@@ -497,9 +497,7 @@ export default class NasesUtilsService {
           this.clientsService.slovenskoSkApi,
         )
       case SendMessageNasesSenderType.Self:
-        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost.bind(
-          this.clientsService.slovenskoSkApi,
-        )
+        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
       default:
         throw new Error('Invalid sender type')
     }

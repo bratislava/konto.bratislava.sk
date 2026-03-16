@@ -209,7 +209,7 @@ export default class NasesController {
       json: true,
     }) as JwtNasesPayloadDto
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-spread
+    // eslint-disable-next-line @typescript-eslint/no-misused-spread -- we are spreading a DTO object, which is not a problem
     const updateData = { ...data, eidToken: undefined }
 
     // TODO temp SEND_TO_NASES_ERROR log, remove

@@ -70,7 +70,7 @@ export default class NasesConsumerService {
         throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Error during NasesConsumerService handling',
-          (error as Error).message,
+          error instanceof Error ? error.message : undefined,
           error,
         ),
       )

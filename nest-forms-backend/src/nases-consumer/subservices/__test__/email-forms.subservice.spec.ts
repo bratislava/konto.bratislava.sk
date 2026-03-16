@@ -209,10 +209,12 @@ describe('EmailFormsSubservice', () => {
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockImplementation((slug: string) => {
-          if (slug === 'test-form-email')
+          if (slug === 'test-form-email') {
             return mockFormDefinitionWithSendEmail as FormDefinitionEmail
-          if (slug === 'test-form-olo')
+          }
+          if (slug === 'test-form-olo') {
             return mockFormDefinitionWithSendOloEmail as FormDefinitionEmail
+          }
           return null
         })
       jest

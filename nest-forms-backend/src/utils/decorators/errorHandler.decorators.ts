@@ -8,9 +8,7 @@ export default function HandleErrors(
     propertyKey: string | symbol,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor {
-    const originalMethod = descriptor.value as (
-      ...args: unknown[]
-    ) => Promise<unknown>
+    const originalMethod = descriptor.value
     const logger = new LineLoggerSubservice(loggerName)
 
     const modifiedDescriptor = descriptor

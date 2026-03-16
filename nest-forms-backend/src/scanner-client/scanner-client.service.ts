@@ -106,6 +106,7 @@ export default class ScannerClientService {
       return response.data
     } catch (error) {
       throw this.errorHandling(
+        // TODO - fix these casts to AxiosError in the whole file. This is a temporary fix to avoid type errors.
         error as AxiosError,
         `minioFileName: ${minioFileName}, userUid: ${userUid as string}`,
       )

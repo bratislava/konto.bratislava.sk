@@ -59,9 +59,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     body: unknown
     userId: string
   } {
-    const method = request.method
-    const originalUrl = request.originalUrl
-    const body = request.body as unknown
+    const { method, originalUrl, body } = request
     const ip = request.ip ?? '<NO IP>'
     const userAgent = request.get('user-agent') || ''
 

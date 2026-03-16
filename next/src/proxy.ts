@@ -18,7 +18,7 @@ export function proxy(request: NextRequest) {
   const connectSrc = [
     'https://faro.bratislava.sk',
     'https://cognito-identity.eu-central-1.amazonaws.com',
-    environment.formsUrl,
+    // environment.formsUrl,
     environment.cityAccountUrl,
     environment.taxesUrl,
     slovenskoSkLoginUrlOrigin,

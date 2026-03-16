@@ -46,7 +46,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
 
   return (
     <thead className="self-stretch bg-gray-50">
-      <tr className="lg:border-b-2">
+      <tr className="lg:border-b">
         {headerData.map((header, index) => (
           <th
             key={index}
@@ -110,7 +110,7 @@ const TableData = ({
             : taxDetail.type
 
         return (
-          <tr key={taxDetail.type} className="not-last:lg:border-b-2">
+          <tr key={taxDetail.type} className="not-last:lg:border-b">
             <td className="h-max p-4 not-first:text-center not-first:text-20-semibold lg:px-6 lg:py-5">
               <div className="inline h-0 font-semibold">{title}</div>
             </td>

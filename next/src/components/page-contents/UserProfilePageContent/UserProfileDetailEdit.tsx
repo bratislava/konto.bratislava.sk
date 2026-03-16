@@ -270,7 +270,7 @@ const UserProfileDetailEdit = ({
       {/*     <InputField label={t('my_profile.profile_detail.phone_number')} /> */}
       {/*   </div> */}
       {/* </div> */}
-      {/* <div className="h-0 w-full border-b-2 border-gray-200" /> */}
+      {/* <div className="h-0 w-full border-b border-gray-200" /> */}
       {/* <h5 className="text-h5">{t('my_profile.profile_detail.address')}</h5> */}
       {/* <Controller */}
       {/*   name="street_address" */}

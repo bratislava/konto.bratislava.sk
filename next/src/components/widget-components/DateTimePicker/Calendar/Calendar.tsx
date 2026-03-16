@@ -61,7 +61,7 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
         />
       </div>
       <CalendarGrid state={state} />
-      <div className="flex items-stretch justify-between border-t-2 border-gray-700 px-4 py-3">
+      <div className="flex items-stretch justify-between border-t border-gray-700 px-4 py-3">
         <Button onPress={onReset} variant="plain" size="small">
           Resetovať
         </Button>

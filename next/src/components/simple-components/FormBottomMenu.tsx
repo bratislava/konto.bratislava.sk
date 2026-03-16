@@ -10,7 +10,7 @@ const FormBottomMenu = () => {
   const menuItems = useFormMenuItems()
 
   return (
-    <ul className="mt-4 flex flex-col gap-3 border-t-2 border-gray-200 pt-4 lg:hidden">
+    <ul className="mt-4 flex flex-col gap-3 border-t border-gray-200 pt-4 lg:hidden">
       {menuItems.map((menuItem, index) => (
         // TODO use button variants correctly (design needed)
         <li key={index}>

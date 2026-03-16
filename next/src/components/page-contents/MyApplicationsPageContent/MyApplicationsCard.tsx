@@ -295,7 +295,7 @@ const MyApplicationsCard = ({
         href={variant === 'SENT' ? detailPageHref : formPageHref}
         onClick={openBottomSheetModal}
       >
-        <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
+        <div className="relative flex w-full items-start justify-between border-b border-gray-200 bg-white py-4 lg:hidden">
           <div className="flex w-full justify-between gap-1.5">
             <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">

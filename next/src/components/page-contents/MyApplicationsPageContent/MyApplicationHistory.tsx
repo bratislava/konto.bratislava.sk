@@ -26,7 +26,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
         {/* TODO - history data needs changes in process and on BE - until then, we just take 1 instance and present it as 'document created' (all the instances are interpreted as document created) */}
         {/* TODO - fix the types in OpenAPI (BE) */}
         {historyData?.slice(-1).map((data: GenericObjectType, i) => (
-          <div key={i} className="flex flex-row flex-wrap gap-2 border-b-2 py-4 md:flex-nowrap">
+          <div key={i} className="flex flex-row flex-wrap gap-2 border-b py-4 md:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
                 <span className="text-p3-semibold">
@@ -61,7 +61,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
           </div>
           <div className="flex flex-col items-center">
             {historyData?.map((data: GenericObjectType, i) => (
-              <div className="flex w-full border-t-2 p-4" key={i}>
+              <div className="flex w-full border-t p-4" key={i}>
                 <span className="min-w-[240px] text-p2">
                   <FormatDate>{data['Datum-zmeny']}</FormatDate>
                 </span>

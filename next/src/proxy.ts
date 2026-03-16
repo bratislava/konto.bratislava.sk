@@ -54,6 +54,14 @@ export function proxy(request: NextRequest) {
 
   requestHeaders.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
   requestHeaders.set('Reporting-Endpoints', reportingEndpointsValue)
+  requestHeaders.set(
+    'Report-To',
+    JSON.stringify({
+      group: CSP_REPORT_ENDPOINT_NAME,
+      max_age: 10886400,
+      endpoints: [{ url: reportToUrl }],
+    }),
+  )
 
   const response = NextResponse.next({
     request: {

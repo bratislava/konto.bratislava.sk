@@ -16,7 +16,7 @@ const NumberWidgetRJSF = ({
   schema,
   label,
   options,
-  placeholder = '',
+  placeholder,
   required,
   value,
   disabled,
@@ -30,9 +30,7 @@ const NumberWidgetRJSF = ({
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
-    tooltip,
     className,
-    resetIcon,
     leftIcon,
     size,
     labelSize,
@@ -68,15 +66,13 @@ const NumberWidgetRJSF = ({
         placeholder={placeholder}
         value={value ?? null}
         errorMessage={rawErrors}
-        required={required}
-        disabled={disabled || readonly}
+        isRequired={required}
+        isDisabled={disabled || readonly}
         helptext={helptext}
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
-        tooltip={tooltip}
         className={className}
-        resetIcon={resetIcon}
         leftIcon={leftIcon}
         onChange={(newValue) => onChange(newValue ?? undefined)}
         size={size}

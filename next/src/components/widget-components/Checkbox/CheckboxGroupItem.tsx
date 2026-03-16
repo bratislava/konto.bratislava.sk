@@ -3,12 +3,11 @@ import { useRef } from 'react'
 import { useCheckboxGroupItem, useFocusRing, VisuallyHidden } from 'react-aria'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
-import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import cn from '@/src/utils/cn'
 
 import { CheckboxGroupContext } from './CheckboxGroup'
 
-type CheckBoxBase = {
+type CheckBoxGroupItemProps = {
   variant?: 'basic' | 'boxed'
   className?: string
   error?: boolean
@@ -17,16 +16,14 @@ type CheckBoxBase = {
   isDisabled?: boolean
   children: React.ReactNode
   value: string
-  tooltip?: string
 }
 const CheckboxGroupItem = ({
   error = false,
   isIndeterminate = false,
-  tooltip,
   children,
   variant = 'basic',
   ...rest
-}: CheckBoxBase) => {
+}: CheckBoxGroupItemProps) => {
   const state = React.useContext(CheckboxGroupContext)
   const ref = useRef<HTMLInputElement>(null)
   const { inputProps } = useCheckboxGroupItem({ ...rest, isIndeterminate, children }, state, ref)
@@ -73,7 +70,6 @@ const CheckboxGroupItem = ({
   return (
     <div data-cy={`checkbox-${inputProps.value as string}`}>
       {/* The input is inside of label, therefore it doesn't need an id. */}
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className={containerStyle}>
         <VisuallyHidden>
           <input {...inputProps} {...focusProps} ref={ref} />
@@ -105,7 +101,6 @@ const CheckboxGroupItem = ({
           </div>
           <div className="flex w-full items-center justify-between gap-3">
             <div className={labelStyle}>{children}</div>
-            {tooltip && <BATooltip>{tooltip}</BATooltip>}
           </div>
         </div>
       </label>

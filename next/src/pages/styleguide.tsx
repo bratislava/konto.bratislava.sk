@@ -16,7 +16,6 @@ import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
 import ProgressBarShowCase from '@/src/components/styleguide/showcases/ProgressBarShowCase'
 import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroupShowCase'
-import SearchFieldShowCase from '@/src/components/styleguide/showcases/SearchFieldShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCardShowCase'
 import SnackbarShowCase from '@/src/components/styleguide/showcases/SnackbarShowCase'
@@ -49,7 +48,6 @@ const showcases = [
   { id: 'date-picker', label: 'Date Picker', component: <DatePickerShowCase /> },
   { id: 'time-picker', label: 'Time Picker', component: <TimePickerShowCase /> },
   { id: 'text-area-field', label: 'Text Area Field', component: <TextAreaFieldShowCase /> },
-  { id: 'search-field', label: 'Search Field', component: <SearchFieldShowCase /> },
   { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },
   { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },

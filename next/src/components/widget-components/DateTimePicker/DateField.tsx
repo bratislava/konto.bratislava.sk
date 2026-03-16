@@ -20,17 +20,15 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
   (
     {
       errorMessage = [],
-      disabled,
+      isDisabled,
       children,
       label,
-      tooltip,
       helptext,
       helptextMarkdown,
       helptextFooter,
       helptextFooterMarkdown,
       isOpen,
-      required,
-      customErrorPlace,
+      isRequired,
       popover,
       size,
       labelSize,
@@ -45,24 +43,24 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
       label,
       description: helptext,
       errorMessage,
-      isDisabled: disabled,
-      isRequired: required,
+      isDisabled,
+      isRequired,
       locale,
       createCalendar,
       ...rest,
     })
 
     const { fieldProps, labelProps, descriptionProps, errorMessageProps } = useDateField(
-      { errorMessage, isDisabled: disabled, label, ...rest },
+      { errorMessage, isDisabled, label, ...rest },
       state,
       ref,
     )
     const dateFieldStyle = cn('flex rounded-lg border-2 px-3 py-2 lg:px-4 lg:py-3', {
-      'bg-white': !disabled,
-      'border-gray-200 hover:border-gray-400': !disabled && !isOpen,
-      'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,
-      'pointer-events-none border-gray-300 bg-gray-100': disabled,
-      'border-gray-700': isOpen && !disabled && errorMessage?.length <= 0,
+      'bg-white': !isDisabled,
+      'border-gray-200 hover:border-gray-400': !isDisabled && !isOpen,
+      'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !isDisabled,
+      'pointer-events-none border-gray-300 bg-gray-100': isDisabled,
+      'border-gray-700': isOpen && !isDisabled && errorMessage?.length <= 0,
     })
 
     return (
@@ -70,15 +68,13 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
         label={label}
         htmlFor={fieldProps?.id}
         labelProps={labelProps}
-        tooltip={tooltip}
         helptext={helptext}
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
-        required={required}
-        disabled={disabled}
-        customErrorPlace={customErrorPlace}
+        isRequired={isRequired}
+        isDisabled={isDisabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}

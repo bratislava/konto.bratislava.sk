@@ -1,14 +1,12 @@
 import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
 import type { NumberFieldProps as ReactAriaNumberFieldProps } from '@react-types/numberfield'
-import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode } from 'react'
 import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/src/assets/ui-icons'
+import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon } from '@/src/assets/ui-icons'
 import MailIcon from '@/src/assets/ui-icons/custom_mail.svg'
-import Button from '@/src/components/simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
 
@@ -18,7 +16,6 @@ export type NumberFieldProps = FieldWrapperProps & {
   name?: string
   value?: number | null
   leftIcon?: LeftIconVariants
-  resetIcon?: boolean
   onChange?: (value: number | null) => void
   endIcon?: ReactNode
   placeholder?: string
@@ -34,35 +31,8 @@ export type NumberFieldProps = FieldWrapperProps & {
  * The component handles conversion between our `null` value and React Aria's `NaN` value.
  */
 const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
-  (
-    {
-      name,
-      label,
-      placeholder,
-      errorMessage = [],
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      tooltip,
-      required,
-      value,
-      disabled,
-      leftIcon,
-      resetIcon,
-      className,
-      onChange,
-      endIcon,
-      customErrorPlace = false,
-      size,
-      labelSize,
-      displayOptionalLabel,
-      ...rest
-    },
-    forwardedRef,
-  ) => {
+  ({ name, value, leftIcon, onChange, endIcon, placeholder, className, ...rest }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
-    const { t } = useTranslation('account')
     const { locale } = useLocale()
 
     const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
@@ -73,14 +43,10 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       ...rest,
       placeholder,
       value: valueControlled ?? NaN,
-      label,
-      errorMessage,
-      description: helptext,
+      description: rest.helptext,
       onChange: (newValue: number) => {
         setValueControlled(Number.isNaN(newValue) ? null : newValue)
       },
-      isRequired: required,
-      isDisabled: disabled,
       isWheelDisabled: true,
     }
     const state = useNumberFieldState({
@@ -110,48 +76,31 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       }
     }
 
-    const resetIconHandler = () => {
-      setValueControlled(null)
-    }
-
     const style = cn(
       'w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 sm:text-16',
       {
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
-        'pr-12 sm:pr-[52px]': resetIcon,
         // hover
-        'hover:border-gray-400': !disabled,
+        'hover:border-gray-400': !rest.isDisabled,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
+          rest.errorMessage?.length && !rest.isDisabled,
 
         // disabled
-        'border-gray-300 bg-gray-100': disabled,
+        'border-gray-300 bg-gray-100': rest.isDisabled,
       },
       className,
     )
 
     return (
       <FieldWrapper
-        label={label}
+        {...rest}
         labelProps={labelProps}
         htmlFor={inputProps.id}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
-        required={required}
-        tooltip={tooltip}
-        disabled={disabled}
-        customErrorPlace={customErrorPlace}
-        errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel={displayOptionalLabel}
       >
         <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
@@ -159,7 +108,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
               className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
-                  'opacity-50': disabled,
+                  'opacity-50': rest.isDisabled,
                 },
               )}
             >
@@ -173,16 +122,6 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
             className={style}
             data-cy={`number-${name}`}
           />
-          {resetIcon && value != null && (
-            <Button
-              onPress={resetIconHandler}
-              variant="unstyled"
-              className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
-            >
-              <RemoveIcon />
-              <span className="sr-only">{t('InputField.aria.reset')}</span>
-            </Button>
-          )}
           {endIcon}
         </div>
       </FieldWrapper>

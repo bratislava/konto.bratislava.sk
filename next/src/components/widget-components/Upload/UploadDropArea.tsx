@@ -19,7 +19,7 @@ import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
 interface UploadDropAreaProps {
-  disabled?: boolean
+  isDisabled?: boolean
   sizeLimit?: number
   supportedFormats?: string[]
   errorMessage?: string[]
@@ -30,7 +30,7 @@ interface UploadDropAreaProps {
 const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
   (
     {
-      disabled,
+      isDisabled,
       sizeLimit,
       supportedFormats,
       errorMessage = [],
@@ -46,20 +46,20 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
 
     const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
       cn('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
-        'bg-white': !disabled && !isDropTarget,
-        'cursor-not-allowed bg-gray-200 opacity-50': disabled,
-        'cursor-pointer': !disabled,
+        'bg-white': !isDisabled && !isDropTarget,
+        'cursor-not-allowed bg-gray-200 opacity-50': isDisabled,
+        'cursor-pointer': !isDisabled,
         'hover:border-gray-400 hover:bg-gray-50 focus:border-gray-700 active:border-gray-700':
-          !disabled && !isDropTarget,
-        'border-gray-400 bg-gray-50': !disabled && isDropTarget,
+          !isDisabled && !isDropTarget,
+        'border-gray-400 bg-gray-50': !isDisabled && isDropTarget,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
+          errorMessage?.length > 0 && !isDisabled,
       })
 
     const handleOnSelect = async (files: FileList | null) => {
-      if (disabled) {
+      if (isDisabled) {
         return
       }
 
@@ -73,7 +73,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
 
     const handleOnDrop = async (event: DropEvent) => {
       // DropZone doesn't yet support `isDisabled` prop.
-      if (disabled) {
+      if (isDisabled) {
         return
       }
 
@@ -103,7 +103,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
             <ReactAriaButton
               ref={ref}
               className="flex size-full flex-col items-center justify-evenly p-6 text-center"
-              isDisabled={disabled}
+              isDisabled={isDisabled}
             >
               <div className="flex justify-center">
                 <div className="flex size-12 items-center justify-center rounded-full bg-gray-100">

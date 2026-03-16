@@ -152,6 +152,7 @@ const UserProfileDetailEdit = ({
       //   postal_code: data.postal_code?.replaceAll(' ', ''),
       // }),
     }
+
     return onSubmit(newUserData)
     // }
     //
@@ -192,7 +193,7 @@ const UserProfileDetailEdit = ({
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    required
+                    isRequired
                     capitalize
                     label={t('my_profile.profile_detail.given_name')}
                     {...field}
@@ -207,7 +208,7 @@ const UserProfileDetailEdit = ({
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    required
+                    isRequired
                     capitalize
                     label={t('my_profile.profile_detail.family_name')}
                     {...field}
@@ -226,8 +227,8 @@ const UserProfileDetailEdit = ({
             control={control}
             render={({ field }) => (
               <InputField
-                disabled
-                required
+                isDisabled
+                isRequired
                 label={t('my_profile.profile_detail.email')}
                 autoComplete="username"
                 {...field}
@@ -304,7 +305,6 @@ const UserProfileDetailEdit = ({
       {/*       control={control} */}
       {/*       render={({ field }) => ( */}
       {/*         <InputField */}
-      {/*           tooltip={t('my_profile.profile_detail.postal_code_tooltip')} */}
       {/*           label={t('my_profile.profile_detail.postal_code')} */}
       {/*           {...field} */}
       {/*           errorMessage={errors.postal_code} */}

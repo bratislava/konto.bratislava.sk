@@ -66,7 +66,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             label={t('auth.fields.new_email_label')}
             placeholder={t('auth.fields.email_placeholder')}
             {...field}
@@ -79,7 +79,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <PasswordField
-            required
+            isRequired
             label={t('auth.fields.new_email_password_label')}
             placeholder={t('auth.fields.password_placeholder')}
             {...field}

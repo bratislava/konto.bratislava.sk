@@ -1,3 +1,5 @@
+import { text } from 'node:stream/consumers'
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import logger from '@/src/frontend/utils/logger'
@@ -9,13 +11,9 @@ export const config = {
 }
 
 async function readBody(req: NextApiRequest): Promise<unknown> {
-  const raw = await new Promise<string>((resolve, reject) => {
-    const chunks: Buffer[] = []
-    req.on('data', (chunk: Buffer) => chunks.push(chunk))
-    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')))
-    req.on('error', reject)
-  })
   try {
+    const raw = await text(req)
+
     return JSON.parse(raw || '{}')
   } catch {
     return {}

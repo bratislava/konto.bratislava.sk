@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { noop } from 'lodash'
 
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
@@ -41,7 +40,9 @@ describe('StatusService', () => {
 
   describe('isPrismaRunning', () => {
     it('should return true', async () => {
-      service['prismaService'].isRunning = jest.fn().mockImplementation(noop)
+      service['prismaService'].isRunning = jest
+        .fn()
+        .mockImplementation(() => {})
       const result = await service.isPrismaRunning()
       expect(result).toEqual({
         running: true,

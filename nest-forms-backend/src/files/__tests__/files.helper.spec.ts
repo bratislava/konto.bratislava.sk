@@ -4,7 +4,6 @@ import { Test } from '@nestjs/testing'
 import { Files, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { noop } from 'lodash'
 
 import prismaMock from '../../../test/singleton'
 import {
@@ -117,7 +116,7 @@ describe('FilesHelper', () => {
 
   describe('areErrorFilesInForm', () => {
     beforeEach(() => {
-      jest.spyOn(service['logger'], 'error').mockImplementation(noop)
+      jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
     })
 
     afterEach(() => {

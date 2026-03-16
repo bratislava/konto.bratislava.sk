@@ -61,7 +61,8 @@ export default class MailgunService implements Mailer {
     }))
 
     try {
-      const renderLocally = Boolean(MAILGUN_CONFIG[data.template].renderLocally)
+      // eslint-disable-next-line no-implicit-coercion
+      const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocally
       const { template } = MAILGUN_CONFIG[data.template]
       const variables = MailgunHelper.createEmailVariables(data)
 

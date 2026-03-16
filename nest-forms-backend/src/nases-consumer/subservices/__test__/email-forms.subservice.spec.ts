@@ -14,7 +14,6 @@ import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
-import { noop } from 'lodash'
 
 import prismaMock from '../../../../test/singleton'
 import ConvertService from '../../../convert/convert.service'
@@ -184,10 +183,10 @@ describe('EmailFormsSubservice', () => {
       verbose: jest.fn(),
     } as unknown as LineLoggerSubservice
 
-    jest.spyOn(console, 'log').mockImplementation(noop)
-    jest.spyOn(console, 'error').mockImplementation(noop)
-    jest.spyOn(console, 'warn').mockImplementation(noop)
-    jest.spyOn(console, 'info').mockImplementation(noop)
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
   })
 
   afterEach(() => {

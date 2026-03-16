@@ -4,7 +4,6 @@ import { createMock } from '@golevelup/ts-jest'
 import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileStatus } from '@prisma/client'
-import { noop } from 'lodash'
 import {
   UpvsCorporateBody,
   UpvsNaturalPerson,
@@ -37,7 +36,7 @@ jest.mock('uuid', () => ({
 const createMockReadableStream = (content: string): Readable => {
   const readableStream = new Readable()
 
-  readableStream._read = noop
+  readableStream._read = () => {}
   readableStream.push(content)
   readableStream.push(null)
   return readableStream

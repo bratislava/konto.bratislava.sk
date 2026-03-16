@@ -24,6 +24,7 @@ export default [
       '@typescript-eslint/no-unnecessary-type-parameters': 'warn', // 1 occurrence
       'sonarjs/no-clear-text-protocols': 'warn', // 8 occurrences
       '@typescript-eslint/no-unsafe-return': 'warn', // 2 occurrences
+      '@typescript-eslint/no-empty-function': 'warn', // 16 occurrences
     },
   },
   {

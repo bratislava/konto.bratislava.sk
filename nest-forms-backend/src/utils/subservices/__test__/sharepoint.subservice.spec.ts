@@ -14,7 +14,6 @@ import { SharepointRelationData } from 'forms-shared/definitions/sharepointTypes
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
-import { noop } from 'lodash'
 
 import prismaMock from '../../../../test/singleton'
 import BaConfigService from '../../../config/ba-config.service'
@@ -31,7 +30,7 @@ describe('SharepointSubservice', () => {
   let service: SharepointSubservice
 
   beforeEach(async () => {
-    jest.spyOn(console, 'log').mockImplementation(noop)
+    jest.spyOn(console, 'log').mockImplementation(() => {})
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

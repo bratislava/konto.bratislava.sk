@@ -7,7 +7,7 @@
 // import { createComparator, createMerger, createShallowAllOfMerge } from '@x0k/json-schema-merge';
 // import { createDeduplicator, createIntersector } from '@x0k/json-schema-merge/lib/array';
 
-import { identity, noop } from "lodash"
+import { identity } from "lodash"
 
 module.exports = {
   createComparator: () => ({
@@ -18,6 +18,6 @@ module.exports = {
     mergeArrayOfSchemaDefinitions: () => [],
   }),
   createShallowAllOfMerge: () => identity,
-  createDeduplicator: () => noop,
-  createIntersector: () => noop,
+  createDeduplicator: () => () => {},
+  createIntersector: () => () => {},
 }

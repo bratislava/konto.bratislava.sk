@@ -24,7 +24,8 @@ export default class FormRegistrationStatusRepository {
         },
       })
 
-    return Boolean(registrationStatus?.isRegistered)
+    // eslint-disable-next-line no-implicit-coercion
+    return !!registrationStatus?.isRegistered
   }
 
   async setStatus(

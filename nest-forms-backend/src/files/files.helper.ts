@@ -57,7 +57,7 @@ export default class FilesHelper {
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList: string =
+    const mimeTypeList =
       this.configService.getOrThrow<string>(`MIMETYPE_WHITELIST`)
     this.supportedMimeTypes = mimeTypeList.split(' ')
   }
@@ -242,7 +242,8 @@ export default class FilesHelper {
           ],
         },
       })
-      return Boolean(file)
+      // eslint-disable-next-line no-implicit-coercion
+      return !!file
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,

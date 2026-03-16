@@ -112,7 +112,7 @@ export class TasksService {
     await this.notificationsEventsService.resendBloomreachEvents()
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: 'Europe/Bratislava' })
   @HandleErrors('Cron Error')
   async alertSilentNorisConnectionErrors() {
     const numberOfErrorsValue = await this.databaseSubservice.getConfigByKeys([
@@ -122,7 +122,7 @@ export class TasksService {
       numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY],
     )
 
-    if (numberOfErrors.toString() === 'NaN') {
+    if (Number.isNaN(numberOfErrors)) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${numberOfErrorsValue[NORIS_SILENT_CONNECTION_ERRORS_KEY]}. Must be a number.`,

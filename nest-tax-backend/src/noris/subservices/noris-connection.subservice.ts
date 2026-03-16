@@ -88,7 +88,7 @@ export class NorisConnectionSubservice {
       const mssqlErrorDetails = {
         code: error.code,
         message: error.message,
-        number: error.name,
+        name: error.name,
       }
       return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
     }
@@ -115,32 +115,15 @@ export class NorisConnectionSubservice {
     }
 
     if (
-      [
-        'ETIMEOUT',
-        'ENOTOPEN',
-        'ECONNCLOSED',
-        'EABORT',
-        'ECANCEL',
-        'ETIMEOUT',
-      ].includes(error.code)
+      ['ETIMEOUT', 'ENOTOPEN', 'ECONNCLOSED', 'EABORT', 'ECANCEL'].includes(
+        error.code,
+      )
     ) {
-      await this.prismaService.$transaction(async (tx) => {
-        const configValue = await tx.config.findFirst({
-          where: {
-            key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
-          },
-        })
-        const currentValue = configValue ? Number(configValue.value) : 0
-
-        await tx.config.updateMany({
-          where: {
-            key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
-          },
-          data: {
-            value: (currentValue + 1).toString(),
-          },
-        })
-      })
+      await this.prismaService.$executeRaw`
+        UPDATE "Config"
+        SET "value" = (COALESCE("value",'0')::int + 1)::text
+        WHERE "key" = ${NORIS_SILENT_CONNECTION_ERRORS_KEY}
+      `
 
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.CONNECTION_ERROR,

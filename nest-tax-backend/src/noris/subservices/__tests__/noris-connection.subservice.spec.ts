@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { MSSQLError } from 'mssql'
 
 import { PrismaService } from '../../../prisma/prisma.service'
-import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../../utils/constants'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
@@ -142,18 +141,6 @@ describe('NorisConnectionSubservice', () => {
           throwerErrorGuard,
           'InternalServerErrorException',
         )
-        const mockTx = {
-          config: {
-            findFirst: jest.fn().mockResolvedValue({
-              key: NORIS_SILENT_CONNECTION_ERRORS_KEY,
-              value: '3',
-            }),
-            updateMany: jest.fn().mockResolvedValue({ count: 1 }),
-          },
-        }
-        prismaService.$transaction.mockImplementation(async (cb: any) => {
-          await cb(mockTx)
-        })
 
         await expect(
           service.withConnection(async () => {
@@ -169,14 +156,7 @@ describe('NorisConnectionSubservice', () => {
           mssqlError,
         )
 
-        expect(prismaService.$transaction).toHaveBeenCalledTimes(1)
-        expect(mockTx.config.findFirst).toHaveBeenCalledWith({
-          where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
-        })
-        expect(mockTx.config.updateMany).toHaveBeenCalledWith({
-          where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
-          data: { value: '4' },
-        })
+        expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
 
         expect(throwerErrorGuardSpy).not.toHaveBeenCalledWith(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -188,21 +168,12 @@ describe('NorisConnectionSubservice', () => {
       },
     )
 
-    it('should use currentValue 0 when config row does not exist and increment to 1', async () => {
+    it('should run increment SQL when config row may not exist', async () => {
       const mssqlError = new MSSQLError('Timeout', 'ETIMEOUT')
       const throwerErrorGuardSpy = jest.spyOn(
         throwerErrorGuard,
         'InternalServerErrorException',
       )
-      const mockTx = {
-        config: {
-          findFirst: jest.fn().mockResolvedValue(null),
-          updateMany: jest.fn().mockResolvedValue({ count: 1 }),
-        },
-      }
-      prismaService.$transaction.mockImplementation(async (cb: any) => {
-        await cb(mockTx)
-      })
 
       await expect(
         service.withConnection(async () => {
@@ -210,13 +181,7 @@ describe('NorisConnectionSubservice', () => {
         }, errorMessage),
       ).rejects.toThrow()
 
-      expect(mockTx.config.findFirst).toHaveBeenCalledWith({
-        where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
-      })
-      expect(mockTx.config.updateMany).toHaveBeenCalledWith({
-        where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
-        data: { value: '1' },
-      })
+      expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
       expect(throwerErrorGuardSpy).not.toHaveBeenCalledWith(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         expect.stringContaining(errorMessage),

@@ -3,9 +3,12 @@ import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import prismaMock from '../../../test/singleton'
+import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import CityAccountIngestionTasksService from '../subservices/city-account-ingestion.tasks.service'
 import NorisSyncTasksService from '../subservices/noris-sync.tasks.service'
 import NotificationsEventsService from '../subservices/notifications-events.service'
@@ -41,6 +44,14 @@ describe('TasksService', () => {
         {
           provide: NotificationsEventsService,
           useValue: createMock<NotificationsEventsService>(),
+        },
+        {
+          provide: DatabaseSubservice,
+          useValue: createMock<DatabaseSubservice>(),
+        },
+        {
+          provide: PrismaService,
+          useValue: prismaMock,
         },
       ],
     }).compile()

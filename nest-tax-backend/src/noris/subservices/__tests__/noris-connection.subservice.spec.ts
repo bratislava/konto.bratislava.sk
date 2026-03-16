@@ -39,6 +39,7 @@ describe('NorisConnectionSubservice', () => {
       MSSQL_HOST: 'localhost',
       MSSQL_DB: 'testdb',
       MSSQL_USERNAME: 'user',
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
       MSSQL_PASSWORD: 'pass',
     }
 
@@ -50,6 +51,7 @@ describe('NorisConnectionSubservice', () => {
           MSSQL_HOST: 'localhost',
           MSSQL_DB: 'testdb',
           MSSQL_USERNAME: 'user',
+          // eslint-disable-next-line sonarjs/no-hardcoded-passwords
           MSSQL_PASSWORD: 'pass',
         }
         if (key in map) {
@@ -90,7 +92,7 @@ describe('NorisConnectionSubservice', () => {
 
       await expect(
         service.withConnection(async () => {
-          throw genericError
+          return Promise.reject(genericError)
         }, errorMessage),
       ).rejects.toThrow(errorMessage)
 
@@ -112,7 +114,7 @@ describe('NorisConnectionSubservice', () => {
       )
       await expect(
         service.withConnection(async () => {
-          throw mssqlError
+          return Promise.reject(mssqlError)
         }, errorMessage),
       ).rejects.toThrow(errorMessage)
 
@@ -155,7 +157,7 @@ describe('NorisConnectionSubservice', () => {
 
         await expect(
           service.withConnection(async () => {
-            throw mssqlError
+            return Promise.reject(mssqlError)
           }, errorMessage),
         ).rejects.toThrow(errorMessage)
 
@@ -204,7 +206,7 @@ describe('NorisConnectionSubservice', () => {
 
       await expect(
         service.withConnection(async () => {
-          throw mssqlError
+          return Promise.reject(mssqlError)
         }, errorMessage),
       ).rejects.toThrow()
 

@@ -9,9 +9,7 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
 import { stateHolidays } from '../tax/utils/unified-tax.util'
-import {
-  NORIS_SILENT_CONNECTION_ERRORS_KEY,
-} from '../utils/constants'
+import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../utils/constants'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'

@@ -100,7 +100,7 @@ export class NorisConnectionSubservice {
       ErrorsEnum.INTERNAL_SERVER_ERROR,
       this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
       undefined,
-      error instanceof Error ? undefined : error as string,
+      error instanceof Error ? undefined : (error as string),
       error instanceof Error ? error : undefined,
     )
   }
@@ -146,7 +146,7 @@ export class NorisConnectionSubservice {
         CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
         undefined,
-        error instanceof Error ? undefined : error as string,
+        error instanceof Error ? undefined : (error as string),
         error instanceof Error ? error : undefined,
       )
     }

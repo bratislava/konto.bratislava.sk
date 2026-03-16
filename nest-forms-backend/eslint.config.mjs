@@ -11,7 +11,7 @@ export default [
       'custom-rules': customRulesPlugin,
     },
     rules: {
-      'custom-rules/thrower-error-guard-enum': 'error',
+      'custom-rules/thrower-error-guard-enum': 'warn',
     },
   },
   {

@@ -43,7 +43,7 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
     <div
       {...calendarProps}
       ref={ref}
-      className="w-full max-w-xs rounded-lg border-2 border-gray-700 bg-white"
+      className="w-full max-w-xs rounded-lg border border-gray-700 bg-white"
     >
       <div className="flex justify-between px-4 py-3">
         <Button

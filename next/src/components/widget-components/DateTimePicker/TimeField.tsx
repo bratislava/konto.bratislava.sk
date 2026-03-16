@@ -37,7 +37,7 @@ const TimeField = (props: TimeFieldProps) => {
     ref,
   )
 
-  const timeFieldStyle = cn('flex rounded-lg border-2 bg-white px-3 py-2 lg:px-4 lg:py-3', {
+  const timeFieldStyle = cn('flex rounded-lg border bg-white px-3 py-2 lg:px-4 lg:py-3', {
     'border-gray-200 focus-within:border-gray-700 hover:border-gray-400': !rest.isDisabled,
     'border-negative-700 hover:border-negative-700': rest.errorMessage?.length && !rest.isDisabled,
     'pointer-events-none border-gray-300 bg-gray-100 text-gray-400': rest.isDisabled,

@@ -82,7 +82,7 @@ const Table = ({ data }: TableDataProps) => {
     <div className="relative w-full">
       <div
         className={cn(
-          'overflow-x-auto rounded-lg border-2 border-solid border-gray-200',
+          'overflow-x-auto rounded-lg border border-solid border-gray-200',
           scrollFadeClassNames,
         )}
         ref={tableWrapperRef}

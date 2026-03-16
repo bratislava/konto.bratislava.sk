@@ -55,7 +55,7 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
       state,
       ref,
     )
-    const dateFieldStyle = cn('flex rounded-lg border-2 px-3 py-2 lg:px-4 lg:py-3', {
+    const dateFieldStyle = cn('flex rounded-lg border px-3 py-2 lg:px-4 lg:py-3', {
       'bg-white': !isDisabled,
       'border-gray-200 hover:border-gray-400': !isDisabled && !isOpen,
       'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !isDisabled,

@@ -200,7 +200,7 @@ const MyApplicationsCard = ({
         wrap={(children) => <Link href={detailPageHref}>{children}</Link>}
       >
         {/* Desktop */}
-        <div className="relative flex w-full items-stretch rounded-lg border-2 border-gray-200 bg-white p-6 max-lg:hidden">
+        <div className="relative flex w-full items-stretch rounded-lg border border-gray-200 bg-white p-6 max-lg:hidden">
           <div className="flex w-full gap-6">
             <div className="flex w-full grow flex-col gap-1">
               {(category || isLoading) && (
@@ -337,6 +337,7 @@ const MyApplicationsCard = ({
             variant="negative-solid"
             onPress={() => {
               setDeleteConceptModalShow(false)
+
               return deleteConcept()
             }}
           >

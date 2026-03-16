@@ -17,11 +17,12 @@ const AccordionV2 = ({ title, noTitleWrapper, children }: AccordionV2Props) => {
     if (noTitleWrapper) {
       return <>{title}</>
     }
+
     return <h3 className="min-w-0 grow text-h4 font-semibold">{title}</h3>
   }
 
   return (
-    <details className="group flex w-full flex-col rounded-xl border-2 border-gray-200 bg-white open:border-gray-700 hover:border-gray-500 open:hover:border-gray-700">
+    <details className="group flex w-full flex-col rounded-xl border border-gray-200 bg-white open:border-gray-700 hover:border-gray-500 open:hover:border-gray-700">
       <summary className="flex cursor-pointer items-center gap-4 p-4 text-left group-open:pb-2 lg:px-8 lg:py-6 lg:group-open:pb-4">
         {renderTitle()}
         <span className="shrink-0" aria-hidden>

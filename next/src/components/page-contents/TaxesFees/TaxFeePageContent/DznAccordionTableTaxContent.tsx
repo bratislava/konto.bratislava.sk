@@ -40,10 +40,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   const headerData = [
     <span>Predmet dane</span>,
     ...(Object.keys(matchHeader).includes(dataType)
-      ? (matchHeader[dataType] as
-          | typeof matchHeader.GROUND
-          | typeof matchHeader.CONSTRUCTION
-          | typeof matchHeader.APARTMENT)
+      ? (matchHeader[dataType] as typeof matchHeader.GROUND)
       : matchHeader.APARTMENT),
   ]
 
@@ -154,7 +151,7 @@ const Table = ({
     <div className="relative w-full">
       <div
         className={cn(
-          'overflow-x-auto rounded-lg border-2 border-solid border-gray-200',
+          'overflow-x-auto rounded-lg border border-solid border-gray-200',
           scrollFadeClassNames,
         )}
         ref={tableWrapperRef}

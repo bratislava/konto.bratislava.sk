@@ -17,7 +17,7 @@ async function main(): Promise<void> {
 
   await app.listen(baConfigService.self.port)
   logger.log(`Nest is running on port: ${baConfigService.self.port}`)
-  logger.log(`RabbitMQ uri: ${process.env.RABBIT_MQ_URI as string}`)
+  logger.log(`RabbitMQ uri: ${baConfigService.rabbitMq.uri}`)
 }
 
 void main()

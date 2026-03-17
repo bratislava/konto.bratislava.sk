@@ -282,7 +282,9 @@ export class UserFixtureFactory {
             (fixture) =>
               fixture.headers.Authorization === `Bearer ${bearerToken}`,
           )
-          if (userFixture) return Promise.resolve(userFixture.user.cognitoJwtPayload)
+          if (userFixture) {
+            return Promise.resolve(userFixture.user.cognitoJwtPayload)
+          }
           throw new UnauthorizedException('Invalid bearer token')
         },
       } satisfies Partial<CognitoJwtVerifyService>)
@@ -292,7 +294,9 @@ export class UserFixtureFactory {
           const userFixture = this.authUsers.find(
             (fixture) => fixture.sub === sub,
           )
-          if (userFixture) return Promise.resolve(userFixture.user.cognitoUser)
+          if (userFixture) {
+            return Promise.resolve(userFixture.user.cognitoUser)
+          }
           throw new UnauthorizedException('Invalid sub')
         },
       } satisfies Partial<CognitoUserService>)
@@ -303,18 +307,22 @@ export class UserFixtureFactory {
             (fixture) =>
               fixture.headers.Authorization === `Bearer ${bearerToken}`,
           )
-          if (userFixture) return Promise.resolve(userFixture.user.cityAccountUser)
+          if (userFixture) {
+            return Promise.resolve(userFixture.user.cityAccountUser)
+          }
           throw new UnauthorizedException('Invalid bearer token')
         },
       } satisfies Partial<CityAccountUserService>)
       .overrideProvider(CognitoGuestIdentityService)
       .useValue({
         verifyGuestIdentityId: async (guestIdentityId: string) =>
-          Promise.resolve(this.guestUsers.some(
-            (fixture) =>
-              fixture.headers['X-Cognito-Guest-Identity-Id'] ===
-              guestIdentityId,
-          )),
+          Promise.resolve(
+            this.guestUsers.some(
+              (fixture) =>
+                fixture.headers['X-Cognito-Guest-Identity-Id'] ===
+                guestIdentityId,
+            ),
+          ),
       } satisfies Partial<CognitoGuestIdentityService>)
 
     return module

@@ -22,11 +22,11 @@ async function readBody(req: NextApiRequest): Promise<unknown> {
 
 function logViolation(report: unknown): void {
   logger.warn(
-    JSON.stringify({
+    {
       timestamp: new Date().toISOString(),
       type: 'csp-violation',
       ...(report && typeof report === 'object' ? report : { raw: report }),
-    }),
+    },
     '[CSP violation]',
   )
 }

@@ -8,17 +8,23 @@ const slovenskoSkLoginUrlOrigin = new URL(environment.slovenskoSkLoginUrl).origi
 // Setting up Content Security Policy with csp header and nonce. Following official docs and our security training
 // recommendations. Note that we removed `data:` from `img-src`.
 // Docs: https://nextjs.org/docs/15/pages/guides/content-security-policy
+//
+// Notes:
+// - You can check violations directly in the browser DevTools > Application > Reporting API
+// - Reporting may not work on internal network, because the request does not hit Cloudflare that adds X-Forwarded-* headers.
+
 const CSP_REPORT_ENDPOINT_NAME = 'csp-endpoint'
 
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const isNodeEnvDevelopment = environment.nodeEnv === 'development'
 
-  // const origin = request.nextUrl.origin
-
+  // Reconstruct the public origin from X-Forwarded-* headers.
+  // In Kubernetes behind an ingress, request.nextUrl.origin points to the internal
+  // pod hostname (e.g. service:3000), but we need the browser-facing origin for
+  // correct CSP reporting endpoints.
   const forwardedHost = request.headers.get('x-forwarded-host')
   const forwardedProto = request.headers.get('x-forwarded-proto')
-
   const host = forwardedHost ?? request.headers.get('host')
   const protocol = forwardedProto ?? request.nextUrl.protocol.replace(':', '')
 
@@ -58,17 +64,18 @@ export function proxy(request: NextRequest) {
   const reportToUrl = `${origin}/api/csp-report`
   const reportingEndpointsValue = `${CSP_REPORT_ENDPOINT_NAME}="${reportToUrl}"`
 
+  // Forward the generated nonce via a request header, so the rendering layer (_document.tsx)
+  // can read it and attach the same nonce to inline scripts/styles.
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
 
-  requestHeaders.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
-  requestHeaders.set('Reporting-Endpoints', reportingEndpointsValue)
+  const response = NextResponse.next({ request: { headers: requestHeaders } })
 
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  })
+  // Send CSP and reporting configuration to the browser.
+  // - `Reporting-Endpoints` is the modern Reporting API endpoint definition.
+  // - `Report-To` is the legacy header still required by some browsers.
+  // Both reporting headers are sent for backward compatibility.
+  // TODO change Content-Security-Policy-Report-Only to Content-Security-Policy when ready
   response.headers.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
   response.headers.set('Reporting-Endpoints', reportingEndpointsValue)
   response.headers.set(

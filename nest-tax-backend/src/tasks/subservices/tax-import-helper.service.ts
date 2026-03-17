@@ -126,6 +126,7 @@ export default class TaxImportHelperService {
     if (isImportPhase) {
       existingTaxPayers = await this.prismaService.$queryRaw<
         { birthNumber: string }[]
+        //language=postgresql
       >`
           SELECT tp."birthNumber"
           FROM "TaxPayer" tp
@@ -149,6 +150,7 @@ export default class TaxImportHelperService {
     } else {
       existingTaxPayers = await this.prismaService.$queryRaw<
         { birthNumber: string }[]
+        //language=postgresql
       >`
           SELECT tp."birthNumber"
           FROM "TaxPayer" tp

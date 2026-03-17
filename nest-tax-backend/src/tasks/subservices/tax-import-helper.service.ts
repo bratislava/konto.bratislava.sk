@@ -92,6 +92,7 @@ export default class TaxImportHelperService {
     newlyCreated: string[]
   }> {
     const thisYear = new Date().getFullYear()
+    // (number of tax types: 2) * (number of years to be imported: delta including initial)
     const NorisCallsPerNewUser = 2 * (firstHistoricalYear - thisYear + 1)
 
     // Get users that have no taxes loaded and were never updated as a priority

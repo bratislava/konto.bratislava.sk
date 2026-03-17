@@ -210,7 +210,6 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       })
       await this.prismaService.taxImportAttempt.createMany({
         data: taxPayers.map((taxPayer) => ({
-          birthNumber: taxPayer.birthNumber,
           taxPayerId: taxPayer.id,
           status: HistoricalTaxImportStatus.READY_TO_IMPORT,
           year,

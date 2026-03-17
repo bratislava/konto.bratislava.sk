@@ -141,8 +141,10 @@ export default class TaxImportHelperService {
             AND (tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus"
               OR tia.id IS NULL)
           ORDER BY CASE
-                       WHEN tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus" THEN 0
-                       ELSE 1 END,
+                       WHEN tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus"
+                           THEN 1
+                       ELSE 0
+                       END DESC,
                    tia."updatedAt" NULLS FIRST,
                    tp."updatedAt"
           LIMIT ${remainingCapacity}

@@ -29,8 +29,6 @@ model TaxPayer {
 
   lastUpdatedAtDZN DateTime @default(now())
   lastUpdatedAtKO  DateTime @default(now())
-  readyToImportDZN Boolean  @default(false)
-  readyToImportKO  Boolean  @default(false)
 
   taxes             Tax[]
   taxAdministrators TaxPayerTaxAdministrator[]

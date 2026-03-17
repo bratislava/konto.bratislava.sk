@@ -58,12 +58,12 @@ ON CONFLICT DO NOTHING;
 INSERT INTO "HistoricalTaxImportAttempt" ("taxPayerId", "year", "taxType", "status", "createdAt", "updatedAt")
 SELECT t.id,
        DATE_PART('year', CURRENT_DATE),
-       'KO'::"TaxType",
+       'DZN'::"TaxType",
        'READY_TO_IMPORT'::"HistoricalTaxImportStatus",
        NOW(),
        NOW()
 FROM "TaxPayer" t
-WHERE t."readyToImportKO"
+WHERE t."readyToImportDZN"
 ON CONFLICT DO NOTHING;
 
 -- Clean up old database columns and indexes

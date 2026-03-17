@@ -20,7 +20,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 const firstHistoricalYear = 2020
-const LOAD_HISTORICAL_TAXES_BATCH = 10
+const LOAD_HISTORICAL_TAXES_BATCH = 500
 
 @Injectable()
 export default class TaxImportTasksService {

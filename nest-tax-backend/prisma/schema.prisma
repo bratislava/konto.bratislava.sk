@@ -152,7 +152,6 @@ model TaxImportAttempt {
   errorMessage String?
 
   @@unique([taxPayerId, year, taxType])
-  // TODO what indexes do we need here?
   @@index([status, updatedAt])
   @@index([taxPayerId, taxType])
 }

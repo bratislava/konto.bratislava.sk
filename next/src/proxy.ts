@@ -13,7 +13,16 @@ const CSP_REPORT_ENDPOINT_NAME = 'csp-endpoint'
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const isNodeEnvDevelopment = environment.nodeEnv === 'development'
-  const origin = request.nextUrl.origin
+
+  // const origin = request.nextUrl.origin
+
+  const forwardedHost = request.headers.get('x-forwarded-host')
+  const forwardedProto = request.headers.get('x-forwarded-proto')
+
+  const host = forwardedHost ?? request.headers.get('host')
+  const protocol = forwardedProto ?? request.nextUrl.protocol.replace(':', '')
+
+  const origin = `${protocol}://${host}`
 
   const connectSrc = [
     'https://faro.bratislava.sk',

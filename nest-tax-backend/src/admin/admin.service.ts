@@ -75,7 +75,7 @@ export class AdminService {
   }
 
   /**
-   * This function pull overpayments from Noris and update the local database.
+   * This function pulls overpayments from Noris and updates the local database.
    * ⚠️ **Warning:** This function will not send email to the user.
    * @param data - The date range to pull overpayments from Noris.
    * @returns The number of created and already created overpayments.

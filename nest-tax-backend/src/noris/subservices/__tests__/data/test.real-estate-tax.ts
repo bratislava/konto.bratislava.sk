@@ -87,6 +87,7 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   TXTSPL4_4: '',
   SPL4_4: '',
   uhrazeno: 113.9,
+  forma_uhrady: 'P',
 }
 
 export const testRealEstateTax2: NorisRealEstateTax = {
@@ -173,6 +174,7 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   TXTSPL4_4: '',
   SPL4_4: '',
   uhrazeno: 250.5,
+  forma_uhrady: 'P',
 }
 
 export const testRealEstateTax3 = {
@@ -262,6 +264,7 @@ export const testRealEstateTax3 = {
   TXTSPL4_4: '',
   SPL4_4: '',
   uhrazeno: '450.75',
+  forma_uhrady: 'P',
 }
 
 export const invalidNorisRealEstateTax1 = {
@@ -274,6 +277,11 @@ export const invalidNorisRealEstateTax2 = {
   det_pozemky_DAN_E: null,
 }
 
+export const invalidNorisRealEstateTax3 = {
+  ...testRealEstateTax3,
+  forma_uhrady: 'FAKE',
+}
+
 export const validNorisRealEstateTaxes = [
   testRealEstateTax1,
   testRealEstateTax2,
@@ -283,6 +291,7 @@ export const validNorisRealEstateTaxes = [
 export const invalidNorisRealEstateTaxes = [
   invalidNorisRealEstateTax1,
   invalidNorisRealEstateTax2,
+  invalidNorisRealEstateTax3,
 ]
 
 export const allNorisRealEstateTaxes = [

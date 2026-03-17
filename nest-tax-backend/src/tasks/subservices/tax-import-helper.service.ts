@@ -230,6 +230,7 @@ export default class TaxImportHelperService {
         birthNumbers,
         {
           prepareOnly: true,
+          suppressEmail: true,
         },
       )
 

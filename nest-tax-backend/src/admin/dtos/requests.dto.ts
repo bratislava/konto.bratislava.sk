@@ -68,7 +68,7 @@ export class RequestPostNorisLoadDataOptionsDto {
   })
   @IsOptional()
   @IsBoolean()
-  suppressEmail?: boolean
+  suppressEmail: boolean
 }
 
 export class RequestPostNorisLoadDataDto {

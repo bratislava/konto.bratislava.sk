@@ -24,7 +24,7 @@ export type TaxBloomreachData = {
   delivery_method: DeliveryMethodNamed | null
   tax_type: TaxType
   order: number
-  suppress_email?: boolean
+  suppress_email: boolean
 }
 
 export type UnpaidTaxReminderBloomreachData = {

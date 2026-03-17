@@ -69,6 +69,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         delivery_method: tax.deliveryMethod,
         tax_type: this.getTaxType(),
         order: tax.order!,
+        suppress_email: false,
       },
       userFromCityAccount.externalId ?? undefined,
     )
@@ -295,12 +296,13 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
    * @param options - Options for processing Noris tax data
    * @param options.prepareOnly - If `true`, only prepares data (validates and marks as ready) without creating taxes. If `false` or undefined, taxes will be created normally. Default: `false`
    * @param options.ignoreBatchLimit - If `true`, ignores the batch limit for the number of taxes to process. Useful when you need to process a large number of taxes in a single operation. Default: `false`
+   * @param options.suppressEmail - If `true`, suppresses sending emails to tax payers. Default: `false`
    * @returns Birth numbers of the tax payers that were processed
    */
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
     year: number,
     birthNumbers: string[],
-    options: RequestPostNorisLoadDataOptionsDto = {},
+    options: RequestPostNorisLoadDataOptionsDto = { suppressEmail: false },
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
     const norisData = await this.getTaxDataByYearAndBirthNumber(
@@ -431,6 +433,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         taxDetails,
         type: taxDefinition.type,
         deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
+        // By marking the remainder as sent, we override the email sending logic
         bloomreachUnpaidTaxReminderSent: suppressEmail,
       },
       include: {
@@ -471,7 +474,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     norisItem: TaxTypeToNorisData[TTaxType],
     userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
     year: number,
-    suppressEmail?: boolean,
+    suppressEmail: boolean,
   ) => {
     try {
       await this.prismaService.$transaction(async (tx) => {

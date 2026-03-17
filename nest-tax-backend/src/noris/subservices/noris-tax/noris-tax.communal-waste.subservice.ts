@@ -223,7 +223,10 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     })
 
     // Process new taxes
-    await this.processNorisTaxData(norisData, year, userDataFromCityAccount)
+    await this.processNorisTaxData(norisData, year, {
+      ...userDataFromCityAccount,
+      suppressEmail: false,
+    })
 
     const taxIdentifierToTax = new Map(
       taxesExist.map((tax) => [tax.variableSymbol, tax]),

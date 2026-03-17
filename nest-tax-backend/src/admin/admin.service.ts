@@ -144,6 +144,7 @@ export class AdminService {
       {
         prepareOnly: false,
         ignoreBatchLimit: true,
+        suppressEmail: false,
       },
     )
   }
@@ -208,6 +209,7 @@ export class AdminService {
         delivery_method: null,
         tax_type: taxType,
         order,
+        suppress_email: false,
       },
       userDataFromCityAccount.externalId ?? undefined,
     )

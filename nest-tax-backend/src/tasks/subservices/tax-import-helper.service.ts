@@ -99,7 +99,7 @@ export default class TaxImportHelperService {
     const newlyCreatedTaxPayers = await this.prismaService.taxPayer.findMany({
       where: {
         createdAt: { equals: this.prismaService.taxPayer.fields.updatedAt },
-        historicalTaxImportAttempts: { none: {} },
+        taxImportAttempts: { none: {} },
       },
       select: { birthNumber: true },
       orderBy: { updatedAt: 'asc' },
@@ -118,7 +118,7 @@ export default class TaxImportHelperService {
     }
 
     // Then get existing users for the remaining capacity.
-    // Check HistoricalTaxImportAttempt table instead of Tax table
+    // Check TaxImportAttempt table instead of Tax table
     // In the preparation phase: find users without any attempt record (not yet prepared)
     // In the import phase: prioritize users with READY_TO_IMPORT status
     const existingTaxPayers: { birthNumber: string }[] = isImportPhase
@@ -126,20 +126,20 @@ export default class TaxImportHelperService {
         await this.prismaService.$queryRaw<{ birthNumber: string }[]>`
           SELECT tp."birthNumber"
           FROM "TaxPayer" tp
-                   LEFT JOIN "HistoricalTaxImportAttempt" htia
-                             ON htia."taxPayerId" = tp.id
-                                 AND htia.year = ${year}
-                                 AND htia."taxType" = ${taxType}::"TaxType"
+                   LEFT JOIN "TaxImportAttempt" tia
+                             ON tia."taxPayerId" = tp.id
+                                 AND tia.year = ${year}
+                                 AND tia."taxType" = ${taxType}::"TaxType"
           WHERE
             -- Exclude newly created users (they're handled separately)
               NOT (tp."createdAt" = tp."updatedAt")
 
-            AND (htia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus"
-              OR htia.id IS NULL)
+            AND (tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus"
+              OR tia.id IS NULL)
           ORDER BY CASE
-                       WHEN htia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus" THEN 0
+                       WHEN tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus" THEN 0
                        ELSE 1 END,
-                   htia."updatedAt" NULLS FIRST,
+                   tia."updatedAt" NULLS FIRST,
                    tp."updatedAt"
           LIMIT ${remainingCapacity}
       `
@@ -147,15 +147,15 @@ export default class TaxImportHelperService {
         await this.prismaService.$queryRaw<{ birthNumber: string }[]>`
           SELECT tp."birthNumber"
           FROM "TaxPayer" tp
-                   LEFT JOIN "HistoricalTaxImportAttempt" htia
-                             ON htia."taxPayerId" = tp.id
-                                 AND htia.year = ${year}
-                                 AND htia."taxType" = ${taxType}::"TaxType"
+                   LEFT JOIN "TaxImportAttempt" tia
+                             ON tia."taxPayerId" = tp.id
+                                 AND tia.year = ${year}
+                                 AND tia."taxType" = ${taxType}::"TaxType"
           WHERE
             -- Exclude newly created users (they're handled separately)
               NOT (tp."createdAt" = tp."updatedAt")
             -- In prepare phase: only users who don't have any attempt for this year/type yet
-            AND htia.id IS NULL
+            AND tia.id IS NULL
           ORDER BY tp."updatedAt"
           LIMIT ${remainingCapacity}
       `
@@ -194,7 +194,7 @@ export default class TaxImportHelperService {
     )
 
     if (notFoundInNoris.length > 0) {
-      await this.prismaService.historicalTaxImportAttempt.updateMany({
+      await this.prismaService.taxImportAttempt.updateMany({
         where: {
           taxPayer: {
             birthNumber: { in: notFoundInNoris },

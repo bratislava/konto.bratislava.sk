@@ -32,9 +32,9 @@ model TaxPayer {
   readyToImportDZN Boolean  @default(false)
   readyToImportKO  Boolean  @default(false)
 
-  taxes                       Tax[]
-  taxAdministrators           TaxPayerTaxAdministrator[]
-  historicalTaxImportAttempts HistoricalTaxImportAttempt[]
+  taxes             Tax[]
+  taxAdministrators TaxPayerTaxAdministrator[]
+  taxImportAttempts TaxImportAttempt[]
 
   @@unique([birthNumber])
   @@unique([uuid])
@@ -142,7 +142,7 @@ model Config {
   updatedAt  DateTime @default(now()) @updatedAt
 }
 
-model HistoricalTaxImportAttempt {
+model TaxImportAttempt {
   id           Int                       @id @default(autoincrement())
   createdAt    DateTime                  @default(now())
   updatedAt    DateTime                  @default(now()) @updatedAt

@@ -996,7 +996,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             taxDetail: {
               createMany: jest.fn().mockResolvedValue({}),
             },
-            historicalTaxImportAttempt: {
+            taxImportAttempt: {
               upsert: jest.fn().mockResolvedValue({}),
             },
           }
@@ -1076,7 +1076,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             taxDetail: {
               createMany: jest.fn().mockResolvedValue({}),
             },
-            historicalTaxImportAttempt: {
+            taxImportAttempt: {
               upsert: jest.fn().mockResolvedValue({}),
             },
           }

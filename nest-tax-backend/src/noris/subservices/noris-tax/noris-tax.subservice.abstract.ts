@@ -198,7 +198,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
 
     if (prepareOnly) {
       // In prepare mode, just check if taxes exist and return the birth numbers
-      // The tracking will be done in the prepareTaxes function via HistoricalTaxImportAttempt table
+      // The tracking will be done in the prepareTaxes function via TaxImportAttempt table
       // No need to check for userFromCityAccount - that will be validated during actual import
       const birthNumbers = norisDataNotInDatabase.map(
         (norisItem) => norisItem.ICO_RC,
@@ -207,7 +207,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         where: { birthNumber: { in: birthNumbers } },
         select: { birthNumber: true, id: true },
       })
-      await this.prismaService.historicalTaxImportAttempt.createMany({
+      await this.prismaService.taxImportAttempt.createMany({
         data: taxPayers.map((taxPayer) => ({
           birthNumber: taxPayer.birthNumber,
           taxPayerId: taxPayer.id,
@@ -443,7 +443,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       data: taxInstallments,
     })
 
-    await transaction.historicalTaxImportAttempt.upsert({
+    await transaction.taxImportAttempt.upsert({
       where: {
         taxPayerId_year_taxType: {
           taxPayerId: taxPayer.id,

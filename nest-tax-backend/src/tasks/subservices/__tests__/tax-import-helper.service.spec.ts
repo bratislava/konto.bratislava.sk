@@ -430,7 +430,7 @@ describe('TaxImportHelperService', () => {
         .mockResolvedValue(mockResult)
 
       const updateManySpy = jest
-        .spyOn(prismaService.historicalTaxImportAttempt, 'updateMany')
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 1 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -498,7 +498,7 @@ describe('TaxImportHelperService', () => {
 
       const error = new Error('Database update failed')
       jest
-        .spyOn(prismaService.historicalTaxImportAttempt, 'updateMany')
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockRejectedValue(error)
 
       await expect(
@@ -520,7 +520,7 @@ describe('TaxImportHelperService', () => {
         .mockResolvedValue(mockResult)
 
       const updateManySpy = jest
-        .spyOn(prismaService.historicalTaxImportAttempt, 'updateMany')
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 0 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -542,7 +542,7 @@ describe('TaxImportHelperService', () => {
         .mockResolvedValue(mockResult)
 
       const updateManySpy = jest
-        .spyOn(prismaService.historicalTaxImportAttempt, 'updateMany')
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 1 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -576,7 +576,7 @@ describe('TaxImportHelperService', () => {
         .mockResolvedValue(mockResult)
 
       const updateManySpy = jest
-        .spyOn(prismaService.historicalTaxImportAttempt, 'updateMany')
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 2 })
 
       await service.importTaxes(taxType, birthNumbers, year)
@@ -610,7 +610,7 @@ describe('TaxImportHelperService', () => {
         .mockResolvedValue(mockResult)
 
       const updateManySpy = jest
-        .spyOn(prismaService.historicalTaxImportAttempt, 'updateMany')
+        .spyOn(prismaService.taxImportAttempt, 'updateMany')
         .mockResolvedValue({ count: 2 })
 
       await service.importTaxes(taxType, birthNumbers, year)

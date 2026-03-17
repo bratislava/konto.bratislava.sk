@@ -212,10 +212,10 @@ export default class TaxImportTasksService {
                  CROSS JOIN UNNEST(ARRAY [${historicalYears.join(',')}]) AS years(year)
                  CROSS JOIN UNNEST(ENUM_RANGE(NULL::"TaxType")) AS tax_types("taxType")
         WHERE NOT EXISTS (SELECT 1
-                          FROM "HistoricalTaxImportAttempt" htia
-                          WHERE htia."taxPayerId" = tp.id
-                            AND htia.year = years.year
-                            AND htia."taxType" = tax_types."taxType")
+                          FROM "TaxImportAttempt" tia
+                          WHERE tia."taxPayerId" = tp.id
+                            AND tia.year = years.year
+                            AND tia."taxType" = tax_types."taxType")
         ORDER BY tp."updatedAt", tp.id
         LIMIT ${LOAD_HISTORICAL_TAXES_BATCH};
     `

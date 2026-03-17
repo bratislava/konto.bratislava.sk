@@ -49,7 +49,7 @@
     "rimraf": "^6.0.1"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "^0.7.1",
+    "@bratislava/eslint-config-nest": "^0.9.0",
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.14",
@@ -58,7 +58,7 @@
     "@types/mime-types": "^3.0.1",
     "@types/node": "^22.15.18",
     "@types/passport-http": "^0.3.11",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.3",
     "jest": "^30.2.0",
     "path": "^0.12.7",
     "prettier": "^3.5.3",

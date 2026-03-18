@@ -124,6 +124,7 @@ export default class NotificationsEventsService {
       WHERE t.type = ${taxType}::"TaxType"
         AND t."year" = ${year}
         AND t."isCancelled" = false
+        AND t."paymentMethodIsInkaso" = false
         AND COALESCE(p.total_paid, 0) < COALESCE(d.total_due, 0)
       LIMIT ${UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT}
     `
@@ -306,6 +307,7 @@ export default class NotificationsEventsService {
       where: {
         bloomreachUnpaidTaxReminderSent: false,
         isCancelled: false,
+        paymentMethodIsInkaso: false, // Such taxes are not paid directly by the tax payer, therefore we do not send reminders for them
         taxPayments: {
           none: {
             status: PaymentStatus.SUCCESS,

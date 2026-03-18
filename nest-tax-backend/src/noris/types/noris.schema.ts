@@ -34,6 +34,7 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
   vyb_telefon_prace: z.string().nullable(),
   vyb_email: z.string().nullable(),
   vyb_id: z.number().nullable(),
+  forma_uhrady: z.enum(['P', 'I', 'H', 'Z', 'S']).nullable(), // We only care about I - Inkaso
 })
 
 export const NorisTaxPaymentSchema = z.object({

@@ -12,6 +12,7 @@ import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import {
   allNorisCommunalWasteTaxes,
   invalidNorisCommunalWasteTax1,
+  invalidNorisCommunalWasteTax3,
   invalidNorisCommunalWasteTaxes,
   testCommunalWasteTax1,
   testCommunalWasteTax2,
@@ -248,6 +249,15 @@ describe('NorisValidatorSubservice', () => {
               ...testCommunalWasteTax1,
               stav_dokladu: 'invalid',
             })
+          }).toThrow(HttpException)
+        })
+
+        it('should throw error for invalid forma_uhrady', () => {
+          expect(() => {
+            service.validateNorisData(
+              NorisCommunalWasteTaxSchema,
+              invalidNorisCommunalWasteTax3,
+            )
           }).toThrow(HttpException)
         })
       })

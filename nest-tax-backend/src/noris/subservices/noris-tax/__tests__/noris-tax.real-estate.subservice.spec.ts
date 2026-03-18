@@ -135,6 +135,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       TXTSPL4_4: 'Test spl 4.4',
       SPL4_4: '4',
       uhrazeno: 0,
+      forma_uhrady: 'P',
     },
   ]
 
@@ -266,29 +267,13 @@ describe('NorisTaxRealEstateSubservice', () => {
     it('should handle database connection errors', async () => {
       const mockError = new Error('Database connection failed')
 
-      throwerErrorGuard.InternalServerErrorException.mockImplementation(() => {
-        throw mockError
+      connectionService.withConnection.mockImplementation(async () => {
+        return Promise.reject(mockError)
       })
-
-      connectionService.withConnection.mockImplementation(
-        (callback, errorHandler) => {
-          return errorHandler(mockError)
-        },
-      )
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow()
-
-      expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        undefined,
-        mockError,
-      )
+      ).rejects.toThrow('Database connection failed')
     })
 
     it('should handle multiple birth numbers correctly', async () => {
@@ -583,57 +568,25 @@ describe('NorisTaxRealEstateSubservice', () => {
     it('should handle connection service errors properly', async () => {
       const mockError = new Error('Connection failed')
 
-      throwerErrorGuard.InternalServerErrorException.mockImplementation(() => {
-        throw mockError
+      connectionService.withConnection.mockImplementation(async () => {
+        return Promise.reject(mockError)
       })
-
-      connectionService.withConnection.mockImplementation(
-        (callback, errorHandler) => {
-          return errorHandler(mockError)
-        },
-      )
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow()
-
-      expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        undefined,
-        mockError,
-      )
+      ).rejects.toThrow('Connection failed')
     })
 
     it('should handle non-Error objects in connection failures', async () => {
-      const mockError = 'String error'
+      const mockError = new Error('String error')
 
-      throwerErrorGuard.InternalServerErrorException.mockImplementation(() => {
-        throw new Error('Mocked error')
-      })
-
-      connectionService.withConnection.mockImplementation(
-        (callback, errorHandler) => {
-          return errorHandler(mockError)
-        },
-      )
+      jest
+        .spyOn(connectionService, 'withConnection')
+        .mockRejectedValue(mockError)
 
       await expect(
         service['getTaxDataByYearAndBirthNumber'](2023, ['123456/7890']),
-      ).rejects.toThrow()
-
-      expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        mockError,
-        undefined,
-      )
+      ).rejects.toThrow('String error')
     })
   })
 

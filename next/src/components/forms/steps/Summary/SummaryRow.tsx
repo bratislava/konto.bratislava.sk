@@ -30,7 +30,7 @@ const SummaryRow = (props: SummaryRowProps) => {
     'border-red-500 [&>div>*]:block': data.isError,
     'border-gray-200 hover:[&>div>*]:block': !data.isError,
     'hover:border-gray-700': isEditable,
-    'border-b-2': hasBorder,
+    'border-b': hasBorder,
   })
 
   const labelClassName = cn('w-full flex-1', {

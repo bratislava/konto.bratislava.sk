@@ -31,7 +31,7 @@ export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props
       >
         <div className="w-full">
           <FocusTrap active={isMobileMenuOpen}>
-            <div className="flex h-16 w-full items-center border-b-2 px-4 py-5">
+            <div className="flex h-16 w-full items-center border-b px-4 py-5">
               <div className="flex w-full justify-between">
                 <Brand url={ROUTES.HOME} className="grow" />
                 {isMobileMenuOpen ? (

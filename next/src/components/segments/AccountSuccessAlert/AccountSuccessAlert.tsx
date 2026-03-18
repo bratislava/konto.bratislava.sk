@@ -1,8 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
 import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
-import { Button } from '@bratislava/component-library'
 import Spinner from '@/src/components/simple-components/Spinner'
 import cn from '@/src/utils/cn'
 

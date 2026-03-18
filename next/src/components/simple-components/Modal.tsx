@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
 import { mergeProps } from 'react-aria'
@@ -5,7 +6,6 @@ import { Dialog, Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'rea
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'
-import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {

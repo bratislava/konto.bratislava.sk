@@ -1,4 +1,5 @@
-import React, { PropsWithChildren, useMemo } from 'react'
+import { Button } from '@bratislava/component-library'
+import { PropsWithChildren, useMemo } from 'react'
 
 import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
@@ -6,7 +7,6 @@ import { useFormSignerLoader } from '@/src/components/forms/signer/useFormSigner
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Alert from '@/src/components/simple-components/Alert'
-import { Button } from '@bratislava/component-library'
 import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 
@@ -14,7 +14,6 @@ import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
  * TODO: Texts and translations + MenuDropdown position fix
  */
 const SummaryFormSignature = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
   const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()

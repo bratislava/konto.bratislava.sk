@@ -1,9 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
-import { Button } from '@bratislava/component-library'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
 export const getStaticProps: GetStaticProps = async () => {

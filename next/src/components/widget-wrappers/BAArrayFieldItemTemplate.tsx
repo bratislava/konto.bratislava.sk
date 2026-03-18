@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import {
   ArrayFieldItemTemplateProps,
   FormContextType,
@@ -10,17 +11,14 @@ import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import { RemoveIcon } from '@/src/assets/ui-icons'
-import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldItemTemplate/ArrayFieldItemTemplate.tsx
  */
 const BAArrayFieldItemTemplate = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   F extends FormContextType = any,
 >(
   props: ArrayFieldItemTemplateProps<T, S, F>,

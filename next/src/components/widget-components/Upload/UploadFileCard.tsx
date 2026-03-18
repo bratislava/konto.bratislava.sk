@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import {
   FileInfo,
   FileStatusType,
@@ -19,7 +20,6 @@ import {
   ErrorIcon,
   ScanningIcon,
 } from '@/src/assets/ui-icons'
-import { Button } from '@bratislava/component-library'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
 import ProgressBar from '@/src/components/simple-components/ProgressBar'
 import cn from '@/src/utils/cn'

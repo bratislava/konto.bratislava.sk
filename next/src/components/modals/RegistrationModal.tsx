@@ -1,12 +1,11 @@
+import { Button } from '@bratislava/component-library'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
-import { Button } from '@bratislava/component-library'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 
 export enum RegistrationModalType {
@@ -142,7 +141,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
             <h4 className="text-h4">{t('registration_modal.body_title')}</h4>
             <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
-              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
+              {}
               {bodyList.map((item, index) => (
                 <li key={index} className="flex items-center gap-4">
                   <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">

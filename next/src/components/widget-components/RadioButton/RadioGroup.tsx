@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Orientation, useRadioGroup } from 'react-aria'
@@ -7,7 +8,6 @@ import {
   useRadioGroupState,
 } from 'react-stately'
 
-import { Button } from '@bratislava/component-library'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
 

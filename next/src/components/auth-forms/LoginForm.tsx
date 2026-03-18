@@ -1,9 +1,9 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
-import { Button } from '@bratislava/component-library'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'

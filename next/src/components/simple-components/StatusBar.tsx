@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next'
 import objectHash from 'object-hash'
@@ -8,7 +9,6 @@ import { strapiClient } from '@/src/clients/graphql-strapi'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import WarningIcon from '@/src/components/icon-components/WarningIcon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import { Button } from '@bratislava/component-library'
 import { environment } from '@/src/environment'
 
 const fetchAlert = async () => {

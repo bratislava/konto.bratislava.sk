@@ -1,10 +1,9 @@
-import React from 'react'
+import { Button } from '@bratislava/component-library'
 
 import {
   FormLandingPageFormCtaFragment,
   FormLandingPageLinkCtaFragment,
 } from '@/src/clients/graphql-strapi/api'
-import { Button } from '@bratislava/component-library'
 
 export type FormLandingPageCardProps =
   | FormLandingPageLinkCtaFragment

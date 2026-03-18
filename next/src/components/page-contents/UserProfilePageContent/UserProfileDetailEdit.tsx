@@ -1,7 +1,7 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import { Button } from '@bratislava/component-library'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
 import useHookForm from '@/src/frontend/hooks/useHookForm'

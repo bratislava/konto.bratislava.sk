@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import Editor from '@monaco-editor/react'
 import Form from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
@@ -21,7 +22,6 @@ import {
   FormValidatorRegistryProvider,
   useFormValidatorRegistry,
 } from '@/src/components/forms/useFormValidatorRegistry'
-import { Button } from '@bratislava/component-library'
 import SelectField, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
@@ -59,6 +59,7 @@ const FormPlaygroundProviders = ({
             fileIds.forEach((fileId) => {
               delete newFiles[fileId]
             })
+
             return newFiles
           })
         },
@@ -73,6 +74,7 @@ const FormPlaygroundProviders = ({
             }
           })
           setFiles((prevFiles) => ({ ...prevFiles, ...newFiles }))
+
           return Object.keys(newFiles)
         },
         getFileInfoById: (fileId: string): FileInfo => {
@@ -84,6 +86,7 @@ const FormPlaygroundProviders = ({
               fileSize: null,
             }
           }
+
           return file
         },
       }) as Partial<ContextType<typeof FormFileUploadContext>>,
@@ -279,6 +282,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const exampleOptions: SelectOption[] = useMemo(() => {
     if (!selectedForm) return []
     const currentFormExamples = exampleForms[selectedForm.slug] || []
+
     return [
       { value: '', label: 'Prázdny formulár' },
       ...currentFormExamples.map((example) => ({

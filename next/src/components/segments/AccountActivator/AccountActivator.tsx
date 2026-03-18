@@ -1,9 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
-import { Button } from '@bratislava/component-library'
 
 const AccountActivator = () => {
   const { t } = useTranslation('account')

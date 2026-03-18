@@ -1,7 +1,7 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 
 import { CrossIcon, EditIcon } from '@/src/assets/ui-icons'
-import { Button } from '@bratislava/component-library'
 
 interface UserProfileDetailsButtonsProps {
   formId: string

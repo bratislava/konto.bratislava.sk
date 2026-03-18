@@ -1,5 +1,6 @@
-import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
 import { Button, ButtonProps } from '@bratislava/component-library'
+
+import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'
 
 import { Stack } from '../Stack'

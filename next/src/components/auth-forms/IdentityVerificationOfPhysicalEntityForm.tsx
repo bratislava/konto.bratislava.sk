@@ -86,6 +86,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
       className="flex flex-col gap-4 md:gap-6"
       onSubmit={handleSubmit((data: IdentityVerificationOfPhysicalEntityFormData) => {
         incrementCaptchaKey()
+
         return onSubmit(data)
       })}
     >
@@ -98,7 +99,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             helptext={t('auth.fields.rc_description')}
             label={t('auth.fields.rc_label')}
             placeholder={t('auth.fields.rc_placeholder')}
@@ -112,7 +113,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             label={t('auth.fields.id_card_label')}
             placeholder={t('auth.fields.id_card_placeholder')}
             helptext={t('auth.fields.id_card_description')}
@@ -137,6 +138,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
               onError={(error) => {
                 logger.error('Turnstile error:', error)
                 setCaptchaWarning('show')
+
                 return onChange(null)
               }}
               onTimeout={() => {

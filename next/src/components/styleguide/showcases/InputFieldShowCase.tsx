@@ -16,79 +16,58 @@ const InputFieldShowCase = () => {
           label="Label"
           placeholder="Placeholder"
           errorMessage={['Error message']}
-          disabled
+          isDisabled
         />
       </Stack>
       <Stack direction="column">
-        <InputField
-          label="Label"
-          placeholder="Placeholder"
-          helptext="Help text"
-          tooltip="InputField"
-        />
+        <InputField label="Label" placeholder="Placeholder" helptext="Help text" />
         <InputField
           label="Label"
           placeholder="Placeholder"
           value="Value"
           helptext="Help text"
-          tooltip="InputField"
-          required
+          isRequired
         />
         <InputField
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
-          required
+          isRequired
           errorMessage={['Error message']}
         />
         <InputField
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
-          required
+          isRequired
           errorMessage={['Error message']}
-          disabled
+          isDisabled
         />
       </Stack>
       <Stack direction="column">
-        <InputField
-          label="Label"
-          placeholder="Placeholder"
-          helptext="Help text"
-          tooltip="InputField"
-          leftIcon="mail"
-          resetIcon
-        />
+        <InputField label="Label" placeholder="Placeholder" helptext="Help text" leftIcon="mail" />
         <InputField
           label="Label"
           placeholder="Placeholder"
           value="Value"
           helptext="Help text"
-          tooltip="InputField"
           leftIcon="call"
-          resetIcon
         />
         <InputField
           label="Label"
           type="password"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
           leftIcon="lock"
-          resetIcon
           errorMessage={['Error message']}
         />
         <InputField
           label="Label"
           placeholder="Placeholder"
           helptext="Help text"
-          tooltip="InputField"
           leftIcon="person"
-          resetIcon
           errorMessage={['Error message']}
-          disabled
+          isDisabled
         />
       </Stack>
     </Wrapper>

@@ -200,7 +200,7 @@ const MyApplicationsCard = ({
         wrap={(children) => <Link href={detailPageHref}>{children}</Link>}
       >
         {/* Desktop */}
-        <div className="relative flex w-full items-stretch rounded-lg border-2 border-gray-200 bg-white p-6 max-lg:hidden">
+        <div className="relative flex w-full items-stretch rounded-lg border border-gray-200 bg-white p-6 max-lg:hidden">
           <div className="flex w-full gap-6">
             <div className="flex w-full grow flex-col gap-1">
               {(category || isLoading) && (
@@ -295,7 +295,7 @@ const MyApplicationsCard = ({
         href={variant === 'SENT' ? detailPageHref : formPageHref}
         onClick={openBottomSheetModal}
       >
-        <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
+        <div className="relative flex w-full items-start justify-between border-b border-gray-200 bg-white py-4 lg:hidden">
           <div className="flex w-full justify-between gap-1.5">
             <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">
@@ -337,6 +337,7 @@ const MyApplicationsCard = ({
             variant="negative-solid"
             onPress={() => {
               setDeleteConceptModalShow(false)
+
               return deleteConcept()
             }}
           >

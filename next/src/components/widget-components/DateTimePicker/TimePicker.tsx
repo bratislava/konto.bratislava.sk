@@ -20,17 +20,15 @@ export type TimePickerProps = FieldWrapperProps & {
   onBlur?: () => void
   minValue?: string
   maxValue?: string
-  readOnly?: boolean
 }
 
 const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   (
     {
       label,
-      disabled,
+      isDisabled,
       errorMessage,
-      required,
-      tooltip,
+      isRequired,
       helptext,
       helptextMarkdown,
       helptextFooter,
@@ -40,8 +38,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       value,
       minValue,
       maxValue,
-      readOnly,
-      customErrorPlace,
       size,
       labelSize,
       displayOptionalLabel,
@@ -77,17 +73,14 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             helptextMarkdown={helptextMarkdown}
             helptextFooter={helptextFooter}
             helptextFooterMarkdown={helptextFooterMarkdown}
-            required={required}
-            disabled={disabled}
-            tooltip={tooltip}
+            isRequired={isRequired}
+            isDisabled={isDisabled}
             errorMessage={errorMessage}
             onChange={(time) =>
               setValueControlled(time ? removeSecondsFromTime(time.toString()) : null)
             }
             onBlur={onBlur}
             value={parsedValue}
-            readOnly={readOnly}
-            customErrorPlace={customErrorPlace}
             size={size}
             labelSize={labelSize}
             displayOptionalLabel={displayOptionalLabel}

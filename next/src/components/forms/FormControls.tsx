@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 
 import { ArrowRightIcon, ChevronLeftIcon } from '@/src/assets/ui-icons'
 import { useFormState } from '@/src/components/forms/useFormState'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 
 const FormControls = () => {
   const { canGoToPreviousStep, goToPreviousStep, canGoToNextStep, goToNextStep } = useFormState()

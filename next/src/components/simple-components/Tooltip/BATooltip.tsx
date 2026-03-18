@@ -4,7 +4,7 @@ import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-
 
 import { HelpIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import HorizontalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-vertical-arrow.svg'
 import cn from '@/src/utils/cn'

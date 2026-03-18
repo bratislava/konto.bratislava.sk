@@ -1,14 +1,14 @@
+import { Button, ButtonAnchorProps, ButtonButtonProps } from '@bratislava/component-library'
 import Image from 'next/image'
 import { ComponentProps } from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
-import Button, { AnchorProps, ButtonProps } from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 type AnnouncementBlockProps = {
   announcementContent?: string
   imageSrc?: ComponentProps<typeof Image>['src']
-  buttons?: (ButtonProps | AnchorProps)[]
+  buttons?: (ButtonButtonProps | ButtonAnchorProps)[]
   onPress?: () => void
   reversed?: boolean
   reversedMobile?: boolean

@@ -7,7 +7,7 @@ import {
   useRadioGroupState,
 } from 'react-stately'
 
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
 

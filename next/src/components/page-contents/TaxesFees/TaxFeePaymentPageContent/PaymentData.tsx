@@ -15,7 +15,7 @@ import {
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Alert from '@/src/components/simple-components/Alert'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import ClipboardCopy from '@/src/components/simple-components/ClipboardCopy'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import PaymentSchedule from '@/src/components/simple-components/PaymentSchedule'

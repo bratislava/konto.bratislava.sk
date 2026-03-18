@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
 import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 type AlertButtonBase = {

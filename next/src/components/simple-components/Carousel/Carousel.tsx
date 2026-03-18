@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useRef, useState } from 'react'
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 export type AllowedVisibleCount = 1 | 2 | 3 | 4

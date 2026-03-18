@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 
 import { ChevronDownIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
 import type { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import MLink from '@/src/components/simple-components/MLink'
 
 const goBack = () => {

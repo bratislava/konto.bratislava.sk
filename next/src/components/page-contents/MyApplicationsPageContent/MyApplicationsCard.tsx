@@ -17,7 +17,7 @@ import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
 import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import MenuDropdown, {
   MenuItemBase,
 } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'

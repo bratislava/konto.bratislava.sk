@@ -1,11 +1,11 @@
 import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
-import Button, { PolymorphicProps } from '@/src/components/simple-components/Button'
+import { Button, ButtonProps } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-type ButtonVariant = PolymorphicProps['variant']
+type ButtonVariant = ButtonProps['variant']
 
 // All button variants from Button.tsx, grouped for display
 const variants: Record<string, ButtonVariant[]> = {
@@ -22,7 +22,7 @@ const variants: Record<string, ButtonVariant[]> = {
   iconWrapped: ['icon-wrapped', 'icon-wrapped-negative-margin'],
 }
 
-type ButtonExampleProps = Omit<PolymorphicProps, 'aria-label'>
+type ButtonExampleProps = Omit<ButtonProps, 'aria-label'>
 
 const basicButtonExamples = {
   'size-default': [

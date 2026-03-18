@@ -6,7 +6,7 @@ import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import Spinner from '@/src/components/simple-components/Spinner'
 
 type FormLightboxModalProps = { imageUrl: string }

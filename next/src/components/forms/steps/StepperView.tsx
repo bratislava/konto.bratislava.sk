@@ -8,7 +8,7 @@ import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { FormStepIndex } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 type StepperModalProps = {

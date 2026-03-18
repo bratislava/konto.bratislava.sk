@@ -21,7 +21,7 @@ import {
   FormValidatorRegistryProvider,
   useFormValidatorRegistry,
 } from '@/src/components/forms/useFormValidatorRegistry'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import SelectField, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'

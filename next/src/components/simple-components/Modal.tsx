@@ -5,7 +5,7 @@ import { Dialog, Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'rea
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {

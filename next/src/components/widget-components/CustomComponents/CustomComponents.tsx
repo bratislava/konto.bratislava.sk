@@ -5,7 +5,7 @@ import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import FormCalculator from '@/src/components/segments/FormCalculator/FormCalculator'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import Alert from '@/src/components/simple-components/Alert'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 
 const CustomComponent = ({ id, component }: { id: string; component: CustomComponentType }) => {
   if (component.type === 'accordion') {

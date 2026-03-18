@@ -3,7 +3,7 @@ import { Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 
 type BottomSheetMenuModalProps = {

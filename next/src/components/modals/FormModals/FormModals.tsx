@@ -8,7 +8,7 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
 import RegistrationModal from '@/src/components/modals/RegistrationModal'
 import TaxFormPdfExportModal from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModal'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import MessageModal, {
   MessageModalProps,
 } from '@/src/components/widget-components/Modals/MessageModal'

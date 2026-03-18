@@ -10,7 +10,7 @@ import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import { RemoveIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 /**
@@ -51,7 +51,7 @@ const BAArrayFieldItemTemplate = <
   const onRemoveItemPatched = () => {
     // The RJSF expects the event to have a `preventDefault` method, but the `onPress` handler
     // does not provide it. We need to patch it in order to make the RJSF work.
-    buttonsProps.onRemoveItem({ preventDefault: () => { } })
+    buttonsProps.onRemoveItem({ preventDefault: () => {} })
   }
 
   return (

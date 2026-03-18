@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { LockIcon } from '@/src/assets/ui-icons'
 import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'
 import BoxedSectionHeader from '@/src/components/page-contents/UserProfilePageContent/BoxedSectionHeader'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import { ROUTES } from '@/src/utils/routes'
 
 const UserProfilePassword = () => {

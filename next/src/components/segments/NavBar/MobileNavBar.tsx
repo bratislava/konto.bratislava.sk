@@ -7,7 +7,7 @@ import HamburgerMenu from '@/src/components/segments/HambergerMenu/HamburgerMenu
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
 import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
 import Brand from '@/src/components/simple-components/Brand'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { ROUTES } from '@/src/utils/routes'

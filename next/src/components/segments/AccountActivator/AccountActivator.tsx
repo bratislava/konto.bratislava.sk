@@ -3,7 +3,7 @@ import React from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 
 const AccountActivator = () => {
   const { t } = useTranslation('account')

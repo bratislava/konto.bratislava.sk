@@ -6,7 +6,7 @@ import { CheckIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 
 export enum RegistrationModalType {

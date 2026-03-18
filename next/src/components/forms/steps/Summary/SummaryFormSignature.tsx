@@ -6,7 +6,7 @@ import { useFormSignerLoader } from '@/src/components/forms/signer/useFormSigner
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Alert from '@/src/components/simple-components/Alert'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 

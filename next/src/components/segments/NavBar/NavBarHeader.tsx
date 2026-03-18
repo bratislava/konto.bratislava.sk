@@ -7,7 +7,7 @@ import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedir
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
 import MenuDropdown, {
   MenuItemBase,

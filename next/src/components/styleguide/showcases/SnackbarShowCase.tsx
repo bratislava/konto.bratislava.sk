@@ -1,4 +1,4 @@
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 
 import { Stack } from '../Stack'

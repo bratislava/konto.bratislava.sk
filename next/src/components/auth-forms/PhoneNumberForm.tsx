@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 

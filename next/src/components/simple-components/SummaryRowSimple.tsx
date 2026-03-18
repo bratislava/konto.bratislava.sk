@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { PropsWithChildren } from 'react'
 
 import { EditIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import cn from '@/src/utils/cn'
 
 type SummaryRowProps = PropsWithChildren<{

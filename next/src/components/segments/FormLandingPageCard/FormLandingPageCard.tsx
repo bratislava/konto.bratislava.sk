@@ -4,7 +4,7 @@ import {
   FormLandingPageFormCtaFragment,
   FormLandingPageLinkCtaFragment,
 } from '@/src/clients/graphql-strapi/api'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 
 export type FormLandingPageCardProps =
   | FormLandingPageLinkCtaFragment

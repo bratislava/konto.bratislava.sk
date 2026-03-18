@@ -8,7 +8,7 @@ import { Dialog, Popover } from 'react-aria-components'
 import { useDatePickerState } from 'react-stately'
 
 import { CalendarIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 
 import Calendar from './Calendar/Calendar'

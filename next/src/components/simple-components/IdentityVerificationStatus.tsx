@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
-import Button from '@/src/components/simple-components/Button'
+import { Button } from '@bratislava/component-library'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { ROUTES } from '@/src/utils/routes'
 

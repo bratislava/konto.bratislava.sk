@@ -80,6 +80,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
+
         return onSubmit(data.verificationCode, data.password).catch((error_) =>
           logger.error('Submit failed', error_),
         )
@@ -103,7 +104,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             autoComplete="off"
             label={t('auth.fields.verification_code_label')}
             placeholder={t('auth.fields.verification_code_placeholder')}
@@ -117,7 +118,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         control={control}
         render={({ field }) => (
           <PasswordField
-            required
+            isRequired
             autoComplete="new-password"
             label={
               fromMigration ? t('auth.fields.password_label') : t('auth.fields.new_password_label')

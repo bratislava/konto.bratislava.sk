@@ -1,6 +1,8 @@
+import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 import { EditIcon } from '@/src/assets/ui-icons'
+import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 export interface SummaryRowData {
@@ -21,13 +23,14 @@ interface SummaryRowProps {
 }
 
 const SummaryRow = (props: SummaryRowProps) => {
+  const { t } = useTranslation('forms')
   const { data, size = 'large', isEditable = true, hasBorder = true, onGoToStep } = props
 
   const containerClassName = cn('flex flex-row flex-wrap gap-2 py-2.5 md:flex-nowrap', {
     'border-red-500 [&>div>*]:block': data.isError,
     'border-gray-200 hover:[&>div>*]:block': !data.isError,
     'hover:border-gray-700': isEditable,
-    'border-b-2': hasBorder,
+    'border-b': hasBorder,
   })
 
   const labelClassName = cn('w-full flex-1', {
@@ -46,9 +49,12 @@ const SummaryRow = (props: SummaryRowProps) => {
       <div className="flex w-full flex-1 flex-row items-center">
         <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (
-          <div className="w-5 lg:hidden lg:hover:block">
-            <EditIcon className="flex size-5 cursor-pointer" onClick={onGoToStep} />
-          </div>
+          <Button
+            variant="icon-wrapped-negative-margin"
+            icon={<EditIcon />}
+            aria-label={t('SummaryRow.EditButton.aria')}
+            onPress={onGoToStep}
+          />
         )}
       </div>
     </div>

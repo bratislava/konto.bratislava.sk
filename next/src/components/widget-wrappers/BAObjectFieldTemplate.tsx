@@ -12,20 +12,20 @@ import cn from '@/src/utils/cn'
  * implementation and displays them directly.
  */
 const BAObjectFieldTemplate = ({
-  idSchema,
+  fieldPathId,
   properties,
   schema,
   uiSchema,
 }: ObjectFieldTemplateProps) => {
   const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
-  const { isStepObject } = getObjectFieldInfo(idSchema)
+  const { isStepObject } = getObjectFieldInfo(fieldPathId)
   const fieldsetClassname = cn({
     'rounded-xl border border-grey-200 p-4': options.objectDisplay === 'boxed',
   })
 
   return (
-    <WidgetWrapper id={idSchema.$id} options={options}>
-      <fieldset className={fieldsetClassname} data-cy={`fieldset-${idSchema.$id}`}>
+    <WidgetWrapper id={fieldPathId.$id} options={options}>
+      <fieldset className={fieldsetClassname} data-cy={`fieldset-${fieldPathId.$id}`}>
         {isStepObject ? (
           <div className="mb-8 flex flex-col gap-4">
             <h2 className="text-h2">{schema.title}</h2>

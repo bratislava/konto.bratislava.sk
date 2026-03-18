@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OfficialCorrespondenceChannelCardWrapper from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
 import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxFeeDetails from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeDetails'
@@ -56,29 +57,33 @@ const TaxFeePageContent = () => {
   return (
     <div className="flex flex-col">
       <TaxFeePageHeader title={pageTitle} breadcrumbs={breadcrumbs} />
-      <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 py-6 lg:gap-10 lg:py-10">
-        {showTaxFeePaidAlert && <Alert type="success" fullWidth message={paymentSuccessMessage} />}
-        {showTaxFeeCancelledAlert && (
-          <Alert type="info" fullWidth message={paymentCancelledMessage} />
-        )}
-        <ResponsiveCarousel
-          controlsVariant="side"
-          desktop={2}
-          hasVerticalPadding={false}
-          items={[
-            <OfficialCorrespondenceChannelCardWrapper />,
-            <TaxesFeesAdministratorCardWrapper
-              taxType={taxData.type}
-              beTaxAdministrator={taxData.taxAdministrator}
-              strapiTaxAdministrator={strapiTaxAdministrator}
-            />,
-          ]}
-          className="w-full"
-        />
-        <TaxFeeSubjectInformation />
-        <TaxFeeDetails />
-        {showPaymentMethods && <TaxFeePaymentMethods />}
-      </div>
+      <SectionContainer className="py-6 lg:py-10">
+        <div className="flex flex-col items-center gap-6 lg:gap-10">
+          {showTaxFeePaidAlert && (
+            <Alert type="success" fullWidth message={paymentSuccessMessage} />
+          )}
+          {showTaxFeeCancelledAlert && (
+            <Alert type="info" fullWidth message={paymentCancelledMessage} />
+          )}
+          <ResponsiveCarousel
+            controlsVariant="side"
+            desktop={2}
+            hasVerticalPadding={false}
+            items={[
+              <OfficialCorrespondenceChannelCardWrapper />,
+              <TaxesFeesAdministratorCardWrapper
+                taxType={taxData.type}
+                beTaxAdministrator={taxData.taxAdministrator}
+                strapiTaxAdministrator={strapiTaxAdministrator}
+              />,
+            ]}
+            className="w-full"
+          />
+          <TaxFeeSubjectInformation />
+          <TaxFeeDetails />
+          {showPaymentMethods && <TaxFeePaymentMethods />}
+        </div>
+      </SectionContainer>
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import FocusTrap from 'focus-trap-react'
+import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import { CrossIcon, HamburgerIcon } from '@/src/assets/ui-icons'
@@ -6,6 +7,7 @@ import HamburgerMenu from '@/src/components/segments/HambergerMenu/HamburgerMenu
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
 import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
 import Brand from '@/src/components/simple-components/Brand'
+import Button from '@/src/components/simple-components/Button'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { ROUTES } from '@/src/utils/routes'
@@ -17,6 +19,7 @@ type Props = {
 }
 
 export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props) => {
+  const { t } = useTranslation('account')
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
   return (
@@ -28,21 +31,30 @@ export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props
       >
         <div className="w-full">
           <FocusTrap active={isMobileMenuOpen}>
-            <div className="flex h-16 w-full items-center border-b-2 px-8 py-5">
+            <div className="flex h-16 w-full items-center border-b px-4 py-5">
               <div className="flex w-full justify-between">
                 <Brand url={ROUTES.HOME} className="grow" />
-                {/* event onPress is propagating to menu itself casuing glitches when opening mobile menu,
-                becasue of that we are using onClick event and thats why simple button is used */}
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen((prev) => !prev)}
-                  className="-mr-4 px-4 py-5"
-                  data-cy="mobile-account-button"
-                >
-                  <div className="flex w-6 items-center justify-center">
-                    {isMobileMenuOpen ? <CrossIcon className="size-6" /> : <HamburgerIcon />}
-                  </div>
-                </button>
+                {isMobileMenuOpen ? (
+                  <Button
+                    onPress={() => {
+                      setMobileMenuOpen(false)
+                    }}
+                    className="-mr-4 p-4"
+                    aria-label={t('MobileNavBar.close')}
+                    data-cy="mobile-account-button"
+                    icon={<CrossIcon />}
+                  />
+                ) : (
+                  <Button
+                    onPress={() => {
+                      setMobileMenuOpen(true)
+                    }}
+                    className="-mr-4 p-4"
+                    aria-label={t('MobileNavBar.open')}
+                    data-cy="mobile-account-button"
+                    icon={<HamburgerIcon />}
+                  />
+                )}
               </div>
 
               {isMobileMenuOpen && (

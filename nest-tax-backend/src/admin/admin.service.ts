@@ -95,7 +95,7 @@ export class AdminService {
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    return this.norisService.removeDeliveryMethodsFromNoris(birthNumber)
+    await this.norisService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   /**

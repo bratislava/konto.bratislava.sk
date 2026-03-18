@@ -4,12 +4,12 @@ import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { QrCodeService } from '../../../qrcode/qrcode.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisRealEstateTaxSchema } from '../../types/noris.schema'
 import { NorisRealEstateTax } from '../../types/noris.types'
@@ -29,7 +29,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
 
     throwerErrorGuard: ThrowerErrorGuard,
     bloomreachService: BloomreachService,
-    qrCodeSubservice: QrCodeSubservice,
+    qrCodeService: QrCodeService,
     prismaService: PrismaService,
     cityAccountSubservice: CityAccountSubservice,
     paymentSubservice: NorisPaymentSubservice,
@@ -37,7 +37,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
   ) {
     const logger = new LineLoggerSubservice(NorisTaxRealEstateSubservice.name)
     super(
-      qrCodeSubservice,
+      qrCodeService,
       prismaService,
       bloomreachService,
       throwerErrorGuard,
@@ -75,15 +75,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
           ),
         )
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get taxes from Noris',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get taxes from Noris',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisRealEstateTaxSchema,
@@ -174,7 +166,7 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     }
 
     const results = await Promise.all(
-      norisData.map((norisItem) => updateTaxRecord(norisItem)),
+      norisData.map(async (norisItem) => updateTaxRecord(norisItem)),
     )
     const count = results.filter(Boolean).length
 

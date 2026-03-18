@@ -36,14 +36,17 @@ const ValueAdapter = ({ schema, value, onChange, children }: ValueAdapterProps) 
     const handleChange = (newValue: string | null) => {
       if (newValue === null) {
         onChange(undefined)
+
         return
       }
       if (newValue === 'true') {
         onChange(true)
+
         return
       }
       if (newValue === 'false') {
         onChange(false)
+
         return
       }
       onChange(undefined)
@@ -56,6 +59,7 @@ const ValueAdapter = ({ schema, value, onChange, children }: ValueAdapterProps) 
     const handleChange = (newValue: string | null) => {
       if (newValue === null) {
         onChange(undefined)
+
         return
       }
       onChange(newValue)
@@ -110,8 +114,8 @@ const RadioGroupWidgetRJSF = ({
             className={className}
             label={label}
             orientation={orientations === 'row' ? 'horizontal' : 'vertical'}
-            required={required}
-            disabled={readonly}
+            isRequired={required}
+            isDisabled={readonly}
             size={size}
             labelSize={labelSize}
             helptext={helptext}

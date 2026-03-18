@@ -31,7 +31,7 @@ export class CardPaymentReportingController {
   async sendReport(
     @Body() data: RequestPostReportingSendReport,
   ): Promise<void> {
-    return this.cardPaymentReportingService.generateAndSendPaymentReport(
+    await this.cardPaymentReportingService.generateAndSendPaymentReport(
       data.emailRecipients,
       new Date(data.date),
     )

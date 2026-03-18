@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MyApplicationsList, {
   getDraftApplications,
 } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
@@ -39,6 +40,7 @@ export const getTotalNumberOfApplications = async (
     emailFormSlugs,
     getSsrAuthSession,
   )
+
   return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
 }
 
@@ -59,6 +61,10 @@ type MyApplicationsSectionProps = {
   formDefinitionSlugTitleMap: Record<string, string>
   emailFormSlugs: string[]
 }
+
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
+ */
 
 const MyApplicationsPageContent = ({
   selectedSection,
@@ -107,10 +113,10 @@ const MyApplicationsPageContent = ({
       }}
       className="flex flex-col"
     >
-      <div className="bg-gray-50 pl-8 lg:pl-0">
-        <div className="m-auto size-full max-w-(--breakpoint-lg) flex-col justify-end gap-4 pt-6 lg:gap-6 lg:pt-14">
+      <SectionContainer className="bg-gray-50 pt-6 lg:pt-14">
+        <div className="size-full flex-col justify-end gap-4 lg:gap-6">
           <h1 className="pt-4 text-h1">{title}</h1>
-          <TabList className="scrollbar-hide flex max-w-(--breakpoint-lg) gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
+          <TabList className="scrollbar-hide flex gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
             {headerNavigationList.map((item) => {
               const count = totalCounts[item.tag].data
               const countText = count == null ? '' : ` (${count})`
@@ -122,7 +128,7 @@ const MyApplicationsPageContent = ({
                   key={item.tag}
                   id={item.tag}
                   data-before-text={text}
-                  className="cursor-pointer py-4 text-center text-20 transition-all before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)] hover:border-gray-700 hover:text-20-semibold data-selected:border-b-2 data-selected:border-gray-700 data-selected:text-20-semibold"
+                  className="cursor-pointer py-4 text-center text-20 transition-all before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)] hover:border-gray-700 hover:text-20-semibold data-selected:border-b data-selected:border-gray-700 data-selected:text-20-semibold"
                 >
                   {text}
                 </Tab>
@@ -130,17 +136,19 @@ const MyApplicationsPageContent = ({
             })}
           </TabList>
         </div>
-      </div>
-      {sections.map((variant) => (
-        <TabPanel key={variant} id={variant}>
-          <MyApplicationsList
-            variant={variant}
-            applications={applications}
-            refetchApplicationsCount={refetchApplicationsCount}
-            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          />
-        </TabPanel>
-      ))}
+      </SectionContainer>
+      <SectionContainer className="py-4 lg:py-8">
+        {sections.map((variant) => (
+          <TabPanel key={variant} id={variant}>
+            <MyApplicationsList
+              variant={variant}
+              applications={applications}
+              refetchApplicationsCount={refetchApplicationsCount}
+              formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+            />
+          </TabPanel>
+        ))}
+      </SectionContainer>
     </Tabs>
   )
 }

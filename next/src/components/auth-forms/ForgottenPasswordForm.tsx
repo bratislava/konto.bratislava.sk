@@ -52,6 +52,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
       data-cy="forgotten-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastEmail(data.email)
+
         return onSubmit(data.email)
       })}
     >
@@ -62,7 +63,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             label={t('auth.fields.email_label')}
             placeholder={t('auth.fields.email_placeholder')}
             {...field}

@@ -1,5 +1,5 @@
-import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
-import { omitExtraData } from '../../src/form-utils/omitExtraData'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import { baOmitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
@@ -25,7 +25,7 @@ describe('omitExtraData', () => {
       input('input', { type: 'text', title: 'Input title' }, {}),
     ])
 
-    const result = omitExtraData(
+    const result = baOmitExtraData(
       schema,
       {
         input: 'value',
@@ -39,7 +39,7 @@ describe('omitExtraData', () => {
   // "Údaje o daňovníkovi" step in "Priznanie k dani z nehnuteľnosti" contains a lot of conditional fields, the original
   // data consists of all possible fields, therefore it is a good test case for omitting extra data.
   test('should omit extra data for complex schema', () => {
-    const result = omitExtraData(
+    const result = baOmitExtraData(
       priznanieKDaniZNehnutelnosti,
       {
         udajeODanovnikovi: {
@@ -155,7 +155,7 @@ describe('omitExtraData', () => {
 
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
     test(`${exampleForm.name} should not contain extra data`, () => {
-      const result = omitExtraData(
+      const result = baOmitExtraData(
         formDefinition.schema,
         exampleForm.formData,
         testValidatorRegistry,

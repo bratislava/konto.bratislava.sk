@@ -13,14 +13,14 @@ export class NorisValidatorSubservice {
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 
-  validateNorisData<T extends z.ZodSchema>(
+  validateNorisData<T extends z.ZodType>(
     schema: T,
     data: unknown[],
   ): z.infer<T>[]
-  validateNorisData<T extends z.ZodSchema>(schema: T, data: unknown): z.infer<T>
-  validateNorisData<T extends z.ZodSchema>(
+  validateNorisData<T extends z.ZodType>(schema: T, data: unknown): z.infer<T>
+  validateNorisData<T extends z.ZodType>(
     schema: T,
-    data: unknown | unknown[],
+    data: unknown,
   ): z.infer<T> | z.infer<T>[] {
     if (Array.isArray(data)) {
       return data
@@ -29,7 +29,6 @@ export class NorisValidatorSubservice {
             return this.validateNorisData(schema, item)
           } catch (error) {
             this.logger.error(error)
-            // eslint-disable-next-line unicorn/no-useless-undefined
             return undefined
           }
         })

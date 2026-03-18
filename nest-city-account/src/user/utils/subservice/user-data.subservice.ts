@@ -28,6 +28,7 @@ import {
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import { DPBUserLoginStatistics } from '../../../dpb/dtos/user.dto'
 
 @Injectable()
 export class UserDataSubservice {
@@ -584,5 +585,38 @@ export class UserDataSubservice {
         },
       })
     }
+  }
+
+  async getUserLoginClientList(client: LoginClientEnum): Promise<DPBUserLoginStatistics[]> {
+    const userLoginList = await this.prisma.userLoginClient.findMany({
+      where: { loginClient: client },
+      select: {
+        loginCount: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
+          select: {
+            externalId: true,
+          },
+        },
+      },
+    })
+
+    return (
+      userLoginList
+        .map((userLoginClient) => {
+          return {
+            loginCount: userLoginClient.loginCount,
+            firstLogin: userLoginClient.createdAt,
+            latestLogin: userLoginClient.updatedAt,
+            id: userLoginClient.user.externalId,
+          }
+        })
+        // This is here just for type safety since our database does not have a constraint implemented for this scenario.
+        // Real data should never be null here.
+        .filter((userLoginListItem): userLoginListItem is DPBUserLoginStatistics => {
+          return !!userLoginListItem.id
+        })
+    )
   }
 }

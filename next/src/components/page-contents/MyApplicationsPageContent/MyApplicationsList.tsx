@@ -1,7 +1,6 @@
 import { AuthSession } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-clients/forms'
-import React from 'react'
 
 import { formsClient } from '@/src/clients/forms'
 import MyApplicationCardsPlaceholder from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationCardsPlaceholder'
@@ -43,6 +42,7 @@ export const getDraftApplications = async (
     undefined,
     { authStrategy: 'authOnly', getSsrAuthSession },
   )
+
   return {
     ...response.data,
     items: response.data.items.map((item) => patchApplicationFormIfNeeded(item, emailFormSlugs)),
@@ -71,46 +71,42 @@ const MyApplicationsList = ({
 
   const totalPagesCount = applications?.countPages ?? 0
 
-  return (
-    <div className="m-auto w-full max-w-(--breakpoint-lg)">
-      {applications?.items.length ? (
-        <>
-          <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
-            {applications.items.map((form) => {
-              return (
-                <li key={form.id}>
-                  <MyApplicationsCard
-                    form={form}
-                    refreshListData={refreshListData}
-                    variant={variant}
-                    formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-                  />
-                </li>
+  return applications?.items.length ? (
+    <>
+      <ul className="flex flex-col gap-2 lg:gap-4">
+        {applications.items.map((form) => {
+          return (
+            <li key={form.id}>
+              <MyApplicationsCard
+                form={form}
+                refreshListData={refreshListData}
+                variant={variant}
+                formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+              />
+            </li>
+          )
+        })}
+      </ul>
+      <div className="py-4 lg:py-8">
+        <Pagination
+          totalCount={totalPagesCount}
+          currentPage={currentPage}
+          onPageChange={(page) =>
+            router
+              .push(
+                {
+                  pathname: router.pathname,
+                  query: { ...router.query, strana: page },
+                },
+                undefined,
               )
-            })}
-          </ul>
-          <div className="my-4 lg:my-8">
-            <Pagination
-              totalCount={totalPagesCount}
-              currentPage={currentPage}
-              onPageChange={(page) =>
-                router
-                  .push(
-                    {
-                      pathname: router.pathname,
-                      query: { ...router.query, strana: page },
-                    },
-                    undefined,
-                  )
-                  .catch((error) => logger.error(error))
-              }
-            />
-          </div>
-        </>
-      ) : (
-        <MyApplicationCardsPlaceholder />
-      )}
-    </div>
+              .catch((error) => logger.error(error))
+          }
+        />
+      </div>
+    </>
+  ) : (
+    <MyApplicationCardsPlaceholder />
   )
 }
 

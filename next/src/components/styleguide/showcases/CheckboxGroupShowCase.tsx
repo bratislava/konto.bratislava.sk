@@ -9,26 +9,21 @@ const CheckboxGroupShowCase = () => {
     <Wrapper direction="column" title="Checkbox Group">
       <Stack direction="column">
         <CheckboxGroup onChange={() => {}} label="Label">
-          <CheckboxGroupItem value="value1" isIndeterminate tooltip="This is some tooltip">
+          <CheckboxGroupItem value="value1" isIndeterminate>
             Value
           </CheckboxGroupItem>
           <CheckboxGroupItem value="value2">Value</CheckboxGroupItem>
           <CheckboxGroupItem value="value3" isDisabled>
             Value
           </CheckboxGroupItem>
-          <CheckboxGroupItem value="value4" error tooltip="This is some tooltip with error">
+          <CheckboxGroupItem value="value4" error>
             Long text value
           </CheckboxGroupItem>
         </CheckboxGroup>
       </Stack>
       <Stack direction="column">
         <CheckboxGroup onChange={() => {}} label="Label">
-          <CheckboxGroupItem
-            value="value1"
-            variant="boxed"
-            isIndeterminate
-            tooltip="This is some tooltip"
-          >
+          <CheckboxGroupItem value="value1" variant="boxed" isIndeterminate>
             Value
           </CheckboxGroupItem>
           <CheckboxGroupItem value="value2" variant="boxed">
@@ -37,12 +32,7 @@ const CheckboxGroupShowCase = () => {
           <CheckboxGroupItem value="value3" variant="boxed" isDisabled>
             Value
           </CheckboxGroupItem>
-          <CheckboxGroupItem
-            value="value4"
-            variant="boxed"
-            error
-            tooltip="This is some tooltip with error"
-          >
+          <CheckboxGroupItem value="value4" variant="boxed" error>
             Long text value
           </CheckboxGroupItem>
         </CheckboxGroup>

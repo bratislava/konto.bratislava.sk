@@ -64,15 +64,7 @@ export class NorisPaymentSubservice {
 
         return request.query(queryPaymentsFromNorisByFromToDate)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get payment data from Noris by date range.',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get payment data from Noris by date range.',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisTaxPaymentSchema,
@@ -133,15 +125,7 @@ export class NorisPaymentSubservice {
             .replaceAll('@variable_symbols', variableSymbolsPlaceholders),
         )
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get payment data from Noris by variable symbols.',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get payment data from Noris by variable symbols.',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisTaxPaymentSchema,
@@ -164,15 +148,7 @@ export class NorisPaymentSubservice {
 
         return request.query(queryOverpaymentsFromNorisByDateRange)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get overpayments data from Noris by date range.',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get overpayments data from Noris by date range.',
     )
 
     const validatedOverpaymentsData =
@@ -192,9 +168,7 @@ export class NorisPaymentSubservice {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {
-          in: norisPaymentData
-            .map((item) => item.variabilny_symbol)
-            .filter((item) => item !== null && item !== undefined),
+          in: norisPaymentData.map((item) => item.variabilny_symbol),
         },
       },
       include: {
@@ -250,13 +224,15 @@ export class NorisPaymentSubservice {
   private async processNorisPaymentData(
     norisPaymentData: NorisTaxPayment[],
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    > = {},
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
   ) {
     // Step 1: Process each payment separately with a concurrency limit
-    const paymentProcesses = norisPaymentData.map((norisPayment) =>
+    const paymentProcesses = norisPaymentData.map(async (norisPayment) =>
       this.concurrencyLimit(async () =>
         this.processIndividualPayment(
           norisPayment,
@@ -274,7 +250,9 @@ export class NorisPaymentSubservice {
   private async processIndividualPayment(
     norisPayment: NorisTaxPayment,
     taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    > = {},
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
@@ -346,7 +324,9 @@ export class NorisPaymentSubservice {
   private async trackPaymentIfNeeded(
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    >,
     bloomreachSettings?: {
       suppressEmail?: boolean
     },
@@ -361,7 +341,8 @@ export class NorisPaymentSubservice {
           payment_source: 'BANK_ACCOUNT',
           year: taxData.year,
           tax_type: taxData.type,
-          order: taxData.order!, // non-null by DB trigger and constraint
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
+          order: taxData.order!,
           suppress_email: bloomreachSettings?.suppressEmail ?? false,
         },
         userFromCityAccount.externalId,

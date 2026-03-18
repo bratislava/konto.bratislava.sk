@@ -9,7 +9,7 @@ import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 interface FileUploadMultipleWidgetRJSFProps extends WidgetProps {
   options: FileUploadUiOptions
   value: string[] | undefined
-  onChange: (value?: string[] | undefined) => void
+  onChange: (value?: string[]) => void
 }
 
 const FileUploadMultipleWidgetRJSF = ({
@@ -76,7 +76,7 @@ const FileUploadMultipleWidgetRJSF = ({
         errorMessage={rawErrors}
         type={type}
         label={label}
-        required={required}
+        isRequired={required}
         multiple
         className={className}
         helptext={helptext}
@@ -85,7 +85,7 @@ const FileUploadMultipleWidgetRJSF = ({
         helptextFooterMarkdown={helptextFooterMarkdown}
         sizeLimit={sizeLimit}
         supportedFormats={supportedFormats}
-        disabled={disabled || readonly}
+        isDisabled={disabled || readonly}
         onUpload={handleUpload}
         onFileRemove={handleFileRemove}
         onFileRetry={handleFileRetry}

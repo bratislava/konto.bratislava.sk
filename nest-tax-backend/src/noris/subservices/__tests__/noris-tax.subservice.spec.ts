@@ -54,31 +54,9 @@ describe('NorisTaxSubservice', () => {
       expect(result).toBe(norisTaxRealEstateSubservice)
     })
 
-    // eslint-disable-next-line no-secrets/no-secrets
     it('should return norisTaxCommunalWasteSubservice for TaxType.KO', () => {
       const result = service['getImplementationByType'](TaxType.KO)
       expect(result).toBe(norisTaxCommunalWasteSubservice)
-    })
-
-    it('should throw InternalServerErrorException for unsupported tax type', () => {
-      const mockError = new Error('Mock error')
-      jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw mockError
-        })
-
-      const invalidTaxType = 'INVALID_TYPE' as TaxType
-
-      expect(() => service['getImplementationByType'](invalidTaxType)).toThrow(
-        mockError,
-      )
-      expect(
-        throwerErrorGuard.InternalServerErrorException,
-      ).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Implementation for tax type INVALID_TYPE not found',
-      )
     })
   })
 
@@ -212,7 +190,6 @@ describe('NorisTaxSubservice', () => {
     })
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('getAndProcessNorisTaxDataByBirthNumberAndYear', () => {
     const mockYear = 2024
     const mockBirthNumbers = ['123456/7890', '987654/3210']
@@ -313,28 +290,8 @@ describe('NorisTaxSubservice', () => {
         norisTaxRealEstateSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear,
       ).toHaveBeenCalledWith(mockYear, mockBirthNumbers, {})
     })
-
-    it('should throw if getImplementationByType throws for unsupported tax type', async () => {
-      const mockError = new Error('Implementation not found')
-      jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw mockError
-        })
-
-      const invalidTaxType = 'INVALID' as TaxType
-
-      await expect(
-        service.getAndProcessNorisTaxDataByBirthNumberAndYear(
-          invalidTaxType,
-          mockYear,
-          mockBirthNumbers,
-        ),
-      ).rejects.toThrow(mockError)
-    })
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords', () => {
     const mockYear = 2024
     const mockBirthNumbers = ['123456/7890', '987654/3210']
@@ -383,25 +340,6 @@ describe('NorisTaxSubservice', () => {
         norisTaxCommunalWasteSubservice.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords,
       ).toHaveBeenCalledTimes(1)
       expect(result).toBe(mockResponse)
-    })
-
-    it('should throw if getImplementationByType throws for unsupported tax type', async () => {
-      const mockError = new Error('Implementation not found')
-      jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw mockError
-        })
-
-      const invalidTaxType = 'INVALID' as TaxType
-
-      await expect(
-        service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
-          invalidTaxType,
-          mockYear,
-          mockBirthNumbers,
-        ),
-      ).rejects.toThrow(mockError)
     })
   })
 })

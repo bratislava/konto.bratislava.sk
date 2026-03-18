@@ -222,7 +222,7 @@ const UploadShowCase = () => {
       </Stack>
       <Stack>
         <UploadWrapped label="Upload" type="button" multiple={multiple} />
-        <UploadWrapped label="Upload" type="button" disabled multiple={multiple} />
+        <UploadWrapped label="Upload" type="button" isDisabled multiple={multiple} />
       </Stack>
       <Stack direction="column">
         <UploadWrapped
@@ -244,13 +244,13 @@ const UploadShowCase = () => {
           type="button"
           sizeLimit={5}
           supportedFormats={['.jpg', '.png', '.pdf']}
-          disabled
+          isDisabled
           multiple={multiple}
         />
       </Stack>
       <Stack direction="column">
         <UploadWrapped label="Upload" type="dragAndDrop" multiple={multiple} />
-        <UploadWrapped label="Upload" type="dragAndDrop" disabled multiple={multiple} />
+        <UploadWrapped label="Upload" type="dragAndDrop" isDisabled multiple={multiple} />
       </Stack>
       <Stack direction="column">
         <UploadWrapped
@@ -272,7 +272,7 @@ const UploadShowCase = () => {
           type="dragAndDrop"
           sizeLimit={5}
           supportedFormats={['.jpg', '.png', '.pdf']}
-          disabled
+          isDisabled
           multiple={multiple}
         />
       </Stack>

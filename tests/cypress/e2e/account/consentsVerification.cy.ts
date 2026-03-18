@@ -10,9 +10,9 @@ describe('A03 -', { testIsolation: false }, () => {
   })
 
   devices
-    .filter((device) => Cypress.env('devices')[`${device}`])
+    .filter((device) => Cypress.expose('devices')[`${device}`])
     .forEach((device) => {
-      context(device, Cypress.env('resolution')[`${device}`], () => {
+      context(device, Cypress.expose('resolution')[`${device}`], () => {
         it('1. Logging in.', () => {
           cy.logInUser(device, this.fileData.email, this.fileData.password)
         })
@@ -24,27 +24,29 @@ describe('A03 -', { testIsolation: false }, () => {
             cy.get('[data-cy=mobile-account-button]').click()
           }
           cy.get('[data-cy=moj-profil-menu-item]').click()
+          cy.intercept('POST', '**/user/subscribe').as('subscribeUser')
           cy.get('[data-cy=receive-information-consent]')
             .find('[data-cy=receive-information-toggle]')
             .click()
-          cy.checkSuccessSnackbar()
+          cy.wait('@subscribeUser').its('response.statusCode').should('eq', 200)
           cy.get('[data-cy=receive-information-consent]')
-            .find('[data-cy=receive-information-toggle]')
-            .find('.bg-success-700')
+            .find('[data-cy=receive-information-toggle] input')
+            .should('be.checked')
         })
 
         it('3. Validate toggle state.', () => {
           cy.reload()
           cy.get('[data-cy=receive-information-consent]')
-            .find('[data-cy=receive-information-toggle]')
-            .find('.bg-success-700')
+            .find('[data-cy=receive-information-toggle] input')
+            .should('be.checked')
+          cy.intercept('POST', '**/user/unsubscribe').as('unsubscribeUser')
           cy.get('[data-cy=receive-information-consent]')
             .find('[data-cy=receive-information-toggle]')
             .click()
-          cy.checkSuccessSnackbar()
+          cy.wait('@unsubscribeUser').its('response.statusCode').should('eq', 200)
           cy.get('[data-cy=receive-information-consent]')
-            .find('[data-cy=receive-information-toggle]')
-            .find('.bg-gray-400')
+            .find('[data-cy=receive-information-toggle] input')
+            .should('not.be.checked')
           cy.logOutUser()
         })
       })

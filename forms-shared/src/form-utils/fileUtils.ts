@@ -1,4 +1,6 @@
-import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
+import type { GenericObjectType, RJSFSchema } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { SchemaValidateFunction } from 'ajv'
 import traverse from 'traverse'
 

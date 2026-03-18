@@ -38,7 +38,7 @@ const UserProfileConsents = () => {
 
   return (
     <BoxedSection>
-      <div className="px-4 md:px-8">
+      <div className="md:px-8">
         <UserConsent
           consent={{
             id: 'receive_information',

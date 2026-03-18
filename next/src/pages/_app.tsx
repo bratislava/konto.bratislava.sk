@@ -1,4 +1,4 @@
-import 'src/pages/index.css'
+import 'src/pages/globals.css'
 // configure Amplify
 import '@/src/frontend/utils/amplifyConfig'
 import 'react-loading-skeleton/dist/skeleton.css'

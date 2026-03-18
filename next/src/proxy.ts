@@ -23,8 +23,9 @@ export function proxy(request: NextRequest) {
   // In Kubernetes behind an ingress, request.nextUrl.origin points to the internal
   // pod hostname (e.g. service:3000), but we need the browser-facing origin for
   // correct CSP reporting endpoints.
-  const forwardedHost = request.headers.get('x-forwarded-host')
-  const forwardedProto = request.headers.get('x-forwarded-proto')
+  // In proxy chains, this headers can contain multiple comma-separated values — we take the first one.
+  const forwardedHost = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim()
+  const forwardedProto = request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim()
   const host = forwardedHost ?? request.headers.get('host')
   const protocol = forwardedProto ?? request.nextUrl.protocol.replace(':', '')
 

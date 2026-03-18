@@ -27,6 +27,7 @@ WITH NorisRows AS (
         z_vybav.telefon_prace vyb_telefon_prace, 
         z_vybav.e_mail vyb_email, 
         dp_conf.vybavuje vyb_id,
+        lcs.dane21_priznanie.forma_uhrady AS forma_uhrady,
         lcs.fn21_dec2string( dsum.dan_spolu , 2) as dan_spolu, 
         lcs.fn21_dec2string(dsum.dan_byty, 2) dan_byty, 
         lcs.fn21_dec2string(dsum.dan_pozemky, 2) dan_pozemky, 
@@ -559,7 +560,9 @@ export const getCommunalWasteTaxesFromNoris = `
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,
-        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov, 
+        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov,
+
+        poplatok.forma_uhrady AS forma_uhrady,
 
         /* ----------------------------Texty splátok výmeru start------------------------------------*/   
         

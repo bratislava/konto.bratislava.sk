@@ -24,7 +24,6 @@ export default class FormRegistrationStatusRepository {
         },
       })
 
-    // eslint-disable-next-line no-implicit-coercion
     return !!registrationStatus?.isRegistered
   }
 

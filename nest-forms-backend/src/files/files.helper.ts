@@ -242,7 +242,6 @@ export default class FilesHelper {
           ],
         },
       })
-      // eslint-disable-next-line no-implicit-coercion
       return !!file
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(

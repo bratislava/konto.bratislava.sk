@@ -80,11 +80,21 @@ export class NorisConnectionSubservice {
     })
   }
 
+  private isMssqlError(error: unknown): error is MSSQLError {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      'message' in error &&
+      'name' in error
+    )
+  }
+
   private addMssqlErrorDetailsToErrorMessage(
     errorMessage: string,
     error: any,
   ): string {
-    if (error instanceof MSSQLError) {
+    if (this.isMssqlError(error)) {
       const mssqlErrorDetails = {
         code: error.code,
         message: error.message,
@@ -110,7 +120,7 @@ export class NorisConnectionSubservice {
     errorMessage: string,
   ): Promise<never> {
     // https://www.npmjs.com/package/mssql#errors
-    if (!(error instanceof MSSQLError)) {
+    if (!this.isMssqlError(error)) {
       throw this.getNorisUrgentError(errorMessage, error)
     }
 

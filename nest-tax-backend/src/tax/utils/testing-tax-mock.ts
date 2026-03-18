@@ -122,6 +122,8 @@ export const createTestingRealEstateTaxMock = (
     dan_stavby: '600,50',
     dan_stavby_viac: '300,25',
     dan_byty: norisData.taxTotal,
+
+    forma_uhrady: 'P',
   }
 }
 
@@ -187,6 +189,8 @@ export const createTestingCommunalWasteTaxMock = (
     SPL4_3: spl3.toFixed(2).replace('.', ','),
     TXTSPL4_4: 'Test splatka4',
     SPL4_4: spl4.toFixed(2).replace('.', ','),
+
+    forma_uhrady: 'I',
 
     // communal waste specific fields (mock but type-correct)
     addresses: [

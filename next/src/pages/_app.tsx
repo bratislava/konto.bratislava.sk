@@ -3,6 +3,7 @@ import 'src/pages/index.css'
 import '@/src/frontend/utils/amplifyConfig'
 import 'react-loading-skeleton/dist/skeleton.css'
 
+import { ComponentLibraryProvider } from '@bratislava/component-library'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppProps } from 'next/app'
@@ -17,6 +18,7 @@ import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 
 import { NavMenuContextProvider } from '@/src/components/segments/NavBar/navMenuContext'
+import MLink from '@/src/components/simple-components/MLink'
 import { environment } from '@/src/environment'
 import { removeAllCookiesAndClearLocalStorage } from '@/src/frontend/utils/amplifyClient'
 import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'
@@ -116,23 +118,25 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
         <NuqsAdapter>
           <I18nProvider locale="sk-SK">
             <QueryClientProvider client={queryClient}>
-              <SnackbarProvider>
-                <PlausibleProvider
-                  domain={
-                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
-                  }
-                  taggedEvents
-                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                  // trackLocalhost
-                >
-                  <NavMenuContextProvider>
-                    {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
-                    <div id="root">
-                      <Component {...pageProps} />
-                    </div>
-                  </NavMenuContextProvider>
-                </PlausibleProvider>
-              </SnackbarProvider>
+              <ComponentLibraryProvider linkComponent={MLink}>
+                <SnackbarProvider>
+                  <PlausibleProvider
+                    domain={
+                      isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
+                    }
+                    taggedEvents
+                    // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                    // trackLocalhost
+                  >
+                    <NavMenuContextProvider>
+                      {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
+                      <div id="root">
+                        <Component {...pageProps} />
+                      </div>
+                    </NavMenuContextProvider>
+                  </PlausibleProvider>
+                </SnackbarProvider>
+              </ComponentLibraryProvider>
             </QueryClientProvider>
           </I18nProvider>
         </NuqsAdapter>

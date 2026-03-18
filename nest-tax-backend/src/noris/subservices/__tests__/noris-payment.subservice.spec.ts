@@ -221,7 +221,7 @@ describe('NorisPaymentSubservice', () => {
 
       expect(withConnectionMock).toHaveBeenCalledWith(
         expect.any(Function),
-        expect.any(Function),
+        expect.any(String),
       )
       expect(result).toEqual({
         created: 2,
@@ -238,28 +238,13 @@ describe('NorisPaymentSubservice', () => {
       const connectionError = new Error('Database connection failed')
       jest
         .spyOn(connectionService, 'withConnection')
-        .mockImplementation((fn, errorHandler) => {
-          errorHandler(connectionError)
-          throw connectionError
-        })
-
-      const throwerErrorGuardMock = jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw new Error('Internal Server Error')
+        .mockImplementation(async () => {
+          return Promise.reject(connectionError)
         })
 
       await expect(
         service.updateOverpaymentsDataFromNorisByDateRange(mockData),
-      ).rejects.toThrow('Internal Server Error')
-
-      expect(throwerErrorGuardMock).toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get overpayments data from Noris by date range.',
-        undefined,
-        undefined,
-        connectionError,
-      )
+      ).rejects.toThrow('Database connection failed')
     })
 
     it('should handle mixed scenarios with some payments already created', async () => {

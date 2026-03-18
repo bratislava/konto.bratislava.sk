@@ -68,6 +68,7 @@ const Calculator = ({
   const expression = useMemo(() => getFormCalculatorExpression(formula, true), [formula])
   const dataAtPath = useMemo(() => {
     const path = getPath(id, dataContextLevelsUp)
+
     return getDataAtPath(formData, path)
   }, [id, dataContextLevelsUp, formData])
   const value = useMemo(() => {
@@ -79,7 +80,7 @@ const Calculator = ({
   }, [expression, dataAtPath])
 
   const wrapperClassName = cn('inline-flex items-center justify-start gap-8 self-stretch py-5', {
-    'border-b-2': !isLast,
+    'border-b': !isLast,
     'border-gray-200': !isLast && variant === 'white',
     'border-white': !isLast && variant === 'black',
   })

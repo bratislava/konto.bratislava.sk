@@ -1,0 +1,3 @@
+INSERT INTO "Config" ("key", "value")
+VALUES 
+  ('NORIS_SILENT_CONNECTION_ERRORS', '0');

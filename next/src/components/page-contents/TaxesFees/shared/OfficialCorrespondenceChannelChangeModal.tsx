@@ -125,7 +125,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
         control={control}
         render={({ field }) => (
           <RadioGroup
-            required
+            isRequired
             onChange={(value) => field.onChange(value === 'true')}
             value={isDefined(field.value) ? String(field.value) : undefined}
             label={t('taxes.delivery_method_change_modal.delivery_method_label')}

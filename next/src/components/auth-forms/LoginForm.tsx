@@ -68,7 +68,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             label={t('auth.fields.email_label')}
             placeholder={t('auth.fields.email_placeholder')}
             {...field}
@@ -81,7 +81,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <PasswordField
-            required
+            isRequired
             label={t('auth.fields.password_label')}
             placeholder={t('auth.fields.password_placeholder')}
             {...field}

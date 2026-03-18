@@ -30,7 +30,7 @@ const AnnouncementBlock = ({
 
   return (
     <div
-      className={cn('flex w-full rounded-lg border-2 border-gray-200', {
+      className={cn('flex w-full rounded-lg border border-gray-200', {
         'flex-col': !reversedMobile,
         'flex-col-reverse': reversedMobile,
         'lg:flex-row-reverse': reversed,

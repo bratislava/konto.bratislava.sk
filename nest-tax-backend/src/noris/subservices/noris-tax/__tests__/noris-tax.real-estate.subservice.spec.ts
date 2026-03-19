@@ -964,7 +964,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               upsert: jest.fn().mockResolvedValue({}),
             },
           }
-          return callback(mockTx as any)
+          return await callback(mockTx as any)
         })
 
         await service['processTaxRecordFromNoris'](
@@ -1046,7 +1046,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               upsert: jest.fn().mockResolvedValue({}),
             },
           }
-          return callback(mockTx as any)
+          return await callback(mockTx as any)
         })
 
         bloomreachService.trackEventTax = jest.fn().mockResolvedValue(false)

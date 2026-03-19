@@ -554,7 +554,11 @@ describe('UpvsQueueService', () => {
           {
             physicalEntityId: null,
             inputUri: 'rc://sk/external_old',
-            data: { uri: 'rc://sk/external_new', status: 'activated', upvs: { edesk_status: 'active', edesk_number: '123' } },
+            data: {
+              uri: 'rc://sk/external_new',
+              status: 'activated',
+              upvs: { edesk_status: 'active', edesk_number: '123' },
+            },
           },
         ],
         failed: [],

@@ -7,6 +7,7 @@ import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { QrCodeService } from '../../../qrcode/qrcode.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import {
   TaxDefinition,
@@ -17,7 +18,6 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { TaxWithTaxPayer } from '../../../utils/types/types.prisma'
 import {
   convertCurrencyToInt,
@@ -34,7 +34,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   protected readonly concurrencyLimit = pLimit(this.concurrency)
 
   protected constructor(
-    protected readonly qrCodeSubservice: QrCodeSubservice,
+    protected readonly qrCodeService: QrCodeService,
     protected readonly prismaService: PrismaService,
     protected readonly bloomreachService: BloomreachService,
     protected readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -60,7 +60,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   private async trackCancelledTax(
     tax: TaxWithTaxPayer,
     year: number,
-    userFromCityAccount: ResponseUserByBirthNumberDto,
+    userFromCityAccount: ResponseUserByBirthNumberDto | null,
   ) {
     const trackingSuccess = await this.bloomreachService.trackEventTax(
       {
@@ -68,10 +68,11 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         year,
         delivery_method: tax.deliveryMethod,
         tax_type: this.getTaxType(),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
         order: tax.order!,
         suppress_email: false,
       },
-      userFromCityAccount.externalId ?? undefined,
+      userFromCityAccount?.externalId ?? undefined,
     )
     if (!trackingSuccess) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -86,7 +87,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     norisItem: TaxTypeToNorisData[TTaxType],
     existingTax: Pick<Tax, 'id' | 'isCancelled'>,
     year: number,
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    >,
   ): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       await tx.taxInstallment.deleteMany({
@@ -143,7 +146,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     const taxesExist = await this.prismaService.tax.findMany({
       select: selectQuery,
       where: {
-        year: +year,
+        year,
         taxPayer: {
           birthNumber: {
             in: norisData.map((norisRecord) => norisRecord.ICO_RC),
@@ -179,7 +182,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     year: number,
     options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    const birthNumbersResult: Set<string> = new Set()
+    const birthNumbersResult = new Set<string>()
     const {
       prepareOnly = false,
       ignoreBatchLimit = false,
@@ -327,6 +330,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
 
     // Include birth numbers found in Noris (regardless of whether they were processed)
     return {
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- we are spreading a DTO object, which is not a problem
       ...birthNumbersResult,
       foundInNoris: [...new Set(norisData.map((item) => item.ICO_RC))],
     }
@@ -376,7 +380,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         return undefined
       }
       return batchSizeLimit
-    } catch (error) {
+    } catch {
       this.logger.warn(
         'Failed to get TAX_IMPORT_BATCH_SIZE config, processing all tax payers',
       )
@@ -512,7 +516,9 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     taxDefinition: TaxDefinition<TTaxType>,
     birthNumbersResult: Set<string>,
     norisItem: TaxTypeToNorisData[TTaxType],
-    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
+    userDataFromCityAccount: Partial<
+      Record<string, ResponseUserByBirthNumberDto>
+    >,
     year: number,
     suppressEmail: boolean,
   ) => {
@@ -547,6 +553,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
             delivery_method:
               userFromCityAccount.taxDeliveryMethodAtLockDate ?? null,
             tax_type: taxDefinition.type,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
             order: tax.order!,
             suppress_email: suppressEmail,
           },

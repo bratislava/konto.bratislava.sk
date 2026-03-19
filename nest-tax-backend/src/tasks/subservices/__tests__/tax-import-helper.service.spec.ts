@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 
@@ -721,5 +720,3 @@ describe('TaxImportHelperService', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

@@ -86,7 +86,7 @@ export default class TaxImportHelperService {
     taxType: TaxType,
     year: number,
     firstHistoricalYear: number,
-    isImportPhase: boolean = true,
+    isImportPhase = true,
   ): Promise<{
     birthNumbers: string[]
     newlyCreated: string[]

@@ -1,6 +1,6 @@
 import React, { DOMAttributes, FC } from 'react'
 
-export interface FieldErrorMessageProps {
+export type FieldErrorMessageProps = {
   errorMessage?: string[]
   errorMessageProps?: DOMAttributes<never>
 }
@@ -15,7 +15,7 @@ const FieldErrorMessage: FC<FieldErrorMessageProps> = ({
       data-cy="error-message"
       {...errorMessageProps}
     >
-      {errorMessage?.map((error, i) => {
+      {errorMessage.map((error, index) => {
         // TODO: Remove this logic (ensure that the strings are properly formatted in the first place)
         const firstCharUppercased = error.slice(0, 1).toUpperCase()
         const restOfError = error.slice(1)
@@ -23,7 +23,7 @@ const FieldErrorMessage: FC<FieldErrorMessageProps> = ({
         const lastCharIsPeriodOrEllipsis = lastChar === '.' || lastChar === '…'
 
         return (
-          <div key={i}>
+          <div key={index}>
             {`${firstCharUppercased}${restOfError}${lastCharIsPeriodOrEllipsis ? '' : '.'}`}
           </div>
         )

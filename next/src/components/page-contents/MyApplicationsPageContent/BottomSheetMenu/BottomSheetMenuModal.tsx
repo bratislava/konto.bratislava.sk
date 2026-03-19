@@ -39,7 +39,7 @@ const BottomSheetMenuModal = ({
         <Dialog className="flex h-full flex-col outline-0">
           {({ close }) => (
             <>
-              <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b-2 bg-white p-4">
+              <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b bg-white p-4">
                 <h6 className="grow text-h6">
                   {t('account_section_applications.mobile_modal_menu.title')}
                 </h6>
@@ -54,7 +54,7 @@ const BottomSheetMenuModal = ({
               <nav className="w-full overflow-auto bg-white px-4">
                 <ul>
                   {conceptMenuContent.map((item) => (
-                    <li key={item.id} className="border-b-2 last:border-b-0">
+                    <li key={item.id} className="border-b last:border-b-0">
                       <BottomSheetMenuRow
                         title={item.title}
                         icon={item.icon}

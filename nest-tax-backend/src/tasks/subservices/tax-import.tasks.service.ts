@@ -163,7 +163,6 @@ export default class TaxImportTasksService {
         return this.norisService.updateOverpaymentsDataFromNorisByDateRange(
           data,
         )
-        // eslint-disable-next-line no-secrets/no-secrets
       }, 'updateOverpaymentsDataFromNorisByDateRange')
 
       // Success: reset lookback days to default

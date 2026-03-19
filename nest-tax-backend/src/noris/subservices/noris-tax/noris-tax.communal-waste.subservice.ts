@@ -5,12 +5,12 @@ import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { QrCodeService } from '../../../qrcode/qrcode.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { QrCodeSubservice } from '../../../utils/subservices/qrcode.subservice'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import {
   NorisBaseTaxSchema,
@@ -35,7 +35,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     private readonly connectionService: NorisConnectionSubservice,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
 
-    qrCodeSubservice: QrCodeSubservice,
+    qrCodeService: QrCodeService,
     throwerErrorGuard: ThrowerErrorGuard,
     prismaService: PrismaService,
     bloomreachService: BloomreachService,
@@ -47,7 +47,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       NorisTaxCommunalWasteSubservice.name,
     )
     super(
-      qrCodeSubservice,
+      qrCodeService,
       prismaService,
       bloomreachService,
       throwerErrorGuard,
@@ -107,15 +107,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
 
         return request.query(queryWithPlaceholders)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get communal waste tax data from Noris',
-          undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
-        )
-      },
+      'Failed to get communal waste tax data from Noris',
     )
     return this.norisValidatorSubservice.validateNorisData(
       NorisCommunalWasteTaxSchema,
@@ -198,7 +190,6 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
         error,
       )
     }
-    let count = 0
 
     const taxDefinition = this.getTaxDefinition()
     const userDataFromCityAccount =
@@ -266,9 +257,9 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     }
 
     const results = await Promise.all(
-      norisData.map((norisItem) => updateTaxRecord(norisItem)),
+      norisData.map(async (norisItem) => updateTaxRecord(norisItem)),
     )
-    count = results.filter(Boolean).length
+    const count = results.filter(Boolean).length
 
     return { updated: count }
   }

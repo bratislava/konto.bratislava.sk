@@ -18,7 +18,6 @@ import {
 
 import { DeliveryMethod } from '../../noris/types/noris.enums'
 
-// eslint-disable-next-line no-secrets/no-secrets
 /**
  * Options for processing Noris tax data.
  *
@@ -174,11 +173,11 @@ export class DateRangeDto {
   toDate?: Date
 }
 
-export type RequestUpdateNorisDeliveryMethodsData = {
-  [key: string]:
-    | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
-    | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
-}
+export type RequestUpdateNorisDeliveryMethodsData = Record<
+  string,
+  | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
+  | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
+>
 
 export class RequestUpdateNorisDeliveryMethodsDto {
   @ApiProperty({

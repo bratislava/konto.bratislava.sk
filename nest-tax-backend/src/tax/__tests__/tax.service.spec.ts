@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
@@ -7,8 +6,8 @@ import prismaMock from '../../../test/singleton'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
+import { QrCodeService } from '../../qrcode/qrcode.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -84,7 +83,7 @@ describe('TaxService', () => {
         TaxService,
         { provide: PrismaService, useValue: prismaMock },
         ThrowerErrorGuard,
-        { provide: QrCodeSubservice, useValue: createMock<QrCodeSubservice>() },
+        { provide: QrCodeService, useValue: createMock<QrCodeService>() },
         { provide: PaymentService, useValue: createMock<PaymentService>() },
       ],
     }).compile()
@@ -103,11 +102,11 @@ describe('TaxService', () => {
   describe('getListOfTaxesByBirthnumberAndType', () => {
     const DEFAULT_TEST_NOW = new Date('2025-01-01T12:00:00.000Z')
 
-    beforeAll(async () => {
+    beforeAll(() => {
       jest.useFakeTimers()
     })
 
-    beforeEach(async () => {
+    beforeEach(() => {
       jest.setSystemTime(DEFAULT_TEST_NOW)
     })
 
@@ -1136,7 +1135,7 @@ describe('TaxService', () => {
         itemizedDetail: {} as any,
       })
       jest
-        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .spyOn(service['qrCodeService'], 'createQrCode')
         .mockResolvedValue('qr-code-url')
 
       const result = await service.getTaxDetail(
@@ -1216,7 +1215,7 @@ describe('TaxService', () => {
         itemizedDetail: {} as any,
       })
       jest
-        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .spyOn(service['qrCodeService'], 'createQrCode')
         .mockResolvedValue('qr-code-url-ko')
 
       const result = await service.getTaxDetail(
@@ -1328,7 +1327,7 @@ describe('TaxService', () => {
         itemizedDetail: {} as any,
       })
       jest
-        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .spyOn(service['qrCodeService'], 'createQrCode')
         .mockResolvedValueOnce('qr-code-url-ko-one-time')
         .mockResolvedValueOnce('qr-code-url-ko-installment')
 
@@ -1405,7 +1404,7 @@ describe('TaxService', () => {
         itemizedDetail: {} as any,
       })
       jest
-        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .spyOn(service['qrCodeService'], 'createQrCode')
         .mockResolvedValue('qr-code-url-ko-payments')
 
       const result = await service.getTaxDetail(
@@ -1466,7 +1465,7 @@ describe('TaxService', () => {
         itemizedDetail: {} as any,
       })
       jest
-        .spyOn(service['qrCodeSubservice'], 'createQrCode')
+        .spyOn(service['qrCodeService'], 'createQrCode')
         .mockResolvedValue('qr-code-url-ko-order2')
 
       const result = await service.getTaxDetail(
@@ -1880,5 +1879,3 @@ describe('TaxService', () => {
     })
   })
 })
-
-/* eslint-enable no-secrets/no-secrets */

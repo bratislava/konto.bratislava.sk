@@ -23,12 +23,14 @@ export const GP_WEBPAY_CONFIG_KEY_MAP: Record<
     PAYGATE_KEY: 'PAYGATE_KEY',
     PAYGATE_SIGN_CERT: 'PAYGATE_SIGN_CERT',
     PAYGATE_MERCHANT_NUMBER: 'PAYGATE_MERCHANT_NUMBER',
+    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
     PAYGATE_PASSPHRASE: 'PAYGATE_PASSPHRASE',
   },
   [TaxType.KO]: {
     PAYGATE_KEY: 'PAYGATE_KEY_KO',
     PAYGATE_SIGN_CERT: 'PAYGATE_SIGN_CERT_KO',
     PAYGATE_MERCHANT_NUMBER: 'PAYGATE_MERCHANT_NUMBER_KO',
+    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
     PAYGATE_PASSPHRASE: 'PAYGATE_PASSPHRASE_KO',
   },
 }
@@ -39,7 +41,7 @@ export class GpWebpaySubservice {
   constructor(private readonly configService: ConfigService) {}
 
   private readonly getDataToSign = (data: CreateOrderData): string => {
-    const digestData: Array<keyof CreateOrderData> = [
+    const digestData: (keyof CreateOrderData)[] = [
       'MERCHANTNUMBER',
       'OPERATION',
       'ORDERNUMBER',

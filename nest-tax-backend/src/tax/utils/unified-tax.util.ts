@@ -4,6 +4,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
+import { QrPaymentNoteEnum } from '../../qrcode/dtos/qrcode.dto'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import {
   GetTaxDetailPureOptions,
@@ -12,7 +13,6 @@ import {
   TaxTypeToResponseDetailItemizedDto,
 } from '../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -40,7 +40,7 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
-export const stateHolidays: Record<number, { dates: Dayjs[] }> = {
+export const stateHolidays: Partial<Record<number, { dates: Dayjs[] }>> = {
   2023: {
     dates: [
       dayjs.tz('2023-01-01', bratislavaTimeZone),
@@ -381,7 +381,8 @@ const calculateInstallmentPaymentDetails = (options: {
       : []),
   ]
 
-  const dueDateLastPayment = installmentDueDatesParsed.at(-1)
+  const dueDateLastPayment =
+    installmentDueDatesParsed[installmentDueDatesParsed.length - 1]
   if (!dueDateLastPayment) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
@@ -740,6 +741,13 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
           CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
         )
 
+      case InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
+          CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
+        )
+
+      case undefined:
       default:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,

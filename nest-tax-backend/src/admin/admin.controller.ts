@@ -152,7 +152,7 @@ export class AdminController {
   async removeDeliveryMethodsFromNoris(
     @Param('birthNumber') birthNumber: string,
   ): Promise<void> {
-    return this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
+    await this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   @HttpCode(200)

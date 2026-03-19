@@ -14,6 +14,7 @@ describe('UserDataSubservice', () => {
   let prisma: typeof prismaMock
 
   const userId = 'user-123'
+  const userExternalId = 'ext-123'
   const gdprParams = {
     category: GDPRCategoryEnum.TAXES,
     type: GDPRTypeEnum.FORMAL_COMMUNICATION,
@@ -99,7 +100,7 @@ describe('UserDataSubservice', () => {
       ]
       prisma.user.findUnique.mockResolvedValue({
         id: userId,
-        externalId: 'ext-123',
+        externalId: userExternalId,
       } as unknown as User)
       prisma.userGdprData.createMany.mockResolvedValue({ count: 1 })
 
@@ -110,7 +111,7 @@ describe('UserDataSubservice', () => {
 
       await userDataSubservice.changeUserGdprData(userId, gdprData)
 
-      expect(processDeliverySpy).toHaveBeenCalledWith(userId)
+      expect(processDeliverySpy).toHaveBeenCalledWith(userExternalId)
     })
   })
 })

@@ -304,6 +304,16 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     options: RequestPostNorisLoadDataOptionsDto = { suppressEmail: false },
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
+    const taxDefinition = this.getTaxDefinition()
+
+    // Mark the attempt for all requested birth numbers before processing
+    // This ensures we track even birth numbers not found in Noris
+    await this.markAttemptForBirthNumbers(
+      birthNumbers,
+      year,
+      taxDefinition.type,
+    )
+
     const norisData = await this.getTaxDataByYearAndBirthNumber(
       year,
       birthNumbers,
@@ -320,6 +330,37 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       ...birthNumbersResult,
       foundInNoris: [...new Set(norisData.map((item) => item.ICO_RC))],
     }
+  }
+
+  /**
+   * Marks TaxImportAttempt for birth numbers that we're about to attempt retrieval from Noris
+   * This ensures that even if Noris returns nothing, we track that an attempt was made
+   */
+  private async markAttemptForBirthNumbers(
+    birthNumbers: string[],
+    year: number,
+    taxType: TaxType,
+  ): Promise<void> {
+    const taxPayers = await this.prismaService.taxPayer.findMany({
+      where: { birthNumber: { in: birthNumbers } },
+      select: { birthNumber: true, id: true },
+    })
+
+    if (taxPayers.length === 0) {
+      return
+    }
+
+    // Create attempt records with NOT_FOUND status
+    // These will be updated to READY_TO_IMPORT in processNorisTaxData if data is found
+    await this.prismaService.taxImportAttempt.createMany({
+      data: taxPayers.map((taxPayer) => ({
+        taxPayerId: taxPayer.id,
+        status: HistoricalTaxImportStatus.NOT_FOUND,
+        year,
+        taxType,
+      })),
+      skipDuplicates: true,
+    })
   }
 
   protected async getBatchSizeLimit(): Promise<number | undefined> {

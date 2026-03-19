@@ -260,3 +260,14 @@ model OAuth2Data {
   idTokenEnc           String?
   refreshTokenEnc      String?
 }
+
+model BloomreachOutbox {
+  id          String   @id @default(uuid()) @db.Uuid
+  createdAt   DateTime @default(now())
+  processedAt DateTime?
+  attempts    Int      @default(0)
+  lastError   String?
+  eventType   String   // 'TRACK_CUSTOMER'
+  externalId  String   @db.Uuid
+  phoneNumber String?  // optional extra payload for trackCustomer
+}

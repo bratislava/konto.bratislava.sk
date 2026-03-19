@@ -3,7 +3,10 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 
-import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
+import {
+  GdprDataSubscriptionDto,
+  UserOfficialCorrespondenceChannelEnum,
+} from '../user/dtos/gdpr.user.dto'
 import {
   AnonymizeResponse,
   BloomreachConsentActionEnum,
@@ -19,14 +22,18 @@ import {
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import {
+  BloomreachOutbox,
   CognitoUserAttributesTierEnum,
+  DeliveryMethodEnum,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
+  Prisma,
 } from '@prisma/client'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import { DeliveryMethodActiveAndLockedDto } from 'src/user/dtos/deliveryMethod.dto'
 
 @Injectable()
 export class BloomreachService {
@@ -55,6 +62,78 @@ export class BloomreachService {
       )
     }
     this.logger = new LineLoggerSubservice(BloomreachService.name)
+  }
+
+  // TODO: Refactor - duplicate exists in user/utils/subservice/user-data.subservice.ts
+  async getOfficialCorrespondenceChannel(
+    userId: string
+  ): Promise<UserOfficialCorrespondenceChannelEnum | null> {
+    const delivery = await this.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
+    const active = delivery.active?.deliveryMethod
+    switch (active) {
+      case DeliveryMethodEnum.EDESK:
+        return UserOfficialCorrespondenceChannelEnum.EDESK
+      case DeliveryMethodEnum.CITY_ACCOUNT:
+        return UserOfficialCorrespondenceChannelEnum.EMAIL
+      case DeliveryMethodEnum.POSTAL:
+        return UserOfficialCorrespondenceChannelEnum.POSTAL
+      default:
+        return null
+    }
+  }
+
+  // TODO: Refactor - duplicate exists in user/utils/subservice/user-data.subservice.ts
+  // keeping it unchanged, even when locked data not needed, for easier refactor
+  async getActiveAndLockedDeliveryMethodsWithDates(
+    where: Prisma.UserWhereUniqueInput
+  ): Promise<DeliveryMethodActiveAndLockedDto> {
+    const user = await this.prisma.user.findUnique({
+      where,
+      include: {
+        physicalEntity: {
+          select: {
+            activeEdesk: true,
+          },
+        },
+      },
+    })
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        ErrorsEnum.NOT_FOUND_ERROR,
+        ErrorsResponseEnum.NOT_FOUND_ERROR
+      )
+    }
+
+    const gdrpDataTaxesFormalCommunication = await this.prisma.userGdprData.findFirst({
+      take: 1,
+      where: {
+        userId: user.id,
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+      },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    const active = user.physicalEntity?.activeEdesk
+      ? { deliveryMethod: DeliveryMethodEnum.EDESK }
+      : gdrpDataTaxesFormalCommunication
+        ? {
+            deliveryMethod:
+              gdrpDataTaxesFormalCommunication?.subType === GDPRSubTypeEnum.subscribe
+                ? DeliveryMethodEnum.CITY_ACCOUNT
+                : DeliveryMethodEnum.POSTAL,
+            date: gdrpDataTaxesFormalCommunication?.createdAt ?? undefined,
+          }
+        : undefined
+
+    const locked = user.taxDeliveryMethodAtLockDate
+      ? {
+          deliveryMethod: user.taxDeliveryMethodAtLockDate,
+          date: user.taxDeliveryMethodCityAccountLockDate ?? undefined,
+        }
+      : undefined
+
+    return { active, locked }
   }
 
   // TODO: Refactor - duplicate exists in paas-mpa/paas-mpa.service.ts
@@ -156,6 +235,13 @@ export class BloomreachService {
       if (contactId && phoneNumber) {
         await this.bloomreachContactDatabaseService.addPhone(contactId, phoneNumber)
       }
+      const dbUser = await this.prisma.user.findUnique({
+        where: { externalId: cognitoId },
+        select: { id: true },
+      })
+      const officialCorrespondenceChannel = dbUser
+        ? await this.getOfficialCorrespondenceChannel(dbUser.id)
+        : null
 
       const data = {
         customer_ids: {
@@ -172,6 +258,8 @@ export class BloomreachService {
           ...(phoneNumber && { phone: phoneNumber }),
           ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
           ...(oAuthOriginClientName && { oauth_origin_client_name: oAuthOriginClientName }),
+          // we need null or undefined or empty string to be passed to bloomreach as value to change correspondence channel to change what was previously set
+          current_tax_correspondence_channel: officialCorrespondenceChannel,
         },
       }
       await axios.post(
@@ -290,5 +378,18 @@ export class BloomreachService {
       this.logger.error(error)
       return AnonymizeResponse.ERROR
     }
+  }
+
+  // TODO: use everywhere instead of calling trackCustomer directly
+  async enqueueTrackCustomerToBloomreachOutbox(
+    tx: Prisma.TransactionClient,
+    userExternalId: string
+  ): Promise<BloomreachOutbox> {
+    return tx.bloomreachOutbox.create({
+      data: {
+        eventType: 'TRACK_CUSTOMER',
+        externalId: userExternalId,
+      },
+    })
   }
 }

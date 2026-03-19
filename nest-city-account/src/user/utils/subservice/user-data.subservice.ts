@@ -15,6 +15,7 @@ import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.sub
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 import {
+  BloomreachOutbox,
   DeliveryMethodEnum,
   DeliveryMethodUserEnum,
   GDPRCategoryEnum,
@@ -99,7 +100,7 @@ export class UserDataSubservice {
     return this.postprocessUser(userData.externalId, user)
   }
 
-  async postprocessUser(externalId: string, user: User, changeGdprData: boolean = false) {
+  async postprocessUser(externalId: string, user: User, changeGdprData = false) {
     if (changeGdprData) {
       await this.changeUserGdprData(user.id, [
         {
@@ -482,17 +483,24 @@ export class UserDataSubservice {
         'Delivery method set more than once at the same time'
       )
     }
-    if (taxDeliveryData.length > 0) {
-      await this.processDeliveryMethodMayHaveChanged(userId)
-    }
 
-    await this.prisma.userGdprData.createMany({
-      data: gdprData.map((elem) => ({
-        type: elem.type,
-        category: elem.category,
-        subType: elem.subType,
-        userId: user.id,
-      })),
+    await this.prisma.$transaction(async (tx) => {
+      const userGdprData = await tx.userGdprData.createMany({
+        data: gdprData.map((elem) => ({
+          type: elem.type,
+          category: elem.category,
+          subType: elem.subType,
+          userId: user.id,
+        })),
+      })
+      let bloomreachOutbox: BloomreachOutbox | undefined
+      if (taxDeliveryData.length > 0 && user.externalId) {
+        bloomreachOutbox = await this.bloomreachService.enqueueTrackCustomerToBloomreachOutbox(
+          tx,
+          user.externalId
+        )
+      }
+      return { userGdprData, bloomreachOutbox }
     })
 
     await this.bloomreachService.trackEventConsents(gdprData, user.externalId, user.id, false)
@@ -633,16 +641,5 @@ export class UserDataSubservice {
           return !!userLoginListItem.id
         })
     )
-  }
-
-  async processDeliveryMethodMayHaveChanged(userId: string): Promise<boolean> {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { externalId: true },
-    })
-    if (user?.externalId) {
-      return (await this.bloomreachService.trackCustomer(user.externalId)) ?? false
-    }
-    return false
   }
 }

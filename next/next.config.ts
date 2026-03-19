@@ -18,19 +18,21 @@ const nextConfig: NextConfig = {
   // https://react.dev/warnings/invalid-hook-call-warning
   transpilePackages: ['forms-shared', '@rjsf/core'],
   images: {
-    remotePatterns: [
-      new URL(`https://${process.env.MINIO_BUCKET}.s3.bratislava.sk/upload/**`),
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        pathname: '/**',
-      },
-      // {
-      //   protocol: 'https',
-      //   hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
-      //   pathname: '/**',
-      // },
-    ],
+    domains: ['city-account-strapi.s3.bratislava.sk'],
+    // domains: [`${process.env.MINIO_BUCKET}.s3.bratislava.sk`],
+    // remotePatterns: [
+    //   new URL(`https://${process.env.MINIO_BUCKET}.s3.bratislava.sk/upload/**`),
+    //   {
+    //     protocol: 'http',
+    //     hostname: 'localhost',
+    //     pathname: '/**',
+    //   },
+    //   // {
+    //   //   protocol: 'https',
+    //   //   hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
+    //   //   pathname: '/**',
+    //   // },
+    // ],
   },
   output: 'standalone',
   // Workaround: Turbopack file tracer misses `module-sync` exports condition files (e.g. require.mjs)

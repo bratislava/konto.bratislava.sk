@@ -26,6 +26,7 @@ const nextConfig = {
   // https://react.dev/warnings/invalid-hook-call-warning
   transpilePackages: ['forms-shared', '@rjsf/core'],
   images: {
+    dangerouslyAllowLocalIP: true,
     domains: ['city-account-strapi.s3.bratislava.sk'],
     // domains: [`${process.env.MINIO_BUCKET}.s3.bratislava.sk`],
     // remotePatterns: [

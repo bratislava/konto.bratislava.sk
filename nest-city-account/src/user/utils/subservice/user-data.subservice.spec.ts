@@ -9,7 +9,8 @@ import { UserOfficialCorrespondenceChannelEnum } from '../../dtos/gdpr.user.dto'
 import prismaMock from '../../../../test/singleton'
 
 describe('UserDataSubservice', () => {
-  let subservice: UserDataSubservice
+  let userDataSubservice: UserDataSubservice
+  let bloomreachSubservice: BloomreachService
   let prisma: typeof prismaMock
 
   const userId = 'user-123'
@@ -44,7 +45,8 @@ describe('UserDataSubservice', () => {
       ],
     }).compile()
 
-    subservice = module.get<UserDataSubservice>(UserDataSubservice)
+    userDataSubservice = module.get<UserDataSubservice>(UserDataSubservice)
+    bloomreachSubservice = module.get<BloomreachService>(BloomreachService)
     prisma = module.get(PrismaService)
   })
 
@@ -67,7 +69,7 @@ describe('UserDataSubservice', () => {
           createdAt: new Date(),
         } as unknown as UserGdprData)
 
-        const result = await subservice.getOfficialCorrespondenceChannel(userId)
+        const result = await userDataSubservice.getOfficialCorrespondenceChannel(userId)
 
         expect(result).toBe(expectedChannel)
       }
@@ -81,14 +83,14 @@ describe('UserDataSubservice', () => {
       }
       prisma.user.findUnique.mockResolvedValue(userWithEdesk as unknown as User)
 
-      const result = await subservice.getOfficialCorrespondenceChannel(userId)
+      const result = await userDataSubservice.getOfficialCorrespondenceChannel(userId)
 
       expect(result).toBe(UserOfficialCorrespondenceChannelEnum.EDESK)
     })
   })
 
   describe('changeUserGdprData', () => {
-    it('should call processDeliveryMethodMayHaveChanged when gdprData contains tax delivery data (category TAXES, type FORMAL_COMMUNICATION)', async () => {
+    it('should call enqueueTrackCustomerToBloomreachOutbox when gdprData contains tax delivery data (category TAXES, type FORMAL_COMMUNICATION)', async () => {
       const gdprData = [
         {
           ...gdprParams,
@@ -102,11 +104,11 @@ describe('UserDataSubservice', () => {
       prisma.userGdprData.createMany.mockResolvedValue({ count: 1 })
 
       const processDeliverySpy = jest.spyOn(
-        subservice,
-        'processDeliveryMethodMayHaveChanged'
+        bloomreachSubservice,
+        'enqueueTrackCustomerToBloomreachOutbox'
       )
 
-      await subservice.changeUserGdprData(userId, gdprData)
+      await userDataSubservice.changeUserGdprData(userId, gdprData)
 
       expect(processDeliverySpy).toHaveBeenCalledWith(userId)
     })

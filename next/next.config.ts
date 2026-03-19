@@ -22,10 +22,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
+        pathname: '/**',
       },
     ],
   },

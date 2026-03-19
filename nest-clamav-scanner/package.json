@@ -41,7 +41,7 @@
     "class-validator": "^0.14.4",
     "husky": "^9.1.7",
     "mime-types": "^3.0.2",
-    "minio": "^8.0.6",
+    "minio": "^8.0.7",
     "nestjs-minio-client": "^2.2.0",
     "openapi-clients": "file:../openapi-clients",
     "passport-http": "^0.3.0",

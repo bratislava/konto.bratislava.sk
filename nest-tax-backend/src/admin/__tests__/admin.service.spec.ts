@@ -225,6 +225,7 @@ describe('AdminService', () => {
       expect(optionsCalled).toStrictEqual({
         prepareOnly: false,
         ignoreBatchLimit: true,
+        suppressEmail: false,
       })
       expect(norisDataCalled[0].SPL4_4).toBe('')
     })
@@ -262,6 +263,7 @@ describe('AdminService', () => {
       expect(optionsCalled).toStrictEqual({
         prepareOnly: false,
         ignoreBatchLimit: true,
+        suppressEmail: false,
       })
     })
 
@@ -409,6 +411,7 @@ describe('AdminService', () => {
           delivery_method: null,
           tax_type: mockTaxType,
           order: mockOrder,
+          suppress_email: false,
         },
         mockCityAccountUser.externalId,
       )
@@ -575,6 +578,7 @@ describe('AdminService', () => {
           delivery_method: null,
           tax_type: mockTaxType,
           order: mockOrder,
+          suppress_email: false,
         },
         undefined,
       )
@@ -641,6 +645,7 @@ describe('AdminService', () => {
           year: mockYear,
           tax_type: mockTaxType,
           order: mockOrder,
+          suppress_email: false,
         },
         'external-123',
       )

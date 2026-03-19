@@ -651,6 +651,7 @@ describe('TaxImportHelperService', () => {
         norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear,
       ).toHaveBeenCalledWith(taxType, year, birthNumbers, {
         prepareOnly: true,
+        suppressEmail: true,
       })
     })
 
@@ -698,6 +699,7 @@ describe('TaxImportHelperService', () => {
         norisService.getAndProcessNewNorisTaxDataByBirthNumberAndYear,
       ).toHaveBeenCalledWith(taxType, year, birthNumbers, {
         prepareOnly: true,
+        suppressEmail: true,
       })
     })
 

@@ -87,6 +87,7 @@ describe('NorisTaxSubservice', () => {
     const mockOptions: RequestPostNorisLoadDataOptionsDto = {
       prepareOnly: true,
       ignoreBatchLimit: true,
+      suppressEmail: true,
     }
 
     it('should call DZN subservice when taxType is TaxType.DZN', async () => {
@@ -182,11 +183,12 @@ describe('NorisTaxSubservice', () => {
         TaxType.DZN,
         mockNorisData as any,
         mockYear,
+        { suppressEmail: false },
       )
 
       expect(
         norisTaxRealEstateSubservice.processNorisTaxData,
-      ).toHaveBeenCalledWith(mockNorisData, mockYear, {})
+      ).toHaveBeenCalledWith(mockNorisData, mockYear, { suppressEmail: false })
     })
 
     it('should throw for unknown tax type', async () => {
@@ -200,7 +202,9 @@ describe('NorisTaxSubservice', () => {
       const unknownTaxType = 'UNKNOWN' as TaxType
 
       await expect(
-        service.processNorisTaxData(unknownTaxType, [] as any, mockYear),
+        service.processNorisTaxData(unknownTaxType, [] as any, mockYear, {
+          suppressEmail: false,
+        }),
       ).rejects.toThrow(mockError)
 
       expect(
@@ -219,6 +223,7 @@ describe('NorisTaxSubservice', () => {
     const mockOptions: RequestPostNorisLoadDataOptionsDto = {
       prepareOnly: false,
       ignoreBatchLimit: true,
+      suppressEmail: false,
     }
 
     it('should call correct subservice for TaxType.DZN with all parameters', async () => {
@@ -307,11 +312,14 @@ describe('NorisTaxSubservice', () => {
         TaxType.DZN,
         mockYear,
         mockBirthNumbers,
+        { suppressEmail: false },
       )
 
       expect(
         norisTaxRealEstateSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear,
-      ).toHaveBeenCalledWith(mockYear, mockBirthNumbers, {})
+      ).toHaveBeenCalledWith(mockYear, mockBirthNumbers, {
+        suppressEmail: false,
+      })
     })
 
     it('should throw if getImplementationByType throws for unsupported tax type', async () => {
@@ -329,6 +337,7 @@ describe('NorisTaxSubservice', () => {
           invalidTaxType,
           mockYear,
           mockBirthNumbers,
+          { suppressEmail: false },
         ),
       ).rejects.toThrow(mockError)
     })

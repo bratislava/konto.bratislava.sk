@@ -1,24 +1,16 @@
-// @ts-check
 import { withPlausibleProxy } from 'next-plausible'
-import i18nextConfig from './next-i18next.config.js'
+import i18nextConfig from './next-i18next.config'
 import path from 'node:path'
+import type { NextConfig } from 'next'
 import withBundleAnalyzer from '@next/bundle-analyzer'
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
-/**
- * @type {import('next').NextConfig}
- * */
-const nextConfig = {
+const nextConfig: NextConfig = {
   experimental: {
-    adapterPath: resolve(__dirname, './next-iframe-resizer-adapter.mjs'),
+    adapterPath: require.resolve('./next-iframe-resizer-adapter.mjs'),
   },
   i18n: i18nextConfig.i18n,
   reactStrictMode: true,
@@ -27,21 +19,16 @@ const nextConfig = {
   transpilePackages: ['forms-shared', '@rjsf/core'],
   images: {
     dangerouslyAllowLocalIP: true,
-    domains: ['city-account-strapi.s3.bratislava.sk'],
-    // domains: [`${process.env.MINIO_BUCKET}.s3.bratislava.sk`],
-    // remotePatterns: [
-    //   new URL(`https://${process.env.MINIO_BUCKET}.s3.bratislava.sk/upload/**`),
-    //   {
-    //     protocol: 'http',
-    //     hostname: 'localhost',
-    //     pathname: '/**',
-    //   },
-    //   // {
-    //   //   protocol: 'https',
-    //   //   hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
-    //   //   pathname: '/**',
-    //   // },
-    // ],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
+      },
+    ],
   },
   output: 'standalone',
   // Workaround: Turbopack file tracer misses `module-sync` exports condition files (e.g. require.mjs)

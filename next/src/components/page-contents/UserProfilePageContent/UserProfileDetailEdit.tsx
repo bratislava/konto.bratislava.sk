@@ -152,6 +152,7 @@ const UserProfileDetailEdit = ({
       //   postal_code: data.postal_code?.replaceAll(' ', ''),
       // }),
     }
+
     return onSubmit(newUserData)
     // }
     //
@@ -192,7 +193,7 @@ const UserProfileDetailEdit = ({
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    required
+                    isRequired
                     capitalize
                     label={t('my_profile.profile_detail.given_name')}
                     {...field}
@@ -207,7 +208,7 @@ const UserProfileDetailEdit = ({
                 control={control}
                 render={({ field }) => (
                   <InputField
-                    required
+                    isRequired
                     capitalize
                     label={t('my_profile.profile_detail.family_name')}
                     {...field}
@@ -226,8 +227,8 @@ const UserProfileDetailEdit = ({
             control={control}
             render={({ field }) => (
               <InputField
-                disabled
-                required
+                isDisabled
+                isRequired
                 label={t('my_profile.profile_detail.email')}
                 autoComplete="username"
                 {...field}
@@ -269,7 +270,7 @@ const UserProfileDetailEdit = ({
       {/*     <InputField label={t('my_profile.profile_detail.phone_number')} /> */}
       {/*   </div> */}
       {/* </div> */}
-      {/* <div className="h-0 w-full border-b-2 border-gray-200" /> */}
+      {/* <div className="h-0 w-full border-b border-gray-200" /> */}
       {/* <h5 className="text-h5">{t('my_profile.profile_detail.address')}</h5> */}
       {/* <Controller */}
       {/*   name="street_address" */}
@@ -304,7 +305,6 @@ const UserProfileDetailEdit = ({
       {/*       control={control} */}
       {/*       render={({ field }) => ( */}
       {/*         <InputField */}
-      {/*           tooltip={t('my_profile.profile_detail.postal_code_tooltip')} */}
       {/*           label={t('my_profile.profile_detail.postal_code')} */}
       {/*           {...field} */}
       {/*           errorMessage={errors.postal_code} */}

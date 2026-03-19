@@ -70,7 +70,7 @@ export default class StatusService {
   }
 
   // function which checks if minio is running
-  public async isMinioRunning(): Promise<ServiceRunningDto> {
+  public isMinioRunning(): ServiceRunningDto {
     try {
       const result = this.minioClientSubservice.client()
       this.logger.log(result)

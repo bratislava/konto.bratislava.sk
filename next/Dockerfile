@@ -1,6 +1,7 @@
+# check=skip=InvalidDefaultArgInFrom
 ARG SHARED_PACKAGE_TAG
-FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
+FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} AS forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
 FROM node:24.14-alpine AS base
 
 # used as app-base in prodution and development image
@@ -28,6 +29,7 @@ WORKDIR /openapi-clients
 COPY --from=openapi-clients /app/ ./
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
+COPY ./patches ./patches
 
 FROM build-base AS install-prod
 ENV NPM_CONFIG_CACHE=/build/.npm
@@ -49,8 +51,12 @@ COPY --chown=node:node --from=build /build/node_modules ./node_modules
 CMD [ "npm run", "develop" ]
 
 FROM app-base AS prod
-COPY --chown=node:node .env.*.local ./
+# Turbopack with `turbopack.root` set to parent produces nested standalone output:
+# .next/standalone/{build,forms-shared,openapi-clients}/ with server.js inside build/
 COPY --chown=node:node --from=build /build/.next/standalone ./
-COPY --chown=node:node --from=build /build/public ./public
-COPY --chown=node:node --from=build /build/.next/static ./.next/static
-CMD [ "node", "server.js" ]
+COPY --chown=node:node .env.*.local ./build/
+# https://github.com/i18next/next-i18next?tab=readme-ov-file#docker
+COPY --chown=node:node --from=build /build/next-i18next.config.js ./build/
+COPY --chown=node:node --from=build /build/public ./build/public
+COPY --chown=node:node --from=build /build/.next/static ./build/.next/static
+CMD [ "node", "build/server.js" ]

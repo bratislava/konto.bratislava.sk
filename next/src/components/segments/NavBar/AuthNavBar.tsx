@@ -6,6 +6,7 @@ import { ArrowLeftIcon } from '@/src/assets/ui-icons'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
+import Button from '@/src/components/simple-components/Button'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import cn from '@/src/utils/cn'
@@ -19,13 +20,20 @@ type Props = {
 }
 
 const BackButton = () => {
+  const { t } = useTranslation('account')
   const router = useRouter()
 
   return (
     <>
-      {/* FIXME we should use Button */}
-      <ArrowLeftIcon className="mx-1 cursor-pointer" onClick={() => router.back()} />
-      <div className="border-b-solid mx-6 hidden h-6 border-r-2 lg:flex" />
+      <Button
+        variant="icon-wrapped-negative-margin"
+        size="large"
+        icon={<ArrowLeftIcon />}
+        aria-label={t('BackButton.aria')}
+        onPress={() => router.back()}
+        className="max-lg:mx-1"
+      />
+      <div className="mx-6 h-6 border-r max-lg:hidden" aria-hidden />
     </>
   )
 }
@@ -90,7 +98,7 @@ export const AuthNavBar = ({
         className={cn(className, 'sticky top-0 left-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileNavbarRef}
       >
-        <div className="flex h-16 w-full items-center justify-between border-b-2 px-4">
+        <div className="flex h-16 w-full items-center justify-between border-b px-4">
           <div className="flex">
             {!backButtonHidden && <BackButton />}
             <Brand

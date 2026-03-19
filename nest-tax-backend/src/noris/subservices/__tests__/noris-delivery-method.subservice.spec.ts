@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
@@ -257,7 +256,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       jest
         .spyOn(connectionService, 'withConnection')
         .mockImplementation(async () => {
-          throw connectionError
+          return Promise.reject(connectionError)
         })
 
       await expect(
@@ -306,13 +305,8 @@ describe('NorisDeliveryMethodSubservice', () => {
 
       jest
         .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn, errorHandler) => {
-          try {
-            const result = await fn({} as mssql.ConnectionPool)
-            return result
-          } catch (error) {
-            return errorHandler(error)
-          }
+        .mockImplementation(async (fn) => {
+          return fn({} as mssql.ConnectionPool)
         })
 
       await expect(
@@ -566,14 +560,13 @@ describe('NorisDeliveryMethodSubservice', () => {
         const connectionError = new Error('Database connection failed')
         jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn, errorHandler) => {
-            errorHandler(connectionError)
-            throw connectionError
+          .mockImplementation(async () => {
+            return Promise.reject(connectionError)
           })
 
         await expect(
           service['updateDeliveryMethodsInNoris'](mockData),
-        ).rejects.toThrow()
+        ).rejects.toThrow('Database connection failed')
       })
 
       it('should handle multiple update items', async () => {
@@ -764,14 +757,13 @@ describe('NorisDeliveryMethodSubservice', () => {
         const connectionError = new Error('Database connection failed')
         jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn, errorHandler) => {
-            errorHandler(connectionError)
-            throw connectionError
+          .mockImplementation(async () => {
+            return Promise.reject(connectionError)
           })
 
         await expect(
           service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData),
-        ).rejects.toThrow()
+        ).rejects.toThrow('Database connection failed')
       })
 
       it('should trim birth numbers from ico field', async () => {
@@ -797,4 +789,3 @@ describe('NorisDeliveryMethodSubservice', () => {
     })
   })
 })
-/* eslint-enable no-secrets/no-secrets */

@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-email */
 import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 
@@ -64,6 +63,7 @@ describe('GinisService', () => {
       MAILGUN_HOST: 'test',
       MAILGUN_EMAIL_FROM: 'test',
       RABBIT_MQ_USERNAME: 'test',
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
       RABBIT_MQ_PASSWORD: 'test',
       RABBIT_MQ_HOST: 'test',
       RABBIT_MQ_PORT: 'test',
@@ -888,7 +888,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1011,7 +1010,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1093,8 +1091,6 @@ describe('GinisService', () => {
     })
 
     it('should assign reference number if not present', async () => {
-      const form = formBase as Forms
-
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
         .mockResolvedValue({
@@ -1107,7 +1103,7 @@ describe('GinisService', () => {
         .spyOn(service['ginisApiService'], 'assignReferenceNumber')
         .mockResolvedValue()
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase as any)
 
       expect(
         service['ginisApiService'].assignReferenceNumber,
@@ -1115,13 +1111,11 @@ describe('GinisService', () => {
     })
 
     it('should set formId property when document not found by formId', async () => {
-      const form = formBase as Forms
-
       jest
         .spyOn(service['ginisApiService'], 'findDocumentId')
         .mockResolvedValue('differentDocId') // different from created
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase as any)
 
       expect(
         service['ginisApiService'].createFormIdProperty,
@@ -1134,13 +1128,11 @@ describe('GinisService', () => {
     })
 
     it('should not set formId property when it is already set and document can be found by formId', async () => {
-      const form = formBase as Forms
-
       jest
         .spyOn(service['ginisApiService'], 'findDocumentId')
         .mockResolvedValue('newDocId') // same as created
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase as any)
 
       expect(
         service['ginisApiService'].createFormIdProperty,
@@ -1234,7 +1226,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1256,7 +1247,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1289,7 +1279,6 @@ describe('GinisService', () => {
       jest
         .spyOn(
           service['clientsService'].cityAccountApi,
-          // eslint-disable-next-line no-secrets/no-secrets
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue({
@@ -1316,9 +1305,7 @@ describe('GinisService', () => {
       const { buildSlovenskoSkXml } = jest.requireMock(
         'forms-shared/slovensko-sk/xmlBuilder',
       )
-      const form = formBase as Forms
       const mockXmlObject = { root: { data: 'test' } }
-      // eslint-disable-next-line xss/no-mixed-html
       const mockXmlString =
         '<?xml version="1.0"?><root><data>test</data></root>'
 
@@ -1341,26 +1328,24 @@ describe('GinisService', () => {
         .spyOn(service['ginisApiService'], 'uploadFile')
         .mockResolvedValue({} as any)
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase as any)
 
       expect(
         service['convertService'].convertJsonToXmlObjectForForm,
-      ).toHaveBeenCalledWith(form)
+      ).toHaveBeenCalledWith(formBase)
       expect(buildSlovenskoSkXml).toHaveBeenCalledWith(mockXmlObject, {
         headless: false,
         pretty: false,
       })
       expect(service['ginisApiService'].uploadFile).toHaveBeenCalledWith(
         'newDocId',
-        `source_form_${form.id}.xml`,
+        `source_form_${formBase.id}.xml`,
         expect.any(Readable),
         SslFileUploadType.SOURCE,
       )
     })
 
     it('should not upload XML source file when electronic source exists', async () => {
-      const form = formBase as Forms
-
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
         .mockResolvedValue({
@@ -1378,7 +1363,7 @@ describe('GinisService', () => {
         .spyOn(service['ginisApiService'], 'uploadFile')
         .mockResolvedValue({} as any)
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase as any)
 
       expect(
         service['convertService'].convertJsonToXmlObjectForForm,
@@ -1496,4 +1481,3 @@ describe('GinisService', () => {
     })
   })
 })
-/* eslint-enable pii/no-email */

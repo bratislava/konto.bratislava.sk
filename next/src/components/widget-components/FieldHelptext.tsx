@@ -2,7 +2,7 @@ import React, { DOMAttributes } from 'react'
 
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 
-type FieldHelptextProps = {
+export type FieldHelptextProps = {
   helptext?: string
   helptextMarkdown?: boolean
   descriptionProps?: DOMAttributes<never>

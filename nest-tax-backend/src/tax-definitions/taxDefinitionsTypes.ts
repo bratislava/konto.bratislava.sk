@@ -14,6 +14,7 @@ import {
   CommunalWasteTaxDetail,
   RealEstateTaxDetail,
 } from '../prisma/json-types'
+import { QrCodeGeneratorDto } from '../qrcode/dtos/qrcode.dto'
 import {
   ResponseActiveInstallmentDto,
   ResponseCommunalWasteTaxDetailItemizedDto,
@@ -21,29 +22,28 @@ import {
   ResponseOneTimePaymentDetailsDto,
   ResponseRealEstateTaxDetailItemizedDto,
 } from '../tax/dtos/response.tax.dto'
-import { QrCodeGeneratorDto } from '../utils/subservices/dtos/qrcode.dto'
 
 export type ReplaceQrCodeWithGeneratorDto<T extends object> = {
   [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
 }
 
 // Central type mapping - single source of truth
-export type TaxTypeToNorisData = {
+export interface TaxTypeToNorisData {
   [TaxType.DZN]: NorisRealEstateTax
   [TaxType.KO]: NorisCommunalWasteTaxGrouped
 }
 
-export type TaxTypeToTaxDetail = {
+export interface TaxTypeToTaxDetail {
   [TaxType.DZN]: RealEstateTaxDetail
   [TaxType.KO]: CommunalWasteTaxDetail
 }
 
-export type TaxTypeToResponseDetailItemizedDto = {
+export interface TaxTypeToResponseDetailItemizedDto {
   [TaxType.DZN]: ResponseRealEstateTaxDetailItemizedDto
   [TaxType.KO]: ResponseCommunalWasteTaxDetailItemizedDto
 }
 
-export type GetTaxDetailPureOptions<TTaxType extends TaxType> = {
+export interface GetTaxDetailPureOptions<TTaxType extends TaxType> {
   type: TTaxType
   taxYear: number // daňový rok
   today: Date // aktuálny dátum
@@ -62,7 +62,7 @@ export type GetTaxDetailPureOptions<TTaxType extends TaxType> = {
   isCancelled: boolean
 }
 
-export type GetTaxDetailPureResponse<TTaxType extends TaxType> = {
+export interface GetTaxDetailPureResponse<TTaxType extends TaxType> {
   overallPaid: number
   overallBalance: number
   overallAmount: number
@@ -76,7 +76,7 @@ export type GetTaxDetailPureResponse<TTaxType extends TaxType> = {
   itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType]
 }
 
-export type TaxDefinition<TTaxType extends TaxType> = {
+export interface TaxDefinition<TTaxType extends TaxType> {
   /** Type of tax (DZN, KO, ...) */
   type: TTaxType
 

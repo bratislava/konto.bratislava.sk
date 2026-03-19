@@ -60,7 +60,7 @@ export class CityAccountSubservice {
 
   async getUserDataAdminBatch(
     birthNumbers: string[],
-  ): Promise<Record<string, ResponseUserByBirthNumberDto>> {
+  ): Promise<Partial<Record<string, ResponseUserByBirthNumberDto>>> {
     const birthNumbersWithoutSlash = birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', ''),
     )

@@ -292,6 +292,7 @@ export class PaymentService {
             currentStatus === PaymentStatus.NEW ? PaymentStatus.FAIL : undefined
           break
 
+        case 'KEEP_CURRENT':
         default:
           break
       }
@@ -334,7 +335,7 @@ export class PaymentService {
 
       if (nextStatus === PaymentStatus.SUCCESS) {
         const user = await this.retryService.retryWithDelay(
-          () =>
+          async () =>
             this.cityAccountSubservice.getUserDataAdmin(
               taxPaymentWithTax.tax.taxPayer.birthNumber,
             ),

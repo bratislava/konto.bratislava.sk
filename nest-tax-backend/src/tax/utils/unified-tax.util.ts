@@ -4,6 +4,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
+import { QrPaymentNoteEnum } from '../../qrcode/dtos/qrcode.dto'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import {
   GetTaxDetailPureOptions,
@@ -12,7 +13,6 @@ import {
   TaxTypeToResponseDetailItemizedDto,
 } from '../../tax-definitions/taxDefinitionsTypes'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { QrPaymentNoteEnum } from '../../utils/subservices/dtos/qrcode.dto'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -40,7 +40,7 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
-export const stateHolidays: Record<number, { dates: Dayjs[] }> = {
+export const stateHolidays: Partial<Record<number, { dates: Dayjs[] }>> = {
   2023: {
     dates: [
       dayjs.tz('2023-01-01', bratislavaTimeZone),
@@ -152,8 +152,7 @@ export const stateHolidays: Record<number, { dates: Dayjs[] }> = {
   },
 }
 
-const dueDateOffsetPostEdesk = 21
-const dueDateOffsetCityAccount = 16
+export const DUE_DATE_OFFSET = 15
 
 const isStateHoliday = (date: Dayjs): boolean => {
   const year = date.year()
@@ -194,7 +193,7 @@ const calculateDueDate = (
     const dueDateBase = createdAt
       .tz(bratislavaTimeZone)
       .startOf('day')
-      .add(dueDateOffsetCityAccount, 'day')
+      .add(DUE_DATE_OFFSET, 'day')
     return ensureWorkingDay(dueDateBase)
   }
 
@@ -207,7 +206,7 @@ const calculateDueDate = (
   const dueDateBase = dateOfValidity
     .tz(bratislavaTimeZone)
     .startOf('day')
-    .add(dueDateOffsetPostEdesk, 'day')
+    .add(DUE_DATE_OFFSET, 'day')
   return ensureWorkingDay(dueDateBase)
 }
 
@@ -322,6 +321,11 @@ const calculateInstallmentStatus = (
   return result
 }
 
+export const parseInstallmentDueDate = (
+  taxYear: number,
+  dateString: string,
+): Dayjs => dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
+
 const calculateInstallmentPaymentDetails = (options: {
   overallAmount: number
   overallPaid: number
@@ -359,9 +363,6 @@ const calculateInstallmentPaymentDetails = (options: {
 
   // Calculate due dates for all installments
   // First installment due date is calculated from dateOfValidity (may be undefined)
-  const parseInstallmentDueDate = (dateString: string): Dayjs =>
-    dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
-
   const installmentDueDatesParsed: [
     dayjs.Dayjs | undefined,
     dayjs.Dayjs,
@@ -371,16 +372,17 @@ const calculateInstallmentPaymentDetails = (options: {
     // First installment due date is calculated from dateOfValidity
     dueDate,
     // Second installment:
-    parseInstallmentDueDate(installmentDueDates.second),
+    parseInstallmentDueDate(taxYear, installmentDueDates.second),
     // Third installment:
-    parseInstallmentDueDate(installmentDueDates.third),
+    parseInstallmentDueDate(taxYear, installmentDueDates.third),
     // Fourth installment (if exists):
     ...(installmentDueDates.fourth
-      ? [parseInstallmentDueDate(installmentDueDates.fourth)]
+      ? [parseInstallmentDueDate(taxYear, installmentDueDates.fourth)]
       : []),
   ]
 
-  const dueDateLastPayment = installmentDueDatesParsed.at(-1)
+  const dueDateLastPayment =
+    installmentDueDatesParsed[installmentDueDatesParsed.length - 1]
   if (!dueDateLastPayment) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
@@ -739,6 +741,13 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
           CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
         )
 
+      case InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
+          CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
+        )
+
+      case undefined:
       default:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,

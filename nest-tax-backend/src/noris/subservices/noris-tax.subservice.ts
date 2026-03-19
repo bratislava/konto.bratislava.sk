@@ -13,7 +13,7 @@ import {
 import { NorisTaxCommunalWasteSubservice } from './noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from './noris-tax/noris-tax.real-estate.subservice'
 
-type TaxTypeToNorisSubservice = {
+interface TaxTypeToNorisSubservice {
   [TaxType.DZN]: NorisTaxRealEstateSubservice
   [TaxType.KO]: NorisTaxCommunalWasteSubservice
 }
@@ -36,14 +36,7 @@ export class NorisTaxSubservice {
   private getImplementationByType<TTaxType extends TaxType>(
     taxType: TTaxType,
   ): TaxTypeToNorisSubservice[TTaxType] {
-    const service = this.subservices[taxType]
-    if (!service) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Implementation for tax type ${taxType} not found`,
-      )
-    }
-    return service
+    return this.subservices[taxType]
   }
 
   async processNorisTaxData<TTaxType extends TaxType>(

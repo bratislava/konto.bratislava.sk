@@ -4,11 +4,11 @@ import { User } from '../types/user'
 
 export const GetUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest()
+    const request = ctx.switchToHttp().getRequest<{ user?: User }>()
     if (!request.user) {
       throw new Error('User not found in request')
     }
 
-    return request.user as User
+    return request.user
   },
 )

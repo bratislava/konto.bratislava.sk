@@ -91,8 +91,8 @@ import ziadostOUzemnoplanovaciuInformaciu, {
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 import webhookShowcase from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
-  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
   nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
+  nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
@@ -226,7 +226,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'ziadost-o-najom-bytu',
     title: 'Žiadosť o nájom bytu',
-    jsonVersion: '2.0.0',
+    jsonVersion: '2.0.1',
     schema: ziadostONajomBytu,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedNotVerified,
     // pospID contains different wording because the original form was created with a different name
@@ -635,7 +635,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
     title: 'Nahlásenie podnetu k elektrickým kolobežkám',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: nahlaseniePodnetuKElektrickymKolobezkam,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     subject: {

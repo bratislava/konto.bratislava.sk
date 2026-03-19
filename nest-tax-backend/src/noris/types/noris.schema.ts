@@ -34,6 +34,7 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
   vyb_telefon_prace: z.string().nullable(),
   vyb_email: z.string().nullable(),
   vyb_id: z.number().nullable(),
+  forma_uhrady: z.enum(['P', 'I', 'H', 'Z', 'S']).nullable(), // We only care about I - Inkaso
 })
 
 export const NorisTaxPaymentSchema = z.object({
@@ -57,7 +58,6 @@ export const NorisCommunalWasteTaxSchema = NorisBaseTaxSchema.extend({
   orientacne_cislo: z.string().nullable(),
 })
 
-// eslint-disable-next-line no-secrets/no-secrets
 /**
  * NorisCommunalWasteTaxGroupedSchema is an extended schema based on
  * NorisBaseTaxSchema and incorporates the structure defined in

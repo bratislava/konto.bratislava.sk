@@ -38,7 +38,6 @@ export default class NasesCronSubservice {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @HandleErrors('CronError')
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   async validateFormRegistrations(): Promise<ValidateFormRegistrationsResultDto> {
     const result: ValidateFormRegistrationsResultDto = {
       'not-found': [],
@@ -102,7 +101,9 @@ export default class NasesCronSubservice {
                 },
               },
             )
-          await (validated.data.status === FormRegistrationStatus.PUBLISHED
+          // TODO open an issue in slovensko.sk to make the type of status response an enum
+          await (validated.data.status ===
+          FormRegistrationStatus.PUBLISHED.toString()
             ? addToResult('valid', formDefinition, true)
             : addToResult('not-published', formDefinition, false))
         } catch (error) {

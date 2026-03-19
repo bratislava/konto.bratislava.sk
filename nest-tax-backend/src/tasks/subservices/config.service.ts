@@ -29,9 +29,7 @@ export default class TasksConfigSubservice {
     )
   }
 
-  async incrementOverpaymentsLookbackDays(
-    incrementBy: number = 1,
-  ): Promise<void> {
+  async incrementOverpaymentsLookbackDays(incrementBy = 1): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
       const config = await tx.config.findFirst({
         where: { key: OVERPAYMENTS_LOOKBACK_DAYS },

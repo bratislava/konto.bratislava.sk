@@ -86,7 +86,7 @@ export default class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('check-form-registrations-in-nases')
-  checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
+  async checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
     return this.nasesCronSubservice.validateFormRegistrations()
   }
 }

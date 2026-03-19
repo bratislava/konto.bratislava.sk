@@ -57,9 +57,8 @@ export default class FilesHelper {
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList: string = <string>(
-      this.configService.get(`MIMETYPE_WHITELIST`)
-    )
+    const mimeTypeList =
+      this.configService.getOrThrow<string>(`MIMETYPE_WHITELIST`)
     this.supportedMimeTypes = mimeTypeList.split(' ')
   }
 
@@ -255,7 +254,7 @@ export default class FilesHelper {
   }
 
   async checkInfectedFiles(formId: string): Promise<boolean> {
-    const infectedFiles: Array<Files> = await this.prisma.files.findMany({
+    const infectedFiles: Files[] = await this.prisma.files.findMany({
       where: {
         formId,
         status: {
@@ -278,7 +277,7 @@ export default class FilesHelper {
   }
 
   async areErrorFilesInForm(formId: string): Promise<boolean> {
-    const errorFiles: Array<Files> = await this.prisma.files.findMany({
+    const errorFiles: Files[] = await this.prisma.files.findMany({
       where: {
         formId,
         status: {
@@ -383,13 +382,13 @@ export default class FilesHelper {
   // optional status
   getBucketUid(status?: string): string {
     if (status === 'SAFE') {
-      return <string>this.configService.get('MINIO_SAFE_BUCKET')
+      return this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET')
     }
     if (status === 'INFECTED') {
-      return <string>this.configService.get('MINIO_INFECTED_BUCKET')
+      return this.configService.getOrThrow<string>('MINIO_INFECTED_BUCKET')
     }
 
-    return <string>this.configService.get('MINIO_UNSCANNED_BUCKET')
+    return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
   }
 
   forms2formInfo(form: Forms): FormInfo {
@@ -418,6 +417,7 @@ export default class FilesHelper {
 
   createMinioFileName(file: BufferedFileDto, fileName: string): string {
     const timestamp = Date.now().toString()
+    // eslint-disable-next-line sonarjs/hashing -- this is not used in a sensitive context
     const hash = createHash('sha1').update(timestamp).digest('hex').slice(0, 8)
     const extension = file.originalname.slice(
       file.originalname.lastIndexOf('.'),

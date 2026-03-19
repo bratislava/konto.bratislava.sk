@@ -1,6 +1,6 @@
 import { JSONSchema7Definition } from 'json-schema'
 
-export type PdfPreviewJwtPayload = {
+export interface PdfPreviewJwtPayload {
   uuid: string
 }
 

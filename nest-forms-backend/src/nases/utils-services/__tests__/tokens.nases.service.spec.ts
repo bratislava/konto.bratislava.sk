@@ -35,10 +35,9 @@ jest.mock('uuid', () => ({
 
 const createMockReadableStream = (content: string): Readable => {
   const readableStream = new Readable()
-  // eslint-disable-next-line no-underscore-dangle
+
   readableStream._read = () => {}
   readableStream.push(content)
-  // eslint-disable-next-line unicorn/no-array-push-push
   readableStream.push(null)
   return readableStream
 }
@@ -50,7 +49,7 @@ describe('NasesUtilsService', () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
       imports: [
-        ConfigModule.forFeature(async () => ({
+        ConfigModule.forFeature(() => ({
           NASES_SENDER_URI: 'example_sender',
           NASES_RECIPIENT_URI: 'example_recipient',
           MINIO_SAFE_BUCKET: '',
@@ -151,7 +150,7 @@ describe('NasesUtilsService', () => {
 
       service['minioClientSubservice'].loadFileStream = jest
         .fn()
-        .mockImplementation(async (_: string, filename: string) =>
+        .mockImplementation((_: string, filename: string) =>
           createMockReadableStream(`test string for input: ${filename}`),
         )
 
@@ -161,7 +160,7 @@ describe('NasesUtilsService', () => {
 
       service['convertService'].generatePdf = jest
         .fn()
-        .mockImplementation(async () =>
+        .mockImplementation(() =>
           createMockReadableStream('Summary PDF content with form details'),
         )
 
@@ -189,7 +188,6 @@ describe('NasesUtilsService', () => {
             pospID: 'esmao.eforms.bratislava.obec_024',
             pospVersion: '1.0',
             jsonVersion: '1.0',
-            // eslint-disable-next-line xss/no-mixed-html
             signatureBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
             formDataHash: '',
           },
@@ -206,14 +204,12 @@ describe('NasesUtilsService', () => {
 
       const parser = new Parser()
       const builder = new Builder({
-        // eslint-disable-next-line unicorn/text-encoding-identifier-case
         xmldec: { version: '1.0', encoding: 'UTF-8' },
         renderOpts: {
           pretty: false,
         },
       })
 
-      /* eslint-disable no-secrets/no-secrets */
       let xmlExample = builder.buildObject(
         await parser.parseStringPromise(
           `<?xml version="1.0" encoding="UTF-8"?>\n` +
@@ -245,7 +241,6 @@ describe('NasesUtilsService', () => {
             `    </SKTalkMessage>`,
         ),
       )
-      /* eslint-enable no-secrets/no-secrets */
 
       expect(returnXmlString).toBe(xmlExample)
 
@@ -288,9 +283,7 @@ describe('NasesUtilsService', () => {
         { type: SendMessageNasesSenderType.Self },
       )
 
-      /* eslint-disable no-secrets/no-secrets */
       xmlExample = builder.buildObject(
-        // eslint-disable-next-line xss/no-mixed-html
         await parser.parseStringPromise(
           `<?xml version="1.0" encoding="UTF-8"?>\n` +
             `    <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n` +
@@ -324,7 +317,6 @@ describe('NasesUtilsService', () => {
             `    </SKTalkMessage>`,
         ),
       )
-      /* eslint-enable no-secrets/no-secrets */
 
       expect(returnXmlString).toBe(xmlExample)
     })

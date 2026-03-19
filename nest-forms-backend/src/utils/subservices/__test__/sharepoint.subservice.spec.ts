@@ -61,7 +61,7 @@ describe('SharepointSubservice', () => {
     service = module.get<SharepointSubservice>(SharepointSubservice)
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.resetAllMocks()
   })
 
@@ -73,7 +73,7 @@ describe('SharepointSubservice', () => {
     it('should just post new record', async () => {
       const spy = jest
         .spyOn(service, 'postNewRecord')
-        .mockImplementation(async () => {})
+        .mockImplementation(async () => Promise.resolve())
       await service.transcode({ data: { formId: 'formIdValue' } } as Bull.Job<{
         formId: string
       }>)
@@ -210,7 +210,7 @@ describe('SharepointSubservice', () => {
           columns.forEach((column) => {
             result[column] = `${column}_val`
           })
-          return result
+          return Promise.resolve(result)
         },
       )
       const result = await service['getAllFieldsMappings'](
@@ -369,7 +369,7 @@ describe('SharepointSubservice', () => {
           columns.forEach((column) => {
             result[column] = `${column}_val`
           })
-          return result
+          return Promise.resolve(result)
         },
       )
       const getValuesSpy = jest

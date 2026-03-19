@@ -123,8 +123,6 @@ export default class TaxImportHelperService {
     // In the preparation phase: find users without any attempt record (not yet prepared)
     // In the import phase: prioritize users with READY_TO_IMPORT status
     let existingTaxPayers: { birthNumber: string }[]
-
-    // eslint-disable-next-line unicorn/prefer-ternary
     if (isImportPhase) {
       existingTaxPayers = await this.prismaService.$queryRaw<
         { birthNumber: string }[]

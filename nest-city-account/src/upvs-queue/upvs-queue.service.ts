@@ -147,6 +147,7 @@ export class UpvsQueueService {
             edeskStatus: item.data.upvs?.edesk_status ?? null,
             edeskNumber: item.data.upvs?.edesk_number ?? null,
             processedAt: new Date(),
+            newUri: item.inputUri !== item.data.uri ? item.data.uri : undefined,
           },
         })
       })

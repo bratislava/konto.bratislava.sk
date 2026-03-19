@@ -1,8 +1,13 @@
 // @ts-check
 import { withPlausibleProxy } from 'next-plausible'
-import i18nextConfig from './next-i18next.config'
+import i18nextConfig from './next-i18next.config.js'
 import path from 'node:path'
 import withBundleAnalyzer from '@next/bundle-analyzer'
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -13,7 +18,7 @@ const bundleAnalyzer = withBundleAnalyzer({
  * */
 const nextConfig = {
   experimental: {
-    adapterPath: require.resolve('./next-iframe-resizer-adapter.mjs'),
+    adapterPath: resolve(__dirname, './next-iframe-resizer-adapter.mjs'),
   },
   i18n: i18nextConfig.i18n,
   reactStrictMode: true,

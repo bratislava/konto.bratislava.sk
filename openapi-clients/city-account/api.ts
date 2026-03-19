@@ -34,6 +34,19 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
+/**
+ * Status of the anonymization of user in bloomreach
+ */
+
+export const AnonymizeResponse = {
+  NotFound: 'NOT_FOUND',
+  NotActive: 'NOT_ACTIVE',
+  Error: 'ERROR',
+  Success: 'SUCCESS',
+} as const
+
+export type AnonymizeResponse = (typeof AnonymizeResponse)[keyof typeof AnonymizeResponse]
+
 export interface ChangeEmailRequestDto {
   /**
    * New email for a user
@@ -70,7 +83,7 @@ export interface CognitoGetUserData {
   /**
    * Which type of account it is?
    */
-  'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
+  'custom:account_type': CognitoUserAccountTypesEnum
   /**
    * client_id of the oAuth origin
    */
@@ -123,14 +136,6 @@ export const CognitoGetUserDataCustomTierEnum = {
 
 export type CognitoGetUserDataCustomTierEnum =
   (typeof CognitoGetUserDataCustomTierEnum)[keyof typeof CognitoGetUserDataCustomTierEnum]
-export const CognitoGetUserDataCustomAccountTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type CognitoGetUserDataCustomAccountTypeEnum =
-  (typeof CognitoGetUserDataCustomAccountTypeEnum)[keyof typeof CognitoGetUserDataCustomAccountTypeEnum]
 export const CognitoGetUserDataUserStatusEnum = {
   Archived: 'ARCHIVED',
   Compromised: 'COMPROMISED',
@@ -145,18 +150,51 @@ export type CognitoGetUserDataUserStatusEnum =
   (typeof CognitoGetUserDataUserStatusEnum)[keyof typeof CognitoGetUserDataUserStatusEnum]
 
 /**
- * Account type from Cognito
+ * Which type of account it is?
  */
 
-export const ContactAndIdInfoTypeEnum = {
+export const CognitoUserAccountTypesEnum = {
   Fo: 'fo',
   Po: 'po',
   FoP: 'fo-p',
 } as const
 
-export type ContactAndIdInfoTypeEnum =
-  (typeof ContactAndIdInfoTypeEnum)[keyof typeof ContactAndIdInfoTypeEnum]
+export type CognitoUserAccountTypesEnum =
+  (typeof CognitoUserAccountTypesEnum)[keyof typeof CognitoUserAccountTypesEnum]
 
+/**
+ * Current cognito tier, marks the status of verifying.
+ */
+
+export const CognitoUserAttributesTierEnum = {
+  New: 'NEW',
+  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
+  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
+  IdentityCard: 'IDENTITY_CARD',
+  Eid: 'EID',
+} as const
+
+export type CognitoUserAttributesTierEnum =
+  (typeof CognitoUserAttributesTierEnum)[keyof typeof CognitoUserAttributesTierEnum]
+
+export interface DPBUserLoginStatistics {
+  /**
+   * Number of times the user has logged in
+   */
+  loginCount: number
+  /**
+   * Date of first login
+   */
+  firstLogin: string
+  /**
+   * Date of latest login
+   */
+  latestLogin: string
+  /**
+   * User ID
+   */
+  id: string | null
+}
 export interface DeactivateAccountResponseDto {
   /**
    * Marks if the operation has been successful
@@ -165,22 +203,12 @@ export interface DeactivateAccountResponseDto {
   /**
    * Status of the anonymization of user in bloomreach
    */
-  bloomreachRemoved: DeactivateAccountResponseDtoBloomreachRemovedEnum
+  bloomreachRemoved: AnonymizeResponse
   /**
    * Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.
    */
   taxDeliveryMethodsRemoved: boolean
 }
-
-export const DeactivateAccountResponseDtoBloomreachRemovedEnum = {
-  NotFound: 'NOT_FOUND',
-  NotActive: 'NOT_ACTIVE',
-  Error: 'ERROR',
-  Success: 'SUCCESS',
-} as const
-
-export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
-  (typeof DeactivateAccountResponseDtoBloomreachRemovedEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedEnum]
 
 export interface DpbUserDto {
   /**
@@ -198,7 +226,7 @@ export interface DpbUserDto {
   /**
    * Account type
    */
-  account_type: DpbUserDtoAccountTypeEnum
+  account_type: CognitoUserAccountTypesEnum
   /**
    * Name (usually company name for legal entities)
    */
@@ -212,15 +240,6 @@ export interface DpbUserDto {
    */
   family_name?: string
 }
-
-export const DpbUserDtoAccountTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type DpbUserDtoAccountTypeEnum =
-  (typeof DpbUserDtoAccountTypeEnum)[keyof typeof DpbUserDtoAccountTypeEnum]
 
 /**
  * Type of Gdpr category
@@ -297,7 +316,7 @@ export interface LegalPersonContactAndIdInfoResponseDto {
   /**
    * Account type from Cognito
    */
-  accountType: ContactAndIdInfoTypeEnum
+  accountType: CognitoUserAccountTypesEnum
   /**
    * Email address
    */
@@ -446,6 +465,43 @@ export interface OnlySuccessDto {
    */
   success: boolean
 }
+export interface PaasMpaRegisterRequestDto {
+  /**
+   * Phone number received from MPA
+   */
+  phoneNumber: string
+}
+export interface PaasMpaRegisterResponseDto {
+  /**
+   * Result of PAAS-MPA Bloomreach registration attempt
+   */
+  status: PaasMpaRegisterStatusEnum
+  /**
+   * Current verification tier of the authenticated user
+   */
+  verificationState?: CognitoUserAttributesTierEnum
+  /**
+   * Bloomreach hard ID (`contact_id`) for the user
+   */
+  bloomreachContactId?: string
+}
+
+/**
+ * Result of PAAS-MPA Bloomreach registration attempt
+ */
+
+export const PaasMpaRegisterStatusEnum = {
+  Success: 'SUCCESS',
+  NotVerified: 'NOT_VERIFIED',
+  IdentifiersNotFound: 'IDENTIFIERS_NOT_FOUND',
+  BloomreachContactIdUnavailable: 'BLOOMREACH_CONTACT_ID_UNAVAILABLE',
+  BloomreachSyncFailed: 'BLOOMREACH_SYNC_FAILED',
+  UnexpectedError: 'UNEXPECTED_ERROR',
+} as const
+
+export type PaasMpaRegisterStatusEnum =
+  (typeof PaasMpaRegisterStatusEnum)[keyof typeof PaasMpaRegisterStatusEnum]
+
 export interface RefreshTokenRequestDto {
   /**
    * Grant type, must be \"refresh_token\"
@@ -545,34 +601,8 @@ export interface ResponseCustomErrorVerificationEidDto {
   /**
    * Error name for decoding.
    */
-  errorName: ResponseCustomErrorVerificationEidDtoErrorNameEnum
+  errorName: VerificationErrorsEnum
 }
-
-export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
-} as const
-
-export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
-  (typeof ResponseCustomErrorVerificationEidDtoErrorNameEnum)[keyof typeof ResponseCustomErrorVerificationEidDtoErrorNameEnum]
 
 export interface ResponseCustomErrorVerificationIdentityCardDto {
   /**
@@ -586,34 +616,8 @@ export interface ResponseCustomErrorVerificationIdentityCardDto {
   /**
    * Error name for decoding.
    */
-  errorName: ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum
+  errorName: VerificationErrorsEnum
 }
-
-export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
-} as const
-
-export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
-  (typeof ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum)[keyof typeof ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum]
 
 export interface ResponseGdprLegalPersonDataDto {
   /**
@@ -867,34 +871,20 @@ export interface ResponseVerificationDto {
   /**
    * Error if exists
    */
-  errorName?: ResponseVerificationDtoErrorNameEnum
+  errorName?: VerificationErrorsEnum
 }
 
-export const ResponseVerificationDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
+/**
+ * Message about update
+ */
+
+export const ResponseVerificationIdentityCardMessageEnum = {
+  SendToQueue: 'SendToQueue',
+  AlreadyVerified: 'AlreadyVerified',
 } as const
 
-export type ResponseVerificationDtoErrorNameEnum =
-  (typeof ResponseVerificationDtoErrorNameEnum)[keyof typeof ResponseVerificationDtoErrorNameEnum]
+export type ResponseVerificationIdentityCardMessageEnum =
+  (typeof ResponseVerificationIdentityCardMessageEnum)[keyof typeof ResponseVerificationIdentityCardMessageEnum]
 
 export interface ResponseVerificationIdentityCardToQueueDto {
   /**
@@ -908,45 +898,12 @@ export interface ResponseVerificationIdentityCardToQueueDto {
   /**
    * Message about update
    */
-  message: ResponseVerificationIdentityCardToQueueDtoMessageEnum
+  message: ResponseVerificationIdentityCardMessageEnum
   /**
    * Error if exists
    */
-  errorName?: ResponseVerificationIdentityCardToQueueDtoErrorNameEnum
+  errorName?: VerificationErrorsEnum
 }
-
-export const ResponseVerificationIdentityCardToQueueDtoMessageEnum = {
-  SendToQueue: 'SendToQueue',
-  AlreadyVerified: 'AlreadyVerified',
-} as const
-
-export type ResponseVerificationIdentityCardToQueueDtoMessageEnum =
-  (typeof ResponseVerificationIdentityCardToQueueDtoMessageEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoMessageEnum]
-export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
-} as const
-
-export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
-  (typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum]
 
 export interface StoreTokensRequestDto {
   /**
@@ -1050,7 +1007,7 @@ export interface UserContactAndIdInfoResponseDto {
   /**
    * Account type from Cognito
    */
-  accountType: ContactAndIdInfoTypeEnum
+  accountType: CognitoUserAccountTypesEnum
   /**
    * Email address
    */
@@ -1112,7 +1069,7 @@ export interface UserVerifyState {
   /**
    * Type of user.
    */
-  type?: UserVerifyStateTypeEnum
+  type?: CognitoUserAccountTypesEnum
   /**
    * Marks if the user with given email is in database.
    */
@@ -1124,7 +1081,7 @@ export interface UserVerifyState {
   /**
    * Current cognito tier, marks the status of verifying.
    */
-  cognitoTier?: UserVerifyStateCognitoTierEnum
+  cognitoTier?: CognitoUserAttributesTierEnum
   /**
    * If set, then this number was used for verifying, but is already in our database for other user.
    */
@@ -1142,25 +1099,6 @@ export interface UserVerifyState {
    */
   possibleCause?: string
 }
-
-export const UserVerifyStateTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type UserVerifyStateTypeEnum =
-  (typeof UserVerifyStateTypeEnum)[keyof typeof UserVerifyStateTypeEnum]
-export const UserVerifyStateCognitoTierEnum = {
-  New: 'NEW',
-  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
-  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
-  IdentityCard: 'IDENTITY_CARD',
-  Eid: 'EID',
-} as const
-
-export type UserVerifyStateCognitoTierEnum =
-  (typeof UserVerifyStateCognitoTierEnum)[keyof typeof UserVerifyStateCognitoTierEnum]
 
 export interface VerificationDataForUser {
   /**
@@ -1198,6 +1136,35 @@ export interface VerificationDataForUserResponseDto {
    */
   verificationDataLastMonth: Array<VerificationDataForUser>
 }
+/**
+ * Error if exists
+ */
+
+export const VerificationErrorsEnum = {
+  RfoAccessError: 'RFO_ACCESS_ERROR',
+  RpoAccessError: 'RPO_ACCESS_ERROR',
+  RfoNotResponding: 'RFO_NOT_RESPONDING',
+  RpoNotResponding: 'RPO_NOT_RESPONDING',
+  DeadPerson: 'DEAD_PERSON',
+  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
+  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
+  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
+  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
+  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
+  DatabaseError: 'DATABASE_ERROR',
+  InvalidCaptcha: 'INVALID_CAPTCHA',
+  VerifyEidError: 'VERIFY_EID_ERROR',
+  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
+  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
+  IcoNotProvided: 'ICO_NOT_PROVIDED',
+  IfoNotProvided: 'IFO_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
+} as const
+
+export type VerificationErrorsEnum =
+  (typeof VerificationErrorsEnum)[keyof typeof VerificationErrorsEnum]
 
 /**
  * ADMINApi - axios parameter creator
@@ -1868,119 +1835,6 @@ export class ADMINApi extends BaseAPI {
 }
 
 /**
- * AppApi - axios parameter creator
- */
-export const AppApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    appControllerHealthCheck: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/healthcheck`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * AppApi - functional programming interface
- */
-export const AppApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = AppApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async appControllerHealthCheck(
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealthCheck(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['AppApi.appControllerHealthCheck']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * AppApi - factory interface
- */
-export const AppApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = AppApiFp(configuration)
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    appControllerHealthCheck(options?: RawAxiosRequestConfig): AxiosPromise<string> {
-      return localVarFp
-        .appControllerHealthCheck(options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * AppApi - object-oriented interface
- */
-export class AppApi extends BaseAPI {
-  /**
-   * See if app is working!
-   * @summary HealthCheck
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
-    return AppApiFp(this.configuration)
-      .appControllerHealthCheck(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
  * AuthApi - axios parameter creator
  */
 export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -2493,6 +2347,60 @@ export class BackendIntegrationAPIApi extends BaseAPI {
 export const DPBApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
+     * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+     * @summary List all user logins for DPB
+     * @param {string} xTimestamp Unix timestamp in milliseconds
+     * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerListUserLogins: async (
+      xTimestamp: string,
+      xSignature: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'xTimestamp' is not null or undefined
+      assertParamExists('dpbControllerListUserLogins', 'xTimestamp', xTimestamp)
+      // verify required parameter 'xSignature' is not null or undefined
+      assertParamExists('dpbControllerListUserLogins', 'xSignature', xSignature)
+      const localVarPath = `/dpb/list-user-logins`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      if (xTimestamp != null) {
+        localVarHeaderParameter['X-Timestamp'] = String(xTimestamp)
+      }
+      if (xSignature != null) {
+        localVarHeaderParameter['X-Signature'] = String(xSignature)
+      }
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Returns user data for the authenticated user
      * @summary Get user data
      * @param {*} [options] Override http request option.
@@ -2540,6 +2448,38 @@ export const DPBApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DPBApiAxiosParamCreator(configuration)
   return {
     /**
+     * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+     * @summary List all user logins for DPB
+     * @param {string} xTimestamp Unix timestamp in milliseconds
+     * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async dpbControllerListUserLogins(
+      xTimestamp: string,
+      xSignature: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DPBUserLoginStatistics>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.dpbControllerListUserLogins(
+        xTimestamp,
+        xSignature,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DPBApi.dpbControllerListUserLogins']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Returns user data for the authenticated user
      * @summary Get user data
      * @param {*} [options] Override http request option.
@@ -2574,6 +2514,23 @@ export const DPBApiFactory = function (
   const localVarFp = DPBApiFp(configuration)
   return {
     /**
+     * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+     * @summary List all user logins for DPB
+     * @param {string} xTimestamp Unix timestamp in milliseconds
+     * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerListUserLogins(
+      xTimestamp: string,
+      xSignature: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<DPBUserLoginStatistics>> {
+      return localVarFp
+        .dpbControllerListUserLogins(xTimestamp, xSignature, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Returns user data for the authenticated user
      * @summary Get user data
      * @param {*} [options] Override http request option.
@@ -2590,6 +2547,24 @@ export const DPBApiFactory = function (
  */
 export class DPBApi extends BaseAPI {
   /**
+   * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+   * @summary List all user logins for DPB
+   * @param {string} xTimestamp Unix timestamp in milliseconds
+   * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public dpbControllerListUserLogins(
+    xTimestamp: string,
+    xSignature: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DPBApiFp(this.configuration)
+      .dpbControllerListUserLogins(xTimestamp, xSignature, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * Returns user data for the authenticated user
    * @summary Get user data
    * @param {*} [options] Override http request option.
@@ -2598,6 +2573,120 @@ export class DPBApi extends BaseAPI {
   public dpbControllerUserData(options?: RawAxiosRequestConfig) {
     return DPBApiFp(this.configuration)
       .dpbControllerUserData(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * DefaultApi - axios parameter creator
+ */
+export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerHealthCheck: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/healthcheck`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * DefaultApi - functional programming interface
+ */
+export const DefaultApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async appControllerHealthCheck(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealthCheck(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.appControllerHealthCheck']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * DefaultApi - factory interface
+ */
+export const DefaultApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = DefaultApiFp(configuration)
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerHealthCheck(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .appControllerHealthCheck(options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * DefaultApi - object-oriented interface
+ */
+export class DefaultApi extends BaseAPI {
+  /**
+   * See if app is working!
+   * @summary HealthCheck
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
+    return DefaultApiFp(this.configuration)
+      .appControllerHealthCheck(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -3261,6 +3350,155 @@ export const OAuth2ControllerAuthorizeCodeChallengeMethodEnum = {
 } as const
 export type OAuth2ControllerAuthorizeCodeChallengeMethodEnum =
   (typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum)[keyof typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum]
+
+/**
+ * PAASMPAApi - axios parameter creator
+ */
+export const PAASMPAApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+     * @summary Register phone number for a verified user in Bloomreach
+     * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paasMpaControllerRegister: async (
+      paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'paasMpaRegisterRequestDto' is not null or undefined
+      assertParamExists(
+        'paasMpaControllerRegister',
+        'paasMpaRegisterRequestDto',
+        paasMpaRegisterRequestDto,
+      )
+      const localVarPath = `/paas-mpa/register`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        paasMpaRegisterRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * PAASMPAApi - functional programming interface
+ */
+export const PAASMPAApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = PAASMPAApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+     * @summary Register phone number for a verified user in Bloomreach
+     * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async paasMpaControllerRegister(
+      paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaasMpaRegisterResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.paasMpaControllerRegister(
+        paasMpaRegisterRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PAASMPAApi.paasMpaControllerRegister']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * PAASMPAApi - factory interface
+ */
+export const PAASMPAApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = PAASMPAApiFp(configuration)
+  return {
+    /**
+     * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+     * @summary Register phone number for a verified user in Bloomreach
+     * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paasMpaControllerRegister(
+      paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<PaasMpaRegisterResponseDto> {
+      return localVarFp
+        .paasMpaControllerRegister(paasMpaRegisterRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * PAASMPAApi - object-oriented interface
+ */
+export class PAASMPAApi extends BaseAPI {
+  /**
+   * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+   * @summary Register phone number for a verified user in Bloomreach
+   * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public paasMpaControllerRegister(
+    paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return PAASMPAApiFp(this.configuration)
+      .paasMpaControllerRegister(paasMpaRegisterRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
 
 /**
  * UserIntegrationApi - axios parameter creator
@@ -4052,7 +4290,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4115,7 +4353,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4432,7 +4670,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4466,7 +4704,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4642,7 +4880,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4661,7 +4899,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4786,7 +5024,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * unsubscribe any user by uuid with different categories of subscription
+   * Unsubscribe any user by uuid with different categories of subscription
    * @summary Unsubscribe user by uuid
    * @param {string} id
    * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4806,7 +5044,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * unsubscribe any user by external Id from cognito with different categories of subscription
+   * Unsubscribe any user by external Id from cognito with different categories of subscription
    * @summary Unsubscribe user by external Id
    * @param {string} id
    * @param {GDPRTypeEnum} type Type of Gdpr subscription

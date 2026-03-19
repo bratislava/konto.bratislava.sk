@@ -301,7 +301,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   async getAndProcessNorisTaxDataByBirthNumberAndYear(
     year: number,
     birthNumbers: string[],
-    options: RequestPostNorisLoadDataOptionsDto = { suppressEmail: false },
+    options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
     const taxDefinition = this.getTaxDefinition()

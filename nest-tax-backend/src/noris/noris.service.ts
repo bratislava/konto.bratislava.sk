@@ -49,7 +49,7 @@ export class NorisService {
     taxType: TaxType,
     year: number,
     birthNumbers: string[],
-    options: RequestPostNorisLoadDataOptionsDto = { suppressEmail: false },
+    options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     return this.taxSubservice.getAndProcessNorisTaxDataByBirthNumberAndYear(
       taxType,
@@ -71,7 +71,7 @@ export class NorisService {
     taxType: TaxType,
     norisData: NorisTax[],
     year: number,
-    options: RequestPostNorisLoadDataOptionsDto = { suppressEmail: false },
+    options: RequestPostNorisLoadDataOptionsDto,
   ) {
     return this.taxSubservice.processNorisTaxData(
       taxType,

@@ -50,7 +50,7 @@ export class NorisTaxSubservice {
     taxType: TTaxType,
     norisData: TaxTypeToNorisData[TTaxType][],
     year: number,
-    options: RequestPostNorisLoadDataOptionsDto = { suppressEmail: false },
+    options: RequestPostNorisLoadDataOptionsDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     // Use conditional branching to help TypeScript narrow types
     if (taxType === TaxType.DZN) {
@@ -80,7 +80,7 @@ export class NorisTaxSubservice {
     taxType: TaxType,
     year: number,
     birthNumbers: string[],
-    options: RequestPostNorisLoadDataOptionsDto = { suppressEmail: false },
+    options: RequestPostNorisLoadDataOptionsDto,
   ) {
     return this.getImplementationByType(
       taxType,

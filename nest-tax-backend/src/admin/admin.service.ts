@@ -47,6 +47,7 @@ export class AdminService {
       taxType,
       year,
       birthNumbers,
+      { suppressEmail: false },
     )
   }
 

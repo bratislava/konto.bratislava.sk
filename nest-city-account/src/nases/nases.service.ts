@@ -173,18 +173,11 @@ export class NasesService {
       matchedUris.add(unmatchedInput.uri)
     }
 
-    let possibleUriChanges: CreateManyResultFailed[] = []
-    if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
-      this.logger.warn({
-        message: `Failed to find input for URIs: ${unmatchedResults.map((r) => r.uri).join(', ')}`,
-        unmatchedInputUris: unmatchedInputs.map((input) => input.uri),
-      })
-      possibleUriChanges = unmatchedInputs.map((input) => ({
-        physicalEntityId: inputsByUri[input.uri]?.physicalEntityId,
-        inputUri: input.uri,
-        possibleUriChange: true,
-      }))
-    }
+    const possibleUriChanges = this.filterPossiblyChangedUris(
+      unmatchedResults,
+      unmatchedInputs,
+      inputsByUri
+    )
 
     const failedWithoutPossibleUriChanges = uniqueInputs
       .filter(
@@ -203,6 +196,26 @@ export class NasesService {
       success: resultDataSuccess,
       failed: resultDataFailed,
     }
+  }
+
+  private filterPossiblyChangedUris(
+    unmatchedResults: ApiIamIdentitiesIdGet200ResponseWithUri[],
+    unmatchedInputs: CreateManyParam,
+    inputsByUri: _.Dictionary<{ physicalEntityId?: string; uri: string }>
+  ) {
+    let possibleUriChanges: CreateManyResultFailed[] = []
+    if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
+      this.logger.warn({
+        message: `Failed to find input for URIs: ${unmatchedResults.map((r) => r.uri).join(', ')}`,
+        unmatchedInputUris: unmatchedInputs.map((input) => input.uri),
+      })
+      possibleUriChanges = unmatchedInputs.map((input) => ({
+        physicalEntityId: inputsByUri[input.uri]?.physicalEntityId,
+        inputUri: input.uri,
+        possibleUriChange: true,
+      }))
+    }
+    return possibleUriChanges
   }
 
   private matchDirectResults(

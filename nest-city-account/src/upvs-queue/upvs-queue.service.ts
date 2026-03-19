@@ -92,6 +92,7 @@ export class UpvsQueueService {
       return
     }
 
+    // If no individual URI requires update, we can continue with regular batch processing
     try {
       const { urgentItems, highPriorityItems, externalItems } = await this.getItemsByPriority()
 
@@ -108,8 +109,8 @@ export class UpvsQueueService {
 
       const upvsResult = await this.nasesService.createMany(createManyJoinedInput)
 
-      const externalUris = await this.handleSuccessfulUpdates(externalItems, upvsResult)
-
+      const externalUris = new Set(externalItems.map((item) => item.uri))
+      await this.handleSuccessfulUpdates(upvsResult, externalUris)
       await this.handleFailureCases(upvsResult, externalUris)
 
       // update result counters
@@ -126,13 +127,9 @@ export class UpvsQueueService {
     return
   }
 
-  private async handleSuccessfulUpdates(
-    externalItems: { physicalEntityId?: string; uri: string }[],
-    upvsResult: CreateManyResult
-  ) {
+  private async handleSuccessfulUpdates(upvsResult: CreateManyResult, externalUris: Set<string>) {
     // Success: separate urgent and high priority from external
     // Filters are not strict, because any potential overlap will not cause any issues
-    const externalUris = new Set(externalItems.map((item) => item.uri))
     const successInternal = upvsResult.success.filter((item) => !!item.physicalEntityId)
     const successExternal = upvsResult.success.filter((item) => externalUris.has(item.inputUri))
 
@@ -154,7 +151,6 @@ export class UpvsQueueService {
         })
       })
     )
-    return externalUris
   }
 
   private async getItemsByPriority() {

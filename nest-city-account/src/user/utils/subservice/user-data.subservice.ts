@@ -1,19 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-
-import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
-import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
-import {
-  ResponseGdprLegalPersonDataDto,
-  ResponseLegalPersonDataSimpleDto,
-} from '../../dtos/gdpr.legalperson.dto'
-import {
-  ResponseGdprUserDataDto,
-  UserOfficialCorrespondenceChannelEnum,
-} from '../../dtos/gdpr.user.dto'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { BloomreachService } from '../../../bloomreach/bloomreach.service'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 import {
   DeliveryMethodEnum,
   DeliveryMethodUserEnum,
@@ -25,10 +10,25 @@ import {
   Prisma,
   User,
 } from '@prisma/client'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
-import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
-import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+
+import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { DPBUserLoginStatistics } from '../../../dpb/dtos/user.dto'
+import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
+import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
+import {
+  ResponseGdprLegalPersonDataDto,
+  ResponseLegalPersonDataSimpleDto,
+} from '../../dtos/gdpr.legalperson.dto'
+import {
+  ResponseGdprUserDataDto,
+  UserOfficialCorrespondenceChannelEnum,
+} from '../../dtos/gdpr.user.dto'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 
 @Injectable()
 export class UserDataSubservice {
@@ -47,7 +47,7 @@ export class UserDataSubservice {
    * @param {CognitoGetUserData} cognitoUserData - The cognito user data.
    * @param {boolean} isAdminCall - Whether the call is made by an admin to bypass the deceased user check.
    */
-  async getOrCreateUser(cognitoUserData: CognitoGetUserData, isAdminCall: boolean = false) {
+  async getOrCreateUser(cognitoUserData: CognitoGetUserData, isAdminCall = false) {
     const userData = {
       externalId: cognitoUserData.idUser,
       email: cognitoUserData.email,
@@ -99,7 +99,7 @@ export class UserDataSubservice {
     return this.postprocessUser(userData.externalId, user)
   }
 
-  async postprocessUser(externalId: string, user: User, changeGdprData: boolean = false) {
+  async postprocessUser(externalId: string, user: User, changeGdprData = false) {
     if (changeGdprData) {
       await this.changeUserGdprData(user.id, [
         {
@@ -171,7 +171,7 @@ export class UserDataSubservice {
   async postprocessLegalPerson(
     externalId: string,
     legalPerson: LegalPerson,
-    changeGdprData: boolean = false
+    changeGdprData = false
   ) {
     if (changeGdprData) {
       await this.changeLegalPersonGdprData(legalPerson.id, [
@@ -261,7 +261,7 @@ export class UserDataSubservice {
   async removeBirthNumber(externalId: string) {
     const user = await this.prisma.user.update({
       where: {
-        externalId: externalId,
+        externalId,
       },
       data: {
         birthNumber: null,
@@ -274,7 +274,7 @@ export class UserDataSubservice {
   async removeLegalPersonBirthNumber(externalId: string) {
     const user = await this.prisma.legalPerson.update({
       where: {
-        externalId: externalId,
+        externalId,
       },
       data: {
         birthNumber: null,
@@ -346,6 +346,7 @@ export class UserDataSubservice {
         return UserOfficialCorrespondenceChannelEnum.EMAIL
       case DeliveryMethodEnum.POSTAL:
         return UserOfficialCorrespondenceChannelEnum.POSTAL
+      case undefined:
       default:
         return null
     }

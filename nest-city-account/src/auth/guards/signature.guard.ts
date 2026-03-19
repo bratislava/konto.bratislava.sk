@@ -1,8 +1,9 @@
 import { ExecutionContext, Injectable } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
 import { Reflector } from '@nestjs/core'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { AuthGuard } from '@nestjs/passport'
+
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { SIGNATURE_PUBLIC_KEY } from '../decorators/signature-public-key.decorator'
 import { SignatureRequest } from '../types/signature-request.types'
 

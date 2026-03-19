@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsOptional, IsString, IsIn, IsUUID, Matches, MinLength } from 'class-validator'
+import { IsIn, IsNotEmpty, IsOptional, IsString, IsUUID, Matches, MinLength } from 'class-validator'
 
 const EXAMPLE_CLIENT_ID = 'a1b2c3d4e5f67890abcdef1234567890'
 

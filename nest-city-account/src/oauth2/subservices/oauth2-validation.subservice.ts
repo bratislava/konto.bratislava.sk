@@ -1,24 +1,26 @@
+import { timingSafeEqual } from 'node:crypto'
+
 import { Injectable } from '@nestjs/common'
 import { Request } from 'express'
-import { timingSafeEqual } from 'node:crypto'
-import { OAuth2Client, OAuth2ClientSubservice } from './oauth2-client.subservice'
+
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
+import { OAuth2Client, OAuth2ClientSubservice } from './oauth2-client.subservice'
 
 export interface AuthorizationParams {
-  responseType?: string | unknown
-  clientId?: string | unknown
-  redirectUri?: string | unknown
-  scope?: string | unknown
-  state?: string | unknown
-  codeChallenge?: string | unknown
-  codeChallengeMethod?: string | unknown
+  responseType?: unknown
+  clientId?: unknown
+  redirectUri?: unknown
+  scope?: unknown
+  state?: unknown
+  codeChallenge?: unknown
+  codeChallengeMethod?: unknown
 }
 
 export interface ClientAuthParams {
   clientId?: string
   clientSecret?: string
-  redirectUri?: string | unknown
+  redirectUri?: unknown
   grantType?: string
   codeVerifier?: string
 }
@@ -53,7 +55,7 @@ export class OAuth2ValidationSubservice {
     this.validateResponseType(params.responseType, client, codeChallenge, codeChallengeMethod)
   }
 
-  private validateClientId(clientId: string | unknown): OAuth2Client {
+  private validateClientId(clientId: unknown): OAuth2Client {
     if (!clientId || typeof clientId !== 'string' || clientId.length === 0) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
@@ -71,14 +73,14 @@ export class OAuth2ValidationSubservice {
         `Unauthorized client: unknown client`,
         undefined,
         'Client not found',
-        { clientId: clientId }
+        { clientId }
       )
     }
 
     return client
   }
 
-  private validateRedirectUri(redirectUri: string | unknown, client: OAuth2Client): string {
+  private validateRedirectUri(redirectUri: unknown, client: OAuth2Client): string {
     if (!redirectUri || typeof redirectUri !== 'string' || redirectUri.length === 0) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
@@ -99,14 +101,14 @@ export class OAuth2ValidationSubservice {
         `Invalid request: provided redirect URI is not allowed for this client`,
         undefined,
         'Redirect URI not allowed for client',
-        { clientId: client.id, redirectUri: redirectUri }
+        { clientId: client.id, redirectUri }
       )
     }
 
     return redirectUri
   }
 
-  private validateScope(scope: string | unknown, client: OAuth2Client): string | undefined {
+  private validateScope(scope: unknown, client: OAuth2Client): string | undefined {
     if (scope === undefined) {
       return undefined
     }
@@ -123,8 +125,8 @@ export class OAuth2ValidationSubservice {
   }
 
   private validatePkceParameters(
-    codeChallenge: string | unknown,
-    codeChallengeMethod: string | unknown,
+    codeChallenge: unknown,
+    codeChallengeMethod: unknown,
     clientId: string
   ): { codeChallenge?: string; codeChallengeMethod?: string } {
     if (codeChallenge === undefined && codeChallengeMethod === undefined) {
@@ -143,7 +145,7 @@ export class OAuth2ValidationSubservice {
         undefined,
         'PKCE parameters incomplete',
         {
-          clientId: clientId,
+          clientId,
           hasCodeChallenge: !!codeChallenge,
           hasCodeChallengeMethod: !!codeChallengeMethod,
         }
@@ -154,7 +156,7 @@ export class OAuth2ValidationSubservice {
   }
 
   private validateResponseType(
-    responseType: string | unknown,
+    responseType: unknown,
     client: OAuth2Client,
     codeChallenge?: string,
     codeChallengeMethod?: string
@@ -179,7 +181,7 @@ export class OAuth2ValidationSubservice {
         `Unsupported response_type: ${responseType} - must be "code" or "token"`,
         undefined,
         'Unsupported response_type',
-        { clientId: client.id, responseType: responseType }
+        { clientId: client.id, responseType }
       )
     }
 
@@ -219,7 +221,9 @@ export class OAuth2ValidationSubservice {
   /**
    * Extract client credentials from request (Basic Auth header or body)
    */
-  extractClientCredentials(request: Request): {
+  extractClientCredentials(
+    request: Request<unknown, unknown, { client_id?: string; client_secret?: string }>
+  ): {
     clientId?: string
     clientSecret?: string
   } {
@@ -238,14 +242,14 @@ export class OAuth2ValidationSubservice {
           clientId = credentials.substring(0, colonIndex)
           clientSecret = credentials.substring(colonIndex + 1)
         }
-      } catch (error) {
+      } catch {
         // Invalid base64 or malformed credentials
       }
     }
 
     if (!clientId) {
-      const bodyClientId = request.body?.client_id
-      const bodyClientSecret = request.body?.client_secret
+      const bodyClientId = request.body.client_id
+      const bodyClientSecret = request.body.client_secret
 
       // Validate that values are non-empty strings (do not trim client-provided values)
       if (typeof bodyClientId === 'string' && bodyClientId.length > 0) {
@@ -272,7 +276,7 @@ export class OAuth2ValidationSubservice {
         expectedBuffer.length === providedBuffer.length ? providedBuffer : dummyBuffer
 
       return timingSafeEqual(expectedBuffer, comparebuffer)
-    } catch (error) {
+    } catch {
       // timingSafeEqual throws if buffers have different lengths
       return false
     }
@@ -337,7 +341,7 @@ export class OAuth2ValidationSubservice {
         `Unauthorized client: unknown client`,
         undefined,
         'Client not found for token request',
-        { clientId: clientId, grantType }
+        { clientId, grantType }
       )
     }
 
@@ -349,7 +353,7 @@ export class OAuth2ValidationSubservice {
           'Invalid client: client_secret is required',
           undefined,
           'Client secret required but not provided',
-          { clientId: clientId, grantType }
+          { clientId, grantType }
         )
       }
       if (!this.isValidSecret(client.secret, clientSecret)) {
@@ -359,7 +363,7 @@ export class OAuth2ValidationSubservice {
           undefined,
           'Invalid client secret provided',
           {
-            clientId: clientId,
+            clientId,
             grantType,
             hasClientSecret: !!clientSecret,
           }
@@ -376,7 +380,7 @@ export class OAuth2ValidationSubservice {
           undefined,
           'Redirect URI not allowed for client in token request',
           {
-            clientId: clientId,
+            clientId,
             redirectUri: params.redirectUri,
             grantType,
           }
@@ -397,7 +401,7 @@ export class OAuth2ValidationSubservice {
           undefined,
           'PKCE code_verifier required but not provided',
           {
-            clientId: clientId,
+            clientId,
             grantType: params.grantType,
             hasCodeVerifier: !!params.codeVerifier,
           }

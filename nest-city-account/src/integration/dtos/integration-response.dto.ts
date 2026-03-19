@@ -1,41 +1,52 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
 import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '@prisma/client'
-import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
-import { IsArray, IsDate, IsEnum, IsObject, IsString } from 'class-validator'
-import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
 import { Type } from 'class-transformer'
+import { IsArray, IsDate, IsEnum, IsObject, IsOptional, IsString } from 'class-validator'
+
+import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
+import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
+import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
 
 export class ResponseUserByBirthNumberDto {
   @ApiProperty({
     description: 'userBirthNumber',
     default: '8808080000',
   })
+  @IsString()
+  @IsOptional()
   birthNumber!: string | null
 
   @ApiProperty({
     description: 'email',
     default: 'brtaislavcan@bratislava.sk',
   })
+  @IsString()
+  @IsOptional()
   email!: string | null
 
   @ApiProperty({
     description: 'Cognito Id',
     default: 'd18cbd7c-daad-4d5d-a1d7-8e47f845baab',
   })
+  @IsString()
+  @IsOptional()
   externalId!: string | null
 
   @ApiProperty({
     description: 'Special user attribute for user segmentation',
     default: UserAttributeEnum.TAX2023,
   })
+  @IsString()
+  @IsOptional()
   userAttribute: string | UserAttributeEnum | null
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Tier from cognito',
     default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
   })
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  @IsObject()
+  @IsOptional()
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   cognitoAttributes?: CognitoGetUserData | {}
 
   @ApiPropertyOptional({
@@ -44,7 +55,8 @@ export class ResponseUserByBirthNumberDto {
     enum: DeliveryMethodEnum,
   })
   @IsEnum(DeliveryMethodEnum)
-  taxDeliveryMethodAtLockDate: DeliveryMethodEnum | null
+  @IsOptional()
+  taxDeliveryMethodAtLockDate?: DeliveryMethodEnum | null
 }
 
 export class GetUserDataByBirthNumbersBatchResponseDto {

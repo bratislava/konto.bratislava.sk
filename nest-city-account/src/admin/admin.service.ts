@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common'
+
 import { PrismaService } from '../prisma/prisma.service'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
-import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
-import { OnlySuccessDto, UserVerifyState } from './dtos/responses.admin.dto'
-import { UserService } from '../user/user.service'
-import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { VerificationService } from '../user-verification/verification.service'
 import {
   DeactivateAccountResponseDto,
   MarkDeceasedAccountResponseDto,
 } from '../user/dtos/user-modification-response.dto'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
+import { UserService } from '../user/user.service'
 import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
+import { VerificationService } from '../user-verification/verification.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
+import { OnlySuccessDto, UserVerifyState } from './dtos/responses.admin.dto'
+import { COGNITO_SYNC_CONFIG_DB_KEY } from './utils/constants'
 
 /**
  * AdminService - Thin delegation layer for administrative operations
@@ -70,16 +70,9 @@ export class AdminService {
    */
   async syncCognitoToDb(): Promise<void> {
     const cognitoUsers = await this.cognitoSubservice.getAllCognitoUsers()
-    if (!cognitoUsers) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        UserErrorsEnum.COGNITO_TYPE_ERROR,
-        UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-      )
-    }
 
     for (const user of cognitoUsers) {
-      const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
-      if (!accountType || !user.sub || !user.email) {
+      if (!user.sub || !user.email) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           UserErrorsEnum.COGNITO_TYPE_ERROR,
           UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
@@ -87,6 +80,7 @@ export class AdminService {
         )
       }
       try {
+        // eslint-disable-next-line no-await-in-loop -- TODO rewrite to use Promise.all
         await this.userService.getOrCreateUserOrLegalPersonRaw(user)
       } catch (error) {
         this.logger.error(error)

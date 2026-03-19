@@ -1,12 +1,14 @@
+import { createPublicKey } from 'node:crypto'
+
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
-import { Strategy as CustomStrategy } from 'passport-custom'
 import { createVerify } from 'crypto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { Strategy as CustomStrategy } from 'passport-custom'
+
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { SignatureRequest } from '../types/signature-request.types'
-import { createPublicKey } from 'node:crypto'
 
 /**
  * Passport strategy for RSA signature verification
@@ -45,7 +47,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
    * @returns true if validation succeeds
    * @throws UnauthorizedException if validation fails
    */
-  async validate(req: SignatureRequest): Promise<boolean> {
+  validate(req: SignatureRequest): boolean {
     // Extract the environment variable name from request metadata
     // This should be set by the @SignaturePublicKey() decorator
     const envVarName = req.signaturePublicKeyEnvVar
@@ -140,7 +142,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     const dataToVerify = `${method}|${originalUrl}|${timestamp}|${body}`
 
     // Verify signature using RSA-SHA256
-    let isValid = false
+    let isValid: boolean
     try {
       const verifier = createVerify('RSA-SHA256')
       verifier.update(dataToVerify)

@@ -1,56 +1,56 @@
 // TODO - communication state to LEGAL_ENTITY
 import { Injectable } from '@nestjs/common'
+import {
+  CognitoUserAttributesTierEnum,
+  DeliveryMethodEnum,
+  GDPRSubTypeEnum,
+  LoginClientEnum,
+  User,
+} from '@prisma/client'
 
+import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
+import {
+  CustomErrorAdminTypesEnum,
+  CustomErrorAdminTypesResponseEnum,
+} from '../admin/dtos/error.dto'
+import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
+import {
+  GetNewVerifiedUsersBirthNumbersResponseDto,
+  ResponseUserByBirthNumberDto,
+} from '../integration/dtos/integration-response.dto'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
+import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
+import {
+  ResponseLegalPersonDataDto,
+  ResponseLegalPersonDataSimpleDto,
+} from './dtos/gdpr.legalperson.dto'
 import {
   GdprDataDto,
   ResponsePublicUnsubscribeDto,
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
-
-import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
-import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import {
-  ResponseLegalPersonDataDto,
-  ResponseLegalPersonDataSimpleDto,
-} from './dtos/gdpr.legalperson.dto'
 import {
   LegalPersonContactAndIdInfoResponseDto,
   UserContactAndIdInfoResponseDto,
 } from './dtos/user-contact-info.dto'
-import { UserDataSubservice } from './utils/subservice/user-data.subservice'
-import {
-  CognitoUserAttributesTierEnum,
-  DeliveryMethodEnum,
-  GDPRSubTypeEnum,
-  User,
-} from '@prisma/client'
-import {
-  CognitoGetUserData,
-  CognitoUserAccountTypesEnum,
-  CognitoUserAttributesEnum,
-} from '../utils/global-dtos/cognito.dto'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { LoginClientEnum } from '@prisma/client'
-import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
-import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 import {
   DeactivateAccountResponseDto,
   MarkDeceasedAccountResponseDto,
 } from './dtos/user-modification-response.dto'
+import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
 import { UserTierService } from './user-tier.service'
-import { TaxSubservice } from '../utils/subservices/tax.subservice'
-import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
-import {
-  CustomErrorAdminTypesEnum,
-  CustomErrorAdminTypesResponseEnum,
-} from '../admin/dtos/error.dto'
-import {
-  GetNewVerifiedUsersBirthNumbersResponseDto,
-  ResponseUserByBirthNumberDto,
-} from '../integration/dtos/integration-response.dto'
+import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
 const USER_REQUEST_LIMIT = 100
 
@@ -101,10 +101,7 @@ export class UserService {
     const officialCorrespondenceChannel =
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.userDataSubservice.getShowEmailCommunicationBanner(
-        user.id,
-        user.birthNumber ? true : false
-      )
+      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
     const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
     return {
       ...user,
@@ -157,10 +154,7 @@ export class UserService {
     const officialCorrespondenceChannel =
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.userDataSubservice.getShowEmailCommunicationBanner(
-        user.id,
-        user.birthNumber ? true : false
-      )
+      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
     const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
     return {
       ...user,
@@ -199,10 +193,7 @@ export class UserService {
     const officialCorrespondenceChannel =
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.userDataSubservice.getShowEmailCommunicationBanner(
-        user.id,
-        user.birthNumber ? true : false
-      )
+      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
     const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
     return {
       ...user,
@@ -249,7 +240,7 @@ export class UserService {
       )
     }
 
-    return { id: id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
+    return { id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
   }
 
   async unsubscribePublicUserByExternalId(
@@ -280,10 +271,7 @@ export class UserService {
       const officialCorrespondenceChannel =
         await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
       const showEmailCommunicationBanner =
-        await this.userDataSubservice.getShowEmailCommunicationBanner(
-          user.id,
-          user.birthNumber ? true : false
-        )
+        await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
       return {
         ...user,
         officialCorrespondenceChannel,
@@ -335,16 +323,22 @@ export class UserService {
    */
   async getOrCreateUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const result = await this.userDataSubservice.getOrCreateUser(cognitoUserData, true)
-      return result
-    }
-    if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const result = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
-      return result
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const result = await this.userDataSubservice.getOrCreateUser(cognitoUserData, true)
+        return result
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const result = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+        return result
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          toLogfmt(cognitoUserData)
+        )
     }
   }
 
@@ -353,21 +347,18 @@ export class UserService {
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
 
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      return this.getOrCreateUserData(cognitoUserData)
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        return this.getOrCreateUserData(cognitoUserData)
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        return this.getOrCreateLegalPersonData(cognitoUserData)
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
-
-    if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      return this.getOrCreateLegalPersonData(cognitoUserData)
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
   }
 
   async recordLoginClient(
@@ -377,23 +368,20 @@ export class UserService {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     const externalId = cognitoUserData.idUser
 
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      await this.recordUserLoginClient(externalId, loginClient)
-      return
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        await this.recordUserLoginClient(externalId, loginClient)
+        return
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        await this.recordLegalPersonLoginClient(externalId, loginClient)
+        return
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
-
-    if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      await this.recordLegalPersonLoginClient(externalId, loginClient)
-      return
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
   }
 
   async getContactAndIdInfoByExternalId(
@@ -403,52 +391,51 @@ export class UserService {
     const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
     const accountType = cognitoData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
 
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      // Get user from database
-      const user = await this.userDataSubservice.getUserByExternalId(externalId)
-      if (!user) {
-        throw this.throwerErrorGuard.NotFoundException(
-          UserErrorsEnum.USER_NOT_FOUND,
-          `User not found for external ID: ${externalId}`
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        // Get user from database
+        const user = await this.userDataSubservice.getUserByExternalId(externalId)
+        if (!user) {
+          throw this.throwerErrorGuard.NotFoundException(
+            UserErrorsEnum.USER_NOT_FOUND,
+            `User not found for external ID: ${externalId}`
+          )
+        }
+
+        return {
+          externalId,
+          accountType,
+          email: cognitoData.email,
+          firstName: cognitoData.given_name,
+          lastName: cognitoData.family_name,
+          birthNumber: user.birthNumber ?? undefined,
+        }
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        // Get legal person from database
+        const legalPerson = await this.userDataSubservice.getLegalPersonByExternalId(externalId)
+        if (!legalPerson) {
+          throw this.throwerErrorGuard.NotFoundException(
+            UserErrorsEnum.USER_NOT_FOUND,
+            `Legal person not found for external ID: ${externalId}`
+          )
+        }
+
+        return {
+          externalId,
+          accountType,
+          email: cognitoData.email,
+          name: cognitoData.name,
+          ico: legalPerson.ico ?? undefined,
+        }
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
         )
-      }
-
-      return {
-        externalId: externalId,
-        accountType: accountType,
-        email: cognitoData.email,
-        firstName: cognitoData.given_name,
-        lastName: cognitoData.family_name,
-        birthNumber: user.birthNumber ?? undefined,
-      }
     }
-
-    if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      // Get legal person from database
-      const legalPerson = await this.userDataSubservice.getLegalPersonByExternalId(externalId)
-      if (!legalPerson) {
-        throw this.throwerErrorGuard.NotFoundException(
-          UserErrorsEnum.USER_NOT_FOUND,
-          `Legal person not found for external ID: ${externalId}`
-        )
-      }
-
-      return {
-        externalId: externalId,
-        accountType: accountType,
-        email: cognitoData.email,
-        name: cognitoData.name,
-        ico: legalPerson.ico ?? undefined,
-      }
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
   }
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -465,7 +452,9 @@ export class UserService {
     if (user.externalId) {
       try {
         cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-      } catch (error) {}
+      } catch {
+        // Intentionally ignore Cognito fetch failure
+      }
     }
     return {
       email: user.email,
@@ -502,8 +491,11 @@ export class UserService {
       let cognitoUser = {}
       if (user.externalId) {
         try {
+          // eslint-disable-next-line no-await-in-loop -- TODO rewrite to use Promise.all
           cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-        } catch (error) {}
+        } catch {
+          // Intentionally ignore Cognito fetch failure
+        }
       }
 
       result[user.birthNumber] = {
@@ -532,24 +524,21 @@ export class UserService {
     )
     await this.bloomreachService.trackCustomer(externalId)
 
+    const accountType = cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     let removedUser: User | null = null
-    if (
-      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-      CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      removedUser = await this.userDataSubservice.removeUserDataFromDatabase(externalId)
-    } else if (
-      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      await this.userDataSubservice.removeLegalPersonDataFromDatabase(externalId)
-    } else {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        UserErrorsEnum.COGNITO_TYPE_ERROR,
-        UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-      )
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        removedUser = await this.userDataSubservice.removeUserDataFromDatabase(externalId)
+        break
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        await this.userDataSubservice.removeLegalPersonDataFromDatabase(externalId)
+        break
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
 
     const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(externalId)
@@ -587,29 +576,34 @@ export class UserService {
       cognitoArchived: boolean
       bloomreachRemoved?: AnonymizeResponse
     }[] = await Promise.all(
-      users.map(async (item) => {
-        if (!item.externalId || !item.email) {
-          return { birthNumber: item.birthNumber!, databaseMarked: true, cognitoArchived: false }
-        }
+      users
+        .filter(
+          (item): item is { externalId: string; email: string; birthNumber: string } =>
+            item.birthNumber !== null
+        )
+        .map(async (item) => {
+          if (!item.externalId || !item.email) {
+            return { birthNumber: item.birthNumber, databaseMarked: true, cognitoArchived: false }
+          }
 
-        let cognitoSuccess = true
-        try {
-          await this.cognitoSubservice.cognitoDeactivateUser(item.externalId)
-        } catch (error) {
-          cognitoSuccess = false
-        }
+          let cognitoSuccess = true
+          try {
+            await this.cognitoSubservice.cognitoDeactivateUser(item.externalId)
+          } catch {
+            cognitoSuccess = false
+          }
 
-        const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(item.externalId)
-        return {
-          birthNumber: item.birthNumber!,
-          databaseMarked: true,
-          cognitoArchived: cognitoSuccess,
-          bloomreachRemoved,
-        }
-      })
+          const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(item.externalId)
+          return {
+            birthNumber: item.birthNumber,
+            databaseMarked: true,
+            cognitoArchived: cognitoSuccess,
+            bloomreachRemoved,
+          }
+        })
     )
 
-    const foundBirthNumbers = users.map((user) => user.birthNumber!)
+    const foundBirthNumbers = users.map((user) => user.birthNumber)
 
     const notFoundBirthNumbers = birthNumberList.filter(
       (birthNumber) => !foundBirthNumbers.includes(birthNumber)
@@ -663,22 +657,24 @@ export class UserService {
       )
     }
 
-    const lastVerify = users.at(-1)?.lastVerificationIdentityCard
+    const lastVerify = users[users.length - 1]?.lastVerificationIdentityCard
     // Default: no users -> return request timestamp
     let nextSince: Date = since
-    if (users.length > 0) {
+    if (users.length > 0 && lastVerify) {
       if (users.length < limitedTake) {
         // End of list for now, advance timestamp one millisecond
-        nextSince = new Date(lastVerify!.getTime() + 1)
+        nextSince = new Date(lastVerify.getTime() + 1)
       } else {
         // Last entry is one over take. We want to return the timestamp of this
         // entry for the next call, but not the entry itself
-        nextSince = lastVerify!
+        nextSince = lastVerify
         users.pop()
       }
     }
 
-    const birthNumbers = users.map((user) => user.birthNumber!)
+    const birthNumbers = users
+      .filter((user): user is User & { birthNumber: string } => user.birthNumber !== null)
+      .map((user) => user.birthNumber)
 
     return { birthNumbers, nextSince }
   }

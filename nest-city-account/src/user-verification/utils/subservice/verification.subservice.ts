@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common'
 import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
+
+import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { MagproxyService } from '../../../magproxy/magproxy.service'
+import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
+import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import {
   RequestBodyVerifyIdentityCardDto,
   RequestBodyVerifyWithRpoDto,
 } from '../../dtos/requests.verification.dto'
-import { VerificationDataSubservice } from './verification-data.subservice'
-import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
-import { RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
-import { VerificationErrorsEnum } from '../../verification.errors.enum'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { VerificationReturnType } from '../../types'
+import { VerificationErrorsEnum } from '../../verification.errors.enum'
+import { VerificationDataSubservice } from './verification-data.subservice'
 
 @Injectable()
 export class VerificationSubservice {
@@ -91,7 +92,7 @@ export class VerificationSubservice {
     this.logger.warn({
       message: 'Could not match birthnumber with statutory organ from RPO',
       ico: legalEntity.ico,
-      birthNumber: birthNumber,
+      birthNumber,
     })
     return {
       success: false,
@@ -174,7 +175,6 @@ export class VerificationSubservice {
    * @param {string} [ico] - The optional ICO number.
    * @throws {Error} - If there is an unexpected error during the verification process.
    */
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   async verifyIdentityCard(
     user: CognitoGetUserData,
     data: RequestBodyVerifyIdentityCardDto,
@@ -195,11 +195,12 @@ export class VerificationSubservice {
       return rfoData
     }
 
-    if (!rfoData.data || rfoData.data.length == 0) {
+    if (rfoData.data.length === 0) {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
     let birthNumberNotExistCounter = 0
+    let firstMatchingRfo: (typeof rfoData.data)[number] | null = null
 
     for (const rfoDataSingle of rfoData.data) {
       // If the check fails, increment counter
@@ -221,7 +222,16 @@ export class VerificationSubservice {
         continue
       }
 
-      const birthNumber = rfoDataSingle.rodneCislo.replaceAll('/', '')
+      firstMatchingRfo = rfoDataSingle
+      break
+    }
+
+    if (firstMatchingRfo !== null) {
+      const rodneCislo = firstMatchingRfo.rodneCislo
+      if (!rodneCislo) {
+        return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+      }
+      const birthNumber = rodneCislo.replaceAll('/', '')
       let databaseResult: VerificationReturnType
       if (ico) {
         databaseResult =
@@ -233,7 +243,7 @@ export class VerificationSubservice {
       } else {
         databaseResult = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
           user,
-          rfoDataSingle.ifo || null,
+          firstMatchingRfo.ifo || null,
           birthNumber,
           0
         )
@@ -256,7 +266,7 @@ export class VerificationSubservice {
     }
 
     // No RFO response contained birthNumber
-    if (birthNumberNotExistCounter == rfoData.data.length) {
+    if (birthNumberNotExistCounter === rfoData.data.length) {
       return { success: false, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
@@ -274,7 +284,7 @@ export class VerificationSubservice {
       return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
     }
 
-    if (!rfoDataDcom.data?.rodneCislo) {
+    if (!rfoDataDcom.data.rodneCislo) {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
@@ -318,10 +328,6 @@ export class VerificationSubservice {
     const rpoData = await this.magproxyService.rpoIco(data.ico)
     if (!rpoData.success) {
       return rpoData
-    }
-
-    if (!rpoData.data) {
-      return { success: false, reason: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS }
     }
 
     const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)

@@ -1,20 +1,21 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 import https from 'https'
-
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
+
+import ClientsService from '../clients/clients.service'
+import { TokenResponseDto } from '../oauth2/dtos/responses.oauth2.dto'
 import {
   RfoIdentityList,
   RfoIdentityListElement,
   RfoIdentityListSchema,
 } from '../rfo-by-birthnumber/dtos/rfoSchema'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ClientsService from '../clients/clients.service'
-import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
 import { VerificationReturnType } from '../user-verification/types'
+import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -73,15 +74,15 @@ export class MagproxyService {
     if (tokenCheck !== '') {
       const tokenPayload = token.split('.')[1]
       const tokenPayloadData = Buffer.from(tokenPayload, 'base64').toString('binary')
-      const tokenPayloadJson = JSON.parse(tokenPayloadData)
-      if (Date.now() >= tokenPayloadJson.exp * 1000 - 3000) {
+      const { exp } = JSON.parse(tokenPayloadData) as { exp?: number }
+      if (Date.now() >= (exp ?? 0) * 1000 - 3000) {
         //check expiration minus 3 seconds
         tokenCheck = ''
       }
     }
     if (tokenCheck === '') {
       const result = await axios
-        .post(
+        .post<TokenResponseDto>(
           this.config.magproxyAzureAdUrl,
           new URLSearchParams({
             client_id: this.config.magproxyAzureClientId,
@@ -93,18 +94,17 @@ export class MagproxyService {
         .then((response) => {
           return response.data
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           throw this.throwerErrorGuard.UnprocessableEntityException(
             MagproxyErrorsEnum.RFO_ACCESS_ERROR,
             MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
-            JSON.stringify(error.response.data),
+            isAxiosError(error) ? JSON.stringify(error.response?.data) : undefined,
             error
           )
         })
       return result.access_token
-    } else {
-      return token
     }
+    return token
   }
 
   // if we get a single object we'll always return it 'typed' (though as partial because of weak assumptions)
@@ -143,7 +143,7 @@ export class MagproxyService {
       )
       // TODO this validation belongs to magproxy
       // TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
-      const validatedData = this.validateRfoDataFormat(result?.data?.items)
+      const validatedData = this.validateRfoDataFormat(result.data.items)
       return { success: true as const, data: validatedData }
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -182,7 +182,7 @@ export class MagproxyService {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
     const result = await this.clientsService.magproxyApi
       .rfoControllerGetOneDcom(birthNumber, {
-        httpsAgent: httpsAgent,
+        httpsAgent,
         headers: {
           Authorization: `Bearer ${magproxyAzureAdToken}`,
         },
@@ -193,15 +193,15 @@ export class MagproxyService {
           data: JSON.parse(JSON.stringify(response.data)) as RfoIdentityListElement,
         }
       })
-      .catch(async (error) => {
-        if (error.response.status === HttpStatus.UNAUTHORIZED) {
+      .catch((error: unknown) => {
+        if (isAxiosError(error) && error.response?.status === HttpStatus.UNAUTHORIZED) {
           throw this.throwerErrorGuard.UnprocessableEntityException(
             VerificationErrorsEnum.RFO_ACCESS_ERROR,
             'There is problem with authentication to registry. More details in app logs.',
             undefined,
             error
           )
-        } else if (error.response.status === HttpStatus.NOT_FOUND) {
+        } else if (isAxiosError(error) && error.response?.status === HttpStatus.NOT_FOUND) {
           // Non-retryable error. Return failure.
           return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
         } else {
@@ -221,7 +221,7 @@ export class MagproxyService {
 
     const result = await this.clientsService.magproxyApi
       .rpoControllerGetLegalPerson(ico, {
-        httpsAgent: httpsAgent,
+        httpsAgent,
         headers: {
           Authorization: `Bearer ${magproxyAzureAdToken}`,
         },
@@ -229,22 +229,21 @@ export class MagproxyService {
       .then((response) => {
         return { success: true as const, data: response.data }
       })
-      .catch(async (error) => {
-        if (error.response.status === HttpStatus.UNAUTHORIZED) {
+      .catch((error: unknown) => {
+        if (isAxiosError(error) && error.response?.status === HttpStatus.UNAUTHORIZED) {
           throw this.throwerErrorGuard.UnprocessableEntityException(
             VerificationErrorsEnum.RPO_ACCESS_ERROR,
             'There is problem with authentication to registry. More details in app logs.'
           )
         }
-        if (error.response.status === HttpStatus.NOT_FOUND) {
+        if (isAxiosError(error) && error.response?.status === HttpStatus.NOT_FOUND) {
           // Non-retryable error. Return failure.
           return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
-        } else {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.RPO_NOT_RESPONDING,
-            'There is problem with unexpected registry response. More details in app logs.'
-          )
         }
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.RPO_NOT_RESPONDING,
+          'There is problem with unexpected registry response. More details in app logs.'
+        )
       })
     return result
   }

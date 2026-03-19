@@ -2,17 +2,17 @@ import { Body, Controller, Get, HttpCode, Param, Patch, Post, UseGuards } from '
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger'
 
 import { AdminGuard } from '../auth/guards/admin.guard'
+import {
+  DeactivateAccountResponseDto,
+  MarkDeceasedAccountResponseDto,
+} from '../user/dtos/user-modification-response.dto'
+import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
 import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
   MarkDeceasedAccountRequestDto,
 } from './dtos/requests.admin.dto'
 import { OnlySuccessDto, UserVerifyState } from './dtos/responses.admin.dto'
-import {
-  DeactivateAccountResponseDto,
-  MarkDeceasedAccountResponseDto,
-} from '../user/dtos/user-modification-response.dto'
-import { VerificationDataForUserResponseDto } from '../user-verification/dtos/verification-response.dto'
 
 @ApiTags('ADMIN')
 @Controller('admin')
@@ -26,6 +26,7 @@ export class AdminController {
     description:
       'This endpoint is intended to be used manually to trigger a sync of all users from cognito and then call getOrCreate for each user.',
   })
+  @ApiOkResponse({})
   @UseGuards(AdminGuard)
   @Get('activate-sync-cognito-to-db')
   async syncCognitoToDb(): Promise<void> {
@@ -52,6 +53,9 @@ export class AdminController {
     summary: 'Deactivate user account',
     description: 'Deactivates user account in cognito and deletes personal info from database.',
   })
+  @ApiOkResponse({
+    type: DeactivateAccountResponseDto,
+  })
   @UseGuards(AdminGuard)
   @Get('deactivate/:externalId')
   async deactivateAccount(
@@ -66,6 +70,9 @@ export class AdminController {
     summary: 'Mark accounts as deceased',
     description:
       'This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.',
+  })
+  @ApiOkResponse({
+    type: MarkDeceasedAccountResponseDto,
   })
   @UseGuards(AdminGuard)
   @Patch('mark-deceased')

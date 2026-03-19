@@ -1,33 +1,35 @@
-import { Injectable } from '@nestjs/common'
 import * as crypto from 'node:crypto'
-import { v1 as uuidv1 } from 'uuid'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../user-verification/verification.errors.enum'
-import ClientsService from '../clients/clients.service'
+
+import { Injectable } from '@nestjs/common'
+import _ from 'lodash'
 import {
   ApiIamIdentitiesIdGet200Response,
   UpvsCorporateBody,
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { v1 as uuidv1 } from 'uuid'
+
+import ClientsService from '../clients/clients.service'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import _ from 'lodash'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export type CreateManyParam = {
   physicalEntityId?: string
   uri: string
 }[]
 
-export type UpvsIdentityByUriSuccessType = {
+export interface UpvsIdentityByUriSuccessType {
   physicalEntityId: string | null
   uri: string
   data: ApiIamIdentitiesIdGet200Response
 }
 
-export type CreateManyResult = {
+export interface CreateManyResult {
   success: UpvsIdentityByUriSuccessType[]
   failed: { physicalEntityId?: string; uri: string }[]
 }
@@ -53,7 +55,7 @@ export class NasesService {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data)
-      .catch((error) => {
+      .catch((error: unknown) => {
         throw this.throwerErrorGuard.BadRequestException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
@@ -99,7 +101,7 @@ export class NasesService {
       .then((response) => {
         return response.data
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
@@ -113,7 +115,6 @@ export class NasesService {
   // takes an array of uris with optional physicalEntityId, validates them against UPVS and keeps the record of both the successful and the failed uris
   // multiple uris with same birthnumber can be passed in, but these should always be assigned to the same physicalEntityId
   // for successful requests, the uri that was returned by UPVS is saved - this might be different from the one that was requested (i.e. when the surname changes)
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   async createMany(inputs: CreateManyParam): Promise<CreateManyResult> {
     const uniqueInputs = _.uniqBy(inputs, 'uri')
     const inputsByUri = _.keyBy(uniqueInputs, 'uri')
@@ -133,16 +134,17 @@ export class NasesService {
           !!result.uri
       )
       .map((result) => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- inputsByUri is a dictionary, and might not have record for each uri
         if (!inputsByUri[result.uri]) {
           this.logger.warn({
             message: `Failed to find input for URI: ${result.uri}`,
-            inputs: inputs,
+            inputs,
           })
         }
         return {
           uri: result.uri,
           data: result,
-          physicalEntityId: inputsByUri[result.uri]?.physicalEntityId || null,
+          physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
         }
       })
 

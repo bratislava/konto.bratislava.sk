@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { PrismaService } from '../../prisma/prisma.service'
-import { UpvsQueueService } from '../../upvs-queue/upvs-queue.service'
-import { NorisService } from '../../noris/noris.service'
-import { EdeskStatus } from '../../noris/types/noris.types'
+import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
+
+import { NorisService } from '../../noris/noris.service'
+import { EdeskStatus } from '../../noris/types/noris.types'
+import { PrismaService } from '../../prisma/prisma.service'
+import { UpvsQueueService } from '../../upvs-queue/upvs-queue.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 const PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE = 4000
 const LEGAL_PERSONS_RETRIEVE_BATCH_SIZE = 0 // TODO: add when upvs retrieval works for legal persons
@@ -68,6 +69,7 @@ export class EdeskTasksSubservice {
       case UpvsIdentityUpvsEdeskStatusEnum.Disabled:
         return EdeskStatus.DISABLED
       case UpvsIdentityUpvsEdeskStatusEnum.Deleted:
+      default:
         return EdeskStatus.DISABLED // There is no Deleted status in Noris
     }
   }
@@ -136,31 +138,33 @@ export class EdeskTasksSubservice {
       return item.queueStatus === QueueItemStatusEnum.COMPLETED && item.processedAt !== null
     }
 
-    await this.norisService.updateEdeskChecks(
-      completedExternalItems
-        .filter(isCompletedItem)
-        .map((item) => {
-          try {
-            const edeskData = this.mapEdeskDataToNorisType(item)
-            return {
-              idNoris: item.norisId,
-              lastCheck: item.processedAt,
-              ...edeskData,
-            }
-          } catch (error) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                'Error mapping eDesk data to Noris type',
-                undefined,
-                error
-              )
-            )
-            return false
-          }
+    const itemsToUpdate: {
+      idNoris: number
+      lastCheck: Date
+      edeskStatus: EdeskStatus
+      edeskNumber: string | null
+      uri: string | null
+    }[] = []
+    for (const item of completedExternalItems.filter(isCompletedItem)) {
+      try {
+        const edeskData = this.mapEdeskDataToNorisType(item)
+        itemsToUpdate.push({
+          idNoris: item.norisId,
+          lastCheck: item.processedAt,
+          ...edeskData,
         })
-        .filter((item) => item !== false)
-    )
+      } catch (error) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Error mapping eDesk data to Noris type',
+            undefined,
+            error
+          )
+        )
+      }
+    }
+    await this.norisService.updateEdeskChecks(itemsToUpdate)
 
     await this.prismaService.externalEdeskCheck.deleteMany({
       where: {

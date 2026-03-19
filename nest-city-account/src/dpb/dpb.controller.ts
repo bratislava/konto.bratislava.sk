@@ -1,14 +1,15 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { OAuth2AccessGuard } from '../oauth2/guards/oauth2-access.guard'
+
+import { SignaturePublicKeyEnvVarName } from '../auth/decorators/signature-public-key.decorator'
+import { SignatureGuard } from '../auth/guards/signature.guard'
 import { ClientName } from '../oauth2/decorators/client-name.decorator'
+import { OAuth2AccessGuard } from '../oauth2/guards/oauth2-access.guard'
 import { OAuth2ClientName } from '../oauth2/subservices/oauth2-client.subservice'
 import { User } from '../utils/decorators/request.decorator'
 import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
-import { DpbUserDto, DPBUserLoginStatistics } from './dtos/user.dto'
 import { DpbService } from './dpb.service'
-import { SignatureGuard } from '../auth/guards/signature.guard'
-import { SignaturePublicKeyEnvVarName } from '../auth/decorators/signature-public-key.decorator'
+import { DpbUserDto, DPBUserLoginStatistics } from './dtos/user.dto'
 
 @ApiTags('DPB')
 @ApiBearerAuth()

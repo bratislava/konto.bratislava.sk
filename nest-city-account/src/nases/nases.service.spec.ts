@@ -7,7 +7,6 @@ import { createMock } from '@golevelup/ts-jest'
 
 describe('NasesService', () => {
   let service: NasesService
-  let clientsService: ClientsService
   let throwerErrorGuard: ThrowerErrorGuard
 
   beforeEach(async () => {
@@ -20,7 +19,6 @@ describe('NasesService', () => {
     }).compile()
 
     service = module.get<NasesService>(NasesService)
-    clientsService = module.get<ClientsService>(ClientsService)
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
   })
 

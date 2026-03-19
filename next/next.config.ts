@@ -19,16 +19,17 @@ const nextConfig: NextConfig = {
   transpilePackages: ['forms-shared', '@rjsf/core'],
   images: {
     remotePatterns: [
+      new URL(`${process.env.MINIO_BUCKET}.s3.bratislava.sk/upload/**`),
       {
         protocol: 'http',
         hostname: 'localhost',
         pathname: '/**',
       },
-      {
-        protocol: 'https',
-        hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
-        pathname: '/**',
-      },
+      // {
+      //   protocol: 'https',
+      //   hostname: `${process.env.MINIO_BUCKET}.s3.bratislava.sk`,
+      //   pathname: '/**',
+      // },
     ],
   },
   output: 'standalone',

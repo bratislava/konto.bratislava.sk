@@ -1,14 +1,17 @@
+// @ts-check
 import { withPlausibleProxy } from 'next-plausible'
 import i18nextConfig from './next-i18next.config'
 import path from 'node:path'
-import type { NextConfig } from 'next'
 import withBundleAnalyzer from '@next/bundle-analyzer'
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
-const nextConfig: NextConfig = {
+/**
+ * @type {import('next').NextConfig}
+ * */
+const nextConfig = {
   experimental: {
     adapterPath: require.resolve('./next-iframe-resizer-adapter.mjs'),
   },

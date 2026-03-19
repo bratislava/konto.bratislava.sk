@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
   // https://react.dev/warnings/invalid-hook-call-warning
   transpilePackages: ['forms-shared', '@rjsf/core'],
   images: {
+    // After upgrading to Next.js 16, image loading from local IP addresses is blocked.
+    // In our Kubernetes setup, S3 resolves to a local IP range (10.10.x.x),
+    // which causes images to fail loading.
+    // To work around this, we temporarily allow local IPs.
+    // TODO: Revisit this setting and implement a safer long-term solution.
+    // Docs: https://nextjs.org/docs/pages/api-reference/components/image#dangerouslyallowlocalip
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {

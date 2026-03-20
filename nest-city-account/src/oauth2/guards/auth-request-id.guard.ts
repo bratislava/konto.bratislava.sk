@@ -36,7 +36,7 @@ export class AuthRequestIdGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<RequestWithAuthorizationData>()
 
     // Support both POST (body.authRequestId) and GET (query.authRequestId)
-    const authRequestId = request.body.authRequestId || request.query.authRequestId
+    const authRequestId = request.body?.authRequestId || request.query.authRequestId
     if (!authRequestId || typeof authRequestId !== 'string') {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
@@ -44,7 +44,7 @@ export class AuthRequestIdGuard implements CanActivate {
         undefined,
         'Missing or invalid authRequestId parameter',
         {
-          hasBodyAuthRequestId: !!request.body.authRequestId,
+          hasBodyAuthRequestId: !!request.body?.authRequestId,
           hasQueryAuthRequestId: !!request.query.authRequestId,
           authRequestIdType: typeof authRequestId,
           method: request.method,

@@ -117,7 +117,7 @@ export class NasesService {
   // for successful requests, the uri that was returned by UPVS is saved - this might be different from the one that was requested (i.e. when the surname changes)
   async createMany(inputs: CreateManyParam): Promise<CreateManyResult> {
     const uniqueInputs = _.uniqBy(inputs, 'uri')
-    const inputsByUri = _.keyBy(uniqueInputs, 'uri')
+    const inputsByUri = _.keyBy(uniqueInputs, 'uri') as Partial<Record<string, CreateManyParam[number]>>
 
     if (inputs.length === 0 || inputs.length > 10) {
       throw this.throwerErrorGuard.BadRequestException(
@@ -134,7 +134,6 @@ export class NasesService {
           !!result.uri
       )
       .map((result) => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- inputsByUri is a dictionary, and might not have record for each uri
         if (!inputsByUri[result.uri]) {
           this.logger.warn({
             message: `Failed to find input for URI: ${result.uri}`,
@@ -144,7 +143,7 @@ export class NasesService {
         return {
           uri: result.uri,
           data: result,
-          physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
+          physicalEntityId: inputsByUri[result.uri]?.physicalEntityId || null,
         }
       })
 

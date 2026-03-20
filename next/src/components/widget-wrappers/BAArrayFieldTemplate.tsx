@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import {
   ArrayFieldTemplateProps,
   FormContextType,
@@ -6,12 +7,10 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
 
 import { AddIcon } from '@/src/assets/ui-icons'
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
-import Button from '@/src/components/simple-components/Button'
 import FieldErrorMessage from '@/src/components/widget-components/FieldErrorMessage'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 import cn from '@/src/utils/cn'

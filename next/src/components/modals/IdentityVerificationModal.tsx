@@ -1,10 +1,9 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
-import Button from '@/src/components/simple-components/Button'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { ModalProps } from '@/src/components/simple-components/Modal'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'

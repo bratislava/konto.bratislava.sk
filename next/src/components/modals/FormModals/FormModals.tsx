@@ -1,6 +1,5 @@
-/* eslint-disable sonarjs/no-duplicate-string */
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
@@ -8,7 +7,6 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
 import RegistrationModal from '@/src/components/modals/RegistrationModal'
 import TaxFormPdfExportModal from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModal'
-import Button from '@/src/components/simple-components/Button'
 import MessageModal, {
   MessageModalProps,
 } from '@/src/components/widget-components/Modals/MessageModal'
@@ -452,6 +450,7 @@ export const FormMessageModals = () => {
       {messageModals.map((modalProps) => {
         // To avoid "A props object containing a "key" prop is being spread into JSX" error
         const { key, ...restModalProps } = modalProps
+
         return <MessageModal key={key} {...restModalProps} />
       })}
     </>

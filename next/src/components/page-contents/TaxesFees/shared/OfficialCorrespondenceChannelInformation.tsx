@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
@@ -7,7 +8,6 @@ import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/T
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
-import Button from '@/src/components/simple-components/Button'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4

@@ -1,12 +1,13 @@
+import { Button, ButtonButtonProps } from '@bratislava/component-library'
+
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
-import Button, { ButtonProps } from '@/src/components/simple-components/Button'
 
 interface TaxFeePaymentMethodsItemProps {
   title: React.ReactNode
   subtitle: string
   amount: number
   buttonText: string
-  buttonVariant: Extract<ButtonProps['variant'], 'solid' | 'outline'>
+  buttonVariant: Extract<ButtonButtonProps['variant'], 'solid' | 'outline'>
   buttonHref: string
 }
 

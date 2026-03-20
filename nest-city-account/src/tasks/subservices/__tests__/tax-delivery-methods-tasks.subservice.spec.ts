@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */
-
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxSubservice } from '../../../utils/subservices/tax.subservice'
-import { PrismaService } from '../../../prisma/prisma.service'
-import prismaMock from '../../../../test/singleton'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { UpdateDeliveryMethodsInNorisResponseDto } from 'openapi-clients/tax'
-import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 import { DeliveryMethodEnum, GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
-import { DeliveryMethodNoris } from '../../../utils/types/tax.types'
 import { AxiosResponse } from 'axios'
+import { UpdateDeliveryMethodsInNorisResponseDto } from 'openapi-clients/tax'
+
+import prismaMock from '../../../../test/singleton'
 import { MailgunService } from '../../../mailgun/mailgun.service'
+import { PrismaService } from '../../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { TaxSubservice } from '../../../utils/subservices/tax.subservice'
+import { DeliveryMethodNoris } from '../../../utils/types/tax.types'
+import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
 type UserWithRelations = Prisma.UserGetPayload<{
   include: {
@@ -1160,4 +1159,3 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
   })
 })
-/* eslint-enable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */

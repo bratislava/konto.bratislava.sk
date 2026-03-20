@@ -1,6 +1,7 @@
 // nest-city-account/src/oauth2/oauth2.exception.ts
 
 import { HttpException, HttpStatus } from '@nestjs/common'
+
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
 
 export interface OAuth2ErrorMetadata {

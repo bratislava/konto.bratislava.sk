@@ -1,13 +1,14 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { PhysicalEntity } from '@prisma/client'
+
 import prismaMock from '../../test/singleton'
+import { MagproxyService } from '../magproxy/magproxy.service'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { PhysicalEntityService } from './physical-entity.service'
-import { PhysicalEntity } from '@prisma/client'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { MagproxyService } from '../magproxy/magproxy.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { PhysicalEntityService } from './physical-entity.service'
 
 const mockBirthNumber = '123456/7890'
 const mockEntityID = '11cc6139-f660-4173-92e1-0d7b9cfa7a24'

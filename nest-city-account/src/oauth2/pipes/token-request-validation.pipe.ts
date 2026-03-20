@@ -1,7 +1,8 @@
 import { ArgumentMetadata, Injectable, PipeTransform, Type } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import { validate } from 'class-validator'
-import { TokenRequestDto, RefreshTokenRequestDto } from '../dtos/requests.oauth2.dto'
+
+import { RefreshTokenRequestDto, TokenRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
 

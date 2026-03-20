@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
-import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
-import { CreateManyParam, NasesService } from '../nases/nases.service'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import dayjs from 'dayjs'
-import { toLogfmt } from '../utils/logging'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
+
 import { parseName } from '../magproxy/dtos/uri'
+import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
+import { CreateManyParam, NasesService } from '../nases/nases.service'
+import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
+import { PrismaService } from '../prisma/prisma.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class UpvsQueueService {
@@ -125,8 +126,11 @@ export class UpvsQueueService {
 
       // handle failures both internal and external
       const failedInternalIds = upvsResult.failed
-        .filter((item) => item.physicalEntityId)
-        .map((item) => item.physicalEntityId!)
+        .filter(
+          (item): item is { physicalEntityId: string; uri: string } =>
+            item.physicalEntityId !== undefined
+        )
+        .map((item) => item.physicalEntityId)
 
       if (failedInternalIds.length > 0) {
         await this.physicalEntityService.updateFailedActiveEdeskUpdateInDatabase(failedInternalIds)
@@ -160,7 +164,6 @@ export class UpvsQueueService {
     }
 
     this.logger.log(result)
-    return
   }
 
   /**
@@ -215,9 +218,8 @@ export class UpvsQueueService {
     const lookBackDate = dayjs().subtract(this.CACHE_TTL_HOURS, 'hour')
 
     // Reuse existing edesk-tasks query logic with exponential backoff
-    const entities = await this.prismaService.$queryRaw<PhysicalEntity[]>
-    //language=postgresql
-    `
+    /* language=postgresql */
+    const entities = await this.prismaService.$queryRaw<(PhysicalEntity & { uri: string })[]>` 
         SELECT e.*
         FROM "PhysicalEntity" e
         WHERE "userId" IS NOT NULL
@@ -232,7 +234,7 @@ export class UpvsQueueService {
     `
 
     return entities.map((entity) => {
-      return { physicalEntityId: entity.id, uri: entity.uri! }
+      return { physicalEntityId: entity.id, uri: entity.uri }
     })
   }
 
@@ -298,7 +300,7 @@ export class UpvsQueueService {
     )
 
     // log errors if any occurred
-    let errorMessage: string = ''
+    let errorMessage = ''
     idUriList
       .filter((item) => item.status === 'rejected')
       .forEach((item) => {

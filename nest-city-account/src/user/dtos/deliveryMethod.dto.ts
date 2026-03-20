@@ -1,4 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { DeliveryMethodEnum } from '@prisma/client'
+import { Type } from 'class-transformer'
 import {
   IsDate,
   IsEnum,
@@ -10,8 +12,6 @@ import {
   ValidationArguments,
   ValidationOptions,
 } from 'class-validator'
-import { Type } from 'class-transformer'
-import { DeliveryMethodEnum } from '@prisma/client'
 
 /**
  * Decorator that enforces a property to be required when the delivery method is set to CITY_ACCOUNT.
@@ -51,7 +51,7 @@ export class DeliveryMethodDto {
   @IsEnum(DeliveryMethodEnum)
   deliveryMethod!: DeliveryMethodEnum
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Date (required for CITY_ACCOUNT method)',
     type: Date,
     required: false,
@@ -60,8 +60,7 @@ export class DeliveryMethodDto {
   @Type(() => Date)
   @ValidateIf(
     (obj: DeliveryMethodDto) =>
-      obj.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT ||
-      (obj.date !== undefined && obj.date !== null)
+      obj.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT || obj.date != null
   )
   @IsDate()
   @IsRequiredForCityAccount()
@@ -69,7 +68,7 @@ export class DeliveryMethodDto {
 }
 
 export class DeliveryMethodActiveAndLockedDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Active delivery method',
     type: DeliveryMethodDto,
     required: false,
@@ -80,7 +79,7 @@ export class DeliveryMethodActiveAndLockedDto {
   @Type(() => DeliveryMethodDto)
   active?: DeliveryMethodDto
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Delivery method at lock date this year.',
     type: DeliveryMethodDto,
     required: false,

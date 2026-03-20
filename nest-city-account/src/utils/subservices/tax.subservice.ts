@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { AxiosPromise } from 'axios'
 import {
   RequestUpdateNorisDeliveryMethodsDto,
   UpdateDeliveryMethodsInNorisResponseDto,
@@ -8,8 +10,6 @@ import ClientsService from '../../clients/clients.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
-import { AxiosPromise } from 'axios'
-import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class TaxSubservice {
@@ -29,11 +29,14 @@ export class TaxSubservice {
 
   async removeDeliveryMethodFromNoris(birthNumber: string): Promise<boolean> {
     try {
-      this.clientsService.taxBackendApi.adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, {
-        headers: {
-          apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),
-        },
-      })
+      await this.clientsService.taxBackendApi.adminControllerRemoveDeliveryMethodsFromNoris(
+        birthNumber,
+        {
+          headers: {
+            apiKey: this.configService.getOrThrow<string>('TAX_BACKEND_API_KEY'),
+          },
+        }
+      )
       return true
     } catch (error) {
       this.logger.error(
@@ -52,7 +55,7 @@ export class TaxSubservice {
   ): AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto> {
     return this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
       headers: {
-        apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),
+        apiKey: this.configService.getOrThrow<string>('TAX_BACKEND_API_KEY'),
       },
     })
   }

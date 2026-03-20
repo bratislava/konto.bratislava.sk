@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */
-
+import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { noop } from 'lodash'
+
+import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MailgunService } from './mailgun.service'
 import { MailgunMessageBuilder } from './mailgun-message.builder'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
-import { createMock } from '@golevelup/ts-jest'
-import { noop } from 'lodash'
 
 describe('MailgunService', () => {
   let service: MailgunService
@@ -45,7 +44,6 @@ describe('MailgunService', () => {
     pdfGeneratorService = module.get<PdfGeneratorService>(PdfGeneratorService)
 
     // Mock the Mailgun client
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(service as any).mg = {
       messages: {
         create: mockCreate,
@@ -58,7 +56,7 @@ describe('MailgunService', () => {
     jest.restoreAllMocks()
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.resetAllMocks()
   })
 
@@ -318,5 +316,3 @@ describe('MailgunService', () => {
     })
   })
 })
-
-/* eslint-enable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */

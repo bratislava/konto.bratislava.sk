@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
+
+import { UserModule } from '../user/user.module'
 import { IntegrationController } from './integration.controller'
 import { IntegrationService } from './integration.service'
-import { UserModule } from '../user/user.module'
 
 /**
  * IntegrationModule - Backend-to-Backend Integration APIs

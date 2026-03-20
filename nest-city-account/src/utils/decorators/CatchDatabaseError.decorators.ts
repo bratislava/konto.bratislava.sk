@@ -1,5 +1,5 @@
-import ThrowerErrorGuard from '../guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../guards/errors.guard'
 
 export interface IHasThrowerErrorGuard {
   throwerErrorGuard: ThrowerErrorGuard
@@ -11,11 +11,14 @@ export function CatchDatabaseError() {
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
-    const originalMethod = descriptor.value
+    const originalMethod = descriptor.value as (
+      this: IHasThrowerErrorGuard,
+      ...args: unknown[]
+    ) => unknown
 
     descriptor.value = async function (this: IHasThrowerErrorGuard, ...args: unknown[]) {
       try {
-        return originalMethod.apply(this, args)
+        return await originalMethod.apply(this, args)
       } catch (error) {
         if (!this.throwerErrorGuard) {
           throw new Error(

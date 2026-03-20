@@ -23,7 +23,7 @@ export class AdminStrategy extends PassportStrategy(HeaderAPIKeyStrategy, 'admin
       const secretBuffer = Buffer.from(secretKey)
 
       return timingSafeEqual(apiKeyBuffer, secretBuffer)
-    } catch (error) {
+    } catch {
       return false
     }
   }

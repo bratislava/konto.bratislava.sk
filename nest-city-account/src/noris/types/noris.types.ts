@@ -43,7 +43,7 @@ export type EdeskRecord = z.infer<typeof EdeskRecordSchema>
  *
  */
 
-export type UpdateEdeskChecks = {
+export interface UpdateEdeskChecks {
   idNoris: number
   lastCheck: Date
 

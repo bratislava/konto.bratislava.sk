@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { toLogfmt } from 'src/utils/logging'
+
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
-import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
-import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CognitoGetUserData, CognitoUserAccountTypesEnum, CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { PaasMpaRegisterResponseDto, PaasMpaRegisterStatusEnum } from './dtos/paas-mpa.dto'
-import { toLogfmt } from 'src/utils/logging'
 
 @Injectable()
 export class PaasMpaService {
@@ -38,41 +38,40 @@ export class PaasMpaService {
   }> {
     const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
 
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const foundUser = await this.prisma.user.findUnique({
-        where: {
-          externalId: user.idUser,
-          ...ACTIVE_USER_FILTER,
-        },
-        select: {
-          birthNumber: true,
-        },
-      })
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const foundUser = await this.prisma.user.findUnique({
+          where: {
+            externalId: user.idUser,
+            ...ACTIVE_USER_FILTER,
+          },
+          select: {
+            birthNumber: true,
+          },
+        })
 
-      return { birthNumber: foundUser?.birthNumber ?? undefined }
-    }
-
-    if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const legalPerson = await this.prisma.legalPerson.findUnique({
-        where: {
-          externalId: user.idUser,
-        },
-        select: {
-          birthNumber: true,
-          ico: true,
-        },
-      })
-
-      return {
-        birthNumber: legalPerson?.birthNumber ?? undefined,
-        ico: legalPerson?.ico ?? undefined,
+        return { birthNumber: foundUser?.birthNumber ?? undefined }
       }
-    }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const legalPerson = await this.prisma.legalPerson.findUnique({
+          where: {
+            externalId: user.idUser,
+          },
+          select: {
+            birthNumber: true,
+            ico: true,
+          },
+        })
 
-    return {}
+        return {
+          birthNumber: legalPerson?.birthNumber ?? undefined,
+          ico: legalPerson?.ico ?? undefined,
+        }
+      }
+      default:
+        return {}
+    }
   }
 
   private async upsertBloomreachContactAndHandleError(
@@ -105,6 +104,7 @@ export class PaasMpaService {
     phoneNumber: string
   ): Promise<boolean> {
     for (let attempt = 1; attempt <= 2; attempt++) {
+      // eslint-disable-next-line no-await-in-loop -- intentional sequential retries
       const trackedInBloomreach = await this.bloomreachService.trackCustomer(cognitoId, phoneNumber)
 
       if (trackedInBloomreach) {
@@ -162,7 +162,7 @@ export class PaasMpaService {
 
     const trackedInBloomreach = await this.trackCustomerPhoneWithRetry(user.idUser, phoneNumber)
 
-    if (trackedInBloomreach === false) {
+    if (!trackedInBloomreach) {
       return {
         status: PaasMpaRegisterStatusEnum.BLOOMREACH_SYNC_FAILED,
         verificationState,

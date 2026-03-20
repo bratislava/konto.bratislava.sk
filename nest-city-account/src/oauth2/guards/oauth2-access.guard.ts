@@ -2,14 +2,15 @@ import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 import { Request } from 'express'
-import { CLIENT_NAME_KEY } from '../decorators/client-name.decorator'
-import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
+
 import { decryptData } from '../../utils/crypto'
+import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { deserializeTokenData } from '../../utils/tokenSerialization'
+import { CLIENT_NAME_KEY } from '../decorators/client-name.decorator'
+import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 
 /**
  * Guard that validates OAuth2 access tokens using Passport
@@ -36,7 +37,7 @@ export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
     const clientName = this.reflector.getAllAndOverride<string>(CLIENT_NAME_KEY, [
       context.getHandler(),
       context.getClass(),
-    ]) as string
+    ])
 
     if (!clientName) {
       throw this.throwerErrorGuard.UnauthorizedException(
@@ -67,7 +68,7 @@ export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
     }
 
     const encryptedToken = authHeader.substring(7)
-    let tokenClientId: string | undefined = undefined
+    let tokenClientId: string | undefined
     try {
       const { token, clientId } = deserializeTokenData(decryptData(encryptedToken))
       tokenClientId = clientId

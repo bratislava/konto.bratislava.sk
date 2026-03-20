@@ -1,27 +1,29 @@
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
+import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 
-import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
+import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
+import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.dto'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
+import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { MailgunService } from '../mailgun/mailgun.service'
 import { NasesService } from '../nases/nases.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
+import { UserTierService } from '../user/user-tier.service'
 import { decryptData, encryptData } from '../utils/crypto'
-import TokenSubservice from './utils/subservice/token.subservice'
 import {
   CognitoGetUserData,
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import {
-  SendToQueueErrorsEnum,
-  SendToQueueErrorsResponseEnum,
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from './verification.errors.enum'
+import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { MailgunService } from '../mailgun/mailgun.service'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { RABBIT_MQ } from './constants'
 import { RabbitMessageDto } from './dtos/rabbit.dto'
 import {
@@ -31,20 +33,18 @@ import {
   ResponseVerificationIdentityCardMessageEnum,
   ResponseVerificationIdentityCardToQueueDto,
 } from './dtos/requests.verification.dto'
-import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
-import { VerificationSubservice } from './utils/subservice/verification.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
-import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
-import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import { VerificationReturnType } from './types'
-import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
-import { UserTierService } from '../user/user-tier.service'
-import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.dto'
-import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { VerificationDataForUserResponseDto } from './dtos/verification-response.dto'
+import { VerificationReturnType } from './types'
+import TokenSubservice from './utils/subservice/token.subservice'
+import { VerificationSubservice } from './utils/subservice/verification.subservice'
+import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
+import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
+import {
+  SendToQueueErrorsEnum,
+  SendToQueueErrorsResponseEnum,
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from './verification.errors.enum'
 
 @Injectable()
 export class VerificationService {
@@ -86,44 +86,43 @@ export class VerificationService {
         status: 'OK',
         message: ResponseVerificationIdentityCardMessageEnum.ALREADY_VERIFIED,
       }
-    } else {
-      try {
-        await this.userTierService.changeTier(
-          user.idUser,
-          CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
-          user['custom:account_type']
-        )
-        await this.bloomreachService.trackCustomer(user.idUser)
-      } catch (error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-          undefined,
-          error
-        )
-      }
+    }
+    try {
+      await this.userTierService.changeTier(
+        user.idUser,
+        CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
+        user['custom:account_type']
+      )
+      await this.bloomreachService.trackCustomer(user.idUser)
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+        SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        undefined,
+        error
+      )
+    }
 
-      try {
-        await this.verificationDataSubservice.createVerificationUserInQueue(user)
-        await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.ROUTING_KEY, {
-          msg: { data, user, type },
-        })
+    try {
+      await this.verificationDataSubservice.createVerificationUserInQueue(user)
+      await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.ROUTING_KEY, {
+        msg: { data, user, type },
+      })
 
-        await this.addEncryptedVerificationDataToDatabase(user, data, type)
-      } catch (error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
-          SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
-          undefined,
-          error
-        )
-      }
+      await this.addEncryptedVerificationDataToDatabase(user, data, type)
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
+        SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
+        undefined,
+        error
+      )
+    }
 
-      return {
-        statusCode: 200,
-        status: 'OK',
-        message: ResponseVerificationIdentityCardMessageEnum.SEND_TO_QUEUE,
-      }
+    return {
+      statusCode: 200,
+      status: 'OK',
+      message: ResponseVerificationIdentityCardMessageEnum.SEND_TO_QUEUE,
     }
   }
 
@@ -164,23 +163,25 @@ export class VerificationService {
       }
     },
   })
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(_: unknown, amqpMessage: ConsumeMessage) {
     const data = JSON.parse(amqpMessage.content.toString()) as RabbitMessageDto
     let verification: VerificationReturnType
     try {
-      if (data.msg.type === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-        const body = data.msg.data as RequestBodyVerifyIdentityCardDto
-        verification = await this.verificationSubservice.verifyIdentityCard(data.msg.user, body)
-      } else if (
-        data.msg.type === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-        data.msg.type === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-      ) {
-        const body = data.msg.data as RequestBodyVerifyWithRpoDto
-        verification = await this.verificationSubservice.verifyIcoIdentityCard(data.msg.user, body)
-      } else {
-        this.logger.error('Not exists type of RPO or RFO verification', data.msg.user.sub)
-        return new Nack()
+      switch (data.msg.type) {
+        case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+          const body = data.msg.data as RequestBodyVerifyIdentityCardDto
+          verification = await this.verificationSubservice.verifyIdentityCard(data.msg.user, body)
+          break
+        }
+        case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+        case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+          const body = data.msg.data as RequestBodyVerifyWithRpoDto
+          verification = await this.verificationSubservice.verifyIcoIdentityCard(data.msg.user, body)
+          break
+        }
+        default:
+          this.logger.error('Not exists type of RPO or RFO verification', data.msg.user.sub)
+          return new Nack()
       }
     } catch (error) {
       // All errors that are thrown should be retryable. Otherwise, return {success: false}.
@@ -216,33 +217,32 @@ export class VerificationService {
         },
       })
       return new Nack()
-    } else {
-      try {
-        const firstName = data.msg.user?.given_name
-        const email = data.msg.user?.email
-        if (!email) {
-          this.logger.error(
-            "Error - no email sent, couldn't find email in user object: ",
-            JSON.stringify(data.msg.user)
-          )
-        } else {
-          await this.mailgunService.sendEmail('2023-identity-check-successful', {
-            to: email,
-            variables: {
-              firstName: firstName ?? null,
-            },
-          })
-        }
-      } catch (error) {
-        this.logger.error('Error while sending verification success email: ', error)
-      }
-      this.logger.log({
-        type: 'ALL GOOD - 200',
-        user: data.msg.user,
-        cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
-      })
-      return new Nack()
     }
+    try {
+      const firstName = data.msg.user.given_name
+      const email = data.msg.user.email
+      if (!email) {
+        this.logger.error(
+          "Error - no email sent, couldn't find email in user object: ",
+          JSON.stringify(data.msg.user)
+        )
+      } else {
+        await this.mailgunService.sendEmail('2023-identity-check-successful', {
+          to: email,
+          variables: {
+            firstName: firstName ?? null,
+          },
+        })
+      }
+    } catch (error) {
+      this.logger.error('Error while sending verification success email: ', error)
+    }
+    this.logger.log({
+      type: 'ALL GOOD - 200',
+      user: data.msg.user,
+      cognitoData: newUserData[CognitoUserAttributesEnum.TIER],
+    })
+    return new Nack()
   }
 
   private async handleVerificationFailed(
@@ -271,34 +271,33 @@ export class VerificationService {
         },
       })
       return new Nack()
-    } else {
-      try {
-        const firstName = data.msg.user?.given_name
-        const email = data.msg.user?.email
-        if (!email) {
-          this.logger.error(
-            "Error - no email sent, couldn't find given_name or email in user object: ",
-            JSON.stringify(data.msg.user)
-          )
-        } else {
-          await this.mailgunService.sendEmail('2023-identity-check-rejected', {
-            to: email,
-            variables: {
-              firstName: firstName ?? null,
-            },
-          })
-        }
-        return new Nack()
-      } catch (error) {
-        this.logger.error('Error while sending verification failed email: ', error)
-      }
-      this.logger.error({
-        type: 'Not Verified without error - 200',
-        user: data.msg.user,
-        error: verification,
-      })
-      return new Nack()
     }
+    try {
+      const firstName = data.msg.user.given_name
+      const email = data.msg.user.email
+      if (!email) {
+        this.logger.error(
+          "Error - no email sent, couldn't find given_name or email in user object: ",
+          JSON.stringify(data.msg.user)
+        )
+      } else {
+        await this.mailgunService.sendEmail('2023-identity-check-rejected', {
+          to: email,
+          variables: {
+            firstName: firstName ?? null,
+          },
+        })
+      }
+      return new Nack()
+    } catch (error) {
+      this.logger.error('Error while sending verification failed email: ', error)
+    }
+    this.logger.error({
+      type: 'Not Verified without error - 200',
+      user: data.msg.user,
+      error: verification,
+    })
+    return new Nack()
   }
 
   private async handleVerificationError(options: {
@@ -339,7 +338,7 @@ export class VerificationService {
 
     const base64Payload = oboToken.split('.')[1]
     const payloadBuffer = Buffer.from(base64Payload, 'base64')
-    const payload = JSON.parse(payloadBuffer.toString())
+    const payload = JSON.parse(payloadBuffer.toString()) as { sub: string; actor: { sub: string } }
     const type = payload.sub.split(':')[0]
 
     const birthNumber = extractBirthNumberFromUri(payload.actor.sub)
@@ -440,13 +439,16 @@ export class VerificationService {
     data: RequestBodyVerifyIdentityCardDto | RequestBodyVerifyWithRpoDto,
     type: CognitoUserAccountTypesEnum
   ): Promise<void> {
-    if (type === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      await this.addEncryptedIdentityCardToDatabase(user, data)
-    } else if (
-      type === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      type === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      await this.addEncryptedIdentityCardIcoToDatabase(user, data as RequestBodyVerifyWithRpoDto)
+    switch (type) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        await this.addEncryptedIdentityCardToDatabase(user, data)
+        break
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        await this.addEncryptedIdentityCardIcoToDatabase(user, data as RequestBodyVerifyWithRpoDto)
+        break
+      default:
+        break
     }
   }
 
@@ -544,7 +546,7 @@ export class VerificationService {
           ) {
             result.isVerified = true
           }
-        } catch (error) {
+        } catch {
           result.isInCognito = false
         }
       }
@@ -589,7 +591,7 @@ export class VerificationService {
           ) {
             result.isVerified = true
           }
-        } catch (error) {
+        } catch {
           result.isInCognito = false
         }
       }

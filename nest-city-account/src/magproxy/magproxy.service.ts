@@ -142,8 +142,8 @@ export class MagproxyService {
         }
       )
       // TODO this validation belongs to magproxy
-      // TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
-      const validatedData = this.validateRfoDataFormat(result.data.items)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
+      const validatedData = this.validateRfoDataFormat(result?.data?.items)
       return { success: true as const, data: validatedData }
     } catch (error) {
       if (!isAxiosError(error)) {

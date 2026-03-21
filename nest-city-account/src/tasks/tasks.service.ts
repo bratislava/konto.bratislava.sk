@@ -4,6 +4,7 @@ import HandleErrors from '../utils/decorators/errorHandler.decorators'
 import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
 import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
 import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'
+import { BloomreachOutboxSubservice } from './subservices/bloomreach-outbox.subservice'
 
 const bratislavaTimezone = 'Europe/Bratislava'
 
@@ -16,7 +17,8 @@ export class TasksService {
   constructor(
     private readonly cleanupTasksSubservice: CleanupTasksSubservice,
     private readonly edeskTasksSubservice: EdeskTasksSubservice,
-    private readonly taxDeliveryMethodsTasksSubservice: TaxDeliveryMethodsTasksSubservice
+    private readonly taxDeliveryMethodsTasksSubservice: TaxDeliveryMethodsTasksSubservice,
+    private readonly bloomreachOutboxSubservice: BloomreachOutboxSubservice
   ) {}
 
   /**
@@ -123,5 +125,15 @@ export class TasksService {
   @HandleErrors('Cron')
   async sendDailyDeliveryMethodSummaries() {
     return this.taxDeliveryMethodsTasksSubservice.sendDailyDeliveryMethodSummaries()
+  }
+
+  /**
+   * Processes the bloomreach outbox.
+   * Runs every minute.
+   */
+  @Cron(CronExpression.EVERY_MINUTE)
+  @HandleErrors('CronError')
+  async processBloomreachOutbox(): Promise<void> {
+    return this.bloomreachOutboxSubservice.processBloomreachOutbox()
   }
 }

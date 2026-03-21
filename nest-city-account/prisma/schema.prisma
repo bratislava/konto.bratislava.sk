@@ -70,7 +70,7 @@ model User {
   createdAt                            DateTime                       @default(now())
   updatedAt                            DateTime                       @updatedAt
   registeredAt                         DateTime?
-  externalId                           String?                        @unique
+  externalId                           String                         @unique @db.Uuid
   email                                String?                        @unique
   ifo                                  String?                        @unique
   birthNumber                          String?                        @unique
@@ -83,9 +83,7 @@ model User {
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
   lastTaxDeliveryMethodsUpdateYear     Int?
-  taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery
-  taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
   lastTaxDeliveryMethodsUpdateTry      DateTime                       @default(now())
@@ -165,7 +163,7 @@ model LegalPerson {
   createdAt                          DateTime                       @default(now())
   updatedAt                          DateTime                       @updatedAt
   registeredAt                       DateTime?
-  externalId                         String?                        @unique
+  externalId                         String                         @unique @db.Uuid
   email                              String?                        @unique
   ico                                String?
   birthNumber                        String?
@@ -261,4 +259,15 @@ model OAuth2Data {
   accessTokenExpiresAt DateTime?
   idTokenEnc           String?
   refreshTokenEnc      String?
+}
+
+model BloomreachOutbox {
+  id          String   @id @default(uuid()) @db.Uuid
+  createdAt   DateTime @default(now())
+  processedAt DateTime?
+  attempts    Int      @default(0)
+  lastError   String?
+  eventType   String   // 'TRACK_CUSTOMER'
+  externalId  String   @db.Uuid
+  phoneNumber String?  // optional extra payload for trackCustomer
 }

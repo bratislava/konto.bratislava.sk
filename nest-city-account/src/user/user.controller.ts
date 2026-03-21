@@ -201,7 +201,7 @@ export class UserController {
     if (
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
-      const result: ResponseUserDataDto = await this.userService.subUnsubUser(
+      const result = await this.userService.subUnsubUser(
         user,
         GDPRSubTypeEnum.subscribe,
         data.gdprData
@@ -214,7 +214,7 @@ export class UserController {
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
         CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
+      const result = await this.userService.subUnsubLegalPerson(
         user,
         GDPRSubTypeEnum.subscribe,
         data.gdprData
@@ -228,6 +228,7 @@ export class UserController {
     )
   }
 
+  // TODO: same as endpoint /subscribe -> refactor
   @HttpCode(200)
   @ApiOperation({
     summary: 'Unsubscribe logged user',
@@ -253,7 +254,7 @@ export class UserController {
     if (
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
-      const result: ResponseUserDataDto = await this.userService.subUnsubUser(
+      const result = await this.userService.subUnsubUser(
         user,
         GDPRSubTypeEnum.unsubscribe,
         data.gdprData
@@ -266,7 +267,7 @@ export class UserController {
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
         CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
+      const result = await this.userService.subUnsubLegalPerson(
         user,
         GDPRSubTypeEnum.unsubscribe,
         data.gdprData

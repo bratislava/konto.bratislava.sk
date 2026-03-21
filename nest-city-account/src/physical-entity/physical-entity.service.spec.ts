@@ -8,6 +8,7 @@ import { PhysicalEntity } from '@prisma/client'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
 
 const mockBirthNumber = '123456/7890'
 const mockEntityID = '11cc6139-f660-4173-92e1-0d7b9cfa7a24'
@@ -41,6 +42,7 @@ describe('PhysicalEntityService', () => {
         { provide: PrismaService, useValue: prismaMock },
         { provide: MagproxyService, useValue: MagproxyServiceMock },
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
+        { provide: BloomreachService, useValue: createMock<BloomreachService>() },
       ],
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)
@@ -101,6 +103,19 @@ describe('PhysicalEntityService', () => {
       expect(loggerSpy).toHaveBeenCalledWith(
         `Entity with birth number ${mockBirthNumber} does not exist.`
       )
+    })
+  })
+  describe('enqueue', () => {
+    it('should update the successful active Edesk update in the database', async () => {
+      // const mockSuccessArray = [{ uri: 'https://example.com', success: true }]
+      // jest.spyOn(prismaMock.physicalEntity, 'update').mockResolvedValue({ ...mockPhysicalEntity, activeEdesk: true })
+      // jest.spyOn(BloomreachService, 'enqueueTrackCustomerToBloomreachOutbox').mockResolvedValue({ id: '123' })
+      // await service.updateSuccessfulActiveEdeskUpdateInDatabase(mockSuccessArray)
+      // expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({ where: { id: mockEntityID }, data: { activeEdesk: true } })
+      // expect(BloomreachService.enqueueTrackCustomerToBloomreachOutbox).toHaveBeenCalledWith(mockSuccessArray)
+      // if updateSuccessfulActiveEdeskUpdateInDatabase is called
+      // if update is called
+      // if enqueueTrackCustomerToBloomreachOutbox is called with the correct externalId
     })
   })
 })

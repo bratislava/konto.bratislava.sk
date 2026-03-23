@@ -1,5 +1,6 @@
 import { Trans, useTranslation } from 'next-i18next'
 import {
+  InstallmentPaidStatusEnum,
   ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
   TaxStatusEnum,
   TaxType,
@@ -21,11 +22,25 @@ const TaxFeePaymentMethods = () => {
   const { taxData } = useTaxFee()
   const { paidStatus, oneTimePayment, installmentPayment, overallBalance } = taxData
 
+  const firstInstallment = installmentPayment.installments?.[0]
+  const isFirstInstallmentPaid =
+    firstInstallment?.status === InstallmentPaidStatusEnum.Paid ||
+    firstInstallment?.status === InstallmentPaidStatusEnum.OverPaid
+
   const paymentPagePath = ROUTES.TAXES_AND_FEES_PAYMENT({
     year: taxData.year,
     type: taxData.type,
     order: taxData.order,
   })
+
+  // If first installment is paid, there is no need to show the subtitle with due date for the one-time payment
+  const oneTimePaymentSubtitle: string | undefined = isFirstInstallmentPaid
+    ? undefined
+    : oneTimePayment.dueDate
+      ? t('tax_detail_section.tax_payment_rest_subtitle', {
+          date: formatDate(oneTimePayment.dueDate),
+        })
+      : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">
@@ -47,15 +62,7 @@ const TaxFeePaymentMethods = () => {
               />
             )
           }
-          subtitle={
-            // only first installment is calculated, others are hardcoded so they will always be available for DzN,
-            // how date calculation works for PKO is not yet determined same in PaymentSchedule
-            oneTimePayment.dueDate
-              ? t('tax_detail_section.tax_payment_rest_subtitle', {
-                  date: formatDate(oneTimePayment.dueDate),
-                })
-              : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
-          }
+          subtitle={oneTimePaymentSubtitle}
           amount={overallBalance}
           buttonText={
             paidStatus === TaxStatusEnum.PartiallyPaid

@@ -10,8 +10,8 @@ import prismaMock from '../../../../test/singleton'
 
 describe('UserDataSubservice', () => {
   let userDataSubservice: UserDataSubservice
-  let bloomreachSubservice: BloomreachService
   let prisma: typeof prismaMock
+  let bloomreachService: BloomreachService
 
   const userId = 'user-123'
   const userExternalId = 'ext-123'
@@ -47,8 +47,8 @@ describe('UserDataSubservice', () => {
     }).compile()
 
     userDataSubservice = module.get<UserDataSubservice>(UserDataSubservice)
-    bloomreachSubservice = module.get<BloomreachService>(BloomreachService)
     prisma = module.get(PrismaService)
+    bloomreachService = module.get(BloomreachService)
   })
 
   afterEach(() => {
@@ -91,7 +91,7 @@ describe('UserDataSubservice', () => {
   })
 
   describe('changeUserGdprData', () => {
-    it('should call enqueueTrackCustomerToBloomreachOutbox when gdprData contains tax delivery data (category TAXES, type FORMAL_COMMUNICATION)', async () => {
+    it('should call transaction or enqueueTrackCustomerToBloomreachOutbox when gdprData contains tax delivery data (category TAXES, type FORMAL_COMMUNICATION)', async () => {
       const gdprData = [
         {
           ...gdprParams,
@@ -102,16 +102,17 @@ describe('UserDataSubservice', () => {
         id: userId,
         externalId: userExternalId,
       } as unknown as User)
-      prisma.userGdprData.createMany.mockResolvedValue({ count: 1 })
-
-      const processDeliverySpy = jest.spyOn(
-        bloomreachSubservice,
-        'enqueueTrackCustomerToBloomreachOutbox'
+      ;(prisma.$transaction as unknown as jest.Mock).mockImplementation(
+        (callback: (tx: typeof prismaMock) => unknown) => callback(prismaMock)
       )
+      prisma.userGdprData.createMany.mockResolvedValue({ count: 1 } as never)
 
       await userDataSubservice.changeUserGdprData(userId, gdprData)
-
-      expect(processDeliverySpy).toHaveBeenCalledWith(userExternalId)
+      expect(prisma.$transaction).toHaveBeenCalled()
+      expect(bloomreachService.enqueueTrackCustomerToBloomreachOutbox).toHaveBeenCalledWith(
+        prismaMock,
+        userExternalId
+      )
     })
   })
 })

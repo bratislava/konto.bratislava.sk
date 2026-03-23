@@ -9,6 +9,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { UpvsIdentityByUriSuccessType } from 'src/nases/nases.service'
 
 const mockBirthNumber = '123456/7890'
 const mockEntityID = '11cc6139-f660-4173-92e1-0d7b9cfa7a24'
@@ -30,6 +31,7 @@ const mockPhysicalEntity: PhysicalEntity = {
 
 describe('PhysicalEntityService', () => {
   let service: PhysicalEntityService
+  let bloomreachService: BloomreachService
   const MagproxyServiceMock = createMock<MagproxyService>()
   let consoleSpy: jest.SpyInstance
   beforeEach(async () => {
@@ -46,6 +48,7 @@ describe('PhysicalEntityService', () => {
       ],
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)
+    bloomreachService = module.get<BloomreachService>(BloomreachService)
     consoleSpy = jest.spyOn(console, 'log')
     consoleSpy.mockImplementation(() => {})
   })
@@ -105,17 +108,64 @@ describe('PhysicalEntityService', () => {
       )
     })
   })
-  describe('enqueue', () => {
-    it('should update the successful active Edesk update in the database', async () => {
-      // const mockSuccessArray = [{ uri: 'https://example.com', success: true }]
-      // jest.spyOn(prismaMock.physicalEntity, 'update').mockResolvedValue({ ...mockPhysicalEntity, activeEdesk: true })
-      // jest.spyOn(BloomreachService, 'enqueueTrackCustomerToBloomreachOutbox').mockResolvedValue({ id: '123' })
-      // await service.updateSuccessfulActiveEdeskUpdateInDatabase(mockSuccessArray)
-      // expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({ where: { id: mockEntityID }, data: { activeEdesk: true } })
-      // expect(BloomreachService.enqueueTrackCustomerToBloomreachOutbox).toHaveBeenCalledWith(mockSuccessArray)
-      // if updateSuccessfulActiveEdeskUpdateInDatabase is called
-      // if update is called
-      // if enqueueTrackCustomerToBloomreachOutbox is called with the correct externalId
+  describe('updateSuccessfulActiveEdeskUpdateInDatabase', () => {
+    const mockSuccessArray: UpvsIdentityByUriSuccessType[] = [
+      {
+        uri: 'https://example.com',
+        physicalEntityId: mockEntityID,
+        data: { upvs: { edesk_status: 'deliverable' } } as UpvsIdentityByUriSuccessType['data'],
+      },
+    ]
+
+    it('should run a transaction, update physical entity, and enqueue Bloomreach when user has externalId', async () => {
+      const userExternalId = 'user-ext-123'
+      prismaMock.physicalEntity.findUnique.mockResolvedValue({
+        user: { externalId: userExternalId },
+      } as never)
+      ;(prismaMock.$transaction as unknown as jest.Mock).mockImplementation(
+        (callback: (tx: typeof prismaMock) => unknown) => callback(prismaMock)
+      )
+      prismaMock.physicalEntity.update.mockResolvedValue({
+        ...mockPhysicalEntity,
+        activeEdesk: true,
+      })
+
+      await service.updateSuccessfulActiveEdeskUpdateInDatabase(mockSuccessArray)
+
+      expect(prismaMock.physicalEntity.findUnique).toHaveBeenCalledWith({
+        where: { id: mockEntityID },
+        select: { user: { select: { externalId: true } } },
+      })
+      expect(prismaMock.$transaction).toHaveBeenCalled()
+      expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
+        where: { id: mockEntityID },
+        data: expect.objectContaining({
+          activeEdesk: true,
+          activeEdeskUpdateFailedAt: null,
+          activeEdeskUpdateFailCount: 0,
+        }),
+      })
+      expect(bloomreachService.enqueueTrackCustomerToBloomreachOutbox).toHaveBeenCalledWith(
+        prismaMock,
+        userExternalId
+      )
+    })
+
+    it('should update in a transaction but not enqueue Bloomreach when user has no externalId', async () => {
+      prismaMock.physicalEntity.findUnique.mockResolvedValue({ user: null } as never)
+      ;(prismaMock.$transaction as unknown as jest.Mock).mockImplementation(
+        (callback: (tx: typeof prismaMock) => unknown) => callback(prismaMock)
+      )
+      prismaMock.physicalEntity.update.mockResolvedValue({
+        ...mockPhysicalEntity,
+        activeEdesk: true,
+      })
+
+      await service.updateSuccessfulActiveEdeskUpdateInDatabase(mockSuccessArray)
+
+      expect(prismaMock.$transaction).toHaveBeenCalled()
+      expect(prismaMock.physicalEntity.update).toHaveBeenCalled()
+      expect(bloomreachService.enqueueTrackCustomerToBloomreachOutbox).not.toHaveBeenCalled()
     })
   })
 })

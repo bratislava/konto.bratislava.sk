@@ -34,13 +34,14 @@ const TaxFeePaymentMethods = () => {
   })
 
   // If first installment is paid, there is no need to show the subtitle with due date for the one-time payment
+  const oneTimePaymentSubtitleText = oneTimePayment.dueDate
+    ? t('tax_detail_section.tax_payment_rest_subtitle', {
+        date: formatDate(oneTimePayment.dueDate),
+      })
+    : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
   const oneTimePaymentSubtitle: string | undefined = isFirstInstallmentPaid
     ? undefined
-    : oneTimePayment.dueDate
-      ? t('tax_detail_section.tax_payment_rest_subtitle', {
-          date: formatDate(oneTimePayment.dueDate),
-        })
-      : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
+    : oneTimePaymentSubtitleText
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">

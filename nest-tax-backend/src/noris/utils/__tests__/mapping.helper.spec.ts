@@ -130,7 +130,6 @@ describe('mapNorisToTaxInstallmentsData', () => {
     const mockNorisData: NorisRealEstateTax = {
       SPL4_2: '',
       SPL1: '100,00',
-      TXTSPL1: 'Single Payment',
     } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
@@ -140,7 +139,6 @@ describe('mapNorisToTaxInstallmentsData', () => {
       taxId: 1,
       amount: 10_000,
       order: 1,
-      text: 'Single Payment',
     })
   })
 
@@ -149,9 +147,6 @@ describe('mapNorisToTaxInstallmentsData', () => {
       SPL4_2: '50,00',
       SPL4_1: '30,00',
       SPL4_3: '20,00',
-      TXTSPL4_1: 'First Payment',
-      TXTSPL4_2: 'Second Payment',
-      TXTSPL4_3: 'Third Payment',
     } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
@@ -162,19 +157,16 @@ describe('mapNorisToTaxInstallmentsData', () => {
         taxId: 1,
         amount: 3000,
         order: 1,
-        text: 'First Payment',
       },
       {
         taxId: 1,
         amount: 5000,
         order: 2,
-        text: 'Second Payment',
       },
       {
         taxId: 1,
         amount: 2000,
         order: 3,
-        text: 'Third Payment',
       },
     ])
   })
@@ -184,9 +176,6 @@ describe('mapNorisToTaxInstallmentsData', () => {
       SPL4_2: '25,75',
       SPL4_1: '10,25',
       SPL4_3: '15,50',
-      TXTSPL4_1: 'First',
-      TXTSPL4_2: 'Second',
-      TXTSPL4_3: 'Third',
     } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
@@ -201,11 +190,7 @@ describe('mapNorisToTaxInstallmentsData', () => {
       SPL4_2: '25,75',
       SPL4_1: '10,25',
       SPL4_3: '15,50',
-      TXTSPL4_1: 'First',
-      TXTSPL4_2: 'Second',
-      TXTSPL4_3: 'Third',
       SPL4_4: '10,00',
-      TXTSPL4_4: 'Fourth',
     } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
@@ -215,7 +200,6 @@ describe('mapNorisToTaxInstallmentsData', () => {
       taxId: 1,
       amount: 1000,
       order: 4,
-      text: 'Fourth',
     })
   })
 })

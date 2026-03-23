@@ -55,15 +55,10 @@ export const createTestingRealEstateTaxMock = (
     obec_nazev_tb: 'test obec',
 
     // splátky (installments) data
-    TXTSPL1: 'TEST: Daň za rok je splatná do xx.yy',
     SPL1: norisData.taxTotal,
-    TXTSPL4_1: 'Test splatka1',
     SPL4_1: spl1.toFixed(2).replace('.', ','),
-    TXTSPL4_2: 'Test splatka2',
     SPL4_2: spl2.toFixed(2).replace('.', ','),
-    TXTSPL4_3: 'Test splatka3',
     SPL4_3: spl3.toFixed(2).replace('.', ','),
-    TXTSPL4_4: '',
     SPL4_4: '',
 
     // tax detail fields - mock only
@@ -179,15 +174,10 @@ export const createTestingCommunalWasteTaxMock = (
     akt_datum: new Date().toISOString().split('T')[0],
 
     // splátky (installments) data
-    TXTSPL1: 'TEST: Poplatok za rok je splatný do xx.yy',
     SPL1: norisData.taxTotal,
-    TXTSPL4_1: 'Test splatka1',
     SPL4_1: spl1.toFixed(2).replace('.', ','),
-    TXTSPL4_2: 'Test splatka2',
     SPL4_2: spl2.toFixed(2).replace('.', ','),
-    TXTSPL4_3: 'Test splatka3',
     SPL4_3: spl3.toFixed(2).replace('.', ','),
-    TXTSPL4_4: 'Test splatka4',
     SPL4_4: spl4.toFixed(2).replace('.', ','),
 
     forma_uhrady: 'I',

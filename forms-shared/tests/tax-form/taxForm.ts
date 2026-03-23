@@ -7,11 +7,8 @@ import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { screenshotTestTimeout } from '../../test-utils/consts'
-import { toMatchImageSnapshot } from 'jest-image-snapshot'
 import { getTaxXsd } from '../../src/tax-form/taxXsdXslt'
 import { formatValidateXmlResultErrors, validateXml } from '../../src/slovensko-sk/validateXml'
-
-expect.extend({ toMatchImageSnapshot })
 
 describe('taxForm', () => {
   const exampleFormPairs = getExampleFormPairs({

@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
@@ -6,7 +7,6 @@ import { ArrowLeftIcon } from '@/src/assets/ui-icons'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
-import Button from '@/src/components/simple-components/Button'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import cn from '@/src/utils/cn'
@@ -33,7 +33,7 @@ const BackButton = () => {
         onPress={() => router.back()}
         className="max-lg:mx-1"
       />
-      <div className="mx-6 h-6 border-r-2 max-lg:hidden" aria-hidden />
+      <div className="mx-6 h-6 border-r max-lg:hidden" aria-hidden />
     </>
   )
 }
@@ -98,7 +98,7 @@ export const AuthNavBar = ({
         className={cn(className, 'sticky top-0 left-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileNavbarRef}
       >
-        <div className="flex h-16 w-full items-center justify-between border-b-2 px-4">
+        <div className="flex h-16 w-full items-center justify-between border-b px-4">
           <div className="flex">
             {!backButtonHidden && <BackButton />}
             <Brand

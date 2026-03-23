@@ -240,10 +240,9 @@ export default class GinisAPIService {
   private async findAndUpdateContactInContactDatabase(
     request: GinNajdiEsuRequest,
     params: GinContactParams,
-    extended: boolean = false,
+    extended = false,
     contactDatabases: GinContactDatabase[] = this.defaultContactDatabaseOrder,
   ): Promise<string | undefined> {
-    // eslint-disable-next-line no-restricted-syntax
     for (const database of contactDatabases) {
       // contact database search must happen one by one, not in parallel, in specified order
       // eslint-disable-next-line no-await-in-loop

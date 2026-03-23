@@ -9,7 +9,7 @@ const MyApplicationCardsPlaceholder = () => {
 
   return (
     <SectionContainer>
-      <div className="-mx-4 mt-0 flex flex-col justify-around rounded-lg border-0 border-gray-200 pt-0 lg:-mx-8 lg:flex-row lg:border-2">
+      <div className="-mx-4 mt-0 flex flex-col justify-around rounded-lg border-0 border-gray-200 pt-0 lg:-mx-8 lg:flex-row lg:border">
         <div className="flex justify-center">
           <Icon className="h-[145px] w-[146px] sm:h-[296px] sm:w-[298px]" />
         </div>

@@ -433,9 +433,9 @@ url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAALooAA8AAAABb7gA
     border-style: var(--tw-border-style);
     border-width: 1px;
   }
-  .border-b-2 {
+  .border-b {
     border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 2px;
+    border-bottom-width: 1px;
   }
   .border-gray-200 {
     border-color: var(--color-gray-200);

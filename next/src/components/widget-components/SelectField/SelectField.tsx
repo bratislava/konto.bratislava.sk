@@ -149,7 +149,6 @@ const SelectField = <
   helptextMarkdown,
   helptextFooter,
   helptextFooterMarkdown,
-  tooltip,
   errorMessage,
   options,
   onChange = () => null,
@@ -173,8 +172,7 @@ const SelectField = <
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
-        tooltip={tooltip}
-        required={rest.required}
+        isRequired={rest.isRequired}
         errorMessage={errorMessage}
         displayOptionalLabel={displayOptionalLabel}
         htmlFor={id}
@@ -188,13 +186,14 @@ const SelectField = <
             value={value}
             onChange={onChange}
             options={options}
+            required={rest.isRequired}
             closeMenuOnSelect={!rest.isMulti}
             hideSelectedOptions={false}
             noOptionsMessage={() => t('SelectField.noOptions')}
             className="w-full"
             classNames={{
               control: ({ isFocused, isDisabled }) =>
-                cn('rounded-lg border-2 bg-white hover:cursor-pointer', {
+                cn('rounded-lg border bg-white hover:cursor-pointer', {
                   'border-negative-700': isError,
                   'border-gray-300': isDisabled && !isError,
                   'border-gray-900': isFocused && !isDisabled,
@@ -220,7 +219,7 @@ const SelectField = <
               clearIndicator: () => 'p-1.5 -m-1.5 rounded-md hover:bg-gray-100',
               indicatorSeparator: () => 'hidden',
               dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',
-              menu: () => 'py-2 mt-2 border-2 border-gray-900 bg-white rounded-lg',
+              menu: () => 'py-2 mt-2 border border-gray-900 bg-white rounded-lg',
               groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
               option: ({ isFocused }) =>
                 cn('flex! items-center justify-between px-5 py-3 hover:cursor-pointer', {

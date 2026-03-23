@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { parseDate } from '@internationalized/date'
 import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
@@ -8,7 +9,6 @@ import { Dialog, Popover } from 'react-aria-components'
 import { useDatePickerState } from 'react-stately'
 
 import { CalendarIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 import { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 
 import Calendar from './Calendar/Calendar'
@@ -22,29 +22,7 @@ export type DatePickerProps = FieldWrapperProps & {
 }
 
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
-  (
-    {
-      label,
-      disabled,
-      errorMessage,
-      required,
-      tooltip,
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      value,
-      minValue,
-      maxValue,
-      onChange = () => {},
-      customErrorPlace = false,
-      size,
-      labelSize,
-      displayOptionalLabel,
-      ...rest
-    },
-    forwardedRef,
-  ) => {
+  ({ value, minValue, maxValue, onChange = () => {}, ...rest }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const dateFieldRef = useObjectRef<HTMLDivElement>(null)
     const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
@@ -63,27 +41,22 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     }, [valueControlled])
 
     const state = useDatePickerState({
-      label,
-      errorMessage,
       value: parsedValue,
       onChange: (date) => setValueControlled(date ? date.toString() : null),
-      isRequired: required,
-      isDisabled: disabled,
       ...rest,
       shouldCloseOnSelect: false,
     })
-    const { fieldProps, buttonProps, calendarProps, dialogProps } = useDatePicker(
-      {
-        errorMessage,
-        minValue: minValue ? parseDate(minValue) : undefined,
-        maxValue: maxValue ? parseDate(maxValue) : undefined,
-        isDisabled: disabled,
-        label,
-        ...rest,
-      },
-      state,
-      ref,
-    )
+    const { fieldProps, buttonProps, calendarProps, dialogProps, errorMessageProps } =
+      useDatePicker(
+        {
+          minValue: minValue ? parseDate(minValue) : undefined,
+          maxValue: maxValue ? parseDate(maxValue) : undefined,
+          isDisabled: rest.isDisabled,
+          ...rest,
+        },
+        state,
+        ref,
+      )
     const buttonPropsFixed = {
       ...buttonProps,
       children: undefined,
@@ -103,18 +76,12 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     return (
       <div className="relative" ref={ref}>
         <DateField
+          ref={dateFieldRef}
           {...fieldProps}
-          label={label}
-          helptext={helptext}
-          helptextMarkdown={helptextMarkdown}
-          helptextFooter={helptextFooter}
-          helptextFooterMarkdown={helptextFooterMarkdown}
-          required={required}
-          disabled={disabled}
-          tooltip={tooltip}
-          errorMessage={errorMessage}
+          {...rest}
+          errorMessage={rest.errorMessage}
+          errorMessageProps={errorMessageProps}
           isOpen={state?.isOpen}
-          customErrorPlace={customErrorPlace}
           popover={
             <>
               {state?.isOpen && (
@@ -134,15 +101,11 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
               )}
             </>
           }
-          size={size}
-          labelSize={labelSize}
-          displayOptionalLabel={displayOptionalLabel}
-          ref={dateFieldRef}
         >
           <Button
             variant="icon-wrapped-negative-margin"
             {...buttonPropsFixed}
-            isDisabled={disabled}
+            isDisabled={rest.isDisabled}
             icon={<CalendarIcon />}
             // TODO investigate why t can return undefined
             aria-label={t('DatePicker.aria.openCalendar') ?? 'Open calendar'}

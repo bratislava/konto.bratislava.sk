@@ -1,10 +1,10 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '@/src/components/simple-components/Button'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import logger from '@/src/frontend/utils/logger'
@@ -71,6 +71,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       data-cy="verification-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
+
         return onSubmit(data.verificationCode).catch((error_) =>
           logger.error('Submit failed', error_),
         )
@@ -92,7 +93,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             autoComplete="off"
             label={t('auth.fields.verification_code_label')}
             placeholder={t('auth.fields.verification_code_placeholder')}

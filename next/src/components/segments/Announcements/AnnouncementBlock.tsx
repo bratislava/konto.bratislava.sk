@@ -1,14 +1,14 @@
+import { Button, ButtonProps } from '@bratislava/component-library'
 import Image from 'next/image'
 import { ComponentProps } from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
-import Button, { AnchorProps, ButtonProps } from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 type AnnouncementBlockProps = {
   announcementContent?: string
   imageSrc?: ComponentProps<typeof Image>['src']
-  buttons?: (ButtonProps | AnchorProps)[]
+  buttons?: ButtonProps[]
   onPress?: () => void
   reversed?: boolean
   reversedMobile?: boolean
@@ -30,7 +30,7 @@ const AnnouncementBlock = ({
 
   return (
     <div
-      className={cn('flex w-full rounded-lg border-2 border-gray-200', {
+      className={cn('flex w-full rounded-lg border border-gray-200', {
         'flex-col': !reversedMobile,
         'flex-col-reverse': reversedMobile,
         'lg:flex-row-reverse': reversed,

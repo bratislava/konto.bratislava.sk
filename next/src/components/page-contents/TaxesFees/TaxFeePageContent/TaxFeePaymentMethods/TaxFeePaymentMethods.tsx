@@ -30,7 +30,7 @@ const TaxFeePaymentMethods = () => {
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">
       <div className="text-h5">{t('tax_detail_section.tax_payment_methods')}</div>
-      <div className="flex w-full flex-col rounded-lg border-2 border-gray-200">
+      <div className="flex w-full flex-col rounded-lg border border-gray-200">
         <TaxFeePaymentMethodsItem
           title={
             taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? (

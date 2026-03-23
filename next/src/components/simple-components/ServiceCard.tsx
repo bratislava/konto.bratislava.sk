@@ -1,7 +1,7 @@
+import { Button } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
 import { ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 import { LinkAnalyticsProps } from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
 
@@ -29,7 +29,7 @@ const ServiceCard = ({
   analyticsProps,
 }: ServiceCardBase) => {
   const style = cn(
-    'group relative flex w-full flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
+    'group relative flex w-full flex-col items-start gap-5 rounded-lg border border-solid border-gray-200 bg-gray-0 p-4',
     className,
     { 'cursor-pointer': buttonText },
     { 'cursor-default': !buttonText },
@@ -38,7 +38,7 @@ const ServiceCard = ({
   return (
     <div className={style}>
       <div className="flex w-full justify-between">
-        <div className="rounded-lg border-2 border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
+        <div className="rounded-lg border border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
         {tags && tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {tags.map((tagItem, index) => (

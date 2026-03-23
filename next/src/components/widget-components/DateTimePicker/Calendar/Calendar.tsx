@@ -1,10 +1,10 @@
+import { Button } from '@bratislava/component-library'
 import { createCalendar } from '@internationalized/date'
 import { useRef } from 'react'
 import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 
 import CalendarGrid from './CalendarGrid'
 
@@ -43,7 +43,7 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
     <div
       {...calendarProps}
       ref={ref}
-      className="w-full max-w-xs rounded-lg border-2 border-gray-700 bg-white"
+      className="w-full max-w-xs rounded-lg border border-gray-700 bg-white"
     >
       <div className="flex justify-between px-4 py-3">
         <Button
@@ -61,7 +61,7 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
         />
       </div>
       <CalendarGrid state={state} />
-      <div className="flex items-stretch justify-between border-t-2 border-gray-700 px-4 py-3">
+      <div className="flex items-stretch justify-between border-t border-gray-700 px-4 py-3">
         <Button onPress={onReset} variant="plain" size="small">
           Resetovať
         </Button>

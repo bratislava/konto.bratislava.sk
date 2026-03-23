@@ -1,8 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 import { EditIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 export interface SummaryRowData {
@@ -30,7 +30,7 @@ const SummaryRow = (props: SummaryRowProps) => {
     'border-red-500 [&>div>*]:block': data.isError,
     'border-gray-200 hover:[&>div>*]:block': !data.isError,
     'hover:border-gray-700': isEditable,
-    'border-b-2': hasBorder,
+    'border-b': hasBorder,
   })
 
   const labelClassName = cn('w-full flex-1', {

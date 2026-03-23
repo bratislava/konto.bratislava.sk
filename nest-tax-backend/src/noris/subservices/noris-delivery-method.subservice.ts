@@ -42,15 +42,7 @@ export class NorisDeliveryMethodSubservice {
         )
         return Promise.all(updatePromises)
       },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to update delivery methods',
-          undefined,
-          undefined,
-          error,
-        )
-      },
+      'Failed to update delivery methods',
     )
 
     return this.getBirthNumbersWithUpdatedDeliveryMethods(
@@ -104,42 +96,29 @@ export class NorisDeliveryMethodSubservice {
       return []
     }
 
-    return this.connectionService.withConnection(
-      async (connection) => {
-        const request = new mssql.Request(connection)
+    return this.connectionService.withConnection(async (connection) => {
+      const request = new mssql.Request(connection)
 
-        // Set parameters for the query
-        const subjectPlaceholders = updatedSubjects
-          .map((_, index) => `@subject${index}`)
-          .join(',')
-        updatedSubjects.forEach((subject, index) => {
-          request.input(`subject${index}`, subject)
-        })
-        const queryWithPlaceholders = getBirthNumbersForSubjects.replaceAll(
-          '@subjects',
-          subjectPlaceholders,
-        )
+      // Set parameters for the query
+      const subjectPlaceholders = updatedSubjects
+        .map((_, index) => `@subject${index}`)
+        .join(',')
+      updatedSubjects.forEach((subject, index) => {
+        request.input(`subject${index}`, subject)
+      })
+      const queryWithPlaceholders = getBirthNumbersForSubjects.replaceAll(
+        '@subjects',
+        subjectPlaceholders,
+      )
 
-        // Execute the query
-        const result = await request.query(queryWithPlaceholders)
-        const validatedResult = this.norisValidatorSubservice.validateNorisData(
-          NorisOrganizationResultSchema,
-          result.recordset,
-        )
-        return validatedResult.map((record: { ico: string }) =>
-          record.ico.trim(),
-        ) // Birth numbers are stored in `ico` column in the respective table
-      },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get birth numbers for updated subjects',
-          undefined,
-          error instanceof Error ? undefined : (error as string),
-          error instanceof Error ? error : undefined,
-        )
-      },
-    )
+      // Execute the query
+      const result = await request.query(queryWithPlaceholders)
+      const validatedResult = this.norisValidatorSubservice.validateNorisData(
+        NorisOrganizationResultSchema,
+        result.recordset,
+      )
+      return validatedResult.map((record: { ico: string }) => record.ico.trim()) // Birth numbers are stored in `ico` column in the respective table
+    }, 'Failed to get birth numbers for updated subjects')
   }
 
   async updateDeliveryMethods({ data }: RequestUpdateNorisDeliveryMethodsDto) {

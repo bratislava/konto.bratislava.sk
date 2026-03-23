@@ -1,7 +1,8 @@
+import { Button } from '@bratislava/component-library'
+
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import WarningIcon from '@/src/components/icon-components/WarningIcon'
-import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 export type ThankYouCardProps = {

@@ -15,7 +15,7 @@ const InputWidgetRJSF = ({
   id,
   label,
   options,
-  placeholder = '',
+  placeholder,
   required,
   value,
   disabled,
@@ -29,9 +29,7 @@ const InputWidgetRJSF = ({
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
-    tooltip,
     className,
-    resetIcon,
     leftIcon,
     inputType,
     size,
@@ -55,15 +53,13 @@ const InputWidgetRJSF = ({
         placeholder={placeholder}
         value={value ?? undefined}
         errorMessage={rawErrors}
-        required={required}
-        disabled={disabled || readonly}
+        isRequired={required}
+        isDisabled={disabled || readonly}
         helptext={helptext}
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
-        tooltip={tooltip}
         className={className}
-        resetIcon={resetIcon}
         leftIcon={leftIcon}
         onChange={handleOnChange}
         size={size}

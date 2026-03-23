@@ -1,7 +1,3 @@
-/* eslint-disable pii/no-email */
-/* eslint-disable no-secrets/no-secrets */
-/* eslint-disable unicorn/no-thenable */
-
 export const testJsonData = {
   prilohy: {
     projektovaDokumentacia: ['string'],
@@ -54,7 +50,3 @@ export const testJsonData = {
     stavbaPisomnosti: ['string', 'string'],
   },
 }
-
-/* eslint-enable unicorn/no-thenable */
-/* eslint-enable no-secrets/no-secrets */
-/* eslint-enable pii/no-email */

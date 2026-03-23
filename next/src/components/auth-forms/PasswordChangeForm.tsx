@@ -1,8 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '@/src/components/simple-components/Button'
 import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
@@ -65,7 +65,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <PasswordField
-            required
+            isRequired
             label={t('auth.fields.old_password_label')}
             placeholder={t('auth.fields.old_password_placeholder')}
             {...field}
@@ -78,7 +78,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <PasswordField
-            required
+            isRequired
             autoComplete="new-password"
             label={t('auth.fields.new_password_label')}
             placeholder={t('auth.fields.new_password_placeholder')}

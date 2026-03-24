@@ -43,8 +43,7 @@ export function proxy(request: NextRequest) {
 
     // Microsoft Clarity - script is loaded via strict-dynamic / tag manager
     // Docs: https://learn.microsoft.com/sk-sk/clarity/setup-and-installation/clarity-csp
-    'https://[a-z].clarity.ms',
-    'https://www.clarity.ms',
+    'https://*.clarity.ms',
     'https://c.bing.com',
 
     // Google Tag manager
@@ -72,7 +71,7 @@ export function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self' https://olo.sk;
-    frame-src 'src' https://consentcdn.cookiebot.eu;
+    frame-src 'self' https://consentcdn.cookiebot.eu;
     upgrade-insecure-requests;
     report-uri /api/csp-report;
     report-to ${CSP_REPORT_ENDPOINT_NAME};

@@ -1,70 +1,50 @@
 import { WidgetProps } from '@rjsf/utils'
 import { InputUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
 
-import InputField from '@/src/components/widget-components/InputField/InputField'
+import TextField from '@/src/components/widget-components/TextField/TextField'
+import { useRjsfAriaAdapter } from '@/src/components/widget-components/TextField/useRjsfAriaAdapter'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 interface InputWidgetRJSFProps extends WidgetProps {
   options: InputUiOptions
-  value: string | undefined
-  onChange: (value?: string) => void
+  // value: string
+  // onChange: (value: string) => void
 }
 
-const InputWidgetRJSF = ({
-  id,
-  label,
-  options,
-  placeholder,
-  required,
-  value,
-  disabled,
-  onChange,
-  rawErrors,
-  readonly,
-  name,
-}: InputWidgetRJSFProps) => {
+const InputWidgetRJSF = (props: InputWidgetRJSFProps) => {
+  const { id, label, options, placeholder, name } = props
   const {
     helptext,
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
     className,
-    leftIcon,
+    // leftIcon,
     inputType,
     size,
     labelSize,
   } = options
 
-  const handleOnChange = (newValue: string | undefined) => {
-    if (newValue && newValue !== '') {
-      onChange(newValue)
-    } else {
-      onChange()
-    }
-  }
+  const racProps = useRjsfAriaAdapter(props, {
+    emptyValue: '',
+  })
 
   return (
     <WidgetWrapper id={id} options={options}>
-      <InputField
+      <TextField
         name={name}
         label={label}
         type={inputType}
         placeholder={placeholder}
-        value={value ?? undefined}
-        errorMessage={rawErrors}
-        isRequired={required}
-        isDisabled={disabled || readonly}
+        {...racProps}
         helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
+        isMarkdownHelptext={helptextMarkdown}
         helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
+        isMarkdownHelptextFooter={helptextFooterMarkdown}
         className={className}
-        leftIcon={leftIcon}
-        onChange={handleOnChange}
+        // startIcon={leftIcon} // TODO: Not implemented in TextField yet
         size={size}
         labelSize={labelSize}
-        displayOptionalLabel
       />
     </WidgetWrapper>
   )

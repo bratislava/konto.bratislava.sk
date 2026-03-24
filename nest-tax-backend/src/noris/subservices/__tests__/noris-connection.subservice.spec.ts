@@ -137,7 +137,8 @@ describe('NorisConnectionSubservice', () => {
       'should log, increment config value, then throw when MSSQLError has code %s',
       async (code) => {
         const mssqlError = new MSSQLError('Connection problem', code)
-        const throwerErrorGuardSpy = jest.spyOn(
+        const badRequestSpy = jest.spyOn(throwerErrorGuard, 'BadRequestException')
+        const internalErrorSpy = jest.spyOn(
           throwerErrorGuard,
           'InternalServerErrorException',
         )
@@ -148,7 +149,7 @@ describe('NorisConnectionSubservice', () => {
           }, errorMessage),
         ).rejects.toThrow(errorMessage)
 
-        expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
+        expect(badRequestSpy).toHaveBeenCalledWith(
           CustomErrorNorisTypesEnum.CONNECTION_ERROR,
           expect.stringContaining(errorMessage),
           undefined,
@@ -158,19 +159,14 @@ describe('NorisConnectionSubservice', () => {
 
         expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
 
-        expect(throwerErrorGuardSpy).not.toHaveBeenCalledWith(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          expect.stringContaining(errorMessage),
-          undefined,
-          undefined,
-          mssqlError,
-        )
+        expect(internalErrorSpy).not.toHaveBeenCalled()
       },
     )
 
     it('should run increment SQL when config row may not exist', async () => {
       const mssqlError = new MSSQLError('Timeout', 'ETIMEOUT')
-      const throwerErrorGuardSpy = jest.spyOn(
+      const badRequestSpy = jest.spyOn(throwerErrorGuard, 'BadRequestException')
+      const internalErrorSpy = jest.spyOn(
         throwerErrorGuard,
         'InternalServerErrorException',
       )
@@ -182,13 +178,14 @@ describe('NorisConnectionSubservice', () => {
       ).rejects.toThrow()
 
       expect(prismaService.$executeRaw).toHaveBeenCalledTimes(1)
-      expect(throwerErrorGuardSpy).not.toHaveBeenCalledWith(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
+      expect(badRequestSpy).toHaveBeenCalledWith(
+        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         expect.stringContaining(errorMessage),
         undefined,
         undefined,
         mssqlError,
       )
+      expect(internalErrorSpy).not.toHaveBeenCalled()
     })
   })
 })

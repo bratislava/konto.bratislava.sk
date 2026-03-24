@@ -78,6 +78,10 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   SPL4_2: '37,96',
   SPL4_3: '37,96',
   SPL4_4: '',
+  datum_spl1: new Date('2025-07-19T00:00:00.000Z'),
+  datum_spl2: new Date('2025-09-01T00:00:00.000Z'),
+  datum_spl3: new Date('2025-11-01T00:00:00.000Z'),
+  datum_spl4: null,
   uhrazeno: 113.9,
   forma_uhrady: 'P',
 }
@@ -160,11 +164,15 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   SPL4_2: '',
   SPL4_3: '',
   SPL4_4: '',
+  datum_spl1: new Date('2024-03-08T00:00:00.000Z'),
+  datum_spl2: new Date('2024-09-01T00:00:00.000Z'),
+  datum_spl3: new Date('2024-11-01T00:00:00.000Z'),
+  datum_spl4: null,
   uhrazeno: 250.5,
   forma_uhrady: 'P',
 }
 
-export const testRealEstateTax3 = {
+export const testRealEstateTax3: NorisRealEstateTax = {
   stav_dokladu: 'Z',
   cislo_poradace: 54_321,
   cislo_subjektu: 345_678_901,
@@ -242,7 +250,11 @@ export const testRealEstateTax3 = {
   SPL4_2: '150,25',
   SPL4_3: '150,25',
   SPL4_4: '',
-  uhrazeno: '450.75',
+  datum_spl1: new Date('2025-07-19T00:00:00.000Z'),
+  datum_spl2: new Date('2025-09-01T00:00:00.000Z'),
+  datum_spl3: new Date('2025-11-01T00:00:00.000Z'),
+  datum_spl4: null,
+  uhrazeno: 450.75,
   forma_uhrady: 'P',
 }
 

@@ -67,6 +67,7 @@ interface TaxInstallment {
   taxId: number
   amount: number
   order: number
+  dueDate: Date
 }
 
 export const mapNorisToTaxInstallmentsData = (
@@ -74,13 +75,14 @@ export const mapNorisToTaxInstallmentsData = (
   taxId: number,
 ): TaxInstallment[] => {
   if (data.SPL4_2 === '') {
-    return [
+    return data.datum_spl1 ? [
       {
         taxId,
         amount: convertCurrencyToInt(data.SPL1),
         order: 1,
+        dueDate: data.datum_spl1,
       },
-    ]
+    ] : []
   }
 
   const installments = [
@@ -88,16 +90,19 @@ export const mapNorisToTaxInstallmentsData = (
       taxId,
       amount: convertCurrencyToInt(data.SPL4_1),
       order: 1,
+      dueDate: data.datum_spl1,
     },
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_2),
       order: 2,
+      dueDate: data.datum_spl2,
     },
     {
       taxId,
       amount: convertCurrencyToInt(data.SPL4_3),
       order: 3,
+      dueDate: data.datum_spl3,
     },
   ]
   if (data.SPL4_4) {
@@ -105,9 +110,10 @@ export const mapNorisToTaxInstallmentsData = (
       taxId,
       amount: convertCurrencyToInt(data.SPL4_4),
       order: 4,
+      dueDate: data.datum_spl4,
     })
   }
-  return installments
+  return installments.filter((installment): installment is TaxInstallment & { dueDate: Date } => installment.dueDate !== null)
 }
 
 export const mapDeliveryMethodToNoris = (

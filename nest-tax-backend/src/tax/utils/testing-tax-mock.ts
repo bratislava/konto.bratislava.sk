@@ -28,6 +28,10 @@ export const createTestingRealEstateTaxMock = (
   const spl2 = spl2InCents / 100
   const spl3 = spl3InCents / 100
   return {
+    datum_spl1: new Date(`${year}-07-19T00:00:00.000Z`),
+    datum_spl2: new Date(`${year}-09-01T00:00:00.000Z`),
+    datum_spl3: new Date(`${year}-11-01T00:00:00.000Z`),
+    datum_spl4: null,
     ICO_RC: norisData.fakeBirthNumber,
     subjekt_nazev: norisData.nameSurname,
     dan_spolu: norisData.taxTotal,
@@ -142,6 +146,10 @@ export const createTestingCommunalWasteTaxMock = (
   const spl4 = spl4InCents / 100
 
   return {
+    datum_spl1: new Date(`${year}-04-11T00:00:00.000Z`),
+    datum_spl2: new Date(`${year}-05-31T00:00:00.000Z`),
+    datum_spl3: new Date(`${year}-08-31T00:00:00.000Z`),
+    datum_spl4: new Date(`${year}-10-31T00:00:00.000Z`),
     stav_dokladu: norisData.isCancelled ? 'S' : 'Z',
     type: TaxType.KO,
     // base identification

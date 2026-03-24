@@ -109,6 +109,11 @@ WITH NorisRows AS (
             when  lcs.dane21_doklad.datum_spl4 is not null  then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl4 , 2)
             else  ''
         end  ) SPL4_4,
+    
+    lcs.dane21_doklad.datum_spl1,
+    lcs.dane21_doklad.datum_spl2,
+    lcs.dane21_doklad.datum_spl3,
+    lcs.dane21_doklad.datum_spl4,
 
     /* One row per (rodne_cislo, rok) when Noris returns duplicates; deterministic by document id */
     ROW_NUMBER() OVER (
@@ -543,6 +548,11 @@ export const getCommunalWasteTaxesFromNoris = `
             when  doklad.datum_spl4 is not null  then lcs.fn21_dec2string( doklad.suma_spl4 , 2)
             else  ''
         end  ) SPL4_4,
+
+        doklad.datum_spl1,
+        doklad.datum_spl2,
+        doklad.datum_spl3,
+        doklad.datum_spl4,
 
         /* --------- Texty splátok výmeru end ----------------------------*/
 

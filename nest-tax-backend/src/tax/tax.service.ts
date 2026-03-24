@@ -419,7 +419,6 @@ export class TaxService {
     return getTaxDetailPureForInstallmentGenerator({
       taxType,
       taxId: tax.id,
-      taxYear: year,
       today,
       overallAmount: tax.amount,
       variableSymbol: tax.variableSymbol,

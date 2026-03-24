@@ -13,6 +13,7 @@ import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
+  bratislavaTimeZone,
   DUE_DATE_OFFSET,
   parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
@@ -81,7 +82,13 @@ export default class NotificationsEventsService {
 
     const found = installmentDueDates
       .map(([key, dueDate]) => {
-        const installmentDate = parseInstallmentDueDate(now.year(), dueDate)
+        const dueDateWithYear = dayjs.tz(
+          `${now.year()}-${dueDate}`,
+          bratislavaTimeZone,
+        )
+        const installmentDate = parseInstallmentDueDate(
+          dueDateWithYear.toDate(),
+        )
         return { installmentNumber: INSTALLMENT_NUMBERS[key], installmentDate }
       })
       .find((installmentInfo) =>

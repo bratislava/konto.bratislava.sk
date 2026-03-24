@@ -34,7 +34,6 @@ export const taxDefinitions: TaxDefinitionsMap = {
   [TaxType.KO]: {
     type: TaxType.KO,
     isUnique: false,
-    numberOfInstallments: 4,
     installmentDueDates: {
       second: '05-31',
       third: '08-31',

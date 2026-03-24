@@ -127,9 +127,11 @@ describe('mapNorisToTaxInstallmentsData', () => {
   const taxId = 1
 
   it('should return single installment when SPL4_2 is empty', () => {
+    const spl1Due = new Date('2025-04-15T12:00:00.000Z')
     const mockNorisData: NorisRealEstateTax = {
       SPL4_2: '',
       SPL1: '100,00',
+      datum_spl1: spl1Due,
     } as NorisRealEstateTax
 
     const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
@@ -139,6 +141,7 @@ describe('mapNorisToTaxInstallmentsData', () => {
       taxId: 1,
       amount: 10_000,
       order: 1,
+      dueDate: spl1Due,
     })
   })
 

@@ -31,7 +31,7 @@ import {
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const bratislavaTimeZone = 'Europe/Bratislava'
+export const bratislavaTimeZone = 'Europe/Bratislava'
 
 const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
   1: QrPaymentNoteEnum.QR_firstInstallment,
@@ -219,9 +219,9 @@ const calculateDueDate = (
 const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
-  numberOfInstallments: number,
+  numberOfInstallments?: number,
 ) => {
-  if (installments.length !== numberOfInstallments) {
+  if (numberOfInstallments && installments.length !== numberOfInstallments) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
@@ -229,7 +229,7 @@ const calculateInstallmentAmounts = (
   }
 
   const installmentOrders = Array.from(
-    { length: numberOfInstallments },
+    { length: installments.length },
     (_, i) => i + 1,
   )
   const amounts = installmentOrders.map((order) => {
@@ -272,6 +272,12 @@ const calculateInstallmentAmounts = (
 }
 
 /**
+ * Due dates aligned with UI installment rows: index 0 = validity-based first due date;
+ * further indices = NORIS due dates for installments with order 2, 3, … (order 1 is omitted).
+ */
+type InstallmentDueDatesRow = [Dayjs | undefined, ...Dayjs[]]
+
+/**
  * Determines installment statuses based on due dates and payment status.
  * Each installment is independent and pays one after another.
  */
@@ -283,12 +289,7 @@ const calculateInstallmentStatus = (
     total: number
     status: InstallmentPaidStatusEnum
   }[],
-  installmentDueDates: [
-    dayjs.Dayjs | undefined,
-    dayjs.Dayjs,
-    dayjs.Dayjs,
-    ...dayjs.Dayjs[],
-  ],
+  installmentDueDates: InstallmentDueDatesRow,
 ): {
   status: InstallmentPaidStatusEnum
   remainingAmount: number
@@ -321,26 +322,18 @@ const calculateInstallmentStatus = (
   return result
 }
 
-export const parseInstallmentDueDate = (
-  taxYear: number,
-  dateString: string,
-): Dayjs => dayjs.tz(`${taxYear}-${dateString}`, bratislavaTimeZone)
+export const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
+  dayjs.tz(dueDate, bratislavaTimeZone)
 
 const calculateInstallmentPaymentDetails = (options: {
   overallAmount: number
   overallPaid: number
   today: Date
-  taxYear: number
   paymentCalendarThreshold: number
   dueDate?: Dayjs
-  installments: { order: number; amount: number }[]
+  installments: { order: number; amount: number; dueDate: Date }[]
   variableSymbol: string
-  installmentDueDates: {
-    second: string
-    third: string
-    fourth?: string
-  }
-  numberOfInstallments: number
+  numberOfInstallments?: number
   iban: string
   isCancelled: boolean
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
@@ -350,8 +343,6 @@ const calculateInstallmentPaymentDetails = (options: {
     overallAmount,
     overallPaid,
     today,
-    taxYear,
-    installmentDueDates,
     paymentCalendarThreshold,
     dueDate,
     installments,
@@ -361,24 +352,15 @@ const calculateInstallmentPaymentDetails = (options: {
     isCancelled,
   } = options
 
-  // Calculate due dates for all installments
-  // First installment due date is calculated from dateOfValidity (may be undefined)
-  const installmentDueDatesParsed: [
-    dayjs.Dayjs | undefined,
-    dayjs.Dayjs,
-    dayjs.Dayjs,
-    ...dayjs.Dayjs[],
-  ] = [
-    // First installment due date is calculated from dateOfValidity
+  const installmentsByOrder = [...installments].sort(
+    (a, b) => a.order - b.order,
+  )
+  const installmentDatesFromNoris = installmentsByOrder
+    .slice(1)
+    .map((installment) => parseInstallmentDueDate(installment.dueDate))
+  const installmentDueDatesParsed: InstallmentDueDatesRow = [
     dueDate,
-    // Second installment:
-    parseInstallmentDueDate(taxYear, installmentDueDates.second),
-    // Third installment:
-    parseInstallmentDueDate(taxYear, installmentDueDates.third),
-    // Fourth installment (if exists):
-    ...(installmentDueDates.fourth
-      ? [parseInstallmentDueDate(taxYear, installmentDueDates.fourth)]
-      : []),
+    ...installmentDatesFromNoris,
   ]
 
   const dueDateLastPayment =
@@ -539,7 +521,6 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
 ): GetTaxDetailPureResponse<TTaxType> => {
   const {
     type,
-    taxYear,
     today,
     overallAmount,
     paymentCalendarThreshold,
@@ -585,8 +566,6 @@ export const getTaxDetailPure = <TTaxType extends TaxType>(
     overallAmount,
     overallPaid,
     today,
-    taxYear,
-    installmentDueDates: taxDefinition.installmentDueDates,
     paymentCalendarThreshold,
     dueDate,
     installments,
@@ -652,12 +631,11 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
 export const getTaxDetailPureForInstallmentGenerator = (options: {
   taxType: TaxType
   taxId: number
-  taxYear: number
   today: Date
   overallAmount: number
   variableSymbol: string
   dateOfValidity: Date | null
-  installments: { order: number; amount: number }[]
+  installments: { order: number; amount: number; dueDate: Date }[]
   taxPayments: {
     amount: number
     status: PaymentStatus
@@ -669,7 +647,6 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   const {
     taxType,
     taxId,
-    taxYear,
     today,
     overallAmount,
     variableSymbol,
@@ -680,12 +657,8 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     createdAt,
     isCancelled,
   } = options
-  const {
-    paymentCalendarThreshold,
-    installmentDueDates,
-    numberOfInstallments,
-    iban,
-  } = getTaxDefinitionByType(taxType)
+  const { paymentCalendarThreshold, numberOfInstallments, iban } =
+    getTaxDefinitionByType(taxType)
 
   let overallPaid = 0
   taxPayments.forEach((payment) => {
@@ -705,12 +678,10 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
     overallAmount,
     overallPaid,
     today,
-    taxYear,
     paymentCalendarThreshold,
     dueDate,
     installments,
     variableSymbol,
-    installmentDueDates,
     numberOfInstallments,
     iban,
     isCancelled,

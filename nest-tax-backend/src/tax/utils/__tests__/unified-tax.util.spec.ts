@@ -30,6 +30,29 @@ import {
 // Add this mock at the top after imports
 jest.mock('../../../tax-definitions/getTaxDefinitionByType')
 
+/**
+ * NORIS `dueDate` per order. Order 1 is not merged into installment row dates (row 1 uses
+ * validity-based due date); orders 2+ supply displayed dates for rows 2+.
+ */
+const DZN_FIXTURE_INSTALLMENT_DUE_DATES = [
+  new Date('2025-03-15T12:00:00.000Z'),
+  new Date('2025-08-31T22:00:00.000Z'),
+  new Date('2025-10-31T23:00:00.000Z'),
+] as const
+
+/**
+ * NORIS `dueDate` per order for 4 KO installments. Order 1 is not merged into row due dates;
+ * orders 2–4 are May / Aug / Oct (all distinct).
+ */
+const KO4_FIXTURE_INSTALLMENT_DUE_DATES = [
+  new Date('2025-03-10T12:00:00.000Z'),
+  new Date('2025-05-31T22:00:00.000Z'),
+  new Date('2025-08-31T22:00:00.000Z'),
+  new Date('2025-10-31T22:00:00.000Z'),
+] as const
+
+const placeholderInstallmentDueDate = new Date('2025-01-02T00:00:00.000Z')
+
 const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
   type: TaxType.DZN,
   taxYear: 2025,
@@ -41,9 +64,9 @@ const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
   deliveryMethod: null,
   createdAt: new Date('2025-01-01'),
   installments: [
-    { order: 1, amount: 2200 },
-    { order: 2, amount: 2200 },
-    { order: 3, amount: 2200 },
+    { order: 1, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0] },
+    { order: 2, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[1] },
+    { order: 3, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[2] },
   ],
   taxDetails: {
     type: TaxType.DZN,
@@ -909,10 +932,26 @@ describe('UnifiedTaxUtil', () => {
       deliveryMethod: null,
       createdAt: new Date('2025-01-01'),
       installments: [
-        { order: 1, amount: 2000 },
-        { order: 2, amount: 2000 },
-        { order: 3, amount: 2000 },
-        { order: 4, amount: 2000 },
+        {
+          order: 1,
+          amount: 2000,
+          dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[0],
+        },
+        {
+          order: 2,
+          amount: 2000,
+          dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[1],
+        },
+        {
+          order: 3,
+          amount: 2000,
+          dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[2],
+        },
+        {
+          order: 4,
+          amount: 2000,
+          dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[3],
+        },
       ],
       taxDetails: {
         type: TaxType.KO,
@@ -1438,8 +1477,16 @@ describe('UnifiedTaxUtil', () => {
       const input = {
         ...defaultInputRealEstate,
         installments: [
-          { order: 1, amount: 2200 },
-          { order: 2, amount: 2200 },
+          {
+            order: 1,
+            amount: 2200,
+            dueDate: placeholderInstallmentDueDate,
+          },
+          {
+            order: 2,
+            amount: 2200,
+            dueDate: placeholderInstallmentDueDate,
+          },
         ],
       }
 
@@ -1455,10 +1502,26 @@ describe('UnifiedTaxUtil', () => {
       const input = {
         ...defaultInputRealEstate,
         installments: [
-          { order: 1, amount: 1650 },
-          { order: 2, amount: 1650 },
-          { order: 3, amount: 1650 },
-          { order: 4, amount: 1650 },
+          {
+            order: 1,
+            amount: 1650,
+            dueDate: placeholderInstallmentDueDate,
+          },
+          {
+            order: 2,
+            amount: 1650,
+            dueDate: placeholderInstallmentDueDate,
+          },
+          {
+            order: 3,
+            amount: 1650,
+            dueDate: placeholderInstallmentDueDate,
+          },
+          {
+            order: 4,
+            amount: 1650,
+            dueDate: placeholderInstallmentDueDate,
+          },
         ],
       }
 
@@ -1495,7 +1558,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     overallAmount: number
     variableSymbol: string
     dateOfValidity: Date | null
-    installments: { order: number; amount: number }[]
+    installments: { order: number; amount: number; dueDate: Date }[]
     taxPayments: {
       amount: number
       status: PaymentStatus
@@ -1514,9 +1577,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     deliveryMethod: null,
     createdAt: new Date('2025-01-01'),
     installments: [
-      { order: 1, amount: 2200 },
-      { order: 2, amount: 2200 },
-      { order: 3, amount: 2200 },
+      { order: 1, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0] },
+      { order: 2, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[1] },
+      { order: 3, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[2] },
     ],
     taxPayments: [],
     isCancelled: false,
@@ -1627,9 +1690,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       overallAmount: 100,
       taxPayments: [],
       installments: [
-        { order: 1, amount: 33 },
-        { order: 2, amount: 33 },
-        { order: 3, amount: 34 },
+        { order: 1, amount: 33, dueDate: placeholderInstallmentDueDate },
+        { order: 2, amount: 33, dueDate: placeholderInstallmentDueDate },
+        { order: 3, amount: 34, dueDate: placeholderInstallmentDueDate },
       ],
     }
 
@@ -1660,8 +1723,16 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     const options = {
       ...baseOptionsRealEstate,
       installments: [
-        { order: 1, amount: 2200 },
-        { order: 2, amount: 2200 },
+        {
+          order: 1,
+          amount: 2200,
+          dueDate: placeholderInstallmentDueDate,
+        },
+        {
+          order: 2,
+          amount: 2200,
+          dueDate: placeholderInstallmentDueDate,
+        },
       ],
     }
 
@@ -1677,10 +1748,26 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     const options = {
       ...baseOptionsRealEstate,
       installments: [
-        { order: 1, amount: 1650 },
-        { order: 2, amount: 1650 },
-        { order: 3, amount: 1650 },
-        { order: 4, amount: 1650 },
+        {
+          order: 1,
+          amount: 1650,
+          dueDate: placeholderInstallmentDueDate,
+        },
+        {
+          order: 2,
+          amount: 1650,
+          dueDate: placeholderInstallmentDueDate,
+        },
+        {
+          order: 3,
+          amount: 1650,
+          dueDate: placeholderInstallmentDueDate,
+        },
+        {
+          order: 4,
+          amount: 1650,
+          dueDate: placeholderInstallmentDueDate,
+        },
       ],
     }
 

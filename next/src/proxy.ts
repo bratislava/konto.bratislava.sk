@@ -40,6 +40,22 @@ export function proxy(request: NextRequest) {
     slovenskoSkLoginUrlOrigin,
     environment.bratislavaStrapiUrl,
     environment.cityAccountStrapiUrl,
+
+    // Microsoft Clarity - script is loaded via strict-dynamic / tag manager
+    // Docs: https://learn.microsoft.com/sk-sk/clarity/setup-and-installation/clarity-csp
+    'https://[a-z].clarity.ms',
+    'https://www.clarity.ms',
+    'https://c.bing.com',
+
+    // Google Tag manager
+    // Docs: https://developers.google.com/tag-platform/security/guides/csp
+    'https://*.google-analytics.com',
+    'https://*.analytics.google.com',
+    'https://*.googletagmanager.com',
+
+    // Cookiebot config fetch
+    // Docs: https://support.cookiebot.com/hc/en-us/articles/360018907220-Cookiebot-and-Content-Security-Protocol-CSP
+    'https://consentcdn.cookiebot.eu',
   ]
     .filter(isDefined)
     .join(' ')

@@ -96,6 +96,8 @@ export function proxy(request: NextRequest) {
   // Both reporting headers are sent for backward compatibility.
   // TODO change Content-Security-Policy-Report-Only to Content-Security-Policy when ready
   response.headers.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
+  // TODO Temporarily enable only frame-ancestors policy to prevent Click-jacking attacks. Remove when whole CSP is enabled
+  response.headers.set('Content-Security-Policy', `frame-ancestors 'self' https://olo.sk;`)
   response.headers.set('Reporting-Endpoints', reportingEndpointsValue)
   response.headers.set(
     'Report-To',

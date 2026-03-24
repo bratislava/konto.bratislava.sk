@@ -53,9 +53,10 @@ export function proxy(request: NextRequest) {
     'https://*.analytics.google.com',
     'https://*.googletagmanager.com',
 
-    // Cookiebot config fetch
+    // Cookiebot config fetch. Note: See also frame-src below.
     // Docs: https://support.cookiebot.com/hc/en-us/articles/360018907220-Cookiebot-and-Content-Security-Protocol-CSP
     'https://consentcdn.cookiebot.eu',
+    'https://consent.cookiebot.eu',
   ]
     .filter(isDefined)
     .join(' ')
@@ -71,6 +72,7 @@ export function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self' https://olo.sk;
+    frame-src 'src' https://consentcdn.cookiebot.eu;
     upgrade-insecure-requests;
     report-uri /api/csp-report;
     report-to ${CSP_REPORT_ENDPOINT_NAME};

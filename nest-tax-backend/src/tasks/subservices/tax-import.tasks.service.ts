@@ -3,6 +3,7 @@ import { TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import _ from 'lodash'
 
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
@@ -15,7 +16,6 @@ import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subser
 import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from './config.service'
 import TaxImportHelperService from './tax-import-helper.service'
-import _ from 'lodash'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

@@ -1,4 +1,4 @@
-import { TaxImportStatus, Prisma, Tax, TaxType } from '@prisma/client'
+import { Prisma, Tax, TaxImportStatus, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'

@@ -216,7 +216,7 @@ const calculateDueDate = (
  * IMPORTANT: The sum of all installments should always equal the total tax amount.
  * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd, then 4th).
  */
-const calculateInstallmentAmounts = (
+export const calculateInstallmentAmounts = (
   installments: { order: number; amount: number }[],
   overallPaid: number,
   numberOfInstallments?: number,
@@ -356,7 +356,7 @@ const calculateInstallmentPaymentDetails = (options: {
     (a, b) => a.order - b.order,
   )
   const installmentDatesFromNoris = installmentsByOrder
-    .slice(1)
+    .slice(1) // Omit order 1 - this is the validity-based due date
     .map((installment) => parseInstallmentDueDate(installment.dueDate))
   const installmentDueDatesParsed: InstallmentDueDatesRow = [
     dueDate,

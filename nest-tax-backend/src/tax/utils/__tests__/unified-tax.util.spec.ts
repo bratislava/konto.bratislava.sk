@@ -22,6 +22,7 @@ import {
   OneTimePaymentTypeEnum,
 } from '../../dtos/response.tax.dto'
 import {
+  calculateInstallmentAmounts,
   getTaxDetailPure,
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
@@ -285,6 +286,95 @@ describe('UnifiedTaxUtil', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
+  })
+
+  describe('calculateInstallmentAmounts', () => {
+    const missingInstallmentError =
+      new ThrowerErrorGuard().InternalServerErrorException(
+        CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
+        CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+      )
+
+    const incorrectCountError =
+      new ThrowerErrorGuard().InternalServerErrorException(
+        CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      )
+
+    it('should throw when order 2 is missing (gap in 1..installments.length)', () => {
+      const installments = [
+        { order: 1, amount: 100 },
+        { order: 3, amount: 200 },
+        { order: 4, amount: 300 },
+      ]
+
+      expect(() => calculateInstallmentAmounts(installments, 0, 3)).toThrow(
+        missingInstallmentError,
+      )
+    })
+
+    it('should throw when order 2 is missing even if numberOfInstallments is omitted', () => {
+      const installments = [
+        { order: 1, amount: 100 },
+        { order: 3, amount: 200 },
+      ]
+
+      expect(() => calculateInstallmentAmounts(installments, 0)).toThrow(
+        missingInstallmentError,
+      )
+    })
+
+    it('should not throw INSTALLMENT_INCORRECT_COUNT when numberOfInstallments is omitted and length matches sequential orders', () => {
+      const installments = [
+        { order: 1, amount: 1000 },
+        { order: 2, amount: 2000 },
+        { order: 3, amount: 3000 },
+      ]
+
+      expect(() => calculateInstallmentAmounts(installments, 500)).not.toThrow()
+    })
+
+    it('should still validate count when numberOfInstallments is provided', () => {
+      const installments = [
+        { order: 1, amount: 100 },
+        { order: 2, amount: 200 },
+      ]
+
+      expect(() => calculateInstallmentAmounts(installments, 0, 3)).toThrow(
+        incorrectCountError,
+      )
+    })
+
+    it('should distribute overallPaid sequentially across installments in order', () => {
+      const installments = [
+        { order: 1, amount: 100 },
+        { order: 2, amount: 200 },
+        { order: 3, amount: 300 },
+      ]
+
+      const result = calculateInstallmentAmounts(installments, 250, 3)
+
+      expect(result).toEqual([
+        {
+          toPay: 0,
+          paid: 100,
+          total: 100,
+          status: InstallmentPaidStatusEnum.PAID,
+        },
+        {
+          toPay: 50,
+          paid: 150,
+          total: 200,
+          status: InstallmentPaidStatusEnum.PARTIALLY_PAID,
+        },
+        {
+          toPay: 300,
+          paid: 0,
+          total: 300,
+          status: InstallmentPaidStatusEnum.NOT_PAID,
+        },
+      ])
+    })
   })
 
   describe('RealEstate', () => {

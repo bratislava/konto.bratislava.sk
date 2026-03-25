@@ -205,6 +205,137 @@ describe('mapNorisToTaxInstallmentsData', () => {
       order: 4,
     })
   })
+
+  it('should return empty array when SPL4_2 is empty and datum_spl1 is null', () => {
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '',
+      SPL1: '100,00',
+      datum_spl1: null,
+    } as NorisRealEstateTax
+
+    expect(mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toEqual([])
+  })
+
+  it('should use the provided taxId on each installment', () => {
+    const spl1Due = new Date('2025-06-01T00:00:00.000Z')
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '',
+      SPL1: '50,00',
+      datum_spl1: spl1Due,
+    } as NorisRealEstateTax
+
+    const result = mapNorisToTaxInstallmentsData(mockNorisData, 42_001)
+
+    expect(result).toEqual([
+      {
+        taxId: 42_001,
+        amount: 5000,
+        order: 1,
+        dueDate: spl1Due,
+      },
+    ])
+  })
+
+  it('should map due dates for all installments when SPL4_2 is set', () => {
+    const d1 = new Date('2025-03-15T00:00:00.000Z')
+    const d2 = new Date('2025-06-15T00:00:00.000Z')
+    const d3 = new Date('2025-09-15T00:00:00.000Z')
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '1,00',
+      SPL4_1: '1,00',
+      SPL4_3: '1,00',
+      datum_spl1: d1,
+      datum_spl2: d2,
+      datum_spl3: d3,
+    } as NorisRealEstateTax
+
+    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
+
+    expect(result).toEqual([
+      { taxId: 1, amount: 100, order: 1, dueDate: d1 },
+      { taxId: 1, amount: 100, order: 2, dueDate: d2 },
+      { taxId: 1, amount: 100, order: 3, dueDate: d3 },
+    ])
+  })
+
+  it('should not add a fourth installment when SPL4_4 is an empty string', () => {
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '10,00',
+      SPL4_1: '10,00',
+      SPL4_3: '10,00',
+      SPL4_4: '',
+    } as NorisRealEstateTax
+
+    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
+
+    expect(result).toHaveLength(3)
+    expect(result.map((i) => i.order)).toEqual([1, 2, 3])
+  })
+
+  it('should omit installments with null dueDate when SPL4_2 is set', () => {
+    const d1 = new Date('2025-01-10T00:00:00.000Z')
+    const d3 = new Date('2025-03-10T00:00:00.000Z')
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '20,00',
+      SPL4_1: '30,00',
+      SPL4_3: '50,00',
+      datum_spl1: d1,
+      datum_spl2: null,
+      datum_spl3: d3,
+    } as NorisRealEstateTax
+
+    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
+
+    expect(result).toEqual([
+      { taxId: 1, amount: 3000, order: 1, dueDate: d1 },
+      { taxId: 1, amount: 5000, order: 3, dueDate: d3 },
+    ])
+  })
+
+  it('should include fourth installment only when SPL4_4 is truthy and datum_spl4 is set', () => {
+    const d1 = new Date('2025-01-01T00:00:00.000Z')
+    const d2 = new Date('2025-02-01T00:00:00.000Z')
+    const d3 = new Date('2025-03-01T00:00:00.000Z')
+    const d4 = new Date('2025-04-01T00:00:00.000Z')
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '10,00',
+      SPL4_1: '10,00',
+      SPL4_3: '10,00',
+      SPL4_4: '10,00',
+      datum_spl1: d1,
+      datum_spl2: d2,
+      datum_spl3: d3,
+      datum_spl4: d4,
+    } as NorisRealEstateTax
+
+    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
+
+    expect(result).toHaveLength(4)
+    expect(result[3]).toEqual({
+      taxId: 1,
+      amount: 1000,
+      order: 4,
+      dueDate: d4,
+    })
+  })
+
+  it('should drop fourth installment when SPL4_4 is set but datum_spl4 is null', () => {
+    const d1 = new Date('2025-01-01T00:00:00.000Z')
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_2: '10,00',
+      SPL4_1: '10,00',
+      SPL4_3: '10,00',
+      SPL4_4: '10,00',
+      datum_spl1: d1,
+      datum_spl2: d1,
+      datum_spl3: d1,
+      datum_spl4: null,
+    } as NorisRealEstateTax
+
+    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
+
+    expect(result).toHaveLength(3)
+  })
 })
 
 describe('mapNorisToDatabaseBaseTax', () => {

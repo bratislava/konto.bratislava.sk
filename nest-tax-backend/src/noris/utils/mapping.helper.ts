@@ -116,7 +116,7 @@ export const mapNorisToTaxInstallmentsData = (
     })
   }
   return installments.filter(
-    (installment): installment is TaxInstallment & { dueDate: Date } =>
+    (installment): installment is TaxInstallment =>
       installment.dueDate !== null,
   )
 }

@@ -208,6 +208,20 @@ describe('NasesService', () => {
       // Should only search for unique URI once
       expect(searchSpy).toHaveBeenCalledWith(['rc://sk/same_uri'])
     })
+
+    it('should throw error if UPVS server is down', async () => {
+      const inputs = [
+        { uri: 'rc://sk/same_uri', physicalEntityId: 'entity-1' },
+        { uri: 'rc://sk/same_uri', physicalEntityId: 'entity-2' },
+      ]
+
+      const searchSpy = jest
+        .spyOn(service as any, 'searchUpvsIdentitiesByUri')
+        .mockRejectedValue(new Error('UPVS server is down'))
+
+      await expect(service.createMany(inputs)).rejects.toThrow()
+      expect(searchSpy).toHaveBeenCalledTimes(1)
+    })
   })
 })
 /* eslint-enable @typescript-eslint/no-explicit-any */

@@ -15,6 +15,7 @@ import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subser
 import { RetryService } from '../../utils-module/retry.service'
 import TasksConfigSubservice from './config.service'
 import TaxImportHelperService from './tax-import-helper.service'
+import _ from 'lodash'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -231,30 +232,21 @@ export default class TaxImportTasksService {
       { year: number; taxType: TaxType; birthNumbers: string[] }
     >()
 
-    missingTaxAttempts.forEach((item) => {
-      const key = `${item.year}-${item.taxType}`
-      const existing = groupedByYearAndType.get(key)
-      if (existing) {
-        existing.birthNumbers.push(item.birthNumber)
-      } else {
-        groupedByYearAndType.set(key, {
-          year: item.year,
-          taxType: item.taxType,
-          birthNumbers: [item.birthNumber],
-        })
-      }
-    })
-
+    const grouped = _.groupBy(
+      missingTaxAttempts,
+      (item) => `${item.year}-${item.taxType}`,
+    )
     // Import taxes for each group
     await Promise.all(
-      [...groupedByYearAndType.values()].map(async (group) => {
+      Object.values(grouped).map(async (items) => {
+        const first = items[0]
         this.logger.log(
-          `Importing ${group.taxType} taxes for ${group.birthNumbers.length} users for year ${group.year}`,
+          `Importing ${first.taxType} taxes for ${items.length} users for year ${first.year}`,
         )
         return this.taxImportHelperService.importTaxes(
-          group.taxType,
-          group.birthNumbers,
-          group.year,
+          first.taxType,
+          items.map((item) => item.birthNumber),
+          first.year,
         )
       }),
     )

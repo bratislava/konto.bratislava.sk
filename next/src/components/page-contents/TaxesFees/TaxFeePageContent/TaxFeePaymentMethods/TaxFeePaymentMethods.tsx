@@ -39,9 +39,7 @@ const TaxFeePaymentMethods = () => {
         date: formatDate(oneTimePayment.dueDate),
       })
     : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
-  const oneTimePaymentSubtitle: string | undefined = isFirstInstallmentPaid
-    ? undefined
-    : oneTimePaymentSubtitleText
+  const oneTimePaymentSubtitle = isFirstInstallmentPaid ? undefined : oneTimePaymentSubtitleText
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">

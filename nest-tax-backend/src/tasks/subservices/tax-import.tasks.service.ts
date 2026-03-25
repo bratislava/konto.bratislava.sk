@@ -197,7 +197,7 @@ export default class TaxImportTasksService {
 
     const historicalYears = Array.from(
       { length: previousYear - firstHistoricalYear + 1 },
-      (_, i) => firstHistoricalYear + i,
+      (__, i) => firstHistoricalYear + i,
     )
 
     // Query for users missing specific (year, taxType) combinations
@@ -228,15 +228,11 @@ export default class TaxImportTasksService {
     }
 
     // Group by year and taxType to batch the import calls
-    const groupedByYearAndType = new Map<
-      string,
-      { year: number; taxType: TaxType; birthNumbers: string[] }
-    >()
-
     const grouped = _.groupBy(
       missingTaxAttempts,
       (item) => `${item.year}-${item.taxType}`,
     )
+
     // Import taxes for each group
     await Promise.all(
       Object.values(grouped).map(async (items) => {

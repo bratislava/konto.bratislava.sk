@@ -138,8 +138,9 @@ export default class TaxImportHelperService {
             -- Exclude newly created users (they're handled separately)
               NOT (tp."createdAt" = tp."updatedAt")
 
-            AND (tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus"
+            -- Include users with non-resolved states
             AND (tia.status = 'READY_TO_IMPORT'::"TaxImportStatus"
+              OR tia.status = 'FAILED'::"TaxImportStatus"
               OR tia.id IS NULL)
           ORDER BY CASE
                        WHEN tia.status = 'READY_TO_IMPORT'::"TaxImportStatus"

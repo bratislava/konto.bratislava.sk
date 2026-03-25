@@ -20,7 +20,7 @@ export class UpvsQueueService {
 
   private readonly BATCH_SIZE = 8 // 8 requests per batch
 
-  private readonly HIGH_PRIORITY_RESERVED_SLOTS = 5 // Reserve 6 slots for high priority
+  private readonly HIGH_PRIORITY_RESERVED_SLOTS = 5 // Reserve 5 slots for high priority
 
   constructor(
     private readonly prismaService: PrismaService,

@@ -322,7 +322,7 @@ const calculateInstallmentStatus = (
   return result
 }
 
-export const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
+const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
   dayjs.tz(dueDate, bratislavaTimeZone)
 
 const calculateInstallmentPaymentDetails = (options: {

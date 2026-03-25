@@ -718,10 +718,6 @@ describe('NorisTaxRealEstateSubservice', () => {
         lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
-        installmentDueDates: {
-          second: '09-01',
-          third: '11-01',
-        },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         iban: 'SK3175000000000025747653',
@@ -835,10 +831,6 @@ describe('NorisTaxRealEstateSubservice', () => {
         lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
-        installmentDueDates: {
-          second: '09-01',
-          third: '11-01',
-        },
         generateItemizedTaxDetail: generateItemizedRealEstateTaxDetail,
         createTestingTaxMock: createTestingRealEstateTaxMock,
         iban: 'SK3175000000000025747653',

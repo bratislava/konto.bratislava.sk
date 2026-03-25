@@ -205,12 +205,14 @@ describe('UpvsQueueService', () => {
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
       prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
-      jest.spyOn(nasesService, 'createMany').mockRejectedValue()
+      jest.spyOn(nasesService, 'createMany').mockRejectedValue(new Error('Mock error'))
+      const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
 
       await service.processBatch()
 
-      expect(service['logger']).toHaveBeenCalledWith(
-        expect.stringContaining('Error processing batch')
+      expect(errorSpy).toHaveBeenCalledWith(
+        'Error processing batch',
+        expect.any(Error)
       )
     })
 

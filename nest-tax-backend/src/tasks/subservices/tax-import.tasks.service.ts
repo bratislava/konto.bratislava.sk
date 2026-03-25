@@ -215,12 +215,13 @@ export default class TaxImportTasksService {
                           FROM "TaxImportAttempt" tia
                           WHERE tia."taxPayerId" = tp.id
                             AND tia.year = years.year
-                            AND tia."taxType" = tax_types."taxType")
+                            AND tia."taxType" = tax_types."taxType"
+                            -- We want to exclude only resolved attempts
+                            AND (tia.status = 'SUCCESS'::"HistoricalTaxImportStatus" OR
+                                 tia.status = 'NOT_FOUND'::"HistoricalTaxImportStatus"))
         ORDER BY tp."updatedAt", tp.id
         LIMIT ${LOAD_HISTORICAL_TAXES_BATCH};
     `
-    // TODO add support for retrying failed attempts
-
     if (missingTaxAttempts.length === 0) {
       this.logger.log('No missing historical tax attempts found')
       return

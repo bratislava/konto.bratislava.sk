@@ -6,11 +6,14 @@ import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { DeliveryMethodEnum } from '@prisma/client'
+import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 import prismaMock from '../../test/singleton'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import { UserTierService } from './user-tier.service'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
+import { GdprDataDto, UserOfficialCorrespondenceChannelEnum } from './dtos/gdpr.user.dto'
+import { CognitoGetUserData, CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
+import { User } from '@prisma/client'
 
 jest.mock('../utils/constants/tax-deadline')
 
@@ -56,6 +59,67 @@ describe('UserService', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
+  })
+
+  describe('subUnsubUser', () => {
+    const mockCognitoUserData = {
+      [CognitoUserAttributesEnum.ACCOUNT_TYPE]: 'PHYSICAL_ENTITY',
+      idUser: 'cognito-ext-123',
+      email: 'test@bratislava.sk',
+      UserCreateDate: new Date('2024-01-01'),
+    } as unknown as CognitoGetUserData
+
+    const gdprDataTaxFormalCommunication: GdprDataDto[] = [
+      {
+        category: GDPRCategoryEnum.TAXES,
+        type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+      },
+    ]
+
+    it.each([
+      [UserOfficialCorrespondenceChannelEnum.EMAIL, GDPRSubTypeEnum.subscribe],
+      [UserOfficialCorrespondenceChannelEnum.POSTAL, GDPRSubTypeEnum.unsubscribe],
+    ] as const)(
+      'should return officialCorrespondenceChannel %s when called with GDPRSubTypeEnum.%s',
+      async (expectedChannel, gdprSubType) => {
+        const mockUser = {
+          id: 'user-1',
+          externalId: 'cognito-ext-123',
+          email: 'test@bratislava.sk',
+          birthNumber: '9909090000',
+          isDeceased: false,
+          taxDeliveryMethodAtLockDate: null,
+          taxDeliveryMethodCityAccountLockDate: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+        userDataSubservice.getOrCreateUser.mockResolvedValue(mockUser as User)
+        userDataSubservice.getOfficialCorrespondenceChannel.mockResolvedValue(expectedChannel)
+        userDataSubservice.getShowEmailCommunicationBanner.mockResolvedValue(false)
+        userDataSubservice.getUserGdprData.mockResolvedValue([])
+
+        const result = await service.subUnsubUser(
+          mockCognitoUserData,
+          gdprSubType,
+          gdprDataTaxFormalCommunication
+        )
+
+        expect(userDataSubservice.getOfficialCorrespondenceChannel).toHaveBeenCalledWith(
+          mockUser.id
+        )
+        expect(result.officialCorrespondenceChannel).toBe(expectedChannel)
+        expect(userDataSubservice.changeUserGdprData).toHaveBeenCalledWith(
+          mockUser.id,
+          expect.arrayContaining([
+            expect.objectContaining({
+              category: GDPRCategoryEnum.TAXES,
+              type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+              subType: gdprSubType,
+            }),
+          ])
+        )
+      }
+    )
   })
 
   describe('hasChangedDeliveryMethodAfterDeadline', () => {

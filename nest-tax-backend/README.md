@@ -36,7 +36,7 @@ npx prisma
 
 - Migrate database and generate prisma files
 
-```
+```bash
 npx prisma migrate dev
 npx prisma generate
 ```

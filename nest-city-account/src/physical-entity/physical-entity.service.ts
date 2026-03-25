@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { UpvsIdentityByUriSuccessType } from '../nases/nases.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
 
 @Injectable()
 export class PhysicalEntityService {
@@ -13,7 +14,8 @@ export class PhysicalEntityService {
 
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly bloomreachService: BloomreachService
   ) {
     this.logger = new LineLoggerSubservice(PhysicalEntityService.name)
   }
@@ -122,10 +124,22 @@ export class PhysicalEntityService {
       }
     }
 
-    const physicalEntity = await this.prismaService.physicalEntity.update({
-      where: { id: data.id },
-      data: dataWithEdeskMetadata,
+    const userExternalId = await this.prismaService.physicalEntity
+      .findUnique({
+        where: { id: data.id },
+        select: { user: { select: { externalId: true } } },
+      })
+      .then((physicalEntity) => physicalEntity?.user?.externalId)
+
+    return await this.prismaService.$transaction(async (tx) => {
+      const physicalEntity = await tx.physicalEntity.update({
+        where: { id: data.id },
+        data: dataWithEdeskMetadata,
+      })
+      if (userExternalId) {
+        await this.bloomreachService.enqueueTrackCustomerToBloomreachOutbox(tx, userExternalId)
+      }
+      return physicalEntity
     })
-    return physicalEntity
   }
 }

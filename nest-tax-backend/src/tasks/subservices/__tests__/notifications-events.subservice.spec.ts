@@ -109,19 +109,16 @@ describe('NotificationsEventsSubservice', () => {
         prismaMock.tax.findMany.mockResolvedValue([])
 
         await service['processInstallmentReminders'](
-          TaxType.KO,
           INSTALLMENT_DUE_DATE_TYPE.NEXT,
           year,
         )
 
         expect(getTaxesSpy).toHaveBeenCalledTimes(1)
-        const [taxType, filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
-          TaxType,
+        const [filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
           UnpaidReminderSent[],
           number,
           { start: Dayjs; end: Dayjs },
         ]
-        expect(taxType).toBe(TaxType.KO)
         expect(filter).toEqual([UnpaidReminderSent.NONE])
         expect(y).toBe(year)
         expect(windowArg.start.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
@@ -139,19 +136,16 @@ describe('NotificationsEventsSubservice', () => {
         prismaMock.tax.findMany.mockResolvedValue([])
 
         await service['processInstallmentReminders'](
-          TaxType.KO,
           INSTALLMENT_DUE_DATE_TYPE.PAST,
           year,
         )
 
         expect(getTaxesSpy).toHaveBeenCalledTimes(1)
-        const [taxType, filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
-          TaxType,
+        const [filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
           UnpaidReminderSent[],
           number,
           { start: Dayjs; end: Dayjs },
         ]
-        expect(taxType).toBe(TaxType.KO)
         expect(filter).toEqual([
           UnpaidReminderSent.NONE,
           UnpaidReminderSent.BEFORE_DUE,
@@ -173,7 +167,6 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.tax.findMany.mockResolvedValue([])
 
       await service['processInstallmentReminders'](
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -203,7 +196,6 @@ describe('NotificationsEventsSubservice', () => {
       cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({} as any)
 
       await service['processInstallmentReminders'](
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -235,7 +227,6 @@ describe('NotificationsEventsSubservice', () => {
       } as any)
 
       await service['processInstallmentReminders'](
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -271,7 +262,6 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
       await service['processInstallmentReminders'](
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -333,7 +323,6 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
       await service['processInstallmentReminders'](
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.PAST,
         year,
       )
@@ -404,7 +393,6 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
       await service['processInstallmentReminders'](
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -465,7 +453,6 @@ describe('NotificationsEventsSubservice', () => {
       } as any)
 
       await service['processInstallmentReminders'](
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -486,38 +473,34 @@ describe('NotificationsEventsSubservice', () => {
       jest.restoreAllMocks()
     })
 
-    it('calls processInstallmentReminders twice (NEXT then PAST) with tax type KO on first run', async () => {
+    it('calls processInstallmentReminders twice (NEXT then PAST) with current year', async () => {
       await service.sendUnpaidTaxInstallmentReminders()
 
       expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(2)
       expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
         1,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         currentYear,
       )
       expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
         2,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.PAST,
         currentYear,
       )
     })
 
-    it('uses DZN on second run after toggle', async () => {
+    it('runs NEXT and PAST again on a second invocation', async () => {
       await service.sendUnpaidTaxInstallmentReminders()
       await service.sendUnpaidTaxInstallmentReminders()
 
       expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(4)
       expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
         3,
-        TaxType.DZN,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         currentYear,
       )
       expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
         4,
-        TaxType.DZN,
         INSTALLMENT_DUE_DATE_TYPE.PAST,
         currentYear,
       )

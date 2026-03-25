@@ -3,7 +3,6 @@ import {
   DeliveryMethodNamed,
   PaymentStatus,
   Prisma,
-  TaxType,
   UnpaidReminderSent,
 } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
@@ -21,7 +20,6 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { TaxPaymentWithTaxAndTaxPayer } from '../../utils/types/types.prisma'
-import { getNextTaxType } from '../utils/tax-type-switch'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../utils/types'
 
 const UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT = 50
@@ -29,8 +27,6 @@ const UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT = 50
 @Injectable()
 export default class NotificationsEventsService {
   private readonly logger: LineLoggerSubservice
-
-  private lastInstallmentReminderTaxType: TaxType = TaxType.DZN
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -43,7 +39,6 @@ export default class NotificationsEventsService {
   }
 
   private async getTaxesEligibleForInstallmentReminder(
-    taxType: TaxType,
     reminderSentFilter: UnpaidReminderSent[],
     year: number,
     window: {
@@ -82,8 +77,7 @@ export default class NotificationsEventsService {
         AND ti_check."bloomreachUnpaidReminderSent" IN (${reminderSentFilterSql})
       LEFT JOIN paid p ON p."taxId" = t.id
       LEFT JOIN due d ON d."taxId" = t.id AND d.thru_order = ti_check."order"
-      WHERE t.type = ${taxType}::"TaxType"
-        AND t."year" = ${year}
+      WHERE t."year" = ${year}
         AND t."isCancelled" = false
         AND t."paymentMethodIsInkaso" = false
         AND COALESCE(p.total_paid, 0) < COALESCE(d.total_due, 0)
@@ -92,7 +86,6 @@ export default class NotificationsEventsService {
   }
 
   private async processInstallmentReminders(
-    taxType: TaxType,
     dueDateType: INSTALLMENT_DUE_DATE_TYPE,
     year: number,
   ) {
@@ -113,7 +106,6 @@ export default class NotificationsEventsService {
 
     const taxInstallmentInfo =
       await this.getTaxesEligibleForInstallmentReminder(
-        taxType,
         reminderSentFilter,
         year,
         window,
@@ -194,7 +186,7 @@ export default class NotificationsEventsService {
 
     if (taxInstallmentIdsSent.length === 0) {
       this.logger.log(
-        `No reminders sent for installment dueDateType: ${dueDateType}, tax type: ${taxType}.`,
+        `No reminders sent for installment dueDateType: ${dueDateType}.`,
       )
       return
     }
@@ -225,32 +217,18 @@ export default class NotificationsEventsService {
     })
 
     this.logger.log(
-      `Updated ${taxInstallmentIdsSent.length} installments for dueDateType: ${dueDateType}, tax type: ${taxType}, tax installment IDs: ${taxInstallmentIdsSent.join(', ')}`,
+      `Updated ${taxInstallmentIdsSent.length} installments for dueDateType: ${dueDateType}, tax installment IDs: ${taxInstallmentIdsSent.join(', ')}`,
     )
   }
 
   async sendUnpaidTaxInstallmentReminders() {
-    this.lastInstallmentReminderTaxType = getNextTaxType(
-      this.lastInstallmentReminderTaxType,
-    )
     const year = dayjs().year()
 
-    const taxType = this.lastInstallmentReminderTaxType
-    this.logger.log(
-      `Starting sendUnpaidTaxInstallmentReminders task for TaxType: ${taxType}`,
-    )
+    this.logger.log(`Starting sendUnpaidTaxInstallmentReminders task`)
 
-    await this.processInstallmentReminders(
-      taxType,
-      INSTALLMENT_DUE_DATE_TYPE.NEXT,
-      year,
-    )
+    await this.processInstallmentReminders(INSTALLMENT_DUE_DATE_TYPE.NEXT, year)
 
-    await this.processInstallmentReminders(
-      taxType,
-      INSTALLMENT_DUE_DATE_TYPE.PAST,
-      year,
-    )
+    await this.processInstallmentReminders(INSTALLMENT_DUE_DATE_TYPE.PAST, year)
   }
 
   async sendUnpaidTaxReminders() {

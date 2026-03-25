@@ -337,8 +337,15 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
   }
 
   /**
-   * Marks TaxImportAttempt for birth numbers that we're about to attempt retrieval from Noris
-   * This ensures that even if Noris returns nothing, we track that an attempt was made
+   * Marks tax import attempts as FAILED before fetching from Noris.
+   *
+   * This pessimistic approach ensures errors are tracked without explicit error handling.
+   * The status is updated on success:
+   * - SUCCESS: Tax successfully imported
+   * - NOT_FOUND: Birth number not found in Noris
+   * - READY_TO_IMPORT: Tax found during prepare phase, awaiting import
+   *
+   * If any error occurs after this point, the FAILED status remains and the attempt will be retried.
    */
   private async markAttemptForBirthNumbers(
     birthNumbers: string[],
@@ -354,12 +361,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       return
     }
 
-    // Create attempt records with NOT_FOUND status
-    // These will be updated to READY_TO_IMPORT in processNorisTaxData if data is found
     await this.prismaService.taxImportAttempt.createMany({
       data: taxPayers.map((taxPayer) => ({
         taxPayerId: taxPayer.id,
-        status: HistoricalTaxImportStatus.NOT_FOUND,
+        status: TaxImportStatus.FAILED,
         year,
         taxType,
       })),

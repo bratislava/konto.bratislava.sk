@@ -482,7 +482,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         taxDetails,
         type: taxDefinition.type,
         deliveryMethod: userDataFromCityAccount?.taxDeliveryMethodAtLockDate,
-        // By marking the remainder as sent, we override the email sending logic
+        // By marking the reminder as sent, we override the email sending logic
         bloomreachUnpaidTaxReminderSent: suppressEmail,
       },
       include: {

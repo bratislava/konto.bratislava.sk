@@ -1,12 +1,12 @@
 import 'yet-another-react-lightbox/styles.css'
 
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { PropsWithChildren, useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 import Spinner from '@/src/components/simple-components/Spinner'
 
 type FormLightboxModalProps = { imageUrl: string }

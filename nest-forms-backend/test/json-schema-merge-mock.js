@@ -7,7 +7,8 @@
 // import { createComparator, createMerger, createShallowAllOfMerge } from '@x0k/json-schema-merge';
 // import { createDeduplicator, createIntersector } from '@x0k/json-schema-merge/lib/array';
 
-// eslint-disable-next-line unicorn/prefer-module
+import { identity } from "lodash"
+
 module.exports = {
   createComparator: () => ({
     compareSchemaDefinitions: () => 0,
@@ -16,10 +17,7 @@ module.exports = {
   createMerger: () => ({
     mergeArrayOfSchemaDefinitions: () => [],
   }),
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  createShallowAllOfMerge: () => (schema) => schema,
-  // eslint-disable-next-line unicorn/consistent-function-scoping
+  createShallowAllOfMerge: () => identity,
   createDeduplicator: () => () => {},
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   createIntersector: () => () => {},
 }

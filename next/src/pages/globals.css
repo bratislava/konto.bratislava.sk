@@ -1,9 +1,12 @@
 @import 'tailwindcss' source(none);
 @import 'tailwind-scrollbar-hide/v4';
 
-@source "./";
-@source "../components/";
-@source "../frontend/";
+@source './';
+@source '../components/';
+@source '../frontend/';
+
+@source '../../node_modules/@bratislava/component-library/dist';
+
 /* When updating the theme don't forget to update the `baTwMerge` implementation in `cn.ts`. */
 @theme inline {
   /* previously defaultTheme.fontFamily.sans in tailwind.config.js */

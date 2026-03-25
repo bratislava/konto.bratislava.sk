@@ -1,9 +1,9 @@
+import { Button } from '@bratislava/component-library'
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
 import { PhoneIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
-import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 type BannerBase = {

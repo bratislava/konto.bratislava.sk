@@ -1,6 +1,3 @@
-/* eslint-disable pii/no-phone-number */
-/* eslint-disable pii/no-email */
-
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
@@ -75,7 +72,6 @@ export class FormUpdateBodyDto {
 
   @ApiPropertyOptional({
     description: 'Concrete error type',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     default: FormError.NONE,
   })
   @IsOptional()
@@ -190,6 +186,3 @@ export class FormUpdateBodyDto {
   @IsDate()
   formSentAt?: Date | null
 }
-
-/* eslint-enable pii/no-phone-number */
-/* eslint-enable pii/no-email */

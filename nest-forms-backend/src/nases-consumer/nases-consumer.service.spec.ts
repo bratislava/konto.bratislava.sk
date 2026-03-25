@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-email */
 import { Nack } from '@golevelup/nestjs-rabbitmq'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -536,4 +535,3 @@ describe('NasesConsumerService', () => {
     })
   })
 })
-/* eslint-enable pii/no-email */

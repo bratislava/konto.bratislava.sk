@@ -53,11 +53,11 @@
     "passport-headerapikey": "^1.2.2",
     "qrcode": "^1.5.4",
     "rimraf": "^6.1.2",
-    "ssh2-sftp-client": "^12.0.1",
+    "ssh2-sftp-client": "^12.1.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "^0.9.0",
+    "@bratislava/eslint-config-nest": "^0.10.0",
     "@golevelup/ts-jest": "^1.2.1",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.17",

@@ -1,6 +1,5 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 
-/* eslint-disable no-secrets/no-secrets */
 export enum MailgunConfigVariableType {
   PARAMETER = 'PARAMETER',
   SELECT = 'SELECT',
@@ -16,7 +15,7 @@ export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
     ]),
 )
 
-type MailgunConfig = {
+interface MailgunConfig {
   template: string
   subject: string
   renderLocally?: boolean
@@ -24,7 +23,7 @@ type MailgunConfig = {
     string,
     {
       type: MailgunConfigVariableType
-      value: any
+      value: unknown
       selectorVariable?: string
     }
   >
@@ -291,4 +290,3 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
     },
   },
 }
-/* eslint-enable no-secrets/no-secrets */

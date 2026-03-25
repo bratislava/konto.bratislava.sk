@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { useState } from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -12,7 +13,6 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
 import RegistrationModal, { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
 import TaxFormPdfExportModal from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModal'
-import Button from '@/src/components/simple-components/Button'
 import Modal from '@/src/components/simple-components/Modal'
 import { Stack } from '@/src/components/styleguide/Stack'
 import { mockFormServerContext } from '@/src/components/styleguide/utils/mockFormServerContext'

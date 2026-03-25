@@ -142,14 +142,14 @@ model Config {
 }
 
 model TaxImportAttempt {
-  id           Int                       @id @default(autoincrement())
-  createdAt    DateTime                  @default(now())
-  updatedAt    DateTime                  @default(now()) @updatedAt
+  id           Int             @id @default(autoincrement())
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now()) @updatedAt
   taxPayerId   Int
-  taxPayer     TaxPayer                  @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
+  taxPayer     TaxPayer        @relation(fields: [taxPayerId], references: [id], onDelete: Cascade)
   year         Int
   taxType      TaxType
-  status       HistoricalTaxImportStatus
+  status       TaxImportStatus
   errorMessage String?
 
   @@unique([taxPayerId, year, taxType])
@@ -189,7 +189,7 @@ enum UnpaidReminderSent {
   BOTH
 }
 
-enum HistoricalTaxImportStatus {
+enum TaxImportStatus {
   READY_TO_IMPORT // Found in Noris during prepare phase, ready to import
   SUCCESS // Successfully imported
   NOT_FOUND // No tax found in Noris for this year

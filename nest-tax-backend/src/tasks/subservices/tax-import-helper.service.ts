@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { HistoricalTaxImportStatus, TaxType } from '@prisma/client'
+import { TaxImportStatus, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -139,9 +139,10 @@ export default class TaxImportHelperService {
               NOT (tp."createdAt" = tp."updatedAt")
 
             AND (tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus"
+            AND (tia.status = 'READY_TO_IMPORT'::"TaxImportStatus"
               OR tia.id IS NULL)
           ORDER BY CASE
-                       WHEN tia.status = 'READY_TO_IMPORT'::"HistoricalTaxImportStatus"
+                       WHEN tia.status = 'READY_TO_IMPORT'::"TaxImportStatus"
                            THEN 1
                        ELSE 0
                        END DESC,
@@ -214,7 +215,7 @@ export default class TaxImportHelperService {
         },
         data: {
           updatedAt: new Date(),
-          status: HistoricalTaxImportStatus.NOT_FOUND,
+          status: TaxImportStatus.NOT_FOUND,
         },
       })
     }

@@ -1,4 +1,4 @@
-import { HistoricalTaxImportStatus, Prisma, Tax, TaxType } from '@prisma/client'
+import { TaxImportStatus, Prisma, Tax, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -214,7 +214,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       await this.prismaService.taxImportAttempt.createMany({
         data: taxPayers.map((taxPayer) => ({
           taxPayerId: taxPayer.id,
-          status: HistoricalTaxImportStatus.READY_TO_IMPORT,
+          status: TaxImportStatus.READY_TO_IMPORT,
           year,
           taxType: taxDefinition.type,
         })),
@@ -502,10 +502,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
         taxPayerId: taxPayer.id,
         year,
         taxType: taxDefinition.type,
-        status: HistoricalTaxImportStatus.SUCCESS,
+        status: TaxImportStatus.SUCCESS,
       },
       update: {
-        status: HistoricalTaxImportStatus.SUCCESS,
+        status: TaxImportStatus.SUCCESS,
       },
     })
 

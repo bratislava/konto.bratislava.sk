@@ -217,8 +217,8 @@ export default class TaxImportTasksService {
                             AND tia.year = years.year
                             AND tia."taxType" = tax_types."taxType"
                             -- We want to exclude only resolved attempts
-                            AND (tia.status = 'SUCCESS'::"HistoricalTaxImportStatus" OR
-                                 tia.status = 'NOT_FOUND'::"HistoricalTaxImportStatus"))
+                            AND (tia.status = 'SUCCESS'::"TaxImportStatus" OR
+                                 tia.status = 'NOT_FOUND'::"TaxImportStatus"))
         ORDER BY tp."updatedAt", tp.id
         LIMIT ${LOAD_HISTORICAL_TAXES_BATCH};
     `

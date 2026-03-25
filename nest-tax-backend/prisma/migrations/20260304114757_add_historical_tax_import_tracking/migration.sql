@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "HistoricalTaxImportStatus" AS ENUM ('READY_TO_IMPORT', 'SUCCESS', 'NOT_FOUND', 'FAILED');
+CREATE TYPE "TaxImportStatus" AS ENUM ('READY_TO_IMPORT', 'SUCCESS', 'NOT_FOUND', 'FAILED');
 
 -- CreateTable
 CREATE TABLE "TaxImportAttempt"
@@ -10,7 +10,7 @@ CREATE TABLE "TaxImportAttempt"
     "taxPayerId"   INTEGER                     NOT NULL,
     "year"         INTEGER                     NOT NULL,
     "taxType"      "TaxType"                   NOT NULL,
-    "status"       "HistoricalTaxImportStatus" NOT NULL,
+    "status"       "TaxImportStatus" NOT NULL,
     "errorMessage" TEXT,
 
     CONSTRAINT "TaxImportAttempt_pkey" PRIMARY KEY ("id")
@@ -37,7 +37,7 @@ INSERT INTO "TaxImportAttempt" ("taxPayerId", "year", "taxType", "status", "crea
 SELECT DISTINCT t."taxPayerId",
                 t."year",
                 t."type",
-                'SUCCESS'::"HistoricalTaxImportStatus",
+                'SUCCESS'::"TaxImportStatus",
                 t."updatedAt",
                 CASE WHEN t.type = 'KO'::"TaxType" THEN tp."lastUpdatedAtKO" ELSE tp."lastUpdatedAtDZN" END
 FROM "Tax" t
@@ -48,7 +48,7 @@ INSERT INTO "TaxImportAttempt" ("taxPayerId", "year", "taxType", "status", "crea
 SELECT t.id,
        DATE_PART('year', CURRENT_DATE),
        'KO'::"TaxType",
-       'READY_TO_IMPORT'::"HistoricalTaxImportStatus",
+       'READY_TO_IMPORT'::"TaxImportStatus",
        NOW(),
        NOW()
 FROM "TaxPayer" t
@@ -59,7 +59,7 @@ INSERT INTO "TaxImportAttempt" ("taxPayerId", "year", "taxType", "status", "crea
 SELECT t.id,
        DATE_PART('year', CURRENT_DATE),
        'DZN'::"TaxType",
-       'READY_TO_IMPORT'::"HistoricalTaxImportStatus",
+       'READY_TO_IMPORT'::"TaxImportStatus",
        NOW(),
        NOW()
 FROM "TaxPayer" t

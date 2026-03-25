@@ -1,8 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { useCopyToClipboard } from 'usehooks-ts'
 
 import { CopyIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import logger from '@/src/frontend/utils/logger'
 

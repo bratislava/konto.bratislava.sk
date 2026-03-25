@@ -1,8 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 import { EditIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 export interface SummaryRowData {

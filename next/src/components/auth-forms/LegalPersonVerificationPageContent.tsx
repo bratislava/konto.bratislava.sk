@@ -1,11 +1,10 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 
 import { ErrorIcon } from '@/src/assets/ui-icons'
 import { useVerifyEid, VerificationStatus } from '@/src/components/auth-forms/useVerifyEid'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
-import Button from '@/src/components/simple-components/Button'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 
 type Props = {

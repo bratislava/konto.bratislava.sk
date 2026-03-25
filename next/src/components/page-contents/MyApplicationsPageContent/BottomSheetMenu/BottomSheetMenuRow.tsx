@@ -1,6 +1,6 @@
+import { Button } from '@bratislava/component-library'
 import Link from 'next/link'
 
-import Button from '@/src/components/simple-components/Button'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import cn from '@/src/utils/cn'
 

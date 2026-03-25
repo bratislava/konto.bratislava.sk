@@ -104,12 +104,11 @@ export default class NotificationsEventsService {
       window.start = window.start.subtract(1, 'week')
     }
 
-    const taxInstallmentInfo =
-      await this.getTaxInstallmentsEligibleForReminder(
-        reminderSentFilter,
-        year,
-        window,
-      )
+    const taxInstallmentInfo = await this.getTaxInstallmentsEligibleForReminder(
+      reminderSentFilter,
+      year,
+      window,
+    )
     const taxes = await this.prismaService.tax.findMany({
       where: { id: { in: taxInstallmentInfo.map((t) => t.taxId) } },
       include: { taxPayer: true },

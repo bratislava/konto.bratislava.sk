@@ -35,6 +35,9 @@ function assertUpdateManyUsesReminderEnums(
   expect(call2[0].data.bloomreachUnpaidReminderSent).toBe(newReminderSent)
 }
 
+/** Calendar May 31, 2025 in the runner's local TZ — matches service's dueDate.getDate()/getMonth() (not UTC instant from Europe/Bratislava midnight, which is prior UTC day on CI). */
+const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = new Date(2025, 4, 31)
+
 function eligibleInstallmentRow(opts: {
   taxId: number
   taxInstallmentId: number
@@ -43,8 +46,7 @@ function eligibleInstallmentRow(opts: {
 }) {
   return {
     taxId: opts.taxId,
-    dueDate:
-      opts.dueDate ?? dayjs.tz('2025-05-31', 'Europe/Bratislava').toDate(),
+    dueDate: opts.dueDate ?? DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE,
     order: opts.order ?? 2,
     id: opts.taxInstallmentId,
   }

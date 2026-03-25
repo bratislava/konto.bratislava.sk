@@ -92,7 +92,7 @@ describe('NotificationsEventsSubservice', () => {
     /** Fixed clock: 2025-06-15 12:00 in Bratislava (CEST), so “today” is 2025-06-15 local. */
     const FIXED_NOW_UTC = new Date('2025-06-15T10:00:00.000Z')
 
-    describe('getTaxesEligibleForInstallmentReminder time window', () => {
+    describe('getTaxInstallmentsEligibleForReminder time window', () => {
       beforeEach(() => {
         jest.useFakeTimers()
         jest.setSystemTime(FIXED_NOW_UTC)
@@ -102,9 +102,9 @@ describe('NotificationsEventsSubservice', () => {
         jest.useRealTimers()
       })
 
-      it('calls getTaxesEligibleForInstallmentReminder with reminderSentFilter [NONE] when dueDateType is NEXT', async () => {
+      it('calls getTaxInstallmentsEligibleForReminder with reminderSentFilter [NONE] when dueDateType is NEXT', async () => {
         const getTaxesSpy = jest
-          .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+          .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
           .mockResolvedValue([])
         prismaMock.tax.findMany.mockResolvedValue([])
 
@@ -129,9 +129,9 @@ describe('NotificationsEventsSubservice', () => {
         )
       })
 
-      it('calls getTaxesEligibleForInstallmentReminder with reminderSentFilter [NONE, BEFORE_DUE] when dueDateType is PAST', async () => {
+      it('calls getTaxInstallmentsEligibleForReminder with reminderSentFilter [NONE, BEFORE_DUE] when dueDateType is PAST', async () => {
         const getTaxesSpy = jest
-          .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+          .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
           .mockResolvedValue([])
         prismaMock.tax.findMany.mockResolvedValue([])
 
@@ -162,7 +162,7 @@ describe('NotificationsEventsSubservice', () => {
 
     it('does not call trackEvent or updateMany when no eligible taxes', async () => {
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([])
       prismaMock.tax.findMany.mockResolvedValue([])
 
@@ -180,7 +180,7 @@ describe('NotificationsEventsSubservice', () => {
     it('does not call trackEvent or updateMany when eligible taxes have no externalId (user missing)', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
         ])
@@ -209,7 +209,7 @@ describe('NotificationsEventsSubservice', () => {
     it('does not call trackEvent when externalId is null', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
         ])
@@ -240,7 +240,7 @@ describe('NotificationsEventsSubservice', () => {
     it('calls trackEvent with full payload and updates TaxInstallment with newReminderSent=BEFORE_DUE and alreadyOtherSent=AFTER_DUE when one tax has externalId (BEFORE)', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
         ])
@@ -301,7 +301,7 @@ describe('NotificationsEventsSubservice', () => {
     it('calls trackEvent with full payload and uses newReminderSent=AFTER_DUE and alreadyOtherSent=BEFORE_DUE when AFTER', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 202 }),
         ])
@@ -362,7 +362,7 @@ describe('NotificationsEventsSubservice', () => {
       const birth1 = '111111/1111'
       const birth2 = '222222/2222'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 301 }),
           eligibleInstallmentRow({ taxId: 2, taxInstallmentId: 302 }),
@@ -433,7 +433,7 @@ describe('NotificationsEventsSubservice', () => {
       const birth1 = '111111/1111'
       const birth2 = '222222/2222'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 401 }),
           eligibleInstallmentRow({ taxId: 2, taxInstallmentId: 402 }),

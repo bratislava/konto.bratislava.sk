@@ -38,7 +38,7 @@ export default class NotificationsEventsService {
     this.logger = new LineLoggerSubservice(NotificationsEventsService.name)
   }
 
-  private async getTaxesEligibleForInstallmentReminder(
+  private async getTaxInstallmentsEligibleForReminder(
     reminderSentFilter: UnpaidReminderSent[],
     year: number,
     window: {
@@ -105,7 +105,7 @@ export default class NotificationsEventsService {
     }
 
     const taxInstallmentInfo =
-      await this.getTaxesEligibleForInstallmentReminder(
+      await this.getTaxInstallmentsEligibleForReminder(
         reminderSentFilter,
         year,
         window,

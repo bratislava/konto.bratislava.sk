@@ -177,6 +177,43 @@ describe('UpvsQueueService', () => {
       })
     })
 
+    it('should handle when UPVS is down', async () => {
+      const mockEntity = {
+        id: 'entity-1',
+        userId: 'user1',
+        uri: 'rc://sk/1234567890_doe_john',
+        activeEdeskUpdatedAt: new Date('2020-01-01'),
+      } as PhysicalEntity
+
+      const mockExternalItem = {
+        id: 'external-fail-1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        uri: 'rc://sk/external-fail',
+        newUri: null,
+        queueStatus: QueueItemStatusEnum.PENDING,
+        upvsStatus: null,
+        edeskStatus: null,
+        edeskNumber: null,
+        processedAt: null,
+        failCount: 0,
+        norisId: 1,
+      }
+
+      // First call for urgent items (empty), second call for high priority items
+      prismaMock.$queryRaw.mockResolvedValueOnce([]).mockResolvedValueOnce([mockEntity])
+      prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
+      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
+
+      jest.spyOn(nasesService, 'createMany').mockRejectedValue()
+
+      await service.processBatch()
+
+      expect(service['logger']).toHaveBeenCalledWith(
+        expect.stringContaining('Error processing batch')
+      )
+    })
+
     it('should handle possible URI changes and mark entities as outdated', async () => {
       const mockEntity = {
         id: 'entity-1',

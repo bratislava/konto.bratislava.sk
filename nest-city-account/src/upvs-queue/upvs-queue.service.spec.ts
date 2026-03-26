@@ -214,6 +214,14 @@ describe('UpvsQueueService', () => {
         'Error processing batch',
         expect.any(Error)
       )
+
+      expect(prismaMock.externalEdeskCheck.updateMany).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            queueStatus: QueueItemStatusEnum.FAILED,
+          }),
+        }),
+      )
     })
 
     it('should handle possible URI changes and mark entities as outdated', async () => {

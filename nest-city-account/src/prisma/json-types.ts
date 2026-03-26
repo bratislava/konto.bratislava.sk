@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import {
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
@@ -8,3 +9,5 @@ declare global {
     type BloomreachCommandData = BloomreachCustomerCommandData | BloomreachEventCommandData
   }
 }
+
+/* eslint-enable @typescript-eslint/no-namespace */

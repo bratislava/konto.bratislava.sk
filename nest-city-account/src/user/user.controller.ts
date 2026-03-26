@@ -30,7 +30,7 @@ import {
 } from './dtos/gdpr.user.dto'
 import { UpsertUserRecordClientRequestDto } from './dtos/user.requests.dto'
 import { UserService } from './user.service'
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { GDPRSubTypeEnum } from '@prisma/client'
 
@@ -46,7 +46,7 @@ import { GDPRSubTypeEnum } from '@prisma/client'
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly bloomreachService: BloomreachService,
+    private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
@@ -127,7 +127,6 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Return subscribed value for logged user',
-    type: ResponseUserDataDto,
   })
   @ApiResponse({
     status: 500,
@@ -136,19 +135,9 @@ export class UserController {
   })
   @UseGuards(CognitoGuard)
   @Post('update-or-create-bloomreach-customer')
-  async updateOrCreateBloomreachCustomer(
-    @User() user: CognitoGetUserData
-  ): Promise<boolean | undefined> {
+  async updateOrCreateBloomreachCustomer(@User() user: CognitoGetUserData): Promise<void> {
     //there is no way to track user attributes change in cognito, so for now, this solution is needed https://github.com/aws-amplify/amplify-js/issues/9391
-    const result = await this.bloomreachService.trackCustomer(user.idUser)
-    if (result) {
-      return result
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
+    await this.bloomreachOutboxService.trackCustomer(user.idUser)
   }
 
   @UseGuards(CognitoGuard)
@@ -357,7 +346,7 @@ export class UserController {
       result = await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
     }
     if (result) {
-      await this.bloomreachService.trackCustomer(user.idUser)
+      await this.bloomreachOutboxService.trackCustomer(user.idUser)
       return result
     }
 

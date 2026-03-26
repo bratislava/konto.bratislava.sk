@@ -914,7 +914,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
     ]),
   ]
 
-  const alert = customComponentsField(
+  const zdravotnyStavAlert = customComponentsField(
     'zdravotnyStavAlert',
     {
       type: 'alert',
@@ -994,9 +994,27 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               title: 'Aká je najvyššia uznaná miera funkčnej poruchy držiteľa/ky preukazu ŤZP?',
               required: true,
               items: [
-                { value: '50az74', label: 'Od 50 % do 74 %' },
-                { value: '75az100', label: 'Od 75 % do 100 %' },
+                {
+                  value: '50az74',
+                  label: 'Od 50 % do 74 % alebo integrovaný posudok 0–2 stupeň',
+                },
+                {
+                  value: '75az100',
+                  label: 'Od 75 % do 100 % alebo integrovaný posudok 3–5 stupeň',
+                },
               ],
+            },
+            {},
+          ),
+          customComponentsField(
+            'mieraFunkcnejPoruchyAlert',
+            {
+              type: 'alert',
+              props: {
+                type: 'info',
+                message:
+                  'Od 1. 9. 2025 sa zmenil spôsob posudzovania ŤZP. Nové integrované posudky už neuvádzajú percentá, ale stupeň odkázanosti. Všetky staršie percentuálne posudky však zostávajú platné. Vyberte možnosť, ktorá zodpovedá najvyššej uznanej miere podľa vášho platného posudku - starého alebo nového.',
+              },
             },
             {},
           ),
@@ -1020,9 +1038,9 @@ const getZdravotnyStavSection = (stepType: StepType) => {
             helptextMarkdown: true,
           },
         ),
-        alert,
+        zdravotnyStavAlert,
       ])
-      .otherwise(() => [...choroby, alert]),
+      .otherwise(() => [...choroby, zdravotnyStavAlert]),
   )
 }
 

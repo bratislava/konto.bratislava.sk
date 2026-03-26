@@ -1,10 +1,10 @@
+import { Button } from '@bratislava/component-library'
 import { createCalendar } from '@internationalized/date'
 import { useRef } from 'react'
 import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 
 import CalendarGrid from './CalendarGrid'
 

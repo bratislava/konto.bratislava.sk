@@ -1,7 +1,8 @@
+import { ButtonAnchorProps } from '@bratislava/component-library'
+
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import { HomepageAnnouncementEntityFragment } from '@/src/clients/graphql-strapi/api'
 import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
-import { AnchorProps } from '@/src/components/simple-components/Button'
 
 type AnnouncementBlockStrapiProps = {
   announcement: HomepageAnnouncementEntityFragment
@@ -17,7 +18,7 @@ const AnnouncementBlockStrapi = ({ announcement, reversed }: AnnouncementBlockSt
 
   const announcementContent = [`### ${title}`, description].join('\n\n')
 
-  const buttons: AnchorProps[] = [
+  const buttons: ButtonAnchorProps[] = [
     {
       children: buttonText,
       href,

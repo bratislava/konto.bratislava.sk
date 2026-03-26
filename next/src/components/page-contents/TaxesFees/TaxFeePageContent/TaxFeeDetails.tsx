@@ -1,12 +1,11 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { TaxType } from 'openapi-clients/tax'
-import React from 'react'
 
 import { ExportIcon } from '@/src/assets/ui-icons'
 import TaxFeeAccordions from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeAccordions'
 import TaxFeePaymentSummary from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentSummary'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
-import Button from '@/src/components/simple-components/Button'
 import { EXTERNAL_LINKS } from '@/src/utils/routes'
 
 /**

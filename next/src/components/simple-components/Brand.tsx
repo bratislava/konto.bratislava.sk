@@ -1,7 +1,7 @@
+import { Button } from '@bratislava/component-library'
 import React from 'react'
 
 import BALogo from '@/src/assets/images/BALogo.svg'
-import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 export interface BrandProps {

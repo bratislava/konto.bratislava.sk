@@ -223,14 +223,13 @@ export default class GinisService {
     }
 
     // ginis can't handle parallel uploads, it's causing race conditions on their side
-    for (let i = 0; i < form.files.length; i += 1) {
-      const file = form.files[i]
+    for (const file of form.files) {
       const minioFilePath = `${pospID}/${form.id}/${file.minioFileName}`
 
       // eslint-disable-next-line no-await-in-loop
       await this.uploadAttachmentToGinis(
         file,
-        form.ginisDocumentId!,
+        form.ginisDocumentId,
         minioFilePath,
       )
     }
@@ -312,7 +311,6 @@ export default class GinisService {
     routingKey: RABBIT_NASES.ROUTING_KEY,
     queue: RABBIT_NASES.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
-      // eslint-disable-next-line no-console
       const logger = new LineLoggerSubservice('Rabbit')
       logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
       channel.reject(message, false)
@@ -664,9 +662,9 @@ export default class GinisService {
     return params
   }
 
-  private async sanitizeEmployeeContactParams(
+  private sanitizeEmployeeContactParams(
     contactParams: GinContactParams,
-  ): Promise<GinContactParams> {
+  ): GinContactParams {
     let department: string | undefined
     if (contactParams.ico === 'Bratislava-OKM') {
       department = 'OSO'
@@ -714,7 +712,7 @@ export default class GinisService {
     }
     // ginis would refuse ICO if it contains anything other than digits
     // employees have their department abbreviated in ICO, so we need to sanitize it
-    contactParams = await this.sanitizeEmployeeContactParams(contactParams)
+    contactParams = this.sanitizeEmployeeContactParams(contactParams)
     return this.ginisApiService.upsertContact(contactParams)
   }
 
@@ -722,7 +720,8 @@ export default class GinisService {
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSkGeneric,
   ) {
-    if (form.formDataJson === null) {
+    const { formDataJson } = form
+    if (!formDataJson) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.EMPTY_FORM_DATA,
         `createDocument: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
@@ -738,7 +737,7 @@ export default class GinisService {
           form.id,
           formDefinition.ginisDocumentTypeId,
           form.updatedAt,
-          extractFormSubjectTechnical(formDefinition, form.formDataJson!),
+          extractFormSubjectTechnical(formDefinition, formDataJson),
           senderId,
         ),
       ))
@@ -755,9 +754,10 @@ export default class GinisService {
       )
     }
 
+    // TODO - try and make Priznak-el-obrazu to be of ENUM type so this comparison can be done with the enum value
     if (
       detail['Wfl-dokument']['Priznak-el-obrazu'] !==
-      SslWflDocumentElectronicSourceExistence.EXISTS
+      SslWflDocumentElectronicSourceExistence.EXISTS.toString()
     ) {
       const message =
         await this.convertService.convertJsonToXmlObjectForForm(form)

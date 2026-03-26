@@ -40,6 +40,22 @@ export function proxy(request: NextRequest) {
     slovenskoSkLoginUrlOrigin,
     environment.bratislavaStrapiUrl,
     environment.cityAccountStrapiUrl,
+
+    // Microsoft Clarity - script is loaded via strict-dynamic / tag manager
+    // Docs: https://learn.microsoft.com/sk-sk/clarity/setup-and-installation/clarity-csp
+    'https://*.clarity.ms',
+    'https://c.bing.com',
+
+    // Google Tag manager
+    // Docs: https://developers.google.com/tag-platform/security/guides/csp
+    'https://*.google-analytics.com',
+    'https://*.analytics.google.com',
+    'https://*.googletagmanager.com',
+
+    // Cookiebot config fetch. Note: See also frame-src below.
+    // Docs: https://support.cookiebot.com/hc/en-us/articles/360018907220-Cookiebot-and-Content-Security-Protocol-CSP
+    'https://consentcdn.cookiebot.eu',
+    'https://consent.cookiebot.eu',
   ]
     .filter(isDefined)
     .join(' ')
@@ -55,6 +71,7 @@ export function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self' https://olo.sk;
+    frame-src 'self' https://consentcdn.cookiebot.eu;
     upgrade-insecure-requests;
     report-uri /api/csp-report;
     report-to ${CSP_REPORT_ENDPOINT_NAME};
@@ -78,6 +95,8 @@ export function proxy(request: NextRequest) {
   // Both reporting headers are sent for backward compatibility.
   // TODO change Content-Security-Policy-Report-Only to Content-Security-Policy when ready
   response.headers.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
+  // TODO Temporarily enable only frame-ancestors policy to prevent Click-jacking attacks. Remove when whole CSP is enabled
+  response.headers.set('Content-Security-Policy', `frame-ancestors 'self' https://olo.sk;`)
   response.headers.set('Reporting-Endpoints', reportingEndpointsValue)
   response.headers.set(
     'Report-To',

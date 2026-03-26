@@ -20,11 +20,11 @@ import {
 const FORM_ACCESS_TYPE_KEY = 'formAccessType'
 
 interface RequestWithUser extends Request {
-  user: User
+  user?: User
 }
 
 interface RequestWithFormAccess extends RequestWithUser {
-  [FORM_ACCESS_TYPE_KEY]: FormAccessType
+  [FORM_ACCESS_TYPE_KEY]?: FormAccessType
 }
 
 const FORM_ACCESS_ALLOW_MIGRATIONS_KEY = 'formAccessAllowMigrations'

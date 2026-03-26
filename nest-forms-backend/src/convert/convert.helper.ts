@@ -9,12 +9,10 @@ import { FormDefinitionSlovenskoSkTax } from 'forms-shared/definitions/formDefin
  * Before this patch, the generated XML had the old posp*, but contained the "importable" data shape, not the one that
  * is sent to NASES.
  */
-// eslint-disable-next-line import/prefer-default-export
 export const patchConvertServiceTaxFormDefinition = (
   formDefinition: FormDefinitionSlovenskoSkTax,
 ): FormDefinitionSlovenskoSkTax => ({
   ...formDefinition,
-  // eslint-disable-next-line no-secrets/no-secrets
   pospID: '00603481.priznanieKDaniZNehnutelnosti',
   pospVersion: '1.0',
 })

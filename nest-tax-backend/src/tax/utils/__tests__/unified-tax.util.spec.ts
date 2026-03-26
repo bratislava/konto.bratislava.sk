@@ -1632,7 +1632,7 @@ describe('UnifiedTaxUtil', () => {
       expect(() => getTaxDetailPure(input)).toThrow(
         new ThrowerErrorGuard().InternalServerErrorException(
           CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-          CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+          'No installments found for the tax.',
         ),
       )
     })
@@ -1804,7 +1804,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
       new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        'No installments found for the tax.',
       ),
     )
   })

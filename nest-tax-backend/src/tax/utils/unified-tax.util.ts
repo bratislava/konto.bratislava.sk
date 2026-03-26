@@ -221,6 +221,13 @@ export const calculateInstallmentAmounts = (
   overallPaid: number,
   numberOfInstallments?: number,
 ) => {
+  if (installments.length === 0) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      'No installments found for the tax.',
+    )
+  }
+
   if (numberOfInstallments && installments.length !== numberOfInstallments) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
@@ -322,7 +329,7 @@ const calculateInstallmentStatus = (
   return result
 }
 
-const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
+export const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
   dayjs.tz(dueDate, bratislavaTimeZone)
 
 const calculateInstallmentPaymentDetails = (options: {

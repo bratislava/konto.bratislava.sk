@@ -14,6 +14,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import {
   bratislavaTimeZone,
   DUE_DATE_OFFSET,
+  parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -94,15 +95,14 @@ export default class NotificationsEventsService {
         ? [UnpaidReminderSent.NONE]
         : [UnpaidReminderSent.NONE, UnpaidReminderSent.BEFORE_DUE]
 
-    const window = {
-      start: dayjs().tz(bratislavaTimeZone).startOf('day'),
-      end: dayjs().tz(bratislavaTimeZone).endOf('day'),
-    }
-    if (dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT) {
-      window.end = window.end.add(1, 'week')
-    } else {
-      window.start = window.start.subtract(1, 'week')
-    }
+    const now = dayjs().tz(bratislavaTimeZone)
+    const window =
+      dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT
+        ? { start: now.startOf('day'), end: now.endOf('day').add(1, 'week') }
+        : {
+            start: now.startOf('day').subtract(1, 'week'),
+            end: now.endOf('day'),
+          }
 
     const taxInstallmentInfo = await this.getTaxInstallmentsEligibleForReminder(
       reminderSentFilter,
@@ -141,14 +141,16 @@ export default class NotificationsEventsService {
         if (!installmentInfo) {
           return undefined
         }
+
+        const dueDate = parseInstallmentDueDate(installmentInfo.dueDate)
         const eventData = {
           year: tax.year,
           tax_type: tax.type,
           order: tax.order!,
           installment_order: installmentInfo.order,
           due_date_type: dueDateType,
-          due_date_month: installmentInfo.dueDate.getMonth() + 1,
-          due_date_day: installmentInfo.dueDate.getDate(),
+          due_date_month: dueDate.month() + 1,
+          due_date_day: dueDate.date(),
         }
         try {
           const result =

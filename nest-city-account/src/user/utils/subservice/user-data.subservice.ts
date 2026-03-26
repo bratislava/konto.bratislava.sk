@@ -12,7 +12,8 @@ import {
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import { BloomreachOutboxService } from '../../../bloomreach/bloomreach-outbox.service'
+import { UserIdentitySubservice } from '../../../utils/subservices/user-identity.subservice'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../../user.error.enum'
 import {
   DeliveryMethodEnum,
@@ -36,14 +37,15 @@ export class UserDataSubservice {
 
   constructor(
     private prisma: PrismaService,
-    private bloomreachService: BloomreachService,
-    private throwerErrorGuard: ThrowerErrorGuard
+    private bloomreachOutboxService: BloomreachOutboxService,
+    private throwerErrorGuard: ThrowerErrorGuard,
+    private userIdentitySubservice: UserIdentitySubservice
   ) {
     this.logger = new LineLoggerSubservice(UserDataSubservice.name)
   }
 
   /**
-   * Gets or creates a user from database using cognito user data.
+   * Gets or creates a user from the database using cognito user data.
    * @param {CognitoGetUserData} cognitoUserData - The cognito user data.
    * @param {boolean} isAdminCall - Whether the call is made by an admin to bypass the deceased user check.
    */
@@ -65,7 +67,7 @@ export class UserDataSubservice {
     }
 
     if (!user) {
-      // user not found, create new one
+      // user is not found, create a new one
       user = await this.prisma.user.create({
         data: userData,
       })
@@ -99,7 +101,7 @@ export class UserDataSubservice {
     return this.postprocessUser(userData.externalId, user)
   }
 
-  async postprocessUser(externalId: string, user: User, changeGdprData: boolean = false) {
+  private async postprocessUser(externalId: string, user: User, changeGdprData: boolean = false) {
     if (changeGdprData) {
       await this.changeUserGdprData(user.id, [
         {
@@ -115,7 +117,7 @@ export class UserDataSubservice {
       ])
     }
 
-    await this.bloomreachService.trackCustomer(externalId)
+    await this.bloomreachOutboxService.trackCustomer(externalId)
     return prismaExclude(user, ['ifo'])
   }
 
@@ -139,7 +141,7 @@ export class UserDataSubservice {
     }
 
     if (!legalPerson) {
-      // legal person not found, create new one
+      // legal person not found, create a new one
       legalPerson = await this.prisma.legalPerson.create({
         data: legalPersonData,
       })
@@ -148,7 +150,7 @@ export class UserDataSubservice {
     }
 
     // TODO: we are missing attribute for isDeceased,
-    // if we are implemeting it, let's add admin call,
+    // if we are implementing it, let's add admin call,
     // same as in getOrCreateUser
 
     // user found, update data
@@ -168,7 +170,7 @@ export class UserDataSubservice {
     return this.postprocessLegalPerson(legalPersonData.externalId, legalPerson)
   }
 
-  async postprocessLegalPerson(
+  private async postprocessLegalPerson(
     externalId: string,
     legalPerson: LegalPerson,
     changeGdprData: boolean = false
@@ -183,7 +185,7 @@ export class UserDataSubservice {
       ])
     }
 
-    await this.bloomreachService.trackCustomer(externalId)
+    await this.bloomreachOutboxService.trackCustomer(externalId)
     return legalPerson
   }
 
@@ -286,69 +288,50 @@ export class UserDataSubservice {
 
   // is this ok?
   async getUserGdprData(userId: string): Promise<ResponseGdprUserDataDto[]> {
-    const data: ResponseGdprUserDataDto[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT ON(category, "type")
-          category,
-          "type",
-          "subType"
-        FROM(
-          SELECT 
-            category,
-            "type",
-            "subType",
-            "createdAt"
-          FROM
-            public."UserGdprData"
-          WHERE
-            "userId" = '${userId}'
-        ) as main
-        ORDER BY
-          category asc,
-          "type" asc,
-          "createdAt" desc`)
+    const data: ResponseGdprUserDataDto[] = await this.prisma.$queryRawUnsafe(
+      //language=postgresql
+      `
+          SELECT DISTINCT ON (category, "type") category,
+                                                "type",
+                                                "subType"
+          FROM (SELECT category,
+                       "type",
+                       "subType",
+                       "createdAt"
+                FROM public."UserGdprData"
+                WHERE "userId" = '${userId}') AS main
+          ORDER BY category,
+                   "type",
+                   "createdAt" DESC`
+    )
     return data
   }
 
   // is this ok?
   async getLegalPersonGdprData(legalPersonId: string): Promise<ResponseGdprLegalPersonDataDto[]> {
-    const data: ResponseGdprLegalPersonDataDto[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT ON(category, "type")
-          category,
-          "type",
-          "subType"
-        FROM(
-          SELECT 
-            category,
-            "type",
-            "subType",
-            "createdAt"
-          FROM
-            public."LegalPersonGdprData"
-          WHERE
-            "legalPersonId" = '${legalPersonId}'
-        ) as main
-        ORDER BY
-          category asc,
-          "type" asc,
-          "createdAt" desc`)
+    const data: ResponseGdprLegalPersonDataDto[] = await this.prisma.$queryRawUnsafe(
+      //language=postgresql
+      `
+          SELECT DISTINCT ON (category, "type") category,
+                                                "type",
+                                                "subType"
+          FROM (SELECT category,
+                       "type",
+                       "subType",
+                       "createdAt"
+                FROM public."LegalPersonGdprData"
+                WHERE "legalPersonId" = '${legalPersonId}') AS main
+          ORDER BY category,
+                   "type",
+                   "createdAt" DESC`
+    )
     return data
   }
 
   async getOfficialCorrespondenceChannel(
     userId: string
   ): Promise<UserOfficialCorrespondenceChannelEnum | null> {
-    const delivery = await this.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
-    const active = delivery.active?.deliveryMethod
-    switch (active) {
-      case DeliveryMethodEnum.EDESK:
-        return UserOfficialCorrespondenceChannelEnum.EDESK
-      case DeliveryMethodEnum.CITY_ACCOUNT:
-        return UserOfficialCorrespondenceChannelEnum.EMAIL
-      case DeliveryMethodEnum.POSTAL:
-        return UserOfficialCorrespondenceChannelEnum.POSTAL
-      default:
-        return null
-    }
+    return this.userIdentitySubservice.getOfficialCorrespondenceChannel({ id: userId })
   }
 
   async getActiveAndLockedDeliveryMethodsWithDates(
@@ -480,7 +463,7 @@ export class UserDataSubservice {
       })),
     })
 
-    await this.bloomreachService.trackEventConsents(gdprData, user.externalId, user.id, false)
+    await this.bloomreachOutboxService.trackEventConsents(gdprData, user.externalId, user.id, false)
   }
 
   async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
@@ -502,7 +485,7 @@ export class UserDataSubservice {
       })),
     })
 
-    await this.bloomreachService.trackEventConsents(
+    await this.bloomreachOutboxService.trackEventConsents(
       gdprData,
       legalPerson.externalId,
       legalPerson.id,
@@ -510,7 +493,7 @@ export class UserDataSubservice {
     )
   }
 
-  async removePhysicalEntityUserIdRelation(userId: string): Promise<void> {
+  private async removePhysicalEntityUserIdRelation(userId: string): Promise<void> {
     const physicalEntity = await this.prisma.physicalEntity.findUnique({
       where: {
         userId,

@@ -86,7 +86,6 @@ export class BloomreachOutboxProcessor {
 
       this.logger.log(`Processed batch of ${commands.length} commands (${entries.length} entries)`)
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -96,46 +95,54 @@ export class BloomreachOutboxProcessor {
         )
       )
 
-      // Mark entries back to PENDING or FAILED based on attempt count
-      const results = await Promise.allSettled(
-        entries.map((entry) => {
-          const newAttempts = entry.attempts + 1
-          if (newAttempts >= MAX_ATTEMPTS) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                `Bloomreach failed to send command after ${MAX_ATTEMPTS} attempts for cognitoID: ${entry.cognitoId}`
-              )
+      await this.rollbackEntries(entries, error)
+    }
+  }
+
+  /**
+   * Marks entries back to PENDING for retry, or FAILED if max attempts reached.
+   * Uses allSettled so one DB failure doesn't block the rest — any entries left
+   * in PROCESSING will be recovered by recoverStaleProcessingEntries.
+   */
+  private async rollbackEntries(entries: BloomreachOutbox[], error: unknown): Promise<void> {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+
+    const results = await Promise.allSettled(
+      entries.map((entry) => {
+        const newAttempts = entry.attempts + 1
+        const exhausted = newAttempts >= MAX_ATTEMPTS
+
+        if (exhausted) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              `Giving up on entry after ${MAX_ATTEMPTS} attempts`,
+              toLogfmt({ cognitoId: entry.cognitoId, entryId: entry.id })
             )
-          }
-
-          return this.prisma.bloomreachOutbox.update({
-            where: { id: entry.id },
-            data: {
-              status:
-                newAttempts >= MAX_ATTEMPTS
-                  ? BloomreachOutboxStatus.FAILED
-                  : BloomreachOutboxStatus.PENDING,
-              attempts: newAttempts,
-              lastError: errorMessage,
-            },
-          })
-        })
-      )
-
-      const failed = results.filter((r) => r.status === 'rejected')
-      if (failed.length > 0) {
-        // If some rollback updates fail, the affected entries stay in PROCESSING
-        // and will be recovered by recoverStaleProcessingEntries on the next tick
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Failed to rollback some batch entries after send failure',
-            toLogfmt({ entryIds: ids, failedCount: failed.length }),
-            failed[0].status === 'rejected' ? failed[0].reason : undefined
           )
+        }
+
+        return this.prisma.bloomreachOutbox.update({
+          where: { id: entry.id },
+          data: {
+            status: exhausted ? BloomreachOutboxStatus.FAILED : BloomreachOutboxStatus.PENDING,
+            attempts: newAttempts,
+            lastError: errorMessage,
+          },
+        })
+      })
+    )
+
+    const rollbackFailures = results.filter((r) => r.status === 'rejected')
+    if (rollbackFailures.length > 0) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Failed to rollback ${rollbackFailures.length}/${entries.length} entries`,
+          toLogfmt({ entryIds: entries.map((e) => e.id) }),
+          (rollbackFailures[0] as PromiseRejectedResult).reason
         )
-      }
+      )
     }
   }
 

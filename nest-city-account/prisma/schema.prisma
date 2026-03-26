@@ -81,7 +81,7 @@ model User {
   createdAt                            DateTime                       @default(now())
   updatedAt                            DateTime                       @updatedAt
   registeredAt                         DateTime?
-  externalId                           String?                        @unique
+  externalId                           String                         @unique
   email                                String?                        @unique
   ifo                                  String?                        @unique
   birthNumber                          String?                        @unique
@@ -176,7 +176,7 @@ model LegalPerson {
   createdAt                          DateTime                       @default(now())
   updatedAt                          DateTime                       @updatedAt
   registeredAt                       DateTime?
-  externalId                         String?                        @unique
+  externalId                         String                         @unique
   email                              String?                        @unique
   ico                                String?
   birthNumber                        String?

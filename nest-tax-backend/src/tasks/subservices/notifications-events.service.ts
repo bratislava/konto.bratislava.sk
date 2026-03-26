@@ -80,6 +80,7 @@ export default class NotificationsEventsService {
       LEFT JOIN due d ON d."taxId" = t.id AND d.thru_order = ti_check."order"
       WHERE t."year" = ${year}
         AND t."isCancelled" = false
+        AND ti_check."order" >= 2
         AND t."paymentMethodIsInkaso" = false
         AND COALESCE(p.total_paid, 0) < COALESCE(d.total_due, 0)
       LIMIT ${UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT}

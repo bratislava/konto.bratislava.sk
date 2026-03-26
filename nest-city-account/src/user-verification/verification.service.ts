@@ -37,6 +37,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { BloomreachPayloadBuilder } from '../bloomreach/bloomreach-payload.builder'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
 import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { VerificationReturnType } from './types'
@@ -154,8 +155,8 @@ export class VerificationService {
         const userIdentitySubservice = new UserIdentitySubservice(prismaService)
         const bloomreachPayloadBuilder = new BloomreachPayloadBuilder(
           cognitoSubservice,
-          throwerErrorGuard,
           bloomreachContactDatabaseService,
+          userIdentitySubservice
         )
 
         const bloomreachOutboxService = new BloomreachOutboxService(

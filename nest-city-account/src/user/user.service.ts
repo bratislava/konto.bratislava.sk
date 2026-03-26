@@ -42,7 +42,7 @@ import {
 } from './dtos/user-modification-response.dto'
 import { UserTierService } from './user-tier.service'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
-import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
+import { AnonymizeResponse } from './dtos/user-modification-response.dto'
 import {
   CustomErrorAdminTypesEnum,
   CustomErrorAdminTypesResponseEnum,
@@ -530,7 +530,7 @@ export class UserService {
       CognitoUserAttributesTierEnum.NEW,
       cognitoUser['custom:account_type']
     )
-    await this.bloomreachService.trackCustomer(externalId)
+    await this.bloomreachOutboxService.trackCustomer(externalId)
 
     let removedUser: User | null = null
     if (

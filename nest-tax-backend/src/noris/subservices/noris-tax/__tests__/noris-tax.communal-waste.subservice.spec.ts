@@ -228,7 +228,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         return callback(mockConnection as any)
       })
 
-      const { Request } = await import('mssql')
+      const { Request } = mssql
       ;(Request as unknown as jest.Mock).mockImplementation(
         () => mockRequest as any,
       )
@@ -256,7 +256,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         return callback(mockConnection as any)
       })
 
-      const { Request } = await import('mssql')
+      const { Request } = mssql
       ;(Request as unknown as jest.Mock).mockImplementation(
         () => mockRequest as any,
       )
@@ -282,7 +282,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         return callback(mockConnection as any)
       })
 
-      const { Request } = await import('mssql')
+      const { Request } = mssql
       ;(Request as unknown as jest.Mock).mockImplementation(
         () => mockRequest as any,
       )
@@ -310,7 +310,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         return callback(mockConnection as any)
       })
 
-      const { Request } = await import('mssql')
+      const { Request } = mssql
       ;(Request as unknown as jest.Mock).mockImplementation(
         () => mockRequest as any,
       )
@@ -350,7 +350,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         return callback(mockConnection as any)
       })
 
-      const { Request } = await import('mssql')
+      const { Request } = mssql
       ;(Request as unknown as jest.Mock).mockImplementation(
         () => mockRequest as any,
       )

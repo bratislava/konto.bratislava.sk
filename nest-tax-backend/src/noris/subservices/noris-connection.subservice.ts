@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { config, connect, ConnectionPool, MSSQLError } from 'mssql'
+import {
+  config,
+  connect,
+  ConnectionError,
+  ConnectionPool,
+  MSSQLError,
+} from 'mssql'
 
 import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
@@ -68,8 +74,9 @@ export class NorisConnectionSubservice {
           resolve()
         } else if (Date.now() - startTime >= maxWaitTime) {
           reject(
-            new Error(
+            new ConnectionError(
               'Connection timeout: Database connection not established within timeout period',
+              'ENOTOPEN',
             ),
           )
         } else {
@@ -80,21 +87,11 @@ export class NorisConnectionSubservice {
     })
   }
 
-  private isMssqlError(error: unknown): error is MSSQLError {
-    return (
-      typeof error === 'object' &&
-      error !== null &&
-      'code' in error &&
-      'message' in error &&
-      'name' in error
-    )
-  }
-
   private addMssqlErrorDetailsToErrorMessage(
     errorMessage: string,
     error: any,
   ): string {
-    if (this.isMssqlError(error)) {
+    if (error instanceof MSSQLError) {
       const mssqlErrorDetails = {
         code: error.code,
         message: error.message,
@@ -120,7 +117,7 @@ export class NorisConnectionSubservice {
     errorMessage: string,
   ): Promise<never> {
     // https://www.npmjs.com/package/mssql#errors
-    if (!this.isMssqlError(error)) {
+    if (!(error instanceof MSSQLError)) {
       throw this.getNorisUrgentError(errorMessage, error)
     }
 
@@ -135,7 +132,7 @@ export class NorisConnectionSubservice {
         WHERE "key" = ${NORIS_SILENT_CONNECTION_ERRORS_KEY}
       `
 
-      throw this.throwerErrorGuard.InternalServerErrorException(
+      throw this.throwerErrorGuard.BadRequestException(
         CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
         undefined,
@@ -152,7 +149,7 @@ export class NorisConnectionSubservice {
    * Creates a connection, executes the function, and ensures proper cleanup.
    *
    * @param operation - Function to execute within the connection context
-   * @param errorHandler - Error handler for any errors that occur during the operation
+   * @param errorMessage - Message passed to {@link handleDatabaseError} on failure
    * @param useOptimized - Whether to use optimized connection settings
    * @returns Result of the operation
    */
@@ -161,18 +158,19 @@ export class NorisConnectionSubservice {
     errorMessage: string,
     useOptimized = false,
   ): Promise<T> {
-    const connection = useOptimized
-      ? await this.createOptimizedConnection()
-      : await this.createConnection()
+    let connection: ConnectionPool | undefined
 
     try {
+      connection = useOptimized
+        ? await this.createOptimizedConnection()
+        : await this.createConnection()
+
       await this.waitForConnection(connection)
-      const result = await operation(connection)
-      return result
+      return await operation(connection)
     } catch (error) {
       return await this.handleDatabaseError(error, errorMessage)
     } finally {
-      await connection.close()
+      await connection?.close()
     }
   }
 }

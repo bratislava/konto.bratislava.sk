@@ -74,7 +74,7 @@ export default class NotificationsEventsService {
       FROM "Tax" t
       JOIN "TaxInstallment" ti_check
         ON ti_check."taxId" = t.id
-        AND ti_check.dueDate BETWEEN ${window.start} AND ${window.end}
+        AND ti_check."dueDate" BETWEEN ${window.start.toDate()} AND ${window.end.toDate()}
         AND ti_check."bloomreachUnpaidReminderSent" IN (${reminderSentFilterSql})
       LEFT JOIN paid p ON p."taxId" = t.id
       LEFT JOIN due d ON d."taxId" = t.id AND d.thru_order = ti_check."order"

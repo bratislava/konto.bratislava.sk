@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { CognitoGetUserData, CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
@@ -16,7 +16,7 @@ export class PaasMpaService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly bloomreachService: BloomreachService,
+    private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly bloomreachContactDatabaseService: BloomreachContactDatabaseService,
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
@@ -100,29 +100,8 @@ export class PaasMpaService {
     }
   }
 
-  private async trackCustomerPhoneWithRetry(
-    cognitoId: string,
-    phoneNumber: string
-  ): Promise<boolean> {
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      const trackedInBloomreach = await this.bloomreachService.trackCustomer(cognitoId, phoneNumber)
-
-      if (trackedInBloomreach) {
-        return trackedInBloomreach
-      }
-
-      this.logger.error(`Failed to sync phone to bloomreach on attempt: ${attempt}`)
-    }
-
-    this.logger.error(
-      this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Failed to sync phone to bloomreach`,
-        toLogfmt({ userId: cognitoId })
-      )
-    )
-
-    return false
+  private async trackCustomerPhone(cognitoId: string, phoneNumber: string): Promise<void> {
+    await this.bloomreachOutboxService.trackCustomer(cognitoId, phoneNumber)
   }
 
   private async handleRegisterPhoneAndGetContactId(
@@ -160,15 +139,7 @@ export class PaasMpaService {
       }
     }
 
-    const trackedInBloomreach = await this.trackCustomerPhoneWithRetry(user.idUser, phoneNumber)
-
-    if (trackedInBloomreach === false) {
-      return {
-        status: PaasMpaRegisterStatusEnum.BLOOMREACH_SYNC_FAILED,
-        verificationState,
-        bloomreachContactId,
-      }
-    }
+    await this.trackCustomerPhone(user.idUser, phoneNumber)
 
     return {
       status: PaasMpaRegisterStatusEnum.SUCCESS,

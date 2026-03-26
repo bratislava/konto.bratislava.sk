@@ -210,17 +210,14 @@ describe('UpvsQueueService', () => {
 
       await service.processBatch()
 
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Error processing batch',
-        expect.any(Error)
-      )
+      expect(errorSpy).toHaveBeenCalledWith('Error processing batch', expect.any(Error))
 
       expect(prismaMock.externalEdeskCheck.updateMany).not.toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
             queueStatus: QueueItemStatusEnum.FAILED,
           }),
-        }),
+        })
       )
     })
 

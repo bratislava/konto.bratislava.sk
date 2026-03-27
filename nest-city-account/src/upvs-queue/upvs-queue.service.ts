@@ -46,16 +46,14 @@ export class UpvsQueueService {
     })
   }
 
-  async retrieveCompletedExternalItems(limit: number) {
-    const result = await this.prismaService.externalEdeskCheck.findMany({
+  async retrieveCompletedAndFailedExternalItems(limit: number) {
+    return this.prismaService.externalEdeskCheck.findMany({
       where: {
-        queueStatus: QueueItemStatusEnum.COMPLETED,
+        queueStatus: { in: [QueueItemStatusEnum.COMPLETED, QueueItemStatusEnum.FAILED] },
       },
       take: limit,
       orderBy: { createdAt: 'asc' },
     })
-
-    return result
   }
 
   /**

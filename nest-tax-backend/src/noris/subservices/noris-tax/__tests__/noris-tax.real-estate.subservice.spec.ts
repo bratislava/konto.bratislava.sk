@@ -244,10 +244,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         return callback(mockConnection as any)
       })
 
-      const { Request } = mssql
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+      jest.mocked(mssql.Request).mockImplementation(() => mockRequest as any)
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2023, [
         '123456/7890',
@@ -286,10 +283,7 @@ describe('NorisTaxRealEstateSubservice', () => {
         return callback(mockConnection as any)
       })
 
-      const { Request } = mssql
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
-      )
+      jest.mocked(mssql.Request).mockImplementation(() => mockRequest as any)
 
       const birthNumbers = ['123456/7890', '987654/3210']
       await service['getTaxDataByYearAndBirthNumber'](2023, birthNumbers)

@@ -97,7 +97,7 @@ model TaxInstallment {
   tax                          Tax                @relation(fields: [taxId], references: [id], onDelete: Cascade)
   order                        Int
   amount                       Int
-  text                         String?
+  dueDate                      DateTime
   bloomreachUnpaidReminderSent UnpaidReminderSent @default(NONE)
 
   @@index([taxId, order])

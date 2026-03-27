@@ -94,7 +94,11 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.ts$": ["ts-jest", { "tsconfig": "tsconfig.spec.json" }]
+      "^.+\\.(t|j)s$": ["ts-jest", { "tsconfig": "tsconfig.spec.json" }]
+    },
+    "transformIgnorePatterns": ["node_modules/(?!(bysquare|lzma1)/)"],
+    "moduleNameMapper": {
+      "^lzma1$": "<rootDir>/../node_modules/lzma1/lib/index.js"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "1.7.2",
-    "@bratislava/component-library": "^1.0.5",
+    "@bratislava/component-library": "1.1.1",
     "@grafana/faro-core": "^2.2.4",
     "@grafana/faro-web-sdk": "^2.2.4",
     "@hookform/resolvers": "^5.2.2",

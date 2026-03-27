@@ -41,6 +41,7 @@ export const testCommunalWasteTax1: NorisCommunalWasteTax = {
   druh_nadoby: 'N12',
   ulica: 'Hlavná ulica',
   orientacne_cislo: '22',
+  forma_uhrady: 'I',
 }
 
 export const testCommunalWasteTax2: NorisCommunalWasteTax = {
@@ -83,6 +84,7 @@ export const testCommunalWasteTax2: NorisCommunalWasteTax = {
   druh_nadoby: 'N12',
   ulica: 'Hlavná ulica',
   orientacne_cislo: '18',
+  forma_uhrady: 'I',
 }
 
 export const testCommunalWasteTax3: NorisCommunalWasteTax = {
@@ -125,6 +127,7 @@ export const testCommunalWasteTax3: NorisCommunalWasteTax = {
   druh_nadoby: 'N12',
   ulica: 'Hlavná ulica',
   orientacne_cislo: '21',
+  forma_uhrady: 'S',
 }
 
 export const testCommunalWasteTax4: NorisCommunalWasteTax = {
@@ -167,6 +170,7 @@ export const testCommunalWasteTax4: NorisCommunalWasteTax = {
   druh_nadoby: 'N12',
   ulica: 'Druhá ulica',
   orientacne_cislo: '51',
+  forma_uhrady: 'I',
 }
 
 // Test data 5: Minimal data with some null values
@@ -209,6 +213,7 @@ export const testCommunalWasteTax5: NorisCommunalWasteTax = {
   druh_nadoby: 'N24',
   ulica: null,
   orientacne_cislo: null,
+  forma_uhrady: 'P',
 }
 
 // Test data 6: Different container type and payment structure
@@ -254,6 +259,7 @@ export const testCommunalWasteTax6: NorisCommunalWasteTax = {
   druh_nadoby: 'N6',
   ulica: 'Tretia ulica',
   orientacne_cislo: '10',
+  forma_uhrady: 'H',
 }
 
 export const invalidNorisCommunalWasteTax1 = {
@@ -264,6 +270,11 @@ export const invalidNorisCommunalWasteTax1 = {
 export const invalidNorisCommunalWasteTax2 = {
   ...testCommunalWasteTax2,
   objem_nadoby: null,
+}
+
+export const invalidNorisCommunalWasteTax3 = {
+  ...testCommunalWasteTax3,
+  forma_uhrady: 'FAKE',
 }
 
 export const validNorisCommunalWasteTaxes = [
@@ -278,6 +289,7 @@ export const validNorisCommunalWasteTaxes = [
 export const invalidNorisCommunalWasteTaxes = [
   invalidNorisCommunalWasteTax1,
   invalidNorisCommunalWasteTax2,
+  invalidNorisCommunalWasteTax3,
 ]
 
 export const allNorisCommunalWasteTaxes = [

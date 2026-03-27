@@ -13,7 +13,6 @@ import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import PrismaService from '../prisma/prisma.service'
@@ -56,7 +55,7 @@ describe('ConvertPdfService', () => {
     updatedAt: new Date(),
   } as const
 
-  beforeAll(async () => {
+  beforeAll(() => {
     process.env = {
       ...process.env,
       MIMETYPE_WHITELIST: 'a b c',
@@ -67,7 +66,6 @@ describe('ConvertPdfService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FormsHelper,
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
@@ -127,10 +125,8 @@ describe('ConvertPdfService', () => {
       expect(filePath).toBe(expectedPdfExportPath)
 
       expect(putObject).toHaveBeenCalled()
-      // TODO should this rule be disabled for tests globally ? or am I doing something wrong ?
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+
       expect(convertService.generatePdf).toHaveBeenCalled()
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(filesHelper.upsertFileByUid).toHaveBeenCalled()
     })
   })

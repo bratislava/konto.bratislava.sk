@@ -77,7 +77,7 @@ const verifyAndMapResponse = async (response: AdminGetUserCommandOutput) => {
   )
   try {
     await validateOrReject(validatedAttributes)
-  } catch (error) {
+  } catch {
     throw new Error('Invalid user attributes received from Cognito.')
   }
 

@@ -6,5 +6,5 @@ module.exports = {
   printWidth: 100,
   plugins: ['prettier-plugin-tailwindcss'],
   tailwindFunctions: ['clsx', 'cn'],
-  tailwindStylesheet: './src/pages/index.css',
+  tailwindStylesheet: './src/pages/globals.css',
 }

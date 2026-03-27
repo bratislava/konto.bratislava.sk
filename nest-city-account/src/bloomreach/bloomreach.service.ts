@@ -225,10 +225,11 @@ export class BloomreachService {
   async trackEventConsents(
     gdprData: GdprDataSubscriptionDto[],
     cognitoId: string | null,
-    userId: string,
-    isLegalPerson: boolean
+    userId?: string,
+    isLegalPerson?: boolean
   ) {
-    const userType = isLegalPerson ? 'legal person' : 'user'
+    const userType =
+      isLegalPerson === true ? 'legal_person' : isLegalPerson === false ? 'user' : 'unknown'
     if (!cognitoId) {
       this.logger.error(
         `No externalId for ${userType} with id: ${userId} has no externalId, skipping trackEventConsents`
@@ -250,7 +251,8 @@ export class BloomreachService {
 
   /**
    * Anonymizes a customer based on his cognito id in bloomreach. This is a part of user acccount deactivation process.
-   * For more info about bloomreach anonymization see https://documentation.bloomreach.com/engagement/reference/anonymize-a-customer-2
+   * We only remove city account information from bloomreach and must keep information from other sources.
+   * Therefore, we can't use bloomreach anonymization endpoint, as it would remove all information from bloomreach.
    *
    * @param cognitoId Id of the user to be anonymized
    * @returns Enum of type AnonymizeResponse with the status of anonymization (if it went successfully, or if there was some error)
@@ -261,18 +263,49 @@ export class BloomreachService {
     }
 
     try {
-      const response = await axios.post(
-        `${process.env.BLOOMREACH_API_URL}/data/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/anonymize`,
-        JSON.stringify({
-          customer_ids: {
-            city_account_id: cognitoId,
+      await this.trackEventConsents(
+        [
+          {
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.unsubscribe,
           },
-        }),
+          {
+            type: GDPRTypeEnum.GENERAL,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.unsubscribe,
+          },
+          {
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            category: GDPRCategoryEnum.TAXES,
+            subType: GDPRSubTypeEnum.unsubscribe,
+          },
+        ],
+        cognitoId
+      )
+
+      const data = {
+        customer_ids: {
+          city_account_id: cognitoId,
+        },
+        properties: {
+          first_name: '',
+          last_name: '',
+          name: '',
+          person_type: '',
+          registration_date: '',
+          email: '',
+          phone: '',
+          is_identity_verified: false,
+          oauth_origin_client_name: '',
+        },
+      }
+      const response = await axios.post(
+        `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers`,
+        JSON.stringify(data),
         {
           headers: {
             Authorization: `Basic ${this.bloomreachCredentials}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
           },
         }
       )

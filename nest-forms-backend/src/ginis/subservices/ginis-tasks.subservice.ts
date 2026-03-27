@@ -95,7 +95,7 @@ export default class GinisTasksSubservice {
   async checkSubmissionState(): Promise<void> {
     // check every document only once a week, otherwise it's a large daily load and Ginis thinks its DOS attack
     // day of the week when a form is checked depends on which symbol the form id starts with
-    const dayToHexPrefixes: Record<number, string[]> = {
+    const dayToHexPrefixes: Partial<Record<number, string[]>> = {
       1: ['0', '1'], // Monday
       2: ['2', '3'], // Tuesday
       3: ['4', '5'], // Wednesday
@@ -106,12 +106,11 @@ export default class GinisTasksSubservice {
     }
     const today = new Date().getDay()
     const prefixes = dayToHexPrefixes[today] ?? []
-    if (!prefixes) {
+    if (prefixes.length === 0) {
       return
     }
 
     const slugsToProcess = formDefinitions
-      // eslint-disable-next-line unicorn/no-array-callback-reference
       .filter(isSlovenskoSkFormDefinition)
       .filter((formDefinition) => !formDefinition.skipGinisStateUpdate)
       .map(({ slug }) => slug)
@@ -130,7 +129,9 @@ export default class GinisTasksSubservice {
     })
 
     await Promise.allSettled(
-      submissions.map((submission) => this.updateSubmissionState(submission)),
+      submissions.map(async (submission) =>
+        this.updateSubmissionState(submission),
+      ),
     )
   }
 }

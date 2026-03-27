@@ -60,7 +60,6 @@ export class LineLoggerSubservice implements LoggerService {
     const colorStart = this.color ? colorCode : ''
     const colorEnd = this.color ? ANSI_RESET : ''
 
-    // eslint-disable-next-line no-console
     console.log(
       [
         colorStart,

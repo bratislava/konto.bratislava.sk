@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
-import { CreateManyParam, NasesService } from '../nases/nases.service'
+import { CreateManyParam, CreateManyResult, NasesService } from '../nases/nases.service'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import dayjs from 'dayjs'
@@ -10,16 +10,17 @@ import { toLogfmt } from '../utils/logging'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 import { parseName } from '../magproxy/dtos/uri'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class UpvsQueueService {
   private readonly logger: LineLoggerSubservice
 
-  private readonly CACHE_TTL_HOURS = 96 // Configurable cache TTL
+  private readonly CACHE_TTL_HOURS = 144 // Configurable cache TTL
 
   private readonly BATCH_SIZE = 8 // 8 requests per batch
 
-  private readonly HIGH_PRIORITY_RESERVED_SLOTS = 6 // Reserve 6 slots for high priority
+  private readonly HIGH_PRIORITY_RESERVED_SLOTS = 5 // Reserve 5 slots for high priority
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -71,20 +72,29 @@ export class UpvsQueueService {
       errors: [] as string[],
     }
 
+    // If there is at least one URI in database flagged as outdated, we need to update it.
+    // TODO this should be calling endpoint for getting identity when available in slovensko-digital container
+    const uriToUpdateInternal = await this.getUriToUpdateInternal()
+    if (uriToUpdateInternal && uriToUpdateInternal.uri && uriToUpdateInternal.id) {
+      await this.handleUriUpdateInternal({
+        id: uriToUpdateInternal.id,
+        uri: uriToUpdateInternal.uri,
+      })
+      result.highPriorityProcessed = 1
+      this.logger.log(result)
+      return
+    }
+    const uriToUpdateExternal = await this.getUriToUpdateExternal()
+    if (uriToUpdateExternal && uriToUpdateExternal.uri) {
+      await this.handleUriUpdateExternal(uriToUpdateExternal.uri)
+      result.externalProcessed = 1
+      this.logger.log(result)
+      return
+    }
+
+    // If no individual URI requires update, we can continue with regular batch processing
     try {
-      let remainingSlots = this.BATCH_SIZE
-
-      // Get all urgent items (up to capacity)
-      const urgentItems = await this.getUrgentQueueItems(remainingSlots)
-      remainingSlots = remainingSlots - urgentItems.length
-
-      // Get high priority items (up to reservation)
-      const highPrioritySlots = Math.min(this.HIGH_PRIORITY_RESERVED_SLOTS, remainingSlots)
-      const highPriorityItems = await this.getHighPriorityQueueItems(highPrioritySlots)
-
-      // If high priority doesn't fill reservation, give to external queue
-      remainingSlots = remainingSlots - highPriorityItems.length
-      const externalItems = await this.getExternalQueueItems(remainingSlots)
+      const { urgentItems, highPriorityItems, externalItems } = await this.getItemsByPriority()
 
       const createManyJoinedInput: CreateManyParam = [
         ...urgentItems,
@@ -99,55 +109,9 @@ export class UpvsQueueService {
 
       const upvsResult = await this.nasesService.createMany(createManyJoinedInput)
 
-      // success: separate urgent and high priority from external
       const externalUris = new Set(externalItems.map((item) => item.uri))
-      const successInternal = upvsResult.success.filter((item) => item.physicalEntityId !== null)
-      const successExternal = upvsResult.success.filter((item) => externalUris.has(item.uri))
-
-      // handle success
-      await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(successInternal)
-
-      // handle success external
-      await Promise.all(
-        successExternal.map(async (item) => {
-          await this.prismaService.externalEdeskCheck.updateMany({
-            where: { uri: item.uri },
-            data: {
-              queueStatus: QueueItemStatusEnum.COMPLETED,
-              upvsStatus: item.data.status ?? null,
-              edeskStatus: item.data.upvs?.edesk_status ?? null,
-              edeskNumber: item.data.upvs?.edesk_number ?? null,
-              processedAt: new Date(),
-            },
-          })
-        })
-      )
-
-      // handle failures both internal and external
-      const failedInternalIds = upvsResult.failed
-        .filter((item) => item.physicalEntityId)
-        .map((item) => item.physicalEntityId!)
-
-      if (failedInternalIds.length > 0) {
-        await this.physicalEntityService.updateFailedActiveEdeskUpdateInDatabase(failedInternalIds)
-      }
-
-      const failedExternalUris = upvsResult.failed
-        .filter((item) => externalUris.has(item.uri))
-        .map((item) => item.uri)
-
-      if (failedExternalUris.length > 0) {
-        await this.prismaService.externalEdeskCheck.updateMany({
-          where: {
-            uri: { in: failedExternalUris },
-            queueStatus: QueueItemStatusEnum.PENDING,
-          },
-          data: {
-            queueStatus: QueueItemStatusEnum.FAILED,
-            failCount: { increment: 1 },
-          },
-        })
-      }
+      await this.handleSuccessfulUpdates(upvsResult, externalUris)
+      await this.handleFailureCases(upvsResult, externalUris)
 
       // update result counters
       result.urgentProcessed = urgentItems.length
@@ -160,6 +124,179 @@ export class UpvsQueueService {
     }
 
     this.logger.log(result)
+    return
+  }
+
+  private async handleSuccessfulUpdates(upvsResult: CreateManyResult, externalUris: Set<string>) {
+    // Success: separate urgent and high priority from external
+    // Filters are not strict, because any potential overlap will not cause any issues
+    const successInternal = upvsResult.success.filter((item) => !!item.physicalEntityId)
+    const successExternal = upvsResult.success.filter((item) => externalUris.has(item.inputUri))
+
+    // handle success
+    await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(successInternal)
+
+    // handle success external
+    await Promise.all(
+      successExternal.map(async (item) => {
+        await this.prismaService.externalEdeskCheck.updateMany({
+          where: { uri: item.inputUri },
+          data: {
+            queueStatus: QueueItemStatusEnum.COMPLETED,
+            upvsStatus: item.data.status ?? null,
+            edeskStatus: item.data.upvs?.edesk_status ?? null,
+            edeskNumber: item.data.upvs?.edesk_number ?? null,
+            processedAt: new Date(),
+            newUri: item.inputUri !== item.data.uri ? item.data.uri : undefined,
+          },
+        })
+      })
+    )
+  }
+
+  private async getItemsByPriority() {
+    let remainingSlots = this.BATCH_SIZE
+
+    // Get all urgent items (up to capacity)
+    const urgentItems = await this.getUrgentQueueItems(remainingSlots)
+    remainingSlots = remainingSlots - urgentItems.length
+
+    // Get high priority items (up to reservation)
+    const highPrioritySlots = Math.min(this.HIGH_PRIORITY_RESERVED_SLOTS, remainingSlots)
+    const highPriorityItems = await this.getHighPriorityQueueItems(highPrioritySlots)
+
+    // If high priority doesn't fill reservation, give to external queue
+    remainingSlots = remainingSlots - highPriorityItems.length
+    const externalItems = await this.getExternalQueueItems(remainingSlots)
+    return { urgentItems, highPriorityItems, externalItems }
+  }
+
+  private async handleFailureCases(upvsResult: CreateManyResult, externalUris: Set<string>) {
+    const failedWithPossibleUriChange = upvsResult.failed.filter((item) => item.possibleUriChange)
+    const failed = upvsResult.failed.filter((item) => !item.possibleUriChange)
+
+    // Requeue possible URI changes
+    if (failedWithPossibleUriChange.length > 0) {
+      await this.prismaService.externalEdeskCheck.updateMany({
+        where: {
+          uri: { in: failedWithPossibleUriChange.map((item) => item.inputUri) },
+          queueStatus: QueueItemStatusEnum.PENDING,
+        },
+        data: {
+          queueStatus: QueueItemStatusEnum.NEW_URI_CHECK_REQUIRED,
+        },
+      })
+      await this.prismaService.physicalEntity.updateMany({
+        where: {
+          uri: { in: failedWithPossibleUriChange.map((item) => item.inputUri) },
+        },
+        data: {
+          uriPossiblyOutdated: true,
+        },
+      })
+    }
+
+    // Handle regular failures
+    const failedInternalIds = failed
+      .filter((item) => item.physicalEntityId)
+      .map((item) => item.physicalEntityId!)
+
+    if (failedInternalIds.length > 0) {
+      await this.physicalEntityService.updateFailedActiveEdeskUpdateInDatabase(failedInternalIds)
+    }
+
+    const failedExternalUris = failed
+      .filter((item) => externalUris.has(item.inputUri))
+      .map((item) => item.inputUri)
+
+    if (failedExternalUris.length > 0) {
+      await this.prismaService.externalEdeskCheck.updateMany({
+        where: {
+          uri: { in: failedExternalUris },
+          queueStatus: QueueItemStatusEnum.PENDING,
+        },
+        data: {
+          queueStatus: QueueItemStatusEnum.FAILED,
+          failCount: { increment: 1 },
+        },
+      })
+    }
+  }
+
+  private async getUriToUpdateInternal() {
+    return await this.prismaService.physicalEntity.findFirst({
+      where: {
+        uriPossiblyOutdated: true,
+      },
+      select: { uri: true, id: true },
+    })
+  }
+
+  private async getUriToUpdateExternal() {
+    return await this.prismaService.externalEdeskCheck.findFirst({
+      where: {
+        queueStatus: QueueItemStatusEnum.NEW_URI_CHECK_REQUIRED,
+        uri: {
+          not: null,
+        },
+      },
+      orderBy: { updatedAt: 'asc' },
+      select: {
+        uri: true,
+      },
+    })
+  }
+
+  private async handleUriUpdateInternal(input: { uri: string; id: string }) {
+    const upvsResult = await this.nasesService.createMany([input])
+    if (
+      upvsResult.success.length === 1 &&
+      upvsResult.success[0].data.uri &&
+      upvsResult.success[0].physicalEntityId
+    ) {
+      const successItem = upvsResult.success[0]
+      await this.prismaService.physicalEntity.update({
+        where: { id: successItem.physicalEntityId! },
+        data: {
+          uri: successItem.data.uri,
+        },
+      })
+    } else {
+      this.prismaService.physicalEntity.update({
+        where: { id: input.id },
+        data: { uriPossiblyOutdated: false },
+      })
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Failed to update URI for physical entity id ${input.id}`
+      )
+    }
+    return
+  }
+
+  private async handleUriUpdateExternal(uri: string) {
+    const upvsResult = await this.nasesService.createMany([{ uri: uri }])
+    if (upvsResult.success.length === 1) {
+      const successItem = upvsResult.success[0]
+      await this.prismaService.externalEdeskCheck.update({
+        where: { uri: successItem.inputUri },
+        data: {
+          queueStatus: QueueItemStatusEnum.COMPLETED,
+          upvsStatus: successItem.data.status ?? null,
+          edeskStatus: successItem.data.upvs?.edesk_status ?? null,
+          edeskNumber: successItem.data.upvs?.edesk_number ?? null,
+          processedAt: new Date(),
+        },
+      })
+    } else {
+      await this.prismaService.externalEdeskCheck.update({
+        where: { uri: uri },
+        data: {
+          queueStatus: QueueItemStatusEnum.FAILED,
+          failCount: { increment: 1 },
+        },
+      })
+    }
     return
   }
 

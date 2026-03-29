@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@bratislava/eslint-config-nest": "^0.10.0",
-    "@golevelup/ts-jest": "^1.2.1",
+    "@golevelup/ts-jest": "^3.0.0",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.17",
     "@types/express": "^5.0.6",

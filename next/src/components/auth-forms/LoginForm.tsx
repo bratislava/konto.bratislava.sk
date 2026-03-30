@@ -73,6 +73,8 @@ const LoginForm = ({ onSubmit, error }: Props) => {
             placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
+            autoComplete="username"
+            autoCapitalize="none"
           />
         )}
       />
@@ -86,6 +88,8 @@ const LoginForm = ({ onSubmit, error }: Props) => {
             placeholder={t('auth.fields.password_placeholder')}
             {...field}
             errorMessage={errors.password}
+            autoComplete="current-password"
+            // TODO consider adding autoCorrect="off" and spellCheck={false}
           />
         )}
       />

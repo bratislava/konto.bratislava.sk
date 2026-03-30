@@ -75,12 +75,6 @@ export const useMenu = () => {
       url: ROUTES.TAXES_AND_FEES,
       hidden: isLegalEntity,
     },
-    {
-      id: 4,
-      title: t('account_section_help.navigation'),
-      icon: <HelpIcon className="size-6" />,
-      url: ROUTES.HELP,
-    },
   ].filter((section) => isDefined(section) && !section.hidden)
 
   // TODO consider using this in desktop menu

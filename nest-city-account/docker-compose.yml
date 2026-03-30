@@ -42,4 +42,4 @@ services:
       - "6310:6379"
     volumes:
       - ./redis-data:/data
-    command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --requirepass redis

@@ -13,7 +13,11 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { toLogfmt } from '../utils/logging'
 import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
-import { BloomreachCommandNameEnum, BloomreachCustomerCommandData } from './bloomreach.types'
+import {
+  BloomreachCommandNameEnum,
+  BloomreachCustomerCommandData,
+  BloomreachEventCommandData,
+} from './bloomreach.types'
 
 @Injectable()
 export class BloomreachOutboxService {
@@ -77,13 +81,11 @@ export class BloomreachOutboxService {
     try {
       const commands = this.payloadBuilder.buildConsentEventCommands(gdprData, cognitoId)
 
-      await this.prisma.bloomreachOutbox.createMany({
-        data: commands.map(({ commandName, commandData }) => ({
-          cognitoId,
-          commandName,
-          commandData,
-        })),
-      })
+      await Promise.all(
+        commands.map(({ commandData }) =>
+          this.upsertPendingEventCommand(cognitoId, commandData)
+        )
+      )
 
       this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${cognitoId}`)
     } catch (error) {
@@ -140,6 +142,50 @@ export class BloomreachOutboxService {
         )
       )
     }
+  }
+
+  private async upsertPendingEventCommand(
+    cognitoId: string,
+    commandData: BloomreachEventCommandData
+  ): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const existing = await tx.bloomreachOutbox.findFirst({
+        where: {
+          cognitoId,
+          commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+          status: BloomreachOutboxStatus.PENDING,
+          AND: [
+            {
+              commandData: {
+                path: ['event_type'],
+                equals: commandData.event_type,
+              },
+            },
+            {
+              commandData: {
+                path: ['properties', 'category'],
+                equals: commandData.properties.category,
+              },
+            },
+          ],
+        },
+      })
+
+      if (existing) {
+        await tx.bloomreachOutbox.update({
+          where: { id: existing.id },
+          data: { commandData },
+        })
+      } else {
+        await tx.bloomreachOutbox.create({
+          data: {
+            cognitoId,
+            commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+            commandData,
+          },
+        })
+      }
+    })
   }
 
   // Prisma's upsert requires a @@unique constraint, but we can't add one on

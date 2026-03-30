@@ -3,20 +3,15 @@ import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
 
-import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
-import FieldHelptext from '@/src/components/widget-components/FieldHelptext'
+import FieldHelptext, { FieldHelptextProps } from '@/src/components/widget-components/FieldHelptext'
 import cn from '@/src/utils/cn'
 
-export type FieldHeaderProps = {
+export type FieldHeaderProps = FieldHelptextProps & {
   label: string
-  required?: boolean
-  tooltip?: string
+  isRequired?: boolean
   labelSize?: LabelSize
   htmlFor?: string
   labelProps?: DOMAttributes<never>
-  helptext?: string
-  helptextMarkdown?: boolean
-  descriptionProps?: DOMAttributes<never>
   /**
    * Some field types (radio, checkbox, upload...) need more spacing between the title and the field itself.
    */
@@ -32,9 +27,8 @@ export type FieldHeaderProps = {
 const FieldHeader = ({
   label,
   htmlFor,
-  required,
+  isRequired,
   labelProps,
-  tooltip,
   labelSize = 'default',
   helptext,
   helptextMarkdown,
@@ -54,12 +48,11 @@ const FieldHeader = ({
     'mb-8': !useCustomBottomMargin,
   })
 
-  const showOptionalLabel = displayOptionalLabel && !required
-  const displayAsterisk = !displayOptionalLabel && required
+  const showOptionalLabel = displayOptionalLabel && !isRequired
+  const displayAsterisk = !displayOptionalLabel && isRequired
 
   const labelStyle = cn('relative text-gray-800', {
-    'text-p3-semibold after:text-p3-semibold sm:text-16-semibold sm:after:text-16-semibold':
-      labelSize === 'default',
+    'text-16-semibold after:text-16-semibold': labelSize === 'default',
     'text-h3 after:text-h3': labelSize === 'h3',
     'text-h4 after:text-h4': labelSize === 'h4',
     'text-h5 after:text-h5': labelSize === 'h5',
@@ -74,28 +67,16 @@ const FieldHeader = ({
           <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
             {label}
           </label>
-          {showOptionalLabel && (
-            <span className="text-p3 sm:text-16">{t('FieldHeader.optional')}</span>
-          )}
+          {showOptionalLabel && <span className="text-16">{t('FieldHeader.optional')}</span>}
         </div>
-        {tooltip && (
-          <div
-            className={cn('flex-column flex shrink-0 items-center', {
-              'ml-5': showOptionalLabel,
-              'ml-2': !showOptionalLabel,
-            })}
-          >
-            <BATooltip>{tooltip}</BATooltip>
-          </div>
-        )}
       </div>
-      {helptext && (
+      {helptext ? (
         <FieldHelptext
           helptext={helptext}
           helptextMarkdown={helptextMarkdown}
           descriptionProps={descriptionProps}
         />
-      )}
+      ) : null}
     </div>
   )
 }

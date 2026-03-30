@@ -1,6 +1,7 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { Button as AriaButton, Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
+import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
 
 import { ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
 import StepperViewList from '@/src/components/forms/steps/StepperViewList'
@@ -32,14 +33,15 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
                 <Heading slot="title" className="grow text-h6">
-                  {t('stepper.all_steps')}
+                  {t('StepperView.all_steps')}
                 </Heading>
-                <AriaButton
-                  className="flex h-full cursor-pointer flex-col justify-center"
+                {/* TODO Unify modal close button with other modals */}
+                <Button
+                  variant="icon-wrapped-negative-margin"
+                  icon={<CrossIcon />}
                   onPress={close}
-                >
-                  <CrossIcon className="size-6" />
-                </AriaButton>
+                  aria-label={t('StepperView.aria.close')}
+                />
               </div>
               <nav className="w-full overflow-auto bg-white p-4" data-cy="stepper-mobile">
                 <StepperViewList onSkipToStep={handleOnSkipToStep} />
@@ -52,7 +54,11 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
   )
 }
 
-const StepperView = () => {
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-11155
+ */
+
+const StepperView = ({ className }: { className?: string }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { currentStepperStep, goToStep } = useFormState()
   const { precalculateSummary } = useFormSummary()
@@ -70,12 +76,14 @@ const StepperView = () => {
   }
 
   return (
-    <div>
+    <div className={className}>
+      {/* Screen: Desktop */}
       <nav className="hidden w-[332px] lg:block" data-cy="stepper-desktop">
         <StepperViewList onSkipToStep={handleOnSkipToStep} />
       </nav>
-      <div className="lg:hidden">
-        <AriaButton
+      {/* Screen: Mobile */}
+      <div className="-mx-4 lg:hidden">
+        <Button
           className={cn(
             'flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 text-left drop-shadow-lg',
           )}
@@ -84,7 +92,7 @@ const StepperView = () => {
         >
           <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
           <ChevronDownIcon className={cn({ 'rotate-180': !isOpen })} />
-        </AriaButton>
+        </Button>
 
         <StepperModal
           isOpen={isOpen}

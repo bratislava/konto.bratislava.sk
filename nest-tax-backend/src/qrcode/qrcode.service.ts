@@ -8,7 +8,7 @@ import * as qrCode from 'qrcode'
 import { QrCodeGeneratorDto } from './dtos/qrcode.dto'
 
 @Injectable()
-export class QrCodeSubservice {
+export class QrCodeService {
   constructor(private readonly configService: ConfigService) {
     // Check if the required environment variables are set
     this.configService.getOrThrow<string>('PAYMENT_QR_BENEFICIARY_NAME')

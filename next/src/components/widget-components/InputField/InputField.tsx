@@ -1,11 +1,9 @@
 import { useObjectRef } from '@react-aria/utils'
-import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@/src/assets/ui-icons'
+import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon } from '@/src/assets/ui-icons'
 import MailIcon from '@/src/assets/ui-icons/custom_mail.svg'
-import Button from '@/src/components/simple-components/Button'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
 
@@ -18,7 +16,6 @@ export type InputFieldProps = FieldWrapperProps & {
   capitalize?: boolean
   value?: string
   leftIcon?: LeftIconVariants
-  resetIcon?: boolean
   onChange?: (value?: string) => void
   onBlur?: () => void
   endIcon?: ReactNode
@@ -30,37 +27,22 @@ export type InputFieldProps = FieldWrapperProps & {
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
     {
-      name,
-      label,
       type = 'text',
-      placeholder,
-      errorMessage = [],
-      helptext,
-      helptextMarkdown,
-      helptextFooter,
-      helptextFooterMarkdown,
-      tooltip,
-      required,
+      name,
+      capitalize = false,
       value = '',
-      disabled,
       leftIcon,
-      resetIcon,
-      className,
       onChange,
       endIcon,
-      customErrorPlace = false,
-      capitalize = false,
       autoComplete,
-      size,
-      labelSize,
-      displayOptionalLabel,
+      placeholder,
+      className,
       ...rest
     },
     forwardedRef,
   ) => {
     const ref = useObjectRef(forwardedRef)
     const [valueState, setValueState] = useState<string>(value)
-    const { t } = useTranslation('account')
 
     useEffect(() => {
       setValueState(onChange ? value : valueState)
@@ -72,9 +54,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         placeholder,
         value: onChange && value ? value : valueState,
         type,
-        label,
-        errorMessage,
-        description: helptext,
+        description: rest.helptext,
         onChange(inputValue) {
           if (onChange) {
             onChange(inputValue.startsWith(' ') ? inputValue.trim() : inputValue)
@@ -91,8 +71,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             }
           }
         },
-        isRequired: required,
-        isDisabled: disabled,
         autoComplete,
       },
       ref,
@@ -114,49 +92,31 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       }
     }
 
-    const resetIconHandler = () => {
-      if (onChange) onChange('')
-      else setValueState('')
-    }
-
     const style = cn(
-      'w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 sm:text-16',
+      'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-16 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
       {
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
-        'pr-12 sm:pr-[52px]': resetIcon,
         // hover
-        'hover:border-gray-400': !disabled,
+        'hover:border-gray-400': !rest.isDisabled,
 
         // error
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
+          rest.errorMessage?.length && !rest.isDisabled,
 
         // disabled
-        'border-gray-300 bg-gray-100': disabled,
+        'border-gray-300 bg-gray-100': rest.isDisabled,
       },
       className,
     )
 
     return (
       <FieldWrapper
-        label={label}
+        {...rest}
         labelProps={labelProps}
         htmlFor={inputProps.id}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
-        required={required}
-        tooltip={tooltip}
-        disabled={disabled}
-        customErrorPlace={customErrorPlace}
-        errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel={displayOptionalLabel}
       >
         <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
@@ -164,7 +124,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
-                  'opacity-50': disabled,
+                  'opacity-50': rest.isDisabled,
                 },
               )}
             >
@@ -178,16 +138,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             className={style}
             data-cy={`input-${name}`}
           />
-          {resetIcon && valueState && (
-            <Button
-              onPress={resetIconHandler}
-              variant="unstyled"
-              className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
-            >
-              <RemoveIcon />
-              <span className="sr-only">{t('InputField.aria.reset')}</span>
-            </Button>
-          )}
           {endIcon}
         </div>
       </FieldWrapper>

@@ -1,4 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Test } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 
@@ -29,11 +30,19 @@ import {
 } from './services/form-access.service'
 import { FormMigrationsService } from './services/form-migrations.service'
 
+class FormAccessResponseDto {
+  accessType: FormAccessType
+}
+
 @Controller('test-form-access-e2e')
+@ApiTags('test-form-access-e2e')
 class TestFormAccessController {
   @Get('access/:formId')
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @ApiOkResponse({
+    type: FormAccessResponseDto,
+  })
   getFormAccessDefault(@GetFormAccessType() accessType: FormAccessType) {
     return { accessType }
   }
@@ -42,6 +51,9 @@ class TestFormAccessController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
   @FormAccessAllowMigrations()
+  @ApiOkResponse({
+    type: FormAccessResponseDto,
+  })
   getFormAccessWithMigration(@GetFormAccessType() accessType: FormAccessType) {
     return { accessType }
   }
@@ -49,6 +61,9 @@ class TestFormAccessController {
   @Get('access-no-param')
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
+  @ApiOkResponse({
+    type: FormAccessResponseDto,
+  })
   getFormAccessNoParam(@GetFormAccessType() accessType: FormAccessType) {
     return { accessType }
   }
@@ -56,12 +71,18 @@ class TestFormAccessController {
   @Get('access-no-guard/:formId')
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard)
+  @ApiOkResponse({
+    type: FormAccessResponseDto,
+  })
   getFormAccessNoGuard(@GetFormAccessType() accessType: FormAccessType) {
     return { accessType }
   }
 
   @Get('access-no-auth/:formId')
   @UseGuards(FormAccessGuard)
+  @ApiOkResponse({
+    type: FormAccessResponseDto,
+  })
   getFormAccessNoAuth(@GetFormAccessType() accessType: FormAccessType) {
     return { accessType }
   }
@@ -195,7 +216,7 @@ describe('Form access', () => {
 
   describe('Error Handling & Invalid Requests', () => {
     it('should return 400 if formId path parameter is missing', async () => {
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<{ message: string }>(
         `/test-form-access-e2e/access-no-param`,
         { headers: authUser1.headers },
       )
@@ -206,7 +227,7 @@ describe('Form access', () => {
     })
 
     it('should throw InternalServerErrorException when GetFormAccessType is used without FormAccessGuard', async () => {
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<{ message: string }>(
         `/test-form-access-e2e/access-no-guard/${formForAuthUser1.id}`,
         { headers: authUser1.headers },
       )
@@ -217,7 +238,7 @@ describe('Form access', () => {
     })
 
     it('should throw BadRequestException when FormAccessGuard is used without UserAuthGuard', async () => {
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<{ message: string }>(
         `/test-form-access-e2e/access-no-auth/${formForAuthUser1.id}`,
         { headers: authUser1.headers },
       )
@@ -265,7 +286,7 @@ describe('Form access', () => {
       })
 
       // Guard
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<FormAccessResponseDto>(
         `/test-form-access-e2e/access/${formForAuthUser1.id}`,
         { headers: authUser1.headers },
       )
@@ -319,7 +340,7 @@ describe('Form access', () => {
       })
 
       // Guard
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<FormAccessResponseDto>(
         `/test-form-access-e2e/access/${formForGuestUser1.id}`,
         { headers: guestUser1.headers },
       )
@@ -336,7 +357,7 @@ describe('Form access', () => {
       expect(serviceAccess).toEqual({ hasAccess: false })
 
       // Guard
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<FormAccessResponseDto>(
         `/test-form-access-e2e/access/${formForGuestUser1.id}`,
         { headers: guestUser2.headers },
       )
@@ -374,7 +395,7 @@ describe('Form access', () => {
       })
 
       // Guard
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<FormAccessResponseDto>(
         `/test-form-access-e2e/access/${formForAuthUserWithIcoCommon1.id}`,
         { headers: authUserWithIcoCommon1.headers },
       )
@@ -394,7 +415,7 @@ describe('Form access', () => {
       })
 
       // Guard
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<FormAccessResponseDto>(
         `/test-form-access-e2e/access/${formForAuthUserWithIcoCommon1.id}`,
         { headers: authUserWithIcoCommon2.headers },
       )
@@ -449,7 +470,7 @@ describe('Form access', () => {
       })
 
       // Guard
-      const response = await testingApp.axiosClient.get(
+      const response = await testingApp.axiosClient.get<FormAccessResponseDto>(
         `/test-form-access-e2e/access-with-migration/${formForGuestUser1.id}`,
         { headers: authUser1.headers },
       )

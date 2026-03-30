@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import {
   FormDefinitionEmail,
   FormDefinitionType,
@@ -14,7 +16,7 @@ import {
   extractFormSubjectPlain,
   extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   FileIdInfoMap,
   renderSummaryEmail,
@@ -124,10 +126,7 @@ export default class EmailFormsSubservice {
       )
     }
 
-    if (
-      formDefinition.type !== FormDefinitionType.Email ||
-      !formDefinition.email.address
-    ) {
+    if (formDefinition.type !== FormDefinitionType.Email) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         EmailFormsErrorsEnum.NOT_EMAIL_FORM,
         `${EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM} Form id: ${form.id}.`,
@@ -171,7 +170,7 @@ export default class EmailFormsSubservice {
       formId,
       slug: formDefinition.slug,
       jsonVersion: formDefinition.jsonVersion,
-      json: omitExtraData(
+      json: baOmitExtraData(
         formDefinition.schema,
         formDataJson,
         this.formValidatorRegistryService.getRegistry(),
@@ -233,7 +232,7 @@ export default class EmailFormsSubservice {
             formId: form.id,
             messageSubject: extractFormSubjectPlain(
               formDefinition,
-              form.formDataJson as GenericObjectType,
+              form.formDataJson,
             ),
             firstName: userName,
             slug: formDefinition.slug,
@@ -269,7 +268,7 @@ export default class EmailFormsSubservice {
           error: FormError.NONE,
         },
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -331,7 +330,6 @@ export default class EmailFormsSubservice {
           ),
           firstName: null,
           slug: formDefinition.slug,
-          // eslint-disable-next-line xss/no-mixed-html
           htmlData: renderedSummary,
           formSentAt: form.formSentAt,
         },

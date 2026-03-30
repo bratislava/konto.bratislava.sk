@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
-import { Forms, FormState } from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
 import {
   AuthFixtureUser,
@@ -19,20 +19,18 @@ import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import FormsHelper from './forms.helper'
 import FormsService from './forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('@nestjs/config')
-jest.mock('./forms.helper')
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
 jest.mock('../utils/subservices/minio-client.subservice')
 jest.mock('../scanner-client/scanner-client.service')
 jest.mock('forms-shared/form-utils/omitExtraData', () => ({
-  omitExtraData: jest.fn(),
+  baOmitExtraData: jest.fn(),
 }))
 jest.mock('../form-validator-registry/form-validator-registry.service')
 
@@ -56,7 +54,6 @@ describe('FormsService', () => {
         MinioClientSubservice,
         ScannerClientService,
         ThrowerErrorGuard,
-        FormsHelper,
         ConfigService,
         FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
@@ -171,7 +168,7 @@ describe('FormsService', () => {
     it('should return the form if everyting is ok', async () => {
       const insertForm = { state: FormState.DRAFT, id: '123' } as Forms
       prismaMock.forms.findUnique.mockResolvedValue(insertForm)
-      FormsHelper.isEditable = jest.fn().mockReturnValue(true)
+      service.isEditable = jest.fn().mockReturnValue(true)
 
       const result = await service.checkFormBeforeSending('123')
       expect(result).toEqual(insertForm)
@@ -222,7 +219,7 @@ describe('FormsService', () => {
         state: FormState.PROCESSING,
       } as Forms
       jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
-      FormsHelper.isEditable = jest.fn().mockReturnValue(false)
+      service.isEditable = jest.fn().mockReturnValue(false)
 
       await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
     })
@@ -235,7 +232,7 @@ describe('FormsService', () => {
         formDefinitionSlug: 'non-existent',
       } as Forms
       jest.spyOn(service, 'getUniqueForm').mockResolvedValue(form)
-      FormsHelper.isEditable = jest.fn().mockReturnValue(true)
+      service.isEditable = jest.fn().mockReturnValue(true)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
       await expect(service.bumpJsonVersion(formId)).rejects.toThrow()
@@ -277,7 +274,7 @@ describe('FormsService', () => {
       ).mockReturnValue(mockRegistry)
 
       const omittedData = { existingData: true }
-      ;(omitExtraData as jest.Mock).mockReturnValue(omittedData)
+      ;(baOmitExtraData as jest.Mock).mockReturnValue(omittedData)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         jsonVersion: '1.1.0',
         schema: { type: 'object' },
@@ -286,7 +283,7 @@ describe('FormsService', () => {
       const updateSpy = jest.spyOn(prismaMock.forms, 'update')
       await service.bumpJsonVersion(formId)
 
-      expect(omitExtraData).toHaveBeenCalledWith(
+      expect(baOmitExtraData).toHaveBeenCalledWith(
         { type: 'object' },
         formDataJson,
         mockRegistry,
@@ -299,6 +296,38 @@ describe('FormsService', () => {
           formDataJson: omittedData,
         },
       })
+    })
+  })
+
+  describe('isEditable', () => {
+    it('should return true', () => {
+      expect(
+        service.isEditable({ state: FormState.DRAFT } as Forms),
+      ).toBeTruthy()
+      expect(
+        service.isEditable({
+          state: FormState.ERROR,
+          error: FormError.INFECTED_FILES,
+        } as Forms),
+      ).toBeTruthy()
+    })
+
+    it('should return false', () => {
+      expect(
+        service.isEditable({ state: FormState.PROCESSING } as Forms),
+      ).toBeFalsy()
+      expect(
+        service.isEditable({ state: FormState.FINISHED } as Forms),
+      ).toBeFalsy()
+      expect(
+        service.isEditable({ state: FormState.QUEUED } as Forms),
+      ).toBeFalsy()
+      expect(
+        service.isEditable({
+          state: FormState.ERROR,
+          error: FormError.NASES_SEND_ERROR,
+        } as Forms),
+      ).toBeFalsy()
     })
   })
 })

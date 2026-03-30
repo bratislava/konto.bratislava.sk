@@ -3,7 +3,9 @@ import { Readable } from 'node:stream'
 import { Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { Response } from 'express'
 import {
   FormDefinition,
@@ -228,7 +230,6 @@ export default class ConvertService {
         const { error: errorEnum, message: errorMessage } =
           extractJsonErrorMapping[error.type]
         throw this.throwerErrorGuard.BadRequestException(
-          // eslint-disable-next-line custom-rules/thrower-error-guard-enum
           errorEnum,
           errorMessage,
         )
@@ -341,7 +342,7 @@ export default class ConvertService {
         pdfBuffer = await renderSummaryPdf({
           formSummary,
           validationData,
-          launchBrowser: () => chromium.launch(),
+          launchBrowser: async () => chromium.launch(),
           clientFiles,
           serverFiles: form.files,
         })
@@ -356,7 +357,7 @@ export default class ConvertService {
         pdfBuffer = await renderSummaryPdf({
           formSummary: form.formSummary,
           validationData: null,
-          launchBrowser: () => chromium.launch(),
+          launchBrowser: async () => chromium.launch(),
           serverFiles: form.files,
         })
       }

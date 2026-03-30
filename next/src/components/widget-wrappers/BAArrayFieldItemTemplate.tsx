@@ -1,34 +1,32 @@
+import { Button } from '@bratislava/component-library'
 import {
-  ArrayFieldTemplateItemType,
+  ArrayFieldItemTemplateProps,
   FormContextType,
+  getUiOptions,
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
+import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import { RemoveIcon } from '@/src/assets/ui-icons'
-import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
-
-export type BAArrayFieldItemTemplateAdditionalProps = {
-  parentUiOptions: ArrayFieldUiOptions
-  parentSelfId: string
-}
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldItemTemplate/ArrayFieldItemTemplate.tsx
  */
 const BAArrayFieldItemTemplate = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   F extends FormContextType = any,
 >(
-  props: ArrayFieldTemplateItemType<T, S, F> & BAArrayFieldItemTemplateAdditionalProps,
+  props: ArrayFieldItemTemplateProps<T, S, F>,
 ) => {
-  const { children, hasRemove, index, onDropIndexClick, parentUiOptions, parentSelfId } = props
+  const { children, buttonsProps, index, parentUiSchema } = props
+  const { hasRemove } = buttonsProps
+  const { parentId } = getObjectFieldInfo(buttonsProps.fieldPathId)
+  const parentUiOptions = getUiOptions(parentUiSchema) as ArrayFieldUiOptions
   const { variant, itemTitle } = parentUiOptions
 
   const boxStyle = cn({
@@ -48,14 +46,14 @@ const BAArrayFieldItemTemplate = <
 
   const title = getArrayItemTitle(itemTitle, index)
 
-  const onDropIndexClickPatched = (innerIndex: number) => () => {
+  const onRemoveItemPatched = () => {
     // The RJSF expects the event to have a `preventDefault` method, but the `onPress` handler
     // does not provide it. We need to patch it in order to make the RJSF work.
-    onDropIndexClick(innerIndex)({ preventDefault: () => {} })
+    buttonsProps.onRemoveItem({ preventDefault: () => {} })
   }
 
   return (
-    <div className={boxStyle} data-cy={`section-${parentSelfId}-${index}`}>
+    <div className={boxStyle} data-cy={`section-${parentId}-${index}`}>
       <div className={headingStyle}>
         {variant === 'topLevel' && <h3 className="grow text-h3">{title}</h3>}
         {variant === 'nested' && <h4 className="grow text-h4">{title}</h4>}
@@ -65,7 +63,7 @@ const BAArrayFieldItemTemplate = <
             icon={<RemoveIcon />}
             // TODO: Translation + improve message
             aria-label="Vymazať"
-            onPress={onDropIndexClickPatched(index)}
+            onPress={onRemoveItemPatched}
             className="self-start"
           />
         )}

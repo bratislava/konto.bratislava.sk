@@ -11,7 +11,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { SharepointRelationData } from 'forms-shared/definitions/sharepointTypes'
-import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
@@ -61,7 +61,7 @@ describe('SharepointSubservice', () => {
     service = module.get<SharepointSubservice>(SharepointSubservice)
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.resetAllMocks()
   })
 
@@ -73,7 +73,7 @@ describe('SharepointSubservice', () => {
     it('should just post new record', async () => {
       const spy = jest
         .spyOn(service, 'postNewRecord')
-        .mockImplementation(async () => {})
+        .mockImplementation(async () => Promise.resolve())
       await service.transcode({ data: { formId: 'formIdValue' } } as Bull.Job<{
         formId: string
       }>)
@@ -210,7 +210,7 @@ describe('SharepointSubservice', () => {
           columns.forEach((column) => {
             result[column] = `${column}_val`
           })
-          return result
+          return Promise.resolve(result)
         },
       )
       const result = await service['getAllFieldsMappings'](
@@ -369,7 +369,7 @@ describe('SharepointSubservice', () => {
           columns.forEach((column) => {
             result[column] = `${column}_val`
           })
-          return result
+          return Promise.resolve(result)
         },
       )
       const getValuesSpy = jest
@@ -377,7 +377,7 @@ describe('SharepointSubservice', () => {
         .mockReturnValue({})
       const updateFormSpy = jest.spyOn(service['prismaService'].forms, 'update')
       jest
-        .spyOn(omitExtraData, 'omitExtraData')
+        .spyOn(baOmitExtraData, 'baOmitExtraData')
         .mockReturnValue({ omitted: true })
 
       await service.postNewRecord('formId')

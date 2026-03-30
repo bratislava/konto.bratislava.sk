@@ -1,8 +1,8 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '@/src/components/simple-components/Button'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
@@ -52,6 +52,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
       data-cy="forgotten-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastEmail(data.email)
+
         return onSubmit(data.email)
       })}
     >
@@ -62,7 +63,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             label={t('auth.fields.email_label')}
             placeholder={t('auth.fields.email_placeholder')}
             {...field}

@@ -981,10 +981,6 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                       "value": "bolt",
                     },
                     {
-                      "label": "Dott",
-                      "value": "dott",
-                    },
-                    {
                       "label": "Svišť",
                       "value": "svist",
                     },
@@ -996,7 +992,6 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
               },
               "enum": [
                 "bolt",
-                "dott",
                 "svist",
               ],
               "title": "Poskytovateľ kolobežky",
@@ -78666,11 +78661,11 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "ui:options": {
                             "enumMetadata": [
                               {
-                                "label": "Od 50 % do 74 %",
+                                "label": "Od 50 % do 74 % alebo integrovaný posudok 0–2 stupeň",
                                 "value": "50az74",
                               },
                               {
-                                "label": "Od 75 % do 100 %",
+                                "label": "Od 75 % do 100 % alebo integrovaný posudok 3–5 stupeň",
                                 "value": "75az100",
                               },
                             ],
@@ -78683,6 +78678,27 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         ],
                         "title": "Aká je najvyššia uznaná miera funkčnej poruchy držiteľa/ky preukazu ŤZP?",
                         "type": "string",
+                      },
+                      "mieraFunkcnejPoruchyAlert": {
+                        "anyOf": [
+                          {},
+                        ],
+                        "baOrder": 4,
+                        "baUiSchema": {
+                          "ui:field": "CustomComponents",
+                          "ui:fieldReplacesAnyOrOneOf": true,
+                          "ui:options": {
+                            "customComponents": [
+                              {
+                                "props": {
+                                  "message": "Od 1. 9. 2025 sa zmenil spôsob posudzovania ŤZP. Nové integrované posudky už neuvádzajú percentá, ale stupeň odkázanosti. Všetky staršie percentuálne posudky však zostávajú platné. Vyberte možnosť, ktorá zodpovedá najvyššej uznanej miere podľa vášho platného posudku - starého alebo nového.",
+                                  "type": "info",
+                                },
+                                "type": "alert",
+                              },
+                            ],
+                          },
+                        },
                       },
                     },
                     "required": [
@@ -78721,7 +78737,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         "then": {
                           "properties": {
                             "existujuceDiagnozy": {
-                              "baOrder": 5,
+                              "baOrder": 6,
                               "baUiSchema": {
                                 "ui:options": {
                                   "enumMetadata": [
@@ -79030,7 +79046,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                     ],
                     "properties": {
                       "chronickeOchorenie": {
-                        "baOrder": 4,
+                        "baOrder": 5,
                         "baUiSchema": {
                           "ui:options": {
                             "enumMetadata": [
@@ -79075,7 +79091,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
               "properties": {
                 "bezbarierovyByt": {
-                  "baOrder": 6,
+                  "baOrder": 7,
                   "baUiSchema": {
                     "ui:options": {
                       "enumMetadata": [
@@ -79134,7 +79150,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                   "anyOf": [
                     {},
                   ],
-                  "baOrder": 7,
+                  "baOrder": 8,
                   "baUiSchema": {
                     "ui:field": "CustomComponents",
                     "ui:fieldReplacesAnyOrOneOf": true,

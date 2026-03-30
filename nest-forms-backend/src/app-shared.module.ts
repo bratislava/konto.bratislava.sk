@@ -32,7 +32,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     BullModule.forRootAsync({
       imports: [BaConfigModule],
       inject: [BaConfigService],
-      useFactory: async (baConfigService: BaConfigService) => ({
+      useFactory: (baConfigService: BaConfigService) => ({
         redis: {
           host: baConfigService.redis.service,
           port: baConfigService.redis.port,

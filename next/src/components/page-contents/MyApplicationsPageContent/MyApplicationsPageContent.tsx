@@ -40,6 +40,7 @@ export const getTotalNumberOfApplications = async (
     emailFormSlugs,
     getSsrAuthSession,
   )
+
   return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
 }
 
@@ -127,7 +128,7 @@ const MyApplicationsPageContent = ({
                   key={item.tag}
                   id={item.tag}
                   data-before-text={text}
-                  className="cursor-pointer py-4 text-center text-20 transition-all before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)] hover:border-gray-700 hover:text-20-semibold data-selected:border-b-2 data-selected:border-gray-700 data-selected:text-20-semibold"
+                  className="cursor-pointer py-4 text-center text-20 transition-all before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)] hover:border-gray-700 hover:text-20-semibold data-selected:border-b data-selected:border-gray-700 data-selected:text-20-semibold"
                 >
                   {text}
                 </Tab>

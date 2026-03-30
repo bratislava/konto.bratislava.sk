@@ -1,3 +1,4 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -6,7 +7,6 @@ import { useCounter, useTimeout } from 'usehooks-ts'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import Button from '@/src/components/simple-components/Button'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import Radio from '@/src/components/widget-components/RadioButton/Radio'
@@ -184,7 +184,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           control={control}
           render={({ field }) => (
             <RadioGroup
-              required
+              isRequired
               onChange={field.onChange}
               value={field.value}
               label={t('auth.fields.account_type_label')}
@@ -208,7 +208,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             helptext={emailHelptextTranslationMap[type]}
             label={t('auth.fields.email_label')}
             placeholder={t('auth.fields.email_placeholder')}
@@ -225,7 +225,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             control={control}
             render={({ field }) => (
               <InputField
-                required
+                isRequired
                 label={t('auth.fields.given_name_label')}
                 placeholder={t('auth.fields.given_name_placeholder')}
                 capitalize
@@ -239,7 +239,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             control={control}
             render={({ field }) => (
               <InputField
-                required
+                isRequired
                 label={t('auth.fields.family_name_label')}
                 placeholder={t('auth.fields.family_name_placeholder')}
                 capitalize
@@ -256,7 +256,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           control={control}
           render={({ field }) => (
             <InputField
-              required
+              isRequired
               label={t('auth.fields.business_name_label')}
               placeholder={t('auth.fields.business_name_placeholder')}
               capitalize
@@ -271,7 +271,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         control={control}
         render={({ field }) => (
           <PasswordField
-            required
+            isRequired
             label={t('auth.fields.password_label')}
             placeholder={t('auth.fields.password_placeholder')}
             helptext={t('auth.fields.password_description')}

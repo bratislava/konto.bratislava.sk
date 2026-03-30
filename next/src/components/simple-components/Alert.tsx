@@ -1,4 +1,6 @@
+import { Button } from '@bratislava/component-library'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
 import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@/src/assets/ui-icons'
@@ -29,13 +31,13 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
               {button.title}
             </Link>
           ) : (
-            <button
-              type="button"
+            <Button
+              variant="unstyled"
               className="w-max text-16-medium underline underline-offset-4"
               onClick={button.handler}
             >
               {button.title}
-            </button>
+            </Button>
           )}
         </React.Fragment>
       ))}
@@ -74,6 +76,8 @@ const Alert = ({
   solid = false,
   hasIcon = true,
 }: AlertBase) => {
+  const { t } = useTranslation('account')
+
   const icons = {
     error: <ErrorIcon className="size-6" />,
     success: <CheckInCircleIcon className="size-6" />,
@@ -115,9 +119,12 @@ const Alert = ({
           </div>
         </div>
         {close && (
-          <span className="flex size-6 cursor-pointer items-center justify-center">
-            <CrossIcon onClick={close} className="size-6" />
-          </span>
+          <Button
+            variant="icon-wrapped-negative-margin"
+            icon={<CrossIcon className="size-6" />}
+            onPress={close}
+            aria-label={t('Alert.aria.close')}
+          />
         )}
       </div>
       {message && title && (

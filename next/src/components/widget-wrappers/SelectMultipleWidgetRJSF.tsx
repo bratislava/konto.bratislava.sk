@@ -13,7 +13,7 @@ import { isDefined } from '@/src/frontend/utils/general'
 interface SelectMultipleWidgetRJSFProps extends WidgetProps {
   options: WithEnumOptions<SelectUiOptions>
   value: string[] | undefined
-  onChange: (value?: string[] | undefined) => void
+  onChange: (value?: string[]) => void
 }
 
 const SelectMultipleWidgetRJSF = ({
@@ -35,7 +35,6 @@ const SelectMultipleWidgetRJSF = ({
     helptextMarkdown,
     helptextFooter,
     helptextFooterMarkdown,
-    tooltip,
     className,
     size,
     labelSize,
@@ -67,9 +66,8 @@ const SelectMultipleWidgetRJSF = ({
         helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
         helptextFooterMarkdown={helptextFooterMarkdown}
-        tooltip={tooltip}
         errorMessage={rawErrors}
-        required={required}
+        isRequired={required}
         isDisabled={disabled || readonly}
         className={className}
         size={size}

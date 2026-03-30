@@ -1,5 +1,6 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
-import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
+import { Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
@@ -38,21 +39,22 @@ const BottomSheetMenuModal = ({
         <Dialog className="flex h-full flex-col outline-0">
           {({ close }) => (
             <>
-              <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b-2 bg-white p-4">
+              <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b bg-white p-4">
                 <h6 className="grow text-h6">
                   {t('account_section_applications.mobile_modal_menu.title')}
                 </h6>
-                <AriaButton
-                  className="flex h-full cursor-pointer flex-col justify-center"
+                <Button
+                  variant="icon-wrapped-negative-margin"
+                  size="large"
+                  icon={<CrossIcon />}
                   onPress={close}
-                >
-                  <CrossIcon className="size-6" />
-                </AriaButton>
+                  aria-label={t('BottomSheetMenuModal.aria.close')}
+                />
               </div>
               <nav className="w-full overflow-auto bg-white px-4">
                 <ul>
                   {conceptMenuContent.map((item) => (
-                    <li key={item.id} className="border-b-2 last:border-b-0">
+                    <li key={item.id} className="border-b last:border-b-0">
                       <BottomSheetMenuRow
                         title={item.title}
                         icon={item.icon}

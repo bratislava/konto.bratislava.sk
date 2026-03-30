@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-email */
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -818,4 +817,3 @@ describe('NasesService', () => {
     })
   })
 })
-/* eslint-enable pii/no-email */

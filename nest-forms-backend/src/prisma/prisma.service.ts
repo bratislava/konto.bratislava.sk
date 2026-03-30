@@ -49,7 +49,7 @@ export default class PrismaService
     await this.$queryRaw`SELECT 1`
   }
 
-  async enableShutdownHooks(app: INestApplication): Promise<void> {
+  enableShutdownHooks(app: INestApplication): void {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     process.on('beforeExit', async () => {
       await app.close()

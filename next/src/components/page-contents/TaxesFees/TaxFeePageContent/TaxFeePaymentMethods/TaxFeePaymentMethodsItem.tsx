@@ -1,12 +1,13 @@
+import { Button, ButtonButtonProps } from '@bratislava/component-library'
+
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
-import Button, { ButtonProps } from '@/src/components/simple-components/Button'
 
 interface TaxFeePaymentMethodsItemProps {
   title: React.ReactNode
-  subtitle: string
+  subtitle?: string
   amount: number
   buttonText: string
-  buttonVariant: Extract<ButtonProps['variant'], 'solid' | 'outline'>
+  buttonVariant: Extract<ButtonButtonProps['variant'], 'solid' | 'outline'>
   buttonHref: string
 }
 
@@ -19,10 +20,10 @@ const TaxFeePaymentMethodsItem = ({
   buttonHref,
 }: TaxFeePaymentMethodsItemProps) => {
   return (
-    <div className="flex w-full flex-col justify-between gap-4 border-gray-200 p-4 nth-2:border-t-2 lg:flex-row lg:gap-0 lg:p-6">
-      <div className="flex flex-col items-start gap-3">
+    <div className="flex w-full flex-col justify-between gap-4 border-gray-200 p-4 nth-2:border-t lg:flex-row lg:gap-0 lg:p-6">
+      <div className="flex flex-col items-start justify-center gap-3">
         <div className="text-p2">{title}</div>
-        <div className="text-p2-semibold text-category-600">{subtitle}</div>
+        {subtitle ? <div className="text-p2-semibold text-category-600">{subtitle}</div> : null}
       </div>
       <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:gap-8">
         <span className="text-p1-semibold">

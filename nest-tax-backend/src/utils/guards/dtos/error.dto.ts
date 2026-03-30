@@ -48,6 +48,7 @@ export class ResponseErrorDto {
   errorName: CustomErrorEnums
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-extraneous-class */
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')
 

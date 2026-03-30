@@ -12,7 +12,7 @@ import {
 } from 'class-validator'
 
 function BooleanTransform() {
-  return Transform(({ value }) => {
+  return Transform(({ value }: { value: unknown }) => {
     if (typeof value === 'string') {
       const lower = value.toLowerCase()
       if (lower === 'true') {
@@ -27,7 +27,7 @@ function BooleanTransform() {
 }
 
 function NumberTransform() {
-  return Transform(({ value }) => {
+  return Transform(({ value }: { value: unknown }) => {
     if (typeof value === 'string' && value.trim() !== '') {
       const num = Number(value)
       return Number.isNaN(num) ? value : num

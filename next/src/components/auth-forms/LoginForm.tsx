@@ -1,9 +1,9 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
-import Button from '@/src/components/simple-components/Button'
 import InputField from '@/src/components/widget-components/InputField/InputField'
 import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -68,7 +68,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <InputField
-            required
+            isRequired
             label={t('auth.fields.email_label')}
             placeholder={t('auth.fields.email_placeholder')}
             {...field}
@@ -81,7 +81,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field }) => (
           <PasswordField
-            required
+            isRequired
             label={t('auth.fields.password_label')}
             placeholder={t('auth.fields.password_placeholder')}
             {...field}

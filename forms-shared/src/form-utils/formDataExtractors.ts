@@ -1,9 +1,8 @@
 import { FormDefinition, FormDefinitionEmail } from '../definitions/formDefinitionTypes'
-import { GenericObjectType } from '@rjsf/utils'
-import {
-  evaluateFormDataExtractor,
-  SchemalessFormDataExtractor,
-} from './evaluateFormDataExtractor'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
+import { evaluateFormDataExtractor, SchemalessFormDataExtractor } from './evaluateFormDataExtractor'
 
 export const extractFormSubjectPlain = (
   formDefinition: FormDefinition,

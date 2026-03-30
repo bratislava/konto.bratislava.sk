@@ -6,10 +6,10 @@ import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
+import { QrCodeService } from '../qrcode/qrcode.service'
 import { getTaxDefinitionByType } from '../tax-definitions/getTaxDefinitionByType'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -47,7 +47,7 @@ export class TaxService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly qrCodeSubservice: QrCodeSubservice,
+    private readonly qrCodeService: QrCodeService,
   ) {}
 
   private async getAmountsAlreadyPaidByTaxIds(
@@ -167,7 +167,8 @@ export class TaxService {
         amountToBePaid,
         status,
         type: tax.type,
-        order: tax.order!, // non-null by DB trigger and constraint
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
+        order: tax.order!,
       }
     })
 
@@ -290,7 +291,7 @@ export class TaxService {
 
     const detailWithoutQrCode = getTaxDetailPure({
       type,
-      taxYear: +year,
+      taxYear: year,
       today: today.toDate(),
       overallAmount: tax.amount,
       paymentCalendarThreshold: taxDefinition.paymentCalendarThreshold,
@@ -306,7 +307,7 @@ export class TaxService {
 
     let oneTimePaymentQrCode: string | undefined
     if (detailWithoutQrCode.oneTimePayment.qrCode) {
-      oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
+      oneTimePaymentQrCode = await this.qrCodeService.createQrCode(
         detailWithoutQrCode.oneTimePayment.qrCode,
       )
     }
@@ -328,7 +329,7 @@ export class TaxService {
                 .variableSymbol,
             dueDate:
               detailWithoutQrCode.installmentPayment.activeInstallment.dueDate,
-            qrCode: await this.qrCodeSubservice.createQrCode(
+            qrCode: await this.qrCodeService.createQrCode(
               detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
             ),
           }

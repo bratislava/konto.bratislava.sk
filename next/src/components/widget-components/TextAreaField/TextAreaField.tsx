@@ -14,23 +14,11 @@ type TextAreaBase = FieldWrapperProps & {
 }
 
 const TextAreaField = ({
-  label,
-  placeholder,
-  errorMessage = [],
-  helptext,
-  helptextMarkdown,
-  helptextFooter,
-  helptextFooterMarkdown,
-  tooltip,
-  required,
-  value,
-  disabled,
-  className,
   defaultValue,
+  value,
   onChange,
-  size,
-  labelSize,
-  displayOptionalLabel,
+  placeholder,
+  className,
   ...rest
 }: TextAreaBase) => {
   const [valueState, setValueState] = useState<string>('')
@@ -46,9 +34,7 @@ const TextAreaField = ({
       ...rest,
       placeholder,
       value: displayValue,
-      label,
-      errorMessage,
-      description: helptext,
+      description: rest.helptext,
       inputElementType: 'textarea',
       onChange(inputValue) {
         if (onChange) {
@@ -61,18 +47,16 @@ const TextAreaField = ({
       onFocusChange: (value) => {
         setIsFocused(value)
       },
-      isRequired: required,
-      isDisabled: disabled,
     },
     ref,
   )
   const containerStyle = cn(
-    'flex resize-none flex-col overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-0 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden sm:text-16',
+    'flex resize-none flex-col overflow-hidden rounded-lg border border-gray-200 bg-gray-0 text-16 caret-gray-700 focus:border-gray-700 focus:outline-hidden',
     {
-      'hover:border-gray-400': !disabled && !isFocused,
+      'hover:border-gray-400': !rest.isDisabled && !isFocused,
       'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-        errorMessage?.length > 0 && !disabled,
-      'border-gray-700 hover:border-gray-700': !disabled && isFocused,
+        rest.errorMessage?.length && !rest.isDisabled,
+      'border-gray-700 hover:border-gray-700': !rest.isDisabled && isFocused,
     },
     className,
   )
@@ -80,28 +64,18 @@ const TextAreaField = ({
   const textareaStyle = cn(
     'h-full w-full resize-none overflow-y-scroll rounded-lg bg-white px-3 py-2 caret-gray-700 focus:outline-hidden focus:placeholder:text-transparent sm:px-4 sm:py-3',
     {
-      'border-gray-300 bg-gray-100': disabled,
+      'border-gray-300 bg-gray-100': rest.isDisabled,
     },
   )
+
   return (
     <div className="flex w-full flex-col">
       <FieldWrapper
-        label={label}
+        {...rest}
         labelProps={labelProps}
         htmlFor={inputProps.id}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
-        required={required}
-        tooltip={tooltip}
-        disabled={disabled}
-        errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel={displayOptionalLabel}
       >
         <div className={containerStyle}>
           <textarea {...inputProps} ref={ref} name={inputProps.id} className={textareaStyle} />

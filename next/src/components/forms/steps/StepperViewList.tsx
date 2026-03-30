@@ -1,5 +1,4 @@
-import React from 'react'
-import { Button as AriaButton } from 'react-aria-components'
+import { Button } from '@bratislava/component-library'
 
 import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
@@ -10,7 +9,12 @@ import cn from '@/src/utils/cn'
 type StepperViewListProps = {
   onSkipToStep: (stepIndex: FormStepIndex) => void
 }
-const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-11155
+ */
+
+const StepperViewList = ({ onSkipToStep }: StepperViewListProps) => {
   const { stepperData, currentStepperStep } = useFormState()
   const { precalculateSummary } = useFormSummary()
 
@@ -30,14 +34,14 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
             key={index}
             aria-current={isCurrent ? 'step' : undefined}
           >
-            <AriaButton
+            <Button
               onPress={() => onSkipToStep(step.index)}
               data-cy={`stepper-step-${index + 1}`}
               className="w-full"
               onHoverStart={isSummary ? precalculateSummary : undefined}
             >
               <StepperViewRow step={step} isCurrent={isCurrent} />
-            </AriaButton>
+            </Button>
           </li>
         )
       })}

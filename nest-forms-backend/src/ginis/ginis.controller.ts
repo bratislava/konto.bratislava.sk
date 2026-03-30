@@ -70,9 +70,10 @@ export default class GinisController {
         `Form with id ${formId} does not have a ginisDocumentId`,
       )
     }
+
     let wflDocument: SslDetailDokumentuWflDokument | null = null
-    let ownerDetail: GinDetailReferentaDetailReferenta | null = null
-    let documentHistory: MappedDocumentHistory = []
+    let ownerDetail: GinDetailReferentaDetailReferenta | null
+    let documentHistory: MappedDocumentHistory
     try {
       const document =
         await this.ginisAPIService.getDocumentDetail(ginisDocumentId)

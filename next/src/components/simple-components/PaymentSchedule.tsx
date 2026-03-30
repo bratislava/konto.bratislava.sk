@@ -18,7 +18,7 @@ const PaymentSchedule = () => {
   const { taxData } = useTaxFee()
 
   return (
-    <ul className="flex w-full flex-col rounded-lg border-2 border-gray-200 px-4 lg:px-6">
+    <ul className="flex w-full flex-col rounded-lg border border-gray-200 px-4 lg:px-6">
       {taxData.installmentPayment.installments?.map((installment, index) => {
         const formattedDate = formatDate(installment.dueDate)
         const translationMap = {

@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { config, connect, ConnectionPool } from 'mssql'
+import {
+  config,
+  connect,
+  ConnectionError,
+  ConnectionPool,
+  MSSQLError,
+} from 'mssql'
 
+import { PrismaService } from '../../prisma/prisma.service'
+import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisConnectionSubservice {
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly prismaService: PrismaService,
   ) {
     if (
       !process.env.MSSQL_HOST ||
@@ -54,7 +64,7 @@ export class NorisConnectionSubservice {
 
   private async waitForConnection(
     connection: ConnectionPool,
-    maxWaitTime: number = 10_000,
+    maxWaitTime = 10_000,
   ): Promise<void> {
     const startTime = Date.now()
 
@@ -64,8 +74,9 @@ export class NorisConnectionSubservice {
           resolve()
         } else if (Date.now() - startTime >= maxWaitTime) {
           reject(
-            new Error(
+            new ConnectionError(
               'Connection timeout: Database connection not established within timeout period',
+              'ENOTOPEN',
             ),
           )
         } else {
@@ -76,32 +87,90 @@ export class NorisConnectionSubservice {
     })
   }
 
+  private addMssqlErrorDetailsToErrorMessage(
+    errorMessage: string,
+    error: any,
+  ): string {
+    if (error instanceof MSSQLError) {
+      const mssqlErrorDetails = {
+        code: error.code,
+        message: error.message,
+        name: error.name,
+      }
+      return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
+    }
+    return errorMessage
+  }
+
+  private getNorisUrgentError(errorMessage: string, error: any) {
+    return this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+      undefined,
+      error instanceof Error ? undefined : (error as string),
+      error instanceof Error ? error : undefined,
+    )
+  }
+
+  private async handleDatabaseError(
+    error: any,
+    errorMessage: string,
+  ): Promise<never> {
+    // https://www.npmjs.com/package/mssql#errors
+    if (!(error instanceof MSSQLError)) {
+      throw this.getNorisUrgentError(errorMessage, error)
+    }
+
+    if (
+      ['ETIMEOUT', 'ENOTOPEN', 'ECONNCLOSED', 'EABORT', 'ECANCEL'].includes(
+        error.code,
+      )
+    ) {
+      await this.prismaService.$executeRaw`
+        UPDATE "Config"
+        SET "value" = (COALESCE("value",'0')::int + 1)::text
+        WHERE "key" = ${NORIS_SILENT_CONNECTION_ERRORS_KEY}
+      `
+
+      throw this.throwerErrorGuard.BadRequestException(
+        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        undefined,
+        error instanceof Error ? undefined : (error as string),
+        error instanceof Error ? error : undefined,
+      )
+    }
+
+    throw this.getNorisUrgentError(errorMessage, error)
+  }
+
   /**
    * Executes a function within a database connection context.
    * Creates a connection, executes the function, and ensures proper cleanup.
    *
    * @param operation - Function to execute within the connection context
-   * @param errorHandler - Error handler for any errors that occur during the operation
+   * @param errorMessage - Message passed to {@link handleDatabaseError} on failure
    * @param useOptimized - Whether to use optimized connection settings
    * @returns Result of the operation
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
-    errorHandler: (error: any) => never,
-    useOptimized: boolean = false,
+    errorMessage: string,
+    useOptimized = false,
   ): Promise<T> {
-    const connection = useOptimized
-      ? await this.createOptimizedConnection()
-      : await this.createConnection()
+    let connection: ConnectionPool | undefined
 
     try {
+      connection = useOptimized
+        ? await this.createOptimizedConnection()
+        : await this.createConnection()
+
       await this.waitForConnection(connection)
-      const result = await operation(connection)
-      return result
+      return await operation(connection)
     } catch (error) {
-      return errorHandler(error)
+      return await this.handleDatabaseError(error, errorMessage)
     } finally {
-      await connection.close()
+      await connection?.close()
     }
   }
 }

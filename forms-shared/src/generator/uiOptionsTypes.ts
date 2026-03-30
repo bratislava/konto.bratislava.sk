@@ -65,7 +65,6 @@ export type WidgetSpacing = {
 }
 
 export type WidgetUiOptions = WidgetSpacing & {
-  tooltip?: string
   helptext?: string
   helptextMarkdown?: boolean
   helptextFooter?: string
@@ -95,7 +94,6 @@ export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
 
 export type InputUiOptions = {
   inputType: InputUiOptionsInputType
-  resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock' | 'euro'
   placeholder?: string
 } & WidgetUiOptions

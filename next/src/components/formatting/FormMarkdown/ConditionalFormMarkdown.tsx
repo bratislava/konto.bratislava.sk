@@ -14,6 +14,7 @@ const ConditionalFormMarkdown = ({
   if (isMarkdown) {
     return <FormMarkdown {...rest}>{children}</FormMarkdown>
   }
+
   return <>{children}</>
 }
 

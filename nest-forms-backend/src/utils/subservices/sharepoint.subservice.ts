@@ -10,7 +10,7 @@ import {
   SharepointRelationData,
 } from 'forms-shared/definitions/sharepointTypes'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   getArrayForOneToMany,
   getValuesForFields,
@@ -72,7 +72,7 @@ export default class SharepointSubservice {
           error: FormError.SHAREPOINT_SEND_ERROR,
         },
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             SharepointErrorsEnum.GENERAL_ERROR,
@@ -207,7 +207,7 @@ export default class SharepointSubservice {
     )
     const fields = await this.getAllFieldsMappings(sharepointData, accessToken)
 
-    const jsonDataExtraDataOmitted = omitExtraData(
+    const jsonDataExtraDataOmitted = baOmitExtraData(
       schema,
       form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),
@@ -292,8 +292,12 @@ export default class SharepointSubservice {
         },
       })
       .then(
-        (response: AxiosResponse<{ value: Array<any> }, object>) =>
-          response.data.value,
+        (
+          response: AxiosResponse<
+            { value: { displayName: string; name: string }[] },
+            object
+          >,
+        ) => response.data.value,
       )
 
     columns.forEach((col) => {
@@ -428,7 +432,7 @@ export default class SharepointSubservice {
         (response: AxiosResponse<{ access_token: string }, object>) =>
           response.data.access_token,
       )
-      .catch((error) => {
+      .catch((error: unknown) => {
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
           SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,

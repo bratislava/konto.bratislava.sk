@@ -297,16 +297,18 @@ describe('NasesCronSubservice', () => {
       ]
       formDefinitionsModule.formDefinitions = extendedMockFormDefinitions
 
-      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation((pospID) => {
-        if (pospID === 'test.form.definition.3') {
+      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation(
+        async (pospID) => {
+          if (pospID === 'test.form.definition.3') {
+            return Promise.resolve({
+              data: { status: 'Nepublikovaný' },
+            })
+          }
           return Promise.resolve({
-            data: { status: 'Nepublikovaný' },
+            data: { status: 'Publikovaný' },
           })
-        }
-        return Promise.resolve({
-          data: { status: 'Publikovaný' },
-        })
-      })
+        },
+      )
 
       const logSpy = jest.spyOn(service['logger'], 'log')
 
@@ -338,16 +340,18 @@ describe('NasesCronSubservice', () => {
       ]
       formDefinitionsModule.formDefinitions = extendedMockFormDefinitions
 
-      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation((pospID) => {
-        if (pospID === 'test.form.definition.3') {
+      mockSlovenskoSkApi.apiEformStatusGet.mockImplementation(
+        async (pospID) => {
+          if (pospID === 'test.form.definition.3') {
+            return Promise.resolve({
+              data: { status: 'Nepublikovaný' },
+            })
+          }
           return Promise.resolve({
-            data: { status: 'Nepublikovaný' },
+            data: { status: 'Publikovaný' },
           })
-        }
-        return Promise.resolve({
-          data: { status: 'Publikovaný' },
-        })
-      })
+        },
+      )
 
       Object.defineProperty(service['baConfigService'], 'environment', {
         get: jest.fn(() => ({

@@ -94,15 +94,15 @@ describe('StatusService', () => {
   })
 
   describe('isMinioRunning', () => {
-    it('should return true', async () => {
+    it('should return true', () => {
       service['minioClientSubservice'].client = jest.fn()
-      const result = await service.isMinioRunning()
+      const result = service.isMinioRunning()
       expect(result).toEqual({
         running: true,
       })
     })
 
-    it('should return false', async () => {
+    it('should return false', () => {
       service['minioClientSubservice'].client = jest
         .fn()
         .mockImplementation(() => {
@@ -110,7 +110,7 @@ describe('StatusService', () => {
         })
       const spy = jest.spyOn(service['logger'], 'error')
 
-      const result = await service.isMinioRunning()
+      const result = service.isMinioRunning()
       expect(result).toEqual({
         running: false,
       })

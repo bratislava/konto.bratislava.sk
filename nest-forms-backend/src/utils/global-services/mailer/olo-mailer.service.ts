@@ -25,6 +25,7 @@ export default class OloMailerService implements Mailer {
   ) {
     this.logger = new LineLoggerSubservice(OloMailerService.name)
 
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols
     this.oloTransporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
@@ -56,7 +57,6 @@ export default class OloMailerService implements Mailer {
         from: `OLO <${emailFrom}>`,
         to: data.to,
         subject: subject ?? MAILGUN_CONFIG[data.template].subject,
-        // eslint-disable-next-line xss/no-mixed-html
         html: mailBody,
         attachments,
       })

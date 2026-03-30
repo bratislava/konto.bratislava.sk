@@ -2,7 +2,7 @@ import React, { DOMAttributes } from 'react'
 
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
 
-type FieldHelptextProps = {
+export type FieldHelptextProps = {
   helptext?: string
   helptextMarkdown?: boolean
   descriptionProps?: DOMAttributes<never>
@@ -19,10 +19,7 @@ const FieldHelptext = ({
 
   return (
     <div className="w-full">
-      <div
-        {...descriptionProps}
-        className="mt-1 text-p3 whitespace-pre-wrap text-gray-700 sm:text-16"
-      >
+      <div {...descriptionProps} className="mt-1 text-16 whitespace-pre-wrap text-gray-700">
         <ConditionalFormMarkdown isMarkdown={helptextMarkdown}>{helptext}</ConditionalFormMarkdown>
       </div>
     </div>

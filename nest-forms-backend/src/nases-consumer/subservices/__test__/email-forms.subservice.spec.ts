@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-email */
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -11,7 +10,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
-import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
@@ -103,7 +102,7 @@ const mockFormDefinitionWithSendEmail = {
     userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
     sendJsonDataAttachmentInTechnicalMail: true,
   },
-} as FormDefinitionEmail
+}
 
 const mockFormDefinitionWithSendOloEmail = {
   slug: 'test-form-olo',
@@ -129,7 +128,7 @@ const mockFormDefinitionWithSendOloEmail = {
     }, // Test with specified emailFrom
     // No sendJsonDataAttachmentInTechnicalMail specified, to test undefined behavior
   },
-} as FormDefinitionEmail
+}
 
 describe('EmailFormsSubservice', () => {
   let service: EmailFormsSubservice
@@ -170,11 +169,9 @@ describe('EmailFormsSubservice', () => {
     }).compile()
 
     service = module.get<EmailFormsSubservice>(EmailFormsSubservice)
-    mailgunService = module.get(MailgunService) as jest.Mocked<MailgunService>
-    oloMailerService = module.get(
-      OloMailerService,
-    ) as jest.Mocked<OloMailerService>
-    configService = module.get(ConfigService) as jest.Mocked<ConfigService>
+    mailgunService = module.get(MailgunService)
+    oloMailerService = module.get(OloMailerService)
+    configService = module.get(ConfigService)
 
     jest.spyOn(configService, 'get').mockReturnValue('production')
 
@@ -212,17 +209,19 @@ describe('EmailFormsSubservice', () => {
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockImplementation((slug: string) => {
-          if (slug === 'test-form-email') return mockFormDefinitionWithSendEmail
-          if (slug === 'test-form-olo')
-            return mockFormDefinitionWithSendOloEmail
+          if (slug === 'test-form-email') {
+            return mockFormDefinitionWithSendEmail as FormDefinitionEmail
+          }
+          if (slug === 'test-form-olo') {
+            return mockFormDefinitionWithSendOloEmail as FormDefinitionEmail
+          }
           return null
         })
-      // eslint-disable-next-line xss/no-mixed-html
       jest
         .spyOn(renderSummaryEmail, 'renderSummaryEmail')
         .mockResolvedValue('<html>Test Email Content</html>')
       jest
-        .spyOn(omitExtraData, 'omitExtraData')
+        .spyOn(baOmitExtraData, 'baOmitExtraData')
         .mockReturnValue({ test: 'data' })
 
       extractEmailFormEmailSpy = jest
@@ -365,7 +364,7 @@ describe('EmailFormsSubservice', () => {
             messageSubject: mockExtractedSubject,
           }),
         }),
-        emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
+        emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress.prod,
         attachments: undefined,
         subject: undefined,
       })
@@ -383,7 +382,7 @@ describe('EmailFormsSubservice', () => {
             messageSubject: mockExtractedSubject,
           }),
         }),
-        emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
+        emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress.prod,
         attachments: expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -679,7 +678,7 @@ describe('EmailFormsSubservice', () => {
         .mockReturnValue(mockExtractedTechnicalSubject)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(formDefinitionWithSubject)
+        .mockReturnValue(formDefinitionWithSubject as FormDefinitionEmail)
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
@@ -709,7 +708,7 @@ describe('EmailFormsSubservice', () => {
         .mockReturnValue(mockExtractedTechnicalSubject)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(formDefinitionWithSubjectAndId)
+        .mockReturnValue(formDefinitionWithSubjectAndId as FormDefinitionEmail)
 
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
@@ -757,7 +756,6 @@ describe('EmailFormsSubservice', () => {
     })
 
     it('should return test address when CLUSTER_ENV is undefined', () => {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       configService.get.mockReturnValue(undefined)
       const addressObject = {
         test: 'test@example.com',
@@ -771,7 +769,6 @@ describe('EmailFormsSubservice', () => {
 
   describe('resolveMultipleAddresses', () => {
     it('should return empty string when address list is empty', () => {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       configService.get.mockReturnValue(undefined)
       const addressObject = {
         test: [] as string[],
@@ -805,4 +802,3 @@ describe('EmailFormsSubservice', () => {
     })
   })
 })
-/* eslint-enable pii/no-email */

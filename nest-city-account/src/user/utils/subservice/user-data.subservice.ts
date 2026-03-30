@@ -180,6 +180,11 @@ export class UserDataSubservice {
           category: GDPRCategoryEnum.ESBS,
           subType: GDPRSubTypeEnum.subscribe,
         },
+        {
+          type: GDPRTypeEnum.GENERAL,
+          category: GDPRCategoryEnum.ESBS,
+          subType: GDPRSubTypeEnum.subscribe,
+        },
       ])
     }
 

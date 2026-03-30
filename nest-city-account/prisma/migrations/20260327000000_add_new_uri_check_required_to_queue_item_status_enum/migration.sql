@@ -17,5 +17,5 @@ CREATE UNIQUE INDEX "ExternalEdeskCheck_uri_key" ON "ExternalEdeskCheck"("uri");
 -- AlterTable
 ALTER TABLE "ExternalEdeskCheck" ADD COLUMN     "newUri" TEXT;
 
--- Requeue all failed external edesk checks
-UPDATE "ExternalEdeskCheck" SET "queueStatus" = 'PENDING' WHERE "queueStatus" = 'FAILED'
+-- Delete all external edesk checks
+DELETE FROM "ExternalEdeskCheck"

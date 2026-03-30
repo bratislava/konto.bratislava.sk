@@ -145,7 +145,8 @@ export class EdeskTasksSubservice {
       edeskNumber: string | null
       uri: string | null
     }[] = []
-    for (const item of completedExternalItems.filter(isCompletedItem)) {
+    const completedItems = completedExternalItems.filter(isCompletedItem)
+    for (const item of completedItems) {
       try {
         const edeskData = this.mapEdeskDataToNorisType(item)
         itemsToUpdate.push({

@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
 import { VerificationErrorsEnum } from '../verification.errors.enum'
@@ -14,14 +13,12 @@ export class ResponseVerificationIdentityCardToQueueDto {
     description: 'number of status code',
     default: 200,
   })
-  @IsNumber()
   statusCode!: number
 
   @ApiProperty({
     description: 'status',
     default: 'OK',
   })
-  @IsString()
   status!: string
 
   @ApiProperty({
@@ -30,7 +27,6 @@ export class ResponseVerificationIdentityCardToQueueDto {
     enum: ResponseVerificationIdentityCardMessageEnum,
     enumName: 'ResponseVerificationIdentityCardMessageEnum',
   })
-  @IsEnum(ResponseVerificationIdentityCardMessageEnum)
   message!: ResponseVerificationIdentityCardMessageEnum
 
   @ApiPropertyOptional({
@@ -39,8 +35,6 @@ export class ResponseVerificationIdentityCardToQueueDto {
     enum: VerificationErrorsEnum,
     enumName: 'VerificationErrorsEnum',
   })
-  @IsOptional()
-  @IsEnum(VerificationErrorsEnum)
   errorName?: VerificationErrorsEnum
 }
 
@@ -75,14 +69,12 @@ export class ResponseCustomErrorVerificationIdentityCardDto {
     description: 'status',
     default: 'custom_error',
   })
-  @IsString()
   status!: string
 
   @ApiProperty({
     description: 'Message about error',
     default: 'Some detail about error',
   })
-  @IsString()
   message!: string
 
   @ApiProperty({
@@ -91,7 +83,6 @@ export class ResponseCustomErrorVerificationIdentityCardDto {
     enum: VerificationErrorsEnum,
     enumName: 'VerificationErrorsEnum',
   })
-  @IsEnum(VerificationErrorsEnum)
   errorName!: VerificationErrorsEnum
 }
 
@@ -128,21 +119,18 @@ export class ResponseVerificationDto {
     description: 'number of status code',
     default: 200,
   })
-  @IsNumber()
   statusCode!: number
 
   @ApiProperty({
     description: 'status',
     default: 'OK',
   })
-  @IsString()
   status!: string
 
   @ApiProperty({
     description: 'Message about update',
     default: 'Tier was updated',
   })
-  @IsString()
   message!: string
 
   @ApiPropertyOptional({
@@ -151,8 +139,6 @@ export class ResponseVerificationDto {
     enum: VerificationErrorsEnum,
     enumName: 'VerificationErrorsEnum',
   })
-  @IsOptional()
-  @IsEnum(VerificationErrorsEnum)
   errorName?: VerificationErrorsEnum
 }
 
@@ -161,14 +147,12 @@ export class ResponseCustomErrorVerificationEidDto {
     description: 'status',
     default: 'custom_error',
   })
-  @IsString()
   status!: string
 
   @ApiProperty({
     description: 'Message about error',
     default: 'Some detail about error',
   })
-  @IsString()
   message!: string
 
   @ApiProperty({
@@ -177,7 +161,6 @@ export class ResponseCustomErrorVerificationEidDto {
     enum: VerificationErrorsEnum,
     enumName: 'VerificationErrorsEnum',
   })
-  @IsEnum(VerificationErrorsEnum)
   errorName!: VerificationErrorsEnum
 }
 

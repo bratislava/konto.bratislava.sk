@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { noop } from 'lodash'
 
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -28,7 +27,7 @@ describe('MailgunService', () => {
     jest.clearAllMocks()
     mockCreate.mockResolvedValue({ id: 'mock-message-id', message: 'Queued' })
 
-    jest.spyOn(console, 'log').mockImplementation(noop)
+    jest.spyOn(console, 'log').mockImplementation()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

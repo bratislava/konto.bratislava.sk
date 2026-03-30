@@ -79,13 +79,17 @@ export class AdminService {
           toLogfmt(user)
         )
       }
-      try {
-        // eslint-disable-next-line no-await-in-loop -- TODO rewrite to use Promise.all
-        await this.userService.getOrCreateUserOrLegalPersonRaw(user)
-      } catch (error) {
-        this.logger.error(error)
-      }
     }
+
+    await Promise.all(
+      cognitoUsers.map(async (user) => {
+        try {
+          await this.userService.getOrCreateUserOrLegalPersonRaw(user)
+        } catch (error) {
+          this.logger.error(error)
+        }
+      })
+    )
   }
 
   async checkUserVerifyState(email: string): Promise<UserVerifyState> {

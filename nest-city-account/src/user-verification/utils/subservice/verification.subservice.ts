@@ -227,11 +227,10 @@ export class VerificationSubservice {
     }
 
     if (firstMatchingRfo !== null) {
-      const rodneCislo = firstMatchingRfo.rodneCislo
-      if (!rodneCislo) {
+      const birthNumber = firstMatchingRfo.rodneCislo?.replaceAll('/', '')
+      if (!birthNumber) {
         return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
       }
-      const birthNumber = rodneCislo.replaceAll('/', '')
       let databaseResult: VerificationReturnType
       if (ico) {
         databaseResult =

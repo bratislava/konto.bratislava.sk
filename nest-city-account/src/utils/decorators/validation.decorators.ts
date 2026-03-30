@@ -2,6 +2,8 @@ import { registerDecorator, ValidationOptions } from 'class-validator'
 
 import { isValidBirthNumber } from '../birthNumbers'
 
+const DIGITS_ONLY_REGEX = /^\d*$/
+
 export function IsBirthNumber(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({
@@ -12,7 +14,9 @@ export function IsBirthNumber(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: unknown): boolean {
-          return typeof value === 'string' && /^\d*$/.test(value) && isValidBirthNumber(value)
+          return (
+            typeof value === 'string' && DIGITS_ONLY_REGEX.test(value) && isValidBirthNumber(value)
+          )
         },
       },
     })
@@ -34,7 +38,7 @@ export function IsIdentityCard(validationOptions?: ValidationOptions) {
           }
           const text = value.substring(0, 2)
           const numbers = value.substring(2, 8)
-          return /^\d*$/.test(numbers) && /^[a-zA-Z]+$/.test(text)
+          return DIGITS_ONLY_REGEX.test(numbers) && /^[a-zA-Z]+$/.test(text)
         },
       },
     })
@@ -53,7 +57,7 @@ export function IsIco(validationOptions?: ValidationOptions) {
         validate(value: unknown): boolean {
           return (
             typeof value === 'string' &&
-            /^\d*$/.test(value) &&
+            DIGITS_ONLY_REGEX.test(value) &&
             value.length >= 6 &&
             value.length <= 8
           )

@@ -75,6 +75,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
             errorMessage={errors.email}
             autoComplete="username"
             autoCapitalize="none"
+            // TODO consider adding autoCorrect="off" and spellCheck={false}
           />
         )}
       />
@@ -89,7 +90,6 @@ const LoginForm = ({ onSubmit, error }: Props) => {
             {...field}
             errorMessage={errors.password}
             autoComplete="current-password"
-            // TODO consider adding autoCorrect="off" and spellCheck={false}
           />
         )}
       />

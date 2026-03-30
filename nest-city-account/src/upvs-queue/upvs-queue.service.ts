@@ -35,6 +35,7 @@ export class UpvsQueueService {
   async addExternalItemsToQueue(records: { uri: string; norisId: number }[]) {
     await this.prismaService.externalEdeskCheck.createMany({
       data: records.map((record) => ({ uri: record.uri, norisId: record.norisId })),
+      skipDuplicates: true,
     })
   }
 

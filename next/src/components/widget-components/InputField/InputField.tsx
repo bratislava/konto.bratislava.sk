@@ -1,6 +1,6 @@
 import { useObjectRef } from '@react-aria/utils'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
-import { useTextField } from 'react-aria'
+import { AriaTextFieldOptions, useTextField } from 'react-aria'
 
 import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon } from '@/src/assets/ui-icons'
 import MailIcon from '@/src/assets/ui-icons/custom_mail.svg'
@@ -20,6 +20,7 @@ export type InputFieldProps = FieldWrapperProps & {
   onBlur?: () => void
   endIcon?: ReactNode
   autoComplete?: string
+  autoCapitalize?: AriaTextFieldOptions<'input'>['autoCapitalize']
   placeholder?: string
   className?: string
 }
@@ -35,6 +36,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       onChange,
       endIcon,
       autoComplete,
+      autoCapitalize,
       placeholder,
       className,
       ...rest
@@ -72,6 +74,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           }
         },
         autoComplete,
+        autoCapitalize,
       },
       ref,
     )

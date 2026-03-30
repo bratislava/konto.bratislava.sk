@@ -208,7 +208,12 @@ export class BloomreachOutboxService {
       if (existing) {
         await tx.bloomreachOutbox.update({
           where: { id: existing.id },
-          data: { commandData },
+          data: {
+            commandData: {
+              customer_ids: { ...existing.commandData.customer_ids, ...commandData.customer_ids },
+              properties: { ...existing.commandData.properties, ...commandData.properties },
+            },
+          },
         })
       } else {
         await tx.bloomreachOutbox.create({

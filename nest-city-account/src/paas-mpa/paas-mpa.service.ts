@@ -5,7 +5,11 @@ import { toLogfmt } from 'src/utils/logging'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
-import { CognitoGetUserData, CognitoUserAccountTypesEnum, CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'

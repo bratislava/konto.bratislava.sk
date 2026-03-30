@@ -273,6 +273,11 @@ export class BloomreachService {
             category: GDPRCategoryEnum.ESBS,
             subType: GDPRSubTypeEnum.unsubscribe,
           },
+          {
+            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+            category: GDPRCategoryEnum.TAXES,
+            subType: GDPRSubTypeEnum.unsubscribe,
+          },
         ],
         cognitoId
       )

@@ -33,7 +33,9 @@ describe('IsBirthNumber', () => {
     )
 
     const birthNumberWithoutSlash = birthNumber.replace('/', '')
-    const dtoWithoutSlash = plainToInstance(BirthNumberDto, { birthNumber: birthNumberWithoutSlash })
+    const dtoWithoutSlash = plainToInstance(BirthNumberDto, {
+      birthNumber: birthNumberWithoutSlash,
+    })
     const errorsWithoutSlash = await validate(dtoWithoutSlash)
     expect(errorsWithoutSlash).toHaveLength(0)
   })

@@ -52,8 +52,7 @@ const FieldHeader = ({
   const displayAsterisk = !displayOptionalLabel && isRequired
 
   const labelStyle = cn('relative text-gray-800', {
-    'text-p3-semibold after:text-p3-semibold sm:text-16-semibold sm:after:text-16-semibold':
-      labelSize === 'default',
+    'text-16-semibold after:text-16-semibold': labelSize === 'default',
     'text-h3 after:text-h3': labelSize === 'h3',
     'text-h4 after:text-h4': labelSize === 'h4',
     'text-h5 after:text-h5': labelSize === 'h5',
@@ -68,9 +67,7 @@ const FieldHeader = ({
           <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
             {label}
           </label>
-          {showOptionalLabel && (
-            <span className="text-p3 sm:text-16">{t('FieldHeader.optional')}</span>
-          )}
+          {showOptionalLabel && <span className="text-16">{t('FieldHeader.optional')}</span>}
         </div>
       </div>
       {helptext ? (

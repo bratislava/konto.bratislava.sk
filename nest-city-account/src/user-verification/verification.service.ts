@@ -176,7 +176,10 @@ export class VerificationService {
         case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
         case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
           const body = data.msg.data as RequestBodyVerifyWithRpoDto
-          verification = await this.verificationSubservice.verifyIcoIdentityCard(data.msg.user, body)
+          verification = await this.verificationSubservice.verifyIcoIdentityCard(
+            data.msg.user,
+            body
+          )
           break
         }
         default:

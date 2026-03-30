@@ -12,11 +12,7 @@ export function IsBirthNumber(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: unknown): boolean {
-          return (
-            typeof value === 'string' &&
-            /^\d*$/.test(value) &&
-            isValidBirthNumber(value)
-          )
+          return typeof value === 'string' && /^\d*$/.test(value) && isValidBirthNumber(value)
         },
       },
     })

@@ -78,7 +78,7 @@ export class PhysicalEntityService {
     const upvsSuccessValueArray = successArray.map((item) => {
       return {
         id: item.physicalEntityId ?? undefined,
-        uri: item.uri,
+        uri: item.inputUri,
         activeEdesk: item.data.upvs?.edesk_status === 'deliverable',
       }
     })

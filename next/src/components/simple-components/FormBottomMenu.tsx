@@ -1,5 +1,6 @@
+import { Button } from '@bratislava/component-library'
+
 import { useFormMenuItems } from '@/src/components/forms/useFormMenuItems'
-import Button from '@/src/components/simple-components/Button'
 import cn from '@/src/utils/cn'
 
 /**

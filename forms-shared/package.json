@@ -55,7 +55,7 @@
     "react-email": "5.2.9",
     "react-markdown": "6.0.3",
     "remove-markdown": "^0.6.3",
-    "rodnecislo": "^1.6.0",
+    "rodnecislo": "^1.8.0",
     "semver": "^7.7.4",
     "traverse": "^0.6.11",
     "ts-pattern": "^5.9.0",

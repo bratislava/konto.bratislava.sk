@@ -213,6 +213,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             label={t('auth.fields.email_label')}
             placeholder={t('auth.fields.email_placeholder')}
             autoComplete="username"
+            autoCapitalize="none"
+            // TODO consider adding autoCorrect="off" and spellCheck={false}
             {...field}
             errorMessage={errors.email}
           />

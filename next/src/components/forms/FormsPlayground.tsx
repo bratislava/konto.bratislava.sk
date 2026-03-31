@@ -336,6 +336,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
               formatOnPaste: true,
               formatOnType: true,
             }}
+            className="border"
           />
 
           <div className="mt-4 flex gap-2">

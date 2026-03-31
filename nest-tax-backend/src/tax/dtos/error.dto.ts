@@ -18,7 +18,7 @@ export enum CustomErrorTaxTypesResponseEnum {
   TAX_USER_NOT_FOUND = 'Tax user was not found',
   BIRTHNUMBER_NOT_EXISTS = 'Birthnumber not exists',
   MISSING_INSTALLMENT_AMOUNTS = 'Missing one or more installment amount',
-  INSTALLMENT_INCORRECT_COUNT = 'Number of installments does not equal 3.',
+  INSTALLMENT_INCORRECT_COUNT = 'Number of installments does not equal the number of installments in the database.',
   INSTALLMENT_UNEXPECTED_ERROR = 'An unexpected error occurred while calculating installments.',
   STATE_HOLIDAY_NOT_EXISTS = 'State holidays are not configured for this or the next year.',
   ALREADY_PAID = 'Tax for this year was already paid.',

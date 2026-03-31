@@ -124,7 +124,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       det_stavba_DAN_H: '0.00',
       det_stavba_ZAKLAD_H: '0.00',
       ICO_RC: '123456/7890',
-      SPL1: '1',
+      SPL1: '',
       SPL4_1: '1',
       SPL4_2: '2',
       SPL4_3: '3',

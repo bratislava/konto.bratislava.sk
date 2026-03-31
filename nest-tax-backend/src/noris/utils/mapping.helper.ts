@@ -74,23 +74,9 @@ export const mapNorisToTaxInstallmentsData = (
   data: NorisBaseTax,
   taxId: number,
 ): TaxInstallment[] => {
-  if (data.SPL4_2 === '') {
-    return data.datum_spl1
-      ? [
-          {
-            taxId,
-            amount: convertCurrencyToInt(data.SPL1),
-            order: 1,
-            dueDate: data.datum_spl1,
-          },
-        ]
-      : []
-  }
-
-  // Determine which installments are present based on non-empty amounts, then
-  // validate the sequence is contiguous (no gaps) and all have due dates.
+  // In single-installment mode, Noris sends the amount in SPL1 instead of SPL4_1.
   const rawInstallments = [
-    { amount: data.SPL4_1, order: 1, dueDate: data.datum_spl1 },
+    { amount: data.SPL1 || data.SPL4_1, order: 1, dueDate: data.datum_spl1 },
     { amount: data.SPL4_2, order: 2, dueDate: data.datum_spl2 },
     { amount: data.SPL4_3, order: 3, dueDate: data.datum_spl3 },
     { amount: data.SPL4_4, order: 4, dueDate: data.datum_spl4 },
@@ -99,6 +85,18 @@ export const mapNorisToTaxInstallmentsData = (
   const firstEmptyIndex = rawInstallments.findIndex((i) => !i.amount)
   const presentCount =
     firstEmptyIndex === -1 ? rawInstallments.length : firstEmptyIndex
+
+  if (presentCount === 0) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: no installments found`,
+    )
+  }
+
+  if (data.SPL1 && presentCount !== 1) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: SPL1 is set but multi-installment fields are also present`,
+    )
+  }
 
   if (rawInstallments.slice(presentCount).some((i) => i.amount)) {
     throw new Error(

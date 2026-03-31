@@ -126,10 +126,9 @@ describe('mapNorisToTaxAdministratorData', () => {
 describe('mapNorisToTaxInstallmentsData', () => {
   const taxId = 1
 
-  it('should return single installment when SPL4_2 is empty', () => {
+  it('should return single installment when SPL1 is set', () => {
     const spl1Due = new Date('2025-04-15T12:00:00.000Z')
     const mockNorisData: NorisRealEstateTax = {
-      SPL4_2: '',
       SPL1: '100,00',
       datum_spl1: spl1Due,
     } as NorisRealEstateTax
@@ -143,6 +142,42 @@ describe('mapNorisToTaxInstallmentsData', () => {
       order: 1,
       dueDate: spl1Due,
     })
+  })
+
+  it('should throw when SPL1 is set alongside multi-installment fields', () => {
+    const mockNorisData: NorisRealEstateTax = {
+      SPL1: '100,00',
+      SPL4_2: '50,00',
+    } as NorisRealEstateTax
+
+    expect(() => mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toThrow(
+      'multi-installment fields are also present',
+    )
+  })
+
+  it('should throw when SPL1 is set but datum_spl1 is null', () => {
+    const mockNorisData: NorisRealEstateTax = {
+      SPL1: '100,00',
+      datum_spl1: null,
+    } as NorisRealEstateTax
+
+    expect(() => mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toThrow(
+      'installment is missing a due date',
+    )
+  })
+
+  it('should throw when no installments are present', () => {
+    const mockNorisData: NorisRealEstateTax = {
+      SPL1: '',
+      SPL4_1: '',
+      SPL4_2: '',
+      SPL4_3: '',
+      SPL4_4: '',
+    } as NorisRealEstateTax
+
+    expect(() => mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toThrow(
+      'no installments found',
+    )
   })
 
   it('should return three installments when SPL4_2 is not empty', () => {
@@ -206,20 +241,9 @@ describe('mapNorisToTaxInstallmentsData', () => {
     })
   })
 
-  it('should return empty array when SPL4_2 is empty and datum_spl1 is null', () => {
-    const mockNorisData: NorisRealEstateTax = {
-      SPL4_2: '',
-      SPL1: '100,00',
-      datum_spl1: null,
-    } as NorisRealEstateTax
-
-    expect(mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toEqual([])
-  })
-
   it('should use the provided taxId on each installment', () => {
     const spl1Due = new Date('2025-06-01T00:00:00.000Z')
     const mockNorisData: NorisRealEstateTax = {
-      SPL4_2: '',
       SPL1: '50,00',
       datum_spl1: spl1Due,
     } as NorisRealEstateTax

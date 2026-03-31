@@ -25,7 +25,6 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
 }
 
 fragment FormBase on Form {
-  documentId
   slug
   moreInformationUrl
 }

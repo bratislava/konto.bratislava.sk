@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
+import { MunicipalServiceCardEntityFragment } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
@@ -8,7 +8,7 @@ import ResponsiveCarousel from '@/src/components/simple-components/Carousel/Resp
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
-  services: MunicipalServiceEntityFragment[]
+  services: MunicipalServiceCardEntityFragment[]
 }
 
 const MunicipalServicesHomepageSection = ({ services }: Props) => {

@@ -1825,14 +1825,12 @@ export type FormLandingPageFragment = {
 
 export type FormBaseFragment = {
   __typename?: 'Form'
-  documentId: string
   slug: string
   moreInformationUrl?: string | null
 }
 
 export type FormWithLandingPageFragment = {
   __typename?: 'Form'
-  documentId: string
   slug: string
   moreInformationUrl?: string | null
   landingPage?: {
@@ -2137,7 +2135,6 @@ export const AlertFragmentDoc = gql`
 `
 export const FormBaseFragmentDoc = gql`
   fragment FormBase on Form {
-    documentId
     slug
     moreInformationUrl
   }

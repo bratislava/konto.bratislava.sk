@@ -15,20 +15,18 @@ type AccountMunicipalServicesPageProps = MunicipalServicesPageContentProps
 
 const extractAndSortCategories = (services: MunicipalServiceEntityFragment[]) => {
   const collator = new Intl.Collator('sk')
-  const categoriesWithDuplicates = (
-    services.flatMap((service) => service.attributes?.categories?.data) ?? []
-  )
+  const categoriesWithDuplicates = services
+    .flatMap((service) => service.categories)
     .filter(isDefined)
-    .filter((category) => category.attributes)
-    .toSorted((a, b) => collator.compare(a.attributes!.title, b.attributes!.title))
+    .toSorted((a, b) => collator.compare(a.title, b.title))
 
-  return uniqBy(categoriesWithDuplicates, (category) => category.id)
+  return uniqBy(categoriesWithDuplicates, (category) => category.documentId)
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServicesPageProps>(
   async () => {
     const municipalServicesPageQuery = await strapiClient.MunicipalServicesPage()
-    const municipalServicesPage = municipalServicesPageQuery.municipalServicesPage?.data?.attributes
+    const municipalServicesPage = municipalServicesPageQuery.municipalServicesPage
 
     if (!municipalServicesPage) {
       return {
@@ -36,9 +34,9 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServ
       }
     }
 
-    const services = municipalServicesPage.services?.data ?? []
+    const services = municipalServicesPage.services.filter(isDefined)
     const categories = extractAndSortCategories(services)
-    const servicesLegalPerson = municipalServicesPage.servicesLegalPerson?.data ?? []
+    const servicesLegalPerson = municipalServicesPage.servicesLegalPerson.filter(isDefined)
     const categoriesLegalPerson = extractAndSortCategories(servicesLegalPerson)
 
     return {

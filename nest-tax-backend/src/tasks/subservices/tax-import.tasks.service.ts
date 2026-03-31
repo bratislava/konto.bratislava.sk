@@ -197,7 +197,7 @@ export default class TaxImportTasksService {
 
     const historicalYears = Array.from(
       { length: previousYear - firstHistoricalYear + 1 },
-      (__, i) => firstHistoricalYear + i,
+      (_unused, i) => firstHistoricalYear + i,
     )
 
     // Query for users missing specific (year, taxType) combinations

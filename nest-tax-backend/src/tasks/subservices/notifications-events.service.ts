@@ -114,6 +114,9 @@ export default class NotificationsEventsService {
       where: { id: { in: taxInstallmentInfo.map((t) => t.taxId) } },
       include: { taxPayer: true },
     })
+    // No taxId collisions: the query filters by a date window of at most ~2 weeks,
+    // and installment due dates for a single tax are months apart, so at most one
+    // installment per tax can fall within the window.
     const taxIdToInstallmentInfo = new Map<
       number,
       { dueDate: Date; order: number; id: number }

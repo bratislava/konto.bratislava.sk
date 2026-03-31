@@ -87,38 +87,39 @@ export const mapNorisToTaxInstallmentsData = (
       : []
   }
 
-  const installments = [
-    {
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_1),
-      order: 1,
-      dueDate: data.datum_spl1,
-    },
-    {
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_2),
-      order: 2,
-      dueDate: data.datum_spl2,
-    },
-    {
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_3),
-      order: 3,
-      dueDate: data.datum_spl3,
-    },
+  // Determine which installments are present based on non-empty amounts, then
+  // validate the sequence is contiguous (no gaps) and all have due dates.
+  const rawInstallments = [
+    { amount: data.SPL4_1, order: 1, dueDate: data.datum_spl1 },
+    { amount: data.SPL4_2, order: 2, dueDate: data.datum_spl2 },
+    { amount: data.SPL4_3, order: 3, dueDate: data.datum_spl3 },
+    { amount: data.SPL4_4, order: 4, dueDate: data.datum_spl4 },
   ]
-  if (data.SPL4_4) {
-    installments.push({
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_4),
-      order: 4,
-      dueDate: data.datum_spl4,
-    })
+
+  const firstEmptyIndex = rawInstallments.findIndex((i) => !i.amount)
+  const presentCount =
+    firstEmptyIndex === -1 ? rawInstallments.length : firstEmptyIndex
+
+  if (rawInstallments.slice(presentCount).some((i) => i.amount)) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: missing installment in sequence`,
+    )
   }
-  return installments.filter(
-    (installment): installment is TaxInstallment =>
-      installment.dueDate !== null,
-  )
+
+  const installments = rawInstallments.slice(0, presentCount)
+
+  if (installments.some((i) => i.dueDate === null)) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: installment is missing a due date`,
+    )
+  }
+
+  return installments.map((i) => ({
+    taxId,
+    amount: convertCurrencyToInt(i.amount),
+    order: i.order,
+    dueDate: i.dueDate as Date,
+  }))
 }
 
 export const mapDeliveryMethodToNoris = (

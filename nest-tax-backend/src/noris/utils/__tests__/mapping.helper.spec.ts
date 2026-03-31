@@ -272,7 +272,7 @@ describe('mapNorisToTaxInstallmentsData', () => {
     expect(result.map((i) => i.order)).toEqual([1, 2, 3])
   })
 
-  it('should omit installments with null dueDate when SPL4_2 is set', () => {
+  it('should throw when an installment has an amount but a null dueDate', () => {
     const d1 = new Date('2025-01-10T00:00:00.000Z')
     const d3 = new Date('2025-03-10T00:00:00.000Z')
     const mockNorisData: NorisRealEstateTax = {
@@ -284,12 +284,9 @@ describe('mapNorisToTaxInstallmentsData', () => {
       datum_spl3: d3,
     } as NorisRealEstateTax
 
-    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
-
-    expect(result).toEqual([
-      { taxId: 1, amount: 3000, order: 1, dueDate: d1 },
-      { taxId: 1, amount: 5000, order: 3, dueDate: d3 },
-    ])
+    expect(() => mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toThrow(
+      'installment is missing a due date',
+    )
   })
 
   it('should include fourth installment only when SPL4_4 is truthy and datum_spl4 is set', () => {
@@ -319,7 +316,7 @@ describe('mapNorisToTaxInstallmentsData', () => {
     })
   })
 
-  it('should drop fourth installment when SPL4_4 is set but datum_spl4 is null', () => {
+  it('should throw when the fourth installment has an amount but a null dueDate', () => {
     const d1 = new Date('2025-01-01T00:00:00.000Z')
     const mockNorisData: NorisRealEstateTax = {
       SPL4_2: '10,00',
@@ -332,9 +329,28 @@ describe('mapNorisToTaxInstallmentsData', () => {
       datum_spl4: null,
     } as NorisRealEstateTax
 
-    const result = mapNorisToTaxInstallmentsData(mockNorisData, taxId)
+    expect(() => mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toThrow(
+      'installment is missing a due date',
+    )
+  })
 
-    expect(result).toHaveLength(3)
+  it('should throw when there is a gap in the installment sequence', () => {
+    const d1 = new Date('2025-01-01T00:00:00.000Z')
+    const d4 = new Date('2025-07-01T00:00:00.000Z')
+    const mockNorisData: NorisRealEstateTax = {
+      SPL4_1: '10,00',
+      SPL4_2: '10,00',
+      SPL4_3: '',
+      SPL4_4: '10,00',
+      datum_spl1: d1,
+      datum_spl2: d1,
+      datum_spl3: null,
+      datum_spl4: d4,
+    } as NorisRealEstateTax
+
+    expect(() => mapNorisToTaxInstallmentsData(mockNorisData, taxId)).toThrow(
+      'missing installment in sequence',
+    )
   })
 })
 

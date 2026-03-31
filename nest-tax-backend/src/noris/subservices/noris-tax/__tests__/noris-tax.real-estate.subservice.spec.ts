@@ -128,7 +128,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       SPL4_1: '1',
       SPL4_2: '2',
       SPL4_3: '3',
-      SPL4_4: '4',
+      SPL4_4: '',
       datum_spl1: new Date('2023-07-19T00:00:00.000Z'),
       datum_spl2: new Date('2023-09-01T00:00:00.000Z'),
       datum_spl3: new Date('2023-11-01T00:00:00.000Z'),

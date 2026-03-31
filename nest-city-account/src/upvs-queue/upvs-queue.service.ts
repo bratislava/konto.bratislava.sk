@@ -223,12 +223,16 @@ export class UpvsQueueService {
   }
 
   private async getUriToUpdateInternal() {
-    return await this.prismaService.physicalEntity.findFirst({
-      where: {
-        uriPossiblyOutdated: true,
-      },
-      select: { uri: true, id: true },
-    })
+    const results = await this.prismaService.$queryRaw<{ uri: string; id: string }[]>`
+      SELECT "uri", "id"
+      FROM "PhysicalEntity"
+      WHERE "uriPossiblyOutdated" = true
+        AND ("activeEdeskUpdateFailCount" = 0
+          OR "activeEdeskUpdateFailedAt" IS NULL
+          OR ("activeEdeskUpdateFailedAt" + (POWER(2, LEAST("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < NOW()))
+      LIMIT 1
+    `
+    return results[0] ?? null
   }
 
   private async getUriToUpdateExternal() {
@@ -261,9 +265,16 @@ export class UpvsQueueService {
         },
       })
     } else {
-      this.prismaService.physicalEntity.update({
+      const confirmedFailed = upvsResult.failed.some(
+        (item) => item.inputUri === input.uri && !item.possibleUriChange
+      )
+      await this.prismaService.physicalEntity.update({
         where: { id: input.id },
-        data: { uriPossiblyOutdated: false },
+        data: {
+          uriPossiblyOutdated: !confirmedFailed,
+          activeEdeskUpdateFailedAt: new Date(),
+          activeEdeskUpdateFailCount: { increment: 1 },
+        },
       })
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

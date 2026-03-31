@@ -171,19 +171,6 @@ describe('testing-tax-mock', () => {
         },
       )
 
-      it('should have non-empty text labels for first 3 installments', () => {
-        const result = createTestingRealEstateTaxMock(
-          mockNorisData,
-          mockTaxAdministrator,
-          2024,
-        )
-
-        expect(result.TXTSPL4_1).toBeTruthy()
-        expect(result.TXTSPL4_2).toBeTruthy()
-        expect(result.TXTSPL4_3).toBeTruthy()
-        expect(result.TXTSPL4_4).toBe('')
-      })
-
       it('should set SPL1 to total tax amount', () => {
         mockNorisData.taxTotal = '250,75'
 
@@ -194,7 +181,6 @@ describe('testing-tax-mock', () => {
         )
 
         expect(result.SPL1).toBe('250,75')
-        expect(result.TXTSPL1).toContain('TEST')
       })
     })
 
@@ -381,19 +367,6 @@ describe('testing-tax-mock', () => {
         },
       )
 
-      it('should have non-empty text labels for all 4 installments', () => {
-        const result = createTestingCommunalWasteTaxMock(
-          mockNorisData,
-          mockTaxAdministrator,
-          2024,
-        )
-
-        expect(result.TXTSPL4_1).toBeTruthy()
-        expect(result.TXTSPL4_2).toBeTruthy()
-        expect(result.TXTSPL4_3).toBeTruthy()
-        expect(result.TXTSPL4_4).toBeTruthy()
-      })
-
       it('should set SPL1 to total tax amount', () => {
         mockNorisData.taxTotal = '180,60'
 
@@ -404,7 +377,6 @@ describe('testing-tax-mock', () => {
         )
 
         expect(result.SPL1).toBe('180,60')
-        expect(result.TXTSPL1).toContain('TEST')
       })
     })
 

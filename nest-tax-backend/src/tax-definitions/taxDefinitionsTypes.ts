@@ -51,7 +51,7 @@ export interface GetTaxDetailPureOptions<TTaxType extends TaxType> {
   paymentCalendarThreshold: number // splátková hranica (66 Eur)
   variableSymbol: string
   dateOfValidity: Date | null // dátum právoplatnosti
-  installments: { order: number; amount: number }[]
+  installments: { order: number; amount: number; dueDate: Date }[]
   taxDetails: TaxTypeToTaxDetail[TTaxType]
   taxPayments: {
     amount: number
@@ -83,12 +83,7 @@ export interface TaxDefinition<TTaxType extends TaxType> {
   /** Whether this tax type is unique per taxpayer and year */
   isUnique: boolean
 
-  numberOfInstallments: number
-  installmentDueDates: {
-    second: string
-    third: string
-    fourth?: string
-  }
+  numberOfInstallments?: number
 
   /** Threshold for allowing installment payments (splátková hranica) in eurocents */
   paymentCalendarThreshold: number

@@ -1562,10 +1562,21 @@ describe('TaxService', () => {
       variableSymbol: 'VS123',
       dateTaxRuling: new Date('2023-01-01'),
       taxInstallments: [
-        { order: 1, amount: 500 },
-        { order: 2, amount: 500 },
+        {
+          order: 1,
+          amount: 500,
+          dueDate: new Date('2023-07-01T00:00:00.000Z'),
+        },
+        {
+          order: 2,
+          amount: 500,
+          dueDate: new Date('2023-09-01T00:00:00.000Z'),
+        },
       ],
       taxPayments: [{ amount: 200, status: PaymentStatus.SUCCESS }],
+      deliveryMethod: null,
+      createdAt: new Date('2023-01-15T00:00:00.000Z'),
+      isCancelled: false,
     }
 
     const mockPaymentGeneratorDto = {
@@ -1612,13 +1623,15 @@ describe('TaxService', () => {
       ).toHaveBeenCalledWith({
         taxType: TaxType.DZN,
         taxId: 1,
-        taxYear: 2023,
-        today: expect.any(Date),
+        today: new Date('2023-06-01T12:00:00.000Z'),
         overallAmount: 1000,
         variableSymbol: 'VS123',
         dateOfValidity: new Date('2023-01-01'),
         installments: mockInstallmentTaxData.taxInstallments,
         taxPayments: mockInstallmentTaxData.taxPayments,
+        deliveryMethod: null,
+        createdAt: new Date('2023-01-15T00:00:00.000Z'),
+        isCancelled: false,
       })
       expect(result).toEqual(mockPaymentGeneratorDto)
     })

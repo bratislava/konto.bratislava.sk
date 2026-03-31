@@ -28,6 +28,10 @@ export const createTestingRealEstateTaxMock = (
   const spl2 = spl2InCents / 100
   const spl3 = spl3InCents / 100
   return {
+    datum_spl1: new Date(`${year}-07-19T00:00:00.000Z`),
+    datum_spl2: new Date(`${year}-09-01T00:00:00.000Z`),
+    datum_spl3: new Date(`${year}-11-01T00:00:00.000Z`),
+    datum_spl4: null,
     ICO_RC: norisData.fakeBirthNumber,
     subjekt_nazev: norisData.nameSurname,
     dan_spolu: norisData.taxTotal,
@@ -55,15 +59,10 @@ export const createTestingRealEstateTaxMock = (
     obec_nazev_tb: 'test obec',
 
     // splátky (installments) data
-    TXTSPL1: 'TEST: Daň za rok je splatná do xx.yy',
     SPL1: norisData.taxTotal,
-    TXTSPL4_1: 'Test splatka1',
     SPL4_1: spl1.toFixed(2).replace('.', ','),
-    TXTSPL4_2: 'Test splatka2',
     SPL4_2: spl2.toFixed(2).replace('.', ','),
-    TXTSPL4_3: 'Test splatka3',
     SPL4_3: spl3.toFixed(2).replace('.', ','),
-    TXTSPL4_4: '',
     SPL4_4: '',
 
     // tax detail fields - mock only
@@ -147,6 +146,10 @@ export const createTestingCommunalWasteTaxMock = (
   const spl4 = spl4InCents / 100
 
   return {
+    datum_spl1: new Date(`${year}-04-11T00:00:00.000Z`),
+    datum_spl2: new Date(`${year}-05-31T00:00:00.000Z`),
+    datum_spl3: new Date(`${year}-08-31T00:00:00.000Z`),
+    datum_spl4: new Date(`${year}-10-31T00:00:00.000Z`),
     stav_dokladu: norisData.isCancelled ? 'S' : 'Z',
     type: TaxType.KO,
     // base identification
@@ -179,15 +182,10 @@ export const createTestingCommunalWasteTaxMock = (
     akt_datum: new Date().toISOString().split('T')[0],
 
     // splátky (installments) data
-    TXTSPL1: 'TEST: Poplatok za rok je splatný do xx.yy',
     SPL1: norisData.taxTotal,
-    TXTSPL4_1: 'Test splatka1',
     SPL4_1: spl1.toFixed(2).replace('.', ','),
-    TXTSPL4_2: 'Test splatka2',
     SPL4_2: spl2.toFixed(2).replace('.', ','),
-    TXTSPL4_3: 'Test splatka3',
     SPL4_3: spl3.toFixed(2).replace('.', ','),
-    TXTSPL4_4: 'Test splatka4',
     SPL4_4: spl4.toFixed(2).replace('.', ','),
 
     forma_uhrady: 'I',

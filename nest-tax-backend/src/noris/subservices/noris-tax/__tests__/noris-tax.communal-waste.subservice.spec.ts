@@ -613,9 +613,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
         const result = service['groupCommunalWasteTaxRecords'](records)
 
-        expect(result[0].TXTSPL1).toBe(testCommunalWasteTax6.TXTSPL1)
         expect(result[0].SPL1).toBe(testCommunalWasteTax6.SPL1)
-        expect(result[0].TXTSPL4_1).toBe(testCommunalWasteTax6.TXTSPL4_1)
         expect(result[0].SPL4_1).toBe(testCommunalWasteTax6.SPL4_1)
         expect(result[0].vyb_email).toBe(testCommunalWasteTax6.vyb_email)
         expect(result[0].vyb_telefon_prace).toBe(

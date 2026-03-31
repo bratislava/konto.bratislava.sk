@@ -66,54 +66,58 @@ export interface DatabaseBaseTaxData {
 interface TaxInstallment {
   taxId: number
   amount: number
-  text: string | null
   order: number
+  dueDate: Date
 }
 
 export const mapNorisToTaxInstallmentsData = (
   data: NorisBaseTax,
   taxId: number,
 ): TaxInstallment[] => {
-  if (data.SPL4_2 === '') {
-    return [
-      {
-        taxId,
-        amount: convertCurrencyToInt(data.SPL1),
-        order: 1,
-        text: data.TXTSPL1,
-      },
-    ]
+  // In single-installment mode, Noris sends the amount in SPL1 instead of SPL4_1.
+  const rawInstallments = [
+    { amount: data.SPL1 || data.SPL4_1, order: 1, dueDate: data.datum_spl1 },
+    { amount: data.SPL4_2, order: 2, dueDate: data.datum_spl2 },
+    { amount: data.SPL4_3, order: 3, dueDate: data.datum_spl3 },
+    { amount: data.SPL4_4, order: 4, dueDate: data.datum_spl4 },
+  ]
+
+  const firstEmptyIndex = rawInstallments.findIndex((i) => !i.amount)
+  const presentCount =
+    firstEmptyIndex === -1 ? rawInstallments.length : firstEmptyIndex
+
+  if (presentCount === 0) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: no installments found`,
+    )
   }
 
-  const installments = [
-    {
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_1),
-      order: 1,
-      text: data.TXTSPL4_1,
-    },
-    {
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_2),
-      order: 2,
-      text: data.TXTSPL4_2,
-    },
-    {
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_3),
-      order: 3,
-      text: data.TXTSPL4_3,
-    },
-  ]
-  if (data.SPL4_4) {
-    installments.push({
-      taxId,
-      amount: convertCurrencyToInt(data.SPL4_4),
-      order: 4,
-      text: data.TXTSPL4_4,
-    })
+  if (data.SPL1 && presentCount !== 1) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: SPL1 is set but multi-installment fields are also present`,
+    )
   }
-  return installments
+
+  if (rawInstallments.slice(presentCount).some((i) => i.amount)) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: missing installment in sequence`,
+    )
+  }
+
+  const installments = rawInstallments.slice(0, presentCount)
+
+  if (installments.some((i) => i.dueDate === null)) {
+    throw new Error(
+      `Invalid installment data for tax ${taxId}: installment is missing a due date`,
+    )
+  }
+
+  return installments.map((i) => ({
+    taxId,
+    amount: convertCurrencyToInt(i.amount),
+    order: i.order,
+    dueDate: i.dueDate as Date,
+  }))
 }
 
 export const mapDeliveryMethodToNoris = (

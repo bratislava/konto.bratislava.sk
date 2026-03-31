@@ -72,12 +72,12 @@ describe('UpvsQueueService', () => {
         norisId: 1,
       }
 
-      // First call for urgent items, second call for high priority items
+      // First call for getUriToUpdateInternal (no URI to update), then urgent items, then high priority items
       prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
         .mockResolvedValueOnce([mockUrgentEntity])
         .mockResolvedValueOnce([mockHighPriorityEntity])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
         given_name: 'John',
@@ -142,10 +142,12 @@ describe('UpvsQueueService', () => {
         norisId: 1,
       }
 
-      // First call for urgent items (empty), second call for high priority items
-      prismaMock.$queryRaw.mockResolvedValueOnce([]).mockResolvedValueOnce([mockEntity])
+      // First call for getUriToUpdateInternal, then urgent items (empty), then high priority items
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([mockEntity])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
@@ -200,10 +202,12 @@ describe('UpvsQueueService', () => {
         norisId: 1,
       }
 
-      // First call for urgent items (empty), second call for high priority items
-      prismaMock.$queryRaw.mockResolvedValueOnce([]).mockResolvedValueOnce([mockEntity])
+      // First call for getUriToUpdateInternal, then urgent items (empty), then high priority items
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([mockEntity])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(nasesService, 'createMany').mockRejectedValue(new Error('Mock error'))
       const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
@@ -244,9 +248,11 @@ describe('UpvsQueueService', () => {
         norisId: 1,
       }
 
-      prismaMock.$queryRaw.mockResolvedValueOnce([]).mockResolvedValueOnce([mockEntity])
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([mockEntity])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
@@ -296,10 +302,12 @@ describe('UpvsQueueService', () => {
         uri: null,
       } as PhysicalEntity & { externalId: string }
 
-      // First call for urgent items, second call for high priority items (empty)
-      prismaMock.$queryRaw.mockResolvedValueOnce([mockEntity]).mockResolvedValueOnce([])
+      // First call for getUriToUpdateInternal, then urgent items, then high priority items (empty)
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([mockEntity])
+        .mockResolvedValueOnce([])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([])
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
         given_name: 'Ján',
@@ -326,16 +334,18 @@ describe('UpvsQueueService', () => {
 
   describe('batch size limits', () => {
     it('should request max batch size for all if everything returns empty', async () => {
-      // Both urgent and high priority return empty
-      prismaMock.$queryRaw.mockResolvedValueOnce([]).mockResolvedValueOnce([])
+      // getUriToUpdateInternal returns empty, then both urgent and high priority return empty
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([])
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       await service.processBatch()
 
-      // Should request full batch size (8) for urgent items (first call)
-      const urgentCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[0]
-      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[1]
+      // Should request full batch size (8) for urgent items (second call, after getUriToUpdateInternal)
+      const urgentCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[1]
+      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[2]
       expect(urgentCall[urgentCall.length - 1]).toBe(8) // Last parameter is the limit
       expect(highPriorityCall[highPriorityCall.length - 1]).toBe(5) // We take only 5 for high priority
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
@@ -354,8 +364,11 @@ describe('UpvsQueueService', () => {
         activeEdeskUpdatedAt: new Date('2020-01-01'),
       })) as PhysicalEntity[]
 
-      // No urgent items, return high priority items
-      prismaMock.$queryRaw.mockResolvedValueOnce([]).mockResolvedValueOnce(mockHighPriorityEntities)
+      // getUriToUpdateInternal returns empty, no urgent items, return high priority items
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(mockHighPriorityEntities)
 
       // Provide external items to fill remaining slots
       const mockExternalItems = Array.from({ length: 3 }, (_, i) => ({
@@ -372,7 +385,6 @@ describe('UpvsQueueService', () => {
       })) as ExternalEdeskCheck[]
 
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue(mockExternalItems)
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
@@ -381,8 +393,8 @@ describe('UpvsQueueService', () => {
 
       await service.processBatch()
 
-      // Should request up to 5 high priority items (second call)
-      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[1]
+      // Should request up to 5 high priority items (third call, after getUriToUpdateInternal and urgent)
+      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[2]
       expect(highPriorityCall[highPriorityCall.length - 1]).toBe(5) // Last parameter is the limit
 
       // Should request 3 external items (8 - 5 high priority)
@@ -402,8 +414,11 @@ describe('UpvsQueueService', () => {
         activeEdeskUpdatedAt: new Date('2020-01-01'),
       })) as PhysicalEntity[]
 
-      // No urgent items, return high priority items
-      prismaMock.$queryRaw.mockResolvedValueOnce([]).mockResolvedValueOnce(mockHighPriorityEntities)
+      // getUriToUpdateInternal returns empty, no urgent items, return high priority items
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(mockHighPriorityEntities)
 
       // External items should fill the remaining 5 slots (8 - 3)
       const mockExternalItems = Array.from({ length: 10 }, (_, i) => ({
@@ -420,7 +435,6 @@ describe('UpvsQueueService', () => {
       })) as ExternalEdeskCheck[]
 
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue(mockExternalItems.slice(0, 5))
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
@@ -451,11 +465,13 @@ describe('UpvsQueueService', () => {
         createdAt: new Date(),
       })) as (PhysicalEntity & { externalId: string })[]
 
-      // First call returns urgent items, second call returns empty for high priority
-      prismaMock.$queryRaw.mockResolvedValueOnce(mockUrgentEntities).mockResolvedValueOnce([])
+      // getUriToUpdateInternal returns empty, then urgent items, then empty for high priority
+      prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(mockUrgentEntities)
+        .mockResolvedValueOnce([])
 
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([])
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
         given_name: 'John',
@@ -469,8 +485,8 @@ describe('UpvsQueueService', () => {
 
       await service.processBatch()
 
-      // Should request 0 high priority slots (second call) since 8 urgent items fill the batch
-      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[1]
+      // Should request 0 high priority slots (third call) since 8 urgent items fill the batch
+      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[2]
       expect(highPriorityCall[highPriorityCall.length - 1]).toBe(0) // Last parameter is the limit
 
       // Should request 0 external items (batch is full with urgent)
@@ -504,8 +520,9 @@ describe('UpvsQueueService', () => {
         activeEdeskUpdatedAt: new Date('2020-01-01'),
       })) as (PhysicalEntity & { externalId: string })[]
 
-      // First call returns urgent items, second call returns high priority items
+      // getUriToUpdateInternal returns empty, then urgent items, then high priority items
       prismaMock.$queryRaw
+        .mockResolvedValueOnce([])
         .mockResolvedValueOnce(mockUrgentEntities)
         .mockResolvedValueOnce(mockHighPriorityEntities)
 
@@ -524,7 +541,6 @@ describe('UpvsQueueService', () => {
       })) as ExternalEdeskCheck[]
 
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue(mockExternalItems)
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
 
       jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
         given_name: 'John',
@@ -563,7 +579,7 @@ describe('UpvsQueueService', () => {
         uri: 'rc://sk/old_uri',
       }
 
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(mockEntity as any)
+      prismaMock.$queryRaw.mockResolvedValueOnce([mockEntity])
       prismaMock.externalEdeskCheck.findFirst.mockResolvedValue(null)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
@@ -590,7 +606,7 @@ describe('UpvsQueueService', () => {
         uri: 'rc://sk/external_old',
       }
 
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
+      prismaMock.$queryRaw.mockResolvedValueOnce([])
       prismaMock.externalEdeskCheck.findFirst.mockResolvedValue(mockExternalItem as any)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
@@ -626,7 +642,7 @@ describe('UpvsQueueService', () => {
         uri: 'rc://sk/external_old',
       }
 
-      prismaMock.physicalEntity.findFirst.mockResolvedValue(null)
+      prismaMock.$queryRaw.mockResolvedValueOnce([])
       prismaMock.externalEdeskCheck.findFirst.mockResolvedValue(mockExternalItem as any)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({

@@ -68,7 +68,7 @@
     "@rjsf/utils": "6.4.1",
     "@rjsf/validator-ajv8": "6.4.1",
     "@tailwindcss/postcss": "4.2.1",
-    "@types/adm-zip": "^0.5.7",
+    "@types/adm-zip": "^0.5.8",
     "@types/app-root-dir": "^0.1.4",
     "@types/archiver": "^7.0.0",
     "@types/jest-image-snapshot": "^6.4.1",

@@ -28,7 +28,7 @@ const MunicipalServicesHomepageSection = ({ services }: Props) => {
         <ResponsiveCarousel
           desktop={4}
           items={services.map((service) => (
-            <MunicipalServiceCard key={service.id} service={service} />
+            <MunicipalServiceCard key={service.documentId} service={service} />
           ))}
           hasVerticalPadding={false}
           className="-mx-2 px-2"

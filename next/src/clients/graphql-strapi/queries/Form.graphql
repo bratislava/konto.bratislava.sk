@@ -25,6 +25,7 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
 }
 
 fragment FormBase on Form {
+  documentId
   slug
   moreInformationUrl
 }
@@ -38,22 +39,14 @@ fragment FormWithLandingPage on Form {
 
 query FormBaseBySlug($slug: String!) {
   forms(filters: { slug: { eq: $slug } }) {
-    data {
-      id
-      attributes {
-        ...FormBase
-      }
-    }
+    documentId
+    ...FormBase
   }
 }
 
 query FormWithLandingPageBySlug($slug: String!) {
   forms(filters: { slug: { eq: $slug } }) {
-    data {
-      id
-      attributes {
-        ...FormWithLandingPage
-      }
-    }
+    documentId
+    ...FormWithLandingPage
   }
 }

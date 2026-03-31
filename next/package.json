@@ -19,7 +19,7 @@
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
     "parse-translations": "i18next",
-    "generate-client-strapi": "graphql-codegen && prettier --write src/clients/graphql-strapi/api.ts",
+    "gen": "graphql-codegen && prettier --write src/clients/graphql-strapi/api.ts",
     "update-react-aria": "npm install @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest @react-aria/utils@latest --save-exact --save-exact-dev",
     "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest --save-exact",
     "update-markdown": "npm install remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",

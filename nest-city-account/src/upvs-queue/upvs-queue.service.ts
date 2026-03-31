@@ -261,7 +261,7 @@ export class UpvsQueueService {
         },
       })
     } else {
-      this.prismaService.physicalEntity.update({
+      await this.prismaService.physicalEntity.update({
         where: { id: input.id },
         data: { uriPossiblyOutdated: false },
       })

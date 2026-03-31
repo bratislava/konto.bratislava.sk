@@ -48,6 +48,49 @@ export default schema(
         ],
       ),
       object(
+        'selfColumnVariants',
+        {
+          title: 'Self Column Variants',
+        },
+        [
+          input(
+            'columnsOneQuarter',
+            { type: 'text', title: 'Self Column 1/4', required: true },
+            { selfColumn: '1/4' },
+          ),
+          input(
+            'columnsThreeQuarters',
+            { type: 'text', title: 'Self Column 3/4', required: true },
+            { selfColumn: '3/4' },
+          ),
+          input(
+            'columns2ThreeQuarters',
+            { type: 'text', title: 'Self Column 3/4', required: true },
+            { selfColumn: '3/4' },
+          ),
+          input(
+            'columns2OneQuarter',
+            { type: 'text', title: 'Self Column 1/4', required: true },
+            { selfColumn: '1/4' },
+          ),
+          input(
+            'columns3Half1',
+            { type: 'text', title: 'Half', required: true },
+            { selfColumn: '2/4' },
+          ),
+          input(
+            'columns3Half2',
+            { type: 'text', title: 'Half', required: true },
+            { selfColumn: '2/4' },
+          ),
+          input(
+            'clumnsFull',
+            { type: 'text', title: 'Self Column 4/4 (default)', required: true },
+            { selfColumn: '4/4' },
+          ),
+        ],
+      ),
+      object(
         'iconInputs',
         {
           title: 'Inputs with Icons',
@@ -86,15 +129,25 @@ export default schema(
         },
         [
           input(
-            'phone',
+            'baPhoneNumber',
             {
               type: 'ba-phone-number',
               title: 'Phone Number',
               required: true,
             },
             {
-              placeholder: '+421',
-              helptext: 'Slovak phone number format',
+              helptext: 'International phone number format',
+            },
+          ),
+          input(
+            'baSlovakPhoneNumber',
+            {
+              type: 'ba-slovak-phone-number',
+              title: 'Slovak Phone Number',
+              required: true,
+            },
+            {
+              helptext: 'Slovak Only International phone number format (+421)',
             },
           ),
           input(

@@ -15,6 +15,7 @@ import {
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import _ from 'lodash'
+import { response } from 'express'
 
 export type CreateManyParam = {
   physicalEntityId?: string
@@ -116,7 +117,7 @@ export class NasesService {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}`,
+          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
           error
         )
       })

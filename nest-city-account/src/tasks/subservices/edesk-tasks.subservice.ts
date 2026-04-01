@@ -117,15 +117,16 @@ export class EdeskTasksSubservice {
     const numberOfPendingExternalItemsInQueue =
       await this.upvsQueueService.getNumberOfPendingExternalItemsInQueue()
 
-    const completedExternalItems = await this.upvsQueueService.retrieveCompletedExternalItems(
-      EXTERNAL_ITEMS_PROCESS_BATCH_SIZE
-    )
+    const processedExternalItems =
+      await this.upvsQueueService.retrieveCompletedAndFailedExternalItems(
+        EXTERNAL_ITEMS_PROCESS_BATCH_SIZE
+      )
 
-    // If there are no completed items or if there are less than the batch size and
+    // If there are no processed items or if there are less than the batch size and
     // the queue is not empty, return early. When the queue is empty, fill it before returning.
     if (
-      completedExternalItems.length === 0 ||
-      (completedExternalItems.length < EXTERNAL_ITEMS_PROCESS_BATCH_SIZE &&
+      processedExternalItems.length === 0 ||
+      (processedExternalItems.length < EXTERNAL_ITEMS_PROCESS_BATCH_SIZE &&
         numberOfPendingExternalItemsInQueue !== 0)
     ) {
       await this.fillQueueWithNewRecordsFromNorisIfEmpty(numberOfPendingExternalItemsInQueue)
@@ -138,18 +139,26 @@ export class EdeskTasksSubservice {
       return item.queueStatus === QueueItemStatusEnum.COMPLETED && item.processedAt !== null
     }
 
-    const itemsToUpdate: {
+    const isFailedItem = (
+      item: ExternalEdeskCheck
+    ): item is ExternalEdeskCheck & { queueStatus: 'FAILED' } => {
+      return item.queueStatus === QueueItemStatusEnum.FAILED
+    }
+
+    const completedItems = processedExternalItems.filter(isCompletedItem)
+    const failedItems = processedExternalItems.filter(isFailedItem)
+
+    const completedNorisUpdates: {
       idNoris: number
       lastCheck: Date
       edeskStatus: EdeskStatus
       edeskNumber: string | null
       uri: string | null
     }[] = []
-    const completedItems = completedExternalItems.filter(isCompletedItem)
     for (const item of completedItems) {
       try {
         const edeskData = this.mapEdeskDataToNorisType(item)
-        itemsToUpdate.push({
+        completedNorisUpdates.push({
           idNoris: item.norisId,
           lastCheck: item.processedAt,
           ...edeskData,
@@ -165,11 +174,21 @@ export class EdeskTasksSubservice {
         )
       }
     }
-    await this.norisService.updateEdeskChecks(itemsToUpdate)
+
+    // FAILED items are reported as NONEXISTENT — they could not be verified by UPVS
+    const failedNorisUpdates = failedItems.map((item) => ({
+      idNoris: item.norisId,
+      lastCheck: new Date(),
+      edeskStatus: EdeskStatus.NONEXISTENT,
+      edeskNumber: null,
+      uri: null,
+    }))
+
+    await this.norisService.updateEdeskChecks([...completedNorisUpdates, ...failedNorisUpdates])
 
     await this.prismaService.externalEdeskCheck.deleteMany({
       where: {
-        id: { in: completedExternalItems.map((item) => item.id) },
+        id: { in: processedExternalItems.map((item) => item.id) },
       },
     })
 

@@ -32,11 +32,11 @@ const EdeskRecordRawSchema = z.object({
 })
 
 export const EdeskRecordSchema = EdeskRecordRawSchema.transform((data) => {
-  const sanitized = data.uri_generated.replaceAll(/\s/g, '')
+  const uriSanitized = data.uri_generated.replaceAll(/\s/g, '')
   return {
     ...data,
-    uri_generated: sanitized,
-    uri_new: sanitized !== data.uri_generated ? sanitized : undefined,
+    uri_generated: uriSanitized,
+    uri_new: uriSanitized !== data.uri_generated ? uriSanitized : undefined,
   }
 }).pipe(
   EdeskRecordRawSchema.extend({

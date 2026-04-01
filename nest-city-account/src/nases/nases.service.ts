@@ -15,7 +15,6 @@ import {
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import _ from 'lodash'
-import { response } from 'express'
 
 export type CreateManyParam = {
   physicalEntityId?: string

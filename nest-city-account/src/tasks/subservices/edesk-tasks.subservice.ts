@@ -98,8 +98,13 @@ export class EdeskTasksSubservice {
       PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE,
       LEGAL_PERSONS_RETRIEVE_BATCH_SIZE
     )
+
     await this.upvsQueueService.addExternalItemsToQueue(
-      norisRecords.map((item) => ({ uri: item.uri_generated, norisId: item.id_noris }))
+      norisRecords.map((item) => ({
+        uri: item.uri_generated,
+        norisId: item.id_noris,
+        newUri: item.uri_new,
+      }))
     )
   }
 

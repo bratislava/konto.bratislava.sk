@@ -8,7 +8,7 @@ export enum EdeskStatus {
   NONEXISTENT = 'NONEXISTENT',
 }
 
-export const EdeskRecordSchema = z.object({
+const EdeskRecordRawSchema = z.object({
   id_noris: z.number(),
   uri_generated: z.string(),
 
@@ -26,10 +26,27 @@ export const EdeskRecordSchema = z.object({
 
   uri_edesk: z.string().nullable(),
   uri_ginis: z.string().nullable(),
-  
+
   last_check: z.date(),
   */
 })
+
+export const EdeskRecordSchema = EdeskRecordRawSchema.transform((data) => {
+  const uriSanitized = data.uri_generated.replaceAll(/\s/g, '')
+  return {
+    ...data,
+    uri_generated: uriSanitized,
+    uri_new: uriSanitized !== data.uri_generated ? uriSanitized : undefined,
+  }
+}).pipe(
+  EdeskRecordRawSchema.extend({
+    uri_generated: z
+      .string()
+      .min(1)
+      .regex(/^[\x20-\x7E]+$/),
+    uri_new: z.union([z.string(), z.undefined()]),
+  })
+)
 
 export type EdeskRecord = z.infer<typeof EdeskRecordSchema>
 

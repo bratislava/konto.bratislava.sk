@@ -325,13 +325,11 @@ export class UserService {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
-        const result = await this.userDataSubservice.getOrCreateUser(cognitoUserData, true)
-        return result
+        return this.userDataSubservice.getOrCreateUser(cognitoUserData, true)
       }
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
-        const result = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
-        return result
+        return this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
       }
       default:
         throw this.throwerErrorGuard.UnprocessableEntityException(

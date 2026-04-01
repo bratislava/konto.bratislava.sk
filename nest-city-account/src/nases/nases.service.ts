@@ -205,7 +205,7 @@ export class NasesService {
   private filterPossiblyChangedUris(
     unmatchedResults: ApiIamIdentitiesIdGet200ResponseWithUri[],
     unmatchedInputs: CreateManyParam,
-    inputsByUri: _.Dictionary<{ physicalEntityId?: string; uri: string }>
+    inputsByUri: Partial<Record<string, CreateManyParam[number]>>
   ) {
     let possibleUriChanges: CreateManyResultFailed[] = []
     if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
@@ -224,16 +224,18 @@ export class NasesService {
 
   private matchDirectResults(
     resultsWithUri: ApiIamIdentitiesIdGet200ResponseWithUri[],
-    inputsByUri: Record<string, CreateManyParam[number]>
+    inputsByUri: Partial<Record<string, CreateManyParam[number]>>
   ) {
     const directMatches = resultsWithUri.filter((result) => !!inputsByUri[result.uri])
     const matchedUris = new Set(directMatches.map((result) => result.uri))
 
-    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.map((result) => ({
-      inputUri: inputsByUri[result.uri].uri,
-      data: result,
-      physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
-    }))
+    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.flatMap((result) => {
+      const input = inputsByUri[result.uri]
+      if (!input) return []
+      return [
+        { inputUri: input.uri, data: result, physicalEntityId: input.physicalEntityId || null },
+      ]
+    })
 
     return { resultDataSuccess, matchedUris }
   }

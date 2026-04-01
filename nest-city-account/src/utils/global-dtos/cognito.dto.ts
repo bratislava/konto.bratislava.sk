@@ -72,7 +72,7 @@ export class CognitoGetUserAttributesData {
   })
   @IsEnum(CognitoUserAccountTypesEnum)
   @IsDefined()
-  [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum; // TODO, are we sure this is always defined?
+  [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum;
 
   @ApiPropertyOptional({
     description: 'client_id of the oAuth origin',

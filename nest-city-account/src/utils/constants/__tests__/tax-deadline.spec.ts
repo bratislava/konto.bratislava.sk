@@ -73,12 +73,12 @@ describe('tax-deadline', () => {
       ).toJSDate(),
     ]
     afterDeadline.forEach((date) => {
-      it(`${date.toString()} should be after deadline`, () => {
+      it(`${date} should be after deadline`, () => {
         expect(date < getTaxDeadlineDate()).toBe(false)
       })
     })
     beforeDeadline.forEach((date) => {
-      it(`${date.toString()} should be before deadline`, () => {
+      it(`${date} should be before deadline`, () => {
         expect(date < getTaxDeadlineDate()).toBe(true)
       })
     })
@@ -164,12 +164,12 @@ describe('tax-deadline', () => {
       ).toJSDate(),
     ]
     afterDeadline.forEach((date) => {
-      it(`${date.toString()} should be after deadline`, () => {
+      it(`${date} should be after deadline`, () => {
         expect(date < getTaxDeadlineDate()).toBe(false)
       })
     })
     beforeDeadline.forEach((date) => {
-      it(`${date.toString()} should be before deadline`, () => {
+      it(`${date} should be before deadline`, () => {
         expect(date < getTaxDeadlineDate()).toBe(true)
       })
     })

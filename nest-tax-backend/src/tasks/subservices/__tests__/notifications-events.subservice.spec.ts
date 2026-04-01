@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, TaxType, UnpaidReminderSent } from '@prisma/client'
-import dayjs from 'dayjs'
+import dayjs, { type Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
@@ -9,25 +9,13 @@ import prismaMock from '../../../../test/singleton'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PaymentService } from '../../../payment/payment.service'
 import { PrismaService } from '../../../prisma/prisma.service'
-import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../utils/subservices/cityaccount.subservice'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../../utils/types'
 import NotificationsEventsService from '../notifications-events.service'
 
-jest.mock('../../../tax-definitions/getTaxDefinitionByType', () => ({
-  getTaxDefinitionByType: jest.fn(),
-}))
-
 dayjs.extend(utc)
 dayjs.extend(timezone)
-
-const TZ = 'Europe/Bratislava'
-
-/** Set fake "now" to a given local date-time in Bratislava (e.g. '2025-05-25 10:00:00'). */
-function setNowBratislava(localDateTime: string): void {
-  jest.setSystemTime(dayjs.tz(localDateTime, TZ).toDate())
-}
 
 /** Assert taxInstallment.updateMany was called twice with the given alreadyOtherSent and newReminderSent (and BOTH). */
 function assertUpdateManyUsesReminderEnums(
@@ -47,38 +35,28 @@ function assertUpdateManyUsesReminderEnums(
   expect(call2[0].data.bloomreachUnpaidReminderSent).toBe(newReminderSent)
 }
 
+/** Calendar May 31, 2025 in the runner's local TZ — matches service's dueDate.getDate()/getMonth() (not UTC instant from Europe/Bratislava midnight, which is prior UTC day on CI). */
+const DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE = new Date(2025, 4, 31)
+
+function eligibleInstallmentRow(opts: {
+  taxId: number
+  taxInstallmentId: number
+  order?: number
+  dueDate?: Date
+}) {
+  return {
+    taxId: opts.taxId,
+    dueDate: opts.dueDate ?? DEFAULT_ELIGIBLE_INSTALLMENT_DUE_DATE,
+    order: opts.order ?? 2,
+    id: opts.taxInstallmentId,
+  }
+}
+
 describe('NotificationsEventsSubservice', () => {
   let service: NotificationsEventsService
   let bloomreachService: jest.Mocked<BloomreachService>
   let cityAccountSubservice: jest.Mocked<CityAccountSubservice>
 
-  const mockTaxDefinitionKO = {
-    type: TaxType.KO,
-    numberOfInstallments: 4,
-    installmentDueDates: {
-      second: '05-31',
-      third: '08-31',
-      fourth: '10-31',
-    },
-  }
-
-  const mockTaxDefinitionDZN = {
-    type: TaxType.DZN,
-    numberOfInstallments: 3,
-    installmentDueDates: {
-      second: '09-01',
-      third: '11-01',
-    },
-  }
-
-  const mockNextInstallment = {
-    installmentNumber: 3 as const,
-    installmentDate: dayjs('2025-06-01'),
-  }
-  const mockPastInstallment = {
-    installmentNumber: 2 as const,
-    installmentDate: dayjs('2025-05-01'),
-  }
   const currentYear = dayjs().year()
 
   beforeEach(async () => {
@@ -108,371 +86,89 @@ describe('NotificationsEventsSubservice', () => {
     cityAccountSubservice = module.get(CityAccountSubservice)
 
     jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
-    ;(getTaxDefinitionByType as jest.Mock).mockImplementation((taxType) => {
-      if (taxType === TaxType.KO) {
-        return mockTaxDefinitionKO
-      }
-      return mockTaxDefinitionDZN
-    })
-  })
-
-  describe('findInstallment (next week)', () => {
-    beforeEach(() => {
-      jest.useFakeTimers()
-    })
-
-    afterEach(() => {
-      jest.useRealTimers()
-    })
-
-    it('returns null when no installment falls in the (now, now+1 week) window', () => {
-      // Now = start of year, all KO due dates (May 31, Aug 31, Oct 31) are far away
-      setNowBratislava('2025-01-01T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).toBeNull()
-    })
-
-    it('returns second installment when its due date is within (now, now+1 week)', () => {
-      // KO: second = 05-31. Set now = 2025-05-25 10:00 Bratislava → May 31 is after now and before June 1 10:00
-      setNowBratislava('2025-05-25T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(2)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-05-31')
-    })
-
-    it('returns third installment when third is in window and second is already past', () => {
-      // KO: second 05-31, third 08-31. Now = 2025-08-25 10:00 → Aug 31 in window
-      setNowBratislava('2025-08-25T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(3)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-08-31')
-    })
-
-    it('returns fourth installment when fourth is in window', () => {
-      // KO: fourth 10-31. Now = 2025-10-25 10:00 → Oct 31 in window
-      setNowBratislava('2025-10-25T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(4)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-10-31')
-    })
-
-    it('returns null when next due date is after now but more than 1 week away', () => {
-      // KO second = 05-31. Now = 2025-05-20 10:00 → May 31 is after now but after May 27 (now+1 week)
-      setNowBratislava('2025-05-20T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).toBeNull()
-    })
-
-    it('returns null when all installments are already in the past', () => {
-      // Now = Dec 1, all KO due dates (May 31, Aug 31, Oct 31) are past
-      setNowBratislava('2025-12-01T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).toBeNull()
-    })
-
-    it('skips installment when its date is before now and returns next one in window', () => {
-      // KO: second 05-31 (past), third 08-31. Now = 2025-08-30 10:00 → third in window
-      setNowBratislava('2025-08-30T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(3)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-08-31')
-    })
-
-    it('returns second installment for DZN when Sep 1 is in window', () => {
-      // DZN: second 09-01, third 11-01 (no fourth). Now = 2025-08-26 10:00
-      setNowBratislava('2025-08-26T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.DZN,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(2)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-09-01')
-    })
-
-    it('returns third installment for DZN when Nov 1 is in window', () => {
-      // DZN: second 09-01 (past), third 11-01. Now = 2025-10-26 10:00
-      setNowBratislava('2025-10-26T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.DZN,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(3)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-11-01')
-    })
-
-    it('returns null for DZN when no installment in window (no fourth installment)', () => {
-      // DZN has only second and third. Now = Jan 1
-      setNowBratislava('2025-01-01T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.DZN,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result).toBeNull()
-    })
-
-    it('returns first matching installment in order (second before third before fourth)', () => {
-      // When second is in window, we must get second, not third. Now = May 25 → second May 31 in window
-      setNowBratislava('2025-05-25T10:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinNextWeek'],
-      )
-
-      expect(result!.installmentNumber).toBe(2)
-    })
-  })
-
-  describe('findInstallment (past week)', () => {
-    beforeEach(() => {
-      jest.useFakeTimers()
-    })
-
-    afterEach(() => {
-      jest.useRealTimers()
-    })
-
-    it('returns fourth installment when fourth due date is within the past week', () => {
-      // KO: fourth 10-31. Now = 2025-11-05 → (now-1week, now) contains Oct 31
-      setNowBratislava('2025-11-05T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(4)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-10-31')
-    })
-
-    it('returns third installment when third due date is within the past week', () => {
-      // KO: third 08-31. Now = 2025-09-05 → (now-1week, now) contains Aug 31
-      setNowBratislava('2025-09-05T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(3)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-08-31')
-    })
-
-    it('returns third installment when only third is in past week (fourth not yet in window)', () => {
-      // KO: third 08-31, fourth 10-31. Now = 2025-09-05 → only Aug 31 in (now-1week, now)
-      setNowBratislava('2025-09-05T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(3)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-08-31')
-    })
-
-    it('returns second installment when second due date is within the past week', () => {
-      // KO: second 05-31. Now = 2025-06-05 → (now-1week, now) contains May 31
-      setNowBratislava('2025-06-05T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(2)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-05-31')
-    })
-
-    it('returns null when no installment due date falls in the past week', () => {
-      // KO second 05-31, third 08-31. Now = 2025-06-15 → (now-1week, now) = (Jun 8, Jun 15); May 31 and Aug 31 outside
-      setNowBratislava('2025-06-15T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).toBeNull()
-    })
-
-    it('returns null when all installments are in the future', () => {
-      // Now = start of year, no KO due date + 1 week is before Jan 1
-      setNowBratislava('2025-01-01T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).toBeNull()
-    })
-
-    it('returns fourth when it is the only one whose due date is in the past week', () => {
-      // KO: fourth 10-31. Now = 2025-11-05 → (now-1week, now) contains Oct 31; second/third outside
-      setNowBratislava('2025-11-05T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.KO,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(4)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-10-31')
-    })
-
-    it('returns second installment for DZN when Sep 1 is within the past week', () => {
-      // DZN: second 09-01. Now = 2025-09-05 → (now-1week, now) contains Sep 1
-      setNowBratislava('2025-09-05T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.DZN,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(2)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-09-01')
-    })
-
-    it('returns third installment for DZN when Nov 1 is within the past week', () => {
-      // DZN: third 11-01 (no fourth). Now = 2025-11-05 → (now-1week, now) contains Nov 1
-      setNowBratislava('2025-11-05T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.DZN,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).not.toBeNull()
-      expect(result!.installmentNumber).toBe(3)
-      expect(result!.installmentDate.format('YYYY-MM-DD')).toBe('2025-11-01')
-    })
-
-    it('returns null for DZN when no installment is more than 1 week past', () => {
-      setNowBratislava('2025-01-01T12:00:00')
-
-      const result = service['findInstallment'](
-        TaxType.DZN,
-        service['isWithinPastWeek'],
-      )
-
-      expect(result).toBeNull()
-    })
   })
 
   describe('processInstallmentReminders', () => {
-    const installment = {
-      installmentNumber: 2 as const,
-      installmentDate: dayjs.tz('2025-05-31', 'Europe/Bratislava'),
-    }
     const year = 2025
 
-    it('calls getTaxesEligibleForInstallmentReminder with reminderSentFilter [NONE] when dueDateTiming is BEFORE', async () => {
-      const getTaxesSpy = jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([])
-      prismaMock.tax.findMany.mockResolvedValue([])
+    /** Fixed clock: 2025-06-15 12:00 in Bratislava (CEST), so “today” is 2025-06-15 local. */
+    const FIXED_NOW_UTC = new Date('2025-06-15T10:00:00.000Z')
 
-      await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
-        INSTALLMENT_DUE_DATE_TYPE.NEXT,
-        year,
-      )
+    describe('getTaxInstallmentsEligibleForReminder time window', () => {
+      beforeEach(() => {
+        jest.useFakeTimers()
+        jest.setSystemTime(FIXED_NOW_UTC)
+      })
 
-      expect(getTaxesSpy).toHaveBeenCalledTimes(1)
-      expect(getTaxesSpy).toHaveBeenCalledWith(
-        TaxType.KO,
-        installment.installmentNumber,
-        [UnpaidReminderSent.NONE],
-        year,
-      )
-    })
+      afterEach(() => {
+        jest.useRealTimers()
+      })
 
-    it('calls getTaxesEligibleForInstallmentReminder with reminderSentFilter [NONE, BEFORE_DUE] when dueDateTiming is AFTER', async () => {
-      const getTaxesSpy = jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([])
-      prismaMock.tax.findMany.mockResolvedValue([])
+      it('calls getTaxInstallmentsEligibleForReminder with reminderSentFilter [NONE] when dueDateType is NEXT', async () => {
+        const getTaxesSpy = jest
+          .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+          .mockResolvedValue([])
+        prismaMock.tax.findMany.mockResolvedValue([])
 
-      await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
-        INSTALLMENT_DUE_DATE_TYPE.PAST,
-        year,
-      )
+        await service['processInstallmentReminders'](
+          INSTALLMENT_DUE_DATE_TYPE.NEXT,
+          year,
+        )
 
-      expect(getTaxesSpy).toHaveBeenCalledTimes(1)
-      expect(getTaxesSpy).toHaveBeenCalledWith(
-        TaxType.KO,
-        installment.installmentNumber,
-        [UnpaidReminderSent.NONE, UnpaidReminderSent.BEFORE_DUE],
-        year,
-      )
+        expect(getTaxesSpy).toHaveBeenCalledTimes(1)
+        const [filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
+          UnpaidReminderSent[],
+          number,
+          { start: Dayjs; end: Dayjs },
+        ]
+        expect(filter).toEqual([UnpaidReminderSent.NONE])
+        expect(y).toBe(year)
+        expect(windowArg.start.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
+          '2025-06-15T00:00:00.000+02:00',
+        )
+        expect(windowArg.end.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
+          '2025-06-22T23:59:59.999+02:00',
+        )
+      })
+
+      it('calls getTaxInstallmentsEligibleForReminder with reminderSentFilter [NONE, BEFORE_DUE] when dueDateType is PAST', async () => {
+        const getTaxesSpy = jest
+          .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+          .mockResolvedValue([])
+        prismaMock.tax.findMany.mockResolvedValue([])
+
+        await service['processInstallmentReminders'](
+          INSTALLMENT_DUE_DATE_TYPE.PAST,
+          year,
+        )
+
+        expect(getTaxesSpy).toHaveBeenCalledTimes(1)
+        const [filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
+          UnpaidReminderSent[],
+          number,
+          { start: Dayjs; end: Dayjs },
+        ]
+        expect(filter).toEqual([
+          UnpaidReminderSent.NONE,
+          UnpaidReminderSent.BEFORE_DUE,
+        ])
+        expect(y).toBe(year)
+        expect(windowArg.start.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
+          '2025-06-08T00:00:00.000+02:00',
+        )
+        expect(windowArg.end.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
+          '2025-06-15T23:59:59.999+02:00',
+        )
+      })
     })
 
     it('does not call trackEvent or updateMany when no eligible taxes', async () => {
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
         .mockResolvedValue([])
       prismaMock.tax.findMany.mockResolvedValue([])
 
       await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -486,8 +182,10 @@ describe('NotificationsEventsSubservice', () => {
     it('does not call trackEvent or updateMany when eligible taxes have no externalId (user missing)', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([{ id: 1 }])
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+        .mockResolvedValue([
+          eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
+        ])
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
@@ -500,8 +198,6 @@ describe('NotificationsEventsSubservice', () => {
       cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({} as any)
 
       await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -515,8 +211,10 @@ describe('NotificationsEventsSubservice', () => {
     it('does not call trackEvent when externalId is null', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([{ id: 1 }])
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+        .mockResolvedValue([
+          eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
+        ])
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
@@ -531,8 +229,6 @@ describe('NotificationsEventsSubservice', () => {
       } as any)
 
       await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -546,8 +242,10 @@ describe('NotificationsEventsSubservice', () => {
     it('calls trackEvent with full payload and updates TaxInstallment with newReminderSent=BEFORE_DUE and alreadyOtherSent=AFTER_DUE when one tax has externalId (BEFORE)', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([{ id: 1 }])
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+        .mockResolvedValue([
+          eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
+        ])
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
@@ -566,8 +264,6 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
       await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -595,13 +291,22 @@ describe('NotificationsEventsSubservice', () => {
         UnpaidReminderSent.AFTER_DUE,
         UnpaidReminderSent.BEFORE_DUE,
       )
+      expect(updateManySpy).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          where: expect.objectContaining({ id: { in: [101] } }),
+          data: { bloomreachUnpaidReminderSent: UnpaidReminderSent.BOTH },
+        }),
+      )
     })
 
     it('calls trackEvent with full payload and uses newReminderSent=AFTER_DUE and alreadyOtherSent=BEFORE_DUE when AFTER', async () => {
       const birthNumber = '123456/7890'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([{ id: 1 }])
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+        .mockResolvedValue([
+          eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 202 }),
+        ])
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
@@ -620,8 +325,6 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
       await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.PAST,
         year,
       )
@@ -649,14 +352,23 @@ describe('NotificationsEventsSubservice', () => {
         UnpaidReminderSent.BEFORE_DUE,
         UnpaidReminderSent.AFTER_DUE,
       )
+      expect(updateManySpy).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          where: expect.objectContaining({ id: { in: [202] } }),
+        }),
+      )
     })
 
     it('calls trackEvent for each tax with full payload and updates all with two updateMany calls', async () => {
       const birth1 = '111111/1111'
       const birth2 = '222222/2222'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([{ id: 1 }, { id: 2 }])
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+        .mockResolvedValue([
+          eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 301 }),
+          eligibleInstallmentRow({ taxId: 2, taxInstallmentId: 302 }),
+        ])
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
@@ -683,8 +395,6 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.taxInstallment.updateMany.mockResolvedValue({ count: 1 })
 
       await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -712,14 +422,24 @@ describe('NotificationsEventsSubservice', () => {
         bloomreachService.trackEventUnpaidTaxInstallmentReminder,
       ).toHaveBeenNthCalledWith(2, expectedPayload2, 'ext-2')
       expect(prismaMock.taxInstallment.updateMany).toHaveBeenCalledTimes(2)
+      const updateManySpy = jest.spyOn(prismaMock.taxInstallment, 'updateMany')
+      expect(updateManySpy).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          where: expect.objectContaining({ id: { in: [301, 302] } }),
+        }),
+      )
     })
 
     it('calls getUserDataAdminBatch with all tax payer birth numbers', async () => {
       const birth1 = '111111/1111'
       const birth2 = '222222/2222'
       jest
-        .spyOn(service as any, 'getTaxesEligibleForInstallmentReminder')
-        .mockResolvedValue([{ id: 1 }, { id: 2 }])
+        .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
+        .mockResolvedValue([
+          eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 401 }),
+          eligibleInstallmentRow({ taxId: 2, taxInstallmentId: 402 }),
+        ])
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
@@ -735,8 +455,6 @@ describe('NotificationsEventsSubservice', () => {
       } as any)
 
       await service['processInstallmentReminders'](
-        installment,
-        TaxType.KO,
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
         year,
       )
@@ -750,7 +468,6 @@ describe('NotificationsEventsSubservice', () => {
 
   describe('sendUnpaidTaxInstallmentReminders', () => {
     beforeEach(() => {
-      jest.spyOn(service as any, 'findInstallment').mockReturnValue(null)
       service['processInstallmentReminders'] = jest.fn()
     })
 
@@ -758,98 +475,36 @@ describe('NotificationsEventsSubservice', () => {
       jest.restoreAllMocks()
     })
 
-    it('does not call processInstallmentReminders when both findInstallment calls return null', async () => {
-      await service.sendUnpaidTaxInstallmentReminders()
-
-      expect(service['processInstallmentReminders']).not.toHaveBeenCalled()
-    })
-
-    it('calls processInstallmentReminders with INSTALLMENT_DUE_DATE_TYPE.NEXT only when findInstallment returns an installment for next week', async () => {
-      jest
-        .spyOn(service as any, 'findInstallment')
-        .mockImplementation((_taxType: unknown, predicate: unknown) =>
-          predicate === service['isWithinNextWeek']
-            ? mockNextInstallment
-            : null,
-        )
-
-      await service.sendUnpaidTaxInstallmentReminders()
-
-      expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(1)
-      expect(service['processInstallmentReminders']).toHaveBeenCalledWith(
-        mockNextInstallment,
-        TaxType.KO,
-        INSTALLMENT_DUE_DATE_TYPE.NEXT,
-        currentYear,
-      )
-      expect(service['processInstallmentReminders']).not.toHaveBeenCalledWith(
-        mockNextInstallment,
-        TaxType.KO,
-        INSTALLMENT_DUE_DATE_TYPE.PAST,
-        currentYear,
-      )
-    })
-
-    it('calls processInstallmentReminders with INSTALLMENT_DUE_DATE_TYPE.PAST only when findInstallment returns an installment for past week', async () => {
-      jest
-        .spyOn(service as any, 'findInstallment')
-        .mockImplementation((_taxType: unknown, predicate: unknown) =>
-          predicate === service['isWithinPastWeek']
-            ? mockPastInstallment
-            : null,
-        )
-
-      await service.sendUnpaidTaxInstallmentReminders()
-
-      expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(1)
-      expect(service['processInstallmentReminders']).toHaveBeenCalledWith(
-        mockPastInstallment,
-        TaxType.KO,
-        INSTALLMENT_DUE_DATE_TYPE.PAST,
-        currentYear,
-      )
-      expect(service['processInstallmentReminders']).not.toHaveBeenCalledWith(
-        mockPastInstallment,
-        TaxType.KO,
-        INSTALLMENT_DUE_DATE_TYPE.NEXT,
-        currentYear,
-      )
-    })
-
-    it('calls processInstallmentReminders with INSTALLMENT_DUE_DATE_TYPE.NEXT and INSTALLMENT_DUE_DATE_TYPE.PAST when both findInstallment calls return an installment', async () => {
-      jest
-        .spyOn(service as any, 'findInstallment')
-        .mockImplementation((_taxType: unknown, predicate: unknown) =>
-          predicate === service['isWithinNextWeek']
-            ? mockNextInstallment
-            : mockPastInstallment,
-        )
-
+    it('calls processInstallmentReminders twice (NEXT then PAST) with current year', async () => {
       await service.sendUnpaidTaxInstallmentReminders()
 
       expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(2)
-    })
-
-    it('uses toggled tax type (DZN -> KO on first run)', async () => {
-      await service.sendUnpaidTaxInstallmentReminders()
-
-      expect(service['findInstallment']).toHaveBeenCalledWith(
-        TaxType.KO,
-        service['isWithinNextWeek'],
+      expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
+        1,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
+        currentYear,
       )
-      expect(service['findInstallment']).toHaveBeenCalledWith(
-        TaxType.KO,
-        service['isWithinPastWeek'],
+      expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
+        2,
+        INSTALLMENT_DUE_DATE_TYPE.PAST,
+        currentYear,
       )
     })
 
-    it('uses DZN on second run after toggle', async () => {
+    it('runs NEXT and PAST again on a second invocation', async () => {
       await service.sendUnpaidTaxInstallmentReminders()
       await service.sendUnpaidTaxInstallmentReminders()
 
-      expect(service['findInstallment']).toHaveBeenLastCalledWith(
-        TaxType.DZN,
-        service['isWithinPastWeek'],
+      expect(service['processInstallmentReminders']).toHaveBeenCalledTimes(4)
+      expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
+        3,
+        INSTALLMENT_DUE_DATE_TYPE.NEXT,
+        currentYear,
+      )
+      expect(service['processInstallmentReminders']).toHaveBeenNthCalledWith(
+        4,
+        INSTALLMENT_DUE_DATE_TYPE.PAST,
+        currentYear,
       )
     })
   })
@@ -877,6 +532,8 @@ describe('NotificationsEventsSubservice', () => {
           {
             id: 1,
             year: 2024,
+            type: TaxType.DZN,
+            order: 1,
             taxPayer: {
               birthNumber: '123456/7890',
             },
@@ -901,6 +558,8 @@ describe('NotificationsEventsSubservice', () => {
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
+          tax_type: TaxType.DZN,
+          order: 1,
         },
         'external-id-123',
       )
@@ -913,6 +572,8 @@ describe('NotificationsEventsSubservice', () => {
           {
             id: 1,
             year: 2024,
+            type: TaxType.DZN,
+            order: 1,
             taxPayer: {
               birthNumber: '123456/7890',
             },
@@ -920,6 +581,8 @@ describe('NotificationsEventsSubservice', () => {
           {
             id: 2,
             year: 2024,
+            type: TaxType.KO,
+            order: 2,
             taxPayer: {
               birthNumber: '123456/7891',
             },
@@ -927,6 +590,8 @@ describe('NotificationsEventsSubservice', () => {
           {
             id: 3,
             year: 2024,
+            type: TaxType.DZN,
+            order: 1,
             taxPayer: {
               birthNumber: '123456/7892',
             },
@@ -955,12 +620,16 @@ describe('NotificationsEventsSubservice', () => {
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
+          tax_type: TaxType.DZN,
+          order: 1,
         },
         'external-id-1',
       )
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
+          tax_type: TaxType.KO,
+          order: 2,
         },
         'external-id-2',
       )

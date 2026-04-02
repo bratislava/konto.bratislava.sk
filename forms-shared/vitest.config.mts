@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     include: ['**/tests/**/*.[jt]s?(x)'],
     snapshotFormat: {
-      maxOutputLength: Infinity,
+      maxOutputLength: 10_000_000,
     },
   },
 })

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
+import {Prisma, TaxType} from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -209,7 +209,7 @@ export default class TaxImportTasksService {
                years.year,
                tax_types."taxType"
         FROM "TaxPayer" tp
-                 CROSS JOIN UNNEST(ARRAY [${historicalYears.join(',')}]) AS years(year)
+                 CROSS JOIN UNNEST(ARRAY [${Prisma.join(historicalYears)}]::integer[]) AS years(year)
                  CROSS JOIN UNNEST(ENUM_RANGE(NULL::"TaxType")) AS tax_types("taxType")
         WHERE NOT EXISTS (SELECT 1
                           FROM "TaxImportAttempt" tia

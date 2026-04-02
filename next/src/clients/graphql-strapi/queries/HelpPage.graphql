@@ -20,10 +20,6 @@ fragment HelpPage on HelpPage {
 
 query HelpPage {
   helpPage {
-    data {
-      attributes {
-        ...HelpPage
-      }
-    }
+    ...HelpPage
   }
 }

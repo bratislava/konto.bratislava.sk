@@ -8,7 +8,7 @@ import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(async () => {
-  const strapiTax = await strapiClient.Tax().then((response) => response.tax?.data?.attributes)
+  const strapiTax = await strapiClient.Tax().then((response) => response.tax)
   if (!strapiTax) {
     return { notFound: true }
   }

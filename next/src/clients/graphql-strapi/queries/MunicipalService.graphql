@@ -1,41 +1,29 @@
-fragment MunicipalServiceTagEntity on MunicipalServiceTagEntity {
-  id
-  attributes {
-    title
+fragment MunicipalServiceTagEntity on MunicipalServiceTag {
+  documentId
+  title
+}
+
+fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
+  documentId
+  title
+}
+
+fragment MunicipalServiceCardEntity on MunicipalService {
+  documentId
+  title
+  description
+  buttonText
+  href
+  color
+  icon
+  tags {
+    ...MunicipalServiceTagEntity
   }
 }
 
-fragment MunicipalServiceCategoryEntity on MunicipalServiceCategoryEntity {
-  id
-  attributes {
-    title
-  }
-}
-
-fragment MunicipalServiceCardEntity on MunicipalServiceEntity {
-  id
-  attributes {
-    title
-    description
-    buttonText
-    href
-    color
-    icon
-    tags {
-      data {
-        ...MunicipalServiceTagEntity
-      }
-    }
-  }
-}
-
-fragment MunicipalServiceEntity on MunicipalServiceEntity {
+fragment MunicipalServiceEntity on MunicipalService {
   ...MunicipalServiceCardEntity
-  attributes {
-    categories {
-      data {
-        ...MunicipalServiceCategoryEntity
-      }
-    }
+  categories {
+    ...MunicipalServiceCategoryEntity
   }
 }

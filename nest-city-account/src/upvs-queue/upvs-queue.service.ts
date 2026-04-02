@@ -32,9 +32,11 @@ export class UpvsQueueService {
     this.logger = new LineLoggerSubservice(UpvsQueueService.name)
   }
 
-  async addExternalItemsToQueue(records: { uri: string; norisId: number }[]) {
+  async addExternalItemsToQueue(
+    records: { uri: string; norisId: number; newUri: string | undefined }[]
+  ) {
     await this.prismaService.externalEdeskCheck.createMany({
-      data: records.map((record) => ({ uri: record.uri, norisId: record.norisId })),
+      data: records,
       skipDuplicates: true,
     })
   }
@@ -47,16 +49,14 @@ export class UpvsQueueService {
     })
   }
 
-  async retrieveCompletedExternalItems(limit: number) {
-    const result = await this.prismaService.externalEdeskCheck.findMany({
+  async retrieveCompletedAndFailedExternalItems(limit: number) {
+    return this.prismaService.externalEdeskCheck.findMany({
       where: {
-        queueStatus: QueueItemStatusEnum.COMPLETED,
+        queueStatus: { in: [QueueItemStatusEnum.COMPLETED, QueueItemStatusEnum.FAILED] },
       },
       take: limit,
       orderBy: { createdAt: 'asc' },
     })
-
-    return result
   }
 
   /**
@@ -225,12 +225,16 @@ export class UpvsQueueService {
   }
 
   private async getUriToUpdateInternal() {
-    return await this.prismaService.physicalEntity.findFirst({
-      where: {
-        uriPossiblyOutdated: true,
-      },
-      select: { uri: true, id: true },
-    })
+    const results = await this.prismaService.$queryRaw<{ uri: string; id: string }[]>`
+      SELECT "uri", "id"
+      FROM "PhysicalEntity"
+      WHERE "uriPossiblyOutdated" = true
+        AND ("activeEdeskUpdateFailCount" = 0
+          OR "activeEdeskUpdateFailedAt" IS NULL
+          OR ("activeEdeskUpdateFailedAt" + (POWER(2, LEAST("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < NOW()))
+      LIMIT 1
+    `
+    return results[0] ?? null
   }
 
   private async getUriToUpdateExternal() {
@@ -263,9 +267,16 @@ export class UpvsQueueService {
         },
       })
     } else {
-      this.prismaService.physicalEntity.update({
+      const confirmedFailed = upvsResult.failed.some(
+        (item) => item.inputUri === input.uri && !item.possibleUriChange
+      )
+      await this.prismaService.physicalEntity.update({
         where: { id: input.id },
-        data: { uriPossiblyOutdated: false },
+        data: {
+          uriPossiblyOutdated: !confirmedFailed,
+          activeEdeskUpdateFailedAt: new Date(),
+          activeEdeskUpdateFailCount: { increment: 1 },
+        },
       })
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

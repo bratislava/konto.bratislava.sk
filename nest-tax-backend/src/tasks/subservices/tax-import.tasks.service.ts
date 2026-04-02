@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
+import {Prisma, TaxType} from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import _ from 'lodash'
 
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
+import { PrismaService } from '../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -17,6 +19,9 @@ import TaxImportHelperService from './tax-import-helper.service'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
+
+const firstHistoricalYear = 2020
+const LOAD_HISTORICAL_TAXES_BATCH = 500
 
 @Injectable()
 export default class TaxImportTasksService {
@@ -31,6 +36,7 @@ export default class TaxImportTasksService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configSubservice: TasksConfigSubservice,
     private readonly retryService: RetryService,
+    private readonly prismaService: PrismaService,
   ) {
     this.logger = new LineLoggerSubservice(TaxImportTasksService.name)
   }
@@ -47,7 +53,7 @@ export default class TaxImportTasksService {
   }
 
   private async loadTaxDataForUserByTaxType(taxType: TaxType) {
-    const year = new Date().getFullYear()
+    const thisYear = new Date().getFullYear()
 
     const [isWithinWindow, todayTaxCount, dailyLimit] = await Promise.all([
       this.taxImportHelperService.isWithinImportWindow(),
@@ -64,25 +70,32 @@ export default class TaxImportTasksService {
     const { birthNumbers, newlyCreated } =
       await this.taxImportHelperService.getPrioritizedBirthNumbersWithMetadata(
         taxType,
-        year,
+        thisYear,
+        firstHistoricalYear,
         importPhase,
       )
 
-    // Import newly created users regardless of window or limit
+    // Import newly created users
     if (newlyCreated.length > 0) {
       this.logger.log(
         `Found ${newlyCreated.length} newly created users, importing all taxes immediately`,
       )
-      await this.taxImportHelperService.importTaxes(
-        TaxType.DZN,
-        newlyCreated,
-        year,
-      )
-      await this.taxImportHelperService.importTaxes(
-        TaxType.KO,
-        newlyCreated,
-        year,
-      )
+
+      for (let year = firstHistoricalYear; year <= thisYear; year += 1) {
+        // Intentionally sequential: avoid hammering slow DB
+        // eslint-disable-next-line no-await-in-loop
+        await this.taxImportHelperService.importTaxes(
+          TaxType.DZN,
+          newlyCreated,
+          year,
+        )
+        // eslint-disable-next-line no-await-in-loop
+        await this.taxImportHelperService.importTaxes(
+          TaxType.KO,
+          newlyCreated,
+          year,
+        )
+      }
     }
 
     if (birthNumbers.length > 0) {
@@ -90,8 +103,16 @@ export default class TaxImportTasksService {
         `Found ${birthNumbers.length} existing users, ${importPhase ? 'importing' : 'preparing'}`,
       )
       await (importPhase
-        ? this.taxImportHelperService.importTaxes(taxType, birthNumbers, year)
-        : this.taxImportHelperService.prepareTaxes(taxType, birthNumbers, year))
+        ? this.taxImportHelperService.importTaxes(
+            taxType,
+            birthNumbers,
+            thisYear,
+          )
+        : this.taxImportHelperService.prepareTaxes(
+            taxType,
+            birthNumbers,
+            thisYear,
+          ))
     }
 
     if (birthNumbers.length === 0 && newlyCreated.length === 0) {
@@ -161,5 +182,72 @@ export default class TaxImportTasksService {
         error,
       )
     }
+  }
+
+  async loadHistoricalTaxes() {
+    this.logger.log('Starting loadHistoricalTaxes task')
+
+    const currentYear = new Date().getFullYear()
+    const previousYear = currentYear - 1
+
+    if (previousYear < firstHistoricalYear) {
+      this.logger.log('No historical years to process')
+      return
+    }
+
+    const historicalYears = Array.from(
+      { length: previousYear - firstHistoricalYear + 1 },
+      (_unused, i) => firstHistoricalYear + i,
+    )
+
+    // Query for users missing specific (year, taxType) combinations
+    const missingTaxAttempts = await this.prismaService.$queryRaw<
+      { birthNumber: string; year: number; taxType: TaxType }[]
+      // language=PostgreSQL
+    >`
+        SELECT tp."birthNumber",
+               years.year,
+               tax_types."taxType"
+        FROM "TaxPayer" tp
+                 CROSS JOIN UNNEST(ARRAY [${Prisma.join(historicalYears)}]::integer[]) AS years(year)
+                 CROSS JOIN UNNEST(ENUM_RANGE(NULL::"TaxType")) AS tax_types("taxType")
+        WHERE NOT EXISTS (SELECT 1
+                          FROM "TaxImportAttempt" tia
+                          WHERE tia."taxPayerId" = tp.id
+                            AND tia.year = years.year
+                            AND tia."taxType" = tax_types."taxType"
+                            -- We want to exclude only resolved attempts
+                            AND (tia.status = 'SUCCESS'::"TaxImportStatus" OR
+                                 tia.status = 'NOT_FOUND'::"TaxImportStatus"))
+        ORDER BY tp."updatedAt", tp.id
+        LIMIT ${LOAD_HISTORICAL_TAXES_BATCH};
+    `
+    if (missingTaxAttempts.length === 0) {
+      this.logger.log('No missing historical tax attempts found')
+      return
+    }
+
+    // Group by year and taxType to batch the import calls
+    const grouped = _.groupBy(
+      missingTaxAttempts,
+      (item) => `${item.year}-${item.taxType}`,
+    )
+
+    // Import taxes for each group
+    await Promise.all(
+      Object.values(grouped).map(async (items) => {
+        const first = items[0]
+        this.logger.log(
+          `Importing ${first.taxType} taxes for ${items.length} users for year ${first.year}`,
+        )
+        return this.taxImportHelperService.importTaxes(
+          first.taxType,
+          items.map((item) => item.birthNumber),
+          first.year,
+        )
+      }),
+    )
+
+    this.logger.log('Completed loadHistoricalTaxes task')
   }
 }

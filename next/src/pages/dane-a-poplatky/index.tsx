@@ -39,6 +39,7 @@ const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>, taxType: 
       authStrategy: 'authOnly',
       getSsrAuthSession,
     })
+
     return data
   } catch (error) {
     if (
@@ -63,7 +64,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
           getTaxes(fetchAuthSession, TaxType.Dzn),
           getTaxes(fetchAuthSession, TaxType.Ko),
           getTaxAdministratorForUser(amplifyContextSpec),
-          strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+          strapiClient.Tax().then((response) => response.tax),
           fetchUserAttributes(amplifyContextSpec).then(
             (response) => response?.['custom:account_type'],
           ),

@@ -10,11 +10,7 @@ type AnnouncementBlockStrapiProps = {
 }
 
 const AnnouncementBlockStrapi = ({ announcement, reversed }: AnnouncementBlockStrapiProps) => {
-  if (!announcement.attributes) {
-    return null
-  }
-
-  const { title, description, buttonText, href, image } = announcement.attributes
+  const { title, description, buttonText, href, image } = announcement
 
   const announcementContent = [`### ${title}`, description].join('\n\n')
 
@@ -30,7 +26,7 @@ const AnnouncementBlockStrapi = ({ announcement, reversed }: AnnouncementBlockSt
   return (
     <AnnouncementBlock
       announcementContent={announcementContent}
-      imageSrc={image?.data?.attributes?.url}
+      imageSrc={image.url}
       buttons={buttons}
       reversed={reversed}
       reversedMobile

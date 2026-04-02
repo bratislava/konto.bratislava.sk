@@ -89,69 +89,31 @@ WITH NorisRows AS (
 
         /* ----------------------------Texty splátok výmeru start------------------------------------*/   
         
-        (case
-            when lcs.dane21_doklad.rok_podkladu<2008 then 
-                (case 
-                    when lcs.dane21_doklad.datum_spl2 is not null then ''
-                    else  '-  naraz do '+convert(varchar(10), lcs.dane21_doklad.datum_spl1, 104) +' v sume:'      
-                end)
-            else      
-                (case 
-                    when lcs.dane21_doklad.datum_spl2 is not null then '' 
-                    else  'v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(lcs.dane21_doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic) +' v sume:'       
-                end)
-        end)  TXTSPL1, 
         (case 
             when lcs.dane21_doklad.datum_spl2 is not null then ''         
             else lcs.fn21_dec2string(lcs.dane21_doklad.suma_mena, 2)   
         end ) SPL1, 
         (case 
-            when lcs.dane21_doklad.rok_podkladu<2008 then
-                (case 
-                    when lcs.dane21_doklad.datum_spl2 is not null then '-  Splátka 1 do '+convert(varchar(10), lcs.dane21_doklad.datum_spl1, 104)  +' v sume:'                    else  ''               end  )        else             (case when lcs.dane21_doklad.datum_spl2 is not null then '- prvá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(lcs.dane21_doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                    else  '' 
-                end)
-        end) TXTSPL4_1, 
-        (case 
             when lcs.dane21_doklad.datum_spl2 is not null then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl1 , 2)
             else  ''
         end  ) SPL4_1, 
         (case 
-            when lcs.dane21_doklad.datum_spl2 is not null then
-                (case 
-                    when lcs.dane21_doklad.rok_podkladu<2008 or cast((cast( lcs.dane21_doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), dp_conf.spl_2_splatnost, 112), 4)) as datetime)>=lcs.dane21_doklad.datum_spl2                  then '- druhá splátka v termíne do '+convert(varchar(10), lcs.dane21_doklad.datum_spl2, 104) +' v sume:'
-                    else '- druhá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(lcs.dane21_doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                end )
-            else  ''
-        end) TXTSPL4_2, 
-        (case 
             when lcs.dane21_doklad.datum_spl2 is not null then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl2 , 2)
             else  '' 
         end) SPL4_2, 
-        (case 
-            when lcs.dane21_doklad.datum_spl3 is not null then
-                (case 
-                    when lcs.dane21_doklad.rok_podkladu<2008 or cast((cast( lcs.dane21_doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), dp_conf.spl_3_splatnost, 112), 4)) as datetime)>=lcs.dane21_doklad.datum_spl3  then '- tretia splátka v termíne do '+convert(varchar(10), lcs.dane21_doklad.datum_spl3, 104) +' v sume:'
-                    else '- tretia splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(lcs.dane21_doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                end )
-            else  ''
-        end  ) TXTSPL4_3, 
     (case 
             when  lcs.dane21_doklad.datum_spl3 is not null  then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl3 , 2)
             else  ''
         end  ) SPL4_3, 
-        (case 
-            when  lcs.dane21_doklad.datum_spl4 is not null  then 
-                (case 
-                    when lcs.dane21_doklad.rok_podkladu<2008 or cast((cast( lcs.dane21_doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), dp_conf.spl_4_splatnost, 112), 4)) as datetime)>=lcs.dane21_doklad.datum_spl4 then '- štvrtá splátka v termíne do '+convert(varchar(10), lcs.dane21_doklad.datum_spl4, 104)  +' v sume:'
-                    else '- štvrtá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(lcs.dane21_doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                    end )
-            else  ''
-        end  ) TXTSPL4_4, 
     (case 
             when  lcs.dane21_doklad.datum_spl4 is not null  then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl4 , 2)
             else  ''
         end  ) SPL4_4,
+    
+    lcs.dane21_doklad.datum_spl1,
+    lcs.dane21_doklad.datum_spl2,
+    lcs.dane21_doklad.datum_spl3,
+    lcs.dane21_doklad.datum_spl4,
 
     /* One row per (rodne_cislo, rok) when Noris returns duplicates; deterministic by document id */
     ROW_NUMBER() OVER (
@@ -565,70 +527,32 @@ export const getCommunalWasteTaxesFromNoris = `
         poplatok.forma_uhrady AS forma_uhrady,
 
         /* ----------------------------Texty splátok výmeru start------------------------------------*/   
-        
-        (case
-            when doklad.rok_podkladu<2008 then 
-                (case 
-                    when doklad.datum_spl2 is not null then ''
-                    else  '-  naraz do '+convert(varchar(10), doklad.datum_spl1, 104) +' v sume:'      
-                end)
-            else      
-                (case 
-                    when doklad.datum_spl2 is not null then '' 
-                    else  'v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic) +' v sume:'       
-                end)
-        end)  TXTSPL1, 
+
         (case 
             when doklad.datum_spl2 is not null then ''         
             else lcs.fn21_dec2string(doklad.suma_mena, 2)   
         end ) SPL1, 
         (case 
-            when doklad.rok_podkladu<2008 then
-                (case 
-                    when doklad.datum_spl2 is not null then '-  Splátka 1 do '+convert(varchar(10), doklad.datum_spl1, 104)  +' v sume:'                    else  ''               end  )        else             (case when doklad.datum_spl2 is not null then '- prvá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                    else  '' 
-                end)
-        end) TXTSPL4_1, 
-        (case 
             when doklad.datum_spl2 is not null then lcs.fn21_dec2string( doklad.suma_spl1 , 2)
             else  ''
         end  ) SPL4_1, 
-        (case 
-            when doklad.datum_spl2 is not null then
-                (case 
-                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_2_splatnost, 112), 4)) as datetime)>=doklad.datum_spl2                  then '- druhá splátka v termíne do '+convert(varchar(10), doklad.datum_spl2, 104) +' v sume:'
-                    else '- druhá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                end )
-            else  ''
-        end) TXTSPL4_2, 
         (case 
             when doklad.datum_spl2 is not null then lcs.fn21_dec2string( doklad.suma_spl2 , 2)
             else  '' 
         end) SPL4_2, 
         (case 
-            when doklad.datum_spl3 is not null then
-                (case 
-                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_3_splatnost, 112), 4)) as datetime)>=doklad.datum_spl3  then '- tretia splátka v termíne do '+convert(varchar(10), doklad.datum_spl3, 104) +' v sume:'
-                    else '- tretia splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                end )
-            else  ''
-        end  ) TXTSPL4_3, 
-        (case 
             when  doklad.datum_spl3 is not null  then lcs.fn21_dec2string( doklad.suma_spl3 , 2)
             else  ''
         end  ) SPL4_3, 
         (case 
-            when  doklad.datum_spl4 is not null  then 
-                (case 
-                    when doklad.rok_podkladu<2008 or cast((cast( doklad.rok_podkladu as varchar(4))+right(CONVERT(char(8), pop_conf.spl_4_splatnost, 112), 4)) as datetime)>=doklad.datum_spl4 then '- štvrtá splátka v termíne do '+convert(varchar(10), doklad.datum_spl4, 104)  +' v sume:'
-                    else '- štvrtá splátka v termíne do 15 dní odo dňa nadobudnutia právoplatnosti '+lcs.fn21_dane_text_vymer_rozhod(doklad.rok_podkladu, lcs.dane21_druh_dokladu.typ_dane, lcs.dane21_druh_dokladu.typ_dokladu, ov.dic)+' v sume:'
-                    end )
-            else  ''
-        end  ) TXTSPL4_4, 
-        (case 
             when  doklad.datum_spl4 is not null  then lcs.fn21_dec2string( doklad.suma_spl4 , 2)
             else  ''
         end  ) SPL4_4,
+
+        doklad.datum_spl1,
+        doklad.datum_spl2,
+        doklad.datum_spl3,
+        doklad.datum_spl4,
 
         /* --------- Texty splátok výmeru end ----------------------------*/
 

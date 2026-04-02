@@ -273,6 +273,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     // Add the payments only for processed taxes
     await this.paymentSubservice.updatePaymentsFromNorisWithData(
       recordsToProcess,
+      { suppressEmail },
     )
 
     return { birthNumbers: [...birthNumbersResult] }

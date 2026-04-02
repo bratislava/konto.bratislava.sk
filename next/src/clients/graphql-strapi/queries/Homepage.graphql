@@ -1,28 +1,16 @@
 query Homepage {
   homepage {
-    data {
-      attributes {
-        services(pagination: { limit: 4 }) {
-          data {
-            ...MunicipalServiceCardEntity
-          }
-        }
-        servicesLegalPerson(pagination: { limit: 4 }) {
-          data {
-            ...MunicipalServiceCardEntity
-          }
-        }
-        announcements {
-          data {
-            ...HomepageAnnouncementEntity
-          }
-        }
-        announcementsLegalPerson {
-          data {
-            ...HomepageAnnouncementEntity
-          }
-        }
-      }
+    services(pagination: { limit: 4 }) {
+      ...MunicipalServiceCardEntity
+    }
+    servicesLegalPerson(pagination: { limit: 4 }) {
+      ...MunicipalServiceCardEntity
+    }
+    announcements {
+      ...HomepageAnnouncementEntity
+    }
+    announcementsLegalPerson {
+      ...HomepageAnnouncementEntity
     }
   }
 }

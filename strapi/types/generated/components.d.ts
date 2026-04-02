@@ -1,82 +1,83 @@
-import type { Attribute, Schema } from '@strapi/strapi'
+import type { Schema, Struct } from '@strapi/strapi'
 
-export interface BlocksFormLandingPage extends Schema.Component {
+export interface BlocksFormLandingPage extends Struct.ComponentSchema {
   collectionName: 'components_blocks_form_landing_pages'
   info: {
     description: ''
     displayName: 'Form landing page'
   }
   attributes: {
-    formCta: Attribute.Component<'blocks.form-landing-page-form-cta'> & Attribute.Required
-    linkCtas: Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    text: Attribute.RichText
+    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
+      Schema.Attribute.Required
+    linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
+    text: Schema.Attribute.RichText
   }
 }
 
-export interface BlocksFormLandingPageFormCta extends Schema.Component {
+export interface BlocksFormLandingPageFormCta extends Struct.ComponentSchema {
   collectionName: 'components_blocks_form_landing_page_form_ctas'
   info: {
     displayName: 'Form landing page form CTA'
   }
   attributes: {
-    buttonLabel: Attribute.String & Attribute.Required
-    text: Attribute.Text
-    title: Attribute.String & Attribute.Required
+    buttonLabel: Schema.Attribute.String & Schema.Attribute.Required
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface BlocksFormLandingPageLinkCta extends Schema.Component {
+export interface BlocksFormLandingPageLinkCta extends Struct.ComponentSchema {
   collectionName: 'components_blocks_form_landing_page_link_ctas'
   info: {
     displayName: 'Form landing page link CTA'
   }
   attributes: {
-    buttonLabel: Attribute.String & Attribute.Required
-    text: Attribute.Text
-    title: Attribute.String & Attribute.Required
-    url: Attribute.String & Attribute.Required
+    buttonLabel: Schema.Attribute.String & Schema.Attribute.Required
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String & Schema.Attribute.Required
+    url: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface BlocksHelpCategory extends Schema.Component {
+export interface BlocksHelpCategory extends Struct.ComponentSchema {
   collectionName: 'components_blocks_help_categories'
   info: {
     description: ''
     displayName: 'Help category'
   }
   attributes: {
-    items: Attribute.Component<'blocks.help-item', true> & Attribute.Required
-    title: Attribute.String & Attribute.Required
+    items: Schema.Attribute.Component<'blocks.help-item', true> & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface BlocksHelpItem extends Schema.Component {
+export interface BlocksHelpItem extends Struct.ComponentSchema {
   collectionName: 'components_blocks_help_items'
   info: {
     displayName: 'Help item'
   }
   attributes: {
-    content: Attribute.RichText & Attribute.Required
-    title: Attribute.String & Attribute.Required
+    content: Schema.Attribute.RichText & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface GeneralAlert extends Schema.Component {
+export interface GeneralAlert extends Struct.ComponentSchema {
   collectionName: 'components_general_alerts'
   info: {
     description: ''
     displayName: 'Alert'
   }
   attributes: {
-    content: Attribute.RichText & Attribute.Required
-    dateFrom: Attribute.DateTime
-    dateTo: Attribute.DateTime
+    content: Schema.Attribute.RichText & Schema.Attribute.Required
+    dateFrom: Schema.Attribute.DateTime
+    dateTo: Schema.Attribute.DateTime
   }
 }
 
-declare module '@strapi/types' {
-  export module Shared {
-    export interface Components {
+declare module '@strapi/strapi' {
+  export module Public {
+    export interface ComponentSchemas {
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta

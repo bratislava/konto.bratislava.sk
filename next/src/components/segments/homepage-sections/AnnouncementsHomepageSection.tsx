@@ -23,7 +23,7 @@ const Announcements = ({ announcements, announcementsLegalPerson }: Props) => {
         <SectionHeader title={t('account_section_intro.announcement_title')} titleLevel="h2" />
         {announcementsByPersonType.map((announcement, index) => (
           <AnnouncementBlockStrapi
-            key={announcement.id}
+            key={announcement.documentId}
             announcement={announcement}
             reversed={index % 2 === 1}
           />

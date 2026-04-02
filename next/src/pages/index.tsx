@@ -17,11 +17,7 @@ const filterValidAnnouncements = (
 
   return announcements
     .filter((announcement) => {
-      if (!announcement.attributes) {
-        return false
-      }
-
-      const { dateFrom, dateTo } = announcement.attributes
+      const { dateFrom, dateTo } = announcement
       const fromDate = dateFrom ? new Date(dateFrom) : null
       const toDate = dateTo ? new Date(dateTo) : null
 
@@ -35,14 +31,14 @@ const filterValidAnnouncements = (
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountIntroPageProps>(async () => {
   const homepageQuery = await strapiClient.Homepage()
-  const services = homepageQuery.homepage?.data?.attributes?.services?.data.filter(isDefined) ?? []
+  const services = homepageQuery.homepage?.services.filter(isDefined) ?? []
   const servicesLegalPerson =
-    homepageQuery.homepage?.data?.attributes?.servicesLegalPerson?.data.filter(isDefined) ?? []
+    homepageQuery.homepage?.servicesLegalPerson.filter(isDefined) ?? []
 
   const allAnnouncements =
-    homepageQuery.homepage?.data?.attributes?.announcements?.data.filter(isDefined) ?? []
+    homepageQuery.homepage?.announcements.filter(isDefined) ?? []
   const allAnnouncementsLegalPerson =
-    homepageQuery.homepage?.data?.attributes?.announcementsLegalPerson?.data.filter(isDefined) ?? []
+    homepageQuery.homepage?.announcementsLegalPerson.filter(isDefined) ?? []
 
   const announcements = filterValidAnnouncements(allAnnouncements)
   const announcementsLegalPerson = filterValidAnnouncements(allAnnouncementsLegalPerson)

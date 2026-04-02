@@ -115,26 +115,20 @@ type MunicipalServiceCardProps = {
   service: MunicipalServiceEntityFragment | MunicipalServiceCardEntityFragment
 }
 
-const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
-  if (!service.attributes) {
-    return null
-  }
-
-  return (
-    <ServiceCard
-      key={service.id}
-      title={service.attributes.title}
-      description={service.attributes.description}
-      buttonText={service.attributes.buttonText}
-      icon={getIconComponent(service.attributes.icon, service.attributes.color)}
-      href={service.attributes.href}
-      tags={
-        service.attributes.tags?.data?.map((tag) => tag.attributes?.title).filter(isDefined) ?? []
-      }
-      tagStyle={getTagStyle(service.attributes.color)}
-      analyticsProps={{ id: `Mestské služby: ${service.attributes.title}` }}
-    />
-  )
-}
+const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => (
+  <ServiceCard
+    key={service.documentId}
+    title={service.title}
+    description={service.description}
+    buttonText={service.buttonText}
+    icon={getIconComponent(service.icon, service.color)}
+    href={service.href}
+    tags={
+      service.tags.map((tag) => tag?.title).filter(isDefined)
+    }
+    tagStyle={getTagStyle(service.color)}
+    analyticsProps={{ id: `Mestské služby: ${service.title}` }}
+  />
+)
 
 export default MunicipalServiceCard

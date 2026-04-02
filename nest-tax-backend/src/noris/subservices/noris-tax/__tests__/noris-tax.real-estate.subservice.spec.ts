@@ -398,7 +398,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       })
       expect(
         paymentSubservice.updatePaymentsFromNorisWithData,
-      ).toHaveBeenCalledWith(mockNorisData)
+      ).toHaveBeenCalledWith(mockNorisData, { suppressEmail: true })
       expect(result).toEqual({ birthNumbers: ['123456/7890'] })
     })
 

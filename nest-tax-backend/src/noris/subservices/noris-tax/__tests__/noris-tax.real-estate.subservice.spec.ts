@@ -316,10 +316,16 @@ describe('NorisTaxRealEstateSubservice', () => {
         .spyOn(service as any, 'processNorisTaxData')
         .mockResolvedValue({ birthNumbers: ['123456/7890'] })
 
+      prismaMock.taxPayer.findMany.mockResolvedValue([
+        { birthNumber: '123456/7890', id: 123_456 } as TaxPayer,
+      ])
+
       const result =
-        await service.getAndProcessNorisTaxDataByBirthNumberAndYear(2023, [
-          '123456/7890',
-        ])
+        await service.getAndProcessNorisTaxDataByBirthNumberAndYear(
+          2023,
+          ['123456/7890'],
+          { suppressEmail: false },
+        )
 
       expect(result).toEqual({
         birthNumbers: ['123456/7890'],
@@ -364,7 +370,9 @@ describe('NorisTaxRealEstateSubservice', () => {
           ;(birthNumbersResult as Set<string>).add((norisItem as any).ICO_RC)
         })
 
-      const result = await service.processNorisTaxData(mockNorisData, 2023, {})
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {
+        suppressEmail: true,
+      })
 
       expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
         mockNorisData.map((record) => record.ICO_RC),
@@ -404,14 +412,18 @@ describe('NorisTaxRealEstateSubservice', () => {
       ] as any
       prismaMock.tax.findMany.mockResolvedValue(existingTaxes)
 
-      const result = await service.processNorisTaxData(mockNorisData, 2023, {})
+      const result = await service.processNorisTaxData(mockNorisData, 2023, {
+        suppressEmail: true,
+      })
 
       expect(service['processTaxRecordFromNoris']).not.toHaveBeenCalled()
       expect(result).toEqual({ birthNumbers: [] })
     })
 
     it('should handle empty Noris data', async () => {
-      const result = await service.processNorisTaxData([], 2023, {})
+      const result = await service.processNorisTaxData([], 2023, {
+        suppressEmail: true,
+      })
 
       expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
         [],
@@ -617,7 +629,9 @@ describe('NorisTaxRealEstateSubservice', () => {
         .spyOn(service as any, 'processTaxRecordFromNoris')
         .mockImplementation(() => {})
 
-      await service.processNorisTaxData(mockNorisData, 2023, {})
+      await service.processNorisTaxData(mockNorisData, 2023, {
+        suppressEmail: true,
+      })
 
       expect(mockConcurrencyLimit).toHaveBeenCalled()
     })
@@ -714,7 +728,6 @@ describe('NorisTaxRealEstateSubservice', () => {
       const mockTaxDefinitionForInsert: TaxDefinition<typeof TaxType.DZN> = {
         type: TaxType.DZN,
         isUnique: true,
-        readyToImportDatabaseFieldName: 'readyToImportDZN',
         lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
@@ -827,7 +840,6 @@ describe('NorisTaxRealEstateSubservice', () => {
       const mockTaxDefinitionForProcess: TaxDefinition<typeof TaxType.DZN> = {
         type: TaxType.DZN,
         isUnique: true,
-        readyToImportDatabaseFieldName: 'readyToImportDZN',
         lastUpdatedAtDatabaseFieldName: 'lastUpdatedAtDZN',
         paymentCalendarThreshold: 0,
         numberOfInstallments: 3,
@@ -908,12 +920,51 @@ describe('NorisTaxRealEstateSubservice', () => {
       it('should process tax record from Noris successfully', async () => {
         const birthNumbersResult = new Set<string>()
 
+        prismaMock.$transaction.mockImplementation(async (callback: any) => {
+          const mockTx = {
+            taxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                name: 'Test Administrator',
+              }),
+            },
+            taxPayer: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                birthNumber: '123456/7890',
+              }),
+            },
+            taxPayerTaxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+            tax: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                order: 1,
+                taxPayer: { id: 1 },
+                isCancelled: false,
+              }),
+            },
+            taxInstallment: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            taxDetail: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            taxImportAttempt: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+          }
+          return await callback(mockTx as any)
+        })
+
         await service['processTaxRecordFromNoris'](
           mockTaxDefinitionForProcess,
           birthNumbersResult,
           mockNorisData[0],
           mockUserData,
           2023,
+          false,
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(true)
@@ -925,6 +976,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum.Edesk,
             tax_type: TaxType.DZN,
             order: 1,
+            suppress_email: false,
           },
           'ext123',
         )
@@ -940,6 +992,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           mockNorisData[0],
           emptyUserData,
           2023,
+          false,
         )
 
         expect(birthNumbersResult.size).toBe(0)
@@ -949,6 +1002,44 @@ describe('NorisTaxRealEstateSubservice', () => {
       it('should handle bloomreach tracking failure', async () => {
         const birthNumbersResult = new Set<string>()
 
+        prismaMock.$transaction.mockImplementation(async (callback: any) => {
+          const mockTx = {
+            taxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                name: 'Test Administrator',
+              }),
+            },
+            taxPayer: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                birthNumber: '123456/7890',
+              }),
+            },
+            taxPayerTaxAdministrator: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+            tax: {
+              upsert: jest.fn().mockResolvedValue({
+                id: 1,
+                order: 1,
+                taxPayer: { id: 1 },
+                isCancelled: false,
+              }),
+            },
+            taxInstallment: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            taxDetail: {
+              createMany: jest.fn().mockResolvedValue({}),
+            },
+            taxImportAttempt: {
+              upsert: jest.fn().mockResolvedValue({}),
+            },
+          }
+          return await callback(mockTx as any)
+        })
+
         bloomreachService.trackEventTax = jest.fn().mockResolvedValue(false)
 
         await service['processTaxRecordFromNoris'](
@@ -957,6 +1048,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           mockNorisData[0],
           mockUserData,
           2023,
+          false,
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
@@ -981,6 +1073,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           mockNorisData[0],
           mockUserData,
           2023,
+          false,
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)
@@ -1000,6 +1093,7 @@ describe('NorisTaxRealEstateSubservice', () => {
           mockNorisData[0],
           mockUserData,
           2023,
+          false,
         )
 
         expect(birthNumbersResult.has('123456/7890')).toBe(false)

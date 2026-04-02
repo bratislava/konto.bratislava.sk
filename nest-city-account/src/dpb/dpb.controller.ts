@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { OAuth2AccessGuard } from '../oauth2/guards/oauth2-access.guard'
 import { ClientName } from '../oauth2/decorators/client-name.decorator'
 import { OAuth2ClientName } from '../oauth2/subservices/oauth2-client.subservice'
@@ -7,8 +7,7 @@ import { User } from '../utils/decorators/request.decorator'
 import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
 import { DpbUserDto, DPBUserLoginStatistics } from './dtos/user.dto'
 import { DpbService } from './dpb.service'
-import { SignatureGuard } from '../auth/guards/signature.guard'
-import { SignaturePublicKeyEnvVarName } from '../auth/decorators/signature-public-key.decorator'
+import { SignatureAuth } from '../auth/decorators/signature-auth.decorator'
 
 @ApiTags('DPB')
 @ApiBearerAuth()
@@ -41,8 +40,7 @@ export class DpbController {
   }
 
   @Get('list-user-logins')
-  @SignaturePublicKeyEnvVarName('DPB_CLIENT_PUBLIC_KEY')
-  @UseGuards(SignatureGuard)
+  @SignatureAuth('DPB_CLIENT_PUBLIC_KEY')
   @ApiOperation({
     summary: 'List all user logins for DPB',
     description: `Returns a list of all user logins with statistics.
@@ -78,18 +76,6 @@ Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY 
 ---
 
 **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.`,
-  })
-  @ApiHeader({
-    name: 'X-Signature',
-    required: true,
-    description: 'Base64-encoded RSA-SHA256 signature of the signing string',
-    schema: { type: 'string', example: 'aGVsbG8gd29ybGQ=...' },
-  })
-  @ApiHeader({
-    name: 'X-Timestamp',
-    required: true,
-    description: 'Unix timestamp in milliseconds',
-    schema: { type: 'string', example: '1234567890123' },
   })
   @ApiResponse({
     status: 200,

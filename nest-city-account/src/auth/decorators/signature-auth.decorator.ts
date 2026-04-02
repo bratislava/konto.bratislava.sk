@@ -26,10 +26,7 @@ import { RequireNonce } from './require-nonce.decorator'
  * }
  * ```
  */
-export function SignatureAuth(
-  publicKeyEnvVarName: string,
-  options?: { requireNonce?: boolean }
-) {
+export function SignatureAuth(publicKeyEnvVarName: string, options?: { requireNonce?: boolean }) {
   const decorators = [
     SignaturePublicKeyEnvVarName(publicKeyEnvVarName),
     UseGuards(SignatureGuard),

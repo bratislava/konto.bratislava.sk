@@ -60,14 +60,17 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    const publicKey = this.configService.get<string>(envVarName)
-    if (!publicKey) {
+    const publicKeyRaw = this.configService.get<string>(envVarName)
+    if (!publicKeyRaw) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
         `Server configuration error: Public key ${req.signaturePublicKeyEnvVar} not configured.`
       )
     }
+
+    // Support PEM keys stored as single-line with literal \n (e.g. in Kubernetes ConfigMaps from .env files)
+    const publicKey = publicKeyRaw.replace(/\\n/g, '\n')
 
     if (!this.isValidPublicKeyPem(publicKey)) {
       throw this.throwerErrorGuard.UnauthorizedException(

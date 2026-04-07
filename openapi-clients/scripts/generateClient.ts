@@ -18,7 +18,7 @@ export const validTypes = [
   'city-account',
   'slovensko-sk',
   'clamav-scanner',
-  'magproxy'
+  'magproxy',
 ] as const
 export type ValidType = (typeof validTypes)[number]
 
@@ -28,7 +28,7 @@ export const endpoints: Record<ValidType, string> = {
   'city-account': 'https://nest-city-account.staging.bratislava.sk/api-json',
   'clamav-scanner': 'https://nest-clamav-scanner.staging.bratislava.sk/api-json',
   'slovensko-sk': 'https://fix.slovensko-sk-api.bratislava.sk/openapi.yaml',
-  'magproxy': 'https://new-magproxy.staging.bratislava.sk/api-json'
+  magproxy: 'https://new-magproxy.staging.bratislava.sk/api-json',
 }
 
 export const getLocalEndpoint = (type: ValidType, localUrl: string): string => {
@@ -127,6 +127,8 @@ export const create${clientName}Client = ({
     ${factories.map((factory) => `...${factory}(...args)`).join(',\n    ')}
   }
 }
+
+export { RequiredError } from './base'
 `
 
   const clientPath = path.join(outputDir, 'client.ts')

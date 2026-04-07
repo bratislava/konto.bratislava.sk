@@ -94,7 +94,6 @@ export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
 
 export type InputUiOptions = {
   inputType: InputUiOptionsInputType
-  leftIcon?: 'person' | 'mail' | 'call' | 'lock' | 'euro'
   placeholder?: string
 } & WidgetUiOptions
 

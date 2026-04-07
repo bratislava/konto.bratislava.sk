@@ -44,32 +44,6 @@ const InputFieldShowCase = () => {
           isDisabled
         />
       </Stack>
-      <Stack direction="column">
-        <InputField label="Label" placeholder="Placeholder" helptext="Help text" leftIcon="mail" />
-        <InputField
-          label="Label"
-          placeholder="Placeholder"
-          value="Value"
-          helptext="Help text"
-          leftIcon="call"
-        />
-        <InputField
-          label="Label"
-          type="password"
-          placeholder="Placeholder"
-          helptext="Help text"
-          leftIcon="lock"
-          errorMessage={['Error message']}
-        />
-        <InputField
-          label="Label"
-          placeholder="Placeholder"
-          helptext="Help text"
-          leftIcon="person"
-          errorMessage={['Error message']}
-          isDisabled
-        />
-      </Stack>
     </Wrapper>
   )
 }

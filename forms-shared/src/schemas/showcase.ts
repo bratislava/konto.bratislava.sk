@@ -91,38 +91,6 @@ export default schema(
         ],
       ),
       object(
-        'iconInputs',
-        {
-          title: 'Inputs with Icons',
-        },
-        [
-          input(
-            'emailIcon',
-            { type: 'email', title: 'Email with Icon' },
-            {
-              leftIcon: 'mail',
-              placeholder: 'Enter email',
-            },
-          ),
-          input(
-            'phoneIcon',
-            { type: 'ba-phone-number', title: 'Phone with Icon' },
-            {
-              leftIcon: 'call',
-              placeholder: 'Enter phone',
-            },
-          ),
-          input(
-            'priceIcon',
-            { type: 'text', title: 'Price with Icon' },
-            {
-              leftIcon: 'euro',
-              placeholder: 'Enter price',
-            },
-          ),
-        ],
-      ),
-      object(
         'formattedInputs',
         {
           title: 'Formatted Inputs',

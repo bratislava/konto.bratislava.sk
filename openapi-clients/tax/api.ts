@@ -233,6 +233,10 @@ export interface RequestPostNorisLoadDataOptionsDto {
    * If true, ignore the batch limit for the number of taxes to process
    */
   ignoreBatchLimit?: boolean
+  /**
+   * If true, suppress email notifications for tax creation
+   */
+  suppressEmail: boolean
 }
 export interface RequestPostNorisPaymentDataLoadDto {
   /**

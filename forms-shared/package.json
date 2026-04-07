@@ -68,7 +68,7 @@
     "@rjsf/utils": "6.4.1",
     "@rjsf/validator-ajv8": "6.4.1",
     "@tailwindcss/postcss": "4.2.1",
-    "@types/adm-zip": "^0.5.7",
+    "@types/adm-zip": "^0.5.8",
     "@types/app-root-dir": "^0.1.4",
     "@types/archiver": "^7.0.0",
     "@types/jest-image-snapshot": "^6.4.1",
@@ -110,7 +110,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
     "unzipper": "^0.12.3",
-    "vitest": "4.1.0"
+    "vitest": "4.1.2"
   },
   "peerDependencies": {
     "@rjsf/core": "6.3.1",

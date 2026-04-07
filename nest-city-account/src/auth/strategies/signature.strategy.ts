@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy as CustomStrategy } from 'passport-custom'
@@ -7,6 +7,7 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import { SignatureRequest } from '../types/signature-request.types'
 import { createPublicKey } from 'node:crypto'
+import { NonceService } from '../services/nonce.service'
 
 /**
  * Passport strategy for RSA signature verification
@@ -14,6 +15,7 @@ import { createPublicKey } from 'node:crypto'
  * Security features:
  * - RSA-SHA256 signature verification
  * - Replay attack prevention via timestamp validation (5 minute window)
+ * - Optional nonce-based replay protection for mutating endpoints (via @RequireNonce())
  * - Clock skew protection (1 minute tolerance)
  * - Timing-safe signature comparison
  * - Constant-time operations where possible
@@ -21,20 +23,20 @@ import { createPublicKey } from 'node:crypto'
  *
  * The strategy validates requests signed with RSA private keys
  * and verifies them using the client's public key from environment variables.
+ *
+ * For mutating endpoints (POST/PUT/DELETE), use @RequireNonce() decorator
+ * to enforce nonce-based replay protection in addition to timestamp validation.
  */
 @Injectable()
 export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signature') {
-  // TODO #1287: Add nonce-based replay protection (X-Nonce header + server-side cache, e.g. Redis with TTL)
-  //  before this strategy is reused for mutating endpoints (PUT/POST/DELETE).
-  //  Timestamp-only is acceptable for the current read-only GET endpoint over TLS,
-  //  but mutating operations are vulnerable to replay within the 5-minute window.
   private readonly maxTimestampAge: number = 5 * 60 * 1000 // 5 minutes
 
   private readonly maxClockSkew: number = 60 * 1000 // 1 minute
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly nonceService: NonceService
   ) {
     super()
   }
@@ -58,14 +60,17 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    const publicKey = this.configService.get<string>(envVarName)
-    if (!publicKey) {
+    const publicKeyRaw = this.configService.get<string>(envVarName)
+    if (!publicKeyRaw) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
         `Server configuration error: Public key ${req.signaturePublicKeyEnvVar} not configured.`
       )
     }
+
+    // Support PEM keys stored as single-line with literal \n (e.g. in Kubernetes ConfigMaps from .env files)
+    const publicKey = publicKeyRaw.replace(/\\n/g, '\n')
 
     if (!this.isValidPublicKeyPem(publicKey)) {
       throw this.throwerErrorGuard.UnauthorizedException(
@@ -157,10 +162,12 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
         )
       }
 
+      await this.validateNonceOrThrow(req, envVarName)
+
       return true
     } catch (error) {
       // Re-throw if it's already our exception
-      if (error instanceof Error && error.name === 'UnauthorizedException') {
+      if (error instanceof HttpException) {
         throw error
       }
 
@@ -172,6 +179,24 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
         error instanceof Error ? error : undefined
       )
     }
+  }
+
+  private async validateNonceOrThrow(req: SignatureRequest, envVarName: string) {
+    const nonce = req.headers['x-nonce']
+
+    if (!req.requireNonce && typeof nonce === 'undefined') {
+      return // Nonce is not required and is not present
+    }
+
+    if (typeof nonce !== 'string') {
+      throw this.throwerErrorGuard.UnauthorizedException(
+        ErrorsEnum.UNAUTHORIZED_ERROR,
+        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
+        'Missing X-Nonce header or header is not string. This endpoint requires nonce-based replay protection.'
+      )
+    }
+
+    await this.nonceService.validateAndMarkUsed(nonce, envVarName)
   }
 
   private isValidPublicKeyPem(value: string): boolean {

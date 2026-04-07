@@ -1,4 +1,5 @@
 fragment Tax on Tax {
+  documentId
   accountCommunicationConsentText
   channelChangeEffectiveNextYearText
   channelChangeEffectiveNextYearTitle
@@ -8,10 +9,6 @@ fragment Tax on Tax {
 
 query Tax {
   tax {
-    data {
-      attributes {
-        ...Tax
-      }
-    }
+    ...Tax
   }
 }

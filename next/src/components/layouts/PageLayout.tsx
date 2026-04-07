@@ -57,7 +57,7 @@ const PageLayout = ({
         style={{
           '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
-        className={cn('relative grow **:scroll-mt-(--main-scroll-top-margin)', {
+        className={cn('relative flex grow flex-col **:scroll-mt-(--main-scroll-top-margin)', {
           'md:gap-6 md:bg-background-passive-primary md:py-8': variant === 'auth',
         })}
       >

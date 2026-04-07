@@ -10,7 +10,6 @@
     "./clamav-scanner": "./dist/clamav-scanner/index.js",
     "./slovensko-sk": "./dist/slovensko-sk/index.js",
     "./magproxy": "./dist/magproxy/index.js",
-    "./magproxy/base": "./dist/magproxy/base.js",
     "./package.json": "./package.json"
   },
   "sideEffects": false,

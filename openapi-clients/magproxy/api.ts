@@ -28,6 +28,7 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
@@ -3148,7 +3149,9 @@ export const DeveloperApiAxiosParamCreator = function (configuration?: Configura
       if (data !== undefined) {
         localVarFormParams.append(
           'data',
-          new Blob([JSON.stringify(data)], { type: 'application/json' }),
+          new Blob([JSON.stringify(data, replaceWithSerializableTypeIfNeeded)], {
+            type: 'application/json',
+          }),
         )
       }
       if (files) {

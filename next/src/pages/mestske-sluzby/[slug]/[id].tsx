@@ -25,7 +25,7 @@ import { ROUTES } from '@/src/utils/routes'
 const fetchStrapiForm = async (slug: string): Promise<FormBaseFragment | null | undefined> => {
   const result = await strapiClient.FormBaseBySlug({ slug })
 
-  return result.forms?.data?.[0]?.attributes
+  return result.forms[0]
 }
 
 type Params = {

@@ -33,9 +33,11 @@ export class UpvsQueueService {
     this.logger = new LineLoggerSubservice(UpvsQueueService.name)
   }
 
-  async addExternalItemsToQueue(records: { uri: string; norisId: number }[]) {
+  async addExternalItemsToQueue(
+    records: { uri: string; norisId: number; newUri: string | undefined }[]
+  ) {
     await this.prismaService.externalEdeskCheck.createMany({
-      data: records.map((record) => ({ uri: record.uri, norisId: record.norisId })),
+      data: records,
       skipDuplicates: true,
     })
   }

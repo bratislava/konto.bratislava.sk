@@ -137,7 +137,10 @@ describe('NorisConnectionSubservice', () => {
       'should log, increment config value, then throw when MSSQLError has code %s',
       async (code) => {
         const mssqlError = new MSSQLError('Connection problem', code)
-        const badRequestSpy = jest.spyOn(throwerErrorGuard, 'BadRequestException')
+        const badRequestSpy = jest.spyOn(
+          throwerErrorGuard,
+          'BadRequestException',
+        )
         const internalErrorSpy = jest.spyOn(
           throwerErrorGuard,
           'InternalServerErrorException',

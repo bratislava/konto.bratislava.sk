@@ -58,7 +58,7 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),
-        strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+        strapiClient.Tax().then((response) => response.tax),
         getTaxAdministratorForUser(amplifyContextSpec),
         prefetchUserQuery(queryClient, fetchAuthSession),
       ])

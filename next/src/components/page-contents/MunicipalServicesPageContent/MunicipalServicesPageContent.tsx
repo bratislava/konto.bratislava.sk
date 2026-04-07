@@ -41,13 +41,13 @@ const MunicipalServicesPageContent = ({
   const enumOptions: SelectOption[] = [
     { value: 'ALL_CATEGORIES', label: t('account_section_services.all_categories') },
     ...categoriesByPersonType.map((category) => {
-      if (!category.id || !category.attributes) {
+      if (!category.documentId) {
         return null
       }
 
       return {
-        value: category.id,
-        label: category.attributes.title,
+        value: category.documentId,
+        label: category.title,
       }
     }),
   ].filter(isDefined)
@@ -63,16 +63,12 @@ const MunicipalServicesPageContent = ({
   }
 
   const filteredServices = servicesByPersonType.filter(isDefined).filter((service) => {
-    if (!service.attributes) {
-      return false
-    }
-
     if (selectorValue.value === 'ALL_CATEGORIES') {
       return true
     }
 
-    return service.attributes.categories?.data?.some(
-      (category) => category.id === selectorValue.value,
+    return service.categories.some(
+      (category) => category?.documentId === selectorValue.value,
     )
   })
 
@@ -94,7 +90,7 @@ const MunicipalServicesPageContent = ({
                 i + 1 <= currentPage * ITEMS_PER_PAGE && i + 1 > (currentPage - 1) * ITEMS_PER_PAGE,
             )
             .map((service) => (
-              <MunicipalServiceCard key={service.id} service={service} />
+              <MunicipalServiceCard key={service.documentId} service={service} />
             ))}
         </div>
         <div className="my-4 lg:my-8">

@@ -7,6 +7,9 @@ import { EdeskRecordSchema } from '../../types/noris.types'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import {
   allEdeskRecords,
+  edeskRecordWithNewlineUri,
+  edeskRecordWithTabUri,
+  edeskRecordWithWhitespaceUri,
   invalidEdeskRecordMissingIdNoris,
   invalidEdeskRecordMissingUriGenerated,
   invalidEdeskRecords,
@@ -99,6 +102,31 @@ describe('NorisValidatorSubservice', () => {
             service.validateNorisData(EdeskRecordSchema, invalidEdeskRecordWrongUriGeneratedType)
           }).toThrow(HttpException)
         })
+      })
+    })
+
+    describe('URI sanitization', () => {
+      it('should strip whitespace and set uri_new when URI contains spaces', () => {
+        const result = service.validateNorisData(EdeskRecordSchema, edeskRecordWithWhitespaceUri)
+        expect(result.uri_generated).toBe('rc://sk/0011225544_uri_test')
+        expect(result.uri_new).toBe('rc://sk/0011225544_uri_test')
+      })
+
+      it('should strip whitespace and set uri_new when URI contains newlines', () => {
+        const result = service.validateNorisData(EdeskRecordSchema, edeskRecordWithNewlineUri)
+        expect(result.uri_generated).toBe('rc://sk/0011225544_uri_test')
+        expect(result.uri_new).toBe('rc://sk/0011225544_uri_test')
+      })
+
+      it('should strip whitespace and set uri_new when URI contains tabs', () => {
+        const result = service.validateNorisData(EdeskRecordSchema, edeskRecordWithTabUri)
+        expect(result.uri_generated).toBe('rc://sk/0011225544_uri_test')
+        expect(result.uri_new).toBe('rc://sk/0011225544_uri_test')
+      })
+
+      it('should not set uri_new when URI is already clean', () => {
+        const result = service.validateNorisData(EdeskRecordSchema, testEdeskRecord1)
+        expect(result.uri_new).toBeUndefined()
       })
     })
 

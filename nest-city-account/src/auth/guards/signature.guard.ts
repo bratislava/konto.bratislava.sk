@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport'
 
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { REQUIRE_NONCE } from '../decorators/require-nonce.decorator'
 import { SIGNATURE_PUBLIC_KEY } from '../decorators/signature-public-key.decorator'
 import { SignatureRequest } from '../types/signature-request.types'
 
@@ -41,7 +42,13 @@ export class SignatureGuard extends AuthGuard('signature') {
       )
     }
 
+    const requireNonce = this.reflector.getAllAndOverride<boolean | undefined>(REQUIRE_NONCE, [
+      context.getHandler(),
+      context.getClass(),
+    ])
+
     request.signaturePublicKeyEnvVar = envVarName
+    request.requireNonce = !!requireNonce
 
     return !!(await super.canActivate(context))
   }

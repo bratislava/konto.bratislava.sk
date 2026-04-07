@@ -459,6 +459,7 @@ const getPrijemSection = (stepType: StepType) => {
           },
           {
             size: 'medium',
+            helptext: 'Zadajte sumu v €',
             belowComponents: [
               {
                 type: 'alert',
@@ -538,7 +539,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
     radioGroup(
@@ -581,7 +582,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
     radioGroup(
@@ -611,7 +612,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'dochodokVyska',
         { title: 'Mesačná výška dôchodku', type: 'number', step: 0.01, required: true, minimum: 0 },
-        { size: 'medium' },
+        { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
     radioGroup(
@@ -640,7 +641,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
     radioGroup(
@@ -669,7 +670,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
     radioGroup(
@@ -703,7 +704,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
     customComponentsField(
@@ -1524,7 +1525,7 @@ export default schema(
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { size: 'medium', helptext: 'Zadajte sumu v €' },
       ),
     ]),
     step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [

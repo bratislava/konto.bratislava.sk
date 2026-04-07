@@ -77822,6 +77822,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
+                            "helptext": "Zadajte sumu v €",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77856,6 +77857,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 4,
                         "baUiSchema": {
                           "ui:options": {
+                            "helptext": "Zadajte sumu v €",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77890,6 +77892,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 6,
                         "baUiSchema": {
                           "ui:options": {
+                            "helptext": "Zadajte sumu v €",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77924,6 +77927,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 8,
                         "baUiSchema": {
                           "ui:options": {
+                            "helptext": "Zadajte sumu v €",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77958,6 +77962,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 10,
                         "baUiSchema": {
                           "ui:options": {
+                            "helptext": "Zadajte sumu v €",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77992,6 +77997,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 12,
                         "baUiSchema": {
                           "ui:options": {
+                            "helptext": "Zadajte sumu v €",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -79469,6 +79475,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79503,6 +79510,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79537,6 +79545,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79571,6 +79580,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79605,6 +79615,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79639,6 +79650,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80511,6 +80523,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80545,6 +80558,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80579,6 +80593,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80613,6 +80628,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80647,6 +80663,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80681,6 +80698,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82029,6 +82047,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82063,6 +82082,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82097,6 +82117,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82131,6 +82152,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82165,6 +82187,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82199,6 +82222,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83158,6 +83182,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83192,6 +83217,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83226,6 +83252,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83260,6 +83287,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83294,6 +83322,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83328,6 +83357,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
+                                    "helptext": "Zadajte sumu v €",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -84583,6 +84613,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                               "type": "alert",
                                             },
                                           ],
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -85323,6 +85354,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                               "type": "alert",
                                             },
                                           ],
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86500,6 +86532,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 2,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86534,6 +86567,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 4,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86568,6 +86602,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 6,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86602,6 +86637,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 8,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86636,6 +86672,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 10,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86670,6 +86707,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 12,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87594,6 +87632,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 2,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87628,6 +87667,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 4,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87662,6 +87702,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 6,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87696,6 +87737,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 8,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87730,6 +87772,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 10,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87764,6 +87807,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 12,
                                       "baUiSchema": {
                                         "ui:options": {
+                                          "helptext": "Zadajte sumu v €",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -88873,6 +88917,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Zadajte sumu v €",
                   "size": "medium",
                 },
                 "ui:widget": "Number",

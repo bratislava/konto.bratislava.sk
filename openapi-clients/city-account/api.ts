@@ -2349,20 +2349,20 @@ export const DPBApiAxiosParamCreator = function (configuration?: Configuration) 
     /**
      * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
      * @summary List all user logins for DPB
-     * @param {string} xTimestamp Unix timestamp in milliseconds
      * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {string} xTimestamp Unix timestamp in milliseconds
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     dpbControllerListUserLogins: async (
-      xTimestamp: string,
       xSignature: string,
+      xTimestamp: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'xTimestamp' is not null or undefined
-      assertParamExists('dpbControllerListUserLogins', 'xTimestamp', xTimestamp)
       // verify required parameter 'xSignature' is not null or undefined
       assertParamExists('dpbControllerListUserLogins', 'xSignature', xSignature)
+      // verify required parameter 'xTimestamp' is not null or undefined
+      assertParamExists('dpbControllerListUserLogins', 'xTimestamp', xTimestamp)
       const localVarPath = `/dpb/list-user-logins`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -2381,11 +2381,11 @@ export const DPBApiAxiosParamCreator = function (configuration?: Configuration) 
 
       localVarHeaderParameter['Accept'] = 'application/json'
 
-      if (xTimestamp != null) {
-        localVarHeaderParameter['X-Timestamp'] = String(xTimestamp)
-      }
       if (xSignature != null) {
         localVarHeaderParameter['X-Signature'] = String(xSignature)
+      }
+      if (xTimestamp != null) {
+        localVarHeaderParameter['X-Timestamp'] = String(xTimestamp)
       }
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2450,21 +2450,21 @@ export const DPBApiFp = function (configuration?: Configuration) {
     /**
      * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
      * @summary List all user logins for DPB
-     * @param {string} xTimestamp Unix timestamp in milliseconds
      * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {string} xTimestamp Unix timestamp in milliseconds
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async dpbControllerListUserLogins(
-      xTimestamp: string,
       xSignature: string,
+      xTimestamp: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DPBUserLoginStatistics>>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.dpbControllerListUserLogins(
-        xTimestamp,
         xSignature,
+        xTimestamp,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -2516,18 +2516,18 @@ export const DPBApiFactory = function (
     /**
      * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
      * @summary List all user logins for DPB
-     * @param {string} xTimestamp Unix timestamp in milliseconds
      * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {string} xTimestamp Unix timestamp in milliseconds
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     dpbControllerListUserLogins(
-      xTimestamp: string,
       xSignature: string,
+      xTimestamp: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<DPBUserLoginStatistics>> {
       return localVarFp
-        .dpbControllerListUserLogins(xTimestamp, xSignature, options)
+        .dpbControllerListUserLogins(xSignature, xTimestamp, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2549,18 +2549,18 @@ export class DPBApi extends BaseAPI {
   /**
    * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
    * @summary List all user logins for DPB
-   * @param {string} xTimestamp Unix timestamp in milliseconds
    * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+   * @param {string} xTimestamp Unix timestamp in milliseconds
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public dpbControllerListUserLogins(
-    xTimestamp: string,
     xSignature: string,
+    xTimestamp: string,
     options?: RawAxiosRequestConfig,
   ) {
     return DPBApiFp(this.configuration)
-      .dpbControllerListUserLogins(xTimestamp, xSignature, options)
+      .dpbControllerListUserLogins(xSignature, xTimestamp, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

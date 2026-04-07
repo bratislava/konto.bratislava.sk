@@ -145,6 +145,21 @@ export type CognitoGetUserDataUserStatusEnum =
   (typeof CognitoGetUserDataUserStatusEnum)[keyof typeof CognitoGetUserDataUserStatusEnum]
 
 /**
+ * Current verification tier of the authenticated user
+ */
+
+export const CognitoUserAttributesTierEnum = {
+  New: 'NEW',
+  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
+  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
+  IdentityCard: 'IDENTITY_CARD',
+  Eid: 'EID',
+} as const
+
+export type CognitoUserAttributesTierEnum =
+  (typeof CognitoUserAttributesTierEnum)[keyof typeof CognitoUserAttributesTierEnum]
+
+/**
  * Account type from Cognito
  */
 
@@ -157,6 +172,24 @@ export const ContactAndIdInfoTypeEnum = {
 export type ContactAndIdInfoTypeEnum =
   (typeof ContactAndIdInfoTypeEnum)[keyof typeof ContactAndIdInfoTypeEnum]
 
+export interface DPBUserLoginStatistics {
+  /**
+   * Number of times the user has logged in
+   */
+  loginCount: number
+  /**
+   * Date of first login
+   */
+  firstLogin: string
+  /**
+   * Date of latest login
+   */
+  latestLogin: string
+  /**
+   * User ID
+   */
+  id: string | null
+}
 export interface DeactivateAccountResponseDto {
   /**
    * Marks if the operation has been successful
@@ -446,6 +479,43 @@ export interface OnlySuccessDto {
    */
   success: boolean
 }
+export interface PaasMpaRegisterRequestDto {
+  /**
+   * Phone number received from MPA
+   */
+  phoneNumber: string
+}
+export interface PaasMpaRegisterResponseDto {
+  /**
+   * Result of PAAS-MPA Bloomreach registration attempt
+   */
+  status: PaasMpaRegisterStatusEnum
+  /**
+   * Current verification tier of the authenticated user
+   */
+  verificationState?: CognitoUserAttributesTierEnum
+  /**
+   * Bloomreach hard ID (`contact_id`) for the user
+   */
+  bloomreachContactId?: string
+}
+
+/**
+ * Result of PAAS-MPA Bloomreach registration attempt
+ */
+
+export const PaasMpaRegisterStatusEnum = {
+  Success: 'SUCCESS',
+  NotVerified: 'NOT_VERIFIED',
+  IdentifiersNotFound: 'IDENTIFIERS_NOT_FOUND',
+  BloomreachContactIdUnavailable: 'BLOOMREACH_CONTACT_ID_UNAVAILABLE',
+  BloomreachSyncFailed: 'BLOOMREACH_SYNC_FAILED',
+  UnexpectedError: 'UNEXPECTED_ERROR',
+} as const
+
+export type PaasMpaRegisterStatusEnum =
+  (typeof PaasMpaRegisterStatusEnum)[keyof typeof PaasMpaRegisterStatusEnum]
+
 export interface RefreshTokenRequestDto {
   /**
    * Grant type, must be \"refresh_token\"
@@ -2493,6 +2563,60 @@ export class BackendIntegrationAPIApi extends BaseAPI {
 export const DPBApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
+     * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+     * @summary List all user logins for DPB
+     * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {string} xTimestamp Unix timestamp in milliseconds
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerListUserLogins: async (
+      xSignature: string,
+      xTimestamp: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'xSignature' is not null or undefined
+      assertParamExists('dpbControllerListUserLogins', 'xSignature', xSignature)
+      // verify required parameter 'xTimestamp' is not null or undefined
+      assertParamExists('dpbControllerListUserLogins', 'xTimestamp', xTimestamp)
+      const localVarPath = `/dpb/list-user-logins`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      if (xSignature != null) {
+        localVarHeaderParameter['X-Signature'] = String(xSignature)
+      }
+      if (xTimestamp != null) {
+        localVarHeaderParameter['X-Timestamp'] = String(xTimestamp)
+      }
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Returns user data for the authenticated user
      * @summary Get user data
      * @param {*} [options] Override http request option.
@@ -2540,6 +2664,38 @@ export const DPBApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = DPBApiAxiosParamCreator(configuration)
   return {
     /**
+     * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+     * @summary List all user logins for DPB
+     * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {string} xTimestamp Unix timestamp in milliseconds
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async dpbControllerListUserLogins(
+      xSignature: string,
+      xTimestamp: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DPBUserLoginStatistics>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.dpbControllerListUserLogins(
+        xSignature,
+        xTimestamp,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DPBApi.dpbControllerListUserLogins']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Returns user data for the authenticated user
      * @summary Get user data
      * @param {*} [options] Override http request option.
@@ -2574,6 +2730,23 @@ export const DPBApiFactory = function (
   const localVarFp = DPBApiFp(configuration)
   return {
     /**
+     * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+     * @summary List all user logins for DPB
+     * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+     * @param {string} xTimestamp Unix timestamp in milliseconds
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    dpbControllerListUserLogins(
+      xSignature: string,
+      xTimestamp: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<DPBUserLoginStatistics>> {
+      return localVarFp
+        .dpbControllerListUserLogins(xSignature, xTimestamp, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Returns user data for the authenticated user
      * @summary Get user data
      * @param {*} [options] Override http request option.
@@ -2589,6 +2762,24 @@ export const DPBApiFactory = function (
  * DPBApi - object-oriented interface
  */
 export class DPBApi extends BaseAPI {
+  /**
+   * Returns a list of all user logins with statistics.  Authenticated via RSA signature (backend-to-backend).  ---  **Signing format**      METHOD|ORIGINAL_URL|TIMESTAMP|BODY  Example:      GET|/dpb/list-user-logins?example=1|1234567890123|{}  - ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host) - TIMESTAMP is Unix ms - BODY is the JSON body string, or \'{}\' for GET requests - Sign with your RSA private key using SHA-256, then base64-encode the result  ⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.  ---  **Key generation (one-time)**      openssl genrsa -out private_key.pem 2048     openssl rsa -in private_key.pem -pubout -out public_key.pem  Share the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.  ---  **Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.
+   * @summary List all user logins for DPB
+   * @param {string} xSignature Base64-encoded RSA-SHA256 signature of the signing string
+   * @param {string} xTimestamp Unix timestamp in milliseconds
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public dpbControllerListUserLogins(
+    xSignature: string,
+    xTimestamp: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DPBApiFp(this.configuration)
+      .dpbControllerListUserLogins(xSignature, xTimestamp, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    * Returns user data for the authenticated user
    * @summary Get user data
@@ -3261,6 +3452,155 @@ export const OAuth2ControllerAuthorizeCodeChallengeMethodEnum = {
 } as const
 export type OAuth2ControllerAuthorizeCodeChallengeMethodEnum =
   (typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum)[keyof typeof OAuth2ControllerAuthorizeCodeChallengeMethodEnum]
+
+/**
+ * PAASMPAApi - axios parameter creator
+ */
+export const PAASMPAApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+     * @summary Register phone number for a verified user in Bloomreach
+     * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paasMpaControllerRegister: async (
+      paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'paasMpaRegisterRequestDto' is not null or undefined
+      assertParamExists(
+        'paasMpaControllerRegister',
+        'paasMpaRegisterRequestDto',
+        paasMpaRegisterRequestDto,
+      )
+      const localVarPath = `/paas-mpa/register`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        paasMpaRegisterRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * PAASMPAApi - functional programming interface
+ */
+export const PAASMPAApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = PAASMPAApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+     * @summary Register phone number for a verified user in Bloomreach
+     * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async paasMpaControllerRegister(
+      paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaasMpaRegisterResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.paasMpaControllerRegister(
+        paasMpaRegisterRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PAASMPAApi.paasMpaControllerRegister']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * PAASMPAApi - factory interface
+ */
+export const PAASMPAApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = PAASMPAApiFp(configuration)
+  return {
+    /**
+     * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+     * @summary Register phone number for a verified user in Bloomreach
+     * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    paasMpaControllerRegister(
+      paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<PaasMpaRegisterResponseDto> {
+      return localVarFp
+        .paasMpaControllerRegister(paasMpaRegisterRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * PAASMPAApi - object-oriented interface
+ */
+export class PAASMPAApi extends BaseAPI {
+  /**
+   * Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).
+   * @summary Register phone number for a verified user in Bloomreach
+   * @param {PaasMpaRegisterRequestDto} paasMpaRegisterRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public paasMpaControllerRegister(
+    paasMpaRegisterRequestDto: PaasMpaRegisterRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return PAASMPAApiFp(this.configuration)
+      .paasMpaControllerRegister(paasMpaRegisterRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
 
 /**
  * UserIntegrationApi - axios parameter creator

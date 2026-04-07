@@ -459,7 +459,6 @@ const getPrijemSection = (stepType: StepType) => {
           },
           {
             size: 'medium',
-            leftIcon: 'euro',
             belowComponents: [
               {
                 type: 'alert',
@@ -539,7 +538,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { leftIcon: 'euro', size: 'medium' },
+        { size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -582,7 +581,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { leftIcon: 'euro', size: 'medium' },
+        { size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -612,7 +611,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'dochodokVyska',
         { title: 'Mesačná výška dôchodku', type: 'number', step: 0.01, required: true, minimum: 0 },
-        { leftIcon: 'euro', size: 'medium' },
+        { size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -641,7 +640,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { leftIcon: 'euro', size: 'medium' },
+        { size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -670,7 +669,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { leftIcon: 'euro', size: 'medium' },
+        { size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -704,7 +703,7 @@ const getPrijemSection = (stepType: StepType) => {
           required: true,
           minimum: 0,
         },
-        { leftIcon: 'euro', size: 'medium' },
+        { size: 'medium' },
       ),
     ]),
     customComponentsField(
@@ -1004,19 +1003,18 @@ const getZdravotnyStavSection = (stepType: StepType) => {
                 },
               ],
             },
-            {},
-          ),
-          customComponentsField(
-            'mieraFunkcnejPoruchyAlert',
             {
-              type: 'alert',
-              props: {
-                type: 'info',
-                message:
-                  'Od 1. 9. 2025 sa zmenil spôsob posudzovania ŤZP. Nové integrované posudky už neuvádzajú percentá, ale stupeň odkázanosti. Všetky staršie percentuálne posudky však zostávajú platné. Vyberte možnosť, ktorá zodpovedá najvyššej uznanej miere podľa vášho platného posudku - starého alebo nového.',
-              },
+              belowComponents: [
+                {
+                  type: 'alert',
+                  props: {
+                    type: 'info',
+                    message:
+                      'Od 1. 9. 2025 sa zmenil spôsob posudzovania ŤZP. Nové integrované posudky už neuvádzajú percentá, ale stupeň odkázanosti. Všetky staršie percentuálne posudky však zostávajú platné. Vyberte možnosť, ktorá zodpovedá najvyššej uznanej miere podľa vášho platného posudku - starého alebo nového.',
+                  },
+                },
+              ],
             },
-            {},
           ),
         ]),
         conditionalFields(createCondition([[['tzpPreukaz'], { const: false }]]), choroby),
@@ -1526,7 +1524,7 @@ export default schema(
           required: true,
           minimum: 0,
         },
-        { leftIcon: 'euro', size: 'medium' },
+        { size: 'medium' },
       ),
     ]),
     step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [

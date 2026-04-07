@@ -77822,7 +77822,6 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
-                            "leftIcon": "euro",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77857,7 +77856,6 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 4,
                         "baUiSchema": {
                           "ui:options": {
-                            "leftIcon": "euro",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77892,7 +77890,6 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 6,
                         "baUiSchema": {
                           "ui:options": {
-                            "leftIcon": "euro",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77927,7 +77924,6 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 8,
                         "baUiSchema": {
                           "ui:options": {
-                            "leftIcon": "euro",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77962,7 +77958,6 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 10,
                         "baUiSchema": {
                           "ui:options": {
-                            "leftIcon": "euro",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -77997,7 +77992,6 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "baOrder": 12,
                         "baUiSchema": {
                           "ui:options": {
-                            "leftIcon": "euro",
                             "size": "medium",
                           },
                           "ui:widget": "Number",
@@ -78659,6 +78653,15 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         "baOrder": 3,
                         "baUiSchema": {
                           "ui:options": {
+                            "belowComponents": [
+                              {
+                                "props": {
+                                  "message": "Od 1. 9. 2025 sa zmenil spôsob posudzovania ŤZP. Nové integrované posudky už neuvádzajú percentá, ale stupeň odkázanosti. Všetky staršie percentuálne posudky však zostávajú platné. Vyberte možnosť, ktorá zodpovedá najvyššej uznanej miere podľa vášho platného posudku - starého alebo nového.",
+                                  "type": "info",
+                                },
+                                "type": "alert",
+                              },
+                            ],
                             "enumMetadata": [
                               {
                                 "label": "Od 50 % do 74 % alebo integrovaný posudok 0–2 stupeň",
@@ -78678,27 +78681,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         ],
                         "title": "Aká je najvyššia uznaná miera funkčnej poruchy držiteľa/ky preukazu ŤZP?",
                         "type": "string",
-                      },
-                      "mieraFunkcnejPoruchyAlert": {
-                        "anyOf": [
-                          {},
-                        ],
-                        "baOrder": 4,
-                        "baUiSchema": {
-                          "ui:field": "CustomComponents",
-                          "ui:fieldReplacesAnyOrOneOf": true,
-                          "ui:options": {
-                            "customComponents": [
-                              {
-                                "props": {
-                                  "message": "Od 1. 9. 2025 sa zmenil spôsob posudzovania ŤZP. Nové integrované posudky už neuvádzajú percentá, ale stupeň odkázanosti. Všetky staršie percentuálne posudky však zostávajú platné. Vyberte možnosť, ktorá zodpovedá najvyššej uznanej miere podľa vášho platného posudku - starého alebo nového.",
-                                  "type": "info",
-                                },
-                                "type": "alert",
-                              },
-                            ],
-                          },
-                        },
                       },
                     },
                     "required": [
@@ -78737,7 +78719,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         "then": {
                           "properties": {
                             "existujuceDiagnozy": {
-                              "baOrder": 6,
+                              "baOrder": 5,
                               "baUiSchema": {
                                 "ui:options": {
                                   "enumMetadata": [
@@ -79046,7 +79028,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                     ],
                     "properties": {
                       "chronickeOchorenie": {
-                        "baOrder": 5,
+                        "baOrder": 4,
                         "baUiSchema": {
                           "ui:options": {
                             "enumMetadata": [
@@ -79091,7 +79073,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
               "properties": {
                 "bezbarierovyByt": {
-                  "baOrder": 7,
+                  "baOrder": 6,
                   "baUiSchema": {
                     "ui:options": {
                       "enumMetadata": [
@@ -79150,7 +79132,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                   "anyOf": [
                     {},
                   ],
-                  "baOrder": 8,
+                  "baOrder": 7,
                   "baUiSchema": {
                     "ui:field": "CustomComponents",
                     "ui:fieldReplacesAnyOrOneOf": true,
@@ -79487,7 +79469,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79522,7 +79503,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79557,7 +79537,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79592,7 +79571,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79627,7 +79605,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -79662,7 +79639,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80535,7 +80511,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80570,7 +80545,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80605,7 +80579,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80640,7 +80613,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80675,7 +80647,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -80710,7 +80681,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82059,7 +82029,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82094,7 +82063,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82129,7 +82097,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82164,7 +82131,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82199,7 +82165,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -82234,7 +82199,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83194,7 +83158,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 2,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83229,7 +83192,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83264,7 +83226,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83299,7 +83260,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83334,7 +83294,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 10,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -83369,7 +83328,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "baOrder": 12,
                                 "baUiSchema": {
                                   "ui:options": {
-                                    "leftIcon": "euro",
                                     "size": "medium",
                                   },
                                   "ui:widget": "Number",
@@ -84625,7 +84583,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                               "type": "alert",
                                             },
                                           ],
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -85366,7 +85323,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                               "type": "alert",
                                             },
                                           ],
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86544,7 +86500,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 2,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86579,7 +86534,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 4,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86614,7 +86568,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 6,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86649,7 +86602,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 8,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86684,7 +86636,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 10,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -86719,7 +86670,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 12,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87644,7 +87594,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 2,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87679,7 +87628,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 4,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87714,7 +87662,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 6,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87749,7 +87696,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 8,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87784,7 +87730,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 10,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -87819,7 +87764,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "baOrder": 12,
                                       "baUiSchema": {
                                         "ui:options": {
-                                          "leftIcon": "euro",
                                           "size": "medium",
                                         },
                                         "ui:widget": "Number",
@@ -88929,7 +88873,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
-                  "leftIcon": "euro",
                   "size": "medium",
                 },
                 "ui:widget": "Number",

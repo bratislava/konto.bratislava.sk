@@ -46,3 +46,5 @@ export const createFormsClient = ({
     ...WebhookApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

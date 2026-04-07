@@ -5,6 +5,7 @@ import {
   BackendIntegrationAPIApiFactory,
   DPBApiFactory,
   OAuth2ApiFactory,
+  PAASMPAApiFactory,
   UserIntegrationApiFactory,
   UserVerificationsApiFactory,
   UsersManipulationApiFactory,
@@ -35,8 +36,11 @@ export const createCityAccountClient = ({
     ...BackendIntegrationAPIApiFactory(...args),
     ...DPBApiFactory(...args),
     ...OAuth2ApiFactory(...args),
+    ...PAASMPAApiFactory(...args),
     ...UserIntegrationApiFactory(...args),
     ...UserVerificationsApiFactory(...args),
     ...UsersManipulationApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

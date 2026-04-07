@@ -24,3 +24,5 @@ export const createClamavScannerClient = ({
     ...StatusesApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

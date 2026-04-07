@@ -32,3 +32,5 @@ export const createTaxClient = ({
     ...TaxApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

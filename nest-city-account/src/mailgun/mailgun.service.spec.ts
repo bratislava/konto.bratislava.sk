@@ -19,15 +19,15 @@ describe('MailgunService', () => {
     process.env = { ...ORIGINAL_ENV }
     process.env.MAILGUN_API_KEY = 'test-mailgun-api-key'
     process.env.DEFAULT_MAILGUN_DOMAIN = 'test.example.com'
-    jest.spyOn(console, 'log').mockImplementation()
-    jest.spyOn(console, 'error').mockImplementation()
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   beforeEach(async () => {
     jest.clearAllMocks()
     mockCreate.mockResolvedValue({ id: 'mock-message-id', message: 'Queued' })
 
-    jest.spyOn(console, 'log').mockImplementation()
+    jest.spyOn(console, 'log').mockImplementation(() => {})
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

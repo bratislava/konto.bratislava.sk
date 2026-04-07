@@ -43,7 +43,7 @@ export class CognitoGetUserAttributesData {
     description: 'Is email verified in cognito?',
     default: 'true',
   })
-  @IsString() // TODO check if this is not boolean
+  @IsString()
   @IsOptional()
   email_verified?: string
 

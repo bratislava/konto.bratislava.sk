@@ -31,7 +31,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       MUNICIPAL_TAX_LOCK_MONTH: '02',
       MUNICIPAL_TAX_LOCK_DAY: '01',
     }
-    jest.spyOn(console, 'log').mockImplementation()
+    jest.spyOn(console, 'log').mockImplementation(() => {})
   })
 
   afterAll(() => {

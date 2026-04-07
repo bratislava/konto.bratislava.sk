@@ -21,7 +21,7 @@
     "generate:clamav-scanner": "tsx scripts/generateClient.ts clamav-scanner",
     "generate:slovensko-sk": "tsx scripts/generateClient.ts slovensko-sk",
     "generate:magproxy": "tsx scripts/generateClient.ts magproxy",
-    "generate": "npm-run-all generate:forms generate:tax generate:city-account generate:clamav-scanner generate:slovensko-sk",
+    "generate": "npm-run-all generate:forms generate:tax generate:city-account generate:clamav-scanner generate:slovensko-sk generate:magproxy",
     "generate:forms:local": "tsx scripts/generateClient.ts forms --local-url localhost:3000",
     "generate:tax:local": "tsx scripts/generateClient.ts tax --local-url localhost:3000",
     "generate:city-account:local": "tsx scripts/generateClient.ts city-account --local-url localhost:3000",

@@ -6,7 +6,11 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { toLogfmt } from '../utils/logging'
-import { BloomreachBatchCommand, BloomreachCommandNameEnum } from './bloomreach.types'
+import {
+  BloomreachBatchCommand,
+  BloomreachBatchResponse,
+  BloomreachCommandNameEnum,
+} from './bloomreach.types'
 import axios from 'axios'
 
 // TODO these constants need consulting
@@ -75,23 +79,50 @@ export class BloomreachOutboxProcessor {
       return
     }
 
-    const ids = entries.map((e) => e.id)
-
     const commands: BloomreachBatchCommand[] = entries.map((entry) => ({
       name: entry.commandName as BloomreachCommandNameEnum,
       data: entry.commandData,
+      command_id: entry.id,
     }))
 
     try {
-      await this.sendBatch(commands)
+      const response = await this.sendBatch(commands)
 
-      // Mark all original entries as completed (including superseded ones)
-      await this.prisma.bloomreachOutbox.updateMany({
-        where: { id: { in: ids } },
-        data: { status: BloomreachOutboxStatus.COMPLETED },
-      })
+      const succeededIds: string[] = []
+      const failedEntries: BloomreachOutbox[] = []
 
-      this.logger.log(`Processed batch of ${commands.length} commands (${entries.length} entries)`)
+      for (let i = 0; i < entries.length; i++) {
+        if (!response.results[i]?.success) {
+          failedEntries.push(entries[i])
+        } else {
+          succeededIds.push(entries[i].id)
+        }
+      }
+
+      if (succeededIds.length > 0) {
+        await this.prisma.bloomreachOutbox.updateMany({
+          where: { id: { in: succeededIds } },
+          data: { status: BloomreachOutboxStatus.COMPLETED },
+        })
+      }
+
+      if (failedEntries.length > 0) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `${failedEntries.length}/${entries.length} commands failed in batch`,
+            toLogfmt({ failedIds: failedEntries.map((e) => e.id) })
+          )
+        )
+        await this.rollbackEntries(
+          failedEntries,
+          new Error('Bloomreach batch API returned success=false for command')
+        )
+      }
+
+      this.logger.log(
+        `Processed batch: ${succeededIds.length} succeeded, ${failedEntries.length} failed`
+      )
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
@@ -172,7 +203,7 @@ export class BloomreachOutboxProcessor {
     }
   }
 
-  private async sendBatch(commands: BloomreachBatchCommand[]): Promise<void> {
+  private async sendBatch(commands: BloomreachBatchCommand[]): Promise<BloomreachBatchResponse> {
     const response = await axios.post(
       `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/batch`,
       { commands },
@@ -183,9 +214,11 @@ export class BloomreachOutboxProcessor {
       }
     )
 
-    const body = response.data as { success?: boolean }
-    if (!body.success) {
-      throw new Error(`Bloomreach batch API returned success=false: ${JSON.stringify(body)}`)
+    const body = response.data as BloomreachBatchResponse
+    if (!body.results) {
+      throw new Error(`Bloomreach batch API returned unexpected response: ${JSON.stringify(body)}`)
     }
+
+    return body
   }
 }

@@ -56,6 +56,20 @@ export type BloomreachEventCommand = {
 export interface BloomreachBatchCommand {
   name: BloomreachCommandNameEnum
   data: BloomreachCustomerCommandData | BloomreachEventCommandData
+  command_id?: string
+}
+
+export interface BloomreachBatchResultItem {
+  success: boolean
+  time: number
+  command_id?: string
+}
+
+export interface BloomreachBatchResponse {
+  success: boolean
+  results: BloomreachBatchResultItem[]
+  start_time: number
+  end_time: number
 }
 
 // ─── Bloomreach enums ───────────────────────────────────────────────────────

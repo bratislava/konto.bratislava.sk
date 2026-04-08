@@ -23,13 +23,26 @@ export type CreateManyParam = {
 
 export type UpvsIdentityByUriSuccessType = {
   physicalEntityId: string | null
-  uri: string
+  inputUri: string
   data: ApiIamIdentitiesIdGet200Response
+}
+
+export type CreateManyResultFailed = {
+  physicalEntityId?: string
+  inputUri: string
+  possibleUriChange: boolean
 }
 
 export type CreateManyResult = {
   success: UpvsIdentityByUriSuccessType[]
-  failed: { physicalEntityId?: string; uri: string }[]
+  failed: CreateManyResultFailed[]
+}
+
+export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<
+  ApiIamIdentitiesIdGet200Response,
+  'uri'
+> & {
+  uri: string
 }
 
 @Injectable()
@@ -103,22 +116,18 @@ export class NasesService {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}`,
+          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
           error
         )
       })
     return result
   }
 
-  // takes an array of uris with optional physicalEntityId, validates them against UPVS and keeps the record of both the successful and the failed uris
-  // multiple uris with same birthnumber can be passed in, but these should always be assigned to the same physicalEntityId
-  // for successful requests, the uri that was returned by UPVS is saved - this might be different from the one that was requested (i.e. when the surname changes)
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   async createMany(inputs: CreateManyParam): Promise<CreateManyResult> {
     const uniqueInputs = _.uniqBy(inputs, 'uri')
     const inputsByUri = _.keyBy(uniqueInputs, 'uri')
 
-    if (inputs.length === 0 || inputs.length > 10) {
+    if (uniqueInputs.length === 0 || uniqueInputs.length > 10) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
         'Must provide between 1 and 10 URIs to validate'
@@ -127,24 +136,11 @@ export class NasesService {
 
     const results = await this.searchUpvsIdentitiesByUri(uniqueInputs.map((input) => input.uri))
 
-    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = results
-      .filter(
-        (result): result is Omit<ApiIamIdentitiesIdGet200Response, 'uri'> & { uri: string } =>
-          !!result.uri
-      )
-      .map((result) => {
-        if (!inputsByUri[result.uri]) {
-          this.logger.warn({
-            message: `Failed to find input for URI: ${result.uri}`,
-            inputs: inputs,
-          })
-        }
-        return {
-          uri: result.uri,
-          data: result,
-          physicalEntityId: inputsByUri[result.uri]?.physicalEntityId || null,
-        }
-      })
+    const resultsWithUri = results.filter(
+      (result): result is ApiIamIdentitiesIdGet200ResponseWithUri => !!result.uri
+    )
+
+    const { resultDataSuccess, matchedUris } = this.matchDirectResults(resultsWithUri, inputsByUri)
 
     if (resultDataSuccess.length >= 10) {
       this.logger.error({
@@ -158,18 +154,83 @@ export class NasesService {
       }
     }
 
-    const successfulUris = new Set(resultDataSuccess.map((r) => r.uri))
+    const unmatchedResults = resultsWithUri.filter((result) => !matchedUris.has(result.uri))
+    const unmatchedInputs = uniqueInputs.filter((input) => !matchedUris.has(input.uri))
 
-    const resultDataFailed = uniqueInputs
-      .filter((input) => !successfulUris.has(input.uri))
+    // If we have exactly one unmatched result and one unmatched input URI, we can safely assume they represent the same
+    // identity.
+    if (unmatchedResults.length === 1 && unmatchedInputs.length === 1) {
+      const unmatchedResult = unmatchedResults.pop()!
+      const unmatchedInput = unmatchedInputs.pop()!
+      this.logger.log({
+        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInput}`,
+      })
+      resultDataSuccess.push({
+        inputUri: unmatchedInput.uri,
+        data: unmatchedResult,
+        physicalEntityId: inputsByUri[unmatchedInput.uri]?.physicalEntityId || null,
+      })
+      matchedUris.add(unmatchedInput.uri)
+    }
+
+    const possibleUriChanges = this.filterPossiblyChangedUris(
+      unmatchedResults,
+      unmatchedInputs,
+      inputsByUri
+    )
+
+    const failedWithoutPossibleUriChanges = uniqueInputs
+      .filter(
+        (input) =>
+          !matchedUris.has(input.uri) && !possibleUriChanges.some((p) => p.inputUri === input.uri)
+      )
       .map((input) => ({
         physicalEntityId: input.physicalEntityId ?? undefined,
-        uri: input.uri,
+        inputUri: input.uri,
+        possibleUriChange: false,
       }))
+
+    const resultDataFailed = [...possibleUriChanges, ...failedWithoutPossibleUriChanges]
 
     return {
       success: resultDataSuccess,
       failed: resultDataFailed,
     }
+  }
+
+  private filterPossiblyChangedUris(
+    unmatchedResults: ApiIamIdentitiesIdGet200ResponseWithUri[],
+    unmatchedInputs: CreateManyParam,
+    inputsByUri: _.Dictionary<{ physicalEntityId?: string; uri: string }>
+  ) {
+    let possibleUriChanges: CreateManyResultFailed[] = []
+    if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
+      this.logger.warn({
+        message: `Failed to find input for URIs: ${unmatchedResults.map((r) => r.uri).join(', ')}`,
+        unmatchedInputUris: unmatchedInputs.map((input) => input.uri),
+      })
+      possibleUriChanges = unmatchedInputs.map((input) => ({
+        physicalEntityId: inputsByUri[input.uri]?.physicalEntityId,
+        inputUri: input.uri,
+        possibleUriChange: true,
+      }))
+    }
+    return possibleUriChanges
+  }
+
+  private matchDirectResults(
+    resultsWithUri: ApiIamIdentitiesIdGet200ResponseWithUri[],
+    inputsByUri: Record<string, CreateManyParam[number]>
+  ) {
+    const directMatches = resultsWithUri.filter((result) => !!inputsByUri[result.uri])
+    const matchedUris = new Set(directMatches.map((result) => result.uri))
+
+    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.map((result) => ({
+      inputUri: inputsByUri[result.uri].uri,
+      data: result,
+      physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
+    }))
+
+    return { resultDataSuccess, matchedUris }
   }
 }

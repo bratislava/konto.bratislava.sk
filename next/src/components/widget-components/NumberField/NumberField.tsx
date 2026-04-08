@@ -5,17 +5,12 @@ import { forwardRef, ReactNode } from 'react'
 import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon } from '@/src/assets/ui-icons'
-import MailIcon from '@/src/assets/ui-icons/custom_mail.svg'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
-
-export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
 
 export type NumberFieldProps = FieldWrapperProps & {
   name?: string
   value?: number | null
-  leftIcon?: LeftIconVariants
   onChange?: (value: number | null) => void
   endIcon?: ReactNode
   placeholder?: string
@@ -31,7 +26,7 @@ export type NumberFieldProps = FieldWrapperProps & {
  * The component handles conversion between our `null` value and React Aria's `NaN` value.
  */
 const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
-  ({ name, value, leftIcon, onChange, endIcon, placeholder, className, ...rest }, forwardedRef) => {
+  ({ name, value, onChange, endIcon, placeholder, className, ...rest }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { locale } = useLocale()
 
@@ -59,28 +54,10 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       state,
       ref,
     )
-    const leftIconSwitcher = (icon: string): ReactNode | null => {
-      switch (icon) {
-        case 'person':
-          return <ProfileIcon />
-        case 'mail':
-          return <MailIcon />
-        case 'call':
-          return <PhoneIcon />
-        case 'lock':
-          return <LockIcon />
-        case 'euro':
-          return <EuroIcon />
-        default:
-          return null
-      }
-    }
 
     const style = cn(
-      'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 sm:text-16',
+      'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-16 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
       {
-        // conditions
-        'pl-12 sm:pl-[52px]': leftIcon,
         // hover
         'hover:border-gray-400': !rest.isDisabled,
 
@@ -103,18 +80,6 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         errorMessageProps={errorMessageProps}
       >
         <div className="relative" data-cy={`required-${name}`}>
-          {leftIcon && (
-            <span
-              className={cn(
-                'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
-                {
-                  'opacity-50': rest.isDisabled,
-                },
-              )}
-            >
-              {leftIconSwitcher(leftIcon)}
-            </span>
-          )}
           <input
             {...inputProps}
             ref={ref}

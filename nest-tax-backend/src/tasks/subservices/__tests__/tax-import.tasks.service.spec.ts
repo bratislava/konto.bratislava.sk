@@ -87,19 +87,19 @@ describe('TaxImportTasksService', () => {
       await service.loadTaxesForUsers()
       expect(
         mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
-      ).toHaveBeenCalledWith(TaxType.DZN, currentYear, true)
+      ).toHaveBeenCalledWith(TaxType.DZN, currentYear, 2020, true)
 
       // Second call should use KO
       await service.loadTaxesForUsers()
       expect(
         mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
-      ).toHaveBeenCalledWith(TaxType.KO, currentYear, true)
+      ).toHaveBeenCalledWith(TaxType.KO, currentYear, 2020, true)
 
       // Third call should use DZN again
       await service.loadTaxesForUsers()
       expect(
         mockTaxImportHelper.getPrioritizedBirthNumbersWithMetadata,
-      ).toHaveBeenCalledWith(TaxType.DZN, currentYear, true)
+      ).toHaveBeenCalledWith(TaxType.DZN, currentYear, 2020, true)
     })
 
     it('should import newly created users immediately regardless of window or limit', async () => {
@@ -131,7 +131,7 @@ describe('TaxImportTasksService', () => {
 
       await service.loadTaxesForUsers()
 
-      // Newly created users should be imported immediately
+      // Newly created users should be imported immediately for all years
       expect(importTaxesSpy).toHaveBeenCalledWith(
         TaxType.DZN,
         newlyCreated,
@@ -143,7 +143,9 @@ describe('TaxImportTasksService', () => {
         birthNumbers,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(2) // Only for newly created
+      // Import called for both DZN and KO for each year from 2020 to current year
+      const yearCount = currentYear - 2020 + 1
+      expect(importTaxesSpy).toHaveBeenCalledTimes(yearCount * 2)
     })
 
     it('should import newly created users immediately when outside window and under limit', async () => {
@@ -187,7 +189,9 @@ describe('TaxImportTasksService', () => {
         birthNumbers,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(2) // Only for newly created
+      // Import called for both DZN and KO for each year from 2020 to current year
+      const yearCount = currentYear - 2020 + 1
+      expect(importTaxesSpy).toHaveBeenCalledTimes(yearCount * 2)
     })
 
     it('should import newly created users immediately when within window and over limit', async () => {
@@ -232,7 +236,9 @@ describe('TaxImportTasksService', () => {
         birthNumbers,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(2) // Only for newly created
+      // Import called for both DZN and KO for each year from 2020 to current year
+      const yearCount = currentYear - 2020 + 1
+      expect(importTaxesSpy).toHaveBeenCalledTimes(yearCount * 2)
     })
 
     it('should import newly created users even when within window and under limit', async () => {
@@ -275,7 +281,9 @@ describe('TaxImportTasksService', () => {
         birthNumbers,
         expect.any(Number),
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(3)
+      // Import called for both DZN and KO for each year from 2020 to current year, plus one import for birthNumbers
+      const yearCount = currentYear - 2020 + 1
+      expect(importTaxesSpy).toHaveBeenCalledTimes(yearCount * 2 + 1)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
     })
 
@@ -421,7 +429,9 @@ describe('TaxImportTasksService', () => {
         newlyCreated,
         currentYear,
       )
-      expect(importTaxesSpy).toHaveBeenCalledTimes(2)
+      // Import called for both DZN and KO for each year from 2020 to current year
+      const yearCount = currentYear - 2020 + 1
+      expect(importTaxesSpy).toHaveBeenCalledTimes(yearCount * 2)
       expect(prepareTaxesSpy).not.toHaveBeenCalled()
     })
 

@@ -24,6 +24,7 @@ export interface TaxBloomreachData {
   delivery_method: DeliveryMethodNamed | null
   tax_type: TaxType
   order: number
+  suppress_email: boolean
 }
 
 export interface UnpaidTaxReminderBloomreachData {

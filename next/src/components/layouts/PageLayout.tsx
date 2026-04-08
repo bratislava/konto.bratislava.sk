@@ -34,9 +34,11 @@ const PageLayout = ({
   const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
   return (
-    <div className={className}>
-      {/* 'contents' class in header enables sticky elements inside it to work */}
-      <header className="relative z-30 contents">
+    <div className={cn('flex min-h-dvh flex-col', className)}>
+      <header
+        // 'contents' class in header enables sticky elements inside it to work
+        className="relative z-30 contents"
+      >
         {variant === 'auth' ? (
           <AuthNavBar
             backButtonHidden={hideBackButton}
@@ -55,12 +57,9 @@ const PageLayout = ({
         style={{
           '--main-scroll-top-margin': `${navbarHeight}px`,
         }}
-        className={cn(
-          'relative min-h-[calc(100vh-var(--main-scroll-top-margin))] **:scroll-mt-(--main-scroll-top-margin)',
-          {
-            'md:gap-6 md:bg-background-passive-primary md:py-8': variant === 'auth',
-          },
-        )}
+        className={cn('relative flex grow flex-col **:scroll-mt-(--main-scroll-top-margin)', {
+          'md:gap-6 md:bg-background-passive-primary md:py-8': variant === 'auth',
+        })}
       >
         {children}
       </main>

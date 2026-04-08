@@ -28,7 +28,7 @@ const fetchStrapiForm = async (
 ): Promise<FormWithLandingPageFragment | null | undefined> => {
   const result = await strapiClient.FormWithLandingPageBySlug({ slug })
 
-  return result.forms?.data?.[0]?.attributes
+  return result.forms[0]
 }
 
 export const formHasLandingPage = (
@@ -86,6 +86,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormCreatedSplitPage
       const isEmbeddedPostfix = isEmbedded
         ? `?${EMBEDDED_FORM_QUERY_PARAM}=${EMBEDDED_FORM_QUERY_PARAM_TRUE_VALUE}`
         : ''
+
       // If user receives a new guest identity, the user must be redirected to the form client-side because redirect
       // requests are not able to save new guest identity cookie.
       return {

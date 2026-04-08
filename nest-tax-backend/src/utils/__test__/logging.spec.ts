@@ -1,12 +1,13 @@
 import { HttpException } from '@nestjs/common'
 
-import { ErrorsEnum } from '../guards/dtos/error.dto'
+import { ErrorsEnum, ErrorSymbols } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import {
   errorToLogfmt,
   escapeForLogfmt,
   objToLogfmt,
   separateLogFromResponseObj,
+  symbolKeysToStrings,
   toLogfmt,
 } from '../logging'
 
@@ -71,6 +72,77 @@ describe('Testing logging:', () => {
       expect(logfmt).toBe(
         String.raw`key="a\n   \\ \\\\ \\\\\\ \\\\\\\\ \" \"\" \"\"\" \\\" \"\\\""`,
       )
+    })
+  })
+
+  describe('symbolKeysToStrings function', () => {
+    it('should return empty object for empty input', () => {
+      expect(symbolKeysToStrings({})).toEqual({})
+    })
+
+    it('should preserve string-keyed properties unchanged', () => {
+      const obj = { message: 'hello', statusCode: 500 }
+      expect(symbolKeysToStrings(obj)).toEqual({
+        message: 'hello',
+        statusCode: 500,
+      })
+    })
+
+    it('should convert a known symbol key to its encoded string key', () => {
+      const obj = { [ErrorSymbols.alert]: 1 }
+      expect(symbolKeysToStrings(obj)).toEqual({
+        [ErrorSymbols.alert]: 1,
+        '$Symbol-alert': 1,
+      })
+    })
+
+    it('should convert all known symbol keys', () => {
+      const obj = {
+        [ErrorSymbols.alert]: 1,
+        [ErrorSymbols.console]: 'console input',
+        [ErrorSymbols.errorCause]: 'Error',
+        [ErrorSymbols.causedByMessage]: 'cause message',
+      }
+      expect(symbolKeysToStrings(obj)).toEqual({
+        [ErrorSymbols.alert]: 1,
+        [ErrorSymbols.console]: 'console input',
+        [ErrorSymbols.errorCause]: 'Error',
+        [ErrorSymbols.causedByMessage]: 'cause message',
+        '$Symbol-alert': 1,
+        '$Symbol-console': 'console input',
+        '$Symbol-errorCause': 'Error',
+        '$Symbol-causedByMessage': 'cause message',
+      })
+    })
+
+    it('should ignore symbols without a description', () => {
+      const sym = Symbol()
+      const obj = { [sym]: 'ignored' }
+      expect(symbolKeysToStrings(obj)).toEqual({ [sym]: 'ignored' })
+    })
+
+    it('should ignore symbols whose description is not in errorTypeKeys', () => {
+      const sym = Symbol('unknownKey')
+      const obj = { [sym]: 'ignored' }
+      expect(symbolKeysToStrings(obj)).toEqual({ [sym]: 'ignored' })
+    })
+
+    it('should handle mixed string keys, known symbol keys, and unknown symbol keys', () => {
+      const unknownSym = Symbol('unknownKey')
+      const noDescSym = Symbol()
+      const obj = {
+        message: 'hello',
+        [ErrorSymbols.alert]: 1,
+        [unknownSym]: 'ignored',
+        [noDescSym]: 'also ignored',
+      }
+      expect(symbolKeysToStrings(obj)).toEqual({
+        message: 'hello',
+        [ErrorSymbols.alert]: 1,
+        [unknownSym]: 'ignored',
+        [noDescSym]: 'also ignored',
+        '$Symbol-alert': 1,
+      })
     })
   })
 

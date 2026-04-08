@@ -214,12 +214,9 @@ describe('NorisTaxRealEstateSubservice', () => {
 
     jest
       .spyOn(service['norisValidatorSubservice'], 'validateNorisData')
-      .mockImplementation((schema, data) => {
-        if (Array.isArray(data)) {
-          return data.map((item) => schema.parse(item))
-        }
-        return schema.parse(data)
-      })
+      .mockImplementation((schema, data) =>
+        data.map((item) => schema.parse(item)),
+      )
   })
 
   afterEach(() => {

@@ -9,7 +9,6 @@ import {
   TaxBloomreachData,
   TaxPaymentBloomreachData,
   UnpaidTaxInstallmentReminderBloomreachData,
-  UnpaidTaxReminderBloomreachData,
 } from './bloomreach.types'
 
 @Injectable()
@@ -112,17 +111,6 @@ export class BloomreachService {
       BloomreachEventNameEnum.TAX,
     )
     return pushEventResult
-  }
-
-  async trackEventUnpaidTaxReminder(
-    taxData: UnpaidTaxReminderBloomreachData,
-    cognitoId: string,
-  ): Promise<boolean> {
-    return this.trackEvent(
-      taxData,
-      cognitoId,
-      BloomreachEventNameEnum.UNPAID_TAX_REMINDER,
-    )
   }
 
   async trackEventUnpaidTaxInstallmentReminder(

@@ -514,15 +514,15 @@ describe('NotificationsEventsSubservice', () => {
       const findManyMock = jest
         .spyOn(service['prismaService'].tax, 'findMany')
         .mockResolvedValue([])
-      const trackEventUnpaidTaxReminderMock = jest.spyOn(
+      const trackEventUnpaidTaxInstallmentReminderMock = jest.spyOn(
         service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
+        'trackEventUnpaidTaxInstallmentReminder',
       )
 
       await service.sendUnpaidTaxReminders()
 
       expect(findManyMock).toHaveBeenCalled()
-      expect(trackEventUnpaidTaxReminderMock).not.toHaveBeenCalled()
+      expect(trackEventUnpaidTaxInstallmentReminderMock).not.toHaveBeenCalled()
     })
 
     it('should send payment reminder events when there are taxes', async () => {
@@ -539,9 +539,9 @@ describe('NotificationsEventsSubservice', () => {
             },
           },
         ] as any)
-      const trackEventUnpaidTaxReminderMock = jest.spyOn(
+      const trackEventUnpaidTaxInstallmentReminderMock = jest.spyOn(
         service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
+        'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -555,7 +555,7 @@ describe('NotificationsEventsSubservice', () => {
       await service.sendUnpaidTaxReminders()
 
       expect(findManyMock).toHaveBeenCalled()
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+      expect(trackEventUnpaidTaxInstallmentReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
           tax_type: TaxType.DZN,
@@ -597,9 +597,9 @@ describe('NotificationsEventsSubservice', () => {
             },
           },
         ] as any)
-      const trackEventUnpaidTaxReminderMock = jest.spyOn(
+      const trackEventUnpaidTaxInstallmentReminderMock = jest.spyOn(
         service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
+        'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -616,20 +616,30 @@ describe('NotificationsEventsSubservice', () => {
       await service.sendUnpaidTaxReminders()
 
       expect(findManyMock).toHaveBeenCalled()
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledTimes(2)
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+      expect(trackEventUnpaidTaxInstallmentReminderMock).toHaveBeenCalledTimes(
+        2,
+      )
+      expect(trackEventUnpaidTaxInstallmentReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
           tax_type: TaxType.DZN,
           order: 1,
+          installment_order: 1,
+          due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+          due_date_month: 5,
+          due_date_day: 31,
         },
         'external-id-1',
       )
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+      expect(trackEventUnpaidTaxInstallmentReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
           tax_type: TaxType.KO,
           order: 2,
+          installment_order: 1,
+          due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+          due_date_month: 5,
+          due_date_day: 31,
         },
         'external-id-2',
       )

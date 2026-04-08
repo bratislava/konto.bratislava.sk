@@ -91,12 +91,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
     // Mock validator to return data as-is
     norisValidatorSubservice.validateNorisData.mockImplementation(
-      (schema, data) => {
-        if (Array.isArray(data)) {
-          return data.map((item) => schema.parse(item))
-        }
-        return schema.parse(data)
-      },
+      (schema, data) => data.map((item) => schema.parse(item)),
     )
   })
 

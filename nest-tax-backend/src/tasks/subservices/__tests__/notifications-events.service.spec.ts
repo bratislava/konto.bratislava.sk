@@ -535,7 +535,7 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.$queryRaw.mockResolvedValue([])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
+        'trackEventUnpaidTaxInstallmentReminder',
       )
 
       await service.sendUnpaidTaxReminders()
@@ -556,7 +556,7 @@ describe('NotificationsEventsSubservice', () => {
       ])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
+        'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -606,7 +606,7 @@ describe('NotificationsEventsSubservice', () => {
       ])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
+        'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
@@ -629,6 +629,10 @@ describe('NotificationsEventsSubservice', () => {
           year: 2024,
           tax_type: TaxType.DZN,
           order: 1,
+          installment_order: 1,
+          due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+          due_date_month: 5,
+          due_date_day: 31,
         },
         'external-id-1',
       )
@@ -637,6 +641,10 @@ describe('NotificationsEventsSubservice', () => {
           year: 2024,
           tax_type: TaxType.KO,
           order: 2,
+          installment_order: 1,
+          due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+          due_date_month: 5,
+          due_date_day: 31,
         },
         'external-id-2',
       )

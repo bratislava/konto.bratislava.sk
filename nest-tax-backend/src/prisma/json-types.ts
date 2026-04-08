@@ -69,7 +69,7 @@ export type CommunalWasteTaxDetail = z.infer<
 export type RealEstateTaxDetail = z.infer<typeof RealEstateTaxDetailSchema>
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // eslint-disable-next-line @typescript-eslint/no-namespace -- necessary for Prisma JSON types
   namespace PrismaJson {
     type TaxDetailType = RealEstateTaxDetail | CommunalWasteTaxDetail
   }

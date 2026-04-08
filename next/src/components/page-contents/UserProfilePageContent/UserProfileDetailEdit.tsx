@@ -260,7 +260,6 @@ const UserProfileDetailEdit = ({
       {/*         <InputField */}
       {/*           label={t('my_profile.profile_detail.phone_number')} */}
       {/*           {...field} */}
-      {/*           placeholder={t('my_profile.profile_detail.phone_number_placeholder')} */}
       {/*           errorMessage={errors.phone_number} */}
       {/*         /> */}
       {/*       )} */}

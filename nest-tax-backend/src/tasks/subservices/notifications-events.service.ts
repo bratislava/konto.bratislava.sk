@@ -158,6 +158,7 @@ export default class NotificationsEventsService {
         const eventData = {
           year: tax.year,
           tax_type: tax.type,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- tax.order is guaranteed to be not null by database constraint
           order: tax.order!,
           installment_order: installmentInfo.order,
           due_date_type: dueDateType,
@@ -347,6 +348,7 @@ export default class NotificationsEventsService {
           {
             year: tax.year,
             tax_type: tax.type,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- tax.order is guaranteed to be not null by database constraint
             order: tax.order!,
             installment_order: 1,
             due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,

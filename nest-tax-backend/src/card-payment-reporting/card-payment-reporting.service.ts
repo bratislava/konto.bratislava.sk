@@ -58,7 +58,7 @@ const csvColumnNames = [
 
 type CsvColumns = (typeof csvColumnNames)[number]
 
-type CsvRecord = Record<CsvColumns, string>
+export type CsvRecord = Record<CsvColumns, string>
 export type CsvColumnsWithVariableSymbol = CsvRecord & {
   variableSymbol: string
 }

@@ -10,9 +10,10 @@ export enum DeliveryMethod {
 }
 
 // In Noris, postal delivery method should be saved as 'E', same as eDesk. This comes as a requirement from the Noris system.
+// Values intentionally match DeliveryMethod.EDESK and DeliveryMethod.CITY_ACCOUNT.
 export enum DeliveryMethodNoris {
-  EDESK = DeliveryMethod.EDESK,
-  CITY_ACCOUNT = DeliveryMethod.CITY_ACCOUNT,
+  EDESK = 'E',
+  CITY_ACCOUNT = 'O',
 }
 
 export interface UpdateNorisDeliveryMethods {

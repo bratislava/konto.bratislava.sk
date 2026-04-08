@@ -193,7 +193,13 @@ describe('BloomreachOutboxService', () => {
       ])
 
       await service.trackEventConsents(
-        [{ type: GDPRTypeEnum.MARKETING, category: GDPRCategoryEnum.ESBS, subType: GDPRSubTypeEnum.unsubscribe }],
+        [
+          {
+            type: GDPRTypeEnum.MARKETING,
+            category: GDPRCategoryEnum.ESBS,
+            subType: GDPRSubTypeEnum.unsubscribe,
+          },
+        ],
         cognitoId
       )
 

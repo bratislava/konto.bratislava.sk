@@ -20,7 +20,7 @@ flowchart TD
 - **Decouples** request handling from Bloomreach availability — callers never fail due to Bloomreach being down.
 - **Automatic retries** — failed batches are retried with exponential backoff up to `MAX_ATTEMPTS` (5) before being marked `FAILED`.
 - **Batching** — multiple commands are sent in a single Bloomreach batch API call, reducing HTTP overhead.
-- **Concurrency-safe** — uses `FOR UPDATE SKIP LOCKED` so multiple instances don't process the same entries.
+- **Single-writer** — `@Interval(30_000)` waits for the previous run to complete before scheduling the next, so batches never overlap.
 
 ## Key Components
 
@@ -51,8 +51,14 @@ stateDiagram-v2
 Customer commands are deduplicated when written to the outbox:
 
 - **Customer upserts** (`customers` command): if a PENDING entry already exists for the same `cognitoId`, its `commandData` is updated in place (via a transaction) instead of creating a duplicate row.
-- **Event commands** (`customers/events`): always inserted as new rows — each event is distinct.
+- **Event commands** (`customers/events`): deduplicated by `cognitoId` + `event_type` + `category` — if a PENDING entry with the same combination exists, its `commandData` is updated in place; otherwise a new row is created.
 
 This ensures the outbox contains at most one PENDING `customers` entry per user at any time, so the processor doesn't need to merge at read time.
 
-**Why "keep latest" and not per-property merge:** Each `customers` command is a full snapshot of the user's current state (fetched from Cognito + DB at queue time), not a partial patch. The latest snapshot always has the most up-to-date values.
+**Per-property merge:** When a PENDING `customers` entry already exists, the new `commandData` is shallow-merged into the existing one (`{ ...existing.customer_ids, ...new.customer_ids }` and likewise for `properties`). This preserves any fields the latest call didn't touch while still applying updates.
+
+## Processing Order
+
+The processor claims entries in **global `createdAt` order** — oldest first, up to `BATCH_SIZE` (50) per cycle. There is no per-key grouping or ordering constraint in the claim query itself.
+
+This is safe because write-time deduplication already prevents duplicate PENDING entries for the same key (see above), so in practice there is at most one PENDING entry per key at any time. Since `@Interval` waits for the previous run to complete, batches never overlap, and `recoverStaleProcessingEntries` resets any entries stuck from a crash before each cycle.

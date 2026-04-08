@@ -42,6 +42,7 @@ stateDiagram-v2
     PROCESSING --> COMPLETED: batch sent successfully
     PROCESSING --> PENDING: failed, attempts < 5
     PROCESSING --> FAILED: failed, attempts >= 5
+    PROCESSING --> FAILED: superseded by newer PENDING
     FAILED --> [*]
     COMPLETED --> [*]
 ```
@@ -62,3 +63,14 @@ This ensures the outbox contains at most one PENDING `customers` entry per user 
 The processor claims entries in **global `createdAt` order** — oldest first, up to `BATCH_SIZE` (50) per cycle. There is no per-key grouping or ordering constraint in the claim query itself.
 
 This is safe because write-time deduplication already prevents duplicate PENDING entries for the same key (see above), so in practice there is at most one PENDING entry per key at any time. Since `@Interval` waits for the previous run to complete, batches never overlap, and `recoverStaleProcessingEntries` resets any entries stuck from a crash before each cycle.
+
+## Revert-Time Deduplication
+
+When a batch fails (HTTP error or per-command `success=false`), entries are reverted to PENDING for retry. Before reverting, the processor checks whether a **newer PENDING entry** was written for the same dedup key while the old entry was PROCESSING (write-time dedup only checks PENDING entries, so it would have created a new row instead of merging).
+
+If a newer entry exists:
+
+- **`customers` commands**: the old entry's `commandData` is **merged into** the newer entry (`{ ...old, ...newer }`, newer takes precedence), mirroring the write-time merge that was skipped. The old entry is marked `FAILED` with `lastError: "Superseded by newer PENDING entry"`.
+- **`customers/events` commands**: the old entry is simply marked `FAILED` — the newer entry fully replaces it (no merge needed).
+
+The same logic applies during crash recovery (`recoverStaleProcessingEntries`).

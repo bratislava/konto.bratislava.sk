@@ -156,8 +156,8 @@ export function toLogfmt(input: unknown): string {
   if (typeof input === 'string') {
     return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
   }
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
-  return `message="${escapeForLogfmt(input.toString())}"`
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- Object is already stringified above
+  return `message="${escapeForLogfmt(String(input))}"`
 }
 
 /**

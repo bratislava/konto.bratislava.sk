@@ -16,25 +16,23 @@ export class NorisValidatorSubservice {
   validateNorisData<T extends z.ZodType>(
     schema: T,
     data: unknown[],
-  ): z.infer<T>[]
-  validateNorisData<T extends z.ZodType>(schema: T, data: unknown): z.infer<T>
-  validateNorisData<T extends z.ZodType>(
+  ): z.infer<T>[] {
+    return data
+      .map((item) => {
+        try {
+          return this.validateSingleNorisData(schema, item)
+        } catch (error) {
+          this.logger.error(error)
+          return undefined
+        }
+      })
+      .filter((item): item is z.infer<T> => item !== undefined)
+  }
+
+  validateSingleNorisData<T extends z.ZodType>(
     schema: T,
     data: unknown,
-  ): z.infer<T> | z.infer<T>[] {
-    if (Array.isArray(data)) {
-      return data
-        .map((item) => {
-          try {
-            return this.validateNorisData(schema, item)
-          } catch (error) {
-            this.logger.error(error)
-            return undefined
-          }
-        })
-        .filter((item): item is z.infer<T> => item !== undefined)
-    }
-
+  ): z.infer<T> {
     const result = schema.safeParse(data)
     if (!result.success) {
       throw this.throwerErrorGuard.BadRequestException(

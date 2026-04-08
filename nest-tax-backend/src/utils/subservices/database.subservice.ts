@@ -58,7 +58,7 @@ export default class DatabaseSubservice {
       }
     })
 
-    return constants as Record<T, string>
+    return constants
   }
 
   async getVariableSymbolsByOrderIds(

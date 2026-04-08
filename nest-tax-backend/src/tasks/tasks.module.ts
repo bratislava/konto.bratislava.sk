@@ -5,9 +5,6 @@ import { CardPaymentReportingModule } from '../card-payment-reporting/card-payme
 import ClientsModule from '../clients/clients.module'
 import { NorisModule } from '../noris/noris.module'
 import { PaymentModule } from '../payment/payment.module'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { UtilsModule } from '../utils-module/utils.module'
 import CityAccountIngestionTasksService from './subservices/city-account-ingestion.tasks.service'
 import TasksConfigSubservice from './subservices/config.service'
@@ -29,9 +26,6 @@ import { TasksService } from './tasks.service'
   ],
   providers: [
     TasksService,
-    ThrowerErrorGuard,
-    DatabaseSubservice,
-    CityAccountSubservice,
     TasksConfigSubservice,
     NotificationsEventsService,
     TaxImportTasksService,

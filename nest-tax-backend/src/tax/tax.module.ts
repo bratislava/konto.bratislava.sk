@@ -4,14 +4,12 @@ import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import { PrismaModule } from '../prisma/prisma.module'
 import { QrCodeModule } from '../qrcode/qrcode.module'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { TaxService } from './tax.service'
 import { TaxControllerV2 } from './tax.v2.controller'
 
 @Module({
   imports: [PrismaModule, ClientsModule, UserInfoPipeModule, QrCodeModule],
-  providers: [TaxService, CognitoSubservice, ThrowerErrorGuard],
+  providers: [TaxService],
   exports: [TaxService],
   controllers: [TaxControllerV2],
 })

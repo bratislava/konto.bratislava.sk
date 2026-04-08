@@ -17,6 +17,11 @@ export function escapeForLogfmt(value: string): string {
     .replaceAll('\n', String.raw`\n`)
 }
 
+interface SeparateLogResult<T extends object> {
+  responseLog: Record<string, T[keyof T]>
+  responseMessage: Record<string, T[keyof T]>
+}
+
 /**
  * Separates log data from an object
  *
@@ -26,16 +31,9 @@ export function escapeForLogfmt(value: string): string {
  */
 export function separateLogFromResponseObj<T extends object>(
   obj: T,
-): {
-  responseLog: Record<string, T[keyof T]>
-  responseMessage: Record<string, T[keyof T]>
-} {
-  const responseLog: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
-  const responseMessage: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
+): SeparateLogResult<T> {
+  const responseLog: SeparateLogResult<T>['responseLog'] = {}
+  const responseMessage: SeparateLogResult<T>['responseMessage'] = {}
 
   Object.getOwnPropertyNames(obj).forEach((objKey) => {
     if (errorTypeStrings.includes(objKey)) {
@@ -82,7 +80,7 @@ export function objToLogfmt(obj: object): string {
         formattedValue = escapeForLogfmt(formattedValue)
       }
 
-      return `${key}="${formattedValue}"`
+      return `${key}="${String(formattedValue)}"`
     })
     .join(' ')
 }
@@ -103,7 +101,7 @@ function httpExceptionToObj(
       method: methodName,
       stack: error.stack,
     }
-  } catch (parseError) {
+  } catch {
     return {
       errorType: error.name,
       message: error.message,
@@ -158,6 +156,7 @@ export function toLogfmt(input: unknown): string {
   if (typeof input === 'string') {
     return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
   }
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   return `message="${escapeForLogfmt(input.toString())}"`
 }
 
@@ -174,7 +173,7 @@ export function symbolKeysToStrings(obj: object): Record<string, unknown> {
     if (description) {
       const encodedKey = errorTypeKeys[description]
       if (encodedKey) {
-        response[encodedKey] = (obj as any)[symbol]
+        response[encodedKey] = Reflect.get(obj, symbol)
       }
     }
   })

@@ -51,11 +51,11 @@ describe('NorisValidatorSubservice', () => {
     expect(service).toBeDefined()
   })
 
-  describe('validateNorisData', () => {
+  describe('validateSingleNorisData', () => {
     describe('payments', () => {
       describe('valid', () => {
         it('should validate valid payment', () => {
-          const result = service.validateNorisData(
+          const result = service.validateSingleNorisData(
             NorisTaxPaymentSchema,
             testPaymentValid,
           )
@@ -63,7 +63,7 @@ describe('NorisValidatorSubservice', () => {
         })
 
         it('should not throw for string value of uhrazeno, and parse it as number', () => {
-          const result = service.validateNorisData(
+          const result = service.validateSingleNorisData(
             NorisTaxPaymentSchema,
             testPaymentStringUhrazeno,
           )
@@ -77,14 +77,14 @@ describe('NorisValidatorSubservice', () => {
       describe('invalid', () => {
         it('should throw error for invalid variable symbol, and alert in grafana', () => {
           expect(() => {
-            service.validateNorisData(
+            service.validateSingleNorisData(
               NorisTaxPaymentSchema,
               testPaymentInvalidVariabilnySymbol,
             )
           }).toThrow(HttpException)
 
           try {
-            service.validateNorisData(
+            service.validateSingleNorisData(
               NorisTaxPaymentSchema,
               testPaymentInvalidVariabilnySymbol,
             )
@@ -103,15 +103,18 @@ describe('NorisValidatorSubservice', () => {
       describe('valid', () => {
         it('should validate valid real estate taxes', () => {
           validNorisRealEstateTaxes.forEach((tax) => {
-            service.validateNorisData(NorisRealEstateTaxSchema, tax)
+            service.validateSingleNorisData(NorisRealEstateTaxSchema, tax)
             expect(true).toBe(true)
           })
         })
 
         it('should parse uhrazeno as number', () => {
-          const result = service.validateNorisData(NorisRealEstateTaxSchema, {
-            ...testRealEstateTax3,
-          })
+          const result = service.validateSingleNorisData(
+            NorisRealEstateTaxSchema,
+            {
+              ...testRealEstateTax3,
+            },
+          )
           expect(result).toEqual({
             ...testRealEstateTax3,
             uhrazeno: 450.75,
@@ -123,11 +126,11 @@ describe('NorisValidatorSubservice', () => {
         it('should throw error for invalid tax', () => {
           invalidNorisRealEstateTaxes.forEach((tax) => {
             expect(() => {
-              service.validateNorisData(NorisRealEstateTaxSchema, tax)
+              service.validateSingleNorisData(NorisRealEstateTaxSchema, tax)
             }).toThrow(HttpException)
 
             try {
-              service.validateNorisData(NorisRealEstateTaxSchema, tax)
+              service.validateSingleNorisData(NorisRealEstateTaxSchema, tax)
             } catch (error) {
               const response = (error as HttpException).getResponse() as Record<
                 symbol | string,
@@ -140,14 +143,14 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw error containing the field name that is invalid', () => {
           expect(() => {
-            service.validateNorisData(
+            service.validateSingleNorisData(
               NorisRealEstateTaxSchema,
               invalidNorisRealEstateTax1,
             )
           }).toThrow(HttpException)
 
           try {
-            service.validateNorisData(
+            service.validateSingleNorisData(
               NorisRealEstateTaxSchema,
               invalidNorisRealEstateTax1,
             )
@@ -167,13 +170,13 @@ describe('NorisValidatorSubservice', () => {
       describe('valid', () => {
         it('should validate valid communal waste taxes', () => {
           validNorisCommunalWasteTaxes.forEach((tax) => {
-            service.validateNorisData(NorisCommunalWasteTaxSchema, tax)
+            service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax)
             expect(true).toBe(true)
           })
         })
 
         it('should parse uhrazeno as number', () => {
-          const result = service.validateNorisData(
+          const result = service.validateSingleNorisData(
             NorisCommunalWasteTaxSchema,
             {
               ...testCommunalWasteTax1,
@@ -187,7 +190,7 @@ describe('NorisValidatorSubservice', () => {
         })
 
         it('should pass for cancelled tax as well', () => {
-          const result = service.validateNorisData(
+          const result = service.validateSingleNorisData(
             NorisCommunalWasteTaxSchema,
             {
               ...testCommunalWasteTax1,
@@ -205,11 +208,11 @@ describe('NorisValidatorSubservice', () => {
         it('should throw error for invalid tax', () => {
           invalidNorisCommunalWasteTaxes.forEach((tax) => {
             expect(() => {
-              service.validateNorisData(NorisCommunalWasteTaxSchema, tax)
+              service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax)
             }).toThrow(HttpException)
 
             try {
-              service.validateNorisData(NorisCommunalWasteTaxSchema, tax)
+              service.validateSingleNorisData(NorisCommunalWasteTaxSchema, tax)
             } catch (error) {
               const response = (error as HttpException).getResponse() as Record<
                 symbol | string,
@@ -222,14 +225,14 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw error containing the field name that is invalid', () => {
           expect(() => {
-            service.validateNorisData(
+            service.validateSingleNorisData(
               NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax1,
             )
           }).toThrow(HttpException)
 
           try {
-            service.validateNorisData(
+            service.validateSingleNorisData(
               NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax1,
             )
@@ -245,7 +248,7 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw for invalid stav_dokladu', () => {
           expect(() => {
-            service.validateNorisData(NorisCommunalWasteTaxSchema, {
+            service.validateSingleNorisData(NorisCommunalWasteTaxSchema, {
               ...testCommunalWasteTax1,
               stav_dokladu: 'invalid',
             })
@@ -254,7 +257,7 @@ describe('NorisValidatorSubservice', () => {
 
         it('should throw error for invalid forma_uhrady', () => {
           expect(() => {
-            service.validateNorisData(
+            service.validateSingleNorisData(
               NorisCommunalWasteTaxSchema,
               invalidNorisCommunalWasteTax3,
             )

@@ -22,6 +22,8 @@ import { get as getAppRootDir } from 'app-root-dir'
 
 const appRootDir = getAppRootDir()
 const tempDir = join(appRootDir, '.temp-clients')
+const sourceRootDir = join(appRootDir, 'src')
+const tempSourceRootDir = join(tempDir, 'src')
 
 function getAllFiles(dir: string): string[] {
   const files: string[] = []
@@ -102,7 +104,7 @@ async function generateAndCompare() {
   for (const type of validTypes) {
     console.log(`Generating ${type} client...`)
     try {
-      await generateClient(type as ValidType, { rootDir: tempDir })
+      await generateClient(type as ValidType, { rootDir: tempSourceRootDir })
     } catch (error) {
       console.error(`Failed to generate client for ${type}:`, error)
       process.exit(1)
@@ -110,8 +112,8 @@ async function generateAndCompare() {
   }
 
   for (const type of validTypes) {
-    const originalPath = join(appRootDir, type)
-    const newPath = join(tempDir, type)
+    const originalPath = join(sourceRootDir, type)
+    const newPath = join(tempSourceRootDir, type)
 
     if (!existsSync(originalPath)) {
       console.log(chalk.yellow(`⚠️  No existing client found for ${type}`))

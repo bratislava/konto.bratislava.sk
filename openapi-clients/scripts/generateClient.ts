@@ -199,7 +199,8 @@ const removeDocsAndCleanupFiles = (type: ValidType, outputDir: string) => {
 
 export const generateClient = async (type: ValidType, options: GenerateClientOptions = {}) => {
   await checkOpenApiGeneratorVersion()
-  const outputDir = path.join(options.rootDir ?? appRootDir, type)
+  const clientsRootDir = options.rootDir ?? path.join(appRootDir, 'src')
+  const outputDir = path.join(clientsRootDir, type)
   const url = options.localUrl ? getLocalEndpoint(type, options.localUrl) : endpoints[type]
 
   try {

@@ -230,6 +230,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 isRequired
                 label={t('auth.fields.given_name_label')}
                 placeholder={t('auth.fields.given_name_placeholder')}
+                helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
                 capitalize
                 {...field}
@@ -245,6 +246,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 isRequired
                 label={t('auth.fields.family_name_label')}
                 placeholder={t('auth.fields.family_name_placeholder')}
+                helptext={t('auth.fields.family_name_helptext')}
                 autoComplete="family-name"
                 capitalize
                 {...field}

@@ -82,9 +82,7 @@ export class BloomreachOutboxService {
       const commands = this.payloadBuilder.buildConsentEventCommands(gdprData, cognitoId)
 
       await Promise.all(
-        commands.map(({ commandData }) =>
-          this.upsertPendingEventCommand(cognitoId, commandData)
-        )
+        commands.map(({ commandData }) => this.upsertPendingEventCommand(cognitoId, commandData))
       )
 
       this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${cognitoId}`)

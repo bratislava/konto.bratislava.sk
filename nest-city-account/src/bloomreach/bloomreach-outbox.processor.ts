@@ -10,6 +10,8 @@ import {
   BloomreachBatchCommand,
   BloomreachBatchResponse,
   BloomreachCommandNameEnum,
+  BloomreachCustomerCommandData,
+  BloomreachEventCommandData,
 } from './bloomreach.types'
 import axios from 'axios'
 
@@ -115,9 +117,9 @@ export class BloomreachOutboxProcessor {
             toLogfmt({ failedIds: failedEntries.map((e) => e.id) })
           )
         )
-        await this.rollbackEntries(
+        await this.revertEntries(
           failedEntries,
-          new Error('Bloomreach batch API returned success=false for command')
+          'Bloomreach batch API returned success=false for command'
         )
       }
 
@@ -134,20 +136,26 @@ export class BloomreachOutboxProcessor {
         )
       )
 
-      await this.rollbackEntries(entries, error)
+      await this.revertEntries(entries, error instanceof Error ? error.message : String(error))
     }
   }
 
   /**
-   * Marks entries back to PENDING for retry, or FAILED if max attempts reached.
-   * Uses allSettled so one DB failure doesn't block the rest — any entries left
-   * in PROCESSING will be recovered by recoverStaleProcessingEntries.
+   * Reverts PROCESSING entries back to PENDING, or marks them FAILED if:
+   * - max attempts reached, or
+   * - a newer PENDING entry exists for the same dedup key (superseded).
+   *
+   * For superseded `customers` commands, merges old data into the newer entry
+   * (mirroring write-time merge that was skipped while the entry was PROCESSING).
+   *
+   * Uses allSettled so one DB failure doesn't block the rest.
    */
-  private async rollbackEntries(entries: BloomreachOutbox[], error: unknown): Promise<void> {
-    const errorMessage = error instanceof Error ? error.message : String(error)
+  private async revertEntries(entries: BloomreachOutbox[], errorMessage?: string): Promise<void> {
+    const supersededIds = await this.findSupersededEntriesAndMerge(entries)
 
     const results = await Promise.allSettled(
       entries.map((entry) => {
+        const superseded = supersededIds.has(entry.id)
         const newAttempts = entry.attempts + 1
         const exhausted = newAttempts >= MAX_ATTEMPTS
 
@@ -164,25 +172,97 @@ export class BloomreachOutboxProcessor {
         return this.prisma.bloomreachOutbox.update({
           where: { id: entry.id },
           data: {
-            status: exhausted ? BloomreachOutboxStatus.FAILED : BloomreachOutboxStatus.PENDING,
+            status:
+              superseded || exhausted
+                ? BloomreachOutboxStatus.FAILED
+                : BloomreachOutboxStatus.PENDING,
             attempts: newAttempts,
-            lastError: errorMessage,
+            lastError: superseded ? 'Superseded by newer PENDING entry' : errorMessage,
           },
         })
       })
     )
 
-    const rollbackFailures = results.filter((r) => r.status === 'rejected')
-    if (rollbackFailures.length > 0) {
+    const revertFailures = results.filter((r) => r.status === 'rejected')
+    if (revertFailures.length > 0) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to rollback ${rollbackFailures.length}/${entries.length} entries`,
+          `Failed to revert ${revertFailures.length}/${entries.length} entries`,
           toLogfmt({ entryIds: entries.map((e) => e.id) }),
-          (rollbackFailures[0] as PromiseRejectedResult).reason
+          (revertFailures[0] as PromiseRejectedResult).reason
         )
       )
     }
+  }
+
+  /**
+   * Finds entries that have been superseded by a newer PENDING entry for the same dedup key.
+   * For superseded `customers` commands, merges old data into the newer PENDING entry
+   * (newer values take precedence, matching the write-time merge logic).
+   * For `customers/events` commands: no merge needed — the newer entry fully replaces.
+   */
+  private async findSupersededEntriesAndMerge(entries: BloomreachOutbox[]): Promise<Set<string>> {
+    const supersededIds = new Set<string>()
+
+    await Promise.all(
+      entries.map(async (entry) => {
+        const baseWhere = {
+          cognitoId: entry.cognitoId,
+          commandName: entry.commandName,
+          status: BloomreachOutboxStatus.PENDING,
+        }
+
+        const { commandData } = entry
+
+        let where
+        if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS_EVENTS) {
+          const eventData = commandData as BloomreachEventCommandData
+          where = {
+            ...baseWhere,
+            AND: [
+              { commandData: { path: ['event_type'], equals: eventData.event_type } },
+              {
+                commandData: {
+                  path: ['properties', 'category'],
+                  equals: eventData.properties.category,
+                },
+              },
+            ],
+          }
+        } else {
+          where = baseWhere
+        }
+
+        await this.prisma.$transaction(async (tx) => {
+          const newer = await tx.bloomreachOutbox.findFirst({ where })
+
+          if (!newer) {
+            return
+          }
+
+          // For customers commands, merge the old entry's data into the newer one
+          // (newer values take precedence, matching the write-time merge logic)
+          if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS) {
+            const oldData = commandData as BloomreachCustomerCommandData
+            const newerData = newer.commandData as BloomreachCustomerCommandData
+            await tx.bloomreachOutbox.update({
+              where: { id: newer.id },
+              data: {
+                commandData: {
+                  customer_ids: { ...oldData.customer_ids, ...newerData.customer_ids },
+                  properties: { ...oldData.properties, ...newerData.properties },
+                },
+              },
+            })
+          }
+
+          supersededIds.add(entry.id)
+        })
+      })
+    )
+
+    return supersededIds
   }
 
   /**
@@ -191,17 +271,20 @@ export class BloomreachOutboxProcessor {
    */
   private async recoverStaleProcessingEntries(): Promise<void> {
     const threshold = new Date(Date.now() - STALE_PROCESSING_THRESHOLD_MS)
-    const { count } = await this.prisma.bloomreachOutbox.updateMany({
+    const staleEntries = await this.prisma.bloomreachOutbox.findMany({
       where: {
         status: BloomreachOutboxStatus.PROCESSING,
         updatedAt: { lt: threshold },
       },
-      data: { status: BloomreachOutboxStatus.PENDING },
     })
 
-    if (count > 0) {
-      this.logger.warn(`Recovered ${count} stale PROCESSING entries`)
+    if (staleEntries.length === 0) {
+      return
     }
+
+    await this.revertEntries(staleEntries)
+
+    this.logger.warn(`Recovered ${staleEntries.length} stale PROCESSING entries`)
   }
 
   private async sendBatch(commands: BloomreachBatchCommand[]): Promise<BloomreachBatchResponse> {

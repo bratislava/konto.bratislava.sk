@@ -7,7 +7,12 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import prismaMock from '../../../test/singleton'
 import { BloomreachOutboxService } from '../bloomreach-outbox.service'
 import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
-import { BloomreachCommandNameEnum } from '../bloomreach.types'
+import {
+  BloomreachCommandNameEnum,
+  BloomreachConsentActionEnum,
+  BloomreachConsentCategoryEnum,
+  BloomreachEventNameEnum,
+} from '../bloomreach.types'
 
 describe('BloomreachOutboxService', () => {
   let service: BloomreachOutboxService
@@ -92,7 +97,13 @@ describe('BloomreachOutboxService', () => {
 
     it('should update existing PENDING entry instead of creating a new one', async () => {
       payloadBuilder.buildCustomerCommand.mockResolvedValue(mockCustomerCommand)
-      const existingEntry = { id: 'existing-id' }
+      const existingEntry = {
+        id: 'existing-id',
+        commandData: {
+          customer_ids: { city_account_id: cognitoId },
+          properties: { phone: '0900000000' },
+        },
+      }
       const txMock = createMock<PrismaService>()
       txMock.bloomreachOutbox.findFirst.mockResolvedValue(existingEntry as any)
       prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
@@ -101,7 +112,12 @@ describe('BloomreachOutboxService', () => {
 
       expect(txMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'existing-id' },
-        data: { commandData: mockCustomerCommand.commandData },
+        data: {
+          commandData: {
+            customer_ids: { city_account_id: cognitoId },
+            properties: { phone: '0900000000', email: 'test@example.com' },
+          },
+        },
       })
       expect(txMock.bloomreachOutbox.create).not.toHaveBeenCalled()
     })
@@ -141,6 +157,51 @@ describe('BloomreachOutboxService', () => {
       prismaMock.bloomreachOutbox.createMany.mockRejectedValue(new Error('DB error'))
 
       await expect(service.trackEventConsents(gdprData, cognitoId)).resolves.toBeUndefined()
+    })
+
+    it('should override a pending subscribe with an unsubscribe for the same event_type and category', async () => {
+      const subscribeCommandData = {
+        customer_ids: { city_account_id: cognitoId },
+        event_type: BloomreachEventNameEnum.CONSENT,
+        properties: {
+          action: BloomreachConsentActionEnum.ACCEPT,
+          category: BloomreachConsentCategoryEnum.ESBS_MARKETING,
+          valid_until: 'unlimited',
+        },
+      }
+
+      const unsubscribeCommandData = {
+        customer_ids: { city_account_id: cognitoId },
+        event_type: BloomreachEventNameEnum.CONSENT,
+        properties: {
+          action: BloomreachConsentActionEnum.REJECT,
+          category: BloomreachConsentCategoryEnum.ESBS_MARKETING,
+          valid_until: 'unlimited',
+        },
+      }
+
+      const existingEntry = { id: 'pending-subscribe-id', commandData: subscribeCommandData }
+      const txMock = createMock<PrismaService>()
+      txMock.bloomreachOutbox.findFirst.mockResolvedValue(existingEntry as any)
+      prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
+
+      payloadBuilder.buildConsentEventCommands.mockReturnValue([
+        {
+          commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+          commandData: unsubscribeCommandData,
+        },
+      ])
+
+      await service.trackEventConsents(
+        [{ type: GDPRTypeEnum.MARKETING, category: GDPRCategoryEnum.ESBS, subType: GDPRSubTypeEnum.unsubscribe }],
+        cognitoId
+      )
+
+      expect(txMock.bloomreachOutbox.update).toHaveBeenCalledWith({
+        where: { id: 'pending-subscribe-id' },
+        data: { commandData: unsubscribeCommandData },
+      })
+      expect(txMock.bloomreachOutbox.create).not.toHaveBeenCalled()
     })
   })
 

@@ -48,20 +48,27 @@ export class BloomreachOutboxProcessor {
     const entries = await this.prisma.$queryRaw<BloomreachOutbox[]>
     //language=postgresql
     `
-        WITH claimed AS
-                 (SELECT "id"
-                  FROM "BloomreachOutbox"
-                  WHERE "status" = ${BloomreachOutboxStatus.PENDING}::"BloomreachOutboxStatus"
-                    AND "updatedAt" + (${RETRY_BACKOFF_BASE_MS} * (2 ^ GREATEST("attempts" - 1, 0))) *
-                                      INTERVAL '1 millisecond' < ${now}
-                  ORDER BY "createdAt" ASC
-                  LIMIT ${BATCH_SIZE} FOR UPDATE SKIP LOCKED)
-        UPDATE "BloomreachOutbox" b
-        SET "status"    = ${BloomreachOutboxStatus.PROCESSING}::"BloomreachOutboxStatus",
-            "updatedAt" = ${now}
-        FROM claimed
-        WHERE b."id" = claimed."id"
-        RETURNING b.*
+    WITH claimed AS
+        (SELECT "id"
+         FROM
+             "BloomreachOutbox"
+         WHERE
+             "status" = ${BloomreachOutboxStatus.PENDING}::"BloomreachOutboxStatus"
+             AND "updatedAt" +
+                 (${RETRY_BACKOFF_BASE_MS} * (2 ^ GREATEST("attempts" - 1, 0))) *
+                     INTERVAL '1 millisecond' < ${now}
+         ORDER BY "createdAt"
+         LIMIT ${BATCH_SIZE}
+         FOR UPDATE)
+    UPDATE "BloomreachOutbox" b
+    SET
+        "status"    = ${BloomreachOutboxStatus.PROCESSING}::"BloomreachOutboxStatus",
+        "updatedAt" = ${now}
+    FROM
+        claimed
+    WHERE
+        b."id" = claimed."id"
+    RETURNING b.*
     `
 
     if (entries.length === 0) {

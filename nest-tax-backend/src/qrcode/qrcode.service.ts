@@ -29,7 +29,7 @@ export class QrCodeService {
           },
           currencyCode: 'EUR',
           variableSymbol: qrCodeData.variableSymbol,
-          paymentNote: qrCodeData.paymentNote || 'QR_WEB', // TODO we want to delete QR_WEB eventually
+          paymentNote: qrCodeData.paymentNote || 'QR_WEB',
         },
       ],
     }

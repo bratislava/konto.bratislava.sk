@@ -194,7 +194,8 @@ export class PaymentService {
           payment_source: taxPayment.source ?? TaxPaymentSource.BANK_ACCOUNT,
           year: taxPayment.tax.year,
           tax_type: taxPayment.tax.type,
-          order: taxPayment.tax.order!, // non-null by DB trigger and constraint
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
+          order: taxPayment.tax.order!,
           suppress_email: false,
         },
         externalId,
@@ -269,7 +270,6 @@ export class PaymentService {
       const strategy = this.getProcessingStrategy(PRCODE)
       const currentStatus = taxPaymentWithTax.status
       const { year, order, type } = taxPaymentWithTax.tax
-      const redirectBase = `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
 
       if (strategy.shouldAlert) {
         this.logger.warn({
@@ -318,17 +318,6 @@ export class PaymentService {
             },
           },
         })
-        if (!taxPayment) {
-          this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-              CustomErrorNorisTypesResponseEnum.DATABASE_ERROR,
-              undefined,
-              `Database did not return an update TaxPayment after nextStatus was set. ORDERID: ${ORDERNUMBER}, STATUS: ${nextStatus}`,
-            ),
-          )
-          return redirectBase
-        }
       } else {
         taxPayment = taxPaymentWithTax
       }

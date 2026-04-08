@@ -40,7 +40,6 @@ export const RealEstateTaxDetailSchema = z.object({
   ),
 })
 
-// TODO test if real data matches this data, as well as tax mocks (enum/int..?)
 export const CommunalWasteTaxDetailSchema = z.object({
   type: z.literal(TaxType.KO),
   addresses: z.array(
@@ -68,10 +67,10 @@ export type CommunalWasteTaxDetail = z.infer<
 >
 
 export type RealEstateTaxDetail = z.infer<typeof RealEstateTaxDetailSchema>
-export type TaxDetail = RealEstateTaxDetail | CommunalWasteTaxDetail
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace PrismaJson {
-    type TaxDetailType = TaxDetail
+    type TaxDetailType = RealEstateTaxDetail | CommunalWasteTaxDetail
   }
 }

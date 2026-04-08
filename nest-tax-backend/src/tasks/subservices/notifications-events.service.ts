@@ -150,6 +150,7 @@ export default class NotificationsEventsService {
         const eventData = {
           year: tax.year,
           tax_type: tax.type,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- tax.order is guaranteed to be not null by database constraint
           order: tax.order!,
           installment_order: installmentInfo.order,
           due_date_type: dueDateType,
@@ -313,6 +314,7 @@ export default class NotificationsEventsService {
           userDataFromCityAccount[tax.taxPayer.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           await this.bloomreachService.trackEventUnpaidTaxReminder(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- tax.order is guaranteed to be not null by database constraint
             { year: tax.year, tax_type: tax.type, order: tax.order! },
             userFromCityAccount.externalId,
           )

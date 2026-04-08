@@ -25,8 +25,6 @@ export default class SftpFileSubservice {
   async getNewFiles(from?: Date) {
     const sftp = new SFTPClient()
 
-    const newFileContents: { name: string; content: string }[] = []
-
     try {
       await sftp.connect({
         host: this.configService.getOrThrow<string>('REPORTING_SFTP_HOST'),
@@ -43,21 +41,19 @@ export default class SftpFileSubservice {
         ? this.filterFilesBeforeDate(sftpFiles, from)
         : await this.filterAlreadyReportedFiles(sftpFiles)
 
-      // Get contents of all new files
-      for (const fileName of newFiles) {
-        const filePath = path.join(
-          this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
-          fileName,
-        )
-
-        // eslint-disable-next-line no-await-in-loop
-        const fileContent = await sftp.get(filePath)
-        newFileContents.push({
-          name: fileName,
-          // eslint-disable-next-line @typescript-eslint/no-base-to-string
-          content: fileContent.toString('utf8'), // Assuming you want the content as a string
-        })
-      }
+      return await Promise.all(
+        newFiles.map(async (fileName) => {
+          const filePath = path.join(
+            this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
+            fileName,
+          )
+          const fileContent = await sftp.get(filePath)
+          if (!Buffer.isBuffer(fileContent)) {
+            throw new Error(`Expected Buffer for file ${fileName}`)
+          }
+          return { name: fileName, content: fileContent.toString('utf8') }
+        }),
+      )
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -69,7 +65,6 @@ export default class SftpFileSubservice {
     } finally {
       await sftp.end()
     }
-    return newFileContents
   }
 
   private filterFilesBeforeDate(sftpFiles: FileInfo[], from: Date) {

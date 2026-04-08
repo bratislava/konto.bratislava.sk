@@ -9,28 +9,10 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
-import { CardPaymentReportingService } from '../card-payment-reporting.service'
-
-const csvColumnNames = [
-  'transactionType',
-  'terminalId',
-  'transactionId',
-  'transactionType_',
-  'date',
-  'totalPrice',
-  'provision',
-  'priceWithoutProvision',
-  'cashBack',
-  'authCode',
-  'cardNumber',
-  'cardType',
-  'closureId',
-  'orderId',
-] as const
-
-type CsvColumns = (typeof csvColumnNames)[number]
-
-type CsvRecord = Record<CsvColumns, string>
+import {
+  CardPaymentReportingService,
+  type CsvRecord,
+} from '../card-payment-reporting.service'
 
 describe('CardPaymentReportingService', () => {
   let service: CardPaymentReportingService

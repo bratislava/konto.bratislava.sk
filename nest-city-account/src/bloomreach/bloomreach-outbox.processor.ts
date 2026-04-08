@@ -58,9 +58,10 @@ export class BloomreachOutboxProcessor {
              "BloomreachOutbox"
          WHERE
              "status" = ${BloomreachOutboxStatus.PENDING}::"BloomreachOutboxStatus"
-             AND "updatedAt" +
-                 (${RETRY_BACKOFF_BASE_MS} * (2 ^ GREATEST("attempts" - 1, 0))) *
-                     INTERVAL '1 millisecond' < ${now}
+             AND ("attempts" = 0
+                  OR "updatedAt" +
+                     (${RETRY_BACKOFF_BASE_MS} * (2 ^ GREATEST("attempts" - 1, 0))) *
+                         INTERVAL '1 millisecond' < ${now})
          ORDER BY "createdAt"
          LIMIT ${BATCH_SIZE}
          FOR UPDATE)

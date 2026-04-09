@@ -5,7 +5,6 @@ import {
   NestInterceptor,
   PayloadTooLargeException,
 } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import multer from 'multer'
@@ -15,6 +14,7 @@ import FormsService from '../forms/forms.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 import FilesHelper from './files.helper'
+import BaConfigService from '../config/ba-config.service'
 
 /**
  * Conservative overhead allowance for multipart boundaries, headers, and the other form fields
@@ -41,7 +41,7 @@ const MULTIPART_OVERHEAD_BYTES = 10_000
 export class FileUploadInterceptor implements NestInterceptor {
   constructor(
     private readonly formsService: FormsService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly filesHelper: FilesHelper,
   ) {}
@@ -99,7 +99,9 @@ export class FileUploadInterceptor implements NestInterceptor {
   }
 
   private async resolveLimit(req: Request): Promise<number> {
-    const globalMax = this.configService.get<number>('MAX_FILE_SIZE')!
+    const globalMax = this.baConfigService.fileLimits.maxSingleSizeGlobal
+    const globalCumulativeMax =
+      this.baConfigService.fileLimits.maxCumulativeSizeGlobal
 
     const { formId } = req.params
     if (!formId) {
@@ -114,14 +116,10 @@ export class FileUploadInterceptor implements NestInterceptor {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     const perFileMax = formDefinition?.maxFileSize ?? globalMax
 
-    if (formDefinition?.maxTotalFileSize != null) {
-      const currentTotal =
-        await this.filesHelper.getActiveFilesTotalSize(formId)
-      const remainingBudget = formDefinition.maxTotalFileSize - currentTotal
+    const currentTotal = await this.filesHelper.getActiveFilesTotalSize(formId)
+    const remainingBudget =
+      formDefinition?.maxTotalFileSize ?? globalCumulativeMax - currentTotal
 
-      return Math.max(0, Math.min(perFileMax, remainingBudget))
-    }
-
-    return perFileMax
+    return Math.max(0, Math.min(perFileMax, remainingBudget))
   }
 }

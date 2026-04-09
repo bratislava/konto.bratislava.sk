@@ -67,7 +67,6 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             isRequired
             label={t('auth.fields.old_password_label')}
-            placeholder={t('auth.fields.old_password_placeholder')}
             {...field}
             errorMessage={errors.oldPassword}
           />
@@ -81,7 +80,6 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
             isRequired
             autoComplete="new-password"
             label={t('auth.fields.new_password_label')}
-            placeholder={t('auth.fields.new_password_placeholder')}
             helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}

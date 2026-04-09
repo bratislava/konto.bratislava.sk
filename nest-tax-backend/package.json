@@ -37,7 +37,7 @@
     "@prisma/client": "6.17.1",
     "@types/mssql": "^9.1.9",
     "axios": "^1.13.6",
-    "bysquare": "2.1.0",
+    "bysquare": "4.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.4",
     "csv-parse": "^6.1.0",
@@ -94,7 +94,11 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.ts$": "ts-jest"
+      "^.+\\.(t|j)s$": ["ts-jest", { "tsconfig": "tsconfig.spec.json" }]
+    },
+    "transformIgnorePatterns": ["node_modules/(?!(bysquare|lzma1)/)"],
+    "moduleNameMapper": {
+      "^lzma1$": "<rootDir>/../node_modules/lzma1/lib/index.js"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

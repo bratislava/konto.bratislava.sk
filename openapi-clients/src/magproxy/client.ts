@@ -40,3 +40,5 @@ export const createMagproxyClient = ({
     ...RSDRegisterSocilnychDvokApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

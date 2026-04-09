@@ -1,4 +1,10 @@
-import { HealthApiFactory, ScannerApiFactory, StatusesApiFactory } from './api'
+import {
+  AdminApiFactory,
+  CardPaymentReportingApiFactory,
+  DefaultApiFactory,
+  PaymentApiFactory,
+  TaxApiFactory,
+} from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
 import type { AxiosInstance } from 'axios'
 
@@ -8,9 +14,9 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type ClamavScannerClient = ReturnType<typeof createClamavScannerClient>
+export type TaxClient = ReturnType<typeof createTaxClient>
 
-export const createClamavScannerClient = ({
+export const createTaxClient = ({
   basePath,
   configurationParameters = {},
   axios,
@@ -19,8 +25,12 @@ export const createClamavScannerClient = ({
   const args = [configuration, basePath, axios] as const
 
   return {
-    ...HealthApiFactory(...args),
-    ...ScannerApiFactory(...args),
-    ...StatusesApiFactory(...args),
+    ...AdminApiFactory(...args),
+    ...CardPaymentReportingApiFactory(...args),
+    ...DefaultApiFactory(...args),
+    ...PaymentApiFactory(...args),
+    ...TaxApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

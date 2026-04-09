@@ -4,13 +4,30 @@
   "private": false,
   "license": "EUPL-1.2",
   "exports": {
-    "./city-account": "./dist/city-account/index.js",
-    "./forms": "./dist/forms/index.js",
-    "./tax": "./dist/tax/index.js",
-    "./clamav-scanner": "./dist/clamav-scanner/index.js",
-    "./slovensko-sk": "./dist/slovensko-sk/index.js",
-    "./magproxy": "./dist/magproxy/index.js",
-    "./magproxy/base": "./dist/magproxy/base.js",
+    "./city-account": {
+      "types": "./dist/city-account/index.d.ts",
+      "default": "./dist/city-account/index.js"
+    },
+    "./forms": {
+      "types": "./dist/forms/index.d.ts",
+      "default": "./dist/forms/index.js"
+    },
+    "./tax": {
+      "types": "./dist/tax/index.d.ts",
+      "default": "./dist/tax/index.js"
+    },
+    "./clamav-scanner": {
+      "types": "./dist/clamav-scanner/index.d.ts",
+      "default": "./dist/clamav-scanner/index.js"
+    },
+    "./slovensko-sk": {
+      "types": "./dist/slovensko-sk/index.d.ts",
+      "default": "./dist/slovensko-sk/index.js"
+    },
+    "./magproxy": {
+      "types": "./dist/magproxy/index.d.ts",
+      "default": "./dist/magproxy/index.js"
+    },
     "./package.json": "./package.json"
   },
   "sideEffects": false,
@@ -21,7 +38,7 @@
     "generate:clamav-scanner": "tsx scripts/generateClient.ts clamav-scanner",
     "generate:slovensko-sk": "tsx scripts/generateClient.ts slovensko-sk",
     "generate:magproxy": "tsx scripts/generateClient.ts magproxy",
-    "generate": "npm-run-all generate:forms generate:tax generate:city-account generate:clamav-scanner generate:slovensko-sk",
+    "generate": "npm-run-all generate:forms generate:tax generate:city-account generate:clamav-scanner generate:slovensko-sk generate:magproxy",
     "generate:forms:local": "tsx scripts/generateClient.ts forms --local-url localhost:3000",
     "generate:tax:local": "tsx scripts/generateClient.ts tax --local-url localhost:3000",
     "generate:city-account:local": "tsx scripts/generateClient.ts city-account --local-url localhost:3000",
@@ -37,7 +54,7 @@
     "@openapitools/openapi-generator-cli": "^2.31.0",
     "@types/app-root-dir": "^0.1.4",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.19.27",
+    "@types/node": "^24.12.2",
     "app-root-dir": "^1.0.2",
     "axios": "^1.13.6",
     "camelcase": "^9.0.0",
@@ -55,11 +72,11 @@
     "axios": "^1.13.6"
   },
   "engines": {
-    "node": ">=20.19.x",
-    "npm": ">=10.9.x"
+    "node": ">=24.14.x",
+    "npm": ">=11.11.x"
   },
   "volta": {
-    "node": "20.19.6",
-    "npm": "10.9.3"
+    "node": "24.14.1",
+    "npm": "11.11.0"
   }
 }

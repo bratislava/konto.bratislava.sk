@@ -42,3 +42,5 @@ export const createCityAccountClient = ({
     ...UsersManipulationApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

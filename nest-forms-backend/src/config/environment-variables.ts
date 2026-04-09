@@ -223,4 +223,10 @@ export default class EnvironmentVariables {
 
   @EnvBoolean()
   FEATURE_TOGGLE_VERSIONING: boolean
+
+  @EnvInt(0)
+  MAX_FILE_SIZE: number
+
+  @EnvInt(0)
+  MAX_CUMULATIVE_FILE_SIZE: number
 }

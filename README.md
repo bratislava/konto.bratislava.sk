@@ -2,8 +2,6 @@
 
 Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](https://konto.bratislava.sk).
 
-> If you are an individual or a company who'd like to take part in these efforts, collaborate closely on development, or report an issue, we'd love to hear from you! 🙌 Contact us using this repository or at [innovationteam@bratislava.sk](mailto:innovationteam@bratislava.sk)
-
 ## Product specification
 
 [Product specification for city account (internal)](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)

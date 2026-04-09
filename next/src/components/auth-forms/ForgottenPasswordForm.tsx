@@ -65,7 +65,6 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
           <InputField
             isRequired
             label={t('auth.fields.email_label')}
-            placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
           />

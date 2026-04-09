@@ -33,7 +33,9 @@ export function proxy(request: NextRequest) {
 
   const connectSrc = [
     'https://faro.bratislava.sk',
+    // TODO add docs
     'https://cognito-identity.eu-central-1.amazonaws.com',
+    'https://cognito-idp.eu-central-1.amazonaws.com',
     environment.formsUrl,
     environment.cityAccountUrl,
     environment.taxesUrl,
@@ -60,12 +62,20 @@ export function proxy(request: NextRequest) {
     .filter(isDefined)
     .join(' ')
 
+  // TODO:
+  //  Remove style-src-elem and style-src-attr lines. Remove this lines to see the violations. Probably caused by
+  //   - cookiebot floating icon
+  //   - react-select uses @emotion/react internally to inject its styles as <style> tags at runtime
+  //   - style={{ '--main-scroll-top-margin': '...' }} in PageLayout.tsx
+  //  Remove "data:" from img-src. Now added for cookiebot icon button.
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isNodeEnvDevelopment ? "'unsafe-eval'" : ''};
     style-src 'self' ${isNodeEnvDevelopment ? "'unsafe-inline'" : `'nonce-${nonce}'`};
+    style-src-elem 'self' 'unsafe-inline';
+    style-src-attr 'self' 'unsafe-inline';
     connect-src 'self' ${connectSrc};
-    img-src 'self' blob:;
+    img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
     base-uri 'self';

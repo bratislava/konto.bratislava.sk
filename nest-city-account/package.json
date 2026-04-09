@@ -61,7 +61,7 @@
     "passport-jwt": "^4.0.1",
     "pg-promise": "^12.6.1",
     "playwright": "^1.58.2",
-    "rodnecislo": "^1.6.0",
+    "rodnecislo": "^1.8.0",
     "uuid": "^11.1.0",
     "zod": "^4.3.6"
   },
@@ -110,8 +110,11 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.ts$": "ts-jest"
+      "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(rodnecislo)/)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],

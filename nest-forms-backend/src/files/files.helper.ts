@@ -3,7 +3,10 @@ import { createHash } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, Forms, Prisma } from '@prisma/client'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
 
@@ -444,7 +447,10 @@ export default class FilesHelper {
     return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
   }
 
-  forms2formInfo(form: Forms): FormInfo {
+  forms2formInfo(form: Forms): {
+    formInfo: FormInfo
+    formDefinition: FormDefinition
+  } {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -454,11 +460,34 @@ export default class FilesHelper {
     }
 
     return {
-      pospIdOrSlug: isSlovenskoSkFormDefinition(formDefinition)
-        ? formDefinition.pospID
-        : formDefinition.slug,
-      formId: form.id,
+      formInfo: {
+        pospIdOrSlug: isSlovenskoSkFormDefinition(formDefinition)
+          ? formDefinition.pospID
+          : formDefinition.slug,
+        formId: form.id,
+      },
+      formDefinition,
     }
+  }
+
+  async getActiveFilesTotalSize(formId: string): Promise<number> {
+    const result = await this.prisma.files.aggregate({
+      where: {
+        formId,
+        status: {
+          in: [
+            FileStatus.UPLOADED,
+            FileStatus.ACCEPTED,
+            FileStatus.QUEUED,
+            FileStatus.SCANNING,
+            FileStatus.SAFE,
+          ],
+        },
+      },
+      _sum: { fileSize: true },
+    })
+
+    return result._sum.fileSize ?? 0
   }
 
   fileDto2formInfo(files: BasicFileDto): FormInfo {

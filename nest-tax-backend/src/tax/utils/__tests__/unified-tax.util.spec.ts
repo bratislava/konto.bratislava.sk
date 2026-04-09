@@ -274,7 +274,7 @@ function expectEqualAsJsonStringsWithDates(received: object, expected: object) {
 describe('UnifiedTaxUtil', () => {
   beforeEach(() => {
     // Get the actual implementation
-    const actualModule = jest.requireActual(
+    const actualModule = jest.requireActual<{ getTaxDefinitionByType: typeof getTaxDefinitionByType }>(
       '../../../tax-definitions/getTaxDefinitionByType',
     )
 
@@ -1677,7 +1677,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
   beforeEach(() => {
     // Get the actual implementation
-    const actualModule = jest.requireActual(
+    const actualModule = jest.requireActual<{ getTaxDefinitionByType: typeof getTaxDefinitionByType }>(
       '../../../tax-definitions/getTaxDefinitionByType',
     )
 
@@ -1765,7 +1765,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
 
   it('should work when threshold is 0', () => {
     // Get the actual implementation and override just paymentCalendarThreshold
-    const actualModule = jest.requireActual(
+    const actualModule = jest.requireActual<{ getTaxDefinitionByType: typeof getTaxDefinitionByType }>(
       '../../../tax-definitions/getTaxDefinitionByType',
     )
     const actualDefinition = actualModule.getTaxDefinitionByType(TaxType.DZN)

@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
+import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factory'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -71,7 +72,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.isWithinImportWindow()
 
@@ -93,7 +94,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.isWithinImportWindow()
 
@@ -111,7 +112,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.isWithinImportWindow()
 
@@ -129,7 +130,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.isWithinImportWindow()
 
@@ -147,7 +148,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.isWithinImportWindow()
 
@@ -166,7 +167,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.isWithinImportWindow()
 
@@ -253,7 +254,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.getDailyTaxLimit()
 
@@ -269,7 +270,7 @@ describe('TaxImportHelperService', () => {
       }
       jest
         .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig as any)
+        .mockResolvedValue(mockConfig)
 
       const result = await service.getDailyTaxLimit()
 
@@ -289,16 +290,16 @@ describe('TaxImportHelperService', () => {
       const taxType = TaxType.DZN
       const year = 2024
       const mockNewlyCreated = [
-        { birthNumber: '123456/7890' },
-        { birthNumber: '111111/2222' },
+        createTestTaxPayer({ birthNumber: '123456/7890' }),
+        createTestTaxPayer({ birthNumber: '111111/2222' }),
       ]
-      const mockExisting = [{ birthNumber: '987654/3210' }]
+      const mockExisting = [createTestTaxPayer({ birthNumber: '987654/3210' })]
       jest
         .spyOn(prismaService.taxPayer, 'findMany')
-        .mockResolvedValueOnce(mockNewlyCreated as any)
+        .mockResolvedValueOnce(mockNewlyCreated)
       const queryRawSpy = jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValueOnce(mockExisting as any)
+        .mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -337,7 +338,7 @@ describe('TaxImportHelperService', () => {
       jest.spyOn(prismaService.taxPayer, 'findMany').mockResolvedValueOnce([])
       jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValueOnce(mockExisting as any)
+        .mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -368,14 +369,14 @@ describe('TaxImportHelperService', () => {
     it('should call query with import phase ordering when isImportPhase is true', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockNewlyCreated = [{ birthNumber: '111111/2222' }]
-      const mockExisting = [{ birthNumber: '123456/7890' }]
+      const mockNewlyCreated = [createTestTaxPayer({ birthNumber: '111111/2222' })]
+      const mockExisting = [createTestTaxPayer({ birthNumber: '123456/7890' })]
       jest
         .spyOn(prismaService.taxPayer, 'findMany')
-        .mockResolvedValueOnce(mockNewlyCreated as any)
+        .mockResolvedValueOnce(mockNewlyCreated)
       const queryRawSpy = jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValueOnce(mockExisting as any)
+        .mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -392,14 +393,14 @@ describe('TaxImportHelperService', () => {
     it('should call query with prepare phase ordering when isImportPhase is false', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockNewlyCreated = [{ birthNumber: '111111/2222' }]
-      const mockExisting = [{ birthNumber: '123456/7890' }]
+      const mockNewlyCreated = [createTestTaxPayer({ birthNumber: '111111/2222' })]
+      const mockExisting = [createTestTaxPayer({ birthNumber: '123456/7890' })]
       jest
         .spyOn(prismaService.taxPayer, 'findMany')
-        .mockResolvedValueOnce(mockNewlyCreated as any)
+        .mockResolvedValueOnce(mockNewlyCreated)
       const queryRawSpy = jest
         .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValueOnce(mockExisting as any)
+        .mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,

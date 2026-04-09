@@ -130,7 +130,7 @@ export class NorisService {
 
   async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
     const edeskUpdateProcessed = edeskChecks.map((edeskCheck) =>
-      this.concurrencyLimit(async () => {
+      this.concurrencyLimit(async () =>
         this.withConnection(
           async (connection) => {
             await connection
@@ -152,7 +152,7 @@ export class NorisService {
             )
           }
         )
-      })
+      )
     )
 
     await Promise.all(edeskUpdateProcessed)

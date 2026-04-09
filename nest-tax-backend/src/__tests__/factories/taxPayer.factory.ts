@@ -2,7 +2,9 @@ import { TaxPayer } from '@prisma/client'
 
 const DEFAULT_DATE = new Date('2024-01-01T00:00:00.000Z')
 
-export const createTestTaxPayer = (overrides?: Partial<TaxPayer>): TaxPayer => ({
+export const createTestTaxPayer = (
+  overrides?: Partial<TaxPayer>,
+): TaxPayer => ({
   id: 1,
   uuid: '1234567890',
   createdAt: DEFAULT_DATE,

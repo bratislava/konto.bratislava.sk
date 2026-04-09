@@ -1,6 +1,11 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, TaxType, UnpaidReminderSent } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  TaxType,
+  UnpaidReminderSent,
+} from '@prisma/client'
 import dayjs, { type Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -537,6 +542,10 @@ describe('NotificationsEventsSubservice', () => {
             taxPayer: {
               birthNumber: '123456/7890',
             },
+            // May 16, 2024 + 15 days = May 31, 2024 (Friday, not a holiday)
+            dateTaxRuling: new Date('2024-05-16'),
+            deliveryMethod: null,
+            createdAt: new Date('2024-01-01'),
           },
         ] as any)
       const trackEventUnpaidTaxInstallmentReminderMock = jest.spyOn(
@@ -560,6 +569,10 @@ describe('NotificationsEventsSubservice', () => {
           year: 2024,
           tax_type: TaxType.DZN,
           order: 1,
+          installment_order: 1,
+          due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+          due_date_month: 5,
+          due_date_day: 31,
         },
         'external-id-123',
       )
@@ -577,6 +590,10 @@ describe('NotificationsEventsSubservice', () => {
             taxPayer: {
               birthNumber: '123456/7890',
             },
+            // May 16, 2024 + 15 days = May 31, 2024 (Friday, not a holiday)
+            dateTaxRuling: new Date('2024-05-16'),
+            deliveryMethod: null,
+            createdAt: new Date('2024-01-01'),
           },
           {
             id: 2,
@@ -586,6 +603,9 @@ describe('NotificationsEventsSubservice', () => {
             taxPayer: {
               birthNumber: '123456/7891',
             },
+            dateTaxRuling: new Date('2024-05-16'),
+            deliveryMethod: null,
+            createdAt: new Date('2024-01-01'),
           },
           {
             id: 3,
@@ -595,6 +615,9 @@ describe('NotificationsEventsSubservice', () => {
             taxPayer: {
               birthNumber: '123456/7892',
             },
+            dateTaxRuling: new Date('2024-05-16'),
+            deliveryMethod: null,
+            createdAt: new Date('2024-01-01'),
           },
         ] as any)
       const trackEventUnpaidTaxInstallmentReminderMock = jest.spyOn(
@@ -642,6 +665,128 @@ describe('NotificationsEventsSubservice', () => {
           due_date_day: 31,
         },
         'external-id-2',
+      )
+    })
+  })
+
+  describe('sendUnpaidTaxReminders due date calculation', () => {
+    const birthNumber = '123456/7890'
+    const externalId = 'external-id-123'
+
+    beforeEach(() => {
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({ [birthNumber]: { externalId } } as any)
+      jest
+        .spyOn(
+          service['bloomreachService'],
+          'trackEventUnpaidTaxInstallmentReminder',
+        )
+        .mockResolvedValue(true)
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    it('should not send event when due date is in the future', async () => {
+      // Fix "now" at 2024-04-01; dateTaxRuling 2024-04-01 + 15 days = April 16 → still in future
+      jest.useFakeTimers()
+      jest.setSystemTime(new Date('2024-04-01T12:00:00.000Z'))
+
+      jest.spyOn(service['prismaService'].tax, 'findMany').mockResolvedValue([
+        {
+          id: 1,
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+          taxPayer: { birthNumber },
+          dateTaxRuling: new Date('2024-04-01'),
+          deliveryMethod: null,
+          createdAt: new Date('2024-01-01'),
+        },
+      ] as any)
+
+      await service.sendUnpaidTaxReminders()
+
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).not.toHaveBeenCalled()
+    })
+
+    it('sends correct due_date_month/day for non-CITY_ACCOUNT using dateTaxRuling', async () => {
+      // May 16, 2024 + 15 days = May 31, 2024 (Friday, not a holiday)
+      jest.spyOn(service['prismaService'].tax, 'findMany').mockResolvedValue([
+        {
+          id: 1,
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+          taxPayer: { birthNumber },
+          dateTaxRuling: new Date('2024-05-16'),
+          deliveryMethod: null,
+          createdAt: new Date('2024-01-01'),
+        },
+      ] as any)
+
+      await service.sendUnpaidTaxReminders()
+
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ due_date_month: 5, due_date_day: 31 }),
+        externalId,
+      )
+    })
+
+    it('sends correct due_date_month/day for CITY_ACCOUNT delivery using createdAt', async () => {
+      // createdAt May 16, 2024 + 15 days = May 31, 2024 (Friday, not a holiday)
+      jest.spyOn(service['prismaService'].tax, 'findMany').mockResolvedValue([
+        {
+          id: 1,
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+          taxPayer: { birthNumber },
+          dateTaxRuling: null,
+          deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
+          createdAt: new Date('2024-05-16'),
+        },
+      ] as any)
+
+      await service.sendUnpaidTaxReminders()
+
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ due_date_month: 5, due_date_day: 31 }),
+        externalId,
+      )
+    })
+
+    it('adjusts due date to next working day when it falls on a weekend', async () => {
+      // Feb 16, 2024 (Friday) + 15 days = March 2, 2024 (Saturday)
+      // → skip Saturday and Sunday → March 4, 2024 (Monday, not a holiday)
+      jest.spyOn(service['prismaService'].tax, 'findMany').mockResolvedValue([
+        {
+          id: 1,
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+          taxPayer: { birthNumber },
+          dateTaxRuling: new Date('2024-02-16'),
+          deliveryMethod: null,
+          createdAt: new Date('2024-01-01'),
+        },
+      ] as any)
+
+      await service.sendUnpaidTaxReminders()
+
+      expect(
+        bloomreachService.trackEventUnpaidTaxInstallmentReminder,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ due_date_month: 3, due_date_day: 4 }),
+        externalId,
       )
     })
   })

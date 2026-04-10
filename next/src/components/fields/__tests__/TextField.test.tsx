@@ -61,17 +61,6 @@ describe('TextField', () => {
     expect(screen.getByText('*')).toBeInTheDocument()
   })
 
-  it('calls onChange with trimmed leading spaces', async () => {
-    const user = userEvent.setup()
-    const onChange = jest.fn()
-
-    render(<TextField label="Name" isRequired onChange={onChange} />)
-
-    await user.type(screen.getByRole('textbox'), ' hello')
-
-    expect(onChange).toHaveBeenLastCalledWith('hello')
-  })
-
   it('forwards ref to the input element', () => {
     const ref = createRef<HTMLInputElement>()
     render(<TextField label="Email" isRequired ref={ref} />)

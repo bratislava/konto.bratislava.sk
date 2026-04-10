@@ -1,17 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { Radio, RadioGroup } from '../RadioGroup'
+import Radio from '../Radio'
+import RadioGroup from '../RadioGroup'
 
 jest.mock('next-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
-      const translations: Record<string, string> = {
-        'FieldHeader.optional': '(Nepovinné)',
-      }
-
-      return translations[key] ?? key
-    },
+    t: (key: string) => key,
   }),
 }))
 
@@ -34,7 +29,7 @@ describe('RadioGroup', () => {
     const onChange = jest.fn()
 
     render(
-      <RadioGroup label="Color" onChange={onChange}>
+      <RadioGroup label="Color" isRequired onChange={onChange}>
         <Radio value="red">Red</Radio>
         <Radio value="blue">Blue</Radio>
       </RadioGroup>,
@@ -63,23 +58,17 @@ describe('RadioGroup', () => {
       </RadioGroup>,
     )
 
-    expect(screen.getByRole('radiogroup')).toHaveAttribute(
-      'aria-orientation',
-      'vertical',
-    )
+    expect(screen.getByRole('radiogroup')).toHaveAttribute('aria-orientation', 'vertical')
   })
 
   it('supports horizontal orientation', () => {
     render(
-      <RadioGroup label="Color" orientation="horizontal">
+      <RadioGroup label="Color" isRequired orientation="horizontal">
         <Radio value="red">Red</Radio>
       </RadioGroup>,
     )
 
-    expect(screen.getByRole('radiogroup')).toHaveAttribute(
-      'aria-orientation',
-      'horizontal',
-    )
+    expect(screen.getByRole('radiogroup')).toHaveAttribute('aria-orientation', 'horizontal')
   })
 
   it('renders radio with description', () => {
@@ -99,16 +88,14 @@ describe('RadioGroup', () => {
     const onChange = jest.fn()
 
     render(
-      <RadioGroup label="Color" onChange={onChange}>
+      <RadioGroup label="Color" isRequired onChange={onChange}>
         <Radio value="red">Red</Radio>
         <Radio value="blue">Blue</Radio>
         <Radio value="green">Green</Radio>
       </RadioGroup>,
     )
 
-    // Focus the first radio
     await user.tab()
-    // Arrow down to select next
     await user.keyboard('{ArrowDown}')
 
     expect(onChange).toHaveBeenCalledWith('blue')

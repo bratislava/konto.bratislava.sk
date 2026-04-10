@@ -14,6 +14,7 @@ describe('mapRjsfToFieldProps', () => {
       label: 'Name',
       isRequired: true,
       isDisabled: false,
+      isReadOnly: false,
       displayOptionalLabel: true,
     })
   })
@@ -64,14 +65,15 @@ describe('mapRjsfToFieldProps', () => {
     expect(result.helptext).toBe('Plain text')
   })
 
-  it('sets isDisabled when readonly', () => {
+  it('keeps isDisabled and isReadOnly separate', () => {
     const result = mapRjsfToFieldProps(
       { label: 'Email', required: false, disabled: false, readonly: true, rawErrors: [] },
       {},
       renderMarkdown,
     )
 
-    expect(result.isDisabled).toBe(true)
+    expect(result.isDisabled).toBe(false)
+    expect(result.isReadOnly).toBe(true)
   })
 
   it('renders markdown helptextFooter via callback', () => {

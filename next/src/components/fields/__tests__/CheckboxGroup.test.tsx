@@ -1,17 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { Checkbox, CheckboxGroup } from '../CheckboxGroup'
+import Checkbox from '../Checkbox'
+import CheckboxGroup from '../CheckboxGroup'
 
 jest.mock('next-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
-      const translations: Record<string, string> = {
-        'FieldHeader.optional': '(Nepovinné)',
-      }
-
-      return translations[key] ?? key
-    },
+    t: (key: string) => key,
   }),
 }))
 
@@ -34,7 +29,7 @@ describe('CheckboxGroup', () => {
     const onChange = jest.fn()
 
     render(
-      <CheckboxGroup label="Interests" onChange={onChange}>
+      <CheckboxGroup label="Interests" isRequired onChange={onChange}>
         <Checkbox value="sports">Sports</Checkbox>
         <Checkbox value="music">Music</Checkbox>
       </CheckboxGroup>,
@@ -50,7 +45,7 @@ describe('CheckboxGroup', () => {
     const onChange = jest.fn()
 
     render(
-      <CheckboxGroup label="Interests" value={['sports']} onChange={onChange}>
+      <CheckboxGroup label="Interests" isRequired value={['sports']} onChange={onChange}>
         <Checkbox value="sports">Sports</Checkbox>
         <Checkbox value="music">Music</Checkbox>
       </CheckboxGroup>,
@@ -76,7 +71,7 @@ describe('CheckboxGroup', () => {
     const onChange = jest.fn()
 
     render(
-      <CheckboxGroup label="Interests" onChange={onChange}>
+      <CheckboxGroup label="Interests" isRequired onChange={onChange}>
         <Checkbox value="sports">Sports</Checkbox>
       </CheckboxGroup>,
     )

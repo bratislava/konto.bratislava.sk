@@ -3,33 +3,30 @@ import { forwardRef, Ref, useState } from 'react'
 import { ToggleButton as RACToggleButton } from 'react-aria-components'
 
 import { EyeHiddenIcon, EyeIcon } from '@/src/assets/ui-icons'
-import cn from '@/src/utils/cn'
 
 import TextField, { TextFieldProps } from './TextField'
 
-export interface PasswordFieldProps extends Omit<TextFieldProps, 'type' | 'endIcon'> {}
+export type PasswordFieldProps = Omit<TextFieldProps, 'type' | 'endIcon'>
 
-const PasswordField = ({ ...props }: PasswordFieldProps,
-  ref: Ref<HTMLInputElement>) => {
+const PasswordField = (props: PasswordFieldProps, ref: Ref<HTMLInputElement>) => {
   const { t } = useTranslation('account')
-  const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+  const [isHidden, setIsHidden] = useState(true)
 
   return (
     <TextField
       {...props}
       ref={ref}
-      type={isPasswordHidden ? 'password' : 'text'}
+      type={isHidden ? 'password' : 'text'}
       endIcon={
         <RACToggleButton
           aria-label={t('auth.fields.password_eyeButton.aria')}
-          isSelected={!isPasswordHidden}
-          onChange={(selected) => setIsPasswordHidden(!selected)}
+          isSelected={!isHidden}
+          onChange={(selected) => setIsHidden(!selected)}
+          // eslint-disable-next-line react/destructuring-assignment
           isDisabled={props.isDisabled}
-          className={cn(
-            'absolute inset-y-1/2 right-1 flex aspect-square h-full -translate-y-2/4 items-center justify-center',
-          )}
+          className="flex items-center justify-center px-3"
         >
-          {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}
+          {isHidden ? <EyeHiddenIcon /> : <EyeIcon />}
         </RACToggleButton>
       }
     />

@@ -18,17 +18,18 @@ interface RjsfFieldOptions {
   labelSize?: LabelSize
 }
 
-export function mapRjsfToFieldProps(
+export const mapRjsfToFieldProps = (
   widgetProps: RjsfWidgetProps,
   options: RjsfFieldOptions,
   renderMarkdown: (text: string) => ReactNode,
-): FieldBaseProps & { isRequired: boolean; isDisabled: boolean } {
+): FieldBaseProps & { isRequired: boolean; isDisabled: boolean; isReadOnly: boolean } => {
   const rawErrors = widgetProps.rawErrors?.filter(Boolean)
 
   return {
     label: widgetProps.label,
     isRequired: widgetProps.required,
-    isDisabled: widgetProps.disabled || widgetProps.readonly,
+    isDisabled: widgetProps.disabled,
+    isReadOnly: widgetProps.readonly,
     displayOptionalLabel: true,
     labelSize: options.labelSize,
     helptext:

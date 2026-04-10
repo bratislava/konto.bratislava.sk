@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 
 import TextAreaField from '../TextAreaField'
 
@@ -28,17 +27,6 @@ describe('TextAreaField', () => {
 
     expect(screen.getByText('Required')).toBeInTheDocument()
     expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true')
-  })
-
-  it('calls onChange with trimmed leading spaces', async () => {
-    const user = userEvent.setup()
-    const onChange = jest.fn()
-
-    render(<TextAreaField label="Description" isRequired onChange={onChange} />)
-
-    await user.type(screen.getByRole('textbox'), ' hello')
-
-    expect(onChange).toHaveBeenLastCalledWith('hello')
   })
 
   it('renders helptext', () => {

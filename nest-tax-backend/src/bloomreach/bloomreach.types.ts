@@ -5,7 +5,6 @@ import { INSTALLMENT_DUE_DATE_TYPE } from '../tasks/utils/types'
 export enum BloomreachEventNameEnum {
   TAX = 'tax',
   TAX_PAYMENT = 'tax_payment',
-  UNPAID_TAX_REMINDER = 'unpaid_tax_reminder',
   UNPAID_TAX_INSTALLMENT_REMINDER = 'unpaid_tax_installment_reminder',
 }
 
@@ -25,12 +24,6 @@ export interface TaxBloomreachData {
   tax_type: TaxType
   order: number
   suppress_email: boolean
-}
-
-export interface UnpaidTaxReminderBloomreachData {
-  year: number
-  tax_type: TaxType
-  order: number
 }
 
 export interface UnpaidTaxInstallmentReminderBloomreachData {

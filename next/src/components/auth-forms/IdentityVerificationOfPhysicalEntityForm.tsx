@@ -6,9 +6,9 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
+import TextField from '@/src/components/fields/TextField'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
 import { environment } from '@/src/environment'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
@@ -98,7 +98,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         name="rc"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             helptext={t('auth.fields.rc_description')}
             label={t('auth.fields.rc_label')}
@@ -111,7 +111,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         name="idCard"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             label={t('auth.fields.id_card_label')}
             helptext={t('auth.fields.id_card_description')}

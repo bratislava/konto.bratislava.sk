@@ -5,10 +5,10 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
+import PasswordField from '@/src/components/fields/PasswordField'
+import TextField from '@/src/components/fields/TextField'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import Radio from '@/src/components/widget-components/RadioButton/Radio'
 import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 import { environment } from '@/src/environment'
@@ -207,7 +207,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         name="email"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             helptext={emailHelptextTranslationMap[type]}
             label={t('auth.fields.email_label')}
@@ -225,12 +225,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             name="given_name"
             control={control}
             render={({ field }) => (
-              <InputField
+              <TextField
                 isRequired
                 label={t('auth.fields.given_name_label')}
                 helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
-                capitalize
+                autoCapitalize=""
                 {...field}
                 errorMessage={errors.given_name}
               />
@@ -240,12 +240,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             name="family_name"
             control={control}
             render={({ field }) => (
-              <InputField
+              <TextField
                 isRequired
                 label={t('auth.fields.family_name_label')}
                 helptext={t('auth.fields.family_name_helptext')}
                 autoComplete="family-name"
-                capitalize
+                autoCapitalize="on"
                 {...field}
                 errorMessage={errors.family_name}
               />
@@ -258,10 +258,10 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           name="name"
           control={control}
           render={({ field }) => (
-            <InputField
+            <TextField
               isRequired
               label={t('auth.fields.business_name_label')}
-              capitalize
+              autoCapitalize="on"
               {...field}
               errorMessage={errors.name}
             />

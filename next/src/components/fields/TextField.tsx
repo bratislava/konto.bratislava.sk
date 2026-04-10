@@ -1,6 +1,7 @@
 import { forwardRef, ReactNode, Ref } from 'react'
 import {
   Input as RACInput,
+  InputProps as RACInputProps,
   TextField as RACTextField,
   TextFieldProps as RACTextFieldProps,
 } from 'react-aria-components'
@@ -10,7 +11,8 @@ import cn from '@/src/utils/cn'
 import FieldWrapper from './_shared/FieldWrapper'
 import { FieldBaseProps } from './_shared/types'
 
-export interface TextFieldProps extends RACTextFieldProps, FieldBaseProps {
+export interface TextFieldProps
+  extends RACTextFieldProps, FieldBaseProps, Pick<RACInputProps, 'autoCapitalize'> {
   placeholder?: string
   endIcon?: ReactNode
 }
@@ -25,6 +27,7 @@ const TextField = (
     errorMessage,
     placeholder,
     endIcon,
+    autoCapitalize,
     ...rest
   }: TextFieldProps,
   ref: Ref<HTMLInputElement>,
@@ -48,6 +51,7 @@ const TextField = (
         <RACInput
           ref={ref}
           placeholder={placeholder}
+          autoCapitalize={autoCapitalize}
           data-cy={rest.name ? `input-${rest.name}` : undefined}
           className={({ isFocused, isDisabled, isInvalid }) =>
             cn(
@@ -64,7 +68,9 @@ const TextField = (
             )
           }
         />
-        {endIcon ? <div className="absolute inset-y-0 right-0 flex items-center">{endIcon}</div> : null}
+        {endIcon ? (
+          <div className="absolute inset-y-0 right-0 flex items-center">{endIcon}</div>
+        ) : null}
       </div>
     </FieldWrapper>
   </RACTextField>

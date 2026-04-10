@@ -13,7 +13,8 @@ const Checkbox = ({ variant = 'basic', children, className, ...rest }: CheckboxP
       cn(
         'group flex w-full cursor-pointer items-center gap-3 rounded-lg text-p2',
         {
-          'border border-solid bg-background-passive-base p-3 lg:px-3 lg:py-2': variant === 'boxed',
+          'border border-solid bg-background-passive-base px-3 py-2 lg:px-4 lg:py-3':
+            variant === 'boxed',
           'border-border-active-default':
             variant === 'boxed' && !isSelected && !isIndeterminate && !isInvalid,
           'border-border-active-primary-default':
@@ -32,15 +33,17 @@ const Checkbox = ({ variant = 'basic', children, className, ...rest }: CheckboxP
     {({ isSelected, isDisabled, isInvalid, isIndeterminate, isFocusVisible }) => (
       <>
         <div
-          className={cn('grid size-6 shrink-0 place-content-center rounded', {
-            'border-2 border-border-active-primary-default':
-              !isSelected && !isIndeterminate && !isInvalid,
-            'border-2 border-border-error': !isSelected && !isIndeterminate && isInvalid,
-            'bg-background-active-primary-default': (isSelected || isIndeterminate) && !isInvalid,
-            'bg-background-error-default': (isSelected || isIndeterminate) && isInvalid,
-            'opacity-50': isDisabled,
-            'ring-2 ring-offset-2': isFocusVisible,
-          })}
+          className={cn(
+            'grid size-6 shrink-0 place-content-center rounded border-2',
+            'border-border-active-primary-default',
+            {
+              'border-border-error': isInvalid && !isDisabled,
+              'bg-background-active-primary-default': (isSelected || isIndeterminate) && !isInvalid,
+              'bg-background-error-default': (isSelected || isIndeterminate) && isInvalid,
+              'opacity-50': isDisabled,
+              'ring-2 ring-offset-2': isFocusVisible,
+            },
+          )}
         >
           {isSelected ? (
             <svg

@@ -33,7 +33,7 @@ const NumberField = (
     {...rest}
     isInvalid={!!errorMessage}
     validationBehavior="aria"
-    className={cn('flex flex-col gap-2', rest.className)}
+    className={cn('flex w-full flex-col gap-2', rest.className)}
   >
     <FieldWrapper
       label={label}
@@ -52,7 +52,7 @@ const NumberField = (
           className={({ isFocused, isDisabled, isInvalid }) =>
             cn(
               'w-full rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',
-              'px-4 py-3 lg:px-3 lg:py-2',
+              'px-3 py-2 lg:px-4 lg:py-3',
               'placeholder:text-content-passive-tertiary',
               {
                 'border-border-active-default': !isInvalid && !isFocused,

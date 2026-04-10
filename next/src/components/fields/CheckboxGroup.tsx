@@ -27,7 +27,7 @@ const CheckboxGroup = ({
     {...rest}
     isInvalid={!!errorMessage}
     validationBehavior="aria"
-    className={cn('flex flex-col gap-2', rest.className)}
+    className={cn('flex w-full flex-col gap-2', rest.className)}
   >
     <FieldWrapper
       label={label}
@@ -38,7 +38,7 @@ const CheckboxGroup = ({
       helptextFooter={helptextFooter}
       errorMessage={errorMessage}
     >
-      <div className="flex flex-col gap-4">{children}</div>
+      <div className="flex flex-col gap-3">{children}</div>
     </FieldWrapper>
   </RACCheckboxGroup>
 )

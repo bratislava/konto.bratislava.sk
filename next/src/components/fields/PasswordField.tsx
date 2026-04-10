@@ -6,7 +6,7 @@ import { EyeHiddenIcon, EyeIcon } from '@/src/assets/ui-icons'
 
 import TextField, { TextFieldProps } from './TextField'
 
-export type PasswordFieldProps = Omit<TextFieldProps, 'type' | 'endIcon'>
+export type PasswordFieldProps = Omit<TextFieldProps, 'type' | 'endIcon' | 'placeholder'>
 
 const PasswordField = (props: PasswordFieldProps, ref: Ref<HTMLInputElement>) => {
   const { t } = useTranslation('account')
@@ -24,7 +24,7 @@ const PasswordField = (props: PasswordFieldProps, ref: Ref<HTMLInputElement>) =>
           onChange={(selected) => setIsHidden(!selected)}
           // eslint-disable-next-line react/destructuring-assignment
           isDisabled={props.isDisabled}
-          className="flex items-center justify-center px-3"
+          className="flex items-center justify-center p-3"
         >
           {isHidden ? <EyeHiddenIcon /> : <EyeIcon />}
         </RACToggleButton>

@@ -9,9 +9,7 @@ import cn from '@/src/utils/cn'
 import FieldWrapper from './_shared/FieldWrapper'
 import { FieldBaseProps } from './_shared/types'
 
-export interface RadioGroupProps
-  extends Omit<RACRadioGroupProps, 'orientation'>,
-    FieldBaseProps {
+export interface RadioGroupProps extends Omit<RACRadioGroupProps, 'orientation'>, FieldBaseProps {
   orientation?: 'vertical' | 'horizontal'
   children: ReactNode
 }
@@ -32,7 +30,7 @@ const RadioGroup = ({
     orientation={orientation}
     isInvalid={!!errorMessage}
     validationBehavior="aria"
-    className={cn('flex flex-col gap-2', rest.className)}
+    className={cn('flex w-full flex-col gap-2', rest.className)}
   >
     <FieldWrapper
       label={label}
@@ -45,7 +43,7 @@ const RadioGroup = ({
     >
       <div
         className={cn('flex', {
-          'flex-col gap-4': orientation === 'vertical',
+          'flex-col gap-3': orientation === 'vertical',
           'flex-row gap-6': orientation === 'horizontal',
         })}
       >

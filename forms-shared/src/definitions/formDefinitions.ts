@@ -93,6 +93,7 @@ import webhookShowcase from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
   nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+  nahlaseniePodnetuKElektrickymKolobezkamFiles,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
@@ -660,5 +661,6 @@ export const formDefinitions: FormDefinition[] = [
       technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,
+    files: nahlaseniePodnetuKElektrickymKolobezkamFiles,
   },
 ]

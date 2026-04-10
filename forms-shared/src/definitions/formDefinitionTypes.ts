@@ -16,6 +16,11 @@ export enum FormDefinitionType {
   Webhook = 'Webhook',
 }
 
+export type FormDefinitionFiles<K extends string = string> = {
+  id: K
+  maxFileSize: number
+}[]
+
 type FormDefinitionBase = {
   slug: string
   title: string
@@ -31,6 +36,7 @@ type FormDefinitionBase = {
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
   feedbackLink?: string
+  files?: FormDefinitionFiles<string>
   /** Max size of a single file in bytes. Falls back to global MAX_FILE_SIZE if not set. */
   maxFileSize?: number
   /** Max cumulative size of all active files on a form instance in bytes. No limit if not set. */

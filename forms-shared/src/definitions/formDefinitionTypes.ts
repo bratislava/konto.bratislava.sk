@@ -16,10 +16,10 @@ export enum FormDefinitionType {
   Webhook = 'Webhook',
 }
 
-export type FileLimits<K extends Record<string, string>> = {
-  id: K[keyof K]
-  maxFileSize: number
-}[]
+export type FileLimits<K extends Record<string, string> = Record<string, string>> = Record<
+  K[keyof K],
+  number
+>
 
 type FormDefinitionBase = {
   slug: string
@@ -36,8 +36,14 @@ type FormDefinitionBase = {
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
   feedbackLink?: string
-  files?: FormDefinitionFiles<string>
-  fileLimits?: FileLimits<Record<string, string>>
+  /**
+   * Per-field file size limits. When set, the upload endpoint requires a `fieldId` query parameter
+   * and enforces the limit for the matching field. Fields not listed fall back to `maxFileSize`.
+   *
+   * A field limit can only **restrict** below `maxFileSize` (or the global `MAX_FILE_SIZE`),
+   * never exceed it — the effective limit is `min(fileLimits[fieldId].maxFileSize, maxFileSize, globalMaxFIle)`.
+   */
+  fileLimits?: FileLimits
   /** Max size of a single file in bytes. Falls back to global MAX_FILE_SIZE if not set. */
   maxFileSize?: number
   /** Max cumulative size of all active files on a form instance in bytes. No limit if not set. */

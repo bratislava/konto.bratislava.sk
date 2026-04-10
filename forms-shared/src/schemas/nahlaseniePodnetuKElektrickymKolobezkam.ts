@@ -13,14 +13,11 @@ export enum nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum {
   FOTOGRAFIA = 'fotografia',
 }
 
-export const nahlaseniePodnetuKElektrickymKolobezkamFiles: FileLimits<
+export const nahlaseniePodnetuKElektrickymKolobezkamFileLimits: FileLimits<
   typeof nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum
-> = [
-  {
-    id: nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum.FOTOGRAFIA,
-    maxFileSize: 10_000_000,
-  },
-]
+> = {
+  [nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum.FOTOGRAFIA]: 10_000_000,
+}
 
 export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám' }, [
   step('podnet', { title: 'Podnet' }, [
@@ -95,7 +92,7 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         helptext: 'Nachádza sa v strede riadidiel pod QR kódom.',
       },
     ),
-    fileUploadMultiple<typeof nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum>(
+    fileUploadMultiple<typeof nahlaseniePodnetuKElektrickymKolobezkamFileLimits>(
       'fotografia',
       {
         title: 'Fotografia podnetu',

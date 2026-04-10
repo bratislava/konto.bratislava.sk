@@ -1,110 +1,35 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { WidgetProps } from '@rjsf/utils'
 import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
 import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { RadioGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 
-import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
 import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
-import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
+import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-type ValueType = string | boolean | undefined
+const RadioGroupWidgetRJSF = (props: WidgetProps) => {
+  const isBoolean = props.schema.type === 'boolean'
 
-interface RadioGroupWidgetRJSFProps extends WidgetProps {
-  options: WithEnumOptions<RadioGroupUiOptions>
-  value: ValueType
-  errorMessage?: string
-  schema: StrictRJSFSchema
-  onChange: (value?: ValueType) => void
-}
+  const { wrapperProps, fieldProps, specificOptions } = useRjsfAdapter<
+    string | null,
+    WithEnumOptions<RadioGroupUiOptions>
+  >(props, {
+    toField: (v) => {
+      if (isBoolean) return typeof v === 'boolean' ? v.toString() : null
 
-interface ValueAdapterProps {
-  schema: StrictRJSFSchema
-  value: ValueType
-  onChange: (value: ValueType) => void
-  children: (props: { value: string | null; onChange: (value: string | null) => void }) => ReactNode
-}
+      return v ?? null
+    },
+    fromField: (v) => {
+      if (v === null) return undefined
+      if (isBoolean) return v === 'true'
 
-/**
- * RadioGroup component only supports string as value, in RJSF we want to support both string and boolean.
- * Therefore, if the value is boolean, we need to convert it to string before passing it to the RadioGroup component.
- * It also handles conversion between null (RadioGroup) and undefined (RJSF).
- */
-const ValueAdapter = ({ schema, value, onChange, children }: ValueAdapterProps) => {
-  if (schema.type === 'boolean') {
-    const mappedValue = typeof value === 'boolean' ? value.toString() : null
-    const handleChange = (newValue: string | null) => {
-      if (newValue === null) {
-        onChange(undefined)
+      return v
+    },
+  })
 
-        return
-      }
-      if (newValue === 'true') {
-        onChange(true)
-
-        return
-      }
-      if (newValue === 'false') {
-        onChange(false)
-
-        return
-      }
-      onChange(undefined)
-    }
-
-    return <>{children({ value: mappedValue, onChange: handleChange })}</>
-  }
-  if (schema.type === 'string') {
-    const mappedValue = value === undefined ? null : (value as string)
-    const handleChange = (newValue: string | null) => {
-      if (newValue === null) {
-        onChange(undefined)
-
-        return
-      }
-      onChange(newValue)
-    }
-
-    return <>{children({ value: mappedValue, onChange: handleChange })}</>
-  }
-
-  return null
-}
-
-const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
-
-const RadioGroupWidgetRJSF = ({
-  id,
-  schema,
-  options,
-  value,
-  onChange,
-  label,
-  rawErrors,
-  required,
-  disabled,
-  readonly,
-}: RadioGroupWidgetRJSFProps) => {
-  const {
-    enumOptions,
-    enumMetadata,
-    className,
-    variant,
-    orientations,
-    labelSize,
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-  } = options
-
-  const fieldProps = mapRjsfToFieldProps(
-    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
-    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
-    renderMarkdown,
-  )
+  const { enumOptions, enumMetadata, variant, orientations } = specificOptions
 
   const mergedOptions = useMemo(
     () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
@@ -112,34 +37,27 @@ const RadioGroupWidgetRJSF = ({
   )
 
   return (
-    <WidgetWrapper id={id} options={options}>
-      <ValueAdapter schema={schema} value={value} onChange={onChange}>
-        {({ value: wrapperValue, onChange: wrapperOnChange }) => (
-          <RadioGroup
-            {...fieldProps}
-            value={wrapperValue}
-            onChange={wrapperOnChange}
-            className={className}
-            orientation={orientations === 'row' ? 'horizontal' : 'vertical'}
-          >
-            {mergedOptions.map((option) => {
-              const radioValue =
-                typeof option.value === 'boolean' ? option.value.toString() : option.value
+    <WidgetWrapper {...wrapperProps}>
+      <RadioGroup
+        {...fieldProps}
+        orientation={orientations === 'row' ? 'horizontal' : 'vertical'}
+      >
+        {mergedOptions.map((option) => {
+          const radioValue =
+            typeof option.value === 'boolean' ? option.value.toString() : option.value
 
-              return (
-                <Radio
-                  key={radioValue}
-                  variant={variant}
-                  value={radioValue}
-                  description={option.description}
-                >
-                  {option.label}
-                </Radio>
-              )
-            })}
-          </RadioGroup>
-        )}
-      </ValueAdapter>
+          return (
+            <Radio
+              key={radioValue}
+              variant={variant}
+              value={radioValue}
+              description={option.description}
+            >
+              {option.label}
+            </Radio>
+          )
+        })}
+      </RadioGroup>
     </WidgetWrapper>
   )
 }

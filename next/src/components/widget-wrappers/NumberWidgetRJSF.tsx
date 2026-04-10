@@ -1,42 +1,20 @@
 import { WidgetProps } from '@rjsf/utils'
 import { NumberUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { ReactNode } from 'react'
 
-import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
 import NumberField from '@/src/components/fields/NumberField'
-import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
+import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-interface NumberWidgetRJSFProps extends WidgetProps {
-  options: NumberUiOptions
-  value: number | undefined
-  onChange: (value?: number) => void
-}
+const NumberWidgetRJSF = (props: WidgetProps) => {
+  const { schema } = props
 
-const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
-
-const NumberWidgetRJSF = ({
-  id,
-  schema,
-  label,
-  options,
-  placeholder,
-  required,
-  value,
-  disabled,
-  onChange,
-  rawErrors,
-  readonly,
-  name,
-}: NumberWidgetRJSFProps) => {
-  const {
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-    className,
-    labelSize,
-  } = options
+  const { wrapperProps, fieldProps, specificOptions } = useRjsfAdapter<number, NumberUiOptions>(
+    props,
+    {
+      toField: (v) => v ?? NaN,
+      fromField: (v) => (Number.isNaN(v) ? undefined : v),
+    },
+  )
 
   const getStep = () => {
     if (schema.multipleOf != null) {
@@ -50,28 +28,18 @@ const NumberWidgetRJSF = ({
   }
 
   const getFormatOptions = () => {
-    if (schema.type === 'integer' && !options.formatOptions?.maximumFractionDigits) {
-      return { ...options.formatOptions, maximumFractionDigits: 0 }
+    if (schema.type === 'integer' && !specificOptions.formatOptions?.maximumFractionDigits) {
+      return { ...specificOptions.formatOptions, maximumFractionDigits: 0 }
     }
 
-    return options.formatOptions
+    return specificOptions.formatOptions
   }
 
-  const fieldProps = mapRjsfToFieldProps(
-    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
-    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
-    renderMarkdown,
-  )
-
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper {...wrapperProps}>
       <NumberField
         {...fieldProps}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        className={className}
-        onChange={(newValue) => onChange(Number.isNaN(newValue) ? undefined : newValue)}
+        placeholder={specificOptions.placeholder}
         minValue={schema.minimum}
         maxValue={schema.maximum}
         formatOptions={getFormatOptions()}

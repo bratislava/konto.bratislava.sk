@@ -74,3 +74,7 @@ jobs:
       - name: Run E2E tests
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock nest-forms-backend-validate /bin/sh -lc "NODE_OPTIONS='--max-old-space-size=4096' npm run test:e2e"
+
+      - name: Build nest-forms-backend
+        run: |
+          docker build --target build --build-arg SHARED_PACKAGE_TAG=${{ inputs.shared_package_tag }} -t nest-forms-backend-validate .

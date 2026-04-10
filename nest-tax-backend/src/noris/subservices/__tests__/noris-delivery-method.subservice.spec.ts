@@ -2,8 +2,14 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
+import { RequestUpdateNorisDeliveryMethodsData } from '../../../admin/dtos/requests.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
+import {
+  DeliveryMethod,
+  IsInCityAccount,
+  type UpdateNorisDeliveryMethods,
+} from '../../types/noris.enums'
+import { NorisDeliveryMethodsUpdateResult } from '../../types/noris.types'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
@@ -15,9 +21,16 @@ const mockRequest = {
 
 jest.mock('mssql', () => ({
   Request: jest.fn().mockImplementation(() => mockRequest),
-  VarChar: jest.fn().mockImplementation((length) => ({ length })),
+  VarChar: jest.fn().mockImplementation((length: number) => ({ length })),
   DateTime: jest.fn(),
 }))
+
+interface NorisDeliveryMethodPrivate {
+  executeDeliveryMethodUpdate: (
+    connection: mssql.ConnectionPool,
+    dataItem: UpdateNorisDeliveryMethods,
+  ) => Promise<NorisDeliveryMethodsUpdateResult[]>
+}
 
 describe('NorisDeliveryMethodSubservice', () => {
   let service: NorisDeliveryMethodSubservice
@@ -29,7 +42,7 @@ describe('NorisDeliveryMethodSubservice', () => {
     jest.restoreAllMocks()
     jest
       .mocked(mssql.Request)
-      .mockReturnValue(mockRequest as unknown as mssql.Request)
+      .mockImplementation(() => mockRequest as unknown as mssql.Request)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -58,17 +71,14 @@ describe('NorisDeliveryMethodSubservice', () => {
 
     jest
       .spyOn(norisValidatorSubservice, 'validateNorisData')
-      .mockImplementation((schema, data) => {
-        if (Array.isArray(data)) {
-          return data.map((item) => schema.parse(item))
-        }
-        return schema.parse(data)
-      })
+      .mockImplementation((schema, data) =>
+        data.map((item) => schema.parse(item)),
+      )
 
     jest
       .spyOn(connectionService, 'withConnection')
       .mockImplementation(async (fn) => {
-        return fn({} as mssql.ConnectionPool)
+        return fn(createMock<mssql.ConnectionPool>())
       })
   })
 
@@ -167,14 +177,12 @@ describe('NorisDeliveryMethodSubservice', () => {
     })
 
     it('should throw error when CITY_ACCOUNT delivery method is missing date', async () => {
-      const mockData = {
-        '010366/4554': {
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-        },
-      } as any
+      const invalidCityAccountData = {
+        '010366/4554': { deliveryMethod: DeliveryMethod.CITY_ACCOUNT },
+      } as unknown as RequestUpdateNorisDeliveryMethodsData
 
       await expect(
-        service.updateDeliveryMethods({ data: mockData }),
+        service.updateDeliveryMethods({ data: invalidCityAccountData }),
       ).rejects.toThrow('Date must be provided')
     })
 
@@ -226,8 +234,10 @@ describe('NorisDeliveryMethodSubservice', () => {
     it('should filter out invalid delivery methods', async () => {
       const mockData = {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
-        '010366/554': { deliveryMethod: 'INVALID_METHOD' as DeliveryMethod },
-      } as any
+        '010366/554': {
+          deliveryMethod: 'INVALID_METHOD' as DeliveryMethod,
+        },
+      } as unknown as RequestUpdateNorisDeliveryMethodsData
 
       const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
@@ -237,7 +247,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
       const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        service as any,
+        service as unknown as NorisDeliveryMethodPrivate,
         'executeDeliveryMethodUpdate',
       )
 
@@ -359,7 +369,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
       const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        service as any,
+        service as unknown as NorisDeliveryMethodPrivate,
         'executeDeliveryMethodUpdate',
       )
 
@@ -415,7 +425,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
       const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        service as any,
+        service as unknown as NorisDeliveryMethodPrivate,
         'executeDeliveryMethodUpdate',
       )
 
@@ -742,7 +752,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       })
 
       it('should return empty array when no subjects provided', async () => {
-        const mockData: any[] = []
+        const mockData: NorisDeliveryMethodsUpdateResult[] = []
 
         const result =
           await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)

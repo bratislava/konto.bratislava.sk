@@ -4,8 +4,13 @@ import { PaymentStatus, TaxType, UnpaidReminderSent } from '@prisma/client'
 import dayjs, { type Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import prismaMock from '../../../../test/singleton'
+import { createTestTax } from '../../../__tests__/factories/tax.factory'
+import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factory'
+import { createTestTaxPayment } from '../../../__tests__/factories/taxPayment.factory'
+import { createTestUserDataFromCityAccount } from '../../../__tests__/factories/userDataFromCityAccount.factory'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 import { PaymentService } from '../../../payment/payment.service'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -24,15 +29,24 @@ function assertUpdateManyUsesReminderEnums(
   newReminderSent: UnpaidReminderSent,
 ): void {
   expect(updateManyMock).toHaveBeenCalledTimes(2)
-  const [call1, call2] = updateManyMock.mock.calls
-  expect(call1[0].where.bloomreachUnpaidReminderSent).toBe(alreadyOtherSent)
-  expect(call1[0].data.bloomreachUnpaidReminderSent).toBe(
-    UnpaidReminderSent.BOTH,
+  expect(updateManyMock).toHaveBeenNthCalledWith(
+    1,
+    expect.objectContaining({
+      where: expect.objectContaining({
+        bloomreachUnpaidReminderSent: alreadyOtherSent,
+      }),
+      data: { bloomreachUnpaidReminderSent: UnpaidReminderSent.BOTH },
+    }),
   )
-  expect(call2[0].where.bloomreachUnpaidReminderSent).toEqual({
-    not: alreadyOtherSent,
-  })
-  expect(call2[0].data.bloomreachUnpaidReminderSent).toBe(newReminderSent)
+  expect(updateManyMock).toHaveBeenNthCalledWith(
+    2,
+    expect.objectContaining({
+      where: expect.objectContaining({
+        bloomreachUnpaidReminderSent: { not: alreadyOtherSent },
+      }),
+      data: { bloomreachUnpaidReminderSent: newReminderSent },
+    }),
+  )
 }
 
 /** Calendar May 31, 2025 in the runner's local TZ — matches service's dueDate.getDate()/getMonth() (not UTC instant from Europe/Bratislava midnight, which is prior UTC day on CI). */
@@ -187,15 +201,15 @@ describe('NotificationsEventsSubservice', () => {
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
         ])
       prismaMock.tax.findMany.mockResolvedValue([
-        {
+        createTestTax({
           id: 1,
           year: 2025,
           type: TaxType.KO,
           order: 1,
           taxPayer: { birthNumber },
-        } as any,
+        }),
       ])
-      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({} as any)
+      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({})
 
       await service['processInstallmentReminders'](
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
@@ -216,17 +230,19 @@ describe('NotificationsEventsSubservice', () => {
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
         ])
       prismaMock.tax.findMany.mockResolvedValue([
-        {
+        createTestTax({
           id: 1,
           year: 2025,
           type: TaxType.KO,
           order: 1,
           taxPayer: { birthNumber },
-        } as any,
+        }),
       ])
       cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
-        [birthNumber]: { externalId: null },
-      } as any)
+        [birthNumber]: createTestUserDataFromCityAccount({
+          externalId: null,
+        }),
+      })
 
       await service['processInstallmentReminders'](
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
@@ -247,17 +263,19 @@ describe('NotificationsEventsSubservice', () => {
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 101 }),
         ])
       prismaMock.tax.findMany.mockResolvedValue([
-        {
+        createTestTax({
           id: 1,
           year: 2025,
           type: TaxType.KO,
           order: 1,
-          taxPayer: { birthNumber },
-        } as any,
+          taxPayer: createTestTaxPayer({ birthNumber }),
+        }),
       ])
       cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
-        [birthNumber]: { externalId: 'ext-1' },
-      } as any)
+        [birthNumber]: createTestUserDataFromCityAccount({
+          externalId: 'ext-1',
+        }),
+      })
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockImplementation(
         async () => Promise.resolve(true),
       )
@@ -308,17 +326,19 @@ describe('NotificationsEventsSubservice', () => {
           eligibleInstallmentRow({ taxId: 1, taxInstallmentId: 202 }),
         ])
       prismaMock.tax.findMany.mockResolvedValue([
-        {
+        createTestTax({
           id: 1,
           year: 2025,
           type: TaxType.KO,
           order: 1,
-          taxPayer: { birthNumber },
-        } as any,
+          taxPayer: createTestTaxPayer({ birthNumber }),
+        }),
       ])
       cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
-        [birthNumber]: { externalId: 'ext-1' },
-      } as any)
+        [birthNumber]: createTestUserDataFromCityAccount({
+          externalId: 'ext-1',
+        }),
+      })
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockResolvedValue(
         Promise.resolve(true),
       )
@@ -370,25 +390,25 @@ describe('NotificationsEventsSubservice', () => {
           eligibleInstallmentRow({ taxId: 2, taxInstallmentId: 302 }),
         ])
       prismaMock.tax.findMany.mockResolvedValue([
-        {
+        createTestTax({
           id: 1,
           year: 2025,
           type: TaxType.KO,
           order: 1,
-          taxPayer: { birthNumber: birth1 },
-        } as any,
-        {
+          taxPayer: createTestTaxPayer({ birthNumber: birth1 }),
+        }),
+        createTestTax({
           id: 2,
           year: 2025,
           type: TaxType.KO,
           order: 2,
-          taxPayer: { birthNumber: birth2 },
-        } as any,
+          taxPayer: createTestTaxPayer({ birthNumber: birth2 }),
+        }),
       ])
       cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
-        [birth1]: { externalId: 'ext-1' },
-        [birth2]: { externalId: 'ext-2' },
-      } as any)
+        [birth1]: createTestUserDataFromCityAccount({ externalId: 'ext-1' }),
+        [birth2]: createTestUserDataFromCityAccount({ externalId: 'ext-2' }),
+      })
       bloomreachService.trackEventUnpaidTaxInstallmentReminder.mockResolvedValue(
         Promise.resolve(true),
       )
@@ -441,18 +461,18 @@ describe('NotificationsEventsSubservice', () => {
           eligibleInstallmentRow({ taxId: 2, taxInstallmentId: 402 }),
         ])
       prismaMock.tax.findMany.mockResolvedValue([
-        {
+        createTestTax({
           id: 1,
-          taxPayer: { birthNumber: birth1 },
-        } as any,
-        {
+          taxPayer: createTestTaxPayer({ birthNumber: birth1 }),
+        }),
+        createTestTax({
           id: 2,
-          taxPayer: { birthNumber: birth2 },
-        } as any,
+          taxPayer: createTestTaxPayer({ birthNumber: birth2 }),
+        }),
       ])
       cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
-        [birth1]: { externalId: 'ext-1' },
-      } as any)
+        [birth1]: createTestUserDataFromCityAccount({ externalId: 'ext-1' }),
+      })
 
       await service['processInstallmentReminders'](
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
@@ -529,16 +549,16 @@ describe('NotificationsEventsSubservice', () => {
       const findManyMock = jest
         .spyOn(service['prismaService'].tax, 'findMany')
         .mockResolvedValue([
-          {
+          createTestTax({
             id: 1,
             year: 2024,
             type: TaxType.DZN,
             order: 1,
-            taxPayer: {
+            taxPayer: createTestTaxPayer({
               birthNumber: '123456/7890',
-            },
-          },
-        ] as any)
+            }),
+          }),
+        ])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
         'trackEventUnpaidTaxReminder',
@@ -546,10 +566,10 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
         .mockResolvedValue({
-          '123456/7890': {
+          '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-123',
-          },
-        } as any)
+          }),
+        })
       jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
       await service.sendUnpaidTaxReminders()
@@ -569,34 +589,34 @@ describe('NotificationsEventsSubservice', () => {
       const findManyMock = jest
         .spyOn(service['prismaService'].tax, 'findMany')
         .mockResolvedValue([
-          {
+          createTestTax({
             id: 1,
             year: 2024,
             type: TaxType.DZN,
             order: 1,
-            taxPayer: {
+            taxPayer: createTestTaxPayer({
               birthNumber: '123456/7890',
-            },
-          },
-          {
+            }),
+          }),
+          createTestTax({
             id: 2,
             year: 2024,
             type: TaxType.KO,
             order: 2,
-            taxPayer: {
+            taxPayer: createTestTaxPayer({
               birthNumber: '123456/7891',
-            },
-          },
-          {
+            }),
+          }),
+          createTestTax({
             id: 3,
             year: 2024,
             type: TaxType.DZN,
             order: 1,
-            taxPayer: {
+            taxPayer: createTestTaxPayer({
               birthNumber: '123456/7892',
-            },
-          },
-        ] as any)
+            }),
+          }),
+        ])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
         'trackEventUnpaidTaxReminder',
@@ -604,13 +624,13 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
         .mockResolvedValue({
-          '123456/7890': {
+          '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-1',
-          },
-          '123456/7891': {
+          }),
+          '123456/7891': createTestUserDataFromCityAccount({
             externalId: 'external-id-2',
-          },
-        } as any)
+          }),
+        })
       jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
       await service.sendUnpaidTaxReminders()
@@ -665,7 +685,7 @@ describe('NotificationsEventsSubservice', () => {
 
     it('should successfully resend bloomreach events for all payments', async () => {
       const mockPayments = [
-        {
+        createTestTaxPayment({
           id: 1,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: false,
@@ -674,8 +694,8 @@ describe('NotificationsEventsSubservice', () => {
               birthNumber: '123456/7890',
             },
           },
-        },
-        {
+        }),
+        createTestTaxPayment({
           id: 2,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: false,
@@ -684,25 +704,27 @@ describe('NotificationsEventsSubservice', () => {
               birthNumber: '234567/8901',
             },
           },
-        },
-      ] as any
+        }),
+      ]
 
       jest
         .spyOn(service['prismaService'].taxPayment, 'findMany')
         .mockResolvedValue(mockPayments)
 
-      const mockUserData = {
-        '123456/7890': {
+      const mockUserData: Partial<
+        Record<string, ResponseUserByBirthNumberDto>
+      > = {
+        '123456/7890': createTestUserDataFromCityAccount({
           externalId: 'external-id-1',
-        },
-        '234567/8901': {
+        }),
+        '234567/8901': createTestUserDataFromCityAccount({
           externalId: 'external-id-2',
-        },
+        }),
       }
 
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
-        .mockResolvedValue(mockUserData as any)
+        .mockResolvedValue(mockUserData)
 
       const trackPaymentInBloomreachSpy = jest.spyOn(
         service['paymentService'],
@@ -731,7 +753,7 @@ describe('NotificationsEventsSubservice', () => {
 
     it('should handle payments without user data from city account', async () => {
       const mockPayments = [
-        {
+        createTestTaxPayment({
           id: 1,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: false,
@@ -740,8 +762,8 @@ describe('NotificationsEventsSubservice', () => {
               birthNumber: '123456/7890',
             },
           },
-        },
-      ] as any
+        }),
+      ]
 
       jest
         .spyOn(service['prismaService'].taxPayment, 'findMany')
@@ -749,7 +771,7 @@ describe('NotificationsEventsSubservice', () => {
 
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
-        .mockResolvedValue({} as any)
+        .mockResolvedValue({})
 
       const trackPaymentInBloomreachSpy = jest
         .spyOn(service['paymentService'], 'trackPaymentInBloomreach')
@@ -765,7 +787,7 @@ describe('NotificationsEventsSubservice', () => {
 
     it('should handle partial failures and log errors', async () => {
       const mockPayments = [
-        {
+        createTestTaxPayment({
           id: 1,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: false,
@@ -774,8 +796,8 @@ describe('NotificationsEventsSubservice', () => {
               birthNumber: '123456/7890',
             },
           },
-        },
-        {
+        }),
+        createTestTaxPayment({
           id: 2,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: false,
@@ -784,8 +806,8 @@ describe('NotificationsEventsSubservice', () => {
               birthNumber: '234567/8901',
             },
           },
-        },
-      ] as any
+        }),
+      ]
 
       jest
         .spyOn(service['prismaService'].taxPayment, 'findMany')
@@ -794,9 +816,13 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
         .mockResolvedValue({
-          '123456/7890': { externalId: 'external-id-1' },
-          '234567/8901': { externalId: 'external-id-2' },
-        } as any)
+          '123456/7890': createTestUserDataFromCityAccount({
+            externalId: 'external-id-1',
+          }),
+          '234567/8901': createTestUserDataFromCityAccount({
+            externalId: 'external-id-2',
+          }),
+        })
 
       const error = new Error('Tracking failed')
       const trackPaymentInBloomreachSpy = jest
@@ -818,7 +844,7 @@ describe('NotificationsEventsSubservice', () => {
 
     it('should handle all failures', async () => {
       const mockPayments = [
-        {
+        createTestTaxPayment({
           id: 1,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: false,
@@ -827,8 +853,8 @@ describe('NotificationsEventsSubservice', () => {
               birthNumber: '123456/7890',
             },
           },
-        },
-        {
+        }),
+        createTestTaxPayment({
           id: 2,
           status: PaymentStatus.SUCCESS,
           bloomreachEventSent: false,
@@ -837,8 +863,8 @@ describe('NotificationsEventsSubservice', () => {
               birthNumber: '234567/8901',
             },
           },
-        },
-      ] as any
+        }),
+      ]
 
       jest
         .spyOn(service['prismaService'].taxPayment, 'findMany')
@@ -847,9 +873,13 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
         .mockResolvedValue({
-          '123456/7890': { externalId: 'external-id-1' },
-          '234567/8901': { externalId: 'external-id-2' },
-        } as any)
+          '123456/7890': createTestUserDataFromCityAccount({
+            externalId: 'external-id-1',
+          }),
+          '234567/8901': createTestUserDataFromCityAccount({
+            externalId: 'external-id-2',
+          }),
+        })
 
       const error1 = new Error('Tracking failed 1')
       const error2 = new Error('Tracking failed 2')

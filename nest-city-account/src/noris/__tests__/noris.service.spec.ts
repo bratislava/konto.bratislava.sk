@@ -240,5 +240,22 @@ describe('NorisService', () => {
       await expect(service.updateEdeskChecks([])).resolves.toBeUndefined()
       expect(withConnectionSpy).not.toHaveBeenCalled()
     })
+
+    it('should reject when withConnection rejects', async () => {
+      const internalError = new HttpException('Internal', 500)
+      jest.spyOn(service as any, 'withConnection').mockRejectedValue(internalError)
+
+      await expect(
+        service.updateEdeskChecks([
+          {
+            idNoris: 42,
+            lastCheck: new Date('2024-01-15'),
+            edeskStatus: EdeskStatus.ACTIVE,
+            edeskNumber: '12345',
+            uri: 'https://edesk.example/sk/123',
+          },
+        ])
+      ).rejects.toThrow(internalError)
+    })
   })
 })

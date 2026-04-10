@@ -70,7 +70,6 @@ const LoginForm = ({ onSubmit, error }: Props) => {
           <InputField
             isRequired
             label={t('auth.fields.email_label')}
-            placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
             autoComplete="username"
@@ -86,7 +85,6 @@ const LoginForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             isRequired
             label={t('auth.fields.password_label')}
-            placeholder={t('auth.fields.password_placeholder')}
             {...field}
             errorMessage={errors.password}
             autoComplete="current-password"

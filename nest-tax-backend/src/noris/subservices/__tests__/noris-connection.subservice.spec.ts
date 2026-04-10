@@ -1,8 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import * as mssql from 'mssql'
-import { MSSQLError } from 'mssql'
+import mssql, { MSSQLError } from 'mssql'
 
 import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
@@ -10,12 +9,8 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
-// Inline jest.fn() avoids the temporal-dead-zone issue that occurs when const
-// variables declared outside the factory are referenced inside jest.mock().
-jest.mock('mssql', () => ({
-  ...jest.requireActual('mssql'),
-  connect: jest.fn(),
-}))
+const mockConnect = jest.fn()
+jest.spyOn(mssql, 'connect').mockImplementation(mockConnect)
 
 describe('NorisConnectionSubservice', () => {
   let module: TestingModule

@@ -4,6 +4,7 @@ import * as mssql from 'mssql'
 
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
+import { NorisDeliveryMethodsUpdateResult } from '../../types/noris.types'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
@@ -739,7 +740,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       })
 
       it('should return empty array when no subjects provided', async () => {
-        const mockData: any[] = []
+        const mockData: NorisDeliveryMethodsUpdateResult[] = []
 
         const result =
           await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)

@@ -9,8 +9,8 @@ RUN apt-get update \
 
 RUN npx playwright install-deps chromium
 
-# build
-FROM base AS build
+# prebuild
+FROM base AS prebuild
 COPY --from=forms-shared /app/ /root/forms-shared
 COPY --from=openapi-clients /app/ /root/openapi-clients
 
@@ -23,9 +23,11 @@ COPY . ./
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
+FROM prebuild AS build
+
 RUN npm run build
 
-FROM build AS validate
+FROM prebuild AS validate
 
 ENV CI=true
 

@@ -1,4 +1,5 @@
-import type { Config } from 'jest'
+/** @jest-config-loader ts-node */
+import { Config } from 'jest'
 
 import sharedConfig from './jest.shared-config'
 

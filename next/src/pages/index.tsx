@@ -1,9 +1,11 @@
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import {
+  GeneralQuery,
   HomepageAnnouncementEntityFragment,
   MunicipalServiceCardEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import HomepageContent from '@/src/components/page-contents/HomepageContent/HomepageContent'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -30,21 +32,23 @@ const filterValidAnnouncements = (
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountIntroPageProps>(async () => {
-  const homepageQuery = await strapiClient.Homepage()
-  const services = homepageQuery.homepage?.services.filter(isDefined) ?? []
-  const servicesLegalPerson =
-    homepageQuery.homepage?.servicesLegalPerson.filter(isDefined) ?? []
+  const [{ homepage }, general] = await Promise.all([
+    strapiClient.Homepage(),
+    strapiClient.General(),
+  ])
 
-  const allAnnouncements =
-    homepageQuery.homepage?.announcements.filter(isDefined) ?? []
-  const allAnnouncementsLegalPerson =
-    homepageQuery.homepage?.announcementsLegalPerson.filter(isDefined) ?? []
+  const services = homepage?.services.filter(isDefined) ?? []
+  const servicesLegalPerson = homepage?.servicesLegalPerson.filter(isDefined) ?? []
+
+  const allAnnouncements = homepage?.announcements.filter(isDefined) ?? []
+  const allAnnouncementsLegalPerson = homepage?.announcementsLegalPerson.filter(isDefined) ?? []
 
   const announcements = filterValidAnnouncements(allAnnouncements)
   const announcementsLegalPerson = filterValidAnnouncements(allAnnouncementsLegalPerson)
 
   return {
     props: {
+      general,
       services,
       servicesLegalPerson,
       announcements,
@@ -55,6 +59,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountIntroPageProp
 })
 
 type AccountIntroPageProps = {
+  general: GeneralQuery
   services: MunicipalServiceCardEntityFragment[]
   servicesLegalPerson: MunicipalServiceCardEntityFragment[]
   announcements: HomepageAnnouncementEntityFragment[]
@@ -62,20 +67,23 @@ type AccountIntroPageProps = {
 }
 
 const AccountIntroPage = ({
+  general,
   services,
   servicesLegalPerson,
   announcements,
   announcementsLegalPerson,
 }: AccountIntroPageProps) => {
   return (
-    <PageLayout>
-      <HomepageContent
-        services={services}
-        servicesLegalPerson={servicesLegalPerson}
-        announcements={announcements}
-        announcementsLegalPerson={announcementsLegalPerson}
-      />
-    </PageLayout>
+    <GeneralContextProvider general={general}>
+      <PageLayout>
+        <HomepageContent
+          services={services}
+          servicesLegalPerson={servicesLegalPerson}
+          announcements={announcements}
+          announcementsLegalPerson={announcementsLegalPerson}
+        />
+      </PageLayout>
+    </GeneralContextProvider>
   )
 }
 

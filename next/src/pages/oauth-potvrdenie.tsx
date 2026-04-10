@@ -3,8 +3,10 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import { strapiClient } from '@/src/clients/graphql-strapi'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import {
@@ -30,10 +32,14 @@ export const getServerSideProps = amplifyGetServerSideProps(
     const queryClient = new QueryClient()
     await prefetchUserQuery(queryClient, fetchAuthSession)
 
-    const clientInfo = await fetchClientInfo(context.query)
+    const [general, clientInfo] = await Promise.all([
+      strapiClient.General(),
+      fetchClientInfo(context.query),
+    ])
 
     return {
       props: {
+        general,
         clientInfo,
         dehydratedState: dehydrate(queryClient),
         ...(await slovakServerSideTranslations()),
@@ -43,7 +49,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true, redirectOAuthParams: true },
 )
 
-const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
+const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
   const router = useRouter()
   const { t } = useTranslation('account')
   const { signOut } = useSignOut()
@@ -82,34 +88,36 @@ const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-        <PageLayout variant="auth" hideBackButton>
-          <AccountContainer>
-            <AccountSuccessAlert
-              title={t('auth.oauth_page.title')}
-              {...(shouldRedirectToIdentityVerification
-                ? {
-                    variant: 'info',
-                    description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
-                    confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
-                    onConfirm: () => {
-                      handleRedirectToIdentityVerification()
-                    },
-                  }
-                : {
-                    variant: 'success',
-                    description: t('auth.oauth_page.description', { email }),
-                    confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
-                    onConfirm: () => {
-                      handleOAuthContinue()
-                    },
-                  })}
-              confirmIsLoading={isLoading}
-              cancelLabel={t('auth.oauth_page.cancel_label')}
-              onCancel={handleLogout}
-              cancelIsLoading={isLoading}
-            />
-          </AccountContainer>
-        </PageLayout>
+        <GeneralContextProvider general={general}>
+          <PageLayout variant="auth" hideBackButton>
+            <AccountContainer>
+              <AccountSuccessAlert
+                title={t('auth.oauth_page.title')}
+                {...(shouldRedirectToIdentityVerification
+                  ? {
+                      variant: 'info',
+                      description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
+                      confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+                      onConfirm: () => {
+                        handleRedirectToIdentityVerification()
+                      },
+                    }
+                  : {
+                      variant: 'success',
+                      description: t('auth.oauth_page.description', { email }),
+                      confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                      onConfirm: () => {
+                        handleOAuthContinue()
+                      },
+                    })}
+                confirmIsLoading={isLoading}
+                cancelLabel={t('auth.oauth_page.cancel_label')}
+                onCancel={handleLogout}
+                cancelIsLoading={isLoading}
+              />
+            </AccountContainer>
+          </PageLayout>
+        </GeneralContextProvider>
       </AmplifyClientOAuthProvider>
     </HydrationBoundary>
   )

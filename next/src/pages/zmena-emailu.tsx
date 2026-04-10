@@ -10,10 +10,12 @@ import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
 import { cityAccountClient } from '@/src/clients/city-account'
+import { strapiClient } from '@/src/clients/graphql-strapi'
 import EmailChangeForm from '@/src/components/auth-forms/EmailChangeForm'
 import EmailVerificationForm from '@/src/components/auth-forms/EmailVerificationForm'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -52,10 +54,14 @@ const verifyPassword = async (password: string) => {
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {
-    const clientInfo = await fetchClientInfo(context.query)
+    const [general, clientInfo] = await Promise.all([
+      strapiClient.General(),
+      fetchClientInfo(context.query),
+    ])
 
     return {
       props: {
+        general,
         clientInfo,
         ...(await slovakServerSideTranslations()),
       },
@@ -64,7 +70,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true },
 )
 
-const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
+const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
   const { t } = useTranslation('account')
   const router = useRouter()
   const { userAttributes } = useSsrAuth()
@@ -191,30 +197,32 @@ const EmailChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout
-        variant="auth"
-        hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
-      >
-        <AccountContainer ref={accountContainerRef}>
-          {emailChangeStatus === EmailChangeStatus.INIT ? (
-            <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
-          ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
-            <EmailVerificationForm
-              lastEmail={lastEmail}
-              onResend={resendVerificationCode}
-              onSubmit={verifyEmail}
-              error={emailChangeError}
-            />
-          ) : (
-            <AccountSuccessAlert
-              title={t('auth.email_change_success_title')}
-              confirmLabel={t('auth.continue_to_account')}
-              onConfirm={onConfirm}
-              description={t('auth.email_change_success_description', { email: lastEmail })}
-            />
-          )}
-        </AccountContainer>
-      </PageLayout>
+      <GeneralContextProvider general={general}>
+        <PageLayout
+          variant="auth"
+          hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+        >
+          <AccountContainer ref={accountContainerRef}>
+            {emailChangeStatus === EmailChangeStatus.INIT ? (
+              <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
+            ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
+              <EmailVerificationForm
+                lastEmail={lastEmail}
+                onResend={resendVerificationCode}
+                onSubmit={verifyEmail}
+                error={emailChangeError}
+              />
+            ) : (
+              <AccountSuccessAlert
+                title={t('auth.email_change_success_title')}
+                confirmLabel={t('auth.continue_to_account')}
+                onConfirm={onConfirm}
+                description={t('auth.email_change_success_description', { email: lastEmail })}
+              />
+            )}
+          </AccountContainer>
+        </PageLayout>
+      </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )
 }

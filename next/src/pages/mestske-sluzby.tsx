@@ -1,8 +1,9 @@
 import { uniqBy } from 'lodash'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
+import { GeneralQuery, MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import MunicipalServicesPageContent, {
   MunicipalServicesPageContentProps,
@@ -11,7 +12,9 @@ import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { isDefined } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
-type AccountMunicipalServicesPageProps = MunicipalServicesPageContentProps
+type AccountMunicipalServicesPageProps = MunicipalServicesPageContentProps & {
+  general: GeneralQuery
+}
 
 const extractAndSortCategories = (services: MunicipalServiceEntityFragment[]) => {
   const collator = new Intl.Collator('sk')
@@ -25,7 +28,10 @@ const extractAndSortCategories = (services: MunicipalServiceEntityFragment[]) =>
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServicesPageProps>(
   async () => {
-    const municipalServicesPageQuery = await strapiClient.MunicipalServicesPage()
+    const [general, municipalServicesPageQuery] = await Promise.all([
+      strapiClient.General(),
+      strapiClient.MunicipalServicesPage(),
+    ])
     const municipalServicesPage = municipalServicesPageQuery.municipalServicesPage
 
     if (!municipalServicesPage) {
@@ -41,6 +47,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServ
 
     return {
       props: {
+        general,
         services,
         categories,
         servicesLegalPerson,
@@ -52,20 +59,23 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServ
 )
 
 const AccountMunicipalServicesPage = ({
+  general,
   services,
   categories,
   servicesLegalPerson,
   categoriesLegalPerson,
 }: AccountMunicipalServicesPageProps) => {
   return (
-    <PageLayout>
-      <MunicipalServicesPageContent
-        services={services}
-        categories={categories}
-        servicesLegalPerson={servicesLegalPerson}
-        categoriesLegalPerson={categoriesLegalPerson}
-      />
-    </PageLayout>
+    <GeneralContextProvider general={general}>
+      <PageLayout>
+        <MunicipalServicesPageContent
+          services={services}
+          categories={categories}
+          servicesLegalPerson={servicesLegalPerson}
+          categoriesLegalPerson={categoriesLegalPerson}
+        />
+      </PageLayout>
+    </GeneralContextProvider>
   )
 }
 

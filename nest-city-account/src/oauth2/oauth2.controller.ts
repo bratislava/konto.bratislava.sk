@@ -12,7 +12,6 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common'
-import { Request, Response } from 'express'
 import {
   ApiBody,
   ApiExtraModels,
@@ -21,11 +20,11 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger'
-import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
-import { TokenRequestGuard, RequestWithClientCredentials } from './guards/token-request.guard'
-import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
-import { OAuth2ErrorThrower } from './oauth2-error.thrower'
+import { Request, Response } from 'express'
+
+import { HttpsGuard } from '../utils/guards/https.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
 import {
   AuthorizationRequestDto,
   ClientInfoRequestDto,
@@ -35,14 +34,15 @@ import {
   TokenRequestDto,
   TokenRequestUnion,
 } from './dtos/requests.oauth2.dto'
-
-import { AuthRequestIdGuard, RequestWithAuthorizationData } from './guards/auth-request-id.guard'
 import { ClientInfoResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
-import { OAuth2Service } from './oauth2.service'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
-import { HttpsGuard } from '../utils/guards/https.guard'
+import { AuthRequestIdGuard, RequestWithAuthorizationData } from './guards/auth-request-id.guard'
+import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
+import { RequestWithClientCredentials, TokenRequestGuard } from './guards/token-request.guard'
 import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
-import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
+import { OAuth2Service } from './oauth2.service'
+import { OAuth2ErrorThrower } from './oauth2-error.thrower'
+import { TokenRequestValidationPipe } from './pipes/token-request-validation.pipe'
 
 @ApiTags('OAuth2')
 @Controller('oauth2')
@@ -240,10 +240,7 @@ export class OAuth2Controller {
     description: 'Invalid request or client not found',
     type: OAuth2AuthorizationErrorDto,
   })
-  async info(
-    @Query() query: ClientInfoRequestDto,
-    @Req() req: Request
-  ): Promise<ClientInfoResponseDto> {
+  info(@Query() query: ClientInfoRequestDto, @Req() req: Request): ClientInfoResponseDto {
     const request = req as RequestWithAuthorizationData
     const authRequestData = request.authorizationRequestData!
 

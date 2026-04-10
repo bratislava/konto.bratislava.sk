@@ -1,39 +1,41 @@
-import { Injectable } from '@nestjs/common'
 import * as crypto from 'node:crypto'
-import { v1 as uuidv1 } from 'uuid'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../user-verification/verification.errors.enum'
-import ClientsService from '../clients/clients.service'
+
+import { Injectable } from '@nestjs/common'
+import _ from 'lodash'
 import {
   ApiIamIdentitiesIdGet200Response,
   UpvsCorporateBody,
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { v1 as uuidv1 } from 'uuid'
+
+import ClientsService from '../clients/clients.service'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import _ from 'lodash'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export type CreateManyParam = {
   physicalEntityId?: string
   uri: string
 }[]
 
-export type UpvsIdentityByUriSuccessType = {
+export interface UpvsIdentityByUriSuccessType {
   physicalEntityId: string | null
   inputUri: string
   data: ApiIamIdentitiesIdGet200Response
 }
 
-export type CreateManyResultFailed = {
+export interface CreateManyResultFailed {
   physicalEntityId?: string
   inputUri: string
   possibleUriChange: boolean
 }
 
-export type CreateManyResult = {
+export interface CreateManyResult {
   success: UpvsIdentityByUriSuccessType[]
   failed: CreateManyResultFailed[]
 }
@@ -66,7 +68,7 @@ export class NasesService {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data)
-      .catch((error) => {
+      .catch((error: unknown) => {
         throw this.throwerErrorGuard.BadRequestException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
@@ -112,7 +114,7 @@ export class NasesService {
       .then((response) => {
         return response.data
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
@@ -125,7 +127,9 @@ export class NasesService {
 
   async createMany(inputs: CreateManyParam): Promise<CreateManyResult> {
     const uniqueInputs = _.uniqBy(inputs, 'uri')
-    const inputsByUri = _.keyBy(uniqueInputs, 'uri')
+    const inputsByUri = _.keyBy(uniqueInputs, 'uri') as Partial<
+      Record<string, CreateManyParam[number]>
+    >
 
     if (uniqueInputs.length === 0 || uniqueInputs.length > 10) {
       throw this.throwerErrorGuard.BadRequestException(
@@ -201,7 +205,7 @@ export class NasesService {
   private filterPossiblyChangedUris(
     unmatchedResults: ApiIamIdentitiesIdGet200ResponseWithUri[],
     unmatchedInputs: CreateManyParam,
-    inputsByUri: _.Dictionary<{ physicalEntityId?: string; uri: string }>
+    inputsByUri: Partial<Record<string, CreateManyParam[number]>>
   ) {
     let possibleUriChanges: CreateManyResultFailed[] = []
     if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
@@ -220,16 +224,18 @@ export class NasesService {
 
   private matchDirectResults(
     resultsWithUri: ApiIamIdentitiesIdGet200ResponseWithUri[],
-    inputsByUri: Record<string, CreateManyParam[number]>
+    inputsByUri: Partial<Record<string, CreateManyParam[number]>>
   ) {
     const directMatches = resultsWithUri.filter((result) => !!inputsByUri[result.uri])
     const matchedUris = new Set(directMatches.map((result) => result.uri))
 
-    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.map((result) => ({
-      inputUri: inputsByUri[result.uri].uri,
-      data: result,
-      physicalEntityId: inputsByUri[result.uri].physicalEntityId || null,
-    }))
+    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.flatMap((result) => {
+      const input = inputsByUri[result.uri]
+      if (!input) return []
+      return [
+        { inputUri: input.uri, data: result, physicalEntityId: input.physicalEntityId || null },
+      ]
+    })
 
     return { resultDataSuccess, matchedUris }
   }

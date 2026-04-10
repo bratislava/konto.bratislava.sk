@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import Turnstile, { TurnstileResponse } from 'cf-turnstile'
 
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
 } from '../../user-verification/verification.errors.enum'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
 
 @Injectable()
@@ -26,7 +26,7 @@ export class TurnstileSubservice {
   }
 
   async validateToken(token: string): Promise<void> {
-    let result: TurnstileResponse | undefined
+    let result: TurnstileResponse
     try {
       result = await this.turnstile(token)
     } catch (error) {
@@ -37,7 +37,7 @@ export class TurnstileSubservice {
         error
       )
     }
-    if (!result || !result?.success) {
+    if (!result.success) {
       throw this.throwerErrorGuard.BadRequestException(
         VerificationErrorsEnum.INVALID_CAPTCHA,
         VerificationErrorsResponseEnum.INVALID_CAPTCHA

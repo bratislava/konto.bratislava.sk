@@ -2,14 +2,15 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { Request, Response } from 'express'
+
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { toLogfmt } from '../../utils/logging'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from '../dtos/errors.oauth2.dto'
-import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
-import { toLogfmt } from '../../utils/logging'
-import { OAuth2ErrorMetadata, OAuth2Exception } from '../oauth2.exception'
 import { RequestWithAuthorizationData } from '../guards/auth-request-id.guard'
+import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
+import { OAuth2ErrorMetadata, OAuth2Exception } from '../oauth2.exception'
 import { OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 
 const USER_AGENT = 'user-agent'
@@ -278,7 +279,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       const candidate = plainToInstance(OAuth2AuthorizationErrorDto, exceptionResponse)
       const errors = validateSync(candidate, { skipMissingProperties: false })
 
-      if (errors.length === 0 && candidate.error) {
+      if (errors.length === 0) {
         // It's already a valid OAuth2 error format, extract plain values
         errorResponse = {
           error: candidate.error,
@@ -340,7 +341,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
       const candidate = plainToInstance(OAuth2TokenErrorDto, exceptionResponse)
       const errors = validateSync(candidate, { skipMissingProperties: false })
 
-      if (errors.length === 0 && candidate.error) {
+      if (errors.length === 0) {
         // It's already a valid OAuth2 error format, extract plain values
         errorResponse = {
           error: candidate.error,
@@ -429,7 +430,9 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
    * Map HTTP status code to OAuth2 authorization error code
    */
   private mapStatusToAuthorizationError(status: number): OAuth2AuthorizationErrorCode {
-    switch (status) {
+    // Only map specific status codes; all others go to default (SERVER_ERROR). Disable exhaustiveness so we don't have to list every HttpStatus.
+    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- intentional: unmapped status codes are handled by default case
+    switch (status as HttpStatus) {
       case HttpStatus.BAD_REQUEST:
       case HttpStatus.NOT_FOUND:
         return OAuth2AuthorizationErrorCode.INVALID_REQUEST
@@ -450,7 +453,9 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
    * Map HTTP status code to OAuth2 token error code
    */
   private mapStatusToTokenError(status: number): OAuth2TokenErrorCode {
-    switch (status) {
+    // Only map specific status codes; all others go to default (INVALID_REQUEST). Disable exhaustiveness so we don't have to list every HttpStatus.
+    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- intentional: unmapped status codes are handled by default case
+    switch (status as HttpStatus) {
       case HttpStatus.BAD_REQUEST:
         return OAuth2TokenErrorCode.INVALID_REQUEST
       case HttpStatus.UNAUTHORIZED:

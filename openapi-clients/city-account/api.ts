@@ -34,6 +34,19 @@ import type { RequestArgs } from './base'
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
+/**
+ * Status of the anonymization of user in bloomreach
+ */
+
+export const AnonymizeResponse = {
+  NotFound: 'NOT_FOUND',
+  NotActive: 'NOT_ACTIVE',
+  Error: 'ERROR',
+  Success: 'SUCCESS',
+} as const
+
+export type AnonymizeResponse = (typeof AnonymizeResponse)[keyof typeof AnonymizeResponse]
+
 export interface ChangeEmailRequestDto {
   /**
    * New email for a user
@@ -70,7 +83,7 @@ export interface CognitoGetUserData {
   /**
    * Which type of account it is?
    */
-  'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
+  'custom:account_type': CognitoUserAccountTypesEnum
   /**
    * client_id of the oAuth origin
    */
@@ -123,14 +136,6 @@ export const CognitoGetUserDataCustomTierEnum = {
 
 export type CognitoGetUserDataCustomTierEnum =
   (typeof CognitoGetUserDataCustomTierEnum)[keyof typeof CognitoGetUserDataCustomTierEnum]
-export const CognitoGetUserDataCustomAccountTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type CognitoGetUserDataCustomAccountTypeEnum =
-  (typeof CognitoGetUserDataCustomAccountTypeEnum)[keyof typeof CognitoGetUserDataCustomAccountTypeEnum]
 export const CognitoGetUserDataUserStatusEnum = {
   Archived: 'ARCHIVED',
   Compromised: 'COMPROMISED',
@@ -145,7 +150,20 @@ export type CognitoGetUserDataUserStatusEnum =
   (typeof CognitoGetUserDataUserStatusEnum)[keyof typeof CognitoGetUserDataUserStatusEnum]
 
 /**
- * Current verification tier of the authenticated user
+ * Which type of account it is?
+ */
+
+export const CognitoUserAccountTypesEnum = {
+  Fo: 'fo',
+  Po: 'po',
+  FoP: 'fo-p',
+} as const
+
+export type CognitoUserAccountTypesEnum =
+  (typeof CognitoUserAccountTypesEnum)[keyof typeof CognitoUserAccountTypesEnum]
+
+/**
+ * Current cognito tier, marks the status of verifying.
  */
 
 export const CognitoUserAttributesTierEnum = {
@@ -158,19 +176,6 @@ export const CognitoUserAttributesTierEnum = {
 
 export type CognitoUserAttributesTierEnum =
   (typeof CognitoUserAttributesTierEnum)[keyof typeof CognitoUserAttributesTierEnum]
-
-/**
- * Account type from Cognito
- */
-
-export const ContactAndIdInfoTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type ContactAndIdInfoTypeEnum =
-  (typeof ContactAndIdInfoTypeEnum)[keyof typeof ContactAndIdInfoTypeEnum]
 
 export interface DPBUserLoginStatistics {
   /**
@@ -198,22 +203,12 @@ export interface DeactivateAccountResponseDto {
   /**
    * Status of the anonymization of user in bloomreach
    */
-  bloomreachRemoved: DeactivateAccountResponseDtoBloomreachRemovedEnum
+  bloomreachRemoved: AnonymizeResponse
   /**
    * Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.
    */
   taxDeliveryMethodsRemoved: boolean
 }
-
-export const DeactivateAccountResponseDtoBloomreachRemovedEnum = {
-  NotFound: 'NOT_FOUND',
-  NotActive: 'NOT_ACTIVE',
-  Error: 'ERROR',
-  Success: 'SUCCESS',
-} as const
-
-export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
-  (typeof DeactivateAccountResponseDtoBloomreachRemovedEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedEnum]
 
 export interface DpbUserDto {
   /**
@@ -231,7 +226,7 @@ export interface DpbUserDto {
   /**
    * Account type
    */
-  account_type: DpbUserDtoAccountTypeEnum
+  account_type: CognitoUserAccountTypesEnum
   /**
    * Name (usually company name for legal entities)
    */
@@ -245,15 +240,6 @@ export interface DpbUserDto {
    */
   family_name?: string
 }
-
-export const DpbUserDtoAccountTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type DpbUserDtoAccountTypeEnum =
-  (typeof DpbUserDtoAccountTypeEnum)[keyof typeof DpbUserDtoAccountTypeEnum]
 
 /**
  * Type of Gdpr category
@@ -330,7 +316,7 @@ export interface LegalPersonContactAndIdInfoResponseDto {
   /**
    * Account type from Cognito
    */
-  accountType: ContactAndIdInfoTypeEnum
+  accountType: CognitoUserAccountTypesEnum
   /**
    * Email address
    */
@@ -615,34 +601,8 @@ export interface ResponseCustomErrorVerificationEidDto {
   /**
    * Error name for decoding.
    */
-  errorName: ResponseCustomErrorVerificationEidDtoErrorNameEnum
+  errorName: VerificationErrorsEnum
 }
-
-export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
-} as const
-
-export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
-  (typeof ResponseCustomErrorVerificationEidDtoErrorNameEnum)[keyof typeof ResponseCustomErrorVerificationEidDtoErrorNameEnum]
 
 export interface ResponseCustomErrorVerificationIdentityCardDto {
   /**
@@ -656,34 +616,8 @@ export interface ResponseCustomErrorVerificationIdentityCardDto {
   /**
    * Error name for decoding.
    */
-  errorName: ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum
+  errorName: VerificationErrorsEnum
 }
-
-export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
-} as const
-
-export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
-  (typeof ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum)[keyof typeof ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum]
 
 export interface ResponseGdprLegalPersonDataDto {
   /**
@@ -937,34 +871,20 @@ export interface ResponseVerificationDto {
   /**
    * Error if exists
    */
-  errorName?: ResponseVerificationDtoErrorNameEnum
+  errorName?: VerificationErrorsEnum
 }
 
-export const ResponseVerificationDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
+/**
+ * Message about update
+ */
+
+export const ResponseVerificationIdentityCardMessageEnum = {
+  SendToQueue: 'SendToQueue',
+  AlreadyVerified: 'AlreadyVerified',
 } as const
 
-export type ResponseVerificationDtoErrorNameEnum =
-  (typeof ResponseVerificationDtoErrorNameEnum)[keyof typeof ResponseVerificationDtoErrorNameEnum]
+export type ResponseVerificationIdentityCardMessageEnum =
+  (typeof ResponseVerificationIdentityCardMessageEnum)[keyof typeof ResponseVerificationIdentityCardMessageEnum]
 
 export interface ResponseVerificationIdentityCardToQueueDto {
   /**
@@ -978,45 +898,12 @@ export interface ResponseVerificationIdentityCardToQueueDto {
   /**
    * Message about update
    */
-  message: ResponseVerificationIdentityCardToQueueDtoMessageEnum
+  message: ResponseVerificationIdentityCardMessageEnum
   /**
    * Error if exists
    */
-  errorName?: ResponseVerificationIdentityCardToQueueDtoErrorNameEnum
+  errorName?: VerificationErrorsEnum
 }
-
-export const ResponseVerificationIdentityCardToQueueDtoMessageEnum = {
-  SendToQueue: 'SendToQueue',
-  AlreadyVerified: 'AlreadyVerified',
-} as const
-
-export type ResponseVerificationIdentityCardToQueueDtoMessageEnum =
-  (typeof ResponseVerificationIdentityCardToQueueDtoMessageEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoMessageEnum]
-export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
-  RfoAccessError: 'RFO_ACCESS_ERROR',
-  RpoAccessError: 'RPO_ACCESS_ERROR',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RpoNotResponding: 'RPO_NOT_RESPONDING',
-  DeadPerson: 'DEAD_PERSON',
-  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
-  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
-  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
-  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
-  DatabaseError: 'DATABASE_ERROR',
-  InvalidCaptcha: 'INVALID_CAPTCHA',
-  VerifyEidError: 'VERIFY_EID_ERROR',
-  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
-  IcoNotProvided: 'ICO_NOT_PROVIDED',
-  IfoNotProvided: 'IFO_NOT_PROVIDED',
-  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
-  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
-  NamesNotMatching: 'NAMES_NOT_MATCHING',
-} as const
-
-export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
-  (typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum]
 
 export interface StoreTokensRequestDto {
   /**
@@ -1120,7 +1007,7 @@ export interface UserContactAndIdInfoResponseDto {
   /**
    * Account type from Cognito
    */
-  accountType: ContactAndIdInfoTypeEnum
+  accountType: CognitoUserAccountTypesEnum
   /**
    * Email address
    */
@@ -1182,7 +1069,7 @@ export interface UserVerifyState {
   /**
    * Type of user.
    */
-  type?: UserVerifyStateTypeEnum
+  type?: CognitoUserAccountTypesEnum
   /**
    * Marks if the user with given email is in database.
    */
@@ -1194,7 +1081,7 @@ export interface UserVerifyState {
   /**
    * Current cognito tier, marks the status of verifying.
    */
-  cognitoTier?: UserVerifyStateCognitoTierEnum
+  cognitoTier?: CognitoUserAttributesTierEnum
   /**
    * If set, then this number was used for verifying, but is already in our database for other user.
    */
@@ -1212,25 +1099,6 @@ export interface UserVerifyState {
    */
   possibleCause?: string
 }
-
-export const UserVerifyStateTypeEnum = {
-  Fo: 'fo',
-  Po: 'po',
-  FoP: 'fo-p',
-} as const
-
-export type UserVerifyStateTypeEnum =
-  (typeof UserVerifyStateTypeEnum)[keyof typeof UserVerifyStateTypeEnum]
-export const UserVerifyStateCognitoTierEnum = {
-  New: 'NEW',
-  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
-  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
-  IdentityCard: 'IDENTITY_CARD',
-  Eid: 'EID',
-} as const
-
-export type UserVerifyStateCognitoTierEnum =
-  (typeof UserVerifyStateCognitoTierEnum)[keyof typeof UserVerifyStateCognitoTierEnum]
 
 export interface VerificationDataForUser {
   /**
@@ -1268,6 +1136,35 @@ export interface VerificationDataForUserResponseDto {
    */
   verificationDataLastMonth: Array<VerificationDataForUser>
 }
+/**
+ * Error if exists
+ */
+
+export const VerificationErrorsEnum = {
+  RfoAccessError: 'RFO_ACCESS_ERROR',
+  RpoAccessError: 'RPO_ACCESS_ERROR',
+  RfoNotResponding: 'RFO_NOT_RESPONDING',
+  RpoNotResponding: 'RPO_NOT_RESPONDING',
+  DeadPerson: 'DEAD_PERSON',
+  BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
+  BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
+  BirthnumberIcoDuplicity: 'BIRTHNUMBER_ICO_DUPLICITY',
+  BirthNumberNotExists: 'BIRTH_NUMBER_NOT_EXISTS',
+  BirthNumberWrongFormat: 'BIRTH_NUMBER_WRONG_FORMAT',
+  DatabaseError: 'DATABASE_ERROR',
+  InvalidCaptcha: 'INVALID_CAPTCHA',
+  VerifyEidError: 'VERIFY_EID_ERROR',
+  UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
+  RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
+  IcoNotProvided: 'ICO_NOT_PROVIDED',
+  IfoNotProvided: 'IFO_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
+  NamesNotMatching: 'NAMES_NOT_MATCHING',
+} as const
+
+export type VerificationErrorsEnum =
+  (typeof VerificationErrorsEnum)[keyof typeof VerificationErrorsEnum]
 
 /**
  * ADMINApi - axios parameter creator
@@ -1933,119 +1830,6 @@ export class ADMINApi extends BaseAPI {
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerVerifyUserManually(email, manuallyVerifyUserRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * AppApi - axios parameter creator
- */
-export const AppApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    appControllerHealthCheck: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/healthcheck`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * AppApi - functional programming interface
- */
-export const AppApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = AppApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async appControllerHealthCheck(
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealthCheck(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['AppApi.appControllerHealthCheck']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * AppApi - factory interface
- */
-export const AppApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = AppApiFp(configuration)
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    appControllerHealthCheck(options?: RawAxiosRequestConfig): AxiosPromise<string> {
-      return localVarFp
-        .appControllerHealthCheck(options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * AppApi - object-oriented interface
- */
-export class AppApi extends BaseAPI {
-  /**
-   * See if app is working!
-   * @summary HealthCheck
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
-    return AppApiFp(this.configuration)
-      .appControllerHealthCheck(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -2789,6 +2573,120 @@ export class DPBApi extends BaseAPI {
   public dpbControllerUserData(options?: RawAxiosRequestConfig) {
     return DPBApiFp(this.configuration)
       .dpbControllerUserData(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * DefaultApi - axios parameter creator
+ */
+export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerHealthCheck: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/healthcheck`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * DefaultApi - functional programming interface
+ */
+export const DefaultApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async appControllerHealthCheck(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealthCheck(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.appControllerHealthCheck']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * DefaultApi - factory interface
+ */
+export const DefaultApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = DefaultApiFp(configuration)
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerHealthCheck(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .appControllerHealthCheck(options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * DefaultApi - object-oriented interface
+ */
+export class DefaultApi extends BaseAPI {
+  /**
+   * See if app is working!
+   * @summary HealthCheck
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
+    return DefaultApiFp(this.configuration)
+      .appControllerHealthCheck(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -4392,7 +4290,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4455,7 +4353,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4772,7 +4670,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4806,7 +4704,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4982,7 +4880,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -5001,7 +4899,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -5126,7 +5024,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * unsubscribe any user by uuid with different categories of subscription
+   * Unsubscribe any user by uuid with different categories of subscription
    * @summary Unsubscribe user by uuid
    * @param {string} id
    * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -5146,7 +5044,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * unsubscribe any user by external Id from cognito with different categories of subscription
+   * Unsubscribe any user by external Id from cognito with different categories of subscription
    * @summary Unsubscribe user by external Id
    * @param {string} id
    * @param {GDPRTypeEnum} type Type of Gdpr subscription

@@ -8,9 +8,9 @@ import {
 } from '@ngneat/falso'
 import jwt from 'jsonwebtoken'
 import {
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesTierEnum,
   UserOfficialCorrespondenceChannelEnum,
-  UserVerifyStateCognitoTierEnum,
-  UserVerifyStateTypeEnum,
 } from 'openapi-clients/city-account'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -69,15 +69,15 @@ export class UserFixtureFactory {
   private createAuthUser(
     params:
       | {
-          accountType: typeof UserVerifyStateTypeEnum.Fo
-          tier?: UserVerifyStateCognitoTierEnum
+          accountType: typeof CognitoUserAccountTypesEnum.Fo
+          tier?: CognitoUserAttributesTierEnum
         }
       | {
           accountType:
-            | typeof UserVerifyStateTypeEnum.FoP
-            | typeof UserVerifyStateTypeEnum.Po
+            | typeof CognitoUserAccountTypesEnum.FoP
+            | typeof CognitoUserAccountTypesEnum.Po
           ico: string
-          tier?: UserVerifyStateCognitoTierEnum
+          tier?: CognitoUserAttributesTierEnum
         },
   ): AuthFixtureUser {
     const randomSub = uuidv4()
@@ -117,7 +117,7 @@ export class UserFixtureFactory {
         gdprData: [],
         hasChangedDeliveryMethodAfterDeadline: false,
       }
-      if (params.accountType === UserVerifyStateTypeEnum.Fo) {
+      if (params.accountType === CognitoUserAccountTypesEnum.Fo) {
         return {
           ...base,
           officialCorrespondenceChannel:
@@ -127,8 +127,8 @@ export class UserFixtureFactory {
       }
 
       if (
-        params.accountType === UserVerifyStateTypeEnum.FoP ||
-        params.accountType === UserVerifyStateTypeEnum.Po
+        params.accountType === CognitoUserAccountTypesEnum.FoP ||
+        params.accountType === CognitoUserAccountTypesEnum.Po
       ) {
         return {
           ...base,
@@ -143,10 +143,10 @@ export class UserFixtureFactory {
       const base = {
         sub: randomSub,
         'custom:account_type': params.accountType,
-        'custom:tier': params.tier ?? UserVerifyStateCognitoTierEnum.New,
+        'custom:tier': params.tier ?? CognitoUserAttributesTierEnum.New,
         email,
       }
-      if (params.accountType === UserVerifyStateTypeEnum.Fo) {
+      if (params.accountType === CognitoUserAccountTypesEnum.Fo) {
         const givenName = randFirstName()
         const familyName = randLastName()
 
@@ -157,7 +157,7 @@ export class UserFixtureFactory {
         }
       }
 
-      if (params.accountType === UserVerifyStateTypeEnum.FoP) {
+      if (params.accountType === CognitoUserAccountTypesEnum.FoP) {
         const givenName = randFirstName()
         const familyName = randLastName()
 
@@ -168,7 +168,7 @@ export class UserFixtureFactory {
         }
       }
 
-      if (params.accountType === UserVerifyStateTypeEnum.Po) {
+      if (params.accountType === CognitoUserAccountTypesEnum.Po) {
         const name = randCompanyName()
 
         return {
@@ -208,10 +208,10 @@ export class UserFixtureFactory {
   createFoAuthUser({
     tier,
   }: {
-    tier?: UserVerifyStateCognitoTierEnum
+    tier?: CognitoUserAttributesTierEnum
   } = {}) {
     return this.createAuthUser({
-      accountType: UserVerifyStateTypeEnum.Fo,
+      accountType: CognitoUserAccountTypesEnum.Fo,
       tier,
     })
   }
@@ -220,11 +220,11 @@ export class UserFixtureFactory {
     tier,
     ico,
   }: {
-    tier?: UserVerifyStateCognitoTierEnum
+    tier?: CognitoUserAttributesTierEnum
     ico: string
   }) {
     return this.createAuthUser({
-      accountType: UserVerifyStateTypeEnum.FoP,
+      accountType: CognitoUserAccountTypesEnum.FoP,
       tier,
       ico,
     })
@@ -234,11 +234,11 @@ export class UserFixtureFactory {
     tier,
     ico,
   }: {
-    tier?: UserVerifyStateCognitoTierEnum
+    tier?: CognitoUserAttributesTierEnum
     ico: string
   }) {
     return this.createAuthUser({
-      accountType: UserVerifyStateTypeEnum.Po,
+      accountType: CognitoUserAccountTypesEnum.Po,
       tier,
       ico,
     })

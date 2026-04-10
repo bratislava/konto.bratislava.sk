@@ -12,8 +12,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     response.locals.middlewareUsed = 'true'
 
     const { send } = response
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    response.send = (exitData: string | object | Buffer | Array<any>) => {
+    response.send = (exitData: string | object | Buffer | unknown[]) => {
       response.locals.middlewareUsed = undefined
 
       const { responseData, logData, returnExitData } = this.parseExitData(response, exitData)
@@ -53,8 +52,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     ip: string
     userAgent: string
     originalUrl: string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body: any
+    body: unknown
     userId: string
   } {
     const { method, originalUrl, body } = request
@@ -66,10 +64,10 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     try {
       if (request.headers.authorization) {
         const token = request.headers.authorization.split('.')[1]
-        const tokenData = JSON.parse(Buffer.from(token, 'base64').toString())
-        userId = tokenData.sub
+        const tokenData = JSON.parse(Buffer.from(token, 'base64').toString()) as { sub?: string }
+        userId = tokenData.sub ?? '<NO USER ID>'
       }
-    } catch (error) {
+    } catch {
       /* empty */
     }
 
@@ -78,28 +76,27 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
   private parseExitData(
     response: Response,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    exitData: string | object | Buffer | Array<any>
+    exitData: string | object | Buffer | unknown[]
   ): {
     returnExitData: typeof exitData
     responseData: string
     logData: Record<string, unknown>
   } {
-    if (!response?.getHeader('content-type')?.toString().includes('application/json')) {
+    if (!response.getHeader('content-type')?.toString().includes('application/json')) {
       return {
-        responseData: <string>exitData,
+        responseData: exitData as string, // TODO this casting is not correct
         returnExitData: exitData,
         logData: {},
       }
     }
 
-    let data = exitData
+    let data: unknown = exitData
 
     // Parse string-type exitData if it is JSON
     if (typeof exitData === 'string') {
       try {
         data = JSON.parse(exitData)
-      } catch (error) {
+      } catch {
         // If parsing fails, assume it's a plain string
         return {
           responseData: exitData,

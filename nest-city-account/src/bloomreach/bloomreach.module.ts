@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 
-import { BloomreachService } from './bloomreach.service'
-import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
-import { bloomreachContactDatabaseProvider } from './bloomreach-contact-database.provider'
 import { PrismaModule } from '../prisma/prisma.module'
+import { BloomreachService } from './bloomreach.service'
+import { bloomreachContactDatabaseProvider } from './bloomreach-contact-database.provider'
+import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 
 @Module({
   imports: [PrismaModule],

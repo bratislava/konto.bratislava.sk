@@ -18,12 +18,12 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
-import { IntegrationService } from './integration.service'
+
+import { AdminGuard } from '../auth/guards/admin.guard'
 import {
   LegalPersonContactAndIdInfoResponseDto,
   UserContactAndIdInfoResponseDto,
 } from '../user/dtos/user-contact-info.dto'
-import { AdminGuard } from '../auth/guards/admin.guard'
 import {
   RequestBatchNewUserBirthNumbers,
   RequestBatchQueryUsersByBirthNumbersDto,
@@ -34,6 +34,7 @@ import {
   GetUserDataByBirthNumbersBatchResponseDto,
   ResponseUserByBirthNumberDto,
 } from './dtos/integration-response.dto'
+import { IntegrationService } from './integration.service'
 
 /**
  * IntegrationController - Backend-to-Backend Integration APIs
@@ -97,7 +98,7 @@ export class IntegrationController {
     description: 'Returns list of birth numbers for new verified users.',
     type: GetNewVerifiedUsersBirthNumbersResponseDto,
   })
-  @UsePipes(new ValidationPipe({ transform: true }))
+  @UsePipes(new ValidationPipe({ transform: true, forbidUnknownValues: true })) // https://github.com/darraghoriordan/eslint-plugin-nestjs-typed/blob/main/src/docs/rules/validation-pipe-should-use-forbid-unknown.md
   @Post('get-verified-users-birth-numbers-batch')
   async getNewVerifiedUsersBirthNumbers(
     @Body() data: RequestBatchNewUserBirthNumbers

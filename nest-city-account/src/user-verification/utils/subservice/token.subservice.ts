@@ -1,7 +1,7 @@
+import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import jwt from 'jsonwebtoken'
 import { v1 as uuidv1 } from 'uuid'
-import { ConfigService } from '@nestjs/config'
-import { Injectable } from '@nestjs/common'
 
 /**
  * Inspired by nest-forms-backend -> tokens.nases.service

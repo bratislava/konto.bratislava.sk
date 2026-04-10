@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common'
 import {
   AdminDisableUserCommand,
   AdminGetUserCommand,
@@ -13,21 +12,22 @@ import {
   ListUsersCommandInput,
   UserType,
 } from '@aws-sdk/client-cognito-identity-provider'
-import { plainToInstance } from 'class-transformer'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-
+import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { plainToInstance } from 'class-transformer'
+
+import {
+  SendToQueueErrorsEnum,
+  SendToQueueErrorsResponseEnum,
+} from '../../user-verification/verification.errors.enum'
 import {
   CognitoGetUserAttributesData,
   CognitoGetUserData,
   CognitoUserAttributesEnum,
   CognitoUserStatusEnum,
 } from '../global-dtos/cognito.dto'
+import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
-import {
-  SendToQueueErrorsEnum,
-  SendToQueueErrorsResponseEnum,
-} from '../../user-verification/verification.errors.enum'
 
 /**
  * Service responsible for Cognito API interactions only.
@@ -220,12 +220,13 @@ export class CognitoSubservice {
    * @returns CognitoGetUserData[]
    */
   async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
-    const result: Array<UserType> = []
+    const result: UserType[] = []
     const params: ListUsersCommandInput = {
       UserPoolId: this.config.cognitoUserPoolId,
     }
     do {
       // TODO: add proper error handling
+      // eslint-disable-next-line no-await-in-loop
       const cognitoData = await this.cognitoClient.send(new ListUsersCommand(params))
       result.push(...(cognitoData.Users ?? []))
       params.PaginationToken = cognitoData.PaginationToken

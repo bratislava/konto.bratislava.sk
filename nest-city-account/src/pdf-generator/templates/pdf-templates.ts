@@ -9,6 +9,7 @@ export const pdfTemplates = {
 
 export type PdfTemplateKeys = keyof typeof pdfTemplates
 
-export type PdfTemplateVariables<T extends PdfTemplateKeys> = {
-  [P in (typeof pdfTemplates)[T]['variables'][number]]: string
-}
+export type PdfTemplateVariables<T extends PdfTemplateKeys> = Record<
+  (typeof pdfTemplates)[T]['variables'][number],
+  string
+>

@@ -18,7 +18,7 @@ import {
   extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
-import { ContactAndIdInfoTypeEnum } from 'openapi-clients/city-account'
+import { CognitoUserAccountTypesEnum } from 'openapi-clients/city-account'
 import {
   UpvsCorporateBody,
   UpvsNaturalPerson,
@@ -640,19 +640,19 @@ export default class GinisService {
     params.email = contactInfo.email
 
     // Map Cognito account type to Ginis contact type and set appropriate fields
-    if (contactInfo.accountType === ContactAndIdInfoTypeEnum.Fo) {
+    if (contactInfo.accountType === CognitoUserAccountTypesEnum.Fo) {
       // Physical entity (UserContactAndIdInfoDto)
       params.type = GinContactType.PHYSICAL_ENTITY
       params.firstName = contactInfo.firstName
       params.lastName = contactInfo.lastName
       params.birthNumber = contactInfo.birthNumber
     } else if (
-      contactInfo.accountType === ContactAndIdInfoTypeEnum.Po ||
-      contactInfo.accountType === ContactAndIdInfoTypeEnum.FoP
+      contactInfo.accountType === CognitoUserAccountTypesEnum.Po ||
+      contactInfo.accountType === CognitoUserAccountTypesEnum.FoP
     ) {
       // Legal entity or self-employed entity (LegalPersonContactAndIdInfoDto)
       params.type =
-        contactInfo.accountType === ContactAndIdInfoTypeEnum.Po
+        contactInfo.accountType === CognitoUserAccountTypesEnum.Po
           ? GinContactType.LEGAL_ENTITY
           : GinContactType.SELF_EMPLOYED_ENTITY
       params.name = contactInfo.name

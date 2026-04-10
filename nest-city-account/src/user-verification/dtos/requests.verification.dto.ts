@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
 import { VerificationErrorsEnum } from '../verification.errors.enum'
@@ -24,12 +24,16 @@ export class ResponseVerificationIdentityCardToQueueDto {
   @ApiProperty({
     description: 'Message about update',
     default: ResponseVerificationIdentityCardMessageEnum.SEND_TO_QUEUE,
+    enum: ResponseVerificationIdentityCardMessageEnum,
+    enumName: 'ResponseVerificationIdentityCardMessageEnum',
   })
   message!: ResponseVerificationIdentityCardMessageEnum
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Error if exists',
     default: '',
+    enum: VerificationErrorsEnum,
+    enumName: 'VerificationErrorsEnum',
   })
   errorName?: VerificationErrorsEnum
 }
@@ -76,6 +80,8 @@ export class ResponseCustomErrorVerificationIdentityCardDto {
   @ApiProperty({
     description: 'Error name for decoding.',
     default: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY,
+    enum: VerificationErrorsEnum,
+    enumName: 'VerificationErrorsEnum',
   })
   errorName!: VerificationErrorsEnum
 }
@@ -127,9 +133,11 @@ export class ResponseVerificationDto {
   })
   message!: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Error if exists',
     default: '',
+    enum: VerificationErrorsEnum,
+    enumName: 'VerificationErrorsEnum',
   })
   errorName?: VerificationErrorsEnum
 }
@@ -150,6 +158,8 @@ export class ResponseCustomErrorVerificationEidDto {
   @ApiProperty({
     description: 'Error name for decoding.',
     default: VerificationErrorsEnum.VERIFY_EID_ERROR,
+    enum: VerificationErrorsEnum,
+    enumName: 'VerificationErrorsEnum',
   })
   errorName!: VerificationErrorsEnum
 }

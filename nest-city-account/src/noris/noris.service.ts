@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { config, connect, ConnectionPool } from 'mssql'
-import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
-import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
 import * as mssql from 'mssql'
 import pLimit from 'p-limit'
+
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
+import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
 
 @Injectable()
 export class NorisService {
@@ -52,10 +53,7 @@ export class NorisService {
     return connection
   }
 
-  private async waitForConnection(
-    connection: ConnectionPool,
-    maxWaitTime: number = 10_000
-  ): Promise<void> {
+  private async waitForConnection(connection: ConnectionPool, maxWaitTime = 10_000): Promise<void> {
     const startTime = Date.now()
 
     return new Promise((resolve, reject) => {
@@ -129,7 +127,7 @@ export class NorisService {
   }
 
   async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
-    const edeskUpdateProcessed = edeskChecks.map((edeskCheck) =>
+    const edeskUpdateProcessed = edeskChecks.map(async (edeskCheck) =>
       this.concurrencyLimit(async () =>
         this.withConnection(
           async (connection) => {

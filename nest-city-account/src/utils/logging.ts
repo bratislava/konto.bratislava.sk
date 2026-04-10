@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpException } from '@nestjs/common'
-
 import { RequiredError } from 'openapi-clients/magproxy/base'
+
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
 
 /**
@@ -27,8 +26,8 @@ export function escapeForLogfmt(value: string): string {
 export function separateLogFromResponseObj<T extends object>(
   obj: T
 ): {
-  responseLog: { [K: string]: T[keyof T] }
-  responseMessage: { [K: string]: T[keyof T] }
+  responseLog: Record<string, T[keyof T]>
+  responseMessage: Record<string, T[keyof T]>
 } {
   const responseLog: ReturnType<typeof separateLogFromResponseObj>['responseLog'] = {}
   const responseMessage: ReturnType<typeof separateLogFromResponseObj>['responseLog'] = {}
@@ -177,7 +176,7 @@ export function symbolKeysToStrings(obj: object): Record<string, unknown> {
     if (description) {
       const encodedKey = errorTypeKeys[description]
       if (encodedKey) {
-        response[encodedKey] = (obj as any)[symbol]
+        response[encodedKey] = (obj as Record<symbol, unknown>)[symbol]
       }
     }
   })

@@ -1,18 +1,18 @@
 import { FormOwnerType } from '@prisma/client'
 import {
-  UserVerifyStateCognitoTierEnum,
-  UserVerifyStateTypeEnum,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesTierEnum,
 } from 'openapi-clients/city-account'
 
 import { AuthUser, isAuthUser, User } from '../types/user'
 
 const tierVerifiedMap = {
-  [UserVerifyStateCognitoTierEnum.Eid]: true,
-  [UserVerifyStateCognitoTierEnum.IdentityCard]: true,
-  [UserVerifyStateCognitoTierEnum.NotVerifiedIdentityCard]: false,
-  [UserVerifyStateCognitoTierEnum.QueueIdentityCard]: false,
-  [UserVerifyStateCognitoTierEnum.New]: false,
-} satisfies Record<UserVerifyStateCognitoTierEnum, boolean>
+  [CognitoUserAttributesTierEnum.Eid]: true,
+  [CognitoUserAttributesTierEnum.IdentityCard]: true,
+  [CognitoUserAttributesTierEnum.NotVerifiedIdentityCard]: false,
+  [CognitoUserAttributesTierEnum.QueueIdentityCard]: false,
+  [CognitoUserAttributesTierEnum.New]: false,
+} satisfies Record<CognitoUserAttributesTierEnum, boolean>
 
 export function isUserVerified(user: AuthUser) {
   const tier = user.cognitoUser.userAttributes['custom:tier']
@@ -24,10 +24,10 @@ export function isUserVerified(user: AuthUser) {
 }
 
 const userFormOwnerTypeMap = {
-  [UserVerifyStateTypeEnum.Fo]: FormOwnerType.FO,
-  [UserVerifyStateTypeEnum.Po]: FormOwnerType.PO,
-  [UserVerifyStateTypeEnum.FoP]: FormOwnerType.PO,
-} satisfies Record<UserVerifyStateTypeEnum, FormOwnerType>
+  [CognitoUserAccountTypesEnum.Fo]: FormOwnerType.FO,
+  [CognitoUserAccountTypesEnum.Po]: FormOwnerType.PO,
+  [CognitoUserAccountTypesEnum.FoP]: FormOwnerType.PO,
+} satisfies Record<CognitoUserAccountTypesEnum, FormOwnerType>
 
 export function userToFormOwnerType(user: User) {
   if (!isAuthUser(user)) {

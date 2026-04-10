@@ -1,27 +1,32 @@
+import { createHash, randomBytes } from 'node:crypto'
+
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import * as jwt from 'jsonwebtoken'
+
+import { PrismaService } from '../prisma/prisma.service'
+import { decryptData, encryptData } from '../utils/crypto'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
 import {
   AuthorizationRequestDto,
   RefreshTokenRequestDto,
   TokenRequestDto,
   TokenRequestUnion,
 } from './dtos/requests.oauth2.dto'
-import { AuthorizationResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { OAuth2ErrorThrower } from './oauth2-error.thrower'
+import {
+  AuthorizationResponseDto,
+  ClientInfoResponseDto,
+  TokenResponseDto,
+} from './dtos/responses.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
-import { PrismaService } from '../prisma/prisma.service'
-import { decryptData, encryptData } from '../utils/crypto'
-import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
-import * as jwt from 'jsonwebtoken'
-import { createHash, randomBytes } from 'node:crypto'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
+import { OAuth2ErrorThrower } from './oauth2-error.thrower'
 import {
   OAuth2ClientAllowedScopes,
   OAuth2ClientSubservice,
 } from './subservices/oauth2-client.subservice'
-import { ClientInfoResponseDto } from './dtos/responses.oauth2.dto'
+import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subservice'
 
 @Injectable()
 export class OAuth2Service {
@@ -107,10 +112,10 @@ export class OAuth2Service {
     refreshToken: string
   ): Promise<void> {
     this.logger.debug('Storing tokens for authorization request', {
-      authRequestId: authRequestId,
-      clientId: clientId,
+      authRequestId,
+      clientId,
       hasRefreshToken: !!refreshToken,
-      refreshTokenLength: refreshToken?.length || 0,
+      refreshTokenLength: refreshToken.length || 0,
     })
 
     // Ensure the authorization request exists
@@ -316,19 +321,19 @@ export class OAuth2Service {
   async token(request: TokenRequestUnion): Promise<TokenResponseDto> {
     this.logger.debug('Processing token request', { grant_type: request.grant_type })
 
-    if (request.grant_type === 'authorization_code') {
-      return this.exchangeCode(request)
+    switch (request.grant_type) {
+      case 'authorization_code':
+        return this.exchangeCode(request)
+      case 'refresh_token':
+        return this.refreshToken(request)
+      default:
+        throw this.oAuth2ErrorThrower.tokenException(
+          OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+          `Unsupported grant type`,
+          undefined,
+          'Unsupported grant type. Should have been handled by the guard.'
+        )
     }
-    if (request.grant_type === 'refresh_token') {
-      return this.refreshToken(request)
-    }
-
-    throw this.oAuth2ErrorThrower.tokenException(
-      OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
-      `Unsupported grant type`,
-      undefined,
-      'Unsupported grant type. Should have been handled by the guard.'
-    )
   }
 
   /**

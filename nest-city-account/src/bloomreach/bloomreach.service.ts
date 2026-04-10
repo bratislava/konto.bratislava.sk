@@ -1,9 +1,23 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-
+import {
+  CognitoUserAttributesTierEnum,
+  GDPRCategoryEnum,
+  GDPRSubTypeEnum,
+  GDPRTypeEnum,
+} from '@prisma/client'
 import axios, { isAxiosError } from 'axios'
-import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   AnonymizeResponse,
   BloomreachConsentActionEnum,
@@ -12,21 +26,6 @@ import {
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
 import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import {
-  CognitoGetUserData,
-  CognitoUserAccountTypesEnum,
-  CognitoUserAttributesEnum,
-} from '../utils/global-dtos/cognito.dto'
-import {
-  CognitoUserAttributesTierEnum,
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
-} from '@prisma/client'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class BloomreachService {
@@ -64,41 +63,40 @@ export class BloomreachService {
   }> {
     const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
 
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const foundUser = await this.prisma.user.findUnique({
-        where: {
-          externalId: user.idUser,
-          ...ACTIVE_USER_FILTER,
-        },
-        select: {
-          birthNumber: true,
-        },
-      })
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const foundUser = await this.prisma.user.findUnique({
+          where: {
+            externalId: user.idUser,
+            ...ACTIVE_USER_FILTER,
+          },
+          select: {
+            birthNumber: true,
+          },
+        })
 
-      return { birthNumber: foundUser?.birthNumber ?? undefined }
-    }
-
-    if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const legalPerson = await this.prisma.legalPerson.findUnique({
-        where: {
-          externalId: user.idUser,
-        },
-        select: {
-          birthNumber: true,
-          ico: true,
-        },
-      })
-
-      return {
-        birthNumber: legalPerson?.birthNumber ?? undefined,
-        ico: legalPerson?.ico ?? undefined,
+        return { birthNumber: foundUser?.birthNumber ?? undefined }
       }
-    }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const legalPerson = await this.prisma.legalPerson.findUnique({
+          where: {
+            externalId: user.idUser,
+          },
+          select: {
+            birthNumber: true,
+            ico: true,
+          },
+        })
 
-    return {}
+        return {
+          birthNumber: legalPerson?.birthNumber ?? undefined,
+          ico: legalPerson?.ico ?? undefined,
+        }
+      }
+      default:
+        return {}
+    }
   }
 
   private createBloomreachConsentCategory(
@@ -165,10 +163,10 @@ export class BloomreachService {
         properties: {
           ...(firstName && { first_name: firstName }),
           ...(lastName && { last_name: lastName }),
-          ...(name && { name: name }),
+          ...(name && { name }),
           ...(accountType && { person_type: accountType }),
           ...(registrationDate && { registration_date: registrationDate }),
-          ...(email && { email: email }),
+          ...(email && { email }),
           ...(phoneNumber && { phone: phoneNumber }),
           ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
           ...(oAuthOriginClientName && { oauth_origin_client_name: oAuthOriginClientName }),
@@ -217,7 +215,7 @@ export class BloomreachService {
           },
         }
       )
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(error, { alert: 1 })
       })
   }
@@ -239,7 +237,7 @@ export class BloomreachService {
 
     this.logger.log(`Tracking ${gdprData.length} events for ${userType} with id: ${cognitoId}`)
     await Promise.allSettled(
-      gdprData.map((elem) =>
+      gdprData.map(async (elem) =>
         this.trackEvent(
           this.createBloomreachConsentCategory(elem.category, elem.type, elem.subType),
           cognitoId,

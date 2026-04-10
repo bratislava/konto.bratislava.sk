@@ -14,8 +14,8 @@ import {
   validateOrReject,
 } from 'class-validator'
 import {
-  UserVerifyStateCognitoTierEnum,
-  UserVerifyStateTypeEnum,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesTierEnum,
 } from 'openapi-clients/city-account'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -28,13 +28,13 @@ class CognitoUserAttributesDto {
   sub: string
 
   @Expose()
-  @IsEnum(UserVerifyStateTypeEnum)
-  'custom:account_type': UserVerifyStateTypeEnum
+  @IsEnum(CognitoUserAccountTypesEnum)
+  'custom:account_type': CognitoUserAccountTypesEnum
 
   @Expose()
-  @IsEnum(UserVerifyStateCognitoTierEnum)
+  @IsEnum(CognitoUserAttributesTierEnum)
   @IsOptional() // Newly signed-up users might not have this attribute
-  'custom:tier'?: UserVerifyStateCognitoTierEnum
+  'custom:tier'?: CognitoUserAttributesTierEnum
 
   @Expose()
   @IsString()

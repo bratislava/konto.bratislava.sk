@@ -1,10 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
 import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '@prisma/client'
-import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
-import { IsArray, IsDate, IsEnum, IsObject, IsString } from 'class-validator'
-import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
 import { Type } from 'class-transformer'
+
+import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
+import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
 
 export class ResponseUserByBirthNumberDto {
   @ApiProperty({
@@ -31,11 +30,11 @@ export class ResponseUserByBirthNumberDto {
   })
   userAttribute: string | UserAttributeEnum | null
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Tier from cognito',
     default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
   })
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   cognitoAttributes?: CognitoGetUserData | {}
 
   @ApiPropertyOptional({
@@ -43,8 +42,7 @@ export class ResponseUserByBirthNumberDto {
     example: DeliveryMethodEnum.EDESK,
     enum: DeliveryMethodEnum,
   })
-  @IsEnum(DeliveryMethodEnum)
-  taxDeliveryMethodAtLockDate: DeliveryMethodEnum | null
+  taxDeliveryMethodAtLockDate?: DeliveryMethodEnum | null
 }
 
 export class GetUserDataByBirthNumbersBatchResponseDto {
@@ -53,7 +51,6 @@ export class GetUserDataByBirthNumbersBatchResponseDto {
     type: 'object',
     additionalProperties: { type: 'ResponseUserByBirthNumberDto' },
   })
-  @IsObject()
   users: Record<string, ResponseUserByBirthNumberDto>
 }
 
@@ -64,9 +61,6 @@ export class GetNewVerifiedUsersBirthNumbersResponseDto {
     isArray: true,
     example: ['0123456789', '1234567890', '234567890'],
   })
-  @IsArray()
-  @IsString({ each: true })
-  @IsBirthNumber({ each: true })
   birthNumbers: string[]
 
   @ApiProperty({
@@ -75,7 +69,6 @@ export class GetNewVerifiedUsersBirthNumbersResponseDto {
     format: 'date-time',
     type: 'string',
   })
-  @IsDate()
   @Type(() => Date)
   nextSince: Date
 }

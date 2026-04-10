@@ -1,11 +1,11 @@
 import { MagproxyErrorsEnum } from '../../magproxy/magproxy.errors.enum'
+import { UserErrorsEnum } from '../../user/user.error.enum'
 import {
   SendToQueueErrorsEnum,
   VerificationErrorsEnum,
 } from '../../user-verification/verification.errors.enum'
-import { UserErrorsEnum } from '../../user/user.error.enum'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
 import { DeliveryMethodErrorsEnum } from '../guards/dtos/delivery-method.error'
+import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.

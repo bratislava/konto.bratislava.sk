@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PrismaService } from '../prisma/prisma.service'
+import { ExternalEdeskCheck, PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
+
 import prismaMock from '../../test/singleton'
-import { UpvsQueueService } from './upvs-queue.service'
-import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { NasesService } from '../nases/nases.service'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
+import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { PhysicalEntity, QueueItemStatusEnum, ExternalEdeskCheck } from '@prisma/client'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { UpvsQueueService } from './upvs-queue.service'
 
 describe('UpvsQueueService', () => {
   let service: UpvsQueueService
@@ -662,5 +662,3 @@ describe('UpvsQueueService', () => {
     })
   })
 })
-
-/* eslint-enable @typescript-eslint/no-explicit-any, sonarjs/no-duplicate-string */

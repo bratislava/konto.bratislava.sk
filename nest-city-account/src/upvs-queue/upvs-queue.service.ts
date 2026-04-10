@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
-import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
-import { CreateManyParam, CreateManyResult, NasesService } from '../nases/nases.service'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import dayjs from 'dayjs'
-import { toLogfmt } from '../utils/logging'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
+
 import { parseName } from '../magproxy/dtos/uri'
+import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
+import { CreateManyParam, CreateManyResult, NasesService } from '../nases/nases.service'
+import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class UpvsQueueService {
@@ -125,7 +126,6 @@ export class UpvsQueueService {
     }
 
     this.logger.log(result)
-    return
   }
 
   private async handleSuccessfulUpdates(upvsResult: CreateManyResult, externalUris: Set<string>) {
@@ -283,11 +283,10 @@ export class UpvsQueueService {
         `Failed to update URI for physical entity id ${input.id}`
       )
     }
-    return
   }
 
   private async handleUriUpdateExternal(uri: string) {
-    const upvsResult = await this.nasesService.createMany([{ uri: uri }])
+    const upvsResult = await this.nasesService.createMany([{ uri }])
     if (upvsResult.success.length === 1) {
       const successItem = upvsResult.success[0]
       await this.prismaService.externalEdeskCheck.update({
@@ -302,14 +301,13 @@ export class UpvsQueueService {
       })
     } else {
       await this.prismaService.externalEdeskCheck.update({
-        where: { uri: uri },
+        where: { uri },
         data: {
           queueStatus: QueueItemStatusEnum.FAILED,
           failCount: { increment: 1 },
         },
       })
     }
-    return
   }
 
   /**
@@ -364,9 +362,8 @@ export class UpvsQueueService {
     const lookBackDate = dayjs().subtract(this.CACHE_TTL_HOURS, 'hour')
 
     // Reuse existing edesk-tasks query logic with exponential backoff
-    const entities = await this.prismaService.$queryRaw<PhysicalEntity[]>
-    //language=postgresql
-    `
+    /* language=postgresql */
+    const entities = await this.prismaService.$queryRaw<(PhysicalEntity & { uri: string })[]>` 
         SELECT e.*
         FROM "PhysicalEntity" e
         WHERE "userId" IS NOT NULL
@@ -381,7 +378,7 @@ export class UpvsQueueService {
     `
 
     return entities.map((entity) => {
-      return { physicalEntityId: entity.id, uri: entity.uri! }
+      return { physicalEntityId: entity.id, uri: entity.uri }
     })
   }
 
@@ -447,7 +444,7 @@ export class UpvsQueueService {
     )
 
     // log errors if any occurred
-    let errorMessage: string = ''
+    let errorMessage = ''
     idUriList
       .filter((item) => item.status === 'rejected')
       .forEach((item) => {

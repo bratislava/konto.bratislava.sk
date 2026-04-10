@@ -14,6 +14,8 @@ import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
 import InputFieldShowCase from '@/src/components/styleguide/showcases/InputFieldShowCase'
 import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
+import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
+import PasswordFieldShowCase from '@/src/components/styleguide/showcases/PasswordFieldShowCase'
 import ProgressBarShowCase from '@/src/components/styleguide/showcases/ProgressBarShowCase'
 import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroupShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
@@ -42,18 +44,20 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },
   { id: 'field-header', label: 'Field Header', component: <FieldHeaderShowCase /> },
   { id: 'spinner', label: 'Spinner', component: <SpinnerShowCase /> },
-  { id: 'input-field', label: 'Input Field', component: <InputFieldShowCase /> },
+  { id: 'input-field', label: 'Input Field / Text Field', component: <InputFieldShowCase /> },
+  { id: 'text-area-field', label: 'Text Area Field', component: <TextAreaFieldShowCase /> },
+  { id: 'number-field', label: 'Number Field', component: <NumberFieldShowCase /> },
+  { id: 'password-field', label: 'Password Field', component: <PasswordFieldShowCase /> },
+  { id: 'radio-group', label: 'Radio Group', component: <RadioGroupShowCase /> },
+  { id: 'checkbox-group', label: 'Checkbox Group', component: <CheckboxGroupShowCase /> },
   { id: 'date-picker', label: 'Date Picker', component: <DatePickerShowCase /> },
   { id: 'time-picker', label: 'Time Picker', component: <TimePickerShowCase /> },
-  { id: 'text-area-field', label: 'Text Area Field', component: <TextAreaFieldShowCase /> },
   { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },
   { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
   { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
   { id: 'accordion', label: 'Accordion', component: <AccordionShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
-  { id: 'checkbox-group', label: 'Checkbox Group', component: <CheckboxGroupShowCase /> },
-  { id: 'radio-group', label: 'Radio Group', component: <RadioGroupShowCase /> },
   { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
   { id: 'banner', label: 'Banner', component: <BannerShowCase /> },
   { id: 'service-card', label: 'Service Card', component: <ServiceCardShowCase /> },

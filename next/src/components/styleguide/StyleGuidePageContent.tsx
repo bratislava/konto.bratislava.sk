@@ -5,6 +5,7 @@ import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
+import AuthFormsShowCase from '@/src/components/styleguide/showcases/AuthFormsShowCase'
 import BannerShowCase from '@/src/components/styleguide/showcases/BannerShowCase'
 import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
@@ -67,6 +68,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     component: <MyApplicationsCardShowCase />,
   },
   { id: 'snackbar', label: 'Snackbar', component: <SnackbarShowCase /> },
+  { id: 'auth-forms', label: 'Auth Forms', component: <AuthFormsShowCase /> },
 ]
 
 const StyleGuidePageContent = () => {

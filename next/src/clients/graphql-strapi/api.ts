@@ -48,6 +48,57 @@ export type BooleanFilterInput = {
   startsWith?: InputMaybe<Scalars['Boolean']['input']>
 }
 
+export type ComponentBlocksCommonLink = {
+  __typename?: 'ComponentBlocksCommonLink'
+  id: Scalars['ID']['output']
+  label?: Maybe<Scalars['String']['output']>
+  municipalService?: Maybe<MunicipalService>
+  url?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksCommonLinkFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksCommonLinkFiltersInput>>>
+  label?: InputMaybe<StringFilterInput>
+  municipalService?: InputMaybe<MunicipalServiceFiltersInput>
+  not?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksCommonLinkFiltersInput>>>
+  url?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksCommonLinkInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  label?: InputMaybe<Scalars['String']['input']>
+  municipalService?: InputMaybe<Scalars['ID']['input']>
+  url?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksFooterColumn = {
+  __typename?: 'ComponentBlocksFooterColumn'
+  id: Scalars['ID']['output']
+  links?: Maybe<Array<Maybe<ComponentBlocksCommonLink>>>
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksFooterColumnLinksArgs = {
+  filters?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentBlocksFooterColumnFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksFooterColumnFiltersInput>>>
+  links?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
+  not?: InputMaybe<ComponentBlocksFooterColumnFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksFooterColumnFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksFooterColumnInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  links?: InputMaybe<Array<InputMaybe<ComponentBlocksCommonLinkInput>>>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksFormLandingPage = {
   __typename?: 'ComponentBlocksFormLandingPage'
   formCta: ComponentBlocksFormLandingPageFormCta
@@ -304,6 +355,40 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']['input']>
 }
 
+export type Footer = {
+  __typename?: 'Footer'
+  accessibilityPageLink?: Maybe<ComponentBlocksCommonLink>
+  columns?: Maybe<Array<Maybe<ComponentBlocksFooterColumn>>>
+  contactText?: Maybe<Scalars['String']['output']>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  documentId: Scalars['ID']['output']
+  facebookUrl?: Maybe<Scalars['String']['output']>
+  instagramUrl?: Maybe<Scalars['String']['output']>
+  linkedinUrl?: Maybe<Scalars['String']['output']>
+  publishedAt?: Maybe<Scalars['DateTime']['output']>
+  tiktokUrl?: Maybe<Scalars['String']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+  youtubeUrl?: Maybe<Scalars['String']['output']>
+}
+
+export type FooterColumnsArgs = {
+  filters?: InputMaybe<ComponentBlocksFooterColumnFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type FooterInput = {
+  accessibilityPageLink?: InputMaybe<ComponentBlocksCommonLinkInput>
+  columns?: InputMaybe<Array<InputMaybe<ComponentBlocksFooterColumnInput>>>
+  contactText?: InputMaybe<Scalars['String']['input']>
+  facebookUrl?: InputMaybe<Scalars['String']['input']>
+  instagramUrl?: InputMaybe<Scalars['String']['input']>
+  linkedinUrl?: InputMaybe<Scalars['String']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  tiktokUrl?: InputMaybe<Scalars['String']['input']>
+  youtubeUrl?: InputMaybe<Scalars['String']['input']>
+}
+
 export type Form = {
   __typename?: 'Form'
   createdAt?: Maybe<Scalars['DateTime']['output']>
@@ -362,12 +447,15 @@ export type GeneralInput = {
 }
 
 export type GenericMorph =
+  | ComponentBlocksCommonLink
+  | ComponentBlocksFooterColumn
   | ComponentBlocksFormLandingPage
   | ComponentBlocksFormLandingPageFormCta
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
+  | Footer
   | Form
   | General
   | HelpPage
@@ -878,6 +966,7 @@ export type Mutation = {
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse
+  deleteFooter?: Maybe<DeleteMutationResponse>
   deleteForm?: Maybe<DeleteMutationResponse>
   deleteGeneral?: Maybe<DeleteMutationResponse>
   deleteHelpPage?: Maybe<DeleteMutationResponse>
@@ -904,6 +993,7 @@ export type Mutation = {
   register: UsersPermissionsLoginPayload
   /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>
+  updateFooter?: Maybe<Footer>
   updateForm?: Maybe<Form>
   updateGeneral?: Maybe<General>
   updateHelpPage?: Maybe<HelpPage>
@@ -1034,6 +1124,11 @@ export type MutationResetPasswordArgs = {
   passwordConfirmation: Scalars['String']['input']
 }
 
+export type MutationUpdateFooterArgs = {
+  data: FooterInput
+  status?: InputMaybe<PublicationStatus>
+}
+
 export type MutationUpdateFormArgs = {
   data: FormInput
   documentId: Scalars['ID']['input']
@@ -1138,6 +1233,7 @@ export enum PublicationStatus {
 
 export type Query = {
   __typename?: 'Query'
+  footer?: Maybe<Footer>
   form?: Maybe<Form>
   forms: Array<Maybe<Form>>
   forms_connection?: Maybe<FormEntityResponseCollection>
@@ -1177,6 +1273,11 @@ export type Query = {
   usersPermissionsUser?: Maybe<UsersPermissionsUser>
   usersPermissionsUsers: Array<Maybe<UsersPermissionsUser>>
   usersPermissionsUsers_connection?: Maybe<UsersPermissionsUserEntityResponseCollection>
+}
+
+export type QueryFooterArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryFormArgs = {
@@ -1899,6 +2000,81 @@ export type FormWithLandingPageBySlugQuery = {
   } | null>
 }
 
+export type CommonLinkFragment = {
+  __typename?: 'ComponentBlocksCommonLink'
+  label?: string | null
+  url?: string | null
+  municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+}
+
+export type FooterColumnBlockFragment = {
+  __typename?: 'ComponentBlocksFooterColumn'
+  title: string
+  links?: Array<{
+    __typename?: 'ComponentBlocksCommonLink'
+    label?: string | null
+    url?: string | null
+    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  } | null> | null
+}
+
+export type FooterFragment = {
+  __typename?: 'Footer'
+  facebookUrl?: string | null
+  instagramUrl?: string | null
+  youtubeUrl?: string | null
+  linkedinUrl?: string | null
+  tiktokUrl?: string | null
+  contactText?: string | null
+  columns?: Array<{
+    __typename?: 'ComponentBlocksFooterColumn'
+    title: string
+    links?: Array<{
+      __typename?: 'ComponentBlocksCommonLink'
+      label?: string | null
+      url?: string | null
+      municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+    } | null> | null
+  } | null> | null
+  accessibilityPageLink?: {
+    __typename?: 'ComponentBlocksCommonLink'
+    label?: string | null
+    url?: string | null
+    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  } | null
+}
+
+export type GeneralQueryVariables = Exact<{ [key: string]: never }>
+
+export type GeneralQuery = {
+  __typename?: 'Query'
+  footer?: {
+    __typename?: 'Footer'
+    facebookUrl?: string | null
+    instagramUrl?: string | null
+    youtubeUrl?: string | null
+    linkedinUrl?: string | null
+    tiktokUrl?: string | null
+    contactText?: string | null
+    columns?: Array<{
+      __typename?: 'ComponentBlocksFooterColumn'
+      title: string
+      links?: Array<{
+        __typename?: 'ComponentBlocksCommonLink'
+        label?: string | null
+        url?: string | null
+        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      } | null> | null
+    } | null> | null
+    accessibilityPageLink?: {
+      __typename?: 'ComponentBlocksCommonLink'
+      label?: string | null
+      url?: string | null
+      municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+    } | null
+  } | null
+}
+
 export type HelpItemFragment = {
   __typename?: 'ComponentBlocksHelpItem'
   id: string
@@ -2180,6 +2356,43 @@ export const FormWithLandingPageFragmentDoc = gql`
   ${FormBaseFragmentDoc}
   ${FormLandingPageFragmentDoc}
 `
+export const CommonLinkFragmentDoc = gql`
+  fragment CommonLink on ComponentBlocksCommonLink {
+    label
+    municipalService {
+      title
+      href
+    }
+    url
+  }
+`
+export const FooterColumnBlockFragmentDoc = gql`
+  fragment FooterColumnBlock on ComponentBlocksFooterColumn {
+    title
+    links {
+      ...CommonLink
+    }
+  }
+  ${CommonLinkFragmentDoc}
+`
+export const FooterFragmentDoc = gql`
+  fragment Footer on Footer {
+    facebookUrl
+    instagramUrl
+    youtubeUrl
+    linkedinUrl
+    tiktokUrl
+    columns {
+      ...FooterColumnBlock
+    }
+    accessibilityPageLink {
+      ...CommonLink
+    }
+    contactText
+  }
+  ${FooterColumnBlockFragmentDoc}
+  ${CommonLinkFragmentDoc}
+`
 export const HelpItemFragmentDoc = gql`
   fragment HelpItem on ComponentBlocksHelpItem {
     id
@@ -2295,6 +2508,14 @@ export const FormWithLandingPageBySlugDocument = gql`
   }
   ${FormWithLandingPageFragmentDoc}
 `
+export const GeneralDocument = gql`
+  query General {
+    footer {
+      ...Footer
+    }
+  }
+  ${FooterFragmentDoc}
+`
 export const HelpPageDocument = gql`
   query HelpPage {
     helpPage {
@@ -2407,6 +2628,24 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             signal,
           }),
         'FormWithLandingPageBySlug',
+        'query',
+        variables,
+      )
+    },
+    General(
+      variables?: GeneralQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<GeneralQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<GeneralQuery>({
+            document: GeneralDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'General',
         'query',
         variables,
       )

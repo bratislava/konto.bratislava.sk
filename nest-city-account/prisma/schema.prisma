@@ -6,6 +6,10 @@ generator client {
   binaryTargets = ["native", "linux-musl", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -62,6 +66,13 @@ enum LoginClientEnum {
 enum QueueItemStatusEnum {
   PENDING
   NEW_URI_CHECK_REQUIRED
+  COMPLETED
+  FAILED
+}
+
+enum BloomreachOutboxStatus {
+  PENDING
+  PROCESSING
   COMPLETED
   FAILED
 }
@@ -267,4 +278,20 @@ model OAuth2Data {
   accessTokenExpiresAt DateTime?
   idTokenEnc           String?
   refreshTokenEnc      String?
+}
+
+model BloomreachOutbox {
+  id          String                 @id @default(uuid()) @db.Uuid
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  cognitoId   String
+  commandName String
+  /// [BloomreachCommandData]
+  commandData Json
+  status      BloomreachOutboxStatus @default(PENDING)
+  attempts    Int                    @default(0)
+  lastError   String?
+
+  @@index([status, createdAt])
+  @@index([cognitoId, commandName, status])
 }

@@ -73,4 +73,4 @@ jobs:
 
       - name: Run E2E tests
         run: |
-          docker run --rm nest-forms-backend-validate /bin/sh -lc "NODE_OPTIONS='--max-old-space-size=4096' npm run test:e2e"
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock nest-forms-backend-validate /bin/sh -lc "NODE_OPTIONS='--max-old-space-size=4096' npm run test:e2e"

@@ -1,0 +1,76 @@
+name: Validate nest-forms-backend
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: false
+        default: './nest-forms-backend'
+      shared_package_tag:
+        description: "Tag used for dependency images."
+        type: string
+        required: false
+        default: 'latest'
+    secrets:
+      registry-pass:
+        description: "Password for registry."
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Docker validation
+    runs-on: "bratislava"
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Pipelines Version
+        run: |
+          echo "Pipelines version: 2.3.0"
+
+      - name: Check for Harbor secret availability
+        id: harbor-check
+        shell: bash
+        run: |
+          if [ "${{ secrets.registry-pass }}" != '' ]; then
+            echo "available=true" >> $GITHUB_OUTPUT;
+          else
+            echo "available=false" >> $GITHUB_OUTPUT;
+          fi
+
+      - name: Login to Harbor
+        if: ${{ steps.harbor-check.outputs.available == 'true' }}
+        uses: docker/login-action@v3.1.0
+        with:
+          registry: harbor.bratislava.sk
+          username: robot$github_actions
+          password: ${{ secrets.registry-pass }}
+
+      - name: Build nest-forms-backend validation image
+        run: |
+          docker build --target validate --build-arg SHARED_PACKAGE_TAG=${{ inputs.shared_package_tag }} -t nest-forms-backend-validate .
+
+      - name: Run unit tests
+        run: |
+          docker run --rm nest-forms-backend-validate /bin/sh -lc "NODE_OPTIONS='--max-old-space-size=4096' npm run test"
+
+      - name: Typescript check
+        run: |
+          docker run --rm nest-forms-backend-validate /bin/sh -lc "npx tsc"
+
+      - name: ESLint check
+        run: |
+          docker run --rm nest-forms-backend-validate /bin/sh -lc "npm run lint"
+
+      - name: Run E2E tests
+        run: |
+          docker run --rm nest-forms-backend-validate /bin/sh -lc "NODE_OPTIONS='--max-old-space-size=4096' npm run test:e2e"

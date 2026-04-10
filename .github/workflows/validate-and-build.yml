@@ -72,11 +72,13 @@ jobs:
   validate-nest-forms-backend:
     if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-forms-backend
-    needs: conditions
-    uses: ./.github/workflows/validate-nest-prisma-konto.yml
+    needs: [conditions, build-forms-shared, build-openapi-clients]
+    uses: ./.github/workflows/validate-nest-forms-konto.yml
     with:
       directory: nest-forms-backend/
-      run_e2e_tests: true
+      shared_package_tag: build-${{ github.sha }}
+    secrets:
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   build-nest-forms-backend:
     name: build nest-forms-backend

@@ -1,10 +1,15 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { FileLimits } from '../../definitions/formDefinitionTypes'
 
-export const fileUploadMultiple = (
+type FileUploadMultipleOptions<K extends FileLimits> = GeneratorBaseOptions & {
+  id?: keyof K & string
+}
+
+export const fileUploadMultiple = <K extends FileLimits = FileLimits>(
   property: string,
-  options: GeneratorBaseOptions,
+  options: FileUploadMultipleOptions<K>,
   uiOptions: FileUploadUiOptions,
 ): GeneratorField => ({
   property,
@@ -21,6 +26,7 @@ export const fileUploadMultiple = (
     baUiSchema: {
       'ui:widget': BaWidgetType.FileUploadMultiple,
       'ui:options': uiOptions,
+      'ui:fileId': options.id,
     },
   }),
   required: Boolean(options.required),

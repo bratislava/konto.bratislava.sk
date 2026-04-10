@@ -3,7 +3,10 @@ import { createHash } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, Forms, Prisma } from '@prisma/client'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
 
@@ -151,27 +154,80 @@ export default class FilesHelper {
     formId: string,
     pospIdOrSlug: string,
   ): Promise<Files> {
-    // if file does not exist in the database, save it
-    const createData: Prisma.FilesCreateArgs = {
-      data: {
-        minioFileName,
-        fileSize,
-        fileName,
-        formId,
-        pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
-      },
-    }
-
-    // if desired fileId is provided, use it
-    if (fileId) {
-      createData.data = {
-        id: fileId,
-        ...createData.data,
-      }
-    }
-
     try {
-      return await this.prisma.files.create(createData)
+      return await this.prisma.files.create({
+        data: {
+          id: fileId,
+          minioFileName,
+          fileSize,
+          fileName,
+          formId,
+          pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
+        },
+      })
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.DATABASE_ERROR,
+        'Error while saving file to database.',
+        undefined,
+        error,
+      )
+    }
+  }
+
+  /**
+   * Atomically checks the cumulative file size limit and saves the file in a serializable
+   * transaction to prevent race conditions with concurrent uploads.
+   */
+  async saveFileToDatabaseWithTotalSizeCheck(
+    fileId: string,
+    minioFileName: string,
+    fileName: string,
+    fileSize: number,
+    formId: string,
+    pospIdOrSlug: string,
+    maxTotalFileSize: number,
+  ): Promise<Files> {
+    try {
+      return await this.prisma.$transaction(
+        async (tx) => {
+          const totalResult = await tx.files.aggregate({
+            where: {
+              formId,
+              status: {
+                in: [
+                  FileStatus.UPLOADED,
+                  FileStatus.ACCEPTED,
+                  FileStatus.QUEUED,
+                  FileStatus.SCANNING,
+                  FileStatus.SAFE,
+                ],
+              },
+            },
+            _sum: { fileSize: true },
+          })
+
+          const currentTotalSize = totalResult._sum.fileSize ?? 0
+          if (currentTotalSize + fileSize > maxTotalFileSize) {
+            throw this.throwerErrorGuard.BadRequestException(
+              FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+              `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Current total: ${currentTotalSize}, new file: ${fileSize}, limit: ${maxTotalFileSize}`,
+            )
+          }
+
+          return tx.files.create({
+            data: {
+              id: fileId,
+              minioFileName,
+              fileSize,
+              fileName,
+              formId,
+              pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
+            },
+          })
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      )
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
@@ -391,7 +447,10 @@ export default class FilesHelper {
     return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
   }
 
-  forms2formInfo(form: Forms): FormInfo {
+  forms2formInfo(form: Forms): {
+    formInfo: FormInfo
+    formDefinition: FormDefinition
+  } {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -401,11 +460,34 @@ export default class FilesHelper {
     }
 
     return {
-      pospIdOrSlug: isSlovenskoSkFormDefinition(formDefinition)
-        ? formDefinition.pospID
-        : formDefinition.slug,
-      formId: form.id,
+      formInfo: {
+        pospIdOrSlug: isSlovenskoSkFormDefinition(formDefinition)
+          ? formDefinition.pospID
+          : formDefinition.slug,
+        formId: form.id,
+      },
+      formDefinition,
     }
+  }
+
+  async getActiveFilesTotalSize(formId: string): Promise<number> {
+    const result = await this.prisma.files.aggregate({
+      where: {
+        formId,
+        status: {
+          in: [
+            FileStatus.UPLOADED,
+            FileStatus.ACCEPTED,
+            FileStatus.QUEUED,
+            FileStatus.SCANNING,
+            FileStatus.SAFE,
+          ],
+        },
+      },
+      _sum: { fileSize: true },
+    })
+
+    return result._sum.fileSize ?? 0
   }
 
   fileDto2formInfo(files: BasicFileDto): FormInfo {

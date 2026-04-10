@@ -8,6 +8,8 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisTaxSubservice } from '../noris-tax.subservice'
 import { NorisTaxCommunalWasteSubservice } from '../noris-tax/noris-tax.communal-waste.subservice'
 import { NorisTaxRealEstateSubservice } from '../noris-tax/noris-tax.real-estate.subservice'
+import { createTestNorisCommunalWasteTaxGrouped } from './factories/noris-communal-waste-tax-grouped.factory'
+import { createTestNorisRealEstateTax } from './factories/noris-real-estate-tax.factory'
 
 describe('NorisTaxSubservice', () => {
   let service: NorisTaxSubservice
@@ -69,7 +71,7 @@ describe('NorisTaxSubservice', () => {
     }
 
     it('should call DZN subservice when taxType is TaxType.DZN', async () => {
-      const mockNorisData = [{ id: 1, data: 'test' }]
+      const mockNorisData = [createTestNorisRealEstateTax()]
       const mockResponse = {
         birthNumbers: [
           '1234567890',
@@ -87,7 +89,7 @@ describe('NorisTaxSubservice', () => {
 
       const result = await service.processNorisTaxData(
         TaxType.DZN,
-        mockNorisData as any,
+        mockNorisData,
         mockYear,
         mockOptions,
       )
@@ -105,7 +107,7 @@ describe('NorisTaxSubservice', () => {
     })
 
     it('should call KO subservice when taxType is TaxType.KO', async () => {
-      const mockNorisData = [{ id: 2, data: 'test-ko' }]
+      const mockNorisData = [createTestNorisCommunalWasteTaxGrouped()]
       const mockResponse = {
         birthNumbers: [
           '1234567890',
@@ -123,7 +125,7 @@ describe('NorisTaxSubservice', () => {
 
       const result = await service.processNorisTaxData(
         TaxType.KO,
-        mockNorisData as any,
+        mockNorisData,
         mockYear,
         mockOptions,
       )
@@ -141,7 +143,7 @@ describe('NorisTaxSubservice', () => {
     })
 
     it('should pass empty object as default options when not provided', async () => {
-      const mockNorisData = [{ id: 1, data: 'test' }]
+      const mockNorisData = [createTestNorisRealEstateTax()]
       const mockResponse = {
         birthNumbers: [
           '1234567890',
@@ -157,12 +159,9 @@ describe('NorisTaxSubservice', () => {
         mockResponse,
       )
 
-      await service.processNorisTaxData(
-        TaxType.DZN,
-        mockNorisData as any,
-        mockYear,
-        { suppressEmail: false },
-      )
+      await service.processNorisTaxData(TaxType.DZN, mockNorisData, mockYear, {
+        suppressEmail: false,
+      })
 
       expect(
         norisTaxRealEstateSubservice.processNorisTaxData,
@@ -180,7 +179,7 @@ describe('NorisTaxSubservice', () => {
       const unknownTaxType = 'UNKNOWN' as TaxType
 
       await expect(
-        service.processNorisTaxData(unknownTaxType, [] as any, mockYear, {
+        service.processNorisTaxData(unknownTaxType, [], mockYear, {
           suppressEmail: false,
         }),
       ).rejects.toThrow(mockError)

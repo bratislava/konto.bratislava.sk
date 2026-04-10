@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { MSSQLError } from 'mssql'
+import mssql, { MSSQLError } from 'mssql'
 
 import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
@@ -10,13 +10,7 @@ import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
 const mockConnect = jest.fn()
-jest.mock('mssql', () => {
-  const actual = jest.requireActual('mssql')
-  return {
-    ...actual,
-    connect: (...args: unknown[]) => mockConnect(...args),
-  }
-})
+jest.spyOn(mssql, 'connect').mockImplementation(mockConnect)
 
 describe('NorisConnectionSubservice', () => {
   let service: NorisConnectionSubservice

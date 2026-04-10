@@ -102,7 +102,6 @@ const IdentityVerificationOfPhysicalEntityForm = ({
             isRequired
             helptext={t('auth.fields.rc_description')}
             label={t('auth.fields.rc_label')}
-            placeholder={t('auth.fields.rc_placeholder')}
             {...field}
             errorMessage={errors.rc}
           />
@@ -115,7 +114,6 @@ const IdentityVerificationOfPhysicalEntityForm = ({
           <InputField
             isRequired
             label={t('auth.fields.id_card_label')}
-            placeholder={t('auth.fields.id_card_placeholder')}
             helptext={t('auth.fields.id_card_description')}
             {...field}
             errorMessage={errors.idCard}

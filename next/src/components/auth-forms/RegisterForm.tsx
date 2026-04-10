@@ -211,7 +211,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             isRequired
             helptext={emailHelptextTranslationMap[type]}
             label={t('auth.fields.email_label')}
-            placeholder={t('auth.fields.email_placeholder')}
             autoComplete="username"
             autoCapitalize="none"
             // TODO consider adding autoCorrect="off" and spellCheck={false}
@@ -229,7 +228,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               <InputField
                 isRequired
                 label={t('auth.fields.given_name_label')}
-                placeholder={t('auth.fields.given_name_placeholder')}
+                helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
                 capitalize
                 {...field}
@@ -244,7 +243,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               <InputField
                 isRequired
                 label={t('auth.fields.family_name_label')}
-                placeholder={t('auth.fields.family_name_placeholder')}
+                helptext={t('auth.fields.family_name_helptext')}
                 autoComplete="family-name"
                 capitalize
                 {...field}
@@ -262,7 +261,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             <InputField
               isRequired
               label={t('auth.fields.business_name_label')}
-              placeholder={t('auth.fields.business_name_placeholder')}
               capitalize
               {...field}
               errorMessage={errors.name}
@@ -277,7 +275,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           <PasswordField
             isRequired
             label={t('auth.fields.password_label')}
-            placeholder={t('auth.fields.password_placeholder')}
             helptext={t('auth.fields.password_description')}
             autoComplete="new-password"
             {...field}

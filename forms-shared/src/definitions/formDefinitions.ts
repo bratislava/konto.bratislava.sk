@@ -661,6 +661,6 @@ export const formDefinitions: FormDefinition[] = [
       technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,
-    files: nahlaseniePodnetuKElektrickymKolobezkamFiles,
+    fileLimits: nahlaseniePodnetuKElektrickymKolobezkamFiles,
   },
 ]

@@ -1,18 +1,12 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
-import { FormDefinitionFiles } from '../../definitions/formDefinitionTypes'
 
-type FileUploadMultipleProperty<K extends FormDefinitionFiles<string>> =
-  string extends K[number]['id'] ? never : K[number]['id']
-
-type FileUploadMultipleOptions<K extends FormDefinitionFiles<string>> = GeneratorBaseOptions & {
-  id: FileUploadMultipleProperty<K>
+type FileUploadMultipleOptions<K extends Record<string, string>> = GeneratorBaseOptions & {
+  id: K[keyof K]
 }
 
-export const fileUploadMultiple = <
-  K extends FormDefinitionFiles<string> = FormDefinitionFiles<string>,
->(
+export const fileUploadMultiple = <K extends Record<string, string>>(
   property: string,
   options: FileUploadMultipleOptions<K>,
   uiOptions: FileUploadUiOptions,

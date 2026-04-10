@@ -2,9 +2,13 @@ import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
 
-export const fileUpload = (
+type FileUploadOptions<K extends Record<string, string>> = GeneratorBaseOptions & {
+  id: K[keyof K]
+}
+
+export const fileUpload = <K extends Record<string, string>>(
   property: string,
-  options: GeneratorBaseOptions,
+  options: FileUploadOptions<K>,
   uiOptions: FileUploadUiOptions,
 ): GeneratorField => ({
   property,
@@ -16,6 +20,7 @@ export const fileUpload = (
     baUiSchema: {
       'ui:widget': BaWidgetType.FileUpload,
       'ui:options': uiOptions,
+      'ui:fileId': options.id,
     },
   }),
   required: Boolean(options.required),

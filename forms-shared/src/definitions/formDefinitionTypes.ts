@@ -16,8 +16,8 @@ export enum FormDefinitionType {
   Webhook = 'Webhook',
 }
 
-export type FormDefinitionFiles<K extends string = string> = {
-  id: K
+export type FileLimits<K extends Record<string, string>> = {
+  id: K[keyof K]
   maxFileSize: number
 }[]
 
@@ -37,6 +37,7 @@ type FormDefinitionBase = {
   exampleFormNotRequired?: boolean
   feedbackLink?: string
   files?: FormDefinitionFiles<string>
+  fileLimits?: FileLimits<Record<string, string>>
   /** Max size of a single file in bytes. Falls back to global MAX_FILE_SIZE if not set. */
   maxFileSize?: number
   /** Max cumulative size of all active files on a form instance in bytes. No limit if not set. */

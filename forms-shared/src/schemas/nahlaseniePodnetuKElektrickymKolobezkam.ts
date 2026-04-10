@@ -7,14 +7,20 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
-import { FormDefinitionFiles } from '../definitions/formDefinitionTypes'
+import { FileLimits } from '../definitions/formDefinitionTypes'
 
-export const nahlaseniePodnetuKElektrickymKolobezkamFiles = [
+export enum nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum {
+  FOTOGRAFIA = 'fotografia',
+}
+
+export const nahlaseniePodnetuKElektrickymKolobezkamFiles: FileLimits<
+  typeof nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum
+> = [
   {
-    id: 'fotografia',
-    maxFileSize: 10 * 1024 * 1024,
+    id: nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum.FOTOGRAFIA,
+    maxFileSize: 10_000_000,
   },
-] as const satisfies FormDefinitionFiles
+]
 
 export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám' }, [
   step('podnet', { title: 'Podnet' }, [
@@ -89,12 +95,12 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         helptext: 'Nachádza sa v strede riadidiel pod QR kódom.',
       },
     ),
-    fileUploadMultiple<typeof nahlaseniePodnetuKElektrickymKolobezkamFiles>(
+    fileUploadMultiple<typeof nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum>(
       'fotografia',
       {
         title: 'Fotografia podnetu',
         required: true,
-        id: 'fotografia', // this is enforced, cannot be out of sync with the files definition
+        id: nahlaseniePodnetuKElektrickymKolobezkamFileIdEnum.FOTOGRAFIA, // this is enforced, cannot be out of sync with the files definition
       },
       {
         type: 'dragAndDrop',

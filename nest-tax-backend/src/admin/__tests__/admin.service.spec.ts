@@ -538,7 +538,7 @@ describe('AdminService', () => {
 
       const loggerErrorSpy = jest
         .spyOn(adminService['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(() => undefined)
 
       await adminService.deleteTax({
         birthNumber: mockBirthNumber,

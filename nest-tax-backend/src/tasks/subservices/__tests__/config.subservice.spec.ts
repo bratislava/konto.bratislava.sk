@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { Prisma } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -78,7 +79,7 @@ describe('TasksConfigSubservice', () => {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as any
+          } as unknown as Prisma.TransactionClient
           return callback(tx)
         })
 
@@ -106,7 +107,7 @@ describe('TasksConfigSubservice', () => {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as any
+          } as unknown as Prisma.TransactionClient
           return callback(tx)
         })
 
@@ -130,7 +131,7 @@ describe('TasksConfigSubservice', () => {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as any
+          } as unknown as Prisma.TransactionClient
           return callback(tx)
         })
 
@@ -166,7 +167,7 @@ describe('TasksConfigSubservice', () => {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as any
+          } as unknown as Prisma.TransactionClient
           return callback(tx)
         })
 

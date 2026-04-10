@@ -2,7 +2,10 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'
+import { strapiClient } from '@/src/clients/graphql-strapi'
+import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails'
 import { patchApplicationFormIfNeeded } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededClient'
@@ -13,6 +16,7 @@ import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
 type AccountMyApplicationsPageProps = {
+  general: GeneralQuery
   formDefinitionTitle: string
   myApplicationDetailsData: GetFormResponseDto
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
@@ -43,6 +47,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
       }
     } catch (error) {
       logger.error(error)
+
       return { notFound: true }
     }
 
@@ -53,8 +58,11 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
       return { notFound: true }
     }
 
+    const general = await strapiClient.General()
+
     return {
       props: {
+        general,
         formDefinitionTitle: formDefinition.title,
         myApplicationDetailsData,
         myApplicationGinisData: modifyGinisDataForSchemaSlug(
@@ -69,18 +77,21 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
 )
 
 const AccountMyApplicationsPage = ({
+  general,
   formDefinitionTitle,
   myApplicationDetailsData,
   myApplicationGinisData,
 }: AccountMyApplicationsPageProps) => {
   return (
-    <PageLayout>
-      <MyApplicationDetails
-        formDefinitionTitle={formDefinitionTitle}
-        ginisData={myApplicationGinisData}
-        detailsData={myApplicationDetailsData}
-      />
-    </PageLayout>
+    <GeneralContextProvider general={general}>
+      <PageLayout>
+        <MyApplicationDetails
+          formDefinitionTitle={formDefinitionTitle}
+          ginisData={myApplicationGinisData}
+          detailsData={myApplicationDetailsData}
+        />
+      </PageLayout>
+    </GeneralContextProvider>
   )
 }
 

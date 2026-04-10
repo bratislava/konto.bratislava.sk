@@ -6,7 +6,6 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 
-// eslint-disable-next-line import/no-cycle
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
@@ -41,7 +40,7 @@ const AccountMarkdown = ({
     disableRemarkDirective ? null : remarkDirective,
     disableRemarkDirectiveRehype ? null : remarkDirectiveRehype,
   ].filter(isDefined)
-  const textStyle = cn({
+  const textStyle = cn('whitespace-pre-line', {
     'text-p3 lg:text-p2': variant === 'sm',
     'text-p2': variant === 'statusBar',
     'text-p1': variant === 'normal',

@@ -1,32 +1,21 @@
-import { useTranslation } from 'next-i18next'
-
-import SectionContainer from '@/src/components/layouts/SectionContainer'
-import cn from '@/src/utils/cn'
-
-type Props = {
-  className?: string
-}
+import DesktopFooter from '@/src/components/segments/Footer/DesktopFooter'
+import MobileFooter from '@/src/components/segments/Footer/MobileFooter'
 
 /**
- * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19566-30173&m=dev
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-34027&t=kxvcsTyGotEVpcH2-4
+ * Based on bratislava.sk: https://github.com/bratislava/bratislava.sk/tree/master/next/src/components/common/Footer
  */
 
-export const Footer = ({ className }: Props) => {
-  const { t } = useTranslation('account')
-
+const Footer = () => {
   return (
-    <footer
-      className={cn(
-        'border-t border-border-passive-primary bg-background-passive-primary py-4 lg:py-6',
-        className,
-      )}
-    >
-      <SectionContainer>
-        <p className="text-center text-p2 text-content-passive-secondary">
-          {t('Footer.text', { currentYear: new Date().getFullYear() })}
-        </p>
-      </SectionContainer>
-    </footer>
+    <>
+      <div className="hidden lg:block">
+        <DesktopFooter />
+      </div>
+      <div className="lg:hidden">
+        <MobileFooter />
+      </div>
+    </>
   )
 }
 

@@ -1,7 +1,10 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
+import { strapiClient } from '@/src/clients/graphql-strapi'
+import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
 import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsPageContent'
@@ -10,6 +13,7 @@ import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
 type AccountMyApplicationsPageProps = {
+  general: GeneralQuery
   applications: GetFormsResponseDto
   selectedSection: ApplicationsListVariant
   formDefinitionSlugTitleMap: Record<string, string>
@@ -38,14 +42,15 @@ export const getServerSideProps = amplifyGetServerSideProps(
     const currentPage = parseInt(context.query.strana as string, 10) || 1
     const emailFormSlugs = getEmailFormSlugs()
 
+    const [general, applications] = await Promise.all([
+      strapiClient.General(),
+      getDraftApplications(selectedSection, currentPage, emailFormSlugs, fetchAuthSession),
+    ])
+
     return {
       props: {
-        applications: await getDraftApplications(
-          selectedSection,
-          currentPage,
-          emailFormSlugs,
-          fetchAuthSession,
-        ),
+        general,
+        applications,
         selectedSection,
         formDefinitionSlugTitleMap: getFormDefinitionSlugTitleMap(),
         emailFormSlugs: getEmailFormSlugs(),
@@ -57,20 +62,23 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const AccountMyApplicationsPage = ({
+  general,
   selectedSection,
   applications,
   formDefinitionSlugTitleMap,
   emailFormSlugs,
 }: AccountMyApplicationsPageProps) => {
   return (
-    <PageLayout>
-      <MyApplicationsPageContent
-        selectedSection={selectedSection}
-        applications={applications}
-        formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-        emailFormSlugs={emailFormSlugs}
-      />
-    </PageLayout>
+    <GeneralContextProvider general={general}>
+      <PageLayout>
+        <MyApplicationsPageContent
+          selectedSection={selectedSection}
+          applications={applications}
+          formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+          emailFormSlugs={emailFormSlugs}
+        />
+      </PageLayout>
+    </GeneralContextProvider>
   )
 }
 

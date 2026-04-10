@@ -2,10 +2,12 @@ import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
 import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { RadioGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React, { ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
-import Radio from '@/src/components/widget-components/RadioButton/Radio'
-import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
+import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
+import Radio from '@/src/components/fields/Radio'
+import RadioGroup from '@/src/components/fields/RadioGroup'
+import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 type ValueType = string | boolean | undefined
@@ -71,6 +73,8 @@ const ValueAdapter = ({ schema, value, onChange, children }: ValueAdapterProps) 
   return null
 }
 
+const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
+
 const RadioGroupWidgetRJSF = ({
   id,
   schema,
@@ -80,6 +84,7 @@ const RadioGroupWidgetRJSF = ({
   label,
   rawErrors,
   required,
+  disabled,
   readonly,
 }: RadioGroupWidgetRJSFProps) => {
   const {
@@ -88,7 +93,6 @@ const RadioGroupWidgetRJSF = ({
     className,
     variant,
     orientations,
-    size,
     labelSize,
     helptext,
     helptextMarkdown,
@@ -96,33 +100,27 @@ const RadioGroupWidgetRJSF = ({
     helptextFooterMarkdown,
   } = options
 
+  const fieldProps = mapRjsfToFieldProps(
+    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
+    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
+    renderMarkdown,
+  )
+
   const mergedOptions = useMemo(
     () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
     [enumOptions, enumMetadata],
   )
-
-  const radioGroupHasDescription = mergedOptions.some((option) => option.description)
 
   return (
     <WidgetWrapper id={id} options={options}>
       <ValueAdapter schema={schema} value={value} onChange={onChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange }) => (
           <RadioGroup
-            errorMessage={rawErrors}
+            {...fieldProps}
             value={wrapperValue}
             onChange={wrapperOnChange}
             className={className}
-            label={label}
             orientation={orientations === 'row' ? 'horizontal' : 'vertical'}
-            isRequired={required}
-            isDisabled={readonly}
-            size={size}
-            labelSize={labelSize}
-            helptext={helptext}
-            helptextMarkdown={helptextMarkdown}
-            helptextFooter={helptextFooter}
-            helptextFooterMarkdown={helptextFooterMarkdown}
-            displayOptionalLabel
           >
             {mergedOptions.map((option) => {
               const radioValue =
@@ -134,7 +132,6 @@ const RadioGroupWidgetRJSF = ({
                   variant={variant}
                   value={radioValue}
                   description={option.description}
-                  radioGroupHasDescription={radioGroupHasDescription}
                 >
                   {option.label}
                 </Radio>

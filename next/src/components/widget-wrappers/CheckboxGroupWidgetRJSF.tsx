@@ -2,10 +2,12 @@ import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
 import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { CheckboxGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
-import CheckboxGroup from '@/src/components/widget-components/Checkbox/CheckboxGroup'
-import CheckboxGroupItem from '@/src/components/widget-components/Checkbox/CheckboxGroupItem'
+import Checkbox from '@/src/components/fields/Checkbox'
+import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
+import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
+import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 interface CheckboxGroupRJSFProps extends WidgetProps {
@@ -14,6 +16,8 @@ interface CheckboxGroupRJSFProps extends WidgetProps {
   schema: StrictRJSFSchema
   onChange: (value: string[]) => void
 }
+
+const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
 
 const CheckboxGroupWidgetRJSF = ({
   id,
@@ -24,6 +28,7 @@ const CheckboxGroupWidgetRJSF = ({
   schema: { maxItems },
   rawErrors,
   required,
+  disabled,
   readonly,
 }: CheckboxGroupRJSFProps) => {
   const {
@@ -31,7 +36,6 @@ const CheckboxGroupWidgetRJSF = ({
     enumMetadata,
     className,
     variant = 'basic',
-    size,
     labelSize,
     helptext,
     helptextMarkdown,
@@ -39,45 +43,39 @@ const CheckboxGroupWidgetRJSF = ({
     helptextFooterMarkdown,
   } = options
 
+  const fieldProps = mapRjsfToFieldProps(
+    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
+    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
+    renderMarkdown,
+  )
+
   const mergedOptions = useMemo(
     () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
     [enumOptions, enumMetadata],
   )
 
   const isDisabled = (valueName: string) => {
-    return value?.length === maxItems && !value?.includes(valueName)
+    return maxItems != null && value?.length === maxItems && !value?.includes(valueName)
   }
 
   return (
     <WidgetWrapper id={id} options={options}>
       <CheckboxGroup
-        errorMessage={rawErrors}
+        {...fieldProps}
         value={value ?? undefined}
         onChange={onChange}
         className={className}
-        label={label}
-        isRequired={required}
-        isDisabled={readonly}
-        size={size}
-        labelSize={labelSize}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
-        displayOptionalLabel
       >
-        {mergedOptions.map((option) => {
-          return (
-            <CheckboxGroupItem
-              key={option.value}
-              value={option.value}
-              variant={variant}
-              isDisabled={isDisabled(option.value) || readonly}
-            >
-              {option.label}
-            </CheckboxGroupItem>
-          )
-        })}
+        {mergedOptions.map((option) => (
+          <Checkbox
+            key={option.value}
+            value={option.value}
+            variant={variant}
+            isDisabled={isDisabled(option.value)}
+          >
+            {option.label}
+          </Checkbox>
+        ))}
       </CheckboxGroup>
     </WidgetWrapper>
   )

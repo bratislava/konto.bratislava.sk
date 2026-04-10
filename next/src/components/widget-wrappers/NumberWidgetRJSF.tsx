@@ -1,8 +1,10 @@
 import { WidgetProps } from '@rjsf/utils'
 import { NumberUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
+import { ReactNode } from 'react'
 
-import NumberField from '@/src/components/widget-components/NumberField/NumberField'
+import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
+import NumberField from '@/src/components/fields/NumberField'
+import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 interface NumberWidgetRJSFProps extends WidgetProps {
@@ -10,6 +12,8 @@ interface NumberWidgetRJSFProps extends WidgetProps {
   value: number | undefined
   onChange: (value?: number) => void
 }
+
+const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
 
 const NumberWidgetRJSF = ({
   id,
@@ -31,7 +35,6 @@ const NumberWidgetRJSF = ({
     helptextFooter,
     helptextFooterMarkdown,
     className,
-    size,
     labelSize,
   } = options
 
@@ -39,8 +42,6 @@ const NumberWidgetRJSF = ({
     if (schema.multipleOf != null) {
       return schema.multipleOf
     }
-    // `multipleOf` is required form schema.type === 'number' and optional for schema.type === 'integer', we add
-    // `step` attribute only for integer values if not present
     if (schema.type === 'integer') {
       return 1
     }
@@ -49,7 +50,6 @@ const NumberWidgetRJSF = ({
   }
 
   const getFormatOptions = () => {
-    // Ensure that no fraction digits can be entered to integer field
     if (schema.type === 'integer' && !options.formatOptions?.maximumFractionDigits) {
       return { ...options.formatOptions, maximumFractionDigits: 0 }
     }
@@ -57,25 +57,21 @@ const NumberWidgetRJSF = ({
     return options.formatOptions
   }
 
+  const fieldProps = mapRjsfToFieldProps(
+    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
+    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
+    renderMarkdown,
+  )
+
   return (
     <WidgetWrapper id={id} options={options}>
       <NumberField
+        {...fieldProps}
         name={name}
-        label={label}
         placeholder={placeholder}
-        value={value ?? null}
-        errorMessage={rawErrors}
-        isRequired={required}
-        isDisabled={disabled || readonly}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
+        value={value}
         className={className}
-        onChange={(newValue) => onChange(newValue ?? undefined)}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel
+        onChange={(newValue) => onChange(Number.isNaN(newValue) ? undefined : newValue)}
         minValue={schema.minimum}
         maxValue={schema.maximum}
         formatOptions={getFormatOptions()}
@@ -84,4 +80,5 @@ const NumberWidgetRJSF = ({
     </WidgetWrapper>
   )
 }
+
 export default NumberWidgetRJSF

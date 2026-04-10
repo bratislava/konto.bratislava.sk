@@ -1,8 +1,10 @@
 import { WidgetProps } from '@rjsf/utils'
 import { InputUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
+import { ReactNode } from 'react'
 
-import InputField from '@/src/components/widget-components/InputField/InputField'
+import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
+import TextField from '@/src/components/fields/TextField'
+import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 interface InputWidgetRJSFProps extends WidgetProps {
@@ -10,6 +12,8 @@ interface InputWidgetRJSFProps extends WidgetProps {
   value: string | undefined
   onChange: (value?: string) => void
 }
+
+const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
 
 const InputWidgetRJSF = ({
   id,
@@ -31,40 +35,28 @@ const InputWidgetRJSF = ({
     helptextFooterMarkdown,
     className,
     inputType,
-    size,
     labelSize,
   } = options
 
-  const handleOnChange = (newValue: string | undefined) => {
-    if (newValue && newValue !== '') {
-      onChange(newValue)
-    } else {
-      onChange()
-    }
-  }
+  const fieldProps = mapRjsfToFieldProps(
+    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
+    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
+    renderMarkdown,
+  )
 
   return (
     <WidgetWrapper id={id} options={options}>
-      <InputField
+      <TextField
+        {...fieldProps}
         name={name}
-        label={label}
         type={inputType}
         placeholder={placeholder}
-        value={value ?? undefined}
-        errorMessage={rawErrors}
-        isRequired={required}
-        isDisabled={disabled || readonly}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
+        value={value}
         className={className}
-        onChange={handleOnChange}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel
+        onChange={(newValue) => onChange(newValue || undefined)}
       />
     </WidgetWrapper>
   )
 }
+
 export default InputWidgetRJSF

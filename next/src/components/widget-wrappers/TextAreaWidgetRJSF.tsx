@@ -1,17 +1,20 @@
 import { WidgetProps } from '@rjsf/utils'
 import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
+import { ReactNode } from 'react'
 
+import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
+import TextAreaField from '@/src/components/fields/TextAreaField'
+import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
 import FieldBlurWrapper from '@/src/components/widget-components/FieldBlurWrapper/FieldBlurWrapper'
-import TextAreaField from '@/src/components/widget-components/TextAreaField/TextAreaField'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
-import cn from '@/src/utils/cn'
 
 interface TextAreaWidgetRJSFProps extends WidgetProps {
   value: string | undefined
   options: TextAreaUiOptions
   onChange: (value?: string) => void
 }
+
+const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
 
 const TextAreaWidgetRJSF = ({
   id,
@@ -31,39 +34,31 @@ const TextAreaWidgetRJSF = ({
     helptextFooter,
     helptextFooterMarkdown,
     className,
-    size,
     labelSize,
   } = options
 
-  const handleOnChange = (newValue?: string) => {
-    if (!newValue || newValue === '') {
-      onChange()
-    } else {
-      onChange(newValue)
-    }
+  const fieldProps = mapRjsfToFieldProps(
+    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
+    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
+    renderMarkdown,
+  )
+
+  const handleOnChange = (newValue: string) => {
+    if (!newValue) onChange(undefined)
+    else onChange(newValue)
   }
 
   return (
     <WidgetWrapper id={id} options={options}>
-      <FieldBlurWrapper value={value} onChange={handleOnChange}>
+      <FieldBlurWrapper value={value ?? ''} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <TextAreaField
-            value={wrapperValue ?? undefined}
-            label={label}
+            {...fieldProps}
+            value={wrapperValue}
             placeholder={placeholder}
-            isRequired={required}
-            isDisabled={disabled || readonly}
-            helptext={helptext}
-            helptextMarkdown={helptextMarkdown}
-            helptextFooter={helptextFooter}
-            helptextFooterMarkdown={helptextFooterMarkdown}
-            className={cn('h-[196px]', className)}
+            className={className}
             onChange={wrapperOnChange}
             onBlur={onBlur}
-            errorMessage={rawErrors}
-            size={size}
-            labelSize={labelSize}
-            displayOptionalLabel
           />
         )}
       </FieldBlurWrapper>

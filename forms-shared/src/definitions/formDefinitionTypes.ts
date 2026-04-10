@@ -16,6 +16,11 @@ export enum FormDefinitionType {
   Webhook = 'Webhook',
 }
 
+export type FormDefinitionFiles<K extends string = string> = {
+  id: K
+  maxFileSize: number
+}[]
+
 type FormDefinitionBase = {
   slug: string
   title: string
@@ -31,6 +36,7 @@ type FormDefinitionBase = {
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
   feedbackLink?: string
+  files?: FormDefinitionFiles<string>
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {

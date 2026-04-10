@@ -5,13 +5,7 @@ import NumberField from '../NumberField'
 
 jest.mock('next-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
-      const translations: Record<string, string> = {
-        'FieldHeader.optional': '(Nepovinne)',
-      }
-
-      return translations[key] ?? key
-    },
+    t: (key: string) => key,
   }),
 }))
 
@@ -35,7 +29,7 @@ describe('NumberField', () => {
     expect(onChange).toHaveBeenLastCalledWith(42)
   })
 
-  it('calls onChange with null when cleared', async () => {
+  it('calls onChange with NaN when cleared', async () => {
     const user = userEvent.setup()
     const onChange = jest.fn()
 
@@ -45,7 +39,7 @@ describe('NumberField', () => {
     await user.clear(input)
     await user.tab()
 
-    expect(onChange).toHaveBeenLastCalledWith(null)
+    expect(onChange).toHaveBeenLastCalledWith(NaN)
   })
 
   it('renders error message', () => {

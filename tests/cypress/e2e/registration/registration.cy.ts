@@ -34,7 +34,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 5)
 
-            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-border-error')
           })
           cy.dataCy('registration-container').should('be.visible') //.matchImage()
         })
@@ -178,7 +178,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
               cy.wrap(Cypress.$('[data-cy=input-email]', form)).should(
                 'have.class',
-                'border-negative-700',
+                'border-border-error',
               )
             })
           })

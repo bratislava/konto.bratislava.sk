@@ -93,7 +93,7 @@ xdescribe('F02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(designerErrorBorderFields, form)).should(
               'have.class',
-              'border-negative-700',
+              'border-border-error',
             )
           })
 
@@ -146,7 +146,7 @@ xdescribe('F02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(constructionErrorBorderFields, form)).should(
               'have.class',
-              'border-negative-700',
+              'border-border-error',
             )
           })
           cy.dataCy('form-container').should('be.visible') //.matchImage()

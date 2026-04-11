@@ -32,7 +32,7 @@ describe('RF02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 4)
 
-            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-border-error')
           })
           cy.dataCy('registration-container').should('be.visible') //.matchImage({maxDiffThreshold: 0.17})
         })

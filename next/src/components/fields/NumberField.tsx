@@ -48,7 +48,7 @@ const NumberField = (
         <RACInput
           ref={ref}
           placeholder={placeholder}
-          data-cy={rest.name ? `input-${rest.name}` : undefined}
+          data-cy={rest.name ? `number-${rest.name}` : undefined}
           className={({ isFocused, isDisabled, isInvalid }) =>
             cn(
               'w-full rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',

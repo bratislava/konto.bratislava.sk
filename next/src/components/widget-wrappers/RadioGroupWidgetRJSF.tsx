@@ -40,6 +40,7 @@ const RadioGroupWidgetRJSF = (props: WidgetProps) => {
     <WidgetWrapper {...wrapperProps}>
       <RadioGroup
         {...fieldProps}
+        data-cy={`radio-group-${fieldProps.label?.toLowerCase().replaceAll(' ', '-').replace(/[?.,§/()]/g, '')}`}
         orientation={orientations === 'row' ? 'horizontal' : 'vertical'}
       >
         {mergedOptions.map((option) => {
@@ -52,6 +53,7 @@ const RadioGroupWidgetRJSF = (props: WidgetProps) => {
               variant={variant}
               value={radioValue}
               description={option.description}
+              data-cy={`radio-${option.label.toLowerCase().replaceAll(' ', '-').replaceAll('.', '')}`}
             >
               {option.label}
             </Radio>

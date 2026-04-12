@@ -25,8 +25,8 @@ describe('RF02 -', { testIsolation: false }, () => {
 
         it('2. Check validation.', () => {
           cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).check()
-            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).click()
+            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 

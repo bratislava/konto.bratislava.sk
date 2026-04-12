@@ -9,8 +9,8 @@ import PasswordField from '@/src/components/fields/PasswordField'
 import TextField from '@/src/components/fields/TextField'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import Radio from '@/src/components/widget-components/RadioButton/Radio'
-import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
+import Radio from '@/src/components/fields/Radio'
+import RadioGroup from '@/src/components/fields/RadioGroup'
 import { environment } from '@/src/environment'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -190,13 +190,13 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               label={t('auth.fields.account_type_label')}
               orientation="vertical"
             >
-              <Radio value="fo" variant="boxed">
+              <Radio value="fo" variant="boxed" data-cy="radio-fyzická-osoba">
                 {t('auth.fields.fo_label')}
               </Radio>
-              <Radio value="fo-p" variant="boxed">
+              <Radio value="fo-p" variant="boxed" data-cy="radio-fyzická-osoba---podnikateľ">
                 {t('auth.fields.fop_label')}
               </Radio>
-              <Radio value="po" variant="boxed">
+              <Radio value="po" variant="boxed" data-cy="radio-právnická-osoba">
                 {t('auth.fields.po_label')}
               </Radio>
             </RadioGroup>

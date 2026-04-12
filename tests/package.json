@@ -5,7 +5,11 @@
     "typecheck": "tsc",
     "start:e2e": "cd ../next && npm run build:e2e && npm run start",
     "cypress:open": "node ./run-cypress.js open --browser chrome --device all --visualTesting local",
+    "cypress:open:desktop": "node ./run-cypress.js open --browser chrome --device desktop --visualTesting local",
+    "cypress:open:mobile": "node ./run-cypress.js open --browser chrome --device mobile --visualTesting local",
     "cypress:run": "node ./run-cypress.js run --browser chrome --device all --visualTesting local",
+    "cypress:run:desktop": "node ./run-cypress.js run --browser chrome --device desktop --visualTesting local",
+    "cypress:run:mobile": "node ./run-cypress.js run --browser chrome --device mobile --visualTesting local",
     "cypress:ci": "node ./run-cypress.js run --browser chrome --device all --visualTesting ci",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."

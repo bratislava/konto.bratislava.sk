@@ -37,13 +37,17 @@ const CheckboxGroupWidgetRJSF = (props: WidgetProps) => {
 
   return (
     <WidgetWrapper {...wrapperProps}>
-      <CheckboxGroup {...fieldProps}>
+      <CheckboxGroup
+        {...fieldProps}
+        data-cy={`checkbox-group-${fieldProps.label?.toLowerCase().replaceAll(' ', '-').replace(/[?.,§/()]/g, '')}`}
+      >
         {mergedOptions.map((option) => (
           <Checkbox
             key={option.value}
             value={option.value}
             variant={variant}
             isDisabled={isOptionDisabled(option.value)}
+            data-cy={`checkbox-${option.value}`}
           >
             {option.label}
           </Checkbox>

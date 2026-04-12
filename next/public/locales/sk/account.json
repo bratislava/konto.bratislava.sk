@@ -424,6 +424,7 @@
   "thank_you.result.payment_success.content": "Ďakujeme za vašu platbu. Stav platby si môžete skontrolovať na stránke Dane a poplatky v Bratislavskom konte.",
   "thank_you.result.payment_success.title": "Platba prebehla úspešne",
   "thank_you.subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
+  "Toast.aria.close": "Zavrieť",
   "Tooltip.aria.tooltip": "Tooltip",
   "Upload.aria.download": "Stiahnuť",
   "Upload.aria.removeFile": "Odstrániť súbor",

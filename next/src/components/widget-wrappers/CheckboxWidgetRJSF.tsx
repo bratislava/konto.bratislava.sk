@@ -1,65 +1,28 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { WidgetProps } from '@rjsf/utils'
 import { CheckboxUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { ReactNode } from 'react'
 
 import Checkbox from '@/src/components/fields/Checkbox'
 import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
-import { mapRjsfToFieldProps } from '@/src/components/fields/mapRjsfToFieldProps'
-import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
+import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-interface CheckboxRJSFProps extends WidgetProps {
-  options: CheckboxUiOptions
-  value: boolean | null
-  schema: StrictRJSFSchema
-  onChange: (value: boolean) => void
-}
-
-const renderMarkdown = (text: string): ReactNode => <FormMarkdown>{text}</FormMarkdown>
-
-const CheckboxWidgetRJSF = ({
-  id,
-  options,
-  value,
-  onChange,
-  label,
-  rawErrors,
-  required,
-  disabled,
-  readonly,
-}: CheckboxRJSFProps) => {
-  const {
-    className,
-    variant = 'basic',
-    labelSize,
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-    checkboxLabel,
-  } = options
-
-  const fieldProps = mapRjsfToFieldProps(
-    { label, required: !!required, disabled: !!disabled, readonly: !!readonly, rawErrors },
-    { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, labelSize },
-    renderMarkdown,
+const CheckboxWidgetRJSF = (props: WidgetProps) => {
+  const { wrapperProps, fieldProps, specificOptions } = useRjsfAdapter<string[], CheckboxUiOptions>(
+    props,
+    {
+      toField: (v) => (v ? ['true'] : []),
+      fromField: (v) => v.includes('true'),
+    },
   )
 
-  const checkboxGroupValue = value ? ['true'] : []
-  const checkboxGroupOnChange = (newValue: string[]) => {
-    onChange(newValue.includes('true'))
-  }
-
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper {...wrapperProps}>
       <CheckboxGroup
         {...fieldProps}
-        value={checkboxGroupValue}
-        onChange={checkboxGroupOnChange}
-        className={className}
+        data-cy={`checkbox-group-${fieldProps.label?.toLowerCase().replaceAll(' ', '-').replace(/[?.,§/()]/g, '')}`}
       >
-        <Checkbox value="true" variant={variant}>
-          {checkboxLabel}
+        <Checkbox value="true" variant={specificOptions.variant ?? 'basic'} data-cy="checkbox-true">
+          {specificOptions.checkboxLabel}
         </Checkbox>
       </CheckboxGroup>
     </WidgetWrapper>

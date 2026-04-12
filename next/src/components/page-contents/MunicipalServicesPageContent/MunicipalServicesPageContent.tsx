@@ -67,9 +67,7 @@ const MunicipalServicesPageContent = ({
       return true
     }
 
-    return service.categories.some(
-      (category) => category?.documentId === selectorValue.value,
-    )
+    return service.categories.some((category) => category?.documentId === selectorValue.value)
   })
 
   return (

@@ -14,8 +14,7 @@ import { environment } from '@/src/environment'
 const fetchAlert = async () => {
   try {
     const alertsQuery = await strapiClient.Alerts()
-    const alerts =
-      alertsQuery.general?.alerts?.filter((alert) => alert != null) ?? []
+    const alerts = alertsQuery.general?.alerts?.filter((alert) => alert != null) ?? []
 
     const now = new Date()
 
@@ -66,7 +65,7 @@ export const StatusBar = () => {
   }
 
   return (
-    <div className="bg-warning-700 w-full text-white">
+    <div className="w-full bg-warning-700 text-white">
       <SectionContainer>
         <div className="flex justify-between py-4">
           <div className="flex">

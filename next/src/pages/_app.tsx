@@ -25,6 +25,8 @@ import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
+import AppToastRegion from '../components/simple-components/Toast/Toast'
+
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
 })
@@ -133,6 +135,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                       <div id="root">
                         <Component {...pageProps} />
                       </div>
+                      <AppToastRegion />
                     </NavMenuContextProvider>
                   </PlausibleProvider>
                 </SnackbarProvider>

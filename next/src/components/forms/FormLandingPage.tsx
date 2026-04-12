@@ -11,7 +11,7 @@ import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFo
 import PageLayout from '@/src/components/layouts/PageLayout'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/frontend/hooks/useToast'
 import { isDefined } from '@/src/frontend/utils/general'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -31,8 +31,7 @@ export type FormLandingPageProps = {
 const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) => {
   const router = useRouter()
   const { t } = useTranslation('forms')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { showToast, closeToasts } = useToast()
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
@@ -44,17 +43,20 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       ),
     networkMode: 'always',
     onMutate: () => {
-      openSnackbarInfo(t('form_landing_page.redirect_info'))
+      showToast({
+        message: t('form_landing_page.redirect_info'),
+        variant: 'info',
+        duration: Number.MAX_SAFE_INTEGER,
+      })
     },
     onSuccess: async (response) => {
-      closeSnackbarInfo()
       await router.push(
         ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formDefinition.slug, response.data.formId),
       )
+      closeToasts()
     },
     onError: () => {
-      closeSnackbarInfo()
-      openSnackbarError(t('form_landing_page.redirect_error'))
+      showToast({ message: t('form_landing_page.redirect_error'), variant: 'error' })
     },
   })
 

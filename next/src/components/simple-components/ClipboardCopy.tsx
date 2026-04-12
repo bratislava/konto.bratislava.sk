@@ -3,17 +3,22 @@ import { useTranslation } from 'next-i18next'
 import { useCopyToClipboard } from 'usehooks-ts'
 
 import { CopyIcon } from '@/src/assets/ui-icons'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/frontend/hooks/useToast'
 import logger from '@/src/frontend/utils/logger'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()
   const { t } = useTranslation('account')
-  const [openSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { showToast } = useToast()
 
   const handleCopy = () => {
     copy(copyText)
-      .then(() => openSnackbarInfo(t('ClipboardCopy.success'), 3000))
+      .then(() =>
+        showToast({
+          message: t('ClipboardCopy.success'),
+          variant: 'info',
+          duration: 3000,
+        }))
       .catch((error_) => logger.error('Submit failed', error_))
   }
 

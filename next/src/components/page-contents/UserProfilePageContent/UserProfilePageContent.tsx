@@ -11,7 +11,7 @@ import UserProfileDetail from '@/src/components/page-contents/UserProfilePageCon
 import UserProfilePassword from '@/src/components/page-contents/UserProfilePageContent/UserProfilePassword'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/frontend/hooks/useToast'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { useUserUpdateBloomreachData } from '@/src/frontend/hooks/useUser'
 import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
@@ -23,7 +23,7 @@ const UserProfilePageContent = () => {
   const [isAlertOpened, setIsAlertOpened] = useState(false)
   const [alertType, setAlertType] = useState<'success' | 'error'>('success')
   const { userAttributes } = useSsrAuth()
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const { showToast } = useToast()
 
   const [updateUserDataError, setUpdateUserDataError] = useState<Error | null>(null)
   const { refreshData } = useRefreshServerSideProps(userAttributes)
@@ -53,8 +53,12 @@ const UserProfilePageContent = () => {
         }
       })
 
-      // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
-      openSnackbarSuccess(t('my_profile.profile_detail.success_snackbar_message'), 3000)
+      // TODO why it's showToast on success and setIsAlertOpened on error ?
+      showToast({
+        message: t('my_profile.profile_detail.success_snackbar_message'),
+        variant: 'success',
+        duration: 3000,
+      })
       // at time of coding cognito is not providing user attributes change event, this is next best thing i come up with
       // this doesn't affect FE, therfore we don't need to wait for result
       updateBloomreachData()

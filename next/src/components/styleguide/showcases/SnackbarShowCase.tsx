@@ -1,23 +1,24 @@
 import { Button } from '@bratislava/component-library'
 
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/frontend/hooks/useToast'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
 const SnackbarShowCase = () => {
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { showToast } = useToast()
 
   return (
     <Wrapper direction="column" title="Snackbar">
       <Stack>
-        <Button onPress={() => openSnackbarSuccess('Success')}>Success</Button>
-        <Button onPress={() => openSnackbarError('Error')}>Error</Button>
-        <Button onPress={() => openSnackbarInfo('Info')}>Info</Button>
-        <Button onPress={() => openSnackbarWarning('Warning')}>Warning</Button>
+        <Button onPress={() => showToast({ message: 'Success', variant: 'success' })}>
+          Success
+        </Button>
+        <Button onPress={() => showToast({ message: 'Error', variant: 'error' })}>Error</Button>
+        <Button onPress={() => showToast({ message: 'Info', variant: 'info' })}>Info</Button>
+        <Button onPress={() => showToast({ message: 'Warning', variant: 'warning' })}>
+          Warning
+        </Button>
       </Stack>
     </Wrapper>
   )

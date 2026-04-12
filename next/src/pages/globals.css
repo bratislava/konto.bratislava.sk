@@ -269,7 +269,6 @@
 
   --animate-stepper-slide: stepper-slide 500ms;
   --animate-stepper-slide-reverse: stepper-slide 500ms reverse;
-
   @keyframes stepper-slide {
     0% {
       transform: translateY(100%);
@@ -715,6 +714,30 @@ body {
 /* Display snackbar above modal. */
 [class*='Snackbar_snackbar-wrapper'] {
   z-index: 60 !important;
+}
+
+::view-transition-new(.toast):only-child {
+  animation: toast-slide-in 150ms ease-out;
+}
+
+::view-transition-old(.toast):only-child {
+  animation: toast-slide-out 150ms ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes toast-slide-in {
+  from {
+    translate: 0 16px;
+    opacity: 0;
+  }
+}
+
+@keyframes toast-slide-out {
+  to {
+    translate: 0 16px;
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 .base-focus-ring {

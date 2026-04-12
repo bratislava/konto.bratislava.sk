@@ -19,10 +19,10 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/frontend/hooks/useToast'
 
 const useGetContext = () => {
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
   const { setSignerIsDeploying } = useFormModals()
   const { formDefinition, formId, isSigned, initialSignature } = useFormContext()
   const { formData, formDataRef } = useFormData()
@@ -33,13 +33,18 @@ const useGetContext = () => {
     },
     onError: (error) => {
       if (error === SignerErrorType.NotInstalled) {
-        openSnackbarError(
-          'Na podpísanie je potrebné nainštalovať podpisovaciu aplikáciu pre kvalifikovaný elektronický podpis.',
-        )
+        showToast({
+          message:
+            'Na podpísanie je potrebné nainštalovať podpisovaciu aplikáciu pre kvalifikovaný elektronický podpis.',
+          variant: 'error',
+        })
       } else if (error === SignerErrorType.LaunchFailed) {
-        openSnackbarError('Podpisovacia aplikácia sa nepodarila načítať, skúste to znova.')
+        showToast({
+          message: 'Podpisovacia aplikácia sa nepodarila načítať, skúste to znova.',
+          variant: 'error',
+        })
       } else {
-        openSnackbarError('Podpisovanie zlyhalo. Skúste to znova.')
+        showToast({ message: 'Podpisovanie zlyhalo. Skúste to znova.', variant: 'error' })
       }
     },
   })
@@ -61,7 +66,7 @@ const useGetContext = () => {
     }
     // It is possible to edit the data while the signer is open.
     if (!isEqual(formDataRequest, formDataRef.current)) {
-      openSnackbarError('Údaje, ktoré ste upravili, je potrebné znova podpísať.')
+      showToast({ message: 'Údaje, ktoré ste upravili, je potrebné znova podpísať.', variant: 'error' })
       handleSignatureChange(null)
       return
     }
@@ -93,10 +98,13 @@ const useGetContext = () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (isAxiosError(error) && error.response?.data?.errorName === 'BAD_REQUEST_ERROR') {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        openSnackbarError(`Nastala chyba pri validácii: \n\n${error.response?.data?.message}`)
+        showToast({
+          message: `Nastala chyba pri validácii: \n\n${error.response?.data?.message}`,
+          variant: 'error',
+        })
         return
       }
-      openSnackbarError('Podpisovanie zlyhalo. Skúste to znova.')
+      showToast({ message: 'Podpisovanie zlyhalo. Skúste to znova.', variant: 'error' })
     },
   })
 

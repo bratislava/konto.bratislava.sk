@@ -24,6 +24,7 @@ import { removeAllCookiesAndClearLocalStorage } from '@/src/frontend/utils/ampli
 import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
+import AppToastRegion from '@/src/components/simple-components/Toast'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -133,7 +134,8 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                       <div id="root">
                         <Component {...pageProps} />
                       </div>
-                    </NavMenuContextProvider>
+                    <AppToastRegion />
+                  </NavMenuContextProvider>
                   </PlausibleProvider>
                 </SnackbarProvider>
               </ComponentLibraryProvider>

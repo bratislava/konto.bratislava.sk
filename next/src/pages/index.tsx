@@ -32,11 +32,9 @@ const filterValidAnnouncements = (
 export const getServerSideProps = amplifyGetServerSideProps<AccountIntroPageProps>(async () => {
   const homepageQuery = await strapiClient.Homepage()
   const services = homepageQuery.homepage?.services.filter(isDefined) ?? []
-  const servicesLegalPerson =
-    homepageQuery.homepage?.servicesLegalPerson.filter(isDefined) ?? []
+  const servicesLegalPerson = homepageQuery.homepage?.servicesLegalPerson.filter(isDefined) ?? []
 
-  const allAnnouncements =
-    homepageQuery.homepage?.announcements.filter(isDefined) ?? []
+  const allAnnouncements = homepageQuery.homepage?.announcements.filter(isDefined) ?? []
   const allAnnouncementsLegalPerson =
     homepageQuery.homepage?.announcementsLegalPerson.filter(isDefined) ?? []
 

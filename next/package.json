@@ -100,7 +100,6 @@
     "react-markdown": "^10.1.0",
     "react-resize-detector": "^12.3.0",
     "react-select": "5.10.2",
-    "react-simple-snackbar": "^1.1.11",
     "react-stately": "3.45.0",
     "react-turnstile": "^1.1.5",
     "react-usestateref": "^2.0.0",

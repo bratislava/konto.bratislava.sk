@@ -18,7 +18,6 @@ import ProgressBarShowCase from '@/src/components/styleguide/showcases/ProgressB
 import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroupShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCardShowCase'
-import SnackbarShowCase from '@/src/components/styleguide/showcases/SnackbarShowCase'
 import ToastShowCase from '@/src/components/styleguide/showcases/ToastShowCase'
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
@@ -65,7 +64,6 @@ const showcases = [
     label: 'My Applications Card',
     component: <MyApplicationsCardShowCase />,
   },
-  { id: 'snackbar', label: 'Snackbar', component: <SnackbarShowCase /> },
   { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
 ] satisfies { id: string; label: string; component: ReactElement }[]
 

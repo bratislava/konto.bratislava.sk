@@ -19,6 +19,7 @@ import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroup
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCardShowCase'
 import SnackbarShowCase from '@/src/components/styleguide/showcases/SnackbarShowCase'
+import ToastShowCase from '@/src/components/styleguide/showcases/ToastShowCase'
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
@@ -65,6 +66,7 @@ const showcases = [
     component: <MyApplicationsCardShowCase />,
   },
   { id: 'snackbar', label: 'Snackbar', component: <SnackbarShowCase /> },
+  { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
 ] satisfies { id: string; label: string; component: ReactElement }[]
 
 const StyleguidePage = () => {

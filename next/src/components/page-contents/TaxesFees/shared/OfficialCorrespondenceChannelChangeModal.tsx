@@ -13,10 +13,11 @@ import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import Radio from '@/src/components/widget-components/RadioButton/Radio'
 import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useUserSubscription } from '@/src/frontend/hooks/useUser'
 import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
+
+import useToast from '../../../simple-components/Toast/useToast'
 
 type AgreementProps = {
   onScrollToBottom: () => void
@@ -148,7 +149,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                 <span>{t('taxes.delivery_method_change_modal.delivery_method_true.title')}</span>
                 {/* TODO unify with Tag component */}
-                <span className="rounded-sm bg-background-success-soft-default px-2 py-0.5 text-p3 text-content-success-default">
+                <span className="bg-background-success-soft-default text-p3 text-content-success-default rounded-sm px-2 py-0.5">
                   {t('taxes.delivery_method_change_modal.delivery_method_true.usage_percentage')}
                 </span>
               </div>
@@ -197,8 +198,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
   })
   const { t } = useTranslation('account')
 
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
 
   const { hasChangedDeliveryMethodAfterDeadline } = useOfficialCorrespondenceChannel()
 
@@ -209,11 +209,17 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
     return changeSubscription(data.isSubscribed, {
       onSuccess: () => {
         onOpenChange?.(false)
-        openSnackbarSuccess(t('taxes.delivery_method_change_modal.success_snackbar_message'))
+        showToast({
+          message: t('taxes.delivery_method_change_modal.success_snackbar_message'),
+          variant: 'success',
+        })
       },
       onError: (error) => {
         logger.error(error)
-        openSnackbarError(t('taxes.delivery_method_change_modal.error_snackbar_message'))
+        showToast({
+          message: t('taxes.delivery_method_change_modal.error_snackbar_message'),
+          variant: 'error',
+        })
       },
     })
   }

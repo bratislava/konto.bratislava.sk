@@ -24,7 +24,6 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
 import { environment } from '@/src/environment'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { isFormSubmitDisabled } from '@/src/frontend/utils/formSummary'
 import {
@@ -32,6 +31,8 @@ import {
   popSendEidMetadata,
   setSendEidMetadata,
 } from '@/src/frontend/utils/metadataStorage'
+
+import useToast from '../simple-components/Toast/useToast'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.
@@ -61,7 +62,7 @@ const useGetContext = () => {
   const router = useRouter()
 
   const { t } = useTranslation('forms')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
   const {
@@ -116,7 +117,7 @@ const useGetContext = () => {
         return
       }
 
-      openSnackbarError(t('form_send_error'))
+      showToast({ message: t('form_send_error'), variant: 'error' })
     },
   })
 
@@ -141,7 +142,7 @@ const useGetContext = () => {
         setRedirectingToSlovenskoSkLogin(true)
       },
       onError: () => {
-        openSnackbarError(t('form_send_error'))
+        showToast({ message: t('form_send_error'), variant: 'error' })
       },
     })
 
@@ -185,7 +186,7 @@ const useGetContext = () => {
         },
       })
       if (fromRepeatModal) {
-        openSnackbarError(t('form_send_error'))
+        showToast({ message: t('form_send_error'), variant: 'error' })
       }
     },
   })

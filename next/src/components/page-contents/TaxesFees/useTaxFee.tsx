@@ -6,9 +6,10 @@ import React, { createContext, PropsWithChildren, useContext } from 'react'
 
 import { StrapiTaxAdministrator } from '@/src/backend/utils/strapi-tax-administrator'
 import { taxClient } from '@/src/clients/tax'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { base64ToArrayBuffer, downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
+
+import useToast from '../../simple-components/Toast/useToast'
 
 type TaxFeeProviderProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
@@ -19,8 +20,7 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeProviderProps)
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { showToast, closeToasts } = useToast()
 
   const { mutate: redirectToFullPaymentMutate, isPending: redirectToFullPaymentIsPending } =
     useMutation({
@@ -35,14 +35,17 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeProviderProps)
         ),
       networkMode: 'always',
       onSuccess: async (response) => {
-        closeSnackbarInfo()
+        closeToasts()
         await router.push(response.data.url)
       },
       onMutate: () => {
-        openSnackbarInfo(t('account_section_payment.redirecting_to_payment'))
+        showToast({ message: t('account_section_payment.redirecting_to_payment'), variant: 'info' })
       },
       onError: (error) => {
-        openSnackbarError(t('account_section_payment.payment_redirect_error'))
+        showToast({
+          message: t('account_section_payment.payment_redirect_error'),
+          variant: 'error',
+        })
         logger.error(error)
       },
     })
@@ -62,14 +65,14 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeProviderProps)
       ),
     networkMode: 'always',
     onSuccess: async (response) => {
-      closeSnackbarInfo()
+      closeToasts()
       await router.push(response.data.url)
     },
     onMutate: () => {
-      openSnackbarInfo(t('account_section_payment.redirecting_to_payment'))
+      showToast({ message: t('account_section_payment.redirecting_to_payment'), variant: 'info' })
     },
     onError: (error) => {
-      openSnackbarError(t('account_section_payment.payment_redirect_error'))
+      showToast({ message: t('account_section_payment.payment_redirect_error'), variant: 'error' })
       logger.error(error)
     },
   })

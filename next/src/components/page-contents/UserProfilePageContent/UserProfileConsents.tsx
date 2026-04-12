@@ -3,7 +3,7 @@ import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 
 import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'
 import UserConsent from '@/src/components/page-contents/UserProfilePageContent/UserConsent'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '../../simple-components/Toast/useToast'
 import { useUserSubscription } from '@/src/frontend/hooks/useUser'
 
 const UserProfileConsents = () => {
@@ -13,8 +13,7 @@ const UserProfileConsents = () => {
     type: GDPRTypeEnum.Marketing,
   })
 
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
 
   const handleOnChangeConsent = async (newValue: boolean) => {
     if (subscriptionChangePending) {
@@ -23,15 +22,15 @@ const UserProfileConsents = () => {
 
     await changeSubscription(newValue, {
       onSuccess: () => {
-        openSnackbarSuccess(
-          newValue
+        showToast({
+          message: newValue
             ? t('my_profile.consents.success_on_snackbar_message')
             : t('my_profile.consents.success_off_snackbar_message'),
-          3000,
-        )
+          variant: 'success',
+        })
       },
       onError: () => {
-        openSnackbarError(t('my_profile.consents.error_snackbar_message'))
+        showToast({ message: t('my_profile.consents.error_snackbar_message'), variant: 'error' })
       },
     })
   }

@@ -9,7 +9,7 @@ import { AlertIcon, ErrorIcon } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '../simple-components/Toast/useToast'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
@@ -26,7 +26,7 @@ const FormVersionCompareAction = () => {
   } = useFormContext()
   const { isSignedIn } = useSsrAuth()
   const { t } = useTranslation('forms')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
   const [isRedirecting, setIsRedirecting] = useState(false)
 
   const { mutate: bumpVersionMutate, isPending: bumpVersionIsPending } = useMutation({
@@ -38,7 +38,10 @@ const FormVersionCompareAction = () => {
       setIsRedirecting(true)
     },
     onError: () => {
-      openSnackbarError(t('form_version_compare_action.error_version_update'))
+      showToast({
+        message: t('form_version_compare_action.error_version_update'),
+        variant: 'error',
+      })
     },
   })
 

@@ -26,12 +26,12 @@
   },
   "dependencies": {
     "@nestjs/common": "^11.1.18",
-    "@nestjs/config": "^4.0.3",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.18",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.18",
     "@nestjs/schedule": "^6.1.1",
-    "@nestjs/swagger": "^11.2.6",
+    "@nestjs/swagger": "^11.2.7",
     "@prisma/client": "6.17.1",
     "await-exec": "^0.1.2",
     "axios": "^1.13.6",
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@bratislava/eslint-config-nest": "^0.7.1",
-    "@nestjs/cli": "^11.0.17",
+    "@nestjs/cli": "^11.0.19",
     "@nestjs/schematics": "^11.0.10",
     "@nestjs/testing": "^11.1.18",
     "@types/express": "^5.0.6",

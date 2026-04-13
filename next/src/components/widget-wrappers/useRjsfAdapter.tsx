@@ -3,6 +3,8 @@ import { WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import { FieldBaseProps } from '@/src/components/fields/_shared/types'
 import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
+import { getFieldSizeClassName } from '@/src/components/widget-wrappers/getFieldSizeClassName'
+import cn from '@/src/utils/cn'
 
 type AdapterConfig<TValue> = {
   toField: (rjsfValue: any) => TValue
@@ -39,8 +41,8 @@ const useRjsfAdapter = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptio
     helptextFooterMarkdown,
     className,
     labelSize,
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     size,
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     selfColumn,
     spaceTop,
     spaceBottom,
@@ -73,7 +75,7 @@ const useRjsfAdapter = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptio
       value: config.toField(props.value),
       onChange: (val: TValue) => props.onChange(config.fromField(val)),
       name: props.name,
-      className,
+      className: cn(getFieldSizeClassName(size), className),
     },
     specificOptions: specificOptions as Omit<TOptions, keyof WidgetUiOptions>,
   }

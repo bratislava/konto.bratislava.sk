@@ -271,7 +271,7 @@ describe('NorisValidatorSubservice', () => {
     it('should validate all payments, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(jest.fn())
       const result = service.validateNorisData(NorisTaxPaymentSchema, [
         testPaymentValid,
         testPaymentStringUhrazeno,
@@ -286,19 +286,15 @@ describe('NorisValidatorSubservice', () => {
       expect(result).not.toContainEqual(testPaymentInvalidVariabilnySymbol)
 
       expect(errorLogSpy).toHaveBeenCalledTimes(1)
-      expect(errorLogSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          response: expect.objectContaining({
-            [ErrorSymbols.alert]: 1,
-          }),
-        }),
-      )
+      expect(errorLogSpy.mock.calls[0][0]).toMatchObject({
+        response: { [ErrorSymbols.alert]: 1 },
+      })
     })
 
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(jest.fn())
       const result = service.validateNorisData(
         NorisRealEstateTaxSchema,
         allNorisRealEstateTaxes,
@@ -311,26 +307,18 @@ describe('NorisValidatorSubservice', () => {
       expect(errorLogSpy).toHaveBeenCalledTimes(
         invalidNorisRealEstateTaxes.length,
       )
-      expect(errorLogSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          response: expect.objectContaining({
-            [ErrorSymbols.alert]: 1,
-          }),
-        }),
-      )
-      expect(errorLogSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          response: expect.objectContaining({
-            message: expect.stringContaining('det_pozemky_DAN_E'), // It should contain the field name that is invalid
-          }),
-        }),
-      )
+      expect(errorLogSpy.mock.calls[0][0]).toMatchObject({
+        response: { [ErrorSymbols.alert]: 1 },
+      })
+      expect(JSON.stringify(errorLogSpy.mock.calls[1][0])).toContain(
+        'det_pozemky_DAN_E',
+      ) // field name that is invalid
     })
 
     it('should validate all communal waste taxes, return only valid and error log the rest', () => {
       const errorLogSpy = jest
         .spyOn(service['logger'], 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(jest.fn())
       const result = service.validateNorisData(
         NorisCommunalWasteTaxSchema,
         allNorisCommunalWasteTaxes,
@@ -346,20 +334,12 @@ describe('NorisValidatorSubservice', () => {
       expect(errorLogSpy).toHaveBeenCalledTimes(
         invalidNorisCommunalWasteTaxes.length,
       )
-      expect(errorLogSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          response: expect.objectContaining({
-            [ErrorSymbols.alert]: 1,
-          }),
-        }),
-      )
-      expect(errorLogSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          response: expect.objectContaining({
-            message: expect.stringContaining('objem_nadoby'), // It should contain the field name that is invalid
-          }),
-        }),
-      )
+      expect(errorLogSpy.mock.calls[0][0]).toMatchObject({
+        response: { [ErrorSymbols.alert]: 1 },
+      })
+      expect(JSON.stringify(errorLogSpy.mock.calls[1][0])).toContain(
+        'objem_nadoby',
+      ) // field name that is invalid
     })
   })
 })

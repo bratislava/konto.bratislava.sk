@@ -54,7 +54,12 @@ const FieldWrapper = ({
           ) : null}
         </RACLabel>
         {helptext ? (
-          <RACText slot="description" className="text-p2 text-content-passive-secondary">
+          <RACText
+            slot="description"
+            // We change default p to div, because we sometimes render full markdown instead of simple text.
+            elementType="div"
+            className="text-p2 text-content-passive-secondary"
+          >
             {helptext}
           </RACText>
         ) : null}
@@ -63,7 +68,12 @@ const FieldWrapper = ({
       {children}
 
       {helptextFooter ? (
-        <RACText slot="description" className="text-p2 text-content-passive-secondary">
+        <RACText
+          slot="description"
+          // We change default p to div, because we sometimes render full markdown instead of simple text.
+          elementType="div"
+          className="text-p2 text-content-passive-secondary"
+        >
           {helptextFooter}
         </RACText>
       ) : null}

@@ -46,69 +46,71 @@ export type FormMarkdownProps = {
  */
 const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkSupersub, remarkDirective, remarkDirectiveRehype]}
-      rehypePlugins={[
-        [
-          rehypeSanitize,
-          {
-            tagNames: [
-              'strong',
-              'em',
-              'sub',
-              'sup',
-              'p',
-              'a',
-              'ul',
-              'ol',
-              'li',
-              'form-image-preview',
-              'tax-year',
-              'tax-year-next',
-            ],
-            attributes: {
-              'form-image-preview': ['src'],
-              a: ['href'],
+    <div className="whitespace-pre-wrap">
+      <ReactMarkdown
+        remarkPlugins={[remarkSupersub, remarkDirective, remarkDirectiveRehype]}
+        rehypePlugins={[
+          [
+            rehypeSanitize,
+            {
+              tagNames: [
+                'strong',
+                'em',
+                'sub',
+                'sup',
+                'p',
+                'a',
+                'ul',
+                'ol',
+                'li',
+                'form-image-preview',
+                'tax-year',
+                'tax-year-next',
+              ],
+              attributes: {
+                'form-image-preview': ['src'],
+                a: ['href'],
+              },
             },
+          ],
+        ]}
+        components={{
+          'form-image-preview': ({ children: childrenInner, node }) => {
+            return (
+              <FormLightboxModal
+                imageUrl={(node?.properties?.src as string | null | undefined) ?? ''}
+              >
+                {childrenInner}
+              </FormLightboxModal>
+            )
           },
-        ],
-      ]}
-      components={{
-        'form-image-preview': ({ children: childrenInner, node }) => {
-          return (
-            <FormLightboxModal
-              imageUrl={(node?.properties?.src as string | null | undefined) ?? ''}
+          a: ({ href, children: childrenInner }) => (
+            <MLink
+              href={href ?? '#'}
+              target={href?.startsWith('http') ? '_blank' : ''}
+              variant="underlined"
             >
-              {childrenInner}
-            </FormLightboxModal>
-          )
-        },
-        a: ({ href, children: childrenInner }) => (
-          <MLink
-            href={href ?? '#'}
-            target={href?.startsWith('http') ? '_blank' : ''}
-            variant="underlined"
-          >
-            {childrenInner as ReactNode}
-          </MLink>
-        ),
-        ul: ({ children: childrenInner }) => (
-          <ul className="list-disc pl-8 whitespace-normal">{childrenInner as ReactNode}</ul>
-        ),
-        ol: ({ children: childrenInner }) => (
-          <ol className="list-decimal pl-8 whitespace-normal">{childrenInner as ReactNode}</ol>
-        ),
-        'tax-year': () => <>{getTaxYear()}</>,
-        'tax-year-next': () => <>{getTaxYear() + 1}</>,
-        ...(pAsSpan
-          ? {
-              p: ({ children: childrenInner }) => <span>{childrenInner as ReactNode}</span>,
-            }
-          : {}),
-      }}
-    >
-      {children}
-    </ReactMarkdown>
+              {childrenInner as ReactNode}
+            </MLink>
+          ),
+          ul: ({ children: childrenInner }) => (
+            <ul className="list-disc pl-8 whitespace-normal">{childrenInner as ReactNode}</ul>
+          ),
+          ol: ({ children: childrenInner }) => (
+            <ol className="list-decimal pl-8 whitespace-normal">{childrenInner as ReactNode}</ol>
+          ),
+          'tax-year': () => <>{getTaxYear()}</>,
+          'tax-year-next': () => <>{getTaxYear() + 1}</>,
+          ...(pAsSpan
+            ? {
+                p: ({ children: childrenInner }) => <span>{childrenInner as ReactNode}</span>,
+              }
+            : {}),
+        }}
+      >
+        {children}
+      </ReactMarkdown>
+    </div>
   )
 }
 

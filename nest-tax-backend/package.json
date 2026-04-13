@@ -46,7 +46,7 @@
     "express": "^5.2.1",
     "form-urlencoded": "^6.1.6",
     "lodash": "^4.17.23",
-    "mssql": "^12.2.0",
+    "mssql": "^12.2.1",
     "nodemailer": "^8.0.1",
     "openapi-clients": "file:../openapi-clients",
     "p-limit": "3.1.0",

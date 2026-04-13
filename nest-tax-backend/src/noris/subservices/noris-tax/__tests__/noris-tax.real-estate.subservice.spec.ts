@@ -234,14 +234,13 @@ describe('NorisTaxRealEstateSubservice', () => {
 
   describe('getTaxDataByYearAndBirthNumber', () => {
     it('should fetch tax data from Noris successfully', async () => {
-      const mockConnection = {}
       const mockRequest = {
         input: jest.fn(),
         query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as mssql.ConnectionPool)
+        return callback(createMock<mssql.ConnectionPool>())
       })
 
       const { Request } = await import('mssql')
@@ -274,14 +273,13 @@ describe('NorisTaxRealEstateSubservice', () => {
     })
 
     it('should handle multiple birth numbers correctly', async () => {
-      const mockConnection = {}
       const mockRequest = {
         input: jest.fn(),
         query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as mssql.ConnectionPool)
+        return callback(createMock<mssql.ConnectionPool>())
       })
 
       const { Request } = await import('mssql')
@@ -292,7 +290,7 @@ describe('NorisTaxRealEstateSubservice', () => {
 
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number0',
-        mssql.VarChar(expect.any(Number) as unknown as number),
+        mssql.VarChar(20),
         '123456/7890',
       )
       expect(mockRequest.input).toHaveBeenCalledWith(

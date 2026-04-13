@@ -11,7 +11,7 @@ on:
         description: "Define node version"
         type: string
         required: false
-        default: '20'
+        default: '24'
 
 jobs:
   test:

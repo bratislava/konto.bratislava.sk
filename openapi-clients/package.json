@@ -37,7 +37,7 @@
     "@openapitools/openapi-generator-cli": "^2.31.1",
     "@types/app-root-dir": "^0.1.4",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.19.27",
+    "@types/node": "24.12.2",
     "app-root-dir": "^1.0.2",
     "axios": "^1.15.0",
     "camelcase": "^9.0.0",
@@ -55,11 +55,11 @@
     "axios": "^1.15.0"
   },
   "engines": {
-    "node": ">=20.19.x",
-    "npm": ">=10.9.x"
+    "node": ">=24.14.x",
+    "npm": ">=11.11.x"
   },
   "volta": {
-    "node": "20.19.6",
-    "npm": "10.9.3"
+    "node": "24.14.1",
+    "npm": "11.11.0"
   }
 }

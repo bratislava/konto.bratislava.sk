@@ -10,14 +10,14 @@ import cn from '@/src/utils/cn'
 
 import { LabelSize } from './types'
 
-const labelSizeStyles: Record<LabelSize, string> = {
+const labelSizeStyles = {
   default: 'text-16-semibold',
   h3: 'text-h3',
   h4: 'text-h4',
   h5: 'text-h5',
 }
 
-interface FieldWrapperProps {
+type FieldWrapperProps = {
   label: string
   isRequired?: boolean
   displayOptionalLabel?: boolean

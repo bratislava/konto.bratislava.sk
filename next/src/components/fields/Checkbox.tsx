@@ -13,8 +13,7 @@ const Checkbox = ({ variant = 'basic', children, className, ...rest }: CheckboxP
       cn(
         'group flex w-full cursor-pointer items-center gap-3 rounded-lg text-p2',
         {
-          'border border-solid bg-background-passive-base px-3 py-2 lg:px-4 lg:py-3':
-            variant === 'boxed',
+          'border bg-background-passive-base px-3 py-2 lg:px-4 lg:py-3': variant === 'boxed',
           'border-border-active-default':
             variant === 'boxed' && !isSelected && !isIndeterminate && !isInvalid,
           'border-border-active-primary-default':

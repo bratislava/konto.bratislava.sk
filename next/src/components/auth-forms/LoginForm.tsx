@@ -71,6 +71,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
             isRequired
             label={t('auth.fields.email_label')}
             autoComplete="username"
+            autoCapitalize="none"
             {...field}
             errorMessage={errors.email}
           />

@@ -6,11 +6,11 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import PasswordField from '@/src/components/fields/PasswordField'
+import Radio from '@/src/components/fields/Radio'
+import RadioGroup from '@/src/components/fields/RadioGroup'
 import TextField from '@/src/components/fields/TextField'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import Radio from '@/src/components/fields/Radio'
-import RadioGroup from '@/src/components/fields/RadioGroup'
 import { environment } from '@/src/environment'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -230,7 +230,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 label={t('auth.fields.given_name_label')}
                 helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
-                autoCapitalize=""
+                autoCapitalize="on"
                 {...field}
                 errorMessage={errors.given_name}
               />

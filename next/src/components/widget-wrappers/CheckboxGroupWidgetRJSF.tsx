@@ -8,6 +8,7 @@ import Checkbox from '@/src/components/fields/Checkbox'
 import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
 import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
+import { isDefined } from '@/src/frontend/utils/general'
 
 const CheckboxGroupWidgetRJSF = (props: WidgetProps) => {
   const { maxItems } = props.schema
@@ -29,7 +30,7 @@ const CheckboxGroupWidgetRJSF = (props: WidgetProps) => {
 
   const isOptionDisabled = (optionValue: string) => {
     return (
-      maxItems != null &&
+      isDefined(maxItems) &&
       fieldProps.value.length === maxItems &&
       !fieldProps.value.includes(optionValue)
     )
@@ -39,7 +40,10 @@ const CheckboxGroupWidgetRJSF = (props: WidgetProps) => {
     <WidgetWrapper {...wrapperProps}>
       <CheckboxGroup
         {...fieldProps}
-        data-cy={`checkbox-group-${fieldProps.label?.toLowerCase().replaceAll(' ', '-').replace(/[?.,§/()]/g, '')}`}
+        data-cy={`checkbox-group-${fieldProps.label
+          ?.toLowerCase()
+          .replaceAll(' ', '-')
+          .replace(/[?.,§/()]/g, '')}`}
       >
         {mergedOptions.map((option) => (
           <Checkbox

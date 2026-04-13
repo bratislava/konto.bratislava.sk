@@ -73,7 +73,7 @@ const useRjsfAdapter = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptio
         ),
       errorMessage: rawErrors?.length ? rawErrors.join(', ') : undefined,
       value: config.toField(props.value),
-      onChange: (val: TValue) => props.onChange(config.fromField(val)),
+      onChange: (valueInner: TValue) => props.onChange(config.fromField(valueInner)),
       name: props.name,
       className: cn(getFieldSizeClassName(size), className),
     },

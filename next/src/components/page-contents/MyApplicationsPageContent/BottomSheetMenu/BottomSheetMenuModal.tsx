@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
@@ -27,20 +27,20 @@ const BottomSheetMenuModal = ({
     <ModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
-      className="fixed top-0 left-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-gray-800/40 outline-0"
+      className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-gray-800/40 outline-0"
       isDismissable
     >
       <Modal
         isDismissable
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        className="fixed bottom-0 w-full outline-0 data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse"
+        className="data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse fixed bottom-0 w-full outline-0"
       >
         <Dialog className="flex h-full flex-col outline-0">
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b bg-white p-4">
-                <h6 className="grow text-h6">
+                <h6 className="text-h6 grow">
                   {t('account_section_applications.mobile_modal_menu.title')}
                 </h6>
                 <Button

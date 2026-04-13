@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext } from 'react'
 

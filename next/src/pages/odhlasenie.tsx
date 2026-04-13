@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 
 import AccountContainer from '@/src/components/layouts/AccountContainer'

@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import BannerImage from '@/src/assets/images/bratislava-dog.png'
 import {
@@ -59,7 +59,7 @@ const HomepageContent = ({
 
       <MunicipalServicesHomepageSection services={servicesByPersonType} />
 
-      <SectionContainer className="py-6 lg:bg-background-passive-primary lg:py-18">
+      <SectionContainer className="lg:bg-background-passive-primary lg:py-18 py-6">
         <Banner
           title={t('account_section_intro.banner_title')}
           content={t('account_section_intro.banner_content')}

@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import objectHash from 'object-hash'
 import { useLocalStorage } from 'usehooks-ts'
 
@@ -65,7 +65,7 @@ export const StatusBar = () => {
   }
 
   return (
-    <div className="w-full bg-warning-700 text-white">
+    <div className="bg-warning-700 w-full text-white">
       <SectionContainer>
         <div className="flex justify-between py-4">
           <div className="flex">

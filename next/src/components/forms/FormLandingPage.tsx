@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React from 'react'
 
 import { formsClient } from '@/src/clients/forms'
@@ -65,7 +65,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           <h1 className="text-h1-form">{formDefinition.title}</h1>
           {strapiForm.moreInformationUrl ? (
             <Link
-              className="w-max text-p1 underline"
+              className="text-p1 w-max underline"
               href={strapiForm.moreInformationUrl}
               target="_blank"
             >

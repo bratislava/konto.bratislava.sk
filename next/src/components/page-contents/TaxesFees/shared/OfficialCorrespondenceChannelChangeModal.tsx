@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'

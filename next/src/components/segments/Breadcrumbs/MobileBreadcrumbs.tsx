@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { ChevronDownIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
 import type { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
@@ -32,7 +32,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
           >
             {t('Breadcrumbs.back')}
           </Button>
-          <div className="h-4 w-px bg-grey-300" />
+          <div className="bg-grey-300 h-4 w-px" />
           {last?.path ? (
             <MLink href={last.path} variant="underlined" aria-hidden className="truncate py-3 pr-4">
               {last.title}
@@ -46,7 +46,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
       {/* TODO: Accordion height animation. */}
       {showDetails && (
         <details className="group">
-          <summary className="absolute top-0 right-0 -mr-4 block cursor-pointer p-4">
+          <summary className="absolute right-0 top-0 -mr-4 block cursor-pointer p-4">
             <ChevronDownIcon className="size-5 shrink-0 transition-transform group-open:rotate-180" />
           </summary>
           <ol className="flex flex-col flex-wrap gap-1 py-2">

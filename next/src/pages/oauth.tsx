@@ -1,5 +1,5 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'

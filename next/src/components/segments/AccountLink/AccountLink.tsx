@@ -1,5 +1,5 @@
 import Link, { LinkProps } from 'next/link'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { ROUTES } from '@/src/utils/routes'

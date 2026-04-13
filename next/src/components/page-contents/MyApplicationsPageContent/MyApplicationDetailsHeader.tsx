@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { ChevronLeftIcon, DownloadIcon } from '@/src/assets/ui-icons'

@@ -3,7 +3,7 @@ import identity from 'lodash/identity'
 import mapValues from 'lodash/mapValues'
 import pickBy from 'lodash/pickBy'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 
 import UserProfileConsents from '@/src/components/page-contents/UserProfilePageContent/UserProfileConsents'

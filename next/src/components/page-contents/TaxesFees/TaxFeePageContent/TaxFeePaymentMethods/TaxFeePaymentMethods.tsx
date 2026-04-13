@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next/pages'
 import {
   InstallmentPaidStatusEnum,
   ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
@@ -7,7 +7,8 @@ import {
 } from 'openapi-clients/tax'
 
 import { formatDate } from '@/src/components/formatting/FormatDate'
-import TaxFeePaymentMethodsItem from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
+import TaxFeePaymentMethodsItem
+  from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Alert from '@/src/components/simple-components/Alert'
 import { ROUTES } from '@/src/utils/routes'

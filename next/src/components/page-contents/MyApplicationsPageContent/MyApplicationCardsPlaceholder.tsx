@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import Icon from '@/src/assets/images/mestske-konto-situacia-2-1.svg'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'

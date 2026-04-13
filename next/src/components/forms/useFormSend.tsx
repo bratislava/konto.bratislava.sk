@@ -2,16 +2,9 @@ import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { SendFormResponseDto } from 'openapi-clients/forms'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-} from 'react'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useRef, } from 'react'
 
 import { formsClient } from '@/src/clients/forms'
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
@@ -27,11 +20,7 @@ import { AccountType } from '@/src/frontend/dtos/accountDto'
 import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { isFormSubmitDisabled } from '@/src/frontend/utils/formSummary'
-import {
-  NASES_TOKEN_QUERY_KEY,
-  popSendEidMetadata,
-  setSendEidMetadata,
-} from '@/src/frontend/utils/metadataStorage'
+import { NASES_TOKEN_QUERY_KEY, popSendEidMetadata, setSendEidMetadata, } from '@/src/frontend/utils/metadataStorage'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.

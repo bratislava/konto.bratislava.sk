@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { Trans, useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next/pages'
 import { mergeProps } from 'react-aria'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
@@ -69,8 +69,8 @@ const SuccessContent = () => {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="flex size-[88px] items-center justify-center rounded-full bg-success-100 p-4">
-        <CheckIcon className="size-10 text-success-700" />
+      <div className="bg-success-100 flex size-[88px] items-center justify-center rounded-full p-4">
+        <CheckIcon className="text-success-700 size-10" />
       </div>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-1">
@@ -82,7 +82,7 @@ const SuccessContent = () => {
             {actions.map((translation, index) => (
               <li
                 key={index}
-                className="flex text-p1 [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border before:border-gray-400 before:text-h-xs before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8"
+                className="text-p1 before:text-h-xs flex [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border before:border-gray-400 before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8"
               >
                 <span>{translation}</span>
               </li>
@@ -91,7 +91,7 @@ const SuccessContent = () => {
         </div>
         {feedbackLink ? (
           <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
-            <h3 className="text-left text-h3">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
+            <h3 className="text-h3 text-left">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
             <Button
               variant="solid"
               className="w-full"
@@ -125,7 +125,7 @@ const SuccessContent = () => {
           <>
             <div className="mt-3 flex w-full items-center md:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
-              <span className="px-6 text-p1">{t('tax_form_pdf_export_modal.footer_choice')}</span>
+              <span className="text-p1 px-6">{t('tax_form_pdf_export_modal.footer_choice')}</span>
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
@@ -146,7 +146,7 @@ const SuccessContent = () => {
                 <Button
                   variant="solid"
                   fullWidth
-                  className="rounded-lg px-5 py-2 text-p1-semibold leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
+                  className="text-p1-semibold rounded-lg px-5 py-2 leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}

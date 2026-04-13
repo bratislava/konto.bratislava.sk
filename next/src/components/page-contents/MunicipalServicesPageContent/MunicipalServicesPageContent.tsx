@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
@@ -81,7 +81,7 @@ const MunicipalServicesPageContent = ({
       />
       <SectionContainer className="w-full pt-4 lg:pt-8">
         <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
-        <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 sm:gap-6 md:gap-8 min-[960px]:grid-cols-3 lg:grid-cols-4">
           {filteredServices
             .filter(
               (_, i) =>

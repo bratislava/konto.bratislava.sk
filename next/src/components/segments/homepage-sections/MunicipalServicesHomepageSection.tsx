@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { MunicipalServiceCardEntityFragment } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -15,7 +15,7 @@ const MunicipalServicesHomepageSection = ({ services }: Props) => {
   const { t } = useTranslation('account')
 
   return (
-    <SectionContainer className="py-6 lg:py-18">
+    <SectionContainer className="lg:py-18 py-6">
       <div className="flex flex-col gap-6 lg:gap-10">
         <SectionHeader
           title={t('account_section_services.navigation')}

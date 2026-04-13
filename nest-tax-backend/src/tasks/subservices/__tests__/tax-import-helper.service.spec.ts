@@ -336,9 +336,7 @@ describe('TaxImportHelperService', () => {
         { birthNumber: '987654/3210' },
       ]
       jest.spyOn(prismaService.taxPayer, 'findMany').mockResolvedValueOnce([])
-      jest
-        .spyOn(prismaService, '$queryRaw')
-        .mockResolvedValueOnce(mockExisting)
+      jest.spyOn(prismaService, '$queryRaw').mockResolvedValueOnce(mockExisting)
 
       const result = await service.getPrioritizedBirthNumbersWithMetadata(
         taxType,
@@ -369,7 +367,9 @@ describe('TaxImportHelperService', () => {
     it('should call query with import phase ordering when isImportPhase is true', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockNewlyCreated = [createTestTaxPayer({ birthNumber: '111111/2222' })]
+      const mockNewlyCreated = [
+        createTestTaxPayer({ birthNumber: '111111/2222' }),
+      ]
       const mockExisting = [createTestTaxPayer({ birthNumber: '123456/7890' })]
       jest
         .spyOn(prismaService.taxPayer, 'findMany')
@@ -393,7 +393,9 @@ describe('TaxImportHelperService', () => {
     it('should call query with prepare phase ordering when isImportPhase is false', async () => {
       const taxType = TaxType.DZN
       const year = 2024
-      const mockNewlyCreated = [createTestTaxPayer({ birthNumber: '111111/2222' })]
+      const mockNewlyCreated = [
+        createTestTaxPayer({ birthNumber: '111111/2222' }),
+      ]
       const mockExisting = [createTestTaxPayer({ birthNumber: '123456/7890' })]
       jest
         .spyOn(prismaService.taxPayer, 'findMany')
@@ -451,7 +453,7 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date),
+          updatedAt: expect.any(Date) as Date,
           status: 'NOT_FOUND',
         },
       })
@@ -556,7 +558,7 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date),
+          updatedAt: expect.any(Date) as Date,
           status: 'NOT_FOUND',
         },
       })
@@ -590,7 +592,7 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date),
+          updatedAt: expect.any(Date) as Date,
           status: 'NOT_FOUND',
         },
       })
@@ -625,7 +627,7 @@ describe('TaxImportHelperService', () => {
           taxType,
         },
         data: {
-          updatedAt: expect.any(Date),
+          updatedAt: expect.any(Date) as Date,
           status: 'NOT_FOUND',
         },
       })

@@ -1,8 +1,6 @@
-import { randomUUID } from 'node:crypto'
-
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { DataModel, generate, PaymentOptions } from 'bysquare'
+import { type DataModel, encode, PaymentOptions } from 'bysquare/pay'
 import * as qrCode from 'qrcode'
 
 import { QrCodeGeneratorDto } from './dtos/qrcode.dto'
@@ -16,7 +14,6 @@ export class QrCodeService {
 
   async createQrCode(qrCodeData: QrCodeGeneratorDto) {
     const model: DataModel = {
-      invoiceId: randomUUID(),
       payments: [
         {
           type: PaymentOptions.PaymentOrder,
@@ -34,7 +31,7 @@ export class QrCodeService {
       ],
     }
 
-    const qr = generate(model)
+    const qr = encode(model)
     const qr_result = await qrCode.toBuffer(qr)
     return qr_result.toString('base64')
   }

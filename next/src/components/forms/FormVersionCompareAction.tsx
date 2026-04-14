@@ -9,8 +9,8 @@ import { AlertIcon, ErrorIcon } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -26,7 +26,7 @@ const FormVersionCompareAction = () => {
   } = useFormContext()
   const { isSignedIn } = useSsrAuth()
   const { t } = useTranslation('forms')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
   const [isRedirecting, setIsRedirecting] = useState(false)
 
   const { mutate: bumpVersionMutate, isPending: bumpVersionIsPending } = useMutation({
@@ -38,7 +38,10 @@ const FormVersionCompareAction = () => {
       setIsRedirecting(true)
     },
     onError: () => {
-      openSnackbarError(t('form_version_compare_action.error_version_update'))
+      showToast({
+        message: t('form_version_compare_action.error_version_update'),
+        variant: 'error',
+      })
     },
   })
 
@@ -52,9 +55,9 @@ const FormVersionCompareAction = () => {
   }[versionCompareContinueAction]
 
   return (
-    <div className="bg-gray-0 flex flex-col justify-between py-16 md:bg-gray-50 md:py-28">
+    <div className="flex flex-col justify-between bg-gray-0 py-16 md:bg-gray-50 md:py-28">
       <div className="flex flex-col">
-        <div className="bg-gray-0 mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
+        <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
           <span
             className={cn(
               'flex h-14 w-14 min-w-14 items-center justify-center rounded-full md:h-[88px] md:w-[88px] md:min-w-[88px]',
@@ -77,7 +80,7 @@ const FormVersionCompareAction = () => {
           </span>
 
           <div className="flex flex-col items-center gap-8 md:gap-6">
-            <h2 className="text-h2 text-center">
+            <h2 className="text-center text-h2">
               {
                 {
                   [VersionCompareContinueAction.CannotContinue]: t(

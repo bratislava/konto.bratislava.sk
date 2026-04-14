@@ -15,10 +15,10 @@ import PlausibleProvider from 'next-plausible'
 import { NuqsAdapter } from 'nuqs/adapters/next/pages'
 import { useEffect, useState } from 'react'
 import { I18nProvider } from 'react-aria'
-import SnackbarProvider from 'react-simple-snackbar'
 
 import { NavMenuContextProvider } from '@/src/components/segments/NavBar/navMenuContext'
 import MLink from '@/src/components/simple-components/MLink'
+import AppToastRegion from '@/src/components/simple-components/Toast/Toast'
 import { environment } from '@/src/environment'
 import { removeAllCookiesAndClearLocalStorage } from '@/src/frontend/utils/amplifyClient'
 import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'
@@ -119,23 +119,22 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
           <I18nProvider locale="sk-SK">
             <QueryClientProvider client={queryClient}>
               <ComponentLibraryProvider linkComponent={MLink}>
-                <SnackbarProvider>
-                  <PlausibleProvider
-                    domain={
-                      isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
-                    }
-                    taggedEvents
-                    // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                    // trackLocalhost
-                  >
-                    <NavMenuContextProvider>
-                      {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
-                      <div id="root">
-                        <Component {...pageProps} />
-                      </div>
-                    </NavMenuContextProvider>
-                  </PlausibleProvider>
-                </SnackbarProvider>
+                <PlausibleProvider
+                  domain={
+                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
+                  }
+                  taggedEvents
+                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                  // trackLocalhost
+                >
+                  <NavMenuContextProvider>
+                    {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
+                    <div id="root">
+                      <Component {...pageProps} />
+                    </div>
+                    <AppToastRegion />
+                  </NavMenuContextProvider>
+                </PlausibleProvider>
               </ComponentLibraryProvider>
             </QueryClientProvider>
           </I18nProvider>

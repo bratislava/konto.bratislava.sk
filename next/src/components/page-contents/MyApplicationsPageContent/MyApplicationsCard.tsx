@@ -23,7 +23,7 @@ import MenuDropdown, {
 } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
@@ -68,9 +68,7 @@ const MyApplicationsCard = ({
 
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
 
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { showToast, closeToasts } = useToast()
   const [bottomSheetIsOpen, setBottomSheetIsOpen] = useState(false)
 
   // everything used in jsx should get mapped here
@@ -96,7 +94,7 @@ const MyApplicationsCard = ({
   // xml and pdf exports copied from useFormExportImport
   // TODO refactor, same as next/frontend/hooks/useFormExportImport.tsx
   const exportXml = async () => {
-    openSnackbarInfo(t('forms:info_messages.xml_export'))
+    showToast({ message: t('forms:info_messages.xml_export'), variant: 'info' })
     try {
       if (!formId) throw new Error('No form id provided for exportXml')
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
@@ -106,16 +104,16 @@ const MyApplicationsCard = ({
       )
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('forms:success_messages.xml_export'))
+      closeToasts()
+      showToast({ message: t('forms:success_messages.xml_export'), variant: 'success' })
     } catch (error) {
-      openSnackbarError(t('forms:errors.xml_export'))
+      showToast({ message: t('forms:errors.xml_export'), variant: 'error' })
       logger.error(JSON.stringify(error))
     }
   }
 
   const exportPdf = async () => {
-    openSnackbarInfo(t('forms:info_messages.pdf_export'))
+    showToast({ message: t('forms:info_messages.pdf_export'), variant: 'info' })
     try {
       if (!formSlug || !formId)
         throw new Error(
@@ -129,27 +127,27 @@ const MyApplicationsCard = ({
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('forms:success_messages.pdf_export'))
+      closeToasts()
+      showToast({ message: t('forms:success_messages.pdf_export'), variant: 'success' })
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('forms:errors.pdf_export'))
+      showToast({ message: t('forms:errors.pdf_export'), variant: 'error' })
     }
   }
 
   const deleteConcept = async () => {
-    openSnackbarInfo(t('forms:info_messages.concept_delete'))
+    showToast({ message: t('forms:info_messages.concept_delete'), variant: 'info' })
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsClient.nasesControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('forms:success_messages.concept_delete'))
+      closeToasts()
+      showToast({ message: t('forms:success_messages.concept_delete'), variant: 'success' })
       await refreshListData()
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('forms:errors.concept_delete'))
+      showToast({ message: t('forms:errors.concept_delete'), variant: 'error' })
     }
   }
 
@@ -306,13 +304,13 @@ const MyApplicationsCard = ({
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="text-20-semibold pb-3">
+              <h3 className="pb-3 text-20-semibold">
                 {isLoading ? <Skeleton width="75%" /> : subject}
               </h3>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center">
+                  <span className="flex items-center text-p3">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (

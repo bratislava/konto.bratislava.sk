@@ -16,8 +16,8 @@ import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
 import { environment } from '@/src/environment'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { createSerializableFile } from '@/src/frontend/utils/formExportImport'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
@@ -44,9 +44,7 @@ export const useGetContext = () => {
   // track each imported/exported xml/pdf in analytics - event format should match the one in FormPagesWrapper
   const plausible = usePlausible()
 
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { showToast, closeToasts } = useToast()
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
   const importJsonButtonRef = useRef<HTMLButtonElement>(null)
@@ -70,16 +68,16 @@ export const useGetContext = () => {
     onMutate: ({ fromModal }) => {
       // The concept saved from modal has its own loading indicator.
       if (!fromModal) {
-        openSnackbarInfo(t('info_messages.concept_save'))
+        showToast({ message: t('info_messages.concept_save'), variant: 'info' })
       }
     },
     onSuccess: () => {
-      openSnackbarSuccess(t('success_messages.concept_save'))
+      showToast({ message: t('success_messages.concept_save'), variant: 'success' })
       setConceptSaveErrorModal(false)
       turnOffLeaveProtection()
     },
     onError: () => {
-      closeSnackbarInfo()
+      closeToasts()
       setConceptSaveErrorModal(true)
     },
   })
@@ -97,7 +95,7 @@ export const useGetContext = () => {
       return new Promise(() => {})
     },
     onError: () => {
-      openSnackbarError(t('errors.migration'))
+      showToast({ message: t('errors.migration'), variant: 'error' })
     },
   })
 
@@ -110,7 +108,7 @@ export const useGetContext = () => {
   }
   // TODO refactor, same as next/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard.tsx
   const exportXml = async () => {
-    openSnackbarInfo(t('info_messages.xml_export'))
+    showToast({ message: t('info_messages.xml_export'), variant: 'info' })
     try {
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
         formId,
@@ -121,18 +119,18 @@ export const useGetContext = () => {
       )
       const fileName = `${slug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_export'))
+      closeToasts()
+      showToast({ message: t('success_messages.xml_export'), variant: 'success' })
       plausible(`${slug}#export-xml`)
     } catch (error) {
-      openSnackbarError(t('errors.xml_export'))
+      showToast({ message: t('errors.xml_export'), variant: 'error' })
     }
   }
 
   const exportJson = async () => {
     const fileName = `${slug}_output.json`
     downloadBlob(new Blob([JSON.stringify(formData)]), fileName)
-    openSnackbarSuccess(t('success_messages.json_export'))
+    showToast({ message: t('success_messages.json_export'), variant: 'success' })
   }
 
   const triggerImportXml = () => {
@@ -150,7 +148,7 @@ export const useGetContext = () => {
     const file = files[0]
 
     try {
-      openSnackbarInfo(t('info_messages.xml_import'))
+      showToast({ message: t('info_messages.xml_import'), variant: 'info' })
       const xmlForm = await file.text()
       const { data } = await formsClient.convertControllerConvertXmlToJson(
         formId,
@@ -159,11 +157,11 @@ export const useGetContext = () => {
         },
         { authStrategy: 'authOrGuestWithToken' },
       )
-      closeSnackbarInfo()
+      closeToasts()
 
       const importData = () => {
         setImportedFormData(data.formDataJson)
-        openSnackbarSuccess(t('success_messages.xml_import'))
+        showToast({ message: t('success_messages.xml_import'), variant: 'success' })
       }
 
       if (environment.featureToggles.versioning && data.requiresVersionConfirmation) {
@@ -180,9 +178,9 @@ export const useGetContext = () => {
       plausible(`${slug}#import-xml`)
     } catch (error) {
       if (isAxiosError(error) && error.response?.data?.errorName === 'INCOMPATIBLE_JSON_VERSION') {
-        openSnackbarError(t('errors.xml_import_incompatible_version'))
+        showToast({ message: t('errors.xml_import_incompatible_version'), variant: 'error' })
       } else {
-        openSnackbarError(t('errors.xml_import'))
+        showToast({ message: t('errors.xml_import'), variant: 'error' })
       }
     }
   }
@@ -193,15 +191,15 @@ export const useGetContext = () => {
     }
     const file = files[0]
     const jsonForm = await file.text()
-    openSnackbarInfo(t('info_messages.json_import'))
+    showToast({ message: t('info_messages.json_import'), variant: 'info' })
     try {
       const parsed = JSON.parse(jsonForm)
-       
+
       setImportedFormData(parsed)
     } catch (error) {
-      openSnackbarError(t('errors.json_import'))
+      showToast({ message: t('errors.json_import'), variant: 'error' })
     }
-    openSnackbarSuccess(t('success_messages.json_import'))
+    showToast({ message: t('success_messages.json_import'), variant: 'success' })
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
@@ -225,17 +223,17 @@ export const useGetContext = () => {
   }
 
   const exportOrdinaryPdf = async () => {
-    openSnackbarInfo(t('info_messages.pdf_export'))
+    showToast({ message: t('info_messages.pdf_export'), variant: 'info' })
     try {
       await runPdfExport()
     } catch (error) {
-      closeSnackbarInfo()
-      openSnackbarError(t('errors.pdf_export'))
+      closeToasts()
+      showToast({ message: t('errors.pdf_export'), variant: 'error' })
 
       return
     }
-    closeSnackbarInfo()
-    openSnackbarSuccess(t('success_messages.pdf_export'))
+    closeToasts()
+    showToast({ message: t('success_messages.pdf_export'), variant: 'success' })
   }
 
   const exportTaxPdf = async () => {
@@ -246,7 +244,7 @@ export const useGetContext = () => {
     } catch (error) {
       setTaxFormPdfExportModal(null)
       if (!abortController.signal.aborted) {
-        openSnackbarError(t('errors.pdf_export'))
+        showToast({ message: t('errors.pdf_export'), variant: 'error' })
       }
 
       return
@@ -274,17 +272,17 @@ export const useGetContext = () => {
   }
 
   const deleteConcept = async () => {
-    openSnackbarInfo(t('info_messages.concept_delete'))
+    showToast({ message: t('info_messages.concept_delete'), variant: 'info' })
     try {
       await formsClient.nasesControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.concept_delete'))
+      closeToasts()
+      showToast({ message: t('success_messages.concept_delete'), variant: 'success' })
       await router.push(ROUTES.MY_APPLICATIONS)
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('errors.concept_delete'))
+      showToast({ message: t('errors.concept_delete'), variant: 'error' })
     }
   }
 

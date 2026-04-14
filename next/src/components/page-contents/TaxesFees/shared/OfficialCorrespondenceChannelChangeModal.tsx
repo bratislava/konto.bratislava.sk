@@ -13,7 +13,7 @@ import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import Radio from '@/src/components/widget-components/RadioButton/Radio'
 import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useUserSubscription } from '@/src/frontend/hooks/useUser'
 import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
@@ -197,8 +197,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
   })
   const { t } = useTranslation('account')
 
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
 
   const { hasChangedDeliveryMethodAfterDeadline } = useOfficialCorrespondenceChannel()
 
@@ -209,11 +208,17 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
     return changeSubscription(data.isSubscribed, {
       onSuccess: () => {
         onOpenChange?.(false)
-        openSnackbarSuccess(t('taxes.delivery_method_change_modal.success_snackbar_message'))
+        showToast({
+          message: t('taxes.delivery_method_change_modal.success_snackbar_message'),
+          variant: 'success',
+        })
       },
       onError: (error) => {
         logger.error(error)
-        openSnackbarError(t('taxes.delivery_method_change_modal.error_snackbar_message'))
+        showToast({
+          message: t('taxes.delivery_method_change_modal.error_snackbar_message'),
+          variant: 'error',
+        })
       },
     })
   }

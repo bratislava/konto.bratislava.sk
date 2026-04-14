@@ -18,6 +18,7 @@ import {
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
 } from './bloomreach.types'
+import { mergeCustomerCommandData } from './utils/merge-commands.utils'
 
 @Injectable()
 export class BloomreachOutboxService {
@@ -207,10 +208,10 @@ export class BloomreachOutboxService {
         await tx.bloomreachOutbox.update({
           where: { id: existing.id },
           data: {
-            commandData: {
-              customer_ids: { ...existing.commandData.customer_ids, ...commandData.customer_ids },
-              properties: { ...existing.commandData.properties, ...commandData.properties },
-            },
+            commandData: mergeCustomerCommandData(
+              existing.commandData as BloomreachCustomerCommandData,
+              commandData
+            ),
           },
         })
       } else {

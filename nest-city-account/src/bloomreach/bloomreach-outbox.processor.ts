@@ -13,6 +13,7 @@ import {
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
 } from './bloomreach.types'
+import { mergeCustomerCommandData } from './utils/merge-commands.utils'
 import axios from 'axios'
 
 // TODO these constants need consulting
@@ -249,15 +250,13 @@ export class BloomreachOutboxProcessor {
           // For customers commands, merge the old entry's data into the newer one
           // (newer values take precedence, matching the write-time merge logic)
           if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS) {
-            const oldData = commandData as BloomreachCustomerCommandData
-            const newerData = newer.commandData as BloomreachCustomerCommandData
             await tx.bloomreachOutbox.update({
               where: { id: newer.id },
               data: {
-                commandData: {
-                  customer_ids: { ...oldData.customer_ids, ...newerData.customer_ids },
-                  properties: { ...oldData.properties, ...newerData.properties },
-                },
+                commandData: mergeCustomerCommandData(
+                  commandData as BloomreachCustomerCommandData,
+                  newer.commandData as BloomreachCustomerCommandData
+                ),
               },
             })
           }

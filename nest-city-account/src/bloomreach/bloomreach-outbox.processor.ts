@@ -16,7 +16,6 @@ import {
 import { mergeCustomerCommandData } from './utils/merge-commands.utils'
 import axios from 'axios'
 
-// TODO these constants need consulting
 const BATCH_SIZE = 50
 const MAX_ATTEMPTS = 5
 const STALE_PROCESSING_THRESHOLD_MS = 60_000

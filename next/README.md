@@ -102,8 +102,3 @@ After removing a snackbar plugin, these overrides can be safely removed from pac
 "react-dom": "18.3.1"
 }
 ```
-
-## `RJSF` patched package
-
-We are using a patched version of `@rjsf/core`. This patch must be present
-until [RJSF PR #4978](https://github.com/rjsf-team/react-jsonschema-form/pull/4978) is released.

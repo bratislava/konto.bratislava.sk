@@ -12,13 +12,17 @@ import BaConfigService from '../config/ba-config.service'
 
 @Injectable()
 export default class ClientsService {
-  constructor(private readonly baConfigService: BaConfigService) {}
+  public readonly slovenskoSkApi: SlovenskoSkClient
 
-  public readonly slovenskoSkApi: SlovenskoSkClient = createSlovenskoSkClient({
-    basePath: this.baConfigService.slovenskoSk.url,
-  })
+  public readonly cityAccountApi: CityAccountClient
 
-  public readonly cityAccountApi: CityAccountClient = createCityAccountClient({
-    basePath: this.baConfigService.cityAccountBackend.url,
-  })
+  constructor(private readonly baConfigService: BaConfigService) {
+    this.slovenskoSkApi = createSlovenskoSkClient({
+      basePath: this.baConfigService.slovenskoSk.url,
+    })
+
+    this.cityAccountApi = createCityAccountClient({
+      basePath: this.baConfigService.cityAccountBackend.url,
+    })
+  }
 }

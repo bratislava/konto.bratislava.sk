@@ -128,7 +128,7 @@
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "4.17.24",
     "@types/mime-types": "^3.0.1",
-    "@types/node": "^24.12.2",
+    "@types/node": "24.12.2",
     "@types/object-hash": "^3.0.6",
     "@types/qs": "^6.15.0",
     "@types/react": "19.2.14",
@@ -149,11 +149,11 @@
     "typescript": "6.0.2"
   },
   "engines": {
-    "node": ">=20.19.x",
-    "npm": ">=10.9.x"
+    "node": ">=24.14.x",
+    "npm": ">=11.11.x"
   },
   "volta": {
-    "node": "20.19.6",
-    "npm": "10.9.3"
+    "node": "24.14.1",
+    "npm": "11.11.0"
   }
 }

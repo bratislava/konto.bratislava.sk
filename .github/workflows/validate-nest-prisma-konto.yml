@@ -16,7 +16,7 @@ on:
         description: "Define node version"
         type: string
         required: false
-        default: '20'
+        default: '24.14'
       level:
         description: "Change reporter level if you need"
         type: string
@@ -65,7 +65,7 @@ jobs:
       # move to directory
       - name: Install dependencies
         working-directory: ${{ inputs.directory }}
-        run: | 
+        run: |
           pwd
           npm ci
           npx prisma generate

@@ -230,16 +230,16 @@ export default class NasesService {
     // Cumulative file size check at submission time — this is the authoritative point
     // because the set of active files is only final after the form data has been updated
     // and extra files deleted.
-    if (
-      this.baConfigService.featureToggles.fileSizeLimits &&
-      formDefinition.maxTotalFileSize != null
-    ) {
+    if (this.baConfigService.featureToggles.fileSizeLimits) {
+      const maxTotalFileSize =
+        formDefinition.maxTotalFileSize ??
+        this.baConfigService.fileLimits.maxCumulativeSizeGlobal
       const totalFileSize =
         await this.filesService.getActiveFilesTotalSize(formId)
-      if (totalFileSize > formDefinition.maxTotalFileSize) {
+      if (totalFileSize > maxTotalFileSize) {
         throw this.throwerErrorGuard.BadRequestException(
           FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-          `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${formDefinition.maxTotalFileSize}`,
+          `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
         )
       }
     }

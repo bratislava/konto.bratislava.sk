@@ -286,30 +286,14 @@ export default class FilesService {
     const fileSize = bufferedFile.size
     const pathWithMinioFileName = filePath + minioFileName
 
-    // Save to DB first so the cumulative size check rejects oversized files
-    // before they reach storage. The check + insert is wrapped in a serializable
-    // transaction to prevent race conditions with concurrent uploads.
-    let file: Files
-    if (formDefinition.maxTotalFileSize != null) {
-      file = await this.filesHelper.saveFileToDatabaseWithTotalSizeCheck(
-        fileId,
-        minioFileName,
-        fileName,
-        fileSize,
-        formId,
-        pospIdOrSlug,
-        formDefinition.maxTotalFileSize,
-      )
-    } else {
-      file = await this.filesHelper.saveFileToDatabase(
-        fileId,
-        minioFileName,
-        fileName,
-        fileSize,
-        formId,
-        pospIdOrSlug,
-      )
-    }
+    const file = await this.filesHelper.saveFileToDatabase(
+      fileId,
+      minioFileName,
+      fileName,
+      fileSize,
+      formId,
+      pospIdOrSlug,
+    )
 
     try {
       const uploadedFile = await this.minioClientSubervice.upload(

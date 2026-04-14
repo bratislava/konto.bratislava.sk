@@ -175,69 +175,6 @@ export default class FilesHelper {
     }
   }
 
-  /**
-   * Atomically checks the cumulative file size limit and saves the file in a serializable
-   * transaction to prevent race conditions with concurrent uploads.
-   */
-  async saveFileToDatabaseWithTotalSizeCheck(
-    fileId: string,
-    minioFileName: string,
-    fileName: string,
-    fileSize: number,
-    formId: string,
-    pospIdOrSlug: string,
-    maxTotalFileSize: number,
-  ): Promise<Files> {
-    try {
-      return await this.prisma.$transaction(
-        async (tx) => {
-          const totalResult = await tx.files.aggregate({
-            where: {
-              formId,
-              status: {
-                in: [
-                  FileStatus.UPLOADED,
-                  FileStatus.ACCEPTED,
-                  FileStatus.QUEUED,
-                  FileStatus.SCANNING,
-                  FileStatus.SAFE,
-                ],
-              },
-            },
-            _sum: { fileSize: true },
-          })
-
-          const currentTotalSize = totalResult._sum.fileSize ?? 0
-          if (currentTotalSize + fileSize > maxTotalFileSize) {
-            throw this.throwerErrorGuard.BadRequestException(
-              FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-              `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Current total: ${currentTotalSize}, new file: ${fileSize}, limit: ${maxTotalFileSize}`,
-            )
-          }
-
-          return tx.files.create({
-            data: {
-              id: fileId,
-              minioFileName,
-              fileSize,
-              fileName,
-              formId,
-              pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
-            },
-          })
-        },
-        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
-      )
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        'Error while saving file to database.',
-        undefined,
-        error,
-      )
-    }
-  }
-
   async checkIfFileExistsInDatabase(fileId: string): Promise<Files | null> {
     try {
       return await this.prisma.files.findFirst({

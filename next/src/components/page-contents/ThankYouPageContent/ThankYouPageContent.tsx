@@ -1,5 +1,5 @@
 import { NextRouter, useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 

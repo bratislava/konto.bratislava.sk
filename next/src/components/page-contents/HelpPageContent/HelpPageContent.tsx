@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import BannerPhone from '@/src/assets/images/help-page-banner-image.png'
 import { HelpPageFragment } from '@/src/clients/graphql-strapi/api'
@@ -33,7 +33,7 @@ const HelpPageContent = ({ helpPage }: Props) => {
         <div className="flex flex-col gap-2 md:gap-3">
           {helpPage.categories.filter(isDefined).map((category) => (
             <div className="flex flex-col gap-2 md:gap-3" key={category.id}>
-              <h3 className="mt-6 flex justify-start text-h4">{category.title}</h3>
+              <h3 className="text-h4 mt-6 flex justify-start">{category.title}</h3>
               {category.items.filter(isDefined).map((item, index) => (
                 <AccordionV2 key={index} title={item.title}>
                   <AccountMarkdown content={item.content} />

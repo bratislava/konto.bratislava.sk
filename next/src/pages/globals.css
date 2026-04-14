@@ -712,11 +712,6 @@ body {
   @apply font-sans text-font antialiased;
 }
 
-/* Display snackbar above modal. */
-[class*='Snackbar_snackbar-wrapper'] {
-  z-index: 60 !important;
-}
-
 .base-focus-ring {
   @apply ring-border-active-primary-default ring-offset-3 outline-none;
   @apply focus-visible:ring-3 focus-visible:transition-shadow;

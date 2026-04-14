@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { ReactNode } from 'react'
 import { Orientation, useRadioGroup } from 'react-aria'
 import {

@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { BinIcon, ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'
@@ -31,7 +31,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       : {
           title: t('menu_list.save_concept'),
           icon: <DiscIcon className="size-6" />,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+           
           onPress: () => saveConcept(),
           dataCy: 'save-concept-mobile',
         },
@@ -39,7 +39,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       ? {
           title: t('menu_list.download_xml'),
           icon: <DownloadIcon className="size-6" />,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+           
           onPress: () => exportXml(),
         }
       : null,
@@ -47,7 +47,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       ? {
           title: t('menu_list.pdf'),
           icon: <PdfIcon className="size-6" />,
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+           
           onPress: () => exportPdf(),
         }
       : null,

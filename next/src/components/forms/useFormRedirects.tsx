@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { formsClient } from '@/src/clients/forms'
@@ -9,7 +9,7 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { ROUTES } from '@/src/utils/routes'
 
 const useGetContext = () => {
@@ -18,8 +18,7 @@ const useGetContext = () => {
   const { formId } = useFormContext()
   const { formData } = useFormData()
   const { t } = useTranslation('forms')
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast, closeToasts } = useToast()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { signature } = useFormSignature()
 
@@ -36,16 +35,22 @@ const useGetContext = () => {
       ),
     networkMode: 'always',
     onSuccess: () => {
-      closeSnackbarInfo()
+      closeToasts()
     },
     onMutate: () => {
       // TODO: Wording.
-      openSnackbarInfo(t('useFormRedirects.save_concept.on_mutate_snackbar_message'))
+      showToast({
+        message: t('useFormRedirects.save_concept.on_mutate_snackbar_message'),
+        variant: 'info',
+      })
       turnOffLeaveProtection()
     },
     onError: () => {
       // Maybe different wording for this case.
-      openSnackbarError(t('useFormRedirects.save_concept.on_error_snackbar_message'))
+      showToast({
+        message: t('useFormRedirects.save_concept.on_error_snackbar_message'),
+        variant: 'error',
+      })
     },
   })
 

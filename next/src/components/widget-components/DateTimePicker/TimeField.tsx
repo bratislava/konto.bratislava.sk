@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { useRef } from 'react'
 import { TimeValue, useTimeField } from 'react-aria'
 import { useTimeFieldState } from 'react-stately'

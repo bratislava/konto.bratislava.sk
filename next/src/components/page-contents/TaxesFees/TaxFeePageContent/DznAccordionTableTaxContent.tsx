@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import {
   ResponseApartmentTaxDetailDto,
   ResponseConstructionTaxDetailDto,
@@ -55,7 +55,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         {headerData.map((header, index) => (
           <th
             key={index}
-            className="p-4 text-left text-16 font-semibold not-first:text-center lg:px-6 lg:py-5"
+            className="text-16 not-first:text-center p-4 text-left font-semibold lg:px-6 lg:py-5"
           >
             {header}
           </th>
@@ -116,20 +116,20 @@ const TableData = ({
 
         return (
           <tr key={taxDetail.type} className="not-last:lg:border-b">
-            <td className="h-max p-4 not-first:text-center not-first:text-20-semibold lg:px-6 lg:py-5">
+            <td className="not-first:text-center not-first:text-20-semibold h-max p-4 lg:px-6 lg:py-5">
               <div className="inline h-0 font-semibold">{title}</div>
             </td>
             {dataType === 'GROUND' && (
-              <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
+              <td className="not-first:text-center not-first:text-16 w-[15%] p-4 lg:px-6 lg:py-5">
                 {taxDetail.area} m<sup>2</sup>
               </td>
             )}
-            <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
+            <td className="not-first:text-center not-first:text-16 w-[15%] p-4 lg:px-6 lg:py-5">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
-            <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
+            <td className="not-first:text-center not-first:text-16 w-[15%] p-4 lg:px-6 lg:py-5">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>
@@ -178,7 +178,7 @@ const DznAccordionTableTaxContent = ({
   return (
     <AccordionV2
       title={
-        <div className="flex min-w-0 grow justify-between text-h5 font-semibold">
+        <div className="text-h5 flex min-w-0 grow justify-between font-semibold">
           <h5>{title}</h5>
           <span>{secondTitle}</span>
         </div>

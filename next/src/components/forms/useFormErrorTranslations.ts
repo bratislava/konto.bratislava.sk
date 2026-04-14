@@ -1,5 +1,5 @@
 import { RJSFValidationError } from '@rjsf/utils'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 const useGetTranslationKey = () => {
   const { t } = useTranslation('rjsf-errors')

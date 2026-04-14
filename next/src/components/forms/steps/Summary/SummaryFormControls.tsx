@@ -1,5 +1,5 @@
 import { Button, ButtonButtonProps } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { ChevronLeftIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'

@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React from 'react'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
@@ -42,7 +42,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
           <CheckIcon fill="white" className="size-6" />
         )}
       </div>
-      <span className="text-left text-p3-medium">
+      <span className="text-p3-medium text-left">
         {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}
         {isSubmitted && !isCurrent ? (
           <span className="sr-only">{t('steps.submitted_sr')}</span>

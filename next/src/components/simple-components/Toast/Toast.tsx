@@ -38,7 +38,7 @@ const Toast = ({ className, ...props }: ToastProps<AppToastContent>) => {
     <ReactAriaToast
       {...props}
       className={cn(
-        'pointer-events-auto flex w-full max-w-2xl items-center rounded text-white shadow-lg transition duration-150 ease-out outline-none data-exiting:translate-y-4 data-exiting:opacity-0 sm:w-auto sm:min-w-83.5 starting:translate-y-4 starting:opacity-0',
+        'pointer-events-auto flex w-full max-w-2xl items-center rounded text-white shadow-lg transition duration-150 ease-out outline-none data-exiting:translate-y-4 data-exiting:opacity-0 lg:w-auto lg:min-w-83.5 starting:translate-y-4 starting:opacity-0',
         className,
       )}
     />

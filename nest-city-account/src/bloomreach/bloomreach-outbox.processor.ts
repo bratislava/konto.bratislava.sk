@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { BloomreachOutbox, BloomreachOutboxStatus } from '@prisma/client'
+import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -208,7 +208,7 @@ export class BloomreachOutboxProcessor {
 
     await Promise.all(
       entries.map(async (entry) => {
-        const baseWhere = {
+        const baseWhere: Prisma.BloomreachOutboxWhereInput = {
           cognitoId: entry.cognitoId,
           commandName: entry.commandName,
           status: BloomreachOutboxStatus.PENDING,
@@ -216,7 +216,7 @@ export class BloomreachOutboxProcessor {
 
         const { commandData } = entry
 
-        let where
+        let where: Prisma.BloomreachOutboxWhereInput
         if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS_EVENTS) {
           const eventData = commandData as BloomreachEventCommandData
           where = {

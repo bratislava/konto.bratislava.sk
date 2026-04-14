@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { getPerFieldFileLimit } from 'forms-shared/form-utils/getFieldFileSizeLimit'
 import multer from 'multer'
 import { Observable } from 'rxjs'
 
@@ -15,7 +16,6 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 import FilesHelper from './files.helper'
 import BaConfigService from '../config/ba-config.service'
-
 /**
  * Conservative overhead allowance for multipart boundaries, headers, and the other form fields
  * (filename, id).
@@ -114,7 +114,27 @@ export class FileUploadInterceptor implements NestInterceptor {
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    const perFileMax = formDefinition?.maxFileSize ?? globalMax
+    const formPerFileMax = formDefinition?.maxFileSize ?? globalMax
+
+    // Per-field file size enforcement: when the form defines `fileLimits`, the frontend
+    // must send a `fieldId` query param so the backend can look up the field-specific limit.
+    const fieldId = req.query.fieldId as string | undefined
+    const hasPerFieldLimits =
+      formDefinition?.fileLimits &&
+      Object.keys(formDefinition.fileLimits).length > 0
+    if (!fieldId && hasPerFieldLimits) {
+      throw this.throwerErrorGuard.BadRequestException(
+        FilesErrorsEnum.MISSING_FIELD_ID_ERROR,
+        FilesErrorsResponseEnum.MISSING_FIELD_ID_ERROR,
+      )
+    }
+
+    // Use the per-field limit if available, but never exceed the form-level max.
+    const fieldLimit = fieldId
+      ? getPerFieldFileLimit(formDefinition?.fileLimits, fieldId)
+      : null
+    const perFileMax =
+      fieldLimit != null ? Math.min(fieldLimit, formPerFileMax) : formPerFileMax
 
     const currentTotal = await this.filesHelper.getActiveFilesTotalSize(formId)
     const remainingBudget =

@@ -1,12 +1,6 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import {
-  config,
-  connect,
-  ConnectionError,
-  ConnectionPool,
-  MSSQLError,
-} from 'mssql'
+import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
 import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
@@ -15,7 +9,9 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
-export class NorisConnectionSubservice {
+export class NorisConnectionSubservice implements OnModuleDestroy {
+  private readonly logger = new Logger(NorisConnectionSubservice.name)
+
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -34,10 +30,25 @@ export class NorisConnectionSubservice {
     }
   }
 
-  private async createConnection(
-    configOverrides?: Partial<config>,
-  ): Promise<ConnectionPool> {
-    const connection = await connect({
+  async onModuleDestroy(): Promise<void> {
+    try {
+      const connection = await this.createConnection()
+      await connection.close()
+    } catch (error) {
+      this.logger.warn(
+        this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          'Failed to close MSSQL connection on shutdown',
+          undefined,
+          undefined,
+          error,
+        ),
+      )
+    }
+  }
+
+  private async createConnection(): Promise<ConnectionPool> {
+    return await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
       database: this.configService.getOrThrow<string>('MSSQL_DB'),
@@ -49,16 +60,6 @@ export class NorisConnectionSubservice {
         encrypt: true,
         trustServerCertificate: true,
       },
-      ...configOverrides,
-    })
-
-    return connection
-  }
-
-  private async createOptimizedConnection(): Promise<ConnectionPool> {
-    return this.createConnection({
-      connectionTimeout: 60_000,
-      requestTimeout: 180_000,
     })
   }
 
@@ -145,32 +146,30 @@ export class NorisConnectionSubservice {
   }
 
   /**
-   * Executes a function within a database connection context.
-   * Creates a connection, executes the function, and ensures proper cleanup.
+   * Executes a function using the mssql global connection pool.
    *
-   * @param operation - Function to execute within the connection context
+   * mssql.connect() is idempotent:
+   * - Pool already connected → resolves immediately (next tick via setImmediate)
+   * - Pool null or disconnected → creates a new pool
+   * Concurrent callers while a pool is being established are serialised by
+   * mssql's internal _connectStack, so only one ConnectionPool is ever created.
+   *
+   * The connection is not closed, as it is expected to be shared and used for the lifetime of the application.
+   *
+   * @param operation - Function to execute with the connection pool
    * @param errorMessage - Message passed to {@link handleDatabaseError} on failure
-   * @param useOptimized - Whether to use optimized connection settings
    * @returns Result of the operation
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
     errorMessage: string,
-    useOptimized = false,
   ): Promise<T> {
-    let connection: ConnectionPool | undefined
-
     try {
-      connection = useOptimized
-        ? await this.createOptimizedConnection()
-        : await this.createConnection()
-
+      const connection = await this.createConnection()
       await this.waitForConnection(connection)
       return await operation(connection)
     } catch (error) {
       return await this.handleDatabaseError(error, errorMessage)
-    } finally {
-      await connection?.close()
     }
   }
 }

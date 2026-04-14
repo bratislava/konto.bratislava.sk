@@ -438,6 +438,13 @@ const calculateInstallmentPaymentDetails = (options: {
   const dueDateLastPayment =
     installmentDueDatesParsed[installmentDueDatesParsed.length - 1]
   if (!dueDateLastPayment) {
+    if (installmentsByOrder.length === 1) {
+      return {
+        isPossible: false,
+        reasonNotPossible:
+          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+      }
+    }
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
@@ -780,6 +787,12 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
           CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
+        )
+
+      case InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+          CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
         )
 
       case undefined:

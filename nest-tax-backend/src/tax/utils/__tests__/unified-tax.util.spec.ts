@@ -1161,6 +1161,46 @@ describe('UnifiedTaxUtil', () => {
           expectEqualAsJsonStringsWithDates(output, defaultOutput4Installments)
         })
 
+        it('single NORIS installment without tax ruling date: installment not possible (JUST_ONE_INSTALLMENT)', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            dateOfValidity: null,
+            installments: [
+              {
+                order: 1,
+                amount: 8000,
+                dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[0],
+              },
+            ],
+          })
+          expect(output.installmentPayment.isPossible).toBe(false)
+          expect(output.installmentPayment.reasonNotPossible).toBe(
+            InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+          )
+        })
+
+        it('single NORIS installment with tax ruling date: KO allows variable count — installment payment is possible', () => {
+          const output = getTaxDetailPure({
+            ...defaultInput4Installments,
+            dateOfValidity: new Date('2025-01-01'),
+            installments: [
+              {
+                order: 1,
+                amount: 8000,
+                dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[0],
+              },
+            ],
+          })
+          expect(output.installmentPayment.isPossible).toBe(true)
+          expect(output.installmentPayment.installments).toHaveLength(1)
+          expect(
+            output.installmentPayment.activeInstallment?.remainingAmount,
+          ).toBe(8000)
+          expect(output.installmentPayment.installments![0].dueDate).toEqual(
+            output.installmentPayment.activeInstallment?.dueDate,
+          )
+        })
+
         it('partial first', () => {
           const output = getTaxDetailPure({
             ...defaultInput4Installments,
@@ -1636,6 +1676,26 @@ describe('UnifiedTaxUtil', () => {
         ),
       )
     })
+
+    it('DZN with tax ruling but only one NORIS row: INSTALLMENT_INCORRECT_COUNT (expects 3)', () => {
+      expect(() =>
+        getTaxDetailPure({
+          ...defaultInputRealEstate,
+          installments: [
+            {
+              order: 1,
+              amount: 6600,
+              dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0],
+            },
+          ],
+        }),
+      ).toThrow(
+        new ThrowerErrorGuard().InternalServerErrorException(
+          CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+          CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+        ),
+      )
+    })
   })
 })
 
@@ -1759,6 +1819,85 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       new ThrowerErrorGuard().UnprocessableEntityException(
         CustomErrorTaxTypesEnum.BELOW_THRESHOLD,
         CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
+      ),
+    )
+  })
+
+  it('should throw JUST_ONE_INSTALLMENT when only one installment and no tax ruling due date', () => {
+    const options = {
+      taxType: TaxType.KO,
+      taxId: 123,
+      today: new Date('2025-01-01'),
+      overallAmount: 8000,
+      variableSymbol: '1234567890',
+      dateOfValidity: null,
+      deliveryMethod: null,
+      createdAt: new Date('2025-01-01'),
+      installments: [
+        {
+          order: 1,
+          amount: 8000,
+          dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[0],
+        },
+      ],
+      taxPayments: [],
+      isCancelled: false,
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+        CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      ),
+    )
+  })
+
+  it('when one NORIS installment and tax ruling exists, KO installment generator succeeds', () => {
+    const options = {
+      taxType: TaxType.KO,
+      taxId: 123,
+      today: new Date('2025-01-01'),
+      overallAmount: 8000,
+      variableSymbol: '1234567890',
+      dateOfValidity: new Date('2025-01-01'),
+      deliveryMethod: null,
+      createdAt: new Date('2025-01-01'),
+      installments: [
+        {
+          order: 1,
+          amount: 8000,
+          dueDate: KO4_FIXTURE_INSTALLMENT_DUE_DATES[0],
+        },
+      ],
+      taxPayments: [],
+      isCancelled: false,
+    }
+
+    const output = getTaxDetailPureForInstallmentGenerator(options)
+    expect(output).toEqual({
+      amount: 8000,
+      taxId: 123,
+      description: 'Platba 1. splatky za dane pre BA s id dane 123',
+      taxType: TaxType.KO,
+    })
+  })
+
+  it('DZN installment generator throws INSTALLMENT_INCORRECT_COUNT when only one NORIS row', () => {
+    const options = {
+      ...baseOptionsRealEstate,
+      installments: [
+        {
+          order: 1,
+          amount: 6600,
+          dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0],
+        },
+      ],
+    }
+
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().InternalServerErrorException(
+        CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+        CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
       ),
     )
   })

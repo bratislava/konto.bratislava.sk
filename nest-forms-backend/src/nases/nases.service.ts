@@ -27,6 +27,10 @@ import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
+import {
+  FilesErrorsEnum,
+  FilesErrorsResponseEnum,
+} from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
@@ -209,14 +213,36 @@ export default class NasesService {
     }
   }
 
-  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
+  async sendForm(
+    formId: string,
+    data: UpdateFormRequestDto,
+    user: User,
+  ): Promise<SendFormResponseDto> {
+    await this.updateForm(formId, data, user)
+
     const form = await this.formsService.checkFormBeforeSending(formId)
+    // All extra files should be already deleted at this point.
+
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
+    }
+
+    // Cumulative file size check at submission time — this is the authoritative point
+    // because the set of active files is only final after the form data has been updated
+    // and extra files deleted.
+    if (formDefinition.maxTotalFileSize != null) {
+      const totalFileSize =
+        await this.filesService.getActiveFilesTotalSize(formId)
+      if (totalFileSize > formDefinition.maxTotalFileSize) {
+        throw this.throwerErrorGuard.BadRequestException(
+          FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${formDefinition.maxTotalFileSize}`,
+        )
+      }
     }
 
     const evaluatedSendPolicy = evaluateFormSendPolicy(

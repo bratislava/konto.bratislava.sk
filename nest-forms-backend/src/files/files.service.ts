@@ -584,4 +584,8 @@ export default class FilesService {
       this.logger.debug(`File ${fileIds.toString()} was successfully deleted.`)
     }
   }
+
+  async getActiveFilesTotalSize(formId: string): Promise<number> {
+    return this.filesHelper.getActiveFilesTotalSize(formId)
+  }
 }

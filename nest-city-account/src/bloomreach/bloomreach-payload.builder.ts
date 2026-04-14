@@ -33,10 +33,10 @@ export class BloomreachPayloadBuilder {
   ) {}
 
   async buildCustomerCommand(
-    cognitoId: string,
+    externalId: string,
     phoneNumber?: string
   ): Promise<BloomreachCustomerCommand> {
-    const user = await this.cognitoSubservice.getDataFromCognito(cognitoId)
+    const user = await this.cognitoSubservice.getDataFromCognito(externalId)
     const {
       given_name: firstName,
       family_name: lastName,
@@ -70,7 +70,7 @@ export class BloomreachPayloadBuilder {
     const correspondenceChannel =
       accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
         ? await this.userIdentitySubservice.getOfficialCorrespondenceChannel({
-            externalId: cognitoId,
+            externalId: externalId,
           })
         : null
 
@@ -78,7 +78,7 @@ export class BloomreachPayloadBuilder {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
         customer_ids: {
-          city_account_id: cognitoId,
+          city_account_id: externalId,
           ...(contactId && { contact_id: contactId }),
         },
         properties: {
@@ -99,12 +99,12 @@ export class BloomreachPayloadBuilder {
     }
   }
 
-  buildAnonymizeCommand(cognitoId: string): BloomreachCustomerCommand {
+  buildAnonymizeCommand(externalId: string): BloomreachCustomerCommand {
     return {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
         customer_ids: {
-          city_account_id: cognitoId,
+          city_account_id: externalId,
         },
         properties: {
           first_name: '',
@@ -124,7 +124,7 @@ export class BloomreachPayloadBuilder {
 
   buildConsentEventCommands(
     gdprData: GdprDataSubscriptionDto[],
-    cognitoId: string
+    externalId: string
   ): BloomreachEventCommand[] {
     return gdprData.map((elem) => {
       const consentData = this.createBloomreachConsentCategory(
@@ -137,7 +137,7 @@ export class BloomreachPayloadBuilder {
         commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
         commandData: {
           customer_ids: {
-            city_account_id: cognitoId,
+            city_account_id: externalId,
           },
           properties: { ...consentData },
           event_type: BloomreachEventNameEnum.CONSENT,

@@ -52,8 +52,8 @@ stateDiagram-v2
 
 Customer commands are deduplicated when written to the outbox:
 
-- **Customer upserts** (`customers` command): if a PENDING entry already exists for the same `cognitoId`, its `commandData` is updated in place (via a transaction) instead of creating a duplicate row.
-- **Event commands** (`customers/events`): deduplicated by `cognitoId` + `event_type` + `category` - if a PENDING entry with the same combination exists, its `commandData` is updated in place; otherwise a new row is created.
+- **Customer upserts** (`customers` command): if a PENDING entry already exists for the same `externalId`, its `commandData` is updated in place (via a transaction) instead of creating a duplicate row.
+- **Event commands** (`customers/events`): deduplicated by `externalId` + `event_type` + `category` - if a PENDING entry with the same combination exists, its `commandData` is updated in place; otherwise a new row is created.
 
 This ensures the outbox contains at most one PENDING `customers` entry per user at any time, so the processor doesn't need to merge at read time.
 

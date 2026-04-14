@@ -26,7 +26,7 @@ describe('BloomreachOutboxProcessor', () => {
     id: 'entry-1',
     createdAt: now,
     updatedAt: now,
-    cognitoId: 'cognito-1',
+    externalId: 'cognito-1',
     commandName: BloomreachCommandNameEnum.CUSTOMERS,
     commandData: { customer_ids: { city_account_id: 'cognito-1' }, properties: {} },
     status: BloomreachOutboxStatus.PROCESSING,

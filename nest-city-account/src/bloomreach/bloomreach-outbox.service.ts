@@ -31,23 +31,23 @@ export class BloomreachOutboxService {
     this.logger = new LineLoggerSubservice(BloomreachOutboxService.name)
   }
 
-  async trackCustomer(cognitoId: string, phoneNumber?: string): Promise<void> {
+  async trackCustomer(externalId: string, phoneNumber?: string): Promise<void> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return
     }
 
     try {
-      const command = await this.payloadBuilder.buildCustomerCommand(cognitoId, phoneNumber)
+      const command = await this.payloadBuilder.buildCustomerCommand(externalId, phoneNumber)
 
-      await this.upsertPendingCustomerCommand(cognitoId, command.commandData)
+      await this.upsertPendingCustomerCommand(externalId, command.commandData)
 
-      this.logger.debug(`Queued customers command for ${cognitoId}`)
+      this.logger.debug(`Queued customers command for ${externalId}`)
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to queue customer tracking',
-          toLogfmt({ cognitoId, hasPhoneNumber: !!phoneNumber }),
+          toLogfmt({ externalId, hasPhoneNumber: !!phoneNumber }),
           error
         )
       )
@@ -56,7 +56,7 @@ export class BloomreachOutboxService {
 
   async trackEventConsents(
     gdprData: GdprDataSubscriptionDto[],
-    cognitoId: string | null,
+    externalId: string | null,
     userId?: string,
     isLegalPerson?: boolean
   ): Promise<void> {
@@ -67,7 +67,7 @@ export class BloomreachOutboxService {
     const userType =
       isLegalPerson === true ? 'legal_person' : isLegalPerson === false ? 'user' : 'unknown'
 
-    if (!cognitoId) {
+    if (!externalId) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -79,26 +79,26 @@ export class BloomreachOutboxService {
     }
 
     try {
-      const commands = this.payloadBuilder.buildConsentEventCommands(gdprData, cognitoId)
+      const commands = this.payloadBuilder.buildConsentEventCommands(gdprData, externalId)
 
       await Promise.all(
-        commands.map(({ commandData }) => this.upsertPendingEventCommand(cognitoId, commandData))
+        commands.map(({ commandData }) => this.upsertPendingEventCommand(externalId, commandData))
       )
 
-      this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${cognitoId}`)
+      this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${externalId}`)
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to queue consent events',
-          toLogfmt({ cognitoId, userType, eventCount: gdprData.length }),
+          toLogfmt({ externalId, userType, eventCount: gdprData.length }),
           error
         )
       )
     }
   }
 
-  async anonymizeCustomer(cognitoId: string): Promise<void> {
+  async anonymizeCustomer(externalId: string): Promise<void> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return
     }
@@ -122,20 +122,20 @@ export class BloomreachOutboxService {
             subType: GDPRSubTypeEnum.unsubscribe,
           },
         ],
-        cognitoId
+        externalId
       )
 
-      const { commandData } = this.payloadBuilder.buildAnonymizeCommand(cognitoId)
+      const { commandData } = this.payloadBuilder.buildAnonymizeCommand(externalId)
 
-      await this.upsertPendingCustomerCommand(cognitoId, commandData)
+      await this.upsertPendingCustomerCommand(externalId, commandData)
 
-      this.logger.debug(`Queued anonymize commands for ${cognitoId}`)
+      this.logger.debug(`Queued anonymize commands for ${externalId}`)
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to queue anonymize commands',
-          toLogfmt({ cognitoId }),
+          toLogfmt({ externalId }),
           error
         )
       )
@@ -143,13 +143,13 @@ export class BloomreachOutboxService {
   }
 
   private async upsertPendingEventCommand(
-    cognitoId: string,
+    externalId: string,
     commandData: BloomreachEventCommandData
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       const existing = await tx.bloomreachOutbox.findFirst({
         where: {
-          cognitoId,
+          externalId,
           commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
           status: BloomreachOutboxStatus.PENDING,
           AND: [
@@ -177,7 +177,7 @@ export class BloomreachOutboxService {
       } else {
         await tx.bloomreachOutbox.create({
           data: {
-            cognitoId,
+            externalId,
             commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
             commandData,
           },
@@ -187,17 +187,17 @@ export class BloomreachOutboxService {
   }
 
   // Prisma's upsert requires a @@unique constraint, but we can't add one on
-  // (cognitoId, commandName, status) — multiple COMPLETED/FAILED rows for the
+  // (externalId, commandName, status) — multiple COMPLETED/FAILED rows for the
   // same combo are valid. A partial unique index (WHERE status = 'PENDING')
   // would work in PostgreSQL, but Prisma doesn't support partial indexes.
   private async upsertPendingCustomerCommand(
-    cognitoId: string,
+    externalId: string,
     commandData: BloomreachCustomerCommandData
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       const existing = await tx.bloomreachOutbox.findFirst({
         where: {
-          cognitoId,
+          externalId,
           commandName: BloomreachCommandNameEnum.CUSTOMERS,
           status: BloomreachOutboxStatus.PENDING,
         },
@@ -216,7 +216,7 @@ export class BloomreachOutboxService {
       } else {
         await tx.bloomreachOutbox.create({
           data: {
-            cognitoId,
+            externalId,
             commandName: BloomreachCommandNameEnum.CUSTOMERS,
             commandData,
           },

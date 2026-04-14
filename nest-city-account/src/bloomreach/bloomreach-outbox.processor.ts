@@ -164,7 +164,7 @@ export class BloomreachOutboxProcessor {
             this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,
               `Giving up on entry after ${MAX_ATTEMPTS} attempts`,
-              toLogfmt({ cognitoId: entry.cognitoId, entryId: entry.id })
+              toLogfmt({ externalId: entry.externalId, entryId: entry.id })
             )
           )
         }
@@ -209,7 +209,7 @@ export class BloomreachOutboxProcessor {
     await Promise.all(
       entries.map(async (entry) => {
         const baseWhere: Prisma.BloomreachOutboxWhereInput = {
-          cognitoId: entry.cognitoId,
+          externalId: entry.externalId,
           commandName: entry.commandName,
           status: BloomreachOutboxStatus.PENDING,
         }

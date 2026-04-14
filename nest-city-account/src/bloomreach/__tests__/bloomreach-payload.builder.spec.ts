@@ -29,10 +29,10 @@ describe('BloomreachPayloadBuilder', () => {
   let contactDbService: jest.Mocked<BloomreachContactDatabaseService>
   let userIdentitySubservice: jest.Mocked<UserIdentitySubservice>
 
-  const cognitoId = 'test-cognito-id'
+  const externalId = 'test-cognito-id'
 
   const baseCognitoUser = {
-    idUser: cognitoId,
+    idUser: externalId,
     given_name: 'John',
     family_name: 'Doe',
     name: 'John Doe',
@@ -73,10 +73,10 @@ describe('BloomreachPayloadBuilder', () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
       userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
 
-      const result = await builder.buildCustomerCommand(cognitoId)
+      const result = await builder.buildCustomerCommand(externalId)
 
       expect(result.commandName).toBe(BloomreachCommandNameEnum.CUSTOMERS)
-      expect(result.commandData.customer_ids.city_account_id).toBe(cognitoId)
+      expect(result.commandData.customer_ids.city_account_id).toBe(externalId)
       expect(result.commandData.properties.first_name).toBe('John')
       expect(result.commandData.properties.last_name).toBe('Doe')
       expect(result.commandData.properties.email).toBe('john@example.com')
@@ -87,7 +87,7 @@ describe('BloomreachPayloadBuilder', () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
       userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
 
-      const result = await builder.buildCustomerCommand(cognitoId, '0900123456')
+      const result = await builder.buildCustomerCommand(externalId, '0900123456')
 
       expect(result.commandData.properties.phone).toBe('0900123456')
     })
@@ -107,7 +107,7 @@ describe('BloomreachPayloadBuilder', () => {
         UserOfficialCorrespondenceChannelEnum.EDESK
       )
 
-      const result = await builder.buildCustomerCommand(cognitoId)
+      const result = await builder.buildCustomerCommand(externalId)
 
       expect(result.commandData.customer_ids.contact_id).toBe('contact-123')
       expect(result.commandData.properties.is_identity_verified).toBe(true)
@@ -130,7 +130,7 @@ describe('BloomreachPayloadBuilder', () => {
       contactDbService.upsert.mockResolvedValue('contact-456')
       userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
 
-      await builder.buildCustomerCommand(cognitoId, '0900123456')
+      await builder.buildCustomerCommand(externalId, '0900123456')
 
       expect(contactDbService.addPhone).toHaveBeenCalledWith('contact-456', '0900123456')
     })
@@ -139,7 +139,7 @@ describe('BloomreachPayloadBuilder', () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
       userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
 
-      const result = await builder.buildCustomerCommand(cognitoId)
+      const result = await builder.buildCustomerCommand(externalId)
 
       expect(userIdentitySubservice.getVerifiedIdentifiers).not.toHaveBeenCalled()
       expect(result.commandData.customer_ids.contact_id).toBeUndefined()
@@ -151,7 +151,7 @@ describe('BloomreachPayloadBuilder', () => {
         UserOfficialCorrespondenceChannelEnum.EDESK
       )
 
-      const result = await builder.buildCustomerCommand(cognitoId)
+      const result = await builder.buildCustomerCommand(externalId)
 
       expect(result.commandData.properties.current_tax_correspondence_channel).toBe(
         UserOfficialCorrespondenceChannelEnum.EDESK
@@ -165,7 +165,7 @@ describe('BloomreachPayloadBuilder', () => {
       }
       cognitoSubservice.getDataFromCognito.mockResolvedValue(legalUser as any)
 
-      const result = await builder.buildCustomerCommand(cognitoId)
+      const result = await builder.buildCustomerCommand(externalId)
 
       expect(userIdentitySubservice.getOfficialCorrespondenceChannel).not.toHaveBeenCalled()
       expect(result.commandData.properties.current_tax_correspondence_channel).toBeUndefined()
@@ -174,10 +174,10 @@ describe('BloomreachPayloadBuilder', () => {
 
   describe('buildAnonymizeCommand', () => {
     it('should return a customers command with empty properties', () => {
-      const result = builder.buildAnonymizeCommand(cognitoId)
+      const result = builder.buildAnonymizeCommand(externalId)
 
       expect(result.commandName).toBe(BloomreachCommandNameEnum.CUSTOMERS)
-      expect(result.commandData.customer_ids.city_account_id).toBe(cognitoId)
+      expect(result.commandData.customer_ids.city_account_id).toBe(externalId)
       expect(result.commandData.properties.first_name).toBe('')
       expect(result.commandData.properties.email).toBe('')
       expect(result.commandData.properties.is_identity_verified).toBe(false)
@@ -194,11 +194,11 @@ describe('BloomreachPayloadBuilder', () => {
         },
       ]
 
-      const result = builder.buildConsentEventCommands(gdprData, cognitoId)
+      const result = builder.buildConsentEventCommands(gdprData, externalId)
 
       expect(result).toHaveLength(1)
       expect(result[0].commandName).toBe(BloomreachCommandNameEnum.CUSTOMERS_EVENTS)
-      expect(result[0].commandData.customer_ids.city_account_id).toBe(cognitoId)
+      expect(result[0].commandData.customer_ids.city_account_id).toBe(externalId)
       expect(result[0].commandData.event_type).toBe(BloomreachEventNameEnum.CONSENT)
       expect(result[0].commandData.properties.action).toBe(BloomreachConsentActionEnum.ACCEPT)
       expect(result[0].commandData.properties.category).toBe(
@@ -216,7 +216,7 @@ describe('BloomreachPayloadBuilder', () => {
         },
       ]
 
-      const result = builder.buildConsentEventCommands(gdprData, cognitoId)
+      const result = builder.buildConsentEventCommands(gdprData, externalId)
 
       expect(result[0].commandData.properties.action).toBe(BloomreachConsentActionEnum.REJECT)
     })
@@ -230,7 +230,7 @@ describe('BloomreachPayloadBuilder', () => {
         },
       ]
 
-      const result = builder.buildConsentEventCommands(gdprData, cognitoId)
+      const result = builder.buildConsentEventCommands(gdprData, externalId)
 
       expect(result[0].commandData.properties.category).toBe(
         BloomreachConsentCategoryEnum.TAX_COMMUNICATION
@@ -246,7 +246,7 @@ describe('BloomreachPayloadBuilder', () => {
         },
       ]
 
-      const result = builder.buildConsentEventCommands(gdprData, cognitoId)
+      const result = builder.buildConsentEventCommands(gdprData, externalId)
 
       expect(result[0].commandData.properties.category).toBe('ESBS-GENERAL')
     })
@@ -265,7 +265,7 @@ describe('BloomreachPayloadBuilder', () => {
         },
       ]
 
-      const result = builder.buildConsentEventCommands(gdprData, cognitoId)
+      const result = builder.buildConsentEventCommands(gdprData, externalId)
 
       expect(result).toHaveLength(2)
       expect(result[0].commandData.properties.action).toBe(BloomreachConsentActionEnum.ACCEPT)

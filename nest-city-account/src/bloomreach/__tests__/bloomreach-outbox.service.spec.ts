@@ -18,12 +18,12 @@ describe('BloomreachOutboxService', () => {
   let service: BloomreachOutboxService
   let payloadBuilder: jest.Mocked<BloomreachPayloadBuilder>
 
-  const cognitoId = 'test-cognito-id'
+  const externalId = 'test-cognito-id'
 
   const mockCustomerCommand = {
     commandName: BloomreachCommandNameEnum.CUSTOMERS as const,
     commandData: {
-      customer_ids: { city_account_id: cognitoId },
+      customer_ids: { city_account_id: externalId },
       properties: { email: 'test@example.com' },
     },
   }
@@ -31,7 +31,7 @@ describe('BloomreachOutboxService', () => {
   const mockAnonymizeCommand = {
     commandName: BloomreachCommandNameEnum.CUSTOMERS as const,
     commandData: {
-      customer_ids: { city_account_id: cognitoId },
+      customer_ids: { city_account_id: externalId },
       properties: {
         first_name: '',
         last_name: '',
@@ -72,7 +72,7 @@ describe('BloomreachOutboxService', () => {
     it('should skip when integration is not active', async () => {
       process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
 
-      await service.trackCustomer(cognitoId)
+      await service.trackCustomer(externalId)
 
       expect(payloadBuilder.buildCustomerCommand).not.toHaveBeenCalled()
     })
@@ -83,12 +83,12 @@ describe('BloomreachOutboxService', () => {
       txMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
 
-      await service.trackCustomer(cognitoId, '0900123456')
+      await service.trackCustomer(externalId, '0900123456')
 
-      expect(payloadBuilder.buildCustomerCommand).toHaveBeenCalledWith(cognitoId, '0900123456')
+      expect(payloadBuilder.buildCustomerCommand).toHaveBeenCalledWith(externalId, '0900123456')
       expect(txMock.bloomreachOutbox.create).toHaveBeenCalledWith({
         data: {
-          cognitoId,
+          externalId,
           commandName: BloomreachCommandNameEnum.CUSTOMERS,
           commandData: mockCustomerCommand.commandData,
         },
@@ -100,7 +100,7 @@ describe('BloomreachOutboxService', () => {
       const existingEntry = {
         id: 'existing-id',
         commandData: {
-          customer_ids: { city_account_id: cognitoId },
+          customer_ids: { city_account_id: externalId },
           properties: { phone: '0900000000', email: 'old@never.test' },
         },
       }
@@ -108,13 +108,13 @@ describe('BloomreachOutboxService', () => {
       txMock.bloomreachOutbox.findFirst.mockResolvedValue(existingEntry as any)
       prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
 
-      await service.trackCustomer(cognitoId)
+      await service.trackCustomer(externalId)
 
       expect(txMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'existing-id' },
         data: {
           commandData: {
-            customer_ids: { city_account_id: cognitoId },
+            customer_ids: { city_account_id: externalId },
             properties: { phone: '0900000000', email: 'test@example.com' },
           },
         },
@@ -125,7 +125,7 @@ describe('BloomreachOutboxService', () => {
     it('should not throw when payload builder fails', async () => {
       payloadBuilder.buildCustomerCommand.mockRejectedValue(new Error('Cognito down'))
 
-      await expect(service.trackCustomer(cognitoId)).resolves.toBeUndefined()
+      await expect(service.trackCustomer(externalId)).resolves.toBeUndefined()
     })
   })
 
@@ -141,12 +141,12 @@ describe('BloomreachOutboxService', () => {
     it('should skip when integration is not active', async () => {
       process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
 
-      await service.trackEventConsents(gdprData, cognitoId)
+      await service.trackEventConsents(gdprData, externalId)
 
       expect(payloadBuilder.buildConsentEventCommands).not.toHaveBeenCalled()
     })
 
-    it('should skip when cognitoId is null', async () => {
+    it('should skip when externalId is null', async () => {
       await service.trackEventConsents(gdprData, null)
 
       expect(payloadBuilder.buildConsentEventCommands).not.toHaveBeenCalled()
@@ -156,12 +156,12 @@ describe('BloomreachOutboxService', () => {
       payloadBuilder.buildConsentEventCommands.mockReturnValue([])
       prismaMock.bloomreachOutbox.createMany.mockRejectedValue(new Error('DB error'))
 
-      await expect(service.trackEventConsents(gdprData, cognitoId)).resolves.toBeUndefined()
+      await expect(service.trackEventConsents(gdprData, externalId)).resolves.toBeUndefined()
     })
 
     it('should override a pending action value for the same event_type and category', async () => {
       const subscribeCommandData = {
-        customer_ids: { city_account_id: cognitoId },
+        customer_ids: { city_account_id: externalId },
         event_type: BloomreachEventNameEnum.CONSENT,
         properties: {
           action: BloomreachConsentActionEnum.ACCEPT,
@@ -171,7 +171,7 @@ describe('BloomreachOutboxService', () => {
       }
 
       const unsubscribeCommandData = {
-        customer_ids: { city_account_id: cognitoId },
+        customer_ids: { city_account_id: externalId },
         event_type: BloomreachEventNameEnum.CONSENT,
         properties: {
           action: BloomreachConsentActionEnum.REJECT,
@@ -200,7 +200,7 @@ describe('BloomreachOutboxService', () => {
             subType: GDPRSubTypeEnum.unsubscribe,
           },
         ],
-        cognitoId
+        externalId
       )
 
       expect(txMock.bloomreachOutbox.update).toHaveBeenCalledWith({
@@ -215,7 +215,7 @@ describe('BloomreachOutboxService', () => {
     it('should skip when integration is not active', async () => {
       process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
 
-      await service.anonymizeCustomer(cognitoId)
+      await service.anonymizeCustomer(externalId)
 
       expect(payloadBuilder.buildAnonymizeCommand).not.toHaveBeenCalled()
     })
@@ -227,7 +227,7 @@ describe('BloomreachOutboxService', () => {
       txMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
 
-      await service.anonymizeCustomer(cognitoId)
+      await service.anonymizeCustomer(externalId)
 
       expect(payloadBuilder.buildConsentEventCommands).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -240,12 +240,12 @@ describe('BloomreachOutboxService', () => {
             subType: GDPRSubTypeEnum.unsubscribe,
           }),
         ]),
-        cognitoId
+        externalId
       )
-      expect(payloadBuilder.buildAnonymizeCommand).toHaveBeenCalledWith(cognitoId)
+      expect(payloadBuilder.buildAnonymizeCommand).toHaveBeenCalledWith(externalId)
       expect(txMock.bloomreachOutbox.create).toHaveBeenCalledWith({
         data: {
-          cognitoId,
+          externalId,
           commandName: BloomreachCommandNameEnum.CUSTOMERS,
           commandData: mockAnonymizeCommand.commandData,
         },

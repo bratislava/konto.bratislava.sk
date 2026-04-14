@@ -231,7 +231,10 @@ describe('PaymentService', () => {
 
     it('should throw InternalServerErrorException when tracking fails (returns false)', async () => {
       const externalId = 'external-id-123'
-      const mockInternalServerError = new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+      const mockInternalServerError = new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
       const mockTransaction = jest
         .fn()
         .mockImplementation(

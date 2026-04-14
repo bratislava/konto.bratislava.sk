@@ -1,7 +1,12 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, TaxType, UnpaidReminderSent } from '@prisma/client'
-import dayjs, { type Dayjs } from 'dayjs'
+import {
+  PaymentStatus,
+  Prisma,
+  TaxType,
+  UnpaidReminderSent,
+} from '@prisma/client'
+import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
@@ -71,6 +76,31 @@ function eligibleInstallmentRow(opts: {
   }
 }
 
+/**
+ * Extract typed arguments from a $queryRaw tagged-template mock call.
+ *
+ * $queryRaw is a generic function (`<T = unknown>(query, ...values: any[]) => PrismaPromise<T>`).
+ * jest-mock-extended cannot infer a concrete overload for generic functions, so `mock.calls` is
+ * typed as `any[][]`. We centralise the unsafe cast here so individual tests stay clean.
+ */
+function getQueryRawArgs(): {
+  windowStart: Date
+  windowEnd: Date
+  filterSql: Prisma.Sql
+  yearArg: number
+} {
+  const [, windowStart, windowEnd, filterSql, yearArg] = prismaMock.$queryRaw
+    .mock.calls[0] as unknown as [
+    TemplateStringsArray,
+    Date,
+    Date,
+    Prisma.Sql,
+    number,
+    number,
+  ]
+  return { windowStart, windowEnd, filterSql, yearArg }
+}
+
 describe('NotificationsEventsSubservice', () => {
   let service: NotificationsEventsService
   let bloomreachService: jest.Mocked<BloomreachService>
@@ -104,7 +134,7 @@ describe('NotificationsEventsSubservice', () => {
     bloomreachService = module.get(BloomreachService)
     cityAccountSubservice = module.get(CityAccountSubservice)
 
-    jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+    jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
   })
 
   describe('processInstallmentReminders', () => {
@@ -123,10 +153,8 @@ describe('NotificationsEventsSubservice', () => {
         jest.useRealTimers()
       })
 
-      it('calls getTaxInstallmentsEligibleForReminder with reminderSentFilter [NONE] when dueDateType is NEXT', async () => {
-        const getTaxesSpy = jest
-          .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
-          .mockResolvedValue([])
+      it('calls $queryRaw with NEXT filter [NONE] and window today..today+7days', async () => {
+        prismaMock.$queryRaw.mockResolvedValue([])
         prismaMock.tax.findMany.mockResolvedValue([])
 
         await service['processInstallmentReminders'](
@@ -134,26 +162,17 @@ describe('NotificationsEventsSubservice', () => {
           year,
         )
 
-        expect(getTaxesSpy).toHaveBeenCalledTimes(1)
-        const [filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
-          UnpaidReminderSent[],
-          number,
-          { start: Dayjs; end: Dayjs },
-        ]
-        expect(filter).toEqual([UnpaidReminderSent.NONE])
-        expect(y).toBe(year)
-        expect(windowArg.start.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
-          '2025-06-15T00:00:00.000+02:00',
-        )
-        expect(windowArg.end.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
-          '2025-06-22T23:59:59.999+02:00',
-        )
+        expect(prismaMock.$queryRaw).toHaveBeenCalledTimes(1)
+        const { windowStart, windowEnd, filterSql, yearArg } = getQueryRawArgs()
+        // FIXED_NOW_UTC = 2025-06-15T10:00Z = 2025-06-15 12:00 Bratislava (CEST)
+        expect(filterSql.values).toEqual([UnpaidReminderSent.NONE])
+        expect(yearArg).toBe(year)
+        expect(windowStart.toISOString()).toBe('2025-06-14T22:00:00.000Z') // 2025-06-15T00:00:00+02:00
+        expect(windowEnd.toISOString()).toBe('2025-06-22T21:59:59.999Z') // 2025-06-22T23:59:59.999+02:00
       })
 
-      it('calls getTaxInstallmentsEligibleForReminder with reminderSentFilter [NONE, BEFORE_DUE] when dueDateType is PAST', async () => {
-        const getTaxesSpy = jest
-          .spyOn(service as any, 'getTaxInstallmentsEligibleForReminder')
-          .mockResolvedValue([])
+      it('calls $queryRaw with PAST filter [NONE, BEFORE_DUE] and window today-7days..today', async () => {
+        prismaMock.$queryRaw.mockResolvedValue([])
         prismaMock.tax.findMany.mockResolvedValue([])
 
         await service['processInstallmentReminders'](
@@ -161,23 +180,16 @@ describe('NotificationsEventsSubservice', () => {
           year,
         )
 
-        expect(getTaxesSpy).toHaveBeenCalledTimes(1)
-        const [filter, y, windowArg] = getTaxesSpy.mock.calls[0] as [
-          UnpaidReminderSent[],
-          number,
-          { start: Dayjs; end: Dayjs },
-        ]
-        expect(filter).toEqual([
+        expect(prismaMock.$queryRaw).toHaveBeenCalledTimes(1)
+        const { windowStart, windowEnd, filterSql, yearArg } = getQueryRawArgs()
+        // FIXED_NOW_UTC = 2025-06-15T10:00Z = 2025-06-15 12:00 Bratislava (CEST)
+        expect(filterSql.values).toEqual([
           UnpaidReminderSent.NONE,
           UnpaidReminderSent.BEFORE_DUE,
         ])
-        expect(y).toBe(year)
-        expect(windowArg.start.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
-          '2025-06-08T00:00:00.000+02:00',
-        )
-        expect(windowArg.end.format('YYYY-MM-DDTHH:mm:ss.SSSZ')).toBe(
-          '2025-06-15T23:59:59.999+02:00',
-        )
+        expect(yearArg).toBe(year)
+        expect(windowStart.toISOString()).toBe('2025-06-07T22:00:00.000Z') // 2025-06-08T00:00:00+02:00
+        expect(windowEnd.toISOString()).toBe('2025-06-15T21:59:59.999Z') // 2025-06-15T23:59:59.999+02:00
       })
     })
 
@@ -300,10 +312,7 @@ describe('NotificationsEventsSubservice', () => {
       ).toHaveBeenCalledWith(expectedPayload, 'ext-1')
 
       expect(prismaMock.taxInstallment.updateMany).toHaveBeenCalledTimes(2)
-      const updateManySpy = jest.spyOn(
-        prismaMock.taxInstallment,
-        'updateMany',
-      )
+      const updateManySpy = jest.spyOn(prismaMock.taxInstallment, 'updateMany')
       assertUpdateManyUsesReminderEnums(
         updateManySpy,
         UnpaidReminderSent.AFTER_DUE,

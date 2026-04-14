@@ -9,10 +9,7 @@ import { QrCodeService } from '../../../../qrcode/qrcode.service'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../../../utils/subservices/database.subservice'
-import {
-  NorisCommunalWasteTax,
-  NorisCommunalWasteTaxGrouped,
-} from '../../../types/noris.types'
+import { NorisCommunalWasteTax } from '../../../types/noris.types'
 import {
   testCommunalWasteTax1,
   testCommunalWasteTax2,
@@ -129,103 +126,89 @@ describe('NorisTaxCommunalWasteSubservice', () => {
   })
 
   describe('getTaxDataByYearAndBirthNumber', () => {
-    it('should call getCommunalWasteTaxDataByBirthNumberAndYear with correct parameters', async () => {
-      const mockData: NorisCommunalWasteTax[] = [testCommunalWasteTax1]
-      const mockGroupedData: NorisCommunalWasteTaxGrouped[] = [
-        {
-          type: TaxType.KO,
-          ...testCommunalWasteTax1,
-          addresses: [],
-        } as any,
-      ]
-
+    it('should fetch and return grouped data for a single record', async () => {
+      const flatRecord: NorisCommunalWasteTax = {
+        ...testCommunalWasteTax1,
+        ulica: 'Hlavná ulica',
+        orientacne_cislo: '22',
+        objem_nadoby: 120,
+        pocet_nadob: 1,
+        pocet_odvozov: 52,
+        sadzba: 4.314,
+        poplatok: 224.33,
+        druh_nadoby: 'N12',
+      }
       jest
-        .spyOn(service as any, 'getCommunalWasteTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockData)
-      jest
-        .spyOn(service as any, 'groupCommunalWasteTaxRecords')
-        .mockReturnValue(mockGroupedData)
+        .spyOn(connectionService, 'withConnection')
+        .mockResolvedValue({ recordset: [flatRecord] })
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2025, [
         '123456/7890',
       ])
 
-      expect(
-        service['getCommunalWasteTaxDataByBirthNumberAndYear'],
-      ).toHaveBeenCalledWith(2025, ['123456/7890'])
-      expect(service['groupCommunalWasteTaxRecords']).toHaveBeenCalledWith(
-        mockData,
-      )
-      expect(result).toEqual(mockGroupedData)
+      expect(connectionService.withConnection).toHaveBeenCalledTimes(1)
+      expect(result).toHaveLength(1)
+      expect(result[0].addresses).toEqual([
+        {
+          addressDetail: { street: 'Hlavná ulica', orientationNumber: '22' },
+          containers: [
+            {
+              objem_nadoby: 120,
+              pocet_nadob: 1,
+              pocet_odvozov: 52,
+              sadzba: 4.314,
+              poplatok: 224.33,
+              druh_nadoby: 'N12',
+            },
+          ],
+        },
+      ])
     })
 
-    it('should call groupCommunalWasteTaxRecords with the fetched data', async () => {
+    it('should group multiple records with the same variabilny_symbol into one result', async () => {
       const mockData: NorisCommunalWasteTax[] = [
         testCommunalWasteTax1,
         testCommunalWasteTax2,
       ]
 
       jest
-        .spyOn(service as any, 'getCommunalWasteTaxDataByBirthNumberAndYear')
-        .mockResolvedValue(mockData)
-      const groupSpy = jest
-        .spyOn(service as any, 'groupCommunalWasteTaxRecords')
-        .mockReturnValue([])
-
-      await service['getTaxDataByYearAndBirthNumber'](2025, ['123456/7890'])
-
-      expect(groupSpy).toHaveBeenCalledWith(mockData)
-      expect(groupSpy).toHaveBeenCalledTimes(1)
-    })
-
-    it('should return the grouped result', async () => {
-      const mockGroupedData: NorisCommunalWasteTaxGrouped[] = [
-        {
-          type: TaxType.KO,
-          variabilny_symbol: '3425030151',
-          addresses: [
-            {
-              addressDetail: {
-                street: 'Hlavná ulica',
-                orientationNumber: '22',
-              },
-              containers: [],
-            },
-          ],
-        } as any,
-      ]
-
-      jest
-        .spyOn(service as any, 'getCommunalWasteTaxDataByBirthNumberAndYear')
-        .mockResolvedValue([])
-      jest
-        .spyOn(service as any, 'groupCommunalWasteTaxRecords')
-        .mockReturnValue(mockGroupedData)
+        .spyOn(connectionService, 'withConnection')
+        .mockResolvedValue({ recordset: mockData })
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2025, [
         '123456/7890',
       ])
 
-      expect(result).toEqual(mockGroupedData)
+      expect(connectionService.withConnection).toHaveBeenCalledTimes(1)
+      expect(result).toHaveLength(1)
+    })
+
+    it('should return empty array when no records found', async () => {
+      jest
+        .spyOn(connectionService, 'withConnection')
+        .mockResolvedValue({ recordset: [] })
+
+      const result = await service['getTaxDataByYearAndBirthNumber'](2025, [
+        '123456/7890',
+      ])
+
+      expect(result).toEqual([])
     })
   })
 
   describe('getCommunalWasteTaxDataByBirthNumberAndYear', () => {
     it('should fetch data from Noris via connection service successfully', async () => {
       const mockData: NorisCommunalWasteTax[] = [testCommunalWasteTax1]
-      const mockConnection = {}
       const mockRequest = {
         input: jest.fn(),
         query: jest.fn().mockResolvedValue({ recordset: mockData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return callback(createMock<mssql.ConnectionPool>())
       })
-
-      const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
+      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
+        () => mockRequest,
       )
 
       const result = await service[
@@ -241,19 +224,16 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     })
 
     it('should build SQL query with correct birth number placeholders', async () => {
-      const mockConnection = {}
       const mockRequest = {
         input: jest.fn(),
         query: jest.fn().mockResolvedValue({ recordset: [] }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return callback(createMock<mssql.ConnectionPool>())
       })
-
-      const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
+      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
+        () => mockRequest,
       )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
@@ -267,19 +247,16 @@ describe('NorisTaxCommunalWasteSubservice', () => {
     })
 
     it('should pass year and birth numbers as parameters to the SQL request', async () => {
-      const mockConnection = {}
       const mockRequest = {
         input: jest.fn(),
         query: jest.fn().mockResolvedValue({ recordset: [] }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return callback(createMock<mssql.ConnectionPool>())
       })
-
-      const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
+      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
+        () => mockRequest,
       )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
@@ -289,25 +266,22 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       expect(mockRequest.input).toHaveBeenCalledWith('year', mssql.Int, 2025)
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number0',
-        mssql.VarChar(expect.any(Number)),
+        mssql.VarChar(20),
         '123456/7890',
       )
     })
 
     it('should handle multiple birth numbers correctly', async () => {
-      const mockConnection = {}
       const mockRequest = {
         input: jest.fn(),
         query: jest.fn().mockResolvedValue({ recordset: [] }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return callback(createMock<mssql.ConnectionPool>())
       })
-
-      const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
+      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
+        () => mockRequest,
       )
 
       const birthNumbers = ['123456/7890', '987654/3210', '111111/1111']
@@ -318,36 +292,33 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number0',
-        mssql.VarChar(expect.any(Number)),
+        mssql.VarChar(20),
         '123456/7890',
       )
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number1',
-        mssql.VarChar(expect.any(Number)),
+        mssql.VarChar(20),
         '987654/3210',
       )
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birth_number2',
-        mssql.VarChar(expect.any(Number)),
+        mssql.VarChar(20),
         '111111/1111',
       )
     })
 
     it('should validate returned data using norisValidatorSubservice', async () => {
       const mockData: NorisCommunalWasteTax[] = [testCommunalWasteTax1]
-      const mockConnection = {}
       const mockRequest = {
         input: jest.fn(),
         query: jest.fn().mockResolvedValue({ recordset: mockData }),
       }
 
       connectionService.withConnection.mockImplementation(async (callback) => {
-        return callback(mockConnection as any)
+        return callback(createMock<mssql.ConnectionPool>())
       })
-
-      const { Request } = await import('mssql')
-      ;(Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest as any,
+      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
+        () => mockRequest,
       )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [

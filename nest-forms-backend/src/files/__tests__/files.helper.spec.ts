@@ -82,11 +82,8 @@ describe('FilesHelper', () => {
       const result = service.forms2formInfo(mockForm)
 
       expect(result).toEqual({
-        formInfo: {
-          pospIdOrSlug: 'test-posp-id',
-          formId: 'test-form-id',
-        },
-        formDefinition: mockFormDefinition,
+        pospIdOrSlug: 'test-posp-id',
+        formId: 'test-form-id',
       })
     })
 
@@ -98,11 +95,8 @@ describe('FilesHelper', () => {
       const result = service.forms2formInfo(mockForm)
 
       expect(result).toEqual({
-        formInfo: {
-          pospIdOrSlug: 'test-slug',
-          formId: 'test-form-id',
-        },
-        formDefinition: mockFormDefinition,
+        pospIdOrSlug: 'test-slug',
+        formId: 'test-form-id',
       })
     })
 

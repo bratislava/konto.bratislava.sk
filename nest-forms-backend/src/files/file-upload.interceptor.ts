@@ -98,6 +98,10 @@ export class FileUploadInterceptor implements NestInterceptor {
   private async resolveLimit(req: Request): Promise<number> {
     const globalMax = this.baConfigService.fileLimits.maxSingleSizeGlobal
 
+    if (!this.baConfigService.featureToggles.fileSizeLimits) {
+      return globalMax
+    }
+
     const { formId } = req.params
     if (!formId) {
       return globalMax

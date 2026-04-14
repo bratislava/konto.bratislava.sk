@@ -62,12 +62,11 @@ import {
 } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
+import BaConfigService from '../config/ba-config.service'
 
 @Injectable()
 export default class NasesService {
   private readonly logger: LineLoggerSubservice
-
-  private readonly versioningEnabled: boolean
 
   constructor(
     private readonly formsService: FormsService,
@@ -77,14 +76,11 @@ export default class NasesService {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
     private readonly convertPdfService: ConvertPdfService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
-    this.versioningEnabled =
-      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
-      'true'
   }
 
   async getUpvsIdentity(
@@ -234,7 +230,10 @@ export default class NasesService {
     // Cumulative file size check at submission time — this is the authoritative point
     // because the set of active files is only final after the form data has been updated
     // and extra files deleted.
-    if (formDefinition.maxTotalFileSize != null) {
+    if (
+      this.baConfigService.featureToggles.fileSizeLimits &&
+      formDefinition.maxTotalFileSize != null
+    ) {
       const totalFileSize =
         await this.filesService.getActiveFilesTotalSize(formId)
       if (totalFileSize > formDefinition.maxTotalFileSize) {
@@ -265,7 +264,7 @@ export default class NasesService {
     }
 
     if (
-      this.versioningEnabled &&
+      this.baConfigService.featureToggles.versioning &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -330,7 +329,7 @@ export default class NasesService {
     }
 
     const shouldBumpJsonVersion =
-      !this.versioningEnabled ||
+      !this.baConfigService.featureToggles.versioning ||
       versionCompareBumpDuringSend({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -425,7 +424,7 @@ export default class NasesService {
     }
 
     if (
-      this.versioningEnabled &&
+      this.baConfigService.featureToggles.versioning &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -477,7 +476,7 @@ export default class NasesService {
     this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
     const shouldBumpJsonVersion =
-      !this.versioningEnabled ||
+      !this.baConfigService.featureToggles.versioning ||
       versionCompareBumpDuringSend({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,

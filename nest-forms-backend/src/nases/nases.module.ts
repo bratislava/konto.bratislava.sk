@@ -21,6 +21,7 @@ import NasesService from './nases.service'
 import FormRegistrationStatusRepository from './utils-services/form-registration-status.repository'
 import NasesCronSubservice from './utils-services/nases.cron.subservice'
 import NasesUtilsService from './utils-services/tokens.nases.service'
+import BaConfigModule from '../config/ba-config.module'
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
+    BaConfigModule,
   ],
   providers: [
     NasesService,

@@ -35,6 +35,7 @@ import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
+import BaConfigService from '../config/ba-config.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/validators')
@@ -83,8 +84,13 @@ describe('NasesService', () => {
           useValue: createMock<FormValidatorRegistryService>(),
         },
         {
-          provide: ConfigService,
-          useValue: createMock<ConfigService>(),
+          provide: BaConfigService,
+          useValue: {
+            featureToggles: {
+              versioning: false,
+              fileSizeLimits: false,
+            },
+          },
         },
         {
           provide: ClientsService,

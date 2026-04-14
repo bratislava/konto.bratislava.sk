@@ -427,6 +427,15 @@ const calculateInstallmentPaymentDetails = (options: {
   const installmentsByOrder = [...installments].sort(
     (a, b) => a.order - b.order,
   )
+
+  if (installmentsByOrder.length === 1) {
+    return {
+      isPossible: false,
+      reasonNotPossible:
+        InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+    }
+  }
+
   const installmentDatesFromNoris = installmentsByOrder
     .slice(1) // Omit order 1 - this is the validity-based due date
     .map((installment) => parseInstallmentDueDate(installment.dueDate))
@@ -438,13 +447,6 @@ const calculateInstallmentPaymentDetails = (options: {
   const dueDateLastPayment =
     installmentDueDatesParsed[installmentDueDatesParsed.length - 1]
   if (!dueDateLastPayment) {
-    if (installmentsByOrder.length === 1) {
-      return {
-        isPossible: false,
-        reasonNotPossible:
-          InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
-      }
-    }
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,

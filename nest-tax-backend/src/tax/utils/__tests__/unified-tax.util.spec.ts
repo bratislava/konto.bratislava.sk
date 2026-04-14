@@ -1179,7 +1179,7 @@ describe('UnifiedTaxUtil', () => {
           )
         })
 
-        it('single NORIS installment with tax ruling date: KO allows variable count — installment payment is possible', () => {
+        it('single NORIS installment with tax ruling date: still not possible (one row = full amount)', () => {
           const output = getTaxDetailPure({
             ...defaultInput4Installments,
             dateOfValidity: new Date('2025-01-01'),
@@ -1191,13 +1191,9 @@ describe('UnifiedTaxUtil', () => {
               },
             ],
           })
-          expect(output.installmentPayment.isPossible).toBe(true)
-          expect(output.installmentPayment.installments).toHaveLength(1)
-          expect(
-            output.installmentPayment.activeInstallment?.remainingAmount,
-          ).toBe(8000)
-          expect(output.installmentPayment.installments![0].dueDate).toEqual(
-            output.installmentPayment.activeInstallment?.dueDate,
+          expect(output.installmentPayment.isPossible).toBe(false)
+          expect(output.installmentPayment.reasonNotPossible).toBe(
+            InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
           )
         })
 
@@ -1677,23 +1673,20 @@ describe('UnifiedTaxUtil', () => {
       )
     })
 
-    it('DZN with tax ruling but only one NORIS row: INSTALLMENT_INCORRECT_COUNT (expects 3)', () => {
-      expect(() =>
-        getTaxDetailPure({
-          ...defaultInputRealEstate,
-          installments: [
-            {
-              order: 1,
-              amount: 6600,
-              dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0],
-            },
-          ],
-        }),
-      ).toThrow(
-        new ThrowerErrorGuard().InternalServerErrorException(
-          CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-          CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
-        ),
+    it('DZN with tax ruling but only one NORIS row: JUST_ONE_INSTALLMENT (not INSTALLMENT_INCORRECT_COUNT)', () => {
+      const output = getTaxDetailPure({
+        ...defaultInputRealEstate,
+        installments: [
+          {
+            order: 1,
+            amount: 6600,
+            dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0],
+          },
+        ],
+      })
+      expect(output.installmentPayment.isPossible).toBe(false)
+      expect(output.installmentPayment.reasonNotPossible).toBe(
+        InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
       )
     })
   })
@@ -1852,7 +1845,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     )
   })
 
-  it('when one NORIS installment and tax ruling exists, KO installment generator succeeds', () => {
+  it('should throw JUST_ONE_INSTALLMENT when only one installment even with tax ruling due date (KO)', () => {
     const options = {
       taxType: TaxType.KO,
       taxId: 123,
@@ -1873,16 +1866,15 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       isCancelled: false,
     }
 
-    const output = getTaxDetailPureForInstallmentGenerator(options)
-    expect(output).toEqual({
-      amount: 8000,
-      taxId: 123,
-      description: 'Platba 1. splatky za dane pre BA s id dane 123',
-      taxType: TaxType.KO,
-    })
+    expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+        CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
+      ),
+    )
   })
 
-  it('DZN installment generator throws INSTALLMENT_INCORRECT_COUNT when only one NORIS row', () => {
+  it('DZN installment generator throws JUST_ONE_INSTALLMENT when only one NORIS row', () => {
     const options = {
       ...baseOptionsRealEstate,
       installments: [
@@ -1895,9 +1887,9 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(
-      new ThrowerErrorGuard().InternalServerErrorException(
-        CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
-        CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+        CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
       ),
     )
   })

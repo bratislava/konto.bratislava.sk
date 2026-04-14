@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
+import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
@@ -6,11 +6,14 @@ import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisConnectionSubservice implements OnModuleDestroy {
-  private readonly logger = new Logger(NorisConnectionSubservice.name)
+  private readonly logger = new LineLoggerSubservice(
+    NorisConnectionSubservice.name,
+  )
 
   constructor(
     private readonly configService: ConfigService,

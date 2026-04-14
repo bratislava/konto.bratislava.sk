@@ -46,6 +46,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       showToast({
         message: t('form_landing_page.redirect_info'),
         variant: 'info',
+        // Keep this toast visible for the whole redirect flow; it is closed explicitly after navigation succeeds.
         duration: Number.MAX_SAFE_INTEGER,
       })
     },
@@ -53,6 +54,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       await router.push(
         ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formDefinition.slug, response.data.formId),
       )
+      // Close the redirect toast only after a successful route change so it stays visible until the user is redirected.
       closeToasts()
     },
     onError: () => {

@@ -47,6 +47,9 @@ export default function useToast() {
 
       const hasVisibleToasts = toastQueue.visibleToasts.length > 0
       if (hasVisibleToasts) {
+        // Because this hook only allows one active toast, callers do not need to close an existing toast
+        // before showing a new one. Some current usages still do that explicitly, but removing it cleanly
+        // would require a larger refactor of the surrounding flows.
         closeToasts()
         pendingToastTimer = setTimeout(addToast, toastReplacementDelay)
       } else {

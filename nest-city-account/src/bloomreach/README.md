@@ -17,16 +17,16 @@ flowchart TD
 
 ### Why the outbox pattern?
 
-- **Decouples** request handling from Bloomreach availability — callers never fail due to Bloomreach being down.
-- **Automatic retries** — failed batches are retried with exponential backoff up to `MAX_ATTEMPTS` (5) before being marked `FAILED`.
-- **Batching** — multiple commands are sent in a single Bloomreach batch API call, reducing HTTP overhead.
-- **Single-writer** — `@Interval(30_000)` waits for the previous run to complete before scheduling the next, so batches never overlap.
+- **Decouples** request handling from Bloomreach availability - callers never fail due to Bloomreach being down.
+- **Automatic retries** - failed batches are retried with exponential backoff up to `MAX_ATTEMPTS` (5) before being marked `FAILED`.
+- **Batching** - multiple commands are sent in a single Bloomreach batch API call, reducing HTTP overhead.
+- **Single-writer** - `@Interval(30_000)` waits for the previous run to complete before scheduling the next, so batches never overlap.
 
 ## Key Components
 
 | File | Responsibility |
 |------|---------------|
-| `bloomreach-outbox.service.ts` | Public API — `trackCustomer()`, `trackEventConsents()`, `anonymizeCustomer()`. Writes outbox entries to DB, deduplicating customer upserts at write time. |
+| `bloomreach-outbox.service.ts` | Public API - `trackCustomer()`, `trackEventConsents()`, `anonymizeCustomer()`. Writes outbox entries to DB, deduplicating customer upserts at write time. |
 | `bloomreach-outbox.processor.ts` | Claims a batch (up to 50), sends to Bloomreach batch API. Scheduled every 30s by `TasksService`. |
 | `bloomreach-payload.builder.ts` | Builds Bloomreach command payloads (`customers`, `customers/events`). Fetches user data from Cognito and DB. |
 | `bloomreach-contact-database.service.ts` | Manages contact records in a separate Bloomreach contact database (upsert, phone). |
@@ -52,7 +52,7 @@ stateDiagram-v2
 Customer commands are deduplicated when written to the outbox:
 
 - **Customer upserts** (`customers` command): if a PENDING entry already exists for the same `cognitoId`, its `commandData` is updated in place (via a transaction) instead of creating a duplicate row.
-- **Event commands** (`customers/events`): deduplicated by `cognitoId` + `event_type` + `category` — if a PENDING entry with the same combination exists, its `commandData` is updated in place; otherwise a new row is created.
+- **Event commands** (`customers/events`): deduplicated by `cognitoId` + `event_type` + `category` - if a PENDING entry with the same combination exists, its `commandData` is updated in place; otherwise a new row is created.
 
 This ensures the outbox contains at most one PENDING `customers` entry per user at any time, so the processor doesn't need to merge at read time.
 
@@ -60,7 +60,7 @@ This ensures the outbox contains at most one PENDING `customers` entry per user 
 
 ## Processing Order
 
-The processor claims entries in **global `createdAt` order** — oldest first, up to `BATCH_SIZE` (50) per cycle. There is no per-key grouping or ordering constraint in the claim query itself.
+The processor claims entries in **global `createdAt` order** - oldest first, up to `BATCH_SIZE` (50) per cycle. There is no per-key grouping or ordering constraint in the claim query itself.
 
 This is safe because write-time deduplication already prevents duplicate PENDING entries for the same key (see above), so in practice there is at most one PENDING entry per key at any time. Since `@Interval` waits for the previous run to complete, batches never overlap, and `recoverStaleProcessingEntries` resets any entries stuck from a crash before each cycle.
 
@@ -71,6 +71,6 @@ When a batch fails (HTTP error or per-command `success=false`), entries are reve
 If a newer entry exists:
 
 - **`customers` commands**: the old entry's `commandData` is **merged into** the newer entry (`{ ...old, ...newer }`, newer takes precedence), mirroring the write-time merge that was skipped. The old entry is marked `FAILED` with `lastError: "Superseded by newer PENDING entry"`.
-- **`customers/events` commands**: the old entry is simply marked `FAILED` — the newer entry fully replaces it (no merge needed).
+- **`customers/events` commands**: the old entry is simply marked `FAILED` - the newer entry fully replaces it (no merge needed).
 
 The same logic applies during crash recovery (`recoverStaleProcessingEntries`).

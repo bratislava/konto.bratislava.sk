@@ -7,8 +7,8 @@ import { getFieldSizeClassName } from '@/src/components/widget-wrappers/getField
 import cn from '@/src/utils/cn'
 
 type AdapterConfig<TValue> = {
-  toField: (rjsfValue: any) => TValue
-  fromField: (fieldValue: TValue) => any
+  toFieldValue: (rjsfValue: any) => TValue
+  fromFieldValue: (fieldValue: TValue) => any
 }
 
 type AdapterFieldProps<TValue> = FieldBaseProps & {
@@ -27,7 +27,7 @@ type AdapterResult<TValue, TOptions extends WidgetUiOptions> = {
   specificOptions: Omit<TOptions, keyof WidgetUiOptions>
 }
 
-const useRjsfAdapter = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptions>(
+const mapRjsfToReactAriaProps = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptions>(
   props: WidgetProps,
   config: AdapterConfig<TValue>,
 ): AdapterResult<TValue, TOptions> => {
@@ -72,8 +72,8 @@ const useRjsfAdapter = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptio
           helptextFooter
         ),
       errorMessage: rawErrors?.length ? rawErrors.join(', ') : undefined,
-      value: config.toField(props.value),
-      onChange: (valueInner: TValue) => props.onChange(config.fromField(valueInner)),
+      value: config.toFieldValue(props.value),
+      onChange: (valueInner: TValue) => props.onChange(config.fromFieldValue(valueInner)),
       name: props.name,
       className: cn(getFieldSizeClassName(size), className),
     },
@@ -81,4 +81,4 @@ const useRjsfAdapter = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptio
   }
 }
 
-export default useRjsfAdapter
+export default mapRjsfToReactAriaProps

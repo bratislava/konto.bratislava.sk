@@ -6,19 +6,19 @@ import { useMemo } from 'react'
 
 import Checkbox from '@/src/components/fields/Checkbox'
 import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
-import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
+import mapRjsfToReactAriaProps from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 import { isDefined } from '@/src/frontend/utils/general'
 
 const CheckboxGroupWidgetRJSF = (props: WidgetProps) => {
   const { maxItems } = props.schema
 
-  const { wrapperProps, fieldProps, specificOptions } = useRjsfAdapter<
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps<
     string[],
     WithEnumOptions<CheckboxGroupUiOptions>
   >(props, {
-    toField: (v) => v ?? [],
-    fromField: (v) => v,
+    toFieldValue: (value) => value ?? [],
+    fromFieldValue: (value) => value,
   })
 
   const { enumOptions, enumMetadata, variant = 'basic' } = specificOptions

@@ -2,19 +2,19 @@ import { WidgetProps } from '@rjsf/utils'
 import { NumberUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import NumberField from '@/src/components/fields/NumberField'
-import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
+import mapRjsfToReactAriaProps from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 const NumberWidgetRJSF = (props: WidgetProps) => {
   const { schema } = props
 
-  const { wrapperProps, fieldProps, specificOptions } = useRjsfAdapter<number, NumberUiOptions>(
-    props,
-    {
-      toField: (v) => v ?? NaN,
-      fromField: (v) => (Number.isNaN(v) ? undefined : v),
-    },
-  )
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps<
+    number,
+    NumberUiOptions
+  >(props, {
+    toFieldValue: (v) => v ?? NaN,
+    fromFieldValue: (v) => (Number.isNaN(v) ? undefined : v),
+  })
 
   const getStep = () => {
     if (schema.multipleOf != null) {

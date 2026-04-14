@@ -3,23 +3,26 @@ import { CheckboxUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import Checkbox from '@/src/components/fields/Checkbox'
 import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
-import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
+import mapRjsfToReactAriaProps from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 const CheckboxWidgetRJSF = (props: WidgetProps) => {
-  const { wrapperProps, fieldProps, specificOptions } = useRjsfAdapter<string[], CheckboxUiOptions>(
-    props,
-    {
-      toField: (v) => (v ? ['true'] : []),
-      fromField: (v) => v.includes('true'),
-    },
-  )
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps<
+    string[],
+    CheckboxUiOptions
+  >(props, {
+    toFieldValue: (value) => (value ? ['true'] : []),
+    fromFieldValue: (value) => Array.isArray(value) && value.length === 1 && value[0] === 'true',
+  })
 
   return (
     <WidgetWrapper {...wrapperProps}>
       <CheckboxGroup
         {...fieldProps}
-        data-cy={`checkbox-group-${fieldProps.label?.toLowerCase().replaceAll(' ', '-').replace(/[?.,§/()]/g, '')}`}
+        data-cy={`checkbox-group-${fieldProps.label
+          ?.toLowerCase()
+          .replaceAll(' ', '-')
+          .replace(/[?.,§/()]/g, '')}`}
       >
         <Checkbox value="true" variant={specificOptions.variant ?? 'basic'} data-cy="checkbox-true">
           {specificOptions.checkboxLabel}

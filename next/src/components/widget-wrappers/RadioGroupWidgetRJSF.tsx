@@ -6,22 +6,22 @@ import { useMemo } from 'react'
 
 import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
-import useRjsfAdapter from '@/src/components/widget-wrappers/useRjsfAdapter'
+import mapRjsfToReactAriaProps from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
 const RadioGroupWidgetRJSF = (props: WidgetProps) => {
   const isBoolean = props.schema.type === 'boolean'
 
-  const { wrapperProps, fieldProps, specificOptions } = useRjsfAdapter<
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps<
     string | null,
     WithEnumOptions<RadioGroupUiOptions>
   >(props, {
-    toField: (v) => {
+    toFieldValue: (v) => {
       if (isBoolean) return typeof v === 'boolean' ? v.toString() : null
 
       return v ?? null
     },
-    fromField: (v) => {
+    fromFieldValue: (v) => {
       if (v === null) return undefined
       if (isBoolean) return v === 'true'
 
@@ -40,7 +40,10 @@ const RadioGroupWidgetRJSF = (props: WidgetProps) => {
     <WidgetWrapper {...wrapperProps}>
       <RadioGroup
         {...fieldProps}
-        data-cy={`radio-group-${fieldProps.label?.toLowerCase().replaceAll(' ', '-').replace(/[?.,§/()]/g, '')}`}
+        data-cy={`radio-group-${fieldProps.label
+          ?.toLowerCase()
+          .replaceAll(' ', '-')
+          .replace(/[?.,§/()]/g, '')}`}
         orientation={orientations === 'row' ? 'horizontal' : 'vertical'}
       >
         {mergedOptions.map((option) => {

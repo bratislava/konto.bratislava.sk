@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import { config, connect, ConnectionPool } from 'mssql'
+import { connect, ConnectionError, ConnectionPool } from 'mssql'
 import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
 import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
 import * as mssql from 'mssql'
 import pLimit from 'p-limit'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
-export class NorisService {
+export class NorisService implements OnModuleDestroy {
   private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
 
   private readonly concurrencyLimit = pLimit(this.concurrency)
+
+  private readonly logger = new LineLoggerSubservice(NorisService.name)
 
   constructor(
     private readonly configService: ConfigService,
@@ -33,8 +36,24 @@ export class NorisService {
     }
   }
 
-  private async createConnection(configOverrides?: Partial<config>): Promise<ConnectionPool> {
-    const connection = await connect({
+  async onModuleDestroy(): Promise<void> {
+    try {
+      const connection = await this.createConnection()
+      await connection.close()
+    } catch (error) {
+      this.logger.warn(
+        this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          'Failed to close MSSQL connection on shutdown',
+          undefined,
+          error
+        )
+      )
+    }
+  }
+
+  private async createConnection(): Promise<ConnectionPool> {
+    return await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: Number(this.configService.getOrThrow<string>('MSSQL_PORT')),
       database: this.configService.getOrThrow<string>('MSSQL_DB'),
@@ -46,16 +65,10 @@ export class NorisService {
         encrypt: true,
         trustServerCertificate: true,
       },
-      ...configOverrides,
     })
-
-    return connection
   }
 
-  private async waitForConnection(
-    connection: ConnectionPool,
-    maxWaitTime: number = 10_000
-  ): Promise<void> {
+  private async waitForConnection(connection: ConnectionPool, maxWaitTime = 10_000): Promise<void> {
     const startTime = Date.now()
 
     return new Promise((resolve, reject) => {
@@ -64,8 +77,9 @@ export class NorisService {
           resolve()
         } else if (Date.now() - startTime >= maxWaitTime) {
           reject(
-            new Error(
-              'Connection timeout: Database connection not established within timeout period'
+            new ConnectionError(
+              'Connection timeout: Database connection not established within timeout period',
+              'ENOTOPEN'
             )
           )
         } else {
@@ -77,29 +91,30 @@ export class NorisService {
   }
 
   /**
-   * Executes a function within a database connection context.
-   * Creates a connection, executes the function, and ensures proper cleanup.
+   * Executes a function using the mssql global connection pool.
+   *
+   * mssql.connect() is idempotent:
+   * - Pool already connected → resolves immediately (next tick via setImmediate)
+   * - Pool null or disconnected → creates a new pool
+   * Concurrent callers while a pool is being established are serialised by
+   * mssql's internal _connectStack, so only one ConnectionPool is ever created.
+   *
+   * The connection is not closed, as it is expected to be shared and used for the lifetime of the application.
    *
    * @param operation - Function to execute within the connection context
    * @param errorHandler - Error handler for any errors that occur during the operation
-   * @param useOptimized - Whether to use optimized connection settings
    * @returns Result of the operation
    */
   private async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    errorHandler: (error: any) => never
+    errorHandler: (error: unknown) => never
   ): Promise<T> {
-    const connection = await this.createConnection()
-
     try {
+      const connection = await this.createConnection()
       await this.waitForConnection(connection)
-      const result = await operation(connection)
-      return result
+      return await operation(connection)
     } catch (error) {
       return errorHandler(error)
-    } finally {
-      await connection.close()
     }
   }
 

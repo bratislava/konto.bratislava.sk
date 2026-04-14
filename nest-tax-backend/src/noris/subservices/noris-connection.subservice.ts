@@ -34,9 +34,15 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
     try {
       const connection = await this.createConnection()
       await connection.close()
-    } catch (err) {
+    } catch (error) {
       this.logger.warn(
-        `Failed to close MSSQL connection on shutdown: ${(err as Error).message}`,
+        this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          'Failed to close MSSQL connection on shutdown',
+          undefined,
+          undefined,
+          error,
+        ),
       )
     }
   }

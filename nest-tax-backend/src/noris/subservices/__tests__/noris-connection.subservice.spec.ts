@@ -33,23 +33,7 @@ describe('NorisConnectionSubservice', () => {
 
   const originalEnv = process.env
 
-  const buildModule = async () => {
-    module = await Test.createTestingModule({
-      providers: [
-        NorisConnectionSubservice,
-        { provide: ConfigService, useValue: configService },
-        ThrowerErrorGuard,
-        { provide: PrismaService, useValue: prismaService },
-      ],
-    }).compile()
-
-    await module.init()
-
-    service = module.get<NorisConnectionSubservice>(NorisConnectionSubservice)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
-  }
-
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks()
 
     // Assign after clearAllMocks so we hold references to the (now-cleared) mock.
@@ -81,6 +65,18 @@ describe('NorisConnectionSubservice', () => {
     })
 
     prismaService = createMock<PrismaService>()
+
+    module = await Test.createTestingModule({
+      providers: [
+        NorisConnectionSubservice,
+        { provide: ConfigService, useValue: configService },
+        ThrowerErrorGuard,
+        { provide: PrismaService, useValue: prismaService },
+      ],
+    }).compile()
+
+    service = module.get<NorisConnectionSubservice>(NorisConnectionSubservice)
+    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
   })
 
   afterEach(async () => {
@@ -91,7 +87,6 @@ describe('NorisConnectionSubservice', () => {
   describe('onModuleDestroy', () => {
     it('should close the pool connection on shutdown', async () => {
       mockMssqlConnect.mockResolvedValue(mockConnectionPool)
-      await buildModule()
 
       await module.close()
 
@@ -100,16 +95,16 @@ describe('NorisConnectionSubservice', () => {
 
     it('should not throw when connect() fails during shutdown', async () => {
       mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
-      await buildModule()
+      const warnSpy = jest.spyOn(service['logger'], 'warn')
 
       await expect(module.close()).resolves.not.toThrow()
+      expect(warnSpy).toHaveBeenCalled()
     })
   })
 
   describe('withConnection', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mockMssqlConnect.mockResolvedValue(mockConnectionPool)
-      await buildModule()
     })
 
     it('should call mssql.connect() on every invocation so the pool is always obtained or recreated', async () => {
@@ -128,9 +123,8 @@ describe('NorisConnectionSubservice', () => {
   })
 
   describe('handleDatabaseError (via withConnection)', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mockMssqlConnect.mockResolvedValue(mockConnectionPool)
-      await buildModule()
     })
 
     const errorMessage = 'Test error message'

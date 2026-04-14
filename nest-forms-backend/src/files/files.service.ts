@@ -3,7 +3,6 @@ import { Readable } from 'node:stream'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
-import { getPerFieldFileLimit } from 'forms-shared/form-utils/getFieldFileSizeLimit'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 

@@ -5,7 +5,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   Res,
   StreamableFile,
   UploadedFile,

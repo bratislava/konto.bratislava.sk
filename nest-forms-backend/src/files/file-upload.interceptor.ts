@@ -11,10 +11,10 @@ import { getPerFieldFileLimit } from 'forms-shared/form-utils/getFieldFileSizeLi
 import multer from 'multer'
 import { Observable } from 'rxjs'
 
+import BaConfigService from '../config/ba-config.service'
 import FormsService from '../forms/forms.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
-import BaConfigService from '../config/ba-config.service'
 /**
  * Conservative overhead allowance for multipart boundaries, headers, and the other form fields (filename, id).
  */
@@ -71,7 +71,15 @@ export class FileUploadInterceptor implements NestInterceptor {
             )
             return
           }
-          reject(err)
+          if (err instanceof Error) {
+            reject(err)
+          } else {
+            try {
+              reject(new Error(JSON.stringify(err)))
+            } catch {
+              reject(new Error(String(err)))
+            }
+          }
           return
         }
         resolve()

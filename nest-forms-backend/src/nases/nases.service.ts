@@ -1,5 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
@@ -25,6 +24,7 @@ import {
 
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
 import {
@@ -62,7 +62,6 @@ import {
 } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
-import BaConfigService from '../config/ba-config.service'
 
 @Injectable()
 export default class NasesService {

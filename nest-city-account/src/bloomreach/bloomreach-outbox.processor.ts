@@ -151,11 +151,11 @@ export class BloomreachOutboxProcessor {
    * Uses allSettled so one DB failure doesn't block the rest.
    */
   private async revertEntries(entries: BloomreachOutbox[], errorMessage?: string): Promise<void> {
-    const supersededIds = await this.findSupersededEntriesAndMerge(entries)
+    const supersededByMap = await this.findSupersededEntriesAndMerge(entries)
 
     const results = await Promise.allSettled(
       entries.map((entry) => {
-        const superseded = supersededIds.has(entry.id)
+        const supersededBy = supersededByMap.get(entry.id)
         const newAttempts = entry.attempts + 1
         const exhausted = newAttempts >= MAX_ATTEMPTS
 
@@ -172,13 +172,15 @@ export class BloomreachOutboxProcessor {
         return this.prisma.bloomreachOutbox.update({
           where: { id: entry.id },
           data: {
-            status: superseded
+            status: supersededBy
               ? BloomreachOutboxStatus.SUPERSEDED
               : exhausted
                 ? BloomreachOutboxStatus.FAILED
                 : BloomreachOutboxStatus.PENDING,
             attempts: newAttempts,
-            lastError: superseded ? 'Superseded by newer PENDING entry' : errorMessage,
+            lastError: supersededBy
+              ? `Superseded by newer PENDING entry ${supersededBy}`
+              : errorMessage,
           },
         })
       })
@@ -203,8 +205,10 @@ export class BloomreachOutboxProcessor {
    * (newer values take precedence, matching the write-time merge logic).
    * For `customers/events` commands: no merge needed — the newer entry fully replaces.
    */
-  private async findSupersededEntriesAndMerge(entries: BloomreachOutbox[]): Promise<Set<string>> {
-    const supersededIds = new Set<string>()
+  private async findSupersededEntriesAndMerge(
+    entries: BloomreachOutbox[]
+  ): Promise<Map<string, string>> {
+    const supersededByMap = new Map<string, string>()
 
     await Promise.all(
       entries.map(async (entry) => {
@@ -258,12 +262,12 @@ export class BloomreachOutboxProcessor {
             })
           }
 
-          supersededIds.add(entry.id)
+          supersededByMap.set(entry.id, newer.id)
         })
       })
     )
 
-    return supersededIds
+    return supersededByMap
   }
 
   /**

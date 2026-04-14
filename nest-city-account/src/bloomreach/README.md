@@ -71,7 +71,7 @@ When a batch fails (HTTP error or per-command `success=false`), entries are reve
 
 If a newer entry exists:
 
-- **`customers` commands**: the old entry's `commandData` is **merged into** the newer entry (`{ ...old, ...newer }`, newer takes precedence), mirroring the write-time merge that was skipped. The old entry is marked `SUPERSEDED` with `lastError: "Superseded by newer PENDING entry"`.
+- **`customers` commands**: the old entry's `commandData` is **merged into** the newer entry (`{ ...old, ...newer }`, newer takes precedence), mirroring the write-time merge that was skipped. The old entry is marked `SUPERSEDED` with `lastError: "Superseded by newer PENDING entry <superseding-entry-id>"`.
 - **`customers/events` commands**: the old entry is simply marked `SUPERSEDED` - the newer entry fully replaces it (no merge needed).
 
 The `SUPERSEDED` status is distinct from `FAILED` because the data may still be delivered through the newer entry — it indicates a partial failure that was absorbed, not a permanent loss.

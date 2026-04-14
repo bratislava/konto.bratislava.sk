@@ -244,7 +244,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.SUPERSEDED,
           attempts: 1,
-          lastError: 'Superseded by newer PENDING entry',
+          lastError: 'Superseded by newer PENDING entry newer-entry',
         },
       })
       // Newer entry should be updated with merged data (old base, newer overrides)
@@ -300,7 +300,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.SUPERSEDED,
           attempts: 1,
-          lastError: 'Superseded by newer PENDING entry',
+          lastError: 'Superseded by newer PENDING entry newer-event',
         },
       })
       // Newer event should NOT be updated (no merge for events)
@@ -363,7 +363,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.SUPERSEDED,
           attempts: 1,
-          lastError: 'Superseded by newer PENDING entry',
+          lastError: 'Superseded by newer PENDING entry newer-1',
         },
       })
       // Newer entry gets merged data

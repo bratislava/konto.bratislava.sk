@@ -74,7 +74,7 @@
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.24",
     "@types/mssql": "^9.1.9",
-    "@types/node": "^20.19.28",
+    "@types/node": "24.12.2",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^7.2.0",
     "@types/uuid": "^10.0.0",
@@ -122,11 +122,11 @@
     ]
   },
   "engines": {
-    "node": ">=20.19.x",
-    "npm": ">=10.9.x"
+    "node": ">=24.14.x",
+    "npm": ">=11.11.x"
   },
   "volta": {
-    "node": "20.19.6",
-    "npm": "10.9.3"
+    "node": "24.14.1",
+    "npm": "11.11.0"
   }
 }

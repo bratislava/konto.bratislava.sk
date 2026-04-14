@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   StreamableFile,
   UploadedFile,
@@ -136,8 +137,9 @@ export default class FilesController {
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
+    @Query('fieldId') fieldId?: string,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(formId, file, body)
+    return this.filesService.uploadFile(formId, file, body, fieldId)
   }
 
   @ApiOperation({

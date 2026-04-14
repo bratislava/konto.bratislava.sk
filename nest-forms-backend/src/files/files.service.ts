@@ -3,6 +3,7 @@ import { Readable } from 'node:stream'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
+import { getPerFieldFileLimit } from 'forms-shared/form-utils/getFieldFileSizeLimit'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
@@ -195,6 +196,7 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
+    fieldId?: string,
   ): Promise<PostFileResponseDto> {
     const fileName = data.filename
     const fileId = data.id
@@ -238,9 +240,28 @@ export default class FilesService {
 
     const { formInfo, formDefinition } = this.filesHelper.forms2formInfo(form)
 
-    const maxFileSize =
+    // When the form has per-field file size limits, require a fieldId to prevent bypass.
+    const hasPerFieldLimits =
+      formDefinition.fileLimits &&
+      Object.keys(formDefinition.fileLimits).length > 0
+    if (!fieldId && hasPerFieldLimits) {
+      throw this.throwerErrorGuard.BadRequestException(
+        FilesErrorsEnum.MISSING_FIELD_ID_ERROR,
+        FilesErrorsResponseEnum.MISSING_FIELD_ID_ERROR,
+      )
+    }
+
+    // Resolve the effective per-file size limit: per-field (if configured) capped by form-level.
+    const formMaxFileSize =
       formDefinition.maxFileSize ??
       this.configService.get<number>('MAX_FILE_SIZE')!
+    const fieldMaxFileSize = fieldId
+      ? getPerFieldFileLimit(formDefinition.fileLimits, fieldId)
+      : null
+    const maxFileSize =
+      fieldMaxFileSize != null
+        ? Math.min(fieldMaxFileSize, formMaxFileSize)
+        : formMaxFileSize
     if (bufferedFile.size > maxFileSize) {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,

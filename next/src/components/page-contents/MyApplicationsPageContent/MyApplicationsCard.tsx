@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -306,13 +306,13 @@ const MyApplicationsCard = ({
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="pb-3 text-20-semibold">
+              <h3 className="text-20-semibold pb-3">
                 {isLoading ? <Skeleton width="75%" /> : subject}
               </h3>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="flex items-center text-p3">
+                  <span className="text-p3 flex items-center">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (

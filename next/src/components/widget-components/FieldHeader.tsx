@@ -1,5 +1,5 @@
 import { LabelSize } from 'forms-shared/generator/uiOptionsTypes'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
 

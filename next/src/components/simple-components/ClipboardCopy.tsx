@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useCopyToClipboard } from 'usehooks-ts'
 
 import { CopyIcon } from '@/src/assets/ui-icons'

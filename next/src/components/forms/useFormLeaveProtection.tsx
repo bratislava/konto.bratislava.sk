@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 
@@ -34,7 +34,7 @@ const useGetContext = () => {
       if (
         enabledRef.current &&
         !isShallow &&
-        // eslint-disable-next-line no-alert
+
         !window.confirm(t('info_messages.form_leave_protection'))
       ) {
         router.events.emit('routeChangeError')

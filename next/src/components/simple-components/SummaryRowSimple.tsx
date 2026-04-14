@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { PropsWithChildren } from 'react'
 
 import { EditIcon } from '@/src/assets/ui-icons'

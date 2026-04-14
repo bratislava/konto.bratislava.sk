@@ -1,11 +1,9 @@
 import { ajvResolver } from '@hookform/resolvers/ajv'
 import { JSONSchemaType } from 'ajv'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { DefaultValues, FieldValues, useForm } from 'react-hook-form'
 
-interface Errors {
-  [key: string]: string[]
-}
+type Errors = Record<string, string[]>;
 
 interface Props<T> {
   // used any as strictNullChecks must be true in tsconfig to use JSONSchemaType<T>
@@ -41,6 +39,7 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
           if (formattedValue.length === 10) {
             return rc % 11 === 0 || (rc % 10 === 0 && (rc / 10) % 11 === 10)
           }
+
           return false
         },
         verificationCode: '^[0-9]{6}$',

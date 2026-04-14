@@ -1,13 +1,17 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import OfficialCorrespondenceChannelCardWrapper from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
-import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
+import OfficialCorrespondenceChannelCardWrapper
+  from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
+import TaxesFeesAdministratorCardWrapper
+  from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxFeeDetails from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeDetails'
-import TaxFeePaymentMethods from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethods'
-import TaxFeeSubjectInformation from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeSubjectInformation'
+import TaxFeePaymentMethods
+  from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethods'
+import TaxFeeSubjectInformation
+  from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeSubjectInformation'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import Alert from '@/src/components/simple-components/Alert'

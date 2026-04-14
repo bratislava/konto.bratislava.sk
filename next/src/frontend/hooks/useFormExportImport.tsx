@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { usePlausible } from 'next-plausible'
 import { GetFormResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
@@ -91,6 +91,7 @@ export const useGetContext = () => {
     onSuccess: () => {
       turnOffLeaveProtection()
       router.reload()
+
       // a promise returned is awaited before toggling the isLoading
       // we use this to prevent re-enabling the button - the promise never resolves, the state is cleared by the reload
       return new Promise(() => {})
@@ -195,7 +196,7 @@ export const useGetContext = () => {
     openSnackbarInfo(t('info_messages.json_import'))
     try {
       const parsed = JSON.parse(jsonForm)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+       
       setImportedFormData(parsed)
     } catch (error) {
       openSnackbarError(t('errors.json_import'))
@@ -230,6 +231,7 @@ export const useGetContext = () => {
     } catch (error) {
       closeSnackbarInfo()
       openSnackbarError(t('errors.pdf_export'))
+
       return
     }
     closeSnackbarInfo()
@@ -246,6 +248,7 @@ export const useGetContext = () => {
       if (!abortController.signal.aborted) {
         openSnackbarError(t('errors.pdf_export'))
       }
+
       return
     }
     setTaxFormPdfExportModal({ type: 'success' })
@@ -259,6 +262,7 @@ export const useGetContext = () => {
   const saveConcept = async (fromModal?: boolean) => {
     if (!isSignedIn) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedConceptSave)
+
       return
     }
 

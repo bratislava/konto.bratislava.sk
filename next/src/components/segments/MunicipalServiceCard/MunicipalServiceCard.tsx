@@ -123,9 +123,7 @@ const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => (
     buttonText={service.buttonText}
     icon={getIconComponent(service.icon, service.color)}
     href={service.href}
-    tags={
-      service.tags.map((tag) => tag?.title).filter(isDefined)
-    }
+    tags={service.tags.map((tag) => tag?.title).filter(isDefined)}
     tagStyle={getTagStyle(service.color)}
     analyticsProps={{ id: `Mestské služby: ${service.title}` }}
   />

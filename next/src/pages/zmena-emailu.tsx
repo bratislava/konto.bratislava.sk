@@ -6,7 +6,7 @@ import {
   updateUserAttributes,
 } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useRef, useState } from 'react'
 
 import { cityAccountClient } from '@/src/clients/city-account'

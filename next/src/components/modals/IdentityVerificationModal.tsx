@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -29,7 +29,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         <div className="flex flex-col gap-4">
           <AccountMarkdown className="text-center" content={t('verification_modal.subtitle')} />
           <AccountMarkdown
-            className="text-center text-p3"
+            className="text-p3 text-center"
             variant="sm"
             content={t('verification_modal.info')}
           />
@@ -48,7 +48,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         </div>
         <div className="flex items-center">
           <HorizontalDivider className="w-full" />
-          <span className="px-6 text-p1">{t('verification_modal.footer_choice')}</span>
+          <span className="text-p1 px-6">{t('verification_modal.footer_choice')}</span>
           <HorizontalDivider className="w-full" />
         </div>
         <Button

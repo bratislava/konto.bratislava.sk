@@ -9,7 +9,7 @@ import {
   SummaryStepComponentProps,
   SummaryStringValueComponentProps,
 } from 'forms-shared/summary-renderer/SummaryRenderer'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { useMemo } from 'react'
 import { useIsSSR } from 'react-aria'
 
@@ -74,7 +74,7 @@ const InvalidValueComponent = () => {
 
   return (
     <span>
-      <div className="flex items-center gap-3 text-error">
+      <div className="text-error flex items-center gap-3">
         <div className="shrink-0">
           <AlertIcon />
         </div>
@@ -87,7 +87,7 @@ const InvalidValueComponent = () => {
 const ArrayComponent = ({ array, children }: SummaryArrayComponentProps) => {
   return (
     <div className="mt-4">
-      <div className="mb-4 text-p2-semibold">{array.title}</div>
+      <div className="text-p2-semibold mb-4">{array.title}</div>
       {children}
     </div>
   )
@@ -128,7 +128,7 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
 
   return (
     <div className="mb-4">
-      <div className="mb-2 inline-block rounded-xl bg-gray-100 px-2 text-p2-semibold">
+      <div className="text-p2-semibold mb-2 inline-block rounded-xl bg-gray-100 px-2">
         {arrayItem.title}
       </div>
       {children}

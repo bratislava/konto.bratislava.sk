@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 
 import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'

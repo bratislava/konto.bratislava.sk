@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -15,7 +15,7 @@ const DznTaxFormAlert = () => {
       fullWidth
       message={
         <>
-          <div className="mb-2 text-h6">
+          <div className="text-h6 mb-2">
             {t('account_section_payment.tax_form_change_ownership_alert_title')}
           </div>
 

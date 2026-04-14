@@ -101,7 +101,7 @@ describe('BloomreachOutboxService', () => {
         id: 'existing-id',
         commandData: {
           customer_ids: { city_account_id: cognitoId },
-          properties: { phone: '0900000000' },
+          properties: { phone: '0900000000', email: 'old@never.test' },
         },
       }
       const txMock = createMock<PrismaService>()
@@ -159,7 +159,7 @@ describe('BloomreachOutboxService', () => {
       await expect(service.trackEventConsents(gdprData, cognitoId)).resolves.toBeUndefined()
     })
 
-    it('should override a pending subscribe with an unsubscribe for the same event_type and category', async () => {
+    it('should override a pending action value for the same event_type and category', async () => {
       const subscribeCommandData = {
         customer_ids: { city_account_id: cognitoId },
         event_type: BloomreachEventNameEnum.CONSENT,

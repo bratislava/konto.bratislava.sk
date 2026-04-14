@@ -8,7 +8,7 @@ import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
-import useToast from '../../simple-components/Toast/useToast'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 

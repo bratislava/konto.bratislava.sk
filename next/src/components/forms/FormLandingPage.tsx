@@ -11,7 +11,7 @@ import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFo
 import PageLayout from '@/src/components/layouts/PageLayout'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
-import useToast from '../simple-components/Toast/useToast'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { isDefined } from '@/src/frontend/utils/general'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -67,7 +67,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           <h1 className="text-h1-form">{formDefinition.title}</h1>
           {strapiForm.moreInformationUrl ? (
             <Link
-              className="text-p1 w-max underline"
+              className="w-max text-p1 underline"
               href={strapiForm.moreInformationUrl}
               target="_blank"
             >

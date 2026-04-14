@@ -6,10 +6,9 @@ import React, { createContext, PropsWithChildren, useContext } from 'react'
 
 import { StrapiTaxAdministrator } from '@/src/backend/utils/strapi-tax-administrator'
 import { taxClient } from '@/src/clients/tax'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { base64ToArrayBuffer, downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
-
-import useToast from '../../simple-components/Toast/useToast'
 
 type TaxFeeProviderProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response

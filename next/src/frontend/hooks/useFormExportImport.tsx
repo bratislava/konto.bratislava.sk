@@ -16,8 +16,8 @@ import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
 import { environment } from '@/src/environment'
-import useToast from '../../components/simple-components/Toast/useToast'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { createSerializableFile } from '@/src/frontend/utils/formExportImport'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
@@ -229,6 +229,7 @@ export const useGetContext = () => {
     } catch (error) {
       closeToasts()
       showToast({ message: t('errors.pdf_export'), variant: 'error' })
+
       return
     }
     closeToasts()

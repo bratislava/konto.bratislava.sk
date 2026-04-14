@@ -18,13 +18,12 @@ import { I18nProvider } from 'react-aria'
 
 import { NavMenuContextProvider } from '@/src/components/segments/NavBar/navMenuContext'
 import MLink from '@/src/components/simple-components/MLink'
+import AppToastRegion from '@/src/components/simple-components/Toast/Toast'
 import { environment } from '@/src/environment'
 import { removeAllCookiesAndClearLocalStorage } from '@/src/frontend/utils/amplifyClient'
 import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
-
-import AppToastRegion from '../components/simple-components/Toast/Toast'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],

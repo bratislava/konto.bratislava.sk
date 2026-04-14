@@ -3,7 +3,7 @@ import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 
 import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'
 import UserConsent from '@/src/components/page-contents/UserProfilePageContent/UserConsent'
-import useToast from '../../simple-components/Toast/useToast'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useUserSubscription } from '@/src/frontend/hooks/useUser'
 
 const UserProfileConsents = () => {

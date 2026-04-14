@@ -23,11 +23,10 @@ import MenuDropdown, {
 } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
-
-import useToast from '../../simple-components/Toast/useToast'
 
 export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 
@@ -305,13 +304,13 @@ const MyApplicationsCard = ({
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="text-20-semibold pb-3">
+              <h3 className="pb-3 text-20-semibold">
                 {isLoading ? <Skeleton width="75%" /> : subject}
               </h3>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center">
+                  <span className="flex items-center text-p3">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (

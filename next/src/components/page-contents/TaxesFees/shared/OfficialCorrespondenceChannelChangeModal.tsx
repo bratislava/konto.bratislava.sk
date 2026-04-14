@@ -13,11 +13,10 @@ import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import Radio from '@/src/components/widget-components/RadioButton/Radio'
 import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useUserSubscription } from '@/src/frontend/hooks/useUser'
 import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
-
-import useToast from '../../../simple-components/Toast/useToast'
 
 type AgreementProps = {
   onScrollToBottom: () => void
@@ -149,7 +148,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                 <span>{t('taxes.delivery_method_change_modal.delivery_method_true.title')}</span>
                 {/* TODO unify with Tag component */}
-                <span className="bg-background-success-soft-default text-p3 text-content-success-default rounded-sm px-2 py-0.5">
+                <span className="rounded-sm bg-background-success-soft-default px-2 py-0.5 text-p3 text-content-success-default">
                   {t('taxes.delivery_method_change_modal.delivery_method_true.usage_percentage')}
                 </span>
               </div>

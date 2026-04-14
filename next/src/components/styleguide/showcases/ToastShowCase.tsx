@@ -4,8 +4,8 @@ import { Button } from '@bratislava/component-library'
 import { useMemo, useState } from 'react'
 
 import InputField from '@/src/components/widget-components/InputField/InputField'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 
-import useToast from '../../simple-components/Toast/useToast'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

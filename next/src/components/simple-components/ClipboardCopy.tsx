@@ -3,9 +3,8 @@ import { useTranslation } from 'next-i18next/pages'
 import { useCopyToClipboard } from 'usehooks-ts'
 
 import { CopyIcon } from '@/src/assets/ui-icons'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import logger from '@/src/frontend/utils/logger'
-
-import useToast from './Toast/useToast'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()

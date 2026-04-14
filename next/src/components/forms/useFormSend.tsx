@@ -15,13 +15,12 @@ import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProte
 import { useFormSent } from '@/src/components/forms/useFormSent'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { RegistrationModalType } from '@/src/components/modals/RegistrationModal'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { environment } from '@/src/environment'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { isFormSubmitDisabled } from '@/src/frontend/utils/formSummary'
 import { NASES_TOKEN_QUERY_KEY, popSendEidMetadata, setSendEidMetadata, } from '@/src/frontend/utils/metadataStorage'
-
-import useToast from '../simple-components/Toast/useToast'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.

@@ -12,11 +12,10 @@ import UserProfilePassword from '@/src/components/page-contents/UserProfilePageC
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useUserUpdateBloomreachData } from '@/src/frontend/hooks/useUser'
 import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import logger from '@/src/frontend/utils/logger'
-
-import useToast from '../../simple-components/Toast/useToast'
 
 const UserProfilePageContent = () => {
   const { t } = useTranslation('account')

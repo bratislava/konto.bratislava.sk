@@ -9,7 +9,7 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
-import useToast from '../simple-components/Toast/useToast'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { ROUTES } from '@/src/utils/routes'
 
 const useGetContext = () => {

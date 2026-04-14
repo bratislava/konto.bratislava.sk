@@ -19,8 +19,7 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormLeaveProtection } from '@/src/components/forms/useFormLeaveProtection'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
-
-import useToast from '../../simple-components/Toast/useToast'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 
 const useGetContext = () => {
   const { showToast } = useToast()
@@ -102,7 +101,6 @@ const useGetContext = () => {
     onError: (error) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (isAxiosError(error) && error.response?.data?.errorName === 'BAD_REQUEST_ERROR') {
-         
         showToast({
           message: `Nastala chyba pri validácii: \n\n${error.response?.data?.message}`,
           variant: 'error',

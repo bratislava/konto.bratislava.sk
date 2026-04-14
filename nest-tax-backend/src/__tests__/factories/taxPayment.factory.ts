@@ -6,34 +6,34 @@ import {
 } from '../../utils/types/types.prisma'
 import { createTestTax, type TestTaxOverrides } from './tax.factory'
 
-type TaxPaymentTestOverrides = Partial<
+const DEFAULT_DATE = new Date('2024-01-01T00:00:00.000Z')
+
+type TestTaxPaymentOverrides = Partial<
   Omit<TaxPaymentWithTaxAndTaxPayer, 'tax'>
 > & {
   tax?: TestTaxOverrides
 }
 
 export const createTestTaxPayment = (
-  overrides?: TaxPaymentTestOverrides,
+  overrides?: TestTaxPaymentOverrides,
 ): TaxPaymentWithTaxAndTaxPayer => {
+  const { tax: taxOverrides, ...restPaymentOverrides } = overrides ?? {}
+
   const baseTax = createTestTax()
   const mergedTax: TaxWithTaxPayer = {
     ...baseTax,
-    ...overrides?.tax,
+    ...taxOverrides,
     taxPayer: {
       ...baseTax.taxPayer,
-      ...overrides?.tax?.taxPayer,
+      ...taxOverrides?.taxPayer,
     },
-  }
-
-  // Nested `tax` is merged into `mergedTax` above.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- omit `tax` from spread source
-  const { tax, ...restPaymentOverrides } = overrides ?? {}
+  } as TaxWithTaxPayer
 
   return {
     id: 1,
     orderId: '1234567890',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: DEFAULT_DATE,
+    updatedAt: DEFAULT_DATE,
     status: PaymentStatus.NEW,
     amount: 1000,
     source: TaxPaymentSource.CARD,

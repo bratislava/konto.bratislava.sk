@@ -46,3 +46,5 @@ export const createSlovenskoSkClient = ({
     ...ZasielaniePodanAdministrciaApiFactory(...args),
   }
 }
+
+export { RequiredError } from './base'

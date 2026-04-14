@@ -77,7 +77,7 @@ export class FileUploadInterceptor implements NestInterceptor {
             try {
               reject(new Error(JSON.stringify(err)))
             } catch {
-              reject(new Error(String(err)))
+              reject(new Error('Unknown multer error'))
             }
           }
           return

@@ -141,9 +141,9 @@ export class BloomreachOutboxProcessor {
   }
 
   /**
-   * Reverts PROCESSING entries back to PENDING, or marks them FAILED if:
-   * - max attempts reached, or
-   * - a newer PENDING entry exists for the same dedup key (superseded).
+   * Reverts PROCESSING entries back to PENDING, or marks them as:
+   * - FAILED if max attempts reached
+   * - SUPERSEDED if a newer PENDING entry exists for the same dedup key
    *
    * For superseded `customers` commands, merges old data into the newer entry
    * (mirroring write-time merge that was skipped while the entry was PROCESSING).
@@ -172,8 +172,9 @@ export class BloomreachOutboxProcessor {
         return this.prisma.bloomreachOutbox.update({
           where: { id: entry.id },
           data: {
-            status:
-              superseded || exhausted
+            status: superseded
+              ? BloomreachOutboxStatus.SUPERSEDED
+              : exhausted
                 ? BloomreachOutboxStatus.FAILED
                 : BloomreachOutboxStatus.PENDING,
             attempts: newAttempts,

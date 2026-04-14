@@ -42,7 +42,8 @@ stateDiagram-v2
     PROCESSING --> COMPLETED: batch sent successfully
     PROCESSING --> PENDING: failed, attempts < 5
     PROCESSING --> FAILED: failed, attempts >= 5
-    PROCESSING --> FAILED: superseded by newer PENDING
+    PROCESSING --> SUPERSEDED: superseded by newer PENDING
+    SUPERSEDED --> [*]
     FAILED --> [*]
     COMPLETED --> [*]
 ```
@@ -70,7 +71,9 @@ When a batch fails (HTTP error or per-command `success=false`), entries are reve
 
 If a newer entry exists:
 
-- **`customers` commands**: the old entry's `commandData` is **merged into** the newer entry (`{ ...old, ...newer }`, newer takes precedence), mirroring the write-time merge that was skipped. The old entry is marked `FAILED` with `lastError: "Superseded by newer PENDING entry"`.
-- **`customers/events` commands**: the old entry is simply marked `FAILED` - the newer entry fully replaces it (no merge needed).
+- **`customers` commands**: the old entry's `commandData` is **merged into** the newer entry (`{ ...old, ...newer }`, newer takes precedence), mirroring the write-time merge that was skipped. The old entry is marked `SUPERSEDED` with `lastError: "Superseded by newer PENDING entry"`.
+- **`customers/events` commands**: the old entry is simply marked `SUPERSEDED` - the newer entry fully replaces it (no merge needed).
+
+The `SUPERSEDED` status is distinct from `FAILED` because the data may still be delivered through the newer entry — it indicates a partial failure that was absorbed, not a permanent loss.
 
 The same logic applies during crash recovery (`recoverStaleProcessingEntries`).

@@ -75,6 +75,7 @@ enum BloomreachOutboxStatus {
   PROCESSING
   COMPLETED
   FAILED
+  SUPERSEDED
 }
 
 model User {

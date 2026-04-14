@@ -215,7 +215,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
     })
 
-    it('should mark reverted customers entry as FAILED and merge data into newer PENDING entry', async () => {
+    it('should mark reverted customers entry as SUPERSEDED and merge data into newer PENDING entry', async () => {
       const oldEntry = makeEntry({
         id: 'old-entry',
         commandData: {
@@ -238,11 +238,11 @@ describe('BloomreachOutboxProcessor', () => {
 
       await processor.processOutbox()
 
-      // Old entry should be marked FAILED (superseded)
+      // Old entry should be marked SUPERSEDED
       expect(prismaMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'old-entry' },
         data: {
-          status: BloomreachOutboxStatus.FAILED,
+          status: BloomreachOutboxStatus.SUPERSEDED,
           attempts: 1,
           lastError: 'Superseded by newer PENDING entry',
         },
@@ -259,7 +259,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
     })
 
-    it('should mark reverted event entry as FAILED without merge when newer PENDING exists', async () => {
+    it('should mark reverted event entry as SUPERSEDED without merge when newer PENDING exists', async () => {
       const oldEventEntry = makeEntry({
         id: 'old-event',
         commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
@@ -294,11 +294,11 @@ describe('BloomreachOutboxProcessor', () => {
 
       await processor.processOutbox()
 
-      // Old event should be marked FAILED (superseded)
+      // Old event should be marked SUPERSEDED
       expect(prismaMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'old-event' },
         data: {
-          status: BloomreachOutboxStatus.FAILED,
+          status: BloomreachOutboxStatus.SUPERSEDED,
           attempts: 1,
           lastError: 'Superseded by newer PENDING entry',
         },
@@ -333,7 +333,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
     })
 
-    it('should mark stale entry as FAILED and merge into newer PENDING for customers commands', async () => {
+    it('should mark stale entry as SUPERSEDED and merge into newer PENDING for customers commands', async () => {
       const staleEntry = makeEntry({
         id: 'stale-1',
         status: BloomreachOutboxStatus.PROCESSING,
@@ -357,11 +357,11 @@ describe('BloomreachOutboxProcessor', () => {
 
       await processor.processOutbox()
 
-      // Stale entry marked FAILED
+      // Stale entry marked SUPERSEDED
       expect(prismaMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'stale-1' },
         data: {
-          status: BloomreachOutboxStatus.FAILED,
+          status: BloomreachOutboxStatus.SUPERSEDED,
           attempts: 1,
           lastError: 'Superseded by newer PENDING entry',
         },

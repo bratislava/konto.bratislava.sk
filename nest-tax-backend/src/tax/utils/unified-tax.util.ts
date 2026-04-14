@@ -416,7 +416,7 @@ const calculateInstallmentPaymentDetails = (options: {
     isCancelled,
   } = options
 
-  if (overallAmount < paymentCalendarThreshold) {
+  if (overallAmount <= paymentCalendarThreshold) {
     return {
       isPossible: false,
       reasonNotPossible:

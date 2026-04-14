@@ -1,10 +1,16 @@
-import { TaxPayer } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 const DEFAULT_DATE = new Date('2024-01-01T00:00:00.000Z')
 
 export const createTestTaxPayer = (
-  overrides?: Partial<TaxPayer>,
-): TaxPayer => ({
+  overrides?: Partial<
+    Prisma.TaxPayerGetPayload<{
+      include: { taxAdministrators: { include: { taxAdministrator: true } } }
+    }>
+  >,
+): Prisma.TaxPayerGetPayload<{
+  include: { taxAdministrators: { include: { taxAdministrator: true } } }
+}> => ({
   id: 1,
   uuid: '1234567890',
   createdAt: DEFAULT_DATE,
@@ -17,5 +23,6 @@ export const createTestTaxPayer = (
   permanentResidenceCity: '1234567890',
   lastUpdatedAtDZN: DEFAULT_DATE,
   lastUpdatedAtKO: DEFAULT_DATE,
+  taxAdministrators: [],
   ...overrides,
 })

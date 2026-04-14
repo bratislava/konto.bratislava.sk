@@ -25,6 +25,7 @@ import ClientsService from '../clients/clients.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
+import { FilesErrorsResponseEnum } from '../files/files.errors.enum'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
@@ -535,9 +536,9 @@ describe('NasesService', () => {
     it('should throw an error if form definition is not found', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
-      await expect(service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)).rejects.toThrow(
-        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
-      )
+      await expect(
+        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND)
     })
 
     it('should throw an error if form data is invalid', async () => {
@@ -551,9 +552,9 @@ describe('NasesService', () => {
           }),
         })
 
-      await expect(service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)).rejects.toThrow(
-        FormsErrorsResponseEnum.FORM_DATA_INVALID,
-      )
+      await expect(
+        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_DATA_INVALID)
     })
 
     it('should throw an error if sending is not possible according to policy', async () => {
@@ -562,9 +563,9 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)).rejects.toThrow(
-        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
-      )
+      await expect(
+        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+      ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
     })
 
     it('should throw an error if sending is not allowed for the user according to policy', async () => {
@@ -573,7 +574,9 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)).rejects.toThrow(
+      await expect(
+        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+      ).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     })
@@ -583,13 +586,17 @@ describe('NasesService', () => {
         .spyOn(service['rabbitmqClientService'], 'publishDelay')
         .mockRejectedValue(new Error('RabbitMQ error'))
 
-      await expect(service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)).rejects.toThrow(
-        NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-      )
+      await expect(
+        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+      ).rejects.toThrow(NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT)
     })
 
     it('should queue the form', async () => {
-      const result = await service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)
+      const result = await service.sendForm(
+        '1',
+        {} as UpdateFormRequestDto,
+        authUser.user,
+      )
 
       expect(result).toEqual({
         id: '1',
@@ -603,7 +610,11 @@ describe('NasesService', () => {
         ...mockFormDefinitionEmail,
       })
 
-      const result = await service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)
+      const result = await service.sendForm(
+        '1',
+        {} as UpdateFormRequestDto,
+        authUser.user,
+      )
 
       expect(result).toEqual({
         id: '1',
@@ -634,7 +645,109 @@ describe('NasesService', () => {
           throw new Error('Summary generation failed')
         })
 
-      await expect(service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)).rejects.toThrow()
+      await expect(
+        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+      ).rejects.toThrow()
+    })
+
+    describe('cumulative file size limits', () => {
+      beforeEach(() => {
+        service['baConfigService'].featureToggles = {
+          versioning: false,
+          fileSizeLimits: true,
+        }
+        service['baConfigService'].fileLimits = {
+          maxSingleSizeGlobal: 500_000_000,
+          maxCumulativeSizeGlobal: 1_000_000_000,
+        }
+      })
+
+      it('should throw if total file size exceeds form definition limit', async () => {
+        ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+          ...mockFormDefinition,
+          maxTotalFileSize: 100_000,
+        })
+        jest
+          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
+          .mockResolvedValue(150_000)
+
+        await expect(
+          service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+        ).rejects.toThrow(
+          FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+        )
+      })
+
+      it('should throw if total file size exceeds global cumulative limit', async () => {
+        service['baConfigService'].fileLimits = {
+          maxSingleSizeGlobal: 500_000_000,
+          maxCumulativeSizeGlobal: 200_000,
+        }
+        ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+          ...mockFormDefinition,
+          // no maxTotalFileSize — falls back to global
+        })
+        jest
+          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
+          .mockResolvedValue(250_000)
+
+        await expect(
+          service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
+        ).rejects.toThrow(
+          FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+        )
+      })
+
+      it('should not throw if total file size is within limit', async () => {
+        ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+          ...mockFormDefinition,
+          maxTotalFileSize: 200_000,
+        })
+        jest
+          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
+          .mockResolvedValue(100_000)
+
+        const result = await service.sendForm(
+          '1',
+          {} as UpdateFormRequestDto,
+          authUser.user,
+        )
+
+        expect(result).toEqual({
+          id: '1',
+          message: 'Form was successfully queued to rabbitmq.',
+          state: FormState.QUEUED,
+        })
+      })
+
+      it('should skip cumulative check when feature flag is off', async () => {
+        service['baConfigService'].featureToggles = {
+          versioning: false,
+          fileSizeLimits: false,
+        }
+        ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+          ...mockFormDefinition,
+          maxTotalFileSize: 100,
+        })
+        jest
+          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
+          .mockResolvedValue(999_999)
+
+        const result = await service.sendForm(
+          '1',
+          {} as UpdateFormRequestDto,
+          authUser.user,
+        )
+
+        expect(result).toEqual({
+          id: '1',
+          message: 'Form was successfully queued to rabbitmq.',
+          state: FormState.QUEUED,
+        })
+        expect(
+          service['filesService'].getActiveFilesTotalSize,
+        ).not.toHaveBeenCalled()
+      })
     })
   })
 

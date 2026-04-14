@@ -384,10 +384,7 @@ export default class FilesHelper {
     return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
   }
 
-  forms2formInfo(form: Forms): {
-    formInfo: FormInfo
-    formDefinition: FormDefinition
-  } {
+  forms2formInfo(form: Forms): FormInfo {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -397,13 +394,10 @@ export default class FilesHelper {
     }
 
     return {
-      formInfo: {
-        pospIdOrSlug: isSlovenskoSkFormDefinition(formDefinition)
-          ? formDefinition.pospID
-          : formDefinition.slug,
-        formId: form.id,
-      },
-      formDefinition,
+      pospIdOrSlug: isSlovenskoSkFormDefinition(formDefinition)
+        ? formDefinition.pospID
+        : formDefinition.slug,
+      formId: form.id,
     }
   }
 

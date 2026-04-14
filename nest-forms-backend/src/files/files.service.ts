@@ -238,37 +238,6 @@ export default class FilesService {
       )
     }
 
-    const { formInfo, formDefinition } = this.filesHelper.forms2formInfo(form)
-
-    // When the form has per-field file size limits, require a fieldId to prevent bypass.
-    const hasPerFieldLimits =
-      formDefinition.fileLimits &&
-      Object.keys(formDefinition.fileLimits).length > 0
-    if (!fieldId && hasPerFieldLimits) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.MISSING_FIELD_ID_ERROR,
-        FilesErrorsResponseEnum.MISSING_FIELD_ID_ERROR,
-      )
-    }
-
-    // Resolve the effective per-file size limit: per-field (if configured) capped by form-level.
-    const formMaxFileSize =
-      formDefinition.maxFileSize ??
-      this.configService.get<number>('MAX_FILE_SIZE')!
-    const fieldMaxFileSize = fieldId
-      ? getPerFieldFileLimit(formDefinition.fileLimits, fieldId)
-      : null
-    const maxFileSize =
-      fieldMaxFileSize != null
-        ? Math.min(fieldMaxFileSize, formMaxFileSize)
-        : formMaxFileSize
-    if (bufferedFile.size > maxFileSize) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,
-        `${FilesErrorsResponseEnum.FILE_SIZE_EXCEEDED_ERROR} Received file size: ${bufferedFile.size}`,
-      )
-    }
-
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {
       throw this.throwerErrorGuard.NotAcceptableException(
@@ -277,6 +246,7 @@ export default class FilesService {
       )
     }
 
+    const formInfo = this.filesHelper.forms2formInfo(form)
     const { pospIdOrSlug } = formInfo
     const filePath = this.filesHelper.getPath(formInfo)
     const minioFileName = this.filesHelper.createMinioFileName(
@@ -286,34 +256,31 @@ export default class FilesService {
     const fileSize = bufferedFile.size
     const pathWithMinioFileName = filePath + minioFileName
 
-    const file = await this.filesHelper.saveFileToDatabase(
-      fileId,
-      minioFileName,
-      fileName,
-      fileSize,
-      formId,
-      pospIdOrSlug,
+    const uploadedFile = await this.minioClientSubervice.upload(
+      bufferedFile,
+      pathWithMinioFileName,
+      this.filesHelper.getBucketUid(),
     )
-
-    try {
-      const uploadedFile = await this.minioClientSubervice.upload(
-        bufferedFile,
-        pathWithMinioFileName,
-        this.filesHelper.getBucketUid(),
+    let file: Files
+    if (uploadedFile) {
+      this.logger.log(
+        `File ${minioFileName} was successfully uploaded to Minio.`,
       )
 
-      if (!uploadedFile) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-          FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        )
-      }
-    } catch (error) {
-      await this.prisma.files.delete({ where: { id: file.id } })
-      throw error
+      file = await this.filesHelper.saveFileToDatabase(
+        fileId,
+        minioFileName,
+        fileName,
+        fileSize,
+        formId,
+        pospIdOrSlug,
+      )
+    } else {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
+        FilesErrorsResponseEnum.FILE_ID_ALREADY_EXISTS_ERROR,
+      )
     }
-
-    this.logger.log(`File ${minioFileName} was successfully uploaded to Minio.`)
 
     const scannerResponse = await this.filesHelper.notifyScannerClient(
       minioFileName,

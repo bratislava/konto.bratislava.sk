@@ -178,6 +178,8 @@ const UserProfileDetailEdit = ({
               render={({ field }) => (
                 <TextField
                   autoCapitalize="on"
+                  autoCorrect="off"
+                  spellCheck="false"
                   label={t('my_profile.profile_detail.business_name')}
                   {...field}
                   errorMessage={errors.given_name}
@@ -195,6 +197,8 @@ const UserProfileDetailEdit = ({
                   <TextField
                     isRequired
                     autoCapitalize="on"
+                    autoCorrect="off"
+                    spellCheck="false"
                     label={t('my_profile.profile_detail.given_name')}
                     {...field}
                     errorMessage={errors.given_name}
@@ -210,6 +214,8 @@ const UserProfileDetailEdit = ({
                   <TextField
                     isRequired
                     autoCapitalize="on"
+                    autoCorrect="off"
+                    spellCheck="false"
                     label={t('my_profile.profile_detail.family_name')}
                     {...field}
                     errorMessage={errors.family_name}

@@ -68,6 +68,10 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
           <TextField
             isRequired
             label={t('auth.fields.new_email_label')}
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.email}
           />

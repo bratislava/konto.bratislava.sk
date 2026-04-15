@@ -213,7 +213,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             label={t('auth.fields.email_label')}
             autoComplete="username"
             autoCapitalize="none"
-            // TODO consider adding autoCorrect="off" and spellCheck={false}
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.email}
           />
@@ -231,6 +232,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
                 autoCapitalize="on"
+                autoCorrect="off"
+                spellCheck="false"
                 {...field}
                 errorMessage={errors.given_name}
               />
@@ -246,6 +249,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 helptext={t('auth.fields.family_name_helptext')}
                 autoComplete="family-name"
                 autoCapitalize="on"
+                autoCorrect="off"
+                spellCheck="false"
                 {...field}
                 errorMessage={errors.family_name}
               />
@@ -262,6 +267,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               isRequired
               label={t('auth.fields.business_name_label')}
               autoCapitalize="on"
+              autoCorrect="off"
+              spellCheck="false"
               {...field}
               errorMessage={errors.name}
             />

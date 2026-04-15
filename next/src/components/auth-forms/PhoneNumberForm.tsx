@@ -57,6 +57,10 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
           <TextField
             label={t('my_profile.profile_detail.phone_number')}
             helptext={t('my_profile.profile_detail.phone_number_helptext')}
+            autoComplete="tel"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.phone_number}
           />

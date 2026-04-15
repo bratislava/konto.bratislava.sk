@@ -12,7 +12,9 @@ import FieldWrapper from './_shared/FieldWrapper'
 import { FieldBaseProps } from './_shared/types'
 
 export interface TextFieldProps
-  extends RACTextFieldProps, FieldBaseProps, Pick<RACInputProps, 'autoCapitalize'> {
+  extends Omit<RACTextFieldProps, 'spellCheck'>,
+    FieldBaseProps,
+    Pick<RACInputProps, 'autoCapitalize' | 'autoCorrect' | 'spellCheck'> {
   placeholder?: string
   endIcon?: ReactNode
 }
@@ -28,6 +30,9 @@ const TextField = (
     placeholder,
     endIcon,
     autoCapitalize,
+    autoCorrect,
+    spellCheck,
+    autoComplete,
     ...rest
   }: TextFieldProps,
   ref: Ref<HTMLInputElement>,
@@ -52,6 +57,9 @@ const TextField = (
           ref={ref}
           placeholder={placeholder}
           autoCapitalize={autoCapitalize}
+          autoCorrect={autoCorrect}
+          spellCheck={spellCheck}
+          autoComplete={autoComplete}
           data-cy={rest.name ? `input-${rest.name}` : undefined}
           className={({ isFocused, isDisabled, isInvalid }) =>
             cn(

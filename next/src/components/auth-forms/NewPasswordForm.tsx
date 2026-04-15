@@ -106,6 +106,9 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
           <TextField
             isRequired
             autoComplete="off"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             label={t('auth.fields.verification_code_label')}
             {...field}
             errorMessage={errors.verificationCode}

@@ -102,6 +102,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
             isRequired
             helptext={t('auth.fields.rc_description')}
             label={t('auth.fields.rc_label')}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.rc}
           />
@@ -115,6 +118,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
             isRequired
             label={t('auth.fields.id_card_label')}
             helptext={t('auth.fields.id_card_description')}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.idCard}
           />

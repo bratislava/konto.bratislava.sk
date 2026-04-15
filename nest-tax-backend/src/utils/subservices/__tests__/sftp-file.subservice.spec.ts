@@ -79,10 +79,7 @@ describe('SftpFileSubservice', () => {
 
     mockPrismaService.csvFile.findMany.mockResolvedValue(mockReportedFiles)
 
-    const result = await service['filterAlreadyReportedFiles'](
-      'DZN',
-      mockFiles,
-    )
+    const result = await service['filterAlreadyReportedFiles']('DZN', mockFiles)
 
     expect(mockPrismaService.csvFile.findMany).toHaveBeenCalledWith({
       select: { name: true },

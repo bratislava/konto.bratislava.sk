@@ -33,7 +33,7 @@ const REPORT_TYPES: ReportTypeConfig[] = [
   },
 ]
 
-const csvColumnNames = [
+export const csvColumnNames = [
   'transactionType',
   'terminalId',
   'transactionId',
@@ -50,7 +50,7 @@ const csvColumnNames = [
   'orderId',
 ] as const
 
-type CsvColumns = (typeof csvColumnNames)[number]
+export type CsvColumns = (typeof csvColumnNames)[number]
 
 export type CsvRecord = Record<CsvColumns, string>
 export type CsvColumnsWithVariableSymbol = CsvRecord & {

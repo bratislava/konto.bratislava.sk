@@ -12,7 +12,8 @@ import FieldWrapper from './_shared/FieldWrapper'
 import { FieldBaseProps } from './_shared/types'
 
 export interface TextFieldProps
-  extends Omit<RACTextFieldProps, 'spellCheck'>,
+  extends
+    Omit<RACTextFieldProps, 'spellCheck'>,
     FieldBaseProps,
     Pick<RACInputProps, 'autoCapitalize' | 'autoCorrect' | 'spellCheck'> {
   placeholder?: string
@@ -68,7 +69,7 @@ const TextField = (
               'placeholder:text-content-passive-tertiary',
               {
                 'border-border-active-default': !isInvalid && !isFocused,
-                'border-border-active-focused': isFocused && !isInvalid,
+                'border-border-active-focused': !isInvalid && isFocused,
                 'border-border-error': isInvalid,
                 'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
                 'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,

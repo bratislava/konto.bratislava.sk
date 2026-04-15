@@ -67,7 +67,7 @@ const NumberField = (
                 'placeholder:text-content-passive-tertiary',
                 {
                   'border-border-active-default': !isInvalid && !isFocused,
-                  'border-border-active-focused': isFocused && !isInvalid,
+                  'border-border-active-focused': !isInvalid && isFocused,
                   'border-border-error': isInvalid,
                   'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
                   'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,

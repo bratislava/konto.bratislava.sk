@@ -21,8 +21,8 @@ const Radio = ({ variant = 'basic', description, children, className, ...rest }:
           'border bg-background-passive-base': variant !== 'basic',
           'px-3 py-2 lg:px-4 lg:py-3': variant === 'boxed',
           'p-4': variant === 'card', // There is no respo variant in Figma
-          'border-border-active-default': variant !== 'basic' && !isSelected && !isInvalid,
-          'border-border-active-primary-default': variant !== 'basic' && isSelected && !isInvalid,
+          'border-border-active-default': variant !== 'basic' && !isInvalid && !isSelected,
+          'border-border-active-primary-default': variant !== 'basic' && !isInvalid && isSelected,
           'border-border-error': variant !== 'basic' && isInvalid,
           'hover:border-border-active-hover':
             variant !== 'basic' && !isSelected && !isDisabled && !isInvalid,

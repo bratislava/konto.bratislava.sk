@@ -15,9 +15,9 @@ const Checkbox = ({ variant = 'basic', children, className, ...rest }: CheckboxP
         {
           'border bg-background-passive-base px-3 py-2 lg:px-4 lg:py-3': variant === 'boxed',
           'border-border-active-default':
-            variant === 'boxed' && !isSelected && !isIndeterminate && !isInvalid,
+            variant === 'boxed' && !isInvalid && !isSelected && !isIndeterminate,
           'border-border-active-primary-default':
-            variant === 'boxed' && (isSelected || isIndeterminate) && !isInvalid,
+            variant === 'boxed' && !isInvalid && (isSelected || isIndeterminate),
           'border-border-error': variant === 'boxed' && isInvalid,
           'hover:border-border-active-hover':
             variant === 'boxed' && !isSelected && !isIndeterminate && !isDisabled && !isInvalid,

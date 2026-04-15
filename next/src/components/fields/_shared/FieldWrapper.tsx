@@ -40,11 +40,14 @@ const FieldWrapper = ({
 }: FieldWrapperProps) => {
   const { t } = useTranslation('account')
 
+  // Showing "(optional)" is the default approach, but we still want to keep the door open for using
+  // asterisks = hiding "(optional)", by setting displayOptionalLabel={false}
   const showOptional = displayOptionalLabel && !isRequired
   const showAsterisk = !displayOptionalLabel && isRequired
 
   return (
     <>
+      {/* TODO There is gap-2 in Figma design, but we agreed gap-1 looks better. Keeping gap-1 until the discussion is resolved. */}
       <div className="flex flex-col gap-1">
         <RACLabel className={cn('text-content-passive-primary', labelSizeStyles[labelSize])}>
           {label}

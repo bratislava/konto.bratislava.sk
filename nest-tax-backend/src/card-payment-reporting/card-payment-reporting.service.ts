@@ -237,8 +237,8 @@ export class CardPaymentReportingService {
     ].join('')
   }
 
-  private createFileName(today_YYMMDD: string): string {
-    return `st1${this.configService.getOrThrow<string>('REPORTING_FILE_NAME')}_${today_YYMMDD}.txt`
+  private createFileName(reportFileName: string, today_YYMMDD: string): string {
+    return `st1${reportFileName}_${today_YYMMDD}.txt`
   }
 
   private async generateResult(

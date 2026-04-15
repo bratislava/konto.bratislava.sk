@@ -87,7 +87,8 @@ const mapRjsfToReactAriaProps = <TValue, TFieldValue, TOptions extends WidgetUiO
       name: props.name,
       className: cn(getFieldSizeClassName(size), className),
     },
-    specificOptions,
+    // TODO revisit why placeholder comes in "props", not in "options"
+    specificOptions: { ...specificOptions, placeholder: props.placeholder },
   }
 }
 

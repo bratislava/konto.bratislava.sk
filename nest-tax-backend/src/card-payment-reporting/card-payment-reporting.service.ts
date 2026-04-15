@@ -243,6 +243,7 @@ export class CardPaymentReportingService {
 
   private async generateResult(
     finalData: CsvColumnsWithVariableSymbol[],
+    reportFileName: string,
     dateInfo: {
       today_DDMMYYYY: string
       today_YYMMDD: string
@@ -255,7 +256,7 @@ export class CardPaymentReportingService {
       'REPORTING_SPECIFIC_SYMBOL',
       'REPORTING_CONSTANT_SYMBOL',
     ])
-    const head = this.generateHeader(dateInfo, constants)
+    const head = this.generateHeader(dateInfo, reportFileName, constants)
     const body = this.generateFileBody(
       finalData,
       dateInfo.yesterday_DDMMYYYY,

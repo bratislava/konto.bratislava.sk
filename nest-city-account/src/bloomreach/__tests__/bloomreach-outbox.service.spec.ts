@@ -100,7 +100,7 @@ describe('BloomreachOutboxService', () => {
       const existingEntry = {
         id: 'existing-id',
         commandData: {
-          customer_ids: { city_account_id: externalId },
+          customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
           properties: { phone: '0900000000', email: 'old@never.test' },
         },
       }
@@ -114,7 +114,7 @@ describe('BloomreachOutboxService', () => {
         where: { id: 'existing-id' },
         data: {
           commandData: {
-            customer_ids: { city_account_id: externalId },
+            customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
             properties: { phone: '0900000000', email: 'test@example.com' },
           },
         },

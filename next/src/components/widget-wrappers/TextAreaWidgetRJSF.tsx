@@ -1,18 +1,18 @@
-import { WidgetProps } from '@rjsf/utils'
 import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import TextAreaField from '@/src/components/fields/TextAreaField'
 import FieldBlurWrapper from '@/src/components/widget-components/FieldBlurWrapper/FieldBlurWrapper'
-import mapRjsfToReactAriaProps from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-const TextAreaWidgetRJSF = (props: WidgetProps) => {
-  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps<
-    string,
-    TextAreaUiOptions
-  >(props, {
-    toFieldValue: (v) => v ?? '',
-    fromFieldValue: (v) => v || undefined,
+type TextAreaWidgetRJSFProps = RJSFWidgetProps<string | undefined, TextAreaUiOptions>
+
+const TextAreaWidgetRJSF = (props: TextAreaWidgetRJSFProps) => {
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
+    toFieldValue: (value) => value ?? '',
+    fromFieldValue: (value) => value || undefined,
   })
 
   return (

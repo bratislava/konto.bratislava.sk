@@ -1,17 +1,17 @@
-import { WidgetProps } from '@rjsf/utils'
 import { InputUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import TextField from '@/src/components/fields/TextField'
-import mapRjsfToReactAriaProps from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-const InputWidgetRJSF = (props: WidgetProps) => {
-  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps<
-    string,
-    InputUiOptions
-  >(props, {
-    toFieldValue: (v) => v ?? '',
-    fromFieldValue: (v) => v || undefined,
+type InputWidgetRJSFProps = RJSFWidgetProps<string | undefined, InputUiOptions>
+
+const InputWidgetRJSF = (props: InputWidgetRJSFProps) => {
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
+    toFieldValue: (value) => value ?? '',
+    fromFieldValue: (value) => (value.length > 0 ? value : undefined),
   })
 
   return (

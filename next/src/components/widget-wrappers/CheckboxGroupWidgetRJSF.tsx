@@ -1,4 +1,3 @@
-import { WidgetProps } from '@rjsf/utils'
 import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
 import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { CheckboxGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
@@ -6,17 +5,21 @@ import { useMemo } from 'react'
 
 import Checkbox from '@/src/components/fields/Checkbox'
 import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
-import mapRjsfToReactAriaProps from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 import { isDefined } from '@/src/frontend/utils/general'
 
-const CheckboxGroupWidgetRJSF = (props: WidgetProps) => {
+type CheckboxGroupWidgetRJSFProps = RJSFWidgetProps<
+  string[] | undefined,
+  WithEnumOptions<CheckboxGroupUiOptions>
+>
+
+const CheckboxGroupWidgetRJSF = (props: CheckboxGroupWidgetRJSFProps) => {
   const { maxItems } = props.schema
 
-  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps<
-    string[],
-    WithEnumOptions<CheckboxGroupUiOptions>
-  >(props, {
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
     toFieldValue: (value) => value ?? [],
     fromFieldValue: (value) => value,
   })

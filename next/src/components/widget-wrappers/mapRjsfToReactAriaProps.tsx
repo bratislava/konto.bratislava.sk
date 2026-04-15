@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import { FieldBaseProps } from '@/src/components/fields/_shared/types'
@@ -6,14 +6,14 @@ import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
 import { getFieldSizeClassName } from '@/src/components/widget-wrappers/getFieldSizeClassName'
 import cn from '@/src/utils/cn'
 
-type AdapterConfig<TValue> = {
-  toFieldValue: (rjsfValue: any) => TValue
-  fromFieldValue: (fieldValue: TValue) => any
+type AdapterConfig<TValue, TFieldValue> = {
+  toFieldValue: (rjsfValue: TValue) => TFieldValue
+  fromFieldValue: (fieldValue: TFieldValue) => TValue
 }
 
-type AdapterFieldProps<TValue> = FieldBaseProps & {
-  value: TValue
-  onChange: (value: TValue) => void
+type AdapterFieldProps<TFieldValue> = FieldBaseProps & {
+  value: TFieldValue
+  onChange: (value: TFieldValue) => void
   isRequired: boolean
   isDisabled: boolean
   isReadOnly: boolean
@@ -21,17 +21,27 @@ type AdapterFieldProps<TValue> = FieldBaseProps & {
   className?: string
 }
 
-type AdapterResult<TValue, TOptions extends WidgetUiOptions> = {
+type AdapterResult<TFieldValue, TOptions extends WidgetUiOptions> = {
   wrapperProps: { id: string; options: WidgetUiOptions }
-  fieldProps: AdapterFieldProps<TValue>
+  fieldProps: AdapterFieldProps<TFieldValue>
   specificOptions: Omit<TOptions, keyof WidgetUiOptions>
 }
 
-const mapRjsfToReactAriaProps = <TValue, TOptions extends WidgetUiOptions = WidgetUiOptions>(
-  props: WidgetProps,
-  config: AdapterConfig<TValue>,
-): AdapterResult<TValue, TOptions> => {
-  const options = props.options as TOptions
+export type RJSFWidgetProps<TValue, TOptions extends WidgetUiOptions> = Omit<
+  WidgetProps<TValue>,
+  'options' | 'value' | 'schema' | 'onChange'
+> & {
+  options: TOptions
+  value: TValue
+  schema: StrictRJSFSchema
+  onChange: (value: TValue) => void
+}
+
+const mapRjsfToReactAriaProps = <TValue, TFieldValue, TOptions extends WidgetUiOptions>(
+  props: RJSFWidgetProps<TValue, TOptions>,
+  config: AdapterConfig<TValue, TFieldValue>,
+): AdapterResult<TFieldValue, TOptions> => {
+  const options = props.options
   const rawErrors = props.rawErrors?.filter(Boolean)
 
   const {
@@ -55,7 +65,7 @@ const mapRjsfToReactAriaProps = <TValue, TOptions extends WidgetUiOptions = Widg
   return {
     wrapperProps: {
       id: props.id,
-      options: options as WidgetUiOptions,
+      options,
     },
     fieldProps: {
       label: props.label,
@@ -73,11 +83,11 @@ const mapRjsfToReactAriaProps = <TValue, TOptions extends WidgetUiOptions = Widg
         ),
       errorMessage: rawErrors?.length ? rawErrors.join(', ') : undefined,
       value: config.toFieldValue(props.value),
-      onChange: (valueInner: TValue) => props.onChange(config.fromFieldValue(valueInner)),
+      onChange: (valueInner) => props.onChange(config.fromFieldValue(valueInner)),
       name: props.name,
       className: cn(getFieldSizeClassName(size), className),
     },
-    specificOptions: specificOptions as Omit<TOptions, keyof WidgetUiOptions>,
+    specificOptions,
   }
 }
 

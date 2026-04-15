@@ -24,16 +24,18 @@ import TimePickerWidgetRJSF from '@/src/components/widget-wrappers/TimePickerWid
 
 // ComponentType<WidgetProps> must be used for each widget, because the library won't accept our custom overridden
 // `options` property.
+// Added `as unknown as` for RadioGroup, CheckboxGroup, and Checkbox - needed because their options types include
+// required properties absent from the generic WidgetProps.options.
 const theme: ThemeProps = {
   widgets: {
     [BaWidgetType.Select]: SelectWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.SelectMultiple]: SelectMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.Input]: InputWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.Number]: NumberWidgetRJSF as ComponentType<WidgetProps>,
-    [BaWidgetType.RadioGroup]: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.RadioGroup]: RadioGroupWidgetRJSF as unknown as ComponentType<WidgetProps>,
     [BaWidgetType.TextArea]: TextAreaWidgetRJSF as ComponentType<WidgetProps>,
-    [BaWidgetType.CheckboxGroup]: CheckboxGroupWidgetRJSF as ComponentType<WidgetProps>,
-    [BaWidgetType.Checkbox]: CheckboxWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.CheckboxGroup]: CheckboxGroupWidgetRJSF as unknown as ComponentType<WidgetProps>,
+    [BaWidgetType.Checkbox]: CheckboxWidgetRJSF as unknown as ComponentType<WidgetProps>,
     [BaWidgetType.FileUpload]: FileUploadWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.FileUploadMultiple]: FileUploadMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.DatePicker]: DatePickerWidgetRJSF as ComponentType<WidgetProps>,

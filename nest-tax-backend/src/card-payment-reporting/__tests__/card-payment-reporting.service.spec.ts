@@ -32,57 +32,80 @@ type CsvColumns = (typeof csvColumnNames)[number]
 
 type CsvRecord = Record<CsvColumns, string>
 
+const makeCsvFileContent = (rows: string[]) =>
+  [`TU;1234567890`, ...rows].join('\n')
+
+const makePosRow = (overrides: Partial<Record<CsvColumns, string>> = {}) => {
+  const defaults: Record<CsvColumns, string> = {
+    transactionType: 'POS',
+    terminalId: '11111111',
+    transactionId: '222222222222',
+    transactionType_: 'S',
+    date: '09.11.24',
+    totalPrice: '100,00',
+    provision: '1,50',
+    priceWithoutProvision: '98,50',
+    cashBack: '0,00',
+    authCode: '777777',
+    cardNumber: '888888******9999',
+    cardType: 'V',
+    closureId: '111111',
+    orderId: '2222222222222222',
+  }
+  const merged = { ...defaults, ...overrides }
+  return csvColumnNames.map((col) => merged[col]).join(';')
+}
+
 describe('CardPaymentReportingService', () => {
   let service: CardPaymentReportingService
+  let mockConfigService: { getOrThrow: jest.Mock }
+  let mockSftpFileSubservice: { getNewFiles: jest.Mock }
+  let mockDatabaseSubservice: {
+    getVariableSymbolsByOrderIds: jest.Mock
+    getConfigByKeys: jest.Mock
+  }
+  let mockEmailSubservice: { send: jest.Mock }
+  let mockPrismaService: {
+    tax: { findMany: jest.Mock }
+    config: { findMany: jest.Mock }
+    csvFile: { createMany: jest.Mock }
+  }
 
   beforeEach(async () => {
+    mockPrismaService = {
+      tax: { findMany: jest.fn() },
+      config: { findMany: jest.fn() },
+      csvFile: { createMany: jest.fn() },
+    }
+    mockConfigService = {
+      getOrThrow: jest.fn(),
+    }
+    mockSftpFileSubservice = {
+      getNewFiles: jest.fn().mockResolvedValue([]),
+    }
+    mockDatabaseSubservice = {
+      getVariableSymbolsByOrderIds: jest.fn().mockResolvedValue([]),
+      getConfigByKeys: jest.fn().mockResolvedValue({
+        REPORTING_USER_CONSTANT_SYMBOL: '0000000001',
+        REPORTING_VARIABLE_SYMBOL: '0000000002',
+        REPORTING_SPECIFIC_SYMBOL: '0000000003',
+        REPORTING_CONSTANT_SYMBOL: '0000000004',
+      }),
+    }
+    mockEmailSubservice = { send: jest.fn() }
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CardPaymentReportingService,
-        {
-          provide: PrismaService,
-          useValue: {
-            tax: {
-              findMany: jest.fn(),
-            },
-            config: {
-              findMany: jest.fn(),
-            },
-            csvFile: {
-              createMany: jest.fn(),
-            },
-          },
-        },
-        {
-          provide: ConfigService,
-          useValue: {
-            getOrThrow: jest.fn(),
-          },
-        },
+        { provide: PrismaService, useValue: mockPrismaService },
+        { provide: ConfigService, useValue: mockConfigService },
         {
           provide: ThrowerErrorGuard,
-          useValue: {
-            InternalServerErrorException: jest.fn(),
-          },
+          useValue: { InternalServerErrorException: jest.fn() },
         },
-        {
-          provide: EmailSubservice,
-          useValue: {
-            send: jest.fn(),
-          },
-        },
-        {
-          provide: SftpFileSubservice,
-          useValue: {
-            getNewFiles: jest.fn(),
-          },
-        },
-        {
-          provide: DatabaseSubservice,
-          useValue: {
-            getVariableSymbolsByOrderIds: jest.fn(),
-          },
-        },
+        { provide: EmailSubservice, useValue: mockEmailSubservice },
+        { provide: SftpFileSubservice, useValue: mockSftpFileSubservice },
+        { provide: DatabaseSubservice, useValue: mockDatabaseSubservice },
       ],
     }).compile()
 
@@ -235,6 +258,209 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         variableSymbols,
       )
       expect(result[0].variableSymbol).toBe('')
+    })
+  })
+
+  describe('generateAndSendPaymentReport', () => {
+    const envValues: Record<string, string> = {
+      REPORTING_SFTP_FILES_PATH: '7322226495/oms/cz',
+      REPORTING_FILE_NAME: 'pbr24',
+      REPORTING_PKO_SFTP_FILES_PATH: '7322257895/oms/cz',
+      REPORTING_PKO_FILE_NAME: 'pbr26',
+      REPORTING_ICO: '00603481',
+      REPORTING_ACCOUNT_ID: '1234567890123456',
+      REPORTING_BANK_ID: '1100',
+    }
+
+    beforeEach(() => {
+      mockConfigService.getOrThrow.mockImplementation((key: string) => {
+        const value = envValues[key]
+        if (!value) throw new Error(`Missing config key: ${key}`)
+        return value
+      })
+    })
+
+    it('should process files from both DzN and PKO SFTP paths', async () => {
+      const dznCsv = makeCsvFileContent([
+        makePosRow({ orderId: '1111111111111111' }),
+      ])
+      const pkoCsv = makeCsvFileContent([
+        makePosRow({ orderId: '2222222222222222' }),
+      ])
+
+      mockSftpFileSubservice.getNewFiles.mockImplementation(
+        async (sftpPath: string) => {
+          if (sftpPath === '7322226495/oms/cz') {
+            return Promise.resolve([
+              { name: 'AH_DATA_1_2_3_2604101234.csv', content: dznCsv },
+            ])
+          }
+          if (sftpPath === '7322257895/oms/cz') {
+            return Promise.resolve([
+              { name: 'AH_DATA_1_2_3_2604101234.csv', content: pkoCsv },
+            ])
+          }
+          return Promise.resolve([])
+        },
+      )
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      expect(mockSftpFileSubservice.getNewFiles).toHaveBeenCalledTimes(2)
+      expect(mockSftpFileSubservice.getNewFiles).toHaveBeenCalledWith(
+        '7322226495/oms/cz',
+        'DZN',
+        undefined,
+      )
+      expect(mockSftpFileSubservice.getNewFiles).toHaveBeenCalledWith(
+        '7322257895/oms/cz',
+        'KO',
+        undefined,
+      )
+
+      expect(mockEmailSubservice.send).toHaveBeenCalledTimes(2)
+
+      const dznCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - DZN',
+      )
+      const pkoCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
+      )
+
+      expect(dznCall).toBeDefined()
+      expect(pkoCall).toBeDefined()
+      expect(dznCall[3]).toHaveLength(1)
+      expect(dznCall[3][0].filename).toBe('st1pbr24_260410.txt')
+      expect(pkoCall[3]).toHaveLength(1)
+      expect(pkoCall[3][0].filename).toBe('st1pbr26_260410.txt')
+    })
+
+    it('should generate correct file content with proper header for each report type', async () => {
+      const csv = makeCsvFileContent([
+        makePosRow({ orderId: '1111111111111111' }),
+      ])
+
+      mockSftpFileSubservice.getNewFiles.mockImplementation(
+        async (sftpPath: string) => {
+          if (sftpPath === '7322226495/oms/cz') {
+            return Promise.resolve([
+              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+            ])
+          }
+          if (sftpPath === '7322257895/oms/cz') {
+            return Promise.resolve([
+              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+            ])
+          }
+          return Promise.resolve([])
+        },
+      )
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      const dznCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - DZN',
+      )
+      const pkoCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
+      )
+
+      expect(dznCall[3][0].content).toContain('pbr24')
+      expect(dznCall[3][0].content).not.toContain('pbr26')
+      expect(pkoCall[3][0].content).toContain('pbr26')
+      expect(pkoCall[3][0].content).not.toContain('pbr24')
+    })
+
+    it('should store CSV file names with their tax type', async () => {
+      const csv = makeCsvFileContent([
+        makePosRow({ orderId: '1111111111111111' }),
+      ])
+
+      mockSftpFileSubservice.getNewFiles.mockImplementation(
+        async (sftpPath: string) => {
+          if (sftpPath === '7322226495/oms/cz') {
+            return Promise.resolve([
+              { name: 'dzn_file_2604101234.csv', content: csv },
+            ])
+          }
+          if (sftpPath === '7322257895/oms/cz') {
+            return Promise.resolve([
+              { name: 'pko_file_2604101234.csv', content: csv },
+            ])
+          }
+          return Promise.resolve([])
+        },
+      )
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      expect(mockPrismaService.csvFile.createMany).toHaveBeenCalledWith({
+        data: expect.arrayContaining([
+          { name: 'dzn_file_2604101234.csv', taxType: 'DZN' },
+          { name: 'pko_file_2604101234.csv', taxType: 'KO' },
+        ]),
+      })
+    })
+
+    it('should not store CSV file names when custom date range is used', async () => {
+      mockSftpFileSubservice.getNewFiles.mockResolvedValue([])
+
+      await service.generateAndSendPaymentReport(
+        ['test@example.com'],
+        new Date('2026-04-01'),
+      )
+
+      expect(mockPrismaService.csvFile.createMany).not.toHaveBeenCalled()
+    })
+
+    it('should send separate no-report emails when both paths return no files', async () => {
+      mockSftpFileSubservice.getNewFiles.mockResolvedValue([])
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      expect(mockEmailSubservice.send).toHaveBeenCalledTimes(2)
+      expect(mockEmailSubservice.send).toHaveBeenCalledWith(
+        ['test@example.com'],
+        'Report platieb kartou - DZN',
+        'Dnes nie je čo reportovať.',
+        [],
+      )
+      expect(mockEmailSubservice.send).toHaveBeenCalledWith(
+        ['test@example.com'],
+        'Report platieb kartou - KO',
+        'Dnes nie je čo reportovať.',
+        [],
+      )
+    })
+
+    it('should handle one report type having files and the other empty', async () => {
+      const csv = makeCsvFileContent([
+        makePosRow({ orderId: '1111111111111111' }),
+      ])
+
+      mockSftpFileSubservice.getNewFiles.mockImplementation(
+        async (sftpPath: string) => {
+          if (sftpPath === '7322257895/oms/cz') {
+            return Promise.resolve([
+              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+            ])
+          }
+          return Promise.resolve([])
+        },
+      )
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      const dznCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - DZN',
+      )
+      const pkoCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
+      )
+
+      expect(dznCall[3]).toHaveLength(0)
+      expect(pkoCall[3]).toHaveLength(1)
+      expect(pkoCall[3][0].filename).toBe('st1pbr26_260410.txt')
     })
   })
 })

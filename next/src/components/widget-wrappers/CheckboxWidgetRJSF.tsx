@@ -17,6 +17,7 @@ const CheckboxWidgetRJSF = (props: CheckboxWidgetRJSFProps) => {
 
   return (
     <WidgetWrapper {...wrapperProps}>
+      {/* TODO: Implement single checkbox */}
       <CheckboxGroup
         {...fieldProps}
         data-cy={`checkbox-group-${fieldProps.label

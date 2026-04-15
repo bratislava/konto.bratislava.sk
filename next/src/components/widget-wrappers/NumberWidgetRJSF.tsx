@@ -20,6 +20,8 @@ const NumberWidgetRJSF = (props: NumberWidgetRJSFProps) => {
     if (schema.multipleOf != null) {
       return schema.multipleOf
     }
+    // `multipleOf` is required form schema.type === 'number' and optional for schema.type === 'integer', we add
+    // `step` attribute only for integer values if not present
     if (schema.type === 'integer') {
       return 1
     }
@@ -28,6 +30,7 @@ const NumberWidgetRJSF = (props: NumberWidgetRJSFProps) => {
   }
 
   const getFormatOptions = () => {
+    // Ensure that no fraction digits can be entered to integer field
     if (schema.type === 'integer' && !specificOptions.formatOptions?.maximumFractionDigits) {
       return { ...specificOptions.formatOptions, maximumFractionDigits: 0 }
     }

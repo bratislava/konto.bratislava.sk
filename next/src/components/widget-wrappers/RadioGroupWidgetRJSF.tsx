@@ -18,6 +18,11 @@ type RadioGroupWidgetRJSFProps = RJSFWidgetProps<
 const RadioGroupWidgetRJSF = (props: RadioGroupWidgetRJSFProps) => {
   const isBoolean = props.schema.type === 'boolean'
 
+  /**
+   * RadioGroupField component only supports string as value, in RJSF we want to support both string and boolean.
+   * Therefore, if the value is boolean, we need to convert it to string before passing it to the RadioGroup component.
+   * We also handle conversion between null (RadioGroupField) and undefined (RJSF).
+   */
   const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
     toFieldValue: (value) => {
       if (isBoolean) return typeof value === 'boolean' ? value.toString() : null

@@ -12,7 +12,7 @@ type TextAreaWidgetRJSFProps = RJSFWidgetProps<string | undefined, TextAreaUiOpt
 const TextAreaWidgetRJSF = (props: TextAreaWidgetRJSFProps) => {
   const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
     toFieldValue: (value) => value ?? '',
-    fromFieldValue: (value) => value || undefined,
+    fromFieldValue: (value) => (value.length > 0 ? value : undefined),
   })
 
   return (

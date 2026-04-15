@@ -133,8 +133,9 @@ export class CardPaymentReportingService {
     })
   }
 
-  generateHeader(
+  private generateHeader(
     dateInfo: { today_DDMMYYYY: string },
+    reportFileName: string,
     constants: {
       REPORTING_VARIABLE_SYMBOL: string
       REPORTING_SPECIFIC_SYMBOL: string
@@ -145,7 +146,7 @@ export class CardPaymentReportingService {
       '4',
       dateInfo.today_DDMMYYYY,
       dateInfo.today_DDMMYYYY,
-      this.configService.getOrThrow<string>('REPORTING_FILE_NAME'),
+      reportFileName,
       'Hlavné mesto Slovenskej republiky Bratislava',
       ' '.repeat(6),
       this.configService.getOrThrow<string>('REPORTING_ICO'),

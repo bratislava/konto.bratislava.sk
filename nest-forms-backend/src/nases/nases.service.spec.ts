@@ -651,14 +651,20 @@ describe('NasesService', () => {
 
     describe('cumulative file size limits', () => {
       beforeEach(() => {
-        service['baConfigService'].featureToggles = {
-          versioning: false,
-          fileSizeLimits: true,
-        }
-        service['baConfigService'].fileLimits = {
-          maxSingleSizeGlobal: 500_000_000,
-          maxCumulativeSizeGlobal: 1_000_000_000,
-        }
+        Object.defineProperty(service['baConfigService'], 'featureToggles', {
+          get: () => ({
+            versioning: false,
+            fileSizeLimits: true,
+          }),
+          configurable: true,
+        })
+        Object.defineProperty(service['baConfigService'], 'fileLimits', {
+          get: () => ({
+            maxSingleSizeGlobal: 500_000_000,
+            maxCumulativeSizeGlobal: 1_000_000_000,
+          }),
+          configurable: true,
+        })
       })
 
       it('should throw if total file size exceeds form definition limit', async () => {
@@ -678,10 +684,13 @@ describe('NasesService', () => {
       })
 
       it('should throw if total file size exceeds global cumulative limit', async () => {
-        service['baConfigService'].fileLimits = {
-          maxSingleSizeGlobal: 500_000_000,
-          maxCumulativeSizeGlobal: 200_000,
-        }
+        Object.defineProperty(service['baConfigService'], 'fileLimits', {
+          get: () => ({
+            maxSingleSizeGlobal: 500_000_000,
+            maxCumulativeSizeGlobal: 200_000,
+          }),
+          configurable: true,
+        })
         ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
           ...mockFormDefinition,
           // no maxTotalFileSize — falls back to global
@@ -720,10 +729,13 @@ describe('NasesService', () => {
       })
 
       it('should skip cumulative check when feature flag is off', async () => {
-        service['baConfigService'].featureToggles = {
-          versioning: false,
-          fileSizeLimits: false,
-        }
+        Object.defineProperty(service['baConfigService'], 'featureToggles', {
+          get: () => ({
+            versioning: false,
+            fileSizeLimits: false,
+          }),
+          configurable: true,
+        })
         ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
           ...mockFormDefinition,
           maxTotalFileSize: 100,

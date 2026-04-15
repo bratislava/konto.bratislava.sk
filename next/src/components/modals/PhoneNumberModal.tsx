@@ -1,5 +1,5 @@
 import { updateUserAttributes } from 'aws-amplify/auth'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { useState } from 'react'
 
 import PhoneNumberForm, { PhoneNumberData } from '@/src/components/auth-forms/PhoneNumberForm'

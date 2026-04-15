@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { forwardRef } from 'react'
 import { DropEvent } from 'react-aria'
 import {
@@ -65,6 +65,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
 
       if (!files) {
         onUpload([])
+
         return
       }
 
@@ -82,6 +83,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
           if (item.kind === 'file') {
             return item.getFile()
           }
+
           return null
           // TODO: Consider implementing folder.
         })
@@ -116,7 +118,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
               </div>
 
               {sizeLimit || supportedFormats?.length ? (
-                <dl className="flex gap-2 text-p3">
+                <dl className="text-p3 flex gap-2">
                   {displayMaxFileSize ? (
                     <>
                       <dt className="sr-only">{t('Upload.sizeLimit')}</dt>

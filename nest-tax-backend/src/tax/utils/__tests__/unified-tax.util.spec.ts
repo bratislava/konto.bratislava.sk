@@ -58,14 +58,14 @@ const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
   type: TaxType.DZN,
   taxYear: 2025,
   today: new Date('2025-01-01'),
-  overallAmount: 6600,
+  overallAmount: 6601,
   paymentCalendarThreshold: 6600,
   variableSymbol: '1234567890',
   dateOfValidity: new Date('2025-01-01'),
   deliveryMethod: null,
   createdAt: new Date('2025-01-01'),
   installments: [
-    { order: 1, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0] },
+    { order: 1, amount: 2201, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0] },
     { order: 2, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[1] },
     { order: 3, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[2] },
   ],
@@ -139,15 +139,15 @@ const defaultInputRealEstate: GetTaxDetailPureOptions<typeof TaxType.DZN> = {
 
 const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
   overallPaid: 0,
-  overallBalance: 6600,
-  overallAmount: 6600,
+  overallBalance: 6601,
+  overallAmount: 6601,
   oneTimePayment: {
     isPossible: true,
     type: OneTimePaymentTypeEnum.ONE_TIME_PAYMENT,
-    amount: 6600,
+    amount: 6601,
     dueDate: new Date('2025-01-15T23:00:00.000Z'),
     qrCode: {
-      amount: 6600,
+      amount: 6601,
       variableSymbol: '1234567890',
       paymentNote: QrPaymentNoteEnum.QR_oneTimePay,
       iban: 'SK3175000000000025747653',
@@ -162,8 +162,8 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
         installmentNumber: 1,
         dueDate: new Date('2025-01-15T23:00:00.000Z'),
         status: InstallmentPaidStatusEnum.NOT_PAID,
-        remainingAmount: 2200,
-        totalInstallmentAmount: 2200,
+        remainingAmount: 2201,
+        totalInstallmentAmount: 2201,
       },
       {
         installmentNumber: 2,
@@ -181,11 +181,11 @@ const defaultOutputRealEstate: GetTaxDetailPureResponse<'DZN'> = {
       },
     ],
     activeInstallment: {
-      remainingAmount: 2200,
+      remainingAmount: 2201,
       variableSymbol: '1234567890',
       dueDate: new Date('2025-01-15T23:00:00.000Z'),
       qrCode: {
-        amount: 2200,
+        amount: 2201,
         variableSymbol: '1234567890',
         paymentNote: QrPaymentNoteEnum.QR_firstInstallment,
         iban: 'SK3175000000000025747653',
@@ -393,14 +393,14 @@ describe('UnifiedTaxUtil', () => {
           })
 
           const expected = createExpectedOutput((draft) => {
-            const newOverallBalance = 6599
+            const newOverallBalance = 6600
             draft.overallPaid = 1
             draft.overallBalance = newOverallBalance
-            draft.installmentPayment.installments![0].remainingAmount = 2199
+            draft.installmentPayment.installments![0].remainingAmount = 2200
             draft.installmentPayment.installments![0].status =
               InstallmentPaidStatusEnum.PARTIALLY_PAID
-            draft.installmentPayment.activeInstallment!.remainingAmount = 2199
-            draft.installmentPayment.activeInstallment!.qrCode.amount = 2199
+            draft.installmentPayment.activeInstallment!.remainingAmount = 2200
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 2200
             draft.oneTimePayment.amount = newOverallBalance
             draft.oneTimePayment.type =
               OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
@@ -415,16 +415,18 @@ describe('UnifiedTaxUtil', () => {
         it('full first', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
-            taxPayments: [{ amount: 2200, status: PaymentStatus.SUCCESS }],
+            taxPayments: [{ amount: 2201, status: PaymentStatus.SUCCESS }],
           })
 
           const expected = createExpectedOutput((draft) => {
             const newOverallBalance = 4400
-            draft.overallPaid = 2200
+            draft.overallPaid = 2201
             draft.overallBalance = newOverallBalance
             draft.installmentPayment.installments![0].remainingAmount = 0
             draft.installmentPayment.installments![0].status =
               InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.activeInstallment!.remainingAmount = 2200
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 2200
             draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
               QrPaymentNoteEnum.QR_secondInstallment
             draft.installmentPayment.activeInstallment!.dueDate = new Date(
@@ -444,12 +446,12 @@ describe('UnifiedTaxUtil', () => {
         it('partial second', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
-            taxPayments: [{ amount: 2201, status: PaymentStatus.SUCCESS }],
+            taxPayments: [{ amount: 2202, status: PaymentStatus.SUCCESS }],
           })
 
           const expected = createExpectedOutput((draft) => {
             const newOverallBalance = 4399
-            draft.overallPaid = 2201
+            draft.overallPaid = 2202
             draft.overallBalance = newOverallBalance
             draft.installmentPayment.installments![0].remainingAmount = 0
             draft.installmentPayment.installments![1].remainingAmount = 2199
@@ -478,12 +480,12 @@ describe('UnifiedTaxUtil', () => {
         it('full second', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
-            taxPayments: [{ amount: 4400, status: PaymentStatus.SUCCESS }],
+            taxPayments: [{ amount: 4401, status: PaymentStatus.SUCCESS }],
           })
 
           const expected = createExpectedOutput((draft) => {
             const newOverallBalance = 2200
-            draft.overallPaid = 4400
+            draft.overallPaid = 4401
             draft.overallBalance = newOverallBalance
             draft.installmentPayment.installments![0].remainingAmount = 0
             draft.installmentPayment.installments![1].remainingAmount = 0
@@ -491,6 +493,8 @@ describe('UnifiedTaxUtil', () => {
               InstallmentPaidStatusEnum.PAID
             draft.installmentPayment.installments![1].status =
               InstallmentPaidStatusEnum.PAID
+            draft.installmentPayment.activeInstallment!.remainingAmount = 2200
+            draft.installmentPayment.activeInstallment!.qrCode.amount = 2200
             draft.installmentPayment.activeInstallment!.qrCode.paymentNote =
               QrPaymentNoteEnum.QR_thirdInstallment
             draft.installmentPayment.activeInstallment!.dueDate = new Date(
@@ -510,11 +514,11 @@ describe('UnifiedTaxUtil', () => {
         it('fully paid', () => {
           const output = getTaxDetailPure({
             ...defaultInputRealEstate,
-            taxPayments: [{ amount: 6600, status: PaymentStatus.SUCCESS }],
+            taxPayments: [{ amount: 6601, status: PaymentStatus.SUCCESS }],
           })
 
           const expected = createExpectedOutput((draft) => {
-            draft.overallPaid = 6600
+            draft.overallPaid = 6601
             draft.overallBalance = 0
             draft.installmentPayment = {
               isPossible: false,
@@ -580,9 +584,68 @@ describe('UnifiedTaxUtil', () => {
             isCancelled: true,
           })
 
-          expect(output.overallAmount).toBe(6600)
+          expect(output.overallAmount).toBe(6601)
           expect(output.overallPaid).toBe(0)
-          expect(output.overallBalance).toBe(6600)
+          expect(output.overallBalance).toBe(6601)
+        })
+      })
+
+      describe('paymentCalendarThreshold', () => {
+        it('when overallAmount equals paymentCalendarThreshold, installment payment is not possible (BELOW_THRESHOLD)', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            overallAmount: 6600,
+            paymentCalendarThreshold: 6600,
+            installments: [
+              {
+                order: 1,
+                amount: 2200,
+                dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0],
+              },
+              {
+                order: 2,
+                amount: 2200,
+                dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[1],
+              },
+              {
+                order: 3,
+                amount: 2200,
+                dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[2],
+              },
+            ],
+          })
+
+          expect(output.installmentPayment.isPossible).toBe(false)
+          expect(output.installmentPayment.reasonNotPossible).toBe(
+            InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
+          )
+        })
+
+        it('when overallAmount is one cent above paymentCalendarThreshold, installment payment is possible', () => {
+          const output = getTaxDetailPure({
+            ...defaultInputRealEstate,
+            overallAmount: 6601,
+            paymentCalendarThreshold: 6600,
+            installments: [
+              {
+                order: 1,
+                amount: 2201,
+                dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0],
+              },
+              {
+                order: 2,
+                amount: 2200,
+                dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[1],
+              },
+              {
+                order: 3,
+                amount: 2200,
+                dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[2],
+              },
+            ],
+          })
+
+          expect(output.installmentPayment.isPossible).toBe(true)
         })
       })
 
@@ -647,11 +710,11 @@ describe('UnifiedTaxUtil', () => {
               )
               draft.oneTimePayment.type =
                 OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
-              draft.oneTimePayment.amount = 6599
-              draft.oneTimePayment.qrCode!.amount = 6599
+              draft.oneTimePayment.amount = 6600
+              draft.oneTimePayment.qrCode!.amount = 6600
               draft.oneTimePayment.qrCode!.paymentNote =
                 QrPaymentNoteEnum.QR_remainingAmount
-              draft.overallBalance = 6599
+              draft.overallBalance = 6600
               draft.overallPaid = 1
             })
 
@@ -661,7 +724,7 @@ describe('UnifiedTaxUtil', () => {
           it('with full first payment', () => {
             const output = getTaxDetailPure({
               ...defaultInputRealEstate,
-              taxPayments: [{ amount: 2200, status: PaymentStatus.SUCCESS }],
+              taxPayments: [{ amount: 2201, status: PaymentStatus.SUCCESS }],
               today: new Date('2025-01-22'),
             })
 
@@ -686,7 +749,7 @@ describe('UnifiedTaxUtil', () => {
               draft.oneTimePayment.qrCode!.paymentNote =
                 QrPaymentNoteEnum.QR_remainingAmount
               draft.overallBalance = 4400
-              draft.overallPaid = 2200
+              draft.overallPaid = 2201
             })
 
             expectEqualAsJsonStringsWithDates(output, expected)
@@ -695,7 +758,7 @@ describe('UnifiedTaxUtil', () => {
           it('with full second payment', () => {
             const output = getTaxDetailPure({
               ...defaultInputRealEstate,
-              taxPayments: [{ amount: 4400, status: PaymentStatus.SUCCESS }],
+              taxPayments: [{ amount: 4401, status: PaymentStatus.SUCCESS }],
               today: new Date('2025-01-22'),
             })
 
@@ -720,7 +783,7 @@ describe('UnifiedTaxUtil', () => {
               draft.oneTimePayment.qrCode!.paymentNote =
                 QrPaymentNoteEnum.QR_remainingAmount
               draft.overallBalance = 2200
-              draft.overallPaid = 4400
+              draft.overallPaid = 4401
             })
 
             expectEqualAsJsonStringsWithDates(output, expected)
@@ -760,7 +823,7 @@ describe('UnifiedTaxUtil', () => {
 
           const expected = createExpectedOutput((draft) => {
             draft.installmentPayment.activeInstallment = {
-              remainingAmount: 6600,
+              remainingAmount: 6601,
               variableSymbol:
                 draft.installmentPayment.activeInstallment!.variableSymbol,
               dueDate: new Date('2025-10-31T23:00:00.000Z'),
@@ -784,7 +847,7 @@ describe('UnifiedTaxUtil', () => {
               {
                 ...draft.installmentPayment.installments![2],
                 status: InstallmentPaidStatusEnum.NOT_PAID,
-                remainingAmount: 6600,
+                remainingAmount: 6601,
               },
             ]
           })
@@ -1661,13 +1724,13 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     taxId: 123,
     taxYear: 2025,
     today: new Date('2025-01-01'),
-    overallAmount: 6600,
+    overallAmount: 6601,
     variableSymbol: '1234567890',
     dateOfValidity: new Date('2025-01-01'),
     deliveryMethod: null,
     createdAt: new Date('2025-01-01'),
     installments: [
-      { order: 1, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0] },
+      { order: 1, amount: 2201, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[0] },
       { order: 2, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[1] },
       { order: 3, amount: 2200, dueDate: DZN_FIXTURE_INSTALLMENT_DUE_DATES[2] },
     ],
@@ -1697,7 +1760,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     )
 
     expect(output).toEqual({
-      amount: 2200,
+      amount: 2201,
       taxId: 123,
       description: 'Platba 1. splatky za dane pre BA s id dane 123',
       taxType: TaxType.DZN,
@@ -1712,7 +1775,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     const output = getTaxDetailPureForInstallmentGenerator(options)
 
     expect(output).toEqual({
-      amount: 2199,
+      amount: 2200,
       taxId: 123,
       description: 'Platba zostatku 1. splatky za dane pre BA s id dane 123',
       taxType: TaxType.DZN,
@@ -1722,7 +1785,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
   it('should throw an error if all installments are fully paid', () => {
     const options = {
       ...baseOptionsRealEstate,
-      taxPayments: [{ amount: 6600, status: PaymentStatus.SUCCESS }],
+      taxPayments: [{ amount: 6601, status: PaymentStatus.SUCCESS }],
     }
 
     expect(() => getTaxDetailPureForInstallmentGenerator(options)).toThrow(

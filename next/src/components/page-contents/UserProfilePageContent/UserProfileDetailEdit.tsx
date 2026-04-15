@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
 import InputField from '@/src/components/widget-components/InputField/InputField'
@@ -260,7 +260,6 @@ const UserProfileDetailEdit = ({
       {/*         <InputField */}
       {/*           label={t('my_profile.profile_detail.phone_number')} */}
       {/*           {...field} */}
-      {/*           placeholder={t('my_profile.profile_detail.phone_number_placeholder')} */}
       {/*           errorMessage={errors.phone_number} */}
       {/*         /> */}
       {/*       )} */}

@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 
 import { ChevronDownSmallIcon } from '@/src/assets/ui-icons'
@@ -59,7 +59,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
           }
         />
         <IdentityVerificationStatus />
-        <nav className="flex gap-x-8 font-semibold text-font/75">
+        <nav className="text-font/75 flex gap-x-8 font-semibold">
           {isSignedIn ? (
             <MenuDropdown
               setIsOpen={setIsMenuOpen}
@@ -67,7 +67,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
                 <Button
                   variant="unstyled"
                   data-cy="account-button"
-                  className="flex items-center gap-4 font-semibold text-font/75"
+                  className="text-font/75 flex items-center gap-4 font-semibold"
                 >
                   <UserAvatar userAttributes={userAttributes} />
                   <div className="flex items-center gap-1 font-light lg:font-semibold">

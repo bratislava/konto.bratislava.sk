@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { ErrorIcon } from '@/src/assets/ui-icons'
 import { useVerifyEid, VerificationStatus } from '@/src/components/auth-forms/useVerifyEid'
@@ -25,12 +25,12 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
     />
   ) : verificationStatus === VerificationStatus.ERROR ? (
     <div className="flex flex-col gap-4 md:gap-6">
-      <div className="mx-auto size-14 rounded-full bg-negative-100 p-4">
+      <div className="bg-negative-100 mx-auto size-14 rounded-full p-4">
         <div className="flex size-6 items-center justify-center">
-          <ErrorIcon className="size-6 text-negative-700" />
+          <ErrorIcon className="text-negative-700 size-6" />
         </div>
       </div>
-      <h1 className="text-center text-h3">
+      <h1 className="text-h3 text-center">
         {t('auth.identity_verification.fop_po_eid.error.title')}
       </h1>
       <AccountMarkdown

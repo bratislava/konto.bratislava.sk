@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
@@ -96,7 +96,6 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
             isRequired
             autoComplete="off"
             label={t('auth.fields.verification_code_label')}
-            placeholder={t('auth.fields.verification_code_placeholder')}
             {...field}
             errorMessage={errors.verificationCode}
           />

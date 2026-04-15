@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { LockIcon } from '@/src/assets/ui-icons'
 import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'

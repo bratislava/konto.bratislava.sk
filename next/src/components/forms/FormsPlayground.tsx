@@ -7,7 +7,7 @@ import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
 import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultFormState'
 import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useQueryState } from 'nuqs'
 import React, { ContextType, createRef, useEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -25,8 +25,9 @@ import {
 import SelectField, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
 import { downloadBlob } from '@/src/frontend/utils/general'
+
+import useToast from '@/src/components/simple-components/Toast/useToast'
 
 export type FormsPlaygroundProps = {
   formDefinitions: ClientPlaygroundFormDefinition[]
@@ -146,8 +147,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const [formData, setFormData] = useState(defaultFormData)
   const [jsonInput, setJsonInput] = useState(JSON.stringify(defaultFormData, null, 2))
 
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { showToast } = useToast()
   const { t } = useTranslation('forms')
   const importJsonInputRef = useRef<HTMLInputElement>(null)
 
@@ -228,7 +228,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
     const fileName = `${selectedForm?.slug}_output.json`
     const jsonBlob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' })
     downloadBlob(jsonBlob, fileName)
-    openSnackbarSuccess(t('success_messages.json_export'))
+    showToast({ message: t('success_messages.json_export'), variant: 'success' })
   }
 
   const triggerImportJson = () => {
@@ -244,9 +244,9 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
       const parsed = JSON.parse(jsonForm)
       setFormData(parsed)
       setJsonInput(JSON.stringify(parsed, null, 2))
-      openSnackbarSuccess(t('success_messages.json_import'))
+      showToast({ message: t('success_messages.json_import'), variant: 'success' })
     } catch (error) {
-      openSnackbarError(t('errors.json_import'))
+      showToast({ message: t('errors.json_import'), variant: 'error' })
     }
 
     // Reset the file input

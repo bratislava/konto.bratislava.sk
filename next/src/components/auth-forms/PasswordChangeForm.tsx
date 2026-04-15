@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
@@ -67,7 +67,6 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             isRequired
             label={t('auth.fields.old_password_label')}
-            placeholder={t('auth.fields.old_password_placeholder')}
             {...field}
             errorMessage={errors.oldPassword}
           />
@@ -81,7 +80,6 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
             isRequired
             autoComplete="new-password"
             label={t('auth.fields.new_password_label')}
-            placeholder={t('auth.fields.new_password_placeholder')}
             helptext={t('auth.fields.password_description')}
             {...field}
             errorMessage={errors.password}

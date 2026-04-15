@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
@@ -68,7 +68,6 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
           <InputField
             isRequired
             label={t('auth.fields.new_email_label')}
-            placeholder={t('auth.fields.email_placeholder')}
             {...field}
             errorMessage={errors.email}
           />
@@ -81,7 +80,6 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             isRequired
             label={t('auth.fields.new_email_password_label')}
-            placeholder={t('auth.fields.password_placeholder')}
             {...field}
             errorMessage={errors.password}
           />

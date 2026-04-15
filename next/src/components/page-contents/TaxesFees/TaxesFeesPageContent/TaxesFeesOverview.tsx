@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxAvailabilityStatus, TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
 

@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import cn from '@/src/utils/cn'
@@ -22,7 +22,7 @@ export const Footer = ({ className }: Props) => {
       )}
     >
       <SectionContainer>
-        <p className="text-center text-p2 text-content-passive-secondary">
+        <p className="text-p2 text-content-passive-secondary text-center">
           {t('Footer.text', { currentYear: new Date().getFullYear() })}
         </p>
       </SectionContainer>

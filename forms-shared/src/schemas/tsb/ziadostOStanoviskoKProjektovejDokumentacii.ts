@@ -7,7 +7,7 @@ import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
-import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtractor'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }

@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import * as mssql from 'mssql'
 import { MSSQLError } from 'mssql'
 
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -9,30 +10,35 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { CustomErrorNorisTypesEnum } from '../../noris.errors'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 
-const mockConnect = jest.fn()
-jest.mock('mssql', () => {
-  const actual = jest.requireActual('mssql')
-  return {
-    ...actual,
-    connect: (...args: unknown[]) => mockConnect(...args),
-  }
-})
+// Inline jest.fn() avoids the temporal-dead-zone issue that occurs when const
+// variables declared outside the factory are referenced inside jest.mock().
+jest.mock('mssql', () => ({
+  ...jest.requireActual('mssql'),
+  connect: jest.fn(),
+}))
 
 describe('NorisConnectionSubservice', () => {
+  let module: TestingModule
   let service: NorisConnectionSubservice
   let configService: jest.Mocked<ConfigService>
   let throwerErrorGuard: ThrowerErrorGuard
   let prismaService: jest.Mocked<PrismaService>
 
+  let mockMssqlConnect: jest.Mock
+
   const mockConnectionPool = {
     connected: true,
-    close: jest.fn(),
+    close: jest.fn().mockResolvedValue(undefined),
   }
 
   const originalEnv = process.env
 
   beforeEach(async () => {
     jest.clearAllMocks()
+
+    // Assign after clearAllMocks so we hold references to the (now-cleared) mock.
+    mockMssqlConnect = mssql.connect as jest.Mock
+
     process.env = {
       ...originalEnv,
       MSSQL_HOST: 'localhost',
@@ -41,8 +47,6 @@ describe('NorisConnectionSubservice', () => {
       // eslint-disable-next-line sonarjs/no-hardcoded-passwords
       MSSQL_PASSWORD: 'pass',
     }
-
-    mockConnect.mockResolvedValue(mockConnectionPool)
 
     configService = createMock<ConfigService>({
       getOrThrow: jest.fn((key: string) => {
@@ -62,7 +66,7 @@ describe('NorisConnectionSubservice', () => {
 
     prismaService = createMock<PrismaService>()
 
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         NorisConnectionSubservice,
         { provide: ConfigService, useValue: configService },
@@ -75,11 +79,54 @@ describe('NorisConnectionSubservice', () => {
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     process.env = originalEnv
+    await module.close()
+  })
+
+  describe('onModuleDestroy', () => {
+    it('should close the pool connection on shutdown', async () => {
+      mockMssqlConnect.mockResolvedValue(mockConnectionPool)
+
+      await module.close()
+
+      expect(mockConnectionPool.close).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not throw when connect() fails during shutdown', async () => {
+      mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
+      const warnSpy = jest.spyOn(service['logger'], 'warn')
+
+      await expect(module.close()).resolves.not.toThrow()
+      expect(warnSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('withConnection', () => {
+    beforeEach(() => {
+      mockMssqlConnect.mockResolvedValue(mockConnectionPool)
+    })
+
+    it('should call mssql.connect() on every invocation so the pool is always obtained or recreated', async () => {
+      // connect() is idempotent: it resolves immediately when already connected
+      await service.withConnection(
+        async () => Promise.resolve('a' as unknown as never),
+        'err',
+      )
+      await service.withConnection(
+        async () => Promise.resolve('b' as unknown as never),
+        'err',
+      )
+
+      expect(mockMssqlConnect).toHaveBeenCalledTimes(2)
+    })
   })
 
   describe('handleDatabaseError (via withConnection)', () => {
+    beforeEach(() => {
+      mockMssqlConnect.mockResolvedValue(mockConnectionPool)
+    })
+
     const errorMessage = 'Test error message'
 
     it('should throw getNorisUrgentError when error is not an MSSQLError', async () => {

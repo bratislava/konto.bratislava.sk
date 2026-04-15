@@ -5,6 +5,8 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { TaxType } from '@prisma/client'
+
 import { PrismaService } from '../prisma/prisma.service'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import EmailSubservice from '../utils/subservices/email.subservice'
@@ -12,6 +14,25 @@ import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
+
+interface ReportTypeConfig {
+  taxType: TaxType
+  sftpPathEnvKey: string
+  fileNameEnvKey: string
+}
+
+const REPORT_TYPES: ReportTypeConfig[] = [
+  {
+    taxType: TaxType.DZN,
+    sftpPathEnvKey: 'REPORTING_SFTP_FILES_PATH',
+    fileNameEnvKey: 'REPORTING_FILE_NAME',
+  },
+  {
+    taxType: TaxType.KO,
+    sftpPathEnvKey: 'REPORTING_PKO_SFTP_FILES_PATH',
+    fileNameEnvKey: 'REPORTING_PKO_FILE_NAME',
+  },
+]
 
 const csvColumnNames = [
   'transactionType',

@@ -241,7 +241,7 @@ const ensureWorkingDay = (date: Dayjs): Dayjs => {
   return workingDay
 }
 
-const calculateDueDate = (
+export const calculateDueDate = (
   dateOfValidity: Dayjs | null,
   deliveryMethod: DeliveryMethodNamed | null,
   createdAt: Dayjs,

@@ -13,6 +13,7 @@ import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
   bratislavaTimeZone,
+  calculateDueDate,
   DUE_DATE_OFFSET,
   parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
@@ -252,6 +253,9 @@ export default class NotificationsEventsService {
             birthNumber: true,
           },
         },
+        createdAt: true,
+        dateTaxRuling: true,
+        deliveryMethod: true,
       },
       where: {
         bloomreachUnpaidTaxReminderSent: false,
@@ -307,23 +311,44 @@ export default class NotificationsEventsService {
         taxes.map((taxData) => taxData.taxPayer.birthNumber),
       )
 
-    await Promise.all(
+    const sentResults = await Promise.all(
       taxes.map(async (tax) => {
         const userFromCityAccount =
           userDataFromCityAccount[tax.taxPayer.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
-          await this.bloomreachService.trackEventUnpaidTaxReminder(
-            { year: tax.year, tax_type: tax.type, order: tax.order! },
+          const dueDate = calculateDueDate(
+            dayjs(tax.dateTaxRuling),
+            tax.deliveryMethod,
+            dayjs(tax.createdAt),
+          )
+          if (!dueDate || dueDate.isAfter(dayjs().endOf('day'))) {
+            return undefined
+          }
+          await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
+            {
+              year: tax.year,
+              tax_type: tax.type,
+              order: tax.order!,
+              installment_order: 1,
+              due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+              due_date_month: dueDate.month() + 1,
+              due_date_day: dueDate.date(),
+            },
             userFromCityAccount.externalId,
           )
+          return tax.id
         }
+        return undefined
       }),
+    )
+    const taxIdsSent = sentResults.filter(
+      (id): id is number => id !== undefined,
     )
 
     await this.prismaService.tax.updateMany({
       where: {
         id: {
-          in: taxes.map((tax) => tax.id),
+          in: taxIdsSent,
         },
       },
       data: {

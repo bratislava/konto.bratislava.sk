@@ -9,9 +9,6 @@ const bundleAnalyzer = withBundleAnalyzer({
 })
 
 const nextConfig: NextConfig = {
-  experimental: {
-    adapterPath: require.resolve('./next-iframe-resizer-adapter.mjs'),
-  },
   i18n: i18nextConfig.i18n,
   reactStrictMode: true,
   // Without transpiling the packages there are two instances of React, and it causes to:
@@ -77,6 +74,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  adapterPath: require.resolve('./next-iframe-resizer-adapter.mjs'),
   async redirects() {
     return [
       {

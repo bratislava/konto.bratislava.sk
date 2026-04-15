@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
@@ -12,6 +12,7 @@ import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/Accou
 import { environment } from '@/src/environment'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
+import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { isBrowser } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
@@ -62,9 +63,15 @@ const IdentityVerificationOfPhysicalEntityForm = ({
   error,
   showSkipButton = true,
 }: Props) => {
-  const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
+  const { redirect } = useQueryParamRedirect()
+
+  const { userAttributes } = useSsrAuth()
+
+  const { family_name: familyName, given_name: givenName } = userAttributes ?? {}
+
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
+
   const {
     handleSubmit,
     control,
@@ -91,7 +98,16 @@ const IdentityVerificationOfPhysicalEntityForm = ({
       })}
     >
       <h1 className="text-h3">{t('auth.identity_verification.fo.init.title')}</h1>
-      <AccountMarkdown variant="sm" content={t('auth.identity_verification.fo.init.content')} />
+      <AccountMarkdown
+        variant="sm"
+        content={
+          givenName && familyName
+            ? t('auth.identity_verification.fo.init.content', {
+                name: `${givenName} ${familyName}`,
+              })
+            : t('auth.identity_verification.fo.init.content_without_data')
+        }
+      />
       <AccountErrorAlert error={error} />
 
       <Controller

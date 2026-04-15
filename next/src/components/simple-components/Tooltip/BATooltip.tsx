@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
 
@@ -24,7 +24,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
   return (
     <Tooltip
       {...props}
-      className="m-0 flex w-fit max-w-[230px] min-w-[118px] flex-row justify-center rounded-sm border-0 bg-gray-700 px-3 py-2 text-p3 break-words text-white sm:max-w-[280px] sm:px-4 sm:py-3 sm:text-p2"
+      className="text-p3 sm:text-p2 m-0 flex w-fit min-w-[118px] max-w-[230px] flex-row justify-center break-words rounded-sm border-0 bg-gray-700 px-3 py-2 text-white sm:max-w-[280px] sm:px-4 sm:py-3"
     >
       <OverlayArrow>
         {({ placement }) => {

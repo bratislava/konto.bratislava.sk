@@ -21,12 +21,12 @@ import ProgressBarShowCase from '@/src/components/styleguide/showcases/ProgressB
 import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroupShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCardShowCase'
-import SnackbarShowCase from '@/src/components/styleguide/showcases/SnackbarShowCase'
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
 import TimePickerShowCase from '@/src/components/styleguide/showcases/TimePickerShowCase'
+import ToastShowCase from '@/src/components/styleguide/showcases/ToastShowCase'
 import ToggleShowCase from '@/src/components/styleguide/showcases/ToggleShowCase'
 import TooltipShowCase from '@/src/components/styleguide/showcases/TooltipShowCase'
 import UploadShowCase from '@/src/components/styleguide/showcases/UploadShowCase'
@@ -67,7 +67,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     label: 'My Applications Card',
     component: <MyApplicationsCardShowCase />,
   },
-  { id: 'snackbar', label: 'Snackbar', component: <SnackbarShowCase /> },
+  { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
   { id: 'auth-forms', label: 'Auth Forms', component: <AuthFormsShowCase /> },
 ]
 

@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 

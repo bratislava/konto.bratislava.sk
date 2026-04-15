@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React from 'react'
 
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -50,7 +50,7 @@ const BoxedSectionHeader = ({
           <div className="flex items-center gap-3 md:gap-2">
             <h2 className="text-h5-semibold md:text-h4-bold">{title}</h2>
             {mainHeader && tierStatus.isIdentityVerified && (
-              <span className="rounded-[4px] bg-success-100 px-2 text-p3-medium text-success-700">
+              <span className="bg-success-100 text-p3-medium text-success-700 rounded-[4px] px-2">
                 {t('IdentityVerificationStatus.verification_status_success')}
               </span>
             )}

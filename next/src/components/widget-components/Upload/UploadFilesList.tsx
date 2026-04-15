@@ -1,5 +1,5 @@
 import { FileInfo } from 'forms-shared/form-files/fileStatus'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React from 'react'
 
 import UploadFileCard from '@/src/components/widget-components/Upload/UploadFileCard'

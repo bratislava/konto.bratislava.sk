@@ -1,6 +1,6 @@
 import { updatePassword } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useRef, useState } from 'react'
 
 import PasswordChangeForm from '@/src/components/auth-forms/PasswordChangeForm'

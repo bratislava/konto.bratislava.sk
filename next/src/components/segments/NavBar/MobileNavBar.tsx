@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import FocusTrap from 'focus-trap-react'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
 
 import { CrossIcon, HamburgerIcon } from '@/src/assets/ui-icons'
@@ -26,7 +26,7 @@ export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props
     <>
       <div
         id="mobile-navbar"
-        className="sticky top-0 left-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
+        className="sticky left-0 top-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
         ref={mobileNavbarRef}
       >
         <div className="w-full">

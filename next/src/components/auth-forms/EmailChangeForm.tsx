@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
 import PasswordField from '@/src/components/fields/PasswordField'

@@ -1,6 +1,6 @@
 import { ajvResolver } from '@hookform/resolvers/ajv'
 import { JSONSchemaType } from 'ajv'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { DefaultValues, FieldValues, useForm } from 'react-hook-form'
 
 type Errors = Record<string, string | undefined>

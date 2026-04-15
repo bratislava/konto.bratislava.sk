@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { forwardRef, Ref, useState } from 'react'
 import { ToggleButton as RACToggleButton } from 'react-aria-components'
 

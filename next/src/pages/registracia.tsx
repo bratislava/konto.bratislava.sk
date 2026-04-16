@@ -2,7 +2,7 @@ import { ParsedUrlQuery } from 'node:querystring'
 
 import { AuthError, autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients/city-account'
 import { useEffect, useMemo, useRef, useState } from 'react'
 

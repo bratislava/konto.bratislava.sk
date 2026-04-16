@@ -41,6 +41,63 @@ const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
 }
 
 export const stateHolidays: Partial<Record<number, { dates: Dayjs[] }>> = {
+  2020: {
+    dates: [
+      dayjs.tz('2020-01-01', bratislavaTimeZone),
+      dayjs.tz('2020-01-06', bratislavaTimeZone),
+      dayjs.tz('2020-04-10', bratislavaTimeZone),
+      dayjs.tz('2020-04-13', bratislavaTimeZone),
+      dayjs.tz('2020-05-01', bratislavaTimeZone),
+      dayjs.tz('2020-05-08', bratislavaTimeZone),
+      dayjs.tz('2020-07-05', bratislavaTimeZone),
+      dayjs.tz('2020-08-29', bratislavaTimeZone),
+      dayjs.tz('2020-09-01', bratislavaTimeZone),
+      dayjs.tz('2020-09-15', bratislavaTimeZone),
+      dayjs.tz('2020-11-01', bratislavaTimeZone),
+      dayjs.tz('2020-11-17', bratislavaTimeZone),
+      dayjs.tz('2020-12-24', bratislavaTimeZone),
+      dayjs.tz('2020-12-25', bratislavaTimeZone),
+      dayjs.tz('2020-12-26', bratislavaTimeZone),
+    ],
+  },
+  2021: {
+    dates: [
+      dayjs.tz('2021-01-01', bratislavaTimeZone),
+      dayjs.tz('2021-01-06', bratislavaTimeZone),
+      dayjs.tz('2021-04-02', bratislavaTimeZone),
+      dayjs.tz('2021-04-05', bratislavaTimeZone),
+      dayjs.tz('2021-05-01', bratislavaTimeZone),
+      dayjs.tz('2021-05-08', bratislavaTimeZone),
+      dayjs.tz('2021-07-05', bratislavaTimeZone),
+      dayjs.tz('2021-08-29', bratislavaTimeZone),
+      dayjs.tz('2021-09-01', bratislavaTimeZone),
+      dayjs.tz('2021-09-15', bratislavaTimeZone),
+      dayjs.tz('2021-11-01', bratislavaTimeZone),
+      dayjs.tz('2021-11-17', bratislavaTimeZone),
+      dayjs.tz('2021-12-24', bratislavaTimeZone),
+      dayjs.tz('2021-12-25', bratislavaTimeZone),
+      dayjs.tz('2021-12-26', bratislavaTimeZone),
+    ],
+  },
+  2022: {
+    dates: [
+      dayjs.tz('2022-01-01', bratislavaTimeZone),
+      dayjs.tz('2022-01-06', bratislavaTimeZone),
+      dayjs.tz('2022-04-15', bratislavaTimeZone),
+      dayjs.tz('2022-04-18', bratislavaTimeZone),
+      dayjs.tz('2022-05-01', bratislavaTimeZone),
+      dayjs.tz('2022-05-08', bratislavaTimeZone),
+      dayjs.tz('2022-07-05', bratislavaTimeZone),
+      dayjs.tz('2022-08-29', bratislavaTimeZone),
+      dayjs.tz('2022-09-01', bratislavaTimeZone),
+      dayjs.tz('2022-09-15', bratislavaTimeZone),
+      dayjs.tz('2022-11-01', bratislavaTimeZone),
+      dayjs.tz('2022-11-17', bratislavaTimeZone),
+      dayjs.tz('2022-12-24', bratislavaTimeZone),
+      dayjs.tz('2022-12-25', bratislavaTimeZone),
+      dayjs.tz('2022-12-26', bratislavaTimeZone),
+    ],
+  },
   2023: {
     dates: [
       dayjs.tz('2023-01-01', bratislavaTimeZone),
@@ -359,6 +416,14 @@ const calculateInstallmentPaymentDetails = (options: {
     isCancelled,
   } = options
 
+  if (overallAmount <= paymentCalendarThreshold) {
+    return {
+      isPossible: false,
+      reasonNotPossible:
+        InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
+    }
+  }
+
   const installmentsByOrder = [...installments].sort(
     (a, b) => a.order - b.order,
   )
@@ -401,14 +466,6 @@ const calculateInstallmentPaymentDetails = (options: {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
       dueDateLastPayment: dueDateLastPayment.toDate(),
-    }
-  }
-
-  if (overallAmount < paymentCalendarThreshold) {
-    return {
-      isPossible: false,
-      reasonNotPossible:
-        InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
     }
   }
 

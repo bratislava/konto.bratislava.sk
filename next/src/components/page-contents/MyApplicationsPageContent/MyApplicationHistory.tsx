@@ -1,5 +1,5 @@
 import { GenericObjectType } from '@rjsf/utils'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import FormatDate from '@/src/components/formatting/FormatDate'
@@ -52,20 +52,20 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
       <div className="flex flex-col overflow-x-auto md:hidden">
         <div className="w-[548px] rounded-lg border border-gray-200">
           <div className="flex items-center bg-gray-200 p-4">
-            <span className="min-w-[240px] text-p2">
+            <span className="text-p2 min-w-[240px]">
               {t('account_section_applications.details.application_history.edit_date')}
             </span>
-            <span className="w-full text-p2">
+            <span className="text-p2 w-full">
               {t('account_section_applications.details.application_history.description')}
             </span>
           </div>
           <div className="flex flex-col items-center">
             {historyData?.map((data: GenericObjectType, i) => (
               <div className="flex w-full border-t p-4" key={i}>
-                <span className="min-w-[240px] text-p2">
+                <span className="text-p2 min-w-[240px]">
                   <FormatDate>{data['Datum-zmeny']}</FormatDate>
                 </span>
-                <span className="w-full text-p2">
+                <span className="text-p2 w-full">
                   {translationMap[data?.assignedCategory] ?? translationMap.UNKNOWN}
                 </span>
               </div>

@@ -34,8 +34,10 @@ import {
 import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import { BloomreachPayloadBuilder } from '../bloomreach/bloomreach-payload.builder'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
 import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { VerificationReturnType } from './types'
@@ -59,7 +61,7 @@ export class VerificationService {
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
-    private readonly bloomreachService: BloomreachService,
+    private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly tokenSubservice: TokenSubservice,
     private readonly userTierService: UserTierService
   ) {
@@ -93,7 +95,7 @@ export class VerificationService {
           CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
           user['custom:account_type']
         )
-        await this.bloomreachService.trackCustomer(user.idUser)
+        await this.bloomreachOutboxService.trackCustomer(user.idUser)
       } catch (error) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
@@ -150,14 +152,20 @@ export class VerificationService {
           getBloomreachContactDatabase()
         )
 
-        const bloomreachService = new BloomreachService(
+        const userIdentitySubservice = new UserIdentitySubservice(prismaService)
+        const bloomreachPayloadBuilder = new BloomreachPayloadBuilder(
           cognitoSubservice,
-          throwerErrorGuard,
-          prismaService,
-          bloomreachContactDatabaseService
+          bloomreachContactDatabaseService,
+          userIdentitySubservice
         )
 
-        await bloomreachService.trackCustomer(data.msg.user.idUser)
+        const bloomreachOutboxService = new BloomreachOutboxService(
+          prismaService,
+          bloomreachPayloadBuilder,
+          throwerErrorGuard
+        )
+
+        await bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {
         const logger = new LineLoggerSubservice('RabbitRPC')
         logger.error('RabbitMQ error handler - catch cognito/parser error', errorCatch)
@@ -199,7 +207,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       data.msg.type
     )
-    await this.bloomreachService.trackCustomer(data.msg.user.idUser)
+    await this.bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
     const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
     if (
       newUserData[CognitoUserAttributesEnum.TIER] ===
@@ -254,7 +262,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
       data.msg.type
     )
-    await this.bloomreachService.trackCustomer(data.msg.user.idUser)
+    await this.bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
     const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
     if (
       newUserData[CognitoUserAttributesEnum.TIER] ===
@@ -418,7 +426,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.EID,
       user['custom:account_type']
     )
-    await this.bloomreachService.trackCustomer(user.idUser)
+    await this.bloomreachOutboxService.trackCustomer(user.idUser)
 
     const newUserData = await this.cognitoSubservice.getDataFromCognito(user.idUser)
     if (newUserData[CognitoUserAttributesEnum.TIER] !== CognitoUserAttributesTierEnum.EID) {
@@ -750,7 +758,7 @@ export class VerificationService {
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       cognitoUser['custom:account_type']
     )
-    await this.bloomreachService.trackCustomer(user.externalId)
+    await this.bloomreachOutboxService.trackCustomer(user.externalId)
 
     return { success: true }
   }

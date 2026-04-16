@@ -1,5 +1,5 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import AccountContainer from '@/src/components/layouts/AccountContainer'

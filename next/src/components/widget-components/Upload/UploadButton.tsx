@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { forwardRef } from 'react'
 import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
 

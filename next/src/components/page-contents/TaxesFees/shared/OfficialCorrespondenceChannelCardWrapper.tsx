@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
@@ -38,9 +38,9 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
       >
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col">
-            <span className="block text-p1-semibold">{title}</span>
+            <span className="text-p1-semibold block">{title}</span>
             {canUserChangeChannel && (
-              <div className="pt-3 pb-2 lg:px-0">
+              <div className="pb-2 pt-3 lg:px-0">
                 <AccountMarkdown
                   content={`${t('taxes.communication_channel.info.youCanChangeChannelOnThisPage', {
                     url: ROUTES.TAXES_AND_FEES,

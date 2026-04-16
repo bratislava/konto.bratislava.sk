@@ -29,7 +29,6 @@ WORKDIR /openapi-clients
 COPY --from=openapi-clients /app/ ./
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
-COPY ./patches ./patches
 
 FROM build-base AS install-prod
 ENV NPM_CONFIG_CACHE=/build/.npm

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import {Prisma, TaxType} from '@prisma/client'
+import { Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'

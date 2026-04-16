@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { HomepageAnnouncementEntityFragment } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -18,7 +18,7 @@ const Announcements = ({ announcements, announcementsLegalPerson }: Props) => {
   const announcementsByPersonType = isLegalEntity ? announcementsLegalPerson : announcements
 
   return (
-    <SectionContainer className="py-6 lg:py-18">
+    <SectionContainer className="lg:py-18 py-6">
       <div className="flex flex-col gap-6">
         <SectionHeader title={t('account_section_intro.announcement_title')} titleLevel="h2" />
         {announcementsByPersonType.map((announcement, index) => (

@@ -1,7 +1,7 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
@@ -28,7 +28,7 @@ export const NavMenu = ({ menuSections }: Props) => {
   return (
     menuSections && (
       <SectionContainer>
-        <div className="flex h-[57px] w-full items-center justify-between border-t border-border-passive-primary">
+        <div className="border-border-passive-primary flex h-[57px] w-full items-center justify-between border-t">
           <NavigationMenu.Root
             value={menuValue}
             onValueChange={setMenuValue}

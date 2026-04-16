@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
@@ -107,7 +107,6 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
             isRequired
             autoComplete="off"
             label={t('auth.fields.verification_code_label')}
-            placeholder={t('auth.fields.verification_code_placeholder')}
             {...field}
             errorMessage={errors.verificationCode}
           />
@@ -122,11 +121,6 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
             autoComplete="new-password"
             label={
               fromMigration ? t('auth.fields.password_label') : t('auth.fields.new_password_label')
-            }
-            placeholder={
-              fromMigration
-                ? t('auth.fields.password_placeholder')
-                : t('auth.fields.new_password_placeholder')
             }
             helptext={t('auth.fields.password_description')}
             {...field}

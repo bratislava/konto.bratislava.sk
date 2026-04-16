@@ -2,6 +2,7 @@ import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -22,7 +23,7 @@ export default class SftpFileSubservice {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
-  async getNewFiles(from?: Date) {
+  async getNewFiles(sftpPath: string, taxType: TaxType, from?: Date) {
     const sftp = new SFTPClient()
 
     const newFileContents: { name: string; content: string }[] = []
@@ -35,20 +36,15 @@ export default class SftpFileSubservice {
         privateKey: this.configService.getOrThrow<string>('REPORTING_SFTP_KEY'),
       })
 
-      const sftpFiles: FileInfo[] = await sftp.list(
-        this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
-      )
+      const sftpFiles: FileInfo[] = await sftp.list(sftpPath)
 
       const newFiles: string[] = from
         ? this.filterFilesBeforeDate(sftpFiles, from)
-        : await this.filterAlreadyReportedFiles(sftpFiles)
+        : await this.filterAlreadyReportedFiles(taxType, sftpFiles)
 
       // Get contents of all new files
       for (const fileName of newFiles) {
-        const filePath = path.join(
-          this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
-          fileName,
-        )
+        const filePath = path.join(sftpPath, fileName)
 
         // eslint-disable-next-line no-await-in-loop
         const fileContent = await sftp.get(filePath)
@@ -84,10 +80,16 @@ export default class SftpFileSubservice {
       .map((file) => file.name)
   }
 
-  private async filterAlreadyReportedFiles(files: FileInfo[]) {
+  private async filterAlreadyReportedFiles(
+    taxType: TaxType,
+    files: FileInfo[],
+  ) {
     const alreadyReportedFiles = await this.prismaService.csvFile.findMany({
       select: { name: true },
-      where: { name: { in: files.map((file) => file.name) } },
+      where: {
+        name: { in: files.map((file) => file.name) },
+        taxType,
+      },
     })
 
     return files

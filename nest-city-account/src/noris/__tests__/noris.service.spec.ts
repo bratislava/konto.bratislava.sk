@@ -9,23 +9,44 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NorisValidatorSubservice } from '../subservices/noris-validator.subservice'
 import { EdeskRecordSchema } from '../types/noris.types'
 import { EdeskStatus } from '../types/noris.types'
+import * as mssql from 'mssql'
+
+// Inline jest.fn() avoids the temporal-dead-zone issue that occurs when const
+// variables declared outside the factory are referenced inside jest.mock().
+jest.mock('mssql', () => ({
+  ...jest.requireActual('mssql'),
+  connect: jest.fn(),
+}))
 
 describe('NorisService', () => {
+  let module: TestingModule
   let service: NorisService
   let configService: ConfigService
   let throwerErrorGuard: ThrowerErrorGuard
   let norisValidatorSubservice: NorisValidatorSubservice
 
+  let mockMssqlConnect: jest.Mock
+
+  const mockConnectionPool = {
+    connected: true,
+    close: jest.fn().mockResolvedValue(undefined),
+  }
+
   const envBackup: NodeJS.ProcessEnv = { ...process.env }
 
   beforeEach(async () => {
+    jest.clearAllMocks()
+
+    // Assign after clearAllMocks so we hold references to the (now-cleared) mock.
+    mockMssqlConnect = mssql.connect as jest.Mock
+
     process.env.MSSQL_HOST = 'localhost'
     process.env.MSSQL_PORT = '1433'
     process.env.MSSQL_DB = 'testdb'
     process.env.MSSQL_USERNAME = 'user'
     process.env.MSSQL_PASSWORD = 'pass'
 
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         NorisService,
         { provide: ConfigService, useValue: createMock<ConfigService>() },
@@ -64,6 +85,24 @@ describe('NorisService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
+  })
+
+  describe('onModuleDestroy', () => {
+    it('should close the pool connection on shutdown', async () => {
+      mockMssqlConnect.mockResolvedValue(mockConnectionPool)
+
+      await module.close()
+
+      expect(mockConnectionPool.close).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not throw when connect() fails during shutdown', async () => {
+      mockMssqlConnect.mockRejectedValue(new Error('MSSQL unreachable'))
+      const warnSpy = jest.spyOn(service['logger'], 'warn')
+
+      await expect(module.close()).resolves.not.toThrow()
+      expect(warnSpy).toHaveBeenCalled()
+    })
   })
 
   describe('waitForConnection', () => {
@@ -115,7 +154,7 @@ describe('NorisService', () => {
         handlerError
       )
       expect(errorHandler).toHaveBeenCalledWith(opError)
-      expect(mockConnection.close).toHaveBeenCalled()
+      expect(mockConnection.close).not.toHaveBeenCalled()
     })
 
     it('should return operation result and close connection on success', async () => {
@@ -134,7 +173,7 @@ describe('NorisService', () => {
         })
       ).resolves.toEqual(result)
       expect(operation).toHaveBeenCalledWith(mockConnection)
-      expect(mockConnection.close).toHaveBeenCalled()
+      expect(mockConnection.close).not.toHaveBeenCalled()
     })
   })
 
@@ -238,6 +277,23 @@ describe('NorisService', () => {
       const withConnectionSpy = jest.spyOn(service as any, 'withConnection')
       await expect(service.updateEdeskChecks([])).resolves.toBeUndefined()
       expect(withConnectionSpy).not.toHaveBeenCalled()
+    })
+
+    it('should reject when withConnection rejects', async () => {
+      const internalError = new HttpException('Internal', 500)
+      jest.spyOn(service as any, 'withConnection').mockRejectedValue(internalError)
+
+      await expect(
+        service.updateEdeskChecks([
+          {
+            idNoris: 42,
+            lastCheck: new Date('2024-01-15'),
+            edeskStatus: EdeskStatus.ACTIVE,
+            edeskNumber: '12345',
+            uri: 'https://edesk.example/sk/123',
+          },
+        ])
+      ).rejects.toThrow(internalError)
     })
   })
 })

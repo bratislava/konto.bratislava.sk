@@ -1,4 +1,4 @@
-FROM node:20.19-slim AS base
+FROM node:24.14-slim AS base
 
 WORKDIR /app
 COPY package.json package-lock.json ./

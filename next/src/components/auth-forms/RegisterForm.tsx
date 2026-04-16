@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
@@ -211,9 +211,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             isRequired
             helptext={emailHelptextTranslationMap[type]}
             label={t('auth.fields.email_label')}
-            placeholder={t('auth.fields.email_placeholder')}
             autoComplete="username"
             autoCapitalize="none"
+            autoCorrect="off"
             // TODO consider adding autoCorrect="off" and spellCheck={false}
             {...field}
             errorMessage={errors.email}
@@ -229,8 +229,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               <InputField
                 isRequired
                 label={t('auth.fields.given_name_label')}
-                placeholder={t('auth.fields.given_name_placeholder')}
+                helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
+                autoCorrect="off"
                 capitalize
                 {...field}
                 errorMessage={errors.given_name}
@@ -244,8 +245,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               <InputField
                 isRequired
                 label={t('auth.fields.family_name_label')}
-                placeholder={t('auth.fields.family_name_placeholder')}
+                helptext={t('auth.fields.family_name_helptext')}
                 autoComplete="family-name"
+                autoCorrect="off"
                 capitalize
                 {...field}
                 errorMessage={errors.family_name}
@@ -262,7 +264,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             <InputField
               isRequired
               label={t('auth.fields.business_name_label')}
-              placeholder={t('auth.fields.business_name_placeholder')}
+              autoCorrect="off"
               capitalize
               {...field}
               errorMessage={errors.name}
@@ -277,7 +279,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           <PasswordField
             isRequired
             label={t('auth.fields.password_label')}
-            placeholder={t('auth.fields.password_placeholder')}
             helptext={t('auth.fields.password_description')}
             autoComplete="new-password"
             {...field}

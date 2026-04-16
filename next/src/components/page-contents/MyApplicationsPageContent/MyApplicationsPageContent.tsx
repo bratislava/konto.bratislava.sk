@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 
@@ -115,8 +115,8 @@ const MyApplicationsPageContent = ({
     >
       <SectionContainer className="bg-gray-50 pt-6 lg:pt-14">
         <div className="size-full flex-col justify-end gap-4 lg:gap-6">
-          <h1 className="pt-4 text-h1">{title}</h1>
-          <TabList className="scrollbar-hide flex gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
+          <h1 className="text-h1 pt-4">{title}</h1>
+          <TabList className="scrollbar-hide flex gap-4 overflow-auto whitespace-nowrap pt-6 lg:gap-6 lg:pt-14">
             {headerNavigationList.map((item) => {
               const count = totalCounts[item.tag].data
               const countText = count == null ? '' : ` (${count})`
@@ -128,7 +128,7 @@ const MyApplicationsPageContent = ({
                   key={item.tag}
                   id={item.tag}
                   data-before-text={text}
-                  className="cursor-pointer py-4 text-center text-20 transition-all before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)] hover:border-gray-700 hover:text-20-semibold data-selected:border-b data-selected:border-gray-700 data-selected:text-20-semibold"
+                  className="text-20 before:text-20-semibold hover:text-20-semibold data-selected:border-b data-selected:border-gray-700 data-selected:text-20-semibold cursor-pointer py-4 text-center transition-all before:invisible before:block before:h-0 before:overflow-hidden before:content-[attr(data-before-text)] hover:border-gray-700"
                 >
                   {text}
                 </Tab>

@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'

@@ -2,12 +2,9 @@ import { useObjectRef } from '@react-aria/utils'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { AriaTextFieldOptions, useTextField } from 'react-aria'
 
-import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon } from '@/src/assets/ui-icons'
-import MailIcon from '@/src/assets/ui-icons/custom_mail.svg'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
 
-export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
 export type InputType = 'text' | 'password' | 'email' | 'tel'
 
 export type InputFieldProps = FieldWrapperProps & {
@@ -15,12 +12,12 @@ export type InputFieldProps = FieldWrapperProps & {
   name?: string
   capitalize?: boolean
   value?: string
-  leftIcon?: LeftIconVariants
   onChange?: (value?: string) => void
   onBlur?: () => void
   endIcon?: ReactNode
   autoComplete?: string
   autoCapitalize?: AriaTextFieldOptions<'input'>['autoCapitalize']
+  autoCorrect?: AriaTextFieldOptions<'input'>['autoCorrect']
   placeholder?: string
   className?: string
 }
@@ -32,11 +29,11 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       name,
       capitalize = false,
       value = '',
-      leftIcon,
       onChange,
       endIcon,
       autoComplete,
       autoCapitalize,
+      autoCorrect,
       placeholder,
       className,
       ...rest
@@ -75,31 +72,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         },
         autoComplete,
         autoCapitalize,
+        autoCorrect,
       },
       ref,
     )
-    const leftIconSwitcher = (icon: string): ReactNode | null => {
-      switch (icon) {
-        case 'person':
-          return <ProfileIcon />
-        case 'mail':
-          return <MailIcon />
-        case 'call':
-          return <PhoneIcon />
-        case 'lock':
-          return <LockIcon />
-        case 'euro':
-          return <EuroIcon />
-        default:
-          return null
-      }
-    }
 
     const style = cn(
       'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-16 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
       {
-        // conditions
-        'pl-12 sm:pl-[52px]': leftIcon,
         // hover
         'hover:border-gray-400': !rest.isDisabled,
 
@@ -122,18 +102,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         errorMessageProps={errorMessageProps}
       >
         <div className="relative" data-cy={`required-${name}`}>
-          {leftIcon && (
-            <span
-              className={cn(
-                'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
-                {
-                  'opacity-50': rest.isDisabled,
-                },
-              )}
-            >
-              {leftIconSwitcher(leftIcon)}
-            </span>
-          )}
           <input
             {...inputProps}
             ref={ref}

@@ -1,5 +1,5 @@
 import { renderFormAdditionalInfo } from 'forms-shared/string-templates/renderTemplate'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { useMemo } from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -21,7 +21,7 @@ const SummaryAdditionalInfo = () => {
 
   return (
     <div>
-      <h3 className="mb-4 text-h3">{t('summary.additional_info')}</h3>
+      <h3 className="text-h3 mb-4">{t('summary.additional_info')}</h3>
       <AccountMarkdown
         content={additionalInfo}
         // TODO: Replace variant statusBar

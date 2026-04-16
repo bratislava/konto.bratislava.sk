@@ -16,6 +16,7 @@ const Footer = () => {
         <MobileFooter />
       </div>
     </>
+
   )
 }
 

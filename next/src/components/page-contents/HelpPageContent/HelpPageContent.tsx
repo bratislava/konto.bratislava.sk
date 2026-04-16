@@ -33,6 +33,7 @@ const HelpPageContent = ({ helpPage }: Props) => {
                   title: faq.title,
                   content: faq.content,
                 }))}
+                accordionTitleLevel="h3"
               />
             </div>
           </SectionContainer>

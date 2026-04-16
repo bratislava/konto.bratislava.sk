@@ -4746,7 +4746,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      */
     async userControllerUpdateOrCreateBloomreachCustomer(
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.userControllerUpdateOrCreateBloomreachCustomer(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -4925,7 +4925,7 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerUpdateOrCreateBloomreachCustomer(
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseUserDataDto> {
+    ): AxiosPromise<void> {
       return localVarFp
         .userControllerUpdateOrCreateBloomreachCustomer(options)
         .then((request) => request(axios, basePath))

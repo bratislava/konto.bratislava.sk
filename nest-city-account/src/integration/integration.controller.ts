@@ -13,6 +13,7 @@ import {
 import {
   ApiExtraModels,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiSecurity,
@@ -60,6 +61,10 @@ export class IntegrationController {
   @ApiNotFoundResponse({
     description: 'User by birth number not found',
     type: HttpException,
+  })
+  @ApiOkResponse({
+    description: 'User data',
+    type: ResponseUserByBirthNumberDto,
   })
   @Get('userdata')
   async getUserDataByBirthNumber(

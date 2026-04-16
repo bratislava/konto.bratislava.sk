@@ -1,5 +1,5 @@
 import { Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { Fragment } from 'react'
 
 import EuFlagSvg from '@/src/assets/images/eu-flag.svg'

@@ -1,5 +1,5 @@
 import { Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import EuFlagSvg from '@/src/assets/images/eu-flag.svg'
 import SectionContainer from '@/src/components/layouts/SectionContainer'

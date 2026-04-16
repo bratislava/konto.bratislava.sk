@@ -1,8 +1,9 @@
-import { MAILGUN } from '../user-verification/constants'
-import { MailgunMessageData } from 'mailgun.js/definitions'
 import { Injectable } from '@nestjs/common'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { MailgunMessageData } from 'mailgun.js/definitions'
+
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
+import { MAILGUN } from '../user-verification/constants'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 interface BaseMailgunParams {
   to: string
@@ -45,36 +46,36 @@ export class MailgunMessageBuilder {
     to,
     variables,
   }: RegistrationSuccessfulMailgunParams): Promise<MailgunMessageData> {
-    return {
+    return Promise.resolve({
       from: MAILGUN.FROM_EMAIL,
       to,
       subject: 'Vitajte v Bratislavskom konte',
       template: '2023-registration-successful',
       'h:X-Mailgun-Variables': JSON.stringify(variables),
-    }
+    })
   }
 
   async '2023-identity-check-successful'({
     to,
     variables,
   }: IdentityCheckSuccessfulMailgunParams): Promise<MailgunMessageData> {
-    return {
+    return Promise.resolve({
       from: MAILGUN.FROM_EMAIL,
       to,
       subject: 'Vaša identita v Bratislavskom konte bola overená',
       template: '2023-identity-check-successful',
       'h:X-Mailgun-Variables': JSON.stringify(variables),
-    }
+    })
   }
 
   async '2023-identity-check-rejected'({ to, variables }: IdentityCheckRejectedMailgunParams) {
-    return {
+    return Promise.resolve({
       from: MAILGUN.FROM_EMAIL,
       to,
       subject: 'Vašu identitu sa v Bratislavskom konte nepodarilo overiť',
       template: '2023-identity-check-rejected',
       'h:X-Mailgun-Variables': JSON.stringify(variables),
-    }
+    })
   }
 
   async '2025-delivery-method-changed-from-user-data'({

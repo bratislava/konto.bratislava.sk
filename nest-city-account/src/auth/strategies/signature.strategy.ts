@@ -1,13 +1,15 @@
+import { createPublicKey } from 'node:crypto'
+
 import { HttpException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
-import { Strategy as CustomStrategy } from 'passport-custom'
 import { createVerify } from 'crypto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { Strategy as CustomStrategy } from 'passport-custom'
+
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import { SignatureRequest } from '../types/signature-request.types'
-import { createPublicKey } from 'node:crypto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NonceService } from '../services/nonce.service'
+import { SignatureRequest } from '../types/signature-request.types'
 
 /**
  * Passport strategy for RSA signature verification
@@ -145,7 +147,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     const dataToVerify = `${method}|${originalUrl}|${timestamp}|${body}`
 
     // Verify signature using RSA-SHA256
-    let isValid = false
+    let isValid: boolean
     try {
       const verifier = createVerify('RSA-SHA256')
       verifier.update(dataToVerify)

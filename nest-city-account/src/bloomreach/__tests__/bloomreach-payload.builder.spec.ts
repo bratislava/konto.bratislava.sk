@@ -1,27 +1,27 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing'
 import { createMock } from '@golevelup/ts-jest'
+import { Test, TestingModule } from '@nestjs/testing'
 import {
   CognitoUserAttributesTierEnum,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
 } from '@prisma/client'
-import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
+
+import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../../utils/global-dtos/cognito.dto'
+import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
 import { UserIdentitySubservice } from '../../utils/subservices/user-identity.subservice'
-import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
-import { BloomreachContactDatabaseService } from '../bloomreach-contact-database.service'
-import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
+import { BloomreachContactDatabaseService } from '../bloomreach-contact-database.service'
+import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachPayloadBuilder', () => {
   let builder: BloomreachPayloadBuilder
@@ -273,5 +273,3 @@ describe('BloomreachPayloadBuilder', () => {
     })
   })
 })
-
-/* eslint-enable @typescript-eslint/no-explicit-any */

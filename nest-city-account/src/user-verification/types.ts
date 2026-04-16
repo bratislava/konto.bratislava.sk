@@ -1,7 +1,7 @@
 import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
 
-export type VerificationReturnType<T = void> =
-  | (T extends void
+export type VerificationReturnType<T = undefined> =
+  | (T extends undefined
       ? { success: true }
       : {
           success: true

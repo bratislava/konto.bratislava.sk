@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common'
-
 import {
   CognitoUserAttributesTierEnum,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
 } from '@prisma/client'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+
+import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
-import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
-import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 import {
-  BloomreachCustomerCommand,
-  BloomreachEventCommand,
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachConsentCategoryEnum,
   BloomreachConsentEventProperties,
+  BloomreachCustomerCommand,
+  BloomreachEventCommand,
   BloomreachEventNameEnum,
 } from './bloomreach.types'
+import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 
 @Injectable()
 export class BloomreachPayloadBuilder {
@@ -56,7 +56,7 @@ export class BloomreachPayloadBuilder {
     if (isIdentityVerified) {
       const { birthNumber, ico } = await this.userIdentitySubservice.getVerifiedIdentifiers(
         user.idUser,
-        accountType as CognitoUserAccountTypesEnum
+        accountType
       )
       if (birthNumber) {
         contactId = await this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
@@ -70,7 +70,7 @@ export class BloomreachPayloadBuilder {
     const correspondenceChannel =
       accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
         ? await this.userIdentitySubservice.getOfficialCorrespondenceChannel({
-            externalId: externalId,
+            externalId,
           })
         : null
 

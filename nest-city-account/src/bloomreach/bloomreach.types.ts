@@ -1,5 +1,5 @@
-import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 import { UserOfficialCorrespondenceChannelEnum } from '../user/dtos/gdpr.user.dto'
+import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
 // ─── Bloomreach Batch API types ─────────────────────────────────────────────
 
@@ -43,12 +43,12 @@ export interface BloomreachEventCommandData {
   event_type: BloomreachEventNameEnum
 }
 
-export type BloomreachCustomerCommand = {
+export interface BloomreachCustomerCommand {
   commandName: BloomreachCommandNameEnum.CUSTOMERS
   commandData: BloomreachCustomerCommandData
 }
 
-export type BloomreachEventCommand = {
+export interface BloomreachEventCommand {
   commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS
   commandData: BloomreachEventCommandData
 }

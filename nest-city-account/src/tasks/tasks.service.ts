@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression, Interval } from '@nestjs/schedule'
-import HandleErrors from '../utils/decorators/errorHandler.decorators'
+
 import { BloomreachOutboxProcessor } from '../bloomreach/bloomreach-outbox.processor'
+import HandleErrors from '../utils/decorators/errorHandler.decorators'
 import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
 import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
 import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'

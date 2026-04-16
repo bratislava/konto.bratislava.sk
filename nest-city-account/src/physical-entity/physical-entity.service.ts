@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { PhysicalEntity } from '@prisma/client'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
-import { PrismaService } from '../prisma/prisma.service'
 import { UpvsIdentityByUriSuccessType } from '../nases/nases.service'
+import { PrismaService } from '../prisma/prisma.service'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
@@ -35,7 +35,6 @@ export class PhysicalEntityService {
       where: { id: entities[0].id },
       data: { userId },
     })
-    return
   }
 
   /**
@@ -57,16 +56,16 @@ export class PhysicalEntityService {
     }
 
     let entity: PhysicalEntity
-    if (!entities || entities.length === 0) {
+    if (entities.length === 0) {
       entity = await this.prismaService.physicalEntity.create({
-        data: { birthNumber: birthNumber },
+        data: { birthNumber },
       })
     } else {
       entity = entities[0]
     }
 
     // Could not create entity
-    if (!entity || !entity.birthNumber) {
+    if (!entity.birthNumber) {
       this.logger.error(
         `PhysicalEntity was not created in database for birth number: ${birthNumber}.`
       )

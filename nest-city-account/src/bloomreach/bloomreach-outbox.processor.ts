@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common'
-
 import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '@prisma/client'
+import axios from 'axios'
+
 import { PrismaService } from '../prisma/prisma.service'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachBatchCommand,
   BloomreachBatchResponse,
@@ -14,7 +15,6 @@ import {
   BloomreachEventCommandData,
 } from './bloomreach.types'
 import { mergeCustomerCommandData } from './utils/merge-commands.utils'
-import axios from 'axios'
 
 const BATCH_SIZE = 50
 const MAX_ATTEMPTS = 5
@@ -51,9 +51,8 @@ export class BloomreachOutboxProcessor {
 
     // Backoff: skip entries that were recently retried (updatedAt + attempts * base delay > now)
     const now = new Date()
-    const entries = await this.prisma.$queryRaw<BloomreachOutbox[]>
     //language=postgresql
-    `
+    const entries = await this.prisma.$queryRaw<BloomreachOutbox[]>`
     WITH claimed AS
         (SELECT "id"
          FROM
@@ -154,7 +153,7 @@ export class BloomreachOutboxProcessor {
     const supersededByMap = await this.findSupersededEntriesAndMerge(entries)
 
     const results = await Promise.allSettled(
-      entries.map((entry) => {
+      entries.map(async (entry) => {
         const supersededBy = supersededByMap.get(entry.id)
         const newAttempts = entry.attempts + 1
         const exhausted = newAttempts >= MAX_ATTEMPTS
@@ -193,7 +192,7 @@ export class BloomreachOutboxProcessor {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Failed to revert ${revertFailures.length}/${entries.length} entries`,
           toLogfmt({ entryIds: entries.map((e) => e.id) }),
-          (revertFailures[0] as PromiseRejectedResult).reason
+          revertFailures[0].reason
         )
       )
     }
@@ -221,7 +220,7 @@ export class BloomreachOutboxProcessor {
         const { commandData } = entry
 
         let where: Prisma.BloomreachOutboxWhereInput
-        if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS_EVENTS) {
+        if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS_EVENTS.toString()) {
           const eventData = commandData as BloomreachEventCommandData
           where = {
             ...baseWhere,
@@ -248,7 +247,7 @@ export class BloomreachOutboxProcessor {
 
           // For customers commands, merge the old entry's data into the newer one
           // (newer values take precedence, matching the write-time merge logic)
-          if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS) {
+          if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS.toString()) {
             await tx.bloomreachOutbox.update({
               where: { id: newer.id },
               data: {

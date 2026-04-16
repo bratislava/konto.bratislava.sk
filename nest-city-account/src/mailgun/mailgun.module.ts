@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
+
+import { PdfGeneratorModule } from '../pdf-generator/pdf-generator.module'
 import { MailgunService } from './mailgun.service'
 import { MailgunMessageBuilder } from './mailgun-message.builder'
-import { PdfGeneratorModule } from '../pdf-generator/pdf-generator.module'
 
 @Module({
   imports: [PdfGeneratorModule],

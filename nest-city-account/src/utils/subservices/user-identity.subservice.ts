@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-
 import { DeliveryMethodEnum, Prisma } from '@prisma/client'
-import { CognitoUserAccountTypesEnum } from '../global-dtos/cognito.dto'
+
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
+import { CognitoUserAccountTypesEnum } from '../global-dtos/cognito.dto'
 
 @Injectable()
 export class UserIdentitySubservice {
@@ -36,6 +36,7 @@ export class UserIdentitySubservice {
         return UserOfficialCorrespondenceChannelEnum.EMAIL
       case DeliveryMethodEnum.POSTAL:
         return UserOfficialCorrespondenceChannelEnum.POSTAL
+      case null:
       default:
         return null
     }

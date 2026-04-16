@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common'
+import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
+import { z } from 'zod'
+
+import { MailgunService } from '../../mailgun/mailgun.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../../utils/constants/tax-deadline'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { DeliveryMethodNoris } from '../../utils/types/tax.types'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { TaxSubservice } from '../../utils/subservices/tax.subservice'
-import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
-import { DeliveryMethodCodec } from '../../utils/norisCodec'
 import {
   DeliveryMethodErrorsEnum,
   DeliveryMethodErrorsResponseEnum,
 } from '../../utils/guards/dtos/delivery-method.error'
-import { MailgunService } from '../../mailgun/mailgun.service'
-import { z } from 'zod'
+import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { DeliveryMethodCodec } from '../../utils/norisCodec'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { TaxSubservice } from '../../utils/subservices/tax.subservice'
+import { DeliveryMethodNoris } from '../../utils/types/tax.types'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 const LOCK_DELIVERY_METHODS_BATCH = 100
@@ -82,7 +83,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       return
     }
 
-    const data = users.reduce<{ [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue }>(
+    const data = users.reduce<Record<string, RequestUpdateNorisDeliveryMethodsDtoDataValue>>(
       (acc, user) => {
         // We know that birthNumber is not null from the query.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -176,7 +177,9 @@ export class TaxDeliveryMethodsTasksSubservice {
     let processedCount = 0
     let batchNumber = 1
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- this is intentional to process batches sequentially
     while (true) {
+      // eslint-disable-next-line no-await-in-loop -- this is intentional to process batches sequentially
       const users = await this.prismaService.user.findMany({
         where: {
           birthNumber: { not: null },
@@ -225,7 +228,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         if (user.physicalEntity?.activeEdesk) {
           return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
         }
-        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
+        if (user.userGdprData[0]?.subType === GDPRSubTypeEnum.subscribe) {
           return {
             birthNumber,
             deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
@@ -242,30 +245,32 @@ export class TaxDeliveryMethodsTasksSubservice {
         (entry) => entry.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT
       )
 
-      // Batch updates for users with same delivery method
-      const updatePromises = [
-        // EDESK users - all have undefined date
-        edeskUsers.length > 0 &&
+      // Batch updates for users with same delivery method (only Promises so Promise.all is safe)
+      const updatePromises: Promise<unknown>[] = []
+      if (edeskUsers.length > 0) {
+        updatePromises.push(
           this.prismaService.user.updateMany({
             where: { birthNumber: { in: edeskUsers.map((u) => u.birthNumber) } },
             data: {
               taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
               taxDeliveryMethodCityAccountLockDate: null,
             },
-          }),
-
-        // POSTAL users - all have undefined date
-        postalUsers.length > 0 &&
+          })
+        )
+      }
+      if (postalUsers.length > 0) {
+        updatePromises.push(
           this.prismaService.user.updateMany({
             where: { birthNumber: { in: postalUsers.map((u) => u.birthNumber) } },
             data: {
               taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
               taxDeliveryMethodCityAccountLockDate: null,
             },
-          }),
-
-        // CITY_ACCOUNT users still need individual updates due to different dates
-        ...cityAccountUsers.map((entry) =>
+          })
+        )
+      }
+      updatePromises.push(
+        ...cityAccountUsers.map(async (entry) =>
           this.prismaService.user.update({
             where: { birthNumber: entry.birthNumber },
             data: {
@@ -273,10 +278,10 @@ export class TaxDeliveryMethodsTasksSubservice {
               taxDeliveryMethodCityAccountLockDate: entry.date,
             },
           })
-        ),
-        // If postalUsers.length > 0 or edeskUsers.length > 0 evaluates to false, we want to filter out this result
-      ].filter(Boolean)
+        )
+      )
 
+      // eslint-disable-next-line no-await-in-loop -- this is intentional to process batches sequentially
       await Promise.all(updatePromises)
 
       processedCount += users.length
@@ -287,6 +292,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       // Break between batches (except for the last one)
       if (users.length === LOCK_DELIVERY_METHODS_BATCH) {
         this.logger.log(`Waiting ${BATCH_DELAY_MS}ms before next batch...`)
+        // eslint-disable-next-line no-await-in-loop -- this is intentional to process batches sequentially
         await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
         batchNumber++
       }
@@ -490,8 +496,8 @@ export class TaxDeliveryMethodsTasksSubservice {
       const logSuffixMap = {
         'edesk-deactivated': ' (eDesk deactivated)',
         'gdpr-change': ' (GDPR change)',
-      }
-      const logSuffix = options?.reason ? (logSuffixMap[options.reason] ?? '') : ''
+      } as const satisfies Record<'edesk-deactivated' | 'gdpr-change', string>
+      const logSuffix = options?.reason ? logSuffixMap[options.reason] : ''
       this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
     } catch (err) {
       this.logger.error(`Failed to send ${deliveryMethod} email for user ${userId}`, err)
@@ -600,7 +606,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     ])
 
     // Process all users with in-memory data
-    const emailPromises = users.map((user) =>
+    const emailPromises = users.map(async (user) =>
       this.processUserDeliveryMethodChange(
         user,
         latestGdprData.get(user.id),

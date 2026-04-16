@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
+import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { PrismaModule } from '../prisma/prisma.module'
+import { UserModule } from '../user/user.module'
 import { VerificationModule } from '../user-verification/verification.module'
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
 import { AdminCronSubservice } from './subservices/admin-cron.subservice'
-import { UserModule } from '../user/user.module'
-import { BloomreachModule } from '../bloomreach/bloomreach.module'
 
 /**
  * AdminModule - Manual administrative operations

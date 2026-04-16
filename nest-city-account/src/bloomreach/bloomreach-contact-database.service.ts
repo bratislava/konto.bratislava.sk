@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
-
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import { toLogfmt } from '../utils/logging'
 import { IDatabase } from 'pg-promise'
+
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 interface BloomreachContactRecord {
   uuid: string
@@ -43,6 +43,7 @@ export class BloomreachContactDatabaseService {
     let loggedError: Error | undefined
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
+        /* eslint-disable-next-line no-await-in-loop -- intentional sequential retries */
         return await this.handleUpsert(email, birthNumber, ico)
       } catch (error) {
         loggedError = this.throwerErrorGuard.InternalServerErrorException(
@@ -51,7 +52,7 @@ export class BloomreachContactDatabaseService {
           toLogfmt({ email, hasBirthNumber: !!birthNumber, hasIco: !!ico, attempt }),
           error
         )
-        this.logger.error(loggedError?.message) // this won't alert
+        this.logger.error(loggedError.message) // this won't alert
       }
     }
     this.logger.error(loggedError)

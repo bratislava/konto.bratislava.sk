@@ -1,14 +1,17 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiExtraModels,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
   getSchemaPath,
-  ApiExtraModels,
 } from '@nestjs/swagger'
+import { GDPRSubTypeEnum } from '@prisma/client'
 
 import { CognitoGuard } from '../auth/guards/cognito.guard'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { User } from '../utils/decorators/request.decorator'
 import {
   CognitoGetUserData,
@@ -16,7 +19,7 @@ import {
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import { ResponseInternalServerErrorDto } from '../utils/guards/dtos/error.dto'
-import { UserErrorsResponseEnum, UserErrorsEnum } from './user.error.enum'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
@@ -29,10 +32,8 @@ import {
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
 import { UpsertUserRecordClientRequestDto } from './dtos/user.requests.dto'
+import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
 import { UserService } from './user.service'
-import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { GDPRSubTypeEnum } from '@prisma/client'
 
 @ApiExtraModels(
   ResponseUserDataDto,
@@ -141,28 +142,24 @@ export class UserController {
   }
 
   @UseGuards(CognitoGuard)
+  @ApiOkResponse({
+    type: ResponseUserDataDto,
+  })
   @Post('remove-birthnumber')
   async removeBirthNumber(@User() user: CognitoGetUserData): Promise<ResponseUserDataDto> {
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      const result = await this.userService.removeBirthNumber(user.idUser)
-      return result
+    const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        return this.userService.removeBirthNumber(user.idUser)
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        return this.userService.removeLegalPersonBirthNumber(user.idUser)
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
-
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const result = await this.userService.removeLegalPersonBirthNumber(user.idUser)
-      return result
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
   }
 
   @HttpCode(200)
@@ -187,34 +184,31 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() data: RequestGdprDataDto
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      const result: ResponseUserDataDto = await this.userService.subUnsubUser(
-        user,
-        GDPRSubTypeEnum.subscribe,
-        data.gdprData
-      )
-      return result
+    const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const result: ResponseUserDataDto = await this.userService.subUnsubUser(
+          user,
+          GDPRSubTypeEnum.subscribe,
+          data.gdprData
+        )
+        return result
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
+          user,
+          GDPRSubTypeEnum.subscribe,
+          data.gdprData
+        )
+        return result
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
-
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
-        user,
-        GDPRSubTypeEnum.subscribe,
-        data.gdprData
-      )
-      return result
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
   }
 
   @HttpCode(200)
@@ -239,40 +233,37 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() data: RequestGdprDataDto
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      const result: ResponseUserDataDto = await this.userService.subUnsubUser(
-        user,
-        GDPRSubTypeEnum.unsubscribe,
-        data.gdprData
-      )
-      return result
+    const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const result: ResponseUserDataDto = await this.userService.subUnsubUser(
+          user,
+          GDPRSubTypeEnum.unsubscribe,
+          data.gdprData
+        )
+        return result
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
+          user,
+          GDPRSubTypeEnum.unsubscribe,
+          data.gdprData
+        )
+        return result
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
-
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const result: ResponseLegalPersonDataDto = await this.userService.subUnsubLegalPerson(
-        user,
-        GDPRSubTypeEnum.unsubscribe,
-        data.gdprData
-      )
-      return result
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
   }
 
   @HttpCode(200)
   @ApiOperation({
     summary: 'Unsubscribe user by uuid',
-    description: 'unsubscribe any user by uuid with different categories of subscription',
+    description: 'Unsubscribe any user by uuid with different categories of subscription',
   })
   @ApiResponse({
     status: 200,
@@ -293,7 +284,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Unsubscribe user by external Id',
     description:
-      'unsubscribe any user by external Id from cognito with different categories of subscription',
+      'Unsubscribe any user by external Id from cognito with different categories of subscription',
   })
   @ApiResponse({
     status: 200,
@@ -331,20 +322,23 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() body: ChangeEmailRequestDto
   ): Promise<ResponseUserDataBasicDto | ResponseLegalPersonDataSimpleDto> {
-    let result: ResponseUserDataBasicDto | ResponseLegalPersonDataSimpleDto | null = null
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-    ) {
-      result = await this.userService.changeUserEmail(user.sub, body.newEmail)
+    const accountType = user[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    let result: ResponseUserDataBasicDto | ResponseLegalPersonDataSimpleDto
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        result = await this.userService.changeUserEmail(user.sub, body.newEmail)
+        break
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        result = await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
+        break
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
 
-    if (
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
-        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      result = await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
-    }
     if (result) {
       await this.bloomreachOutboxService.trackCustomer(user.idUser)
       return result

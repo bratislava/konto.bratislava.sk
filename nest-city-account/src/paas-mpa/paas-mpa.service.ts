@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
-import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
-import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CognitoGetUserData, CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
 import { PaasMpaRegisterResponseDto, PaasMpaRegisterStatusEnum } from './dtos/paas-mpa.dto'
-import { toLogfmt } from 'src/utils/logging'
 
 @Injectable()
 export class PaasMpaService {

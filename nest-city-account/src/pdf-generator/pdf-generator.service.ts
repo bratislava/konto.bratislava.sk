@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common'
-import { Browser, chromium } from 'playwright'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { PdfTemplateKeys, pdfTemplates, PdfTemplateVariables } from './templates/pdf-templates'
 import { spawn } from 'node:child_process'
 import { existsSync, unlinkSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
 import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+
+import { Injectable } from '@nestjs/common'
+import { Browser, chromium } from 'playwright'
 import { v4 as uuidv4 } from 'uuid'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { PdfTemplateKeys, pdfTemplates, PdfTemplateVariables } from './templates/pdf-templates'
 
 @Injectable()
 export class PdfGeneratorService {
@@ -37,7 +39,10 @@ export class PdfGeneratorService {
       })
       const page = await browser.newPage()
 
-      const htmlWithFilledOutVariables = template.html.replace(/\{\{(.*?)}}/g, (match, key) => {
+      // Restrict to word chars (\\w+) to avoid ReDoS; template keys are identifiers only
+      const htmlWithFilledOutVariables = template.html.replace(/\{\{(\w+)}}/g, (match, key) => {
+        // Fallback to match when key is missing (e.g. template typo); runtime key may not exist
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- regex capture can be unknown key
         return templateVariables[key as keyof typeof templateVariables] ?? match
       })
 
@@ -65,7 +70,6 @@ export class PdfGeneratorService {
     } catch (error) {
       if (browser) {
         await browser.close()
-        browser = null
       }
 
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -93,8 +97,8 @@ export class PdfGeneratorService {
         const stdoutChunks: Buffer[] = []
         const stderrChunks: Buffer[] = []
 
-        child.stdout.on('data', (chunk) => stdoutChunks.push(chunk))
-        child.stderr.on('data', (chunk) => stderrChunks.push(chunk))
+        child.stdout.on('data', (chunk: Buffer) => stdoutChunks.push(chunk))
+        child.stderr.on('data', (chunk: Buffer) => stderrChunks.push(chunk))
 
         child.on('error', (err) => {
           this.logger.error(`Failed to start qpdf process: ${err.message}`)

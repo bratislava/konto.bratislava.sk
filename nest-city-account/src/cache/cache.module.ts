@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common'
-import { CacheModule as NestCacheModule } from '@nestjs/cache-manager'
-import { ConfigModule, ConfigService } from '@nestjs/config'
 import KeyvRedis from '@keyv/redis'
+import { CacheModule as NestCacheModule } from '@nestjs/cache-manager'
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 
 /**
  * Redis-based cache module for the application
@@ -18,7 +18,7 @@ import KeyvRedis from '@keyv/redis'
     NestCacheModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: (configService: ConfigService) => {
         const service = configService.get<string>('REDIS_SERVICE')
         const password = configService.get<string>('REDIS_PASSWORD')
         const user = configService.get<string>('REDIS_USER', 'default')

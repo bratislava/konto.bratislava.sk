@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsEnum } from 'class-validator'
 import { LoginClientEnum } from '@prisma/client'
+import { IsEnum } from 'class-validator'
 
 export class UpsertUserRecordClientRequestDto {
   @ApiProperty({

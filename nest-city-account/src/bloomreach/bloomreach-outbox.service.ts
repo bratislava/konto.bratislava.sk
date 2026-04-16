@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common'
-
 import {
   BloomreachOutboxStatus,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
 } from '@prisma/client'
+
 import { PrismaService } from '../prisma/prisma.service'
 import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
-import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachCommandNameEnum,
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
 } from './bloomreach.types'
+import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
 import { mergeCustomerCommandData } from './utils/merge-commands.utils'
 
 @Injectable()
@@ -83,7 +83,9 @@ export class BloomreachOutboxService {
       const commands = this.payloadBuilder.buildConsentEventCommands(gdprData, externalId)
 
       await Promise.all(
-        commands.map(({ commandData }) => this.upsertPendingEventCommand(externalId, commandData))
+        commands.map(async ({ commandData }) =>
+          this.upsertPendingEventCommand(externalId, commandData)
+        )
       )
 
       this.logger.debug(`Queued ${commands.length} consent events for ${userType} ${externalId}`)

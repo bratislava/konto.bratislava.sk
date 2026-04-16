@@ -1,18 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing'
 import { createMock } from '@golevelup/ts-jest'
+import { Test, TestingModule } from '@nestjs/testing'
 import { BloomreachOutbox, BloomreachOutboxStatus } from '@prisma/client'
 import axios from 'axios'
+
+import prismaMock from '../../../test/singleton'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import prismaMock from '../../../test/singleton'
-import { BloomreachOutboxProcessor } from '../bloomreach-outbox.processor'
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
+import { BloomreachOutboxProcessor } from '../bloomreach-outbox.processor'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -379,5 +379,3 @@ describe('BloomreachOutboxProcessor', () => {
     })
   })
 })
-
-/* eslint-enable @typescript-eslint/no-explicit-any */

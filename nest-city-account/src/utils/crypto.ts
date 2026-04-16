@@ -19,12 +19,12 @@ const encrypt = (plaintext: Buffer, key: Buffer) => {
 }
 
 const decrypt = (ciphertextAndNonce: Buffer, key: Buffer) => {
-  const nonce = ciphertextAndNonce.slice(0, ALGORITHM_NONCE_SIZE)
-  const ciphertext = ciphertextAndNonce.slice(
+  const nonce = ciphertextAndNonce.subarray(0, ALGORITHM_NONCE_SIZE)
+  const ciphertext = ciphertextAndNonce.subarray(
     ALGORITHM_NONCE_SIZE,
     ciphertextAndNonce.length - ALGORITHM_TAG_SIZE
   )
-  const tag = ciphertextAndNonce.slice(ciphertext.length + ALGORITHM_NONCE_SIZE)
+  const tag = ciphertextAndNonce.subarray(ciphertext.length + ALGORITHM_NONCE_SIZE)
 
   const cipher = crypto.createDecipheriv(ALGORITHM_NAME, key, nonce)
 

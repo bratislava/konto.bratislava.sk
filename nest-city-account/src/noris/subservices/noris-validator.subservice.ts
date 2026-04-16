@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import z from 'zod'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
@@ -10,12 +11,10 @@ export class NorisValidatorSubservice {
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 
-  validateNorisData<T extends z.ZodSchema>(schema: T, data: unknown[]): z.infer<T>[]
-  validateNorisData<T extends z.ZodSchema>(schema: T, data: unknown): z.infer<T>
-  validateNorisData<T extends z.ZodSchema>(
-    schema: T,
-    data: unknown | unknown[]
-  ): z.infer<T> | z.infer<T>[] {
+  validateNorisData<T extends z.ZodType>(schema: T, data: unknown[]): z.infer<T>[]
+  validateNorisData<T extends z.ZodType>(schema: T, data: unknown): z.infer<T>
+  // eslint-disable-next-line sonarjs/function-return-type -- TODO consider fixing
+  validateNorisData<T extends z.ZodType>(schema: T, data: unknown): z.infer<T> | z.infer<T>[] {
     if (Array.isArray(data)) {
       return data
         .map((item) => {

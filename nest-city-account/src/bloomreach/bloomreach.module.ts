@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 
-import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
-import { bloomreachContactDatabaseProvider } from './bloomreach-contact-database.provider'
-import { BloomreachOutboxService } from './bloomreach-outbox.service'
-import { BloomreachOutboxProcessor } from './bloomreach-outbox.processor'
-import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
 import { PrismaModule } from '../prisma/prisma.module'
+import { bloomreachContactDatabaseProvider } from './bloomreach-contact-database.provider'
+import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
+import { BloomreachOutboxProcessor } from './bloomreach-outbox.processor'
+import { BloomreachOutboxService } from './bloomreach-outbox.service'
+import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
 
 @Module({
   imports: [PrismaModule],

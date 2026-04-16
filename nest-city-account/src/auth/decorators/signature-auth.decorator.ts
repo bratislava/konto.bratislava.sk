@@ -1,8 +1,9 @@
 import { applyDecorators, UseGuards } from '@nestjs/common'
 import { ApiHeader } from '@nestjs/swagger'
+
 import { SignatureGuard } from '../guards/signature.guard'
-import { SignaturePublicKeyEnvVarName } from './signature-public-key.decorator'
 import { RequireNonce } from './require-nonce.decorator'
+import { SignaturePublicKeyEnvVarName } from './signature-public-key.decorator'
 
 /**
  * Composite decorator for signature-based authentication

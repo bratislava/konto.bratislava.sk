@@ -1,7 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
-import { PrismaClient, Prisma } from '@prisma/client'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { Prisma, PrismaClient } from '@prisma/client'
+
 import { escapeForLogfmt } from '../utils/logging'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export const ACTIVE_USER_FILTER = { isDeceased: false }
 

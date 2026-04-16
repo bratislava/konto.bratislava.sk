@@ -1,18 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing'
 import { createMock } from '@golevelup/ts-jest'
+import { Test, TestingModule } from '@nestjs/testing'
 import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
+
+import prismaMock from '../../../test/singleton'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import prismaMock from '../../../test/singleton'
-import { BloomreachOutboxService } from '../bloomreach-outbox.service'
-import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
+import { BloomreachOutboxService } from '../bloomreach-outbox.service'
+import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachOutboxService', () => {
   let service: BloomreachOutboxService
@@ -253,5 +253,3 @@ describe('BloomreachOutboxService', () => {
     })
   })
 })
-
-/* eslint-enable @typescript-eslint/no-explicit-any */

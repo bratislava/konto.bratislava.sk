@@ -50,8 +50,8 @@ const Checkbox = ({
             'grid size-6 shrink-0 place-content-center rounded border-2',
             'border-border-active-primary-default',
             {
-              'border-border-error': isInvalid && !isDisabled,
               'bg-background-active-primary-default': (isSelected || isIndeterminate) && !isInvalid,
+              'border-border-error': isInvalid && !isDisabled,
               'bg-background-error-default': (isSelected || isIndeterminate) && isInvalid,
               'opacity-50': isDisabled,
               'ring-2 ring-offset-2': isFocusVisible,

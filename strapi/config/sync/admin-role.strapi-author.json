@@ -1,0 +1,268 @@
+{
+  "name": "Author",
+  "code": "strapi-author",
+  "description": "Authors can manage the content they have created.",
+  "documentId": "j0i2x99mk8ubawtzmro4qrc3",
+  "locale": null,
+  "permissions": [
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::form.form",
+      "properties": {
+        "fields": [
+          "slug",
+          "moreInformationUrl",
+          "landingPage.text",
+          "landingPage.linkCtas.title",
+          "landingPage.linkCtas.text",
+          "landingPage.linkCtas.buttonLabel",
+          "landingPage.linkCtas.url",
+          "landingPage.formCta.title",
+          "landingPage.formCta.text",
+          "landingPage.formCta.buttonLabel"
+        ]
+      },
+      "conditions": [],
+      "documentId": "pyddiaoqvwezvd79kcn0z3v0",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::form.form",
+      "properties": {
+        "fields": [
+          "slug",
+          "moreInformationUrl",
+          "landingPage.text",
+          "landingPage.linkCtas.title",
+          "landingPage.linkCtas.text",
+          "landingPage.linkCtas.buttonLabel",
+          "landingPage.linkCtas.url",
+          "landingPage.formCta.title",
+          "landingPage.formCta.text",
+          "landingPage.formCta.buttonLabel"
+        ]
+      },
+      "conditions": [],
+      "documentId": "zosm40v4sdivnbzq1gqj442j",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::form.form",
+      "properties": {
+        "fields": [
+          "slug",
+          "moreInformationUrl",
+          "landingPage.text",
+          "landingPage.linkCtas.title",
+          "landingPage.linkCtas.text",
+          "landingPage.linkCtas.buttonLabel",
+          "landingPage.linkCtas.url",
+          "landingPage.formCta.title",
+          "landingPage.formCta.text",
+          "landingPage.formCta.buttonLabel"
+        ]
+      },
+      "conditions": [],
+      "documentId": "qowo18eapl6qr29x1lyz347j",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::general.general",
+      "properties": {
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
+      },
+      "conditions": [],
+      "documentId": "eeq7a73f6dbf7na3qa7txkjw",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::general.general",
+      "properties": {
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
+      },
+      "conditions": [],
+      "documentId": "m2kb1rgplj0lv6wys6m8afsk",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::general.general",
+      "properties": {
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
+      },
+      "conditions": [],
+      "documentId": "i22wtm2ryn4w987mfm0hbokz",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::help-page.help-page",
+      "properties": {
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
+      },
+      "conditions": [],
+      "documentId": "tr1kc0elxsjf4wum8owbj5an",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::help-page.help-page",
+      "properties": {
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
+      },
+      "conditions": [],
+      "documentId": "io7fybeo8v6frlhv2ll0xsly",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::help-page.help-page",
+      "properties": {
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
+      },
+      "conditions": [],
+      "documentId": "xtt4yllts4y9kjcrbl2a2la2",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::tax.tax",
+      "properties": {
+        "fields": [
+          "accountCommunicationConsentText",
+          "channelChangeEffectiveNextYearTitle",
+          "channelChangeEffectiveNextYearText"
+        ]
+      },
+      "conditions": [],
+      "documentId": "zgdvjx032kwy5yjy1pub4rh8",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::tax.tax",
+      "properties": {
+        "fields": [
+          "accountCommunicationConsentText",
+          "channelChangeEffectiveNextYearTitle",
+          "channelChangeEffectiveNextYearText"
+        ]
+      },
+      "conditions": [],
+      "documentId": "jv5mod3yvk5gvbmbof1mylte",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::tax.tax",
+      "properties": {
+        "fields": [
+          "accountCommunicationConsentText",
+          "channelChangeEffectiveNextYearTitle",
+          "channelChangeEffectiveNextYearText"
+        ]
+      },
+      "conditions": [],
+      "documentId": "ob88s5gs1xbf480xqqi0abek",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.assets.copy-link",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "jzno3l0nwv02l5wy9y5gw9hn",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.assets.create",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "r31qjxqwegpj81udqc4v5lyn",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.assets.download",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "mnpq6c3oyg8vr75ki7o7h00a",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.assets.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "documentId": "vj1nske4993hjk6403v1dkky",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.configure-view",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "be38c6totxq1a91zj7fw6djn",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.read",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [
+        "admin::is-creator"
+      ],
+      "documentId": "cy97td6tio7hz8lqamsn5pm6",
+      "locale": null
+    }
+  ]
+}

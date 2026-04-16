@@ -67,7 +67,6 @@ export default class BaConfig {
       oboTokenPublic: this.validatedConfig.OBO_TOKEN_PUBLIC,
       subNasesTechnicalAccount:
         this.validatedConfig.SUB_NASES_TECHNICAL_ACCOUNT,
-      nasesSenderUri: this.validatedConfig.NASES_SENDER_URI,
       nasesRecipientUri: this.validatedConfig.NASES_RECIPIENT_URI,
     }
   }

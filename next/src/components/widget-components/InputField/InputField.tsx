@@ -17,6 +17,7 @@ export type InputFieldProps = FieldWrapperProps & {
   endIcon?: ReactNode
   autoComplete?: string
   autoCapitalize?: AriaTextFieldOptions<'input'>['autoCapitalize']
+  autoCorrect?: AriaTextFieldOptions<'input'>['autoCorrect']
   placeholder?: string
   className?: string
 }
@@ -32,6 +33,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       endIcon,
       autoComplete,
       autoCapitalize,
+      autoCorrect,
       placeholder,
       className,
       ...rest
@@ -70,6 +72,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         },
         autoComplete,
         autoCapitalize,
+        autoCorrect,
       },
       ref,
     )

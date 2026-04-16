@@ -44,6 +44,8 @@ const RadioGroupWidgetRJSF = (props: RadioGroupWidgetRJSFProps) => {
     [enumOptions, enumMetadata],
   )
 
+  const hasDescriptionInRadioGroup = mergedOptions.some((option) => option.description)
+
   return (
     <WidgetWrapper {...wrapperProps}>
       <RadioGroup
@@ -64,6 +66,7 @@ const RadioGroupWidgetRJSF = (props: RadioGroupWidgetRJSFProps) => {
               variant={variant}
               value={radioValue}
               description={option.description}
+              hasDescriptionInRadioGroup={hasDescriptionInRadioGroup}
               data-cy={`radio-${option.label.toLowerCase().replaceAll(' ', '-').replaceAll('.', '')}`}
             >
               {option.label}

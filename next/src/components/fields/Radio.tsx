@@ -7,9 +7,20 @@ export interface RadioProps extends Omit<RACRadioProps, 'children'> {
   variant?: 'basic' | 'boxed' | 'card'
   description?: string
   children: ReactNode
+  /**
+   * Whether any of the other radios in the group has a description. If they do, we want to display the label in semi-bold.
+   */
+  hasDescriptionInRadioGroup?: boolean
 }
 
-const Radio = ({ variant = 'basic', description, children, className, ...rest }: RadioProps) => (
+const Radio = ({
+  variant = 'basic',
+  description,
+  children,
+  hasDescriptionInRadioGroup,
+  className,
+  ...rest
+}: RadioProps) => (
   <RACRadio
     {...rest}
     className={({ isSelected, isDisabled, isInvalid }) =>
@@ -58,7 +69,9 @@ const Radio = ({ variant = 'basic', description, children, className, ...rest }:
           ) : null}
         </div>
         <span className="flex grow flex-col gap-1">
-          <span className={cn({ 'font-semibold': !!description })}>{children}</span>
+          <span className={cn({ 'font-semibold': !!description || hasDescriptionInRadioGroup })}>
+            {children}
+          </span>
           {description ? <span>{description}</span> : null}
         </span>
       </>

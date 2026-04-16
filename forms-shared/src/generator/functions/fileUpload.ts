@@ -1,13 +1,13 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
-import { FileLimits } from '../../definitions/formDefinitionTypes'
+import { FormFiles } from '../../definitions/formDefinitionTypes'
 
-type FileUploadOptions<K extends FileLimits> = GeneratorBaseOptions & {
-  id?: keyof K & string
+type FileUploadOptions<K extends FormFiles<string>> = GeneratorBaseOptions & {
+  slotId: K['slots'][number]['slotId']
 }
 
-export const fileUpload = <K extends FileLimits>(
+export const fileUpload = <K extends FormFiles<string> = never>(
   property: string,
   options: FileUploadOptions<K>,
   uiOptions: FileUploadUiOptions,
@@ -21,7 +21,7 @@ export const fileUpload = <K extends FileLimits>(
     baUiSchema: {
       'ui:widget': BaWidgetType.FileUpload,
       'ui:options': uiOptions,
-      'ui:fileId': options.id,
+      'ui:slot': options.slotId,
     },
   }),
   required: Boolean(options.required),

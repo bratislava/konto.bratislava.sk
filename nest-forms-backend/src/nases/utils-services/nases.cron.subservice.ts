@@ -15,8 +15,8 @@ import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { ValidateFormRegistrationsResultDto } from '../dtos/responses.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
+import NasesSenderService from '../services/nases.sender.service'
 import FormRegistrationStatusRepository from './form-registration-status.repository'
-import NasesUtilsService from './tokens.nases.service'
 
 enum FormRegistrationStatus {
   PUBLISHED = 'Publikovaný',
@@ -28,7 +28,7 @@ export default class NasesCronSubservice {
 
   constructor(
     private readonly clientsService: ClientsService,
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly nasesSenderService: NasesSenderService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly baConfigService: BaConfigService,
     private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
@@ -86,7 +86,7 @@ export default class NasesCronSubservice {
         }
 
         const validateEformJwtToken =
-          this.nasesUtilsService.createTechnicalAccountJwtToken()
+          this.nasesSenderService.createTechnicalAccountJwtToken()
 
         const { pospID, pospVersion } = formDefinition
 

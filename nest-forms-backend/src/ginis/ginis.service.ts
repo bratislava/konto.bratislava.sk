@@ -35,10 +35,8 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases/nases.errors.enum'
-import NasesUtilsService, {
-  isUpvsCorporateBody,
-  isUpvsNaturalPerson,
-} from '../nases/utils-services/tokens.nases.service'
+import NasesContactsService, { isUpvsCorporateBody, isUpvsNaturalPerson } from '../nases/services/nases.contacts.service'
+import NasesSenderService from '../nases/services/nases.sender.service'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -70,7 +68,8 @@ export default class GinisService {
     private mailgunService: MailgunService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private prismaService: PrismaService,
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly nasesSenderService: NasesSenderService,
+    private readonly nasesContactsService: NasesContactsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
     this.logger = new LineLoggerSubservice('GinisService')
@@ -518,7 +517,7 @@ export default class GinisService {
   private async fetchContactByUri(
     uri: string,
   ): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
-    const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
+    const jwt = this.nasesSenderService.createTechnicalAccountJwtToken()
     const response =
       await this.clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost(
         {
@@ -569,7 +568,7 @@ export default class GinisService {
     if (isUpvsNaturalPerson(contact)) {
       params.type = GinContactType.PHYSICAL_ENTITY
       const extractedData =
-        this.nasesUtilsService.extractNaturalPersonData(contact)
+        this.nasesContactsService.extractNaturalPersonData(contact)
       if (extractedData.firstNames.length > 0) {
         params.firstName = extractedData.firstNames.join(' ')
       }
@@ -582,7 +581,7 @@ export default class GinisService {
     if (isUpvsCorporateBody(contact)) {
       params.type = GinContactType.LEGAL_ENTITY
       const extractedData =
-        this.nasesUtilsService.extractCorporateBodyData(contact)
+        this.nasesContactsService.extractCorporateBodyData(contact)
       if (extractedData.name) {
         params.name = extractedData.name
       }

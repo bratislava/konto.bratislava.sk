@@ -9,7 +9,7 @@ import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
+import NasesSenderService from '../nases/services/nases.sender.service'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
@@ -43,7 +43,7 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     GinisHelper,
     ThrowerErrorGuard,
     GinisAPIService,
-    NasesUtilsService,
+    NasesSenderService,
     MailgunService,
     MailgunHelper,
     MinioClientSubservice,

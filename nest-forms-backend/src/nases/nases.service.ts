@@ -52,7 +52,7 @@ import {
 } from './dtos/requests.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
-import NasesUtilsService from './utils-services/tokens.nases.service'
+import NasesSenderService from './services/nases.sender.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
 @Injectable()
@@ -66,7 +66,7 @@ export default class NasesService {
     private readonly filesService: FilesService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly nasesSenderService: NasesSenderService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
@@ -330,7 +330,7 @@ export default class NasesService {
     user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
-    const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
+    const jwt = this.nasesSenderService.createUserJwtToken(oboToken)
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -560,8 +560,8 @@ export default class NasesService {
     senderUri: string,
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<void> {
-    // sendMessageNases is implemented in a way that it does not throw. Therefore this is not in try-catch block.
-    const sendData = await this.nasesUtilsService.sendMessageNases(
+    // send is implemented in a way that it does not throw. Therefore this is not in try-catch block.
+    const sendData = await this.nasesSenderService.send(
       jwt,
       form,
       senderUri,

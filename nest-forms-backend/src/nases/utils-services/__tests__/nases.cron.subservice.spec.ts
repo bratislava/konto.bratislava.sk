@@ -14,9 +14,9 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../../nases.errors.enum'
+import NasesSenderService from '../../services/nases.sender.service'
 import FormRegistrationStatusRepository from '../form-registration-status.repository'
 import NasesCronSubservice from '../nases.cron.subservice'
-import NasesUtilsService from '../tokens.nases.service'
 
 jest.mock('../../../utils/subservices/line-logger.subservice', () => ({
   __esModule: true,
@@ -50,7 +50,7 @@ jest.mock('forms-shared/definitions/formDefinitions', () => ({
 
 describe('NasesCronSubservice', () => {
   let service: NasesCronSubservice
-  let nasesUtilsService: jest.Mocked<NasesUtilsService>
+  let nasesSenderService: jest.Mocked<NasesSenderService>
   let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
   const mockSlovenskoSkApi = {
@@ -70,8 +70,8 @@ describe('NasesCronSubservice', () => {
           },
         },
         {
-          provide: NasesUtilsService,
-          useValue: createMock<NasesUtilsService>({
+          provide: NasesSenderService,
+          useValue: createMock<NasesSenderService>({
             createTechnicalAccountJwtToken: jest.fn(),
           }),
         },
@@ -97,7 +97,7 @@ describe('NasesCronSubservice', () => {
     }).compile()
 
     service = module.get<NasesCronSubservice>(NasesCronSubservice)
-    nasesUtilsService = module.get(NasesUtilsService)
+    nasesSenderService = module.get(NasesSenderService)
     throwerErrorGuard = module.get(ThrowerErrorGuard)
   })
 
@@ -115,7 +115,7 @@ describe('NasesCronSubservice', () => {
     let originalFormDefinitions: any
 
     beforeEach(() => {
-      nasesUtilsService.createTechnicalAccountJwtToken.mockReturnValue(
+      nasesSenderService.createTechnicalAccountJwtToken.mockReturnValue(
         'mock-jwt-token',
       )
 
@@ -247,7 +247,7 @@ describe('NasesCronSubservice', () => {
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
       expect(
-        nasesUtilsService.createTechnicalAccountJwtToken,
+        nasesSenderService.createTechnicalAccountJwtToken,
       ).toHaveBeenCalledTimes(2)
     })
 
@@ -259,7 +259,7 @@ describe('NasesCronSubservice', () => {
       await service.validateFormRegistrations()
 
       expect(
-        nasesUtilsService.createTechnicalAccountJwtToken,
+        nasesSenderService.createTechnicalAccountJwtToken,
       ).toHaveBeenCalledTimes(2)
     })
 

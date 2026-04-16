@@ -10,8 +10,8 @@ import {
 
 import AdminGuard from '../auth/guards/admin.guard'
 import { ValidateFormRegistrationsResultDto } from '../nases/dtos/responses.dto'
+import NasesSenderService from '../nases/services/nases.sender.service'
 import NasesCronSubservice from '../nases/utils-services/nases.cron.subservice'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 
@@ -20,7 +20,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 @ApiSecurity('apiKey')
 export default class AdminController {
   constructor(
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly nasesSenderService: NasesSenderService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesCronSubservice: NasesCronSubservice,
   ) {}
@@ -38,7 +38,7 @@ export default class AdminController {
   @UseGuards(AdminGuard)
   @Get('technical-jwt')
   getTechnicalJwt(): string {
-    return this.nasesUtilsService.createTechnicalAccountJwtToken()
+    return this.nasesSenderService.createTechnicalAccountJwtToken()
   }
 
   @ApiOperation({
@@ -52,7 +52,7 @@ export default class AdminController {
   @UseGuards(AdminGuard)
   @Get('administration-jwt')
   getAdministrationJwt(): string {
-    return this.nasesUtilsService.createAdministrationJwtToken()
+    return this.nasesSenderService.createAdministrationJwtToken()
   }
 
   @ApiOperation({
@@ -72,7 +72,7 @@ export default class AdminController {
         'Authorization not provided',
       )
     }
-    return this.nasesUtilsService.createUserJwtToken(head.authorization)
+    return this.nasesSenderService.createUserJwtToken(head.authorization)
   }
 
   @ApiOperation({

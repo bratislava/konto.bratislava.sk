@@ -47,7 +47,7 @@ import {
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
 import NasesService from './nases.service'
-import NasesUtilsService from './utils-services/tokens.nases.service'
+import NasesSenderService from './services/nases.sender.service'
 
 @ApiTags('nases')
 @ApiBearerAuth()
@@ -55,7 +55,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 export default class NasesController {
   constructor(
     private readonly nasesService: NasesService,
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly nasesSenderService: NasesSenderService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly formsService: FormsService,
     private readonly logger: LineLoggerSubservice,
@@ -198,7 +198,7 @@ export default class NasesController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
+    const jwtTest = this.nasesSenderService.createUserJwtToken(data.eidToken)
     if ((await this.nasesService.getUpvsIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,

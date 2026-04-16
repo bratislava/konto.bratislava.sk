@@ -20,7 +20,7 @@ import NasesController from './nases.controller'
 import NasesService from './nases.service'
 import FormRegistrationStatusRepository from './utils-services/form-registration-status.repository'
 import NasesCronSubservice from './utils-services/nases.cron.subservice'
-import NasesUtilsService from './utils-services/tokens.nases.service'
+import NasesSenderService from './services/nases.sender.service'
 
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
   ],
   providers: [
     NasesService,
-    NasesUtilsService,
+    NasesSenderService,
     ThrowerErrorGuard,
     ScannerClientService,
     MinioClientSubservice,
@@ -47,7 +47,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     NasesCronSubservice,
     FormRegistrationStatusRepository,
   ],
-  exports: [NasesService, NasesUtilsService, NasesCronSubservice],
+  exports: [NasesService, NasesSenderService, NasesCronSubservice],
   controllers: [NasesController],
 })
 export default class NasesModule {}

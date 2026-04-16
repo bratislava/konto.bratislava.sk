@@ -3,10 +3,14 @@ FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:24.14 AS base
 
+RUN apt-get update \
+    && apt-get install -y qpdf \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN npx playwright install-deps chromium
 
-# build
-FROM base AS build
+# prebuild
+FROM base AS prebuild
 COPY --from=forms-shared /app/ /root/forms-shared
 COPY --from=openapi-clients /app/ /root/openapi-clients
 
@@ -19,7 +23,13 @@ COPY . ./
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
+FROM prebuild AS build
+
 RUN npm run build
+
+FROM prebuild AS validate
+
+ENV CI=true
 
 # development
 FROM base AS dev

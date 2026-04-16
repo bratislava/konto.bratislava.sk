@@ -8,6 +8,7 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 import { CognitoSubservice } from './cognito.subservice'
 import { TaxSubservice } from './tax.subservice'
 import { TurnstileSubservice } from './turnstile.subservice'
+import { UserIdentitySubservice } from './user-identity.subservice'
 
 /**
  * SharedModule is a global module that provides commonly used services and utilities
@@ -36,7 +37,19 @@ import { TurnstileSubservice } from './turnstile.subservice'
 @Global()
 @Module({
   imports: [PrismaModule, ClientsModule, ConfigModule], // Only leaf modules can be imported here.
-  providers: [ThrowerErrorGuard, TaxSubservice, CognitoSubservice, TurnstileSubservice],
-  exports: [ThrowerErrorGuard, TaxSubservice, CognitoSubservice, TurnstileSubservice],
+  providers: [
+    ThrowerErrorGuard,
+    TaxSubservice,
+    CognitoSubservice,
+    TurnstileSubservice,
+    UserIdentitySubservice,
+  ],
+  exports: [
+    ThrowerErrorGuard,
+    TaxSubservice,
+    CognitoSubservice,
+    TurnstileSubservice,
+    UserIdentitySubservice,
+  ],
 })
 export class SharedModule {}

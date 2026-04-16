@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { ReactNode } from 'react'
 
 import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@/src/assets/ui-icons'
@@ -24,7 +24,7 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
         <React.Fragment key={i}>
           {button.link ? (
             <Link
-              className="w-max text-16-medium underline underline-offset-4"
+              className="text-16-medium w-max underline underline-offset-4"
               href={button.link}
               data-cy="alert-container-button"
             >
@@ -33,7 +33,7 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
           ) : (
             <Button
               variant="unstyled"
-              className="w-max text-16-medium underline underline-offset-4"
+              className="text-16-medium w-max underline underline-offset-4"
               onClick={button.handler}
             >
               {button.title}

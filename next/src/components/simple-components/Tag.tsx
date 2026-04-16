@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { FC, useState } from 'react'
 
 import { CrossIcon } from '@/src/assets/ui-icons'

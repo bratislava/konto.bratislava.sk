@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { DeliveryMethodEnum } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -37,8 +37,8 @@ describe('UserService', () => {
           useValue: createMock<ThrowerErrorGuard>(),
         },
         {
-          provide: BloomreachService,
-          useValue: createMock<BloomreachService>(),
+          provide: BloomreachOutboxService,
+          useValue: createMock<BloomreachOutboxService>(),
         },
         {
           provide: CognitoSubservice,

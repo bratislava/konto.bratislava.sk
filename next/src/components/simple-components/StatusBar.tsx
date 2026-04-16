@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import objectHash from 'object-hash'
 import { useLocalStorage } from 'usehooks-ts'
 
@@ -14,8 +14,7 @@ import { environment } from '@/src/environment'
 const fetchAlert = async () => {
   try {
     const alertsQuery = await strapiClient.Alerts()
-    const alerts =
-      alertsQuery.general?.alerts?.filter((alert) => alert != null) ?? []
+    const alerts = alertsQuery.general?.alerts?.filter((alert) => alert != null) ?? []
 
     const now = new Date()
 

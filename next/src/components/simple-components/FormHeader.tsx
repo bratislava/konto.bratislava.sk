@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import { DiscIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'
@@ -27,7 +27,7 @@ const FormHeader = () => {
           <h1 className="text-h1-form">{schema.title}</h1>
           {strapiForm?.moreInformationUrl ? (
             <Link
-              className="w-max text-p1 underline"
+              className="text-p1 w-max underline"
               href={strapiForm.moreInformationUrl}
               target="_blank"
             >
@@ -43,7 +43,7 @@ const FormHeader = () => {
               startIcon={<DiscIcon className="size-5" />}
               onPress={() => saveConcept()}
               data-cy="save-concept-desktop"
-              className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
+              className="data-hovered:border-gray-600 data-pressed:border-gray-800 border-gray-700" // TODO remove when Button is updated according to DS
             >
               {t('menu_list.save_concept')}
             </Button>
@@ -55,7 +55,7 @@ const FormHeader = () => {
                 size="small"
                 icon={<EllipsisVerticalIcon />}
                 aria-label="Menu"
-                className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
+                className="data-hovered:border-gray-600 data-pressed:border-gray-800 border-gray-700" // TODO remove when Button is updated according to DS
               />
             }
             items={menuItems}

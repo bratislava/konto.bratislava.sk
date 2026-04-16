@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'

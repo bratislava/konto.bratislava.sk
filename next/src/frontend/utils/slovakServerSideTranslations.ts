@@ -1,6 +1,5 @@
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { serverSideTranslations } from 'next-i18next/pages/serverSideTranslations'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Tail<T extends any[]> = ((...t: T) => any) extends (_: any, ...tail: infer U) => any ? U : []
 
 /**

@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import { useSearchParams } from 'next/navigation'
-import { Trans, useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
 
@@ -158,7 +158,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                 <span className="text-h5">{t('taxes.payment_data.card_payment_title')}</span>
               </div>
               <div className="flex flex-row items-center gap-1.5 lg:gap-3">
-                <div className="rounded-lg bg-background-passive-primary px-3 py-1">
+                <div className="bg-background-passive-primary rounded-lg px-3 py-1">
                   <CreditCardIcon className="size-5" />
                 </div>
                 <ApplePayIcon className="size-12" />
@@ -166,7 +166,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
               </div>
             </div>
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
-              <span className="w-full text-h5 lg:w-auto">
+              <span className="text-h5 w-full lg:w-auto">
                 {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
               </span>
               <Button
@@ -217,7 +217,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                   )
                 })}
               </ul>
-              <div className="flex max-w-120 flex-col gap-4 self-stretch rounded-lg border p-4 lg:flex-row">
+              <div className="max-w-120 flex flex-col gap-4 self-stretch rounded-lg border p-4 lg:flex-row">
                 <div className="flex w-full grow flex-col items-start justify-between gap-4">
                   <div className="flex flex-col items-start gap-2">
                     <div className="text-h6">{t('taxes.payment_data.qr_code')}</div>
@@ -234,7 +234,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                     {t('taxes.payment_data.download_qr_code')}
                   </Button>
                 </div>
-                <div className="flex h-full flex-col justify-center lg:w-100">
+                <div className="lg:w-100 flex h-full flex-col justify-center">
                   <img className="aspect-square w-full" src={qrCodeImageSrc} alt="QR code" />{' '}
                 </div>
               </div>

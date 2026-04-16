@@ -1,5 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import React, { PropsWithChildren } from 'react'
 import { mergeProps } from 'react-aria'
 import { Dialog, Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components'
@@ -98,7 +98,7 @@ const Modal = ({
                     aria-label={t('Modal.aria.close')}
                     onPress={close}
                     data-cy="close-modal"
-                    className="absolute top-3 right-3 md:top-4 md:right-4"
+                    className="absolute right-3 top-3 md:right-4 md:top-4"
                   />
                 )}
                 {children}

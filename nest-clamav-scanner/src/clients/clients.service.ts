@@ -4,9 +4,11 @@ import { createFormsClient, type FormsClient } from 'openapi-clients/forms'
 
 @Injectable()
 export default class ClientsService {
-  constructor(private readonly configService: ConfigService) {}
+  public readonly formsApi: FormsClient
 
-  public readonly formsApi: FormsClient = createFormsClient({
-    basePath: this.configService.getOrThrow('NEST_FORMS_BACKEND'),
-  })
+  constructor(private readonly configService: ConfigService) {
+    this.formsApi = createFormsClient({
+      basePath: this.configService.getOrThrow('NEST_FORMS_BACKEND'),
+    })
+  }
 }

@@ -1,7 +1,7 @@
 import 'yet-another-react-lightbox/styles.css'
 
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { PropsWithChildren, useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'

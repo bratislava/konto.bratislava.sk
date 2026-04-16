@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
 
 import { ArrowLeftIcon } from '@/src/assets/ui-icons'

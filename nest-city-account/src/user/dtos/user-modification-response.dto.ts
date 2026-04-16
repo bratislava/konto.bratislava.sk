@@ -1,7 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsBoolean, IsEnum, IsObject, IsOptional, IsString } from 'class-validator'
 
-import { AnonymizeResponse } from '../../bloomreach/bloomreach.dto'
+/**
+ * Marks the state of anonymization of a user in bloomreach.
+ * - NOT_FOUND = The user was not found in bloomreach.
+ * - NOT_ACTIVE = Bloomreach integration state is not active.
+ * - ERROR = There has been an unknown error. Check logs.
+ * - SUCCESS = The user has been successfuly anonymized in bloomreach.
+ */
+export enum AnonymizeResponse {
+  NOT_FOUND = 'NOT_FOUND',
+  NOT_ACTIVE = 'NOT_ACTIVE',
+  ERROR = 'ERROR',
+  SUCCESS = 'SUCCESS',
+}
 
 export class DeactivateAccountResponseDto {
   @ApiProperty({

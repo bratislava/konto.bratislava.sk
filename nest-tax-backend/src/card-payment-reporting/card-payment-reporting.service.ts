@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { TaxType } from '@prisma/client'
 import { parse } from 'csv-parse/sync'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -12,6 +13,25 @@ import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
+
+interface ReportTypeConfig {
+  taxType: TaxType
+  sftpPathEnvKey: string
+  fileNameEnvKey: string
+}
+
+const REPORT_TYPES: ReportTypeConfig[] = [
+  {
+    taxType: TaxType.DZN,
+    sftpPathEnvKey: 'REPORTING_SFTP_FILES_PATH',
+    fileNameEnvKey: 'REPORTING_FILE_NAME',
+  },
+  {
+    taxType: TaxType.KO,
+    sftpPathEnvKey: 'REPORTING_PKO_SFTP_FILES_PATH',
+    fileNameEnvKey: 'REPORTING_PKO_FILE_NAME',
+  },
+]
 
 const csvColumnNames = [
   'transactionType',
@@ -112,8 +132,9 @@ export class CardPaymentReportingService {
     })
   }
 
-  generateHeader(
+  private generateHeader(
     dateInfo: { today_DDMMYYYY: string },
+    reportFileName: string,
     constants: {
       REPORTING_VARIABLE_SYMBOL: string
       REPORTING_SPECIFIC_SYMBOL: string
@@ -124,7 +145,7 @@ export class CardPaymentReportingService {
       '4',
       dateInfo.today_DDMMYYYY,
       dateInfo.today_DDMMYYYY,
-      this.configService.getOrThrow<string>('REPORTING_FILE_NAME'),
+      reportFileName,
       'Hlavné mesto Slovenskej republiky Bratislava',
       ' '.repeat(6),
       this.configService.getOrThrow<string>('REPORTING_ICO'),
@@ -215,12 +236,13 @@ export class CardPaymentReportingService {
     ].join('')
   }
 
-  private createFileName(today_YYMMDD: string): string {
-    return `st1${this.configService.getOrThrow<string>('REPORTING_FILE_NAME')}_${today_YYMMDD}.txt`
+  private createFileName(reportFileName: string, today_YYMMDD: string): string {
+    return `st1${reportFileName}_${today_YYMMDD}.txt`
   }
 
   private async generateResult(
     finalData: CsvColumnsWithVariableSymbol[],
+    reportFileName: string,
     dateInfo: {
       today_DDMMYYYY: string
       today_YYMMDD: string
@@ -233,7 +255,7 @@ export class CardPaymentReportingService {
       'REPORTING_SPECIFIC_SYMBOL',
       'REPORTING_CONSTANT_SYMBOL',
     ])
-    const head = this.generateHeader(dateInfo, constants)
+    const head = this.generateHeader(dateInfo, reportFileName, constants)
     const body = this.generateFileBody(
       finalData,
       dateInfo.yesterday_DDMMYYYY,
@@ -244,12 +266,27 @@ export class CardPaymentReportingService {
     return head + body + footer
   }
 
-  async generateAndSendPaymentReport(emailRecipients: string[], from?: Date) {
-    const sftpFiles = await this.sftpFileSubservice.getNewFiles(from)
+  private async processReportType(
+    reportType: ReportTypeConfig,
+    from?: Date,
+  ): Promise<{
+    outputFiles: OutputFile[]
+    sftpFileNames: { taxType: TaxType; name: string }[]
+  }> {
+    const sftpPath = this.configService.getOrThrow<string>(
+      reportType.sftpPathEnvKey,
+    )
+    const reportFileName = this.configService.getOrThrow<string>(
+      reportType.fileNameEnvKey,
+    )
+    const sftpFiles = await this.sftpFileSubservice.getNewFiles(
+      sftpPath,
+      reportType.taxType,
+      from,
+    )
 
     const hundredEightyDaysAgo = dayjs().subtract(180, 'day')
 
-    // Processing new files
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
         const fileDate = this.extractFileDate(file.name)
@@ -288,11 +325,15 @@ export class CardPaymentReportingService {
         // Generate file content
         const processedFileResult = await this.generateResult(
           finalData,
+          reportFileName,
           dateInfo,
         )
 
         // Generate file name
-        const processedFileFileName = this.createFileName(dateInfo.today_YYMMDD)
+        const processedFileFileName = this.createFileName(
+          reportFileName,
+          dateInfo.today_YYMMDD,
+        )
 
         // Count debet
         const debet = finalData.reduce((sum, row) => {
@@ -308,18 +349,28 @@ export class CardPaymentReportingService {
         }
       }),
     )
-    // Filter out any `null` values caused by skipping files without a valid date
-    const validOutputFiles = outputFiles.filter((file) => file !== null)
 
-    const attachments = validOutputFiles.map((item) => {
-      return {
-        filename: item.filename,
-        content: item.content,
-        contentType: 'text/plain',
-      }
-    })
+    return {
+      outputFiles: outputFiles.filter((file) => file !== null),
+      sftpFileNames: sftpFiles.map((file) => ({
+        taxType: reportType.taxType,
+        name: file.name,
+      })),
+    }
+  }
 
-    validOutputFiles.sort((a, b) => {
+  private async sendReportEmail(
+    emailRecipients: string[],
+    taxType: TaxType,
+    outputFiles: OutputFile[],
+  ) {
+    const attachments = outputFiles.map((item) => ({
+      filename: item.filename,
+      content: item.content,
+      contentType: 'text/plain',
+    }))
+
+    outputFiles.sort((a, b) => {
       if (a.date.isBefore(b.date)) {
         return a.date.isAfter(b.date) ? 1 : -1
       }
@@ -329,13 +380,35 @@ export class CardPaymentReportingService {
     const message =
       attachments.length === 0
         ? 'Dnes nie je čo reportovať.'
-        : `Report z dní:\n  - ${validOutputFiles.map((file) => [file.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
+        : `Report z dní:\n  - ${outputFiles.map((file) => [file.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
       emailRecipients,
-      'Report platieb kartou',
+      `Report platieb kartou - ${taxType}`,
       message,
       attachments,
+    )
+  }
+
+  private async processAndSendReport(
+    reportType: ReportTypeConfig,
+    emailRecipients: string[],
+    from?: Date,
+  ) {
+    const result = await this.processReportType(reportType, from)
+    await this.sendReportEmail(
+      emailRecipients,
+      reportType.taxType,
+      result.outputFiles,
+    )
+    return result
+  }
+
+  async generateAndSendPaymentReport(emailRecipients: string[], from?: Date) {
+    const results = await Promise.all(
+      REPORT_TYPES.map(async (reportType) =>
+        this.processAndSendReport(reportType, emailRecipients, from),
+      ),
     )
 
     // We do not want to update the database if custom range was used
@@ -343,10 +416,13 @@ export class CardPaymentReportingService {
       return
     }
 
-    // Write updated CSV names
+    const allProcessedFiles = results.flatMap((r) => r.sftpFileNames)
+
+    // Write updated CSV names with their tax type
     await this.prismaService.csvFile.createMany({
-      data: sftpFiles.map((file) => ({
+      data: allProcessedFiles.map((file) => ({
         name: file.name,
+        taxType: file.taxType,
       })),
     })
   }

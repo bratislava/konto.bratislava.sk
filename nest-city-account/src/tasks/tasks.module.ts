@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import ClientsModule from '../clients/clients.module'
 import { MailgunModule } from '../mailgun/mailgun.module'
 import { NorisModule } from '../noris/noris.module'
@@ -22,6 +23,7 @@ import { TasksService } from './tasks.service'
     PdfGeneratorModule,
     UpvsQueueModule,
     NorisModule,
+    BloomreachModule,
   ],
   providers: [
     TaxSubservice,

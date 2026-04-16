@@ -13,8 +13,7 @@ import {
   CustomErrorAdminTypesEnum,
   CustomErrorAdminTypesResponseEnum,
 } from '../admin/dtos/error.dto'
-import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
   ResponseUserByBirthNumberDto,
@@ -45,6 +44,7 @@ import {
   UserContactAndIdInfoResponseDto,
 } from './dtos/user-contact-info.dto'
 import {
+  AnonymizeResponse,
   DeactivateAccountResponseDto,
   MarkDeceasedAccountResponseDto,
 } from './dtos/user-modification-response.dto'
@@ -60,7 +60,7 @@ export class UserService {
     private userDataSubservice: UserDataSubservice,
     private prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private bloomreachService: BloomreachService,
+    private bloomreachOutboxService: BloomreachOutboxService,
     private cognitoSubservice: CognitoSubservice,
     private userTierService: UserTierService,
     private taxSubservice: TaxSubservice
@@ -520,7 +520,7 @@ export class UserService {
       CognitoUserAttributesTierEnum.NEW,
       cognitoUser['custom:account_type']
     )
-    await this.bloomreachService.trackCustomer(externalId)
+    await this.bloomreachOutboxService.trackCustomer(externalId)
 
     const accountType = cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     let removedUser: User | null = null
@@ -539,14 +539,18 @@ export class UserService {
         )
     }
 
-    const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(externalId)
+    await this.bloomreachOutboxService.anonymizeCustomer(externalId)
 
     const taxDeliveryMethodsRemoved =
       removedUser && removedUser.birthNumber
         ? await this.taxSubservice.removeDeliveryMethodFromNoris(removedUser.birthNumber)
         : true
 
-    return { success: true, bloomreachRemoved, taxDeliveryMethodsRemoved }
+    return {
+      success: true,
+      bloomreachRemoved: AnonymizeResponse.SUCCESS,
+      taxDeliveryMethodsRemoved,
+    }
   }
 
   async markAccountsAsDeceased(birthNumberList: string[]): Promise<MarkDeceasedAccountResponseDto> {
@@ -591,12 +595,12 @@ export class UserService {
             cognitoSuccess = false
           }
 
-          const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(item.externalId)
+          await this.bloomreachOutboxService.anonymizeCustomer(item.externalId)
           return {
             birthNumber: item.birthNumber,
             databaseMarked: true,
             cognitoArchived: cognitoSuccess,
-            bloomreachRemoved,
+            bloomreachRemoved: AnonymizeResponse.SUCCESS,
           }
         })
     )

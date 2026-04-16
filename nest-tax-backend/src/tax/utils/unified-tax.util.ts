@@ -416,6 +416,14 @@ const calculateInstallmentPaymentDetails = (options: {
     isCancelled,
   } = options
 
+  if (overallAmount <= paymentCalendarThreshold) {
+    return {
+      isPossible: false,
+      reasonNotPossible:
+        InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
+    }
+  }
+
   const installmentsByOrder = [...installments].sort(
     (a, b) => a.order - b.order,
   )
@@ -458,14 +466,6 @@ const calculateInstallmentPaymentDetails = (options: {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
       dueDateLastPayment: dueDateLastPayment.toDate(),
-    }
-  }
-
-  if (overallAmount < paymentCalendarThreshold) {
-    return {
-      isPossible: false,
-      reasonNotPossible:
-        InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
     }
   }
 

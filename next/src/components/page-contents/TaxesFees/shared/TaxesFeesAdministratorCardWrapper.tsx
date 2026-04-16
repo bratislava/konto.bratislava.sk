@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { ResponseTaxAdministratorDto, TaxType } from 'openapi-clients/tax'
 import React from 'react'
 

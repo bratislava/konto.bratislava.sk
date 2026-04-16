@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { useMemo } from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -8,7 +8,7 @@ import logger from '@/src/frontend/utils/logger'
 
 interface Props {
   error?: Error | null
-  args?: { [key: string]: string | number }
+  args?: Record<string, string | number>
   close?: () => void
   solid?: boolean
 }
@@ -26,6 +26,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
         `${GENERIC_ERROR_MESSAGE} - something not error-like passed into AccountErrorAlert: `,
         JSON.stringify(error),
       )
+
       return t('errors.unknown')
     }
     if (isErrorWithoutName(error)) {
@@ -35,6 +36,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
         error.message,
         JSON.stringify(error),
       )
+
       return t('errors.unknown')
     }
 
@@ -76,6 +78,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     if (errorKeyWithMessage in errorTranslationMap) {
       const formattedMessage = errorTranslationMap[errorKeyWithMessage]
       logger.info('Known error with message', error.name, error.message, formattedMessage)
+
       return formattedMessage
     }
 
@@ -83,11 +86,13 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     if (error.name in errorTranslationMap) {
       const formattedMessage = errorTranslationMap[error.name]
       logger.info('Known error', error.name, error.message, formattedMessage)
+
       return formattedMessage
     }
 
     // Unknown error
     logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error)
+
     return t('errors.unknown')
     // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render
     // instead of fixing this, we may want to get rid of args/present version of formatUnicorn altogether

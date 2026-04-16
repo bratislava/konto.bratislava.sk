@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { Cron, CronExpression } from '@nestjs/schedule'
+import { Cron, CronExpression, Interval } from '@nestjs/schedule'
 
+import { BloomreachOutboxProcessor } from '../bloomreach/bloomreach-outbox.processor'
 import HandleErrors from '../utils/decorators/errorHandler.decorators'
 import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
 import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
@@ -15,10 +16,21 @@ const bratislavaTimezone = 'Europe/Bratislava'
 @Injectable()
 export class TasksService {
   constructor(
+    private readonly bloomreachOutboxProcessor: BloomreachOutboxProcessor,
     private readonly cleanupTasksSubservice: CleanupTasksSubservice,
     private readonly edeskTasksSubservice: EdeskTasksSubservice,
     private readonly taxDeliveryMethodsTasksSubservice: TaxDeliveryMethodsTasksSubservice
   ) {}
+
+  /**
+   * Processes the Bloomreach outbox — claims pending entries and sends them in batches.
+   * Runs every 30 seconds as a fixed-delay interval.
+   */
+  @Interval(30_000)
+  @HandleErrors('BloomreachOutboxProcessor')
+  async processBloomreachOutbox(): Promise<void> {
+    return this.bloomreachOutboxProcessor.processOutbox()
+  }
 
   /**
    * Deletes user verification data older than 1 month.

@@ -1,12 +1,16 @@
 import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
 import { MailIcon, SettingsIcon } from '@/src/assets/ui-icons'
-import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
-import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
+import OfficialCorrespondenceChannelAlert
+  from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
+import OfficialCorrespondenceChannelChangeModal
+  from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
+import {
+  useOfficialCorrespondenceChannel
+} from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
 
 /**
@@ -38,7 +42,7 @@ const OfficialCorrespondenceChannelInformation = () => {
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
       />
-      <div className="flex flex-col gap-4 rounded-lg border bg-gray-0 p-4 lg:mx-0 lg:gap-5 lg:p-5">
+      <div className="bg-gray-0 flex flex-col gap-4 rounded-lg border p-4 lg:mx-0 lg:gap-5 lg:p-5">
         <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">

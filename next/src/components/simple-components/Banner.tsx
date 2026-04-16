@@ -1,6 +1,5 @@
 import { Button } from '@bratislava/component-library'
-import { ImageProps } from 'next/image'
-import Image from 'next/legacy/image'
+import Image, { ImageProps } from 'next/image'
 
 import { PhoneIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -52,7 +51,7 @@ const Banner = ({
         </div>
       </div>
       <div className="my-auto flex w-full sm:w-1/2">
-        <Image src={image} alt="" />
+        <Image src={image} alt="" className="h-auto w-full" />
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { ChevronLeftIcon, DownloadIcon } from '@/src/assets/ui-icons'
@@ -8,7 +8,7 @@ import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
-import useSnackbar from '@/src/frontend/hooks/useSnackbar'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
@@ -26,9 +26,7 @@ const MyApplicationDetailsHeader = ({
   // TODO Translations
   const { t } = useTranslation(['account', 'forms'])
 
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { showToast, closeToasts } = useToast()
 
   const latestGinisChangeDate = ginisData?.documentHistory?.[0]?.['Datum-zmeny']
   const firstGinisChangeDate =
@@ -45,7 +43,7 @@ const MyApplicationDetailsHeader = ({
   const { icon, text } = useFormStateComponents({ error, state })
 
   const exportPdf = async () => {
-    openSnackbarInfo(t('forms:info_messages.pdf_export'))
+    showToast({ message: t('forms:info_messages.pdf_export'), variant: 'info' })
     try {
       if (!formId) throw new Error(`No form id.`)
       const response = await formsClient.convertControllerConvertToPdf(
@@ -55,11 +53,11 @@ const MyApplicationDetailsHeader = ({
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('forms:success_messages.pdf_export'))
+      closeToasts()
+      showToast({ message: t('forms:success_messages.pdf_export'), variant: 'success' })
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('forms:errors.pdf_export'))
+      showToast({ message: t('forms:errors.pdf_export'), variant: 'error' })
     }
   }
 

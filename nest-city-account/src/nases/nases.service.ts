@@ -233,7 +233,11 @@ export class NasesService {
       const input = inputsByUri[result.uri]
       if (!input) return []
       return [
-        { inputUri: input.uri, data: result, physicalEntityId: input.physicalEntityId || null },
+        {
+          inputUri: input.uri,
+          data: result,
+          physicalEntityId: input.physicalEntityId || null,
+        },
       ]
     })
 

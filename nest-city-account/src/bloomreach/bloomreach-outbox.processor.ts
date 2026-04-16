@@ -51,10 +51,8 @@ export class BloomreachOutboxProcessor {
 
     // Backoff: skip entries that were recently retried (updatedAt + attempts * base delay > now)
     const now = new Date()
-    const entries = await this.prisma.$queryRaw<
-      BloomreachOutbox[]
-      //language=postgresql
-    >`
+    //language=postgresql
+    const entries = await this.prisma.$queryRaw<BloomreachOutbox[]>`
     WITH claimed AS
         (SELECT "id"
          FROM

@@ -11,6 +11,7 @@ import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
 import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'
 import { UpvsQueueModule } from '../upvs-queue/upvs-queue.module'
 import { NorisModule } from '../noris/noris.module'
+import { BloomreachModule } from '../bloomreach/bloomreach.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { NorisModule } from '../noris/noris.module'
     PdfGeneratorModule,
     UpvsQueueModule,
     NorisModule,
+    BloomreachModule,
   ],
   providers: [
     TaxSubservice,

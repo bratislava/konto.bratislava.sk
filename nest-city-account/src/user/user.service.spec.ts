@@ -4,7 +4,7 @@ import { UserService } from './user.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { DeliveryMethodEnum } from '@prisma/client'
 import prismaMock from '../../test/singleton'
@@ -36,8 +36,8 @@ describe('UserService', () => {
           useValue: createMock<ThrowerErrorGuard>(),
         },
         {
-          provide: BloomreachService,
-          useValue: createMock<BloomreachService>(),
+          provide: BloomreachOutboxService,
+          useValue: createMock<BloomreachOutboxService>(),
         },
         {
           provide: CognitoSubservice,

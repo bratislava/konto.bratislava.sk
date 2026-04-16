@@ -385,6 +385,42 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   }
 }
 
+export interface ApiFooterFooter extends Struct.SingleTypeSchema {
+  collectionName: 'footers'
+  info: {
+    displayName: 'Footer'
+    pluralName: 'footers'
+    singularName: 'footer'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    accessibilityPageLink: Schema.Attribute.Component<'blocks.common-link', false>
+    columns: Schema.Attribute.Component<'blocks.footer-column', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 2
+        },
+        number
+      >
+    contactText: Schema.Attribute.RichText
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    facebookUrl: Schema.Attribute.String
+    instagramUrl: Schema.Attribute.String
+    linkedinUrl: Schema.Attribute.String
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::footer.footer'> &
+      Schema.Attribute.Private
+    publishedAt: Schema.Attribute.DateTime
+    tiktokUrl: Schema.Attribute.String
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    youtubeUrl: Schema.Attribute.String
+  }
+}
+
 export interface ApiFormForm extends Struct.CollectionTypeSchema {
   collectionName: 'forms'
   info: {
@@ -1160,6 +1196,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken
       'admin::transfer-token-permission': AdminTransferTokenPermission
       'admin::user': AdminUser
+      'api::footer.footer': ApiFooterFooter
       'api::form.form': ApiFormForm
       'api::general.general': ApiGeneralGeneral
       'api::help-page.help-page': ApiHelpPageHelpPage

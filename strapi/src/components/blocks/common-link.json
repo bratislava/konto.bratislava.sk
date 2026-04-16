@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_common_links",
+  "info": {
+    "displayName": "Common link"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "municipalService": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::municipal-service.municipal-service"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

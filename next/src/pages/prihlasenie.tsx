@@ -13,9 +13,12 @@ import {
 import { useRef, useState } from 'react'
 
 import { cityAccountClient, LoginClientEnum } from '@/src/clients/city-account'
+import { strapiClient } from '@/src/clients/graphql-strapi'
+import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import LoginForm from '@/src/components/auth-forms/LoginForm'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
@@ -39,10 +42,14 @@ import { ROUTES } from '@/src/utils/routes'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {
-    const clientInfo = await fetchClientInfo(context.query)
+    const [general, clientInfo] = await Promise.all([
+      strapiClient.General(),
+      fetchClientInfo(context.query),
+    ])
 
     return {
       props: {
+        general,
         clientInfo,
         ...(await slovakServerSideTranslations()),
       },
@@ -54,10 +61,11 @@ export const getServerSideProps = amplifyGetServerSideProps(
 export const loginConfirmSignUpEmailHiddenQueryParam = `loginConfirmSignUpEmail`
 
 export type AuthPageCommonProps = {
+  general: GeneralQuery
   clientInfo: ClientInfoResponseDto | null
 }
 
-const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
+const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   const router = useRouter()
   const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
@@ -107,6 +115,7 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
 
           if (shouldRedirectToIdentityVerification) {
             router.push(getRouteWithRedirect(ROUTES.OAUTH_CONFIRM))
+
             return
           }
 
@@ -159,6 +168,7 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
         if (currentUser.signInDetails?.loginId === email) {
           logger.info(`[AUTH] Special case, user already authenticated for email ${email}`)
           await redirect()
+
           return
         }
         logger.error(
@@ -176,13 +186,15 @@ const LoginPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="auth" hideBackButton>
-        <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
-          <LoginForm onSubmit={onLogin} error={loginError} />
-          <HorizontalDivider />
-          <AccountLink variant="registration" />
-        </AccountContainer>
-      </PageLayout>
+      <GeneralContextProvider general={general}>
+        <PageLayout variant="auth" hideBackButton>
+          <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
+            <LoginForm onSubmit={onLogin} error={loginError} />
+            <HorizontalDivider />
+            <AccountLink variant="registration" />
+          </AccountContainer>
+        </PageLayout>
+      </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )
 }

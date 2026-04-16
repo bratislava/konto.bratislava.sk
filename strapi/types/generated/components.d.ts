@@ -1,5 +1,31 @@
 import type { Schema, Struct } from '@strapi/strapi'
 
+export interface BlocksCommonLink extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_common_links'
+  info: {
+    displayName: 'Common link'
+  }
+  attributes: {
+    label: Schema.Attribute.String
+    municipalService: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::municipal-service.municipal-service'
+    >
+    url: Schema.Attribute.String
+  }
+}
+
+export interface BlocksFooterColumn extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_footer_columns'
+  info: {
+    displayName: 'Footer Column'
+  }
+  attributes: {
+    links: Schema.Attribute.Component<'blocks.common-link', true>
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 export interface BlocksFormLandingPage extends Struct.ComponentSchema {
   collectionName: 'components_blocks_form_landing_pages'
   info: {
@@ -78,6 +104,8 @@ export interface GeneralAlert extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'blocks.common-link': BlocksCommonLink
+      'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta

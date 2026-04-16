@@ -1,0 +1,36 @@
+fragment CommonLink on ComponentBlocksCommonLink {
+  label
+  municipalService {
+    title
+    href
+  }
+  url
+}
+
+fragment FooterColumnBlock on ComponentBlocksFooterColumn {
+  title
+  links {
+    ...CommonLink
+  }
+}
+
+fragment Footer on Footer {
+  facebookUrl
+  instagramUrl
+  youtubeUrl
+  linkedinUrl
+  tiktokUrl
+  columns {
+    ...FooterColumnBlock
+  }
+  accessibilityPageLink {
+    ...CommonLink
+  }
+  contactText
+}
+
+query General {
+  footer {
+    ...Footer
+  }
+}

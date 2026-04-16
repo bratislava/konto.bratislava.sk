@@ -3,10 +3,12 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { useRef, useState } from 'react'
 
+import { strapiClient } from '@/src/clients/graphql-strapi'
 import ForgottenPasswordForm from '@/src/components/auth-forms/ForgottenPasswordForm'
 import NewPasswordForm from '@/src/components/auth-forms/NewPasswordForm'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
@@ -29,10 +31,14 @@ enum ForgotPasswordStatus {
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {
-    const clientInfo = await fetchClientInfo(context.query)
+    const [general, clientInfo] = await Promise.all([
+      strapiClient.General(),
+      fetchClientInfo(context.query),
+    ])
 
     return {
       props: {
+        general,
         clientInfo,
         ...(await slovakServerSideTranslations()),
       },
@@ -41,7 +47,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignOut: true, redirectQueryParam: true },
 )
 
-const ForgottenPasswordPage = ({ clientInfo }: AuthPageCommonProps) => {
+const ForgottenPasswordPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   const [lastEmail, setLastEmail] = useState('')
   const [forgotPasswordError, setForgotPasswordError] = useState<Error | null>(null)
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<ForgotPasswordStatus>(
@@ -111,40 +117,42 @@ const ForgottenPasswordPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout
-        variant="auth"
-        hideBackButton={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
-      >
-        <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
-          {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
-            <NewPasswordForm
-              onSubmit={(verificationCode, newPassword) =>
-                forgotPasswordSubmit(verificationCode, newPassword)
-              }
-              onResend={() => forgotPassword(lastEmail)}
-              error={forgotPasswordError}
-              lastEmail={lastEmail}
-            />
-          ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
-            <>
-              <ForgottenPasswordForm
-                onSubmit={(email: string) => forgotPassword(email)}
+      <GeneralContextProvider general={general}>
+        <PageLayout
+          variant="auth"
+          hideBackButton={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
+        >
+          <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
+            {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
+              <NewPasswordForm
+                onSubmit={(verificationCode, newPassword) =>
+                  forgotPasswordSubmit(verificationCode, newPassword)
+                }
+                onResend={() => forgotPassword(lastEmail)}
                 error={forgotPasswordError}
                 lastEmail={lastEmail}
-                setLastEmail={setLastEmail}
               />
-              <HorizontalDivider />
-              <AccountLink variant="login" />
-            </>
-          ) : (
-            <AccountSuccessAlert
-              title={t('auth.forgotten_password_success_title')}
-              confirmLabel={t('auth.forgotten_password_success_go_to_login')}
-              onConfirm={onConfirm}
-            />
-          )}
-        </AccountContainer>
-      </PageLayout>
+            ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
+              <>
+                <ForgottenPasswordForm
+                  onSubmit={(email: string) => forgotPassword(email)}
+                  error={forgotPasswordError}
+                  lastEmail={lastEmail}
+                  setLastEmail={setLastEmail}
+                />
+                <HorizontalDivider />
+                <AccountLink variant="login" />
+              </>
+            ) : (
+              <AccountSuccessAlert
+                title={t('auth.forgotten_password_success_title')}
+                confirmLabel={t('auth.forgotten_password_success_go_to_login')}
+                onConfirm={onConfirm}
+              />
+            )}
+          </AccountContainer>
+        </PageLayout>
+      </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )
 }

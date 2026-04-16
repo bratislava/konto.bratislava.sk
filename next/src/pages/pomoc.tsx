@@ -1,6 +1,7 @@
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { HelpPageFragment } from '@/src/clients/graphql-strapi/api'
+import { GeneralQuery, HelpPageFragment } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import HelpPageContent from '@/src/components/page-contents/HelpPageContent/HelpPageContent'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -8,10 +9,14 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 
 type AccountHelpPageProps = {
   helpPage: HelpPageFragment
+  general: GeneralQuery
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountHelpPageProps>(async () => {
-  const helpPageQuery = await strapiClient.HelpPage()
+  const [general, helpPageQuery] = await Promise.all([
+    strapiClient.General(),
+    strapiClient.HelpPage(),
+  ])
   const helpPage = helpPageQuery.helpPage
 
   if (!helpPage) {
@@ -22,17 +27,20 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountHelpPageProps
 
   return {
     props: {
+      general,
       helpPage,
       ...(await slovakServerSideTranslations()),
     },
   }
 })
 
-const AccountHelpPage = ({ helpPage }: AccountHelpPageProps) => {
+const AccountHelpPage = ({ general, helpPage }: AccountHelpPageProps) => {
   return (
-    <PageLayout>
-      <HelpPageContent helpPage={helpPage} />
-    </PageLayout>
+    <GeneralContextProvider general={general}>
+      <PageLayout>
+        <HelpPageContent helpPage={helpPage} />
+      </PageLayout>
+    </GeneralContextProvider>
   )
 }
 

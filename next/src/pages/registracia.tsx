@@ -7,10 +7,12 @@ import { UpsertUserRecordClientRequestDtoLoginClientEnum } from 'openapi-clients
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { cityAccountClient, LoginClientEnum } from '@/src/clients/city-account'
+import { strapiClient } from '@/src/clients/graphql-strapi'
 import EmailVerificationForm from '@/src/components/auth-forms/EmailVerificationForm'
 import RegisterForm from '@/src/components/auth-forms/RegisterForm'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountActivator from '@/src/components/segments/AccountActivator/AccountActivator'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
@@ -48,10 +50,14 @@ enum RegistrationStatus {
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {
-    const clientInfo = await fetchClientInfo(context.query)
+    const [general, clientInfo] = await Promise.all([
+      strapiClient.General(),
+      fetchClientInfo(context.query),
+    ])
 
     return {
       props: {
+        general,
         clientInfo,
         ...(await slovakServerSideTranslations()),
       },
@@ -91,7 +97,7 @@ const getInitialState = (query: ParsedUrlQuery) => {
   return { registrationStatus: RegistrationStatus.INIT, lastEmail: '' }
 }
 
-const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
+const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   const router = useRouter()
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
@@ -351,43 +357,45 @@ const RegisterPage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout variant="auth" hideBackButton>
-        {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
+      <GeneralContextProvider general={general}>
+        <PageLayout variant="auth" hideBackButton>
+          {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
 
-        <AccountContainer
-          dataCyPrefix="registration"
-          ref={accountContainerRef}
-          className="flex flex-col gap-8 md:gap-10"
-        >
-          {registrationStatus === RegistrationStatus.INIT && (
-            <>
-              <RegisterForm
+          <AccountContainer
+            dataCyPrefix="registration"
+            ref={accountContainerRef}
+            className="flex flex-col gap-8 md:gap-10"
+          >
+            {registrationStatus === RegistrationStatus.INIT && (
+              <>
+                <RegisterForm
+                  lastEmail={lastEmail}
+                  onSubmit={handleSignUp}
+                  error={registrationError}
+                />
+                <HorizontalDivider />
+                <AccountLink variant="login" />
+              </>
+            )}
+            {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
+              <EmailVerificationForm
                 lastEmail={lastEmail}
-                onSubmit={handleSignUp}
+                onResend={resendVerificationCode}
+                onSubmit={verifyEmail}
                 error={registrationError}
               />
-              <HorizontalDivider />
-              <AccountLink variant="login" />
-            </>
-          )}
-          {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
-            <EmailVerificationForm
-              lastEmail={lastEmail}
-              onResend={resendVerificationCode}
-              onSubmit={verifyEmail}
-              error={registrationError}
-            />
-          )}
-          {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
-            registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
-            <AccountSuccessAlert
-              title={t('auth.register_success_title')}
-              description={t('auth.register_success_description', { email: lastEmail })}
-              {...accountSuccessAlertProps}
-            />
-          )}
-        </AccountContainer>
-      </PageLayout>
+            )}
+            {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
+              registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
+              <AccountSuccessAlert
+                title={t('auth.register_success_title')}
+                description={t('auth.register_success_description', { email: lastEmail })}
+                {...accountSuccessAlertProps}
+              />
+            )}
+          </AccountContainer>
+        </PageLayout>
+      </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )
 }

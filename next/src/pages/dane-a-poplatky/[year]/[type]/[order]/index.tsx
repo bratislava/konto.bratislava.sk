@@ -7,9 +7,10 @@ import {
   StrapiTaxAdministrator,
 } from '@/src/backend/utils/strapi-tax-administrator'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { GeneralQuery, TaxFragment } from '@/src/clients/graphql-strapi/api'
 import { taxClient } from '@/src/clients/tax'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import TaxFeePageContent from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePageContent'
 import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
@@ -21,6 +22,7 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 import { TaxFeeRouteProps } from '@/src/utils/routes'
 
 type PageProps = {
+  general: GeneralQuery
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
@@ -53,15 +55,17 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
+      const [general, { data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
+        strapiClient.General(),
         taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, orderNumber, type, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         }),
         strapiClient.Tax().then((response) => response.tax),
         getTaxAdministratorForUser(amplifyContextSpec),
-        prefetchUserQuery(queryClient, fetchAuthSession),
       ])
+
+      await prefetchUserQuery(queryClient, fetchAuthSession)
 
       if (!strapiTax) {
         return { notFound: true }
@@ -69,6 +73,7 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
 
       return {
         props: {
+          general,
           taxData,
           strapiTax,
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
@@ -98,6 +103,7 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
 )
 
 const AccountTaxesFeesPage = ({
+  general,
   taxData,
   strapiTax,
   dehydratedState,
@@ -105,13 +111,15 @@ const AccountTaxesFeesPage = ({
 }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
-      <PageLayout>
-        <StrapiTaxProvider strapiTax={strapiTax}>
-          <TaxFeeProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
-            <TaxFeePageContent />
-          </TaxFeeProvider>
-        </StrapiTaxProvider>
-      </PageLayout>
+      <GeneralContextProvider general={general}>
+        <PageLayout>
+          <StrapiTaxProvider strapiTax={strapiTax}>
+            <TaxFeeProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
+              <TaxFeePageContent />
+            </TaxFeeProvider>
+          </StrapiTaxProvider>
+        </PageLayout>
+      </GeneralContextProvider>
     </HydrationBoundary>
   )
 }

@@ -33,7 +33,6 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
-import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -690,7 +689,7 @@ describe('NasesService', () => {
               firstName: 'Tester',
             },
           },
-          { type: SendMessageNasesSenderType.Self },
+          'test-uri',
         ),
       ).rejects.toThrow()
     })
@@ -712,7 +711,7 @@ describe('NasesService', () => {
             firstName: 'Tester',
           },
         },
-        { type: SendMessageNasesSenderType.Self },
+        'test-uri',
       )
 
       expect(spyLog).not.toHaveBeenCalled()
@@ -739,7 +738,7 @@ describe('NasesService', () => {
             firstName: 'Tester',
           },
         },
-        { type: SendMessageNasesSenderType.Self },
+        'test-uri',
         additionalFormUpdates,
       )
 
@@ -769,7 +768,7 @@ describe('NasesService', () => {
               firstName: 'Tester',
             },
           },
-          { type: SendMessageNasesSenderType.Self },
+          'test-uri',
         ),
       ).rejects.toThrow()
 
@@ -797,7 +796,7 @@ describe('NasesService', () => {
             firstName: 'Tester',
           },
         },
-        { type: SendMessageNasesSenderType.Self },
+        'test-uri',
       )
 
       expect(updateFormSpy).toHaveBeenCalledWith(

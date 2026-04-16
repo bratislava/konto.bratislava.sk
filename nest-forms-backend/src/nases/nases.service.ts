@@ -52,10 +52,6 @@ import {
 } from './dtos/requests.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
-import {
-  SendMessageNasesSender,
-  SendMessageNasesSenderType,
-} from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
@@ -490,10 +486,7 @@ export default class NasesService {
     }
 
     try {
-      await this.sendToNasesAndUpdateState(jwt, form, data, {
-        type: SendMessageNasesSenderType.Eid,
-        senderUri: nasesUser.sub,
-      })
+      await this.sendToNasesAndUpdateState(jwt, form, data, nasesUser.sub)
     } catch (error) {
       this.logger.error(`Error sending form to nases.`, error)
 
@@ -564,14 +557,14 @@ export default class NasesService {
     jwt: string,
     form: Forms,
     data: RabbitPayloadDto,
-    sender: SendMessageNasesSender,
+    senderUri: string,
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<void> {
     // sendMessageNases is implemented in a way that it does not throw. Therefore this is not in try-catch block.
     const sendData = await this.nasesUtilsService.sendMessageNases(
       jwt,
       form,
-      sender,
+      senderUri,
     )
 
     if (sendData.status !== HttpStatus.OK) {

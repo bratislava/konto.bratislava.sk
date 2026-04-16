@@ -1,39 +1,20 @@
-import { WidgetProps } from '@rjsf/utils'
 import { NumberUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
 
-import NumberField from '@/src/components/widget-components/NumberField/NumberField'
+import NumberField from '@/src/components/fields/NumberField'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-interface NumberWidgetRJSFProps extends WidgetProps {
-  options: NumberUiOptions
-  value: number | undefined
-  onChange: (value?: number) => void
-}
+type NumberWidgetRJSFProps = RJSFWidgetProps<number | undefined, NumberUiOptions>
 
-const NumberWidgetRJSF = ({
-  id,
-  schema,
-  label,
-  options,
-  placeholder,
-  required,
-  value,
-  disabled,
-  onChange,
-  rawErrors,
-  readonly,
-  name,
-}: NumberWidgetRJSFProps) => {
-  const {
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-    className,
-    size,
-    labelSize,
-  } = options
+const NumberWidgetRJSF = (props: NumberWidgetRJSFProps) => {
+  const { schema } = props
+
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
+    toFieldValue: (value) => value ?? NaN,
+    fromFieldValue: (value) => (Number.isNaN(value) ? undefined : value),
+  })
 
   const getStep = () => {
     if (schema.multipleOf != null) {
@@ -50,32 +31,18 @@ const NumberWidgetRJSF = ({
 
   const getFormatOptions = () => {
     // Ensure that no fraction digits can be entered to integer field
-    if (schema.type === 'integer' && !options.formatOptions?.maximumFractionDigits) {
-      return { ...options.formatOptions, maximumFractionDigits: 0 }
+    if (schema.type === 'integer' && !specificOptions.formatOptions?.maximumFractionDigits) {
+      return { ...specificOptions.formatOptions, maximumFractionDigits: 0 }
     }
 
-    return options.formatOptions
+    return specificOptions.formatOptions
   }
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper {...wrapperProps}>
       <NumberField
-        name={name}
-        label={label}
-        placeholder={placeholder}
-        value={value ?? null}
-        errorMessage={rawErrors}
-        isRequired={required}
-        isDisabled={disabled || readonly}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
-        className={className}
-        onChange={(newValue) => onChange(newValue ?? undefined)}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel
+        {...fieldProps}
+        placeholder={specificOptions.placeholder}
         minValue={schema.minimum}
         maxValue={schema.maximum}
         formatOptions={getFormatOptions()}
@@ -84,4 +51,5 @@ const NumberWidgetRJSF = ({
     </WidgetWrapper>
   )
 }
+
 export default NumberWidgetRJSF

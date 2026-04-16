@@ -1,69 +1,30 @@
-import { WidgetProps } from '@rjsf/utils'
 import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
 
+import TextAreaField from '@/src/components/fields/TextAreaField'
 import FieldBlurWrapper from '@/src/components/widget-components/FieldBlurWrapper/FieldBlurWrapper'
-import TextAreaField from '@/src/components/widget-components/TextAreaField/TextAreaField'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
-import cn from '@/src/utils/cn'
 
-interface TextAreaWidgetRJSFProps extends WidgetProps {
-  value: string | undefined
-  options: TextAreaUiOptions
-  onChange: (value?: string) => void
-}
+type TextAreaWidgetRJSFProps = RJSFWidgetProps<string | undefined, TextAreaUiOptions>
 
-const TextAreaWidgetRJSF = ({
-  id,
-  value,
-  label,
-  placeholder,
-  rawErrors,
-  required,
-  disabled,
-  options,
-  onChange,
-  readonly,
-}: TextAreaWidgetRJSFProps) => {
-  const {
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-    className,
-    size,
-    labelSize,
-  } = options
-
-  const handleOnChange = (newValue?: string) => {
-    if (!newValue || newValue === '') {
-      onChange()
-    } else {
-      onChange(newValue)
-    }
-  }
+const TextAreaWidgetRJSF = (props: TextAreaWidgetRJSFProps) => {
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
+    toFieldValue: (value) => value ?? '',
+    fromFieldValue: (value) => (value.length > 0 ? value : undefined),
+  })
 
   return (
-    <WidgetWrapper id={id} options={options}>
-      <FieldBlurWrapper value={value} onChange={handleOnChange}>
-        {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
+    <WidgetWrapper {...wrapperProps}>
+      <FieldBlurWrapper value={fieldProps.value} onChange={fieldProps.onChange}>
+        {({ value, onChange, onBlur }) => (
           <TextAreaField
-            value={wrapperValue ?? undefined}
-            label={label}
-            placeholder={placeholder}
-            isRequired={required}
-            isDisabled={disabled || readonly}
-            helptext={helptext}
-            helptextMarkdown={helptextMarkdown}
-            helptextFooter={helptextFooter}
-            helptextFooterMarkdown={helptextFooterMarkdown}
-            className={cn('h-[196px]', className)}
-            onChange={wrapperOnChange}
+            {...fieldProps}
+            value={value}
+            onChange={onChange}
             onBlur={onBlur}
-            errorMessage={rawErrors}
-            size={size}
-            labelSize={labelSize}
-            displayOptionalLabel
+            placeholder={specificOptions.placeholder}
           />
         )}
       </FieldBlurWrapper>

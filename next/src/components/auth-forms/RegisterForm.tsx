@@ -5,12 +5,12 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
+import PasswordField from '@/src/components/fields/PasswordField'
+import Radio from '@/src/components/fields/Radio'
+import RadioGroup from '@/src/components/fields/RadioGroup'
+import TextField from '@/src/components/fields/TextField'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
-import Radio from '@/src/components/widget-components/RadioButton/Radio'
-import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 import { environment } from '@/src/environment'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -190,13 +190,13 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               label={t('auth.fields.account_type_label')}
               orientation="vertical"
             >
-              <Radio value="fo" variant="boxed">
+              <Radio value="fo" variant="boxed" data-cy="radio-fyzická-osoba">
                 {t('auth.fields.fo_label')}
               </Radio>
-              <Radio value="fo-p" variant="boxed">
+              <Radio value="fo-p" variant="boxed" data-cy="radio-fyzická-osoba---podnikateľ">
                 {t('auth.fields.fop_label')}
               </Radio>
-              <Radio value="po" variant="boxed">
+              <Radio value="po" variant="boxed" data-cy="radio-právnická-osoba">
                 {t('auth.fields.po_label')}
               </Radio>
             </RadioGroup>
@@ -207,14 +207,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         name="email"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             helptext={emailHelptextTranslationMap[type]}
             label={t('auth.fields.email_label')}
             autoComplete="username"
             autoCapitalize="none"
             autoCorrect="off"
-            // TODO consider adding autoCorrect="off" and spellCheck={false}
+            spellCheck="false"
             {...field}
             errorMessage={errors.email}
           />
@@ -226,13 +226,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             name="given_name"
             control={control}
             render={({ field }) => (
-              <InputField
+              <TextField
                 isRequired
                 label={t('auth.fields.given_name_label')}
                 helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
+                autoCapitalize="on"
                 autoCorrect="off"
-                capitalize
+                spellCheck="false"
                 {...field}
                 errorMessage={errors.given_name}
               />
@@ -242,13 +243,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             name="family_name"
             control={control}
             render={({ field }) => (
-              <InputField
+              <TextField
                 isRequired
                 label={t('auth.fields.family_name_label')}
                 helptext={t('auth.fields.family_name_helptext')}
                 autoComplete="family-name"
+                autoCapitalize="on"
                 autoCorrect="off"
-                capitalize
+                spellCheck="false"
                 {...field}
                 errorMessage={errors.family_name}
               />
@@ -261,11 +263,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           name="name"
           control={control}
           render={({ field }) => (
-            <InputField
+            <TextField
               isRequired
               label={t('auth.fields.business_name_label')}
+              autoCapitalize="on"
               autoCorrect="off"
-              capitalize
+              spellCheck="false"
               {...field}
               errorMessage={errors.name}
             />

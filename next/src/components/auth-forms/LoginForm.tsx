@@ -2,10 +2,10 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
+import PasswordField from '@/src/components/fields/PasswordField'
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
@@ -67,14 +67,15 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         name="email"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             label={t('auth.fields.email_label')}
-            {...field}
-            errorMessage={errors.email}
             autoComplete="username"
             autoCapitalize="none"
-            // TODO consider adding autoCorrect="off" and spellCheck={false}
+            autoCorrect="off"
+            spellCheck="false"
+            {...field}
+            errorMessage={errors.email}
           />
         )}
       />
@@ -85,9 +86,9 @@ const LoginForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             isRequired
             label={t('auth.fields.password_label')}
+            autoComplete="current-password"
             {...field}
             errorMessage={errors.password}
-            autoComplete="current-password"
           />
         )}
       />

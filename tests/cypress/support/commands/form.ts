@@ -198,7 +198,7 @@ Cypress.Commands.add('checkActiveStep', (stepIndex) => {
 Cypress.Commands.add('checkFormValidation', (device, form, required, fields) => {
   cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
   cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', required)
-  cy.wrap(Cypress.$(fields, form)).should('have.class', 'border-negative-700')
+  cy.wrap(Cypress.$(fields, form)).should('have.class', 'border-border-error')
 })
 
 Cypress.Commands.add('selectState', (form, esbsNationalityCiselnik, state) => {

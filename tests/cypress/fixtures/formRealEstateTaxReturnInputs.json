@@ -1,9 +1,9 @@
 {
   "taxpayerBorderFields": "[data-cy=input-email], [data-cy=input-rodneCislo], [data-cy=input-ulica], [data-cy=input-cislo], [data-cy=input-meno], [data-cy=input-telefon], [data-cy=input-obec], [data-cy=input-psc]",
-  "landTaxBorderFields": "[data-cy=input-celkovaVymeraPozemku], [data-cy=input-cisloParcely], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu], [data-cy=input-spoluvlastnickyPodiel]",
-  "onePurposeTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-celkovaZastavanaPlocha], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]",
-  "multiPurposeTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-popisStavby], [data-cy=input-celkovaVymera], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu],[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]",
-  "nonResidentialTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely]",
+  "landTaxBorderFields": "[data-cy=number-celkovaVymeraPozemku], [data-cy=input-cisloParcely], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu], [data-cy=input-spoluvlastnickyPodiel]",
+  "onePurposeTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=number-supisneCislo], [data-cy=input-cisloParcely], [data-cy=number-celkovaZastavanaPlocha], [data-cy=input-spoluvlastnickyPodiel], [data-cy=number-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]",
+  "multiPurposeTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=number-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-popisStavby], [data-cy=number-celkovaVymera], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu],[data-cy=number-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]",
+  "nonResidentialTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=number-supisneCislo], [data-cy=input-cisloParcely]",
   "summaryBorderFields": "[data-cy=summary-row-root_druhPriznania_rok], [data-cy=summary-row-root_udajeODanovnikovi_rodneCislo], [data-cy=summary-row-root_udajeODanovnikovi_priezvisko], [data-cy=summary-row-root_udajeODanovnikovi_obecPsc_obec], [data-cy=summary-row-root_udajeODanovnikovi_obecPsc_psc], [data-cy=summary-row-root_udajeODanovnikovi_email], [data-cy=summary-row-root_udajeODanovnikovi_telefon]",
-  "husbandWifeBorderFields": "[data-cy=input-rodneCislo], [input-meno], [data-cy=input-priezvisko]"
+  "husbandWifeBorderFields": "[data-cy=input-rodneCislo], [data-cy=input-meno], [data-cy=input-priezvisko]"
 }

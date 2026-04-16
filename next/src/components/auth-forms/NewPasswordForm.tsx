@@ -3,10 +3,10 @@ import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
+import PasswordField from '@/src/components/fields/PasswordField'
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import logger from '@/src/frontend/utils/logger'
 
@@ -103,9 +103,12 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         name="verificationCode"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             autoComplete="off"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             label={t('auth.fields.verification_code_label')}
             {...field}
             errorMessage={errors.verificationCode}

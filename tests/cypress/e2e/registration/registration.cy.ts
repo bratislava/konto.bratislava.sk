@@ -34,14 +34,14 @@ describe('RF01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 5)
 
-            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-border-error')
           })
           cy.dataCy('registration-container').should('be.visible') //.matchImage()
         })
 
         it('3. Filling out the registration form.', () => {
           cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
 
@@ -178,7 +178,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
               cy.wrap(Cypress.$('[data-cy=input-email]', form)).should(
                 'have.class',
-                'border-negative-700',
+                'border-border-error',
               )
             })
           })

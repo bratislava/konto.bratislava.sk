@@ -2,7 +2,7 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
-import InputField from '@/src/components/widget-components/InputField/InputField'
+import TextField from '@/src/components/fields/TextField'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
@@ -176,8 +176,10 @@ const UserProfileDetailEdit = ({
               name="business_name"
               control={control}
               render={({ field }) => (
-                <InputField
-                  capitalize
+                <TextField
+                  autoCapitalize="on"
+                  autoCorrect="off"
+                  spellCheck="false"
                   label={t('my_profile.profile_detail.business_name')}
                   {...field}
                   errorMessage={errors.given_name}
@@ -192,9 +194,11 @@ const UserProfileDetailEdit = ({
                 name="given_name"
                 control={control}
                 render={({ field }) => (
-                  <InputField
+                  <TextField
                     isRequired
-                    capitalize
+                    autoCapitalize="on"
+                    autoCorrect="off"
+                    spellCheck="false"
                     label={t('my_profile.profile_detail.given_name')}
                     {...field}
                     errorMessage={errors.given_name}
@@ -207,9 +211,11 @@ const UserProfileDetailEdit = ({
                 name="family_name"
                 control={control}
                 render={({ field }) => (
-                  <InputField
+                  <TextField
                     isRequired
-                    capitalize
+                    autoCapitalize="on"
+                    autoCorrect="off"
+                    spellCheck="false"
                     label={t('my_profile.profile_detail.family_name')}
                     {...field}
                     errorMessage={errors.family_name}
@@ -226,7 +232,7 @@ const UserProfileDetailEdit = ({
             name="email"
             control={control}
             render={({ field }) => (
-              <InputField
+              <TextField
                 isDisabled
                 isRequired
                 label={t('my_profile.profile_detail.email')}
@@ -257,7 +263,7 @@ const UserProfileDetailEdit = ({
       {/*       name="phone_number" */}
       {/*       control={control} */}
       {/*       render={({ field }) => ( */}
-      {/*         <InputField */}
+      {/*         <TextField */}
       {/*           label={t('my_profile.profile_detail.phone_number')} */}
       {/*           {...field} */}
       {/*           errorMessage={errors.phone_number} */}
@@ -266,7 +272,7 @@ const UserProfileDetailEdit = ({
       {/*     /> */}
       {/*   </div> */}
       {/*   <div className="invisible h-0 w-full grow md:w-fit"> */}
-      {/*     <InputField label={t('my_profile.profile_detail.phone_number')} /> */}
+      {/*     <TextField label={t('my_profile.profile_detail.phone_number')} /> */}
       {/*   </div> */}
       {/* </div> */}
       {/* <div className="h-0 w-full border-b border-gray-200" /> */}
@@ -275,9 +281,9 @@ const UserProfileDetailEdit = ({
       {/*   name="street_address" */}
       {/*   control={control} */}
       {/*   render={({ field }) => ( */}
-      {/*     <InputField */}
+      {/*     <TextField */}
       {/*       label={t('my_profile.profile_detail.street')} */}
-      {/*       capitalize */}
+      {/*       autoCapitalize="on" */}
       {/*       {...field} */}
       {/*       errorMessage={errors.street_address} */}
       {/*     /> */}
@@ -289,9 +295,9 @@ const UserProfileDetailEdit = ({
       {/*       name="city" */}
       {/*       control={control} */}
       {/*       render={({ field }) => ( */}
-      {/*         <InputField */}
+      {/*         <TextField */}
       {/*           label={t('my_profile.profile_detail.city')} */}
-      {/*           capitalize */}
+      {/*           autoCapitalize="on" */}
       {/*           {...field} */}
       {/*           errorMessage={errors.city} */}
       {/*         /> */}
@@ -303,7 +309,7 @@ const UserProfileDetailEdit = ({
       {/*       name="postal_code" */}
       {/*       control={control} */}
       {/*       render={({ field }) => ( */}
-      {/*         <InputField */}
+      {/*         <TextField */}
       {/*           label={t('my_profile.profile_detail.postal_code')} */}
       {/*           {...field} */}
       {/*           errorMessage={errors.postal_code} */}

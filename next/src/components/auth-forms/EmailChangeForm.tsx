@@ -2,9 +2,9 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
+import PasswordField from '@/src/components/fields/PasswordField'
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
 interface Data {
@@ -65,9 +65,13 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         name="newEmail"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             label={t('auth.fields.new_email_label')}
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.email}
           />

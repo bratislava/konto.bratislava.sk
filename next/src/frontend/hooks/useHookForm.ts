@@ -3,7 +3,7 @@ import { JSONSchemaType } from 'ajv'
 import { useTranslation } from 'next-i18next/pages'
 import { DefaultValues, FieldValues, useForm } from 'react-hook-form'
 
-type Errors = Record<string, string[]>;
+type Errors = Record<string, string | undefined>
 
 interface Props<T> {
   // used any as strictNullChecks must be true in tsconfig to use JSONSchemaType<T>
@@ -52,7 +52,7 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
   const errors: Errors = {}
   Object.keys(form.formState.errors).forEach((key: string) => {
     const errorMessage = form.formState.errors[key]?.message?.toString()
-    errors[key] = [t(errorMessage || 'error')]
+    errors[key] = t(errorMessage || 'error')
   })
 
   return { ...form, errors }

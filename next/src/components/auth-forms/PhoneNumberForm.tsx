@@ -2,8 +2,8 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
 export interface PhoneNumberData {
@@ -54,9 +54,13 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         name="phone_number"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             label={t('my_profile.profile_detail.phone_number')}
             helptext={t('my_profile.profile_detail.phone_number_helptext')}
+            autoComplete="tel"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.phone_number}
           />

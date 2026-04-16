@@ -13,6 +13,8 @@ import { toLogfmt } from '../utils/logging'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
+type PhysicalEntityWithUri = Omit<PhysicalEntity, 'uri'> & { uri: string }
+
 @Injectable()
 export class UpvsQueueService {
   private readonly logger: LineLoggerSubservice
@@ -363,7 +365,7 @@ export class UpvsQueueService {
 
     // Reuse existing edesk-tasks query logic with exponential backoff
     /* language=postgresql */
-    const entities = await this.prismaService.$queryRaw<(PhysicalEntity & { uri: string })[]>` 
+    const entities = await this.prismaService.$queryRaw<PhysicalEntityWithUri[]>` 
         SELECT e.*
         FROM "PhysicalEntity" e
         WHERE "userId" IS NOT NULL

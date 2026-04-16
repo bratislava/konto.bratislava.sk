@@ -31,6 +31,8 @@ const CheckboxGroupWidgetRJSF = (props: CheckboxGroupWidgetRJSFProps) => {
     [enumOptions, enumMetadata],
   )
 
+  const hasDescriptionInCheckboxGroup = mergedOptions.some((option) => option.description)
+
   const isOptionDisabled = (optionValue: string) => {
     return (
       isDefined(maxItems) &&
@@ -53,6 +55,8 @@ const CheckboxGroupWidgetRJSF = (props: CheckboxGroupWidgetRJSFProps) => {
             key={option.value}
             value={option.value}
             variant={variant}
+            description={option.description}
+            hasDescriptionInCheckboxGroup={hasDescriptionInCheckboxGroup}
             isDisabled={isOptionDisabled(option.value)}
             data-cy={`checkbox-${option.value}`}
           >

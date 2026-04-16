@@ -1,12 +1,26 @@
+import { ReactNode } from 'react'
 import { Checkbox as RACCheckbox, CheckboxProps as RACCheckboxProps } from 'react-aria-components'
 
 import cn from '@/src/utils/cn'
 
-export interface CheckboxProps extends RACCheckboxProps {
+export interface CheckboxProps extends Omit<RACCheckboxProps, 'children'> {
   variant?: 'basic' | 'boxed'
+  description?: string
+  children: ReactNode
+  /**
+   * Whether any of the other checkboxes in the group has a description. If they do, we want to display the label in semi-bold.
+   */
+  hasDescriptionInCheckboxGroup?: boolean
 }
 
-const Checkbox = ({ variant = 'basic', children, className, ...rest }: CheckboxProps) => (
+const Checkbox = ({
+  variant = 'basic',
+  description,
+  children,
+  hasDescriptionInCheckboxGroup,
+  className,
+  ...rest
+}: CheckboxProps) => (
   <RACCheckbox
     {...rest}
     className={({ isSelected, isDisabled, isInvalid, isIndeterminate }) =>
@@ -59,7 +73,12 @@ const Checkbox = ({ variant = 'basic', children, className, ...rest }: CheckboxP
             </svg>
           ) : null}
         </div>
-        {children}
+        <span className="flex grow flex-col gap-1">
+          <span className={cn({ 'font-semibold': !!description || hasDescriptionInCheckboxGroup })}>
+            {children}
+          </span>
+          {description ? <span>{description}</span> : null}
+        </span>
       </>
     )}
   </RACCheckbox>

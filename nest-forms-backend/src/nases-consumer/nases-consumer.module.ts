@@ -9,7 +9,6 @@ import FormValidatorRegistryModule from '../form-validator-registry/form-validat
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
 import NasesModule from '../nases/nases.module'
-import NasesSenderService from '../nases/services/nases.sender.service'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
@@ -38,7 +37,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
   ],
   providers: [
     NasesConsumerService,
-    NasesSenderService,
     ThrowerErrorGuard,
     MailgunHelper,
     MailgunService,

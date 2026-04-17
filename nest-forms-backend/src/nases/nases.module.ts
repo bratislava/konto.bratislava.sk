@@ -19,6 +19,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
+import NasesContactsService from './services/nases.contacts.service'
 import NasesSenderService from './services/nases.sender.service'
 import FormRegistrationStatusRepository from './utils-services/form-registration-status.repository'
 import NasesCronSubservice from './utils-services/nases.cron.subservice'
@@ -48,8 +49,14 @@ import NasesCronSubservice from './utils-services/nases.cron.subservice'
     LineLoggerSubservice,
     NasesCronSubservice,
     FormRegistrationStatusRepository,
+    NasesContactsService,
   ],
-  exports: [NasesService, NasesSenderService, NasesCronSubservice],
+  exports: [
+    NasesService,
+    NasesSenderService,
+    NasesCronSubservice,
+    NasesContactsService,
+  ],
   controllers: [NasesController],
 })
 export default class NasesModule {}

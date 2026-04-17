@@ -87,7 +87,9 @@ const mapRjsfToReactAriaProps = <TValue, TFieldValue, TOptions extends WidgetUiO
       name: props.name,
       className: cn(getFieldSizeClassName(size), className),
     },
-    // TODO revisit why placeholder comes in "props", not in "options"
+    // TODO Find more generic and typesafe solutions
+    // RJSF hoists `placeholder` from options to a top-level WidgetProps prop, so we re-attach it here.
+    // https://github.com/rjsf-team/react-jsonschema-form/blob/v6.4.2/packages/core/src/components/fields/MultiSchemaField.tsx#L175
     specificOptions: { ...specificOptions, placeholder: props.placeholder },
   }
 }

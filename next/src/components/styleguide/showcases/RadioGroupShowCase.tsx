@@ -18,6 +18,28 @@ const RadioGroupShowCase = () => {
     },
   ]
 
+  const mockWithDescription = [
+    { value: 'one', label: 'One', description: 'Lorem Ipsum' },
+    { value: 'two', label: 'Two', description: 'Lorem Ipsum' },
+    { value: 'three', label: 'Three', description: 'Lorem Ipsum', isDisabled: true },
+    {
+      value: 'four',
+      label: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
+  ]
+
+  const mockWithMixedDescription = [
+    { value: 'one', label: 'One', description: 'Lorem Ipsum' },
+    { value: 'two', label: 'Two' },
+    { value: 'three', label: 'Three' },
+    {
+      value: 'four',
+      label: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
+  ]
+
   return (
     <>
       <Wrapper direction="column" title="RadioGroup RAC">
@@ -97,6 +119,44 @@ const RadioGroupShowCase = () => {
             </Radio>
           </RadioGroup>
         </Stack>
+
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+          <Stack direction="column">
+            <RadioGroup
+              isRequired
+              label="All with description"
+              helptext="This combination - basic variant with options with description - should not be used, I guess."
+            >
+              {mockWithDescription.map((item) => (
+                <Radio key={item.value} {...item} hasDescriptionInRadioGroup>
+                  {item.label}
+                </Radio>
+              ))}
+            </RadioGroup>
+          </Stack>
+          <Stack direction="column">
+            <RadioGroup isRequired label="All with description (boxed)">
+              {mockWithDescription.map((item) => (
+                <Radio key={item.value} {...item} variant="boxed" hasDescriptionInRadioGroup>
+                  {item.label}
+                </Radio>
+              ))}
+            </RadioGroup>
+          </Stack>
+          <Stack direction="column">
+            <RadioGroup
+              isRequired
+              label="Mixed description (boxed)"
+              helptext="This showcase checks, if labels are rendered correctly with semi-bold font, even if not all options have description."
+            >
+              {mockWithMixedDescription.map((item) => (
+                <Radio key={item.value} {...item} variant="boxed" hasDescriptionInRadioGroup>
+                  {item.label}
+                </Radio>
+              ))}
+            </RadioGroup>
+          </Stack>
+        </div>
       </Wrapper>
 
       {/* TODO remove */}

@@ -29,6 +29,17 @@ const CheckboxGroupShowCase = () => {
     },
   ]
 
+  const mockWithMixedDescription = [
+    { value: 'one', label: 'One', description: 'Lorem Ipsum' },
+    { value: 'two', label: 'Two' },
+    { value: 'three', label: 'Three' },
+    {
+      value: 'four',
+      label: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
+  ]
+
   return (
     <>
       <Wrapper direction="column" title="CheckboxGroup RAC">
@@ -63,27 +74,43 @@ const CheckboxGroupShowCase = () => {
         </div>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
           <Stack direction="column">
-            <CheckboxGroup label="Label">
+            <CheckboxGroup
+              label="All with description"
+              helptext="This combination - basic variant with options with description - should not be used, I guess."
+            >
               {mockWithDescription.map((checkbox) => (
-                <Checkbox key={checkbox.value} {...checkbox}>
+                <Checkbox key={checkbox.value} {...checkbox} hasDescriptionInCheckboxGroup>
                   {checkbox.label}
                 </Checkbox>
               ))}
             </CheckboxGroup>
           </Stack>
           <Stack direction="column">
-            <CheckboxGroup label="Label">
+            <CheckboxGroup label="All with description (boxed)">
               {mockWithDescription.map((checkbox) => (
-                <Checkbox key={checkbox.value} {...checkbox} variant="boxed">
+                <Checkbox
+                  key={checkbox.value}
+                  {...checkbox}
+                  variant="boxed"
+                  hasDescriptionInCheckboxGroup
+                >
                   {checkbox.label}
                 </Checkbox>
               ))}
             </CheckboxGroup>
           </Stack>
           <Stack direction="column">
-            <CheckboxGroup label="Label" errorMessage="Error message">
-              {mockWithDescription.map((checkbox) => (
-                <Checkbox key={checkbox.value} {...checkbox} variant="boxed">
+            <CheckboxGroup
+              label="Mixed description (boxed)"
+              helptext="This showcase checks, if labels are rendered correctly with semi-bold font, even if not all options have description."
+            >
+              {mockWithMixedDescription.map((checkbox) => (
+                <Checkbox
+                  key={checkbox.value}
+                  {...checkbox}
+                  variant="boxed"
+                  hasDescriptionInCheckboxGroup
+                >
                   {checkbox.label}
                 </Checkbox>
               ))}

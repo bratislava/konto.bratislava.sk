@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import ClientsModule from '../clients/clients.module'
@@ -18,12 +19,14 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
+import NasesContactsService from './services/nases.contacts.service'
+import NasesSenderService from './services/nases.sender.service'
 import FormRegistrationStatusRepository from './utils-services/form-registration-status.repository'
 import NasesCronSubservice from './utils-services/nases.cron.subservice'
-import NasesUtilsService from './utils-services/tokens.nases.service'
 
 @Module({
   imports: [
+    ApiJwtTokensModule,
     PrismaModule,
     FormsModule,
     RabbitmqClientModule,
@@ -39,15 +42,21 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
   ],
   providers: [
     NasesService,
-    NasesUtilsService,
+    NasesSenderService,
     ThrowerErrorGuard,
     ScannerClientService,
     MinioClientSubservice,
     LineLoggerSubservice,
     NasesCronSubservice,
     FormRegistrationStatusRepository,
+    NasesContactsService,
   ],
-  exports: [NasesService, NasesUtilsService, NasesCronSubservice],
+  exports: [
+    NasesService,
+    NasesSenderService,
+    NasesCronSubservice,
+    NasesContactsService,
+  ],
   controllers: [NasesController],
 })
 export default class NasesModule {}

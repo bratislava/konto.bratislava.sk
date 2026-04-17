@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
 
+import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import NasesModule from '../nases/nases.module'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaModule from '../prisma/prisma.module'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -13,6 +13,7 @@ import AdminController from './admin.controller'
 
 @Module({
   imports: [
+    ApiJwtTokensModule,
     PrismaModule,
     ConvertModule,
     TaxModule,
@@ -20,7 +21,7 @@ import AdminController from './admin.controller'
     UserInfoPipeModule,
     NasesModule,
   ],
-  providers: [ThrowerErrorGuard, NasesUtilsService, MinioClientSubservice],
+  providers: [ThrowerErrorGuard, MinioClientSubservice],
   exports: [],
   controllers: [AdminController],
 })

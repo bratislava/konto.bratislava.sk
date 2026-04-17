@@ -23,6 +23,7 @@ import {
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -52,7 +53,7 @@ import {
 } from './dtos/requests.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
-import NasesUtilsService from './utils-services/tokens.nases.service'
+import NasesSenderService from './services/nases.sender.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
 @Injectable()
@@ -66,7 +67,8 @@ export default class NasesService {
     private readonly filesService: FilesService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly nasesSenderService: NasesSenderService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
@@ -330,7 +332,7 @@ export default class NasesService {
     user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
-    const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
+    const jwt = this.apiJwtTokensService.createUserJwtToken(oboToken)
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -560,12 +562,8 @@ export default class NasesService {
     senderUri: string,
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<void> {
-    // sendMessageNases is implemented in a way that it does not throw. Therefore this is not in try-catch block.
-    const sendData = await this.nasesUtilsService.sendMessageNases(
-      jwt,
-      form,
-      senderUri,
-    )
+    // send is implemented in a way that it does not throw. Therefore this is not in try-catch block.
+    const sendData = await this.nasesSenderService.send(jwt, form, senderUri)
 
     if (sendData.status !== HttpStatus.OK) {
       await this.formsService.updateForm(data.formId, {

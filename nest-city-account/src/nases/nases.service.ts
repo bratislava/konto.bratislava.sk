@@ -1,5 +1,3 @@
-import * as crypto from 'node:crypto'
-
 import { Injectable } from '@nestjs/common'
 import _ from 'lodash'
 import {
@@ -7,8 +5,8 @@ import {
   UpvsCorporateBody,
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
-import { v1 as uuidv1 } from 'uuid'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import {
   VerificationErrorsEnum,
@@ -53,7 +51,8 @@ export class NasesService {
 
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
-    private clientsService: ClientsService
+    private clientsService: ClientsService,
+    private readonly apiJwtTokensService: ApiJwtTokensService
   ) {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
@@ -79,29 +78,8 @@ export class NasesService {
     return result
   }
 
-  // copied from nest-forms-backend
-  private createTechnicalAccountJwtToken(): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
-    const header = {
-      alg: 'RS256',
-    }
-    const jti = uuidv1()
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
-    const payload = {
-      sub: process.env.SUB_NASES_TECHNICAL_ACCOUNT,
-      exp,
-      jti,
-      obo: null,
-    }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString('base64url')
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString('base64url')
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const signature = crypto.sign('sha256', buffer, { key: privateKey }).toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${signature}`
-  }
-
   private async searchUpvsIdentitiesByUri(uris: string[]) {
-    const jwt = this.createTechnicalAccountJwtToken()
+    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken()
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesSearchPost(
         {

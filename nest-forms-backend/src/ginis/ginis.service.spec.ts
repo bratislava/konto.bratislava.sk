@@ -10,10 +10,11 @@ import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../test/singleton'
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
+import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -91,8 +92,12 @@ describe('GinisService', () => {
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         {
-          provide: NasesUtilsService,
-          useValue: createMock<NasesUtilsService>(),
+          provide: ApiJwtTokensService,
+          useValue: createMock<ApiJwtTokensService>(),
+        },
+        {
+          provide: NasesContactsService,
+          useValue: createMock<NasesContactsService>(),
         },
         { provide: getQueueToken('sharepoint'), useValue: { add: jest.fn() } },
         {
@@ -128,28 +133,22 @@ describe('GinisService', () => {
       value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
     })
 
-    // Create a real NasesUtilsService instance for extraction methods
+    // Create a real NasesContactsService instance for extraction methods
     // The extraction methods are pure functions that don't need dependencies
-    const realNasesUtilsService = new NasesUtilsService(
-      createMock(),
+    const realNasesContactsService = new NasesContactsService(
       module.get(ThrowerErrorGuard),
-      createMock<PrismaService>(),
-      createMock(),
-      createMock(),
-      createMock(),
-      createMock(),
     )
 
     // Use real implementations for extraction methods
     jest
-      .spyOn(service['nasesUtilsService'], 'extractNaturalPersonData')
+      .spyOn(service['nasesContactsService'], 'extractNaturalPersonData')
       .mockImplementation((contact) =>
-        realNasesUtilsService.extractNaturalPersonData(contact),
+        realNasesContactsService.extractNaturalPersonData(contact),
       )
     jest
-      .spyOn(service['nasesUtilsService'], 'extractCorporateBodyData')
+      .spyOn(service['nasesContactsService'], 'extractCorporateBodyData')
       .mockImplementation((contact) =>
-        realNasesUtilsService.extractCorporateBodyData(contact),
+        realNasesContactsService.extractCorporateBodyData(contact),
       )
   })
 
@@ -866,7 +865,7 @@ describe('GinisService', () => {
         .mockResolvedValue('contactId')
 
       jest
-        .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
+        .spyOn(service['apiJwtTokensService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('jwt-token')
     })
 

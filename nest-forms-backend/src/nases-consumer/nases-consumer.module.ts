@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
@@ -8,7 +9,6 @@ import FormValidatorRegistryModule from '../form-validator-registry/form-validat
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
 import NasesModule from '../nases/nases.module'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
@@ -22,6 +22,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
 
 @Module({
   imports: [
+    ApiJwtTokensModule,
     RabbitmqClientModule,
     FormsModule,
     GinisModule,
@@ -36,7 +37,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
   ],
   providers: [
     NasesConsumerService,
-    NasesUtilsService,
     ThrowerErrorGuard,
     MailgunHelper,
     MailgunService,

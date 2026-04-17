@@ -7,6 +7,7 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
+import nahlaseniePodnetuKElektrickymKolobezkamExample from '../example-forms/examples/nahlaseniePodnetuKElektrickymKolobezkamExample'
 
 export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám' }, [
   step('podnet', { title: 'Podnet' }, [
@@ -81,11 +82,12 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         helptext: 'Nachádza sa v strede riadidiel pod QR kódom.',
       },
     ),
-    fileUploadMultiple(
+    fileUploadMultiple<typeof nahlaseniePodnetuKElektrickymKolobezkamFiles>(
       'fotografia',
       {
         title: 'Fotografia podnetu',
         required: true,
+        slotId: 'fotografia',
       },
       {
         type: 'dragAndDrop',
@@ -95,6 +97,16 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
     ),
   ]),
 ])
+
+export const nahlaseniePodnetuKElektrickymKolobezkamFiles = {
+  maxFileSize: undefined,
+  maxTotalFileSize: undefined,
+  slots: [
+    {
+      slotId: 'fotografia',
+    },
+  ],
+} as const
 
 type ExtractProviderFormData = {
   podnet: {

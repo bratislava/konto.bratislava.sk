@@ -136,6 +136,10 @@ export default schema(
   ],
 )
 
+export const oloTaxiFiles = {
+  slots: [],
+} as const
+
 type ExtractFormData = {
   ziadatel: {
     menoPriezvisko: {

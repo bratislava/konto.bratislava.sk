@@ -303,22 +303,24 @@ export default schema(
       ),
     ]),
     step('fileUploads', { title: 'File Uploads' }, [
-      fileUploadMultiple(
+      fileUploadMultiple<typeof showcaseFiles>(
         'buttonUpload',
         {
           title: 'Button Upload',
           required: true,
+          slotId: 'buttonUpload',
         },
         {
           type: 'button',
           helptext: 'Click button to upload files',
         },
       ),
-      fileUploadMultiple(
+      fileUploadMultiple<typeof showcaseFiles>(
         'dragAndDrop',
         {
           title: 'Drag and Drop Upload',
           required: true,
+          slotId: 'dragAndDrop',
         },
         {
           type: 'dragAndDrop',
@@ -595,3 +597,14 @@ export default schema(
     ]),
   ],
 )
+
+export const showcaseFiles = {
+  slots: [
+    {
+      slotId: 'buttonUpload',
+    },
+    {
+      slotId: 'dragAndDrop',
+    },
+  ],
+} as const

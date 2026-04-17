@@ -1003,11 +1003,12 @@ export const getZevoSchema = (type: ZevoType) => [
           },
           {},
         ),
-        fileUploadMultiple(
+        fileUploadMultiple<typeof energetickeZhodnotenieOdpaduVZevoFiles>(
           'fotoOdpadu',
           {
             title: 'Foto odpadu',
             required: false,
+            slotId: 'fotoOdpadu',
           },
           {
             type: 'dragAndDrop',
@@ -1115,6 +1116,14 @@ export const getZevoSchema = (type: ZevoType) => [
     ),
   ]),
 ]
+
+export const energetickeZhodnotenieOdpaduVZevoFiles = {
+  slots: [
+    {
+      slotId: 'fotoOdpadu',
+    },
+  ],
+} as const
 
 type ExtractFormData = {
   ziadatel: {

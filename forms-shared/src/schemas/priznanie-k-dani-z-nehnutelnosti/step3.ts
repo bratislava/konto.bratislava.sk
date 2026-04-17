@@ -15,6 +15,7 @@ import { arrayField } from '../../generator/functions/arrayField'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { priznanieKDaniZNehnutelnostiFiles } from '../priznanieKDaniZNehnutelnosti'
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
@@ -248,11 +249,12 @@ const innerArray = (kalkulacka: boolean) =>
               [['hodnotaUrcenaZnaleckymPosudkom'], { const: true }],
             ]),
             [
-              fileUploadMultiple(
+              fileUploadMultiple<typeof priznanieKDaniZNehnutelnostiFiles>(
                 'znaleckyPosudok',
                 // TODO: Reconsider required when tax form will be sent online.
                 {
                   title: 'Nahrajte znalecký posudok',
+                  slotId: 'znaleckyPosudok',
                 },
                 {
                   type: 'dragAndDrop',

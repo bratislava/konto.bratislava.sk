@@ -55,11 +55,12 @@ export default schema(
       ]),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUpload(
+      fileUpload<typeof objednavkaInformativnehoZakresuSietiFiles>(
         'snimkaMapy',
         {
           title: 'Snímka z katastrálnej mapy s vyznačeným záujmovým územím',
           required: true,
+          slotId: 'snimkaMapy',
         },
         {
           type: 'dragAndDrop',
@@ -73,6 +74,14 @@ Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/katas
     ]),
   ],
 )
+
+export const objednavkaInformativnehoZakresuSietiFiles = {
+  slots: [
+    {
+      slotId: 'snimkaMapy',
+    },
+  ],
+}
 
 type ExtractFormData = {
   objednavatel: { email: string } & (

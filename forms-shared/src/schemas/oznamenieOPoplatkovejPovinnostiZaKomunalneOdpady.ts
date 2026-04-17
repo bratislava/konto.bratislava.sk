@@ -747,9 +747,9 @@ export default schema(
             title: 'Údaje o oprávnenej osobe na podanie oznámenia',
           },
           [
-            fileUploadMultiple(
+            fileUploadMultiple<typeof oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles>(
               'splnomocnenie',
-              { title: 'Nahrajte splnomocnenie', required: true },
+              { title: 'Nahrajte splnomocnenie', required: true, slotId: 'splnomocnenie' },
               {
                 type: 'dragAndDrop',
                 helptext:
@@ -1519,9 +1519,9 @@ export default schema(
         ]),
         { title: 'Prílohy' },
         [
-          fileUploadMultiple(
+          fileUploadMultiple<typeof oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles>(
             'prilohy',
-            { title: 'Prílohy' },
+            { title: 'Prílohy', slotId: 'prilohy' },
             {
               type: 'dragAndDrop',
               helptext: match(osobaTypy)
@@ -1569,3 +1569,14 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
     ),
   ],
 )
+
+export const oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles = {
+  slots: [
+    {
+      slotId: 'splnomocnenie',
+    },
+    {
+      slotId: 'prilohy',
+    },
+  ],
+} as const

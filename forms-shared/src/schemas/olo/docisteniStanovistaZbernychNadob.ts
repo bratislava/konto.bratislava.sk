@@ -195,6 +195,10 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, [
   ]),
 ])
 
+export const docisteniStanovistaZbernychNadobFiles = {
+  slots: [],
+} as const
+
 type ExtractFormData = {
   ziadatel: {
     email: string

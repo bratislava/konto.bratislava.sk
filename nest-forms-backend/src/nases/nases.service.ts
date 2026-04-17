@@ -23,6 +23,7 @@ import {
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -67,6 +68,7 @@ export default class NasesService {
     private readonly rabbitmqClientService: RabbitmqClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesSenderService: NasesSenderService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
@@ -330,7 +332,7 @@ export default class NasesService {
     user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
-    const jwt = this.nasesSenderService.createUserJwtToken(oboToken)
+    const jwt = this.apiJwtTokensService.createUserJwtToken(oboToken)
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -561,11 +563,7 @@ export default class NasesService {
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<void> {
     // send is implemented in a way that it does not throw. Therefore this is not in try-catch block.
-    const sendData = await this.nasesSenderService.send(
-      jwt,
-      form,
-      senderUri,
-    )
+    const sendData = await this.nasesSenderService.send(jwt, form, senderUri)
 
     if (sendData.status !== HttpStatus.OK) {
       await this.formsService.updateForm(data.formId, {

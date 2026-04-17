@@ -17,6 +17,7 @@ import {
 import { Forms } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
@@ -47,7 +48,6 @@ import {
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
 import NasesService from './nases.service'
-import NasesSenderService from './services/nases.sender.service'
 
 @ApiTags('nases')
 @ApiBearerAuth()
@@ -55,7 +55,7 @@ import NasesSenderService from './services/nases.sender.service'
 export default class NasesController {
   constructor(
     private readonly nasesService: NasesService,
-    private readonly nasesSenderService: NasesSenderService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly formsService: FormsService,
     private readonly logger: LineLoggerSubservice,
@@ -198,7 +198,7 @@ export default class NasesController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    const jwtTest = this.nasesSenderService.createUserJwtToken(data.eidToken)
+    const jwtTest = this.apiJwtTokensService.createUserJwtToken(data.eidToken)
     if ((await this.nasesService.getUpvsIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,

@@ -21,6 +21,7 @@ import {
   UserFixtureFactory,
 } from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
@@ -72,6 +73,10 @@ describe('NasesService', () => {
         {
           provide: NasesSenderService,
           useValue: createMock<NasesSenderService>(),
+        },
+        {
+          provide: ApiJwtTokensService,
+          useValue: createMock<ApiJwtTokensService>(),
         },
         {
           provide: PrismaService,
@@ -183,7 +188,7 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
-      service['NasesSenderService'].createUserJwtToken = jest
+      service['apiJwtTokensService'].createUserJwtToken = jest
         .fn()
         .mockReturnValue('mock-jwt')
       service['filesService'].areFormAttachmentsReady = jest
@@ -198,7 +203,7 @@ describe('NasesService', () => {
 
       // this is the important mock we're testing against
       jest
-        .spyOn(service['NasesSenderService'], 'send')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 404, data: {} })
 
       const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
@@ -313,7 +318,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['NasesSenderService'], 'send')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 404, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
 
@@ -356,7 +361,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['NasesSenderService'], 'send')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 200, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = jest
@@ -401,7 +406,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['NasesSenderService'], 'send')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 200, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = jest.spyOn(
@@ -458,7 +463,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['NasesSenderService'], 'send')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 200, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = jest.spyOn(
@@ -673,7 +678,7 @@ describe('NasesService', () => {
 
   describe('sendToNasesAndUpdateState', () => {
     it('should throw if status is not 200', async () => {
-      service['NasesSenderService'].send = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 401 })
 
@@ -695,7 +700,7 @@ describe('NasesService', () => {
     })
 
     it('should start checking for nases delivery and not trigger any errors', async () => {
-      service['NasesSenderService'].send = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 200 })
 
@@ -718,7 +723,7 @@ describe('NasesService', () => {
     })
 
     it('should pass additionalFormUpdates to formsService.updateForm', async () => {
-      service['NasesSenderService'].send = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 200 })
 
@@ -750,7 +755,7 @@ describe('NasesService', () => {
     })
 
     it('should update to ERROR an throw error if sending to NASES fails', async () => {
-      service['NasesSenderService'].send = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 500 })
 
@@ -779,7 +784,7 @@ describe('NasesService', () => {
     })
 
     it('should update to DELIVERED_NASES if sending to NASES is successful', async () => {
-      service['NasesSenderService'].send = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 200 })
 

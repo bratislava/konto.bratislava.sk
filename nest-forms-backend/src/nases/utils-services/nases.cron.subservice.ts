@@ -7,6 +7,7 @@ import {
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 
+import ApiJwtTokensService from '../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
 import { ClusterEnv } from '../../config/environment-variables'
@@ -15,7 +16,6 @@ import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { ValidateFormRegistrationsResultDto } from '../dtos/responses.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
-import NasesSenderService from '../services/nases.sender.service'
 import FormRegistrationStatusRepository from './form-registration-status.repository'
 
 enum FormRegistrationStatus {
@@ -28,7 +28,7 @@ export default class NasesCronSubservice {
 
   constructor(
     private readonly clientsService: ClientsService,
-    private readonly nasesSenderService: NasesSenderService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly baConfigService: BaConfigService,
     private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
@@ -86,7 +86,7 @@ export default class NasesCronSubservice {
         }
 
         const validateEformJwtToken =
-          this.nasesSenderService.createTechnicalAccountJwtToken()
+          this.apiJwtTokensService.createTechnicalAccountJwtToken()
 
         const { pospID, pospVersion } = formDefinition
 

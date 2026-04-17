@@ -6,6 +6,7 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 
+import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import { ClusterEnv } from '../../../config/environment-variables'
@@ -14,7 +15,6 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../../nases.errors.enum'
-import NasesSenderService from '../../services/nases.sender.service'
 import FormRegistrationStatusRepository from '../form-registration-status.repository'
 import NasesCronSubservice from '../nases.cron.subservice'
 
@@ -50,7 +50,7 @@ jest.mock('forms-shared/definitions/formDefinitions', () => ({
 
 describe('NasesCronSubservice', () => {
   let service: NasesCronSubservice
-  let nasesSenderService: jest.Mocked<NasesSenderService>
+  let apiJwtTokensService: jest.Mocked<ApiJwtTokensService>
   let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
   const mockSlovenskoSkApi = {
@@ -70,8 +70,8 @@ describe('NasesCronSubservice', () => {
           },
         },
         {
-          provide: NasesSenderService,
-          useValue: createMock<NasesSenderService>({
+          provide: ApiJwtTokensService,
+          useValue: createMock<ApiJwtTokensService>({
             createTechnicalAccountJwtToken: jest.fn(),
           }),
         },
@@ -97,7 +97,7 @@ describe('NasesCronSubservice', () => {
     }).compile()
 
     service = module.get<NasesCronSubservice>(NasesCronSubservice)
-    nasesSenderService = module.get(NasesSenderService)
+    apiJwtTokensService = module.get(ApiJwtTokensService)
     throwerErrorGuard = module.get(ThrowerErrorGuard)
   })
 
@@ -115,7 +115,7 @@ describe('NasesCronSubservice', () => {
     let originalFormDefinitions: any
 
     beforeEach(() => {
-      nasesSenderService.createTechnicalAccountJwtToken.mockReturnValue(
+      apiJwtTokensService.createTechnicalAccountJwtToken.mockReturnValue(
         'mock-jwt-token',
       )
 
@@ -247,7 +247,7 @@ describe('NasesCronSubservice', () => {
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
       expect(
-        nasesSenderService.createTechnicalAccountJwtToken,
+        apiJwtTokensService.createTechnicalAccountJwtToken,
       ).toHaveBeenCalledTimes(2)
     })
 
@@ -259,7 +259,7 @@ describe('NasesCronSubservice', () => {
       await service.validateFormRegistrations()
 
       expect(
-        nasesSenderService.createTechnicalAccountJwtToken,
+        apiJwtTokensService.createTechnicalAccountJwtToken,
       ).toHaveBeenCalledTimes(2)
     })
 

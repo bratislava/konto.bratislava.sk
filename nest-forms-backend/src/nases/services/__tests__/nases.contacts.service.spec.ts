@@ -1,8 +1,14 @@
-import { Test, TestingModule } from "@nestjs/testing"
-import { UpvsCorporateBody, UpvsNaturalPerson } from "openapi-clients/slovensko-sk"
+import { Test, TestingModule } from '@nestjs/testing'
+import {
+  UpvsCorporateBody,
+  UpvsNaturalPerson,
+} from 'openapi-clients/slovensko-sk'
 
-import ThrowerErrorGuard from "../../../utils/guards/thrower-error.guard"
-import NasesContactsService, { isUpvsCorporateBody, isUpvsNaturalPerson } from "../nases.contacts.service"
+import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import NasesContactsService, {
+  isUpvsCorporateBody,
+  isUpvsNaturalPerson,
+} from '../nases.contacts.service'
 
 describe('NasesContactsService', () => {
   let service: NasesContactsService
@@ -10,10 +16,7 @@ describe('NasesContactsService', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
-      providers: [
-        NasesContactsService,
-        ThrowerErrorGuard,
-      ],
+      providers: [NasesContactsService, ThrowerErrorGuard],
     }).compile()
 
     service = app.get<NasesContactsService>(NasesContactsService)
@@ -369,4 +372,4 @@ describe('NasesContactsService', () => {
       expect(loggerSpy).toHaveBeenCalled()
     })
   })
-})  
+})

@@ -1,4 +1,3 @@
-
 import { Stream } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
@@ -13,7 +12,6 @@ import {
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
-import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
@@ -164,63 +162,6 @@ export default class NasesSenderService {
       }
     }
     return result
-  }
-
-  createUserJwtToken(oboToken: string): string {
-    const payload = {
-      jti: uuidv1(),
-      obo: oboToken,
-    }
-    const options: jwt.SignOptions = {
-      algorithm: 'RS256',
-      expiresIn: '5m', // 5 minutes
-      header: {
-        alg: 'RS256',
-        cty: 'JWT',
-      },
-    }
-
-    return jwt.sign(
-      payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
-      options,
-    )
-  }
-
-  createTechnicalAccountJwtToken(): string {
-    const payload = {
-      sub: this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
-      jti: uuidv1(),
-      obo: null,
-    }
-
-    const options: jwt.SignOptions = {
-      algorithm: 'RS256',
-      expiresIn: '5m', // 5 minutes
-    }
-
-    return jwt.sign(
-      payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
-      options,
-    )
-  }
-
-  createAdministrationJwtToken(): string {
-    const payload = {
-      jti: uuidv1(),
-    }
-
-    const options: jwt.SignOptions = {
-      algorithm: 'RS256',
-      expiresIn: '5m', // 5 minutes
-    }
-
-    return jwt.sign(
-      payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
-      options,
-    )
   }
 
   private async getFormMessage(

@@ -10,11 +10,11 @@ import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../test/singleton'
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import NasesContactsService from '../nases/services/nases.contacts.service'
-import NasesSenderService from '../nases/services/nases.sender.service'
 import PrismaService from '../prisma/prisma.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -92,8 +92,12 @@ describe('GinisService', () => {
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         {
-          provide: NasesSenderService,
-          useValue: createMock<NasesSenderService>(),
+          provide: ApiJwtTokensService,
+          useValue: createMock<ApiJwtTokensService>(),
+        },
+        {
+          provide: NasesContactsService,
+          useValue: createMock<NasesContactsService>(),
         },
         { provide: getQueueToken('sharepoint'), useValue: { add: jest.fn() } },
         {
@@ -861,7 +865,10 @@ describe('GinisService', () => {
         .mockResolvedValue('contactId')
 
       jest
-        .spyOn(service['nasesSenderService'], 'createTechnicalAccountJwtToken')
+        .spyOn(
+          service['apiJwtTokensService'],
+          'createTechnicalAccountJwtToken',
+        )
         .mockReturnValue('jwt-token')
     })
 

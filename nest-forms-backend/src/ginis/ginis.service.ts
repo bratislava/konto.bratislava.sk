@@ -24,6 +24,7 @@ import {
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
@@ -35,8 +36,10 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases/nases.errors.enum'
-import NasesContactsService, { isUpvsCorporateBody, isUpvsNaturalPerson } from '../nases/services/nases.contacts.service'
-import NasesSenderService from '../nases/services/nases.sender.service'
+import NasesContactsService, {
+  isUpvsCorporateBody,
+  isUpvsNaturalPerson,
+} from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -68,7 +71,7 @@ export default class GinisService {
     private mailgunService: MailgunService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private prismaService: PrismaService,
-    private readonly nasesSenderService: NasesSenderService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly nasesContactsService: NasesContactsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
@@ -517,7 +520,7 @@ export default class GinisService {
   private async fetchContactByUri(
     uri: string,
   ): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
-    const jwt = this.nasesSenderService.createTechnicalAccountJwtToken()
+    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken()
     const response =
       await this.clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost(
         {

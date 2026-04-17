@@ -1,4 +1,3 @@
-
 import { Injectable } from '@nestjs/common'
 import {
   UpvsCorporateBody,
@@ -7,10 +6,7 @@ import {
 
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../nases.errors.enum'
+import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
 
 export interface NaturalPersonData {
   given_names?: string[]
@@ -62,9 +58,7 @@ export interface CorporateBodyExtractedData {
 export default class NasesContactsService {
   private readonly logger: LineLoggerSubservice
 
-  constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     this.logger = new LineLoggerSubservice('NasesContactsService')
   }
 

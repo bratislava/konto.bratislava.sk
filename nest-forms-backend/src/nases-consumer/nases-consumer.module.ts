@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
@@ -22,6 +23,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
 
 @Module({
   imports: [
+    ApiJwtTokensModule,
     RabbitmqClientModule,
     FormsModule,
     GinisModule,

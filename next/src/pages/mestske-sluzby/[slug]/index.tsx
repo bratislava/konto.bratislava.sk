@@ -3,12 +3,13 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 
 import { formsClient } from '@/src/clients/forms'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
+import { FormWithLandingPageFragment, GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import { makeClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import FormCreatedSplitPage, {
   FormCreatedSplitPageProps,
 } from '@/src/components/forms/FormCreatedSplitPage'
 import { FormWithLandingPageRequiredFragment } from '@/src/components/forms/FormLandingPage'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import {
@@ -37,7 +38,11 @@ export const formHasLandingPage = (
   return Boolean(form?.landingPage)
 }
 
-export const getServerSideProps = amplifyGetServerSideProps<FormCreatedSplitPageProps, Params>(
+type Props = FormCreatedSplitPageProps & {
+  general: GeneralQuery
+}
+
+export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
   async ({ context, fetchAuthSession }) => {
     if (!context.params) {
       return { notFound: true }
@@ -49,10 +54,11 @@ export const getServerSideProps = amplifyGetServerSideProps<FormCreatedSplitPage
       return { notFound: true }
     }
 
-    const strapiForm = await fetchStrapiForm(slug)
+    const [general, strapiForm] = await Promise.all([strapiClient.General(), fetchStrapiForm(slug)])
     if (formHasLandingPage(strapiForm)) {
       return {
         props: {
+          general,
           type: 'landingPage',
           formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition),
           strapiForm,
@@ -91,6 +97,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormCreatedSplitPage
       // requests are not able to save new guest identity cookie.
       return {
         props: {
+          general,
           type: 'redirect',
           redirectUrl: `${ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(slug, form.formId)}${isEmbeddedPostfix}`,
           ...(await slovakServerSideTranslations()),
@@ -107,4 +114,10 @@ export const getServerSideProps = amplifyGetServerSideProps<FormCreatedSplitPage
   {},
 )
 
-export default SsrAuthProviderHOC(FormCreatedSplitPage)
+const MunicipalServicesFormSplitPage = ({ general, ...props }: Props) => (
+  <GeneralContextProvider general={general}>
+    <FormCreatedSplitPage {...props} />
+  </GeneralContextProvider>
+)
+
+export default SsrAuthProviderHOC(MunicipalServicesFormSplitPage)

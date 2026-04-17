@@ -5,6 +5,7 @@ import { Channel, ConsumeMessage } from 'amqplib'
 
 import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
 import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.dto'
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
@@ -37,7 +38,6 @@ import {
 } from './dtos/requests.verification.dto'
 import { VerificationDataForUserResponseDto } from './dtos/verification-response.dto'
 import { VerificationReturnType } from './types'
-import TokenSubservice from './utils/subservice/token.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
 import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
@@ -62,7 +62,7 @@ export class VerificationService {
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
     private readonly bloomreachOutboxService: BloomreachOutboxService,
-    private readonly tokenSubservice: TokenSubservice,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly userTierService: UserTierService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
@@ -334,7 +334,7 @@ export class VerificationService {
     user: CognitoGetUserData,
     oboToken: string
   ): Promise<ResponseVerificationDto> {
-    const jwtToken = this.tokenSubservice.createUserJwtToken(oboToken)
+    const jwtToken = this.apiJwtTokensService.createUserJwtToken(oboToken)
     try {
       // we do this only to verify that the token is valid, we don't need the result
       await this.nasesService.getUpvsIdentity(jwtToken)

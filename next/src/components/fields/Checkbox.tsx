@@ -61,14 +61,14 @@ const Checkbox = ({
           {isSelected ? (
             <svg
               viewBox="0 0 18 18"
-              aria-hidden="true"
+              aria-hidden
               className="size-4 fill-none stroke-white stroke-[3px]"
             >
               <polyline points="2 9 7 14 16 4" />
             </svg>
           ) : null}
           {isIndeterminate ? (
-            <svg viewBox="0 0 18 18" aria-hidden="true" className="size-4 fill-white stroke-none">
+            <svg viewBox="0 0 18 18" aria-hidden className="size-4 fill-white stroke-none">
               <rect x={1} y={7.5} width={16} height={3} />
             </svg>
           ) : null}

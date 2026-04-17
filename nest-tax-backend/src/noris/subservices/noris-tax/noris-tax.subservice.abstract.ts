@@ -518,7 +518,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     return tax
   }
 
-  protected readonly processTaxRecordFromNoris = async (
+  readonly processTaxRecordFromNoris = async (
     taxDefinition: TaxDefinition<TTaxType>,
     birthNumbersResult: Set<string>,
     norisItem: TaxTypeToNorisData[TTaxType],

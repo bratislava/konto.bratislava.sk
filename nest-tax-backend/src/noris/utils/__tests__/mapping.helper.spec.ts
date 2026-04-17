@@ -512,9 +512,9 @@ describe('mapDeliveryMethodToNoris', () => {
   })
 
   it('should throw an error for unknown delivery method', () => {
-    expect(() => mapDeliveryMethodToNoris('UNKNOWN' as any)).toThrow(
-      'Unknown delivery method: UNKNOWN',
-    )
+    expect(() =>
+      mapDeliveryMethodToNoris('UNKNOWN' as unknown as DeliveryMethod),
+    ).toThrow('Unknown delivery method: UNKNOWN')
   })
 })
 

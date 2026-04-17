@@ -9,28 +9,19 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
-import { CardPaymentReportingService } from '../card-payment-reporting.service'
+import {
+  CardPaymentReportingService,
+  csvColumnNames,
+  type CsvColumns,
+  type CsvRecord,
+} from '../card-payment-reporting.service'
 
-const csvColumnNames = [
-  'transactionType',
-  'terminalId',
-  'transactionId',
-  'transactionType_',
-  'date',
-  'totalPrice',
-  'provision',
-  'priceWithoutProvision',
-  'cashBack',
-  'authCode',
-  'cardNumber',
-  'cardType',
-  'closureId',
-  'orderId',
-] as const
-
-type CsvColumns = (typeof csvColumnNames)[number]
-
-type CsvRecord = Record<CsvColumns, string>
+type EmailSendCall = [
+  recipients: string[],
+  subject: string,
+  body: string,
+  attachments: { filename: string; content: string; contentType: string }[],
+]
 
 const makeCsvFileContent = (rows: string[]) =>
   [`TU;1234567890`, ...rows].join('\n')
@@ -64,7 +55,7 @@ describe('CardPaymentReportingService', () => {
     getVariableSymbolsByOrderIds: jest.Mock
     getConfigByKeys: jest.Mock
   }
-  let mockEmailSubservice: { send: jest.Mock }
+  let mockEmailSubservice: { send: jest.Mock<Promise<void>, EmailSendCall> }
   let mockPrismaService: {
     tax: { findMany: jest.Mock }
     config: { findMany: jest.Mock }
@@ -92,7 +83,7 @@ describe('CardPaymentReportingService', () => {
         REPORTING_CONSTANT_SYMBOL: '0000000004',
       }),
     }
-    mockEmailSubservice = { send: jest.fn() }
+    mockEmailSubservice = { send: jest.fn<Promise<void>, EmailSendCall>() }
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -320,19 +311,24 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       expect(mockEmailSubservice.send).toHaveBeenCalledTimes(2)
 
-      const dznCall = mockEmailSubservice.send.mock.calls.find(
-        (call: unknown[]) => call[1] === 'Report platieb kartou - DZN',
+      const sendCalls1 = mockEmailSubservice.send.mock.calls
+      const dznCall = sendCalls1.find(
+        (call) => call[1] === 'Report platieb kartou - DZN',
       )
-      const pkoCall = mockEmailSubservice.send.mock.calls.find(
-        (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
+      const pkoCall = sendCalls1.find(
+        (call) => call[1] === 'Report platieb kartou - KO',
       )
 
       expect(dznCall).toBeDefined()
       expect(pkoCall).toBeDefined()
-      expect(dznCall[3]).toHaveLength(1)
-      expect(dznCall[3][0].filename).toBe('st1pbr24_260410.txt')
-      expect(pkoCall[3]).toHaveLength(1)
-      expect(pkoCall[3][0].filename).toBe('st1pbr26_260410.txt')
+      expect((dznCall as EmailSendCall)[3]).toHaveLength(1)
+      expect((dznCall as EmailSendCall)[3][0].filename).toBe(
+        'st1pbr24_260410.txt',
+      )
+      expect((pkoCall as EmailSendCall)[3]).toHaveLength(1)
+      expect((pkoCall as EmailSendCall)[3][0].filename).toBe(
+        'st1pbr26_260410.txt',
+      )
     })
 
     it('should generate correct file content with proper header for each report type', async () => {
@@ -358,17 +354,18 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       await service.generateAndSendPaymentReport(['test@example.com'])
 
-      const dznCall = mockEmailSubservice.send.mock.calls.find(
-        (call: unknown[]) => call[1] === 'Report platieb kartou - DZN',
+      const sendCalls2 = mockEmailSubservice.send.mock.calls
+      const dznCall2 = sendCalls2.find(
+        (call) => call[1] === 'Report platieb kartou - DZN',
       )
-      const pkoCall = mockEmailSubservice.send.mock.calls.find(
-        (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
+      const pkoCall2 = sendCalls2.find(
+        (call) => call[1] === 'Report platieb kartou - KO',
       )
 
-      expect(dznCall[3][0].content).toContain('pbr24')
-      expect(dznCall[3][0].content).not.toContain('pbr26')
-      expect(pkoCall[3][0].content).toContain('pbr26')
-      expect(pkoCall[3][0].content).not.toContain('pbr24')
+      expect((dznCall2 as EmailSendCall)[3][0].content).toContain('pbr24')
+      expect((dznCall2 as EmailSendCall)[3][0].content).not.toContain('pbr26')
+      expect((pkoCall2 as EmailSendCall)[3][0].content).toContain('pbr26')
+      expect((pkoCall2 as EmailSendCall)[3][0].content).not.toContain('pbr24')
     })
 
     it('should store CSV file names with their tax type', async () => {
@@ -398,7 +395,7 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         data: expect.arrayContaining([
           { name: 'dzn_file_2604101234.csv', taxType: 'DZN' },
           { name: 'pko_file_2604101234.csv', taxType: 'KO' },
-        ]),
+        ]) as unknown,
       })
     })
 
@@ -451,16 +448,19 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       await service.generateAndSendPaymentReport(['test@example.com'])
 
-      const dznCall = mockEmailSubservice.send.mock.calls.find(
-        (call: unknown[]) => call[1] === 'Report platieb kartou - DZN',
+      const sendCalls3 = mockEmailSubservice.send.mock.calls
+      const dznCall3 = sendCalls3.find(
+        (call) => call[1] === 'Report platieb kartou - DZN',
       )
-      const pkoCall = mockEmailSubservice.send.mock.calls.find(
-        (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
+      const pkoCall3 = sendCalls3.find(
+        (call) => call[1] === 'Report platieb kartou - KO',
       )
 
-      expect(dznCall[3]).toHaveLength(0)
-      expect(pkoCall[3]).toHaveLength(1)
-      expect(pkoCall[3][0].filename).toBe('st1pbr26_260410.txt')
+      expect((dznCall3 as EmailSendCall)[3]).toHaveLength(0)
+      expect((pkoCall3 as EmailSendCall)[3]).toHaveLength(1)
+      expect((pkoCall3 as EmailSendCall)[3][0].filename).toBe(
+        'st1pbr26_260410.txt',
+      )
     })
   })
 })

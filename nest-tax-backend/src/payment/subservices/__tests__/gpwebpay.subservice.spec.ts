@@ -1,4 +1,4 @@
-import crypto from 'node:crypto'
+import crypto, { Sign, Verify } from 'node:crypto'
 
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -63,7 +63,7 @@ describe('GpWebpaySubservice', () => {
         PAYMETHODS: 'CARD',
       }
 
-      const result = (service as any).getDataToSign(mockData)
+      const result = service['getDataToSign'](mockData)
       expect(result).toBe(
         '123|CREATE|456|100|EUR|1|http://example.com|Test order|test@example.com|CARD',
       )
@@ -80,7 +80,7 @@ describe('GpWebpaySubservice', () => {
         CURRENCY: 'EUR',
       }
 
-      const result = (service as any).getDataToSign(mockData)
+      const result = service['getDataToSign'](mockData)
       expect(result).toBe('123|CREATE|456|100|EUR|1|http://example.com')
     })
   })
@@ -106,7 +106,7 @@ describe('GpWebpaySubservice', () => {
         write: jest.fn(),
         end: jest.fn(),
         sign: jest.fn().mockReturnValue('mock-signature'),
-      } as any)
+      } as unknown as Sign)
 
       const mockData: CreateOrderData = {
         MERCHANTNUMBER: '123',
@@ -132,7 +132,7 @@ describe('GpWebpaySubservice', () => {
         write: jest.fn(),
         end: jest.fn(),
         verify: jest.fn().mockReturnValue(true),
-      } as any)
+      } as unknown as Verify)
 
       const result = service.verifyData(TaxType.DZN, 'test-data', 'test-digest')
       expect(result).toBe(true)

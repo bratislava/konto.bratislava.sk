@@ -1,102 +1,26 @@
-import { updateUserAttributes } from 'aws-amplify/auth'
-import identity from 'lodash/identity'
-import mapValues from 'lodash/mapValues'
-import pickBy from 'lodash/pickBy'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
-import { useEffect, useState } from 'react'
 
-import UserProfileConsents from '@/src/components/page-contents/UserProfilePageContent/UserProfileConsents'
-import UserProfileDetail from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetail'
-import UserProfilePassword from '@/src/components/page-contents/UserProfilePageContent/UserProfilePassword'
-import { UserAttributes } from '@/src/frontend/dtos/accountDto'
-import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
-import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
-import useToast from '@/src/components/simple-components/Toast/useToast'
-import { useUserUpdateBloomreachData } from '@/src/frontend/hooks/useUser'
-import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
-import logger from '@/src/frontend/utils/logger'
+import UserProfileConsents from '@/src/components/page-contents/UserProfilePageContent/UserProfileConsents/UserProfileConsents'
+import UserProfileDetails from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/UserProfileDetails'
+import UserProfilePassword from '@/src/components/page-contents/UserProfilePageContent/UserProfilePassword/UserProfilePassword'
+import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
+
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=822-65528
+ */
 
 const UserProfilePageContent = () => {
   const { t } = useTranslation('account')
-  const [isEditing, setIsEditing] = useState<boolean>(false)
-  const [isAlertOpened, setIsAlertOpened] = useState(false)
-  const [alertType, setAlertType] = useState<'success' | 'error'>('success')
-  const { userAttributes } = useSsrAuth()
-  const { showToast } = useToast()
-
-  const [updateUserDataError, setUpdateUserDataError] = useState<Error | null>(null)
-  const { refreshData } = useRefreshServerSideProps(userAttributes)
-  const { push } = useRouter()
-
-  const { updateBloomreachData } = useUserUpdateBloomreachData()
-
-  useEffect(() => {
-    setAlertType(updateUserDataError ? 'error' : 'success')
-  }, [updateUserDataError])
-
-  const handleOnCancelEditing = () => {
-    setIsEditing(false)
-  }
-
-  const handleOnSubmitEditing = async (newUserAttributes: UserAttributes) => {
-    try {
-      const newUserAttributesFiltered = mapValues(pickBy(newUserAttributes, identity))
-      const keys = Object.keys(newUserAttributesFiltered)
-      const result = await updateUserAttributes({
-        userAttributes: newUserAttributesFiltered,
-      })
-      keys.forEach((key) => {
-        const keyResult = result[key]
-        if (!keyResult.isUpdated) {
-          throw new Error(`Unknown error - attribute ${key} was not updated`)
-        }
-      })
-
-      // TODO why it's showToast on success and setIsAlertOpened on error ?
-      showToast({
-        message: t('my_profile.profile_detail.success_snackbar_message'),
-        variant: 'success',
-        duration: 3000,
-      })
-      // at time of coding cognito is not providing user attributes change event, this is next best thing i come up with
-      // this doesn't affect FE, therfore we don't need to wait for result
-      updateBloomreachData()
-      await refreshData()
-      setIsEditing(false)
-    } catch (error) {
-      logger.error('Update User Data failed', error)
-      if (isError(error)) {
-        setUpdateUserDataError(error)
-      } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in handleOnSubmitEditing:`,
-          error,
-        )
-        setUpdateUserDataError(new Error('Unknown error'))
-      }
-      setIsAlertOpened(true)
-      setTimeout(() => setIsAlertOpened(false), 3000)
-    }
-  }
 
   return (
-    <section className="h-full bg-gray-100">
-      <div className="flex h-full flex-col gap-2 md:gap-0">
-        <UserProfileDetail
-          userAttributes={userAttributes}
-          isEditing={isEditing}
-          isAlertOpened={isAlertOpened}
-          alertType={alertType}
-          onChangeIsEditing={setIsEditing}
-          onCancelEditing={handleOnCancelEditing}
-          onSubmit={handleOnSubmitEditing}
-          onEmailChange={() => push('/zmena-emailu')}
-        />
+    <>
+      <PageHeader title={t('account_section_my_profile.title')} />
+      <div className="flex flex-col gap-2.5 py-6 lg:gap-6 lg:py-10">
+        <UserProfileDetails />
         <UserProfilePassword />
         <UserProfileConsents />
       </div>
-    </section>
+    </>
   )
 }
 

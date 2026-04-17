@@ -1,7 +1,7 @@
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Toggle from '@/src/components/simple-components/Toggle'
 
-interface Consent {
+type Consent = {
   id: string
   title: string
   text: string
@@ -9,32 +9,29 @@ interface Consent {
   isSelected: boolean
 }
 
-interface UserConsentProps {
+type Props = {
   consent: Consent
   onChange: (isSelected: boolean) => void
 }
 
-const UserConsent = ({ consent, onChange }: UserConsentProps) => {
+const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
   return (
     <div
-      className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:py-6"
+      className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center"
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}
     >
-      <div className="flex w-full grow flex-col gap-2">
+      <div className="flex flex-col gap-2">
         <h3 className="text-h5">{consent.title}</h3>
-        {/* TODO remove custom spacing by gap-1 */}
         <AccountMarkdown variant="sm" content={consent.text} className="gap-1" />
       </div>
-      <div>
-        <Toggle
-          id={consent.id}
-          isSelected={consent.isSelected}
-          isDisabled={consent.isDisabled}
-          onChange={onChange}
-        />
-      </div>
+      <Toggle
+        id={consent.id}
+        isSelected={consent.isSelected}
+        isDisabled={consent.isDisabled}
+        onChange={onChange}
+      />
     </div>
   )
 }
 
-export default UserConsent
+export default UserProfileConsentsItem

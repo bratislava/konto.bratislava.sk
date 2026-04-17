@@ -427,6 +427,15 @@ const calculateInstallmentPaymentDetails = (options: {
   const installmentsByOrder = [...installments].sort(
     (a, b) => a.order - b.order,
   )
+
+  if (installmentsByOrder.length === 1) {
+    return {
+      isPossible: false,
+      reasonNotPossible:
+        InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT,
+    }
+  }
+
   const installmentDatesFromNoris = installmentsByOrder
     .slice(1) // Omit order 1 - this is the validity-based due date
     .map((installment) => parseInstallmentDueDate(installment.dueDate))
@@ -780,6 +789,12 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
           CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
+        )
+
+      case InstallmentPaymentReasonNotPossibleEnum.JUST_ONE_INSTALLMENT:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.JUST_ONE_INSTALLMENT,
+          CustomErrorTaxTypesResponseEnum.JUST_ONE_INSTALLMENT,
         )
 
       case undefined:

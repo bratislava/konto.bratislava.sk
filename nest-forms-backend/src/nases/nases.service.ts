@@ -1,5 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
@@ -25,8 +24,13 @@ import {
 
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
+import {
+  FilesErrorsEnum,
+  FilesErrorsResponseEnum,
+} from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
@@ -59,8 +63,6 @@ import userToSendPolicyAccountType from './utils-services/user-to-send-policy-ac
 export default class NasesService {
   private readonly logger: LineLoggerSubservice
 
-  private readonly versioningEnabled: boolean
-
   constructor(
     private readonly formsService: FormsService,
     private readonly filesService: FilesService,
@@ -69,14 +71,11 @@ export default class NasesService {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
     private readonly convertPdfService: ConvertPdfService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
-    this.versioningEnabled =
-      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
-      'true'
   }
 
   async getUpvsIdentity(
@@ -205,14 +204,39 @@ export default class NasesService {
     }
   }
 
-  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
+  async sendForm(
+    formId: string,
+    data: UpdateFormRequestDto,
+    user: User,
+  ): Promise<SendFormResponseDto> {
+    await this.updateForm(formId, data, user)
+
     const form = await this.formsService.checkFormBeforeSending(formId)
+    // All extra files should be already deleted at this point.
+
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
+    }
+
+    // Cumulative file size check at submission time — this is the authoritative point
+    // because the set of active files is only final after the form data has been updated
+    // and extra files deleted.
+    if (this.baConfigService.featureToggles.fileSizeLimits) {
+      const maxTotalFileSize =
+        formDefinition.maxTotalFileSize ??
+        this.baConfigService.fileLimits.maxCumulativeSizeGlobal
+      const totalFileSize =
+        await this.filesService.getActiveFilesTotalSize(formId)
+      if (totalFileSize > maxTotalFileSize) {
+        throw this.throwerErrorGuard.BadRequestException(
+          FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
+        )
+      }
     }
 
     const evaluatedSendPolicy = evaluateFormSendPolicy(
@@ -235,7 +259,7 @@ export default class NasesService {
     }
 
     if (
-      this.versioningEnabled &&
+      this.baConfigService.featureToggles.versioning &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -300,7 +324,7 @@ export default class NasesService {
     }
 
     const shouldBumpJsonVersion =
-      !this.versioningEnabled ||
+      !this.baConfigService.featureToggles.versioning ||
       versionCompareBumpDuringSend({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -395,7 +419,7 @@ export default class NasesService {
     }
 
     if (
-      this.versioningEnabled &&
+      this.baConfigService.featureToggles.versioning &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -447,7 +471,7 @@ export default class NasesService {
     this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
     const shouldBumpJsonVersion =
-      !this.versioningEnabled ||
+      !this.baConfigService.featureToggles.versioning ||
       versionCompareBumpDuringSend({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,

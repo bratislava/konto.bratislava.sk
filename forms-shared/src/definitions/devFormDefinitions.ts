@@ -1,6 +1,6 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
-import showcase from '../schemas/showcase'
+import showcase, { showcaseFiles } from '../schemas/showcase'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
 
 export const devFormDefinitions: FormDefinition[] = [
@@ -21,5 +21,6 @@ export const devFormDefinitions: FormDefinition[] = [
       ginisFunctionId: '',
     },
     isSigned: false,
+    files: showcaseFiles,
   },
 ]

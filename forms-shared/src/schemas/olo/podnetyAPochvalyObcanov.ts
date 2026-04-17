@@ -112,11 +112,12 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, [
     ),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
     textArea('sprava', { title: 'Správa', required: true }, { helptext: 'Napíšte svoje podnety' }),
-    fileUploadMultiple(
+    fileUploadMultiple<typeof podnetyAPochvalyObcanovFiles>(
       'prilohy',
       {
         title: 'Prílohy',
         required: false,
+        slotId: 'prilohy',
       },
       {
         type: 'dragAndDrop',
@@ -124,6 +125,14 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, [
     ),
   ]),
 ])
+
+export const podnetyAPochvalyObcanovFiles = {
+  slots: [
+    {
+      slotId: 'prilohy',
+    },
+  ],
+} as const
 
 type ExtractFormData = {
   podnet: {

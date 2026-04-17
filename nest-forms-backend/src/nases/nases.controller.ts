@@ -173,9 +173,7 @@ export default class NasesController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    await this.nasesService.updateForm(formId, data, user)
-
-    const returnData = await this.nasesService.sendForm(formId, user)
+    const returnData = await this.nasesService.sendForm(formId, data, user)
     return returnData
   }
 

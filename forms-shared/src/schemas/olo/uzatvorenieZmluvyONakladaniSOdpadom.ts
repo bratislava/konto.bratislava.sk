@@ -5,3 +5,7 @@ export default schema(
   { title: 'Uzatvorenie zmluvy o nakladaní s odpadom' },
   getZevoSchema(ZevoType.UzatvorenieZmluvyONakladaniSOdpadom),
 )
+
+export const uzatvorenieZmluvyONakladaniSOdpadomFiles = {
+  slots: [],
+} as const

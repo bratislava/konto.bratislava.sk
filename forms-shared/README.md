@@ -123,6 +123,3 @@ npm run docker:test:update
 - `react-markdown` is fixed on version 6, until we use a compiler, see <https://stackoverflow.com/a/69469619>
 - We are using a patched version of `@rjsf/core`. This patch must be present until [PR #4978](https://github.com/rjsf-team/react-jsonschema-form/pull/4978) is released.
 - `deasync` must be overridden to a newer version, it is used internally by `node-font2base64` but the old version doesn't work on newer Node.js versions
-
-
-

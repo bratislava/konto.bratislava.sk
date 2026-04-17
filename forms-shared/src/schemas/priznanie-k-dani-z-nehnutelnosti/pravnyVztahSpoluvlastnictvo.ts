@@ -8,6 +8,7 @@ import { number } from '../../generator/functions/number'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { priznanieKDaniZNehnutelnostiFiles } from '../priznanieKDaniZNehnutelnosti'
 
 export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
   radioGroup(
@@ -82,12 +83,13 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       [['naZakladeDohody'], { const: true }],
     ]),
     [
-      fileUploadMultiple(
+      fileUploadMultiple<typeof priznanieKDaniZNehnutelnostiFiles>(
         'splnomocnenie',
         // TODO: Reconsider required when tax form will be sent online.
         {
           title:
             'Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností',
+          slotId: 'splnomocnenie',
         },
         {
           type: 'dragAndDrop',

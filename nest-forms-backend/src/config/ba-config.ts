@@ -165,6 +165,14 @@ export default class BaConfig {
   get featureToggles() {
     return {
       versioning: this.validatedConfig.FEATURE_TOGGLE_VERSIONING,
+      fileSizeLimits: this.validatedConfig.FEATURE_TOGGLE_FILE_SIZE_LIMITS,
+    }
+  }
+
+  get fileLimits() {
+    return {
+      maxSingleSizeGlobal: this.validatedConfig.MAX_FILE_SIZE,
+      maxCumulativeSizeGlobal: this.validatedConfig.MAX_CUMULATIVE_FILE_SIZE,
     }
   }
 }

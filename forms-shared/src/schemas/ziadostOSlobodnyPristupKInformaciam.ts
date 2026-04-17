@@ -131,9 +131,13 @@ export default schema(
         { title: 'Obsah žiadosti', required: true },
         { helptext: 'Uveďte požadované informácie' },
       ),
-      fileUploadMultiple(
+      fileUploadMultiple<typeof ziadostOSlobodyPristupKInformaciamFiles>(
         'prilohyZiadosti',
-        { title: 'Prílohy k žiadosti', required: false },
+        {
+          title: 'Prílohy k žiadosti',
+          required: false,
+          slotId: 'prilohyZiadosti',
+        },
         {
           type: 'dragAndDrop',
         },
@@ -177,3 +181,11 @@ export default schema(
     ]),
   ],
 )
+
+export const ziadostOSlobodyPristupKInformaciamFiles = {
+  slots: [
+    {
+      slotId: 'prilohyZiadosti',
+    },
+  ],
+} as const

@@ -1,13 +1,16 @@
 import stanoviskoKInvesticnemuZameru, {
   stanoviskoKInvesticnemuZameruExtractPlainSubject,
   stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
+  stanoviskoKInvesticnemuZameruFiles,
 } from '../schemas/stanoviskoKInvesticnemuZameru'
 import predzahradky, {
   predzahradkyExtractPlainSubject,
   predzahradkyExtractTechnicalSubject,
+  predzahradkyFiles,
 } from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti, {
   priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+  priznanieKDaniZNehnutelnostiFiles,
 } from '../schemas/priznanieKDaniZNehnutelnosti'
 import {
   generalTermsAndConditions,
@@ -19,80 +22,110 @@ import {
 import zavazneStanoviskoKInvesticnejCinnosti, {
   zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
   zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
+  zavazneStanoviskoKInvesticnejCinnostiFiles,
 } from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady, {
   komunitneZahradyExtractPlainSubject,
   komunitneZahradyExtractTechnicalSubject,
+  komunitneZahradyFiles,
 } from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
 import ziadostONajomBytu, {
   ziadostONajomBytuAdditionalInfoTemplate,
+  ziadostONajomBytuFiles,
 } from '../schemas/ziadostONajomBytu'
 import mimoriadnyOdvozAZhodnotenieOdpadu, {
   mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
   mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
+  mimoriadnyOdvozAZhodnotenieOdpaduFiles,
 } from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
 import energetickeZhodnotenieOdpaduVZevo from '../schemas/olo/energetickeZhodnotenieOdpaduVZevo'
-import uzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
+import uzatvorenieZmluvyONakladaniSOdpadom, {
+  uzatvorenieZmluvyONakladaniSOdpadomFiles,
+} from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
 import docisteniStanovistaZbernychNadob, {
   docisteniStanovistaZbernychNadobExtractEmail,
   docisteniStanovistaZbernychNadobExtractName,
+  docisteniStanovistaZbernychNadobFiles,
 } from '../schemas/olo/docisteniStanovistaZbernychNadob'
 import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom, {
   odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
   odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
+  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromFiles,
 } from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
-import koloTaxi, { koloTaxiExtractEmail, koloTaxiExtractName } from '../schemas/olo/koloTaxi'
-import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName } from '../schemas/olo/oloTaxi'
+import koloTaxi, {
+  koloTaxiExtractEmail,
+  koloTaxiExtractName,
+  koloTaxiFiles,
+} from '../schemas/olo/koloTaxi'
+import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName, oloTaxiFiles } from '../schemas/olo/oloTaxi'
 import podnetyAPochvalyObcanov, {
   podnetyAPochvalyObcanovExtractEmail,
   podnetyAPochvalyObcanovExtractName,
+  podnetyAPochvalyObcanovFiles,
 } from '../schemas/olo/podnetyAPochvalyObcanov'
 import odvozObjemnehoOdpaduValnikom, {
   odvozObjemnehoOdpaduValnikomExtractEmail,
   odvozObjemnehoOdpaduValnikomExtractName,
+  odvozObjemnehoOdpaduValnikomFiles,
 } from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
 import triedenyZberPapieraPlastovASklaPrePravnickeOsoby, {
   triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
   triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
+  triedenyZberPapieraPlastovASklaPrePravnickeOsobyFiles,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
 import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
+  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiFiles,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
-import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoShared'
+import {
+  energetickeZhodnotenieOdpaduVZevoFiles,
+  zevoExtractEmail,
+  zevoExtractName,
+} from '../schemas/olo/shared/zevoShared'
 import objednavkaInformativnehoZakresuSieti, {
   objednavkaInformativnehoZakresuSietiExtractEmail,
   objednavkaInformativnehoZakresuSietiExtractName,
   objednavkaInformativnehoZakresuSietiExtractTechnicalSubject,
+  objednavkaInformativnehoZakresuSietiFiles,
 } from '../schemas/tsb/objednavkaInformativnehoZakresuSieti'
 import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia, {
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractTechnicalSubject,
+  objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaFiles,
 } from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
 import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia, {
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles,
 } from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
 import ziadostOStanoviskoKProjektovejDokumentacii, {
   ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject,
+  ziadostOStanoviskoKProjektovejDokumentaciiFiles,
 } from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
-import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
+import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady, {
+  oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles,
+} from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
-import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPristupKInformaciam'
+import ziadostOSlobodnyPristupKInformaciam, {
+  ziadostOSlobodyPristupKInformaciamFiles,
+} from '../schemas/ziadostOSlobodnyPristupKInformaciam'
 import ziadostOUzemnoplanovaciuInformaciu, {
+  ziadostOUzemnoplanovaciuInformaciuFiles,
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
-import webhookShowcase from '../schemas/webhookShowcase'
+import webhookShowcase, { webhookShowcaseFiles } from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
   nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+  nahlaseniePodnetuKElektrickymKolobezkamFiles,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 
 export const formDefinitions: FormDefinition[] = [
@@ -118,6 +151,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
+    files: stanoviskoKInvesticnemuZameruFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -141,6 +175,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
+    files: zavazneStanoviskoKInvesticnejCinnostiFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -163,6 +198,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A381',
       ginisFunctionId: 'MAG0SF00AG9O',
     },
+    files: predzahradkyFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -185,6 +221,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A0Q4',
       ginisFunctionId: 'MAG0SF00A93V',
     },
+    files: komunitneZahradyFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkTax,
@@ -202,6 +239,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFtP1By',
+    files: priznanieKDaniZNehnutelnostiFiles,
   },
   // testing integration of new posID against GINIS&NORIS, will be removed afterwards
   {
@@ -221,6 +259,7 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: true,
     exampleFormNotRequired: true,
     skipProductionRegistrationCheck: true,
+    files: priznanieKDaniZNehnutelnostiFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -243,6 +282,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     additionalInfoTemplate: ziadostONajomBytuAdditionalInfoTemplate,
+    files: ziadostONajomBytuFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -262,6 +302,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: mimoriadnyOdvozAZhodnotenieOdpaduFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -281,6 +322,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: energetickeZhodnotenieOdpaduVZevoFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -300,6 +342,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: uzatvorenieZmluvyONakladaniSOdpadomFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -319,6 +362,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: docisteniStanovistaZbernychNadobFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -338,6 +382,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -357,6 +402,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloKoloTaxiTermsAndConditions,
     embedded: 'olo',
+    files: koloTaxiFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -376,6 +422,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: oloTaxiFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -395,6 +442,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: podnetyAPochvalyObcanovFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -414,6 +462,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: odvozObjemnehoOdpaduValnikomFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -433,6 +482,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: triedenyZberPapieraPlastovASklaPrePravnickeOsobyFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -452,6 +502,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -479,6 +530,7 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: objednavkaInformativnehoZakresuSietiFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -507,6 +559,7 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -534,6 +587,7 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: ziadostOStanoviskoKProjektovejDokumentaciiFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -562,6 +616,7 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -580,6 +635,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
+    files: oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -597,6 +653,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A3M3',
     },
     isSigned: false,
+    files: ziadostOSlobodyPristupKInformaciamFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -619,6 +676,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
+    files: ziadostOUzemnoplanovaciuInformaciuFiles,
   },
   {
     type: FormDefinitionType.Webhook,
@@ -630,6 +688,7 @@ export const formDefinitions: FormDefinition[] = [
     webhookUrl: 'https://nest-forms-backend.staging.bratislava.sk/webhook',
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
+    files: webhookShowcaseFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -660,5 +719,6 @@ export const formDefinitions: FormDefinition[] = [
       technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,
+    files: nahlaseniePodnetuKElektrickymKolobezkamFiles,
   },
 ]

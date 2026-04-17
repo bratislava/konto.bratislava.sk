@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import ClientsModule from '../clients/clients.module'
+import BaConfigModule from '../config/ba-config.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
@@ -36,6 +37,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
+    BaConfigModule,
   ],
   providers: [
     NasesService,

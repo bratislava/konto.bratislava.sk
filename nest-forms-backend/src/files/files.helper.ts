@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, FormError, Forms, Prisma } from '@prisma/client'
+import { Files, FileStatus, FormError, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
@@ -151,27 +151,17 @@ export default class FilesHelper {
     formId: string,
     pospIdOrSlug: string,
   ): Promise<Files> {
-    // if file does not exist in the database, save it
-    const createData: Prisma.FilesCreateArgs = {
-      data: {
-        minioFileName,
-        fileSize,
-        fileName,
-        formId,
-        pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
-      },
-    }
-
-    // if desired fileId is provided, use it
-    if (fileId) {
-      createData.data = {
-        id: fileId,
-        ...createData.data,
-      }
-    }
-
     try {
-      return await this.prisma.files.create(createData)
+      return await this.prisma.files.create({
+        data: {
+          id: fileId,
+          minioFileName,
+          fileSize,
+          fileName,
+          formId,
+          pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
+        },
+      })
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
@@ -406,6 +396,26 @@ export default class FilesHelper {
         : formDefinition.slug,
       formId: form.id,
     }
+  }
+
+  async getActiveFilesTotalSize(formId: string): Promise<number> {
+    const result = await this.prisma.files.aggregate({
+      where: {
+        formId,
+        status: {
+          in: [
+            FileStatus.UPLOADED,
+            FileStatus.ACCEPTED,
+            FileStatus.QUEUED,
+            FileStatus.SCANNING,
+            FileStatus.SAFE,
+          ],
+        },
+      },
+      _sum: { fileSize: true },
+    })
+
+    return result._sum.fileSize ?? 0
   }
 
   fileDto2formInfo(files: BasicFileDto): FormInfo {

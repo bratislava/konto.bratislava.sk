@@ -18,12 +18,15 @@ export default schema(
   [
     getObjednavatelZiadatelStep('ziadatel'),
     step('informacieOZariadeni', { title: 'Informácie o zariadení' }, [
-      fileUploadMultiple(
+      fileUploadMultiple<
+        typeof ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles
+      >(
         'umiestnenieStoziare',
         {
           title:
             'Nahrajte vyplnený súbor Umiestnenie zariadení na stožiare verejného osvetlenia.xlsx',
           required: true,
+          slotId: 'umiestnenieStoziare',
         },
         {
           type: 'dragAndDrop',
@@ -117,11 +120,14 @@ export default schema(
       ),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUploadMultiple(
+      fileUploadMultiple<
+        typeof ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles
+      >(
         'fotografiaVizualizacia',
         {
           title: 'Fotografia alebo vizualizácia zariadenia/zariadení',
           required: true,
+          slotId: 'fotografiaVizualizacia',
         },
         {
           type: 'dragAndDrop',
@@ -132,6 +138,17 @@ export default schema(
     ]),
   ],
 )
+
+export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles = {
+  slots: [
+    {
+      slotId: 'fotografiaVizualizacia',
+    },
+    {
+      slotId: 'fotografiaVizualizacia',
+    },
+  ],
+}
 
 type ExtractFormData = {
   ziadatel: { email: string } & (

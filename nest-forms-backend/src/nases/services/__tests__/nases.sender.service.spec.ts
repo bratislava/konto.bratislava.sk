@@ -1,7 +1,6 @@
 import { Readable } from 'node:stream'
 
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileStatus } from '@prisma/client'
 import { v1, v4 } from 'uuid'
@@ -9,6 +8,7 @@ import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../../test/singleton'
 import ClientsService from '../../../clients/clients.service'
+import BaConfigService from '../../../config/ba-config.service'
 import ConvertService from '../../../convert/convert.service'
 import PrismaService from '../../../prisma/prisma.service'
 import TaxService from '../../../tax/tax.service'
@@ -40,12 +40,6 @@ describe('NasesSenderService', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forFeature(() => ({
-          NASES_RECIPIENT_URI: 'example_recipient',
-          MINIO_SAFE_BUCKET: '',
-        })),
-      ],
       providers: [
         NasesSenderService,
         ConvertService,
@@ -54,6 +48,13 @@ describe('NasesSenderService', () => {
         MinioClientSubservice,
         { provide: TaxService, useValue: createMock<TaxService>() },
         { provide: ClientsService, useValue: createMock<ClientsService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            minio: { buckets: { safe: '' } },
+            slovenskoSk: { nasesRecipientUri: 'example_recipient' },
+          },
+        },
       ],
     }).compile()
 

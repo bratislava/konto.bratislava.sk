@@ -1,7 +1,6 @@
 import { Stream } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
 import { isAxiosError } from 'axios'
 import {
@@ -16,6 +15,7 @@ import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import ClientsService from '../../clients/clients.service'
+import BaConfigService from '../../config/ba-config.service'
 import ConvertService from '../../convert/convert.service'
 import {
   FormsErrorsEnum,
@@ -25,7 +25,6 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesSendResponse } from '../dtos/responses.dto'
 import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
@@ -37,19 +36,15 @@ import {
 
 @Injectable()
 export default class NasesSenderService {
-  private readonly logger: LineLoggerSubservice
-
   constructor(
     private readonly convertService: ConvertService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
     private minioClientSubservice: MinioClientSubservice,
     private taxService: TaxService,
-    private configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
-  ) {
-    this.logger = new LineLoggerSubservice('NasesSenderService')
-  }
+  ) {}
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
@@ -88,7 +83,7 @@ export default class NasesSenderService {
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
       const fileStream = await this.minioClientSubservice.loadFileStream(
-        this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET'),
+        this.baConfigService.minio.buckets.safe,
         `${file.pospId}/${form.id}/${file.minioFileName}`,
       )
 
@@ -307,9 +302,7 @@ export default class NasesSenderService {
             },
             MessageId: form.id,
             SenderId: senderUri,
-            RecipientId: this.configService.getOrThrow<string>(
-              'NASES_RECIPIENT_URI',
-            ),
+            RecipientId: this.baConfigService.slovenskoSk.nasesRecipientUri,
             MessageType: pospID,
             MessageSubject: subject,
             Object: attachments,

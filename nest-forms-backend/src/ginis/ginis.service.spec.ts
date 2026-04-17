@@ -865,10 +865,7 @@ describe('GinisService', () => {
         .mockResolvedValue('contactId')
 
       jest
-        .spyOn(
-          service['apiJwtTokensService'],
-          'createTechnicalAccountJwtToken',
-        )
+        .spyOn(service['apiJwtTokensService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('jwt-token')
     })
 

@@ -43,7 +43,7 @@
     "@nestjs/swagger": "11.2.6",
     "@prisma/client": "6.15.0",
     "@rjsf/utils": "^6.4.1",
-    "amqplib": "^0.10.9",
+    "amqplib": "^1.0.2",
     "aws-jwt-verify": "^5.1.1",
     "axios": "^1.15.0",
     "bull": "4.16.5",

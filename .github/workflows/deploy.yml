@@ -11,29 +11,25 @@ on:
 jobs:
   build-forms-shared:
     name: Build and push specific forms-shared image
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: ./.github/workflows/build-shared-package.yml
     with:
       directory: forms-shared/
-      build_image_no_registry: "--no_image_repo_check"
-      tag: "--tag=${{ github.ref_name }}-${{ github.sha }}"
-      fetch-depth: 1
+      image: harbor.bratislava.sk/standalone/forms-shared
+      push: true
+      target: prod
     secrets:
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   build-openapi-clients:
     name: Build and push specific openapi-clients image
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: ./.github/workflows/build-shared-package.yml
     with:
       directory: openapi-clients/
-      build_image_no_registry: "--no_image_repo_check"
-      tag: "--tag=${{ github.ref_name }}-${{ github.sha }}"
-      fetch-depth: 1
+      image: harbor.bratislava.sk/standalone/openapi-clients
+      push: true
+      target: prod
     secrets:
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   conditions:
     name: Check for cluster conditions
@@ -54,7 +50,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -74,7 +70,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -113,7 +109,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -171,7 +167,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-clamav-scanner/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -191,7 +187,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-tax-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -210,7 +206,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-city-account/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -237,7 +233,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -257,7 +253,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -277,7 +273,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -297,7 +293,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -355,7 +351,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -375,7 +371,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -394,7 +390,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -439,7 +435,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -459,7 +455,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -498,7 +494,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -556,7 +552,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -576,7 +572,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -595,7 +591,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443

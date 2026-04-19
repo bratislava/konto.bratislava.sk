@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import formData from 'form-data'
-import Mailgun from 'mailgun.js'
-import { Interfaces } from 'mailgun.js/definitions'
+import type { Interfaces } from 'mailgun.js/definitions' with { 'resolution-mode': 'import' }
 
 import { MAILGUN } from '../user-verification/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MailgunMessageBuilder, MailgunTemplates } from './mailgun-message.builder'
+
+const Mailgun = require('mailgun.js')
 
 const mailgun = new Mailgun(formData)
 
@@ -57,7 +58,7 @@ export class MailgunService {
       // ensures that the templateKey and options are correctly matched. The 'as any' here is safe because
       // we've already validated the types through the function signature.
       const factoryMethod = this.mailgunMessageBuilder[templateKey]
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // @ts-expect-error test
       const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options as any)
 
       const response = await this.mg.messages.create(this.config.defaultMailgunDomain, messageData)

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { MailgunMessageData } from 'mailgun.js/definitions'
+import type { MailgunMessageData } from 'mailgun.js/definitions' with {
+  'resolution-mode': 'import',
+}
 
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { MAILGUN } from '../user-verification/constants'

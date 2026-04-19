@@ -4,13 +4,34 @@
   "private": false,
   "license": "EUPL-1.2",
   "exports": {
-    "./city-account": "./dist/city-account/index.js",
-    "./forms": "./dist/forms/index.js",
-    "./tax": "./dist/tax/index.js",
-    "./clamav-scanner": "./dist/clamav-scanner/index.js",
-    "./slovensko-sk": "./dist/slovensko-sk/index.js",
-    "./magproxy": "./dist/magproxy/index.js",
-    "./magproxy/base": "./dist/magproxy/base.js",
+    "./city-account": {
+      "types": "./dist/city-account/index.d.ts",
+      "default": "./dist/city-account/index.js"
+    },
+    "./forms": {
+      "types": "./dist/forms/index.d.ts",
+      "default": "./dist/forms/index.js"
+    },
+    "./tax": {
+      "types": "./dist/tax/index.d.ts",
+      "default": "./dist/tax/index.js"
+    },
+    "./clamav-scanner": {
+      "types": "./dist/clamav-scanner/index.d.ts",
+      "default": "./dist/clamav-scanner/index.js"
+    },
+    "./slovensko-sk": {
+      "types": "./dist/slovensko-sk/index.d.ts",
+      "default": "./dist/slovensko-sk/index.js"
+    },
+    "./magproxy": {
+      "types": "./dist/magproxy/index.d.ts",
+      "default": "./dist/magproxy/index.js"
+    },
+    "./magproxy/base": {
+      "types": "./dist/magproxy/base.d.ts",
+      "default": "./dist/magproxy/base.js"
+    },
     "./package.json": "./package.json"
   },
   "sideEffects": false,

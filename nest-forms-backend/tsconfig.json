@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "node16",
-    "moduleResolution": "node16",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "allowJs": true,
     "declaration": true,
     "removeComments": true,
@@ -17,6 +17,7 @@
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "isolatedModules": true
   }
 }

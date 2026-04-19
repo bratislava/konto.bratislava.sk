@@ -28,6 +28,11 @@
     "./*": "./dist/*.js",
     "./package.json": "./package.json"
   },
+  "typesVersions": {
+    "*": {
+      "*": ["dist/*.d.ts"]
+    }
+  },
   "sideEffects": false,
   "overrides": {
     "deasync": "0.1.31"

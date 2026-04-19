@@ -9,45 +9,47 @@ on:
         required: true
 
 jobs:
-  test-forms-shared:
-    name: Run tests on forms-shared
-    uses: ./.github/workflows/validate-forms-shared-konto.yml
-    with:
-      directory: forms-shared/
+  conditions:
+    name: Check for conditions
+    uses: ./.github/workflows/build-conditions-konto.yml
 
   build-forms-shared:
     name: Build image of forms-shared and push it to harbor
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: ./.github/workflows/build-shared-package.yml
     with:
       directory: forms-shared/
-      build_image_no_registry: ""
-      tag: "--tag=build-${{ github.sha }}"
-      fetch-depth: 1
+      image: harbor.bratislava.sk/standalone/forms-shared
+      push: true
+      target: prod
     secrets:
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   build-openapi-clients:
     name: Build image of openapi-clients and push it to harbor
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    uses: ./.github/workflows/build-shared-package.yml
     with:
       directory: openapi-clients/
-      build_image_no_registry: ""
-      tag: "--tag=build-${{ github.sha }}"
-      fetch-depth: 1
+      image: harbor.bratislava.sk/standalone/openapi-clients
+      push: true
+      target: prod
     secrets:
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-  conditions:
-    name: Check for conditions
-    needs: [build-forms-shared, build-openapi-clients]
-    uses: ./.github/workflows/build-conditions-konto.yml
+  validate-forms-shared:
+    if: needs.conditions.outputs.forms-shared == 'true'
+    name: validate forms-shared
+    needs: [ conditions ]
+    uses: ./.github/workflows/validate-forms-shared-konto.yml
+    with:
+      directory: forms-shared/
+      image: harbor.bratislava.sk/standalone/forms-shared
+    secrets:
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   build-next:
     if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: build next
-    needs: [conditions]
+    needs: [ conditions, build-forms-shared, build-openapi-clients ]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
@@ -72,7 +74,7 @@ jobs:
   validate-nest-forms-backend:
     if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-forms-backend
-    needs: conditions
+    needs: [ conditions, build-forms-shared, build-openapi-clients ]
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-forms-backend/
@@ -80,7 +82,7 @@ jobs:
 
   build-nest-forms-backend:
     name: build nest-forms-backend
-    needs: [conditions, validate-nest-forms-backend]
+    needs: [ conditions, build-forms-shared, build-openapi-clients ]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
@@ -94,14 +96,14 @@ jobs:
   validate-nest-clamav-scanner:
     if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-clamav-scanner
-    needs: conditions
+    needs: [ conditions, build-openapi-clients ]
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-clamav-scanner/
 
   build-nest-clamav-scanner:
     name: build nest-clamav-scanner
-    needs: [conditions, validate-nest-clamav-scanner]
+    needs: [ conditions, build-openapi-clients ]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
@@ -114,14 +116,14 @@ jobs:
   validate-nest-tax-backend:
     if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-tax-backend
-    needs: conditions
+    needs: [ conditions, build-openapi-clients ]
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-tax-backend/
 
   build-nest-tax-backend:
     name: build nest-tax-backend
-    needs: [conditions, validate-nest-tax-backend]
+    needs: [ conditions, build-openapi-clients ]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
@@ -134,14 +136,14 @@ jobs:
   validate-nest-city-account:
     if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
     name: validate nest-city-account
-    needs: conditions
+    needs: [ conditions, build-openapi-clients ]
     uses: ./.github/workflows/validate-nest-prisma-konto.yml
     with:
       directory: nest-city-account/
 
   build-nest-city-account:
     name: build nest-city-account
-    needs: [conditions, validate-nest-city-account]
+    needs: [ conditions, build-openapi-clients ]
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/

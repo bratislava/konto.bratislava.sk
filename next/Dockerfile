@@ -23,10 +23,24 @@ ENTRYPOINT [ "/sbin/tini", "--" ]
 
 # used for build-base for building only
 FROM base AS build-base
+
+# Temporary workaround until this repository uses npm workspaces. Locally, shared
+# packages are symlinked through file: dependencies and their folders already
+# contain node_modules. In CI, the copied package folders would not have
+# node_modules, so we install each shared package explicitly to keep behavior
+# close to local development and expose missing runtime dependencies early.
+# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
+RUN --mount=type=cache,target=/build/.npm \
+    npm config set cache /build/.npm
+
 WORKDIR /forms-shared
 COPY --from=forms-shared /app/ ./
+RUN npm ci
+
 WORKDIR /openapi-clients
 COPY --from=openapi-clients /app/ ./
+RUN npm ci
+
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
 
@@ -34,14 +48,14 @@ FROM build-base AS install-prod
 ENV NPM_CONFIG_CACHE=/build/.npm
 RUN --mount=type=cache,target=/build/.npm \
     npm config set cache /build/.npm \
- && npm ci --omit=dev --frozen-lockfile
+ && npm ci --omit=dev
 
 FROM install-prod AS build
 COPY . ./
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN --mount=type=cache,target=/build/.npm \
     npm config set cache /build/.npm \
-    && npm ci --include=dev --frozen-lockfile \
+    && npm ci --include=dev \
     && npm run build
 
 FROM app-base AS dev

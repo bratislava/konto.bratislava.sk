@@ -13,6 +13,17 @@
     "./magproxy/base": "./dist/magproxy/base.js",
     "./package.json": "./package.json"
   },
+  "typesVersions": {
+    "*": {
+      "city-account": ["dist/city-account/index.d.ts"],
+      "forms": ["dist/forms/index.d.ts"],
+      "tax": ["dist/tax/index.d.ts"],
+      "clamav-scanner": ["dist/clamav-scanner/index.d.ts"],
+      "slovensko-sk": ["dist/slovensko-sk/index.d.ts"],
+      "magproxy": ["dist/magproxy/index.d.ts"],
+      "magproxy/base": ["dist/magproxy/base.d.ts"]
+    }
+  },
   "sideEffects": false,
   "scripts": {
     "generate:forms": "tsx scripts/generateClient.ts forms",

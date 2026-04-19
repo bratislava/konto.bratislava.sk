@@ -1,24 +1,36 @@
+# check=skip=InvalidDefaultArgInFrom
 ARG SHARED_PACKAGE_TAG
-FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
+FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} AS forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
 FROM node:24.14 AS base
 
 RUN npx playwright install-deps chromium
 
 # build
 FROM base AS build
-COPY --from=forms-shared /app/ /root/forms-shared
-COPY --from=openapi-clients /app/ /root/openapi-clients
+
+# Temporary workaround until this repository uses npm workspaces. Locally, shared
+# packages are symlinked through file: dependencies and their folders already
+# contain node_modules. In CI, the copied package folders would not have
+# node_modules, so we install each shared package explicitly to keep behavior
+# close to local development and expose missing runtime dependencies early.
+# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
+WORKDIR /root/forms-shared
+COPY --from=forms-shared /app/ .
+RUN npm ci
+
+WORKDIR /root/openapi-clients
+COPY --from=openapi-clients /app/ .
+RUN npm ci
 
 WORKDIR /root/nest-forms-backend
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --include=dev
 
 COPY . ./
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
-
 RUN npm run build
 
 # development
@@ -40,26 +52,8 @@ FROM base AS prod
 
 USER node
 
-# When copying node_modules from the build stage, symlinks to external dependencies
-# (like ../../forms-shared and ../../openapi-clients) are preserved. These symlinks expect the target directories
-# to exist at specific paths in the production container. We create these directories and
-# populate them with the actual content so the symlinks work correctly.
-#
-# Note: Using --install-links with npm ci fails because it requires the package-lock.json
-# to be perfectly in sync with package.json. When dependencies have complex version
-# requirements or when using local file dependencies, this synchronization often breaks,
-# causing npm ci to fail with "Missing: X from lock file" or "Invalid: lock file's X does
-# not satisfy Y" errors.
-RUN mkdir -p /home/node/forms-shared \
-    && chown -R node:node /home/node/forms-shared
-RUN mkdir -p /home/node/openapi-clients \
-    && chown -R node:node /home/node/openapi-clients
-
-WORKDIR /home/node/forms-shared
-COPY --chown=node:node --from=forms-shared /app/ ./
-
-WORKDIR /home/node/openapi-clients
-COPY --chown=node:node --from=openapi-clients /app/ ./
+COPY --chown=node:node --from=build /root/forms-shared /home/node/forms-shared
+COPY --chown=node:node --from=build /root/openapi-clients /home/node/openapi-clients
 
 WORKDIR /home/node/app
 

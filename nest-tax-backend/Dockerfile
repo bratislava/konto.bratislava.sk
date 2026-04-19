@@ -24,7 +24,7 @@ FROM base AS build-base
 # close to local development and expose missing runtime dependencies early.
 # https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
 WORKDIR /openapi-clients
-COPY --from=openapi-clients /app/ .
+COPY --from=openapi-clients / .
 RUN npm ci --include=dev
 
 WORKDIR /build

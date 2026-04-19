@@ -16,11 +16,11 @@ FROM base AS build
 # close to local development and expose missing runtime dependencies early.
 # https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
 WORKDIR /root/forms-shared
-COPY --from=forms-shared /app/ .
+COPY --from=forms-shared / .
 RUN npm ci
 
 WORKDIR /root/openapi-clients
-COPY --from=openapi-clients /app/ .
+COPY --from=openapi-clients / .
 RUN npm ci
 
 WORKDIR /root/nest-forms-backend

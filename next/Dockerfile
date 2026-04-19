@@ -34,11 +34,11 @@ RUN --mount=type=cache,target=/build/.npm \
     npm config set cache /build/.npm
 
 WORKDIR /forms-shared
-COPY --from=forms-shared /app/ ./
+COPY --from=forms-shared / ./
 RUN npm ci
 
 WORKDIR /openapi-clients
-COPY --from=openapi-clients /app/ ./
+COPY --from=openapi-clients / ./
 RUN npm ci
 
 WORKDIR /build

@@ -157,7 +157,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
               variant="solid"
               fullWidth
               onPress={() => register()}
-              className='md:rounded-t-none'
+              className="md:rounded-t-none lg:py-6"
               data-cy="registration-modal-button"
             >
               {t('registration_modal.body_action')}

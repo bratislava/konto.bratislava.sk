@@ -1,0 +1,222 @@
+{
+  "key": "plugin_content_manager_configuration_content_types::api::tax.tax",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "id",
+      "defaultSortBy": "id",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "accountCommunicationConsentText": {
+        "edit": {
+          "label": "accountCommunicationConsentText",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "accountCommunicationConsentText",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "channelChangeEffectiveNextYearTitle": {
+        "edit": {
+          "label": "channelChangeEffectiveNextYearTitle",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "channelChangeEffectiveNextYearTitle",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "channelChangeEffectiveNextYearText": {
+        "edit": {
+          "label": "channelChangeEffectiveNextYearText",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "channelChangeEffectiveNextYearText",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "paymentAlertText": {
+        "edit": {
+          "label": "paymentAlertText",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "paymentAlertText",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "feedbackLinkDzn": {
+        "edit": {
+          "label": "feedbackLinkDzn",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "feedbackLinkDzn",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "feedbackLinkKo": {
+        "edit": {
+          "label": "feedbackLinkKo",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "feedbackLinkKo",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdAt": {
+        "edit": {
+          "label": "createdAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "createdAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedAt": {
+        "edit": {
+          "label": "updatedAt",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true
+        },
+        "list": {
+          "label": "updatedAt",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "createdBy": {
+        "edit": {
+          "label": "createdBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "createdBy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "updatedBy": {
+        "edit": {
+          "label": "updatedBy",
+          "description": "",
+          "placeholder": "",
+          "visible": false,
+          "editable": true,
+          "mainField": "firstname"
+        },
+        "list": {
+          "label": "updatedBy",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "createdAt",
+        "updatedAt",
+        "feedbackLinkDzn"
+      ],
+      "edit": [
+        [
+          {
+            "name": "accountCommunicationConsentText",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "channelChangeEffectiveNextYearTitle",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "channelChangeEffectiveNextYearText",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "paymentAlertText",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "feedbackLinkDzn",
+            "size": 6
+          },
+          {
+            "name": "feedbackLinkKo",
+            "size": 6
+          }
+        ]
+      ]
+    },
+    "uid": "api::tax.tax"
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

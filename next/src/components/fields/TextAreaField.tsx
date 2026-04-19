@@ -48,7 +48,8 @@ const TextAreaField = (
         className={({ isFocused, isDisabled, isInvalid }) =>
           cn(
             'w-full rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',
-            'min-h-30 resize-y',
+            'min-h-30',
+            isDisabled ? 'resize-none' : 'resize-y',
             'px-3 py-2 lg:px-4 lg:py-3',
             'placeholder:text-content-passive-tertiary',
             {

@@ -265,11 +265,13 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
     const envValues: Record<string, string> = {
       REPORTING_SFTP_FILES_PATH: '7322226495/oms/cz',
       REPORTING_FILE_NAME: 'pbr24',
-      REPORTING_PKO_SFTP_FILES_PATH: '7322257895/oms/cz',
-      REPORTING_PKO_FILE_NAME: 'pbr26',
-      REPORTING_ICO: '00603481',
       REPORTING_ACCOUNT_ID: '1234567890123456',
       REPORTING_BANK_ID: '1100',
+      REPORTING_PKO_SFTP_FILES_PATH: '7322257895/oms/cz',
+      REPORTING_PKO_FILE_NAME: 'pbr26',
+      REPORTING_PKO_ACCOUNT_ID: '6543210987654321',
+      REPORTING_PKO_BANK_ID: '2200',
+      REPORTING_ICO: '00603481',
     }
 
     beforeEach(() => {
@@ -369,6 +371,43 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
       expect(dznCall[3][0].content).not.toContain('pbr26')
       expect(pkoCall[3][0].content).toContain('pbr26')
       expect(pkoCall[3][0].content).not.toContain('pbr24')
+    })
+
+    it('should use separate account IDs for each report type', async () => {
+      const csv = makeCsvFileContent([
+        makePosRow({ orderId: '1111111111111111' }),
+      ])
+
+      mockSftpFileSubservice.getNewFiles.mockImplementation(
+        async (sftpPath: string) => {
+          if (sftpPath === '7322226495/oms/cz') {
+            return Promise.resolve([
+              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+            ])
+          }
+          if (sftpPath === '7322257895/oms/cz') {
+            return Promise.resolve([
+              { name: 'AH_DATA_1_2_3_2604101234.csv', content: csv },
+            ])
+          }
+          return Promise.resolve([])
+        },
+      )
+
+      await service.generateAndSendPaymentReport(['test@example.com'])
+
+      const dznCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - DZN',
+      )
+      const pkoCall = mockEmailSubservice.send.mock.calls.find(
+        (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
+      )
+
+      expect(dznCall[3][0].content).toContain('1234567890123456')
+      expect(dznCall[3][0].content).not.toContain('6543210987654321')
+
+      expect(pkoCall[3][0].content).toContain('6543210987654321')
+      expect(pkoCall[3][0].content).not.toContain('1234567890123456')
     })
 
     it('should store CSV file names with their tax type', async () => {

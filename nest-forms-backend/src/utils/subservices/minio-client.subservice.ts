@@ -9,8 +9,9 @@ import {
   FilesErrorsEnum,
   FilesErrorsResponseEnum,
 } from '../../files/files.errors.enum'
+import { ErrorsEnum } from '../global-enums/errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import alertError, { LineLoggerSubservice } from './line-logger.subservice'
+import { LineLoggerSubservice } from './line-logger.subservice'
 
 interface UploadedObjectInfo {
   etag: string
@@ -59,8 +60,8 @@ export default class MinioClientSubservice {
     this.logger.debug(`Listing files in bucket ${bucketName} in path ${path}`)
 
     try {
-      let files: Array<string> = await new Promise((resolve, reject) => {
-        const objectsListTemp: Array<string> = []
+      let files: string[] = await new Promise((resolve, reject) => {
+        const objectsListTemp: string[] = []
         const stream = this.minioService.client.listObjectsV2(
           bucketName,
           path,
@@ -102,31 +103,39 @@ export default class MinioClientSubservice {
         0,
       )
     } catch (error) {
-      alertError(
-        `Error creating folder ${path} in bucket ${bucket}.`,
-        this.logger,
-        error,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Error creating folder in bucket.`,
+          { path, bucket },
+          error,
+        ),
       )
       return false
     }
   }
 
   // function which deletes folder in minio bucket
-  public async deleteFolder(
-    bucket: string,
-    path: string,
-  ): Promise<false | void> {
+  public async deleteFolder(bucket: string, path: string): Promise<boolean> {
     // delete folder in mino bucket in desired path
     try {
-      return await this.minioService.client.removeObject(bucket, path)
+      await this.minioService.client.removeObject(bucket, path)
+      return true
     } catch (error) {
-      alertError('Error while deleting a folder in minio', this.logger, error)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Error while deleting a folder in minio',
+          undefined,
+          error,
+        ),
+      )
       return false
     }
   }
 
   // function which deletes file in minio bucket
-  public async deleteFile(bucket: string, path: string): Promise<false | void> {
+  public async deleteFile(bucket: string, path: string): Promise<boolean> {
     // delete file in mino bucket in desired path
     return this.deleteFolder(bucket, path)
   }

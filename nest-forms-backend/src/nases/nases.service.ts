@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
+  isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
@@ -17,10 +18,14 @@ import {
   versionCompareBumpDuringSend,
   versionCompareCanSendForm,
 } from 'forms-shared/versioning/version-compare'
-import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
+import {
+  UpvsCorporateBody,
+  UpvsNaturalPerson,
+} from 'openapi-clients/slovensko-sk'
 
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
+import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -32,7 +37,6 @@ import {
 import FormsService from '../forms/forms.service'
 import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
-import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -48,7 +52,6 @@ import {
 } from './dtos/requests.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
-import { SendMessageNasesSenderType } from './types/send-message-nases-sender.type'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
@@ -61,7 +64,6 @@ export default class NasesService {
   constructor(
     private readonly formsService: FormsService,
     private readonly filesService: FilesService,
-    private readonly nasesConsumerService: NasesConsumerService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesUtilsService: NasesUtilsService,
@@ -69,6 +71,7 @@ export default class NasesService {
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
     private readonly clientsService: ClientsService,
+    private readonly convertPdfService: ConvertPdfService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
@@ -76,13 +79,19 @@ export default class NasesService {
       'true'
   }
 
-  async getNasesIdentity(token: string): Promise<UpvsNaturalPerson | null> {
+  async getUpvsIdentity(
+    token: string,
+  ): Promise<UpvsNaturalPerson | UpvsCorporateBody | null> {
+    // there is a bug in the container and function `apiUpvsIdentityGet` below, according to 'openapi-clients/slovensko-sk' types
+    // returns information about UpvsNaturalPerson,
+    // in reality it returns information about UpvsCorporateBody as well
+    // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, typing can be erased
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data)
-      .catch((error) => {
+      .catch((error: unknown) => {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -301,6 +310,7 @@ export default class NasesService {
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
       formSummary,
+      formSentAt: new Date(),
       ...(shouldBumpJsonVersion
         ? { jsonVersion: formDefinition.jsonVersion }
         : undefined),
@@ -375,7 +385,6 @@ export default class NasesService {
           const { error: errorEnum, message: errorMessage } =
             verifyFormSignatureErrorMapping[error.type]
           throw this.throwerErrorGuard.UnprocessableEntityException(
-            // eslint-disable-next-line custom-rules/thrower-error-guard-enum
             errorEnum,
             errorMessage,
           )
@@ -423,6 +432,7 @@ export default class NasesService {
     await this.formsService.updateForm(id, {
       mainUri: nasesUser.sub,
       actorUri: nasesUser.actor.sub,
+      formSentAt: new Date(),
     })
 
     const data: RabbitPayloadDto = {
@@ -455,32 +465,32 @@ export default class NasesService {
         : undefined),
     })
 
-    // Send to nases
-    let isSent = false
-
     try {
-      isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
-        jwt,
-        form,
-        data,
+      // create a pdf image of the form, upload it to minio and at it among form files
+      await this.convertPdfService.createPdfImageInFormFiles(
+        data.formId,
         formDefinition,
-        {
-          type: SendMessageNasesSenderType.Eid,
-          senderUri: nasesUser.sub,
-        },
       )
     } catch (error) {
-      this.logger.error(`Error sending form to nases.`, error)
-    }
-
-    if (!isSent) {
-      // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function
-      await this.formsService.updateForm(data.formId, {
+      await this.formsService.updateForm(id, {
         state: FormState.DRAFT,
         error: FormError.NASES_SEND_ERROR,
       })
 
-      // TODO temp SEND_TO_NASES_ERROR log, remove
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.CREATE_PDF_IMAGE_ERROR,
+        `${NasesErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR} Received form id: ${data.formId}.`,
+        undefined,
+        error,
+      )
+    }
+
+    try {
+      await this.sendToNasesAndUpdateState(jwt, form, data, nasesUser.sub)
+    } catch (error) {
+      this.logger.error(`Error sending form to nases.`, error)
+
+      // TODO temp SEND_TO_NASES_ERROR log, remove.
       this.logger.log(
         `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
           form.formSignature,
@@ -493,6 +503,27 @@ export default class NasesService {
         NasesErrorsEnum.SEND_TO_NASES_ERROR,
         NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
       )
+    }
+
+    // Send the form to ginis if should be sent
+    if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
+      try {
+        await this.rabbitmqClientService.publishToGinis({
+          formId: data.formId,
+          tries: 0,
+          userData: data.userData,
+        })
+      } catch (error) {
+        // We do not want to show the user error when the submission was already delivered to Nases. Therefore Ginis errors should only be logged for us.
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+            `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
+            undefined,
+            error,
+          ),
+        )
+      }
     }
 
     return {
@@ -520,5 +551,52 @@ export default class NasesService {
       NasesErrorsEnum.FILE_NOT_SCANNED,
       NasesErrorsResponseEnum.FILE_NOT_SCANNED,
     )
+  }
+
+  public async sendToNasesAndUpdateState(
+    jwt: string,
+    form: Forms,
+    data: RabbitPayloadDto,
+    senderUri: string,
+    additionalFormUpdates?: FormUpdateBodyDto,
+  ): Promise<void> {
+    // sendMessageNases is implemented in a way that it does not throw. Therefore this is not in try-catch block.
+    const sendData = await this.nasesUtilsService.sendMessageNases(
+      jwt,
+      form,
+      senderUri,
+    )
+
+    if (sendData.status !== HttpStatus.OK) {
+      await this.formsService.updateForm(data.formId, {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.UNABLE_SEND_FORM_TO_NASES,
+        NasesErrorsResponseEnum.UNABLE_SEND_FORM_TO_NASES,
+        {
+          status: sendData.status,
+          formId: data.formId,
+          error: FormError.NASES_SEND_ERROR,
+          sendData: sendData.data,
+        },
+      )
+    }
+
+    // prisma update form status to DELIVERED_NASES
+    await this.formsService.updateForm(data.formId, {
+      state: FormState.DELIVERED_NASES,
+      error: FormError.NONE,
+      ...additionalFormUpdates,
+    })
+
+    this.logger.log({
+      type: 'ALL GOOD - 200',
+      status: 200,
+      formId: data.formId,
+      sendData: sendData.data,
+    })
   }
 }

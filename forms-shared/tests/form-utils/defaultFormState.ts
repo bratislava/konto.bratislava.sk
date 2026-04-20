@@ -86,7 +86,7 @@ describe('defaultFormState', () => {
       ),
     ])
 
-    filterConsole(
+    const restore = filterConsole(
       'warn',
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
@@ -100,6 +100,8 @@ describe('defaultFormState', () => {
       checkboxGroupRequired: [],
       arrayFieldRequired: [{}],
     })
+
+    restore()
   })
 
   test('getDefaultForm should not prefill const values', () => {
@@ -124,7 +126,7 @@ describe('baGetDefaultFormStateStable', () => {
   ])
 
   test('should return correct default values', () => {
-    filterConsole(
+    const restore = filterConsole(
       'warn',
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
@@ -135,5 +137,6 @@ describe('baGetDefaultFormStateStable', () => {
 
     expect(result).toEqual({ input1: 'value1' })
     expect(resultStable).toEqual({ input1: 'value1', input2: 'value2' })
+    restore()
   })
 })

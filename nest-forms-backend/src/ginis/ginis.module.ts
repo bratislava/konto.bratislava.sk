@@ -13,6 +13,7 @@ import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
+import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import GinisController from './ginis.controller'
@@ -44,6 +45,7 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     GinisAPIService,
     NasesUtilsService,
     MailgunService,
+    MailgunHelper,
     MinioClientSubservice,
     GinisTasksSubservice,
   ],

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 import { GinisError } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -44,7 +43,6 @@ describe('GinisController', () => {
     expect(controller).toBeDefined()
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('getGinisDocumentByFormId (GET :formId)', () => {
     it('should throw error if form not found', async () => {
       controller['formsService'].getUniqueForm = jest
@@ -157,4 +155,3 @@ describe('GinisController', () => {
     })
   })
 })
-/* eslint-enable @typescript-eslint/dot-notation */

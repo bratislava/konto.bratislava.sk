@@ -1,4 +1,3 @@
-/* eslint-disable pii/no-phone-number */
 import {
   ApiProperty,
   ApiPropertyOptional,
@@ -10,13 +9,14 @@ import {
   IsBoolean,
   IsDate,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator'
 
-class formUserInformationDto {
+class FormUserInformationDto {
   @ApiProperty({
     description:
       'User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID',
@@ -43,7 +43,7 @@ class formUserInformationDto {
   declare actorUri: string | null
 }
 
-class idDto {
+class IdDto {
   @ApiProperty({
     description: 'id of the record in db',
     example: 'd81d6e01-8196-45a1-bce2-e02877d9fbd8',
@@ -56,7 +56,6 @@ class idDto {
 export class DownloadTokenResponseDataDto {
   @ApiProperty({
     description: 'Download jwt token',
-    // eslint-disable-next-line no-secrets/no-secrets
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @IsString()
@@ -101,8 +100,9 @@ export class FormInfo {
     example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
     nullable: true,
   })
-  @IsUUID()
   @IsOptional()
+  @IsString()
+  @IsNotEmpty()
   declare userExternalId?: string | null
 }
 
@@ -209,12 +209,12 @@ export class ExtendedFileDto extends BasicFileWithStatus {
   @IsDate()
   declare updatedAt: Date
 
-  @Type(() => formUserInformationDto)
+  @Type(() => FormUserInformationDto)
   @ApiPropertyOptional({
     description: 'Info about user who sent the form',
   })
   @IsOptional()
-  declare forms?: formUserInformationDto
+  declare forms?: FormUserInformationDto
 }
 
 export class ResponseFileDto extends ExtendedFileDto {
@@ -231,7 +231,7 @@ export class PostFileResponseDto extends ExtendedFileDto {}
 export class GetFileResponseDto extends IntersectionType(ExtendedFileDto) {}
 
 export class GetFileResponseReducedDto extends IntersectionType(
-  idDto,
+  IdDto,
   FileNameDto,
   FileSizeDto,
   StatusFileDto,
@@ -278,4 +278,3 @@ export class FormFilesWithMinio {
 
   id: string
 }
-/* eslint-enable pii/no-phone-number */

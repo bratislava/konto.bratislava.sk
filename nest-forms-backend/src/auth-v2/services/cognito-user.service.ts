@@ -1,4 +1,5 @@
 import {
+  AdminGetUserCommand,
   AdminGetUserCommandOutput,
   AttributeType,
 } from '@aws-sdk/client-cognito-identity-provider'
@@ -7,14 +8,14 @@ import { Expose, plainToInstance } from 'class-transformer'
 import {
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   validateOrReject,
 } from 'class-validator'
 import {
-  UserVerifyStateCognitoTierEnum,
-  UserVerifyStateTypeEnum,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesTierEnum,
 } from 'openapi-clients/city-account'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -22,17 +23,18 @@ import { CognitoProvidersService } from './cognito-providers.service'
 
 class CognitoUserAttributesDto {
   @Expose()
-  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
   sub: string
 
   @Expose()
-  @IsEnum(UserVerifyStateTypeEnum)
-  'custom:account_type': UserVerifyStateTypeEnum
+  @IsEnum(CognitoUserAccountTypesEnum)
+  'custom:account_type': CognitoUserAccountTypesEnum
 
   @Expose()
-  @IsEnum(UserVerifyStateCognitoTierEnum)
+  @IsEnum(CognitoUserAttributesTierEnum)
   @IsOptional() // Newly signed-up users might not have this attribute
-  'custom:tier'?: UserVerifyStateCognitoTierEnum
+  'custom:tier'?: CognitoUserAttributesTierEnum
 
   @Expose()
   @IsString()
@@ -75,7 +77,7 @@ const verifyAndMapResponse = async (response: AdminGetUserCommandOutput) => {
   )
   try {
     await validateOrReject(validatedAttributes)
-  } catch (error) {
+  } catch {
     throw new Error('Invalid user attributes received from Cognito.')
   }
 
@@ -98,11 +100,14 @@ export class CognitoUserService {
   ) {}
 
   async getUserAttributes(sub: string) {
-    const response =
-      await this.cognitoProvidersService.identityProvider.adminGetUser({
-        UserPoolId: this.baConfigService.cognito.userPoolId,
-        Username: sub,
-      })
+    const inputParams = {
+      UserPoolId: this.baConfigService.cognito.userPoolId,
+      Username: sub,
+    }
+
+    const response = await this.cognitoProvidersService.identityProvider.send(
+      new AdminGetUserCommand(inputParams),
+    )
 
     return verifyAndMapResponse(response)
   }

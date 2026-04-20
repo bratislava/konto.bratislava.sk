@@ -13,6 +13,20 @@ export enum NasesErrorsEnum {
   FORM_VERSION_NOT_COMPATIBLE = 'FORM_VERSION_NOT_COMPATIBLE',
   SEND_POLICY_NOT_POSSIBLE = 'SEND_POLICY_NOT_POSSIBLE',
   SEND_POLICY_NOT_ALLOWED_FOR_USER = 'SEND_POLICY_NOT_ALLOWED_FOR_USER',
+  UNABLE_SEND_FORM_TO_NASES = 'UNABLE_SEND_FORM_TO_NASES',
+  SEND_TO_GINIS_ERROR = 'SEND_TO_GINIS_ERROR',
+  FAILED_FORM_REGISTRATION_VERIFICATION = 'FAILED_FORM_REGISTRATION_VERIFICATION',
+  CREATE_PDF_IMAGE_ERROR = 'CREATE_PDF_IMAGE_ERROR',
+  IDENTITY_SEARCH_DATA_INCONSISTENT = 'IDENTITY_SEARCH_DATA_INCONSISTENT',
+  FORM_NOT_FOUND = 'FORM_NOT_FOUND',
+  FORM_ARCHIVED = 'FORM_ARCHIVED',
+  FORM_DEFINITION_NOT_FOUND = 'FORM_DEFINITION_NOT_FOUND',
+  FORM_DEFINITION_NOT_SUPPORTED_TYPE = 'FORM_DEFINITION_NOT_SUPPORTED_TYPE',
+  MAX_TRIES_REACHED = 'MAX_TRIES_REACHED',
+  SENDING_EMAIL_FAILED = 'SENDING_EMAIL_FAILED',
+  DATABASE_ERROR = 'DATABASE_ERROR',
+  WEBHOOK_ERROR = 'WEBHOOK_ERROR',
+  FORM_DEFINITION_NOT_IN_SLOVENSKO_SK = 'FORM_DEFINITION_NOT_IN_SLOVENSKO_SK',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -30,6 +44,18 @@ export enum NasesErrorsResponseEnum {
   FORM_VERSION_NOT_COMPATIBLE = 'Form version is not compatible for sending.',
   SEND_POLICY_NOT_POSSIBLE = 'Sending is not possible for this form.',
   SEND_POLICY_NOT_ALLOWED_FOR_USER = 'Sending is not allowed for this user.',
+  UNABLE_SEND_FORM_TO_NASES = 'Unable to send form to NASES.',
+  SEND_TO_GINIS_ERROR = 'There was an error when sending to Ginis.',
+  FAILED_FORM_REGISTRATION_VERIFICATION = 'Failed to verify form registration in Slovensko.sk.',
+  CREATE_PDF_IMAGE_ERROR = 'Error while creating pdf image.',
+  IDENTITY_SEARCH_DATA_INCONSISTENT = 'Data from identity search is inconsistent or missing.',
+  FORM_NOT_FOUND = 'Form not found in database.',
+  FORM_ARCHIVED = 'Form is archived.',
+  FORM_DEFINITION_NOT_FOUND = 'Form definition was not found for given slug.',
+  FORM_DEFINITION_NOT_SUPPORTED_TYPE = 'Got unsupported type of FormDefinition. In the nases-consumer queue only generic Slovensko.sk forms can be processed.',
+  MAX_TRIES_REACHED = 'Max tries reached for formId.',
+  SENDING_EMAIL_FAILED = 'Sending email of form has failed.',
+  WEBHOOK_ERROR = 'Sending webhook of form has failed.',
 }
 
 export enum NasesErrorCodesEnum {

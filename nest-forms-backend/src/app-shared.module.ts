@@ -24,6 +24,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
         useSSL: baConfigService.minio.useSSL,
         accessKey: baConfigService.minio.accessKey,
         secretKey: baConfigService.minio.secretKey,
+        pathStyle: baConfigService.minio.pathStyle,
       }),
     }),
     PrismaModule,
@@ -31,7 +32,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     BullModule.forRootAsync({
       imports: [BaConfigModule],
       inject: [BaConfigService],
-      useFactory: async (baConfigService: BaConfigService) => ({
+      useFactory: (baConfigService: BaConfigService) => ({
         redis: {
           host: baConfigService.redis.service,
           port: baConfigService.redis.port,

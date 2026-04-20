@@ -1,6 +1,3 @@
-/* eslint-disable pii/no-phone-number */
-/* eslint-disable pii/no-email */
-
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
@@ -13,7 +10,6 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  IsUUID,
   ValidateNested,
 } from 'class-validator'
 
@@ -76,7 +72,6 @@ export class FormUpdateBodyDto {
 
   @ApiPropertyOptional({
     description: 'Concrete error type',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     default: FormError.NONE,
   })
   @IsOptional()
@@ -132,7 +127,8 @@ export class FormUpdateBodyDto {
     default: 'e5c84a71-5985-40c7-bb19-e4ad22eda41c',
   })
   @IsOptional()
-  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
   userCognitoID?: string
 
   @ApiPropertyOptional({
@@ -179,7 +175,14 @@ export class FormUpdateBodyDto {
   @IsObject()
   @ValidateNested()
   formSignature?: FormSignatureDto
-}
 
-/* eslint-enable pii/no-phone-number */
-/* eslint-enable pii/no-email */
+  @ApiPropertyOptional({
+    description: 'Date time, when form was sent',
+    nullable: true,
+    example: '2026-02-11T12:00:00.000Z',
+  })
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  formSentAt?: Date | null
+}

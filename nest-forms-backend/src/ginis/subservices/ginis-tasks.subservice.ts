@@ -6,9 +6,8 @@ import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefini
 
 import PrismaService from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import {
   GinisTaskErrorEnum,
   GinisTaskErrorResponseEnum,
@@ -32,6 +31,7 @@ export default class GinisTasksSubservice {
     private readonly prisma: PrismaService,
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('GinisTasksSubservice')
   }
@@ -50,10 +50,13 @@ export default class GinisTasksSubservice {
         return docDetail['Wfl-dokument']['Stav-dokumentu']
       })
     } catch (error) {
-      alertError(
-        GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
-        this.logger,
-        `${GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR} Document ID: ${ginisDocumentId}.`,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          GinisTaskErrorResponseEnum.GET_DOCUMENT_DETAIL_ERROR,
+          { ginisDocumentId },
+          error,
+        ),
       )
       return
     }
@@ -77,9 +80,12 @@ export default class GinisTasksSubservice {
         },
       })
     } else if (!GINIS_PROCESSING_DOCUMENT_STATES.has(docState)) {
-      alertError(
-        `Unknown GINIS Document state received: ${docState} for submission ${ginisDocumentId}.`,
-        this.logger,
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+          'Unknown GINIS Document state received.',
+          { docState, ginisDocumentId },
+        ),
       )
     }
   }
@@ -89,7 +95,7 @@ export default class GinisTasksSubservice {
   async checkSubmissionState(): Promise<void> {
     // check every document only once a week, otherwise it's a large daily load and Ginis thinks its DOS attack
     // day of the week when a form is checked depends on which symbol the form id starts with
-    const dayToHexPrefixes: Record<number, string[]> = {
+    const dayToHexPrefixes: Partial<Record<number, string[]>> = {
       1: ['0', '1'], // Monday
       2: ['2', '3'], // Tuesday
       3: ['4', '5'], // Wednesday
@@ -100,12 +106,11 @@ export default class GinisTasksSubservice {
     }
     const today = new Date().getDay()
     const prefixes = dayToHexPrefixes[today] ?? []
-    if (!prefixes) {
+    if (prefixes.length === 0) {
       return
     }
 
     const slugsToProcess = formDefinitions
-      // eslint-disable-next-line unicorn/no-array-callback-reference
       .filter(isSlovenskoSkFormDefinition)
       .filter((formDefinition) => !formDefinition.skipGinisStateUpdate)
       .map(({ slug }) => slug)
@@ -124,7 +129,9 @@ export default class GinisTasksSubservice {
     })
 
     await Promise.allSettled(
-      submissions.map((submission) => this.updateSubmissionState(submission)),
+      submissions.map(async (submission) =>
+        this.updateSubmissionState(submission),
+      ),
     )
   }
 }

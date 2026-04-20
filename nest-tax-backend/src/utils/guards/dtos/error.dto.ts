@@ -5,10 +5,7 @@ import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
 } from '../../../payment/dtos/error.dto'
-import {
-  CustomErrorPdfCreateTypesEnum,
-  CustomErrorTaxTypesEnum,
-} from '../../../tax/dtos/error.dto'
+import { CustomErrorTaxTypesEnum } from '../../../tax/dtos/error.dto'
 
 export class ResponseInternalServerErrorDto {
   @ApiProperty({
@@ -51,6 +48,7 @@ export class ResponseErrorDto {
   errorName: CustomErrorEnums
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-extraneous-class */
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')
 
@@ -119,5 +117,4 @@ export type CustomErrorEnums =
   | CustomErrorTaxTypesEnum
   | CustomErrorPaymentTypesEnum
   | CustomErrorPaymentResponseTypesEnum
-  | CustomErrorPdfCreateTypesEnum
   | CustomErrorNorisTypesEnum

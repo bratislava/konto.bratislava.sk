@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common'
-import { BloomreachModule } from 'src/bloomreach/bloomreach.module'
-import { NorisModule } from 'src/noris/noris.module'
-import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
-import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
+import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import ClientsModule from '../clients/clients.module'
+import { NorisModule } from '../noris/noris.module'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
 
@@ -15,7 +14,6 @@ import { AdminService } from './admin.service'
   providers: [
     AdminService,
     AdminStrategy,
-    QrCodeSubservice,
     CityAccountSubservice,
     ThrowerErrorGuard,
   ],

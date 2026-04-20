@@ -3,37 +3,44 @@ import { ConfigService } from '@nestjs/config'
 import {
   PaymentStatus,
   Prisma,
-  Tax,
-  TaxPayer,
   TaxPayment,
   TaxPaymentSource,
+  TaxType,
 } from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
-import { BloomreachService } from 'src/bloomreach/bloomreach.service'
-import { PrismaService } from 'src/prisma/prisma.service'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
-import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
-import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
-import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
 
-import {
-  CustomErrorTaxTypesEnum,
-  CustomErrorTaxTypesResponseEnum,
-} from '../tax/dtos/error.dto'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { TaxService } from '../tax/tax.service'
-import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { TaxPaymentWithTaxInfo } from '../utils/types/types.prisma'
+import { RetryService } from '../utils-module/retry.service'
 import {
+  CustomErrorNorisTypesResponseEnum,
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
-  CustomErrorPaymentTypesResponseEnum,
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
+import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import {
+  GP_WEBPAY_CONFIG_KEY_MAP,
+  GpWebpaySubservice,
+} from './subservices/gpwebpay.subservice'
+
+interface GpWebpayProcessingStrategy {
+  dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
+  shouldAlert: boolean
+  feState: PaymentRedirectStateEnum
+}
 
 @Injectable()
 export class PaymentService {
+  private readonly logger = new LineLoggerSubservice('PaymentService')
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly gpWebpaySubservice: GpWebpaySubservice,
@@ -42,34 +49,21 @@ export class PaymentService {
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxService: TaxService,
+    private readonly retryService: RetryService,
   ) {}
 
-  private async getTaxPaymentByTaxId(
-    id: number,
-  ): Promise<TaxPaymentWithTaxYear | null> {
-    try {
-      return await this.prisma.taxPayment.findFirst({
-        where: {
-          status: PaymentStatus.SUCCESS,
-          taxId: id,
-        },
-        include: {
-          tax: {
-            select: {
-              year: true,
-            },
-          },
-        },
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Can not load data from taxPayment',
-        'Database error',
-        undefined,
-        error,
-      )
-    }
+  private getRedirectUrl(taxType: TaxType) {
+    const redirectUrl = this.configService.getOrThrow<string>(
+      'PAYGATE_REDIRECT_URL',
+    )
+
+    const url = new URL(redirectUrl)
+
+    const basePath = url.pathname.endsWith('/')
+      ? url.pathname
+      : `${url.pathname}/`
+
+    return new URL(taxType, `${url.origin}${basePath}`).toString()
   }
 
   /**
@@ -83,7 +77,12 @@ export class PaymentService {
     try {
       orderId = Date.now().toString()
       payment = await this.prisma.taxPayment.create({
-        data: { orderId, amount: options.amount, taxId: options.taxId },
+        data: {
+          orderId,
+          amount: options.amount,
+          taxId: options.taxId,
+          bloomreachEventSent: false,
+        },
       })
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -96,20 +95,25 @@ export class PaymentService {
     }
 
     try {
+      // data that goes to payment gateway should not contain diacritics
+      const redirectUrl = this.getRedirectUrl(options.taxType)
       const requestData = {
         MERCHANTNUMBER: this.configService.getOrThrow<string>(
-          'PAYGATE_MERCHANT_NUMBER',
+          GP_WEBPAY_CONFIG_KEY_MAP[options.taxType].PAYGATE_MERCHANT_NUMBER,
         ),
         OPERATION: 'CREATE_ORDER',
         ORDERNUMBER: orderId,
         AMOUNT: payment.amount.toString(),
         CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
+        URL: redirectUrl,
         DESCRIPTION: options.description,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
-      const signedData = this.gpWebpaySubservice.getSignedData(requestData)
+      const signedData = this.gpWebpaySubservice.getSignedData(
+        options.taxType,
+        requestData,
+      )
       return `${this.configService.getOrThrow<string>('PAYGATE_PAYMENT_REDIRECT_URL')}?${formurlencoded(
         signedData,
         {
@@ -130,10 +134,14 @@ export class PaymentService {
   async generateFullPaymentLink(
     where: Prisma.TaxPayerWhereUniqueInput,
     year: number,
+    type: TaxType,
+    order: number,
   ) {
     const generator = await this.taxService.getOneTimePaymentGenerator(
       where,
       year,
+      type,
+      order,
     )
 
     return this.getPaymentUrlInternal(generator)
@@ -142,181 +150,80 @@ export class PaymentService {
   async generateInstallmentPaymentLink(
     where: Prisma.TaxPayerWhereUniqueInput,
     year: number,
+    type: TaxType,
+    order: number,
   ) {
     const generator = await this.taxService.getInstallmentPaymentGenerator(
       where,
       year,
+      type,
+      order,
     )
 
     return this.getPaymentUrlInternal(generator)
   }
 
-  private async getPaymentUrl(tax: Tax): Promise<string> {
-    const taxPayment: TaxPaymentWithTaxYear | null =
-      await this.getTaxPaymentByTaxId(tax.id)
-
-    if (taxPayment) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.PAYMENT_ALREADY_PAID,
-        'Payment or part of payment or some installment was already paid, you can not pay whole amount',
-        'Already paid',
-      )
-    }
-
-    const isPayable = computeIsPayableYear(tax.year)
-    if (!isPayable) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.OLD_TAX_NOT_PAYABLE,
-        CustomErrorPaymentTypesResponseEnum.OLD_TAX_NOT_PAYABLE,
-        'Not payable',
-      )
-    }
-
-    let orderId: string
-    let payment: TaxPayment
-    try {
-      orderId = Date.now().toString()
-      payment = await this.prisma.taxPayment.create({
-        data: { orderId, amount: tax.amount, taxId: tax.id },
+  /**
+   * Tracks the payment in Bloomreach and updates the tax payment bloomreachEventSent flag.
+   * This is to prevent missing payments in Bloomreach in case of some failure in the tracking process.
+   *
+   * Note that we first set the flag to true in the transaction, and then send the event. The reason is that
+   * if the event fails, the transaction will be rolled back, and the flag will not be set.
+   * If the event succeeds, the flag will be set to true.
+   *
+   * @param taxPayment - Tax payment to track in Bloomreach
+   * @param externalId - External ID of the user
+   */
+  async trackPaymentInBloomreach(
+    taxPayment: TaxPaymentWithTaxInfo,
+    externalId?: string,
+  ) {
+    await this.prisma.$transaction(async (tx) => {
+      await tx.taxPayment.update({
+        where: { id: taxPayment.id },
+        data: { bloomreachEventSent: true },
       })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Can not create order',
-        'Database error',
-        undefined,
-        error,
-      )
-    }
 
-    try {
-      const requestData = {
-        MERCHANTNUMBER: this.configService.getOrThrow<string>(
-          'PAYGATE_MERCHANT_NUMBER',
-        ),
-        OPERATION: 'CREATE_ORDER',
-        ORDERNUMBER: orderId,
-        AMOUNT: payment.amount.toString(),
-        CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
-        DEPOSITFLAG: '1',
-        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
-        DESCRIPTION: `Platba za dane pre BA s id dane ${tax.id}`,
-        PAYMETHODS: `APAY,GPAY,CRD`,
+      if (!externalId) {
+        return
       }
-      const signedData = this.gpWebpaySubservice.getSignedData(requestData)
-      return `${this.configService.getOrThrow<string>('PAYGATE_PAYMENT_REDIRECT_URL')}?${formurlencoded(
-        signedData,
+
+      const result = await this.bloomreachService.trackEventTaxPayment(
         {
-          ignorenull: true,
+          amount: taxPayment.amount,
+          payment_source: taxPayment.source ?? TaxPaymentSource.BANK_ACCOUNT,
+          year: taxPayment.tax.year,
+          tax_type: taxPayment.tax.type,
+          order: taxPayment.tax.order!, // non-null by DB trigger and constraint
+          suppress_email: false,
         },
-      )}`
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
-        'Can not create url',
-        'Create url error',
-        undefined,
-        error,
+        externalId,
       )
-    }
+      if (!result) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to track payment in Bloomreach.',
+        )
+      }
+    })
   }
 
-  async redirectToPayGateByTaxId(uuid: string) {
-    let tax: Tax | null = null
-    try {
-      tax = await this.prisma.tax.findUnique({
-        where: {
-          uuid,
-        },
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Get tax error',
-        'Database error',
-        undefined,
-        error,
-      )
-    }
-
-    if (!tax) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
-        ErrorsResponseEnum.NOT_FOUND_ERROR,
-        'Tax was not found',
-      )
-    }
-
-    return this.getPaymentUrl(tax)
-  }
-
-  async getPayGateUrlByUserAndYear(year: string, birthNumber: string) {
-    let taxPayer: TaxPayer | null = null
-    try {
-      taxPayer = await this.prisma.taxPayer.findUnique({
-        where: { birthNumber },
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Get taxpayer error',
-        'Database error',
-        undefined,
-        error,
-      )
-    }
-
-    if (!taxPayer) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
-        ErrorsResponseEnum.NOT_FOUND_ERROR,
-        'Tax was not found',
-      )
-    }
-
-    let tax: Tax | null = null
-    try {
-      tax = await this.prisma.tax.findUnique({
-        where: {
-          taxPayerId_year: {
-            taxPayerId: taxPayer.id,
-            year: +year,
-          },
-        },
-      })
-    } catch (error) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-        'Get tax error',
-        'Database error',
-        undefined,
-        error,
-      )
-    }
-
-    if (!tax) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
-        ErrorsResponseEnum.NOT_FOUND_ERROR,
-        'Tax was not found',
-      )
-    }
-
-    return this.getPaymentUrl(tax)
-  }
-
-  async processPaymentResponse({
-    OPERATION,
-    ORDERNUMBER,
-    PRCODE,
-    SRCODE,
-    DIGEST,
-    DIGEST1,
-    RESULTTEXT,
-  }: PaymentResponseQueryDto): Promise<string> {
+  async processPaymentResponse(
+    taxType: TaxType,
+    {
+      OPERATION,
+      ORDERNUMBER,
+      PRCODE,
+      SRCODE,
+      DIGEST,
+      DIGEST1,
+      RESULTTEXT,
+    }: PaymentResponseQueryDto,
+  ): Promise<string> {
     if (!ORDERNUMBER) {
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
+
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
         OPERATION,
@@ -327,85 +234,122 @@ export class PaymentService {
       })
       if (
         !(
-          this.gpWebpaySubservice.verifyData(dataToVerify, DIGEST) &&
+          this.gpWebpaySubservice.verifyData(taxType, dataToVerify, DIGEST) &&
           this.gpWebpaySubservice.verifyData(
-            `${dataToVerify}|${process.env.PAYGATE_MERCHANT_NUMBER}`,
+            taxType,
+            `${dataToVerify}|${this.configService.getOrThrow<string>(GP_WEBPAY_CONFIG_KEY_MAP[taxType].PAYGATE_MERCHANT_NUMBER)}`,
             DIGEST1,
           )
         )
       ) {
-        await this.prisma.taxPayment.update({
-          where: { orderId: ORDERNUMBER },
-          data: {
-            status: PaymentStatus.FAIL,
-            source: 'CARD',
-          },
-        })
+        // We failed to verify this payment. If we have any side effects here, they can be triggered
+        // by just guessing the ORDERNUMBER we generate as a timestamp.
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
       }
 
-      const payment = await this.prisma.taxPayment.findUnique({
-        where: {
-          orderId: ORDERNUMBER,
-        },
-        include: {
-          tax: {
-            include: {
-              taxPayer: true,
-            },
-          },
-        },
+      const taxPaymentWithTax: Prisma.TaxPaymentGetPayload<{
+        include: { tax: { include: { taxPayer: true } } }
+      }> | null = await this.prisma.taxPayment.findUnique({
+        where: { orderId: ORDERNUMBER },
+        include: { tax: { include: { taxPayer: true } } },
       })
 
-      if (!payment) {
+      if (!taxPaymentWithTax) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+            CustomErrorNorisTypesResponseEnum.TAX_NOT_FOUND,
+            undefined,
+            `We received a valid payment response for payment we do not have in our database. ORDERNUMBER: ${ORDERNUMBER}`,
+          ),
+        )
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
       }
 
-      if (payment.status === PaymentStatus.SUCCESS) {
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}`
+      const strategy = this.getProcessingStrategy(PRCODE)
+      const currentStatus = taxPaymentWithTax.status
+      const { year, order, type } = taxPaymentWithTax.tax
+      const redirectBase = `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
+
+      if (strategy.shouldAlert) {
+        this.logger.warn({
+          message: 'A problematic payment response was detected.',
+          PRCODE,
+          SRCODE,
+          ORDERNUMBER,
+          alert: 1,
+        })
       }
 
-      if (!(Number(PRCODE) === 0 && Number(SRCODE) === 0)) {
-        await this.prisma.taxPayment.update({
+      let nextStatus: PaymentStatus | undefined
+      switch (strategy.dbStatus) {
+        case 'SUCCESS':
+          nextStatus = PaymentStatus.SUCCESS
+          break
+
+        case 'NEW_TO_FAILED':
+          nextStatus =
+            currentStatus === PaymentStatus.NEW ? PaymentStatus.FAIL : undefined
+          break
+
+        case 'KEEP_CURRENT':
+        default:
+          break
+      }
+
+      let taxPayment: Prisma.TaxPaymentGetPayload<{
+        include: { tax: { select: { year: true; type: true; order: true } } }
+      }> | null
+
+      if (nextStatus) {
+        taxPayment = await this.prisma.taxPayment.update({
           where: { orderId: ORDERNUMBER },
           data: {
-            status: PaymentStatus.FAIL,
-            source: 'CARD',
+            status: nextStatus,
+            source: TaxPaymentSource.CARD,
           },
-        })
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
-      }
-
-      const taxPayment = await this.prisma.taxPayment.update({
-        where: { orderId: ORDERNUMBER },
-        data: {
-          status: PaymentStatus.SUCCESS,
-          source: 'CARD',
-        },
-        include: {
-          tax: {
-            select: {
-              year: true,
+          include: {
+            tax: {
+              select: {
+                year: true,
+                type: true,
+                order: true,
+              },
             },
           },
-        },
-      })
+        })
+        if (!taxPayment) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+              CustomErrorNorisTypesResponseEnum.DATABASE_ERROR,
+              undefined,
+              `Database did not return an update TaxPayment after nextStatus was set. ORDERID: ${ORDERNUMBER}, STATUS: ${nextStatus}`,
+            ),
+          )
+          return redirectBase
+        }
+      } else {
+        taxPayment = taxPaymentWithTax
+      }
 
-      const user = await this.cityAccountSubservice.getUserDataAdmin(
-        payment.tax.taxPayer.birthNumber,
-      )
-      if (user?.externalId) {
-        await this.bloomreachService.trackEventTaxPayment(
-          {
-            amount: taxPayment.amount,
-            payment_source: TaxPaymentSource.CARD,
-            year: taxPayment.tax.year,
-          },
-          user.externalId,
+      if (nextStatus === PaymentStatus.SUCCESS) {
+        const user = await this.retryService.retryWithDelay(
+          async () =>
+            this.cityAccountSubservice.getUserDataAdmin(
+              taxPaymentWithTax.tax.taxPayer.birthNumber,
+            ),
+          'getUserDataAdmin',
+          3,
+          1000, // 1 second delay, 3 retries
+        )
+        await this.trackPaymentInBloomreach(
+          taxPayment,
+          user?.externalId ?? undefined,
         )
       }
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
@@ -417,20 +361,54 @@ export class PaymentService {
     }
   }
 
-  async getQrCodeByTaxUuid(uuid: string): Promise<string> {
-    const qrBase64 = await this.prisma.tax.findUnique({ where: { uuid } })
-    if (!qrBase64) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-      )
+  private getProcessingStrategy(prCode: string): GpWebpayProcessingStrategy {
+    const pr = Number(prCode)
+
+    // https://www.gpwebpay.cz/downloads/GP_webpay_HTTP_EN.pdf
+    // PR 0: Success
+    if (pr === 0) {
+      return {
+        dbStatus: 'SUCCESS',
+        shouldAlert: false,
+        feState: PaymentRedirectStateEnum.PAYMENT_SUCCESS,
+      }
     }
-    if (!qrBase64.qrCodeEmail) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.QR_CODE_NOT_FOUND,
-        CustomErrorPaymentTypesResponseEnum.QR_CODE_NOT_FOUND,
-      )
+
+    // PR 14 or 152: Already Paid / Duplicate
+    if (pr === 14 || pr === 152) {
+      return {
+        dbStatus: 'KEEP_CURRENT',
+        shouldAlert: false,
+        feState: PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID,
+      }
     }
-    return qrBase64.qrCodeEmail
+
+    // PR 31: Security / Digest mismatch
+    if (pr === 31) {
+      return {
+        dbStatus: 'KEEP_CURRENT',
+        shouldAlert: true,
+        feState: PaymentRedirectStateEnum.FAILED_TO_VERIFY,
+      }
+    }
+
+    // Technical alerts for PR codes 1-7 (Invalid request), 11 (Unknown merchant), 15-27 (Technical/Connection), 1000 (Gateway problem)
+    const technicalAlertPrCodes = [
+      1, 2, 3, 4, 5, 6, 7, 11, 15, 16, 17, 18, 20, 25, 26, 27, 1000,
+    ]
+    if (technicalAlertPrCodes.includes(pr)) {
+      return {
+        dbStatus: pr <= 27 ? 'NEW_TO_FAILED' : 'KEEP_CURRENT',
+        shouldAlert: true,
+        feState: PaymentRedirectStateEnum.PAYMENT_FAILED,
+      }
+    }
+
+    // All other failures (PR 28, 30, 32, 35, 38, 40, 46, 50, 82-85, 500+, SR codes)
+    return {
+      dbStatus: 'NEW_TO_FAILED',
+      shouldAlert: false,
+      feState: PaymentRedirectStateEnum.PAYMENT_FAILED,
+    }
   }
 }

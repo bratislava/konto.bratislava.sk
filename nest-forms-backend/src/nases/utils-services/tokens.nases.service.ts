@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-secrets/no-secrets */
 import type { WithImplicitCoercion } from 'node:buffer'
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
@@ -18,10 +16,12 @@ import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExt
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
-import { UserControllerGetOrCreateUser200Response } from 'openapi-clients/city-account'
+import {
+  UpvsCorporateBody,
+  UpvsNaturalPerson,
+} from 'openapi-clients/slovensko-sk'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
-import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import {
@@ -32,9 +32,7 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesSendResponse } from '../dtos/responses.dto'
 import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
@@ -44,10 +42,52 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
-import {
-  SendMessageNasesSender,
-  SendMessageNasesSenderType,
-} from '../types/send-message-nases-sender.type'
+
+export interface NaturalPersonData {
+  given_names?: string[]
+  family_names?: { value?: string; primary?: boolean }[]
+  birth?: {
+    date?: string
+  }
+}
+
+export interface CorporateBodyData {
+  name?: string
+  /** IČO */
+  cin?: string
+  /** DIČ */
+  tin?: string | null
+}
+
+export function isUpvsNaturalPerson(
+  contact: UpvsNaturalPerson | UpvsCorporateBody,
+): contact is UpvsNaturalPerson {
+  return (
+    contact.type === 'natural_person' &&
+    'natural_person' in contact &&
+    contact.natural_person !== undefined
+  )
+}
+
+export function isUpvsCorporateBody(
+  contact: UpvsNaturalPerson | UpvsCorporateBody,
+): contact is UpvsCorporateBody {
+  return (
+    contact.type === 'legal_entity' &&
+    'corporate_body' in contact &&
+    contact.corporate_body !== undefined
+  )
+}
+
+export interface NaturalPersonExtractedData {
+  firstNames: string[]
+  lastNames: string[]
+}
+
+export interface CorporateBodyExtractedData {
+  ico?: string
+  name?: string
+}
 
 @Injectable()
 export default class NasesUtilsService {
@@ -89,13 +129,16 @@ export default class NasesUtilsService {
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-      // eslint-disable-next-line no-underscore-dangle
       const _buf = new Array<any>()
 
       stream.on('data', (chunk) => _buf.push(chunk))
-      stream.on('end', () => resolve(Buffer.concat(_buf)))
-      // eslint-disable-next-line prefer-promise-reject-errors, @typescript-eslint/restrict-template-expressions
-      stream.on('error', (err) => reject(`error converting stream - ${err}`))
+      stream.on('end', () => {
+        resolve(Buffer.concat(_buf))
+      })
+
+      stream.on('error', (err) => {
+        reject(new Error(`error converting stream - ${err}`))
+      })
     })
   }
 
@@ -118,14 +161,13 @@ export default class NasesUtilsService {
       },
     })
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
       const fileStream = await this.minioClientSubservice.loadFileStream(
         this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET'),
         `${file.pospId}/${form.id}/${file.minioFileName}`,
       )
-      // eslint-disable-next-line no-restricted-syntax
+
       const fileBuffer = await this.stream2buffer(fileStream)
       const fileBase64 = fileBuffer.toString('base64')
       result.push({
@@ -255,91 +297,6 @@ export default class NasesUtilsService {
     )
   }
 
-  async getUserInfo(
-    bearerToken: string,
-  ): Promise<UserControllerGetOrCreateUser200Response> {
-    return this.clientsService.cityAccountApi
-      .userControllerGetOrCreateUser({
-        headers: {
-          Authorization: bearerToken,
-        },
-      })
-      .then((response) => response.data)
-      .catch((error) => {
-        throw this.throwerErrorGuard.NotFoundException(
-          NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          undefined,
-          error,
-        )
-      })
-  }
-
-  async getUri(
-    bearerToken?: string,
-    userData?: CognitoGetUserData,
-  ): Promise<string | null> {
-    if (bearerToken === undefined) return null
-
-    if (!userData || !userData.family_name || !userData.given_name) {
-      return null
-    }
-
-    let birthNumber: string
-    try {
-      const userInfo = await this.getUserInfo(bearerToken)
-      if (userInfo.birthNumber === null) {
-        return null
-      }
-      birthNumber = userInfo.birthNumber
-    } catch (error) {
-      alertError('Error when retrieving user info', this.logger, error)
-      return null
-    }
-
-    // TODO remove when slovensko.sk uri will be retrievable.
-    return `rc://sk/${birthNumber}_${userData.family_name.toLowerCase()}_${userData.given_name.toLowerCase()}`
-
-    // TODO And put back this
-    /* const result = await axios
-      .post(
-        `${
-          this.configService.getOrThrow<string>('SLOVENSKO_SK_CONTAINER_URI')
-        }/api/iam/identities/search`,
-        {
-          uris: [
-            `rc://sk/${birthNumber}_${userData.family_name.toLowerCase()}_${userData.given_name.toLowerCase()}`,
-          ],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${this.createTechnicalAccountJwtToken()}`,
-          },
-        },
-      )
-      .then((response: AxiosResponse) => {
-        if (response.data && Array.isArray(response.data)) {
-          try {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            return response.data[0].uri as string;
-          } catch (error) {
-            return null;
-          }
-        }
-        return null;
-      })
-      .catch((error) => {
-        alertError(
-          'There was an error when retrieving uri from slovensko.sk',
-          this.logger,
-          error
-        )
-        return null;
-      });
-
-    return result; */
-  }
-
   private async getFormMessage(
     formDefinition: FormDefinitionSlovenskoSk,
     form: Forms,
@@ -375,17 +332,6 @@ export default class NasesUtilsService {
     return message
   }
 
-  private getSenderId(sender: SendMessageNasesSender): string {
-    if (sender.type === SendMessageNasesSenderType.Eid) {
-      return sender.senderUri
-    }
-    if (sender.type === SendMessageNasesSenderType.Self) {
-      return this.configService.getOrThrow<string>('NASES_SENDER_URI')
-    }
-
-    throw new Error('Invalid sender type')
-  }
-
   /**
    * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
    * it uses default from the form definition.
@@ -403,7 +349,7 @@ export default class NasesUtilsService {
    */
   private async createEnvelopeSendMessage(
     form: Forms,
-    sender: SendMessageNasesSender,
+    senderUri: string,
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -415,7 +361,8 @@ export default class NasesUtilsService {
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
+        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        { formDefinitionType: formDefinition.type, formId: form.id },
       )
     }
     const { isSigned, pospID, pospVersion, title } = formDefinition
@@ -432,7 +379,6 @@ export default class NasesUtilsService {
       formDefinition,
       form.formDataJson,
     )
-    const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
     const mimeType = isSigned
       ? 'application/vnd.etsi.asic-e+zip'
@@ -471,6 +417,7 @@ export default class NasesUtilsService {
     const template = {
       SKTalkMessage: {
         $: {
+          // eslint-disable-next-line sonarjs/no-clear-text-protocols
           xmlns: 'http://gov.sk/SKTalkMessage',
           'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
           'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
@@ -488,10 +435,11 @@ export default class NasesUtilsService {
         Body: {
           MessageContainer: {
             $: {
+              // eslint-disable-next-line sonarjs/no-clear-text-protocols
               xmlns: 'http://schemas.gov.sk/core/MessageContainer/1.0',
             },
             MessageId: form.id,
-            SenderId: senderId,
+            SenderId: senderUri,
             RecipientId: this.configService.getOrThrow<string>(
               'NASES_RECIPIENT_URI',
             ),
@@ -526,53 +474,40 @@ export default class NasesUtilsService {
     }`
   }
 
-  private getSendMessageNasesEndpoint = (sender: SendMessageNasesSender) => {
-    if (sender.type === SendMessageNasesSenderType.Eid) {
-      return this.clientsService.slovenskoSkApi
-        .apiSktalkReceiveAndSaveToOutboxPost
-    }
-    if (sender.type === SendMessageNasesSenderType.Self) {
-      return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
-    }
-
-    throw new Error('Invalid sender type')
-  }
-
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
-    sender: SendMessageNasesSender,
+    senderUri: string,
   ): Promise<NasesSendResponse> {
     let message
     try {
-      message = await this.createEnvelopeSendMessage(data, sender)
+      message = await this.createEnvelopeSendMessage(data, senderUri)
     } catch (error) {
       return {
         status: 500,
         data: {
-          message: `Failed to create envelope for nases message: ${(error as Error)?.message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
+          message: `Failed to create envelope for nases message: ${(error as Error).message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
         },
       }
     }
     try {
-      const response = await this.getSendMessageNasesEndpoint(sender)(
-        {
-          message,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
+      const response =
+        await this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost(
+          {
+            message,
           },
-        },
-      )
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          },
+        )
 
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         console.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
-            response.data
-          }, message: ${message}`,
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY, message: ${message}`,
         )
 
         return {
@@ -587,9 +522,9 @@ export default class NasesUtilsService {
       if (response.data.receive_result !== 0) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         console.log(
-          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
-            response.data
-          }, message: ${message}`,
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${JSON.stringify(
+            response.data,
+          )}, message: ${message}`,
         )
 
         return {
@@ -627,17 +562,99 @@ export default class NasesUtilsService {
         },
       })
       .then((response) => response.data.length > 0)
-      .catch((error) => {
-        alertError(
-          'Error when checking if message is in eDesk',
-          this.logger,
-          error,
+      .catch((error: unknown) => {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            NasesErrorsEnum.SEND_TO_NASES_ERROR,
+            'Error when checking if message is in eDesk',
+            undefined,
+            error,
+          ),
         )
         return false
       })
 
     return result
   }
+
+  extractNaturalPersonData(
+    contact: UpvsNaturalPerson,
+  ): NaturalPersonExtractedData {
+    const naturalPerson = contact.natural_person as
+      | NaturalPersonData
+      | null
+      | undefined
+
+    const result: NaturalPersonExtractedData = {
+      firstNames: [],
+      lastNames: [],
+    }
+
+    if (!naturalPerson) {
+      return result
+    }
+
+    // given_names is already an array of strings, maintain order
+    if (naturalPerson.given_names && naturalPerson.given_names.length > 0) {
+      result.firstNames = [...naturalPerson.given_names]
+    }
+
+    // family_names is an array of objects, extract values maintaining order
+    // Sort by primary first (primary names come first), then maintain array order
+    if (naturalPerson.family_names && naturalPerson.family_names.length > 0) {
+      const sortedFamilyNames = [...naturalPerson.family_names].sort((a, b) => {
+        // Primary names come first
+        if (a.primary && !b.primary) return -1
+        if (!a.primary && b.primary) return 1
+        return 0 // Maintain original order for same primary status
+      })
+      result.lastNames = sortedFamilyNames
+        .map((name) => name.value)
+        .filter((value): value is string => value !== undefined)
+    }
+
+    return result
+  }
+
+  extractCorporateBodyData(
+    contact: UpvsCorporateBody,
+  ): CorporateBodyExtractedData {
+    const corporateBody = contact.corporate_body as
+      | CorporateBodyData
+      | null
+      | undefined
+
+    const result: CorporateBodyExtractedData = {}
+
+    if (corporateBody) {
+      if (corporateBody.name) {
+        result.name = corporateBody.name
+      }
+      if (corporateBody.cin) {
+        result.ico = corporateBody.cin
+      }
+    }
+
+    // Fallback: check various_ids for ICO if not found in corporate_body
+    if (!result.ico && contact.various_ids) {
+      const icoEntry = contact.various_ids.find(
+        (id) =>
+          id.type?.name?.includes('IČO') ||
+          id.type?.name?.includes('Identifikačné číslo organizácie'),
+      )
+      if (icoEntry?.value) {
+        result.ico = icoEntry.value
+      }
+
+      // don't throw, alert only
+      this.logger.error(
+        this.throwerErrorGuard.UnprocessableEntityException(
+          NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+          `extractCorporateBodyData: ${NasesErrorsResponseEnum.IDENTITY_SEARCH_DATA_INCONSISTENT}: ICO not found in contact returned by nases ${contact.uri}.`,
+        ),
+      )
+    }
+
+    return result
+  }
 }
-/* eslint-enable no-secrets/no-secrets */
-/* eslint-enable no-await-in-loop */

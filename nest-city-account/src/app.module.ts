@@ -1,18 +1,23 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
-
+import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
+
 import { AdminModule } from './admin/admin.module'
 import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
-import { PrismaModule } from './prisma/prisma.module'
-import { VerificationModule } from './user-verification/verification.module'
-import { UserModule } from './user/user.module'
-import AppLoggerMiddleware from './utils/middlewares/logger.service'
-import { TasksSubservice } from './utils/subservices/tasks.subservice'
-import ThrowerErrorGuard from './utils/guards/errors.guard'
-import { TaxSubservice } from './utils/subservices/tax.subservice'
-import { ConfigModule } from '@nestjs/config'
 import ClientsModule from './clients/clients.module'
+import { DpbModule } from './dpb/dpb.module'
+import { IntegrationModule } from './integration/integration.module'
+import { NorisModule } from './noris/noris.module'
+import { OAuth2Module } from './oauth2/oauth2.module'
+import { PaasMpaModule } from './paas-mpa/paas-mpa.module'
+import { PrismaModule } from './prisma/prisma.module'
+import { TasksModule } from './tasks/tasks.module'
+import { UserModule } from './user/user.module'
+import { VerificationModule } from './user-verification/verification.module'
+import AppLoggerMiddleware from './utils/middlewares/logger.service'
+import { SharedModule } from './utils/subservices/shared.module'
+import { TaxSubservice } from './utils/subservices/tax.subservice'
 
 @Module({
   imports: [
@@ -21,15 +26,23 @@ import ClientsModule from './clients/clients.module'
     UserModule,
     VerificationModule,
     AdminModule,
+    IntegrationModule,
+    SharedModule,
     ScheduleModule.forRoot(),
+    SharedModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule,
+    TasksModule,
+    OAuth2Module,
+    DpbModule,
+    PaasMpaModule,
+    NorisModule,
   ],
   controllers: [AppController],
-  providers: [TaxSubservice, TasksSubservice, ThrowerErrorGuard],
+  providers: [TaxSubservice],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*')
+    consumer.apply(AppLoggerMiddleware).exclude('oauth2/{*path}').forRoutes('*')
   }
 }

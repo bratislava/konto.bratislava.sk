@@ -1,5 +1,4 @@
 import { baDefaultFormStateBehavior } from './defaultFormState'
-import { baFastMergeAllOf } from './fastMergeAllOf'
 import { BAJSONSchema7 } from './ajvKeywords'
 import { BaRjsfValidatorRegistry } from './validatorRegistry'
 
@@ -18,5 +17,4 @@ export const getBaFormDefaults = (
 ) => ({
   validator: validatorRegistry.getValidator(schema),
   experimental_defaultFormStateBehavior: baDefaultFormStateBehavior,
-  experimental_customMergeAllOf: baFastMergeAllOf,
 })

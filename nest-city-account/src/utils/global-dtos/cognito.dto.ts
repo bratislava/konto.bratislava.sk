@@ -1,12 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { IsString } from 'class-validator'
+import { IsDefined, IsEnum, IsOptional, IsString } from 'class-validator'
 
-export class CognitoUserAttributesValuesDateDto {
-  Name!: CognitoUserAttributesEnum
-
-  Value!: string | CognitoUserAttributesTierEnum
-}
+import { OAuth2ClientName } from '../../oauth2/subservices/oauth2-client.subservice'
 
 export enum CognitoUserAccountTypesEnum {
   PHYSICAL_ENTITY = 'fo', // fyzicka osoba
@@ -20,6 +16,8 @@ export enum CognitoUserAttributesEnum {
   RC_OP_VERIFIED_DATE = 'custom:rc_op_verified_date',
   IFO = 'custom:ifo',
   ACCOUNT_TYPE = 'custom:account_type',
+  OAUTH_ORIGIN_CLIENT_ID = 'custom:origin_client_id',
+  OAUTH_ORIGIN_CLIENT_NAME = 'custom:origin_client_name',
 }
 
 export enum CognitoUserStatusEnum {
@@ -37,12 +35,16 @@ export class CognitoGetUserAttributesData {
     description: 'Id from cognito',
     default: '9e7791b2-787b-4b93-8473-94a70a516025',
   })
+  @IsString()
+  @IsDefined()
   sub!: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Is email verified in cognito?',
     default: 'true',
   })
+  @IsString()
+  @IsOptional()
   email_verified?: string
 
   @ApiPropertyOptional({
@@ -50,36 +52,65 @@ export class CognitoGetUserAttributesData {
     example: 'Company s.r.o.',
   })
   @IsString()
-  name?: string
+  @IsOptional()
+  name?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Which type of verified tier it is?',
+    enum: CognitoUserAttributesTierEnum,
     default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
   })
-  'custom:tier'?: CognitoUserAttributesTierEnum
+  @IsEnum(CognitoUserAttributesTierEnum)
+  @IsOptional()
+  [CognitoUserAttributesEnum.TIER]?: CognitoUserAttributesTierEnum;
 
   @ApiProperty({
     description: 'Which type of account it is?',
+    enum: CognitoUserAccountTypesEnum,
+    enumName: 'CognitoUserAccountTypesEnum',
     default: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
   })
-  'custom:account_type'!: CognitoUserAccountTypesEnum
+  @IsEnum(CognitoUserAccountTypesEnum)
+  @IsDefined()
+  [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
+    description: 'client_id of the oAuth origin',
+  })
+  @IsString()
+  @IsOptional()
+  [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID]?: string;
+
+  @ApiPropertyOptional({
+    description: `Name of the oAuth origin corresponding to the ${CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID}`,
+    example: OAuth2ClientName.DPB,
+  })
+  @IsString()
+  @IsOptional()
+  [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_NAME]?: string
+
+  @ApiPropertyOptional({
     description: 'First name',
     default: 'Jožko',
   })
+  @IsString()
+  @IsOptional()
   given_name?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Last name',
     default: 'Bratislavský',
   })
+  @IsString()
+  @IsOptional()
   family_name?: string
 
   @ApiProperty({
     description: 'email',
     default: 'janko.bratislavsky@bratislava.sk',
   })
+  @IsString()
+  @IsDefined()
   email: string
 }
 
@@ -90,13 +121,13 @@ export class CognitoGetUserData extends CognitoGetUserAttributesData {
   })
   idUser!: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'User create date',
     default: '2022-01-01 00:00:00',
   })
   UserCreateDate?: Date
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'User updated date',
     default: '2022-01-01 00:00:00',
   })
@@ -108,16 +139,12 @@ export class CognitoGetUserData extends CognitoGetUserAttributesData {
   })
   Enabled!: boolean
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Cognito confirmation statue',
+    enum: CognitoUserStatusEnum,
     default: CognitoUserStatusEnum.CONFIRMED,
   })
   UserStatus?: CognitoUserStatusEnum
-}
-
-export interface CognitoUserAttributesDto {
-  Name: string
-  Value?: string
 }
 
 export interface CognitoAccessTokenDto {
@@ -125,6 +152,7 @@ export interface CognitoAccessTokenDto {
   device_key: string
   iss: string
   client_id: string
+  aud?: string // Optional: present in ID tokens, may be present in customized access tokens
   origin_jti: string
   event_id: string
   token_use: CognitoTokenType

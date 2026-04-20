@@ -8,7 +8,10 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
-import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtractor'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 
 export default schema(
   { title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia' },
@@ -165,4 +168,10 @@ export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtra
       // Unreachable code, provided for type-safety to return `string` as required.
       throw new Error('Failed to extract the name.')
     },
+  }
+
+export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject: SchemalessFormDataExtractor<GenericObjectType> =
+  {
+    type: 'schemaless',
+    extractFn: () => 'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
   }

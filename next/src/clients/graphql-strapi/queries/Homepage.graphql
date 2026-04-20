@@ -1,0 +1,16 @@
+query Homepage {
+  homepage {
+    services(pagination: { limit: 4 }) {
+      ...MunicipalServiceCardEntity
+    }
+    servicesLegalPerson(pagination: { limit: 4 }) {
+      ...MunicipalServiceCardEntity
+    }
+    announcements {
+      ...HomepageAnnouncementEntity
+    }
+    announcementsLegalPerson {
+      ...HomepageAnnouncementEntity
+    }
+  }
+}

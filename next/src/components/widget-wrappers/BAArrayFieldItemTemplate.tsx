@@ -1,0 +1,76 @@
+import { Button } from '@bratislava/component-library'
+import {
+  ArrayFieldItemTemplateProps,
+  FormContextType,
+  getUiOptions,
+  RJSFSchema,
+  StrictRJSFSchema,
+} from '@rjsf/utils'
+import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
+import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
+import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
+
+import { RemoveIcon } from '@/src/assets/ui-icons'
+import cn from '@/src/utils/cn'
+
+/**
+ * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldItemTemplate/ArrayFieldItemTemplate.tsx
+ */
+const BAArrayFieldItemTemplate = <
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(
+  props: ArrayFieldItemTemplateProps<T, S, F>,
+) => {
+  const { children, buttonsProps, index, parentUiSchema } = props
+  const { hasRemove } = buttonsProps
+  const { parentId } = getObjectFieldInfo(buttonsProps.fieldPathId)
+  const parentUiOptions = getUiOptions(parentUiSchema) as ArrayFieldUiOptions
+  const { variant, itemTitle } = parentUiOptions
+
+  const boxStyle = cn({
+    'rounded-lg border border-zinc-300 bg-white p-4 md:px-6 md:pt-8 md:pb-6':
+      variant === 'topLevel',
+    'rounded-lg bg-gray-50': variant === 'nested',
+  })
+
+  const headingStyle = cn('flex items-center gap-8', {
+    'mb-8': variant === 'topLevel',
+    'border-b border-gray-200 px-4 py-5 md:px-6': variant === 'nested',
+  })
+
+  const contentStyle = cn({
+    'px-4 py-5 md:px-6': variant === 'nested',
+  })
+
+  const title = getArrayItemTitle(itemTitle, index)
+
+  const onRemoveItemPatched = () => {
+    // The RJSF expects the event to have a `preventDefault` method, but the `onPress` handler
+    // does not provide it. We need to patch it in order to make the RJSF work.
+    buttonsProps.onRemoveItem({ preventDefault: () => {} })
+  }
+
+  return (
+    <div className={boxStyle} data-cy={`section-${parentId}-${index}`}>
+      <div className={headingStyle}>
+        {variant === 'topLevel' && <h3 className="grow text-h3">{title}</h3>}
+        {variant === 'nested' && <h4 className="grow text-h4">{title}</h4>}
+        {hasRemove && (
+          <Button
+            variant="icon-wrapped"
+            icon={<RemoveIcon />}
+            // TODO: Translation + improve message
+            aria-label="Vymazať"
+            onPress={onRemoveItemPatched}
+            className="self-start"
+          />
+        )}
+      </div>
+      <div className={contentStyle}>{children}</div>
+    </div>
+  )
+}
+
+export default BAArrayFieldItemTemplate

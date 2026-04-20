@@ -6,9 +6,8 @@ metadata:
   labels:
     service: app
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: cloudflare-dns01
     cert-manager.io/issue-temporary-certificate: 'true'
-    kubernetes.io/ingress.class: haproxy
 spec:
   tls:
   - hosts:

@@ -1,0 +1,83 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsBoolean, IsEnum, IsObject, IsOptional, IsString } from 'class-validator'
+
+/**
+ * Marks the state of anonymization of a user in bloomreach.
+ * - NOT_FOUND = The user was not found in bloomreach.
+ * - NOT_ACTIVE = Bloomreach integration state is not active.
+ * - ERROR = There has been an unknown error. Check logs.
+ * - SUCCESS = The user has been successfuly anonymized in bloomreach.
+ */
+export enum AnonymizeResponse {
+  NOT_FOUND = 'NOT_FOUND',
+  NOT_ACTIVE = 'NOT_ACTIVE',
+  ERROR = 'ERROR',
+  SUCCESS = 'SUCCESS',
+}
+
+export class DeactivateAccountResponseDto {
+  @ApiProperty({
+    description: 'Marks if the operation has been successful',
+    example: true,
+  })
+  @IsBoolean()
+  success!: boolean
+
+  @ApiProperty({
+    description: 'Status of the anonymization of user in bloomreach',
+    example: AnonymizeResponse.SUCCESS,
+    enum: AnonymizeResponse,
+    enumName: 'AnonymizeResponse',
+  })
+  @IsEnum(AnonymizeResponse)
+  bloomreachRemoved!: AnonymizeResponse
+
+  @ApiProperty({
+    description:
+      'Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.',
+    example: true,
+  })
+  @IsBoolean()
+  taxDeliveryMethodsRemoved!: boolean
+}
+
+export class MarkDeceasedAccountResponseItemDto {
+  @ApiProperty({
+    description: 'Birth number of the deceased person',
+    example: '1234567890',
+  })
+  @IsString()
+  birthNumber!: string
+
+  @ApiProperty({
+    description: 'Whether the user was successfully marked as deceased in the database',
+    example: true,
+  })
+  @IsBoolean()
+  databaseMarked!: boolean
+
+  @ApiProperty({
+    description: 'Whether the user was successfully archived in Cognito / mail was changed.',
+    example: true,
+  })
+  @IsBoolean()
+  cognitoArchived!: boolean
+
+  @ApiPropertyOptional({
+    description: 'Status of the anonymization of user in Bloomreach',
+    example: AnonymizeResponse.SUCCESS,
+    enum: AnonymizeResponse,
+  })
+  @IsEnum(AnonymizeResponse)
+  @IsOptional()
+  bloomreachRemoved?: AnonymizeResponse
+}
+
+export class MarkDeceasedAccountResponseDto {
+  @ApiProperty({
+    description: 'List of birth numbers with success marked for each data storage.',
+    type: [MarkDeceasedAccountResponseItemDto],
+  })
+  @IsObject({ each: true })
+  results!: MarkDeceasedAccountResponseItemDto[]
+}

@@ -1,12 +1,24 @@
-import { DeliveryMethodNamed, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
-import { DeliveryMethod } from '../../noris/noris.types'
-
-export type TaxPaymentWithTaxYear = Prisma.TaxPaymentGetPayload<{
+export type TaxPaymentWithTaxInfo<
+  TTaxSelect extends Prisma.TaxSelect = {
+    year: true
+    type: true
+    order: true
+  },
+> = Prisma.TaxPaymentGetPayload<{
   include: {
     tax: {
-      select: {
-        year: true
+      select: TTaxSelect
+    }
+  }
+}>
+
+export type TaxPaymentWithTaxAndTaxPayer = Prisma.TaxPaymentGetPayload<{
+  include: {
+    tax: {
+      include: {
+        taxPayer: true
       }
     }
   }
@@ -17,29 +29,3 @@ export type TaxWithTaxPayer = Prisma.TaxGetPayload<{
     taxPayer: true
   }
 }>
-
-export type TaxIdVariableSymbolYear = Prisma.TaxGetPayload<{
-  select: {
-    id: true
-    variableSymbol: true
-    year: true
-  }
-}>
-
-export const transformDeliveryMethodToDatabaseType = (
-  deliveryMethod: DeliveryMethod | null,
-): DeliveryMethodNamed | null => {
-  switch (deliveryMethod) {
-    case DeliveryMethod.EDESK:
-      return DeliveryMethodNamed.EDESK
-
-    case DeliveryMethod.CITY_ACCOUNT:
-      return DeliveryMethodNamed.CITY_ACCOUNT
-
-    case DeliveryMethod.POSTAL:
-      return DeliveryMethodNamed.POSTAL
-
-    default:
-      return null
-  }
-}

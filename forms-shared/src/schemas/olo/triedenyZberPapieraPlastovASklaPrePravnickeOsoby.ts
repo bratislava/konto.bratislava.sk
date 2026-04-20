@@ -12,7 +12,7 @@ import { arrayField } from '../../generator/functions/arrayField'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
-import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtractor'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 const getFakturacia = (novyOdberatel: boolean) =>
   object(

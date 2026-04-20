@@ -1,11 +1,11 @@
-import HandleErrors from '../errorHandler.decorators'
-import ThrowerErrorGuard from '../../guards/errors.guard'
 import { ErrorsEnum } from '../../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../guards/errors.guard'
+import HandleErrors from '../errorHandler.decorators'
 
 describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
 
-  beforeEach(async () => {
+  beforeEach(() => {
     consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(() => {})
   })
 
@@ -17,7 +17,7 @@ describe('HandleErrors', () => {
     class TestClass {
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
-        throw new Error('This is a test error')
+        await Promise.reject(new Error('This is a test error'))
       }
     }
 
@@ -39,11 +39,13 @@ describe('HandleErrors', () => {
 
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error message',
-          'Console error',
-          new Error('Caused by error message test')
+        await Promise.reject(
+          this.throwerErrorGuard.BadRequestException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Error message',
+            'Console error',
+            new Error('Caused by error message test')
+          )
         )
       }
     }

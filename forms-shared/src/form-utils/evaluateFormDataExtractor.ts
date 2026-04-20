@@ -1,4 +1,6 @@
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { BAJSONSchema7 } from './ajvKeywords'
 import { getBaRjsfValidator } from './validators'
 

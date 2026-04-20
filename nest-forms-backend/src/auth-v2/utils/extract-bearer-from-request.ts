@@ -16,7 +16,8 @@ export function extractBearerFromRequest(request: Request) {
     )
   }
 
-  const match = bearerTokenHeader.match(/^Bearer\s([\w.-]+)$/)
+  const regex = /^Bearer\s([\w.-]+)$/
+  const match = regex.exec(bearerTokenHeader)
   if (!match || !match[1]) {
     throw new UnauthorizedException(
       `Invalid format for header ${bearerTokenHeaderKey}. Expected "Bearer <token>"`,

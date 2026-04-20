@@ -14,11 +14,11 @@ export default class BasicStrategy extends PassportStrategy(
     })
   }
 
-  public validate = async (
+  public validate = (
     _: unknown,
     username: string,
     password: string,
-  ): Promise<boolean> => {
+  ): boolean => {
     if (
       this.configService.get<string>('NEST_FORMS_BACKEND_USERNAME') ===
         username &&

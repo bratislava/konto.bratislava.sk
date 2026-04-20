@@ -2,14 +2,14 @@ import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms, FormState } from '@prisma/client'
+import { FormState } from '@prisma/client'
 import axios from 'axios'
 import {
   FormDefinition,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
-import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
@@ -17,6 +17,7 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { FormWithFiles } from '../../../utils/types/prisma'
 import { WebhookErrorsResponseEnum } from '../dtos/webhook.errors.enum'
 import WebhookSubservice from '../webhook.subservice'
 
@@ -76,19 +77,20 @@ describe('WebhookSubservice', () => {
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: {},
-      }
+        files: [],
+      } as unknown as FormWithFiles
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
         schema: {},
         slug: 'test-slug',
       } as FormDefinition
-      prismaMock.forms.findUnique.mockResolvedValue(mockForm as Forms)
-      prismaMock.forms.update.mockResolvedValue(mockForm as Forms)
+      prismaMock.forms.findUnique.mockResolvedValue(mockForm)
+      prismaMock.forms.update.mockResolvedValue(mockForm)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(mockFormDefinition)
-      ;(omitExtraData.omitExtraData as jest.Mock).mockReturnValue(
+      ;(baOmitExtraData.baOmitExtraData as jest.Mock).mockReturnValue(
         mockForm.formDataJson,
       )
       ;(axios.post as jest.Mock).mockResolvedValue({ status: 200 })
@@ -122,6 +124,7 @@ describe('WebhookSubservice', () => {
     it('should throw NotFoundException when form definition is not found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         formDefinitionSlug: 'test-slug',
+        files: [],
       } as any)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
@@ -139,6 +142,7 @@ describe('WebhookSubservice', () => {
     it('should throw UnprocessableEntityException when form is not a webhook form', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         formDefinitionSlug: 'test-slug',
+        files: [],
       } as any)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
@@ -158,7 +162,8 @@ describe('WebhookSubservice', () => {
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: null,
-      }
+        files: [],
+      } as unknown as FormWithFiles
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
@@ -166,7 +171,7 @@ describe('WebhookSubservice', () => {
         slug: 'test-slug',
       } as FormDefinition
 
-      prismaMock.forms.findUnique.mockResolvedValue(mockForm as Forms)
+      prismaMock.forms.findUnique.mockResolvedValue(mockForm)
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(mockFormDefinition)

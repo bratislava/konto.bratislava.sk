@@ -1,14 +1,14 @@
-import { CognitoIdentity } from '@aws-sdk/client-cognito-identity'
-import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider'
+import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity'
+import { CognitoIdentityProviderClient } from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../../config/ba-config.service'
 
 @Injectable()
 export class CognitoProvidersService {
-  public readonly identity: CognitoIdentity
+  public readonly identity: CognitoIdentityClient
 
-  public readonly identityProvider: CognitoIdentityProvider
+  public readonly identityProvider: CognitoIdentityProviderClient
 
   constructor(readonly baConfigService: BaConfigService) {
     const config = {
@@ -19,7 +19,7 @@ export class CognitoProvidersService {
       },
     } as const
 
-    this.identity = new CognitoIdentity(config)
-    this.identityProvider = new CognitoIdentityProvider(config)
+    this.identity = new CognitoIdentityClient(config)
+    this.identityProvider = new CognitoIdentityProviderClient(config)
   }
 }

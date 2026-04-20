@@ -1,5 +1,4 @@
-import { setConfig } from 'next/config'
+// next/config was removed in Next.js 15+
+// The previous setup used setConfig from next/config which is no longer available
 
-import config from './next.config'
-
-setConfig(config)
+import '@testing-library/jest-dom'

@@ -1,0 +1,107 @@
+import { Button } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
+import { useState } from 'react'
+import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
+
+import { ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
+import StepperViewList from '@/src/components/forms/steps/StepperViewList'
+import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
+import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
+import { FormStepIndex } from '@/src/components/forms/steps/types/Steps'
+import { useFormState } from '@/src/components/forms/useFormState'
+import cn from '@/src/utils/cn'
+
+type StepperModalProps = {
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  handleOnSkipToStep: (stepIndex: FormStepIndex) => void
+}
+
+const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalProps) => {
+  const { t } = useTranslation('forms')
+
+  return (
+    <ModalOverlay
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      className="data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0"
+      isDismissable
+    >
+      <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
+        <Dialog className="flex h-full flex-col outline-0">
+          {({ close }) => (
+            <>
+              <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
+                <Heading slot="title" className="text-h6 grow">
+                  {t('StepperView.all_steps')}
+                </Heading>
+                {/* TODO Unify modal close button with other modals */}
+                <Button
+                  variant="icon-wrapped-negative-margin"
+                  icon={<CrossIcon />}
+                  onPress={close}
+                  aria-label={t('StepperView.aria.close')}
+                />
+              </div>
+              <nav className="w-full overflow-auto bg-white p-4" data-cy="stepper-mobile">
+                <StepperViewList onSkipToStep={handleOnSkipToStep} />
+              </nav>
+            </>
+          )}
+        </Dialog>
+      </Modal>
+    </ModalOverlay>
+  )
+}
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-11155
+ */
+
+const StepperView = ({ className }: { className?: string }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const { currentStepperStep, goToStep } = useFormState()
+  const { precalculateSummary } = useFormSummary()
+
+  const handleOnClickDropdownIcon = () => {
+    if (!isOpen) {
+      precalculateSummary()
+      setIsOpen(true)
+    }
+  }
+
+  const handleOnSkipToStep = (stepIndex: FormStepIndex) => {
+    goToStep(stepIndex)
+    setIsOpen(false)
+  }
+
+  return (
+    <div className={className}>
+      {/* Screen: Desktop */}
+      <nav className="hidden w-[332px] lg:block" data-cy="stepper-desktop">
+        <StepperViewList onSkipToStep={handleOnSkipToStep} />
+      </nav>
+      {/* Screen: Mobile */}
+      <div className="-mx-4 lg:hidden">
+        <Button
+          className={cn(
+            'flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 text-left drop-shadow-lg',
+          )}
+          data-cy="stepper-dropdown"
+          onPress={handleOnClickDropdownIcon}
+        >
+          <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
+          <ChevronDownIcon className={cn({ 'rotate-180': !isOpen })} />
+        </Button>
+
+        <StepperModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          handleOnSkipToStep={handleOnSkipToStep}
+        />
+      </div>
+    </div>
+  )
+}
+
+export default StepperView

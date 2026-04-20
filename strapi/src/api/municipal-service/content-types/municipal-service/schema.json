@@ -62,7 +62,8 @@
         "excavations",
         "management-communications",
         "parking",
-        "towing"
+        "towing",
+        "scooter"
       ],
       "required": true
     },

@@ -1,4 +1,4 @@
-FROM node:20.9-slim AS base
+FROM node:24.14-slim AS base
 
 # Install Java (required for OpenAPI generator CLI)
 RUN apt-get update && apt-get install -y openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*

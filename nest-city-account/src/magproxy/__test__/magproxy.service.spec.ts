@@ -1,10 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../utils/guards/errors.guard'
-import { MagproxyService } from '../magproxy.service'
-import ClientsService from '../../clients/clients.service'
 import { createMock } from '@golevelup/ts-jest'
-import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.test'
+import { Test, TestingModule } from '@nestjs/testing'
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
+
+import ClientsService from '../../clients/clients.service'
+import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.test'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { MagproxyService } from '../magproxy.service'
 
 describe('MagproxyService', () => {
   let service: MagproxyService
@@ -26,7 +27,6 @@ describe('MagproxyService', () => {
       providers: [
         MagproxyService,
         ThrowerErrorGuard,
-        ErrorMessengerGuard,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
     }).compile()
@@ -38,10 +38,12 @@ describe('MagproxyService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('validateRfoDataFormat', ()=> {
+  describe('validateRfoDataFormat', () => {
     it('should return result for valid RFO data', () => {
       const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
-      const response = service['validateRfoDataFormat'](mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[])
+      const response = service['validateRfoDataFormat'](
+        mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[]
+      )
 
       expect(errorLogSpy).not.toHaveBeenCalled()
       expect(response).toEqual(mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[])
@@ -49,10 +51,12 @@ describe('MagproxyService', () => {
 
     it('should log error for invalid RFO data, however still return', () => {
       const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       const mockRfoResponseListOneItemsInvalid = mockRfoResponseListOneItems as any
       mockRfoResponseListOneItemsInvalid[0].rodnePriezviskaOsoby[0].meno = 1222 // Invalid data - name as number
-      const response = service['validateRfoDataFormat'](mockRfoResponseListOneItemsInvalid as unknown as ResponseRfoPersonDto[])
+      const response = service['validateRfoDataFormat'](
+        mockRfoResponseListOneItemsInvalid as unknown as ResponseRfoPersonDto[]
+      )
 
       expect(errorLogSpy).toHaveBeenCalled()
       expect(response).toEqual(mockRfoResponseListOneItemsInvalid)
@@ -61,7 +65,6 @@ describe('MagproxyService', () => {
     it('should throw error if the data is not an array', () => {
       const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         service['validateRfoDataFormat']({} as any)
       }).toThrow()
 

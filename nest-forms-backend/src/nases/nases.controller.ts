@@ -29,6 +29,7 @@ import {
   FormAccessGuard,
   GetFormAccessType,
 } from '../forms-v2/guards/form-access.guard'
+import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
 import { FormAccessType } from '../forms-v2/services/form-access.service'
 import {
   ErrorsEnum,
@@ -165,7 +166,7 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormSendOnlyRegisteredGuard)
   @Post('send-and-update-form/:formId')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
@@ -190,7 +191,7 @@ export default class NasesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormSendOnlyRegisteredGuard)
   @Post('eid/send-and-update-form/:formId')
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,
@@ -198,7 +199,7 @@ export default class NasesController {
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
-    if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
+    if ((await this.nasesService.getUpvsIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
@@ -208,6 +209,7 @@ export default class NasesController {
       json: true,
     }) as JwtNasesPayloadDto
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-spread -- we are spreading a DTO object, which is not a problem
     const updateData = { ...data, eidToken: undefined }
 
     // TODO temp SEND_TO_NASES_ERROR log, remove

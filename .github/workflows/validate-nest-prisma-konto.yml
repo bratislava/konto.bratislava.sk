@@ -16,7 +16,7 @@ on:
         description: "Define node version"
         type: string
         required: false
-        default: '20'
+        default: '24.14'
       level:
         description: "Change reporter level if you need"
         type: string
@@ -31,7 +31,7 @@ on:
 jobs:
   test:
     name: Unit tests and lint
-    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    runs-on: "bratislava"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,6 +44,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node }}
+
+      - name: Install system dependencies (qpdf)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qpdf
 
       - name: Build forms-shared
         working-directory: forms-shared
@@ -60,10 +65,14 @@ jobs:
       # move to directory
       - name: Install dependencies
         working-directory: ${{ inputs.directory }}
-        run: | 
+        run: |
           pwd
           npm ci
           npx prisma generate
+
+      - name: Install Playwright Chromium
+        working-directory: ${{ inputs.directory }}
+        run: npx playwright install chromium --with-deps
 
       - name: Run unit tests
         working-directory: ${{ inputs.directory }}

@@ -1,9 +1,10 @@
 import { MagproxyErrorsEnum } from '../../magproxy/magproxy.errors.enum'
+import { UserErrorsEnum } from '../../user/user.error.enum'
 import {
   SendToQueueErrorsEnum,
   VerificationErrorsEnum,
 } from '../../user-verification/verification.errors.enum'
-import { UserErrorsEnum } from '../../user/user.error.enum'
+import { DeliveryMethodErrorsEnum } from '../guards/dtos/delivery-method.error'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 /**
@@ -27,4 +28,5 @@ export default [
   VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
   VerificationErrorsEnum.EMPTY_RFO_RESPONSE,
   VerificationErrorsEnum.EMPTY_RPO_RESPONSE,
+  DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
 ] as string[]

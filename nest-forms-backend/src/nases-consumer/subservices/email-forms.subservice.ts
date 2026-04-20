@@ -1,18 +1,22 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import {
   FormDefinitionEmail,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
+  extractEmailFormAddress,
   extractEmailFormEmail,
   extractEmailFormName,
   extractFormSubjectPlain,
+  extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   FileIdInfoMap,
   renderSummaryEmail,
@@ -31,9 +35,7 @@ import { Mailer } from '../../utils/global-services/mailer/mailer.interface'
 import MailgunService from '../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,
@@ -66,6 +68,15 @@ export default class EmailFormsSubservice {
     const isProd =
       this.configService.get<string>('CLUSTER_ENV') === 'production'
     return isProd ? address.prod : address.test
+  }
+
+  private resolveMultipleAddresses(address: {
+    test: string[]
+    prod: string[]
+  }): string {
+    const isProd =
+      this.configService.get<string>('CLUSTER_ENV') === 'production'
+    return isProd ? address.prod.join(', ') : address.test.join(', ')
   }
 
   private getMailer(formDefinition: FormDefinitionEmail): Mailer {
@@ -115,10 +126,7 @@ export default class EmailFormsSubservice {
       )
     }
 
-    if (
-      formDefinition.type !== FormDefinitionType.Email ||
-      !formDefinition.email.address
-    ) {
+    if (formDefinition.type !== FormDefinitionType.Email) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         EmailFormsErrorsEnum.NOT_EMAIL_FORM,
         `${EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM} Form id: ${form.id}.`,
@@ -162,7 +170,7 @@ export default class EmailFormsSubservice {
       formId,
       slug: formDefinition.slug,
       jsonVersion: formDefinition.jsonVersion,
-      json: omitExtraData(
+      json: baOmitExtraData(
         formDefinition.schema,
         formDataJson,
         this.formValidatorRegistryService.getRegistry(),
@@ -224,22 +232,24 @@ export default class EmailFormsSubservice {
             formId: form.id,
             messageSubject: extractFormSubjectPlain(
               formDefinition,
-              form.formDataJson as GenericObjectType,
+              form.formDataJson,
             ),
             firstName: userName,
             slug: formDefinition.slug,
+            formSentAt: form.formSentAt,
           },
         },
-        emailFrom: this.resolveAddress(
-          formDefinition.email.fromAddress ?? formDefinition.email.address,
-        ),
+        emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
         attachments,
       })
     } catch (error) {
-      alertError(
-        `Sending confirmation email to ${userEmail} for form ${form.id} failed.`,
-        this.logger,
-        JSON.stringify(error),
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Error while sending confirmation email.',
+          { userEmail, formId: form.id },
+          error,
+        ),
       )
     }
   }
@@ -258,11 +268,14 @@ export default class EmailFormsSubservice {
           error: FormError.NONE,
         },
       })
-      .catch((error) => {
-        alertError(
-          `Setting form state with id ${form.id} to FINISHED failed.`,
-          this.logger,
-          JSON.stringify(error),
+      .catch((error: unknown) => {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Setting form state to FINISHED failed.',
+            { formId: form.id },
+            error,
+          ),
         )
       })
   }
@@ -274,20 +287,40 @@ export default class EmailFormsSubservice {
   ): Promise<void> {
     // Get and validate the form
     const { form, formDefinition } = await this.getValidatedEmailForm(formId)
+    const resolvedRecipientAddresses = this.resolveMultipleAddresses(
+      extractEmailFormAddress(formDefinition, form.formDataJson),
+    )
 
     this.logger.log(
-      `Sending email of form ${formId} to ${this.resolveAddress(formDefinition.email.address)}.`,
+      `Sending email of form ${formId} to ${resolvedRecipientAddresses}.`,
     )
 
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
+    let technicalSubject: string | undefined
+    if (formDefinition.subject?.extractTechnical) {
+      technicalSubject = extractFormSubjectTechnical(
+        formDefinition,
+        form.formDataJson,
+      )
+      if (formDefinition.email.technicalEmailSubjectAppendId) {
+        technicalSubject += ` [${form.id}]`
+      }
+    }
+
+    const renderedSummary = await renderSummaryEmail({
+      formSummary: form.formSummary,
+      serverFiles: form.files,
+      fileIdInfoMap,
+      validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+    })
 
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail({
       data: {
-        to: this.resolveAddress(formDefinition.email.address),
+        to: resolvedRecipientAddresses,
         template: formDefinition.email.newSubmissionTemplate,
         data: {
           formId: form.id,
@@ -297,17 +330,11 @@ export default class EmailFormsSubservice {
           ),
           firstName: null,
           slug: formDefinition.slug,
-          htmlData: await renderSummaryEmail({
-            formSummary: form.formSummary,
-            serverFiles: form.files,
-            fileIdInfoMap,
-            validatorRegistry: this.formValidatorRegistryService.getRegistry(),
-          }),
+          htmlData: renderedSummary,
+          formSentAt: form.formSentAt,
         },
       },
-      emailFrom: this.resolveAddress(
-        formDefinition.email.fromAddress ?? formDefinition.email.address,
-      ),
+      emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(
             formId,
@@ -316,7 +343,7 @@ export default class EmailFormsSubservice {
             fileIdInfoMap,
           )
         : undefined,
-      subject: formDefinition.email.technicalEmailSubject,
+      subject: technicalSubject,
     })
 
     const userConfirmationEmail =
@@ -328,12 +355,30 @@ export default class EmailFormsSubservice {
       form.formDataJson,
     )
 
-    await this.sendUserConfirmationEmail(
-      userConfirmationEmail,
-      form,
-      formDefinition,
-      userName,
-    )
+    if (userConfirmationEmail) {
+      await this.sendUserConfirmationEmail(
+        userConfirmationEmail,
+        form,
+        formDefinition,
+        userName,
+      )
+    } else if (formDefinition.email.extractEmail) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'No valid user confirmation email available (provided or extracted).',
+          {
+            formId,
+            emailSource: userEmail == null ? 'extracted' : 'provided',
+            userEmail,
+            userFirstName,
+            userName,
+            formDefinitionSlug: formDefinition.slug,
+            formDataJson: form.formDataJson,
+          },
+        ),
+      )
+    }
 
     // Update form state to FINISHED
     await this.updateFormState(form)

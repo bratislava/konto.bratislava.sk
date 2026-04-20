@@ -10,9 +10,9 @@ describe('A05 -', { testIsolation: false }, () => {
   })
 
   devices
-    .filter((device) => Cypress.env('devices')[`${device}`])
+    .filter((device) => Cypress.expose('devices')[`${device}`])
     .forEach((device) => {
-      context(device, Cypress.env('resolution')[`${device}`], () => {
+      context(device, Cypress.expose('resolution')[`${device}`], () => {
         it('1. Logging in.', () => {
           cy.logInUser(device, this.fileData.email, this.fileData.password)
         })
@@ -27,12 +27,12 @@ describe('A05 -', { testIsolation: false }, () => {
           cy.get('[data-cy=alert-container]').should('be.visible')
           cy.get('[data-cy=alert-container]')
             .find('[data-cy="alert-container-title"]')
-            .should('contain', 'Neoverený profil')
+            .should('contain', 'Neoverený používateľ')
           cy.get('[data-cy=alert-container]')
             .find('[data-cy="alert-container-content"]')
             .should(
               'contain',
-              'Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.',
+              'Vaša totožnosť zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.',
             )
           cy.get('[data-cy=alert-container-button]').click()
         })

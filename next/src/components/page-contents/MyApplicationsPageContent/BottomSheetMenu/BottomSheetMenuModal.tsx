@@ -1,0 +1,78 @@
+import { Button } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
+import { Dialog, Modal, ModalOverlay } from 'react-aria-components'
+
+import { CrossIcon } from '@/src/assets/ui-icons'
+import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
+import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+
+type BottomSheetMenuModalProps = {
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  conceptMenuContent: MenuItemBase[]
+}
+
+const BottomSheetMenuModal = ({
+  isOpen,
+  setIsOpen,
+  conceptMenuContent,
+}: BottomSheetMenuModalProps) => {
+  const { t } = useTranslation('account')
+
+  const onLinkClick = () => {
+    setIsOpen(false)
+  }
+
+  return (
+    <ModalOverlay
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-gray-800/40 outline-0"
+      isDismissable
+    >
+      <Modal
+        isDismissable
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        className="data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse fixed bottom-0 w-full outline-0"
+      >
+        <Dialog className="flex h-full flex-col outline-0">
+          {({ close }) => (
+            <>
+              <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b bg-white p-4">
+                <h6 className="text-h6 grow">
+                  {t('account_section_applications.mobile_modal_menu.title')}
+                </h6>
+                <Button
+                  variant="icon-wrapped-negative-margin"
+                  size="large"
+                  icon={<CrossIcon />}
+                  onPress={close}
+                  aria-label={t('BottomSheetMenuModal.aria.close')}
+                />
+              </div>
+              <nav className="w-full overflow-auto bg-white px-4">
+                <ul>
+                  {conceptMenuContent.map((item) => (
+                    <li key={item.id} className="border-b last:border-b-0">
+                      <BottomSheetMenuRow
+                        title={item.title}
+                        icon={item.icon}
+                        url={item.url}
+                        onPress={item.onPress}
+                        onLinkClick={onLinkClick}
+                        itemClassName={item.itemClassName}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </>
+          )}
+        </Dialog>
+      </Modal>
+    </ModalOverlay>
+  )
+}
+
+export default BottomSheetMenuModal

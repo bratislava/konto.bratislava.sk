@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common'
-import { BloomreachModule } from 'src/bloomreach/bloomreach.module'
-import { PrismaModule } from 'src/prisma/prisma.module'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
-import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
-import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
+import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import ClientsModule from '../clients/clients.module'
+import { PrismaModule } from '../prisma/prisma.module'
 import { TaxModule } from '../tax/tax.module'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { UtilsModule } from '../utils-module/utils.module'
 import { PaymentController } from './payment.controller'
 import { PaymentService } from './payment.service'
+import { GpWebpaySubservice } from './subservices/gpwebpay.subservice'
 
 @Module({
   imports: [
@@ -19,11 +20,12 @@ import { PaymentService } from './payment.service'
     ClientsModule,
     UserInfoPipeModule,
     TaxModule,
+    UtilsModule,
   ],
   providers: [
     PaymentService,
-    CognitoSubservice,
     GpWebpaySubservice,
+    CognitoSubservice,
     ThrowerErrorGuard,
     CityAccountSubservice,
   ],

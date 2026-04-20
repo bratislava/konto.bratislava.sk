@@ -27,6 +27,49 @@ input BooleanFilterInput {
   startsWith: Boolean
 }
 
+type ComponentBlocksCommonLink {
+  id: ID!
+  label: String
+  municipalService: MunicipalService
+  url: String
+}
+
+input ComponentBlocksCommonLinkFiltersInput {
+  and: [ComponentBlocksCommonLinkFiltersInput]
+  label: StringFilterInput
+  municipalService: MunicipalServiceFiltersInput
+  not: ComponentBlocksCommonLinkFiltersInput
+  or: [ComponentBlocksCommonLinkFiltersInput]
+  url: StringFilterInput
+}
+
+input ComponentBlocksCommonLinkInput {
+  id: ID
+  label: String
+  municipalService: ID
+  url: String
+}
+
+type ComponentBlocksFooterColumn {
+  id: ID!
+  links(filters: ComponentBlocksCommonLinkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksCommonLink]
+  title: String!
+}
+
+input ComponentBlocksFooterColumnFiltersInput {
+  and: [ComponentBlocksFooterColumnFiltersInput]
+  links: ComponentBlocksCommonLinkFiltersInput
+  not: ComponentBlocksFooterColumnFiltersInput
+  or: [ComponentBlocksFooterColumnFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksFooterColumnInput {
+  id: ID
+  links: [ComponentBlocksCommonLinkInput]
+  title: String
+}
+
 type ComponentBlocksFormLandingPage {
   formCta: ComponentBlocksFormLandingPageFormCta!
   id: ID!
@@ -162,104 +205,6 @@ input ComponentGeneralAlertInput {
   id: ID
 }
 
-type ContentReleasesRelease {
-  actions(filters: ContentReleasesReleaseActionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseActionRelationResponseCollection
-  createdAt: DateTime
-  name: String!
-  releasedAt: DateTime
-  scheduledAt: DateTime
-  timezone: String
-  updatedAt: DateTime
-}
-
-type ContentReleasesReleaseAction {
-  contentType: String!
-  createdAt: DateTime
-  entry: GenericMorph
-  locale: String
-  release: ContentReleasesReleaseEntityResponse
-  type: ENUM_CONTENTRELEASESRELEASEACTION_TYPE!
-  updatedAt: DateTime
-}
-
-type ContentReleasesReleaseActionEntity {
-  attributes: ContentReleasesReleaseAction
-  id: ID
-}
-
-type ContentReleasesReleaseActionEntityResponse {
-  data: ContentReleasesReleaseActionEntity
-}
-
-type ContentReleasesReleaseActionEntityResponseCollection {
-  data: [ContentReleasesReleaseActionEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input ContentReleasesReleaseActionFiltersInput {
-  and: [ContentReleasesReleaseActionFiltersInput]
-  contentType: StringFilterInput
-  createdAt: DateTimeFilterInput
-  id: IDFilterInput
-  locale: StringFilterInput
-  not: ContentReleasesReleaseActionFiltersInput
-  or: [ContentReleasesReleaseActionFiltersInput]
-  release: ContentReleasesReleaseFiltersInput
-  type: StringFilterInput
-  updatedAt: DateTimeFilterInput
-}
-
-input ContentReleasesReleaseActionInput {
-  contentType: String
-  locale: String
-  release: ID
-  type: ENUM_CONTENTRELEASESRELEASEACTION_TYPE
-}
-
-type ContentReleasesReleaseActionRelationResponseCollection {
-  data: [ContentReleasesReleaseActionEntity!]!
-}
-
-type ContentReleasesReleaseEntity {
-  attributes: ContentReleasesRelease
-  id: ID
-}
-
-type ContentReleasesReleaseEntityResponse {
-  data: ContentReleasesReleaseEntity
-}
-
-type ContentReleasesReleaseEntityResponseCollection {
-  data: [ContentReleasesReleaseEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input ContentReleasesReleaseFiltersInput {
-  actions: ContentReleasesReleaseActionFiltersInput
-  and: [ContentReleasesReleaseFiltersInput]
-  createdAt: DateTimeFilterInput
-  id: IDFilterInput
-  name: StringFilterInput
-  not: ContentReleasesReleaseFiltersInput
-  or: [ContentReleasesReleaseFiltersInput]
-  releasedAt: DateTimeFilterInput
-  scheduledAt: DateTimeFilterInput
-  timezone: StringFilterInput
-  updatedAt: DateTimeFilterInput
-}
-
-input ContentReleasesReleaseInput {
-  actions: [ID]
-  name: String
-  releasedAt: DateTime
-  scheduledAt: DateTime
-  timezone: String
-}
-
-type ContentReleasesReleaseRelationResponseCollection {
-  data: [ContentReleasesReleaseEntity!]!
-}
-
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -320,9 +265,8 @@ input DateTimeFilterInput {
   startsWith: DateTime
 }
 
-enum ENUM_CONTENTRELEASESRELEASEACTION_TYPE {
-  publish
-  unpublish
+type DeleteMutationResponse {
+  documentId: ID!
 }
 
 enum ENUM_MUNICIPALSERVICE_COLOR {
@@ -356,6 +300,7 @@ enum ENUM_MUNICIPALSERVICE_ICON {
   mosquito
   parking
   public_space_occupation
+  scooter
   security
   spatial_planning
   swimming_pool
@@ -402,10 +347,74 @@ input FloatFilterInput {
   startsWith: Float
 }
 
+type Footer {
+  accessibilityPageLink: ComponentBlocksCommonLink
+  columns(filters: ComponentBlocksFooterColumnFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFooterColumn]
+  contactText: String
+  createdAt: DateTime
+  documentId: ID!
+  facebookUrl: String
+  instagramUrl: String
+  linkedinUrl: String
+  publishedAt: DateTime
+  tiktokUrl: String
+  updatedAt: DateTime
+  youtubeUrl: String
+}
+
+type FooterEntity {
+  attributes: Footer
+  id: ID
+}
+
+type FooterEntityResponse {
+  data: Footer
+}
+
+type FooterEntityResponseCollection {
+  nodes: [Footer!]!
+  pageInfo: Pagination!
+}
+
+input FooterFiltersInput {
+  accessibilityPageLink: ComponentBlocksCommonLinkFiltersInput
+  and: [FooterFiltersInput]
+  columns: ComponentBlocksFooterColumnFiltersInput
+  contactText: StringFilterInput
+  createdAt: DateTimeFilterInput
+  facebookUrl: StringFilterInput
+  instagramUrl: StringFilterInput
+  linkedinUrl: StringFilterInput
+  not: FooterFiltersInput
+  or: [FooterFiltersInput]
+  publishedAt: DateTimeFilterInput
+  tiktokUrl: StringFilterInput
+  updatedAt: DateTimeFilterInput
+  youtubeUrl: StringFilterInput
+}
+
+input FooterInput {
+  accessibilityPageLink: ComponentBlocksCommonLinkInput
+  columns: [ComponentBlocksFooterColumnInput]
+  contactText: String
+  facebookUrl: String
+  instagramUrl: String
+  linkedinUrl: String
+  publishedAt: DateTime
+  tiktokUrl: String
+  youtubeUrl: String
+}
+
+type FooterRelationResponseCollection {
+  nodes: [Footer!]!
+}
+
 type Form {
   createdAt: DateTime
+  documentId: ID!
   landingPage: ComponentBlocksFormLandingPage
   moreInformationUrl: String
+  publishedAt: DateTime
   slug: String!
   updatedAt: DateTime
 }
@@ -416,22 +425,23 @@ type FormEntity {
 }
 
 type FormEntityResponse {
-  data: FormEntity
+  data: Form
 }
 
 type FormEntityResponseCollection {
-  data: [FormEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [Form!]!
+  pageInfo: Pagination!
 }
 
 input FormFiltersInput {
   and: [FormFiltersInput]
   createdAt: DateTimeFilterInput
-  id: IDFilterInput
+  documentId: IDFilterInput
   landingPage: ComponentBlocksFormLandingPageFiltersInput
   moreInformationUrl: StringFilterInput
   not: FormFiltersInput
   or: [FormFiltersInput]
+  publishedAt: DateTimeFilterInput
   slug: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
@@ -439,16 +449,19 @@ input FormFiltersInput {
 input FormInput {
   landingPage: ComponentBlocksFormLandingPageInput
   moreInformationUrl: String
+  publishedAt: DateTime
   slug: String
 }
 
 type FormRelationResponseCollection {
-  data: [FormEntity!]!
+  nodes: [Form!]!
 }
 
 type General {
   alerts(filters: ComponentGeneralAlertFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentGeneralAlert]
   createdAt: DateTime
+  documentId: ID!
+  publishedAt: DateTime
   updatedAt: DateTime
 }
 
@@ -458,12 +471,12 @@ type GeneralEntity {
 }
 
 type GeneralEntityResponse {
-  data: GeneralEntity
+  data: General
 }
 
 type GeneralEntityResponseCollection {
-  data: [GeneralEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [General!]!
+  pageInfo: Pagination!
 }
 
 input GeneralFiltersInput {
@@ -472,22 +485,26 @@ input GeneralFiltersInput {
   createdAt: DateTimeFilterInput
   not: GeneralFiltersInput
   or: [GeneralFiltersInput]
+  publishedAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input GeneralInput {
   alerts: [ComponentGeneralAlertInput]
+  publishedAt: DateTime
 }
 
 type GeneralRelationResponseCollection {
-  data: [GeneralEntity!]!
+  nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
   createdAt: DateTime
+  documentId: ID!
+  publishedAt: DateTime
   updatedAt: DateTime
 }
 
@@ -497,12 +514,12 @@ type HelpPageEntity {
 }
 
 type HelpPageEntityResponse {
-  data: HelpPageEntity
+  data: HelpPage
 }
 
 type HelpPageEntityResponseCollection {
-  data: [HelpPageEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [HelpPage!]!
+  pageInfo: Pagination!
 }
 
 input HelpPageFiltersInput {
@@ -511,23 +528,31 @@ input HelpPageFiltersInput {
   createdAt: DateTimeFilterInput
   not: HelpPageFiltersInput
   or: [HelpPageFiltersInput]
+  publishedAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input HelpPageInput {
   categories: [ComponentBlocksHelpCategoryInput]
+  publishedAt: DateTime
 }
 
 type HelpPageRelationResponseCollection {
-  data: [HelpPageEntity!]!
+  nodes: [HelpPage!]!
 }
 
 type Homepage {
-  announcements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementRelationResponseCollection
-  announcementsLegalPerson(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementRelationResponseCollection
+  announcements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [HomepageAnnouncement]!
+  announcementsLegalPerson(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [HomepageAnnouncement]!
+  announcementsLegalPerson_connection(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementRelationResponseCollection
+  announcements_connection(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementRelationResponseCollection
   createdAt: DateTime
-  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
-  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  documentId: ID!
+  publishedAt: DateTime
+  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
+  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
+  servicesLegalPerson_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  services_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
   updatedAt: DateTime
 }
 
@@ -537,8 +562,10 @@ type HomepageAnnouncement {
   dateFrom: DateTime
   dateTo: DateTime
   description: String!
+  documentId: ID!
   href: String!
-  image: UploadFileEntityResponse!
+  image: UploadFile!
+  publishedAt: DateTime
   title: String!
   updatedAt: DateTime
 }
@@ -549,12 +576,12 @@ type HomepageAnnouncementEntity {
 }
 
 type HomepageAnnouncementEntityResponse {
-  data: HomepageAnnouncementEntity
+  data: HomepageAnnouncement
 }
 
 type HomepageAnnouncementEntityResponseCollection {
-  data: [HomepageAnnouncementEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [HomepageAnnouncement!]!
+  pageInfo: Pagination!
 }
 
 input HomepageAnnouncementFiltersInput {
@@ -564,10 +591,11 @@ input HomepageAnnouncementFiltersInput {
   dateFrom: DateTimeFilterInput
   dateTo: DateTimeFilterInput
   description: StringFilterInput
+  documentId: IDFilterInput
   href: StringFilterInput
-  id: IDFilterInput
   not: HomepageAnnouncementFiltersInput
   or: [HomepageAnnouncementFiltersInput]
+  publishedAt: DateTimeFilterInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
@@ -579,11 +607,12 @@ input HomepageAnnouncementInput {
   description: String
   href: String
   image: ID
+  publishedAt: DateTime
   title: String
 }
 
 type HomepageAnnouncementRelationResponseCollection {
-  data: [HomepageAnnouncementEntity!]!
+  nodes: [HomepageAnnouncement!]!
 }
 
 type HomepageEntity {
@@ -592,12 +621,12 @@ type HomepageEntity {
 }
 
 type HomepageEntityResponse {
-  data: HomepageEntity
+  data: Homepage
 }
 
 type HomepageEntityResponseCollection {
-  data: [HomepageEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [Homepage!]!
+  pageInfo: Pagination!
 }
 
 input HomepageFiltersInput {
@@ -607,6 +636,7 @@ input HomepageFiltersInput {
   createdAt: DateTimeFilterInput
   not: HomepageFiltersInput
   or: [HomepageFiltersInput]
+  publishedAt: DateTimeFilterInput
   services: MunicipalServiceFiltersInput
   servicesLegalPerson: MunicipalServiceFiltersInput
   updatedAt: DateTimeFilterInput
@@ -615,18 +645,21 @@ input HomepageFiltersInput {
 input HomepageInput {
   announcements: [ID]
   announcementsLegalPerson: [ID]
+  publishedAt: DateTime
   services: [ID]
   servicesLegalPerson: [ID]
 }
 
 type HomepageRelationResponseCollection {
-  data: [HomepageEntity!]!
+  nodes: [Homepage!]!
 }
 
 type I18NLocale {
   code: String
   createdAt: DateTime
+  documentId: ID!
   name: String
+  publishedAt: DateTime
   updatedAt: DateTime
 }
 
@@ -639,32 +672,34 @@ type I18NLocaleEntity {
 }
 
 type I18NLocaleEntityResponse {
-  data: I18NLocaleEntity
+  data: I18NLocale
 }
 
 type I18NLocaleEntityResponseCollection {
-  data: [I18NLocaleEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [I18NLocale!]!
+  pageInfo: Pagination!
 }
 
 input I18NLocaleFiltersInput {
   and: [I18NLocaleFiltersInput]
   code: StringFilterInput
   createdAt: DateTimeFilterInput
-  id: IDFilterInput
+  documentId: IDFilterInput
   name: StringFilterInput
   not: I18NLocaleFiltersInput
   or: [I18NLocaleFiltersInput]
+  publishedAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input I18NLocaleInput {
   code: String
   name: String
+  publishedAt: DateTime
 }
 
 type I18NLocaleRelationResponseCollection {
-  data: [I18NLocaleEntity!]!
+  nodes: [I18NLocale!]!
 }
 
 input IDFilterInput {
@@ -779,20 +814,27 @@ input LongFilterInput {
 
 type MunicipalService {
   buttonText: String!
-  categories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryRelationResponseCollection
+  categories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceCategory]!
+  categories_connection(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryRelationResponseCollection
   color: ENUM_MUNICIPALSERVICE_COLOR!
   createdAt: DateTime
   description: String!
+  documentId: ID!
   href: String!
   icon: ENUM_MUNICIPALSERVICE_ICON!
-  tags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagRelationResponseCollection
+  publishedAt: DateTime
+  tags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceTag]!
+  tags_connection(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagRelationResponseCollection
   title: String!
   updatedAt: DateTime
 }
 
 type MunicipalServiceCategory {
   createdAt: DateTime
-  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  documentId: ID!
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
+  municipalServices_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  publishedAt: DateTime
   title: String!
   updatedAt: DateTime
 }
@@ -803,32 +845,34 @@ type MunicipalServiceCategoryEntity {
 }
 
 type MunicipalServiceCategoryEntityResponse {
-  data: MunicipalServiceCategoryEntity
+  data: MunicipalServiceCategory
 }
 
 type MunicipalServiceCategoryEntityResponseCollection {
-  data: [MunicipalServiceCategoryEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [MunicipalServiceCategory!]!
+  pageInfo: Pagination!
 }
 
 input MunicipalServiceCategoryFiltersInput {
   and: [MunicipalServiceCategoryFiltersInput]
   createdAt: DateTimeFilterInput
-  id: IDFilterInput
+  documentId: IDFilterInput
   municipalServices: MunicipalServiceFiltersInput
   not: MunicipalServiceCategoryFiltersInput
   or: [MunicipalServiceCategoryFiltersInput]
+  publishedAt: DateTimeFilterInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input MunicipalServiceCategoryInput {
   municipalServices: [ID]
+  publishedAt: DateTime
   title: String
 }
 
 type MunicipalServiceCategoryRelationResponseCollection {
-  data: [MunicipalServiceCategoryEntity!]!
+  nodes: [MunicipalServiceCategory!]!
 }
 
 type MunicipalServiceEntity {
@@ -837,12 +881,12 @@ type MunicipalServiceEntity {
 }
 
 type MunicipalServiceEntityResponse {
-  data: MunicipalServiceEntity
+  data: MunicipalService
 }
 
 type MunicipalServiceEntityResponseCollection {
-  data: [MunicipalServiceEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [MunicipalService!]!
+  pageInfo: Pagination!
 }
 
 input MunicipalServiceFiltersInput {
@@ -852,11 +896,12 @@ input MunicipalServiceFiltersInput {
   color: StringFilterInput
   createdAt: DateTimeFilterInput
   description: StringFilterInput
+  documentId: IDFilterInput
   href: StringFilterInput
   icon: StringFilterInput
-  id: IDFilterInput
   not: MunicipalServiceFiltersInput
   or: [MunicipalServiceFiltersInput]
+  publishedAt: DateTimeFilterInput
   tags: MunicipalServiceTagFiltersInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
@@ -869,17 +914,21 @@ input MunicipalServiceInput {
   description: String
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
+  publishedAt: DateTime
   tags: [ID]
   title: String
 }
 
 type MunicipalServiceRelationResponseCollection {
-  data: [MunicipalServiceEntity!]!
+  nodes: [MunicipalService!]!
 }
 
 type MunicipalServiceTag {
   createdAt: DateTime
-  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  documentId: ID!
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
+  municipalServices_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  publishedAt: DateTime
   title: String!
   updatedAt: DateTime
 }
@@ -890,38 +939,44 @@ type MunicipalServiceTagEntity {
 }
 
 type MunicipalServiceTagEntityResponse {
-  data: MunicipalServiceTagEntity
+  data: MunicipalServiceTag
 }
 
 type MunicipalServiceTagEntityResponseCollection {
-  data: [MunicipalServiceTagEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [MunicipalServiceTag!]!
+  pageInfo: Pagination!
 }
 
 input MunicipalServiceTagFiltersInput {
   and: [MunicipalServiceTagFiltersInput]
   createdAt: DateTimeFilterInput
-  id: IDFilterInput
+  documentId: IDFilterInput
   municipalServices: MunicipalServiceFiltersInput
   not: MunicipalServiceTagFiltersInput
   or: [MunicipalServiceTagFiltersInput]
+  publishedAt: DateTimeFilterInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input MunicipalServiceTagInput {
   municipalServices: [ID]
+  publishedAt: DateTime
   title: String
 }
 
 type MunicipalServiceTagRelationResponseCollection {
-  data: [MunicipalServiceTagEntity!]!
+  nodes: [MunicipalServiceTag!]!
 }
 
 type MunicipalServicesPage {
   createdAt: DateTime
-  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
-  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  documentId: ID!
+  publishedAt: DateTime
+  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
+  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
+  servicesLegalPerson_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  services_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
   updatedAt: DateTime
 }
 
@@ -931,12 +986,12 @@ type MunicipalServicesPageEntity {
 }
 
 type MunicipalServicesPageEntityResponse {
-  data: MunicipalServicesPageEntity
+  data: MunicipalServicesPage
 }
 
 type MunicipalServicesPageEntityResponseCollection {
-  data: [MunicipalServicesPageEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [MunicipalServicesPage!]!
+  pageInfo: Pagination!
 }
 
 input MunicipalServicesPageFiltersInput {
@@ -944,52 +999,52 @@ input MunicipalServicesPageFiltersInput {
   createdAt: DateTimeFilterInput
   not: MunicipalServicesPageFiltersInput
   or: [MunicipalServicesPageFiltersInput]
+  publishedAt: DateTimeFilterInput
   services: MunicipalServiceFiltersInput
   servicesLegalPerson: MunicipalServiceFiltersInput
   updatedAt: DateTimeFilterInput
 }
 
 input MunicipalServicesPageInput {
+  publishedAt: DateTime
   services: [ID]
   servicesLegalPerson: [ID]
 }
 
 type MunicipalServicesPageRelationResponseCollection {
-  data: [MunicipalServicesPageEntity!]!
+  nodes: [MunicipalServicesPage!]!
 }
 
 type Mutation {
   """Change user password. Confirm with the current password."""
   changePassword(currentPassword: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
-  createContentReleasesRelease(data: ContentReleasesReleaseInput!): ContentReleasesReleaseEntityResponse
-  createContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!): ContentReleasesReleaseActionEntityResponse
-  createForm(data: FormInput!): FormEntityResponse
-  createHomepageAnnouncement(data: HomepageAnnouncementInput!): HomepageAnnouncementEntityResponse
-  createMunicipalService(data: MunicipalServiceInput!): MunicipalServiceEntityResponse
-  createMunicipalServiceCategory(data: MunicipalServiceCategoryInput!): MunicipalServiceCategoryEntityResponse
-  createMunicipalServiceTag(data: MunicipalServiceTagInput!): MunicipalServiceTagEntityResponse
-  createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
-  createUploadFolder(data: UploadFolderInput!): UploadFolderEntityResponse
+  createForm(data: FormInput!, status: PublicationStatus = PUBLISHED): Form
+  createHomepageAnnouncement(data: HomepageAnnouncementInput!, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
+  createMunicipalService(data: MunicipalServiceInput!, status: PublicationStatus = PUBLISHED): MunicipalService
+  createMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
+  createMunicipalServiceTag(data: MunicipalServiceTagInput!, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
+  createReviewWorkflowsWorkflow(data: ReviewWorkflowsWorkflowInput!, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflow
+  createReviewWorkflowsWorkflowStage(data: ReviewWorkflowsWorkflowStageInput!, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStage
 
   """Create a new role"""
   createUsersPermissionsRole(data: UsersPermissionsRoleInput!): UsersPermissionsCreateRolePayload
 
   """Create a new user"""
   createUsersPermissionsUser(data: UsersPermissionsUserInput!): UsersPermissionsUserEntityResponse!
-  deleteContentReleasesRelease(id: ID!): ContentReleasesReleaseEntityResponse
-  deleteContentReleasesReleaseAction(id: ID!): ContentReleasesReleaseActionEntityResponse
-  deleteForm(id: ID!): FormEntityResponse
-  deleteGeneral: GeneralEntityResponse
-  deleteHelpPage: HelpPageEntityResponse
-  deleteHomepage: HomepageEntityResponse
-  deleteHomepageAnnouncement(id: ID!): HomepageAnnouncementEntityResponse
-  deleteMunicipalService(id: ID!): MunicipalServiceEntityResponse
-  deleteMunicipalServiceCategory(id: ID!): MunicipalServiceCategoryEntityResponse
-  deleteMunicipalServiceTag(id: ID!): MunicipalServiceTagEntityResponse
-  deleteMunicipalServicesPage: MunicipalServicesPageEntityResponse
-  deleteTax: TaxEntityResponse
-  deleteUploadFile(id: ID!): UploadFileEntityResponse
-  deleteUploadFolder(id: ID!): UploadFolderEntityResponse
+  deleteFooter: DeleteMutationResponse
+  deleteForm(documentId: ID!): DeleteMutationResponse
+  deleteGeneral: DeleteMutationResponse
+  deleteHelpPage: DeleteMutationResponse
+  deleteHomepage: DeleteMutationResponse
+  deleteHomepageAnnouncement(documentId: ID!): DeleteMutationResponse
+  deleteMunicipalService(documentId: ID!): DeleteMutationResponse
+  deleteMunicipalServiceCategory(documentId: ID!): DeleteMutationResponse
+  deleteMunicipalServiceTag(documentId: ID!): DeleteMutationResponse
+  deleteMunicipalServicesPage: DeleteMutationResponse
+  deleteReviewWorkflowsWorkflow(documentId: ID!): DeleteMutationResponse
+  deleteReviewWorkflowsWorkflowStage(documentId: ID!): DeleteMutationResponse
+  deleteTax: DeleteMutationResponse
+  deleteUploadFile(id: ID!): UploadFile
 
   """Delete an existing role"""
   deleteUsersPermissionsRole(id: ID!): UsersPermissionsDeleteRolePayload
@@ -1003,38 +1058,34 @@ type Mutation {
   """Request a reset password token"""
   forgotPassword(email: String!): UsersPermissionsPasswordPayload
   login(input: UsersPermissionsLoginInput!): UsersPermissionsLoginPayload!
-  multipleUpload(field: String, files: [Upload]!, ref: String, refId: ID): [UploadFileEntityResponse]!
 
   """Register a user"""
   register(input: UsersPermissionsRegisterInput!): UsersPermissionsLoginPayload!
-  removeFile(id: ID!): UploadFileEntityResponse
 
   """
   Reset user password. Confirm with a code (resetToken from forgotPassword)
   """
   resetPassword(code: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
-  updateContentReleasesRelease(data: ContentReleasesReleaseInput!, id: ID!): ContentReleasesReleaseEntityResponse
-  updateContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!, id: ID!): ContentReleasesReleaseActionEntityResponse
-  updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
-  updateForm(data: FormInput!, id: ID!): FormEntityResponse
-  updateGeneral(data: GeneralInput!): GeneralEntityResponse
-  updateHelpPage(data: HelpPageInput!): HelpPageEntityResponse
-  updateHomepage(data: HomepageInput!): HomepageEntityResponse
-  updateHomepageAnnouncement(data: HomepageAnnouncementInput!, id: ID!): HomepageAnnouncementEntityResponse
-  updateMunicipalService(data: MunicipalServiceInput!, id: ID!): MunicipalServiceEntityResponse
-  updateMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, id: ID!): MunicipalServiceCategoryEntityResponse
-  updateMunicipalServiceTag(data: MunicipalServiceTagInput!, id: ID!): MunicipalServiceTagEntityResponse
-  updateMunicipalServicesPage(data: MunicipalServicesPageInput!): MunicipalServicesPageEntityResponse
-  updateTax(data: TaxInput!): TaxEntityResponse
-  updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
-  updateUploadFolder(data: UploadFolderInput!, id: ID!): UploadFolderEntityResponse
+  updateFooter(data: FooterInput!, status: PublicationStatus = PUBLISHED): Footer
+  updateForm(data: FormInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): Form
+  updateGeneral(data: GeneralInput!, status: PublicationStatus = PUBLISHED): General
+  updateHelpPage(data: HelpPageInput!, status: PublicationStatus = PUBLISHED): HelpPage
+  updateHomepage(data: HomepageInput!, status: PublicationStatus = PUBLISHED): Homepage
+  updateHomepageAnnouncement(data: HomepageAnnouncementInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
+  updateMunicipalService(data: MunicipalServiceInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): MunicipalService
+  updateMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
+  updateMunicipalServiceTag(data: MunicipalServiceTagInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
+  updateMunicipalServicesPage(data: MunicipalServicesPageInput!, status: PublicationStatus = PUBLISHED): MunicipalServicesPage
+  updateReviewWorkflowsWorkflow(data: ReviewWorkflowsWorkflowInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflow
+  updateReviewWorkflowsWorkflowStage(data: ReviewWorkflowsWorkflowStageInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStage
+  updateTax(data: TaxInput!, status: PublicationStatus = PUBLISHED): Tax
+  updateUploadFile(id: ID!, info: FileInfoInput): UploadFile!
 
   """Update an existing role"""
   updateUsersPermissionsRole(data: UsersPermissionsRoleInput!, id: ID!): UsersPermissionsUpdateRolePayload
 
   """Update an existing user"""
   updateUsersPermissionsUser(data: UsersPermissionsUserInput!, id: ID!): UsersPermissionsUserEntityResponse!
-  upload(field: String, file: Upload!, info: FileInfoInput, ref: String, refId: ID): UploadFileEntityResponse!
 }
 
 type Pagination {
@@ -1051,46 +1102,156 @@ input PaginationArg {
   start: Int
 }
 
-enum PublicationState {
-  LIVE
-  PREVIEW
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
 }
 
 type Query {
-  contentReleasesRelease(id: ID): ContentReleasesReleaseEntityResponse
-  contentReleasesReleaseAction(id: ID): ContentReleasesReleaseActionEntityResponse
-  contentReleasesReleaseActions(filters: ContentReleasesReleaseActionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseActionEntityResponseCollection
-  contentReleasesReleases(filters: ContentReleasesReleaseFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseEntityResponseCollection
-  form(id: ID): FormEntityResponse
-  forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection
-  general: GeneralEntityResponse
-  helpPage: HelpPageEntityResponse
-  homepage: HomepageEntityResponse
-  homepageAnnouncement(id: ID): HomepageAnnouncementEntityResponse
-  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementEntityResponseCollection
-  i18NLocale(id: ID): I18NLocaleEntityResponse
-  i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
+  footer(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Footer
+  form(documentId: ID!): Form
+  forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [Form]!
+  forms_connection(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection
+  general: General
+  helpPage: HelpPage
+  homepage: Homepage
+  homepageAnnouncement(documentId: ID!): HomepageAnnouncement
+  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [HomepageAnnouncement]!
+  homepageAnnouncements_connection(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementEntityResponseCollection
+  i18NLocale(documentId: ID!): I18NLocale
+  i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [I18NLocale]!
+  i18NLocales_connection(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe
-  municipalService(id: ID): MunicipalServiceEntityResponse
-  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
-  municipalServiceCategory(id: ID): MunicipalServiceCategoryEntityResponse
-  municipalServiceTag(id: ID): MunicipalServiceTagEntityResponse
-  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagEntityResponseCollection
-  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceEntityResponseCollection
-  municipalServicesPage: MunicipalServicesPageEntityResponse
-  tax: TaxEntityResponse
-  uploadFile(id: ID): UploadFileEntityResponse
-  uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection
-  uploadFolder(id: ID): UploadFolderEntityResponse
-  uploadFolders(filters: UploadFolderFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFolderEntityResponseCollection
-  usersPermissionsRole(id: ID): UsersPermissionsRoleEntityResponse
-  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsRoleEntityResponseCollection
-  usersPermissionsUser(id: ID): UsersPermissionsUserEntityResponse
-  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsUserEntityResponseCollection
+  municipalService(documentId: ID!): MunicipalService
+  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceCategory]!
+  municipalServiceCategories_connection(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
+  municipalServiceCategory(documentId: ID!): MunicipalServiceCategory
+  municipalServiceTag(documentId: ID!): MunicipalServiceTag
+  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceTag]!
+  municipalServiceTags_connection(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagEntityResponseCollection
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
+  municipalServicesPage: MunicipalServicesPage
+  municipalServices_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceEntityResponseCollection
+  reviewWorkflowsWorkflow(documentId: ID!): ReviewWorkflowsWorkflow
+  reviewWorkflowsWorkflowStage(documentId: ID!): ReviewWorkflowsWorkflowStage
+  reviewWorkflowsWorkflowStages(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ReviewWorkflowsWorkflowStage]!
+  reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ReviewWorkflowsWorkflowStageEntityResponseCollection
+  reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ReviewWorkflowsWorkflow]!
+  reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ReviewWorkflowsWorkflowEntityResponseCollection
+  tax: Tax
+  uploadFile(documentId: ID!): UploadFile
+  uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UploadFile]!
+  uploadFiles_connection(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection
+  usersPermissionsRole(documentId: ID!): UsersPermissionsRole
+  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsRole]!
+  usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsRoleEntityResponseCollection
+  usersPermissionsUser(documentId: ID!): UsersPermissionsUser
+  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsUser]!
+  usersPermissionsUsers_connection(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsUserEntityResponseCollection
 }
 
 type ResponseCollectionMeta {
   pagination: Pagination!
+}
+
+type ReviewWorkflowsWorkflow {
+  contentTypes: JSON!
+  createdAt: DateTime
+  documentId: ID!
+  name: String!
+  publishedAt: DateTime
+  stageRequiredToPublish: ReviewWorkflowsWorkflowStage
+  stages(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ReviewWorkflowsWorkflowStage]!
+  stages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ReviewWorkflowsWorkflowStageRelationResponseCollection
+  updatedAt: DateTime
+}
+
+type ReviewWorkflowsWorkflowEntity {
+  attributes: ReviewWorkflowsWorkflow
+  id: ID
+}
+
+type ReviewWorkflowsWorkflowEntityResponse {
+  data: ReviewWorkflowsWorkflow
+}
+
+type ReviewWorkflowsWorkflowEntityResponseCollection {
+  nodes: [ReviewWorkflowsWorkflow!]!
+  pageInfo: Pagination!
+}
+
+input ReviewWorkflowsWorkflowFiltersInput {
+  and: [ReviewWorkflowsWorkflowFiltersInput]
+  contentTypes: JSONFilterInput
+  createdAt: DateTimeFilterInput
+  documentId: IDFilterInput
+  name: StringFilterInput
+  not: ReviewWorkflowsWorkflowFiltersInput
+  or: [ReviewWorkflowsWorkflowFiltersInput]
+  publishedAt: DateTimeFilterInput
+  stageRequiredToPublish: ReviewWorkflowsWorkflowStageFiltersInput
+  stages: ReviewWorkflowsWorkflowStageFiltersInput
+  updatedAt: DateTimeFilterInput
+}
+
+input ReviewWorkflowsWorkflowInput {
+  contentTypes: JSON
+  name: String
+  publishedAt: DateTime
+  stageRequiredToPublish: ID
+  stages: [ID]
+}
+
+type ReviewWorkflowsWorkflowRelationResponseCollection {
+  nodes: [ReviewWorkflowsWorkflow!]!
+}
+
+type ReviewWorkflowsWorkflowStage {
+  color: String
+  createdAt: DateTime
+  documentId: ID!
+  name: String
+  publishedAt: DateTime
+  updatedAt: DateTime
+  workflow: ReviewWorkflowsWorkflow
+}
+
+type ReviewWorkflowsWorkflowStageEntity {
+  attributes: ReviewWorkflowsWorkflowStage
+  id: ID
+}
+
+type ReviewWorkflowsWorkflowStageEntityResponse {
+  data: ReviewWorkflowsWorkflowStage
+}
+
+type ReviewWorkflowsWorkflowStageEntityResponseCollection {
+  nodes: [ReviewWorkflowsWorkflowStage!]!
+  pageInfo: Pagination!
+}
+
+input ReviewWorkflowsWorkflowStageFiltersInput {
+  and: [ReviewWorkflowsWorkflowStageFiltersInput]
+  color: StringFilterInput
+  createdAt: DateTimeFilterInput
+  documentId: IDFilterInput
+  name: StringFilterInput
+  not: ReviewWorkflowsWorkflowStageFiltersInput
+  or: [ReviewWorkflowsWorkflowStageFiltersInput]
+  publishedAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  workflow: ReviewWorkflowsWorkflowFiltersInput
+}
+
+input ReviewWorkflowsWorkflowStageInput {
+  color: String
+  name: String
+  publishedAt: DateTime
+  workflow: ID
+}
+
+type ReviewWorkflowsWorkflowStageRelationResponseCollection {
+  nodes: [ReviewWorkflowsWorkflowStage!]!
 }
 
 input StringFilterInput {
@@ -1123,12 +1284,11 @@ type Tax {
   channelChangeEffectiveNextYearText: String
   channelChangeEffectiveNextYearTitle: String
   createdAt: DateTime
-  currentYearTaxInPreparationText: String
-  currentYearTaxInPreparationTitle: String
-  displayCurrentYearTaxInPreparation: Boolean!
-  paymentSuccessFaqLink: String
-  paymentSuccessFeedbackLink: String
-  paymentSuccessPrivacyPolicyLink: String
+  documentId: ID!
+  feedbackLinkDzn: String
+  feedbackLinkKo: String
+  paymentAlertText: String
+  publishedAt: DateTime
   updatedAt: DateTime
 }
 
@@ -1138,12 +1298,12 @@ type TaxEntity {
 }
 
 type TaxEntityResponse {
-  data: TaxEntity
+  data: Tax
 }
 
 type TaxEntityResponseCollection {
-  data: [TaxEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [Tax!]!
+  pageInfo: Pagination!
 }
 
 input TaxFiltersInput {
@@ -1152,14 +1312,12 @@ input TaxFiltersInput {
   channelChangeEffectiveNextYearText: StringFilterInput
   channelChangeEffectiveNextYearTitle: StringFilterInput
   createdAt: DateTimeFilterInput
-  currentYearTaxInPreparationText: StringFilterInput
-  currentYearTaxInPreparationTitle: StringFilterInput
-  displayCurrentYearTaxInPreparation: BooleanFilterInput
+  feedbackLinkDzn: StringFilterInput
+  feedbackLinkKo: StringFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
-  paymentSuccessFaqLink: StringFilterInput
-  paymentSuccessFeedbackLink: StringFilterInput
-  paymentSuccessPrivacyPolicyLink: StringFilterInput
+  paymentAlertText: StringFilterInput
+  publishedAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
 }
 
@@ -1167,16 +1325,14 @@ input TaxInput {
   accountCommunicationConsentText: String
   channelChangeEffectiveNextYearText: String
   channelChangeEffectiveNextYearTitle: String
-  currentYearTaxInPreparationText: String
-  currentYearTaxInPreparationTitle: String
-  displayCurrentYearTaxInPreparation: Boolean
-  paymentSuccessFaqLink: String
-  paymentSuccessFeedbackLink: String
-  paymentSuccessPrivacyPolicyLink: String
+  feedbackLinkDzn: String
+  feedbackLinkKo: String
+  paymentAlertText: String
+  publishedAt: DateTime
 }
 
 type TaxRelationResponseCollection {
-  data: [TaxEntity!]!
+  nodes: [Tax!]!
 }
 
 """A time string with format HH:mm:ss.SSS"""
@@ -1207,14 +1363,13 @@ input TimeFilterInput {
   startsWith: Time
 }
 
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
-
 type UploadFile {
   alternativeText: String
   caption: String
   createdAt: DateTime
+  documentId: ID!
   ext: String
+  focalPoint: JSON
   formats: JSON
   hash: String!
   height: Int
@@ -1223,6 +1378,7 @@ type UploadFile {
   previewUrl: String
   provider: String!
   provider_metadata: JSON
+  publishedAt: DateTime
   related: [GenericMorph]
   size: Float!
   updatedAt: DateTime
@@ -1236,12 +1392,12 @@ type UploadFileEntity {
 }
 
 type UploadFileEntityResponse {
-  data: UploadFileEntity
+  data: UploadFile
 }
 
 type UploadFileEntityResponseCollection {
-  data: [UploadFileEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [UploadFile!]!
+  pageInfo: Pagination!
 }
 
 input UploadFileFiltersInput {
@@ -1249,13 +1405,12 @@ input UploadFileFiltersInput {
   and: [UploadFileFiltersInput]
   caption: StringFilterInput
   createdAt: DateTimeFilterInput
+  documentId: IDFilterInput
   ext: StringFilterInput
-  folder: UploadFolderFiltersInput
-  folderPath: StringFilterInput
+  focalPoint: JSONFilterInput
   formats: JSONFilterInput
   hash: StringFilterInput
   height: IntFilterInput
-  id: IDFilterInput
   mime: StringFilterInput
   name: StringFilterInput
   not: UploadFileFiltersInput
@@ -1263,6 +1418,7 @@ input UploadFileFiltersInput {
   previewUrl: StringFilterInput
   provider: StringFilterInput
   provider_metadata: JSONFilterInput
+  publishedAt: DateTimeFilterInput
   size: FloatFilterInput
   updatedAt: DateTimeFilterInput
   url: StringFilterInput
@@ -1273,8 +1429,7 @@ input UploadFileInput {
   alternativeText: String
   caption: String
   ext: String
-  folder: ID
-  folderPath: String
+  focalPoint: JSON
   formats: JSON
   hash: String
   height: Int
@@ -1283,66 +1438,14 @@ input UploadFileInput {
   previewUrl: String
   provider: String
   provider_metadata: JSON
+  publishedAt: DateTime
   size: Float
   url: String
   width: Int
 }
 
 type UploadFileRelationResponseCollection {
-  data: [UploadFileEntity!]!
-}
-
-type UploadFolder {
-  children(filters: UploadFolderFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFolderRelationResponseCollection
-  createdAt: DateTime
-  files(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileRelationResponseCollection
-  name: String!
-  parent: UploadFolderEntityResponse
-  path: String!
-  pathId: Int!
-  updatedAt: DateTime
-}
-
-type UploadFolderEntity {
-  attributes: UploadFolder
-  id: ID
-}
-
-type UploadFolderEntityResponse {
-  data: UploadFolderEntity
-}
-
-type UploadFolderEntityResponseCollection {
-  data: [UploadFolderEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input UploadFolderFiltersInput {
-  and: [UploadFolderFiltersInput]
-  children: UploadFolderFiltersInput
-  createdAt: DateTimeFilterInput
-  files: UploadFileFiltersInput
-  id: IDFilterInput
-  name: StringFilterInput
-  not: UploadFolderFiltersInput
-  or: [UploadFolderFiltersInput]
-  parent: UploadFolderFiltersInput
-  path: StringFilterInput
-  pathId: IntFilterInput
-  updatedAt: DateTimeFilterInput
-}
-
-input UploadFolderInput {
-  children: [ID]
-  files: [ID]
-  name: String
-  parent: ID
-  path: String
-  pathId: Int
-}
-
-type UploadFolderRelationResponseCollection {
-  data: [UploadFolderEntity!]!
+  nodes: [UploadFile!]!
 }
 
 type UsersPermissionsCreateRolePayload {
@@ -1367,6 +1470,7 @@ type UsersPermissionsLoginPayload {
 type UsersPermissionsMe {
   blocked: Boolean
   confirmed: Boolean
+  documentId: ID!
   email: String
   id: ID!
   role: UsersPermissionsMeRole
@@ -1387,7 +1491,9 @@ type UsersPermissionsPasswordPayload {
 type UsersPermissionsPermission {
   action: String!
   createdAt: DateTime
-  role: UsersPermissionsRoleEntityResponse
+  documentId: ID!
+  publishedAt: DateTime
+  role: UsersPermissionsRole
   updatedAt: DateTime
 }
 
@@ -1397,32 +1503,34 @@ type UsersPermissionsPermissionEntity {
 }
 
 type UsersPermissionsPermissionEntityResponse {
-  data: UsersPermissionsPermissionEntity
+  data: UsersPermissionsPermission
 }
 
 type UsersPermissionsPermissionEntityResponseCollection {
-  data: [UsersPermissionsPermissionEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [UsersPermissionsPermission!]!
+  pageInfo: Pagination!
 }
 
 input UsersPermissionsPermissionFiltersInput {
   action: StringFilterInput
   and: [UsersPermissionsPermissionFiltersInput]
   createdAt: DateTimeFilterInput
-  id: IDFilterInput
+  documentId: IDFilterInput
   not: UsersPermissionsPermissionFiltersInput
   or: [UsersPermissionsPermissionFiltersInput]
+  publishedAt: DateTimeFilterInput
   role: UsersPermissionsRoleFiltersInput
   updatedAt: DateTimeFilterInput
 }
 
 input UsersPermissionsPermissionInput {
   action: String
+  publishedAt: DateTime
   role: ID
 }
 
 type UsersPermissionsPermissionRelationResponseCollection {
-  data: [UsersPermissionsPermissionEntity!]!
+  nodes: [UsersPermissionsPermission!]!
 }
 
 input UsersPermissionsRegisterInput {
@@ -1434,11 +1542,15 @@ input UsersPermissionsRegisterInput {
 type UsersPermissionsRole {
   createdAt: DateTime
   description: String
+  documentId: ID!
   name: String!
-  permissions(filters: UsersPermissionsPermissionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsPermissionRelationResponseCollection
+  permissions(filters: UsersPermissionsPermissionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsPermission]!
+  permissions_connection(filters: UsersPermissionsPermissionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsPermissionRelationResponseCollection
+  publishedAt: DateTime
   type: String
   updatedAt: DateTime
-  users(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsUserRelationResponseCollection
+  users(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsUser]!
+  users_connection(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsUserRelationResponseCollection
 }
 
 type UsersPermissionsRoleEntity {
@@ -1447,23 +1559,24 @@ type UsersPermissionsRoleEntity {
 }
 
 type UsersPermissionsRoleEntityResponse {
-  data: UsersPermissionsRoleEntity
+  data: UsersPermissionsRole
 }
 
 type UsersPermissionsRoleEntityResponseCollection {
-  data: [UsersPermissionsRoleEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [UsersPermissionsRole!]!
+  pageInfo: Pagination!
 }
 
 input UsersPermissionsRoleFiltersInput {
   and: [UsersPermissionsRoleFiltersInput]
   createdAt: DateTimeFilterInput
   description: StringFilterInput
-  id: IDFilterInput
+  documentId: IDFilterInput
   name: StringFilterInput
   not: UsersPermissionsRoleFiltersInput
   or: [UsersPermissionsRoleFiltersInput]
   permissions: UsersPermissionsPermissionFiltersInput
+  publishedAt: DateTimeFilterInput
   type: StringFilterInput
   updatedAt: DateTimeFilterInput
   users: UsersPermissionsUserFiltersInput
@@ -1473,12 +1586,13 @@ input UsersPermissionsRoleInput {
   description: String
   name: String
   permissions: [ID]
+  publishedAt: DateTime
   type: String
   users: [ID]
 }
 
 type UsersPermissionsRoleRelationResponseCollection {
-  data: [UsersPermissionsRoleEntity!]!
+  nodes: [UsersPermissionsRole!]!
 }
 
 type UsersPermissionsUpdateRolePayload {
@@ -1489,9 +1603,11 @@ type UsersPermissionsUser {
   blocked: Boolean
   confirmed: Boolean
   createdAt: DateTime
+  documentId: ID!
   email: String!
   provider: String
-  role: UsersPermissionsRoleEntityResponse
+  publishedAt: DateTime
+  role: UsersPermissionsRole
   updatedAt: DateTime
   username: String!
 }
@@ -1502,27 +1618,25 @@ type UsersPermissionsUserEntity {
 }
 
 type UsersPermissionsUserEntityResponse {
-  data: UsersPermissionsUserEntity
+  data: UsersPermissionsUser
 }
 
 type UsersPermissionsUserEntityResponseCollection {
-  data: [UsersPermissionsUserEntity!]!
-  meta: ResponseCollectionMeta!
+  nodes: [UsersPermissionsUser!]!
+  pageInfo: Pagination!
 }
 
 input UsersPermissionsUserFiltersInput {
   and: [UsersPermissionsUserFiltersInput]
   blocked: BooleanFilterInput
-  confirmationToken: StringFilterInput
   confirmed: BooleanFilterInput
   createdAt: DateTimeFilterInput
+  documentId: IDFilterInput
   email: StringFilterInput
-  id: IDFilterInput
   not: UsersPermissionsUserFiltersInput
   or: [UsersPermissionsUserFiltersInput]
-  password: StringFilterInput
   provider: StringFilterInput
-  resetPasswordToken: StringFilterInput
+  publishedAt: DateTimeFilterInput
   role: UsersPermissionsRoleFiltersInput
   updatedAt: DateTimeFilterInput
   username: StringFilterInput
@@ -1530,16 +1644,15 @@ input UsersPermissionsUserFiltersInput {
 
 input UsersPermissionsUserInput {
   blocked: Boolean
-  confirmationToken: String
   confirmed: Boolean
   email: String
   password: String
   provider: String
-  resetPasswordToken: String
+  publishedAt: DateTime
   role: ID
   username: String
 }
 
 type UsersPermissionsUserRelationResponseCollection {
-  data: [UsersPermissionsUserEntity!]!
+  nodes: [UsersPermissionsUser!]!
 }

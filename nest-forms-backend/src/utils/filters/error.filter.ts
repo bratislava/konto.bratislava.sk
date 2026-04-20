@@ -11,12 +11,33 @@ import { errorTypeKeys } from '../guards/dtos/error.dto'
 import { symbolKeysToStrings } from '../logging'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
+function rethrowIfNotHttp(
+  host: ArgumentsHost,
+  exception: unknown,
+  filterName: string,
+): void {
+  if (host.getType() !== 'http') {
+    const logger = new LineLoggerSubservice(`${filterName} non HTTP`)
+    logger.error(exception)
+    throw exception
+  }
+}
+
 @Catch(Error)
 export class ErrorFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost): void {
+    rethrowIfNotHttp(host, exception, ErrorFilter.name)
+
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
+
+    // TODO remove when this is resolved: https://github.com/bratislava/private-konto.bratislava.sk/issues/1069
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(ErrorFilter.name)
+      logger.error(exception)
+      return
+    }
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
@@ -38,9 +59,18 @@ export class ErrorFilter implements ExceptionFilter {
 @Catch(TypeError)
 export class TypeErrorFilter implements ExceptionFilter {
   catch(exception: TypeError, host: ArgumentsHost): void {
+    rethrowIfNotHttp(host, exception, TypeErrorFilter.name)
+
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
+
+    // TODO remove when this is resolved: https://github.com/bratislava/private-konto.bratislava.sk/issues/1069
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(TypeErrorFilter.name)
+      logger.error(exception)
+      return
+    }
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
@@ -62,9 +92,18 @@ export class TypeErrorFilter implements ExceptionFilter {
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
+    rethrowIfNotHttp(host, exception, HttpExceptionFilter.name)
+
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const status = exception.getStatus()
+
+    // TODO remove when this is resolved: https://github.com/bratislava/private-konto.bratislava.sk/issues/1069
+    if (host.getType() !== 'http') {
+      const logger = new LineLoggerSubservice(HttpExceptionFilter.name)
+      logger.error(exception)
+      return
+    }
 
     const exceptionResponse = exception.getResponse()
     response.status(status)

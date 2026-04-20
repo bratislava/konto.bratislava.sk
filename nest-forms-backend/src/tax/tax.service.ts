@@ -11,13 +11,12 @@ export default class TaxService implements OnModuleDestroy {
 
   constructor() {
     this.pdfPool = new Piscina({
-      // eslint-disable-next-line unicorn/prefer-module
       filename: path.join(__dirname, 'worker.js'),
     })
   }
 
   onModuleDestroy(): void {
-    this.pdfPool.destroy()
+    void this.pdfPool.destroy()
   }
 
   async getFilledInPdfBase64(

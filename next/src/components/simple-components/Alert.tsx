@@ -1,0 +1,146 @@
+import { Button } from '@bratislava/component-library'
+import Link from 'next/link'
+import { useTranslation } from 'next-i18next/pages'
+import React, { ReactNode } from 'react'
+
+import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@/src/assets/ui-icons'
+import cn from '@/src/utils/cn'
+
+type AlertButtonBase = {
+  title: string
+  handler?: () => void | Promise<boolean>
+  link?: string
+}
+
+type AlertButtonsBase = {
+  buttons?: AlertButtonBase[]
+  className?: string
+}
+
+const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
+  return buttons && buttons?.length > 0 ? (
+    <div className={cn('flex w-max items-start gap-5', className)}>
+      {buttons?.map((button, i) => (
+        <React.Fragment key={i}>
+          {button.link ? (
+            <Link
+              className="text-16-medium w-max underline underline-offset-4"
+              href={button.link}
+              data-cy="alert-container-button"
+            >
+              {button.title}
+            </Link>
+          ) : (
+            <Button
+              variant="unstyled"
+              className="text-16-medium w-max underline underline-offset-4"
+              onClick={button.handler}
+            >
+              {button.title}
+            </Button>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  ) : null
+}
+
+type AlertBase = {
+  title?: string
+  message?: ReactNode
+  type: 'error' | 'success' | 'info' | 'warning'
+  close?: () => void
+  className?: string
+  buttons?: AlertButtonBase[]
+  fullWidth?: boolean
+  solid?: boolean
+  /**
+   * @default true
+   */
+  hasIcon?: boolean
+}
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-12975&m=dev
+ */
+
+// TODO: implement design system Alert
+const Alert = ({
+  title,
+  message,
+  type,
+  close,
+  className,
+  buttons,
+  fullWidth = false,
+  solid = false,
+  hasIcon = true,
+}: AlertBase) => {
+  const { t } = useTranslation('account')
+
+  const icons = {
+    error: <ErrorIcon className="size-6" />,
+    success: <CheckInCircleIcon className="size-6" />,
+    info: <InfoIcon className="size-6" />,
+    warning: <AlertIcon className="size-6" />,
+  }
+
+  const alertContainer = cn(
+    'flex w-full flex-col items-start gap-2 rounded-lg p-3 lg:p-4',
+    className,
+    {
+      'bg-negative-100 text-negative-700': type === 'error' && !solid,
+      'bg-success-50 text-success-700': type === 'success' && !solid,
+      'bg-gray-100 text-gray-700': type === 'info' && !solid,
+      'bg-background-warning-soft-default text-warning-700': type === 'warning' && !solid,
+
+      'bg-negative-700 text-white': type === 'error' && solid,
+      'bg-success-700 text-white': type === 'success' && solid,
+      'bg-gray-700 text-white': type === 'info' && solid,
+      'bg-warning-700 text-white': type === 'warning' && solid,
+    },
+    { 'max-w-[480px]': !fullWidth },
+  )
+
+  const contentStyle = cn('w-full', {
+    'text-16-semibold': title,
+    'text-16': !title,
+    'text-white': solid,
+    'text-gray-700': !solid,
+  })
+
+  return (
+    <div className={alertContainer} data-cy="alert-container">
+      <div className="flex w-full justify-between">
+        <div className="flex w-full gap-[14px]">
+          {hasIcon && <span className="flex min-w-[22px] justify-center">{icons[type]}</span>}
+          <div className={contentStyle} data-cy="alert-container-title">
+            {title || message}
+          </div>
+        </div>
+        {close && (
+          <Button
+            variant="icon-wrapped-negative-margin"
+            icon={<CrossIcon className="size-6" />}
+            onPress={close}
+            aria-label={t('Alert.aria.close')}
+          />
+        )}
+      </div>
+      {message && title && (
+        <div
+          className={cn('w-full pl-9 text-p2 font-normal', {
+            'text-gray-0': solid,
+            'text-gray-700': !solid,
+          })}
+          data-cy="alert-container-content"
+        >
+          {title && message}
+        </div>
+      )}
+      <AlertButtons className="pl-9" buttons={buttons} />
+    </div>
+  )
+}
+
+export default Alert

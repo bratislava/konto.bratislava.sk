@@ -8,12 +8,12 @@ export enum UserType {
   Auth = 'Auth',
 }
 
-export type GuestUser = {
+export interface GuestUser {
   type: UserType.Guest
   cognitoIdentityId: string
 }
 
-export type AuthUser = {
+export interface AuthUser {
   type: UserType.Auth
   cognitoJwtPayload: CognitoAccessTokenPayload
   cognitoUser: CognitoUser

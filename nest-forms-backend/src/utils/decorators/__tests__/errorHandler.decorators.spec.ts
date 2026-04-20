@@ -5,7 +5,7 @@ import HandleErrors from '../errorHandler.decorators'
 describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
 
-  beforeEach(async () => {
+  beforeEach(() => {
     consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(() => {})
   })
 
@@ -17,7 +17,7 @@ describe('HandleErrors', () => {
     class TestClass {
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
-        throw new Error('This is a test error')
+        return Promise.reject(new Error('This is a test error'))
       }
     }
 
@@ -39,11 +39,13 @@ describe('HandleErrors', () => {
 
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
-        throw this.throwerErrorGuard.BadRequestException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error message',
-          'Console error',
-          new Error('Caused by error message test'),
+        return Promise.reject(
+          this.throwerErrorGuard.BadRequestException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Error message',
+            'Console error',
+            new Error('Caused by error message test'),
+          ),
         )
       }
     }
@@ -54,7 +56,7 @@ describe('HandleErrors', () => {
     await expect(t.testMethod()).resolves.toBeNull()
 
     const regex =
-      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error message" alert="1" errorCause="Error" causedByMessage="Caused by error message test" console="Console error" method="undefined" stack="HttpException:.*Was directly caused by:.*/
+      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error message" alert="1" errorCause="Error" causedByMessage="Caused by error message test" causedByConsole="undefined" console="Console error" method="undefined" stack="HttpException:.*Was directly caused by:.*/
 
     expect(consoleErrorMock).toHaveBeenCalledTimes(1)
     expect(consoleErrorMock).toHaveBeenCalledWith(expect.stringMatching(regex))

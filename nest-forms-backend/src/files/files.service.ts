@@ -14,16 +14,12 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
-// eslint-disable-next-line import/no-cycle
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
-import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError, {
-  LineLoggerSubservice,
-} from '../utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import {
   BufferedFileDto,
@@ -51,7 +47,6 @@ export default class FilesService {
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nasesConsumerHelper: NasesConsumerHelper,
     private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FilesService')
@@ -227,7 +222,12 @@ export default class FilesService {
       )
     }
 
-    if (!this.filesHelper.isSupportedMimeType(bufferedFile.mimetype)) {
+    if (
+      !this.filesHelper.isSupportedMimeType(
+        bufferedFile.mimetype,
+        bufferedFile.originalname,
+      )
+    ) {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR,
         `${FilesErrorsResponseEnum.FILE_MIME_TYPE_IS_NOT_SUPPORTED_ERROR} Received file mimetype: ${bufferedFile.mimetype}`,
@@ -345,7 +345,7 @@ export default class FilesService {
       )
     }
 
-    return <string>decoded.fileId
+    return decoded.fileId as string
   }
 
   async downloadFile(fileId: string): Promise<Readable> {
@@ -429,7 +429,7 @@ export default class FilesService {
     }
 
     // if there are files in virus state, requeue message
-    if (await this.nasesConsumerHelper.checkInfectedFiles(formId)) {
+    if (await this.filesHelper.checkInfectedFiles(formId)) {
       this.logger.warn(`Form with id ${formId} has infected files.`)
       const result = {
         filesReady: false,
@@ -442,17 +442,21 @@ export default class FilesService {
     }
 
     // if there are files in error state notify developers, and set form to error state
-    if (await this.nasesConsumerHelper.checkErrorFiles(formId)) {
+    if (await this.filesHelper.areErrorFilesInForm(formId)) {
       const result = {
         filesReady: false,
         requeue: false,
         state: FormState.ERROR,
         error: FormError.UNABLE_TO_SCAN_FILES,
       }
-      alertError(
-        `Form with id ${formId} has files in error state. Setting form to ERROR state with error: ${FormError.UNABLE_TO_SCAN_FILES}.`,
-        this.logger,
-        JSON.stringify(result),
+
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          `Form has files in error state. Setting form to ERROR state with error: ${FormError.UNABLE_TO_SCAN_FILES}.`,
+          { formId },
+          result,
+        ),
       )
       return result
     }
@@ -500,7 +504,6 @@ export default class FilesService {
   async deleteFileMany(fileIds: string[]): Promise<void> {
     let file: Files
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const fileId of fileIds) {
       try {
         // eslint-disable-next-line no-await-in-loop
@@ -543,7 +546,7 @@ export default class FilesService {
         bucket,
         pathWithMinioFileName,
       )
-      if (deleteStatus === false) {
+      if (!deleteStatus) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           FilesErrorsEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
           FilesErrorsResponseEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,

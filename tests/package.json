@@ -5,33 +5,37 @@
     "typecheck": "tsc",
     "start:e2e": "cd ../next && npm run build:e2e && npm run start",
     "cypress:open": "node ./run-cypress.js open --browser chrome --device all --visualTesting local",
+    "cypress:open:desktop": "node ./run-cypress.js open --browser chrome --device desktop --visualTesting local",
+    "cypress:open:mobile": "node ./run-cypress.js open --browser chrome --device mobile --visualTesting local",
     "cypress:run": "node ./run-cypress.js run --browser chrome --device all --visualTesting local",
+    "cypress:run:desktop": "node ./run-cypress.js run --browser chrome --device desktop --visualTesting local",
+    "cypress:run:mobile": "node ./run-cypress.js run --browser chrome --device mobile --visualTesting local",
     "cypress:ci": "node ./run-cypress.js run --browser chrome --device all --visualTesting ci",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
   "devDependencies": {
     "@frsource/cypress-plugin-visual-regression-diff": "^3.3.10",
-    "@types/node": "^20.11.10",
+    "@types/node": "24.12.2",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
-    "cypress": "^13.5.1",
+    "cypress": "^15.11.0",
     "cypress-file-upload": "^5.0.8",
     "eslint": "^8.54.0",
     "eslint-config-adjunct": "^4.12.2",
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-prettier": "^5.0.1",
     "path": "^0.12.7",
-    "prettier": "3.1.0",
-    "typescript": "5.1.3",
-    "yargs": "^17.7.2"
+    "prettier": "3.8.1",
+    "typescript": "5.9.3",
+    "yargs": "^18.0.0"
   },
   "engines": {
-    "node": ">=20.9.x",
-    "npm": ">=10.x.x"
+    "node": ">=24.14.x",
+    "npm": ">=11.11.x"
   },
   "volta": {
-    "node": "20.9.0",
-    "npm": "10.8.1"
+    "node": "24.14.1",
+    "npm": "11.11.0"
   }
 }

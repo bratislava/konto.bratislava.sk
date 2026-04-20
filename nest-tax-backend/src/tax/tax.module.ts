@@ -1,24 +1,18 @@
 import { Module } from '@nestjs/common'
-import { PrismaModule } from 'src/prisma/prisma.module'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
-import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
-import { TaxController } from './tax.controller'
+import { PrismaModule } from '../prisma/prisma.module'
+import { QrCodeModule } from '../qrcode/qrcode.module'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { TaxService } from './tax.service'
 import { TaxControllerV2 } from './tax.v2.controller'
 
 @Module({
-  imports: [PrismaModule, ClientsModule, UserInfoPipeModule],
-  providers: [
-    TaxService,
-    CognitoSubservice,
-    ThrowerErrorGuard,
-    QrCodeSubservice,
-  ],
+  imports: [PrismaModule, ClientsModule, UserInfoPipeModule, QrCodeModule],
+  providers: [TaxService, CognitoSubservice, ThrowerErrorGuard],
   exports: [TaxService],
-  controllers: [TaxController, TaxControllerV2],
+  controllers: [TaxControllerV2],
 })
 export class TaxModule {}

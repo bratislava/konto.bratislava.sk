@@ -171,7 +171,6 @@ describe('Form Migrations', () => {
       )
 
       expect(response.status).toBe(201)
-      console.log(response.data)
       expect(response.data).toEqual({
         success: true,
       })
@@ -257,8 +256,8 @@ describe('Form Migrations', () => {
       expect(response.status).toBe(400)
 
       const unchangedForm = await formsFixtureRepository.get(form.id)
-      expect(unchangedForm!.cognitoGuestIdentityId).toBe(guestUser2.identityId)
-      expect(unchangedForm!.userExternalId).toBeNull()
+      expect(unchangedForm?.cognitoGuestIdentityId).toBe(guestUser2.identityId)
+      expect(unchangedForm?.userExternalId).toBeNull()
     })
   })
 })

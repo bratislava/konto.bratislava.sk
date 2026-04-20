@@ -1,35 +1,46 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import AWS from 'aws-sdk'
-
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { fromPairs } from 'lodash'
-import { ListUsersRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider'
-import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import {
-  CognitoGetUserAttributesData,
-  CognitoGetUserData,
-  CognitoUserAccountTypesEnum,
-  CognitoUserAttributesDto,
-  CognitoUserAttributesEnum,
-  CognitoUserAttributesValuesDateDto,
-  CognitoUserStatusEnum,
-} from '../global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
+  AdminDisableUserCommand,
+  AdminGetUserCommand,
+  AdminGetUserCommandOutput,
+  AdminUpdateUserAttributesCommand,
+  AttributeType,
+  AuthFlowType,
+  CognitoIdentityProviderClient,
+  CognitoIdentityProviderServiceException,
+  InitiateAuthCommand,
+  ListUsersCommand,
+  ListUsersCommandInput,
+  UserType,
+} from '@aws-sdk/client-cognito-identity-provider'
+import { Injectable } from '@nestjs/common'
+import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { plainToInstance } from 'class-transformer'
+
 import {
   SendToQueueErrorsEnum,
   SendToQueueErrorsResponseEnum,
 } from '../../user-verification/verification.errors.enum'
+import {
+  CognitoGetUserAttributesData,
+  CognitoGetUserData,
+  CognitoUserAttributesEnum,
+  CognitoUserStatusEnum,
+} from '../global-dtos/cognito.dto'
+import { ErrorsEnum } from '../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../guards/errors.guard'
 
+/**
+ * Service responsible for Cognito API interactions only.
+ * Does not contain business logic or database operations.
+ * For tier management with database synchronization, use UserTierService.
+ */
 @Injectable()
 export class CognitoSubservice {
-  private readonly cognitoIdentity: AWS.CognitoIdentityServiceProvider
+  private readonly cognitoClient: CognitoIdentityProviderClient
 
   private readonly config
 
-  constructor(
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly prisma: PrismaService
-  ) {
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     if (
       !process.env.AWS_COGNITO_ACCESS ||
       !process.env.AWS_COGNITO_SECRET ||
@@ -38,10 +49,12 @@ export class CognitoSubservice {
     ) {
       throw new Error('CognitoSubservice ENV vars are not set ')
     }
-    this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider({
-      accessKeyId: process.env.AWS_COGNITO_ACCESS,
-      secretAccessKey: process.env.AWS_COGNITO_SECRET,
+    this.cognitoClient = new CognitoIdentityProviderClient({
       region: process.env.AWS_COGNITO_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_COGNITO_ACCESS,
+        secretAccessKey: process.env.AWS_COGNITO_SECRET,
+      },
     })
 
     this.config = {
@@ -49,207 +62,215 @@ export class CognitoSubservice {
     }
   }
 
-  private attributesToObject(data: CognitoUserAttributesDto[]): CognitoGetUserAttributesData {
-    const result = fromPairs(data.map((elem) => [elem.Name, elem.Value]))
-    return result as unknown as CognitoGetUserAttributesData
+  private attributesToObject(attributes: AttributeType[]): CognitoGetUserAttributesData {
+    const obj = Object.fromEntries(
+      attributes
+        .filter((attr): attr is AttributeType & { Name: string } => attr.Name != null)
+        .map(({ Name, Value }) => [Name, Value] as const)
+    )
+    return plainToInstance(CognitoGetUserAttributesData, obj, {
+      enableImplicitConversion: true,
+    })
   }
 
-  async getDataFromCognito(userId: string): Promise<CognitoGetUserData> {
-    const result = await this.cognitoIdentity
-      .adminGetUser(
-        {
-          UserPoolId: this.config.cognitoUserPoolId,
-          Username: userId,
-        },
-        (err, data) => {
-          if (err === null) {
-            return data
-          } else {
-            return err
-          }
-        }
-      )
-      .promise()
-    if (result.$response.error) {
-      // TODO: Use throwerErrorGuard
-      throw new HttpException(
-        {
-          status: result.$response.error.statusCode,
-          message: result.$response.error.code,
-        },
-        HttpStatus.BAD_REQUEST
-      )
-    } else {
-      return {
-        idUser: result.Username,
-        ...this.attributesToObject(result.UserAttributes ?? []),
-        UserCreateDate: result.UserCreateDate,
-        UserLastModifiedDate: result.UserLastModifiedDate,
-        Enabled: result.Enabled ?? false,
-        UserStatus: result.UserStatus as CognitoUserStatusEnum,
-      }
+  private async getUser(externalId: string): Promise<AdminGetUserCommandOutput> {
+    const inputParams = {
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: externalId,
     }
-  }
 
-  async cognitoDeactivateUser(userId: string): Promise<void> {
-    const result = await this.cognitoIdentity
-      .adminDisableUser(
-        {
-          UserPoolId: this.config.cognitoUserPoolId,
-          Username: userId,
-        },
-        (err, data) => {
-          if (err === null) {
-            return data
-          } else {
-            return err
-          }
-        }
-      )
-      .promise()
-
-    if (result.$response.error) {
-      // TODO: Use throwerErrorGuard
-      throw new HttpException(
-        {
-          status: result.$response.error.statusCode,
-          message: result.$response.error.code,
-        },
-        HttpStatus.BAD_REQUEST
-      )
-    }
-  }
-
-  async changeTier(
-    userId: string,
-    newTier: CognitoUserAttributesTierEnum,
-    accountType: CognitoUserAccountTypesEnum
-  ): Promise<void> {
-    await this.changeCognitoTier(userId, [
-      {
-        Name: CognitoUserAttributesEnum.TIER,
-        Value: newTier,
-      },
-    ])
-
-    // i don't think this (cognito.subservice) is the right place for
-    // calling bloomreach service as well as database update
-
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          externalId: userId,
-          ...ACTIVE_USER_FILTER,
-        },
-      })
-      if (!user) {
-        return
-      }
-
-      await this.prisma.user.update({
-        where: {
-          externalId: userId,
-        },
-        data: {
-          cognitoTier: newTier,
-        },
-      })
-    } else {
-      const legalPerson = await this.prisma.legalPerson.findUnique({
-        where: {
-          externalId: userId,
-        },
-      })
-      if (!legalPerson) {
-        return
-      }
-
-      await this.prisma.legalPerson.update({
-        where: {
-          externalId: userId,
-        },
-        data: {
-          cognitoTier: newTier,
-        },
-      })
-    }
-  }
-
-  private async changeCognitoTier(
-    userId: string,
-    userAttributes: CognitoUserAttributesValuesDateDto[]
-  ) {
-    await this.cognitoIdentity
-      .adminUpdateUserAttributes({
-        UserAttributes: userAttributes,
-        UserPoolId: this.config.cognitoUserPoolId,
-        Username: userId,
-      })
-      .promise()
-      .catch((error) => {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+    try {
+      return await this.cognitoClient.send(new AdminGetUserCommand(inputParams))
+    } catch (error) {
+      if (error instanceof CognitoIdentityProviderServiceException) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          error.name,
           undefined,
           error
         )
-      })
+      }
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Unknown error occurred when fetching user from Cognito',
+        undefined,
+        error
+      )
+    }
+  }
+
+  async getDataFromCognito(externalId: string): Promise<CognitoGetUserData> {
+    const result = await this.getUser(externalId)
+
+    if (result.Username === undefined) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+        'Username undefined in user data from Cognito'
+      )
+    }
+
+    return {
+      idUser: result.Username,
+      ...this.attributesToObject(result.UserAttributes ?? []),
+      UserCreateDate: result.UserCreateDate,
+      UserLastModifiedDate: result.UserLastModifiedDate,
+      Enabled: result.Enabled ?? false,
+      UserStatus: result.UserStatus as CognitoUserStatusEnum,
+    }
+  }
+
+  async cognitoDeactivateUser(externalId: string): Promise<void> {
+    const inputParams = {
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: externalId,
+    }
+
+    try {
+      await this.cognitoClient.send(new AdminDisableUserCommand(inputParams))
+    } catch (error) {
+      if (error instanceof CognitoIdentityProviderServiceException) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          error.name,
+          undefined,
+          error
+        )
+      }
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Unknown error occurred when disabling user in Cognito',
+        undefined,
+        error
+      )
+    }
+  }
+
+  /**
+   * Updates user tier in Cognito only.
+   * Note: This does NOT update the database. For coordinated tier changes with database sync,
+   * use UserTierService.changeTier() instead.
+   */
+  async changeTier(externalId: string, newTier: CognitoUserAttributesTierEnum): Promise<void> {
+    const inputParams = {
+      UserAttributes: [
+        {
+          Name: CognitoUserAttributesEnum.TIER,
+          Value: newTier,
+        },
+      ],
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: externalId,
+    }
+    try {
+      await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+        SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+        undefined,
+        error
+      )
+    }
   }
 
   /**
    * Changes the email in cognito to unique format {cognitoId}-{email}.disabled.bratislava.sk
    * Used so that users with deactivated accounts can recreate new accounts with previously used emails.
-   * @param userId user id in cognito
+   * @param externalId user id in cognito
    * @returns void
    */
-  async deactivateCognitoMail(userId: string, oldMail: string) {
-    const result = await this.cognitoIdentity
-      .adminUpdateUserAttributes({
-        UserAttributes: [
-          {
-            Name: 'email',
-            Value: `${userId}-${oldMail}.disabled.bratislava.sk`,
-          },
-          {
-            Name: 'email_verified',
-            Value: 'true',
-          },
-        ],
-        UserPoolId: this.config.cognitoUserPoolId,
-        Username: userId,
-      })
-      .promise()
-
-    if (result.$response.error) {
-      // TODO This error is a bit of a problem for me, as I don't want to break anything.
-      // TODO status in exception and in response may not match and we can't do that with throwerErrorGuard as of right now
-      throw new HttpException(
+  async deactivateCognitoMail(externalId: string, oldMail: string) {
+    const inputParams = {
+      UserAttributes: [
         {
-          status: result.$response.error.statusCode,
-          message: result.$response.error.code,
+          Name: 'email',
+          Value: `${externalId}-${oldMail}.disabled.bratislava.sk`,
         },
-        HttpStatus.BAD_REQUEST
+        {
+          Name: 'email_verified',
+          Value: 'true',
+        },
+      ],
+      UserPoolId: this.config.cognitoUserPoolId,
+      Username: externalId,
+    }
+
+    try {
+      await this.cognitoClient.send(new AdminUpdateUserAttributesCommand(inputParams))
+    } catch (error) {
+      if (error instanceof CognitoIdentityProviderServiceException) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          error.name,
+          undefined,
+          error
+        )
+      }
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Unknown error occurred when updating user attributes in Cognito',
+        undefined,
+        error
       )
     }
   }
 
   /**
-   * Returns all users from cognito user pool
+   * Returns all formatted users from cognito user pool
    * @returns CognitoGetUserData[]
    */
   async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
-    let result: CognitoGetUserData[] = []
-    const params: ListUsersRequest = {
+    const result: UserType[] = []
+    const params: ListUsersCommandInput = {
       UserPoolId: this.config.cognitoUserPoolId,
     }
     do {
       // TODO: add proper error handling
-      const cognitoData = await this.cognitoIdentity.listUsers(params).promise()
-      const { Users = [], PaginationToken } = cognitoData
-      result = [...result, ...(Users as CognitoGetUserData[])]
-      params.PaginationToken = PaginationToken
+      // eslint-disable-next-line no-await-in-loop
+      const cognitoData = await this.cognitoClient.send(new ListUsersCommand(params))
+      result.push(...(cognitoData.Users ?? []))
+      params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
+    return result.map((user) => {
+      return {
+        idUser: user.Username ?? '',
+        ...this.attributesToObject(user.Attributes ?? []),
+        UserCreateDate: user.UserCreateDate,
+        UserLastModifiedDate: user.UserLastModifiedDate,
+        Enabled: user.Enabled ?? false,
+        UserStatus: user.UserStatus as CognitoUserStatusEnum,
+      }
+    })
+  }
 
-    return result
+  async refreshTokens(refreshToken: string, clientId: string) {
+    const inputParams = {
+      AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
+      ClientId: clientId,
+      AuthParameters: {
+        REFRESH_TOKEN: refreshToken,
+      },
+    }
+
+    try {
+      const response = await this.cognitoClient.send(new InitiateAuthCommand(inputParams))
+      if (response.AuthenticationResult === undefined) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+          'AuthenticationResult undefined in response to refresh tokens request from Cognito'
+        )
+      }
+      return {
+        accessToken: response.AuthenticationResult.AccessToken,
+        idToken: response.AuthenticationResult.IdToken,
+      }
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+        'Unexpected error occurred when refreshing tokens via Cognito',
+        undefined,
+        error
+      )
+    }
   }
 }

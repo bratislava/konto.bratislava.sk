@@ -1,0 +1,73 @@
+import { z } from 'zod'
+
+export enum EdeskStatus {
+  ACTIVE = 'ACTIVE',
+  DISABLED = 'DISABLED',
+  DELIVERABLE = 'DELIVERABLE',
+  CREATED = 'CREATED',
+  NONEXISTENT = 'NONEXISTENT',
+}
+
+const EdeskRecordRawSchema = z.object({
+  id_noris: z.number(),
+  uri_generated: z.string(),
+
+  // TODO - these fields are not necessary now, but can be in the future for generating uris.
+  /*
+  edesk_status: z.enum(EdeskStatus).nullable(),
+  edesk_number: z.string().nullable(),
+
+  priezvisko: z.string(),
+  meno: z.string(),
+
+  rc: z.string(),
+  ICO: z.string(),
+  obchodne_meno: z.string(),
+
+  uri_edesk: z.string().nullable(),
+  uri_ginis: z.string().nullable(),
+
+  last_check: z.date(),
+  */
+})
+
+export const EdeskRecordSchema = EdeskRecordRawSchema.transform((data) => {
+  const uriSanitized = data.uri_generated.replaceAll(/\s/g, '')
+  return {
+    ...data,
+    uri_generated: uriSanitized,
+    uri_new: uriSanitized !== data.uri_generated ? uriSanitized : undefined,
+  }
+}).pipe(
+  EdeskRecordRawSchema.extend({
+    uri_generated: z
+      .string()
+      .min(1)
+      .regex(/^[\x20-\x7E]+$/),
+    uri_new: z.union([z.string(), z.undefined()]),
+  })
+)
+
+export type EdeskRecord = z.infer<typeof EdeskRecordSchema>
+
+/**
+ * Parameters for lcs.usp21_ino_edesk_update.
+ * Procedure raises an exception with error description on validation failure.
+ *
+ * Conditional rules:
+ * - When edesk_status !== 'NONEXISTENT': edesk_number and uri are required;
+ * - When edesk_status === 'NONEXISTENT': edesk_number and uri must be null.
+ *
+ */
+
+export interface UpdateEdeskChecks {
+  idNoris: number
+  lastCheck: Date
+
+  edeskStatus: EdeskStatus
+
+  /** Must be null when status is NONEXISTENT. */
+  edeskNumber: string | null
+  /** Must be null when status is NONEXISTENT. */
+  uri: string | null
+}

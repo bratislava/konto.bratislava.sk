@@ -1,28 +1,24 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
-
 import { MagproxyModule } from 'src/magproxy/magproxy.module'
+import TokenSubservice from 'src/user-verification/utils/subservice/token.subservice'
+
+import { BloomreachModule } from '../bloomreach/bloomreach.module'
+import { MailgunModule } from '../mailgun/mailgun.module'
 import { NasesModule } from '../nases/nases.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
-import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { UserModule } from '../user/user.module'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
-import { TurnstileSubservice } from '../utils/subservices/turnstile.subservice'
 import { RABBIT_MQ } from './constants'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
+import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
 import { VerificationController } from './verification.controller'
 import { VerificationService } from './verification.service'
-import { BloomreachModule } from '../bloomreach/bloomreach.module'
 
 @Module({
   imports: [
     RabbitMQModule.forRoot({
-      uri:
-        process.env.NODE_ENV === 'production'
-          ? `amqp://${process.env.RABBIT_MQ_USERNAME}:${process.env.RABBIT_MQ_PASSWORD}@${process.env.RABBIT_MQ_HOST}:${process.env.RABBIT_MQ_PORT}`
-          : (process.env.RABBIT_MQ_URI ?? ''),
+      uri: process.env.RABBIT_MQ_URI ?? '',
       exchanges: [
         {
           name: RABBIT_MQ.EXCHANGE,
@@ -39,16 +35,14 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
     MagproxyModule,
     PhysicalEntityModule,
     BloomreachModule,
+    MailgunModule,
+    UserModule,
   ],
   providers: [
     VerificationService,
-    DatabaseSubserviceUser,
-    CognitoSubservice,
-    TurnstileSubservice,
+    VerificationDataSubservice,
     VerificationSubservice,
-    MailgunSubservice,
-    ThrowerErrorGuard,
-    ErrorMessengerGuard,
+    TokenSubservice,
   ],
   exports: [VerificationService],
   controllers: [VerificationController],

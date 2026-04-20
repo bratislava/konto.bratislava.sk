@@ -1,18 +1,28 @@
 import { Injectable } from '@nestjs/common'
-import { createCityAccountClient } from 'openapi-clients/city-account'
-import { createSlovenskoSkClient } from 'openapi-clients/slovensko-sk'
+import {
+  type CityAccountClient,
+  createCityAccountClient,
+} from 'openapi-clients/city-account'
+import {
+  createSlovenskoSkClient,
+  type SlovenskoSkClient,
+} from 'openapi-clients/slovensko-sk'
 
 import BaConfigService from '../config/ba-config.service'
 
 @Injectable()
 export default class ClientsService {
-  constructor(private readonly baConfigService: BaConfigService) {}
+  public readonly slovenskoSkApi: SlovenskoSkClient
 
-  public readonly slovenskoSkApi = createSlovenskoSkClient({
-    basePath: this.baConfigService.slovenskoSk.url,
-  })
+  public readonly cityAccountApi: CityAccountClient
 
-  public readonly cityAccountApi = createCityAccountClient({
-    basePath: this.baConfigService.cityAccountBackend.url,
-  })
+  constructor(private readonly baConfigService: BaConfigService) {
+    this.slovenskoSkApi = createSlovenskoSkClient({
+      basePath: this.baConfigService.slovenskoSk.url,
+    })
+
+    this.cityAccountApi = createCityAccountClient({
+      basePath: this.baConfigService.cityAccountBackend.url,
+    })
+  }
 }

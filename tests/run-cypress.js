@@ -48,7 +48,9 @@ const main = async () => {
     '--browser',
     browser,
     '--env',
-    `DEVICE=${device},pluginVisualRegressionImagesPath=cypress/visualTesting/${visualTesting}/,BASEURL=${baseUrl}`,
+    `DEVICE=${device},BASEURL=${baseUrl}`,
+    '--expose',
+    `pluginVisualRegressionImagesPath=cypress/visualTesting/${visualTesting}/`,
   ]
   const cypressProcess = spawn('npx', ['cypress', ...args], { stdio: 'inherit' })
 

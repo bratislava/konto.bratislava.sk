@@ -143,12 +143,42 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         title: 'Objem kontajnera',
         required: true,
         items: [
-          { value: '7m3_3t', label: 'objem: 7 m³ / nosnosť: do 3 t' },
-          { value: '10m3_3t', label: 'objem: 10 m³ / nosnosť: do 3 t' },
-          { value: '11m3_8t', label: 'objem: 11 m³ / nosnosť: do 8 t' },
-          { value: '16m3_8t', label: 'objem: 16 m³ / nosnosť: do 8 t' },
-          { value: '27m3_8t', label: 'objem: 27 m³ / nosnosť: do 8 t' },
-          { value: '30m3_8t', label: 'objem: 30 m³ / nosnosť: do 8 t' },
+          {
+            value: '7m3_3t_hakovy_nosic',
+            label: 'objem: 7 m³ / nosnosť: do 3 t / hákový nosič VKK',
+          },
+          {
+            value: '10m3_3t_hakovy_nosic',
+            label: 'objem: 10 m³ / nosnosť: do 3 t / hákový nosič VKK',
+          },
+          {
+            value: '5m3_4t_ramenovy_nosic',
+            label: 'objem: 5 m³ / nosnosť: do 4 t / ramenový nosič VKK (vanička)',
+          },
+          {
+            value: '7m3_4t_ramenovy_nosic',
+            label: 'objem: 7 m³ / nosnosť: do 4 t / ramenový nosič VKK (vanička)',
+          },
+          {
+            value: '10m3_4t_ramenovy_nosic',
+            label: 'objem: 10 m³ / nosnosť: do 4 t / ramenový nosič VKK (vanička)',
+          },
+          {
+            value: '11m3_8t_hakovy_nosic',
+            label: 'objem: 11 m³ / nosnosť: do 8 t / hákový nosič VKK',
+          },
+          {
+            value: '16m3_8t_hakovy_nosic',
+            label: 'objem: 16 m³ / nosnosť: do 8 t / hákový nosič VKK',
+          },
+          {
+            value: '27m3_8t_hakovy_nosic',
+            label: 'objem: 27 m³ / nosnosť: do 8 t / hákový nosič VKK',
+          },
+          {
+            value: '30m3_8t_hakovy_nosic',
+            label: 'objem: 30 m³ / nosnosť: do 8 t / hákový nosič VKK',
+          },
         ],
       },
       {},

@@ -1,0 +1,3 @@
+INSERT INTO "Config" ("key", "value")
+VALUES ('OVERPAYMENTS_FROM_NORIS_ENABLED', 'false'),
+       ('OVERPAYMENTS_LOOKBACK_DAYS', '3');

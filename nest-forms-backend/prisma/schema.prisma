@@ -56,6 +56,7 @@ model Forms {
   files                  Files[]
   archived               Boolean        @default(false)
   ginisState             GinisState     @default(CREATED)
+  formSentAt             DateTime?
 }
 
 enum GinisState {
@@ -172,4 +173,13 @@ model FormMigration {
   cognitoGuestIdentityId String
   expiresAt              DateTime
   createdAt              DateTime @default(now())
+}
+
+model FormRegistrationStatus {
+  slug         String
+  pospId       String
+  pospVersion  String
+  isRegistered Boolean
+
+  @@id([slug, pospId, pospVersion])
 }

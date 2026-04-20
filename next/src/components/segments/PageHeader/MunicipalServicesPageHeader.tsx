@@ -1,0 +1,44 @@
+import { Dispatch, SetStateAction } from 'react'
+
+import SectionContainer from '@/src/components/layouts/SectionContainer'
+import SelectFieldNew, {
+  SelectOption,
+} from '@/src/components/widget-components/SelectField/SelectField'
+
+type Props = {
+  title: string
+  selectorValue: SelectOption
+  setSelectorValue: (val: SelectOption) => void
+  setCurrentPage: Dispatch<SetStateAction<number>>
+  enumOptions: SelectOption[]
+}
+
+const MunicipalServicesPageHeader = ({
+  title,
+  enumOptions,
+  selectorValue,
+  setCurrentPage,
+  setSelectorValue,
+}: Props) => {
+  return (
+    <SectionContainer className="bg-gray-50 pt-6 pb-4 lg:pt-16 lg:pb-8">
+      <div className="flex size-full flex-col justify-end">
+        <h1 className="mb-4 text-h1 md:mb-6">{title}</h1>
+        <SelectFieldNew
+          label=""
+          className="max-w-none pr-4 sm:max-w-[400px]"
+          value={selectorValue}
+          onChange={(value) => {
+            if (!value) return
+            setSelectorValue(value)
+            setCurrentPage(1)
+          }}
+          options={enumOptions}
+          displayOptionalLabel={false}
+        />
+      </div>
+    </SectionContainer>
+  )
+}
+
+export default MunicipalServicesPageHeader

@@ -1,85 +1,114 @@
-import type { Schema, Attribute } from '@strapi/strapi'
+import type { Schema, Struct } from '@strapi/strapi'
 
-export interface BlocksFormLandingPageFormCta extends Schema.Component {
+export interface BlocksCommonLink extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_common_links'
+  info: {
+    displayName: 'Common link'
+  }
+  attributes: {
+    label: Schema.Attribute.String
+    municipalService: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::municipal-service.municipal-service'
+    >
+    url: Schema.Attribute.String
+  }
+}
+
+export interface BlocksFooterColumn extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_footer_columns'
+  info: {
+    displayName: 'Footer Column'
+  }
+  attributes: {
+    links: Schema.Attribute.Component<'blocks.common-link', true>
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksFormLandingPage extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_form_landing_pages'
+  info: {
+    description: ''
+    displayName: 'Form landing page'
+  }
+  attributes: {
+    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
+      Schema.Attribute.Required
+    linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
+    text: Schema.Attribute.RichText
+  }
+}
+
+export interface BlocksFormLandingPageFormCta extends Struct.ComponentSchema {
   collectionName: 'components_blocks_form_landing_page_form_ctas'
   info: {
     displayName: 'Form landing page form CTA'
   }
   attributes: {
-    title: Attribute.String & Attribute.Required
-    text: Attribute.Text
-    buttonLabel: Attribute.String & Attribute.Required
+    buttonLabel: Schema.Attribute.String & Schema.Attribute.Required
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface BlocksFormLandingPageLinkCta extends Schema.Component {
+export interface BlocksFormLandingPageLinkCta extends Struct.ComponentSchema {
   collectionName: 'components_blocks_form_landing_page_link_ctas'
   info: {
     displayName: 'Form landing page link CTA'
   }
   attributes: {
-    title: Attribute.String & Attribute.Required
-    text: Attribute.Text
-    buttonLabel: Attribute.String & Attribute.Required
-    url: Attribute.String & Attribute.Required
+    buttonLabel: Schema.Attribute.String & Schema.Attribute.Required
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String & Schema.Attribute.Required
+    url: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface BlocksFormLandingPage extends Schema.Component {
-  collectionName: 'components_blocks_form_landing_pages'
-  info: {
-    displayName: 'Form landing page'
-    description: ''
-  }
-  attributes: {
-    text: Attribute.RichText
-    linkCtas: Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    formCta: Attribute.Component<'blocks.form-landing-page-form-cta'> & Attribute.Required
-  }
-}
-
-export interface BlocksHelpCategory extends Schema.Component {
+export interface BlocksHelpCategory extends Struct.ComponentSchema {
   collectionName: 'components_blocks_help_categories'
   info: {
-    displayName: 'Help category'
     description: ''
+    displayName: 'Help category'
   }
   attributes: {
-    title: Attribute.String & Attribute.Required
-    items: Attribute.Component<'blocks.help-item', true> & Attribute.Required
+    items: Schema.Attribute.Component<'blocks.help-item', true> & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface BlocksHelpItem extends Schema.Component {
+export interface BlocksHelpItem extends Struct.ComponentSchema {
   collectionName: 'components_blocks_help_items'
   info: {
     displayName: 'Help item'
   }
   attributes: {
-    title: Attribute.String & Attribute.Required
-    content: Attribute.RichText & Attribute.Required
+    content: Schema.Attribute.RichText & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
-export interface GeneralAlert extends Schema.Component {
+export interface GeneralAlert extends Struct.ComponentSchema {
   collectionName: 'components_general_alerts'
   info: {
-    displayName: 'Alert'
     description: ''
+    displayName: 'Alert'
   }
   attributes: {
-    content: Attribute.RichText & Attribute.Required
-    dateFrom: Attribute.DateTime
-    dateTo: Attribute.DateTime
+    content: Schema.Attribute.RichText & Schema.Attribute.Required
+    dateFrom: Schema.Attribute.DateTime
+    dateTo: Schema.Attribute.DateTime
   }
 }
 
-declare module '@strapi/types' {
-  export module Shared {
-    export interface Components {
+declare module '@strapi/strapi' {
+  export module Public {
+    export interface ComponentSchemas {
+      'blocks.common-link': BlocksCommonLink
+      'blocks.footer-column': BlocksFooterColumn
+      'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
-      'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert

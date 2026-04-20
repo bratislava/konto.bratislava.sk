@@ -1,182 +1,238 @@
 // TODO - communication state to LEGAL_ENTITY
 import { Injectable } from '@nestjs/common'
-
 import {
-  GdprDataDto,
-  GdprSubType,
-  RequestPublicSubscriptionDto,
-  ResponsePublicUnsubscribeDto,
-  ResponseUserDataBasicDto,
-  ResponseUserDataDto,
-} from './dtos/gdpr.user.dto'
+  CognitoUserAttributesTierEnum,
+  DeliveryMethodEnum,
+  GDPRSubTypeEnum,
+  LoginClientEnum,
+  User,
+} from '@prisma/client'
 
-import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { PrismaService } from '../prisma/prisma.service'
-import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
+import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
+import {
+  CustomErrorAdminTypesEnum,
+  CustomErrorAdminTypesResponseEnum,
+} from '../admin/dtos/error.dto'
+import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import {
+  GetNewVerifiedUsersBirthNumbersResponseDto,
+  ResponseUserByBirthNumberDto,
+} from '../integration/dtos/integration-response.dto'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
-import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
-import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
+import {
+  GdprDataDto,
+  ResponsePublicUnsubscribeDto,
+  ResponseUserDataBasicDto,
+  ResponseUserDataDto,
+} from './dtos/gdpr.user.dto'
+import {
+  LegalPersonContactAndIdInfoResponseDto,
+  UserContactAndIdInfoResponseDto,
+} from './dtos/user-contact-info.dto'
+import {
+  AnonymizeResponse,
+  DeactivateAccountResponseDto,
+  MarkDeceasedAccountResponseDto,
+} from './dtos/user-modification-response.dto'
+import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
+import { UserTierService } from './user-tier.service'
+import { UserDataSubservice } from './utils/subservice/user-data.subservice'
+
+const USER_REQUEST_LIMIT = 100
 
 @Injectable()
 export class UserService {
   constructor(
-    private databaseSubservice: DatabaseSubserviceUser,
+    private userDataSubservice: UserDataSubservice,
     private prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private bloomreachService: BloomreachService
+    private bloomreachOutboxService: BloomreachOutboxService,
+    private cognitoSubservice: CognitoSubservice,
+    private userTierService: UserTierService,
+    private taxSubservice: TaxSubservice
   ) {}
 
-  private verificationDeadline(verificationDate: Date | null): boolean {
-    const verificationDeadlineDate = getTaxDeadlineDate()
-    if (verificationDate === null) {
+  private async hasChangedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {
+    const now = new Date()
+    const deadline = getTaxDeadlineDate()
+
+    if (now < deadline) {
       return false
     }
-    return verificationDate < verificationDeadlineDate
+
+    const { active, locked } =
+      await this.userDataSubservice.getActiveAndLockedDeliveryMethodsWithDates({ id: userId })
+
+    // If EDESK is activated after the deadline, the information is sent directly to Noris.
+    // We are legally required to communicate with residents via EDESK once it is active.
+    if (active?.deliveryMethod === DeliveryMethodEnum.EDESK) {
+      return false
+    }
+
+    // If the user was verified after the deadline, his locked delivery method will be NULL. Default delivery method is POSTAL.
+    // Therefore, if the user has selected POSTAL as delivery method, we should not consider it as a change.
+    if (active?.deliveryMethod === DeliveryMethodEnum.POSTAL && !locked?.deliveryMethod) {
+      return false
+    }
+
+    if (active?.deliveryMethod !== locked?.deliveryMethod) {
+      return true
+    }
+
+    return false
   }
 
-  async getOrCreateUserData(id: string, email: string): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(id, email)
+  async getOrCreateUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
+    const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
     const officialCorrespondenceChannel =
-      await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id)
-    const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
+      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
+    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+        user.id
+      ),
     }
   }
 
-  async getOrCreateLegalPersonData(id: string, email: string): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.databaseSubservice.getOrCreateLegalPerson(id, email)
-    const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
+  async getOrCreateLegalPersonData(
+    cognitoUserData: CognitoGetUserData
+  ): Promise<ResponseLegalPersonDataDto> {
+    const user = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+    const getGdprData = await this.userDataSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
   }
 
+  async recordUserLoginClient(externalId: string, loginClient: LoginClientEnum): Promise<void> {
+    const user = await this.userDataSubservice.getUserByExternalId(externalId)
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        `User not found for Cognito ID: ${externalId}`,
+        `Failed to record login client '${loginClient}' for user with Cognito ID: ${externalId}. User does not exist in database.`
+      )
+    }
+    await this.userDataSubservice.recordUserLoginClient(loginClient, user.id)
+  }
+
+  async recordLegalPersonLoginClient(
+    externalId: string,
+    loginClient: LoginClientEnum
+  ): Promise<void> {
+    const legalPerson = await this.userDataSubservice.getLegalPersonByExternalId(externalId)
+    if (!legalPerson) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        `Legal person not found for Cognito ID: ${externalId}`,
+        `Failed to record login client '${loginClient}' for legal person with Cognito ID: ${externalId}. Legal person does not exist in database.`
+      )
+    }
+    await this.userDataSubservice.recordLegalPersonLoginClient(loginClient, legalPerson.id)
+  }
+
   async removeBirthNumber(id: string): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.removeBirthNumber(id)
+    const user = await this.userDataSubservice.removeBirthNumber(id)
     const officialCorrespondenceChannel =
-      await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id)
-    const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
+      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
+    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+        user.id
+      ),
     }
   }
 
   async removeLegalPersonBirthNumber(id: string) {
-    const user = await this.databaseSubservice.removeLegalPersonBirthNumber(id)
-    const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
+    const user = await this.userDataSubservice.removeLegalPersonBirthNumber(id)
+    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: false, // TODO add this for legal persons
       officialCorrespondenceChannel: null,
       gdprData: getGdprData,
       showEmailCommunicationBanner: false, // TODO add this for legal persons
+      hasChangedDeliveryMethodAfterDeadline: false,
     }
   }
 
   async subUnsubUser(
-    externalId: string,
-    gdprSubType: GdprSubType,
-    email: string,
+    cognitoUserData: CognitoGetUserData,
+    gdprSubType: GDPRSubTypeEnum,
     gdprData: GdprDataDto[]
   ): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(externalId, email)
-    await this.databaseSubservice.changeUserGdprData(
+    const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
+    await this.userDataSubservice.changeUserGdprData(
       user.id,
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
 
-    await this.bloomreachService.trackEventConsents(
-      gdprData.map((elem) => ({ ...elem, subType: gdprSubType })),
-      user.externalId,
-      user.id,
-      false
-    )
-
     const officialCorrespondenceChannel =
-      await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id)
-    const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
+      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
+    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
     return {
       ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       gdprData: getGdprData,
+      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+        user.id
+      ),
     }
   }
 
   async subUnsubLegalPerson(
-    externalId: string,
-    gdprSubType: GdprSubType,
-    email: string,
+    cognitoUserData: CognitoGetUserData,
+    gdprSubType: GDPRSubTypeEnum,
     gdprData: GdprDataDto[]
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.databaseSubservice.getOrCreateLegalPerson(externalId, email)
-    await this.databaseSubservice.changeLegalPersonGdprData(
+    const user = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+    await this.userDataSubservice.changeLegalPersonGdprData(
       user.id,
       gdprData.map((elem) => ({
         ...elem,
         subType: gdprSubType,
       }))
     )
-    const getGdprData = await this.databaseSubservice.getLegalPersonGdprData(user.id)
+    const getGdprData = await this.userDataSubservice.getLegalPersonGdprData(user.id)
     return { ...user, gdprData: getGdprData }
-  }
-
-  async subscribePublicUser(data: RequestPublicSubscriptionDto): Promise<ResponseUserDataDto> {
-    const user = await this.databaseSubservice.getOrCreateUser(null, data.email)
-    await this.databaseSubservice.changeUserGdprData(
-      user.id,
-      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB }))
-    )
-
-    await this.bloomreachService.trackEventConsents(
-      data.gdprData.map((elem) => ({ ...elem, subType: GdprSubType.SUB })),
-      user.externalId,
-      user.id,
-      false
-    )
-    const officialCorrespondenceChannel =
-      await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
-    const showEmailCommunicationBanner =
-      await this.databaseSubservice.getShowEmailCommunicationBanner(user.id)
-    const getGdprData = await this.databaseSubservice.getUserGdprData(user.id)
-    return {
-      ...user,
-      wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      gdprData: getGdprData,
-    }
   }
 
   async unsubscribePublicUser(
     id: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponsePublicUnsubscribeDto> {
-    await this.databaseSubservice.changeUserGdprData(
+    await this.userDataSubservice.changeUserGdprData(
       id,
-      gdprData.map((elem) => ({ ...elem, subType: GdprSubType.UNSUB }))
+      gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe }))
     )
-    const getGdprData = await this.databaseSubservice.getUserGdprData(id)
-    const user = await this.databaseSubservice.getUserById(id)
+    const getGdprData = await this.userDataSubservice.getUserGdprData(id)
+    const user = await this.userDataSubservice.getUserById(id)
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
@@ -184,21 +240,14 @@ export class UserService {
       )
     }
 
-    await this.bloomreachService.trackEventConsents(
-      gdprData.map((elem) => ({ ...elem, subType: GdprSubType.UNSUB })),
-      user.externalId,
-      user.id,
-      false
-    )
-
-    return { id: id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
+    return { id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
   }
 
   async unsubscribePublicUserByExternalId(
     externalId: string,
     gdprData: GdprDataDto[]
   ): Promise<ResponsePublicUnsubscribeDto> {
-    const user = await this.databaseSubservice.getUserByExternalId(externalId)
+    const user = await this.userDataSubservice.getUserByExternalId(externalId)
     if (user) {
       const data = await this.unsubscribePublicUser(user.id, gdprData)
       return data
@@ -220,14 +269,16 @@ export class UserService {
         },
       })
       const officialCorrespondenceChannel =
-        await this.databaseSubservice.getOfficialCorrespondenceChannel(user.id)
+        await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
       const showEmailCommunicationBanner =
-        await this.databaseSubservice.getShowEmailCommunicationBanner(user.id)
+        await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
       return {
         ...user,
-        wasVerifiedBeforeTaxDeadline: this.verificationDeadline(user.lastVerificationIdentityCard),
         officialCorrespondenceChannel,
         showEmailCommunicationBanner,
+        hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
+          user.id
+        ),
       }
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -264,21 +315,373 @@ export class UserService {
     }
   }
 
+  /**
+   * Gets or creates user/legal person from Cognito user data as raw database entity
+   *
+   * @param cognitoUserData Cognito user data
+   * @returns raw database entity without additional computed fields
+   */
+  async getOrCreateUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        return this.userDataSubservice.getOrCreateUser(cognitoUserData, true)
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        return this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR,
+          toLogfmt(cognitoUserData)
+        )
+    }
+  }
+
   async getOrCreateUserOrLegalPerson(
-    accountType: CognitoUserAccountTypesEnum,
-    idUser: string,
-    email: string
-  ) {
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const result = await this.databaseSubservice.getOrCreateUser(idUser, email)
-      return result
+    cognitoUserData: CognitoGetUserData
+  ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        return this.getOrCreateUserData(cognitoUserData)
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        return this.getOrCreateLegalPersonData(cognitoUserData)
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
     }
+  }
+
+  async recordLoginClient(
+    cognitoUserData: CognitoGetUserData,
+    loginClient: LoginClientEnum
+  ): Promise<void> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    const externalId = cognitoUserData.idUser
+
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        await this.recordUserLoginClient(externalId, loginClient)
+        return
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        await this.recordLegalPersonLoginClient(externalId, loginClient)
+        return
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+    }
+  }
+
+  async getContactAndIdInfoByExternalId(
+    externalId: string
+  ): Promise<UserContactAndIdInfoResponseDto | LegalPersonContactAndIdInfoResponseDto> {
+    // Get data from Cognito
+    const cognitoData = await this.cognitoSubservice.getDataFromCognito(externalId)
+    const accountType = cognitoData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        // Get user from database
+        const user = await this.userDataSubservice.getUserByExternalId(externalId)
+        if (!user) {
+          throw this.throwerErrorGuard.NotFoundException(
+            UserErrorsEnum.USER_NOT_FOUND,
+            `User not found for external ID: ${externalId}`
+          )
+        }
+
+        return {
+          externalId,
+          accountType,
+          email: cognitoData.email,
+          firstName: cognitoData.given_name,
+          lastName: cognitoData.family_name,
+          birthNumber: user.birthNumber ?? undefined,
+        }
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        // Get legal person from database
+        const legalPerson = await this.userDataSubservice.getLegalPersonByExternalId(externalId)
+        if (!legalPerson) {
+          throw this.throwerErrorGuard.NotFoundException(
+            UserErrorsEnum.USER_NOT_FOUND,
+            `Legal person not found for external ID: ${externalId}`
+          )
+        }
+
+        return {
+          externalId,
+          accountType,
+          email: cognitoData.email,
+          name: cognitoData.name,
+          ico: legalPerson.ico ?? undefined,
+        }
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+    }
+  }
+
+  async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
+    const user = await this.prisma.user.findUnique({
+      where: { birthNumber, ...ACTIVE_USER_FILTER },
+    })
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
+        AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
+      )
+    }
+    let cognitoUser = {}
+    if (user.externalId) {
+      try {
+        cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
+      } catch {
+        // Intentionally ignore Cognito fetch failure
+      }
+    }
+    return {
+      email: user.email,
+      birthNumber: user.birthNumber,
+      externalId: user.externalId,
+      userAttribute: user.userAttribute,
+      cognitoAttributes: cognitoUser,
+      taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
+    }
+  }
+
+  /**
+   * Similar to function getUserDataByBirthNumber, returns data about users based on their birth number, but instead of separately, it does it in batch in one request.
+   * @param birthNumbers Array of birth numbers without slash, for which users should be retrieved from database.
+   * @returns A map of birth numbers (those which were found in database) to user information.
+   */
+  async getUsersDataByBirthNumbers(
+    birthNumbers: string[]
+  ): Promise<Record<string, ResponseUserByBirthNumberDto>> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        birthNumber: {
+          in: birthNumbers,
+        },
+        ...ACTIVE_USER_FILTER,
+      },
+    })
+    const result: Record<string, ResponseUserByBirthNumberDto> = {}
+
+    for (const user of users) {
+      if (!user.birthNumber) {
+        continue
+      }
+      let cognitoUser = {}
+      if (user.externalId) {
+        try {
+          // eslint-disable-next-line no-await-in-loop -- TODO rewrite to use Promise.all
+          cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
+        } catch {
+          // Intentionally ignore Cognito fetch failure
+        }
+      }
+
+      result[user.birthNumber] = {
+        email: user.email,
+        birthNumber: user.birthNumber,
+        externalId: user.externalId,
+        userAttribute: user.userAttribute,
+        cognitoAttributes: cognitoUser,
+        taxDeliveryMethodAtLockDate: user.taxDeliveryMethodAtLockDate,
+      }
+    }
+
+    return result
+  }
+
+  async deactivateAccount(externalId: string): Promise<DeactivateAccountResponseDto> {
+    const cognitoUser = await this.cognitoSubservice.getDataFromCognito(externalId)
+    await this.cognitoSubservice.cognitoDeactivateUser(externalId)
+    await this.cognitoSubservice.deactivateCognitoMail(externalId, cognitoUser.email)
+
+    // We also need to change the account to unverified, since we delete birthNumber from database
+    await this.userTierService.changeTier(
+      externalId,
+      CognitoUserAttributesTierEnum.NEW,
+      cognitoUser['custom:account_type']
+    )
+    await this.bloomreachOutboxService.trackCustomer(externalId)
+
+    const accountType = cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    let removedUser: User | null = null
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
+        removedUser = await this.userDataSubservice.removeUserDataFromDatabase(externalId)
+        break
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+        await this.userDataSubservice.removeLegalPersonDataFromDatabase(externalId)
+        break
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+    }
+
+    await this.bloomreachOutboxService.anonymizeCustomer(externalId)
+
+    const taxDeliveryMethodsRemoved =
+      removedUser && removedUser.birthNumber
+        ? await this.taxSubservice.removeDeliveryMethodFromNoris(removedUser.birthNumber)
+        : true
+
+    return {
+      success: true,
+      bloomreachRemoved: AnonymizeResponse.SUCCESS,
+      taxDeliveryMethodsRemoved,
+    }
+  }
+
+  async markAccountsAsDeceased(birthNumberList: string[]): Promise<MarkDeceasedAccountResponseDto> {
+    const users = await this.prisma.user.updateManyAndReturn({
+      where: {
+        birthNumber: {
+          in: birthNumberList,
+        },
+        ...ACTIVE_USER_FILTER,
+      },
+      data: {
+        isDeceased: true,
+        markedDeceasedAt: new Date(),
+      },
+      select: {
+        externalId: true,
+        birthNumber: true,
+        email: true,
+      },
+    })
+
+    const foundResults: {
+      birthNumber: string
+      databaseMarked: boolean
+      cognitoArchived: boolean
+      bloomreachRemoved?: AnonymizeResponse
+    }[] = await Promise.all(
+      users
+        .filter(
+          (item): item is { externalId: string; email: string; birthNumber: string } =>
+            item.birthNumber !== null
+        )
+        .map(async (item) => {
+          if (!item.externalId || !item.email) {
+            return { birthNumber: item.birthNumber, databaseMarked: true, cognitoArchived: false }
+          }
+
+          let cognitoSuccess = true
+          try {
+            await this.cognitoSubservice.cognitoDeactivateUser(item.externalId)
+          } catch {
+            cognitoSuccess = false
+          }
+
+          await this.bloomreachOutboxService.anonymizeCustomer(item.externalId)
+          return {
+            birthNumber: item.birthNumber,
+            databaseMarked: true,
+            cognitoArchived: cognitoSuccess,
+            bloomreachRemoved: AnonymizeResponse.SUCCESS,
+          }
+        })
+    )
+
+    const foundBirthNumbers = users.map((user) => user.birthNumber)
+
+    const notFoundBirthNumbers = birthNumberList.filter(
+      (birthNumber) => !foundBirthNumbers.includes(birthNumber)
+    )
+
+    const notFoundResults = notFoundBirthNumbers.map((birthNumber) => ({
+      birthNumber,
+      databaseMarked: false,
+      cognitoArchived: false,
+    }))
+
+    return { results: [...foundResults, ...notFoundResults] }
+  }
+
+  async getNewVerifiedUsersBirthNumbers(
+    since: Date,
+    take?: number
+  ): Promise<GetNewVerifiedUsersBirthNumbersResponseDto> {
+    // Take one more, so that we can return nextSince for the next user
+    // We can't do date+1, because two users can have the same timestamp
+    // This should be sufficient, if we do not expect 100+ users with the same timestamp
+    const limitedTake = Math.min(take ?? USER_REQUEST_LIMIT, USER_REQUEST_LIMIT) + 1
+    const users = await this.prisma.user.findMany({
+      select: {
+        birthNumber: true,
+        lastVerificationIdentityCard: true,
+      },
+      where: {
+        lastVerificationIdentityCard: { gte: since },
+        birthNumber: {
+          not: null,
+        },
+        ...ACTIVE_USER_FILTER,
+      },
+      orderBy: {
+        lastVerificationIdentityCard: 'asc',
+      },
+      take: limitedTake,
+    })
+
     if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+      users.length === limitedTake &&
+      limitedTake >= 2 &&
+      users[0].lastVerificationIdentityCard?.getTime() ===
+        users[users.length - 1].lastVerificationIdentityCard?.getTime()
     ) {
-      const result = await this.databaseSubservice.getOrCreateLegalPerson(idUser, email)
-      return result
+      // If this happens because of manual edit in the database, please add random jitter to the dates
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorAdminTypesEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP,
+        CustomErrorAdminTypesResponseEnum.TOO_MANY_USERS_VERIFIED_WITH_THE_SAME_TIMESTAMP
+      )
     }
+
+    const lastVerify = users[users.length - 1]?.lastVerificationIdentityCard
+    // Default: no users -> return request timestamp
+    let nextSince: Date = since
+    if (users.length > 0 && lastVerify) {
+      if (users.length < limitedTake) {
+        // End of list for now, advance timestamp one millisecond
+        nextSince = new Date(lastVerify.getTime() + 1)
+      } else {
+        // Last entry is one over take. We want to return the timestamp of this
+        // entry for the next call, but not the entry itself
+        nextSince = lastVerify
+        users.pop()
+      }
+    }
+
+    const birthNumbers = users
+      .filter((user): user is User & { birthNumber: string } => user.birthNumber !== null)
+      .map((user) => user.birthNumber)
+
+    return { birthNumbers, nextSince }
+  }
+
+  async getUserLoginClientList(client: LoginClientEnum) {
+    return await this.userDataSubservice.getUserLoginClientList(client)
   }
 }

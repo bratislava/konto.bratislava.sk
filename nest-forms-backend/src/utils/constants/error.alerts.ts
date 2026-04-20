@@ -1,10 +1,14 @@
 import { FormError } from '@prisma/client'
 
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
+import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
+import { GinisTaskErrorEnum } from '../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../signer/signer.errors.enum'
+import { StatusErrorsEnum } from '../../status/errors/status.errors.enum'
 import { ErrorsEnum } from '../global-enums/errors.enum'
+import { SharepointErrorsEnum } from '../subservices/dtos/sharepoint.errors.enum'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.
@@ -20,9 +24,21 @@ export default [
   FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
   FilesErrorsEnum.FILE_MINIO_CHECK_ERROR,
   FilesErrorsEnum.FILE_BY_SCANNERID_NOT_FOUND_ERROR,
+  FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
   NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
   NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
   NasesErrorsEnum.SEND_TO_NASES_ERROR,
+  NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+  NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+  NasesErrorsEnum.FORM_NOT_FOUND,
+  NasesErrorsEnum.FORM_ARCHIVED,
+  NasesErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+  NasesErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+  NasesErrorsEnum.MAX_TRIES_REACHED,
+  NasesErrorsEnum.SENDING_EMAIL_FAILED,
+  NasesErrorsEnum.DATABASE_ERROR,
+  NasesErrorsEnum.WEBHOOK_ERROR,
+  NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
   ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
   ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
   ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
@@ -33,4 +49,8 @@ export default [
   FormError.NASES_SEND_ERROR,
   FormError.RABBITMQ_MAX_TRIES,
   SignerErrorsEnum.XML_VALIDATION_ERROR,
+  SharepointErrorsEnum.GENERAL_ERROR,
+  FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
+  GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+  ...Object.values(StatusErrorsEnum),
 ] as string[]

@@ -72,7 +72,7 @@ export default class FilesController {
   @FormAccessAllowMigrations()
   @UseGuards(UserAuthGuard, FormAccessGuard)
   @Get('forms/:formId')
-  getFilesStatusByForm(
+  async getFilesStatusByForm(
     @Param('formId') formId: string,
   ): Promise<GetFileResponseReducedDto[]> {
     return this.filesService.getFilesByForm(formId)
@@ -91,7 +91,7 @@ export default class FilesController {
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
   @Patch('scan/:scannerId')
-  updateFileStatusScannerId(
+  async updateFileStatusScannerId(
     @Body() statusObject: UpdateFileStatusRequestDto,
     @Param('scannerId') scannerId: string,
   ): Promise<UpdateFileStatusResponseDto> {

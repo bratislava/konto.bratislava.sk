@@ -11,7 +11,9 @@ import {
 } from '../summary-renderer/SummaryRenderer'
 import Markdown from 'react-markdown'
 import cx from 'classnames'
-import { GenericObjectType, ValidationData } from '@rjsf/utils'
+import type { GenericObjectType, ValidationData } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { FileInfoSummary } from '../form-files/fileStatus'
 import { FormSummary } from '../summary/summary'
 
@@ -37,7 +39,7 @@ const StepComponent = ({ step, children }: SummaryStepComponentProps) => (
 )
 
 const FieldComponent = ({ field, hasError, children }: SummaryFieldComponentProps) => {
-  const wrapperClass = cx('flex flex-row flex-nowrap gap-2 border-b-2 py-2.5', {
+  const wrapperClass = cx('flex flex-row flex-nowrap gap-2 border-b py-2.5', {
     'border-gray-200': !hasError,
     'border-red-500': hasError,
   })

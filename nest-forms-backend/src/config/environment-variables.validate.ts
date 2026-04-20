@@ -7,7 +7,7 @@ export default function validateEnvironmentVariables(
   config: Record<string, unknown>,
 ): EnvironmentVariables {
   const validatedConfig = plainToInstance(EnvironmentVariables, config, {
-    enableImplicitConversion: true,
+    enableImplicitConversion: false, // if left true, boolean always parse as true
     excludeExtraneousValues: true,
   })
 

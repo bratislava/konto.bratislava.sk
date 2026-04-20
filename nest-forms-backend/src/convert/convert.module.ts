@@ -5,7 +5,6 @@ import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import FilesModule from '../files/files.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
-import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
 import FormsService from '../forms/forms.service'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
@@ -34,7 +33,6 @@ import ConvertService from './convert.service'
     ThrowerErrorGuard,
     PrismaService,
     FormsService,
-    FormsHelper,
     ConfigService,
     MinioClientSubservice,
   ],

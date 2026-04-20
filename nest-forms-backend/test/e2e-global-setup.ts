@@ -14,6 +14,7 @@ export default async function e2eGlobalSetup(): Promise<void> {
   process.env.DATABASE_URL = `postgresql://${container.getUsername()}:${container.getPassword()}@${container.getHost()}:${container.getPort()}/${container.getDatabase()}`
   e2eGlobalShared.postgresContainer = container
 
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   execSync('npx prisma db push --skip-generate', {
     stdio: 'inherit',
     env: process.env,

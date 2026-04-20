@@ -1,14 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+
 import alertReporting from '../constants/error.alerts'
-import { ResponseVerificationIdentityCardDto } from '../../user-verification/dtos/requests.verification.dto'
-import { CognitoGetUserData } from '../global-dtos/cognito.dto'
 import { CustomErrorEnums, ErrorSymbols, ResponseErrorInternalDto } from './dtos/error.dto'
-import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../../user-verification/verification.errors.enum'
-import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
-import { AxiosError } from 'axios'
 
 @Injectable()
 export default class ThrowerErrorGuard {
@@ -16,7 +9,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.NOT_ACCEPTABLE,
@@ -32,7 +25,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.GONE,
@@ -48,7 +41,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.PAYLOAD_TOO_LARGE,
@@ -64,7 +57,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.INTERNAL_SERVER_ERROR,
@@ -80,7 +73,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.FORBIDDEN,
@@ -96,7 +89,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.UNPROCESSABLE_ENTITY,
@@ -112,7 +105,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.NOT_FOUND,
@@ -128,7 +121,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.BAD_REQUEST,
@@ -144,7 +137,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    error?: Error | unknown
+    error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.UNAUTHORIZED,
@@ -197,115 +190,5 @@ export default class ThrowerErrorGuard {
     }
 
     return exception
-  }
-}
-
-@Injectable()
-export class ErrorMessengerGuard {
-  private logger: LineLoggerSubservice = new LineLoggerSubservice('CUSTOM ERRORS')
-
-  birthNumberICInconsistency() {
-    return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'CustomError',
-      message: 'This identity card number is not matching identity card for birthNumber',
-      errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
-    }
-  }
-
-  rfoDeadPerson() {
-    return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'CustomError',
-      message: 'User is not alive in registry.',
-      errorName: VerificationErrorsEnum.DEAD_PERSON,
-    }
-  }
-
-  rfoNotResponding(error: AxiosError) {
-    this.logger.warn(error.response?.data)
-    return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'CustomError',
-      message: 'There is problem with unexpected registry response. More details in app logs.',
-      errorName: VerificationErrorsEnum.RFO_NOT_RESPONDING,
-    }
-  }
-
-  rpoNotResponding(error: AxiosError) {
-    this.logger.warn(error.response?.data)
-    return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'CustomError',
-      message: 'There is problem with unexpected registry response. More details in app logs.',
-      errorName: VerificationErrorsEnum.RPO_NOT_RESPONDING,
-    }
-  }
-
-  birthNumberNotExists() {
-    return {
-      statusCode: HttpStatus.NOT_FOUND,
-      status: 'NotFound',
-      message: 'Birth number does not exists in registry.',
-      errorName: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-    }
-  }
-
-  birthNumberBadFormat() {
-    return {
-      statusCode: HttpStatus.BAD_REQUEST,
-      status: 'CustomError',
-      message: 'Birth number has wrong format.',
-      errorName: VerificationErrorsEnum.BIRTH_NUMBER_WRONG_FORMAT,
-    }
-  }
-
-  rpoFieldNotExists(field: string) {
-    return {
-      statusCode: HttpStatus.NOT_FOUND,
-      status: 'NotFound',
-      message: `Field '${field}' does not exists in RPO object from registry.`,
-      errorName: VerificationErrorsEnum.RPO_FIELD_NOT_EXISTS,
-    }
-  }
-
-  azureAdGetTokenTimeout() {
-    return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'CustomError',
-      message: 'There is problem with authentication to registry. More details in app logs.',
-      errorName: VerificationErrorsEnum.RFO_ACCESS_ERROR,
-    }
-  }
-
-  verificationQueueLog(
-    user: CognitoGetUserData,
-    data: ResponseVerificationIdentityCardDto,
-    cognitoData?: string
-  ) {
-    this.logger.log({ type: 'ALL GOOD - 200', user, log: data, cognitoData })
-  }
-
-  verificationQueueError(user: CognitoGetUserData, data: ResponseVerificationIdentityCardDto) {
-    this.logger.error({ type: 'Not Verified without error - 200', user, error: data })
-  }
-
-  birthNumberDuplicity() {
-    return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'custom_error',
-      message: VerificationErrorsResponseEnum.BIRTHNUMBER_IFO_DUPLICITY,
-      errorName: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY,
-    }
-  }
-
-  birthNumberIcoDuplicity() {
-    return {
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      status: 'custom_error',
-      message:
-        'Duplicity of ICO - birth number pair. This user is already registered with different account.',
-      errorName: VerificationErrorsEnum.BIRTHNUMBER_ICO_DUPLICITY,
-    }
   }
 }

@@ -3,7 +3,9 @@ import {
   Controller,
   HttpCode,
   Param,
+  ParseEnumPipe,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -14,18 +16,24 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
-import { AdminGuard } from 'src/auth/guards/admin.guard'
+import { TaxType } from '@prisma/client'
 
+import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
+import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { AdminService } from './admin.service'
 import {
+  DateRangeDto,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
+import {
+  CreateBirthNumbersResponseDto,
+  UpdateDeliveryMethodsInNorisResponseDto,
+} from './dtos/responses.dto'
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -35,35 +43,42 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Integrate data from norris if not exists by birth numbers or all',
+    summary: 'Loads new data from Noris.',
+    description:
+      'Loads new data from Noris by birth numbers and year, and saves it to our database.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Load data from noris',
+    description:
+      'Birth numbers of tax payers, whose taxes were successfully loaded from Noris.',
     type: CreateBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
   @Post('create-data-from-noris')
-  async loadDataFromNorris(
+  async loadDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    return this.adminService.loadDataFromNoris(data)
+    const { taxType, year, birthNumbers } = data
+    return this.adminService.loadDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Integrate data from norris',
+    summary: 'Updates data from Noris.',
+    description:
+      'Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Load data from noris',
+    description: 'Number of records updated in Noris',
   })
   @UseGuards(AdminGuard)
-  @Post('update-data-from-norris')
-  async updateDataFromNorris(
+  @Post('update-data-from-noris')
+  async updateDataFromNoris(
     @Body() data: RequestPostNorisLoadDataDto,
-  ): Promise<any> {
-    return this.adminService.updateDataFromNoris(data)
+  ): Promise<{ updated: number }> {
+    const { taxType, year, birthNumbers } = data
+    return this.adminService.updateDataFromNoris(taxType, year, birthNumbers)
   }
 
   @HttpCode(200)
@@ -74,16 +89,35 @@ export class AdminController {
     status: 200,
     description:
       'Integrate Paid for day from Noris to our database from date of last integration to today',
+    type: ResponseCreatedAlreadyCreatedDto,
   })
   @UseGuards(AdminGuard)
   @Post('payments-from-noris')
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
-  ): Promise<any> {
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
     return this.adminService.updatePaymentsFromNoris({
       type: 'fromToDate',
       data,
     })
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Pull overpayments from Noris for a specified date range.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Pulls payment records with overpayments from Noris database to local database for the specified date range. Creates new records and updates existing ones that have changed.',
+    type: ResponseCreatedAlreadyCreatedDto,
+  })
+  @UseGuards(AdminGuard)
+  @Post('overpayments-from-noris')
+  async updateOverpaymentsFromNoris(
+    @Body() data: DateRangeDto,
+  ): Promise<ResponseCreatedAlreadyCreatedDto> {
+    return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data)
   }
 
   @HttpCode(200)
@@ -93,12 +127,13 @@ export class AdminController {
   @ApiResponse({
     status: 200,
     description: 'Records successfully updated in Noris',
+    type: UpdateDeliveryMethodsInNorisResponseDto,
   })
   @UseGuards(AdminGuard)
   @Post('update-delivery-methods-in-noris')
   async updateDeliveryMethodsInNoris(
     @Body() data: RequestUpdateNorisDeliveryMethodsDto,
-  ): Promise<void> {
+  ): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
     return this.adminService.updateDeliveryMethodsInNoris(data)
   }
 
@@ -117,7 +152,7 @@ export class AdminController {
   async removeDeliveryMethodsFromNoris(
     @Param('birthNumber') birthNumber: string,
   ): Promise<void> {
-    return this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
+    await this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   @HttpCode(200)
@@ -137,8 +172,9 @@ export class AdminController {
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
+    @Query('taxType', new ParseEnumPipe(TaxType)) taxType: TaxType,
   ): Promise<void> {
-    await this.adminService.createTestingTax(request)
+    await this.adminService.createTestingTax(request, taxType)
   }
 
   @HttpCode(200)

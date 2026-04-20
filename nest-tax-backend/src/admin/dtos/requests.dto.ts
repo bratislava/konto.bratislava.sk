@@ -1,8 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { TaxType } from '@prisma/client'
+import { Type } from 'class-transformer'
 import {
+  IsArray,
+  IsBoolean,
+  IsDate,
   IsDateString,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
@@ -10,30 +16,94 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/noris.types'
+import { DeliveryMethod } from '../../noris/types/noris.enums'
+
+/**
+ * Options for processing Noris tax data.
+ *
+ * Used to configure how tax data is processed when calling methods like
+ * `processNorisTaxData()` or `getAndProcessNewNorisTaxDataByBirthNumberAndYear()`.
+ */
+export class RequestPostNorisLoadDataOptionsDto {
+  /**
+   * If `true`, only prepares data (validates and marks as ready) without creating taxes.
+   * If `false` or undefined, taxes will be created normally.
+   *
+   * @default false
+   */
+  @ApiPropertyOptional({
+    description:
+      'If true, only prepare data (validate and mark as ready) without creating taxes',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  prepareOnly?: boolean
+
+  /**
+   * If `true`, ignores the batch limit for the number of taxes to process.
+   * Useful when you need to process a large number of taxes in a single operation.
+   *
+   * @default false
+   */
+  @ApiPropertyOptional({
+    description:
+      'If true, ignore the batch limit for the number of taxes to process',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  ignoreBatchLimit?: boolean
+
+  /**
+   * If `true`, suppresses email notifications for tax creation.
+   * Used for loading historical taxes where we don't want to send email notifications.
+   *
+   * @default false
+   */
+  @ApiProperty({
+    description: 'If true, suppress email notifications for tax creation',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  suppressEmail: boolean
+}
 
 export class RequestPostNorisLoadDataDto {
   @ApiProperty({
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
-    description: 'Birth numbers or ALL',
+    description: 'Birth numbers in format with slash',
     default: ['000000/0000'],
   })
-  birthNumbers: string[] | 'All'
-}
-
-export class CreateBirthNumbersRequestDto {
-  @ApiProperty({
-    description:
-      'Birth numbers which should be added to tax payers in database. They must be in format with slash.',
-    default: ['000000/0000'],
-    type: [String],
-  })
+  @IsString({ each: true })
+  @IsArray()
+  @IsNotEmpty({ each: true })
   birthNumbers: string[]
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
+
+  @ApiPropertyOptional({
+    description: 'Options for the tax import',
+    type: RequestPostNorisLoadDataOptionsDto,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => RequestPostNorisLoadDataOptionsDto)
+  options?: RequestPostNorisLoadDataOptionsDto
 }
 
 export class RequestPostNorisPaymentDataLoadDto {
@@ -41,25 +111,29 @@ export class RequestPostNorisPaymentDataLoadDto {
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'From date - if is not set, take one from database',
     default: '2022-01-01',
   })
+  @IsDateString()
   fromDate: string
 
   @ApiProperty({
     description: 'To date - if is not set, take one from database',
     default: '2022-01-02',
   })
+  @IsDateString()
   toDate: string
 
   @ApiProperty({
     description: 'If you want to count also overpayments.',
     default: false,
   })
-  overPayments: Boolean
+  @IsBoolean()
+  overPayments: boolean
 }
 
 export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
@@ -80,11 +154,30 @@ export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
   variableSymbols: string[]
 }
 
-export type RequestUpdateNorisDeliveryMethodsData = {
-  [key: string]:
-    | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
-    | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
+export class DateRangeDto {
+  @ApiProperty({
+    description: 'From date',
+    default: '2025-10-10',
+  })
+  @IsDate()
+  @Type(() => Date)
+  fromDate: Date
+
+  @ApiPropertyOptional({
+    description: 'To date',
+    default: '2025-10-16',
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  toDate?: Date
 }
+
+export type RequestUpdateNorisDeliveryMethodsData = Record<
+  string,
+  | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
+  | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
+>
 
 export class RequestUpdateNorisDeliveryMethodsDto {
   @ApiProperty({
@@ -136,6 +229,13 @@ export class RequestUpdateNorisDeliveryMethodsDto {
 
 export class RequestAdminCreateTestingTaxNorisData {
   @ApiProperty({
+    description: 'Variable symbol of the tax',
+    example: '0000000001',
+  })
+  @IsString()
+  variableSymbol: string
+
+  @ApiProperty({
     description: 'Delivery method for the tax',
     enum: DeliveryMethod,
     nullable: true,
@@ -166,19 +266,27 @@ export class RequestAdminCreateTestingTaxNorisData {
   taxTotal: string
 
   @ApiProperty({
-    description: 'Amount already paid as string',
-    example: '0.00',
+    description: 'Amount already paid',
+    example: 10.9,
   })
-  @IsString()
-  alreadyPaid: string
+  @IsNumber()
+  alreadyPaid: number
 
   @ApiProperty({
     description: 'Date of tax ruling (dátum právoplatnosti)',
-    example: '2024-01-01',
+    example: '2024-01-01T07:31:39.916Z',
   })
-  @IsString()
+  @IsDate()
+  @Type(() => Date)
   @IsOptional()
-  dateTaxRuling: string | null
+  dateTaxRuling: Date | null
+
+  @ApiProperty({
+    description: 'Indicates if tax is cancelled',
+    default: false,
+  })
+  @IsBoolean()
+  isCancelled: boolean
 }
 
 export class RequestAdminCreateTestingTaxDto {
@@ -211,6 +319,22 @@ export class RequestAdminDeleteTaxDto {
   })
   @IsString()
   birthNumber: string
+
+  @ApiProperty({
+    description: 'Type of tax',
+    example: TaxType.DZN,
+    enumName: 'TaxType',
+    enum: TaxType,
+  })
+  @IsEnum(TaxType)
+  taxType: TaxType
+
+  @ApiProperty({
+    description: 'Order of tax for given year and type',
+    default: 1,
+  })
+  @IsNumber()
+  order: number
 }
 
 export class RequestPostReportingSendReport {

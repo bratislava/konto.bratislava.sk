@@ -16,18 +16,18 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "@strapi/plugin-graphql": "4.25.22",
-    "@strapi/plugin-i18n": "4.25.22",
-    "@strapi/plugin-users-permissions": "4.25.22",
-    "@strapi/provider-upload-aws-s3": "4.25.22",
-    "@strapi/strapi": "4.25.22",
+    "@strapi/plugin-graphql": "5.40.0",
+    "@strapi/plugin-users-permissions": "5.40.0",
+    "@strapi/provider-upload-aws-s3": "5.40.0",
+    "@strapi/strapi": "5.40.0",
     "patch-package": "^6.5.1",
     "pg": "^8.10.0",
     "postinstall-postinstall": "^2.1.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-router-dom": "5.3.4",
-    "styled-components": "5.3.3"
+    "react-router-dom": "^6.0.0",
+    "strapi-plugin-config-sync": "3.2.0",
+    "styled-components": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
@@ -37,12 +37,12 @@
     "eslint-scope": "^7.1.1"
   },
   "engines": {
-    "node": ">=20.9.x",
-    "npm": ">=10.8.x"
+    "node": ">=24.14.x",
+    "npm": ">=11.11.x"
   },
   "volta": {
-    "node": "20.9.0",
-    "npm": "10.8.1"
+    "node": "24.14.1",
+    "npm": "11.11.0"
   },
   "strapi": {
     "uuid": "61130046-63b5-40a0-a617-713763ba3913"

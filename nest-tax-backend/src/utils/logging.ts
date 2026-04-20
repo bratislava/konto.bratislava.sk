@@ -27,8 +27,8 @@ export function escapeForLogfmt(value: string): string {
 export function separateLogFromResponseObj<T extends object>(
   obj: T,
 ): {
-  responseLog: { [K: string]: T[keyof T] }
-  responseMessage: { [K: string]: T[keyof T] }
+  responseLog: Record<string, T[keyof T]>
+  responseMessage: Record<string, T[keyof T]>
 } {
   const responseLog: ReturnType<
     typeof separateLogFromResponseObj
@@ -145,7 +145,7 @@ export function isLogfmt(input: string): boolean {
   return regex.test(input)
 }
 
-export function ToLogfmt(input: unknown): string {
+export function toLogfmt(input: unknown): string {
   if (!input) {
     return ''
   }

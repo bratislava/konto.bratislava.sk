@@ -9,7 +9,9 @@ import step8 from './priznanie-k-dani-z-nehnutelnosti/step8'
 import { schema } from '../generator/functions/schema'
 
 import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 
 export default schema(
   {

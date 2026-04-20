@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachEventNameEnum,
-  TaxBloomreachDataDto,
-  TaxPaymentBloomreachDataDto,
-  UnpaidTaxReminderBloomreachDataDto,
-} from './bloomreach.dto'
+  TaxBloomreachData,
+  TaxPaymentBloomreachData,
+  UnpaidTaxInstallmentReminderBloomreachData,
+  UnpaidTaxReminderBloomreachData,
+} from './bloomreach.types'
 
 @Injectable()
 export class BloomreachService {
@@ -19,7 +21,10 @@ export class BloomreachService {
     'binary',
   ).toString('base64')
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly configService: ConfigService,
+  ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
       !process.env.BLOOMREACH_API_KEY ||
@@ -39,6 +44,16 @@ export class BloomreachService {
     cognitoId: string,
     eventName: BloomreachEventNameEnum,
   ): Promise<boolean> {
+    if (
+      this.configService.getOrThrow<string>(
+        'FEATURE_TOGGLE_SEND_BLOOMREACH_EVENTS',
+      ) !== 'true'
+    ) {
+      this.logger.debug(
+        `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}. Object content: ${JSON.stringify(data)}`,
+      )
+      return true
+    }
     const eventResponse = await fetch(
       `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
       {
@@ -70,7 +85,7 @@ export class BloomreachService {
   }
 
   async trackEventTaxPayment(
-    taxPaymentData: TaxPaymentBloomreachDataDto,
+    taxPaymentData: TaxPaymentBloomreachData,
     cognitoId?: string,
   ): Promise<boolean> {
     if (!cognitoId) {
@@ -85,7 +100,7 @@ export class BloomreachService {
   }
 
   async trackEventTax(
-    taxData: TaxBloomreachDataDto,
+    taxData: TaxBloomreachData,
     cognitoId?: string,
   ): Promise<boolean> {
     if (!cognitoId) {
@@ -100,13 +115,24 @@ export class BloomreachService {
   }
 
   async trackEventUnpaidTaxReminder(
-    taxData: UnpaidTaxReminderBloomreachDataDto,
+    taxData: UnpaidTaxReminderBloomreachData,
     cognitoId: string,
-  ): Promise<void> {
-    await this.trackEvent(
+  ): Promise<boolean> {
+    return this.trackEvent(
       taxData,
       cognitoId,
       BloomreachEventNameEnum.UNPAID_TAX_REMINDER,
+    )
+  }
+
+  async trackEventUnpaidTaxInstallmentReminder(
+    taxData: UnpaidTaxInstallmentReminderBloomreachData,
+    cognitoId: string,
+  ): Promise<boolean> {
+    return this.trackEvent(
+      taxData,
+      cognitoId,
+      BloomreachEventNameEnum.UNPAID_TAX_INSTALLMENT_REMINDER,
     )
   }
 }

@@ -31,7 +31,7 @@ declare namespace Cypress {
 
 Cypress.Commands.add('checkFormFieldsNotInErrorState', (form, errorBorderFields) => {
   cy.dataCy(form).then((form) => {
-    cy.wrap(Cypress.$(errorBorderFields, form)).should('not.have.class', 'border-negative-700')
+    cy.wrap(Cypress.$(errorBorderFields, form)).should('not.have.class', 'border-border-error')
   })
 })
 

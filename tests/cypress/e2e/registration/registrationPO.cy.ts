@@ -12,26 +12,27 @@ describe('RF02 -', { testIsolation: false }, () => {
   })
 
   devices
-    .filter((device) => Cypress.env('devices')[`${device}`])
+    .filter((device) => Cypress.expose('devices')[`${device}`])
     .forEach((device) => {
-      context(device, Cypress.env('resolution')[`${device}`], () => {
+      context(device, Cypress.expose('resolution')[`${device}`], () => {
         const emailHash = `${Date.now() + device}@cypress.test`
 
         it('1. Submitting a empty registration PO form.', () => {
           cy.visit('/registracia')
+          cy.waitForHydration()
           cy.hideNavbar(device)
         })
 
         it('2. Check validation.', () => {
           cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).check()
-            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).click()
+            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 4)
 
-            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-border-error')
           })
           cy.dataCy('registration-container').should('be.visible') //.matchImage({maxDiffThreshold: 0.17})
         })
@@ -43,8 +44,6 @@ describe('RF02 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[data-cy=input-name]', form)).type(this.fileData.company_name)
 
             cy.wrap(Cypress.$('[data-cy=input-password]', form)).type(password)
-
-            cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form)).type(password)
           })
         })
 

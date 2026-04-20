@@ -1,13 +1,19 @@
 import { createMock } from '@golevelup/ts-jest'
+import { HttpException, HttpStatus } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { AdminService } from '../../admin/admin.service'
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
-import { CardPaymentReportingService } from '../../card-payment-reporting/card-payment-reporting.service'
+import prismaMock from '../../../test/singleton'
 import { PrismaService } from '../../prisma/prisma.service'
+import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
+import CityAccountIngestionTasksService from '../subservices/city-account-ingestion.tasks.service'
+import NorisSyncTasksService from '../subservices/noris-sync.tasks.service'
+import NotificationsEventsService from '../subservices/notifications-events.service'
+import ReportingTasksService from '../subservices/reporting.tasks.service'
+import TaxImportTasksService from '../subservices/tax-import.tasks.service'
 import { TasksService } from '../tasks.service'
 
 describe('TasksService', () => {
@@ -17,24 +23,35 @@ describe('TasksService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TasksService,
+        { provide: ConfigService, useValue: createMock<ConfigService>() },
         ThrowerErrorGuard,
-        { provide: AdminService, useValue: createMock<AdminService>() },
-        { provide: PrismaService, useValue: createMock<PrismaService>() },
+        {
+          provide: ReportingTasksService,
+          useValue: createMock<ReportingTasksService>(),
+        },
+        {
+          provide: NorisSyncTasksService,
+          useValue: createMock<NorisSyncTasksService>(),
+        },
+        {
+          provide: CityAccountIngestionTasksService,
+          useValue: createMock<CityAccountIngestionTasksService>(),
+        },
+        {
+          provide: TaxImportTasksService,
+          useValue: createMock<TaxImportTasksService>(),
+        },
+        {
+          provide: NotificationsEventsService,
+          useValue: createMock<NotificationsEventsService>(),
+        },
         {
           provide: DatabaseSubservice,
           useValue: createMock<DatabaseSubservice>(),
         },
         {
-          provide: CardPaymentReportingService,
-          useValue: createMock<CardPaymentReportingService>(),
-        },
-        {
-          provide: CityAccountSubservice,
-          useValue: createMock<CityAccountSubservice>(),
-        },
-        {
-          provide: BloomreachService,
-          useValue: createMock<BloomreachService>(),
+          provide: PrismaService,
+          useValue: prismaMock,
         },
       ],
     }).compile()
@@ -46,115 +63,108 @@ describe('TasksService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('sendUnpaidTaxReminders', () => {
-    it('should not do anything when there are no taxes', async () => {
-      const findManyMock = jest
-        .spyOn(service['prismaService'].tax, 'findMany')
-        .mockResolvedValue([])
-      const trackEventUnpaidTaxReminderMock = jest.spyOn(
-        service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
+  describe('alertSilentNorisConnectionErrors', () => {
+    it('should return without throwing when numberOfErrors is 0', async () => {
+      jest
+        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+        .mockResolvedValue({
+          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '0',
+        })
+
+      const updateManySpy = jest
+        .spyOn(service['prismaService'].config, 'updateMany')
+        .mockResolvedValue({ count: 0 })
+      const throwerErrorGuardSpy = jest.spyOn(
+        service['throwerErrorGuard'],
+        'InternalServerErrorException',
       )
 
-      await service.sendUnpaidTaxReminders()
+      await service.alertSilentNorisConnectionErrors()
 
-      expect(findManyMock).toHaveBeenCalled()
-      expect(trackEventUnpaidTaxReminderMock).not.toHaveBeenCalled()
+      expect(updateManySpy).toHaveBeenCalledWith({
+        where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
+        data: { value: '0' },
+      })
+      expect(throwerErrorGuardSpy).not.toHaveBeenCalled()
     })
 
-    it('should send payment reminder events when there are taxes', async () => {
-      const findManyMock = jest
-        .spyOn(service['prismaService'].tax, 'findMany')
-        .mockResolvedValue([
-          {
-            id: 1,
-            year: 2024,
-            taxPayer: {
-              birthNumber: '123456/7890',
-            },
-          },
-        ] as any)
-      const trackEventUnpaidTaxReminderMock = jest.spyOn(
-        service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
-      )
+    it('should return without throwing when numberOfErrors is below threshold', async () => {
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
         .mockResolvedValue({
-          '123456/7890': {
-            externalId: 'external-id-123',
-          },
-        } as any)
-      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '19',
+        })
 
-      await service.sendUnpaidTaxReminders()
+      const updateManySpy = jest
+        .spyOn(service['prismaService'].config, 'updateMany')
+        .mockResolvedValue({ count: 0 })
+      const throwerErrorGuardSpy = jest.spyOn(
+        service['throwerErrorGuard'],
+        'InternalServerErrorException',
+      )
 
-      expect(findManyMock).toHaveBeenCalled()
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
-        {
-          year: 2024,
-        },
-        'external-id-123',
+      await service.alertSilentNorisConnectionErrors()
+
+      expect(updateManySpy).toHaveBeenCalledWith({
+        where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
+        data: { value: '0' },
+      })
+      expect(throwerErrorGuardSpy).not.toHaveBeenCalled()
+    })
+
+    it('should throw when config value is invalid (NaN)', async () => {
+      const invalidValue = 'not-a-number'
+      jest
+        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
+        .mockResolvedValue({
+          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: invalidValue,
+        })
+
+      const throwerErrorGuardSpy = jest
+        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
+        .mockReturnValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        )
+
+      // Method is decorated with @HandleErrors, so it catches the error and returns null
+      await service.alertSilentNorisConnectionErrors()
+      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Invalid ${NORIS_SILENT_CONNECTION_ERRORS_KEY} value: ${invalidValue}. Must be a number.`,
       )
     })
 
-    it('should send payment reminder event for each tax where there is user from city account', async () => {
-      const findManyMock = jest
-        .spyOn(service['prismaService'].tax, 'findMany')
-        .mockResolvedValue([
-          {
-            id: 1,
-            year: 2024,
-            taxPayer: {
-              birthNumber: '123456/7890',
-            },
-          },
-          {
-            id: 2,
-            year: 2024,
-            taxPayer: {
-              birthNumber: '123456/7891',
-            },
-          },
-          {
-            id: 3,
-            year: 2024,
-            taxPayer: {
-              birthNumber: '123456/7892',
-            },
-          },
-        ] as any)
-      const trackEventUnpaidTaxReminderMock = jest.spyOn(
-        service['bloomreachService'],
-        'trackEventUnpaidTaxReminder',
-      )
+    it('should reset config to 0 and throw when numberOfErrors is at or above threshold', async () => {
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(service['databaseSubservice'], 'getConfigByKeys')
         .mockResolvedValue({
-          '123456/7890': {
-            externalId: 'external-id-1',
-          },
-          '123456/7891': {
-            externalId: 'external-id-2',
-          },
-        } as any)
-      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+          [NORIS_SILENT_CONNECTION_ERRORS_KEY]: '25',
+        })
 
-      await service.sendUnpaidTaxReminders()
+      const updateManySpy = jest
+        .spyOn(service['prismaService'].config, 'updateMany')
+        .mockResolvedValue({ count: 1 })
+      const throwerErrorGuardSpy = jest
+        .spyOn(service['throwerErrorGuard'], 'InternalServerErrorException')
+        .mockReturnValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        )
 
-      expect(findManyMock).toHaveBeenCalled()
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledTimes(2)
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
-        {
-          year: 2024,
-        },
-        'external-id-1',
-      )
-      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
-        {
-          year: 2024,
-        },
-        'external-id-2',
+      // Method is decorated with @HandleErrors, so it catches the error and returns null
+      await service.alertSilentNorisConnectionErrors()
+      expect(updateManySpy).toHaveBeenCalledWith({
+        where: { key: NORIS_SILENT_CONNECTION_ERRORS_KEY },
+        data: { value: '0' },
+      })
+      expect(throwerErrorGuardSpy).toHaveBeenCalledWith(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Number of silenced Noris connection errors in last 24 hours is 25.',
       )
     })
   })

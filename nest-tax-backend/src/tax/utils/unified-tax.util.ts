@@ -1,14 +1,18 @@
-import { PaymentStatus, TaxDetail } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { QrPaymentNoteEnum } from '../../qrcode/dtos/qrcode.dto'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import {
-  QrCodeGeneratorDto,
-  QrPaymentNoteEnum,
-} from '../../utils/subservices/dtos/qrcode.dto'
+  GetTaxDetailPureOptions,
+  GetTaxDetailPureResponse,
+  ReplaceQrCodeWithGeneratorDto,
+  TaxTypeToResponseDetailItemizedDto,
+} from '../../tax-definitions/taxDefinitionsTypes'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
@@ -22,22 +26,116 @@ import {
   ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
-import { generateItemizedTaxDetail } from './helpers/tax.helper'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-type ReplaceQrCodeWithGeneratorDto<T extends object> = {
-  [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
+export const bratislavaTimeZone = 'Europe/Bratislava'
+
+const INSTALLMENT_TO_QR_NOTE: Record<number, QrPaymentNoteEnum> = {
+  1: QrPaymentNoteEnum.QR_firstInstallment,
+  2: QrPaymentNoteEnum.QR_secondInstallment,
+  3: QrPaymentNoteEnum.QR_thirdInstallment,
+  4: QrPaymentNoteEnum.QR_fourthInstallment,
 }
 
-const bratislavaTimeZone = 'Europe/Bratislava'
-
-export const stateHolidays = [
-  {
-    year: 2025,
+export const stateHolidays: Partial<Record<number, { dates: Dayjs[] }>> = {
+  2020: {
+    dates: [
+      dayjs.tz('2020-01-01', bratislavaTimeZone),
+      dayjs.tz('2020-01-06', bratislavaTimeZone),
+      dayjs.tz('2020-04-10', bratislavaTimeZone),
+      dayjs.tz('2020-04-13', bratislavaTimeZone),
+      dayjs.tz('2020-05-01', bratislavaTimeZone),
+      dayjs.tz('2020-05-08', bratislavaTimeZone),
+      dayjs.tz('2020-07-05', bratislavaTimeZone),
+      dayjs.tz('2020-08-29', bratislavaTimeZone),
+      dayjs.tz('2020-09-01', bratislavaTimeZone),
+      dayjs.tz('2020-09-15', bratislavaTimeZone),
+      dayjs.tz('2020-11-01', bratislavaTimeZone),
+      dayjs.tz('2020-11-17', bratislavaTimeZone),
+      dayjs.tz('2020-12-24', bratislavaTimeZone),
+      dayjs.tz('2020-12-25', bratislavaTimeZone),
+      dayjs.tz('2020-12-26', bratislavaTimeZone),
+    ],
+  },
+  2021: {
+    dates: [
+      dayjs.tz('2021-01-01', bratislavaTimeZone),
+      dayjs.tz('2021-01-06', bratislavaTimeZone),
+      dayjs.tz('2021-04-02', bratislavaTimeZone),
+      dayjs.tz('2021-04-05', bratislavaTimeZone),
+      dayjs.tz('2021-05-01', bratislavaTimeZone),
+      dayjs.tz('2021-05-08', bratislavaTimeZone),
+      dayjs.tz('2021-07-05', bratislavaTimeZone),
+      dayjs.tz('2021-08-29', bratislavaTimeZone),
+      dayjs.tz('2021-09-01', bratislavaTimeZone),
+      dayjs.tz('2021-09-15', bratislavaTimeZone),
+      dayjs.tz('2021-11-01', bratislavaTimeZone),
+      dayjs.tz('2021-11-17', bratislavaTimeZone),
+      dayjs.tz('2021-12-24', bratislavaTimeZone),
+      dayjs.tz('2021-12-25', bratislavaTimeZone),
+      dayjs.tz('2021-12-26', bratislavaTimeZone),
+    ],
+  },
+  2022: {
+    dates: [
+      dayjs.tz('2022-01-01', bratislavaTimeZone),
+      dayjs.tz('2022-01-06', bratislavaTimeZone),
+      dayjs.tz('2022-04-15', bratislavaTimeZone),
+      dayjs.tz('2022-04-18', bratislavaTimeZone),
+      dayjs.tz('2022-05-01', bratislavaTimeZone),
+      dayjs.tz('2022-05-08', bratislavaTimeZone),
+      dayjs.tz('2022-07-05', bratislavaTimeZone),
+      dayjs.tz('2022-08-29', bratislavaTimeZone),
+      dayjs.tz('2022-09-01', bratislavaTimeZone),
+      dayjs.tz('2022-09-15', bratislavaTimeZone),
+      dayjs.tz('2022-11-01', bratislavaTimeZone),
+      dayjs.tz('2022-11-17', bratislavaTimeZone),
+      dayjs.tz('2022-12-24', bratislavaTimeZone),
+      dayjs.tz('2022-12-25', bratislavaTimeZone),
+      dayjs.tz('2022-12-26', bratislavaTimeZone),
+    ],
+  },
+  2023: {
+    dates: [
+      dayjs.tz('2023-01-01', bratislavaTimeZone),
+      dayjs.tz('2023-01-06', bratislavaTimeZone),
+      dayjs.tz('2023-04-07', bratislavaTimeZone),
+      dayjs.tz('2023-04-10', bratislavaTimeZone),
+      dayjs.tz('2023-05-01', bratislavaTimeZone),
+      dayjs.tz('2023-05-08', bratislavaTimeZone),
+      dayjs.tz('2023-07-05', bratislavaTimeZone),
+      dayjs.tz('2023-08-29', bratislavaTimeZone),
+      dayjs.tz('2023-09-01', bratislavaTimeZone),
+      dayjs.tz('2023-09-15', bratislavaTimeZone),
+      dayjs.tz('2023-11-01', bratislavaTimeZone),
+      dayjs.tz('2023-11-17', bratislavaTimeZone),
+      dayjs.tz('2023-12-24', bratislavaTimeZone),
+      dayjs.tz('2023-12-25', bratislavaTimeZone),
+      dayjs.tz('2023-12-26', bratislavaTimeZone),
+    ],
+  },
+  2024: {
+    dates: [
+      dayjs.tz('2024-01-01', bratislavaTimeZone),
+      dayjs.tz('2024-01-06', bratislavaTimeZone),
+      dayjs.tz('2024-03-29', bratislavaTimeZone),
+      dayjs.tz('2024-04-01', bratislavaTimeZone),
+      dayjs.tz('2024-05-01', bratislavaTimeZone),
+      dayjs.tz('2024-05-08', bratislavaTimeZone),
+      dayjs.tz('2024-07-05', bratislavaTimeZone),
+      dayjs.tz('2024-08-29', bratislavaTimeZone),
+      dayjs.tz('2024-09-15', bratislavaTimeZone),
+      dayjs.tz('2024-11-01', bratislavaTimeZone),
+      dayjs.tz('2024-11-17', bratislavaTimeZone),
+      dayjs.tz('2024-12-24', bratislavaTimeZone),
+      dayjs.tz('2024-12-25', bratislavaTimeZone),
+      dayjs.tz('2024-12-26', bratislavaTimeZone),
+    ],
+  },
+  2025: {
     dates: [
       dayjs.tz('2025-01-01', bratislavaTimeZone),
       dayjs.tz('2025-01-06', bratislavaTimeZone),
@@ -55,8 +153,7 @@ export const stateHolidays = [
       dayjs.tz('2025-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2026,
+  2026: {
     dates: [
       dayjs.tz('2026-01-01', bratislavaTimeZone),
       dayjs.tz('2026-01-06', bratislavaTimeZone),
@@ -74,8 +171,7 @@ export const stateHolidays = [
       dayjs.tz('2026-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2027,
+  2027: {
     dates: [
       dayjs.tz('2027-01-01', bratislavaTimeZone),
       dayjs.tz('2027-01-06', bratislavaTimeZone),
@@ -93,8 +189,7 @@ export const stateHolidays = [
       dayjs.tz('2027-12-26', bratislavaTimeZone),
     ],
   },
-  {
-    year: 2028,
+  2028: {
     dates: [
       dayjs.tz('2028-01-01', bratislavaTimeZone),
       dayjs.tz('2028-01-06', bratislavaTimeZone),
@@ -112,15 +207,13 @@ export const stateHolidays = [
       dayjs.tz('2028-12-26', bratislavaTimeZone),
     ],
   },
-]
+}
 
-const secondPaymentDueDate = '09-01'
-const thirdPaymentDueDate = '11-01'
-const dueDateOffset = 21
+export const DUE_DATE_OFFSET = 15
 
 const isStateHoliday = (date: Dayjs): boolean => {
   const year = date.year()
-  const yearHolidays = stateHolidays.find((holiday) => holiday.year === year)
+  const yearHolidays = stateHolidays[year]
 
   if (!yearHolidays) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
@@ -148,7 +241,19 @@ const ensureWorkingDay = (date: Dayjs): Dayjs => {
   return workingDay
 }
 
-const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
+const calculateDueDate = (
+  dateOfValidity: Dayjs | null,
+  deliveryMethod: DeliveryMethodNamed | null,
+  createdAt: Dayjs,
+): Dayjs | undefined => {
+  if (deliveryMethod && deliveryMethod === DeliveryMethodNamed.CITY_ACCOUNT) {
+    const dueDateBase = createdAt
+      .tz(bratislavaTimeZone)
+      .startOf('day')
+      .add(DUE_DATE_OFFSET, 'day')
+    return ensureWorkingDay(dueDateBase)
+  }
+
   // We will not provide due date if date of validity for the first payment is not set.
   if (!dateOfValidity) {
     return undefined
@@ -158,25 +263,41 @@ const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
   const dueDateBase = dateOfValidity
     .tz(bratislavaTimeZone)
     .startOf('day')
-    .add(dueDateOffset, 'day')
+    .add(DUE_DATE_OFFSET, 'day')
   return ensureWorkingDay(dueDateBase)
 }
 
-const calculateInstallmentAmounts = (
-  installments: { order: string | null; amount: number }[],
+/**
+ * Calculates installment payment amounts and their statuses based on overall paid amount.
+ *
+ * IMPORTANT: The sum of all installments should always equal the total tax amount.
+ * This function distributes payments sequentially across installments (1st, then 2nd, then 3rd, then 4th).
+ */
+export const calculateInstallmentAmounts = (
+  installments: { order: number; amount: number }[],
   overallPaid: number,
-): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
-  if (installments.length !== 3) {
+  numberOfInstallments?: number,
+) => {
+  if (installments.length === 0) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      'No installments found for the tax.',
+    )
+  }
+
+  if (numberOfInstallments && installments.length !== numberOfInstallments) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
     )
   }
 
-  const amounts = [1, 2, 3].map((order) => {
-    const installment = installments.find(
-      (item) => item.order === order.toString(),
-    )
+  const installmentOrders = Array.from(
+    { length: installments.length },
+    (_, i) => i + 1,
+  )
+  const amounts = installmentOrders.map((order) => {
+    const installment = installments.find((item) => item.order === order)
     if (!installment) {
       throw new ThrowerErrorGuard().InternalServerErrorException(
         CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
@@ -189,6 +310,7 @@ const calculateInstallmentAmounts = (
   const result: {
     toPay: number
     paid: number
+    total: number
     status: InstallmentPaidStatusEnum
   }[] = []
   let remainingPaid = overallPaid
@@ -206,23 +328,78 @@ const calculateInstallmentAmounts = (
       status = InstallmentPaidStatusEnum.PARTIALLY_PAID
     }
 
-    result.push({ toPay, paid, status })
+    result.push({ toPay, paid, total: amount, status })
     remainingPaid -= paid
   })
 
   return result
 }
 
+/**
+ * Due dates aligned with UI installment rows: index 0 = validity-based first due date;
+ * further indices = NORIS due dates for installments with order 2, 3, … (order 1 is omitted).
+ */
+type InstallmentDueDatesRow = [Dayjs | undefined, ...Dayjs[]]
+
+/**
+ * Determines installment statuses based on due dates and payment status.
+ * Each installment is independent and pays one after another.
+ */
+const calculateInstallmentStatus = (
+  today: Date,
+  installmentAmounts: {
+    toPay: number
+    paid: number
+    total: number
+    status: InstallmentPaidStatusEnum
+  }[],
+  installmentDueDates: InstallmentDueDatesRow,
+): {
+  status: InstallmentPaidStatusEnum
+  remainingAmount: number
+}[] => {
+  const installmentCount = installmentAmounts.length
+  const result: {
+    status: InstallmentPaidStatusEnum
+    remainingAmount: number
+  }[] = []
+
+  for (let i = 0; i < installmentCount; i += 1) {
+    const installmentDueDate = installmentDueDates[i]
+    // If due date is undefined, we can't determine if it's late, so use the original status
+    const isDueDateInFuture =
+      installmentDueDate === undefined ||
+      installmentDueDate.isAfter(dayjs(today))
+    const isLateInstallment =
+      !isDueDateInFuture &&
+      installmentAmounts[i].status !== InstallmentPaidStatusEnum.PAID &&
+      installmentAmounts[i].status !== InstallmentPaidStatusEnum.OVER_PAID
+
+    result.push({
+      status: isLateInstallment
+        ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
+        : installmentAmounts[i].status,
+      remainingAmount: installmentAmounts[i].toPay,
+    })
+  }
+
+  return result
+}
+
+export const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
+  dayjs.tz(dueDate, bratislavaTimeZone)
+
 const calculateInstallmentPaymentDetails = (options: {
   overallAmount: number
   overallPaid: number
   today: Date
-  taxYear: number
   paymentCalendarThreshold: number
   dueDate?: Dayjs
-  installments: { order: string | null; amount: number }[]
+  installments: { order: number; amount: number; dueDate: Date }[]
   variableSymbol: string
-  specificSymbol: any
+  numberOfInstallments?: number
+  iban: string
+  isCancelled: boolean
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
@@ -230,38 +407,16 @@ const calculateInstallmentPaymentDetails = (options: {
     overallAmount,
     overallPaid,
     today,
-    taxYear,
     paymentCalendarThreshold,
     dueDate,
     installments,
     variableSymbol,
-    specificSymbol,
+    numberOfInstallments,
+    iban,
+    isCancelled,
   } = options
-  if (overallAmount - overallPaid <= 0) {
-    return {
-      isPossible: false,
-      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-    }
-  }
 
-  // Midnight start of the next day
-  const dueDateSecondPayment = dayjs.tz(
-    `${taxYear}-${secondPaymentDueDate}`,
-    bratislavaTimeZone,
-  )
-  const dueDateThirdPayment = dayjs.tz(
-    `${taxYear}-${thirdPaymentDueDate}`,
-    bratislavaTimeZone,
-  )
-
-  if (dayjs(today) > dueDateSecondPayment) {
-    return {
-      isPossible: false,
-      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
-    }
-  }
-
-  if (overallAmount < paymentCalendarThreshold) {
+  if (overallAmount <= paymentCalendarThreshold) {
     return {
       isPossible: false,
       reasonNotPossible:
@@ -269,48 +424,77 @@ const calculateInstallmentPaymentDetails = (options: {
     }
   }
 
+  const installmentsByOrder = [...installments].sort(
+    (a, b) => a.order - b.order,
+  )
+  const installmentDatesFromNoris = installmentsByOrder
+    .slice(1) // Omit order 1 - this is the validity-based due date
+    .map((installment) => parseInstallmentDueDate(installment.dueDate))
+  const installmentDueDatesParsed: InstallmentDueDatesRow = [
+    dueDate,
+    ...installmentDatesFromNoris,
+  ]
+
+  const dueDateLastPayment =
+    installmentDueDatesParsed[installmentDueDatesParsed.length - 1]
+  if (!dueDateLastPayment) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    )
+  }
+
+  if (isCancelled) {
+    return {
+      isPossible: false,
+      reasonNotPossible:
+        InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED,
+      dueDateLastPayment: dueDateLastPayment.toDate(),
+    }
+  }
+
+  if (overallAmount - overallPaid <= 0) {
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+      dueDateLastPayment: dueDateLastPayment.toDate(),
+    }
+  }
+
+  if (dayjs(today).isAfter(dueDateLastPayment)) {
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+      dueDateLastPayment: dueDateLastPayment.toDate(),
+    }
+  }
+
   const installmentAmounts = calculateInstallmentAmounts(
     installments,
     overallPaid,
+    numberOfInstallments,
   )
 
-  const dueDateInFuture = !dueDate || dueDate > dayjs(today)
-  const isFirstInstallmentLate =
-    !dueDateInFuture &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
-    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+  const installmentStatuses = calculateInstallmentStatus(
+    today,
+    installmentAmounts,
+    installmentDueDatesParsed,
+  )
 
-  const installmentDetails: ResponseInstallmentItemDto[] = [
-    {
-      installmentNumber: 1,
-      dueDate: dueDate?.toDate(),
-      status: isFirstInstallmentLate
-        ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
-        : installmentAmounts[0].status,
-      remainingAmount: isFirstInstallmentLate ? 0 : installmentAmounts[0].toPay,
-    },
-    {
-      installmentNumber: 2,
-      dueDate: dueDateSecondPayment.toDate(),
-      status: isFirstInstallmentLate
-        ? installmentAmounts[0].status
-        : installmentAmounts[1].status,
-      remainingAmount: isFirstInstallmentLate
-        ? installmentAmounts[1].toPay + installmentAmounts[0].toPay
-        : installmentAmounts[1].toPay,
-    },
-    {
-      installmentNumber: 3,
-      dueDate: dueDateThirdPayment.toDate(),
-      status: installmentAmounts[2].status,
-      remainingAmount: installmentAmounts[2].toPay,
-    },
-  ]
+  const installmentDetails: ResponseInstallmentItemDto[] =
+    installmentStatuses.map((statusInfo, index) => ({
+      installmentNumber: index + 1,
+      dueDate: installmentDueDatesParsed[index]?.toDate(),
+      status: statusInfo.status,
+      remainingAmount: statusInfo.remainingAmount,
+      totalInstallmentAmount: installmentAmounts[index].total,
+    }))
 
   const active = installmentDetails.find(
     (installment) =>
       installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
-      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
+      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID ||
+      installment.status === InstallmentPaidStatusEnum.AFTER_DUE_DATE,
   )
 
   // All valid reasons for no active payment should have been caught before
@@ -322,31 +506,25 @@ const calculateInstallmentPaymentDetails = (options: {
     )
   }
 
-  let paymentNote
-  if (active.installmentNumber === 1) {
-    paymentNote = QrPaymentNoteEnum.QR_firstInstallment
-  } else if (active.installmentNumber === 2) {
-    paymentNote =
-      installmentDetails[0].status === InstallmentPaidStatusEnum.AFTER_DUE_DATE
-        ? QrPaymentNoteEnum.QR_firstSecondInstallment
-        : QrPaymentNoteEnum.QR_secondInstallment
-  } else {
-    paymentNote = QrPaymentNoteEnum.QR_thirdInstallment
-  }
+  const paymentNote =
+    INSTALLMENT_TO_QR_NOTE[active.installmentNumber] ??
+    QrPaymentNoteEnum.QR_fourthInstallment
 
   const activeInstallment = {
     remainingAmount: active.remainingAmount,
     variableSymbol,
+    dueDate: active.dueDate,
     qrCode: {
       amount: active.remainingAmount,
       variableSymbol,
-      specificSymbol,
       paymentNote,
+      iban,
     },
   }
 
   return {
     isPossible: true,
+    dueDateLastPayment: dueDateLastPayment.toDate(),
     installments: installmentDetails,
     activeInstallment,
   }
@@ -357,14 +535,16 @@ const calculateOneTimePaymentDetails = (options: {
   overallBalance: number
   dueDate?: Date
   variableSymbol: string
-  specificSymbol: string
+  iban: string
+  isCancelled: boolean
 }): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
   const {
     overallPaid,
     overallBalance,
     dueDate,
     variableSymbol,
-    specificSymbol,
+    iban,
+    isCancelled,
   } = options
   if (overallBalance <= 0) {
     return {
@@ -372,6 +552,13 @@ const calculateOneTimePaymentDetails = (options: {
       reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
     }
   }
+  if (isCancelled) {
+    return {
+      isPossible: false,
+      reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.TAX_IS_CANCELLED,
+    }
+  }
+
   return {
     isPossible: true,
     type:
@@ -383,36 +570,21 @@ const calculateOneTimePaymentDetails = (options: {
     qrCode: {
       amount: overallBalance,
       variableSymbol,
-      specificSymbol,
       paymentNote:
         overallPaid > 0
           ? QrPaymentNoteEnum.QR_remainingAmount
           : QrPaymentNoteEnum.QR_oneTimePay,
+      iban,
     },
     variableSymbol,
   }
 }
 
-export const getTaxDetailPure = (options: {
-  taxYear: number // daňový rok
-  today: Date // aktuálny dátum
-  overallAmount: number // suma na zaplatenie
-  paymentCalendarThreshold: number // splátková hranica (66 Eur)
-  variableSymbol: string
-  dateOfValidity: Date | null // dátum právoplatnosti
-  installments: { order: string | null; amount: number }[]
-  taxDetails: TaxDetail[]
-  taxConstructions: number
-  taxFlat: number
-  taxLand: number
-  specificSymbol: string
-  taxPayments: {
-    amount: number
-    status: PaymentStatus
-  }[]
-}) => {
+export const getTaxDetailPure = <TTaxType extends TaxType>(
+  options: GetTaxDetailPureOptions<TTaxType>,
+): GetTaxDetailPureResponse<TTaxType> => {
   const {
-    taxYear,
+    type,
     today,
     overallAmount,
     paymentCalendarThreshold,
@@ -420,11 +592,10 @@ export const getTaxDetailPure = (options: {
     dateOfValidity,
     installments,
     taxDetails,
-    taxConstructions,
-    taxFlat,
-    taxLand,
-    specificSymbol,
     taxPayments,
+    deliveryMethod,
+    createdAt,
+    isCancelled,
   } = options
 
   let overallPaid = 0
@@ -437,34 +608,39 @@ export const getTaxDetailPure = (options: {
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
   const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
-  const dueDate = calculateDueDate(dateOfValidityDayjs)
+
+  const dueDate = calculateDueDate(
+    dateOfValidityDayjs,
+    deliveryMethod,
+    dayjs(createdAt),
+  )
+
+  const taxDefinition = getTaxDefinitionByType(type)
 
   const oneTimePayment = calculateOneTimePaymentDetails({
     overallPaid,
     overallBalance,
     dueDate: dueDate?.toDate(),
     variableSymbol,
-    specificSymbol,
+    iban: taxDefinition.iban,
+    isCancelled,
   })
 
   const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,
     overallPaid,
     today,
-    taxYear,
     paymentCalendarThreshold,
     dueDate,
     installments,
     variableSymbol,
-    specificSymbol,
+    numberOfInstallments: taxDefinition.numberOfInstallments,
+    iban: taxDefinition.iban,
+    isCancelled,
   })
 
-  const itemizedDetail: ResponseTaxDetailItemizedDto = {
-    apartmentTotalAmount: taxFlat,
-    groundTotalAmount: taxLand,
-    constructionTotalAmount: taxConstructions,
-    ...generateItemizedTaxDetail(taxDetails),
-  }
+  const itemizedDetail: TaxTypeToResponseDetailItemizedDto[TTaxType] =
+    taxDefinition.generateItemizedTaxDetail(taxDetails)
 
   return {
     overallPaid,
@@ -475,15 +651,17 @@ export const getTaxDetailPure = (options: {
     itemizedDetail,
   }
 }
+
 export const getTaxDetailPureForOneTimeGenerator = (options: {
   taxId: number
-  overallAmount: number // suma na zaplatenie
+  taxType: TaxType
+  overallAmount: number
   taxPayments: {
     amount: number
     status: PaymentStatus
   }[]
 }): PaymentGateURLGeneratorDto => {
-  const { taxId, overallAmount, taxPayments } = options
+  const { taxId, taxType, overallAmount, taxPayments } = options
 
   let overallPaid = 0
   taxPayments.forEach((payment) => {
@@ -510,61 +688,76 @@ export const getTaxDetailPureForOneTimeGenerator = (options: {
     amount: overallBalance,
     taxId,
     description,
+    taxType,
   }
 }
 
 export const getTaxDetailPureForInstallmentGenerator = (options: {
+  taxType: TaxType
   taxId: number
-  taxYear: number
   today: Date
   overallAmount: number
-  paymentCalendarThreshold: number
   variableSymbol: string
   dateOfValidity: Date | null
-  installments: { order: string | null; amount: number }[]
-  specificSymbol: string
+  installments: { order: number; amount: number; dueDate: Date }[]
   taxPayments: {
     amount: number
     status: PaymentStatus
   }[]
+  deliveryMethod: DeliveryMethodNamed | null
+  createdAt: Date
+  isCancelled: boolean
 }): PaymentGateURLGeneratorDto => {
   const {
+    taxType,
     taxId,
-    taxYear,
     today,
     overallAmount,
-    paymentCalendarThreshold,
     variableSymbol,
     dateOfValidity,
     installments,
-    specificSymbol,
     taxPayments,
+    deliveryMethod,
+    createdAt,
+    isCancelled,
   } = options
+  const { paymentCalendarThreshold, numberOfInstallments, iban } =
+    getTaxDefinitionByType(taxType)
 
-  // Reuse the existing tax detail calculation
-  const taxDetail = getTaxDetailPure({
-    taxYear,
-    today,
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
+    }
+  })
+
+  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  const dueDate = calculateDueDate(
+    dateOfValidityDayjs,
+    deliveryMethod,
+    dayjs(createdAt),
+  )
+
+  const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,
+    overallPaid,
+    today,
     paymentCalendarThreshold,
-    variableSymbol,
-    dateOfValidity,
+    dueDate,
     installments,
-    taxDetails: [], // Not needed for payment generation
-    taxConstructions: 0, // Not needed for payment generation
-    taxFlat: 0, // Not needed for payment generation
-    taxLand: 0, // Not needed for payment generation
-    specificSymbol,
-    taxPayments,
+    variableSymbol,
+    numberOfInstallments,
+    iban,
+    isCancelled,
   })
 
   // Check if installment payment is possible
   if (
-    !taxDetail.installmentPayment.isPossible ||
-    !taxDetail.installmentPayment.activeInstallment ||
-    !taxDetail.installmentPayment.installments
+    !installmentPayment.isPossible ||
+    !installmentPayment.activeInstallment ||
+    !installmentPayment.installments
   ) {
-    switch (taxDetail.installmentPayment.reasonNotPossible) {
+    switch (installmentPayment.reasonNotPossible) {
       case InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.ALREADY_PAID,
@@ -583,6 +776,13 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
           CustomErrorTaxTypesResponseEnum.BELOW_THRESHOLD,
         )
 
+      case InstallmentPaymentReasonNotPossibleEnum.TAX_IS_CANCELLED:
+        throw new ThrowerErrorGuard().UnprocessableEntityException(
+          CustomErrorTaxTypesEnum.TAX_IS_CANCELLED,
+          CustomErrorTaxTypesResponseEnum.TAX_IS_CANCELLED,
+        )
+
+      case undefined:
       default:
         throw new ThrowerErrorGuard().UnprocessableEntityException(
           CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
@@ -592,7 +792,7 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   }
 
   // Find the active installment details
-  const activeInstallmentInfo = taxDetail.installmentPayment.installments.find(
+  const activeInstallmentInfo = installmentPayment.installments.find(
     (installment) =>
       installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
       installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
@@ -604,16 +804,17 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
       CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
     )
   }
-
   // Create description based on the installment status
+  // data that goes to payment gateway should not contain diacritics
   const description =
     activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
-      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
-      : `Platba ${activeInstallmentInfo.installmentNumber}. splátky za dane pre BA s id dane ${taxId}`
+      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+      : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
 
   return {
     amount: activeInstallmentInfo.remainingAmount,
     taxId,
     description,
+    taxType,
   }
 }

@@ -15,7 +15,7 @@ export const getFileIdsToInfoMap = (
   selfUrl: string,
 ): FileIdInfoMap => {
   const result: FileIdInfoMap = {}
-  form.files?.forEach((file) => {
+  form.files.forEach((file) => {
     const token = jwt.sign({ fileId: file.id }, jwtSecret, {
       expiresIn: '5y',
     })

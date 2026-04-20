@@ -44,7 +44,7 @@ describe('GinisHelper', () => {
     it('should just call update form', async () => {
       const spy = jest
         .spyOn(helper['formsService'], 'updateForm')
-        .mockImplementation(async () => ({}) as Forms)
+        .mockImplementation(async () => Promise.resolve({} as Forms))
       await helper.setFormToError('sss')
 
       expect(spy).toHaveBeenCalledTimes(1)

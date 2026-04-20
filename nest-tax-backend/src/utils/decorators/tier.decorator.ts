@@ -1,7 +1,6 @@
 import { SetMetadata } from '@nestjs/common'
-
-import { CognitoTiersEnum } from '../global-dtos/cognito.dto'
+import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 export const TIERS_KEY = 'custom:tier'
-export const Tiers = (...tiers: CognitoTiersEnum[]) =>
+export const Tiers = (...tiers: CognitoUserAttributesTierEnum[]) =>
   SetMetadata(TIERS_KEY, tiers)

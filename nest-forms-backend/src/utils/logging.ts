@@ -27,21 +27,19 @@ export function escapeForLogfmt(value: string): string {
 export function separateLogFromResponseObj<T extends object>(
   obj: T,
 ): {
-  responseLog: { [K: string]: T[keyof T] }
-  responseMessage: { [K: string]: T[keyof T] }
+  responseLog: Record<string, T[keyof T]>
+  responseMessage: Record<string, T[keyof T]>
 } {
-  const responseLog: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
-  const responseMessage: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
+  const responseLog: Record<string, T[keyof T]> = {}
+  const responseMessage: Record<string, T[keyof T]> = {}
 
-  Object.getOwnPropertyNames(obj).forEach((objKey) => {
-    if (errorTypeStrings.includes(objKey)) {
-      responseLog[objKey.slice(8)] = obj[objKey as keyof T]
+  const ownNames = Object.getOwnPropertyNames(obj) as (keyof T)[]
+  ownNames.forEach((objKey) => {
+    const keyStr = String(objKey)
+    if (errorTypeStrings.includes(keyStr)) {
+      responseLog[keyStr.slice(8)] = obj[objKey]
     } else {
-      responseMessage[objKey] = obj[objKey as keyof T]
+      responseMessage[keyStr] = obj[objKey]
     }
   })
 
@@ -72,7 +70,20 @@ export function objToLogfmt(obj: object): string {
     ...separatedValues.responseMessage,
   }
   return Object.entries(objAll)
-    .map(([key, value]) => {
+    .flatMap(([key, value]) => {
+      if (key === 'console' && typeof value === 'object' && value !== null) {
+        return Object.entries(value).map(([subKey, subValue]) => {
+          let formattedSubValue: unknown = subValue
+          if (typeof formattedSubValue === 'object') {
+            formattedSubValue = JSON.stringify(formattedSubValue)
+          }
+          if (typeof formattedSubValue === 'string') {
+            formattedSubValue = escapeForLogfmt(formattedSubValue)
+          }
+          return `${subKey}="${formattedSubValue}"`
+        })
+      }
+
       let formattedValue: unknown = value
       if (typeof formattedValue === 'object') {
         formattedValue = JSON.stringify(formattedValue)
@@ -103,7 +114,8 @@ function httpExceptionToObj(
       method: methodName,
       stack: error.stack,
     }
-  } catch (parseError) {
+  } catch {
+    // TODO do we want to log this caught error?
     return {
       errorType: error.name,
       message: error.message,
@@ -145,7 +157,7 @@ export function isLogfmt(input: string): boolean {
   return regex.test(input)
 }
 
-export function ToLogfmt(input: unknown): string {
+export function toLogfmt(input: unknown): string {
   if (!input) {
     return ''
   }
@@ -158,6 +170,8 @@ export function ToLogfmt(input: unknown): string {
   if (typeof input === 'string') {
     return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   return `message="${escapeForLogfmt(input.toString())}"`
 }
 
@@ -171,10 +185,10 @@ export function symbolKeysToStrings(obj: object): Record<string, unknown> {
 
   symbols.forEach((symbol) => {
     const { description } = symbol
-    if (description) {
+    if (description && description in errorTypeKeys) {
       const encodedKey = errorTypeKeys[description]
       if (encodedKey) {
-        response[encodedKey] = (obj as any)[symbol]
+        response[encodedKey] = (obj as Record<symbol, unknown>)[symbol]
       }
     }
   })

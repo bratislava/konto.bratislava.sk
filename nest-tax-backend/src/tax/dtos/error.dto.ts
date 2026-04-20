@@ -9,6 +9,8 @@ export enum CustomErrorTaxTypesEnum {
   ALREADY_PAID = 'ALREADY_PAID',
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
   BELOW_THRESHOLD = 'BELOW_THRESHOLD',
+  TAX_TYPE_NOT_FOUND = 'TAX_TYPE_NOT_FOUND',
+  TAX_IS_CANCELLED = 'TAX_IS_CANCELLED',
 }
 
 export enum CustomErrorTaxTypesResponseEnum {
@@ -16,14 +18,11 @@ export enum CustomErrorTaxTypesResponseEnum {
   TAX_USER_NOT_FOUND = 'Tax user was not found',
   BIRTHNUMBER_NOT_EXISTS = 'Birthnumber not exists',
   MISSING_INSTALLMENT_AMOUNTS = 'Missing one or more installment amount',
-  INSTALLMENT_INCORRECT_COUNT = 'Number of installments does not equal 3.',
+  INSTALLMENT_INCORRECT_COUNT = 'Number of installments does not equal the number of installments in the database.',
   INSTALLMENT_UNEXPECTED_ERROR = 'An unexpected error occurred while calculating installments.',
   STATE_HOLIDAY_NOT_EXISTS = 'State holidays are not configured for this or the next year.',
   ALREADY_PAID = 'Tax for this year was already paid.',
   AFTER_DUE_DATE = 'Tax is after due date.',
   BELOW_THRESHOLD = 'Tax amount is below threshold for installment payments.',
-}
-
-export enum CustomErrorPdfCreateTypesEnum {
-  PDF_CREATE_ERROR = 'PDF_CREATE_ERROR',
+  TAX_IS_CANCELLED = 'Tax is cancelled.',
 }

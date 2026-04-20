@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, test } from 'vitest'
+import { toMatchImageSnapshot } from 'jest-image-snapshot'
 import { generatePageScreenshot } from '../../test-utils/generatePageScreenshot'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { renderSummaryEmail } from '../../src/summary-email/renderSummaryEmail'
 import { mapValues } from 'lodash'
-import { screenshotTestTimeout } from '../../test-utils/consts'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
-import { toMatchImageSnapshot } from 'jest-image-snapshot'
+import { screenshotTestTimeout } from '../../test-utils/consts'
 import { getFormSummary } from '../../src/summary/summary'
 
 expect.extend({ toMatchImageSnapshot })

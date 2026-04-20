@@ -1,25 +1,23 @@
-/* eslint-disable pii/no-email */
 import { Nack } from '@golevelup/nestjs-rabbitmq'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
+  FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import FilesService from '../files/files.service'
 import FormsService from '../forms/forms.service'
-import {
-  SendMessageNasesSender,
-  SendMessageNasesSenderType,
-} from '../nases/types/send-message-nases-sender.type'
+import GinisService from '../ginis/ginis.service'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import { FormWithFiles } from '../utils/types/prisma'
 import NasesConsumerService from './nases-consumer.service'
@@ -31,7 +29,7 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 describe('NasesConsumerService', () => {
   let service: NasesConsumerService
   let formsService: FormsService
-  let convertPdfService: ConvertPdfService
+  let ginisService: GinisService
 
   beforeEach(async () => {
     jest.resetAllMocks()
@@ -56,12 +54,7 @@ describe('NasesConsumerService', () => {
           useValue: createMock<RabbitmqClientService>(),
         },
         { provide: FormsService, useValue: createMock<FormsService>() },
-        { provide: FilesService, useValue: createMock<FilesService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
-        {
-          provide: ConvertPdfService,
-          useValue: createMock<ConvertPdfService>(),
-        },
         {
           provide: EmailFormsSubservice,
           useValue: createMock<EmailFormsSubservice>(),
@@ -71,12 +64,21 @@ describe('NasesConsumerService', () => {
           useValue: createMock<WebhookSubservice>(),
         },
         { provide: PrismaService, useValue: createMock<PrismaService>() },
+        { provide: GinisService, useValue: createMock<GinisService>() },
+        {
+          provide: ConvertPdfService,
+          useValue: createMock<ConvertPdfService>(),
+        },
+        {
+          provide: ThrowerErrorGuard,
+          useValue: createMock<ThrowerErrorGuard>(),
+        },
       ],
     }).compile()
 
     service = app.get<NasesConsumerService>(NasesConsumerService)
     formsService = app.get<FormsService>(FormsService)
-    convertPdfService = app.get<ConvertPdfService>(ConvertPdfService)
+    ginisService = app.get<GinisService>(GinisService)
     Object.defineProperty(service, 'logger', {
       value: {
         error: jest.fn(),
@@ -95,120 +97,6 @@ describe('NasesConsumerService', () => {
   describe('should be defined', () => {
     it('should be defined', () => {
       expect(service).toBeDefined()
-    })
-  })
-
-  describe('sendToNasesAndUpdateState', () => {
-    it('should error handle if status is not 200', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
-        .fn()
-        .mockResolvedValue({ status: 401 })
-
-      const convertSpy = jest.spyOn(
-        convertPdfService,
-        'createPdfImageInFormFiles',
-      )
-      const spyLog = jest.spyOn(service['logger'], 'error')
-
-      await service.sendToNasesAndUpdateState(
-        '',
-        {} as Forms,
-        {
-          formId: '',
-          tries: 1,
-          userData: {
-            email: 'test.inovacie_at_bratislava.sk',
-            firstName: 'Tester',
-          },
-        },
-        {} as FormDefinitionSlovenskoSk,
-        { type: SendMessageNasesSenderType.Self },
-      )
-
-      expect(spyLog).toHaveBeenCalled()
-      expect(convertSpy).toHaveBeenCalled()
-    })
-
-    it('should start checking for nases delivery and not trigger any errors', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
-        .fn()
-        .mockResolvedValue({ status: 200 })
-
-      const spyLog = jest.spyOn(service['logger'], 'error')
-      const spyDelay = jest.spyOn(service as any, 'queueDelayedForm')
-      const spyPublish = jest.spyOn(
-        service['rabbitmqClientService'],
-        'publishToGinis',
-      )
-
-      const convertSpy = jest.spyOn(
-        convertPdfService,
-        'createPdfImageInFormFiles',
-      )
-      await service.sendToNasesAndUpdateState(
-        '',
-        {} as Forms,
-        {
-          formId: 'formIdVal',
-          tries: 1,
-          userData: {
-            email: 'test.inovacie_at_bratislava.sk',
-            firstName: 'Tester',
-          },
-        },
-        {
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as FormDefinitionSlovenskoSk,
-        { type: SendMessageNasesSenderType.Self },
-      )
-
-      expect(spyLog).not.toHaveBeenCalled()
-      expect(spyDelay).not.toHaveBeenCalled()
-      expect(spyPublish).toHaveBeenCalledWith({
-        formId: 'formIdVal',
-        tries: 0,
-        userData: {
-          email: 'test.inovacie_at_bratislava.sk',
-          firstName: 'Tester',
-        },
-      })
-
-      expect(convertSpy).toHaveBeenCalled()
-    })
-
-    it('should pass additionalFormUpdates to formsService.updateForm', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
-        .fn()
-        .mockResolvedValue({ status: 200 })
-
-      const updateFormSpy = jest.spyOn(formsService, 'updateForm')
-      const additionalFormUpdates = {
-        formSummary: {} as PrismaJson.FormSummary,
-      }
-
-      await service.sendToNasesAndUpdateState(
-        '',
-        {} as Forms,
-        {
-          formId: 'formIdVal',
-          tries: 1,
-          userData: {
-            email: 'test.inovacie_at_bratislava.sk',
-            firstName: 'Tester',
-          },
-        },
-        {
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as FormDefinitionSlovenskoSk,
-        { type: SendMessageNasesSenderType.Self },
-        additionalFormUpdates,
-      )
-
-      expect(updateFormSpy).toHaveBeenCalledWith('formIdVal', {
-        state: FormState.DELIVERED_NASES,
-        error: FormError.NONE,
-        ...additionalFormUpdates,
-      })
     })
   })
 
@@ -255,10 +143,6 @@ describe('NasesConsumerService', () => {
       schema: {},
     } as FormDefinitionSlovenskoSk
 
-    const mockSender: SendMessageNasesSender = {
-      type: SendMessageNasesSenderType.Self,
-    }
-
     beforeEach(() => {
       jest.resetAllMocks()
     })
@@ -304,9 +188,9 @@ describe('NasesConsumerService', () => {
       jest
         .spyOn(service as any, 'handleEmailForm')
         .mockResolvedValue(new Nack(false))
-      const sendToNasesAndUpdateStateSpy = jest
-        .spyOn(service, 'sendToNasesAndUpdateState')
-        .mockResolvedValue(true)
+      const createDocumentSpy = jest
+        .spyOn(ginisService, 'createDocument')
+        .mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -316,7 +200,7 @@ describe('NasesConsumerService', () => {
         'test@example.com',
         'Test',
       )
-      expect(sendToNasesAndUpdateStateSpy).not.toHaveBeenCalled()
+      expect(createDocumentSpy).not.toHaveBeenCalled()
     })
 
     it('should handle webhook form when form definition type is Webhook', async () => {
@@ -328,18 +212,18 @@ describe('NasesConsumerService', () => {
       jest
         .spyOn(service as any, 'handleWebhookForm')
         .mockResolvedValue(new Nack(false))
-      const sendToNasesAndUpdateStateSpy = jest
-        .spyOn(service, 'sendToNasesAndUpdateState')
-        .mockResolvedValue(true)
+      const createDocumentSpy = jest
+        .spyOn(ginisService, 'createDocument')
+        .mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
       expect(result).toEqual(new Nack(false))
       expect(service['handleWebhookForm']).toHaveBeenCalledWith(mockForm)
-      expect(sendToNasesAndUpdateStateSpy).not.toHaveBeenCalled()
+      expect(createDocumentSpy).not.toHaveBeenCalled()
     })
 
-    it('should send to NASES and update state when all checks pass', async () => {
+    it('should send to Ginis and update state when all checks pass', async () => {
       const mockForm = {
         formDefinitionSlug: 'test-slug',
         id: 'test-id',
@@ -348,25 +232,19 @@ describe('NasesConsumerService', () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
-      jest
-        .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
-        .mockReturnValue('mock-jwt')
-      jest.spyOn(service, 'sendToNasesAndUpdateState').mockResolvedValue(true)
+      jest.spyOn(ginisService, 'createDocument').mockResolvedValue()
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
       expect(result).toEqual(new Nack(false))
-      expect(service.sendToNasesAndUpdateState).toHaveBeenCalledWith(
-        'mock-jwt',
+      expect(ginisService.createDocument).toHaveBeenCalledWith(
         mockForm,
-        mockRabbitPayloadDto,
         mockFormDefinition,
-        mockSender,
       )
       expect(service['mailgunService'].sendEmail).toHaveBeenCalled()
     })
 
-    it('should queue delayed form when send to NASES fails and tries <= 1', async () => {
+    it('should queue delayed form when send to Ginis fails and tries <= 2', async () => {
       const mockForm = {
         formDefinitionSlug: 'test-slug',
         id: 'test-id',
@@ -376,9 +254,8 @@ describe('NasesConsumerService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
-        .mockReturnValue('mock-jwt')
-      jest.spyOn(service, 'sendToNasesAndUpdateState').mockResolvedValue(false)
+        .spyOn(ginisService, 'createDocument')
+        .mockRejectedValue(new Error('Ginis error'))
       jest.spyOn(service as any, 'queueDelayedForm').mockResolvedValue(null)
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
@@ -387,14 +264,14 @@ describe('NasesConsumerService', () => {
       expect(service['queueDelayedForm']).toHaveBeenCalledWith(
         mockRabbitPayloadDto.formId,
         mockRabbitPayloadDto.tries,
-        FormError.NASES_SEND_ERROR,
+        FormError.GINIS_SEND_ERROR,
         mockRabbitPayloadDto.userData,
         FormState.QUEUED,
       )
     })
 
-    it('should requeue with delay when send to NASES fails and tries > 1', async () => {
-      const mockPayload = { ...mockRabbitPayloadDto, tries: 2 }
+    it('should requeue with delay when send to Ginis fails and tries > 2', async () => {
+      const mockPayload = { ...mockRabbitPayloadDto, tries: 3 }
       const mockForm = {
         formDefinitionSlug: 'test-slug',
         id: 'test-id',
@@ -404,9 +281,8 @@ describe('NasesConsumerService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
-        .mockReturnValue('mock-jwt')
-      jest.spyOn(service, 'sendToNasesAndUpdateState').mockResolvedValue(false)
+        .spyOn(ginisService, 'createDocument')
+        .mockRejectedValue(new Error('Ginis error'))
       jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
       const result = await service.onQueueConsumption(mockPayload)
@@ -468,5 +344,194 @@ describe('NasesConsumerService', () => {
       expect(service.nackTrueWithWait).toHaveBeenCalled()
     })
   })
+
+  describe('handleSlovenskoSkGenericForm', () => {
+    let pdfServiceSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      pdfServiceSpy = jest.spyOn(
+        service['convertPdfService'],
+        'createPdfImageInFormFiles',
+      )
+    })
+
+    it('should requeue and send email if second try fails', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 2,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSkGeneric
+
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+      const queueDelayedFormSpy = jest.spyOn(service as any, 'queueDelayedForm')
+      jest
+        .spyOn(ginisService, 'createDocument')
+        .mockRejectedValue(new Error('Ginis error'))
+
+      const result = await service['handleSlovenskoSkGenericForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(pdfServiceSpy).toHaveBeenCalled()
+      expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
+        template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+        to: mockRabbitPayloadDto.userData.email,
+        firstName: mockRabbitPayloadDto.userData.firstName,
+      })
+      expect(queueDelayedFormSpy).toHaveBeenCalled()
+      expect(result.requeue).toBeFalsy() // It is requeued via queueDelayedForm
+    })
+
+    it('should requeue with no email if third try fails', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 3,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSkGeneric
+
+      const queueDelayedFormSpy = jest.spyOn(service as any, 'queueDelayedForm')
+      jest
+        .spyOn(ginisService, 'createDocument')
+        .mockRejectedValue(new Error('Ginis error'))
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+      jest
+        .spyOn(service as any, 'nackTrueWithWait')
+        .mockResolvedValue(new Nack(true))
+
+      const result = await service['handleSlovenskoSkGenericForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(pdfServiceSpy).toHaveBeenCalled()
+      expect(sendEmailSpy).not.toHaveBeenCalled() // No email sent on second try
+      expect(queueDelayedFormSpy).not.toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
+    })
+
+    it('should publish to ginis if it is generic slovensko.sk form', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSkGeneric
+
+      const publishToGinisSpy = jest.spyOn(
+        service['rabbitmqClientService'],
+        'publishToGinis',
+      )
+
+      const result = await service['handleSlovenskoSkGenericForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(pdfServiceSpy).toHaveBeenCalled()
+      expect(result.requeue).toBeFalsy()
+      expect(publishToGinisSpy).toHaveBeenCalledWith({
+        formId: mockRabbitPayloadDto.formId,
+        tries: 0,
+        userData: mockRabbitPayloadDto.userData,
+      })
+    })
+
+    it('should send email if email is provided', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: 'test@example.com',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSkGeneric
+
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+
+      await service['handleSlovenskoSkGenericForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
+        template: MailgunTemplateEnum.NASES_SENT,
+        to: mockRabbitPayloadDto.userData.email,
+        firstName: mockRabbitPayloadDto.userData.firstName,
+      })
+    })
+
+    it('should not send email if email is not provided', async () => {
+      const mockForm = {
+        id: 'test-id',
+        formDefinitionSlug: 'slovensko-sk',
+      } as Forms
+      const mockRabbitPayloadDto = {
+        formId: 'test-form-id',
+        tries: 1,
+        userData: {
+          email: '',
+          firstName: 'Test',
+        },
+      }
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        schema: {},
+      } as FormDefinitionSlovenskoSkGeneric
+
+      const sendEmailSpy = jest.spyOn(service as any, 'sendFormSubmissionEmail')
+
+      await service['handleSlovenskoSkGenericForm'](
+        mockForm,
+        mockRabbitPayloadDto,
+        mockFormDefinition,
+      )
+
+      expect(sendEmailSpy).not.toHaveBeenCalled()
+    })
+  })
 })
-/* eslint-enable pii/no-email */

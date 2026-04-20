@@ -14,6 +14,7 @@ import { MinioClientService } from './minio-client.service'
         useSSL: configService.get('MINIO_USE_SSL') === 'true',
         accessKey: configService.get('MINIO_ACCESS_KEY', ''),
         secretKey: configService.get('MINIO_SECRET_KEY', ''),
+        pathStyle: configService.get('MINIO_PATH_STYLE') === 'true',
       }),
       inject: [ConfigService],
     }),

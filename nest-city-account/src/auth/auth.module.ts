@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { CacheModule } from '../cache/cache.module'
 import { AuthController } from './auth.controller'
+import { SignatureGuard } from './guards/signature.guard'
+import { NonceService } from './services/nonce.service'
 import { CognitoStrategy } from './strategies/cognito.strategy'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { SignatureStrategy } from './strategies/signature.strategy'
 
 @Module({
-  imports: [PassportModule],
-  providers: [CognitoStrategy, CognitoSubservice, ThrowerErrorGuard],
-  exports: [],
+  imports: [PassportModule, CacheModule],
+  providers: [CognitoStrategy, SignatureStrategy, SignatureGuard, NonceService],
+  exports: [SignatureGuard],
   controllers: [AuthController],
 })
 export class AuthModule {}

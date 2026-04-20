@@ -2,7 +2,7 @@ import * as process from 'node:process'
 
 import { LoggerService } from '@nestjs/common'
 
-import { escapeForLogfmt, isLogfmt, ToLogfmt } from '../logging'
+import { escapeForLogfmt, isLogfmt, toLogfmt } from '../logging'
 
 // ANSI color escape codes
 const ANSI_RESET = '\u001B[0m'
@@ -52,7 +52,7 @@ export class LineLoggerSubservice implements LoggerService {
     const formattedStringMessages = this.formatStringMessage(stringMessages)
 
     const formattedOtherItems = otherItems
-      .map((item) => ToLogfmt(item))
+      .map((item) => toLogfmt(item))
       .join(' ')
 
     const formattedContext = this.context ? `context="${this.context}"` : ''
@@ -60,7 +60,6 @@ export class LineLoggerSubservice implements LoggerService {
     const colorStart = this.color ? colorCode : ''
     const colorEnd = this.color ? ANSI_RESET : ''
 
-    // eslint-disable-next-line no-console
     console.log(
       [
         colorStart,
@@ -104,18 +103,5 @@ export class LineLoggerSubservice implements LoggerService {
 
   verbose(message: unknown, ...optionalParams: unknown[]): void {
     this.printLog('VERBOSE', message, optionalParams, '')
-  }
-}
-
-// TODO use ThrowerErrorGuard instead ()
-export default function alertError(
-  message: string,
-  logger: LineLoggerSubservice,
-  error?: unknown,
-): void {
-  if (error instanceof Error) {
-    logger.error({ alertMessage: message, alert: 1 }, error)
-  } else {
-    logger.error({ alertMessage: message, alert: 1 }, <string>error)
   }
 }

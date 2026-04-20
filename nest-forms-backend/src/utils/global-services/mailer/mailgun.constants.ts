@@ -1,6 +1,5 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 
-/* eslint-disable no-secrets/no-secrets */
 export enum MailgunConfigVariableType {
   PARAMETER = 'PARAMETER',
   SELECT = 'SELECT',
@@ -16,7 +15,21 @@ export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
     ]),
 )
 
-export const MAILGUN_CONFIG = {
+interface MailgunConfig {
+  template: string
+  subject: string
+  renderLocally?: boolean
+  variables: Record<
+    string,
+    {
+      type: MailgunConfigVariableType
+      value: unknown
+      selectorVariable?: string
+    }
+  >
+}
+
+export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
   NASES_SENT: {
     template: '2023-application-status-sent',
     subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
@@ -186,6 +199,7 @@ export const MAILGUN_CONFIG = {
   TSB_NEW_SUBMISSION: {
     template: 'tsb-form-send',
     subject: 'TSB: Nové podanie',
+    renderLocally: true,
     variables: {
       slug: {
         type: MailgunConfigVariableType.PARAMETER,
@@ -235,5 +249,44 @@ export const MAILGUN_CONFIG = {
       },
     },
   },
+  BRATISLAVA_NEW_SUBMISSION: {
+    template: '2026-bratislava-new-submission',
+    subject: 'Bratislavské konto: Nové podanie',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      htmlData: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{htmlData}}',
+      },
+      formSentAt: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{formSentAt}}',
+      },
+    },
+  },
+  BRATISLAVA_SENT_SUCCESS: {
+    template: '2026-bratislava-form-success',
+    subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      feHost: {
+        type: MailgunConfigVariableType.STRING,
+        value: process.env.FRONTEND_URL || 'https://konto.bratislava.sk',
+      },
+      firstName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{firstName}}',
+      },
+      formSentAt: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{formSentAt}}',
+      },
+    },
+  },
 }
-/* eslint-enable no-secrets/no-secrets */

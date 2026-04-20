@@ -3,7 +3,6 @@ import EnvironmentVariables from './environment-variables'
 export default class BaConfig {
   constructor(protected validatedConfig: EnvironmentVariables) {}
 
-  /* eslint-disable @typescript-eslint/explicit-function-return-type */
   get environment() {
     return {
       nodeEnv: this.validatedConfig.NODE_ENV,
@@ -68,7 +67,6 @@ export default class BaConfig {
       oboTokenPublic: this.validatedConfig.OBO_TOKEN_PUBLIC,
       subNasesTechnicalAccount:
         this.validatedConfig.SUB_NASES_TECHNICAL_ACCOUNT,
-      nasesSenderUri: this.validatedConfig.NASES_SENDER_URI,
       nasesRecipientUri: this.validatedConfig.NASES_RECIPIENT_URI,
     }
   }
@@ -82,6 +80,7 @@ export default class BaConfig {
   get cityAccountBackend() {
     return {
       url: this.validatedConfig.USER_ACCOUNT_API,
+      apiKey: this.validatedConfig.USER_ACCOUNT_API_KEY,
     }
   }
 
@@ -101,6 +100,7 @@ export default class BaConfig {
       sslMtomHost: this.validatedConfig.GINIS_SSL_MTOM_HOST,
       ginHost: this.validatedConfig.GINIS_GIN_HOST,
       formIdPropertyId: this.validatedConfig.GINIS_FORM_ID_PROPERTY_ID,
+      anonymousSenderId: this.validatedConfig.GINIS_ANONYMOUS_SENDER_ID,
     }
   }
 
@@ -123,7 +123,9 @@ export default class BaConfig {
   get sharepoint() {
     return {
       domain: this.validatedConfig.SHAREPOINT_DOMAIN,
-      url: this.validatedConfig.SHAREPOINT_URL,
+      siteId: this.validatedConfig.SHAREPOINT_SITE_ID,
+      siteName: this.validatedConfig.SHAREPOINT_SITE_NAME,
+      graphUrl: this.validatedConfig.SHAREPOINT_GRAPH_URL,
       clientId: this.validatedConfig.SHAREPOINT_CLIENT_ID,
       clientSecret: this.validatedConfig.SHAREPOINT_CLIENT_SECRET,
       tenantId: this.validatedConfig.SHAREPOINT_TENANT_ID,
@@ -138,6 +140,7 @@ export default class BaConfig {
       port: this.validatedConfig.MINIO_PORT,
       secretKey: this.validatedConfig.MINIO_SECRET_KEY,
       useSSL: this.validatedConfig.MINIO_USE_SSL,
+      pathStyle: this.validatedConfig.MINIO_PATH_STYLE,
       buckets: {
         unscanned: this.validatedConfig.MINIO_UNSCANNED_BUCKET,
         safe: this.validatedConfig.MINIO_SAFE_BUCKET,
@@ -164,5 +167,4 @@ export default class BaConfig {
       versioning: this.validatedConfig.FEATURE_TOGGLE_VERSIONING,
     }
   }
-  /* eslint-enable @typescript-eslint/explicit-function-return-type */
 }

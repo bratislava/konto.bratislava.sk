@@ -4,10 +4,8 @@ import { Test } from '@nestjs/testing'
 import { Files } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
-import FormsHelper from '../../forms/forms.helper'
 import FormsService from '../../forms/forms.service'
 import { FormAccessService } from '../../forms-v2/services/form-access.service'
-import NasesConsumerHelper from '../../nases-consumer/nases-consumer.helper'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
@@ -31,16 +29,11 @@ describe('FilesService', () => {
         },
         { provide: FormsService, useValue: createMock<FormsService>() },
         { provide: FilesHelper, useValue: createMock<FilesHelper>() },
-        { provide: FormsHelper, useValue: createMock<FormsHelper>() },
         {
           provide: FormAccessService,
           useValue: createMock<FormAccessService>(),
         },
         ThrowerErrorGuard,
-        {
-          provide: NasesConsumerHelper,
-          useValue: createMock<NasesConsumerHelper>(),
-        },
       ],
     }).compile()
 
@@ -69,7 +62,7 @@ describe('FilesService', () => {
 
     it('should be false if there are virus files', async () => {
       prismaMock.files.findMany.mockResolvedValue([])
-      service['nasesConsumerHelper'].checkInfectedFiles = jest
+      service['filesHelper'].checkInfectedFiles = jest
         .fn()
         .mockResolvedValue(true)
 
@@ -79,10 +72,10 @@ describe('FilesService', () => {
 
     it('should be false if there are error files', async () => {
       prismaMock.files.findMany.mockResolvedValue([])
-      service['nasesConsumerHelper'].checkInfectedFiles = jest
+      service['filesHelper'].checkInfectedFiles = jest
         .fn()
         .mockResolvedValue(false)
-      service['nasesConsumerHelper'].checkErrorFiles = jest
+      service['filesHelper'].areErrorFilesInForm = jest
         .fn()
         .mockResolvedValue(true)
 
@@ -92,10 +85,10 @@ describe('FilesService', () => {
 
     it('should return true otherwise', async () => {
       prismaMock.files.findMany.mockResolvedValue([])
-      service['nasesConsumerHelper'].checkInfectedFiles = jest
+      service['filesHelper'].checkInfectedFiles = jest
         .fn()
         .mockResolvedValue(false)
-      service['nasesConsumerHelper'].checkErrorFiles = jest
+      service['filesHelper'].areErrorFilesInForm = jest
         .fn()
         .mockResolvedValue(false)
 

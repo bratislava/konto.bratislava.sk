@@ -6,7 +6,6 @@ import {
   SignerErrorsResponseEnum,
 } from './signer.errors.enum'
 
-// eslint-disable-next-line import/prefer-default-export
 export class XmlValidationErrorDto extends BadRequestErrorDto {
   @ApiProperty({
     example: SignerErrorsEnum.XML_VALIDATION_ERROR,

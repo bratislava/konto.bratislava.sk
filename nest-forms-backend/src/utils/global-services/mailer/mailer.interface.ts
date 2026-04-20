@@ -2,7 +2,7 @@ import { Readable } from 'node:stream'
 
 import { SendEmailInputDto } from '../../global-dtos/mailgun.dto'
 
-export type MailerSendEmailParams = {
+export interface MailerSendEmailParams {
   data: SendEmailInputDto
   emailFrom?: string
   subject?: string

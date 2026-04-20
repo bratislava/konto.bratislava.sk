@@ -70,9 +70,10 @@ export default class GinisController {
         `Form with id ${formId} does not have a ginisDocumentId`,
       )
     }
+
     let wflDocument: SslDetailDokumentuWflDokument | null = null
-    let ownerDetail: GinDetailReferentaDetailReferenta | null = null
-    let documentHistory: MappedDocumentHistory = []
+    let ownerDetail: GinDetailReferentaDetailReferenta | null
+    let documentHistory: MappedDocumentHistory
     try {
       const document =
         await this.ginisAPIService.getDocumentDetail(ginisDocumentId)
@@ -94,9 +95,9 @@ export default class GinisController {
             )
           : this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `Error while getting document or owner from GINIS: ${<string>(
-                error
-              )}`,
+              'Error while getting document or owner from GINIS:',
+              undefined,
+              error,
             )
       throw errorToThrow
     }

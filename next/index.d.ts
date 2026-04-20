@@ -1,6 +1,3 @@
-/// <reference types="react" />
-/// <reference types="react-dom" />
-
 declare module '*.svg' {
   import * as React from 'react'
 

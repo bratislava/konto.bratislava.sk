@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { User } from '@prisma/client'
-import { IsEmail, IsNotEmpty } from 'class-validator'
+import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, User } from '@prisma/client'
+import { IsEmail, IsEnum } from 'class-validator'
 
 export class RequestGdprDataDto {
   gdprData!: GdprDataDto[]
@@ -11,52 +11,35 @@ export enum UserAttributeEnum {
   TAX2024 = 'TAX2024',
 }
 
-export class RequestPublicSubscriptionDto extends RequestGdprDataDto {
-  @ApiProperty({
-    description: 'Email to subscribe',
-    example: 'test@bratislava.sk',
-  })
-  @IsNotEmpty()
-  @IsEmail()
-  email!: string
-}
-
 export class GdprDataDto {
   @ApiProperty({
     description: 'Type of Gdpr subscription',
     default: 'marketing',
+    enum: GDPRTypeEnum,
+    enumName: 'GDPRTypeEnum',
   })
-  type!: GdprType
+  @IsEnum(GDPRTypeEnum)
+  type!: GDPRTypeEnum
 
   @ApiProperty({
     description: 'Type of Gdpr category',
     default: 'library',
+    enum: GDPRCategoryEnum,
+    enumName: 'GDPRCategoryEnum',
   })
-  category!: GdprCategory
+  @IsEnum(GDPRCategoryEnum)
+  category!: GDPRCategoryEnum
 }
 
 export class GdprDataSubscriptionDto extends GdprDataDto {
   @ApiProperty({
     description: 'Type of subType - unsubscribe or subscribe',
     default: 'unsubscribe',
+    enum: GDPRSubTypeEnum,
+    enumName: 'GDPRSubTypeEnum',
   })
-  subType!: GdprSubType
-}
-
-export enum GdprCategory {
-  TAXES = 'TAXES',
-  ESBS = 'ESBS',
-}
-
-export enum GdprSubType {
-  UNSUB = 'unsubscribe',
-  SUB = 'subscribe',
-}
-
-export enum GdprType {
-  LICENSE = 'LICENSE',
-  MARKETING = 'MARKETING',
-  FORMAL_COMMUNICATION = 'FORMAL_COMMUNICATION',
+  @IsEnum(GDPRSubTypeEnum)
+  subType!: GDPRSubTypeEnum
 }
 
 export enum UserOfficialCorrespondenceChannelEnum {
@@ -115,17 +98,17 @@ export class ResponseUserDataBasicDto {
 
   @ApiProperty({
     description:
-      'True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.',
-    default: true,
-  })
-  wasVerifiedBeforeTaxDeadline!: boolean
-
-  @ApiProperty({
-    description:
       'Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.',
     default: true,
   })
   showEmailCommunicationBanner!: boolean
+
+  @ApiProperty({
+    description:
+      'True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.',
+    default: false,
+  })
+  hasChangedDeliveryMethodAfterDeadline!: boolean
 }
 
 export class ResponseUserDataDto extends ResponseUserDataBasicDto {
@@ -148,11 +131,32 @@ export class ResponseUserDataDto extends ResponseUserDataBasicDto {
 }
 
 export class ResponseGdprUserDataDto {
-  category!: GdprCategory
+  @ApiProperty({
+    description: 'Type of Gdpr category',
+    default: 'library',
+    enum: GDPRCategoryEnum,
+    enumName: 'GDPRCategoryEnum',
+  })
+  @IsEnum(GDPRCategoryEnum)
+  category!: GDPRCategoryEnum
 
-  type!: GdprType
+  @ApiProperty({
+    description: 'Type of Gdpr subscription',
+    default: 'marketing',
+    enum: GDPRTypeEnum,
+    enumName: 'GDPRTypeEnum',
+  })
+  @IsEnum(GDPRTypeEnum)
+  type!: GDPRTypeEnum
 
-  subType!: GdprSubType
+  @ApiProperty({
+    description: 'Type of subType - unsubscribe or subscribe',
+    default: 'unsubscribe',
+    enum: GDPRSubTypeEnum,
+    enumName: 'GDPRSubTypeEnum',
+  })
+  @IsEnum(GDPRSubTypeEnum)
+  subType!: GDPRSubTypeEnum
 }
 
 export class ResponsePublicUnsubscribeDto {

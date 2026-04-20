@@ -3,7 +3,9 @@ import { Readable } from 'node:stream'
 import { Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils' with {
+  'resolution-mode': 'import',
+}
 import { Response } from 'express'
 import {
   FormDefinition,
@@ -134,13 +136,18 @@ export default class ConvertService {
     if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND}`,
+        { slug: form.formDefinitionSlug },
       )
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}`,
+        {
+          formDefinitionType: formDefinition.type,
+          slug: form.formDefinitionSlug,
+        },
       )
     }
     const formDataJson = formDataJsonOverride ?? form.formDataJson
@@ -199,7 +206,11 @@ export default class ConvertService {
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        {
+          formDefinitionType: formDefinition.type,
+          slug: form.formDefinitionSlug,
+        },
       )
     }
 
@@ -219,7 +230,6 @@ export default class ConvertService {
         const { error: errorEnum, message: errorMessage } =
           extractJsonErrorMapping[error.type]
         throw this.throwerErrorGuard.BadRequestException(
-          // eslint-disable-next-line custom-rules/thrower-error-guard-enum
           errorEnum,
           errorMessage,
         )
@@ -332,7 +342,7 @@ export default class ConvertService {
         pdfBuffer = await renderSummaryPdf({
           formSummary,
           validationData,
-          launchBrowser: () => chromium.launch(),
+          launchBrowser: async () => chromium.launch(),
           clientFiles,
           serverFiles: form.files,
         })
@@ -347,7 +357,7 @@ export default class ConvertService {
         pdfBuffer = await renderSummaryPdf({
           formSummary: form.formSummary,
           validationData: null,
-          launchBrowser: () => chromium.launch(),
+          launchBrowser: async () => chromium.launch(),
           serverFiles: form.files,
         })
       }
@@ -381,7 +391,8 @@ export default class ConvertService {
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+        { slug: form.formDefinitionSlug },
       )
     }
 

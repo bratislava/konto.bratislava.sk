@@ -1,5 +1,6 @@
 export enum VerificationErrorsEnum {
   RFO_ACCESS_ERROR = 'RFO_ACCESS_ERROR',
+  RPO_ACCESS_ERROR = 'RPO_ACCESS_ERROR',
   RFO_NOT_RESPONDING = 'RFO_NOT_RESPONDING',
   RPO_NOT_RESPONDING = 'RPO_NOT_RESPONDING',
   DEAD_PERSON = 'DEAD_PERSON',
@@ -17,16 +18,19 @@ export enum VerificationErrorsEnum {
   IFO_NOT_PROVIDED = 'IFO_NOT_PROVIDED',
   EMPTY_RFO_RESPONSE = 'EMPTY_RFO_RESPONSE',
   EMPTY_RPO_RESPONSE = 'EMPTY_RPO_RESPONSE',
+  NAMES_NOT_MATCHING = 'NAMES_NOT_MATCHING',
 }
 
 export enum VerificationErrorsResponseEnum {
-  ICO_NOT_PROVIDED = 'Ico for verification was not provided',
+  ICO_NOT_PROVIDED = 'Unable to verify LEGAL_ENTITY or SELF_EMPLOYED_ENTITY, ico not provided',
   IFO_NOT_PROVIDED = 'Ifo for verification was not provided',
+  BIRTH_NUMBER_NOT_PROVIDED = 'Unable to verify PHYSICAL_ENTITY, birth number (rc) not provided',
   BIRTHNUMBER_IFO_DUPLICITY = 'Duplicity of birth number. This user is already registered with a different account.',
   VERIFY_EID_ERROR = 'Failed to verify user with eid.',
   UNEXPECTED_UPVS_RESPONSE = 'Unexpected UPVS response.',
   INVALID_CAPTCHA = 'Invalid captcha token. Please try again. If the problem persists and you are not robot, please contact support.',
   DATABASE_ERROR = 'Error to write or update or read from/to database',
+  BIRTH_NUMBER_NOT_EXISTS = 'Birth number does not exists in registry.',
 }
 
 export enum SendToQueueErrorsEnum {

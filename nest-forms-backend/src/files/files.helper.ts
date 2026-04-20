@@ -2,12 +2,16 @@ import { createHash } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
+import { Files, FileStatus, FormError, Forms, Prisma } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
 
-import { isValidScanStatus } from '../common/utils/helpers'
+import {
+  finalErrorScanStatuses,
+  infectedScanStatuses,
+  isValidScanStatus,
+} from '../common/utils/helpers'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -27,6 +31,17 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 
+/**
+ * Mapping of file extensions to MIME types for formats that browsers don't recognize
+ * and send as application/octet-stream. These are ASiC electronic signature container formats.
+ */
+const extensionToMimeType = new Map<string, string>([
+  ['.asice', 'application/vnd.etsi.asic-e+zip'],
+  ['.sce', 'application/vnd.etsi.asic-e+zip'],
+  ['.asics', 'application/vnd.etsi.asic-s+zip'],
+  ['.scs', 'application/vnd.etsi.asic-s+zip'],
+])
+
 // TODO missing tests
 @Injectable()
 export default class FilesHelper {
@@ -42,14 +57,31 @@ export default class FilesHelper {
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList: string = <string>(
-      this.configService.get(`MIMETYPE_WHITELIST`)
-    )
+    const mimeTypeList =
+      this.configService.getOrThrow<string>(`MIMETYPE_WHITELIST`)
     this.supportedMimeTypes = mimeTypeList.split(' ')
   }
 
-  isSupportedMimeType(mimeType: string): boolean {
-    return this.supportedMimeTypes.includes(mimeType)
+  /**
+   * Checks if a file's MIME type is supported. When the browser sends application/octet-stream
+   * (which happens for unknown file types like .asice, .scs, etc.), we check the file extension
+   * to determine the actual MIME type.
+   */
+  isSupportedMimeType(mimeType: string, filename?: string): boolean {
+    if (this.supportedMimeTypes.includes(mimeType)) {
+      return true
+    }
+
+    // For application/octet-stream, check if the file extension maps to a supported MIME type
+    if (mimeType === 'application/octet-stream' && filename) {
+      const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase()
+      const mappedMimeType = extensionToMimeType.get(extension)
+      if (mappedMimeType && this.supportedMimeTypes.includes(mappedMimeType)) {
+        return true
+      }
+    }
+
+    return false
   }
 
   /**
@@ -221,6 +253,53 @@ export default class FilesHelper {
     }
   }
 
+  async checkInfectedFiles(formId: string): Promise<boolean> {
+    const infectedFiles: Files[] = await this.prisma.files.findMany({
+      where: {
+        formId,
+        status: {
+          in: infectedScanStatuses,
+        },
+      },
+    })
+
+    if (infectedFiles.length > 0) {
+      // here we should send notification to user and to our notification service
+      this.logger.warn({
+        type: 'Form contains infected files.',
+        formId,
+        error: FormError.INFECTED_FILES,
+        infectedFiles,
+      })
+      return true
+    }
+    return false
+  }
+
+  async areErrorFilesInForm(formId: string): Promise<boolean> {
+    const errorFiles: Files[] = await this.prisma.files.findMany({
+      where: {
+        formId,
+        status: {
+          in: finalErrorScanStatuses,
+        },
+      },
+    })
+
+    if (errorFiles.length > 0) {
+      // here we should send notification to user and to our notification service
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
+          FilesErrorsResponseEnum.FILE_SCANNING_SERVICE_ERROR,
+          { formId, errorFiles },
+        ),
+      )
+      return true
+    }
+    return false
+  }
+
   async notifyScannerClient(
     minioFileName: string,
     formInfo: FormInfo,
@@ -303,13 +382,13 @@ export default class FilesHelper {
   // optional status
   getBucketUid(status?: string): string {
     if (status === 'SAFE') {
-      return <string>this.configService.get('MINIO_SAFE_BUCKET')
+      return this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET')
     }
     if (status === 'INFECTED') {
-      return <string>this.configService.get('MINIO_INFECTED_BUCKET')
+      return this.configService.getOrThrow<string>('MINIO_INFECTED_BUCKET')
     }
 
-    return <string>this.configService.get('MINIO_UNSCANNED_BUCKET')
+    return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
   }
 
   forms2formInfo(form: Forms): FormInfo {
@@ -338,6 +417,7 @@ export default class FilesHelper {
 
   createMinioFileName(file: BufferedFileDto, fileName: string): string {
     const timestamp = Date.now().toString()
+    // eslint-disable-next-line sonarjs/hashing -- this is not used in a sensitive context
     const hash = createHash('sha1').update(timestamp).digest('hex').slice(0, 8)
     const extension = file.originalname.slice(
       file.originalname.lastIndexOf('.'),

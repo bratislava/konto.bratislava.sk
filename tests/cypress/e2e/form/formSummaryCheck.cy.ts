@@ -12,11 +12,12 @@ describe('F03 -', { testIsolation: false }, () => {
   })
 
   devices
-    .filter((device) => Cypress.env('devices')[`${device}`])
+    .filter((device) => Cypress.expose('devices')[`${device}`])
     .forEach((device) => {
-      context(device, Cypress.env('resolution')[`${device}`], () => {
+      context(device, Cypress.expose('resolution')[`${device}`], () => {
         before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
+          cy.waitForHydration()
         })
 
         beforeEach(() => {
@@ -40,7 +41,7 @@ describe('F03 -', { testIsolation: false }, () => {
 
         it('3. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-meno]', form)).type(this.fileData.first_name)
 

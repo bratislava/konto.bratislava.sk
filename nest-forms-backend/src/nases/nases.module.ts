@@ -5,14 +5,10 @@ import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
-import FilesHelper from '../files/files.helper'
 import FilesModule from '../files/files.module'
-import FilesService from '../files/files.service'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
-import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
-import NasesConsumerModule from '../nases-consumer/nases-consumer.module'
 import PrismaModule from '../prisma/prisma.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import ScannerClientService from '../scanner-client/scanner-client.service'
@@ -22,6 +18,8 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
+import FormRegistrationStatusRepository from './utils-services/form-registration-status.repository'
+import NasesCronSubservice from './utils-services/nases.cron.subservice'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
 @Module({
@@ -30,7 +28,6 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     FormsModule,
     RabbitmqClientModule,
     FilesModule,
-    NasesConsumerModule,
     ConvertModule,
     TaxModule,
     ConvertPdfModule,
@@ -44,14 +41,13 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     NasesService,
     NasesUtilsService,
     ThrowerErrorGuard,
-    FormsHelper,
-    FilesService,
-    FilesHelper,
     ScannerClientService,
     MinioClientSubservice,
     LineLoggerSubservice,
+    NasesCronSubservice,
+    FormRegistrationStatusRepository,
   ],
-  exports: [NasesService, NasesUtilsService],
+  exports: [NasesService, NasesUtilsService, NasesCronSubservice],
   controllers: [NasesController],
 })
 export default class NasesModule {}

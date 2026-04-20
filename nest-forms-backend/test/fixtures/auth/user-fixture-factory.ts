@@ -8,9 +8,9 @@ import {
 } from '@ngneat/falso'
 import jwt from 'jsonwebtoken'
 import {
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesTierEnum,
   UserOfficialCorrespondenceChannelEnum,
-  UserVerifyStateCognitoTierEnum,
-  UserVerifyStateTypeEnum,
 } from 'openapi-clients/city-account'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -20,14 +20,14 @@ import { CognitoJwtVerifyService } from '../../../src/auth-v2/services/cognito-j
 import { CognitoUserService } from '../../../src/auth-v2/services/cognito-user.service'
 import { AuthUser, GuestUser, UserType } from '../../../src/auth-v2/types/user'
 
-export type GuestFixtureUser = {
+export interface GuestFixtureUser {
   identityId: string
   headers: {
     'X-Cognito-Guest-Identity-Id': string
   }
   user: GuestUser
 }
-export type AuthFixtureUser = {
+export interface AuthFixtureUser {
   sub: string
   headers: {
     Authorization: string
@@ -69,15 +69,15 @@ export class UserFixtureFactory {
   private createAuthUser(
     params:
       | {
-          accountType: typeof UserVerifyStateTypeEnum.Fo
-          tier?: UserVerifyStateCognitoTierEnum
+          accountType: typeof CognitoUserAccountTypesEnum.Fo
+          tier?: CognitoUserAttributesTierEnum
         }
       | {
           accountType:
-            | typeof UserVerifyStateTypeEnum.FoP
-            | typeof UserVerifyStateTypeEnum.Po
+            | typeof CognitoUserAccountTypesEnum.FoP
+            | typeof CognitoUserAccountTypesEnum.Po
           ico: string
-          tier?: UserVerifyStateCognitoTierEnum
+          tier?: CognitoUserAttributesTierEnum
         },
   ): AuthFixtureUser {
     const randomSub = uuidv4()
@@ -115,11 +115,11 @@ export class UserFixtureFactory {
         email,
         birthNumber: null,
         gdprData: [],
+        hasChangedDeliveryMethodAfterDeadline: false,
       }
-      if (params.accountType === UserVerifyStateTypeEnum.Fo) {
+      if (params.accountType === CognitoUserAccountTypesEnum.Fo) {
         return {
           ...base,
-          wasVerifiedBeforeTaxDeadline: false,
           officialCorrespondenceChannel:
             UserOfficialCorrespondenceChannelEnum.Postal,
           showEmailCommunicationBanner: false,
@@ -127,8 +127,8 @@ export class UserFixtureFactory {
       }
 
       if (
-        params.accountType === UserVerifyStateTypeEnum.FoP ||
-        params.accountType === UserVerifyStateTypeEnum.Po
+        params.accountType === CognitoUserAccountTypesEnum.FoP ||
+        params.accountType === CognitoUserAccountTypesEnum.Po
       ) {
         return {
           ...base,
@@ -143,10 +143,10 @@ export class UserFixtureFactory {
       const base = {
         sub: randomSub,
         'custom:account_type': params.accountType,
-        'custom:tier': params.tier ?? UserVerifyStateCognitoTierEnum.New,
+        'custom:tier': params.tier ?? CognitoUserAttributesTierEnum.New,
         email,
       }
-      if (params.accountType === UserVerifyStateTypeEnum.Fo) {
+      if (params.accountType === CognitoUserAccountTypesEnum.Fo) {
         const givenName = randFirstName()
         const familyName = randLastName()
 
@@ -157,7 +157,7 @@ export class UserFixtureFactory {
         }
       }
 
-      if (params.accountType === UserVerifyStateTypeEnum.FoP) {
+      if (params.accountType === CognitoUserAccountTypesEnum.FoP) {
         const givenName = randFirstName()
         const familyName = randLastName()
 
@@ -168,7 +168,7 @@ export class UserFixtureFactory {
         }
       }
 
-      if (params.accountType === UserVerifyStateTypeEnum.Po) {
+      if (params.accountType === CognitoUserAccountTypesEnum.Po) {
         const name = randCompanyName()
 
         return {
@@ -208,10 +208,10 @@ export class UserFixtureFactory {
   createFoAuthUser({
     tier,
   }: {
-    tier?: UserVerifyStateCognitoTierEnum
+    tier?: CognitoUserAttributesTierEnum
   } = {}) {
     return this.createAuthUser({
-      accountType: UserVerifyStateTypeEnum.Fo,
+      accountType: CognitoUserAccountTypesEnum.Fo,
       tier,
     })
   }
@@ -220,11 +220,11 @@ export class UserFixtureFactory {
     tier,
     ico,
   }: {
-    tier?: UserVerifyStateCognitoTierEnum
+    tier?: CognitoUserAttributesTierEnum
     ico: string
   }) {
     return this.createAuthUser({
-      accountType: UserVerifyStateTypeEnum.FoP,
+      accountType: CognitoUserAccountTypesEnum.FoP,
       tier,
       ico,
     })
@@ -234,11 +234,11 @@ export class UserFixtureFactory {
     tier,
     ico,
   }: {
-    tier?: UserVerifyStateCognitoTierEnum
+    tier?: CognitoUserAttributesTierEnum
     ico: string
   }) {
     return this.createAuthUser({
-      accountType: UserVerifyStateTypeEnum.Po,
+      accountType: CognitoUserAccountTypesEnum.Po,
       tier,
       ico,
     })
@@ -248,6 +248,7 @@ export class UserFixtureFactory {
     let ico: string
     do {
       const randomNumber =
+        // eslint-disable-next-line sonarjs/pseudo-random
         Math.floor(Math.random() * 9_000_000_000) + 1_000_000_000
       ico = `ico://sk/${randomNumber}`
     } while (this.generatedIcos.has(ico))
@@ -281,7 +282,9 @@ export class UserFixtureFactory {
             (fixture) =>
               fixture.headers.Authorization === `Bearer ${bearerToken}`,
           )
-          if (userFixture) return userFixture.user.cognitoJwtPayload
+          if (userFixture) {
+            return Promise.resolve(userFixture.user.cognitoJwtPayload)
+          }
           throw new UnauthorizedException('Invalid bearer token')
         },
       } satisfies Partial<CognitoJwtVerifyService>)
@@ -291,7 +294,9 @@ export class UserFixtureFactory {
           const userFixture = this.authUsers.find(
             (fixture) => fixture.sub === sub,
           )
-          if (userFixture) return userFixture.user.cognitoUser
+          if (userFixture) {
+            return Promise.resolve(userFixture.user.cognitoUser)
+          }
           throw new UnauthorizedException('Invalid sub')
         },
       } satisfies Partial<CognitoUserService>)
@@ -302,17 +307,21 @@ export class UserFixtureFactory {
             (fixture) =>
               fixture.headers.Authorization === `Bearer ${bearerToken}`,
           )
-          if (userFixture) return userFixture.user.cityAccountUser
+          if (userFixture) {
+            return Promise.resolve(userFixture.user.cityAccountUser)
+          }
           throw new UnauthorizedException('Invalid bearer token')
         },
       } satisfies Partial<CityAccountUserService>)
       .overrideProvider(CognitoGuestIdentityService)
       .useValue({
         verifyGuestIdentityId: async (guestIdentityId: string) =>
-          this.guestUsers.some(
-            (fixture) =>
-              fixture.headers['X-Cognito-Guest-Identity-Id'] ===
-              guestIdentityId,
+          Promise.resolve(
+            this.guestUsers.some(
+              (fixture) =>
+                fixture.headers['X-Cognito-Guest-Identity-Id'] ===
+                guestIdentityId,
+            ),
           ),
       } satisfies Partial<CognitoGuestIdentityService>)
 

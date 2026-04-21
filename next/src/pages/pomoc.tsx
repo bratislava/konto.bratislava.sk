@@ -13,11 +13,10 @@ type AccountHelpPageProps = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountHelpPageProps>(async () => {
-  const [general, helpPageQuery] = await Promise.all([
+  const [general, { helpPage }] = await Promise.all([
     strapiClient.General(),
     strapiClient.HelpPage(),
   ])
-  const helpPage = helpPageQuery.helpPage
 
   if (!helpPage) {
     return {

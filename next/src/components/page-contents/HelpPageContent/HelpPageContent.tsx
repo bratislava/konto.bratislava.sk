@@ -25,21 +25,15 @@ const HelpPageContent = ({ helpPage }: Props) => {
       <PageHeader title={t('account_section_help.navigation')} />
       <div className="flex flex-col">
         {helpPage.categories.filter(isDefined).map((category) => (
-          <SectionContainer className="lg:pt-18 lg:last:pb-18 pt-6 last:pb-6" key={category.id}>
+          <SectionContainer className="pt-6 last:pb-6 lg:pt-18 lg:last:pb-18" key={category.id}>
             <div className="flex flex-col gap-6 lg:gap-8">
               <SectionHeader title={category.title} titleLevel="h2" />
-              <FaqsGroup
-                faqs={category.items.filter(isDefined).map((faq) => ({
-                  title: faq.title,
-                  content: faq.content,
-                }))}
-                accordionTitleLevel="h3"
-              />
+              <FaqsGroup faqs={category.items.filter(isDefined)} accordionTitleLevel="h3" />
             </div>
           </SectionContainer>
         ))}
       </div>
-      <SectionContainer className="bg-background-passive-primary lg:py-18 py-6">
+      <SectionContainer className="bg-background-passive-primary py-6 lg:py-18">
         <Banner
           title="Nenašli ste odpoveď na vašu otázku?"
           content={`<span className='text-p2'>${t('account_section_help.banner_content')}</span>`}

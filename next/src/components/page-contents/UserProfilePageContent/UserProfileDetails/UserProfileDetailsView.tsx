@@ -8,6 +8,7 @@ type RowProps = {
   label: string
   value?: string | null
 }
+
 const Row = ({ label, value }: RowProps) => {
   const slugifiedLabel = `${label.replaceAll(' ', '-').toLowerCase()}-profile-row`
   const displayedValue = value && value !== '' ? value : '-'
@@ -15,7 +16,7 @@ const Row = ({ label, value }: RowProps) => {
   return (
     <li
       data-cy={slugifiedLabel}
-      className="flex w-full flex-col gap-1 py-4 lg:flex-row lg:gap-4 lg:*:w-1/2"
+      className="not-first:pt-4 not-last:pb-4 flex w-full flex-col gap-1 lg:flex-row lg:gap-4 lg:py-4 lg:*:w-1/2"
     >
       <span className="text-p2-semibold">{label}</span>
       <span className="text-p2 lg:break-normal">{displayedValue}</span>
@@ -23,11 +24,11 @@ const Row = ({ label, value }: RowProps) => {
   )
 }
 
-type UserProfileDetailsViewProps = {
+type Props = {
   userAttributes: UserAttributes
 }
 
-const UserProfileDetailsView = ({ userAttributes }: UserProfileDetailsViewProps) => {
+const UserProfileDetailsView = ({ userAttributes }: Props) => {
   const { t } = useTranslation('account')
 
   const {

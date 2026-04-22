@@ -654,6 +654,7 @@ describe('NasesService', () => {
         state: FormState.QUEUED,
         formSummary: mockSummary,
         formSentAt: expect.any(Date),
+        jsonVersion: mockFormDefinition.jsonVersion,
       })
     })
 

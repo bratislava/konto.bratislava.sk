@@ -184,6 +184,9 @@ describe('NasesService', () => {
         ginisAssignment: {
           ginisNodeId: '',
         },
+        files: {
+          slots: [],
+        },
       }
 
       // Setup mocks
@@ -506,9 +509,21 @@ describe('NasesService', () => {
     } as unknown as Forms
 
     const mockFormDefinition = {
+      slug: 'test-slug',
+      title: 'Test Form',
       schema: {},
+      jsonVersion: '1.0.0',
       type: FormDefinitionType.SlovenskoSkGeneric,
       sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+      termsAndConditions: 'Test Terms and Conditions',
+      pospID: 'test-posp-id',
+      pospVersion: '1.0',
+      publisher: 'Test Publisher',
+      isSigned: false,
+      ginisDocumentTypeId: '',
+      ginisAssignment: {
+        ginisNodeId: '',
+      },
       files: {
         maxFileSize: 500_000_000,
         maxTotalFileSize: 500_000_000,

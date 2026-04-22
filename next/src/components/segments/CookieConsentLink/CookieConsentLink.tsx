@@ -2,11 +2,11 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 /**
- * Docs: https://www.cookiebot.com/en/developer/
+ * Cookiebot docs: https://www.cookiebot.com/en/developer/
  *
- * For local testing:
- * - Cookiebot - add localhost as a testing domain: https://admin.cookiebot.com/domain-groups/
- * - GTM - enable preview mode for localhost: https://support.google.com/tagmanager/thread/347094327/localhost-testing?hl=en
+ * - For local testing, you need to enable preview mode for localhost in GTM:
+ * - https://support.google.com/tagmanager/thread/347094327/localhost-testing?hl=en
+ * - For additional info and access to Cookiebot and GMT, see our team docs
  */
 
 const showCookiebotConsentBanner = () => {

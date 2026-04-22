@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { getPerFieldFileLimit } from 'forms-shared/form-utils/getFieldFileSizeLimit'
 import multer from 'multer'
 import { Observable } from 'rxjs'
 
@@ -15,6 +14,10 @@ import BaConfigService from '../config/ba-config.service'
 import FormsService from '../forms/forms.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 /**
  * Conservative overhead allowance for multipart boundaries, headers, and the other form fields (filename, id).
  */
@@ -31,9 +34,8 @@ const MULTIPART_OVERHEAD_BYTES = 10_000
  * Cumulative (maxTotalFileSize) limits are NOT checked here — they are enforced at form submission time in
  * NasesService.sendForm, because the set of active files is not final until the user submits.
  *
- * WARNING: If the form or form definition is not found (invalid formId, missing slug), the limit falls back to the
- * global MAX_FILE_SIZE. This interceptor does NOT validate that the form exists — ensure a guard (e.g. FormAccessGuard)
- * runs before this interceptor to reject requests with invalid formIds.
+ * If the form or form definition is not found (invalid formId, missing slug), the interceptor throws an error.
+ * When the feature toggle is disabled, the limit falls back to the global MAX_FILE_SIZE.
  */
 @Injectable()
 export class FileUploadInterceptor implements NestInterceptor {
@@ -112,34 +114,43 @@ export class FileUploadInterceptor implements NestInterceptor {
 
     const { formId } = req.params
     if (!formId) {
-      return globalMax
+      throw this.throwerErrorGuard.BadRequestException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
     }
 
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
-      return globalMax
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
     }
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    const formPerFileMax = formDefinition?.maxFileSize ?? globalMax
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+      )
+    }
 
-    // Per-field file size enforcement: when the form defines `fileLimits`, the frontend
-    // must send a `fieldId` query param so the backend can look up the field-specific limit.
+    const formPerFileMax = formDefinition.files.maxFileSize ?? globalMax
+
     const fieldId = req.query.fieldId as string | undefined
-    const hasPerFieldLimits =
-      formDefinition?.fileLimits &&
-      Object.keys(formDefinition.fileLimits).length > 0
-    if (!fieldId && hasPerFieldLimits) {
+    if (!fieldId) {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.MISSING_FIELD_ID_ERROR,
         FilesErrorsResponseEnum.MISSING_FIELD_ID_ERROR,
       )
     }
 
-    const fieldLimit = fieldId
-      ? getPerFieldFileLimit(formDefinition?.fileLimits, fieldId)
-      : null
+    const slot = formDefinition.files.slots.find((s) => s.slotId === fieldId)
+    if (!slot?.maxFileSize) {
+      return formPerFileMax
+    }
 
-    return Math.min(fieldLimit ?? Infinity, formPerFileMax)
+    return Math.min(slot.maxFileSize, formPerFileMax)
   }
 }

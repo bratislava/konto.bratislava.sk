@@ -552,7 +552,9 @@ export default class FilesService {
     }
   }
 
-  async getActiveFilesTotalSize(formId: string): Promise<number> {
-    return this.filesHelper.getActiveFilesTotalSize(formId)
+  async getActiveFileSizes(
+    formId: string,
+  ): Promise<{ id: string; slotId: string | null; fileSize: number }[]> {
+    return this.filesHelper.getActiveFileSizes(formId)
   }
 }

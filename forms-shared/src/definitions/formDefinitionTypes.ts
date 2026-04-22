@@ -31,6 +31,7 @@ export type FormFiles<SlotId extends string> = {
   slots: readonly {
     slotId: SlotId
     maxFileSize?: number
+    maxTotalFileSize?: number
     allowedFileTypes?: string[]
   }[]
 }

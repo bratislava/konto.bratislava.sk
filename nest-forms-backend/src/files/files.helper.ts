@@ -400,8 +400,10 @@ export default class FilesHelper {
     }
   }
 
-  async getActiveFilesTotalSize(formId: string): Promise<number> {
-    const result = await this.prisma.files.aggregate({
+  async getActiveFileSizes(
+    formId: string,
+  ): Promise<{ id: string; slotId: string | null; fileSize: number }[]> {
+    return this.prisma.files.findMany({
       where: {
         formId,
         status: {
@@ -414,10 +416,8 @@ export default class FilesHelper {
           ],
         },
       },
-      _sum: { fileSize: true },
+      select: { id: true, slotId: true, fileSize: true },
     })
-
-    return result._sum.fileSize ?? 0
   }
 
   fileDto2formInfo(files: BasicFileDto): FormInfo {

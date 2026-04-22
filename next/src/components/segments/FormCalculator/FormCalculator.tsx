@@ -85,7 +85,7 @@ const Calculator = ({
     'border-white': !isLast && variant === 'black',
   })
 
-  const labelClassName = cn('max-w-[400px] shrink text-p2-semibold font-semibold', {
+  const labelClassName = cn('max-w-[400px] shrink text-16-semibold', {
     'text-gray-800': variant === 'white',
     'text-white': variant === 'black',
   })

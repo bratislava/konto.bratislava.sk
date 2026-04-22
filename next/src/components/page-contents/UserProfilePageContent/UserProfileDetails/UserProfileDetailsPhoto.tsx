@@ -23,7 +23,7 @@ const UserProfileDetailsPhoto = ({ userAttributes }: Props) => {
           : ''
 
   return (
-    <div className="flex size-[6.5rem] items-center justify-center rounded-full bg-background-passive-primary text-content-passive-primary lg:size-[10.5rem]">
+    <div className="flex size-26 items-center justify-center rounded-full bg-background-passive-primary text-content-passive-primary lg:size-42">
       <span className="text-h2">{initialLetters.toUpperCase()}</span>
     </div>
   )

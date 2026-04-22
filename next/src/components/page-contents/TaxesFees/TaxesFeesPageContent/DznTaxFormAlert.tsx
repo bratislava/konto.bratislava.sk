@@ -15,7 +15,7 @@ const DznTaxFormAlert = () => {
       fullWidth
       message={
         <>
-          <div className="text-h6 mb-2">
+          <div className="mb-2 text-h6">
             {t('account_section_payment.tax_form_change_ownership_alert_title')}
           </div>
 

@@ -5,10 +5,11 @@
  */
 export const createSerializableFile = (file: File) => {
   const replacer: string[] = []
-  // eslint-disable-next-line guard-for-in,no-restricted-syntax
+  // eslint-disable-next-line guard-for-in
   for (const key in file) {
     replacer.push(key)
   }
   const stringified = JSON.stringify(file, replacer)
+
   return JSON.parse(stringified) as File
 }

@@ -12,7 +12,7 @@ const SummaryFormLegalText = () => {
 
   return (
     <div>
-      <h3 className="text-h3 mb-4">{t('summary.vop_agreement_title')}</h3>
+      <h3 className="mb-4 text-h3">{t('summary.vop_agreement_title')}</h3>
       <AccountMarkdown
         content={termsAndConditions}
         // TODO: Replace variant statusBar

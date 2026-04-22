@@ -41,6 +41,7 @@ export const getStepProperty = (step: BAJSONSchema7 | null) => {
   }
 
   const keys = Object.keys(step.properties)
+
   return keys[0] ?? null
 }
 
@@ -75,6 +76,7 @@ export const getStepperData = (stepsSchemas: (BAJSONSchema7 | null)[]): FormStep
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1
+
       return {
         index,
         displayIndex,
@@ -111,6 +113,7 @@ export const parseStepFromFieldId = (fieldId: string) => {
   if (arr[0] === 'root' && arr[1]) {
     return arr[1]
   }
+
   return null
 }
 

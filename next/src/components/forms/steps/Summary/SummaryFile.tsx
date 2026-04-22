@@ -35,6 +35,7 @@ const SummaryFile = ({ fileInfo }: SummaryFileProps) => {
     if (isUploadingStyle) {
       return <Spinner size="sm" className="size-6" {...props} />
     }
+
     return <AttachmentIcon {...props} />
   }, [isErrorStyle, isScanningStyle, isDoneStyle, isUploadingStyle])
 

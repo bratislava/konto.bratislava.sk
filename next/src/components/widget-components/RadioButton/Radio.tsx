@@ -31,7 +31,7 @@ const Radio = ({
   const isError = state?.validationState === 'invalid'
 
   const inputStyle = cn(
-    'top-0 right-0 bottom-0 left-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center self-start rounded-full border-2 bg-white outline-offset-4',
+    'inset-0 m-0 grid size-6 min-h-[24px] min-w-[24px] appearance-none place-content-center self-start rounded-full border-2 bg-white outline-offset-4',
     {
       // "before" pseudo-element is used to display the selected radio button
       'before:h-4 before:min-h-[16px] before:w-4 before:min-w-[16px] before:rounded-full before:bg-gray-700':

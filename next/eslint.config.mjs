@@ -11,13 +11,13 @@ export default [
   }),
   {
     settings: {
-      "better-tailwindcss": {
+      'better-tailwindcss': {
         // tailwindcss 4: the path to the entry file of the css based tailwind config (eg: `src/global.css`)
-        entryPoint: "src/pages/globals.css",
+        entryPoint: 'src/pages/globals.css',
         // tailwindcss 3: the path to the tailwind config file (eg: `tailwind.config.js`)
         // tailwindConfig: "tailwind.config.js"
         callees: ['cx', 'classnames', 'clsx', 'cn', 'twMerge', 'tw'],
-      }
+      },
     },
   },
 

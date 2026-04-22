@@ -27,7 +27,7 @@ export type FaqsGroupProps = {
 
 const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
   return (
-    <DisclosureGroup className="border-border-active-default bg-background-passive-base rounded-lg border py-2">
+    <DisclosureGroup className="rounded-lg border border-border-active-default bg-background-passive-base py-2">
       {faqs?.filter(isDefined).map((faq, index) => (
         <Fragment key={index}>
           {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}
@@ -37,7 +37,7 @@ const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
                 variant="h5"
                 as={accordionTitleLevel}
                 // TODO handle font style properly through correct css variables
-                className="text-[1rem] font-semibold leading-5 lg:text-[1.25rem] lg:leading-7"
+                className="text-base/p-tiny font-semibold lg:text-xl/7"
               >
                 {faq.title}
               </Typography>

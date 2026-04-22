@@ -61,7 +61,7 @@ const DateField = (
         {(segment) => (
           <RACDateSegment
             segment={segment}
-            className="data-[focused]:bg-background-active-primary-default data-[focused]:text-content-active-primary-inverted-default rounded-sm px-0.5 caret-transparent outline-hidden data-placeholder:text-content-passive-tertiary"
+            className="rounded-sm px-0.5 caret-transparent outline-hidden data-[focused]:bg-background-passive-secondary data-placeholder:text-content-passive-tertiary"
           />
         )}
       </RACDateInput>

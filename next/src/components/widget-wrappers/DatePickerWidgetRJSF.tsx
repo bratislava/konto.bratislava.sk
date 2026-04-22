@@ -1,51 +1,31 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { DatePickerUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
+import { DateValue } from 'react-aria-components'
 
-import DatePicker from '@/src/components/widget-components/DateTimePicker/DatePicker'
+import DatePicker from '@/src/components/fields/DatePicker/DatePicker'
+import { safeParseDate } from '@/src/components/widget-wrappers/dateTimeParse'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-interface DatePickerWidgetRJSFProps extends WidgetProps {
-  label: string
-  options: DatePickerUiOptions
-  value: string | null
-  errorMessage?: string
-  schema: StrictRJSFSchema
-  onChange: (value?: string) => void
-}
+type DatePickerWidgetRJSFProps = RJSFWidgetProps<string | undefined, DatePickerUiOptions>
 
-const DatePickerWidgetRJSF = ({
-  id,
-  label,
-  options,
-  rawErrors,
-  required,
-  disabled,
-  value,
-  onChange,
-  readonly,
-}: DatePickerWidgetRJSFProps) => {
-  const { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, size, labelSize } =
-    options
+const DatePickerWidgetRJSF = (props: DatePickerWidgetRJSFProps) => {
+  const { wrapperProps, fieldProps } = mapRjsfToReactAriaProps(props, {
+    toFieldValue: (value) => (value ? safeParseDate(value) : null),
+    fromFieldValue: (value: DateValue | null) => (value ? value.toString() : undefined),
+  })
+  const { minValue, maxValue } = props.options
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper {...wrapperProps}>
       <DatePicker
-        label={label}
-        errorMessage={rawErrors}
-        isRequired={required}
-        isDisabled={disabled || readonly}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
-        value={value ?? null}
-        onChange={(value) => onChange(value ?? undefined)}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel
+        {...fieldProps}
+        minValue={minValue ? safeParseDate(minValue) ?? undefined : undefined}
+        maxValue={maxValue ? safeParseDate(maxValue) ?? undefined : undefined}
       />
     </WidgetWrapper>
   )
 }
+
 export default DatePickerWidgetRJSF

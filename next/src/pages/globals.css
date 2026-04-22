@@ -312,6 +312,17 @@
   --text-h-2xl--line-height: 48px;
   --text-h-3xl: 56px;
   --text-h-3xl--line-height: 64px;
+
+  /* TODO Adding only used text sizes from new tokens, so far */
+  --text-p-small: 1rem; /* 16px */
+  --leading-p-small: 1.5rem; /* 24px */
+  --text-p-small-r: 1rem; /* 16px */
+  --leading-p-small-r: 1.5rem; /* 24px */
+
+  --text-p-tiny: 0.875rem; /* 14px */
+  --leading-p-tiny: 1.25rem; /* 20px */
+  --text-p-tiny-r: 0.875rem; /* 14px */
+  --leading-p-tiny-r: 1.25rem; /* 20px */
 }
 
 @utility text-h1-lg {
@@ -712,13 +723,34 @@ body {
   @apply font-sans text-font antialiased;
 }
 
-.base-focus-ring {
+@utility base-focus-ring {
   @apply ring-border-active-primary-default ring-offset-3 outline-none;
   @apply focus-visible:ring-3 focus-visible:transition-shadow;
 }
 
-.wrapper-focus-ring {
+@utility wrapper-focus-ring {
   @apply ring-border-active-primary-default ring-offset-3 outline-none;
   @apply focus-within:[&:has(:focus-visible)]:ring-3 focus-within:[&:has(:focus-visible)]:transition-shadow;
   @apply [&_*]:focus-visible:ring-0 [&_*]:focus-visible:ring-offset-0 [&_*]:focus-visible:outline-none;
 }
+
+@utility negative-x-spacing {
+  @apply -mx-4 px-4;
+}
+
+@utility text-size-p-small {
+  @apply text-p-small leading-p-small;
+}
+
+@utility text-size-p-small-r {
+  @apply text-p-small-r leading-p-small-r;
+}
+
+@utility text-size-p-tiny {
+  @apply text-p-tiny leading-p-tiny;
+}
+
+@utility text-size-p-tiny-r {
+  @apply text-p-tiny-r leading-p-tiny-r;
+}
+

@@ -15,7 +15,7 @@ type ProgressBarBase = {
 const ProgressBar = ({
   type = 'default',
   label,
-  value = 0,
+  value,
   minValue = 0,
   maxValue = 100,
   className,
@@ -36,11 +36,12 @@ const ProgressBar = ({
     className,
     {},
   )
+
   return (
     <div className="flex w-full flex-col">
       {label && <span {...labelProps}>{label}</span>}
       <div {...progressBarProps} className={progressBarStyleContainer}>
-        <div className={cn('flex-column flex h-2 w-full items-center rounded-full bg-gray-200')}>
+        <div className={cn('flex h-2 w-full flex-col items-center rounded-full bg-gray-200')}>
           <div
             style={{ width: barWidth }}
             className={cn('h-2 rounded-full', {

@@ -9,12 +9,25 @@ export default [
       '/src/clients/graphql-*/*.ts',
     ],
   }),
+  {
+    settings: {
+      "better-tailwindcss": {
+        // tailwindcss 4: the path to the entry file of the css based tailwind config (eg: `src/global.css`)
+        entryPoint: "src/pages/globals.css",
+        // tailwindcss 3: the path to the tailwind config file (eg: `tailwind.config.js`)
+        // tailwindConfig: "tailwind.config.js"
+        callees: ['cx', 'classnames', 'clsx', 'cn', 'twMerge', 'tw'],
+      }
+    },
+  },
 
   // Project-specific rule overrides
   {
     rules: {
       'jsx-a11y/anchor-is-valid': 'off',
       'no-multi-spaces': 'error',
+
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
 
       // TODO good rules, require work to fix and were skipped over in eslint v9 upgrade
       '@typescript-eslint/no-explicit-any': 'off',
@@ -65,7 +78,6 @@ export default [
       '@typescript-eslint/no-dynamic-delete': 'warn', // 2 violations
       'react-hooks/static-components': 'warn', // 2 violations
       'sonarjs/no-undefined-argument': 'warn', // 2 violations
-      'tailwindcss/enforces-shorthand': 'warn', // 2 violations
       'sonarjs/fixme-tag': 'warn', // 2 violations
       '@typescript-eslint/no-base-to-string': 'warn', // 2 violations
     },

@@ -25,12 +25,12 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
     />
   ) : verificationStatus === VerificationStatus.ERROR ? (
     <div className="flex flex-col gap-4 md:gap-6">
-      <div className="bg-negative-100 mx-auto size-14 rounded-full p-4">
+      <div className="mx-auto size-14 rounded-full bg-negative-100 p-4">
         <div className="flex size-6 items-center justify-center">
-          <ErrorIcon className="text-negative-700 size-6" />
+          <ErrorIcon className="size-6 text-negative-700" />
         </div>
       </div>
-      <h1 className="text-h3 text-center">
+      <h1 className="text-center text-h3">
         {t('auth.identity_verification.fop_po_eid.error.title')}
       </h1>
       <AccountMarkdown

@@ -33,6 +33,7 @@ const NasesLoginPage = () => {
     if (!sendEidMetadata && !verifyEidMetadata) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       router.push(ROUTES.HOME)
+
       return
     }
 

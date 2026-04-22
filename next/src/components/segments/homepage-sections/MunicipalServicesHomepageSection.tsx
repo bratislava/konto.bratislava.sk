@@ -15,7 +15,7 @@ const MunicipalServicesHomepageSection = ({ services }: Props) => {
   const { t } = useTranslation('account')
 
   return (
-    <SectionContainer className="lg:py-18 py-6">
+    <SectionContainer className="py-6 lg:py-18">
       <div className="flex flex-col gap-6 lg:gap-10">
         <SectionHeader
           title={t('account_section_services.navigation')}

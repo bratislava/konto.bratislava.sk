@@ -19,7 +19,7 @@ const UserProfileDetails = () => {
 
   return (
     <SectionContainer>
-      <div className="border-border-passive-primary w-full rounded-lg border">
+      <div className="w-full rounded-lg border border-border-passive-primary">
         <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div className="flex flex-col gap-2">

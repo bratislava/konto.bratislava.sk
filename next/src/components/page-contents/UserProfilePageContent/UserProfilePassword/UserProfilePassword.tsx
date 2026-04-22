@@ -14,7 +14,7 @@ const UserProfilePassword = () => {
 
   return (
     <SectionContainer>
-      <div className="border-border-passive-primary rounded-lg border p-4 lg:p-6">
+      <div className="rounded-lg border border-border-passive-primary p-4 lg:p-6">
         <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2">
             <h2 className="text-h5">{t('my_profile.password_change.title')}</h2>

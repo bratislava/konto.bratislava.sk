@@ -101,7 +101,7 @@ const Pagination = ({ currentPage, totalCount, onPageChange = () => {} }: Pagina
               <li
                 key={index}
                 className={cn({
-                  'text-size-p-small flex w-10 items-center justify-center font-semibold lg:w-12':
+                  'flex w-10 items-center justify-center text-size-p-small font-semibold lg:w-12':
                     type === 'start-ellipsis' || type === 'end-ellipsis',
                   'lg:mr-2': type === 'previous',
                   'lg:ml-2': type === 'next',

@@ -75,7 +75,7 @@ const DesktopFooter = () => {
           <FooterAccessibilityLink {...footer} />
         </div>
         <HorizontalDivider />
-        <div className="text-size-p-small text-center">
+        <div className="text-center text-size-p-small">
           <FooterCopyright />
         </div>
       </footer>

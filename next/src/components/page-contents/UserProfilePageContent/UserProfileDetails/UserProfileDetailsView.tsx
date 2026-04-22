@@ -16,7 +16,7 @@ const Row = ({ label, value }: RowProps) => {
   return (
     <li
       data-cy={slugifiedLabel}
-      className="not-first:pt-4 not-last:pb-4 flex w-full flex-col gap-1 lg:flex-row lg:gap-4 lg:py-4 lg:*:w-1/2"
+      className="flex w-full flex-col gap-1 not-first:pt-4 not-last:pb-4 lg:flex-row lg:gap-4 lg:py-4 lg:*:w-1/2"
     >
       <span className="text-p2-semibold">{label}</span>
       <span className="text-p2 lg:break-normal">{displayedValue}</span>

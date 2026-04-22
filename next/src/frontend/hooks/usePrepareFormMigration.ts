@@ -12,6 +12,7 @@ export const usePrepareFormMigration = (context: MigrationContext) => {
       logger.error(
         `[AUTH] Missing guestIdentityId in SSR context for signed-out user during ${context}. This should never happen.`,
       )
+
       return
     }
 

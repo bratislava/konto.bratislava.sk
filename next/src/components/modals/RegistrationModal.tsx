@@ -172,7 +172,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
-            <span className="text-p1 px-6">{t('registration_modal.footer_choice')}</span>
+            <span className="px-6 text-p1">{t('registration_modal.footer_choice')}</span>
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">

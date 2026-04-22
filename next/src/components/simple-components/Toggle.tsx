@@ -41,10 +41,11 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
     'bg-gray-400': !state.isSelected,
   })
 
-  const toggleBall = cn('relative h-5 w-5 rounded-full bg-white', {
+  const toggleBall = cn('relative size-5 rounded-full bg-white', {
     'left-[26px]': state.isSelected,
     'left-0.5': !state.isSelected,
   })
+
   return (
     <label
       htmlFor={generatedOrProvidedId}
@@ -56,14 +57,14 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
       </VisuallyHidden>
       <div className={togglerContainer}>
         <div
-          className={cn('absolute ml-1.5 flex h-4 w-4 items-center justify-center', {
+          className={cn('absolute ml-1.5 flex size-4 items-center justify-center', {
             hidden: !state.isSelected,
           })}
         >
           <CheckIcon className="text-gray-0" />
         </div>
         <div
-          className={cn('absolute ml-[26px] flex h-4 w-4 items-center justify-center', {
+          className={cn('absolute ml-[26px] flex size-4 items-center justify-center', {
             hidden: state.isSelected,
           })}
         >

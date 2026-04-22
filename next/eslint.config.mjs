@@ -5,8 +5,8 @@ export default [
     ignores: [
       '*.config.*',
       '*.js', // Temporarily ignored toplevel .js files after migration to eslint v9
-      '/src/clients/openapi-*/*.ts',
-      '/src/clients/graphql-*/*.ts',
+      './src/clients/openapi-*/**/*.ts',
+      './src/clients/graphql-*/**/*.ts',
     ],
   }),
   {

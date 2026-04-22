@@ -195,6 +195,7 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
+    slotId?: string,
   ): Promise<PostFileResponseDto> {
     const fileName = data.filename
     const fileId = data.id
@@ -272,6 +273,7 @@ export default class FilesService {
         fileSize,
         formId,
         pospIdOrSlug,
+        slotId,
       )
     } else {
       throw this.throwerErrorGuard.UnprocessableEntityException(

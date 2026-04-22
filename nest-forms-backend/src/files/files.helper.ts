@@ -150,6 +150,7 @@ export default class FilesHelper {
     fileSize: number,
     formId: string,
     pospIdOrSlug: string,
+    slotId?: string,
   ): Promise<Files> {
     try {
       return await this.prisma.files.create({
@@ -160,6 +161,7 @@ export default class FilesHelper {
           fileName,
           formId,
           pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
+          slotId,
         },
       })
     } catch (error) {

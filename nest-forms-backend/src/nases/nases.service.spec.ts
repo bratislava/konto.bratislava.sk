@@ -509,6 +509,11 @@ describe('NasesService', () => {
       schema: {},
       type: FormDefinitionType.SlovenskoSkGeneric,
       sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+      files: {
+        maxFileSize: 500_000_000,
+        maxTotalFileSize: 500_000_000,
+        slots: [],
+      },
     } as FormDefinitionSlovenskoSkGeneric
 
     const mockFormDefinitionEmail = {
@@ -670,11 +675,18 @@ describe('NasesService', () => {
       it('should throw if total file size exceeds form definition limit', async () => {
         ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
           ...mockFormDefinition,
-          maxTotalFileSize: 100_000,
+          files: {
+            ...mockFormDefinition.files,
+            maxTotalFileSize: 100_000,
+          },
         })
         jest
-          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
-          .mockResolvedValue(150_000)
+          .spyOn(service['filesService'], 'getActiveFileSizes')
+          .mockResolvedValue([
+            { id: 'test-id-1', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-2', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-3', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+          ])
 
         await expect(
           service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
@@ -687,17 +699,26 @@ describe('NasesService', () => {
         Object.defineProperty(service['baConfigService'], 'fileLimits', {
           get: () => ({
             maxSingleSizeGlobal: 500_000_000,
-            maxCumulativeSizeGlobal: 200_000,
+            maxCumulativeSizeGlobal: 200_000_000,
           }),
           configurable: true,
         })
         ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
           ...mockFormDefinition,
-          // no maxTotalFileSize — falls back to global
+          files: {
+            // no maxTotalFileSize — falls back to global
+            slots: [],
+          },
         })
         jest
-          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
-          .mockResolvedValue(250_000)
+          .spyOn(service['filesService'], 'getActiveFileSizes')
+          .mockResolvedValue([
+            { id: 'test-id-1', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-2', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-3', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-5', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+          ])
 
         await expect(
           service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
@@ -712,8 +733,13 @@ describe('NasesService', () => {
           maxTotalFileSize: 200_000,
         })
         jest
-          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
-          .mockResolvedValue(100_000)
+          .spyOn(service['filesService'], 'getActiveFileSizes')
+          .mockResolvedValue([
+            { id: 'test-id-1', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-2', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-3', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+            { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
+          ])
 
         const result = await service.sendForm(
           '1',
@@ -738,11 +764,19 @@ describe('NasesService', () => {
         })
         ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
           ...mockFormDefinition,
-          maxTotalFileSize: 100,
+          files: {
+            ...mockFormDefinition.files,
+            maxTotalFileSize: 100,
+          },
         })
         jest
-          .spyOn(service['filesService'], 'getActiveFilesTotalSize')
-          .mockResolvedValue(999_999)
+          .spyOn(service['filesService'], 'getActiveFileSizes')
+          .mockResolvedValue([
+            { id: 'test-id-1', slotId: 'test-slot-id-1', fileSize: 100 },
+            { id: 'test-id-2', slotId: 'test-slot-id-1', fileSize: 100 },
+            { id: 'test-id-3', slotId: 'test-slot-id-1', fileSize: 100 },
+            { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 100 },
+          ])
 
         const result = await service.sendForm(
           '1',
@@ -756,7 +790,7 @@ describe('NasesService', () => {
           state: FormState.QUEUED,
         })
         expect(
-          service['filesService'].getActiveFilesTotalSize,
+          service['filesService'].getActiveFileSizes,
         ).not.toHaveBeenCalled()
       })
     })

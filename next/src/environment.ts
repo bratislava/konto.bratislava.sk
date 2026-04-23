@@ -3,11 +3,11 @@
 // In browser process.env is an empty object, the values are replaced during the build time, so they need to be accessed
 // via process.env.NEXT_PUBLIC_...
 
-/* eslint-disable no-process-env */
 function assertEnv<T>(variable: string, value: T) {
   if (!value) {
     throw new Error(`Missing environment variable: ${variable}`)
   }
+
   return value
 }
 
@@ -24,7 +24,6 @@ function getOriginsArray<T>(variable: string, value: T, required = true) {
   array.forEach((origin) => {
     let parsedUrl: URL
     try {
-      // eslint-disable-next-line no-new
       parsedUrl = new URL(origin)
     } catch (error) {
       throw new Error(`Invalid origin in ${variable}: ${origin} is not a valid URL`)

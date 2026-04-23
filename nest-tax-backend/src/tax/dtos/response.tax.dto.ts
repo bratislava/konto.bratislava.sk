@@ -54,6 +54,7 @@ export enum InstallmentPaymentReasonNotPossibleEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
   ALREADY_PAID = 'ALREADY_PAID',
   TAX_IS_CANCELLED = 'TAX_IS_CANCELLED',
+  JUST_ONE_INSTALLMENT = 'JUST_ONE_INSTALLMENT',
 }
 
 export enum InstallmentPaidStatusEnum {

@@ -21,13 +21,13 @@ const FormHeader = () => {
   const menuItems = useFormMenuItems()
 
   return (
-    <SectionContainer className="min-h-none size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
+    <SectionContainer className="size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
       <div className="flex justify-between">
         <div className="flex flex-col gap-2 lg:gap-4">
           <h1 className="text-h1-form">{schema.title}</h1>
           {strapiForm?.moreInformationUrl ? (
             <Link
-              className="text-p1 w-max underline"
+              className="w-max text-p1 underline"
               href={strapiForm.moreInformationUrl}
               target="_blank"
             >
@@ -43,7 +43,7 @@ const FormHeader = () => {
               startIcon={<DiscIcon className="size-5" />}
               onPress={() => saveConcept()}
               data-cy="save-concept-desktop"
-              className="data-hovered:border-gray-600 data-pressed:border-gray-800 border-gray-700" // TODO remove when Button is updated according to DS
+              className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
             >
               {t('menu_list.save_concept')}
             </Button>
@@ -55,7 +55,7 @@ const FormHeader = () => {
                 size="small"
                 icon={<EllipsisVerticalIcon />}
                 aria-label="Menu"
-                className="data-hovered:border-gray-600 data-pressed:border-gray-800 border-gray-700" // TODO remove when Button is updated according to DS
+                className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
               />
             }
             items={menuItems}

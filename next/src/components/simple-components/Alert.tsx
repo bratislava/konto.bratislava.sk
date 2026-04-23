@@ -24,7 +24,7 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
         <React.Fragment key={i}>
           {button.link ? (
             <Link
-              className="text-16-medium w-max underline underline-offset-4"
+              className="w-max text-16-medium underline underline-offset-4"
               href={button.link}
               data-cy="alert-container-button"
             >
@@ -33,7 +33,7 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
           ) : (
             <Button
               variant="unstyled"
-              className="text-16-medium w-max underline underline-offset-4"
+              className="w-max text-16-medium underline underline-offset-4"
               onClick={button.handler}
             >
               {button.title}
@@ -129,7 +129,7 @@ const Alert = ({
       </div>
       {message && title && (
         <div
-          className={cn('w-full pl-9 text-p2 font-normal', {
+          className={cn('w-full pl-9 text-16', {
             'text-gray-0': solid,
             'text-gray-700': !solid,
           })}

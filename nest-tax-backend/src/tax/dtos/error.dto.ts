@@ -11,6 +11,7 @@ export enum CustomErrorTaxTypesEnum {
   BELOW_THRESHOLD = 'BELOW_THRESHOLD',
   TAX_TYPE_NOT_FOUND = 'TAX_TYPE_NOT_FOUND',
   TAX_IS_CANCELLED = 'TAX_IS_CANCELLED',
+  JUST_ONE_INSTALLMENT = 'JUST_ONE_INSTALLMENT',
 }
 
 export enum CustomErrorTaxTypesResponseEnum {
@@ -25,4 +26,5 @@ export enum CustomErrorTaxTypesResponseEnum {
   AFTER_DUE_DATE = 'Tax is after due date.',
   BELOW_THRESHOLD = 'Tax amount is below threshold for installment payments.',
   TAX_IS_CANCELLED = 'Tax is cancelled.',
+  JUST_ONE_INSTALLMENT = 'Tax has only one installment, no installment payments are possible.',
 }

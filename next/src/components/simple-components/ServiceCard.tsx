@@ -57,7 +57,7 @@ const ServiceCard = ({
         >
           {title}
         </h3>
-        <div className="flex items-center text-p-sm font-normal">{description}</div>
+        <div className="flex items-center text-p3">{description}</div>
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">

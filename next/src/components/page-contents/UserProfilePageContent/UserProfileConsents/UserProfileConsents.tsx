@@ -1,19 +1,19 @@
 import { useTranslation } from 'next-i18next/pages'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 
-import BoxedSection from '@/src/components/page-contents/UserProfilePageContent/BoxedSection'
-import UserConsent from '@/src/components/page-contents/UserProfilePageContent/UserConsent'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
+import UserProfileConsentsItem from '@/src/components/page-contents/UserProfilePageContent/UserProfileConsents/UserProfileConsentsItem'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useUserSubscription } from '@/src/frontend/hooks/useUser'
 
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
+  const { showToast } = useToast()
+
   const { isSubscribed, changeSubscription, subscriptionChangePending } = useUserSubscription({
     category: GDPRCategoryEnum.Esbs,
     type: GDPRTypeEnum.Marketing,
   })
-
-  const { showToast } = useToast()
 
   const handleOnChangeConsent = async (newValue: boolean) => {
     if (subscriptionChangePending) {
@@ -36,9 +36,9 @@ const UserProfileConsents = () => {
   }
 
   return (
-    <BoxedSection>
-      <div className="md:px-8">
-        <UserConsent
+    <SectionContainer>
+      <div className="rounded-lg border border-border-passive-primary p-4 lg:p-6">
+        <UserProfileConsentsItem
           consent={{
             id: 'receive_information',
             title: t('my_profile.consents.receive_information.title'),
@@ -49,7 +49,7 @@ const UserProfileConsents = () => {
           onChange={handleOnChangeConsent}
         />
       </div>
-    </BoxedSection>
+    </SectionContainer>
   )
 }
 

@@ -20,5 +20,6 @@ export const useStrapiTax = () => {
   if (!context) {
     throw new Error('useStrapiTax must be used within a StrapiTaxProvider')
   }
+
   return context
 }

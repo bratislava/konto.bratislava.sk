@@ -39,7 +39,7 @@ const TableHeader = () => {
     <thead className="self-stretch bg-gray-50">
       <tr className="lg:border-b">
         {headerData.map((header, index) => (
-          <th key={index} className="p-4 text-left text-16 font-semibold lg:px-6 lg:py-5">
+          <th key={index} className="p-4 text-left text-16-semibold lg:px-6 lg:py-5">
             {header}
           </th>
         ))}

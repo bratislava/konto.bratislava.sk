@@ -157,7 +157,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
               variant="solid"
               fullWidth
               onPress={() => register()}
-              className="text-p1-semibold rounded-lg px-5 py-2 leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
+              className="md:rounded-t-none lg:py-6"
               data-cy="registration-modal-button"
             >
               {t('registration_modal.body_action')}
@@ -172,7 +172,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
-            <span className="text-p1 px-6">{t('registration_modal.footer_choice')}</span>
+            <span className="px-6 text-p1">{t('registration_modal.footer_choice')}</span>
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">

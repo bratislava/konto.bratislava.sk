@@ -7,7 +7,6 @@ import {
   TimeValue,
 } from 'react-aria-components'
 
-import { ClockIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'
 
 import FieldWrapper from './_shared/FieldWrapper'
@@ -44,32 +43,34 @@ const TimeField = (
       helptextFooter={helptextFooter}
       errorMessage={errorMessage}
     >
-      <div
-        className={cn(
-          'flex w-full items-center gap-4 rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',
-          'px-3 py-2 lg:px-4 lg:py-3',
-          {
-            'border-border-active-default focus-within:border-border-active-focused hover:border-border-active-hover':
-              !errorMessage && !rest.isDisabled,
-            'border-border-error': !!errorMessage,
-            'border-border-active-disabled bg-background-passive-tertiary': rest.isDisabled,
-          },
-        )}
+      <RACDateInput
+        ref={ref}
+        data-cy={rest.name ? `timefield-${rest.name}` : undefined}
+        className={({ isFocusWithin, isDisabled, isInvalid }) =>
+          cn(
+            'flex w-full rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',
+            'px-3 py-2 lg:px-4 lg:py-3',
+            {
+              'border-border-active-default': !isInvalid && !isFocusWithin,
+              'border-border-active-focused': !isInvalid && isFocusWithin,
+              'border-border-error': isInvalid,
+              'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
+              'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocusWithin,
+            },
+          )
+        }
       >
-        <RACDateInput
-          ref={ref}
-          data-cy={rest.name ? `timefield-${rest.name}` : undefined}
-          className="flex flex-1"
-        >
-          {(segment) => (
-            <RACDateSegment
-              segment={segment}
-              className="rounded-sm px-0.5 caret-transparent outline-hidden data-[focused]:bg-background-passive-secondary data-placeholder:text-content-passive-tertiary"
-            />
-          )}
-        </RACDateInput>
-        <ClockIcon className="size-6 shrink-0" />
-      </div>
+        {(segment) => (
+          <RACDateSegment
+            segment={segment}
+            className={cn(
+              'rounded-sm px-0.5 type-literal:p-0',
+              'whitespace-nowrap caret-transparent outline-hidden',
+              'placeholder:text-content-passive-tertiary focus:bg-background-passive-secondary',
+            )}
+          />
+        )}
+      </RACDateInput>
     </FieldWrapper>
   </RACTimeField>
 )

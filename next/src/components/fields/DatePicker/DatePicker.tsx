@@ -1,7 +1,7 @@
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { forwardRef, Ref } from 'react'
 import {
-  Button as RACButton,
   DateInput as RACDateInput,
   DatePicker as RACDatePicker,
   DatePickerProps as RACDatePickerProps,
@@ -72,17 +72,19 @@ const DatePicker = (
             {(segment) => (
               <RACDateSegment
                 segment={segment}
-                className="rounded-sm px-0.5 caret-transparent outline-hidden data-[focused]:bg-background-passive-secondary data-placeholder:text-content-passive-tertiary"
+                className={cn(
+                  'rounded-sm px-0.5 type-literal:-ml-0.5 type-literal:p-0',
+                  'whitespace-nowrap caret-transparent outline-hidden',
+                  'placeholder:text-content-passive-tertiary focus:bg-background-passive-secondary',
+                )}
               />
             )}
           </RACDateInput>
-          <RACButton
-            type="button"
+          <Button
+            variant="icon-wrapped-negative-margin"
             aria-label={t('DatePicker.aria.openCalendar')}
-            className="ml-2 flex size-6 items-center justify-center outline-hidden disabled:opacity-40"
-          >
-            <CalendarIcon />
-          </RACButton>
+            icon={<CalendarIcon />}
+          />
         </RACGroup>
       </FieldWrapper>
       <RACPopover placement="bottom start" className="z-50">

@@ -11,6 +11,7 @@ import MyApplicationsList, {
 } from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
 import logger from '@/src/frontend/utils/logger'
 import { ApplicationsListVariant, sections } from '@/src/pages/moje-ziadosti'
+import cn from '@/src/utils/cn'
 
 type HeaderNavigationItemBase = {
   title: string
@@ -122,13 +123,18 @@ const MyApplicationsPageContent = ({
               const countText = count == null ? '' : ` (${count})`
               const text = `${item.title}${countText}`
 
-              /* Hover without layout shift based on: https://stackoverflow.com/a/20249560 */
               return (
                 <Tab
                   key={item.tag}
                   id={item.tag}
                   data-before-text={text}
-                  className="cursor-pointer py-4 text-center text-20 transition-all before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)] hover:border-gray-700 hover:text-20-semibold selected:border-b selected:border-gray-700 selected:text-20-semibold"
+                  className={cn(
+                    'cursor-pointer p-4 text-center text-20 lg:px-0',
+                    'hover:border-gray-700 hover:text-20-semibold',
+                    'selected:border-b-2 selected:border-gray-700 selected:text-20-semibold',
+                    // Hover without layout shift based on: https://stackoverflow.com/a/20249560
+                    'before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)]',
+                  )}
                 >
                   {text}
                 </Tab>

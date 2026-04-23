@@ -40,10 +40,9 @@ const FormHeader = () => {
             <Button
               size="small"
               variant="outline"
-              startIcon={<DiscIcon className="size-5" />}
+              startIcon={<DiscIcon />}
               onPress={() => saveConcept()}
               data-cy="save-concept-desktop"
-              className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
             >
               {t('menu_list.save_concept')}
             </Button>
@@ -54,8 +53,7 @@ const FormHeader = () => {
                 variant="outline"
                 size="small"
                 icon={<EllipsisVerticalIcon />}
-                aria-label="Menu"
-                className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when Button is updated according to DS
+                aria-label={t('form_header.additional_fom_action_menu_aria_label')}
               />
             }
             items={menuItems}

@@ -21,6 +21,7 @@
   "form_controls.back": "Späť",
   "form_controls.continue": "Pokračovať",
   "form_controls.skip": "Preskočiť",
+  "form_header.additional_fom_action_menu_aria_label": "Ďalšie akcie formulára",
   "form_header.services_link": "Viac informácií o službe",
   "form_landing_page.redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova.",
   "form_landing_page.redirect_info": "Presmerovávam na formulár.",

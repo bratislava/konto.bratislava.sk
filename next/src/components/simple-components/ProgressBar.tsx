@@ -41,7 +41,7 @@ const ProgressBar = ({
     <div className="flex w-full flex-col">
       {label && <span {...labelProps}>{label}</span>}
       <div {...progressBarProps} className={progressBarStyleContainer}>
-        <div className={cn('flex h-2 w-full flex-col items-center rounded-full bg-gray-200')}>
+        <div className={cn('flex h-2 w-full items-center rounded-full bg-gray-200')}>
           <div
             style={{ width: barWidth }}
             className={cn('h-2 rounded-full', {
@@ -52,7 +52,7 @@ const ProgressBar = ({
         </div>
 
         {/* "before" creates space for percentage value, so the progressbar doesn't change width */}
-        <div className='text-right text-p2 before:invisible before:block before:h-0 before:overflow-hidden before:content-["100%"]'>{`${value}%`}</div>
+        <div className='text-p2 text-right before:invisible before:block before:h-0 before:overflow-hidden before:content-["100%"]'>{`${value}%`}</div>
       </div>
     </div>
   )

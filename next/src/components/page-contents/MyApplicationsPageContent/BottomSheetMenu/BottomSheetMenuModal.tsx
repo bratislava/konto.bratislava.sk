@@ -34,7 +34,7 @@ const BottomSheetMenuModal = ({
         isDismissable
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        className="fixed bottom-0 w-full outline-0 data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse"
+        className="fixed bottom-0 w-full outline-0 entering:animate-stepper-slide exiting:animate-stepper-slide-reverse"
       >
         <Dialog className="flex h-full flex-col outline-0">
           {({ close }) => (

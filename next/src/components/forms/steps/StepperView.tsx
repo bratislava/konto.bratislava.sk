@@ -24,7 +24,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
     <ModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
-      className="fixed top-0 left-0 z-50 h-(--visual-viewport-height) w-screen bg-white outline-0 data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse"
+      className="fixed top-0 left-0 z-50 h-(--visual-viewport-height) w-screen bg-white outline-0 entering:animate-stepper-slide exiting:animate-stepper-slide-reverse"
       isDismissable
     >
       <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">

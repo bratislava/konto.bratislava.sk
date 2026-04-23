@@ -19,20 +19,12 @@ const TimePickerWidgetRJSF = (props: TimePickerWidgetRJSFProps) => {
     toFieldValue: (value) => (value ? safeParseTime(value) : null),
     fromFieldValue: (value: TimeValue | null) => (value ? formatTime(value) : undefined),
   })
-  const { minValue, maxValue } = props.options
 
   return (
     <WidgetWrapper {...wrapperProps}>
       <FieldBlurWrapper value={fieldProps.value} onChange={fieldProps.onChange}>
         {({ value, onChange, onBlur }) => (
-          <TimeField
-            {...fieldProps}
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            minValue={minValue ? safeParseTime(minValue) ?? undefined : undefined}
-            maxValue={maxValue ? safeParseTime(maxValue) ?? undefined : undefined}
-          />
+          <TimeField {...fieldProps} value={value} onChange={onChange} onBlur={onBlur} />
         )}
       </FieldBlurWrapper>
     </WidgetWrapper>

@@ -15,15 +15,10 @@ const DatePickerWidgetRJSF = (props: DatePickerWidgetRJSFProps) => {
     toFieldValue: (value) => (value ? safeParseDate(value) : null),
     fromFieldValue: (value: DateValue | null) => (value ? value.toString() : undefined),
   })
-  const { minValue, maxValue } = props.options
 
   return (
     <WidgetWrapper {...wrapperProps}>
-      <DatePicker
-        {...fieldProps}
-        minValue={minValue ? safeParseDate(minValue) ?? undefined : undefined}
-        maxValue={maxValue ? safeParseDate(maxValue) ?? undefined : undefined}
-      />
+      <DatePicker {...fieldProps} />
     </WidgetWrapper>
   )
 }

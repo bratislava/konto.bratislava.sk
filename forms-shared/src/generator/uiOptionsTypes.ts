@@ -92,10 +92,7 @@ export type CheckboxUiOptions = {
   checkboxLabel: string
 } & WidgetUiOptions
 
-export interface DatePickerUiOptions extends WidgetUiOptions {
-  minValue?: string
-  maxValue?: string
-}
+export type DatePickerUiOptions = WidgetUiOptions
 
 export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
 
@@ -121,10 +118,7 @@ export type SelectUiOptions = {
 
 export type TextAreaUiOptions = { placeholder?: string } & WidgetUiOptions
 
-export interface TimePickerUiOptions extends WidgetUiOptions {
-  minValue?: string
-  maxValue?: string
-}
+export type TimePickerUiOptions = WidgetUiOptions
 
 export type FileUploadUiOptions = {
   sizeLimit?: number

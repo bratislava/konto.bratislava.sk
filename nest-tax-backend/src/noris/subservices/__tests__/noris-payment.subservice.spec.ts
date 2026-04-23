@@ -703,6 +703,7 @@ describe('NorisPaymentSubservice', () => {
     })
 
     it.each([
+      // paidFromNoris = uhrazeno * 100 (via currency.js mock)
       {
         uhrazeno: 2000,
         alreadyPaid: 0,
@@ -711,14 +712,43 @@ describe('NorisPaymentSubservice', () => {
         expectedIsFullyPaid: true,
       },
       {
+        uhrazeno: 2001,
+        alreadyPaid: 0,
+        taxAmount: 200_000,
+        expectedCreatedAmount: 200_100,
+        expectedIsFullyPaid: true,
+      },
+      {
+        uhrazeno: 1999,
+        alreadyPaid: 0,
+        taxAmount: 200_000,
+        expectedCreatedAmount: 199_900,
+        expectedIsFullyPaid: false,
+      },
+      {
         uhrazeno: 1000,
         alreadyPaid: 0,
         taxAmount: 200_000,
         expectedCreatedAmount: 100_000,
         expectedIsFullyPaid: false,
       },
+      // alreadyPaid > 0: is_fully_paid is based on cumulative paidFromNoris, not the new payment amount
+      {
+        uhrazeno: 2000,
+        alreadyPaid: 100_000,
+        taxAmount: 200_000,
+        expectedCreatedAmount: 100_000,
+        expectedIsFullyPaid: true,
+      },
+      {
+        uhrazeno: 1500,
+        alreadyPaid: 100_000,
+        taxAmount: 200_000,
+        expectedCreatedAmount: 50_000,
+        expectedIsFullyPaid: false,
+      },
     ])(
-      'should pass is_fully_paid: $expectedIsFullyPaid when paidFromNoris=$expectedCreatedAmount and taxAmount=$taxAmount',
+      'should pass is_fully_paid: $expectedIsFullyPaid when uhrazeno=$uhrazeno, alreadyPaid=$alreadyPaid, taxAmount=$taxAmount',
       async ({
         uhrazeno,
         alreadyPaid,

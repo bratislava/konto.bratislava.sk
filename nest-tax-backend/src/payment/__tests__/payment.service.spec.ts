@@ -320,8 +320,11 @@ describe('PaymentService', () => {
 
     it.each([
       { totalPaid: 150_000, taxAmount: 150_000, expectedIsFullyPaid: true },
+      { totalPaid: 150_001, taxAmount: 150_000, expectedIsFullyPaid: true },
       { totalPaid: 200_000, taxAmount: 150_000, expectedIsFullyPaid: true },
+      { totalPaid: 149_999, taxAmount: 150_000, expectedIsFullyPaid: false },
       { totalPaid: 100_000, taxAmount: 150_000, expectedIsFullyPaid: false },
+      { totalPaid: null, taxAmount: 150_000, expectedIsFullyPaid: false },
     ])(
       'should pass is_fully_paid: $expectedIsFullyPaid when totalPaid=$totalPaid and taxAmount=$taxAmount',
       async ({ totalPaid, taxAmount, expectedIsFullyPaid }) => {

@@ -1,81 +1,53 @@
-import * as React from 'react'
-import { useId, useRef } from 'react'
-import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
-import { ToggleState, useToggleState } from 'react-stately'
+import { ReactNode } from 'react'
+import { Switch as RACSwitch, SwitchProps as RACSwitchProps } from 'react-aria-components'
 
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'
 
-type ToggleBase = {
-  className?: string
-  isDisabled?: boolean
-  isReadOnly?: boolean
-  defaultSelected?: boolean
-  isSelected?: boolean
-  children?: React.ReactNode
-  value?: string
-  id?: string
-  onChange?: (isSelected: boolean) => void
+export interface ToggleProps extends Omit<RACSwitchProps, 'children'> {
+  children?: ReactNode
 }
 
-const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: ToggleBase) => {
-  const state: ToggleState = useToggleState({ ...rest, isDisabled, isSelected })
-  const generatedId = useId()
-  const generatedOrProvidedId = rest.id ?? generatedId
-  const ref = useRef<HTMLInputElement>(null)
-  const { inputProps } = useSwitch(
-    { ...rest, isDisabled, children, 'aria-label': generatedOrProvidedId },
-    state,
-    ref,
-  )
-  const { focusProps } = useFocusRing()
-
-  const toggleContainer = cn('group flex flex-row items-center gap-4 p-0 select-none', {
-    'cursor-not-allowed opacity-50': isDisabled,
-    'cursor-pointer': !isDisabled,
-  })
-  const labelStyle = cn('text-16 text-gray-700 select-none')
-
-  const togglerContainer = cn('flex h-6 w-12 items-center rounded-full', {
-    'bg-success-700': state.isSelected,
-    'bg-gray-400': !state.isSelected,
-  })
-
-  const toggleBall = cn('relative size-5 rounded-full bg-white', {
-    'left-[26px]': state.isSelected,
-    'left-0.5': !state.isSelected,
-  })
-
-  return (
-    <label
-      htmlFor={generatedOrProvidedId}
-      className={toggleContainer}
-      data-cy={`${rest.id?.replace(/_/g, '-')}-toggle`}
-    >
-      <VisuallyHidden>
-        <input id={generatedOrProvidedId} {...inputProps} {...focusProps} ref={ref} />
-      </VisuallyHidden>
-      <div className={togglerContainer}>
+const Toggle = ({ children, className, ...rest }: ToggleProps) => (
+  <RACSwitch
+    {...rest}
+    data-cy={rest.id ? `${rest.id.replaceAll('_', '-')}-toggle` : undefined}
+    className={(renderProps) =>
+      cn(
+        'group flex cursor-pointer items-center gap-4 rounded-full text-16 text-content-passive-secondary base-focus-ring select-none',
+        'disabled:cursor-not-allowed disabled:opacity-50',
+        'readonly:cursor-not-allowed',
+        typeof className === 'function' ? className(renderProps) : className,
+      )
+    }
+  >
+    {({ isSelected }) => (
+      <>
         <div
-          className={cn('absolute ml-1.5 flex size-4 items-center justify-center', {
-            hidden: !state.isSelected,
-          })}
+          className={cn(
+            'relative flex h-6 w-12 shrink-0 items-center rounded-full transition-colors',
+            {
+              'bg-background-success-default': isSelected,
+              'bg-background-passive-tertiary': !isSelected,
+            },
+          )}
         >
-          <CheckIcon className="text-gray-0" />
+          {isSelected ? (
+            <CheckIcon className="absolute left-1.5 size-4 text-background-passive-base" />
+          ) : (
+            <CrossIcon className="absolute right-1.5 size-4 text-content-passive-tertiary" />
+          )}
+          <div
+            className={cn(
+              'size-5 rounded-full bg-background-passive-base transition-transform',
+              isSelected ? 'translate-x-6.5' : 'translate-x-0.5',
+            )}
+          />
         </div>
-        <div
-          className={cn('absolute ml-[26px] flex size-4 items-center justify-center', {
-            hidden: state.isSelected,
-          })}
-        >
-          <CrossIcon className="text-gray-0" />
-        </div>
-        <div className={toggleBall} />
-      </div>
-
-      {children && <div className={labelStyle}>{children}</div>}
-    </label>
-  )
-}
+        {children ? <span>{children}</span> : null}
+      </>
+    )}
+  </RACSwitch>
+)
 
 export default Toggle

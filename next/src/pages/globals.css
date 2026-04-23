@@ -9,7 +9,12 @@
 
 @source '../../node_modules/@bratislava/component-library/dist';
 
+/** 
+ * Figma: https://www.figma.com/design/ctDKMhAPIjLUVNNmq430D4/DS--Foundations 
+ */
+
 /* When updating the theme don't forget to update the `baTwMerge` implementation in `cn.ts`. */
+
 @theme inline {
   /* previously defaultTheme.fontFamily.sans in tailwind.config.js */
   --font-sans:
@@ -28,6 +33,12 @@
   --breakpoint-2xl: initial;
 
   /* COLORS */
+
+  --color-white: var(--color-grey-0);
+  --color-font: var(--color-content-passive-primary);
+  --color-font-contrast: var(--color-content-passive-inverted-primary);
+
+  --color-error: #d00000; /* TODO consolidate with correct tokens */
 
   --color-main-800: rgb(147, 37, 27); /*#93251B*/
   --color-main-700: rgb(216, 55, 40); /*#D83728*/
@@ -152,10 +163,6 @@
   --color-municipal-services-olo-bg: rgb(252, 240, 214); /*#FCF0D6*/
   --color-municipal-services-marianum: rgb(68, 102, 80); /*#446650*/
   --color-municipal-services-marianum-bg: rgb(180, 194, 185); /*#B4C2B9*/
-
-  --color-error: #d00000;
-  --color-font: #333;
-  --color-font-contrast: var(--color-grey-50);
 
   /* Color tokens - border */
 
@@ -402,7 +409,7 @@
 @utility wrapper-focus-ring {
   @apply ring-border-active-primary-default ring-offset-3 outline-none;
   @apply focus-within:[&:has(:focus-visible)]:ring-3 focus-within:[&:has(:focus-visible)]:transition-shadow;
-  @apply [&_*]:focus-visible:ring-0 [&_*]:focus-visible:ring-offset-0 [&_*]:focus-visible:outline-none;
+  @apply **:focus-visible:ring-0 **:focus-visible:ring-offset-0 **:focus-visible:outline-none;
 }
 
 @utility negative-x-spacing {

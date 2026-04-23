@@ -1,6 +1,8 @@
 @import 'tailwindcss' source(none);
 @import 'tailwind-scrollbar-hide/v4';
 
+@plugin 'tailwindcss-react-aria-components';
+
 @source './';
 @source '../components/';
 @source '../frontend/';

@@ -295,9 +295,12 @@ export class NorisPaymentSubservice {
           },
         })
 
+        const isFullyPaid = paidFromNoris >= taxData.amount
+
         await this.trackPaymentIfNeeded(
           taxData,
           createdTaxPayment,
+          isFullyPaid,
           userDataFromCityAccount,
           bloomreachSettings,
         )
@@ -324,6 +327,7 @@ export class NorisPaymentSubservice {
   private async trackPaymentIfNeeded(
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
+    isFullyPaid: boolean,
     userDataFromCityAccount: Partial<
       Record<string, ResponseUserByBirthNumberDto>
     >,
@@ -344,6 +348,7 @@ export class NorisPaymentSubservice {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
           order: taxData.order!,
           suppress_email: bloomreachSettings?.suppressEmail ?? false,
+          is_fully_paid: isFullyPaid,
         },
         userFromCityAccount.externalId,
       )

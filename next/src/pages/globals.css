@@ -155,9 +155,9 @@
 
   --color-error: #d00000;
   --color-font: #333;
-  --color-font-contrast: var(--color-gray-50);
+  --color-font-contrast: var(--color-grey-50);
 
-  /* New tokens - border */
+  /* Color tokens - border */
 
   --color-border-error: var(--color-negative-700);
   --color-border-error-hover: var(--color-negative-600);
@@ -198,7 +198,7 @@
   --color-border-active-tertiary-inverted-hover: var(--color-grey-500);
   --color-border-active-tertiary-inverted-pressed: var(--color-grey-400);
 
-  /* New tokens - background */
+  /* Color tokens - background */
 
   --color-background-error-default: var(--color-negative-700);
   --color-background-error-hover: var(--color-negative-600);
@@ -234,7 +234,7 @@
   --color-background-active-primary-soft-inverted-pressed: var(--color-grey-500);
   /* active secondary and tertiary variants are part of DS but not used currently  */
 
-  /* New tokens - content */
+  /* Color tokens - content */
 
   --color-content-error-default: var(--color-negative-700);
   --color-content-error-hover: var(--color-negative-600);
@@ -264,30 +264,19 @@
   --color-content-active-tertiary-disabled: var(--color-grey-500);
 
   /* Box shadows */
+
   --shadow-lg: 0px 16px 24px rgba(0, 0, 0, 0.12);
   --shadow-md: 0px 8px 16px rgba(0, 0, 0, 0.12);
   --shadow-default: 0px 4px 12px rgba(0, 0, 0, 0.12);
   --shadow-sm: 0px 2px 8px rgba(0, 0, 0, 0.12);
 
-  --animate-stepper-slide: stepper-slide 500ms;
-  --animate-stepper-slide-reverse: stepper-slide 500ms reverse;
+  /* Text variables (original) */
 
-  @keyframes stepper-slide {
-    0% {
-      transform: translateY(100%);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-
-  /* Button font variables */
   --text-btn-base: 16px;
   --text-btn-base--line-height: 24px;
   --text-btn-lg: 20px;
   --text-btn-lg--line-height: 32px;
 
-  /* Paragraph font variables */
   --text-p-xs: 12px;
   --text-p-xs--line-height: 18px;
   --text-p-sm: 14px;
@@ -297,7 +286,6 @@
   --text-p-md: 20px;
   --text-p-md--line-height: 28px;
 
-  /* Heading font variables */
   --text-h-xs: 16px;
   --text-h-xs--line-height: 24px;
   --text-h-sm: 18px;
@@ -315,7 +303,8 @@
   --text-h-3xl: 56px;
   --text-h-3xl--line-height: 64px;
 
-  /* TODO Adding only used text sizes from new tokens, so far */
+  /* Text variables (new) - TODO expand and implement */
+
   --text-p-small: 1rem; /* 16px */
   --leading-p-small: 1.5rem; /* 24px */
   --text-p-small-r: 1rem; /* 16px */
@@ -325,7 +314,120 @@
   --leading-p-tiny: 1.25rem; /* 20px */
   --text-p-tiny-r: 0.875rem; /* 14px */
   --leading-p-tiny-r: 1.25rem; /* 20px */
+
+  /* Animations */
+
+  --animate-stepper-slide: stepper-slide 500ms;
+  --animate-stepper-slide-reverse: stepper-slide 500ms reverse;
+
+  @keyframes stepper-slide {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 }
+
+@layer base {
+  body {
+    @apply font-sans text-font antialiased;
+  }
+
+  /*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults. */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-grey-200, currentColor);
+  }
+
+  /* https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Scroll fade utilities */
+
+@utility scroll-fade-left {
+  /* useHorizontalScrollFade */
+  &::before {
+    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
+  }
+
+  &::before {
+    @apply left-0 bg-linear-to-r;
+  }
+}
+
+@utility scroll-fade-right {
+  &::after {
+    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
+  }
+
+  &::after {
+    @apply right-0 bg-linear-to-l;
+  }
+}
+
+@utility scroll-fade-left-opaque {
+  &::before {
+    @apply opacity-100;
+  }
+}
+
+@utility scroll-fade-right-opaque {
+  &::after {
+    @apply opacity-100;
+  }
+}
+
+/* Various utilities */
+
+@utility base-focus-ring {
+  @apply ring-border-active-primary-default ring-offset-3 outline-none;
+  @apply focus-visible:ring-3 focus-visible:transition-shadow;
+}
+
+@utility wrapper-focus-ring {
+  @apply ring-border-active-primary-default ring-offset-3 outline-none;
+  @apply focus-within:[&:has(:focus-visible)]:ring-3 focus-within:[&:has(:focus-visible)]:transition-shadow;
+  @apply [&_*]:focus-visible:ring-0 [&_*]:focus-visible:ring-offset-0 [&_*]:focus-visible:outline-none;
+}
+
+@utility negative-x-spacing {
+  @apply -mx-4 px-4;
+}
+
+/* Text utilities (new) */
+
+@utility text-size-p-small {
+  @apply text-p-small leading-p-small;
+}
+
+@utility text-size-p-small-r {
+  @apply text-p-small-r leading-p-small-r;
+}
+
+@utility text-size-p-tiny {
+  @apply text-p-tiny leading-p-tiny;
+}
+
+@utility text-size-p-tiny-r {
+  @apply text-p-tiny-r leading-p-tiny-r;
+}
+
+/* Text utilities (original) */
 
 @utility text-h1-lg {
   @apply text-h-xl font-semibold lg:text-h-3xl;
@@ -660,98 +762,4 @@
 
 @utility text-16-bold {
   @apply text-p-base font-bold;
-}
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-}
-
-@utility scroll-fade-left {
-  /* useHorizontalScrollFade */
-  &::before {
-    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
-  }
-
-  &::before {
-    @apply left-0 bg-linear-to-r;
-  }
-}
-
-@utility scroll-fade-right {
-  &::after {
-    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
-  }
-
-  &::after {
-    @apply right-0 bg-linear-to-l;
-  }
-}
-
-@utility scroll-fade-left-opaque {
-  &::before {
-    @apply opacity-100;
-  }
-}
-
-@utility scroll-fade-right-opaque {
-  &::after {
-    @apply opacity-100;
-  }
-}
-
-/* https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor */
-@layer base {
-  button:not(:disabled),
-  [role='button']:not(:disabled) {
-    cursor: pointer;
-  }
-}
-
-body {
-  @apply font-sans text-font antialiased;
-}
-
-@utility base-focus-ring {
-  @apply ring-border-active-primary-default ring-offset-3 outline-none;
-  @apply focus-visible:ring-3 focus-visible:transition-shadow;
-}
-
-@utility wrapper-focus-ring {
-  @apply ring-border-active-primary-default ring-offset-3 outline-none;
-  @apply focus-within:[&:has(:focus-visible)]:ring-3 focus-within:[&:has(:focus-visible)]:transition-shadow;
-  @apply [&_*]:focus-visible:ring-0 [&_*]:focus-visible:ring-offset-0 [&_*]:focus-visible:outline-none;
-}
-
-@utility negative-x-spacing {
-  @apply -mx-4 px-4;
-}
-
-@utility text-size-p-small {
-  @apply text-p-small leading-p-small;
-}
-
-@utility text-size-p-small-r {
-  @apply text-p-small-r leading-p-small-r;
-}
-
-@utility text-size-p-tiny {
-  @apply text-p-tiny leading-p-tiny;
-}
-
-@utility text-size-p-tiny-r {
-  @apply text-p-tiny-r leading-p-tiny-r;
 }

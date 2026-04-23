@@ -106,6 +106,12 @@ describe('PaymentService', () => {
         const mockTx = {
           taxPayment: {
             update: mockUpdate,
+            aggregate: jest
+              .fn()
+              .mockResolvedValue({ _sum: { amount: 150_000 } }),
+          },
+          tax: {
+            findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
           },
         }
         return callback(mockTx)
@@ -132,6 +138,7 @@ describe('PaymentService', () => {
           suppress_email: false,
           tax_type: mockTaxPayment.tax.type,
           order: mockTaxPayment.tax.order,
+          is_fully_paid: true,
         },
         externalId,
       )
@@ -148,6 +155,12 @@ describe('PaymentService', () => {
         const mockTx = {
           taxPayment: {
             update: jest.fn(),
+            aggregate: jest
+              .fn()
+              .mockResolvedValue({ _sum: { amount: 150_000 } }),
+          },
+          tax: {
+            findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
           },
         }
         return callback(mockTx)
@@ -171,6 +184,7 @@ describe('PaymentService', () => {
           suppress_email: false,
           tax_type: mockTaxPayment.tax.type,
           order: mockTaxPayment.tax.order,
+          is_fully_paid: true,
         },
         externalId,
       )
@@ -207,6 +221,12 @@ describe('PaymentService', () => {
         const mockTx = {
           taxPayment: {
             update: jest.fn(),
+            aggregate: jest
+              .fn()
+              .mockResolvedValue({ _sum: { amount: 150_000 } }),
+          },
+          tax: {
+            findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
           },
         }
         return callback(mockTx)
@@ -234,6 +254,12 @@ describe('PaymentService', () => {
         const mockTx = {
           taxPayment: {
             update: jest.fn(),
+            aggregate: jest
+              .fn()
+              .mockResolvedValue({ _sum: { amount: 150_000 } }),
+          },
+          tax: {
+            findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
           },
         }
         try {
@@ -262,6 +288,73 @@ describe('PaymentService', () => {
       expect(mockTransaction).toHaveBeenCalled()
       expect(transactionThrow).toBe(true)
     })
+
+    it('should throw NotFoundException when tax is not found', async () => {
+      const externalId = 'external-id-123'
+      const mockNotFoundException = new Error('Not Found')
+      const mockTransaction = jest.fn().mockImplementation((callback) => {
+        const mockTx = {
+          taxPayment: {
+            update: jest.fn(),
+            aggregate: jest.fn(),
+          },
+          tax: {
+            findUnique: jest.fn().mockResolvedValue(null),
+          },
+        }
+        return callback(mockTx)
+      })
+
+      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      jest
+        .spyOn(throwerErrorGuard, 'NotFoundException')
+        .mockReturnValue(mockNotFoundException as any)
+
+      await expect(
+        service.trackPaymentInBloomreach(mockTaxPayment, externalId),
+      ).rejects.toThrow(mockNotFoundException)
+
+      expect(throwerErrorGuard.NotFoundException).toHaveBeenCalled()
+      expect(bloomreachService.trackEventTaxPayment).not.toHaveBeenCalled()
+    })
+
+    it.each([
+      { totalPaid: 150_000, taxAmount: 150_000, expectedIsFullyPaid: true },
+      { totalPaid: 200_000, taxAmount: 150_000, expectedIsFullyPaid: true },
+      { totalPaid: 100_000, taxAmount: 150_000, expectedIsFullyPaid: false },
+    ])(
+      'should pass is_fully_paid: $expectedIsFullyPaid when totalPaid=$totalPaid and taxAmount=$taxAmount',
+      async ({ totalPaid, taxAmount, expectedIsFullyPaid }) => {
+        const externalId = 'external-id-123'
+        const mockTransaction = jest.fn().mockImplementation((callback) =>
+          callback({
+            taxPayment: {
+              update: jest.fn(),
+              aggregate: jest
+                .fn()
+                .mockResolvedValue({ _sum: { amount: totalPaid } }),
+            },
+            tax: {
+              findUnique: jest.fn().mockResolvedValue({ amount: taxAmount }),
+            },
+          }),
+        )
+
+        jest
+          .spyOn(prismaMock, '$transaction')
+          .mockImplementation(mockTransaction)
+        jest
+          .spyOn(bloomreachService, 'trackEventTaxPayment')
+          .mockResolvedValue(true)
+
+        await service.trackPaymentInBloomreach(mockTaxPayment, externalId)
+
+        expect(bloomreachService.trackEventTaxPayment).toHaveBeenCalledWith(
+          expect.objectContaining({ is_fully_paid: expectedIsFullyPaid }),
+          externalId,
+        )
+      },
+    )
   })
 
   describe('processPaymentResponse', () => {

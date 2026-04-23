@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, Tax } from '@prisma/client'
+import { PaymentStatus, Tax, TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
 
 import prismaMock from '../../../../test/singleton'
@@ -624,6 +624,8 @@ describe('NorisPaymentSubservice', () => {
         id: 1,
         year: 2024,
         amount: 1500,
+        type: TaxType.DZN,
+        order: 1,
         taxPayer: {
           id: 1,
           birthNumber: '123456/7890',
@@ -685,16 +687,107 @@ describe('NorisPaymentSubservice', () => {
           bloomreachEventSent: true,
         },
       })
+      // paidFromNoris = currency(1500).intValue = 150_000; taxData.amount = 1500 → is_fully_paid = true
       expect(trackEventTaxPaymentMock).toHaveBeenCalledWith(
         {
           amount: 50_000,
           payment_source: 'BANK_ACCOUNT',
           year: 2024,
+          tax_type: TaxType.DZN,
+          order: 1,
           suppress_email: false,
+          is_fully_paid: true,
         },
         'external-123',
       )
     })
+
+    it.each([
+      {
+        uhrazeno: 2000,
+        alreadyPaid: 0,
+        taxAmount: 200_000,
+        expectedCreatedAmount: 200_000,
+        expectedIsFullyPaid: true,
+      },
+      {
+        uhrazeno: 1000,
+        alreadyPaid: 0,
+        taxAmount: 200_000,
+        expectedCreatedAmount: 100_000,
+        expectedIsFullyPaid: false,
+      },
+    ])(
+      'should pass is_fully_paid: $expectedIsFullyPaid when paidFromNoris=$expectedCreatedAmount and taxAmount=$taxAmount',
+      async ({
+        uhrazeno,
+        alreadyPaid,
+        taxAmount,
+        expectedCreatedAmount,
+        expectedIsFullyPaid,
+      }) => {
+        const mockNorisPayment: NorisTaxPayment = {
+          variabilny_symbol: '1234567890',
+          uhrazeno,
+        }
+
+        const mockTaxData: TaxWithTaxPayer = {
+          id: 1,
+          year: 2024,
+          amount: taxAmount,
+          taxPayer: { id: 1, birthNumber: '123456/7890' },
+        } as TaxWithTaxPayer
+
+        const taxesDataByVsMap = new Map<string, TaxWithTaxPayer>()
+        taxesDataByVsMap.set('1234567890', mockTaxData)
+
+        const userDataFromCityAccount = {
+          '123456/7890': {
+            externalId: 'external-123',
+            birthNumber: '123456/7890',
+            email: 'test@example.com',
+            userAttribute: {},
+          },
+        }
+
+        const mockTransaction = jest.fn().mockImplementation((callback) =>
+          callback({
+            $queryRaw: jest.fn().mockResolvedValue([]),
+            taxPayment: {
+              aggregate: jest
+                .fn()
+                .mockResolvedValue({ _sum: { amount: alreadyPaid } }),
+              create: jest.fn().mockResolvedValue({
+                id: 1,
+                amount: expectedCreatedAmount,
+                source: 'BANK_ACCOUNT',
+                taxId: 1,
+                status: PaymentStatus.SUCCESS,
+              }),
+            },
+          }),
+        )
+
+        jest
+          .spyOn(prismaMock, '$transaction')
+          .mockImplementation(mockTransaction)
+
+        const trackEventMock = jest
+          .spyOn(bloomreachService, 'trackEventTaxPayment')
+          .mockResolvedValue(true)
+
+        await service['processIndividualPayment'](
+          mockNorisPayment,
+          taxesDataByVsMap,
+          userDataFromCityAccount,
+        )
+
+        expect(trackEventMock).toHaveBeenCalledWith(
+          expect.objectContaining({ is_fully_paid: expectedIsFullyPaid }),
+          'external-123',
+        )
+      },
+    )
 
     it('should handle case when no existing payments exist', async () => {
       const mockNorisPayment: NorisTaxPayment = {

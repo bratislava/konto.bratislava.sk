@@ -22,6 +22,7 @@ const Spinner = ({ size = 'md', variant = 'black', className }: SpinnerBase) => 
       'h-12 w-12 border-4 border-t-4': size === 'lg',
     },
   )
+
   return <div className={style} />
 }
 

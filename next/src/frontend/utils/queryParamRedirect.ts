@@ -100,6 +100,7 @@ export const removeRedirectQueryParamFromUrl = (resolvedUrl: string) => {
   if (newQueryString) {
     return `${url}?${newQueryString}`
   }
+
   return url
 }
 
@@ -118,6 +119,7 @@ export const getRedirectUrl = async (
     if (accessToken) {
       parsedUrl.searchParams.set('access_token', accessToken)
     }
+
     return parsedUrl.toString()
   }
 

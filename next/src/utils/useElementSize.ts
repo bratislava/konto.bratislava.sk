@@ -26,15 +26,12 @@ function useElementSize<T extends HTMLElement = HTMLDivElement>(
       width: ref?.offsetWidth || 0,
       height: ref?.offsetHeight || 0,
     })
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref?.offsetHeight, ref?.offsetWidth])
 
   useEventListener('resize', handleSize)
 
   useIsomorphicLayoutEffect(() => {
     handleSize()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref?.offsetHeight, ref?.offsetWidth, ...deps])
 
   return [setRef, size]

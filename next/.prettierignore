@@ -3,5 +3,6 @@
 yarn.lock
 package-lock.json
 .next
+next-env.d.ts
 
 backend/forms/*/form.*.sef.json

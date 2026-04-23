@@ -41,7 +41,7 @@ const ThankYouCard = ({
     <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-8 md:rounded-2xl md:px-12 md:py-10 lg:max-w-[800px]">
       <span
         className={cn(
-          'flex h-14 w-14 min-w-14 items-center justify-center rounded-full md:h-[88px] md:w-[88px] md:min-w-[88px]',
+          'flex size-14 min-w-14 items-center justify-center rounded-full md:size-[88px] md:min-w-[88px]',
           {
             'bg-background-success-soft-default': variant === 'success',
             'bg-background-error-soft-default': variant === 'error',

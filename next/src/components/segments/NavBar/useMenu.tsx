@@ -95,7 +95,7 @@ export const useMenu = () => {
         {
           id: 2,
           title: t('menu_links.logout'),
-          icon: <LogoutIcon className="text-negative-700 size-5" />,
+          icon: <LogoutIcon className="size-5 text-negative-700" />,
           onPress: () => signOut(),
           itemClassName: 'bg-negative-50',
         },

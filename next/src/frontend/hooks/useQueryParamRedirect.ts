@@ -25,6 +25,7 @@ export const useQueryParamRedirect = () => {
 
   const safeRedirect = useMemo(() => {
     const param = searchParams.get(redirectQueryParam)
+
     return getSafeRedirect(param)
   }, [searchParams])
 
@@ -77,6 +78,7 @@ export const useQueryParamRedirect = () => {
    */
   const redirect = useCallback(async () => {
     const url = await getRedirectUrl(safeRedirect, fetchAuthSession)
+
     return router.push(url)
   }, [router, safeRedirect])
 

@@ -38,7 +38,7 @@ const Toast = ({ className, ...props }: ToastProps<AppToastContent>) => {
     <ReactAriaToast
       {...props}
       className={cn(
-        'pointer-events-auto flex w-full max-w-2xl items-center rounded text-white shadow-lg transition duration-150 ease-out outline-none data-exiting:translate-y-4 data-exiting:opacity-0 lg:w-auto lg:min-w-83.5 starting:translate-y-4 starting:opacity-0',
+        'pointer-events-auto flex w-full max-w-2xl items-center rounded-sm text-white shadow-lg transition duration-150 ease-out outline-none data-exiting:translate-y-4 data-exiting:opacity-0 lg:w-auto lg:min-w-83.5 starting:translate-y-4 starting:opacity-0',
         className,
       )}
     />
@@ -52,7 +52,7 @@ const AppToastRegion = () => {
     <ToastRegion
       queue={toastQueue}
       // z-[60] is there to display it above modal (z-[50])
-      className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex flex-col items-center px-2 outline-none"
+      className="pointer-events-none fixed inset-x-0 bottom-4 z-60 flex flex-col items-center px-2 outline-none"
     >
       {({ toast }) => (
         <Toast
@@ -67,7 +67,7 @@ const AppToastRegion = () => {
           <ToastContent className="flex min-w-0 flex-1 items-center">
             <Text
               slot="title"
-              className="flex-1 px-4 py-3.5 text-left text-sm font-normal leading-5"
+              className="flex-1 px-4 py-3.5 text-left text-p-tiny/p-tiny font-normal"
             >
               {toast.content.message}
             </Text>

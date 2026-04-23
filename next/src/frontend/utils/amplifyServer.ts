@@ -44,8 +44,7 @@ import { ROUTES } from '@/src/utils/routes'
  * the effort. In the future, we should examine why it takes so long and then we will be able to simplify this function.
  */
 export const amplifyGetServerSideProps = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Props extends { [key: string]: any } = { [key: string]: any },
+  Props extends Record<string, any> = Record<string, any>,
   Params extends ParsedUrlQuery = ParsedUrlQuery,
   Preview extends PreviewData = PreviewData,
 >(

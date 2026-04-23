@@ -32,6 +32,7 @@ export const modifyGinisDataForSchemaSlug = (
   ) {
     return prefilteredData
   }
+
   // we don't have any direction for other schemas, but we have a few complaints, so playing it safe until the details page is fixed
   return {
     ...prefilteredData,

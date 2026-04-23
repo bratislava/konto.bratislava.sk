@@ -9,6 +9,7 @@ export const useRefreshServerSideProps = (dataToWatch?: unknown) => {
 
   const refreshData = async () => {
     setRefreshing(true)
+
     return router.replace(router.asPath)
   }
 

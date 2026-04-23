@@ -41,7 +41,9 @@ describe('RF01 -', { testIsolation: false }, () => {
 
         it('3. Filling out the registration form.', () => {
           cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).find('input').should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form))
+              .find('input')
+              .should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
 
@@ -73,9 +75,6 @@ describe('RF01 -', { testIsolation: false }, () => {
         describe('A02 - change email and password', { testIsolation: false }, () => {
           it('1. Logging in.', () => {
             cy.logInUser(device, emailHash, password)
-            // PhoneNumberModal is temporarily hidden.
-            // cy.get('[data-cy=add-phone-number]', { timeout: 10000 })
-            // cy.get('[data-cy=close-modal]').click({ multiple: true })
           })
 
           it('2. Changing email.', () => {
@@ -85,13 +84,8 @@ describe('RF01 -', { testIsolation: false }, () => {
               cy.get('[data-cy=mobile-account-button]').click()
             }
             cy.get('[data-cy=moj-profil-menu-item]').click()
-            if (device === 'desktop') {
-              cy.get('[data-cy=edit-personal-information-button]').click()
-              cy.get('[data-cy=change-email-button]').click()
-            } else {
-              cy.get('[data-cy=edit-personal-information-button-mobile]').click()
-              cy.get('[data-cy=change-email-button]').click()
-            }
+            cy.get('[data-cy=edit-personal-information-button]').click()
+            cy.get('[data-cy=change-email-button]').click()
             cy.url().should('include', '/zmena-emailu')
             cy.dataCy('change-email-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-newEmail]', form)).clear().type(emailHash)

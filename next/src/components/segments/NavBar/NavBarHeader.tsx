@@ -59,7 +59,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
           }
         />
         <IdentityVerificationStatus />
-        <nav className="text-font/75 flex gap-x-8 font-semibold">
+        <nav className="flex gap-x-8 font-semibold text-font/75">
           {isSignedIn ? (
             <MenuDropdown
               setIsOpen={setIsMenuOpen}
@@ -67,7 +67,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
                 <Button
                   variant="unstyled"
                   data-cy="account-button"
-                  className="text-font/75 flex items-center gap-4 font-semibold"
+                  className="flex items-center gap-4 font-semibold text-font/75"
                 >
                   <UserAvatar userAttributes={userAttributes} />
                   <div className="flex items-center gap-1 font-light lg:font-semibold">

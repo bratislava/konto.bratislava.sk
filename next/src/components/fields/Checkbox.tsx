@@ -47,7 +47,7 @@ const Checkbox = ({
       <>
         <div
           className={cn(
-            'grid size-6 shrink-0 place-content-center rounded border-2',
+            'grid size-6 shrink-0 place-content-center rounded-sm border-2',
             'border-border-active-primary-default',
             {
               'bg-background-active-primary-default': (isSelected || isIndeterminate) && !isInvalid,

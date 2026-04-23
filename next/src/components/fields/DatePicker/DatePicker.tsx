@@ -15,6 +15,7 @@ import {
 import { CalendarIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'
 
+import { dateOrTimeContainerClassName, dateSegmentClassName } from '../_shared/date-time-helpers'
 import FieldWrapper from '../_shared/FieldWrapper'
 import { FieldBaseProps } from '../_shared/types'
 import Calendar from './Calendar'
@@ -54,31 +55,10 @@ const DatePicker = (
       >
         <RACGroup
           data-cy={rest.name ? `datepicker-${rest.name}` : undefined}
-          className={({ isFocusWithin, isDisabled, isInvalid }) =>
-            cn(
-              'flex w-full items-center rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',
-              'px-3 py-2 lg:px-4 lg:py-3',
-              {
-                'border-border-active-default': !isInvalid && !isFocusWithin,
-                'border-border-active-focused': !isInvalid && isFocusWithin,
-                'border-border-error': isInvalid,
-                'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
-                'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocusWithin,
-              },
-            )
-          }
+          className={dateOrTimeContainerClassName}
         >
           <RACDateInput className="flex flex-1">
-            {(segment) => (
-              <RACDateSegment
-                segment={segment}
-                className={cn(
-                  'rounded-sm px-0.5 type-literal:-ml-0.5 type-literal:p-0',
-                  'whitespace-nowrap caret-transparent outline-hidden',
-                  'placeholder:text-content-passive-tertiary focus:bg-background-passive-secondary',
-                )}
-              />
-            )}
+            {(segment) => <RACDateSegment segment={segment} className={dateSegmentClassName} />}
           </RACDateInput>
           <Button
             variant="icon-wrapped-negative-margin"

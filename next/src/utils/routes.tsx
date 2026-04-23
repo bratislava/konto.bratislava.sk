@@ -14,6 +14,7 @@ export const ROUTES = {
   OAUTH_CONFIRM: '/oauth-potvrdenie',
   // eslint-disable-next-line sonarjs/no-hardcoded-passwords
   PASSWORD_CHANGE: '/zmena-hesla',
+  EMAIL_CHANGE: '/zmena-emailu',
   HELP: '/pomoc',
   TAXES_AND_FEES: '/dane-a-poplatky',
   TAXES_AND_FEES_YEAR: (year: number) => `/dane-a-poplatky/${year}`,

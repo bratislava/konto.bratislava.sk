@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import IframeResizer from '@iframe-resizer/react'
 import { useQueryState } from 'nuqs'
 import React, { useEffect } from 'react'

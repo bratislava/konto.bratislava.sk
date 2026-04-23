@@ -62,7 +62,7 @@ const TextAreaField = ({
   )
 
   const textareaStyle = cn(
-    'h-full w-full resize-none overflow-y-scroll rounded-lg bg-white px-3 py-2 caret-gray-700 focus:outline-hidden focus:placeholder:text-transparent sm:px-4 sm:py-3',
+    'size-full resize-none overflow-y-scroll rounded-lg bg-white px-3 py-2 caret-gray-700 focus:outline-hidden focus:placeholder:text-transparent sm:px-4 sm:py-3',
     {
       'border-gray-300 bg-gray-100': rest.isDisabled,
     },

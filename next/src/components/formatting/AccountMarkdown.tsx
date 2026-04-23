@@ -72,7 +72,7 @@ const AccountMarkdown = ({
     a: ({ href, children }: ChildrenParent) => (
       <Link
         href={href ?? '#'}
-        className={cn('font-semibold break-words underline underline-offset-4', {
+        className={cn('font-semibold wrap-break-word underline underline-offset-4', {
           'text-white hover:text-category-600': uLinkVariant === 'primary',
           'text-font hover:text-category-600': uLinkVariant === 'default',
           'text-white hover:text-white': uLinkVariant === 'error',

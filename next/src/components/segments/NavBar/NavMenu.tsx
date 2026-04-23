@@ -28,7 +28,7 @@ export const NavMenu = ({ menuSections }: Props) => {
   return (
     menuSections && (
       <SectionContainer>
-        <div className="border-border-passive-primary flex h-[57px] w-full items-center justify-between border-t">
+        <div className="flex h-[57px] w-full items-center justify-between border-t border-border-passive-primary">
           <NavigationMenu.Root
             value={menuValue}
             onValueChange={setMenuValue}
@@ -48,7 +48,7 @@ export const NavMenu = ({ menuSections }: Props) => {
                     <NextLink href={sectionItem.url}>
                       <div
                         className={cn(
-                          'flex h-full w-full cursor-pointer items-center justify-center border-b-2 text-p2-semibold transition-all hover:border-main-700 hover:text-main-700',
+                          'flex size-full cursor-pointer items-center justify-center border-b-2 text-p2-semibold transition-all hover:border-main-700 hover:text-main-700',
                           {
                             'border-main-700 text-main-700': isActive(sectionItem),
                             'border-transparent': !isActive(sectionItem),

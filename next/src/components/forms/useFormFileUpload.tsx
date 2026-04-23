@@ -83,6 +83,7 @@ export const useGetContext = () => {
       const response = await formsClient.filesControllerGetFilesStatusByForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
+
       return response.data
     },
     retry: Infinity, // Retry infinitely
@@ -125,6 +126,7 @@ export const useGetContext = () => {
           if (file.id === firstQueuedFile.id) {
             return { ...file, status }
           }
+
           return file
         })
 

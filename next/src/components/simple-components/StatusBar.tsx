@@ -65,7 +65,7 @@ export const StatusBar = () => {
   }
 
   return (
-    <div className="bg-warning-700 w-full text-white">
+    <div className="w-full bg-warning-700 text-white">
       <SectionContainer>
         <div className="flex justify-between py-4">
           <div className="flex">

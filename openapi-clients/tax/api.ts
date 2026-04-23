@@ -608,6 +608,7 @@ export const ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum = {
   AfterDueDate: 'AFTER_DUE_DATE',
   AlreadyPaid: 'ALREADY_PAID',
   TaxIsCancelled: 'TAX_IS_CANCELLED',
+  JustOneInstallment: 'JUST_ONE_INSTALLMENT',
 } as const
 
 export type ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum =

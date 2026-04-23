@@ -68,25 +68,25 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
   return (
     <>
       {/* Desktop */}
-      <div className="wrapper-focus-ring group relative hidden w-full items-center justify-between gap-6 py-4 lg:flex">
+      <div className="group relative hidden w-full items-center justify-between gap-6 py-4 wrapper-focus-ring lg:flex">
         <div className="flex w-full max-w-[450px] flex-col">
           {isActiveLink ? (
             <MLink href={href} variant="unstyled" stretched>
-              <h3 className="text-16-semibold mb-1 group-hover:underline">{title}</h3>
+              <h3 className="mb-1 text-16-semibold group-hover:underline">{title}</h3>
             </MLink>
           ) : (
-            <h3 className="text-16-semibold mb-1">{title}</h3>
+            <h3 className="mb-1 text-16-semibold">{title}</h3>
           )}
         </div>
-        <div className="gap-18 flex w-full items-center">
+        <div className="flex w-full items-center gap-18">
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <span className="mb-1 text-p3-semibold">
               {t('account_section_payment.tax_card_delivered')}
             </span>
             <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <span className="mb-1 text-p3-semibold">
               {t('account_section_payment.tax_card_amount')}
             </span>
             {amountToBePaid === undefined ? (
@@ -98,7 +98,7 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
             )}
           </div>
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <span className="mb-1 text-p3-semibold">
               {t('account_section_payment.tax_card_status')}
             </span>
             <PaymentStatus status={status} />

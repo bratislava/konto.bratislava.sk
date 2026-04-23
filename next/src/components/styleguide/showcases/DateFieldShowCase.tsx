@@ -15,6 +15,16 @@ const DateFieldShowCase = () => (
       <DateField
         label="Label"
         minValue={parseDate('2024-09-01')}
+        helptext="min 2024-09-01"
+      />
+      <DateField
+        label="Label"
+        maxValue={parseDate('2024-09-30')}
+        helptext="max 2024-09-30"
+      />
+      <DateField
+        label="Label"
+        minValue={parseDate('2024-09-01')}
         maxValue={parseDate('2024-09-30')}
         helptext="min 2024-09-01, max 2024-09-30"
       />

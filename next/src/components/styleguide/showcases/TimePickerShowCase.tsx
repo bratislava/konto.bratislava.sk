@@ -14,6 +14,8 @@ const TimePickerShowCase = () => {
           <TimeField label="Label" />
           <TimeField label="Label" errorMessage="Error message" />
           <TimeField label="Label" isDisabled />
+          <TimeField label="Label" minValue={parseTime('08:00')} helptext="min 08:00" />
+          <TimeField label="Label" maxValue={parseTime('17:00')} helptext="max 17:00" />
           <TimeField
             label="Label"
             minValue={parseTime('08:00')}

@@ -23,6 +23,16 @@ const DatePickerShowCase = () => {
           <DatePicker
             label="Label"
             minValue={parseDate('2024-09-01')}
+            helptext="min 2024-09-01"
+          />
+          <DatePicker
+            label="Label"
+            maxValue={parseDate('2024-09-30')}
+            helptext="max 2024-09-30"
+          />
+          <DatePicker
+            label="Label"
+            minValue={parseDate('2024-09-01')}
             maxValue={parseDate('2024-09-30')}
             helptext="min 2024-09-01, max 2024-09-30"
           />

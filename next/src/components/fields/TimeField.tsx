@@ -49,7 +49,13 @@ const TimeField = (
         data-cy={rest.name ? `timefield-${rest.name}` : undefined}
         className={dateOrTimeContainerClassName}
       >
-        {(segment) => <RACDateSegment segment={segment} className={timeSegmentClassName} />}
+        {(segment) => (
+          <RACDateSegment
+            segment={segment}
+            data-cy={`date-time-${segment.type}`}
+            className={timeSegmentClassName}
+          />
+        )}
       </RACDateInput>
     </FieldWrapper>
   </RACTimeField>

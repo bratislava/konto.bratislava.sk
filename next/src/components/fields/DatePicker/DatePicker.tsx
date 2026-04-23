@@ -58,7 +58,13 @@ const DatePicker = (
           className={dateOrTimeContainerClassName}
         >
           <RACDateInput className="flex flex-1">
-            {(segment) => <RACDateSegment segment={segment} className={dateSegmentClassName} />}
+            {(segment) => (
+              <RACDateSegment
+                segment={segment}
+                data-cy={`date-time-${segment.type}`}
+                className={dateSegmentClassName}
+              />
+            )}
           </RACDateInput>
           <Button
             variant="icon-wrapped-negative-margin"

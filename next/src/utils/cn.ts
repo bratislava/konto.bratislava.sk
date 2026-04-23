@@ -65,7 +65,7 @@ const baTwMerge = extendTailwindMerge({
         'culture-300',
         'culture-200',
         'culture-100',
-        // Gray colors
+        // Gray colors - TODO remove with gray/grey consolidation
         'gray-800',
         'gray-700',
         'gray-600',
@@ -76,6 +76,17 @@ const baTwMerge = extendTailwindMerge({
         'gray-100',
         'gray-50',
         'gray-0',
+        // Grey colors
+        'grey-800',
+        'grey-700',
+        'grey-600',
+        'grey-500',
+        'grey-400',
+        'grey-300',
+        'grey-200',
+        'grey-100',
+        'grey-50',
+        'grey-0',
         // Success colors
         'success-800',
         'success-700',

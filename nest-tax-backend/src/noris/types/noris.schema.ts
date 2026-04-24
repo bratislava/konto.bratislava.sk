@@ -38,7 +38,7 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
 export const NorisTaxPaymentSchema = z.object({
   variabilny_symbol: z.string(),
   uhrazeno: z.coerce.number(),
-  datum_posledni_platby: z.date().nullish(),
+  datum_posledni_platby: z.date().nullable(),
 })
 
 export const NorisBaseTaxSchema = NorisBaseTaxWithoutPaymentSchema.extend(

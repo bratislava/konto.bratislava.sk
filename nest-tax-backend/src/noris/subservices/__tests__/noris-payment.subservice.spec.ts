@@ -136,12 +136,14 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 500,
           uhrazeno: 1500,
+          datum_posledni_platby: new Date(),
         },
         {
           variabilny_symbol: '0987654321',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 300,
           uhrazeno: 2300,
+          datum_posledni_platby: new Date(),
         },
       ]
 
@@ -260,12 +262,14 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 0,
           uhrazeno: 1000,
+          datum_posledni_platby: new Date(),
         },
         {
           variabilny_symbol: '2222222222',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 500,
           uhrazeno: 2500,
+          datum_posledni_platby: new Date(),
         },
       ]
 
@@ -371,6 +375,7 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 500,
           uhrazeno_overpayment: 200,
           uhrazeno: 700,
+          datum_posledni_platby: new Date(),
         },
       ]
 
@@ -463,12 +468,14 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 0,
           uhrazeno: 1000,
+          datum_posledni_platby: new Date(),
         },
         {
           variabilny_symbol: '8888888888',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 500,
           uhrazeno: 2500,
+          datum_posledni_platby: new Date(),
         },
       ]
 

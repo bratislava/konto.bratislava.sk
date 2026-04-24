@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { PropsWithChildren } from 'react'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -21,11 +22,11 @@ const PageHeader = (props: AccountSectionHeaderBase) => {
       <div className="flex flex-col gap-4 lg:gap-6">
         <span className={cn('size-full justify-end py-6 lg:px-0 lg:py-16', titleWrapperClassName)}>
           {titleAsParagraph ? (
-            <p className="text-h1">{title}</p>
+            <Typography variant="h1" as="p">{title}</Typography>
           ) : (
-            <h1 className="text-h1">{title}</h1>
+            <Typography variant="h1">{title}</Typography>
           )}
-          {text && <p className="mt-3 text-p1">{text}</p>}
+          {text && <p className="text-p1 mt-3">{text}</p>}
         </span>
         {children}
       </div>

@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
@@ -28,7 +29,7 @@ const BAObjectFieldTemplate = ({
       <fieldset className={fieldsetClassname} data-cy={`fieldset-${fieldPathId.$id}`}>
         {isStepObject ? (
           <div className="mb-8 flex flex-col gap-4">
-            <h2 className="text-h2">{schema.title}</h2>
+            <Typography variant="h2">{schema.title}</Typography>
             {options.description && (
               <span className="text-p2">
                 <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
@@ -39,9 +40,9 @@ const BAObjectFieldTemplate = ({
           </div>
         ) : (
           <>
-            {options.title && <h3 className="mb-3 text-h3">{options.title}</h3>}
+            {options.title && <Typography variant="h3" className="mb-3">{options.title}</Typography>}
             {options.description && (
-              <div className="mb-3 text-p2 whitespace-pre-wrap">
+              <div className="text-p2 mb-3 whitespace-pre-wrap">
                 <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
                   {options.description}
                 </ConditionalFormMarkdown>

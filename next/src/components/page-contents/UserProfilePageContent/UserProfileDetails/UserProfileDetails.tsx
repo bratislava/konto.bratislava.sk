@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { EditIcon } from '@/src/assets/ui-icons'
@@ -24,7 +24,7 @@ const UserProfileDetails = () => {
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div className="flex flex-col gap-2">
               <div className="flex gap-3">
-                <h2 className="text-h5">{t('my_profile.profile_detail.title')}</h2>
+                <Typography variant="h5" as="h2">{t('my_profile.profile_detail.title')}</Typography>
                 {tierStatus.isIdentityVerified && <IdentityVerificationStatus />}
               </div>
               <p className="text-p2">{t('my_profile.profile_detail.text')}</p>

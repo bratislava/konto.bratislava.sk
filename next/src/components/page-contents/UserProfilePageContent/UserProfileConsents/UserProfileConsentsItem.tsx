@@ -1,3 +1,5 @@
+import { Typography } from '@bratislava/component-library'
+
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Toggle from '@/src/components/simple-components/Toggle'
 
@@ -21,7 +23,7 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}
     >
       <div className="flex flex-col gap-2">
-        <h3 className="text-h5">{consent.title}</h3>
+        <Typography variant="h5" as="h3">{consent.title}</Typography>
         <AccountMarkdown variant="sm" content={consent.text} className="gap-1" />
       </div>
       <Toggle

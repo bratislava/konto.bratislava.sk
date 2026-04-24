@@ -1,6 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ResponseTaxAdministratorDto, TaxType } from 'openapi-clients/tax'
-import React from 'react'
 
 import { ClockIcon, MailIcon, PhoneIcon } from '@/src/assets/ui-icons'
 import { StrapiTaxAdministrator } from '@/src/backend/utils/strapi-tax-administrator'
@@ -55,7 +55,7 @@ const TaxesFeesAdministratorCardWrapper = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-h5-semibold">{cardTitle}</h2>
+      <Typography variant="h5" as="h2">{cardTitle}</Typography>
       <div className="flex w-full grow items-start justify-between gap-4 rounded-lg border px-4 py-3 lg:p-5">
         <div className="flex flex-col gap-3">
           <p className="text-p1-semibold">{taxAdministrator.name}</p>

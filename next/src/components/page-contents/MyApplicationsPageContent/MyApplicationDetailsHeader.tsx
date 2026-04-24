@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
@@ -17,6 +17,7 @@ type MyApplicationDetailsHeaderBase = {
   data?: GetFormResponseDto
   ginisData?: GinisDocumentDetailResponseDto | null
 }
+
 
 const MyApplicationDetailsHeader = ({
   formDefinitionTitle,
@@ -73,7 +74,7 @@ const MyApplicationDetailsHeader = ({
             <div className="flex flex-col gap-2">
               <p className="text-p2-semibold text-main-700">{formDefinitionTitle}</p>
               <div className="flex w-full items-center justify-between">
-                <h1 className="text-h1">{subject}</h1>
+                <Typography variant="h1">{subject}</Typography>
                 <Button
                   variant="solid"
                   className="max-md:hidden"

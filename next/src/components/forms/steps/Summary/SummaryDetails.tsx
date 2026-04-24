@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
 import {
   SummaryArrayComponentProps,
@@ -10,7 +11,7 @@ import {
   SummaryStringValueComponentProps,
 } from 'forms-shared/summary-renderer/SummaryRenderer'
 import { useTranslation } from 'next-i18next/pages'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useIsSSR } from 'react-aria'
 
 import { AlertIcon, ChevronDownIcon } from '@/src/assets/ui-icons'
@@ -29,7 +30,7 @@ const FormComponent = ({ children }: SummaryFormComponentProps) => (
 const StepComponent = ({ step, children }: SummaryStepComponentProps) => {
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-h3-semibold">{step.title}</h3>
+      <Typography variant="h3">{step.title}</Typography>
       <div>{children}</div>
     </div>
   )
@@ -87,7 +88,7 @@ const InvalidValueComponent = () => {
 const ArrayComponent = ({ array, children }: SummaryArrayComponentProps) => {
   return (
     <div className="mt-4">
-      <div className="mb-4 text-p2-semibold">{array.title}</div>
+      <div className="text-p2-semibold mb-4">{array.title}</div>
       {children}
     </div>
   )
@@ -128,7 +129,7 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
 
   return (
     <div className="mb-4">
-      <div className="mb-2 inline-block rounded-xl bg-gray-100 px-2 text-p2-semibold">
+      <div className="text-p2-semibold mb-2 inline-block rounded-xl bg-gray-100 px-2">
         {arrayItem.title}
       </div>
       {children}

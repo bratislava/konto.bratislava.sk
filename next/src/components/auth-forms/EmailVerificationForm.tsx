@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -77,7 +77,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         )
       })}
     >
-      <h1 className="text-h3">{t('auth.email_verification_title')}</h1>
+      <Typography variant="h3" as="h1">{t('auth.email_verification_title')}</Typography>
       <p className="text-p3 lg:text-p2" data-cy="verification-description">
         {t('auth.email_verification_description', { email: lastEmail || '' })}
       </p>

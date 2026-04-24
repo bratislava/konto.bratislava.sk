@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import {
   ArrayFieldTemplateProps,
   FormContextType,
@@ -62,11 +62,11 @@ const BAArrayFieldTemplate = <
         <>
           {/* ArrayFieldTitleTemplate is not used */}
           {title && variant === 'topLevel' && (
-            <h3 className={cn('text-h3', { 'mb-2': description, 'mb-6': !description })}>
+            <Typography variant="h3" className={cn({ 'mb-2': description, 'mb-6': !description })}>
               {title}
-            </h3>
+            </Typography>
           )}
-          {title && variant === 'nested' && <h4 className="mb-4 text-h4">{title}</h4>}
+          {title && variant === 'nested' && <Typography variant="h4" className="mb-4">{title}</Typography>}
         </>
       )}
       {/* ArrayFieldDescriptionTemplate is not used */}

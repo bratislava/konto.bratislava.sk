@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -86,9 +86,9 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         )
       })}
     >
-      <h1 className="text-h3">
+      <Typography variant="h3" as="h1">
         {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
-      </h1>
+      </Typography>
       <p className="text-p3 lg:text-p2">
         {t('auth.new_password_description', { email: lastEmail })}
       </p>

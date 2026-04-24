@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import {
   ArrayFieldItemTemplateProps,
   FormContextType,
@@ -55,8 +55,8 @@ const BAArrayFieldItemTemplate = <
   return (
     <div className={boxStyle} data-cy={`section-${parentId}-${index}`}>
       <div className={headingStyle}>
-        {variant === 'topLevel' && <h3 className="grow text-h3">{title}</h3>}
-        {variant === 'nested' && <h4 className="grow text-h4">{title}</h4>}
+        {variant === 'topLevel' && <Typography variant="h3" className="grow">{title}</Typography>}
+        {variant === 'nested' && <Typography variant="h4" className="grow">{title}</Typography>}
         {hasRemove && (
           <Button
             variant="icon-wrapped"

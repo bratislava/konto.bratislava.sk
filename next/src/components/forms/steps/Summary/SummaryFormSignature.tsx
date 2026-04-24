@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { PropsWithChildren, useMemo } from 'react'
 
 import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
@@ -13,6 +13,7 @@ import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 /**
  * TODO: Texts and translations + MenuDropdown position fix
  */
+
 const SummaryFormSignature = () => {
   const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
@@ -57,7 +58,7 @@ const SummaryFormSignature = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3">
-        <h3 className="text-h3">Podpis dokumentu</h3>
+        <Typography variant="h3">Podpis dokumentu</Typography>
         <p className="text-p2">
           Podpíšte dokument pred odoslaním pomocou svojho občianskeho preukazu s čipom (eID) a vašim
           zaručeným elektronickým podpisom (KEP).

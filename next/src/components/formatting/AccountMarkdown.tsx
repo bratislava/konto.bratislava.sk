@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import Link from 'next/link'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -47,11 +48,11 @@ const AccountMarkdown = ({
   })
 
   const componentsGroup: Record<string, React.FC<ChildrenParent>> = {
-    h2: ({ children }: ChildrenParent) => <h2 className="text-h2">{children}</h2>,
-    h3: ({ children }: ChildrenParent) => <h3 className="text-h3">{children}</h3>,
-    h4: ({ children }: ChildrenParent) => <h4 className="text-h4">{children}</h4>,
-    h5: ({ children }: ChildrenParent) => <h5 className="text-h5">{children}</h5>,
-    h6: ({ children }: ChildrenParent) => <h6 className="text-h6">{children}</h6>,
+    h2: ({ children }: ChildrenParent) => <Typography variant="h2">{children}</Typography>,
+    h3: ({ children }: ChildrenParent) => <Typography variant="h3">{children}</Typography>,
+    h4: ({ children }: ChildrenParent) => <Typography variant="h4">{children}</Typography>,
+    h5: ({ children }: ChildrenParent) => <Typography variant="h5">{children}</Typography>,
+    h6: ({ children }: ChildrenParent) => <Typography variant="h6">{children}</Typography>,
     p: ({ children }: ChildrenParent) => <p className={textStyle}>{children}</p>,
     strong: ({ children }: ChildrenParent) => <strong className="font-semibold">{children}</strong>,
     ol: ({ children, ordered, ...props }: ChildrenParent) => (

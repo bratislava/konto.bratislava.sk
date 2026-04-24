@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import BannerImage from '@/src/assets/images/bratislava-dog.png'
@@ -41,7 +42,7 @@ const HomepageContent = ({
   return (
     <>
       <PhoneNumberModal />
-      <h1 className="sr-only">{t('common.bratislava_account')}</h1>
+      <Typography variant="h1" className="sr-only">{t('common.bratislava_account')}</Typography>
       <PageHeader
         title={
           name

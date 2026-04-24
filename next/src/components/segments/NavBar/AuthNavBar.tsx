@@ -78,7 +78,11 @@ export const AuthNavBar = ({
                 className="group"
                 url={brandLinkHref}
                 title={
-                  <p className="text-p2 text-content-active-primary-default group-hover:text-content-active-primary-hover">
+                  <p
+                    className={cn('text-p2 text-content-active-primary-default', {
+                      'group-hover:text-content-active-primary-hover': brandLinkHref,
+                    })}
+                  >
                     {t('NavBar.logoTitle')}
                   </p>
                 }

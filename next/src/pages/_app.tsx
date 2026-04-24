@@ -25,6 +25,7 @@ import AmplifyClientProvider from '@/src/frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
+// https://nextjs.org/docs/pages/building-your-application/optimizing/fonts
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
   variable: '--inter-font',
@@ -126,7 +127,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                 >
                   <NavMenuContextProvider>
                     {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
-                    <div id="root" className={inter.variable}>
+                    <div id="root" className={inter.className}>
                       <Component {...pageProps} />
                     </div>
                     <AppToastRegion />

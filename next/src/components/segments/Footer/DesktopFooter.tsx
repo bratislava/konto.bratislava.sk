@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next/pages'
 import EuFlagSvg from '@/src/assets/images/eu-flag.svg'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useGeneralContext } from '@/src/components/logic/GeneralContextProvider'
+import CookieConsentLink from '@/src/components/segments/CookieConsentLink/CookieConsentLink'
 import {
   FooterAccessibilityLink,
   FooterColumnLinks,
@@ -72,6 +73,7 @@ const DesktopFooter = () => {
         </div>
         <HorizontalDivider />
         <div className="flex justify-center gap-6 lg:justify-normal">
+          <CookieConsentLink />
           <FooterAccessibilityLink {...footer} />
         </div>
         <HorizontalDivider />

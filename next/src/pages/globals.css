@@ -371,6 +371,15 @@
     @apply font-sans text-font antialiased;
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold;
+  }
+
   /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still

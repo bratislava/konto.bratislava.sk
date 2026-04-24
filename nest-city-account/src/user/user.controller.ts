@@ -167,6 +167,7 @@ export class UserController {
     summary: 'Create subscribed or unsubscribed log for logged in users',
     description:
       'This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -216,6 +217,7 @@ export class UserController {
     summary: 'Unsubscribe logged user',
     description:
       'This endpoint is used only for logged user, user is paired by JWTtoken. You can send unsubscription data from model in array, or you can send empty array in gdprData and it will automatically create unsubscribed data.',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -264,6 +266,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Unsubscribe user by uuid',
     description: 'Unsubscribe any user by uuid with different categories of subscription',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -285,6 +288,7 @@ export class UserController {
     summary: 'Unsubscribe user by external Id',
     description:
       'Unsubscribe any user by external Id from cognito with different categories of subscription',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,

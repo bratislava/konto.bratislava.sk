@@ -27,6 +27,7 @@ import logger from '@/src/frontend/utils/logger'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
+  variable: '--inter-font',
 })
 
 export type GlobalAppProps = {
@@ -100,12 +101,8 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
         <meta name="theme-color" content="#ffffff" />
         {/* Prevents automatic zooming on input fields on safari, which some users consider a bug. Source: https://stackoverflow.com/a/46254706 */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <style>{`
-          :root {
-            --inter-font: ${inter.style.fontFamily};
-          }
-        `}</style>
       </Head>
+
       {environment.gtmId && allowCookies ? (
         <GoogleTagManager
           gtmId={environment.gtmId}
@@ -124,12 +121,12 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                     isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
                   }
                   taggedEvents
-                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                  // uncomment for local testing, needs to be run with `npm run build && npm run start`
                   // trackLocalhost
                 >
                   <NavMenuContextProvider>
                     {/* This root div is used for locked body when mobile menu is open, see MobileNavMenu component */}
-                    <div id="root">
+                    <div id="root" className={inter.variable}>
                       <Component {...pageProps} />
                     </div>
                     <AppToastRegion />

@@ -99,6 +99,8 @@ export function proxy(request: NextRequest) {
     report-to ${CSP_REPORT_ENDPOINT_NAME};
 `
   // TODO Add default-src 'self' when whole Report-Only header is moved to real CSP.
+  // frame-src: slovensko.sk was found in reported violations on "sumar" of priznanie-k-dani-z-nehnutelnosti
+  //   it's probably used when logging-in to slovensko.sk - TODO make sure that we know why it's needed
   const cspHeader = `
     img-src 'self' blob: data: ${imgSrc};
     font-src 'self';
@@ -106,7 +108,7 @@ export function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self' https://olo.sk;
-    frame-src 'self' https://consentcdn.cookiebot.eu https://challenges.cloudflare.com;
+    frame-src 'self' https://consentcdn.cookiebot.eu https://challenges.cloudflare.com https://www.slovensko.sk;
     upgrade-insecure-requests;
     report-uri /api/csp-report;
     report-to ${CSP_REPORT_ENDPOINT_NAME};

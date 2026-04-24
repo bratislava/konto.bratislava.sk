@@ -145,7 +145,7 @@
   "auth.fields.po_label": "Právnická osoba",
   "auth.fields.postal_code_format": "PSČ musí obsahovať práve 5 číslic",
   "auth.fields.rc_description": "Zadávajte s lomkou.",
-  "auth.fields.rc_format": "Zadajte rodné číslo zadajte s lomkou vo formáte 123456/7890.",
+  "auth.fields.rc_format": "Zadajte rodné číslo s lomkou vo formáte 123456/7890.",
   "auth.fields.rc_label": "Rodné číslo",
   "auth.fields.rc_required": "Rodné číslo je povinné",
   "auth.fields.verification_code_format": "Overovací kód nie je správny",

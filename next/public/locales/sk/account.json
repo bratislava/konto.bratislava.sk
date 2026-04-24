@@ -291,6 +291,7 @@
   "my_profile.profile_detail.text": "Spravujte svoje osobné údaje",
   "my_profile.profile_detail.title": "Osobné údaje",
   "NavBar.capitalCityOfSR": "Hlavné mesto SR",
+  "NavBar.logoTitle": "Bratislavské konto",
   "NavMenu.aria.navMenuLabel": "Navigačné menu",
   "Pagination.aria.goToNextPage": "Ísť na ďalšiu stranu",
   "Pagination.aria.goToPage": "Ísť na stranu {{page}}",

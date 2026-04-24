@@ -298,7 +298,7 @@ export class NorisPaymentSubservice {
 
         const isFullyPaid = paidFromNoris >= taxData.amount
         const suppressEmail =
-          bloomreachSettings?.suppressEmail ??
+          bloomreachSettings?.suppressEmail ||
           this.isHistoricalPayment(norisPayment)
 
         await this.trackPaymentIfNeeded(

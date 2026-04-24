@@ -1275,16 +1275,16 @@ describe('NorisPaymentSubservice', () => {
         )
       })
 
-      it('should use explicit bloomreachSettings.suppressEmail over date-based logic', async () => {
+      it('should override bloomreachSettings.suppressEmail in case of historical payment', async () => {
         const trackMock = jest
           .spyOn(bloomreachService, 'trackEventTaxPayment')
           .mockResolvedValue(true)
 
         await service['processIndividualPayment'](
-          buildNorisPayment(RECENT_DATE),
+          buildNorisPayment(OLD_DATE),
           new Map([['1234567890', BASE_TAX_DATA]]),
           BASE_USER_DATA,
-          { suppressEmail: true },
+          { suppressEmail: false },
         )
 
         expect(trackMock).toHaveBeenCalledWith(

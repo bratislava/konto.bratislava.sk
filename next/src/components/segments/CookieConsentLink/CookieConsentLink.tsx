@@ -1,3 +1,4 @@
+import { isBrowser } from '@/src/frontend/utils/general'
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
@@ -10,11 +11,10 @@ import { useTranslation } from 'next-i18next/pages'
  */
 
 const showCookiebotConsentBanner = () => {
-  if (typeof window === 'undefined') {
-    return
+  if (isBrowser())
+  { 
+    window.Cookiebot?.show?.()
   }
-
-  window.Cookiebot?.show?.()
 }
 
 const CookieConsentLink = () => {

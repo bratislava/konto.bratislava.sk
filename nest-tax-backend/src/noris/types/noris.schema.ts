@@ -12,7 +12,6 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
   variabilny_symbol: z.string(), // If it is null, we should not process the tax. Currently all were non-null, thus we can expect it to be non-null, otherwise throw error when parsing.
   rok: z.number(),
   dan_spolu: z.string(),
-  uhrazeno: z.coerce.number(),
   subjekt_refer: z.string().nullable(),
   subjekt_nazev: z.string().nullable(),
   akt_datum: z.string().nullable(),
@@ -39,6 +38,7 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
 export const NorisTaxPaymentSchema = z.object({
   variabilny_symbol: z.string(),
   uhrazeno: z.coerce.number(),
+  datum_posledni_platby: z.date().nullish(),
 })
 
 export const NorisBaseTaxSchema = NorisBaseTaxWithoutPaymentSchema.extend(

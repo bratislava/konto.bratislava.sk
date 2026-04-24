@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
+import dayjs from 'dayjs'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -296,13 +297,15 @@ export class NorisPaymentSubservice {
         })
 
         const isFullyPaid = paidFromNoris >= taxData.amount
+        const suppressEmail =
+          bloomreachSettings?.suppressEmail ?? this.isHistoricalPayment(norisPayment)
 
         await this.trackPaymentIfNeeded(
           taxData,
           createdTaxPayment,
           isFullyPaid,
           userDataFromCityAccount,
-          bloomreachSettings,
+          { ...bloomreachSettings, suppressEmail },
         )
 
         return 'CREATED'
@@ -316,6 +319,12 @@ export class NorisPaymentSubservice {
         error,
       )
     }
+  }
+
+  private isHistoricalPayment(norisPayment: NorisTaxPayment): boolean {
+    const { datum_posledni_platby } = norisPayment
+    if (!datum_posledni_platby) return false
+    return dayjs(datum_posledni_platby).isBefore(dayjs().subtract(180, 'day'))
   }
 
   private formatAmount(amount: number | string) {

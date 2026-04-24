@@ -11,12 +11,13 @@ WITH NorisRows AS (
         lcs.dane21_doklad.cislo_subjektu,
         subjekt_doklad.reference_subjektu cislo_konania , 
         lcs.dane21_doklad.datum_platnosti,
-        lcs.dane21_doklad.variabilny_symbol, 
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
-            else 0 end 
+        lcs.dane21_doklad.variabilny_symbol,
+        (case
+            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
+            else 0 end
         ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
-        subjekt_doklad_sub.reference_subjektu subjekt_refer, 
+        (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby,
+        subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
         lcs.dane21_priznanie.rok, 
         a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, org_cudz.adr_tp_sup_cislo, org_cudz.adr_tp_or_cislo), '') as ulica_tb_cislo, 
@@ -342,17 +343,18 @@ WITH NorisRows AS (
             uda_21_organizacia_mag.cislo_subjektu=lcs.dane21_priznanie.subjekt
 
     LEFT OUTER JOIN (
-        SELECT 
+        SELECT
             dane21_doklad_overpayment.podklad,
             dane21_doklad_overpayment.rok_podkladu,
-            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total,
+            MAX(dane21_doklad_overpayment.datum_realizacie) as datum_realizacie
         FROM lcs.dane21_doklad dane21_doklad_overpayment
         JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
             ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
         WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
         GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
     ) overpayment_sum
-        ON overpayment_sum.podklad = lcs.dane21_doklad.podklad 
+        ON overpayment_sum.podklad = lcs.dane21_doklad.podklad
         AND overpayment_sum.rok_podkladu = lcs.dane21_doklad.rok_podkladu
 
     WHERE 
@@ -371,21 +373,23 @@ SELECT * FROM NorisRows WHERE _rn = 1
 `
 
 const basePaymentsQuery = `
-    SELECT 
+    SELECT
         dane21_doklad.variabilny_symbol as variabilny_symbol,
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
-            else 0 end 
-        ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno
+        (case
+            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
+            else 0 end
+        ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
+        (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby
     FROM lcs.dane21_doklad as dane21_doklad
     JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
         ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
         AND view_doklad_saldo.uhrazeno > 0
     LEFT OUTER JOIN (
-        SELECT 
+        SELECT
             dane21_doklad_overpayment.podklad,
             dane21_doklad_overpayment.rok_podkladu,
-            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total,
+            MAX(dane21_doklad_overpayment.datum_realizacie) as datum_realizacie
         FROM lcs.dane21_doklad dane21_doklad_overpayment
         JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
             ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
@@ -433,15 +437,16 @@ export const queryPaymentsFromNorisByVariableSymbols =
 export const queryOverpaymentsFromNorisByDateRange = `
   SELECT 
       dane21_doklad.variabilny_symbol as variabilny_symbol,
-      (case 
-          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
-          else 0 end 
+      (case
+          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
+          else 0 end
       ) uhrazeno_sum_saldo,
       sum(dane21_doklad_overpayment.suma_mena) as uhrazeno_overpayment, -- TODO use just uhrazeno, these two are only for debugging
-      (case 
-          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
-          else 0 end 
-      ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno
+      (case
+          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
+          else 0 end
+      ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
+      (SELECT MAX(v) FROM (VALUES(MAX(view_doklad_saldo.datum_posledni_platby)), (MAX(dane21_doklad_overpayment.datum_realizacie))) AS maxDate(v)) AS datum_posledni_platby
   FROM lcs.dane21_doklad as dane21_doklad
   JOIN lcs.dane21_doklad_sum_saldo as view_doklad_saldo
       ON view_doklad_saldo.cislo_subjektu = dane21_doklad.cislo_subjektu
@@ -514,11 +519,12 @@ export const getCommunalWasteTaxesFromNoris = `
         doklad.datum_platnosti,
         doklad.variabilny_symbol,
         poplatok.rok rok,
-        lcs.fn21_dec2string( dsum.dan_spolu_nezaokr , 2) as dan_spolu, 
-        (case 
-            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
-            else 0 end 
+        lcs.fn21_dec2string( dsum.dan_spolu_nezaokr , 2) as dan_spolu,
+        (case
+            when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
+            else 0 end
         ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
+        (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby,
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,
@@ -590,17 +596,18 @@ export const getCommunalWasteTaxesFromNoris = `
     JOIN lcs.dane21_doklad doklad ON doklad.podklad = poplatok.cislo_subjektu
 
     LEFT OUTER JOIN (
-        SELECT 
+        SELECT
             dane21_doklad_overpayment.podklad,
             dane21_doklad_overpayment.rok_podkladu,
-            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total
+            SUM(dane21_doklad_overpayment.suma_mena) as overpayment_total,
+            MAX(dane21_doklad_overpayment.datum_realizacie) as datum_realizacie
         FROM lcs.dane21_doklad dane21_doklad_overpayment
         JOIN lcs.dane21_druh_dokladu overpayment_druh_dokladu
             ON overpayment_druh_dokladu.cislo_subjektu = dane21_doklad_overpayment.druh_dokladu
         WHERE overpayment_druh_dokladu.typ_dokladu = 'ZAL'
         GROUP BY dane21_doklad_overpayment.podklad, dane21_doklad_overpayment.rok_podkladu
     ) overpayment_sum
-        ON overpayment_sum.podklad = doklad.podklad 
+        ON overpayment_sum.podklad = doklad.podklad
         AND overpayment_sum.rok_podkladu = doklad.rok_podkladu
 
     JOIN lcs.organizace_vlastni ov  ON 1=1

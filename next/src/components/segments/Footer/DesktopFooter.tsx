@@ -57,12 +57,7 @@ const DesktopFooter = () => {
           <FooterContacts {...footer} />
           {footer.columns?.filter(isDefined).map((column, index) => (
             <div className="flex flex-col gap-3 lg:gap-4" key={index}>
-              <Typography
-                variant="h5"
-                as="h2"
-                // TODO Handle heading font size and weight globally
-                className="text-[1.25rem] font-semibold"
-              >
+              <Typography variant="h5" as="h2">
                 {column.title}
               </Typography>
               <div className="flex flex-col gap-3">

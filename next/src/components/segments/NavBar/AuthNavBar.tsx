@@ -107,8 +107,8 @@ export const AuthNavBar = ({
               title={
                 <Typography
                   variant="p-small"
-                  className={cn('text-font', {
-                    'group-hover:text-gray-600': brandLinkHref,
+                  className={cn('text-content-passive-primary', {
+                    'group-hover:text-content-active-primary-hover': brandLinkHref,
                   })}
                 >
                   <span className="font-semibold">Bratislava</span>

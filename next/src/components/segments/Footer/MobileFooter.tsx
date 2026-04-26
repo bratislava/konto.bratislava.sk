@@ -61,12 +61,7 @@ const MobileFooter = () => {
                 <HorizontalDivider />
                 <Disclosure>
                   <DisclosureHeader className="py-6">
-                    <Typography
-                      variant="h4"
-                      as="h3"
-                      // TODO Handle heading font size and weight globally
-                      className="text-[1rem] font-semibold"
-                    >
+                    <Typography variant="h4" as="h3">
                       {column.title}
                     </Typography>
                   </DisclosureHeader>

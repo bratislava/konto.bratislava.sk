@@ -52,9 +52,11 @@ export const NavBarHeader = ({ menuItems }: Props) => {
           className="group grow"
           url={ROUTES.HOME}
           title={
-            <Typography variant="p-small" className="text-font group-hover:text-gray-600">
-              {t('NavBar.capitalCityOfSR')}
-              <span className="font-semibold"> Bratislava</span>
+            <Typography
+              variant="p-small"
+              className="text-content-active-primary-default group-hover:text-content-active-primary-hover"
+            >
+              {t('NavBar.logoTitle')}
             </Typography>
           }
         />

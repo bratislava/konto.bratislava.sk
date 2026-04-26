@@ -64,7 +64,7 @@ export const AuthNavBar = ({
       <div
         id="desktop-navbar"
         className={cn(
-          'text-p2 items-center max-lg:hidden',
+          'items-center max-lg:hidden',
           'sticky top-0 left-0 z-40 w-full bg-white shadow-default',
           className,
         )}
@@ -80,11 +80,11 @@ export const AuthNavBar = ({
                 title={
                   <Typography
                     variant="p-small"
-                    className={cn('text-font', {
-                      'group-hover:text-gray-600': brandLinkHref,
+                    className={cn('text-content-active-primary-default', {
+                      'group-hover:text-content-active-primary-hover': brandLinkHref,
                     })}
                   >
-                    {t('NavBar.capitalCityOfSR')} <span className="font-semibold">Bratislava</span>
+                    {t('NavBar.logoTitle')}
                   </Typography>
                 }
               />

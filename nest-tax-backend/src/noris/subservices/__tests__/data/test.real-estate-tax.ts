@@ -83,6 +83,7 @@ export const testRealEstateTax1: NorisRealEstateTax = {
   datum_spl3: new Date('2025-11-01T00:00:00.000Z'),
   datum_spl4: null,
   uhrazeno: 113.9,
+  datum_posledni_platby: new Date(),
   forma_uhrady: 'P',
 }
 
@@ -169,6 +170,7 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   datum_spl3: new Date('2024-11-01T00:00:00.000Z'),
   datum_spl4: null,
   uhrazeno: 250.5,
+  datum_posledni_platby: new Date(),
   forma_uhrady: 'P',
 }
 
@@ -255,6 +257,7 @@ export const testRealEstateTax3: NorisRealEstateTax = {
   datum_spl3: new Date('2025-11-01T00:00:00.000Z'),
   datum_spl4: null,
   uhrazeno: 450.75,
+  datum_posledni_platby: new Date(),
   forma_uhrady: 'P',
 }
 

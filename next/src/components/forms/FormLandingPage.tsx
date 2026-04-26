@@ -1,8 +1,8 @@
+import { Typography } from '@bratislava/component-library'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
-import React from 'react'
 
 import { formsClient } from '@/src/clients/forms'
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
@@ -66,10 +66,10 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
     <PageLayout>
       <SectionContainer className="size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
         <div className="flex flex-col gap-2 lg:gap-4">
-          <h1 className="text-h1-form">{formDefinition.title}</h1>
+          <Typography variant="h1" className="text-size-h2-r lg:text-size-h1">{formDefinition.title}</Typography>
           {strapiForm.moreInformationUrl ? (
             <Link
-              className="w-max text-p1 underline"
+              className="text-p1 w-max underline"
               href={strapiForm.moreInformationUrl}
               target="_blank"
             >

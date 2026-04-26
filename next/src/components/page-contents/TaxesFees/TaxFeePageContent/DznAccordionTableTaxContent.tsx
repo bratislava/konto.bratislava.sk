@@ -1,10 +1,11 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import {
   ResponseApartmentTaxDetailDto,
   ResponseConstructionTaxDetailDto,
   ResponseGroundTaxDetailDto,
 } from 'openapi-clients/tax'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
@@ -55,7 +56,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         {headerData.map((header, index) => (
           <th
             key={index}
-            className="p-4 text-left text-16-semibold not-first:text-center lg:px-6 lg:py-5"
+            className="text-16-semibold p-4 text-left not-first:text-center lg:px-6 lg:py-5"
           >
             {header}
           </th>
@@ -116,20 +117,20 @@ const TableData = ({
 
         return (
           <tr key={taxDetail.type} className="not-last:lg:border-b">
-            <td className="h-max p-4 not-first:text-center not-first:text-20-semibold lg:px-6 lg:py-5">
+            <td className="not-first:text-20-semibold h-max p-4 not-first:text-center lg:px-6 lg:py-5">
               <div className="inline h-0 font-semibold">{title}</div>
             </td>
             {dataType === 'GROUND' && (
-              <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
+              <td className="not-first:text-16 w-[15%] p-4 not-first:text-center lg:px-6 lg:py-5">
                 {taxDetail.area} m<sup>2</sup>
               </td>
             )}
-            <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
+            <td className="not-first:text-16 w-[15%] p-4 not-first:text-center lg:px-6 lg:py-5">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
-            <td className="w-[15%] p-4 not-first:text-center not-first:text-16 lg:px-6 lg:py-5">
+            <td className="not-first:text-16 w-[15%] p-4 not-first:text-center lg:px-6 lg:py-5">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>
@@ -169,6 +170,7 @@ const Table = ({
     </div>
   )
 }
+
 const DznAccordionTableTaxContent = ({
   title,
   secondTitle,
@@ -179,7 +181,7 @@ const DznAccordionTableTaxContent = ({
     <AccordionV2
       title={
         <div className="flex min-w-0 grow justify-between text-h5 font-semibold">
-          <h5>{title}</h5>
+          <Typography variant="h5">{title}</Typography>
           <span>{secondTitle}</span>
         </div>
       }

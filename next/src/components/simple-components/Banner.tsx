@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import Image, { ImageProps } from 'next/image'
 
 import { PhoneIcon } from '@/src/assets/ui-icons'
@@ -35,7 +35,9 @@ const Banner = ({
     >
       <div className="mb-6 flex size-full max-w-[488px] flex-col justify-center gap-6 rounded-l-3xl px-4 text-white md:px-0 lg:mb-0 lg:w-1/2">
         <div className="flex flex-col items-start gap-3">
-          <h2 className="text-h1 lg:text-h2">{title}</h2>
+          <Typography variant="h1" as="h2">
+            {title}
+          </Typography>
           <AccountMarkdown content={content} variant="sm" className="text-p2 text-gray-200" />
         </div>
         <div className="flex flex-col gap-4 lg:flex-row">

@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
@@ -54,8 +54,9 @@ const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
   )
 }
 
-// designs here https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?node-id=7120%3A20498&mode=dev
-// TODO write docs
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19579-6052&t=MkpmmyHKdgx0IlKq-4
+ */
 
 const MyApplicationsCard = ({
   form,
@@ -206,7 +207,9 @@ const MyApplicationsCard = ({
                   {isLoading ? <Skeleton width="25%" /> : category}
                 </div>
               )}
-              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : subject}</h3>
+              <Typography variant="h5" as="h3">
+                {isLoading ? <Skeleton width="75%" /> : subject}
+              </Typography>
               {(createdAt || isLoading) && (
                 <div className="text-p3">
                   {isLoading ? (
@@ -304,13 +307,13 @@ const MyApplicationsCard = ({
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="pb-3 text-20-semibold">
+              <Typography variant="h5" as="h3" className="pb-3">
                 {isLoading ? <Skeleton width="75%" /> : subject}
-              </h3>
+              </Typography>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="flex items-center text-p3">
+                  <span className="text-p3 flex items-center">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (

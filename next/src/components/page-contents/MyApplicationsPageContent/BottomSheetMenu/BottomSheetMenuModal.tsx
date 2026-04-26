@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
@@ -40,9 +40,9 @@ const BottomSheetMenuModal = ({
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b bg-white p-4">
-                <h6 className="grow text-h6">
+                <Typography variant="h6" className="grow">
                   {t('account_section_applications.mobile_modal_menu.title')}
-                </h6>
+                </Typography>
                 <Button
                   variant="icon-wrapped-negative-margin"
                   size="large"

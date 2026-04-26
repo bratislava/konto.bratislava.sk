@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useState } from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -122,7 +122,9 @@ const ModalShowCaseContent = () => {
 
       <Modal isOpen={simpleModal} onOpenChange={setSimpleModalOpen} modalClassname="max-w-[700px]">
         <div className="flex flex-col gap-4">
-          <h2 className="text-h3 font-semibold">Simple Modal Example</h2>
+          <Typography variant="h3" as="h2">
+            Simple Modal Example
+          </Typography>
           <div className="flex flex-col gap-4">
             <div className="flex w-full items-center justify-center rounded-lg bg-background-passive-primary p-4">
               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum

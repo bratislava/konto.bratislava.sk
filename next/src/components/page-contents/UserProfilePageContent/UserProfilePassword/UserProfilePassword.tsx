@@ -17,8 +17,10 @@ const UserProfilePassword = () => {
       <div className="rounded-lg border border-border-passive-primary p-4 lg:p-6">
         <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2">
-            <Typography variant="h5" as="h2">{t('my_profile.password_change.title')}</Typography>
-            <p className="text-p2">{t('my_profile.password_change.text')}</p>
+            <Typography variant="h5" as="h2">
+              {t('my_profile.password_change.title')}
+            </Typography>
+            <Typography variant="p-small">{t('my_profile.password_change.text')}</Typography>
           </div>
           <Button
             variant="solid"

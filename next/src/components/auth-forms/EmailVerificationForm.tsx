@@ -37,6 +37,10 @@ const schema = {
   required: ['verificationCode'],
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=814-60380&p=f&m=dev
+ */
+
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const [resendIsLoading, setResendIsLoading] = useState(false)
@@ -77,10 +81,12 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         )
       })}
     >
-      <Typography variant="h3" as="h1">{t('auth.email_verification_title')}</Typography>
-      <p className="text-p3 lg:text-p2" data-cy="verification-description">
+      <Typography variant="h3" as="h1">
+        {t('auth.email_verification_title')}
+      </Typography>
+      <Typography variant="p-small" data-cy="verification-description">
         {t('auth.email_verification_description', { email: lastEmail || '' })}
-      </p>
+      </Typography>
       <AccountErrorAlert
         error={error}
         args={{

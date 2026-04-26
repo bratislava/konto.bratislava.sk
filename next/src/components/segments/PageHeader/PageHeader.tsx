@@ -22,11 +22,17 @@ const PageHeader = (props: AccountSectionHeaderBase) => {
       <div className="flex flex-col gap-4 lg:gap-6">
         <span className={cn('size-full justify-end py-6 lg:px-0 lg:py-16', titleWrapperClassName)}>
           {titleAsParagraph ? (
-            <Typography variant="h1" as="p">{title}</Typography>
+            <Typography variant="h1" as="p">
+              {title}
+            </Typography>
           ) : (
             <Typography variant="h1">{title}</Typography>
           )}
-          {text && <p className="text-p1 mt-3">{text}</p>}
+          {text && (
+            <Typography variant="p-default" className="mt-3 lg:text-size-p-large">
+              {text}
+            </Typography>
+          )}
         </span>
         {children}
       </div>

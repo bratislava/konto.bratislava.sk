@@ -97,7 +97,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         return onSubmit(data)
       })}
     >
-      <Typography variant="h3" as="h1">{t('auth.identity_verification.fo.init.title')}</Typography>
+      <Typography variant="h3" as="h1">
+        {t('auth.identity_verification.fo.init.title')}
+      </Typography>
       <AccountMarkdown
         variant="sm"
         content={
@@ -173,7 +175,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
               className="mb-2 self-center"
             />
             {captchaWarning === 'show' && (
-              <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
+              <Typography variant="p-tiny" className="italic">
+                {t('auth.captcha_warning')}
+              </Typography>
             )}
           </>
         )}

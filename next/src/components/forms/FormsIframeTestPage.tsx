@@ -64,7 +64,9 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
 
       <main className="flex-1">
         <SectionContainer className="py-6">
-          <Typography variant="h1" className="mb-6">Formuláre</Typography>
+          <Typography variant="h1" className="mb-6">
+            Formuláre
+          </Typography>
 
           <SelectField
             options={options}
@@ -87,8 +89,10 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
         <SectionContainer className="bg-gray-900 py-8 text-white">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div>
-              <Typography variant="h5" className="mb-4">LOGO</Typography>
-              <p>
+              <Typography variant="h5" className="mb-4">
+                LOGO
+              </Typography>
+              <Typography variant="p-default">
                 Názov spoločnosti
                 <br />
                 Ulica 123
@@ -96,11 +100,13 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
                 851 01 Bratislava
                 <br />
                 info@example.sk
-              </p>
+              </Typography>
             </div>
 
             <div>
-              <Typography variant="h5" className="mb-4">Menu</Typography>
+              <Typography variant="h5" className="mb-4">
+                Menu
+              </Typography>
               <div className="flex flex-col gap-2">
                 <a href="#" className="hover:underline">
                   Prvá položka
@@ -118,7 +124,9 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
             </div>
 
             <div>
-              <Typography variant="h5" className="mb-4">Dokumenty</Typography>
+              <Typography variant="h5" className="mb-4">
+                Dokumenty
+              </Typography>
               <div className="flex flex-col gap-2">
                 <a href="#" className="hover:underline">
                   Dokument 1

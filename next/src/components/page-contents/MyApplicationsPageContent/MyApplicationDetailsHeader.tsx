@@ -18,7 +18,6 @@ type MyApplicationDetailsHeaderBase = {
   ginisData?: GinisDocumentDetailResponseDto | null
 }
 
-
 const MyApplicationDetailsHeader = ({
   formDefinitionTitle,
   data,
@@ -72,7 +71,9 @@ const MyApplicationDetailsHeader = ({
           </Link>
           <div className="flex flex-col gap-4 lg:gap-6">
             <div className="flex flex-col gap-2">
-              <p className="text-p2-semibold text-main-700">{formDefinitionTitle}</p>
+              <Typography variant="p-small" className="font-semibold text-main-700">
+                {formDefinitionTitle}
+              </Typography>
               <div className="flex w-full items-center justify-between">
                 <Typography variant="h1">{subject}</Typography>
                 <Button
@@ -87,12 +88,12 @@ const MyApplicationDetailsHeader = ({
             </div>
             <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
               <div className="flex items-center gap-3">
-                <p className="text-p3-semibold lg:text-p2-semibold">
+                <Typography variant="p-tiny" className="font-semibold lg:text-size-p-small">
                   {t('account_section_applications.details.application_details.sent')}
-                </p>
-                <p className="text-p3 lg:text-p2">
+                </Typography>
+                <Typography variant="p-tiny" className="lg:text-size-p-small">
                   <FormatDate>{createdAt || ''}</FormatDate>
-                </p>
+                </Typography>
               </div>
               <span className="hidden size-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
@@ -101,12 +102,12 @@ const MyApplicationDetailsHeader = ({
               </div>
               <span className="hidden size-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
-                <p className="text-p3 lg:text-p2">
+                <Typography variant="p-tiny" className="lg:text-size-p-small">
                   {t('account_section_applications.last_change')}
-                </p>
-                <p className="text-p3 lg:text-p2">
+                </Typography>
+                <Typography variant="p-tiny" className="lg:text-size-p-small">
                   <FormatDate>{updatedAt || ''}</FormatDate>
-                </p>
+                </Typography>
               </div>
             </div>
             <Button

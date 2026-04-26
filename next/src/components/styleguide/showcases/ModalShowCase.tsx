@@ -106,10 +106,10 @@ const ModalShowCaseContent = () => {
   return (
     <Wrapper direction="column" title="Modals">
       <Wrapper title="Base" direction="column" noBorder>
-        <p>
+        <Typography>
           <strong>Where is this used:</strong> Base Modal is the building block for custom modal
           content across the app. MessageModal is used for specific usecases outlined below.
-        </p>
+        </Typography>
         <Stack direction="column">
           <Button variant="solid" onPress={() => setSimpleModalOpen(true)}>
             Open simple modal
@@ -163,10 +163,10 @@ const ModalShowCaseContent = () => {
       </MessageModal>
 
       <Wrapper title="Form MessageModal variants" direction="column" noBorder>
-        <p>
+        <Typography>
           <strong>Where is this used:</strong> All of these appear on form pages
           /mestske-sluzby/[slug]/[id].
-        </p>
+        </Typography>
 
         <Stack direction="row">
           {Object.entries(formMessageModalsConfig).map(([key, value]) => (
@@ -184,11 +184,11 @@ const ModalShowCaseContent = () => {
       </Wrapper>
 
       <Wrapper title="Tax form PDF export modal" direction="column" noBorder>
-        <p>
+        <Typography>
           <strong>Where is this used:</strong> Usage: when the user exports form as PDF (form menu →
           Export PDF). Shows loading while the PDF is generated, then success when done. Used only
           for tax forms.
-        </p>
+        </Typography>
         <Stack direction="column">
           <Button
             variant="solid"
@@ -217,12 +217,12 @@ const ModalShowCaseContent = () => {
       </Wrapper>
 
       <Wrapper title="Identity verification modal" direction="column" noBorder>
-        <p>
+        <Typography>
           <strong>Where is this used:</strong> Usage: explains that identity verification is
           required and offers a button to go to the verification page. Shown when the user needs to
           verify their identity in the form context (e.g. before sending or from a verify-identity
           action).
-        </p>
+        </Typography>
         <Stack direction="column">
           <Button variant="solid" onPress={() => formModals.setIdentityVerificationModal(true)}>
             Identity verification modal
@@ -236,12 +236,12 @@ const ModalShowCaseContent = () => {
       </Wrapper>
 
       <Wrapper title="Registration modal" direction="column" noBorder>
-        <p>
+        <Typography>
           <strong>Where is this used:</strong> Form page. Each variant is shown when the user is not
           signed in: <strong>Initial</strong> when opening a form that requires sign-in;{' '}
           <strong>NotAuthenticatedConceptSave</strong> when tapping Save draft;{' '}
           <strong>NotAuthenticatedSubmitForm</strong> when tapping Send.
-        </p>
+        </Typography>
         <Stack direction="column">
           <Button
             variant="solid"

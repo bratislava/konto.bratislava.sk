@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import Icon from '@/src/assets/images/mestske-konto-situacia-2-1.svg'
@@ -14,7 +15,9 @@ const MyApplicationCardsPlaceholder = () => {
           <Icon className="h-[145px] w-[146px] sm:h-[296px] sm:w-[298px]" />
         </div>
         <div className="mt-5 flex max-w-none flex-col justify-center gap-3 md:mt-0 lg:max-w-[500px]">
-          <p className="text-h4">{t('account_section_applications.placeholder.title')}</p>
+          <Typography variant="h4" as="p">
+            {t('account_section_applications.placeholder.title')}
+          </Typography>
           <AccountMarkdown content={t('account_section_applications.placeholder.subtitle')} />
         </div>
       </div>

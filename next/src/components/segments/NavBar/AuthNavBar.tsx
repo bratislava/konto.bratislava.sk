@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
@@ -64,7 +64,7 @@ export const AuthNavBar = ({
       <div
         id="desktop-navbar"
         className={cn(
-          'items-center text-p2 max-lg:hidden',
+          'text-p2 items-center max-lg:hidden',
           'sticky top-0 left-0 z-40 w-full bg-white shadow-default',
           className,
         )}
@@ -78,13 +78,14 @@ export const AuthNavBar = ({
                 className="group"
                 url={brandLinkHref}
                 title={
-                  <p
-                    className={cn('text-p2 text-font', {
+                  <Typography
+                    variant="p-small"
+                    className={cn('text-font', {
                       'group-hover:text-gray-600': brandLinkHref,
                     })}
                   >
                     {t('NavBar.capitalCityOfSR')} <span className="font-semibold">Bratislava</span>
-                  </p>
+                  </Typography>
                 }
               />
             </div>
@@ -104,13 +105,14 @@ export const AuthNavBar = ({
             <Brand
               url={brandLinkHref}
               title={
-                <p
-                  className={cn('text-p2 text-font', {
+                <Typography
+                  variant="p-small"
+                  className={cn('text-font', {
                     'group-hover:text-gray-600': brandLinkHref,
                   })}
                 >
                   <span className="font-semibold">Bratislava</span>
-                </p>
+                </Typography>
               }
             />
           </div>

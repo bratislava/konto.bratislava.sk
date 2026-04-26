@@ -324,8 +324,11 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 onChange(null)
               }}
             />
+
             {captchaWarning === 'show' && (
-              <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
+              <Typography variant="p-tiny" className="italic">
+                {t('auth.captcha_warning')}
+              </Typography>
             )}
           </>
         )}

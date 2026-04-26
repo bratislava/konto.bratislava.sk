@@ -55,10 +55,14 @@ const TaxesFeesAdministratorCardWrapper = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <Typography variant="h5" as="h2">{cardTitle}</Typography>
+      <Typography variant="h5" as="h2">
+        {cardTitle}
+      </Typography>
       <div className="flex w-full grow items-start justify-between gap-4 rounded-lg border px-4 py-3 lg:p-5">
         <div className="flex flex-col gap-3">
-          <p className="text-p1-semibold">{taxAdministrator.name}</p>
+          <Typography variant="p-default" className="font-semibold lg:text-size-p-large">
+            {taxAdministrator.name}
+          </Typography>
           <div className="flex flex-col flex-wrap gap-x-4 gap-y-2 self-stretch break-all lg:flex-row lg:items-center">
             <span className="flex items-center gap-x-2">
               <PhoneIcon className="size-5 shrink-0" />

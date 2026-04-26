@@ -24,10 +24,12 @@ const UserProfileDetails = () => {
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div className="flex flex-col gap-2">
               <div className="flex gap-3">
-                <Typography variant="h5" as="h2">{t('my_profile.profile_detail.title')}</Typography>
+                <Typography variant="h5" as="h2">
+                  {t('my_profile.profile_detail.title')}
+                </Typography>
                 {tierStatus.isIdentityVerified && <IdentityVerificationStatus />}
               </div>
-              <p className="text-p2">{t('my_profile.profile_detail.text')}</p>
+              <Typography variant="p-small">{t('my_profile.profile_detail.text')}</Typography>
             </div>
             {isEditing ? (
               <div className="flex items-center gap-6 lg:flex-row-reverse">

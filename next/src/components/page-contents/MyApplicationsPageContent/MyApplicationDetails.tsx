@@ -80,7 +80,7 @@ const MyApplicationDetails = ({
                 label={t('account_section_applications.details.application_details.contact')}
                 isError={false}
               >
-                <p>
+                <Typography variant="p-default">
                   {ginisData?.ownerPhone ? (
                     <MLink variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
                       {`${ginisData.ownerPhone}, `}
@@ -95,7 +95,7 @@ const MyApplicationDetails = ({
                   ) : (
                     t('account_section_applications.details.application_details.email_unavailable')
                   )}
-                </p>
+                </Typography>
               </SummaryRowSimple>
             </div>
           </div>

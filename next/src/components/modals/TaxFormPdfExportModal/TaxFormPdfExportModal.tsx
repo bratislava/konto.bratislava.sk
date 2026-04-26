@@ -22,7 +22,9 @@ const LoadingContent = () => {
       <Spinner size="lg" />
       <div className="flex flex-col gap-3 text-center">
         <Typography variant="h3">{t('tax_form_pdf_export_modal.preparing')}</Typography>
-        <p className="text-p1">{t('tax_form_pdf_export_modal.preparing_description')}</p>
+        <Typography variant="p-default">
+          {t('tax_form_pdf_export_modal.preparing_description')}
+        </Typography>
       </div>
     </div>
   )
@@ -75,7 +77,7 @@ const SuccessContent = () => {
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-1">
           <Typography variant="h2">{t('tax_form_pdf_export_modal.heading')}</Typography>
-          <p className="text-p2">{t('tax_form_pdf_export_modal.subheading')}</p>
+          <Typography variant="p-small">{t('tax_form_pdf_export_modal.subheading')}</Typography>
         </div>
         <div className="flex flex-col items-center gap-1">
           <ol className="flex flex-col gap-6 [counter-reset:list-number-styling]">
@@ -91,7 +93,9 @@ const SuccessContent = () => {
         </div>
         {feedbackLink ? (
           <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
-            <Typography variant="h3" className="text-left">{t('tax_form_pdf_export_modal.feedback_heading')}</Typography>
+            <Typography variant="h3" className="text-left">
+              {t('tax_form_pdf_export_modal.feedback_heading')}
+            </Typography>
             <Button
               variant="solid"
               className="w-full"
@@ -105,7 +109,7 @@ const SuccessContent = () => {
         ) : null}
         <div className="h-0.5 w-full bg-gray-200" />
         <Typography variant="h3">{t('tax_form_pdf_export_modal.how_to_pay_tax')}</Typography>
-        <p className="text-p1">
+        <Typography variant="p-default">
           {isSignedIn ? (
             <Trans
               ns="forms"
@@ -119,7 +123,7 @@ const SuccessContent = () => {
               components={{ strong: <strong className="font-semibold" /> }}
             />
           )}
-        </p>
+        </Typography>
         {!isSignedIn && (
           // Copied from RegistrationModal
           <>
@@ -130,14 +134,18 @@ const SuccessContent = () => {
             </div>
             <div>
               <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
-                <Typography variant="h4">{t('tax_form_pdf_export_modal.account_create')}</Typography>
+                <Typography variant="h4">
+                  {t('tax_form_pdf_export_modal.account_create')}
+                </Typography>
                 <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
                   {advantages.map((item, index) => (
                     <li key={index} className="flex items-center gap-4">
                       <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
                         <CheckIcon className="size-7" />
                       </span>
-                      <p className="text-p3 md:text-p1">{item}</p>
+                      <Typography variant="p-tiny" className="lg:text-size-p-large">
+                        {item}
+                      </Typography>
                     </li>
                   ))}
                 </ul>

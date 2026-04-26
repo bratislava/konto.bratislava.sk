@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { PropsWithChildren } from 'react'
 
@@ -24,20 +24,20 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
   })
 
   const labelClassName = cn('w-full', {
-    'text-p1-semibold': size === 'large',
-    'text-p2-semibold': size === 'small',
+    'text-size-p-small-r font-semibold lg:text-size-p-large': size === 'large',
+    'text-size-p-small-r font-semibold lg:text-size-p-small': size === 'small',
   })
 
   const valueClassName = cn('grow', {
-    'text-p1': size === 'large',
-    'text-p2': size === 'small',
+    'text-size-p-small-r lg:text-size-p-large': size === 'large',
+    'text-size-p-small-r lg:text-size-p-small': size === 'small',
   })
 
   return (
     <div className={containerClassName}>
-      <p className={labelClassName}>{label}</p>
+      <Typography className={labelClassName}>{label}</Typography>
       <div className="flex w-full flex-row items-center">
-        <div className={valueClassName}>{children}</div>
+        <Typography className={valueClassName}>{children}</Typography>
         {isEditable && (
           <Button
             variant="icon-wrapped-negative-margin"

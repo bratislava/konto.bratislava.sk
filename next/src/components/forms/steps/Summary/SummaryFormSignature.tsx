@@ -59,10 +59,10 @@ const SummaryFormSignature = () => {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3">
         <Typography variant="h3">Podpis dokumentu</Typography>
-        <p className="text-p2">
+        <Typography variant="p-small">
           Podpíšte dokument pred odoslaním pomocou svojho občianskeho preukazu s čipom (eID) a vašim
           zaručeným elektronickým podpisom (KEP).
-        </p>
+        </Typography>
       </div>
       {isNotSupported && (
         <Alert

@@ -49,6 +49,10 @@ const schema = {
   required: ['verificationCode', 'password'],
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13414-66534
+ */
+
 const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState<string>('')
   const { t } = useTranslation('account')
@@ -89,9 +93,9 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <Typography variant="h3" as="h1">
         {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
       </Typography>
-      <p className="text-p3 lg:text-p2">
+      <Typography variant="p-default">
         {t('auth.new_password_description', { email: lastEmail })}
-      </p>
+      </Typography>
       <AccountErrorAlert
         error={error}
         args={{

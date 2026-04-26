@@ -39,6 +39,10 @@ const schema = {
   required: ['newEmail', 'password'],
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=822-65528&p=f&t=exwgWgm6FlZ6RJVr-0
+ */
+
 const EmailChangeForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
 
@@ -58,8 +62,10 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
       data-cy="change-email-form"
     >
-      <Typography variant="h3" as="h1">{t('auth.email_change_title')}</Typography>
-      <p className="text-p3 lg:text-p2">{t('auth.email_change_description')}</p>
+      <Typography variant="h3" as="h1">
+        {t('auth.email_change_title')}
+      </Typography>
+      <Typography variant="p-default">{t('auth.email_change_description')}</Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="newEmail"

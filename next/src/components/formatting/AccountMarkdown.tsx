@@ -41,10 +41,11 @@ const AccountMarkdown = ({
     disableRemarkDirective ? null : remarkDirective,
     disableRemarkDirectiveRehype ? null : remarkDirectiveRehype,
   ].filter(isDefined)
+
   const textStyle = cn('whitespace-pre-line', {
-    'text-p3 lg:text-p2': variant === 'sm',
-    'text-p2': variant === 'statusBar',
-    'text-p1': variant === 'normal',
+    'text-size-p-tiny-r lg:text-size-p-small': variant === 'sm',
+    'text-size-p-small-r lg:text-size-p-small': variant === 'statusBar',
+    'text-size-p-small-r lg:text-size-p-large': variant === 'normal',
   })
 
   const componentsGroup: Record<string, React.FC<ChildrenParent>> = {
@@ -53,7 +54,7 @@ const AccountMarkdown = ({
     h4: ({ children }: ChildrenParent) => <Typography variant="h4">{children}</Typography>,
     h5: ({ children }: ChildrenParent) => <Typography variant="h5">{children}</Typography>,
     h6: ({ children }: ChildrenParent) => <Typography variant="h6">{children}</Typography>,
-    p: ({ children }: ChildrenParent) => <p className={textStyle}>{children}</p>,
+    p: ({ children }: ChildrenParent) => <Typography className={textStyle}>{children}</Typography>,
     strong: ({ children }: ChildrenParent) => <strong className="font-semibold">{children}</strong>,
     ol: ({ children, ordered, ...props }: ChildrenParent) => (
       <ol className="list-decimal pl-8" {...props}>

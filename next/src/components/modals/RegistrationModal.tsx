@@ -151,7 +151,9 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
                   <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
                     <CheckIcon className="size-7" />
                   </span>
-                  <p className="text-p3 md:text-p1">{item}</p>
+                  <Typography variant="p-tiny" className="lg:text-size-p-large">
+                    {item}
+                  </Typography>
                 </li>
               ))}
             </ul>

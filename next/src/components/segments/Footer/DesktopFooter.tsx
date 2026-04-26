@@ -38,10 +38,10 @@ const DesktopFooter = () => {
             className="group grow"
             url={ROUTES.HOME}
             title={
-              <p className="text-p2 text-[#F23005]">
+              <Typography variant="p-small" className="text-[#F23005]">
                 {t('NavBar.capitalCityOfSR')}
                 <span className="font-semibold"> Bratislava</span>
-              </p>
+              </Typography>
             }
           />
           <div className="flex items-center gap-16">

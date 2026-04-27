@@ -63,7 +63,7 @@ const ServiceCard = ({
         >
           {title}
         </Typography>
-        <div className="text-p3 flex items-center">{description}</div>
+        <Typography variant="p-tiny">{description}</Typography>
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
@@ -71,7 +71,6 @@ const ServiceCard = ({
             href={href}
             variant="link"
             hasLinkIcon={false}
-            className="text-p2-semibold"
             stretched
             analyticsProps={analyticsProps}
           >

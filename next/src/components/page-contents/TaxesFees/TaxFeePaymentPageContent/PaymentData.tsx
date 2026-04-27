@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
@@ -204,8 +204,12 @@ const PaymentData = ({ paymentMethod }: Props) => {
                       {/* TODO consider separating this row into a component */}
                       <div className="flex gap-3 self-stretch py-3 lg:gap-4 lg:py-4">
                         <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-                          <span className="text-p2-semibold">{row.label}</span>
-                          <span className="text-p2">{row.value}</span>
+                          <Typography variant="p-small" as="span" className="font-semibold">
+                            {row.label}
+                          </Typography>
+                          <Typography variant="p-small" as="span">
+                            {row.value}
+                          </Typography>
                         </div>
                         <span className="size-6">
                           {row.clipboardCopyValue ? (

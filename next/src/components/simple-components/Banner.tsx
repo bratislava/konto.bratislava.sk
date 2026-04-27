@@ -35,10 +35,10 @@ const Banner = ({
     >
       <div className="mb-6 flex size-full max-w-[488px] flex-col justify-center gap-6 rounded-l-3xl px-4 text-white md:px-0 lg:mb-0 lg:w-1/2">
         <div className="flex flex-col items-start gap-3">
-          <Typography variant="h1" as="h2">
+          <Typography variant="h1" as="h2" className="lg:text-size-h2">
             {title}
           </Typography>
-          <AccountMarkdown content={content} variant="sm" className="text-p2 text-gray-200" />
+          <AccountMarkdown content={content} variant="sm" className="text-gray-200" />
         </div>
         <div className="flex flex-col gap-4 lg:flex-row">
           <Button href={href} variant="solid-inverted" onPress={onPress} fullWidthMobile>
@@ -47,7 +47,9 @@ const Banner = ({
           {mobileNumber && (
             <div className="flex items-center gap-2 px-3 py-2 text-gray-0">
               <PhoneIcon />
-              <span className="text-p2-semibold">{mobileNumber}</span>
+              <Typography variant="p-small" className="font-semibold">
+                {mobileNumber}
+              </Typography>
             </div>
           )}
         </div>

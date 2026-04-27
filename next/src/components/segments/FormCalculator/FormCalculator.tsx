@@ -85,15 +85,18 @@ const Calculator = ({
     'border-white': !isLast && variant === 'black',
   })
 
-  const labelClassName = cn('max-w-[400px] shrink text-16-semibold', {
+  const labelClassName = cn('text-16-semibold max-w-[400px] shrink', {
     'text-gray-800': variant === 'white',
     'text-white': variant === 'black',
   })
 
-  const valueClassName = cn('grow basis-0 text-right text-p2-semibold', {
-    'text-gray-700': variant === 'white',
-    'text-white': variant === 'black',
-  })
+  const valueClassName = cn(
+    'grow basis-0 text-right text-size-p-small-r font-semibold lg:text-size-p-small',
+    {
+      'text-gray-700': variant === 'white',
+      'text-white': variant === 'black',
+    },
+  )
 
   return (
     <div className={wrapperClassName}>

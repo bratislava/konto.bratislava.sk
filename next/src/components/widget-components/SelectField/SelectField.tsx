@@ -80,7 +80,9 @@ const CustomOption = <
         {selectHasDescriptions ? (
           <div>
             <div className="text-p1-semibold">{children}</div>
-            {description && <div className="text-p2">{description}</div>}
+            {description && (
+              <div className="text-size-p-small-r lg:text-size-p-small">{description}</div>
+            )}
           </div>
         ) : (
           <div>{children}</div>

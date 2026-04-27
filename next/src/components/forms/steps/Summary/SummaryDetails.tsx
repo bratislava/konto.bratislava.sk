@@ -88,7 +88,9 @@ const InvalidValueComponent = () => {
 const ArrayComponent = ({ array, children }: SummaryArrayComponentProps) => {
   return (
     <div className="mt-4">
-      <div className="text-p2-semibold mb-4">{array.title}</div>
+      <Typography variant="p-small" className="mb-4 font-semibold">
+        {array.title}
+      </Typography>
       {children}
     </div>
   )
@@ -111,11 +113,13 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
       >
         <summary className="group flex w-full cursor-pointer p-6">
           <div className="flex grow flex-col gap-1">
-            <span className="text-p2-semibold">{arrayItem.title}</span>
+            <Typography variant="p-small" className="font-semibold">
+              {arrayItem.title}
+            </Typography>
             {hasError && (
-              <div className="text-p2 text-category-700 group-open:hidden">
+              <Typography variant="p-small" className="text-category-700 group-open:hidden">
                 {t('summary.contains_errors')}
-              </div>
+              </Typography>
             )}
           </div>
           <span className="shrink-0" aria-hidden>
@@ -129,9 +133,13 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
 
   return (
     <div className="mb-4">
-      <div className="text-p2-semibold mb-2 inline-block rounded-xl bg-gray-100 px-2">
+      <Typography
+        variant="p-small"
+        as="div"
+        className="mb-2 inline-block rounded-xl bg-gray-100 px-2 font-semibold"
+      >
         {arrayItem.title}
-      </div>
+      </Typography>
       {children}
     </div>
   )

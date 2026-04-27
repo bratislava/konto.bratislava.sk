@@ -37,7 +37,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
         {...rest}
         onClick={onClick}
         className={cn(
-          'flex cursor-pointer items-center gap-3 rounded-lg border-b border-transparent p-4 text-p2-semibold transition-all hover:bg-gray-100',
+          'flex cursor-pointer items-center gap-3 rounded-lg border-b border-transparent p-4 text-size-p-small-r font-semibold transition-all hover:bg-gray-100 lg:text-size-p-small',
           {
             'bg-gray-100': isSelected,
           },
@@ -105,7 +105,7 @@ export const HamburgerMenu = ({ menuSections, menuItems, closeMenu }: Props) => 
                 <NavigationMenu.Item key={sectionItem.id}>
                   <NavigationMenu.Trigger
                     className={cn(
-                      'flex w-full cursor-pointer items-center justify-between rounded-lg border-b border-transparent p-4 text-p2-semibold transition-all hover:bg-main-100 hover:text-main-700',
+                      'flex w-full cursor-pointer items-center justify-between rounded-lg border-b border-transparent p-4 text-size-p-small-r font-semibold transition-all hover:bg-main-100 hover:text-main-700 lg:text-size-p-small',
                     )}
                     data-cy={`${sectionItem.url ? sectionItem.url.replaceAll('/', '') : sectionItem.title.replaceAll(' ', '-')}-menu-item`}
                     onClick={() => {

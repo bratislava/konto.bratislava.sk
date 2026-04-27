@@ -22,7 +22,10 @@ const FormBottomMenu = () => {
               href={menuItem.url}
               hasLinkIcon={false}
               startIcon={menuItem.icon}
-              className={cn('flex items-center gap-3 text-p2', menuItem.className)}
+              className={cn(
+                'flex items-center gap-3 text-size-p-small-r lg:text-size-p-small',
+                menuItem.className,
+              )}
             >
               {menuItem.title}
             </Button>
@@ -32,7 +35,10 @@ const FormBottomMenu = () => {
               data-cy={menuItem.dataCy ?? ''}
               onPress={menuItem.onPress}
               startIcon={menuItem.icon}
-              className={cn('flex items-center gap-3 text-p2', menuItem.className)}
+              className={cn(
+                'flex items-center gap-3 text-size-p-small-r lg:text-size-p-small',
+                menuItem.className,
+              )}
             >
               {menuItem.title}
             </Button>

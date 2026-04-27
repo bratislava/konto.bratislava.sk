@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
@@ -63,8 +64,12 @@ const TaxFeeSubjectInformation = () => {
             <Fragment key={index}>
               {index > 0 && <HorizontalDivider asListItem />}
               <li className="flex flex-col gap-2 py-3 lg:flex-row lg:gap-4 lg:py-4">
-                <span className="text-p2-semibold">{row.label}</span>
-                <span className="text-p2">{row.value}</span>
+                <Typography variant="p-small" as="span" className="font-semibold">
+                  {row.label}
+                </Typography>
+                <Typography variant="p-small" as="span">
+                  {row.value}
+                </Typography>
               </li>
             </Fragment>
           )

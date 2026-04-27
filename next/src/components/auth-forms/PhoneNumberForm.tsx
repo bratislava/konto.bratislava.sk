@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
@@ -46,9 +46,9 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
-      <div className="whitespace-pre-line">
-        <div className="text-p2">{t('phone_number_modal.description')}</div>
-      </div>
+      <Typography variant="p-small" className="whitespace-pre-line">
+        {t('phone_number_modal.description')}
+      </Typography>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
         name="phone_number"

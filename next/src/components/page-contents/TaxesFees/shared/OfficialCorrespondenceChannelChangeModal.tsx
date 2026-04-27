@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import { useEffect, useRef } from 'react'
@@ -148,7 +148,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                 <span>{t('taxes.delivery_method_change_modal.delivery_method_true.title')}</span>
                 {/* TODO unify with Tag component */}
-                <span className="rounded-sm bg-background-success-soft-default px-2 py-0.5 text-p3 text-content-success-default">
+                <span className="text-p3 rounded-sm bg-background-success-soft-default px-2 py-0.5 text-content-success-default">
                   {t('taxes.delivery_method_change_modal.delivery_method_true.usage_percentage')}
                 </span>
               </div>
@@ -158,9 +158,9 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
       />
       {isSubscribed && (
         <div className="flex flex-col gap-2">
-          <span className="text-p2-semibold">
+          <Typography variant="p-small" className="font-semibold">
             {t('taxes.delivery_method_change_modal.delivery_method_true.agreement.title')}
-          </span>
+          </Typography>
           <Controller
             name="scrolledToBottom"
             control={control}

@@ -53,7 +53,7 @@ const FieldWrapper = ({
           {label}
           {showAsterisk ? <span className="ml-0.5 text-content-error-default">*</span> : null}
           {showOptional ? (
-            <span className="ml-1 text-16 font-normal">{t('FieldHeader.optional')}</span>
+            <span className="text-16 ml-1 font-normal">{t('FieldHeader.optional')}</span>
           ) : null}
         </RACLabel>
         {helptext ? (
@@ -61,7 +61,7 @@ const FieldWrapper = ({
             slot="description"
             // We change default p to div, because we sometimes render full markdown instead of simple text.
             elementType="div"
-            className="text-p2 text-content-passive-secondary"
+            className="text-size-p-small-r text-content-passive-secondary lg:text-size-p-small"
           >
             {helptext}
           </RACText>
@@ -75,12 +75,15 @@ const FieldWrapper = ({
           slot="description"
           // We change default p to div, because we sometimes render full markdown instead of simple text.
           elementType="div"
-          className="text-p2 text-content-passive-secondary"
+          className="text-size-p-small-r text-content-passive-secondary lg:text-size-p-small"
         >
           {helptextFooter}
         </RACText>
       ) : null}
-      <RACFieldError className="text-p2 text-error" data-cy="error-message">
+      <RACFieldError
+        className="text-size-p-small-r text-error lg:text-size-p-small"
+        data-cy="error-message"
+      >
         {errorMessage}
       </RACFieldError>
     </>

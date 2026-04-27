@@ -120,11 +120,18 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
       <div className="relative flex w-full items-start justify-between py-4 lg:hidden">
         <div className="flex flex-col gap-2">
           {isActiveLink ? (
-            <MLink href={href} variant="unstyled" stretched className="text-p2-semibold">
+            <MLink
+              href={href}
+              variant="unstyled"
+              stretched
+              className="text-p-small-r font-semibold lg:text-p-small"
+            >
               {title}
             </MLink>
           ) : (
-            <span className="text-p2-semibold">{title}</span>
+            <Typography variant="p-small" className="font-semibold">
+              {title}
+            </Typography>
           )}
           {createdAt && <span>{formatDate(createdAt)}</span>}
           <div className="flex flex-row">

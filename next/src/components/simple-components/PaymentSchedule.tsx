@@ -1,6 +1,7 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { InstallmentPaidStatusEnum } from 'openapi-clients/tax'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { formatDate } from '@/src/components/formatting/FormatDate'
@@ -52,8 +53,10 @@ const PaymentSchedule = () => {
                   : t('tax_detail_section.installments.not_available')}
               </span>
               <div className="flex justify-between max-lg:w-full lg:grow">
-                <span
-                  className={cn('text-p2-semibold', {
+                <Typography
+                  variant="p-small"
+                  as="span"
+                  className={cn('font-semibold', {
                     'text-content-error-default':
                       installment.status === InstallmentPaidStatusEnum.AfterDueDate,
                     'text-content-warning-default':
@@ -64,10 +67,10 @@ const PaymentSchedule = () => {
                   })}
                 >
                   {statusLabel}
-                </span>
-                <span className="text-p2-semibold">
+                </Typography>
+                <Typography variant="p-small" as="span" className="font-semibold">
                   <FormatCurrencyFromCents value={installment.remainingAmount} />
-                </span>
+                </Typography>
               </div>
             </li>
           </Fragment>

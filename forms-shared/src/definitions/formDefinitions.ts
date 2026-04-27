@@ -688,7 +688,6 @@ export const formDefinitions: FormDefinition[] = [
       // TODO use template with PAAS logo
       userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
-      // TODO check if this needed
       technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,

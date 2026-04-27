@@ -58,7 +58,7 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
         required: true,
         items: [...kategorieItems],
       },
-      { placeholder: 'Vyberte zo zoznamu' },
+      {},
     ),
     conditionalFields(
       createCondition([[['kategoria'], { enum: kategorieVyzadujuceCisloZiadosti }]]),
@@ -106,7 +106,6 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
         { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
         {
           size: 'medium',
-          placeholder: '+421',
           helptext:
             'Zadajte platné slovenské telefónne číslo v tvare +421 alebo si zvoľte kontaktovanie e-mailom.',
         },

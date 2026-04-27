@@ -41289,7 +41289,6 @@ exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapsh
                       "ui:options": {
                         "helptext": "Zadajte platné slovenské telefónne číslo v tvare +421 alebo si zvoľte kontaktovanie e-mailom.",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -41351,7 +41350,6 @@ exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapsh
                       "value": "ine",
                     },
                   ],
-                  "placeholder": "Vyberte zo zoznamu",
                 },
                 "ui:widget": "Select",
               },

@@ -8,11 +8,40 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
-import type { GenericObjectType } from '@rjsf/utils' with {
-  'resolution-mode': 'import',
-}
 
-const kategorieVyzadujuceCisloZiadosti = [
+const kategorieItems = [
+  {
+    value: 'pravidlaPaasAVseobecneInformacie',
+    label: 'Pravidlá PAAS a všeobecné informácie',
+  },
+  { value: 'ziadostOParkovaciuKartu', label: 'Informácie k žiadosti o parkovaciu kartu' },
+  {
+    value: 'zmenaZrusenieParkovacejKarty',
+    label: 'Informácie o zmene/zrušení parkovacej karty',
+  },
+  {
+    value: 'upozornenieONespravnomParkovani',
+    label: 'Dostal/a som upozornenie o nesprávnom parkovaní',
+  },
+  {
+    value: 'rozkazOUlozeniSankcie',
+    label: 'Dostal/a som Rozkaz o uložení sankcie (pokutu)',
+  },
+  {
+    value: 'parkovacieListky',
+    label: 'Parkovacie lístky - aplikácie, parkomaty, SMS',
+  },
+  { value: 'podnetyNaZlepsenieReklamacie', label: 'Podnety na zlepšenie/reklamácie' },
+  { value: 'ine', label: 'Iné' },
+] as const
+
+type KategoriaValue = (typeof kategorieItems)[number]['value']
+
+const kategorieLabelByValue = Object.fromEntries(
+  kategorieItems.map(({ value, label }) => [value, label]),
+) as Record<KategoriaValue, string>
+
+const kategorieVyzadujuceCisloZiadosti: KategoriaValue[] = [
   'ziadostOParkovaciuKartu',
   'zmenaZrusenieParkovacejKarty',
   'upozornenieONespravnomParkovani',
@@ -27,31 +56,7 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
       {
         title: 'Kategória',
         required: true,
-        items: [
-          {
-            value: 'pravidlaPaasAVseobecneInformacie',
-            label: 'Pravidlá PAAS a všeobecné informácie',
-          },
-          { value: 'ziadostOParkovaciuKartu', label: 'Informácie k žiadosti o parkovaciu kartu' },
-          {
-            value: 'zmenaZrusenieParkovacejKarty',
-            label: 'Informácie o zmene/zrušení parkovacej karty',
-          },
-          {
-            value: 'upozornenieONespravnomParkovani',
-            label: 'Dostal/a som upozornenie o nesprávnom parkovaní',
-          },
-          {
-            value: 'rozkazOUlozeniSankcie',
-            label: 'Dostal/a som Rozkaz o uložení sankcie (pokutu)',
-          },
-          {
-            value: 'parkovacieListky',
-            label: 'Parkovacie lístky - aplikácie, parkomaty, SMS',
-          },
-          { value: 'podnetyNaZlepsenieReklamacie', label: 'Podnety na zlepšenie/reklamácie' },
-          { value: 'ine', label: 'Iné' },
-        ],
+        items: [...kategorieItems],
       },
       { placeholder: 'Vyberte zo zoznamu' },
     ),
@@ -110,8 +115,15 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
   ]),
 ])
 
-export const kontaktnyFormularPaasExtractTechnicalSubject: SchemalessFormDataExtractor<GenericObjectType> =
+type ExtractTechnicalSubjectFormData = {
+  udaje: {
+    kategoria: KategoriaValue
+  }
+}
+
+export const kontaktnyFormularPaasExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractTechnicalSubjectFormData> =
   {
     type: 'schemaless',
-    extractFn: () => 'paas-kontaktny-formular-paas',
+    extractFn: (formData) =>
+      `Kontaktný formulár PAAS: ${kategorieLabelByValue[formData.udaje.kategoria]}`,
   }

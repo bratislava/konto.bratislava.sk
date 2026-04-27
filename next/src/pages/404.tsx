@@ -25,7 +25,7 @@ const NotFoundPage = () => {
         <div className="flex shrink-0 flex-col items-center lg:items-start">
           {/* text-5xl font-extrabold does not work */}
           <div className="pb-4 text-[48px] font-extrabold lg:text-[64px]">404</div>
-          <div className="max-w-xs pb-10 text-center text-p1 lg:text-left">
+          <div className="max-w-xs pb-10 text-center text-size-p-small-r lg:text-left lg:text-size-p-large">
             {t('404.sorryNoResultsFound')}
           </div>
           <Button href="/" hasLinkIcon={false} variant="solid">

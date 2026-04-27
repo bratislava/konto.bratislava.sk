@@ -79,7 +79,7 @@ const CustomOption = <
       <components.Option {...props}>
         {selectHasDescriptions ? (
           <div>
-            <div className="text-p1-semibold">{children}</div>
+            <div className="text-size-p-small-r font-semibold lg:text-size-p-large">{children}</div>
             {description && (
               <div className="text-size-p-small-r lg:text-size-p-small">{description}</div>
             )}
@@ -212,7 +212,7 @@ const SelectField = <
                   'items-center gap-1 rounded-sm pr-1.5 pl-2',
                   isDisabled ? 'bg-gray-200' : 'bg-gray-100',
                 ),
-              multiValueLabel: () => 'text-p-tiny-r lg:text-p-tiny',
+              multiValueLabel: () => 'text-size-p-tiny-r lg:text-size-p-tiny',
               multiValueRemove: () =>
                 'hover:bg-negative-100 hover:text-red-800 rounded-sm h-5 [&>svg]:w-4 [&>svg]:h-4',
               indicatorsContainer: ({ isDisabled }) =>

@@ -133,7 +133,9 @@ const SuccessContent = () => {
           <>
             <div className="mt-3 flex w-full items-center md:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
-              <span className="text-p1 px-6">{t('tax_form_pdf_export_modal.footer_choice')}</span>
+              <span className="px-6 text-size-p-small-r lg:text-size-p-large">
+                {t('tax_form_pdf_export_modal.footer_choice')}
+              </span>
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
@@ -158,7 +160,7 @@ const SuccessContent = () => {
                 <Button
                   variant="solid"
                   fullWidth
-                  className="text-p1-semibold rounded-lg px-5 py-2 leading-6 md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6"
+                  className="rounded-lg px-5 py-2 text-size-p-small-r font-semibold md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6 lg:text-size-p-large"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}

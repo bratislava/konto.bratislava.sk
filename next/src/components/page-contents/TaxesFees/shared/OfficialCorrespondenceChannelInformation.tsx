@@ -44,7 +44,9 @@ const OfficialCorrespondenceChannelInformation = () => {
             <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
               <MailIcon className="size-6" />
             </div>
-            <span className="text-p1-semibold">{channelLabel}</span>
+            <span className="text-size-p-small-r font-semibold lg:text-size-p-large">
+              {channelLabel}
+            </span>
           </div>
           {canUserChangeChannel && (
             <>

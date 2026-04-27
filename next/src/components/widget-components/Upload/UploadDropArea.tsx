@@ -119,7 +119,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
               </Typography>
 
               {sizeLimit || supportedFormats?.length ? (
-                <dl className="flex gap-2 text-p-tiny-r lg:text-p-tiny">
+                <dl className="flex gap-2 text-size-p-tiny-r lg:text-size-p-tiny">
                   {displayMaxFileSize ? (
                     <>
                       <dt className="sr-only">{t('Upload.sizeLimit')}</dt>

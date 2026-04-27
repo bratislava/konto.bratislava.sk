@@ -30,7 +30,7 @@ const TaxFeePaymentMethodsItem = ({
         ) : null}
       </div>
       <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:gap-8">
-        <span className="text-p1-semibold">
+        <span className="text-size-p-small-r font-semibold lg:text-size-p-large">
           <FormatCurrencyFromCents value={amount} />
         </span>
         <Button

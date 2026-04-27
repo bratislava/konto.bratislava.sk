@@ -31,7 +31,7 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
   return (
     <div className="flex items-center gap-1.5">
       <span
-        className={cn('w-max text-p-tiny-r font-semibold lg:text-p-small', {
+        className={cn('w-max text-size-p-tiny-r font-semibold lg:text-size-p-small', {
           'text-content-error-default': status === TaxStatusEnum.NotPaid,
           'text-content-warning-default':
             // partially paid should be blue color but we don't such color,
@@ -124,7 +124,7 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
               href={href}
               variant="unstyled"
               stretched
-              className="text-p-small-r font-semibold lg:text-p-small"
+              className="text-size-p-small-r font-semibold lg:text-size-p-small"
             >
               {title}
             </MLink>

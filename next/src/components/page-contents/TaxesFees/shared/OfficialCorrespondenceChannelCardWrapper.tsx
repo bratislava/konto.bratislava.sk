@@ -1,7 +1,6 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
-import React from 'react'
 
 import { MailIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -10,7 +9,6 @@ import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
 // TODO unify with TaxesFeesAdministratorCardWrapper
-
 
 const OfficialCorrespondenceChannelCardWrapper = () => {
   const { t } = useTranslation('account')
@@ -41,7 +39,9 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
       >
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col">
-            <span className="text-p1-semibold block">{title}</span>
+            <span className="block text-size-p-small-r font-semibold lg:text-size-p-large">
+              {title}
+            </span>
             {canUserChangeChannel && (
               <div className="pt-3 pb-2 lg:px-0">
                 <AccountMarkdown

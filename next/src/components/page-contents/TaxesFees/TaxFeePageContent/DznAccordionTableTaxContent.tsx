@@ -56,7 +56,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         {headerData.map((header, index) => (
           <th
             key={index}
-            className="text-16-semibold p-4 text-left not-first:text-center lg:px-6 lg:py-5"
+            className="p-4 text-left text-size-p-small-r font-semibold not-first:text-center lg:px-6 lg:py-5 lg:text-size-p-small"
           >
             {header}
           </th>
@@ -117,20 +117,20 @@ const TableData = ({
 
         return (
           <tr key={taxDetail.type} className="not-last:lg:border-b">
-            <td className="not-first:text-20-semibold h-max p-4 not-first:text-center lg:px-6 lg:py-5">
+            <td className="h-max p-4 not-first:text-center not-first:text-size-p-large lg:px-6 lg:py-5 not-first:lg:text-size-p-large">
               <div className="inline h-0 font-semibold">{title}</div>
             </td>
             {dataType === 'GROUND' && (
-              <td className="not-first:text-16 w-[15%] p-4 not-first:text-center lg:px-6 lg:py-5">
+              <td className="w-[15%] p-4 not-first:text-center not-first:text-size-p-small-r lg:px-6 lg:py-5 not-first:lg:text-size-p-small">
                 {taxDetail.area} m<sup>2</sup>
               </td>
             )}
-            <td className="not-first:text-16 w-[15%] p-4 not-first:text-center lg:px-6 lg:py-5">
+            <td className="w-[15%] p-4 not-first:text-center not-first:text-size-p-small-r lg:px-6 lg:py-5 not-first:lg:text-size-p-small">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
-            <td className="not-first:text-16 w-[15%] p-4 not-first:text-center lg:px-6 lg:py-5">
+            <td className="w-[15%] p-4 not-first:text-center not-first:text-size-p-small-r lg:px-6 lg:py-5 not-first:lg:text-size-p-small">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>

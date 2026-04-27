@@ -25,6 +25,8 @@ import ziadostOSlobodnyPristupKInformaciamExample from './examples/ziadostOSlobo
 import priznanieKDaniZNehnutelnostiExample5NoCalculators from './examples/priznanieKDaniZNehnutelnostiExample5NoCalculators'
 import ziadostOUzemnoplanovaciuInformaciuExample from './examples/ziadostOUzemnoplanovaciuInformaciuExample'
 import nahlaseniePodnetuKElektrickymKolobezkamExample from './examples/nahlaseniePodnetuKElektrickymKolobezkamExample'
+import kontaktnyFormularPaasExample1 from './examples/kontaktnyFormularPaasExample1'
+import kontaktnyFormularPaasExample2 from './examples/kontaktnyFormularPaasExample2'
 
 export const exampleForms: Record<string, ExampleForm[]> = {
   'stanovisko-k-investicnemu-zameru': [stanoviskoKInvesticnemuZameruExample],
@@ -63,6 +65,10 @@ export const exampleForms: Record<string, ExampleForm[]> = {
   'ziadost-o-slobodny-pristup-k-informaciam': [ziadostOSlobodnyPristupKInformaciamExample],
   'ziadost-o-uzemnoplanovaciu-informaciu': [ziadostOUzemnoplanovaciuInformaciuExample],
   'nahlasenie-podnetu-k-elektrickym-kolobezkam': [nahlaseniePodnetuKElektrickymKolobezkamExample],
+  'paas-kontaktny-formular-paas': [
+    kontaktnyFormularPaasExample1,
+    kontaktnyFormularPaasExample2,
+  ],
 }
 
 export const exampleDevForms: Record<string, ExampleForm[]> = {}

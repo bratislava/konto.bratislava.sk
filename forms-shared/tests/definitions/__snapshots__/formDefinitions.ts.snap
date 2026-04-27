@@ -41182,6 +41182,280 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
 }
 `;
 
+exports[`Form definitions > paas-kontaktny-formular-paas > default form state should match snapshot 1`] = `
+{
+  "udaje": {
+    "prilohy": [],
+    "sposobKontaktovania": "email",
+  },
+}
+`;
+
+exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "udaje": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "kategoria": {
+                    "enum": [
+                      "ziadostOParkovaciuKartu",
+                      "zmenaZrusenieParkovacejKarty",
+                      "upozornenieONespravnomParkovani",
+                      "rozkazOUlozeniSankcie",
+                      "parkovacieListky",
+                    ],
+                  },
+                },
+                "required": [
+                  "kategoria",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "cisloZiadostiEcv": {
+                    "baOrder": 2,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Číslo žiadosti / EČV",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "cisloZiadostiEcv",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "sposobKontaktovania": {
+                    "const": "email",
+                  },
+                },
+                "required": [
+                  "sposobKontaktovania",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 7,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "sposobKontaktovania": {
+                    "const": "telefon",
+                  },
+                },
+                "required": [
+                  "sposobKontaktovania",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "telefon": {
+                    "baOrder": 8,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Zadajte platné slovenské telefónne číslo v tvare +421 alebo si zvoľte kontaktovanie e-mailom.",
+                        "inputType": "tel",
+                        "placeholder": "+421",
+                        "size": "medium",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "telefon",
+                ],
+                "type": "object",
+              },
+            },
+          ],
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "udaje",
+            },
+          },
+          "properties": {
+            "kategoria": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Pravidlá PAAS a všeobecné informácie",
+                      "value": "pravidlaPaasAVseobecneInformacie",
+                    },
+                    {
+                      "label": "Informácie k žiadosti o parkovaciu kartu",
+                      "value": "ziadostOParkovaciuKartu",
+                    },
+                    {
+                      "label": "Informácie o zmene/zrušení parkovacej karty",
+                      "value": "zmenaZrusenieParkovacejKarty",
+                    },
+                    {
+                      "label": "Dostal/a som upozornenie o nesprávnom parkovaní",
+                      "value": "upozornenieONespravnomParkovani",
+                    },
+                    {
+                      "label": "Dostal/a som Rozkaz o uložení sankcie (pokutu)",
+                      "value": "rozkazOUlozeniSankcie",
+                    },
+                    {
+                      "label": "Parkovacie lístky - aplikácie, parkomaty, SMS",
+                      "value": "parkovacieListky",
+                    },
+                    {
+                      "label": "Podnety na zlepšenie/reklamácie",
+                      "value": "podnetyNaZlepsenieReklamacie",
+                    },
+                    {
+                      "label": "Iné",
+                      "value": "ine",
+                    },
+                  ],
+                  "placeholder": "Vyberte zo zoznamu",
+                },
+                "ui:widget": "Select",
+              },
+              "enum": [
+                "pravidlaPaasAVseobecneInformacie",
+                "ziadostOParkovaciuKartu",
+                "zmenaZrusenieParkovacejKarty",
+                "upozornenieONespravnomParkovani",
+                "rozkazOUlozeniSankcie",
+                "parkovacieListky",
+                "podnetyNaZlepsenieReklamacie",
+                "ine",
+              ],
+              "title": "Kategória",
+              "type": "string",
+            },
+            "menoPriezviskoObchodneMeno": {
+              "baOrder": 5,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Ak ste právnická osoba alebo podnikateľ, uveďte obchodné meno.",
+                  "inputType": "text",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Meno a priezvisko / Obchodné meno",
+              "type": "string",
+            },
+            "prilohy": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {
+                  "type": "dragAndDrop",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "title": "Prílohy",
+              "type": "array",
+            },
+            "sposobKontaktovania": {
+              "baOrder": 6,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "E-mailom",
+                      "value": "email",
+                    },
+                    {
+                      "label": "Telefonicky",
+                      "value": "telefon",
+                    },
+                  ],
+                  "orientations": "column",
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "default": "email",
+              "enum": [
+                "email",
+                "telefon",
+              ],
+              "title": "Ako vás máme kontaktovať?",
+              "type": "string",
+            },
+            "sprava": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Pre rýchle vybavenie uveďte čo najviac informácií k podnetu. Prípadné dokumenty priložte tak, aby neobsahovali viditeľné osobné údaje.",
+                },
+                "ui:widget": "TextArea",
+              },
+              "title": "Správa",
+              "type": "string",
+            },
+          },
+          "required": [
+            "kategoria",
+            "sprava",
+            "menoPriezviskoObchodneMeno",
+            "sposobKontaktovania",
+          ],
+          "title": "Údaje",
+          "type": "object",
+        },
+      },
+      "required": [
+        "udaje",
+      ],
+      "type": "object",
+    },
+  ],
+  "title": "Kontaktný formulár PAAS",
+}
+`;
+
 exports[`Form definitions > predzahradky > default form state should match snapshot 1`] = `
 {
   "predzahradka": {

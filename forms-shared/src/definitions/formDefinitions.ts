@@ -94,6 +94,9 @@ import nahlaseniePodnetuKElektrickymKolobezkam, {
   nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
+import kontaktnyFormularPaas, {
+  kontaktnyFormularPaasExtractTechnicalSubject,
+} from '../schemas/paas/kontaktnyFormularPaas'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -657,6 +660,35 @@ export const formDefinitions: FormDefinition[] = [
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
+      technicalEmailSubjectAppendId: true,
+    },
+    termsAndConditions: generalTermsAndConditions,
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'paas-kontaktny-formular-paas',
+    title: 'Kontaktný formulár PAAS',
+    jsonVersion: '1.0.0',
+    schema: kontaktnyFormularPaas,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
+    subject: {
+      extractTechnical: kontaktnyFormularPaasExtractTechnicalSubject,
+    },
+    email: {
+      address: {
+        // TODO change to prod email
+        prod: ['inovacie.bratislava@gmail.com'],
+        test: ['inovacie.bratislava@gmail.com'],
+      },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
+      mailer: 'mailgun',
+      // TODO use template with PAAS logo
+      userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
+      newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
+      // TODO check if this needed
       technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,

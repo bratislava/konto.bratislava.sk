@@ -239,7 +239,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
     >
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <Heading slot="title" className="text-h3">
+          <Heading slot="title" className="text-size-h3-r lg:text-size-h3">
             {t('taxes.delivery_method_change_modal.title')}
           </Heading>
           <AccountMarkdown

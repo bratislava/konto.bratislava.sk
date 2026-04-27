@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 
@@ -35,7 +35,9 @@ const TaxFeeDetails = () => {
   return (
     <div className="flex w-full flex-col items-start gap-3 lg:gap-6">
       <div className="flex w-full flex-col justify-between lg:flex-row">
-        <span className="text-h5">{taxFeeAccordionsHeader}</span>
+        <Typography variant="h5" as="p">
+          {taxFeeAccordionsHeader}
+        </Typography>
         <Button variant="link" endIcon={<ExportIcon />} {...taxFeeAccordionsHeaderLinkProps} />
       </div>
       <TaxFeeAccordions />

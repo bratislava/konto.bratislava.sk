@@ -8,7 +8,7 @@ import {
   CustomComponentCalculatorProps,
 } from 'forms-shared/generator/uiOptionsTypes'
 import get from 'lodash/get'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -126,7 +126,7 @@ const FormCalculator = ({
   label,
   calculators,
 }: CustomComponentCalculatorProps & { id: string }) => {
-  const labelClassName = cn('text-h5', {
+  const labelClassName = cn('text-size-h5-r lg:text-size-h5', {
     'text-white': variant === 'black',
     'text-gray-700': variant === 'white',
   })

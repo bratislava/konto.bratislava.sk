@@ -180,9 +180,11 @@ const DznAccordionTableTaxContent = ({
   return (
     <AccordionV2
       title={
-        <div className="flex min-w-0 grow justify-between text-h5 font-semibold">
+        <div className="flex min-w-0 grow justify-between">
           <Typography variant="h5">{title}</Typography>
-          <span>{secondTitle}</span>
+          <Typography variant="h5" as="span" className="font-semibold">
+            {secondTitle}
+          </Typography>
         </div>
       }
       noTitleWrapper

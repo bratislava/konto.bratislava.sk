@@ -141,7 +141,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
 
           {hasMultipleInstallments && (
             <div className="flex flex-col gap-3">
-              <span className="text-h5">{t('taxes.payment_data.installments.title')}</span>
+              <Typography variant="h5">{t('taxes.payment_data.installments.title')}</Typography>
               <PaymentSchedule />
             </div>
           )}
@@ -149,13 +149,13 @@ const PaymentData = ({ paymentMethod }: Props) => {
       )}
 
       <div className="flex flex-col gap-2 lg:gap-4">
-        <div className="text-h5">{t('taxes.payment_data.payment_methods_title')}</div>
+        <Typography variant="h5">{t('taxes.payment_data.payment_methods_title')}</Typography>
         <div className="rounded-lg border px-4 lg:px-6">
           <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
               <div className="flex flex-row-reverse items-center justify-between gap-4 lg:flex-row lg:justify-start">
                 <PaymentHandIcon className="size-8 lg:size-12" />
-                <span className="text-h5">{t('taxes.payment_data.card_payment_title')}</span>
+                <Typography variant="h5">{t('taxes.payment_data.card_payment_title')}</Typography>
               </div>
               <div className="flex flex-row items-center gap-1.5 lg:gap-3">
                 <div className="rounded-lg bg-background-passive-primary px-3 py-1">
@@ -166,9 +166,9 @@ const PaymentData = ({ paymentMethod }: Props) => {
               </div>
             </div>
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
-              <span className="w-full text-h5 lg:w-auto">
+              <Typography variant="h5" as="span" className="w-full lg:w-auto">
                 {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
-              </span>
+              </Typography>
               <Button
                 variant="solid"
                 onPress={handleRedirectToPayment}
@@ -187,13 +187,13 @@ const PaymentData = ({ paymentMethod }: Props) => {
             <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
               <div className="flex w-full flex-row-reverse items-center justify-between gap-5 lg:flex-row lg:justify-start">
                 <QrCodeIcon className="size-8 lg:size-12" />
-                <span className="text-h5">
+                <Typography variant="h5">
                   {t('taxes.payment_data.qr_code_and_bank_transfer_title')}
-                </span>
+                </Typography>
               </div>
-              <span className="text-h5 max-lg:w-full">
+              <Typography variant="h5" className="max-lg:w-full">
                 {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
-              </span>
+              </Typography>
             </div>
             <div className="flex w-full flex-col gap-6 lg:flex-row lg:gap-4">
               <ul className="flex w-full flex-col rounded-lg border px-4 py-2 lg:px-6">

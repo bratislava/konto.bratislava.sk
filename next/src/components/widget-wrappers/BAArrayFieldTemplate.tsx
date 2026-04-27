@@ -66,7 +66,11 @@ const BAArrayFieldTemplate = <
               {title}
             </Typography>
           )}
-          {title && variant === 'nested' && <Typography variant="h4" className="mb-4">{title}</Typography>}
+          {title && variant === 'nested' && (
+            <Typography variant="h4" className="mb-4">
+              {title}
+            </Typography>
+          )}
         </>
       )}
       {/* ArrayFieldDescriptionTemplate is not used */}
@@ -99,7 +103,11 @@ const BAArrayFieldTemplate = <
           <div className="flex flex-col gap-6">
             {variant === 'topLevel' && (uiOptions.addTitle || uiOptions.addDescription) && (
               <div className="flex flex-col gap-3">
-                {uiOptions.addTitle && <span className="text-h3">{uiOptions.addTitle}</span>}
+                {uiOptions.addTitle && (
+                  <Typography variant="h3" as="span">
+                    {uiOptions.addTitle}
+                  </Typography>
+                )}
                 {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
               </div>
             )}

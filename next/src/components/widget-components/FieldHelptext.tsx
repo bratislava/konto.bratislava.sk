@@ -19,7 +19,10 @@ const FieldHelptext = ({
 
   return (
     <div className="w-full">
-      <div {...descriptionProps} className="mt-1 text-16 whitespace-pre-wrap text-gray-700">
+      <div
+        {...descriptionProps}
+        className="mt-1 text-size-p-small-r whitespace-pre-wrap text-gray-700 lg:text-size-p-small"
+      >
         <ConditionalFormMarkdown isMarkdown={helptextMarkdown}>{helptext}</ConditionalFormMarkdown>
       </div>
     </div>

@@ -224,10 +224,12 @@ const PaymentData = ({ paymentMethod }: Props) => {
               <div className="flex max-w-120 flex-col gap-4 self-stretch rounded-lg border p-4 lg:flex-row">
                 <div className="flex w-full grow flex-col items-start justify-between gap-4">
                   <div className="flex flex-col items-start gap-2">
-                    <div className="text-h6">{t('taxes.payment_data.qr_code')}</div>
-                    <div className="text-16">
+                    <Typography variant="h6" as="p">
+                      {t('taxes.payment_data.qr_code')}
+                    </Typography>
+                    <Typography variant="p-small">
                       {t('taxes.payment_data.use_your_banking_app_to_load')}
-                    </div>
+                    </Typography>
                   </div>
                   <Button
                     startIcon={<DownloadIcon />}

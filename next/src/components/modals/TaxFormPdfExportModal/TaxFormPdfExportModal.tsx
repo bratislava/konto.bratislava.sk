@@ -9,6 +9,7 @@ import { TaxFormPdfExportModalState } from '@/src/components/modals/TaxFormPdfEx
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import Spinner from '@/src/components/simple-components/Spinner'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import cn from '@/src/utils/cn'
 
 type TaxFormPdfExportModalProps = {
   state: TaxFormPdfExportModalState | null
@@ -84,7 +85,10 @@ const SuccessContent = () => {
             {actions.map((translation, index) => (
               <li
                 key={index}
-                className="text-p1 before:text-16-semibold flex [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border before:border-gray-400 before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8"
+                className={cn(
+                  'flex text-size-p-small-r [counter-increment:list-number-styling] lg:text-size-p-large',
+                  'before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border before:border-gray-400 before:text-size-p-small-r before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8 lg:before:text-size-p-small',
+                )}
               >
                 <span>{translation}</span>
               </li>

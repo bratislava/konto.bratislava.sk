@@ -24,7 +24,7 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
         <React.Fragment key={i}>
           {button.link ? (
             <Link
-              className="w-max text-16-medium underline underline-offset-4"
+              className="w-max text-size-p-small-r font-medium underline underline-offset-4 lg:text-size-p-small"
               href={button.link}
               data-cy="alert-container-button"
             >
@@ -33,7 +33,7 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
           ) : (
             <Button
               variant="unstyled"
-              className="w-max text-16-medium underline underline-offset-4"
+              className="w-max text-size-p-small-r font-medium underline underline-offset-4 lg:text-size-p-small"
               onClick={button.handler}
             >
               {button.title}
@@ -102,9 +102,8 @@ const Alert = ({
     { 'max-w-[480px]': !fullWidth },
   )
 
-  const contentStyle = cn('w-full', {
-    'text-16-semibold': title,
-    'text-16': !title,
+  const contentStyle = cn('w-full text-size-p-small-r lg:text-size-p-small', {
+    'font-semibold': title,
     'text-white': solid,
     'text-gray-700': !solid,
   })
@@ -129,7 +128,7 @@ const Alert = ({
       </div>
       {message && title && (
         <div
-          className={cn('w-full pl-9 text-16', {
+          className={cn('w-full pl-9 text-size-p-small-r lg:text-size-p-small', {
             'text-gray-0': solid,
             'text-gray-700': !solid,
           })}

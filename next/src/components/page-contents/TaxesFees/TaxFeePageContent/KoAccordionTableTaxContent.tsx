@@ -40,7 +40,10 @@ const TableHeader = () => {
     <thead className="self-stretch bg-gray-50">
       <tr className="lg:border-b">
         {headerData.map((header, index) => (
-          <th key={index} className="text-16-semibold p-4 text-left lg:px-6 lg:py-5">
+          <th
+            key={index}
+            className="p-4 text-left text-size-p-small-r font-semibold lg:px-6 lg:py-5 lg:text-size-p-small"
+          >
             {header}
           </th>
         ))}

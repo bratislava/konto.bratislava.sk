@@ -226,7 +226,7 @@ const MyApplicationsCard = ({
                 <div className="flex gap-2">
                   {!isLoading && stateIconAndText.icon}
                   <div className="flex w-[200px] flex-col gap-1">
-                    <div className="text-16-semibold">
+                    <div className="text-size-p-small-r font-semibold lg:text-size-p-small">
                       {isLoading ? <Skeleton width="50%" /> : stateIconAndText.text}
                     </div>
                     {variant === 'SENT' &&

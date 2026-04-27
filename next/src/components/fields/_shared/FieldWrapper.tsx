@@ -11,10 +11,10 @@ import cn from '@/src/utils/cn'
 import { LabelSize } from './types'
 
 const labelSizeStyles = {
-  default: 'text-16-semibold',
-  h3: 'text-h3',
-  h4: 'text-h4',
-  h5: 'text-h5',
+  default: 'text-size-p-small-r lg:text-size-p-small',
+  h3: 'text-size-h3-r lg:text-size-h3',
+  h4: 'text-size-h4-r lg:text-size-h4',
+  h5: 'text-size-h5-r lg:text-size-h5',
 }
 
 type FieldWrapperProps = {
@@ -50,10 +50,14 @@ const FieldWrapper = ({
       {/* TODO There is gap-2 in Figma design, but we agreed gap-1 looks better. Keeping gap-1 until the discussion is resolved. */}
       <div className="flex flex-col gap-1">
         <RACLabel className={cn('text-content-passive-primary', labelSizeStyles[labelSize])}>
-          {label}
-          {showAsterisk ? <span className="ml-0.5 text-content-error-default">*</span> : null}
+          <span className="font-semibold">{label}</span>
+          {showAsterisk ? (
+            <span className="ml-0.5 font-semibold text-content-error-default">*</span>
+          ) : null}
           {showOptional ? (
-            <span className="text-16 ml-1 font-normal">{t('FieldHeader.optional')}</span>
+            <span className="ml-1 text-size-p-small-r font-normal lg:text-size-p-small">
+              {t('FieldHeader.optional')}
+            </span>
           ) : null}
         </RACLabel>
         {helptext ? (

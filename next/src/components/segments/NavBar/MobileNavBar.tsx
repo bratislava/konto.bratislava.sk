@@ -26,7 +26,7 @@ export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props
     <>
       <div
         id="mobile-navbar"
-        className="sticky left-0 top-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
+        className="sticky top-0 left-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
         ref={mobileNavbarRef}
       >
         <div className="w-full">

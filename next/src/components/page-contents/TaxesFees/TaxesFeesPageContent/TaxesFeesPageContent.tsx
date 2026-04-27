@@ -5,19 +5,14 @@ import { Key } from 'react-aria-components'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
-import OfficialCorrespondenceChannelInformation
-  from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
-import OfficialCorrespondenceChannelNeededBanner
-  from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
-import TaxesFeesAdministratorCardWrapper
-  from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
+import OfficialCorrespondenceChannelInformation from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
+import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
+import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxesFeesOverview from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesOverview'
 import TaxesFeesTabs, {
   TaxTypeTabOptions,
 } from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesTabs'
-import {
-  useOfficialCorrespondenceChannel
-} from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
+import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxesFees } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'

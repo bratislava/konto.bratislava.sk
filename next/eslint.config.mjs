@@ -5,16 +5,27 @@ export default [
     ignores: [
       '*.config.*',
       '*.js', // Temporarily ignored toplevel .js files after migration to eslint v9
-      '/src/clients/openapi-*/*.ts',
-      '/src/clients/graphql-*/*.ts',
+      './src/clients/openapi-*/**/*.ts',
+      './src/clients/graphql-*/**/*.ts',
     ],
   }),
+  // https://github.com/bratislava/eslint-config/blob/b17b3028c67e639cf5cef183817f9087d6281d7e/packages/next/README.md#tailwind-css
+  {
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: 'src/pages/globals.css',
+        callees: ['cx', 'classnames', 'clsx', 'cn', 'twMerge', 'tw'],
+      },
+    },
+  },
 
   // Project-specific rule overrides
   {
     rules: {
       'jsx-a11y/anchor-is-valid': 'off',
       'no-multi-spaces': 'error',
+
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
 
       // TODO good rules, require work to fix and were skipped over in eslint v9 upgrade
       '@typescript-eslint/no-explicit-any': 'off',
@@ -65,7 +76,6 @@ export default [
       '@typescript-eslint/no-dynamic-delete': 'warn', // 2 violations
       'react-hooks/static-components': 'warn', // 2 violations
       'sonarjs/no-undefined-argument': 'warn', // 2 violations
-      'tailwindcss/enforces-shorthand': 'warn', // 2 violations
       'sonarjs/fixme-tag': 'warn', // 2 violations
       '@typescript-eslint/no-base-to-string': 'warn', // 2 violations
     },

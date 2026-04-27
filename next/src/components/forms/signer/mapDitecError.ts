@@ -25,6 +25,7 @@ export const mapDitecError = (error: GenericObjectType) => {
   }
 
   const errorCode = error.code as string
+
   // eslint-disable-next-line consistent-return
   return ditecErrorMap[errorCode] as SignerErrorType
 }

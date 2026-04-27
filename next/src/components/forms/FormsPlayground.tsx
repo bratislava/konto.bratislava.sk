@@ -22,12 +22,11 @@ import {
   FormValidatorRegistryProvider,
   useFormValidatorRegistry,
 } from '@/src/components/forms/useFormValidatorRegistry'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import SelectField, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
 import { downloadBlob } from '@/src/frontend/utils/general'
-
-import useToast from '@/src/components/simple-components/Toast/useToast'
 
 export type FormsPlaygroundProps = {
   formDefinitions: ClientPlaygroundFormDefinition[]

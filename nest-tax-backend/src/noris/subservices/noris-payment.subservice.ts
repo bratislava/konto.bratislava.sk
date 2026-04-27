@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
+import dayjs from 'dayjs'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -295,11 +296,17 @@ export class NorisPaymentSubservice {
           },
         })
 
+        const isFullyPaid = paidFromNoris >= taxData.amount
+        const suppressEmail =
+          bloomreachSettings?.suppressEmail ||
+          this.isHistoricalPayment(norisPayment)
+
         await this.trackPaymentIfNeeded(
           taxData,
           createdTaxPayment,
+          isFullyPaid,
           userDataFromCityAccount,
-          bloomreachSettings,
+          { ...bloomreachSettings, suppressEmail },
         )
 
         return 'CREATED'
@@ -315,6 +322,12 @@ export class NorisPaymentSubservice {
     }
   }
 
+  private isHistoricalPayment(norisPayment: NorisTaxPayment): boolean {
+    const { datum_posledni_platby } = norisPayment
+    if (!datum_posledni_platby) return false
+    return dayjs(datum_posledni_platby).isBefore(dayjs().subtract(180, 'day'))
+  }
+
   private formatAmount(amount: number | string) {
     return typeof amount === 'number'
       ? currency(amount).intValue
@@ -324,6 +337,7 @@ export class NorisPaymentSubservice {
   private async trackPaymentIfNeeded(
     taxData: TaxWithTaxPayer,
     createdTaxPayment: TaxPayment,
+    isFullyPaid: boolean,
     userDataFromCityAccount: Partial<
       Record<string, ResponseUserByBirthNumberDto>
     >,
@@ -344,6 +358,7 @@ export class NorisPaymentSubservice {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- non-null by DB trigger and constraint
           order: taxData.order!,
           suppress_email: bloomreachSettings?.suppressEmail ?? false,
+          is_fully_paid: isFullyPaid,
         },
         userFromCityAccount.externalId,
       )

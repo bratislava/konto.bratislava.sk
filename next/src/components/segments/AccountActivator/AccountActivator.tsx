@@ -9,7 +9,7 @@ const AccountActivator = () => {
 
   return (
     <AccountContainer>
-      <div className="md:bg-gray-0 flex flex-col gap-2 rounded-xl bg-gray-50 px-5 py-4 md:rounded-none md:p-0">
+      <div className="flex flex-col gap-2 rounded-xl bg-gray-50 px-5 py-4 md:rounded-none md:bg-gray-0 md:p-0">
         <h3 className="text-h3">{t('account_activator.title')}</h3>
         <AccountMarkdown variant="sm" content={t('account_activator.content')} />
         <Button variant="link" className="mt-2 md:mt-4" href="https://bratislava.sk/konto">

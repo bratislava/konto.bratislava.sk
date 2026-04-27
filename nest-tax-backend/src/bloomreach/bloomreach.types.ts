@@ -16,6 +16,7 @@ export interface TaxPaymentBloomreachData {
   tax_type: TaxType
   order: number
   suppress_email: boolean
+  is_fully_paid: boolean
 }
 
 export interface TaxBloomreachData {

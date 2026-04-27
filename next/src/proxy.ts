@@ -6,7 +6,7 @@ import { isDefined } from '@/src/frontend/utils/general'
 const slovenskoSkLoginUrlOrigin = new URL(environment.slovenskoSkLoginUrl).origin
 
 // Setting up Content Security Policy with csp header and nonce. Following official docs and our security training
-// recommendations. Note that we removed `data:` from `img-src`.
+// recommendations.
 // Docs: https://nextjs.org/docs/15/pages/guides/content-security-policy
 //
 // Notes:
@@ -32,10 +32,6 @@ export function proxy(request: NextRequest) {
   const origin = `${protocol}://${host}`
 
   const connectSrc = [
-    'https://faro.bratislava.sk',
-    // TODO add docs
-    'https://cognito-identity.eu-central-1.amazonaws.com',
-    'https://cognito-idp.eu-central-1.amazonaws.com',
     environment.formsUrl,
     environment.cityAccountUrl,
     environment.taxesUrl,
@@ -43,21 +39,40 @@ export function proxy(request: NextRequest) {
     environment.bratislavaStrapiUrl,
     environment.cityAccountStrapiUrl,
 
+    // FARO logger
+    'https://faro.bratislava.sk',
+
+    // AWS Cognito - Identity Pool (federated/guest credentials) + User Pool (signup/signin).
+    // Called directly by aws-amplify from the browser. No Hosted UI configured, so no
+    // `*.auth.<region>.amazoncognito.com` entry is needed.
+    'https://cognito-identity.eu-central-1.amazonaws.com',
+    'https://cognito-idp.eu-central-1.amazonaws.com',
+
     // Microsoft Clarity - script is loaded via strict-dynamic / tag manager
     // Docs: https://learn.microsoft.com/sk-sk/clarity/setup-and-installation/clarity-csp
     'https://*.clarity.ms',
     'https://c.bing.com',
 
-    // Google Tag manager
+    // Google Tag manager / Google Ads / Google Signals
     // Docs: https://developers.google.com/tag-platform/security/guides/csp
     'https://*.google-analytics.com',
     'https://*.analytics.google.com',
     'https://*.googletagmanager.com',
+    'https://www.google.com',
 
     // Cookiebot config fetch. Note: See also frame-src below.
     // Docs: https://support.cookiebot.com/hc/en-us/articles/360018907220-Cookiebot-and-Content-Security-Protocol-CSP
     'https://consentcdn.cookiebot.eu',
     'https://consent.cookiebot.eu',
+  ]
+    .filter(isDefined)
+    .join(' ')
+
+  const imgSrc = [
+    'https://www.googletagmanager.com',
+    'https://*.google-analytics.com',
+    'https://*.clarity.ms',
+    'https://c.bing.com',
   ]
     .filter(isDefined)
     .join(' ')
@@ -68,26 +83,40 @@ export function proxy(request: NextRequest) {
   //   - react-select uses @emotion/react internally to inject its styles as <style> tags at runtime
   //   - style={{ '--main-scroll-top-margin': '...' }} in PageLayout.tsx
   //  Remove "data:" from img-src. Now added for cookiebot icon button.
-  const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isNodeEnvDevelopment ? "'unsafe-eval'" : ''};
+  //  Remove 'unsafe-eval' - added temporarily because a Next.js chunk triggers eval in production.
+  //   Root cause to be investigated in a separate session.
+  // Report-only policy covers directives still being tuned (script/style/connect).
+  // `default-src` is intentionally omitted — directives already enforced in the
+  // `Content-Security-Policy` header below (img, font, frame, ...) must NOT fall back here,
+  // otherwise every such violation would be reported twice.
+  const cspHeaderReportOnly = `
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval';
     style-src 'self' ${isNodeEnvDevelopment ? "'unsafe-inline'" : `'nonce-${nonce}'`};
     style-src-elem 'self' 'unsafe-inline';
     style-src-attr 'self' 'unsafe-inline';
     connect-src 'self' ${connectSrc};
-    img-src 'self' blob: data:;
+    report-uri /api/csp-report;
+    report-to ${CSP_REPORT_ENDPOINT_NAME};
+`
+  // TODO Add default-src 'self' when whole Report-Only header is moved to real CSP.
+  // frame-src: slovensko.sk was found in reported violations on "sumar" of priznanie-k-dani-z-nehnutelnosti
+  //   it's probably used when logging-in to slovensko.sk - TODO make sure that we know why it's needed
+  const cspHeader = `
+    img-src 'self' blob: data: ${imgSrc};
     font-src 'self';
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self' https://olo.sk;
-    frame-src 'self' https://consentcdn.cookiebot.eu;
+    frame-src 'self' https://consentcdn.cookiebot.eu https://challenges.cloudflare.com https://www.slovensko.sk;
     upgrade-insecure-requests;
     report-uri /api/csp-report;
     report-to ${CSP_REPORT_ENDPOINT_NAME};
 `
+
   // Replace newline characters and spaces
-  const contentSecurityPolicyHeaderValue = cspHeader.replaceAll(/\s{2,}/g, ' ').trim()
+  const cspHeaderReportOnlyValue = cspHeaderReportOnly.replaceAll(/\s{2,}/g, ' ').trim()
+  const cspHeaderValue = cspHeader.replaceAll(/\s{2,}/g, ' ').trim()
 
   const reportToUrl = `${origin}/api/csp-report`
   const reportingEndpointsValue = `${CSP_REPORT_ENDPOINT_NAME}="${reportToUrl}"`
@@ -103,10 +132,9 @@ export function proxy(request: NextRequest) {
   // - `Reporting-Endpoints` is the modern Reporting API endpoint definition.
   // - `Report-To` is the legacy header still required by some browsers.
   // Both reporting headers are sent for backward compatibility.
-  // TODO change Content-Security-Policy-Report-Only to Content-Security-Policy when ready
-  response.headers.set('Content-Security-Policy-Report-Only', contentSecurityPolicyHeaderValue)
-  // TODO Temporarily enable only frame-ancestors policy to prevent Click-jacking attacks. Remove when whole CSP is enabled
-  response.headers.set('Content-Security-Policy', `frame-ancestors 'self' https://olo.sk;`)
+  // TODO Gradually move policies from Content-Security-Policy-Report-Only to Content-Security-Policy when ready
+  response.headers.set('Content-Security-Policy-Report-Only', cspHeaderReportOnlyValue)
+  response.headers.set('Content-Security-Policy', cspHeaderValue)
   response.headers.set('Reporting-Endpoints', reportingEndpointsValue)
   response.headers.set(
     'Report-To',

@@ -40,6 +40,7 @@ const ExpandMoreIcon = ({ size = 'sm', className }: ExpandMoreIconProps) => {
       </svg>
     )
   }
+
   return (
     <svg
       width="12"

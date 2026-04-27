@@ -1,7 +1,6 @@
 import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
 import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { RadioGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { useMemo } from 'react'
 
 import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
@@ -39,10 +38,8 @@ const RadioGroupWidgetRJSF = (props: RadioGroupWidgetRJSFProps) => {
 
   const { enumOptions, enumMetadata, variant, orientations } = specificOptions
 
-  const mergedOptions = useMemo(
-    () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
-    [enumOptions, enumMetadata],
-  )
+  // No useMemo: React Compiler can't preserve memoization over deps destructured from a function return, so manual memo blocks component compilation.
+  const mergedOptions = mergeEnumOptionsMetadata(enumOptions, enumMetadata)
 
   const hasDescriptionInRadioGroup = mergedOptions.some((option) => option.description)
 

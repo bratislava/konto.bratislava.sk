@@ -53,7 +53,7 @@ const MessageModal = ({
         <div className="flex w-full flex-col gap-5 lg:gap-6">
           <div className="flex flex-col gap-2">
             <div className="w-full text-center text-h5 font-semibold">{title}</div>
-            <div className="flex w-full flex-col gap-4 text-center text-p2 text-p-base whitespace-pre-wrap">
+            <div className="flex w-full flex-col gap-4 text-center text-16 whitespace-pre-wrap">
               {children}
             </div>
           </div>

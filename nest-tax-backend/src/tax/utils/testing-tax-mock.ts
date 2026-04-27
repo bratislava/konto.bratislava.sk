@@ -42,6 +42,7 @@ export const createTestingRealEstateTaxMock = (
     // payment data
     variabilny_symbol: norisData.variableSymbol,
     uhrazeno: norisData.alreadyPaid,
+    datum_posledni_platby: norisData.alreadyPaid > 0 ? new Date() : null,
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,
     cislo_poradace: Number(taxAdministrator.externalId),
@@ -162,6 +163,7 @@ export const createTestingCommunalWasteTaxMock = (
     // payment data
     variabilny_symbol: norisData.variableSymbol,
     uhrazeno: norisData.alreadyPaid,
+    datum_posledni_platby: norisData.alreadyPaid > 0 ? new Date() : null,
 
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,

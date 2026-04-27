@@ -5,6 +5,7 @@ import { Fragment } from 'react'
 import EuFlagSvg from '@/src/assets/images/eu-flag.svg'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useGeneralContext } from '@/src/components/logic/GeneralContextProvider'
+import CookieConsentLink from '@/src/components/segments/CookieConsentLink/CookieConsentLink'
 import {
   FooterAccessibilityLink,
   FooterColumnLinks,
@@ -88,6 +89,7 @@ const MobileFooter = () => {
         </div>
         <HorizontalDivider />
         <div className="flex gap-4">
+          <CookieConsentLink />
           <FooterAccessibilityLink {...footer} />
         </div>
         <HorizontalDivider />

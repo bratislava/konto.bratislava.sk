@@ -20,6 +20,7 @@ import { Wrapper } from '../Wrapper'
 
 const mockSubmit = async (...args: any[]) => {
   console.log('Form submitted with:', args)
+
   return Promise.resolve()
 }
 

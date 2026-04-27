@@ -28,7 +28,7 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkProps>(
     const plausible = usePlausible()
 
     const styles = cn(
-      'base-focus-ring rounded-xs underline-offset-2 transition',
+      'rounded-xs underline-offset-2 base-focus-ring transition',
       {
         'max-lg:underline lg:hover:underline': variant === 'standard',
         'underline hover:opacity-80': variant === 'underlined' || variant === 'underlined-medium',

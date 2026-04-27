@@ -203,21 +203,21 @@ const MyApplicationsCard = ({
           <div className="flex w-full gap-6">
             <div className="flex w-full grow flex-col gap-1">
               {(category || isLoading) && (
-                <div className="text-p3-semibold text-main-700">
+                <Typography variant="p-tiny" as="div" className="font-semibold text-main-700">
                   {isLoading ? <Skeleton width="25%" /> : category}
-                </div>
+                </Typography>
               )}
               <Typography variant="h5" as="h3">
                 {isLoading ? <Skeleton width="75%" /> : subject}
               </Typography>
               {(createdAt || isLoading) && (
-                <div className="text-p3">
+                <Typography variant="p-tiny" as="div">
                   {isLoading ? (
                     <Skeleton width="50%" />
                   ) : (
                     <FormatDate>{createdAt || ''}</FormatDate>
                   )}
-                </div>
+                </Typography>
               )}
             </div>
 
@@ -301,9 +301,9 @@ const MyApplicationsCard = ({
             <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">
                 {(category || isLoading) && (
-                  <div className="text-p3-semibold text-main-700">
+                  <Typography variant="p-tiny" as="div" className="font-semibold text-main-700">
                     {isLoading ? <Skeleton width="25%" /> : category}
-                  </div>
+                  </Typography>
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
@@ -313,13 +313,13 @@ const MyApplicationsCard = ({
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center">
+                  <Typography variant="p-tiny" as="span" className="flex items-center">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (
                       <FormatDate>{createdAt || ''}</FormatDate>
                     )}
-                  </span>
+                  </Typography>
                 )}
 
                 {stateIconAndText.iconRound}

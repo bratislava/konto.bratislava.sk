@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 
 import {
   FormLandingPageFormCtaFragment,
@@ -52,7 +52,7 @@ const FormLandingPageCard = (props: FormLandingPageCardProps) => {
         <div className="flex flex-col items-start gap-1 text-h6 md:flex-row md:items-center md:gap-3">
           {props.title}
         </div>
-        {props.text && <span className="text-p3">{props.text}</span>}
+        {props.text && <Typography variant="p-tiny">{props.text}</Typography>}
       </div>
       <div className="flex shrink-0 items-center md:w-[150px] md:justify-center">
         <FormLandingPageButton {...props} />

@@ -146,11 +146,17 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
               description={t('taxes.delivery_method_change_modal.delivery_method_true.description')}
             >
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-                <span>{t('taxes.delivery_method_change_modal.delivery_method_true.title')}</span>
+                <Typography as="span">
+                  {t('taxes.delivery_method_change_modal.delivery_method_true.title')}
+                </Typography>
                 {/* TODO unify with Tag component */}
-                <span className="text-p3 rounded-sm bg-background-success-soft-default px-2 py-0.5 text-content-success-default">
+                <Typography
+                  variant="p-tiny"
+                  as="span"
+                  className="rounded-sm bg-background-success-soft-default px-2 py-0.5 text-content-success-default"
+                >
                   {t('taxes.delivery_method_change_modal.delivery_method_true.usage_percentage')}
-                </span>
+                </Typography>
               </div>
             </Radio>
           </RadioGroup>

@@ -29,9 +29,9 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
   }[status]
 
   return (
-    <div className="flex items-center gap-[6px]">
+    <div className="flex items-center gap-1.5">
       <span
-        className={cn('text-p3-semibold lg:text-16-semibold w-max', {
+        className={cn('w-max text-p-tiny-r font-semibold lg:text-p-small', {
           'text-content-error-default': status === TaxStatusEnum.NotPaid,
           'text-content-warning-default':
             // partially paid should be blue color but we don't such color,
@@ -84,15 +84,15 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
         </div>
         <div className="flex w-full items-center gap-18">
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
               {t('account_section_payment.tax_card_delivered')}
-            </span>
+            </Typography>
             <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
               {t('account_section_payment.tax_card_amount')}
-            </span>
+            </Typography>
             {amountToBePaid === undefined ? (
               <span>-</span>
             ) : (
@@ -102,9 +102,9 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
             )}
           </div>
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
               {t('account_section_payment.tax_card_status')}
-            </span>
+            </Typography>
             <PaymentStatus status={status} />
           </div>
         </div>
@@ -136,9 +136,9 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
           {createdAt && <span>{formatDate(createdAt)}</span>}
           <div className="flex flex-row">
             {isDefined(amountToBePaid) && (
-              <span className="text-p3">
+              <Typography variant="p-tiny" as="span">
                 <FormatCurrencyFromCents value={amountToBePaid} />
-              </span>
+              </Typography>
             )}
             <span className="flex items-center">
               {isDefined(amountToBePaid) && (

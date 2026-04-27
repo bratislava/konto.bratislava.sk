@@ -46,9 +46,14 @@ const ServiceCard = ({
         {tags && tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {tags.map((tagItem, index) => (
-              <span key={index} className={cn('text-p3-medium h-min rounded-[4px] px-2', tagStyle)}>
+              <Typography
+                variant="p-tiny"
+                as="span"
+                key={index}
+                className={cn('h-min rounded-sm px-2 font-medium', tagStyle)}
+              >
                 {tagItem}
-              </span>
+              </Typography>
             ))}
           </div>
         ) : null}

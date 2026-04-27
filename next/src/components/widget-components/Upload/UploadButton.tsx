@@ -53,7 +53,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       },
     )
 
-    const buttonInfoClassNames = cn('flex flex-col justify-center text-p3', {
+    const buttonInfoClassNames = cn('flex flex-col justify-center text-p-tiny-r lg:text-p-tiny', {
       'min-w-40': supportedFormats || sizeLimit,
     })
 

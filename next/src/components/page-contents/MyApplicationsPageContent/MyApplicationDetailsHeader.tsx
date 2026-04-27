@@ -67,7 +67,9 @@ const MyApplicationDetailsHeader = ({
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
           <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
             <ChevronLeftIcon className="size-5" />
-            <span className="text-p3-medium underline underline-offset-2">{t('back_to_list')}</span>
+            <Typography variant="p-tiny" className="font-medium underline underline-offset-2">
+              {t('back_to_list')}
+            </Typography>
           </Link>
           <div className="flex flex-col gap-4 lg:gap-6">
             <div className="flex flex-col gap-2">

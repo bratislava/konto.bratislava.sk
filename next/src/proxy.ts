@@ -73,6 +73,14 @@ export function proxy(request: NextRequest) {
     'https://*.google-analytics.com',
     'https://*.clarity.ms',
     'https://c.bing.com',
+
+    // Email-playground previews emails inside an iframe; the email HTML references
+    // images hosted on these public city buckets / CDN. The iframe srcDoc inherits
+    // this CSP, so the hosts must be in img-src for the preview to render correctly.
+    'https://tax-personal-estates.s3.bratislava.sk',
+    'https://olo.s3.bratislava.sk',
+    'https://kupaliska-prod.s3.bratislava.sk',
+    'https://cdn-api.bratislava.sk',
   ]
     .filter(isDefined)
     .join(' ')

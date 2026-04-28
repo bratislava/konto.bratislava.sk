@@ -250,7 +250,8 @@ describe('NotificationsEventsSubservice', () => {
         {
           id: 1,
           year: 2025,
-          type: TaxType.KO,
+          type: TaxType.DZN,
+          amount: 5000,
           order: 1,
           taxPayer: { birthNumber },
         } as any,
@@ -270,12 +271,13 @@ describe('NotificationsEventsSubservice', () => {
 
       const expectedPayload = {
         year: 2025,
-        tax_type: TaxType.KO,
+        tax_type: TaxType.DZN,
         order: 1,
         installment_order: 2,
         due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
         due_date_month: 5,
         due_date_day: 31,
+        are_installments_possible: false, // 5000 eurocents < DZN threshold 6600
       }
       expect(
         bloomreachService.trackEventUnpaidTaxInstallmentReminder,
@@ -312,6 +314,7 @@ describe('NotificationsEventsSubservice', () => {
           id: 1,
           year: 2025,
           type: TaxType.KO,
+          amount: 10000,
           order: 1,
           taxPayer: { birthNumber },
         } as any,
@@ -337,6 +340,7 @@ describe('NotificationsEventsSubservice', () => {
         due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
         due_date_month: 5,
         due_date_day: 31,
+        are_installments_possible: true, // 10000 eurocents > KO threshold 0
       }
       expect(
         bloomreachService.trackEventUnpaidTaxInstallmentReminder,
@@ -373,7 +377,8 @@ describe('NotificationsEventsSubservice', () => {
         {
           id: 1,
           year: 2025,
-          type: TaxType.KO,
+          type: TaxType.DZN,
+          amount: 5000,
           order: 1,
           taxPayer: { birthNumber: birth1 },
         } as any,
@@ -381,6 +386,7 @@ describe('NotificationsEventsSubservice', () => {
           id: 2,
           year: 2025,
           type: TaxType.KO,
+          amount: 10000,
           order: 2,
           taxPayer: { birthNumber: birth2 },
         } as any,
@@ -401,16 +407,23 @@ describe('NotificationsEventsSubservice', () => {
 
       const expectedPayload1 = {
         year: 2025,
-        tax_type: TaxType.KO,
+        tax_type: TaxType.DZN,
         order: 1,
         installment_order: 2,
         due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
         due_date_month: 5,
         due_date_day: 31,
+        are_installments_possible: false, // 5000 eurocents < DZN threshold 6600
       }
       const expectedPayload2 = {
-        ...expectedPayload1,
+        year: 2025,
+        tax_type: TaxType.KO,
         order: 2,
+        installment_order: 2,
+        due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
+        due_date_month: 5,
+        due_date_day: 31,
+        are_installments_possible: true, // 10000 eurocents > KO threshold 0
       }
       expect(
         bloomreachService.trackEventUnpaidTaxInstallmentReminder,
@@ -443,10 +456,18 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
+          year: 2025,
+          type: TaxType.KO,
+          order: 1,
+          amount: 100,
           taxPayer: { birthNumber: birth1 },
         } as any,
         {
           id: 2,
+          year: 2025,
+          type: TaxType.KO,
+          order: 2,
+          amount: 200,
           taxPayer: { birthNumber: birth2 },
         } as any,
       ])

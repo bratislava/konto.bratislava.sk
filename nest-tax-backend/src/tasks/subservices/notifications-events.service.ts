@@ -16,6 +16,7 @@ import {
   DUE_DATE_OFFSET,
   parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
@@ -147,6 +148,11 @@ export default class NotificationsEventsService {
         }
 
         const dueDate = parseInstallmentDueDate(installmentInfo.dueDate)
+
+        const taxDefinition = getTaxDefinitionByType(tax.type)
+        const areInstallmentsPossible =
+          tax.amount > taxDefinition.paymentCalendarThreshold
+
         const eventData = {
           year: tax.year,
           tax_type: tax.type,
@@ -155,6 +161,7 @@ export default class NotificationsEventsService {
           due_date_type: dueDateType,
           due_date_month: dueDate.month() + 1,
           due_date_day: dueDate.date(),
+          are_installments_possible: areInstallmentsPossible,
         }
         try {
           const result =

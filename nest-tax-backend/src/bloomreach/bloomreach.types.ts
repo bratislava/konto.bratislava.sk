@@ -42,4 +42,5 @@ export interface UnpaidTaxInstallmentReminderBloomreachData {
   due_date_type: INSTALLMENT_DUE_DATE_TYPE
   due_date_month: number
   due_date_day: number
+  are_installments_possible: boolean
 }

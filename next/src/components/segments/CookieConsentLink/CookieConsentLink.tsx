@@ -1,6 +1,7 @@
-import { isBrowser } from '@/src/frontend/utils/general'
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
+
+import { isBrowser } from '@/src/frontend/utils/general'
 
 /**
  * Cookiebot docs: https://www.cookiebot.com/en/developer/

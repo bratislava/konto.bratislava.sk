@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useMutation } from '@tanstack/react-query'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import { router } from 'next/client'
@@ -80,7 +80,7 @@ const FormVersionCompareAction = () => {
           </span>
 
           <div className="flex flex-col items-center gap-8 md:gap-6">
-            <h2 className="text-center text-h2">
+            <Typography variant="h2" className="text-center">
               {
                 {
                   [VersionCompareContinueAction.CannotContinue]: t(
@@ -91,7 +91,7 @@ const FormVersionCompareAction = () => {
                   ),
                 }[versionCompareContinueAction]
               }
-            </h2>
+            </Typography>
             <AccountMarkdown
               variant="sm"
               content={

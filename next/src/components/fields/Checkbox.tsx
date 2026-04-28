@@ -25,7 +25,7 @@ const Checkbox = ({
     {...rest}
     className={({ isSelected, isDisabled, isInvalid, isIndeterminate }) =>
       cn(
-        'group flex w-full cursor-pointer items-center gap-3 rounded-lg text-p2',
+        'group flex w-full cursor-pointer items-center gap-3 rounded-lg text-size-p-small-r lg:text-size-p-small',
         {
           'border bg-background-passive-base px-3 py-2 lg:px-4 lg:py-3': variant === 'boxed',
           'border-border-active-default':

@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
 import { ChevronDownIcon } from '@/src/assets/ui-icons'
@@ -18,7 +19,7 @@ const AccordionV2 = ({ title, noTitleWrapper, children }: AccordionV2Props) => {
       return <>{title}</>
     }
 
-    return <h3 className="min-w-0 grow text-h4 font-semibold">{title}</h3>
+    return <Typography variant="h4" as="h3" className="min-w-0 grow">{title}</Typography>
   }
 
   return (

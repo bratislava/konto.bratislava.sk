@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next/pages'
 
@@ -133,13 +133,13 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       data-cy="registration-modal"
     >
       <div className="mb-6 flex flex-col gap-2">
-        {title && <h3 className="text-h2 lg:text-h3">{title}</h3>}
-        {subtitle && <AccountMarkdown className="text-p1" content={subtitle} />}
+        {title && <Typography variant="h3">{title}</Typography>}
+        {subtitle && <AccountMarkdown content={subtitle} />}
       </div>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col">
           <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
-            <h4 className="text-h4">{t('registration_modal.body_title')}</h4>
+            <Typography variant="h4">{t('registration_modal.body_title')}</Typography>
             <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
               {}
               {bodyList.map((item, index) => (
@@ -147,7 +147,9 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
                   <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
                     <CheckIcon className="size-7" />
                   </span>
-                  <p className="text-p3 md:text-p1">{item}</p>
+                  <Typography variant="p-tiny" className="lg:text-size-p-large">
+                    {item}
+                  </Typography>
                 </li>
               ))}
             </ul>
@@ -172,7 +174,9 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
-            <span className="px-6 text-p1">{t('registration_modal.footer_choice')}</span>
+            <span className="px-6 text-size-p-large-r lg:text-size-p-large">
+              {t('registration_modal.footer_choice')}
+            </span>
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">

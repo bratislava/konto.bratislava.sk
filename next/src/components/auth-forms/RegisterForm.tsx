@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -173,9 +173,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         return onSubmit(data.email, data.password, data.turnstileToken, userAttributes)
       })}
     >
-      <h1 className="text-h2" data-cy="register-form-title">
+      <Typography variant="h2" as="h1" data-cy="register-form-title">
         {t('auth.register_title')}
-      </h1>
+      </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
       {disablePO ? null : (
@@ -324,8 +324,11 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 onChange(null)
               }}
             />
+
             {captchaWarning === 'show' && (
-              <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
+              <Typography variant="p-tiny" className="italic">
+                {t('auth.captcha_warning')}
+              </Typography>
             )}
           </>
         )}

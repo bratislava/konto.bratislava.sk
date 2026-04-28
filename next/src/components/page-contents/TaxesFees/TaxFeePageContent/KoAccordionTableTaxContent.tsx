@@ -1,5 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
-import React, { PropsWithChildren, useRef } from 'react'
+import { PropsWithChildren, useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
@@ -39,7 +40,10 @@ const TableHeader = () => {
     <thead className="self-stretch bg-gray-50">
       <tr className="lg:border-b">
         {headerData.map((header, index) => (
-          <th key={index} className="p-4 text-left text-16-semibold lg:px-6 lg:py-5">
+          <th
+            key={index}
+            className="p-4 text-left text-size-p-small-r font-semibold lg:px-6 lg:py-5 lg:text-size-p-small"
+          >
             {header}
           </th>
         ))}
@@ -104,9 +108,11 @@ const KoAccordionTableTaxContent = ({
   return (
     <AccordionV2
       title={
-        <div className="flex min-w-0 grow justify-between text-h5 font-semibold">
-          <h5>{title}</h5>
-          <span>{secondTitle}</span>
+        <div className="flex min-w-0 grow justify-between">
+          <Typography variant="h5">{title}</Typography>
+          <Typography variant="h5" as="span" className="font-semibold">
+            {secondTitle}
+          </Typography>
         </div>
       }
       noTitleWrapper

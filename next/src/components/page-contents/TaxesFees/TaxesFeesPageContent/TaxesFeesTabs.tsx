@@ -31,11 +31,11 @@ const TaxesFeesTabs = ({ selectedKey, onSelectionChange, items }: Props) => {
               id={item.id}
               data-before-text={item.title}
               className={cn(
-                'cursor-pointer p-4 text-center text-20 lg:px-0',
-                'hover:border-gray-700 hover:text-20-semibold',
-                'selected:border-b-2 selected:border-gray-700 selected:text-20-semibold',
+                'cursor-pointer p-4 text-center text-size-p-large lg:px-0 lg:text-size-p-large',
+                'hover:border-gray-700 hover:font-semibold',
+                'selected:border-b-2 selected:border-gray-700 selected:font-semibold',
                 // Hover without layout shift based on: https://stackoverflow.com/a/20249560
-                'before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)]',
+                'before:invisible before:block before:h-0 before:overflow-hidden before:font-semibold before:content-[attr(data-before-text)]',
               )}
             >
               {item.title}

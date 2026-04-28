@@ -30,7 +30,7 @@ export const NavBar = ({ desktopNavbarRef, mobileNavbarRef, hideNavMenu, classNa
       <div
         id="desktop-navbar"
         className={cn(
-          'sticky top-0 left-0 z-40 hidden w-full items-center bg-white text-p2 shadow-default lg:block',
+          'sticky top-0 left-0 z-40 hidden w-full items-center bg-white shadow-default lg:block',
           className,
         )}
         ref={desktopNavbarRef}

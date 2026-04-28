@@ -25,7 +25,7 @@ const Radio = ({
     {...rest}
     className={({ isSelected, isDisabled, isInvalid }) =>
       cn(
-        'group flex w-full cursor-pointer gap-3 rounded-lg text-p2',
+        'group flex w-full cursor-pointer gap-3 rounded-lg text-size-p-small-r lg:text-size-p-small',
         {
           'items-center': variant === 'basic',
           'flex-col items-start': variant === 'card',

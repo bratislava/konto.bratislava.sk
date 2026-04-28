@@ -65,7 +65,7 @@ const CheckboxGroupItem = ({
     'cursor-not-allowed opacity-50': isDisabled,
   })
 
-  const labelStyle = cn('flex text-16 text-gray-700', {})
+  const labelStyle = cn('flex text-size-p-small-r text-gray-700 lg:text-size-p-small', {})
 
   return (
     <div data-cy={`checkbox-${inputProps.value as string}`}>

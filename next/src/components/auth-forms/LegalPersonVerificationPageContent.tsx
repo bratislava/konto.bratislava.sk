@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { ErrorIcon } from '@/src/assets/ui-icons'
@@ -30,9 +30,9 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
           <ErrorIcon className="size-6 text-negative-700" />
         </div>
       </div>
-      <h1 className="text-center text-h3">
+      <Typography variant="h3" as="h1" className="text-center">
         {t('auth.identity_verification.fop_po_eid.error.title')}
-      </h1>
+      </Typography>
       <AccountMarkdown
         className="text-center"
         content={t('auth.identity_verification.fop_po_eid.error.content')}
@@ -45,7 +45,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
     </div>
   ) : (
     <div className="flex flex-col gap-4 md:gap-6">
-      <h1 className="text-h3">{t('auth.identity_verification.fop_po_eid.init.title')}</h1>
+      <Typography variant="h3" as="h1">{t('auth.identity_verification.fop_po_eid.init.title')}</Typography>
       <AccountMarkdown
         variant="sm"
         content={t('auth.identity_verification.fop_po_eid.init.content')}

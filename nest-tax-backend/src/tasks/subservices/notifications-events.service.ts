@@ -1,8 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import {
-  DeliveryMethodNamed,
   PaymentStatus,
   Prisma,
+  TaxType,
   UnpaidReminderSent,
 } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
@@ -248,55 +248,56 @@ export default class NotificationsEventsService {
       .tz('Europe/Bratislava')
       .subtract(DUE_DATE_OFFSET, 'day')
       .toDate()
-    const taxes = await this.prismaService.tax.findMany({
-      select: {
-        id: true,
-        year: true,
-        type: true,
-        order: true,
-        taxPayer: {
-          select: {
-            birthNumber: true,
-          },
-        },
-      },
-      where: {
-        bloomreachUnpaidTaxReminderSent: false,
-        isCancelled: false,
-        // Such taxes are not paid directly by the taxpayer. Therefore, we do not send reminders for them
-        paymentMethodIsInkaso: false,
-        taxPayments: {
-          none: {
-            status: PaymentStatus.SUCCESS,
-          },
-        },
-        OR: [
-          {
-            deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
-            createdAt: {
-              lte: DUE_DATE_OFFSET_DATE,
-            },
-          },
-          {
-            deliveryMethod: {
-              not: DeliveryMethodNamed.CITY_ACCOUNT,
-            },
-            dateTaxRuling: {
-              lte: DUE_DATE_OFFSET_DATE,
-            },
-          },
-          {
-            deliveryMethod: null,
-            dateTaxRuling: {
-              lte: DUE_DATE_OFFSET_DATE,
-            },
-          },
-        ],
-      },
-      // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
-      // 50 * 6 * 24 h = 7200 is max number of konto visitors in dayhours
-      take: 50,
-    })
+
+    // Raw query so that LIMIT applies after all eligibility filters.
+    // Eligibility rules:
+    //   - 2+ installments → no successful payment at all
+    //   - 1 installment   → sum of successful payments < tax amount (partial/unpaid)
+    // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
+    // 50 * 6 * 24 h = 7200 is max number of konto visitors in dayhours
+    const taxes = await this.prismaService.$queryRaw<
+      {
+        id: number
+        year: number
+        type: TaxType
+        order: number | null
+        birthNumber: string
+      }[]
+    >`
+      WITH paid AS (
+        SELECT tp."taxId", SUM(tp.amount) AS total_paid
+        FROM "TaxPayment" tp
+        WHERE tp.status = 'SUCCESS'::"PaymentStatus"
+        GROUP BY tp."taxId"
+      ),
+      installment_counts AS (
+        SELECT ti."taxId", COUNT(*) AS installment_count
+        FROM "TaxInstallment" ti
+        GROUP BY ti."taxId"
+      )
+      SELECT
+        t.id,
+        t.year,
+        t.type,
+        t."order",
+        taxp."birthNumber"
+      FROM "Tax" t
+      JOIN "TaxPayer" taxp ON taxp.id = t."taxPayerId"
+      LEFT JOIN paid p ON p."taxId" = t.id
+      LEFT JOIN installment_counts ic ON ic."taxId" = t.id
+      WHERE t."bloomreachUnpaidTaxReminderSent" = false
+        AND t."isCancelled" = false
+        AND t."paymentMethodIsInkaso" = false
+        AND (
+          (t."deliveryMethod" = 'CITY_ACCOUNT'::"DeliveryMethodNamed" AND t."createdAt" <= ${DUE_DATE_OFFSET_DATE})
+          OR (t."deliveryMethod" IS DISTINCT FROM 'CITY_ACCOUNT'::"DeliveryMethodNamed" AND t."dateTaxRuling" <= ${DUE_DATE_OFFSET_DATE})
+        )
+        AND (
+          (COALESCE(ic.installment_count, 0) >= 2 AND COALESCE(p.total_paid, 0) = 0)
+          OR (COALESCE(ic.installment_count, 0) < 2 AND COALESCE(p.total_paid, 0) < t.amount)
+        )
+      LIMIT ${UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT}
+    `
 
     if (taxes.length === 0) {
       return
@@ -311,13 +312,13 @@ export default class NotificationsEventsService {
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
-        taxes.map((taxData) => taxData.taxPayer.birthNumber),
+        taxes.map((tax) => tax.birthNumber),
       )
 
     await Promise.all(
       taxes.map(async (tax) => {
         const userFromCityAccount =
-          userDataFromCityAccount[tax.taxPayer.birthNumber] || null
+          userDataFromCityAccount[tax.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           await this.bloomreachService.trackEventUnpaidTaxReminder(
             { year: tax.year, tax_type: tax.type, order: tax.order! },

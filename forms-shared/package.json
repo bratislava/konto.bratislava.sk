@@ -106,7 +106,7 @@
     "tailwindcss": "4.2.2",
     "tmp-promise": "^3.0.3",
     "ts-node": "^10.9.2",
-    "typescript": "6.0.2",
+    "typescript": "6.0.3",
     "unzipper": "^0.12.3",
     "vitest": "4.1.4"
   },

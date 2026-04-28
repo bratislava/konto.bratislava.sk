@@ -1,14 +1,4 @@
 {
-  "name": "reset_password",
   "description": "Kúpaliská reset password",
-  "createdAt": "Thu, 09 Jun 2022 09:22:00 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Thu, 09 Jun 2022 09:22:00 UTC",
-    "headers": null
-  }
+  "subject": null
 }

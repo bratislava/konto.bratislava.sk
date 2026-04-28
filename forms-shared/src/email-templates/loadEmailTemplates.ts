@@ -1,12 +1,5 @@
 import fs from 'fs/promises'
 import path from 'path'
-// Mailgun.js 12.x is ESM-only and its `exports` map only exposes `.` and
-// `./definitions`. The root entry no longer re-exports the `Interfaces` namespace,
-// so we go through the `definitions` subpath. Type-only import from an ESM module
-// inside a CJS module needs the `resolution-mode` attribute.
-import type { Interfaces as MailgunInterfaces } from 'mailgun.js/definitions' with {
-  'resolution-mode': 'import',
-}
 import extractHandlebarsVariables from './extractHandlebarsVariables'
 
 /* Created by Claude */
@@ -19,21 +12,15 @@ export type EmailTemplate = {
   variables: string[]
 }
 
-// metadata.json on disk follows Mailgun's IDomainTemplate shape, with the version
-// body stripped out (it lives in template.html instead). The Mailgun.js SDK type
-// omits the `headers` field that the REST API actually returns on a version, so
-// we augment it here.
-type TemplateVersionWithHeaders = NonNullable<MailgunInterfaces.IDomainTemplate['version']> & {
-  headers?: { Subject?: string } | null
-}
-type StoredTemplate = Omit<MailgunInterfaces.IDomainTemplate, 'version'> & {
-  version?: Omit<TemplateVersionWithHeaders, 'template'>
+type StoredMetadata = {
+  description?: string
+  subject?: string | null
 }
 
-const readJson = async (filePath: string): Promise<unknown> => {
+const readMetadata = async (filePath: string): Promise<StoredMetadata | null> => {
   try {
     const raw = await fs.readFile(filePath, 'utf8')
-    return JSON.parse(raw)
+    return JSON.parse(raw) as StoredMetadata
   } catch {
     return null
   }
@@ -49,14 +36,12 @@ const loadOneTemplate = async (
   } catch {
     return null
   }
-  const metadata = (await readJson(
-    path.join(templateDir, 'metadata.json'),
-  )) as StoredTemplate | null
+  const metadata = await readMetadata(path.join(templateDir, 'metadata.json'))
   return {
     name,
     html,
     description: metadata?.description ?? '',
-    subject: metadata?.version?.headers?.Subject ?? null,
+    subject: metadata?.subject ?? null,
     variables: extractHandlebarsVariables(html),
   }
 }

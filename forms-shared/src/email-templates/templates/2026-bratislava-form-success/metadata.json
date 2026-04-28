@@ -1,18 +1,4 @@
 {
-  "name": "2026-bratislava-form-success",
   "description": "Form sent when user submits filled form on city account page.",
-  "createdAt": "Wed, 11 Feb 2026 09:11:39 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Wed, 11 Feb 2026 09:11:39 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

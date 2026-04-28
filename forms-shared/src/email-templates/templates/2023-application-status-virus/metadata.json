@@ -1,18 +1,4 @@
 {
-  "name": "2023-application-status-virus",
   "description": "Application status Virus",
-  "createdAt": "Mon, 20 Nov 2023 12:30:05 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Mon, 20 Nov 2023 12:30:05 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

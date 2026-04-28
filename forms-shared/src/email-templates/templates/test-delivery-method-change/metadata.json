@@ -1,18 +1,4 @@
 {
-  "name": "test-delivery-method-change",
   "description": "",
-  "createdAt": "Wed, 11 Feb 2026 13:29:07 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Wed, 11 Feb 2026 13:29:07 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

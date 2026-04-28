@@ -1,18 +1,4 @@
 {
-  "name": "2026-bratislava-new-submission",
   "description": "Email which is sent to municipality after a submission of city form.",
-  "createdAt": "Wed, 11 Feb 2026 08:52:29 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Wed, 11 Feb 2026 08:52:29 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

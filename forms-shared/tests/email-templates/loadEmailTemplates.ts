@@ -38,13 +38,13 @@ describe('loadEmailTemplates', () => {
     expect(templateB?.description).toBe('')
   })
 
-  test('reads subject from metadata.json version.headers.Subject when present', async () => {
+  test('reads subject from metadata.json when present', async () => {
     const result = await loadEmailTemplates(fixtureDir)
     const templateA = result.find((template) => template.name === 'templateA')
     expect(templateA?.subject).toBe('Hello {{firstName}}')
   })
 
-  test('returns null subject when metadata.json or its Subject header is missing', async () => {
+  test('returns null subject when metadata.json is missing or has no subject', async () => {
     const result = await loadEmailTemplates(fixtureDir)
     const templateB = result.find((template) => template.name === 'templateB')
     expect(templateB?.subject).toBeNull()

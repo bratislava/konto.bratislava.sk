@@ -1,14 +1,4 @@
 {
-  "name": "set-password",
   "description": "Kupaliska set password",
-  "createdAt": "Thu, 09 Jun 2022 09:30:15 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Thu, 09 Jun 2022 09:30:15 UTC",
-    "headers": null
-  }
+  "subject": null
 }

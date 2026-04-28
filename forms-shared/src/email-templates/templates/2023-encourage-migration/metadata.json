@@ -1,14 +1,4 @@
 {
-  "name": "2023-encourage-migration",
   "description": "Encouragement to activate account for users which paid through us last year 2022.",
-  "createdAt": "Mon, 27 Mar 2023 10:04:29 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Mon, 27 Mar 2023 10:04:29 UTC",
-    "headers": null
-  }
+  "subject": null
 }

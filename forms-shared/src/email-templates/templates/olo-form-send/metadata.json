@@ -1,18 +1,4 @@
 {
-  "name": "olo-form-send",
   "description": "Email which is sent to OLO after a submission of their form.",
-  "createdAt": "Thu, 26 Sep 2024 09:33:33 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Thu, 26 Sep 2024 09:33:34 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

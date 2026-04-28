@@ -1,14 +1,4 @@
 {
-  "name": "2023-identity-check-successful",
   "description": "Identity check successful.",
-  "createdAt": "Fri, 31 Mar 2023 09:00:45 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Fri, 31 Mar 2023 09:00:45 UTC",
-    "headers": null
-  }
+  "subject": null
 }

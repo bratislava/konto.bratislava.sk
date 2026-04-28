@@ -1,18 +1,4 @@
 {
-  "name": "2025-tsb-form-success",
   "description": "",
-  "createdAt": "Thu, 20 Mar 2025 22:45:42 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Thu, 20 Mar 2025 22:45:42 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

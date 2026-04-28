@@ -1,18 +1,4 @@
 {
-  "name": "2023-application-status-error-try-again",
   "description": "Application status Error - try again",
-  "createdAt": "Mon, 20 Nov 2023 12:50:48 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Mon, 20 Nov 2023 12:50:48 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

@@ -1,18 +1,4 @@
 {
-  "name": "2025-delivery-method-changed-notify",
   "description": "",
-  "createdAt": "Wed, 07 Jan 2026 15:57:32 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Wed, 07 Jan 2026 15:57:32 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": "Váš spôsob doručenia v mestskom konte bol zmenený na oznámenie"
-    }
-  }
+  "subject": "Váš spôsob doručenia v mestskom konte bol zmenený na oznámenie"
 }

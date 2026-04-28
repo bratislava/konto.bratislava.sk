@@ -1,18 +1,4 @@
 {
-  "name": "2023-application-status-in-progress",
   "description": "Application status In progress",
-  "createdAt": "Mon, 20 Nov 2023 12:32:43 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Mon, 20 Nov 2023 12:32:43 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

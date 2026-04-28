@@ -1,14 +1,4 @@
 {
-  "name": "purchased_tickets_response",
   "description": "Swimming pool ticket confirmation email",
-  "createdAt": "Mon, 06 Jun 2022 13:26:58 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Mon, 06 Jun 2022 13:26:58 UTC",
-    "headers": null
-  }
+  "subject": null
 }

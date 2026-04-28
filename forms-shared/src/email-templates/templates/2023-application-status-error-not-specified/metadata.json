@@ -1,18 +1,4 @@
 {
-  "name": "2023-application-status-error-not-specified",
   "description": "Application status Error not specified",
-  "createdAt": "Mon, 20 Nov 2023 12:44:10 UTC",
-  "createdBy": "html",
-  "version": {
-    "tag": "initial",
-    "engine": "handlebars",
-    "mjml": null,
-    "comment": "",
-    "createdAt": "Mon, 20 Nov 2023 12:44:10 UTC",
-    "headers": {
-      "From": "",
-      "Reply-To": "",
-      "Subject": ""
-    }
-  }
+  "subject": null
 }

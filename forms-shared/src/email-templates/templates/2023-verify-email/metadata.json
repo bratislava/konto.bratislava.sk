@@ -1,0 +1,14 @@
+{
+  "name": "2023-verify-email",
+  "description": "Email with code that needs to be entered to be successfully verified.",
+  "createdAt": "Wed, 29 Mar 2023 07:18:21 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Wed, 29 Mar 2023 07:18:21 UTC",
+    "headers": null
+  }
+}

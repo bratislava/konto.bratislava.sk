@@ -1,0 +1,11 @@
+{
+  "name": "templateA",
+  "description": "Greets the user by first name.",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "headers": {
+      "Subject": "Hello {{firstName}}"
+    }
+  }
+}

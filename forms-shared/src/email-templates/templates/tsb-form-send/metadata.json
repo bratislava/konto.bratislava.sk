@@ -1,0 +1,18 @@
+{
+  "name": "tsb-form-send",
+  "description": "",
+  "createdAt": "Thu, 20 Mar 2025 23:12:21 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Thu, 20 Mar 2025 23:12:21 UTC",
+    "headers": {
+      "From": "",
+      "Reply-To": "",
+      "Subject": ""
+    }
+  }
+}

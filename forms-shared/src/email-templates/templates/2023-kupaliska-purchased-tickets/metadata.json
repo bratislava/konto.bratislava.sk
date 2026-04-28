@@ -1,0 +1,14 @@
+{
+  "name": "2023-kupaliska-purchased-tickets",
+  "description": "Purchased tickets Kupaliska",
+  "createdAt": "Thu, 11 May 2023 12:46:04 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Thu, 11 May 2023 12:46:04 UTC",
+    "headers": null
+  }
+}

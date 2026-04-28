@@ -1,0 +1,14 @@
+{
+  "name": "set_password",
+  "description": "Kúpaliská set password",
+  "createdAt": "Thu, 09 Jun 2022 09:24:14 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Thu, 09 Jun 2022 09:24:14 UTC",
+    "headers": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "kupaliska_feedback_form",
+  "description": "Email with feedback form after the end of the season",
+  "createdAt": "Mon, 22 Aug 2022 15:11:53 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Mon, 22 Aug 2022 15:11:53 UTC",
+    "headers": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "2023-password-changed",
+  "description": "Email confrimation when password is changed",
+  "createdAt": "Wed, 29 Mar 2023 06:38:03 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Wed, 29 Mar 2023 06:38:03 UTC",
+    "headers": null
+  }
+}

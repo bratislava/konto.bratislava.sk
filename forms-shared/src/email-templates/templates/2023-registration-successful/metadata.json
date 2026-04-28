@@ -1,0 +1,14 @@
+{
+  "name": "2023-registration-successful",
+  "description": "Email send after successful registration.",
+  "createdAt": "Fri, 31 Mar 2023 08:54:28 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Fri, 31 Mar 2023 08:54:28 UTC",
+    "headers": null
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "2023-application-status-denied",
+  "description": "Application status Denied.",
+  "createdAt": "Mon, 20 Nov 2023 12:48:47 UTC",
+  "createdBy": "html",
+  "version": {
+    "tag": "initial",
+    "engine": "handlebars",
+    "mjml": null,
+    "comment": "",
+    "createdAt": "Mon, 20 Nov 2023 12:48:47 UTC",
+    "headers": {
+      "From": "",
+      "Reply-To": "",
+      "Subject": ""
+    }
+  }
+}

@@ -6,7 +6,6 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormMenuItems } from '@/src/components/forms/useFormMenuItems'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
-import MLink from '@/src/components/simple-components/MLink'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 
 const FormHeader = () => {
@@ -24,18 +23,16 @@ const FormHeader = () => {
     <SectionContainer className="size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
       <div className="flex justify-between">
         <div className="flex flex-col gap-2 lg:gap-4">
-          <Typography variant="h1" className="text-size-h2-r lg:text-size-h1">
-            {schema.title}
-          </Typography>
+          <Typography variant="h1">{schema.title}</Typography>
           {strapiForm?.moreInformationUrl ? (
-            <MLink
-              variant="underlined"
-              className="w-max text-size-p-small-r lg:text-size-p-large"
+            <Button
+              variant="link"
+              size="large"
+              className="w-max"
               href={strapiForm.moreInformationUrl}
-              target="_blank"
             >
               {t('form_header.services_link')}
-            </MLink>
+            </Button>
           ) : null}
         </div>
         <div className="hidden h-full shrink-0 gap-3 lg:flex">

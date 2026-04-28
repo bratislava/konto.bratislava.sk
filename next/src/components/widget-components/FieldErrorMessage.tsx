@@ -1,4 +1,4 @@
-import React, { DOMAttributes, FC } from 'react'
+import { DOMAttributes, FC } from 'react'
 
 export type FieldErrorMessageProps = {
   errorMessage?: string[]

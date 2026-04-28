@@ -66,12 +66,10 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
     <PageLayout>
       <SectionContainer className="size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
         <div className="flex flex-col gap-2 lg:gap-4">
-          <Typography variant="h1" className="text-size-h2-r lg:text-size-h1">
-            {formDefinition.title}
-          </Typography>
+          <Typography variant="h1">{formDefinition.title}</Typography>
           {strapiForm.moreInformationUrl ? (
             <MLink
-              className="w-max text-size-p-small-r lg:text-size-p-large"
+              className="w-max text-size-p-large-r lg:text-size-p-large"
               variant="underlined"
               href={strapiForm.moreInformationUrl}
               target="_blank"

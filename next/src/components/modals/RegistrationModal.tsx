@@ -138,12 +138,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             {title}
           </Typography>
         )}
-        {subtitle && (
-          <AccountMarkdown
-            className="text-size-p-small-r lg:text-size-p-large"
-            content={subtitle}
-          />
-        )}
+        {subtitle && <AccountMarkdown content={subtitle} />}
       </div>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col">
@@ -183,7 +178,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
-            <span className="px-6 text-size-p-small-r lg:text-size-p-large">
+            <span className="px-6 text-size-p-large-r lg:text-size-p-large">
               {t('registration_modal.footer_choice')}
             </span>
             <span className="h-0.5 w-full bg-gray-200" />

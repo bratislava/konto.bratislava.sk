@@ -48,7 +48,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         </div>
         <div className="flex items-center">
           <HorizontalDivider className="w-full" />
-          <span className="px-6 text-size-p-small-r lg:text-size-p-large">
+          <span className="px-6 text-size-p-large-r lg:text-size-p-large">
             {t('verification_modal.footer_choice')}
           </span>
           <HorizontalDivider className="w-full" />

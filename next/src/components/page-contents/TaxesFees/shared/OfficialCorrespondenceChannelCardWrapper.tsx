@@ -39,9 +39,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
       >
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col">
-            <span className="block text-size-p-small-r font-semibold lg:text-size-p-large">
-              {title}
-            </span>
+            <Typography variant="p-large">{title}</Typography>
             {canUserChangeChannel && (
               <div className="pt-3 pb-2 lg:px-0">
                 <AccountMarkdown

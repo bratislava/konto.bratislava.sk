@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
@@ -44,9 +44,9 @@ const OfficialCorrespondenceChannelInformation = () => {
             <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
               <MailIcon className="size-6" />
             </div>
-            <span className="text-size-p-small-r font-semibold lg:text-size-p-large">
+            <Typography variant="p-large" className="font-semibold">
               {channelLabel}
-            </span>
+            </Typography>
           </div>
           {canUserChangeChannel && (
             <>

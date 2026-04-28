@@ -86,7 +86,7 @@ const SuccessContent = () => {
               <li
                 key={index}
                 className={cn(
-                  'flex text-size-p-small-r [counter-increment:list-number-styling] lg:text-size-p-large',
+                  'flex text-size-p-large-r [counter-increment:list-number-styling] lg:text-size-p-large',
                   'before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border before:border-gray-400 before:text-size-p-small-r before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8 lg:before:text-size-p-small',
                 )}
               >
@@ -133,7 +133,7 @@ const SuccessContent = () => {
           <>
             <div className="mt-3 flex w-full items-center md:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
-              <span className="px-6 text-size-p-small-r lg:text-size-p-large">
+              <span className="px-6 text-size-p-large-r lg:text-size-p-large">
                 {t('tax_form_pdf_export_modal.footer_choice')}
               </span>
               <span className="h-0.5 w-full bg-gray-200" />
@@ -160,7 +160,7 @@ const SuccessContent = () => {
                 <Button
                   variant="solid"
                   fullWidth
-                  className="rounded-lg px-5 py-2 text-size-p-small-r font-semibold md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6 lg:text-size-p-large"
+                  className="rounded-lg px-5 py-2 text-size-p-large-r font-semibold md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6 lg:text-size-p-large"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}

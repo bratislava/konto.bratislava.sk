@@ -138,7 +138,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')}
       </Button>
-      <div className="text-size-p-tiny-r lg:text-size-p-small">
+      <div className="text-size-p-small-r lg:text-size-p-small">
         <span>{t('auth.verification_description')}</span>{' '}
         {cnt > 0 && <span>{t('auth.verification_cnt_description', { cnt })}</span>}
       </div>

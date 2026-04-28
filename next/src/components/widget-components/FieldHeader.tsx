@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { LabelSize } from 'forms-shared/generator/uiOptionsTypes'
 import { useTranslation } from 'next-i18next/pages'
 import * as React from 'react'
@@ -69,9 +70,9 @@ const FieldHeader = ({
             {label}
           </label>
           {showOptionalLabel && (
-            <span className="text-size-p-small-r lg:text-size-p-small">
+            <Typography variant="p-small" as="span">
               {t('FieldHeader.optional')}
-            </span>
+            </Typography>
           )}
         </div>
       </div>

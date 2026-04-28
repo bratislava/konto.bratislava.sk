@@ -115,7 +115,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       </Button>
       {/* don't show timer if error */}
 
-      <div className="text-size-p-tiny-r lg:text-size-p-small">
+      <div className="text-size-p-small-r lg:text-size-p-small">
         {noError && count > 0 && (
           <div className="mb-4">
             <span>{t('auth.verification_description')}</span>{' '}

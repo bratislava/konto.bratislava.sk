@@ -1,5 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import React, { useId } from 'react'
+import { useId } from 'react'
 import Select, {
   ClearIndicatorProps,
   components,
@@ -79,10 +80,8 @@ const CustomOption = <
       <components.Option {...props}>
         {selectHasDescriptions ? (
           <div>
-            <div className="text-size-p-small-r font-semibold lg:text-size-p-large">{children}</div>
-            {description && (
-              <div className="text-size-p-small-r lg:text-size-p-small">{description}</div>
-            )}
+            <div className="text-size-p-large-r font-semibold lg:text-size-p-large">{children}</div>
+            {description && <Typography variant="p-small">{description}</Typography>}
           </div>
         ) : (
           <div>{children}</div>

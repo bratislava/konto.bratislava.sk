@@ -34,12 +34,12 @@ const SummaryRow = (props: SummaryRowProps) => {
   })
 
   const labelClassName = cn('w-full flex-1', {
-    'text-size-p-small-r font-semibold lg:text-size-p-large': size === 'large',
+    'text-size-p-large-r font-semibold lg:text-size-p-large': size === 'large',
     'text-size-p-small-r font-semibold lg:text-size-p-small': size === 'small',
   })
 
   const valueClassName = cn('grow', {
-    'text-size-p-small-r lg:text-size-p-large': size === 'large',
+    'text-size-p-large-r lg:text-size-p-large': size === 'large',
     'text-size-p-small-r lg:text-size-p-small': size === 'small',
   })
 

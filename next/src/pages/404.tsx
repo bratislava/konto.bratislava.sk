@@ -24,10 +24,7 @@ const NotFoundPage = () => {
         </div>
         <div className="flex shrink-0 flex-col items-center lg:items-start">
           <div className="pb-4 text-[48px] font-extrabold lg:text-[64px]">404</div>
-          <Typography
-            variant="p-small"
-            className="max-w-xs pb-10 text-center lg:text-left lg:text-size-p-large"
-          >
+          <Typography variant="p-large" className="max-w-xs pb-10 text-center lg:text-left">
             {t('404.sorryNoResultsFound')}
           </Typography>
           <Button href="/" hasLinkIcon={false} variant="solid">

@@ -46,11 +46,11 @@ const BAObjectFieldTemplate = ({
               </Typography>
             )}
             {options.description && (
-              <div className="mb-3 text-size-p-small-r whitespace-pre-wrap lg:text-size-p-small">
+              <Typography variant="p-small" as="div" className="mb-3 whitespace-pre-wrap">
                 <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
                   {options.description}
                 </ConditionalFormMarkdown>
-              </div>
+              </Typography>
             )}
           </>
         )}

@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 import {
@@ -50,14 +51,18 @@ const FieldWrapper = ({
       {/* TODO There is gap-2 in Figma design, but we agreed gap-1 looks better. Keeping gap-1 until the discussion is resolved. */}
       <div className="flex flex-col gap-1">
         <RACLabel className={cn('text-content-passive-primary', labelSizeStyles[labelSize])}>
-          <span className="font-semibold">{label}</span>
+          <Typography as="span" className="font-semibold">
+            {label}
+          </Typography>
           {showAsterisk ? (
-            <span className="ml-0.5 font-semibold text-content-error-default">*</span>
+            <Typography as="span" className="ml-0.5 font-semibold text-content-error-default">
+              *
+            </Typography>
           ) : null}
           {showOptional ? (
-            <span className="ml-1 text-size-p-small-r font-normal lg:text-size-p-small">
+            <Typography variant="p-small" className="ml-1 font-normal">
               {t('FieldHeader.optional')}
-            </span>
+            </Typography>
           ) : null}
         </RACLabel>
         {helptext ? (

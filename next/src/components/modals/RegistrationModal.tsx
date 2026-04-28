@@ -133,11 +133,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       data-cy="registration-modal"
     >
       <div className="mb-6 flex flex-col gap-2">
-        {title && (
-          <Typography variant="h2" as="h3" className="lg:text-size-h3">
-            {title}
-          </Typography>
-        )}
+        {title && <Typography variant="h3">{title}</Typography>}
         {subtitle && <AccountMarkdown content={subtitle} />}
       </div>
       <div className="flex flex-col gap-6">

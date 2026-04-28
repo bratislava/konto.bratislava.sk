@@ -133,9 +133,9 @@ const SuccessContent = () => {
           <>
             <div className="mt-3 flex w-full items-center md:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
-              <span className="px-6 text-size-p-large-r lg:text-size-p-large">
+              <Typography variant="p-large" as="span" className="px-6">
                 {t('tax_form_pdf_export_modal.footer_choice')}
-              </span>
+              </Typography>
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
@@ -149,9 +149,7 @@ const SuccessContent = () => {
                       <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
                         <CheckIcon className="size-7" />
                       </span>
-                      <Typography variant="p-tiny" className="lg:text-size-p-large">
-                        {item}
-                      </Typography>
+                      <Typography variant="p-small">{item}</Typography>
                     </li>
                   ))}
                 </ul>

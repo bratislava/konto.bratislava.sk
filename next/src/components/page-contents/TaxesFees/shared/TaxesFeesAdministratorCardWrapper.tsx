@@ -60,7 +60,7 @@ const TaxesFeesAdministratorCardWrapper = ({
       </Typography>
       <div className="flex w-full grow items-start justify-between gap-4 rounded-lg border px-4 py-3 lg:p-5">
         <div className="flex flex-col gap-3">
-          <Typography variant="p-default" className="font-semibold lg:text-size-p-large">
+          <Typography variant="p-small" className="font-semibold">
             {taxAdministrator.name}
           </Typography>
           <div className="flex flex-col flex-wrap gap-x-4 gap-y-2 self-stretch break-all lg:flex-row lg:items-center">

@@ -29,7 +29,7 @@ const PageHeader = (props: AccountSectionHeaderBase) => {
             <Typography variant="h1">{title}</Typography>
           )}
           {text && (
-            <Typography variant="p-default" className="mt-3 lg:text-size-p-large">
+            <Typography variant="p-large" className="mt-3">
               {text}
             </Typography>
           )}

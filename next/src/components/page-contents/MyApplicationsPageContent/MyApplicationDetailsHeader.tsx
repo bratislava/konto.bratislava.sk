@@ -90,10 +90,10 @@ const MyApplicationDetailsHeader = ({
             </div>
             <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
               <div className="flex items-center gap-3">
-                <Typography variant="p-tiny" className="font-semibold lg:text-size-p-small">
+                <Typography variant="p-small" className="font-semibold">
                   {t('account_section_applications.details.application_details.sent')}
                 </Typography>
-                <Typography variant="p-tiny" className="lg:text-size-p-small">
+                <Typography variant="p-small">
                   <FormatDate>{createdAt || ''}</FormatDate>
                 </Typography>
               </div>
@@ -104,10 +104,10 @@ const MyApplicationDetailsHeader = ({
               </div>
               <span className="hidden size-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
-                <Typography variant="p-tiny" className="lg:text-size-p-small">
+                <Typography variant="p-small">
                   {t('account_section_applications.last_change')}
                 </Typography>
-                <Typography variant="p-tiny" className="lg:text-size-p-small">
+                <Typography variant="p-small">
                   <FormatDate>{updatedAt || ''}</FormatDate>
                 </Typography>
               </div>

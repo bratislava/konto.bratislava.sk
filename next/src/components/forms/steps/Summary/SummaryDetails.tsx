@@ -133,13 +133,11 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
 
   return (
     <div className="mb-4">
-      <Typography
-        variant="p-small"
-        as="div"
-        className="mb-2 inline-block rounded-xl bg-gray-100 px-2 font-semibold"
-      >
-        {arrayItem.title}
-      </Typography>
+      <div className="mb-2 inline-block rounded-xl bg-gray-100 px-2">
+        <Typography variant="p-small" className="font-semibold">
+          {arrayItem.title}
+        </Typography>
+      </div>
       {children}
     </div>
   )

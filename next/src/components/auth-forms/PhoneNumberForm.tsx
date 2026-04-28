@@ -46,9 +46,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
-      <Typography variant="p-small" className="whitespace-pre-line">
-        {t('phone_number_modal.description')}
-      </Typography>
+      <Typography variant="p-small">{t('phone_number_modal.description')}</Typography>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
         name="phone_number"

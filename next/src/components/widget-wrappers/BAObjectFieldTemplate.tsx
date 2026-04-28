@@ -31,7 +31,7 @@ const BAObjectFieldTemplate = ({
           <div className="mb-8 flex flex-col gap-4">
             <Typography variant="h2">{schema.title}</Typography>
             {options.description && (
-              <Typography variant="p-small">
+              <Typography variant="p-small" as="div">
                 <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
                   {options.description}
                 </ConditionalFormMarkdown>

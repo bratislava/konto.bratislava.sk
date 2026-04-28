@@ -222,7 +222,8 @@ const SelectField = <
               indicatorSeparator: () => 'hidden',
               dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',
               menu: () => 'py-2 mt-2 border border-gray-900 bg-white rounded-lg',
-              groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
+              groupHeading: () =>
+                'ml-3 mt-2 mb-1 text-gray-500 text-size-p-tiny-r lg:text-size-p-tiny',
               option: ({ isFocused }) =>
                 cn('flex! items-center justify-between px-5 py-3 hover:cursor-pointer', {
                   'bg-gray-100 active:bg-gray-200': isFocused,

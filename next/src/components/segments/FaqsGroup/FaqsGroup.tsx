@@ -33,12 +33,7 @@ const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
           {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}
           <Disclosure id={`disclosure-faq-${index}`}>
             <DisclosureHeader className="p-4 ring-inset lg:px-6">
-              <Typography
-                variant="h5"
-                as={accordionTitleLevel}
-                // TODO handle font style properly through correct css variables
-                className="text-base/p-tiny font-semibold lg:text-xl/7"
-              >
+              <Typography variant="h5" as={accordionTitleLevel}>
                 {faq.title}
               </Typography>
             </DisclosureHeader>

@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { GetStaticProps } from 'next'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next/pages'
@@ -23,11 +23,13 @@ const NotFoundPage = () => {
           <Image alt="" src="/images/404.png" fill className="object-contain" />
         </div>
         <div className="flex shrink-0 flex-col items-center lg:items-start">
-          {/* text-5xl font-extrabold does not work */}
           <div className="pb-4 text-[48px] font-extrabold lg:text-[64px]">404</div>
-          <div className="max-w-xs pb-10 text-center text-size-p-small-r lg:text-left lg:text-size-p-large">
+          <Typography
+            variant="p-small"
+            className="max-w-xs pb-10 text-center lg:text-left lg:text-size-p-large"
+          >
             {t('404.sorryNoResultsFound')}
-          </div>
+          </Typography>
           <Button href="/" hasLinkIcon={false} variant="solid">
             {t('404.toTheMainPage')}
           </Button>

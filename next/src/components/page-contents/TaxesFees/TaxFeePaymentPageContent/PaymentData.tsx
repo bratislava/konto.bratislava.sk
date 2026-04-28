@@ -224,7 +224,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
               <div className="flex max-w-120 flex-col gap-4 self-stretch rounded-lg border p-4 lg:flex-row">
                 <div className="flex w-full grow flex-col items-start justify-between gap-4">
                   <div className="flex flex-col items-start gap-2">
-                    <Typography variant="h6" as="p">
+                    <Typography variant="h6" as="p" className="font-semibold">
                       {t('taxes.payment_data.qr_code')}
                     </Typography>
                     <Typography variant="p-small">

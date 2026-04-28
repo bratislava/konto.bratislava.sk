@@ -57,7 +57,7 @@ const TaxFeeSubjectInformation = () => {
 
   return (
     <div className="flex w-full flex-col items-start gap-4 lg:gap-6">
-      <Typography variant="h5" as="p">
+      <Typography variant="h5" as="p" className="font-semibold">
         {title}
       </Typography>
       <ul className="flex w-full flex-col rounded-lg border border-gray-200 px-5 py-2 lg:px-6">

@@ -113,7 +113,7 @@ const SuccessContent = () => {
         ) : null}
         <div className="h-0.5 w-full bg-gray-200" />
         <Typography variant="h3">{t('tax_form_pdf_export_modal.how_to_pay_tax')}</Typography>
-        <Typography variant="p-default">
+        <Typography variant="p-large">
           {isSignedIn ? (
             <Trans
               ns="forms"

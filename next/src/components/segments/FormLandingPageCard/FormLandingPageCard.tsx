@@ -52,7 +52,7 @@ const FormLandingPageCard = (props: FormLandingPageCardProps) => {
         <Typography
           variant="h6"
           as="p"
-          className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-3"
+          className="flex flex-col items-start gap-1 font-semibold md:flex-row md:items-center md:gap-3"
         >
           {props.title}
         </Typography>

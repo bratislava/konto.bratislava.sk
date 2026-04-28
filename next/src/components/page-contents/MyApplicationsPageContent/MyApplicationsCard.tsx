@@ -203,7 +203,7 @@ const MyApplicationsCard = ({
           <div className="flex w-full gap-6">
             <div className="flex w-full grow flex-col gap-1">
               {(category || isLoading) && (
-                <Typography variant="p-tiny" as="div" className="font-semibold text-main-700">
+                <Typography variant="p-tiny" as="div" className="font-semibold">
                   {isLoading ? <Skeleton width="25%" /> : category}
                 </Typography>
               )}
@@ -226,9 +226,9 @@ const MyApplicationsCard = ({
                 <div className="flex gap-2">
                   {!isLoading && stateIconAndText.icon}
                   <div className="flex w-[200px] flex-col gap-1">
-                    <div className="text-size-p-small-r font-semibold lg:text-size-p-small">
+                    <Typography variant="p-small" as="div" className="font-semibold">
                       {isLoading ? <Skeleton width="50%" /> : stateIconAndText.text}
-                    </div>
+                    </Typography>
                     {variant === 'SENT' &&
                       (isLoading ? (
                         <Skeleton width="75%" />
@@ -301,7 +301,7 @@ const MyApplicationsCard = ({
             <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">
                 {(category || isLoading) && (
-                  <Typography variant="p-tiny" as="div" className="font-semibold text-main-700">
+                  <Typography variant="p-tiny" as="div" className="font-semibold">
                     {isLoading ? <Skeleton width="25%" /> : category}
                   </Typography>
                 )}

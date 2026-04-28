@@ -93,7 +93,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <Typography variant="h3" as="h1">
         {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
       </Typography>
-      <Typography variant="p-default">
+      <Typography variant="p-small">
         {t('auth.new_password_description', { email: lastEmail })}
       </Typography>
       <AccountErrorAlert

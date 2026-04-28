@@ -44,7 +44,7 @@ const TaxFeePaymentMethods = () => {
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">
-      <Typography variant="h5" as="p">
+      <Typography variant="h5" as="p" className="font-semibold">
         {t('tax_detail_section.tax_payment_methods')}
       </Typography>
       <div className="flex w-full flex-col rounded-lg border border-gray-200">

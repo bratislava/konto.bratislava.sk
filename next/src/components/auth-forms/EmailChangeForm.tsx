@@ -65,7 +65,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
       <Typography variant="h3" as="h1">
         {t('auth.email_change_title')}
       </Typography>
-      <Typography variant="p-default">{t('auth.email_change_description')}</Typography>
+      <Typography variant="p-small">{t('auth.email_change_description')}</Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="newEmail"

@@ -250,7 +250,8 @@ describe('NotificationsEventsSubservice', () => {
         {
           id: 1,
           year: 2025,
-          type: TaxType.KO,
+          type: TaxType.DZN,
+          amount: 5000,
           order: 1,
           taxPayer: { birthNumber },
         } as any,
@@ -270,12 +271,13 @@ describe('NotificationsEventsSubservice', () => {
 
       const expectedPayload = {
         year: 2025,
-        tax_type: TaxType.KO,
+        tax_type: TaxType.DZN,
         order: 1,
         installment_order: 2,
         due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
         due_date_month: 5,
         due_date_day: 31,
+        are_installments_possible: false, // 5000 eurocents < DZN threshold 6600
       }
       expect(
         bloomreachService.trackEventUnpaidTaxInstallmentReminder,
@@ -312,6 +314,7 @@ describe('NotificationsEventsSubservice', () => {
           id: 1,
           year: 2025,
           type: TaxType.KO,
+          amount: 10000,
           order: 1,
           taxPayer: { birthNumber },
         } as any,
@@ -337,6 +340,7 @@ describe('NotificationsEventsSubservice', () => {
         due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
         due_date_month: 5,
         due_date_day: 31,
+        are_installments_possible: true, // 10000 eurocents > KO threshold 0
       }
       expect(
         bloomreachService.trackEventUnpaidTaxInstallmentReminder,
@@ -373,7 +377,8 @@ describe('NotificationsEventsSubservice', () => {
         {
           id: 1,
           year: 2025,
-          type: TaxType.KO,
+          type: TaxType.DZN,
+          amount: 5000,
           order: 1,
           taxPayer: { birthNumber: birth1 },
         } as any,
@@ -381,6 +386,7 @@ describe('NotificationsEventsSubservice', () => {
           id: 2,
           year: 2025,
           type: TaxType.KO,
+          amount: 10000,
           order: 2,
           taxPayer: { birthNumber: birth2 },
         } as any,
@@ -401,16 +407,23 @@ describe('NotificationsEventsSubservice', () => {
 
       const expectedPayload1 = {
         year: 2025,
-        tax_type: TaxType.KO,
+        tax_type: TaxType.DZN,
         order: 1,
         installment_order: 2,
         due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
         due_date_month: 5,
         due_date_day: 31,
+        are_installments_possible: false, // 5000 eurocents < DZN threshold 6600
       }
       const expectedPayload2 = {
-        ...expectedPayload1,
+        year: 2025,
+        tax_type: TaxType.KO,
         order: 2,
+        installment_order: 2,
+        due_date_type: INSTALLMENT_DUE_DATE_TYPE.NEXT,
+        due_date_month: 5,
+        due_date_day: 31,
+        are_installments_possible: true, // 10000 eurocents > KO threshold 0
       }
       expect(
         bloomreachService.trackEventUnpaidTaxInstallmentReminder,
@@ -443,10 +456,18 @@ describe('NotificationsEventsSubservice', () => {
       prismaMock.tax.findMany.mockResolvedValue([
         {
           id: 1,
+          year: 2025,
+          type: TaxType.KO,
+          order: 1,
+          amount: 100,
           taxPayer: { birthNumber: birth1 },
         } as any,
         {
           id: 2,
+          year: 2025,
+          type: TaxType.KO,
+          order: 2,
+          amount: 200,
           taxPayer: { birthNumber: birth2 },
         } as any,
       ])
@@ -511,9 +532,7 @@ describe('NotificationsEventsSubservice', () => {
 
   describe('sendUnpaidTaxReminders', () => {
     it('should not do anything when there are no taxes', async () => {
-      const findManyMock = jest
-        .spyOn(service['prismaService'].tax, 'findMany')
-        .mockResolvedValue([])
+      prismaMock.$queryRaw.mockResolvedValue([])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
         'trackEventUnpaidTaxReminder',
@@ -521,24 +540,20 @@ describe('NotificationsEventsSubservice', () => {
 
       await service.sendUnpaidTaxReminders()
 
-      expect(findManyMock).toHaveBeenCalled()
+      expect(prismaMock.$queryRaw).toHaveBeenCalled()
       expect(trackEventUnpaidTaxReminderMock).not.toHaveBeenCalled()
     })
 
     it('should send payment reminder events when there are taxes', async () => {
-      const findManyMock = jest
-        .spyOn(service['prismaService'].tax, 'findMany')
-        .mockResolvedValue([
-          {
-            id: 1,
-            year: 2024,
-            type: TaxType.DZN,
-            order: 1,
-            taxPayer: {
-              birthNumber: '123456/7890',
-            },
-          },
-        ] as any)
+      prismaMock.$queryRaw.mockResolvedValue([
+        {
+          id: 1,
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+          birthNumber: '123456/7890',
+        },
+      ])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
         'trackEventUnpaidTaxReminder',
@@ -554,7 +569,7 @@ describe('NotificationsEventsSubservice', () => {
 
       await service.sendUnpaidTaxReminders()
 
-      expect(findManyMock).toHaveBeenCalled()
+      expect(prismaMock.$queryRaw).toHaveBeenCalled()
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
@@ -566,37 +581,29 @@ describe('NotificationsEventsSubservice', () => {
     })
 
     it('should send payment reminder event for each tax where there is user from city account', async () => {
-      const findManyMock = jest
-        .spyOn(service['prismaService'].tax, 'findMany')
-        .mockResolvedValue([
-          {
-            id: 1,
-            year: 2024,
-            type: TaxType.DZN,
-            order: 1,
-            taxPayer: {
-              birthNumber: '123456/7890',
-            },
-          },
-          {
-            id: 2,
-            year: 2024,
-            type: TaxType.KO,
-            order: 2,
-            taxPayer: {
-              birthNumber: '123456/7891',
-            },
-          },
-          {
-            id: 3,
-            year: 2024,
-            type: TaxType.DZN,
-            order: 1,
-            taxPayer: {
-              birthNumber: '123456/7892',
-            },
-          },
-        ] as any)
+      prismaMock.$queryRaw.mockResolvedValue([
+        {
+          id: 1,
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+          birthNumber: '123456/7890',
+        },
+        {
+          id: 2,
+          year: 2024,
+          type: TaxType.KO,
+          order: 2,
+          birthNumber: '123456/7891',
+        },
+        {
+          id: 3,
+          year: 2024,
+          type: TaxType.DZN,
+          order: 1,
+          birthNumber: '123456/7892',
+        },
+      ])
       const trackEventUnpaidTaxReminderMock = jest.spyOn(
         service['bloomreachService'],
         'trackEventUnpaidTaxReminder',
@@ -615,7 +622,7 @@ describe('NotificationsEventsSubservice', () => {
 
       await service.sendUnpaidTaxReminders()
 
-      expect(findManyMock).toHaveBeenCalled()
+      expect(prismaMock.$queryRaw).toHaveBeenCalled()
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledTimes(2)
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {

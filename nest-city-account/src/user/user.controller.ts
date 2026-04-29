@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  NotImplementedException,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiExtraModels,
@@ -352,5 +362,43 @@ export class UserController {
       UserErrorsEnum.COGNITO_TYPE_ERROR,
       UserErrorsResponseEnum.COGNITO_TYPE_ERROR
     )
+  }
+
+  // DRAFT — replacement for /subscribe and /unsubscribe.
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'Update a single GDPR consent for the logged-in user',
+    description: 'Accept or revoke a single user-facing consent identified by `consentType`.',
+  })
+  @ApiResponse({ status: 204, description: 'Consent updated' })
+  @UseGuards(CognitoGuard)
+  @Post('gdpr-consent')
+  async updateGdprConsent(
+    @User() user: CognitoGetUserData,
+    @Body() body: UpdateGdprConsentRequestDto
+  ): Promise<void> {
+    // TODO map `body.consentType` to the internal (GDPRCategoryEnum, GDPRTypeEnum) tuple and call
+    //      userService.subUnsubUser / subUnsubLegalPerson with subscribe/unsubscribe derived from `body.accept`.
+    throw new NotImplementedException()
+  }
+
+  // DRAFT — replacement for the TAXES/FORMAL_COMMUNICATION consent hack currently used to set
+  // tax delivery method. Just takes one enum.
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'Set tax/official delivery method preference for the logged-in user',
+    description:
+      'Sets the user preference for how official / tax communication should be delivered.',
+  })
+  @ApiResponse({ status: 204, description: 'Delivery method preference updated' })
+  @UseGuards(CognitoGuard)
+  @Post('delivery-method')
+  async setDeliveryMethod(
+    @User() user: CognitoGetUserData,
+    @Body() body: SetDeliveryMethodRequestDto
+  ): Promise<void> {
+    // TODO call a new userService.setDeliveryMethod(user, body.deliveryMethod) that writes the
+    //      preference directly (avoiding the current GDPR TAXES/FORMAL_COMMUNICATION encoding).
+    throw new NotImplementedException()
   }
 }

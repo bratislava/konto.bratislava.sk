@@ -390,7 +390,7 @@ export class UserController {
   updateGdprConsent(
     @User() user: CognitoGetUserData,
     @Body() body: UpdateGdprConsentRequestDto
-  ): Promise<void> {
+  ): void {
     // TODO map `body.consentType` to the internal (GDPRCategoryEnum, GDPRTypeEnum) tuple and call
     //      userService.subUnsubUser / subUnsubLegalPerson with subscribe/unsubscribe derived from `body.accept`.
     throw new NotImplementedException()
@@ -410,7 +410,7 @@ export class UserController {
   setDeliveryMethod(
     @User() user: CognitoGetUserData,
     @Body() body: SetDeliveryMethodRequestDto
-  ): Promise<void> {
+  ): void {
     // TODO call a new userService.setDeliveryMethod(user, body.deliveryMethod) that writes the
     //      preference directly (avoiding the current GDPR TAXES/FORMAL_COMMUNICATION encoding).
     throw new NotImplementedException()

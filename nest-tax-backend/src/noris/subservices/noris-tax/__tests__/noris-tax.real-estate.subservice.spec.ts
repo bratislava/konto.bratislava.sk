@@ -134,6 +134,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       datum_spl3: new Date('2023-11-01T00:00:00.000Z'),
       datum_spl4: null,
       uhrazeno: 0,
+      datum_posledni_platby: null,
       forma_uhrady: 'P',
     },
   ]

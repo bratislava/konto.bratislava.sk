@@ -1,6 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next/pages'
-import React from 'react'
 
 import UploadFileCard from '@/src/components/widget-components/Upload/UploadFileCard'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -36,9 +36,9 @@ const UploadFilesList = ({
   return (
     <div className="flex flex-col gap-4">
       {/* TODO accordion, "x of n" info */}
-      <div>
-        <h3 className="text-p1-semibold">{t('Upload.uploadingList')}</h3>
-      </div>
+      <Typography variant="h5" as="h3">
+        {t('Upload.uploadingList')}
+      </Typography>
 
       <ul className="flex flex-col gap-2">
         {valueArray.filter(isDefined).map((fileId) => (

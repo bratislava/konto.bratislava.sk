@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import {
@@ -72,9 +72,9 @@ export const FooterCopyright = () => {
   const { t } = useTranslation('account')
 
   return (
-    <p className="text-center text-p2 text-content-passive-secondary">
+    <Typography variant="p-small" className="text-center text-content-passive-secondary">
       {t('Footer.text', { currentYear: new Date().getFullYear() })}
-    </p>
+    </Typography>
   )
 }
 

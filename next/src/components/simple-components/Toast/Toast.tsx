@@ -67,7 +67,7 @@ const AppToastRegion = () => {
           <ToastContent className="flex min-w-0 flex-1 items-center">
             <Text
               slot="title"
-              className="flex-1 px-4 py-3.5 text-left text-p-tiny/p-tiny font-normal"
+              className="flex-1 px-4 py-3.5 text-left text-size-p-tiny-r font-normal lg:text-size-p-tiny"
             >
               {toast.content.message}
             </Text>

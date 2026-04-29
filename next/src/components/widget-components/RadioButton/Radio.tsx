@@ -48,22 +48,26 @@ const Radio = ({
     },
   )
 
-  const containerStyle = cn('group relative flex w-full gap-3 rounded-lg text-16', className, {
-    'bg-white': !isDisabled && (variant === 'card' || variant === 'boxed'),
-    'flex-row items-center': variant === 'basic' || variant === 'boxed',
-    'p-3 lg:px-4 lg:py-3': variant === 'boxed',
-    'flex-col items-start p-5 break-words': variant === 'card',
-    'rounded-8 border border-solid': variant === 'boxed' || variant === 'card',
-    'border-gray-200': !isError && !isSelected,
-    'border-negative-700': isError,
+  const containerStyle = cn(
+    'group relative flex w-full gap-3 rounded-lg text-size-p-small-r lg:text-size-p-small',
+    className,
+    {
+      'bg-white': !isDisabled && (variant === 'card' || variant === 'boxed'),
+      'flex-row items-center': variant === 'basic' || variant === 'boxed',
+      'p-3 lg:px-4 lg:py-3': variant === 'boxed',
+      'flex-col items-start p-5 break-words': variant === 'card',
+      'rounded-8 border border-solid': variant === 'boxed' || variant === 'card',
+      'border-gray-200': !isError && !isSelected,
+      'border-negative-700': isError,
 
-    'border-gray-700 hover:border-gray-500': isSelected && !isDisabled && !isError,
-    'hover:border-gray-500': !isError && !isSelected && !isDisabled,
+      'border-gray-700 hover:border-gray-500': isSelected && !isDisabled && !isError,
+      'hover:border-gray-500': !isError && !isSelected && !isDisabled,
 
-    'opacity-50': isDisabled,
-    'cursor-pointer': !isDisabled,
-    'border-gray-300 bg-gray-100': isDisabled && (variant === 'boxed' || variant === 'card'),
-  })
+      'opacity-50': isDisabled,
+      'cursor-pointer': !isDisabled,
+      'border-gray-300 bg-gray-100': isDisabled && (variant === 'boxed' || variant === 'card'),
+    },
+  )
 
   return (
     <div className="w-full">

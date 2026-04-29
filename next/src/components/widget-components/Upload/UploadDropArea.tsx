@@ -1,5 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { DropEvent } from 'react-aria'
 import {
   Button as ReactAriaButton,
@@ -113,12 +114,12 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
                 </div>
               </div>
 
-              <div className="text-16-semibold">
+              <Typography variant="p-small" className="font-semibold">
                 {allowsMultiple ? t('Upload.uploadFiles') : t('Upload.uploadFile')}
-              </div>
+              </Typography>
 
               {sizeLimit || supportedFormats?.length ? (
-                <dl className="flex gap-2 text-p3">
+                <dl className="flex gap-2 text-size-p-tiny-r lg:text-size-p-tiny">
                   {displayMaxFileSize ? (
                     <>
                       <dt className="sr-only">{t('Upload.sizeLimit')}</dt>

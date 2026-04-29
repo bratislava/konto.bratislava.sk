@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -245,7 +245,7 @@ export const FormMessageModals = () => {
       children: (
         <>
           {t('send_confirmation_eid_modal.content')}
-          <div className="text-p3">{t('send_confirmation_eid_modal.content_small')}</div>
+          <Typography variant="p-tiny">{t('send_confirmation_eid_modal.content_small')}</Typography>
         </>
       ),
     },
@@ -287,7 +287,9 @@ export const FormMessageModals = () => {
       children: (
         <>
           {t('send_confirmation_eid_legal_modal.content')}
-          <div className="text-p3">{t('send_confirmation_eid_legal_modal.content_small')}</div>
+          <Typography variant="p-tiny">
+            {t('send_confirmation_eid_legal_modal.content_small')}
+          </Typography>
         </>
       ),
     },

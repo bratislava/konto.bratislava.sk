@@ -34,7 +34,7 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
     'cursor-not-allowed opacity-50': isDisabled,
     'cursor-pointer': !isDisabled,
   })
-  const labelStyle = cn('text-16 text-gray-700 select-none')
+  const labelStyle = cn('text-size-p-small-r text-gray-700 select-none lg:text-size-p-small')
 
   const togglerContainer = cn('flex h-6 w-12 items-center rounded-full', {
     'bg-success-700': state.isSelected,

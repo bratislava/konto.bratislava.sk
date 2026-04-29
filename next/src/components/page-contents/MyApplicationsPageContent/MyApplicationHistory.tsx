@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next/pages'
 import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
@@ -29,20 +30,20 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
           <div key={i} className="flex flex-row flex-wrap gap-2 border-b py-4 md:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
-                <span className="text-p3-semibold">
+                <Typography variant="p-tiny" as="span" className="font-semibold">
                   {t('account_section_applications.details.application_history.edit_date')}
-                </span>
-                <span className="text-p2">
+                </Typography>
+                <Typography variant="p-small" as="span">
                   <FormatDate>{data['Datum-zmeny']}</FormatDate>
-                </span>
+                </Typography>
               </div>
               <div className="flex w-full flex-col">
-                <span className="text-p3-semibold">
+                <Typography variant="p-tiny" as="span" className="font-semibold">
                   {t('account_section_applications.details.application_history.description')}
-                </span>
-                <span className="text-p2">
+                </Typography>
+                <Typography variant="p-small" as="span">
                   {translationMap[data?.assignedCategory] ?? translationMap.UNKNOWN}
-                </span>
+                </Typography>
               </div>
             </div>
           </div>
@@ -52,22 +53,22 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
       <div className="flex flex-col overflow-x-auto md:hidden">
         <div className="w-[548px] rounded-lg border border-gray-200">
           <div className="flex items-center bg-gray-200 p-4">
-            <span className="min-w-[240px] text-p2">
+            <Typography variant="p-small" as="span" className="min-w-60">
               {t('account_section_applications.details.application_history.edit_date')}
-            </span>
-            <span className="w-full text-p2">
+            </Typography>
+            <Typography variant="p-small" as="span" className="w-full">
               {t('account_section_applications.details.application_history.description')}
-            </span>
+            </Typography>
           </div>
           <div className="flex flex-col items-center">
             {historyData?.map((data: GenericObjectType, i) => (
               <div className="flex w-full border-t p-4" key={i}>
-                <span className="min-w-[240px] text-p2">
+                <Typography variant="p-small" as="span" className="min-w-60">
                   <FormatDate>{data['Datum-zmeny']}</FormatDate>
-                </span>
-                <span className="w-full text-p2">
+                </Typography>
+                <Typography variant="p-small" as="span" className="w-full">
                   {translationMap[data?.assignedCategory] ?? translationMap.UNKNOWN}
-                </span>
+                </Typography>
               </div>
             ))}
           </div>

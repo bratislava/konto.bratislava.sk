@@ -1,5 +1,4 @@
-import { Button } from '@bratislava/component-library'
-import Link from 'next/link'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { DiscIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
@@ -24,15 +23,16 @@ const FormHeader = () => {
     <SectionContainer className="size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
       <div className="flex justify-between">
         <div className="flex flex-col gap-2 lg:gap-4">
-          <h1 className="text-h1-form">{schema.title}</h1>
+          <Typography variant="h1">{schema.title}</Typography>
           {strapiForm?.moreInformationUrl ? (
-            <Link
-              className="w-max text-p1 underline"
+            <Button
+              variant="link"
+              size="large"
+              className="w-max"
               href={strapiForm.moreInformationUrl}
-              target="_blank"
             >
               {t('form_header.services_link')}
-            </Link>
+            </Button>
           ) : null}
         </div>
         <div className="hidden h-full shrink-0 gap-3 lg:flex">

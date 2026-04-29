@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -10,7 +10,7 @@ const AccountActivator = () => {
   return (
     <AccountContainer>
       <div className="flex flex-col gap-2 rounded-xl bg-gray-50 px-5 py-4 md:rounded-none md:bg-gray-0 md:p-0">
-        <h3 className="text-h3">{t('account_activator.title')}</h3>
+        <Typography variant="h3">{t('account_activator.title')}</Typography>
         <AccountMarkdown variant="sm" content={t('account_activator.content')} />
         <Button variant="link" className="mt-2 md:mt-4" href="https://bratislava.sk/konto">
           {t('account_activator.button_text')}

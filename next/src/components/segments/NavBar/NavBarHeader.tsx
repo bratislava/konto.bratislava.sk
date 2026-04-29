@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
@@ -52,10 +52,12 @@ export const NavBarHeader = ({ menuItems }: Props) => {
           className="group grow"
           url={ROUTES.HOME}
           title={
-            <p className="text-p2 text-font group-hover:text-gray-600">
-              {t('NavBar.capitalCityOfSR')}
-              <span className="font-semibold"> Bratislava</span>
-            </p>
+            <Typography
+              variant="p-small"
+              className="text-content-active-primary-default group-hover:text-content-active-primary-hover"
+            >
+              {t('NavBar.logoTitle')}
+            </Typography>
           }
         />
         <IdentityVerificationStatus />

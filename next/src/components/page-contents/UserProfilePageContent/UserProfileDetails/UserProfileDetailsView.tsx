@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Fragment } from 'react/jsx-runtime'
 
@@ -18,8 +19,12 @@ const Row = ({ label, value }: RowProps) => {
       data-cy={slugifiedLabel}
       className="flex w-full flex-col gap-1 not-first:pt-4 not-last:pb-4 lg:flex-row lg:gap-4 lg:py-4 lg:*:w-1/2"
     >
-      <span className="text-p2-semibold">{label}</span>
-      <span className="text-p2 lg:break-normal">{displayedValue}</span>
+      <Typography variant="p-small" as="span" className="font-semibold">
+        {label}
+      </Typography>
+      <Typography variant="p-small" as="span" className="lg:break-normal">
+        {displayedValue}
+      </Typography>
     </li>
   )
 }

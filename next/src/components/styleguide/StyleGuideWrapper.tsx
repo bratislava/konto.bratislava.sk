@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -11,7 +11,9 @@ const StyleGuideWrapper = ({ children }: StyleGuideWrapperProps) => {
   return (
     <main>
       <SectionContainer className="min-h-[calc(100vh+1px)] bg-[#E5E5E5] pb-64 md:pt-12">
-        <h1 className="mb-10 text-center text-h1 underline">Style Guide</h1>
+        <Typography variant="h1" className="mb-10 text-center underline">
+          Style Guide
+        </Typography>
         {children}
       </SectionContainer>
     </main>

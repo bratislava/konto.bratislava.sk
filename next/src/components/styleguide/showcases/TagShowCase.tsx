@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useState } from 'react'
 
 import Tag from '@/src/components/simple-components/Tag'
@@ -11,10 +12,10 @@ const TagShowCase = () => {
 
   return (
     <Wrapper direction="column" title="Tag">
-      <p>
+      <Typography>
         WARNING: branded colors are automatically set from primary and secondary colors from
         tailwind config as its set brand{' '}
-      </p>
+      </Typography>
       <Stack>
         <Tag text="Defaulttttttttttttttttttt" />
         <Tag text="D" />

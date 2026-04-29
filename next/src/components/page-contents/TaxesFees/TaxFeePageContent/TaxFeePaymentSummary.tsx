@@ -1,6 +1,7 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
@@ -39,10 +40,12 @@ const TaxFeePaymentSummary = () => {
         <Fragment key={index}>
           {index > 0 && <HorizontalDivider asListItem className="max-lg:hidden" />}
           <li className="flex justify-between border-gray-200 py-1.5 lg:py-4">
-            <span className="text-h5">{label}</span>
-            <span className={cn('text-h5-semibold', valueClassName)}>
+            <Typography variant="h5" as="span">
+              {label}
+            </Typography>
+            <Typography variant="h5" as="span" className={cn('font-semibold', valueClassName)}>
               <FormatCurrencyFromCents value={value} />
-            </span>
+            </Typography>
           </li>
         </Fragment>
       ))}

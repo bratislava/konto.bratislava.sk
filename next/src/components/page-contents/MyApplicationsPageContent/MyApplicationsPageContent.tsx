@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useQuery } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
@@ -116,7 +117,9 @@ const MyApplicationsPageContent = ({
     >
       <SectionContainer className="bg-gray-50 pt-6 lg:pt-14">
         <div className="size-full flex-col justify-end gap-4 lg:gap-6">
-          <h1 className="pt-4 text-h1">{title}</h1>
+          <Typography variant="h1" className="pt-4">
+            {title}
+          </Typography>
           <TabList className="scrollbar-hide flex gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
             {headerNavigationList.map((item) => {
               const count = totalCounts[item.tag].data
@@ -129,11 +132,11 @@ const MyApplicationsPageContent = ({
                   id={item.tag}
                   data-before-text={text}
                   className={cn(
-                    'cursor-pointer p-4 text-center text-20 lg:px-0',
-                    'hover:border-gray-700 hover:text-20-semibold',
-                    'selected:border-b-2 selected:border-gray-700 selected:text-20-semibold',
+                    'cursor-pointer p-4 text-center text-size-p-large lg:px-0 lg:text-size-p-large',
+                    'hover:border-gray-700 hover:font-semibold',
+                    'selected:border-b-2 selected:border-gray-700 selected:font-semibold',
                     // Hover without layout shift based on: https://stackoverflow.com/a/20249560
-                    'before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)]',
+                    'before:invisible before:block before:h-0 before:overflow-hidden before:font-semibold before:content-[attr(data-before-text)]',
                   )}
                 >
                   {text}

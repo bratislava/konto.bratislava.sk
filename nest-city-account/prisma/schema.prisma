@@ -103,7 +103,7 @@ model User {
   userLoginClients                 UserLoginClient[]
   isDeceased                       Boolean                        @default(false)
   markedDeceasedAt                 DateTime?
-  DeliveryMethodUserHistory        DeliveryMethodUserHistory[]
+  DeliveryMethodUserHistory        DeliveryMethodHistory[]
 }
 
 // In this table we store for one month the data used by a user to verify their account by ID card.
@@ -176,28 +176,27 @@ model ExternalEdeskCheck {
 }
 
 model LegalPerson {
-  id                                 String                             @id @default(uuid()) @db.Uuid
-  createdAt                          DateTime                           @default(now())
-  updatedAt                          DateTime                           @updatedAt
+  id                                 String                         @id @default(uuid()) @db.Uuid
+  createdAt                          DateTime                       @default(now())
+  updatedAt                          DateTime                       @updatedAt
   registeredAt                       DateTime?
-  externalId                         String                             @unique
-  email                              String?                            @unique
+  externalId                         String                         @unique
+  email                              String?                        @unique
   ico                                String?
   birthNumber                        String?
   lastVerificationAttempt            DateTime?
   birthnumberIcoAlreadyExistsLast    String?
-  birthnumberIcoAlreadyExistsCounter Int                                @default(0)
+  birthnumberIcoAlreadyExistsCounter Int                            @default(0)
   userAttribute                      String?
   legalPersonGdprData                LegalPersonGdprData[]
   cognitoTier                        CognitoUserAttributesTierEnum?
   legalPersonIcoIdCardVerify         LegalPersonIcoIdCardVerify[]
   legalPersonLoginClients            LegalPersonLoginClient[]
-  DeliveryMethodLegalPersonHistory   DeliveryMethodLegalPersonHistory[]
 
   @@unique([ico, birthNumber])
 }
 
-model DeliveryMethodUserHistory {
+model DeliveryMethodHistory {
   id        String                 @id @default(uuid())
   createdAt DateTime               @default(now())
   userId    String                 @db.Uuid
@@ -216,16 +215,6 @@ model UserGdprData {
   category  GDPRCategoryEnum
   subType   GDPRSubTypeEnum?
   user      User             @relation(fields: [userId], references: [id])
-}
-
-model DeliveryMethodLegalPersonHistory {
-  id            String                 @id @default(uuid())
-  createdAt     DateTime               @default(now())
-  legalPersonId String                 @db.Uuid
-  legalPerson   LegalPerson            @relation(fields: [legalPersonId], references: [id])
-  method        DeliveryMethodUserEnum
-
-  @@index([legalPersonId])
 }
 
 model LegalPersonGdprData {

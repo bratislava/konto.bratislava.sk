@@ -340,7 +340,7 @@ export class RequestAdminDeleteTaxDto {
 export class RequestPostReportingSendReport {
   @ApiProperty({
     description: 'Date since when reports should be generated',
-    default: 2022,
+    default: '2026-01-01',
   })
   @IsDateString()
   date: string

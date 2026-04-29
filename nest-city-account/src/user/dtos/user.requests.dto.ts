@@ -22,6 +22,7 @@ export class UpdateGdprConsentRequestDto {
   @ApiProperty({
     description: 'The consent the user is toggling',
     enum: UserConsentTypeEnum,
+    enumName: 'UserConsentTypeEnum',
     example: UserConsentTypeEnum.ESBS_MARKETING,
   })
   @IsEnum(UserConsentTypeEnum)

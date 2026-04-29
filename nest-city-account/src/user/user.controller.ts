@@ -387,7 +387,7 @@ export class UserController {
   @ApiResponse({ status: 204, description: 'Consent updated' })
   @UseGuards(CognitoGuard)
   @Post('gdpr-consent')
-  async updateGdprConsent(
+  updateGdprConsent(
     @User() user: CognitoGetUserData,
     @Body() body: UpdateGdprConsentRequestDto
   ): Promise<void> {
@@ -407,7 +407,7 @@ export class UserController {
   @ApiResponse({ status: 204, description: 'Delivery method preference updated' })
   @UseGuards(CognitoGuard)
   @Post('delivery-method')
-  async setDeliveryMethod(
+  setDeliveryMethod(
     @User() user: CognitoGetUserData,
     @Body() body: SetDeliveryMethodRequestDto
   ): Promise<void> {

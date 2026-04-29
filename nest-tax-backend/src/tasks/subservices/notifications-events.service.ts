@@ -251,8 +251,8 @@ export default class NotificationsEventsService {
 
     // Raw query so that LIMIT applies after all eligibility filters.
     // Eligibility rules:
-    //   - 2+ installments → no successful payment at all
-    //   - 1 installment   → sum of successful payments < tax amount (partial/unpaid)
+    //   - 2+ installments: no successful payment at all
+    //   - 1 installment:   sum of successful payments < tax amount (partial or unpaid)
     // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
     // 50 * 6 * 24 h = 7200 is max number of konto visitors in dayhours
     const taxes = await this.prismaService.$queryRaw<

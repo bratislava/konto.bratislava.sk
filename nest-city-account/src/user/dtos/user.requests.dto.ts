@@ -12,16 +12,17 @@ export class UpsertUserRecordClientRequestDto {
   loginClient!: LoginClientEnum
 }
 
-// TODO decide final enum — likely replaces the (category, type) tuple with a single user-facing consent key.
+// TODO maybe we want to generate this from Prisma types later
 export enum UserConsentTypeEnum {
-  MARKETING = 'MARKETING',
+  ESBS_MARKETING = 'ESBS_MARKETING',
+  ESBS_GENERAL = 'ESBS_GENERAL',
 }
 
 export class UpdateGdprConsentRequestDto {
   @ApiProperty({
     description: 'The consent the user is toggling',
     enum: UserConsentTypeEnum,
-    example: UserConsentTypeEnum.MARKETING,
+    example: UserConsentTypeEnum.ESBS_MARKETING,
   })
   @IsEnum(UserConsentTypeEnum)
   consentType!: UserConsentTypeEnum

@@ -444,7 +444,7 @@ export class UserDataSubservice {
     }
 
     // TODO we want to separate this into an endpoint
-    const { taxDeliveryData } = this.separateTaxDeliveryData(gdprData)
+    const { taxDeliveryData, otherGdprData } = this.separateTaxDeliveryData(gdprData)
     if (taxDeliveryData.length > 1) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -463,7 +463,7 @@ export class UserDataSubservice {
     }
 
     await this.prisma.userGdprData.createMany({
-      data: gdprData.map((elem) => ({
+      data: otherGdprData.map((elem) => ({
         type: elem.type,
         category: elem.category,
         subType: elem.subType,
@@ -471,7 +471,12 @@ export class UserDataSubservice {
       })),
     })
 
-    await this.bloomreachOutboxService.trackEventConsents(gdprData, user.externalId, user.id, false)
+    await this.bloomreachOutboxService.trackEventConsents(
+      otherGdprData,
+      user.externalId,
+      user.id,
+      false
+    )
   }
 
   async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {

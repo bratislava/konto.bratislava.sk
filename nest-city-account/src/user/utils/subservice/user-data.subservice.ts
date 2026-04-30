@@ -607,4 +607,11 @@ export class UserDataSubservice {
         })
     )
   }
+
+  setDeliveryMethod(sub: string, deliveryMethod: DeliveryMethodUserEnum) {
+    this.prisma.user.update({
+      where: { externalId: sub },
+      data: { deliveryMethod },
+    })
+  }
 }

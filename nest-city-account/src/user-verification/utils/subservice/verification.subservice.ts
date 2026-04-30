@@ -280,6 +280,7 @@ export class VerificationSubservice {
     if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
       this.logger.warn('We refused validation based on names not matching.', {
         cognitoID: user.sub,
+        providedName: { name: user.given_name, surname: user.family_name },
       })
       return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
     }

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import {
   CognitoUserAttributesTierEnum,
   DeliveryMethodEnum,
+  DeliveryMethodUserEnum,
   GDPRSubTypeEnum,
   LoginClientEnum,
   User,
@@ -683,5 +684,9 @@ export class UserService {
 
   async getUserLoginClientList(client: LoginClientEnum) {
     return await this.userDataSubservice.getUserLoginClientList(client)
+  }
+
+  setDeliveryMethod(user: CognitoGetUserData, deliveryMethod: DeliveryMethodUserEnum) {
+    this.userDataSubservice.setDeliveryMethod(user.sub, deliveryMethod)
   }
 }

@@ -411,8 +411,6 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() body: SetDeliveryMethodRequestDto
   ): Promise<void> {
-    // TODO call a new userService.setDeliveryMethod(user, body.deliveryMethod) that writes the
-    //      preference directly (avoiding the current GDPR TAXES/FORMAL_COMMUNICATION encoding).
-    throw new NotImplementedException()
+    this.userService.setDeliveryMethod(user, body.deliveryMethod)
   }
 }

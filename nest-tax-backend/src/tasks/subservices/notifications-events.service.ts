@@ -331,7 +331,7 @@ export default class NotificationsEventsService {
           userDataFromCityAccount[tax.birthNumber] || null
         if (userFromCityAccount && userFromCityAccount.externalId) {
           const dueDate = calculateDueDate(
-            dayjs(tax.dateTaxRuling),
+            tax.dateTaxRuling ? dayjs(tax.dateTaxRuling) : null,
             tax.deliveryMethod,
             dayjs(tax.createdAt),
           )

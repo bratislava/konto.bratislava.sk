@@ -20,22 +20,43 @@ export type StrapiTaxAdministrators = StrapiTaxAdministrator[]
 interface StrapiTaxAdministratorsListResponse {
   data: {
     id: number
-    attributes: {
-      createdAt: string
-      updatedAt: string
-      taxAdministrators: StrapiTaxAdministrators
-    }
+    documentId: string
+    createdAt: string
+    updatedAt: string
+    taxAdministrators: StrapiTaxAdministrators
   }
   meta: unknown
 }
 
-const getStrapiTaxAdministrators = async () =>
-  axiosInstance.get<StrapiTaxAdministratorsListResponse>(
+/**
+ * The tax administrators list is fetched on every tax detail page open, which produced a usage spike on the
+ * bratislava.sk Strapi. The tax administrators list is not changed frequently, so an in-memory TTL cache is enough and
+ * dramatically reduces upstream load.
+ */
+const TAX_ADMINISTRATORS_TTL_MS = 60 * 60 * 1000 // 1h
+
+let taxAdministratorsCache: {
+  data: StrapiTaxAdministrators
+  expiresAt: number
+} | null = null
+
+const getStrapiTaxAdministrators = async () => {
+  if (taxAdministratorsCache && taxAdministratorsCache.expiresAt > Date.now()) {
+    return taxAdministratorsCache.data
+  }
+
+  const response = await axiosInstance.get<StrapiTaxAdministratorsListResponse>(
     `${environment.bratislavaStrapiUrl}/api/tax-administrators-list?populate=*`,
     {
       responseType: 'json',
     },
   )
+
+  const data = response.data.data.taxAdministrators
+  taxAdministratorsCache = { data, expiresAt: Date.now() + TAX_ADMINISTRATORS_TTL_MS }
+
+  return data
+}
 
 /**
  * Returns the start of the range in lowercase.
@@ -84,7 +105,7 @@ function findTaxAdministratorBySurname(
 
 export const getTaxAdministratorForUser = async (contextSpec: AmplifyServerContextSpec) => {
   try {
-    const [userAttributes, taxAdministratorsResponse] = await Promise.all([
+    const [userAttributes, taxAdministrators] = await Promise.all([
       fetchUserAttributes(contextSpec),
       getStrapiTaxAdministrators(),
     ])
@@ -93,10 +114,7 @@ export const getTaxAdministratorForUser = async (contextSpec: AmplifyServerConte
       return null
     }
 
-    return findTaxAdministratorBySurname(
-      taxAdministratorsResponse.data.data.attributes.taxAdministrators,
-      userAttributes.family_name,
-    )
+    return findTaxAdministratorBySurname(taxAdministrators, userAttributes.family_name)
   } catch (error) {
     return null
   }

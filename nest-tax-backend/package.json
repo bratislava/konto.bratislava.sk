@@ -42,7 +42,7 @@
     "class-validator": "^0.14.4",
     "csv-parse": "^6.2.1",
     "currency.js": "^2.0.4",
-    "dayjs": "^1.11.19",
+    "dayjs": "^1.11.20",
     "express": "^5.2.1",
     "form-urlencoded": "^6.1.6",
     "lodash": "^4.17.23",

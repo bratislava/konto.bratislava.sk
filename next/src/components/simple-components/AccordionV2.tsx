@@ -19,7 +19,11 @@ const AccordionV2 = ({ title, noTitleWrapper, children }: AccordionV2Props) => {
       return <>{title}</>
     }
 
-    return <Typography variant="h4" as="h3" className="min-w-0 grow">{title}</Typography>
+    return (
+      <Typography variant="h4" as="h3" className="min-w-0 grow">
+        {title}
+      </Typography>
+    )
   }
 
   return (

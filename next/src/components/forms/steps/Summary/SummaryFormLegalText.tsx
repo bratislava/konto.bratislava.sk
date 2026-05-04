@@ -12,7 +12,9 @@ const SummaryFormLegalText = () => {
 
   return (
     <div>
-      <Typography variant="h3" className="mb-4">{t('summary.vop_agreement_title')}</Typography>
+      <Typography variant="h3" className="mb-4">
+        {t('summary.vop_agreement_title')}
+      </Typography>
       <AccountMarkdown
         content={termsAndConditions}
         // TODO: Replace variant statusBar

@@ -3,6 +3,12 @@ import * as path from 'path'
 
 const SLOVENSKO_MEF_JSON_URL = 'https://www.slovensko.sk/static/eForm/datasetexport/json/mef.json'
 
+/**
+ * Docker consumers use these build args to invalidate only the layers that
+ * depend on external inputs: the Playwright browser install when the locked
+ * Playwright version changes, and the downloaded slovensko.sk metadata when
+ * the remote file changes.
+ */
 export const prepareDockerBuildArgs = async (projectRoot: string) => {
   const packageLockPath = path.join(projectRoot, 'package-lock.json')
   const packageLock = JSON.parse(readFileSync(packageLockPath, 'utf8'))

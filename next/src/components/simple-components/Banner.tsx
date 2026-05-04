@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import Image, { ImageProps } from 'next/image'
 
 import { PhoneIcon } from '@/src/assets/ui-icons'
@@ -29,14 +29,14 @@ const Banner = ({
   return (
     <div
       className={cn(
-        'm-auto flex h-full w-full flex-col items-center justify-end rounded-2xl bg-gray-800 py-6 lg:flex-row lg:py-0',
+        'm-auto flex size-full flex-col items-center justify-end rounded-2xl bg-gray-800 py-6 lg:flex-row lg:py-0',
         className,
       )}
     >
       <div className="mb-6 flex size-full max-w-[488px] flex-col justify-center gap-6 rounded-l-3xl px-4 text-white md:px-0 lg:mb-0 lg:w-1/2">
         <div className="flex flex-col items-start gap-3">
-          <h2 className="text-h1 lg:text-h2">{title}</h2>
-          <AccountMarkdown content={content} variant="sm" className="text-p2 text-gray-200" />
+          <Typography variant="h2">{title}</Typography>
+          <AccountMarkdown content={content} variant="sm" className="text-gray-200" />
         </div>
         <div className="flex flex-col gap-4 lg:flex-row">
           <Button href={href} variant="solid-inverted" onPress={onPress} fullWidthMobile>
@@ -45,7 +45,9 @@ const Banner = ({
           {mobileNumber && (
             <div className="flex items-center gap-2 px-3 py-2 text-gray-0">
               <PhoneIcon />
-              <span className="text-p2-semibold">{mobileNumber}</span>
+              <Typography variant="p-small" className="font-semibold">
+                {mobileNumber}
+              </Typography>
             </div>
           )}
         </div>

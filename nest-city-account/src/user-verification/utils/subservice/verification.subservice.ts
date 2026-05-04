@@ -276,22 +276,22 @@ export class VerificationSubservice {
       return rfoDataDcom
     }
 
-    // For physical person, require Cognito given_name + family_name match to RFO
-    if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
-      this.logger.warn('We refused validation based on names not matching.', {
-        cognitoID: user.sub,
-      })
-      return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
-    }
-
     if (!rfoDataDcom.data.rodneCislo) {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
     const rfoCheckDcom = this.checkIdentityCard(rfoDataDcom.data, data.identityCard)
-
     if (!rfoCheckDcom.success) {
       return rfoCheckDcom
+    }
+
+    // For physical person, require Cognito given_name + family_name match to RFO
+    if (!ico && !this.validatePersonName(rfoDataDcom.data, user.given_name, user.family_name)) {
+      this.logger.warn('We refused validation based on names not matching.', {
+        cognitoID: user.sub,
+        providedName: { name: user.given_name, surname: user.family_name },
+      })
+      return { success: false, reason: VerificationErrorsEnum.NAMES_NOT_MATCHING }
     }
 
     const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')

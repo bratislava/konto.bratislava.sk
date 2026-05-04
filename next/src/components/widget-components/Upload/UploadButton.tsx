@@ -53,9 +53,12 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       },
     )
 
-    const buttonInfoClassNames = cn('flex flex-col justify-center text-p3', {
-      'min-w-40': supportedFormats || sizeLimit,
-    })
+    const buttonInfoClassNames = cn(
+      'flex flex-col justify-center text-size-p-tiny-r lg:text-size-p-tiny',
+      {
+        'min-w-40': supportedFormats || sizeLimit,
+      },
+    )
 
     const handleOnSelect = async (files: FileList | null) => {
       if (isDisabled) {

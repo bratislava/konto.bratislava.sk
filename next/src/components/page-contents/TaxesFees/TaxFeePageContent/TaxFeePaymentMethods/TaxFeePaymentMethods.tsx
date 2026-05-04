@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { Trans, useTranslation } from 'next-i18next/pages'
 import {
   InstallmentPaidStatusEnum,
@@ -7,8 +8,7 @@ import {
 } from 'openapi-clients/tax'
 
 import { formatDate } from '@/src/components/formatting/FormatDate'
-import TaxFeePaymentMethodsItem
-  from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
+import TaxFeePaymentMethodsItem from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Alert from '@/src/components/simple-components/Alert'
 import { ROUTES } from '@/src/utils/routes'
@@ -44,7 +44,9 @@ const TaxFeePaymentMethods = () => {
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">
-      <div className="text-h5">{t('tax_detail_section.tax_payment_methods')}</div>
+      <Typography variant="h5" as="p" className="font-semibold">
+        {t('tax_detail_section.tax_payment_methods')}
+      </Typography>
       <div className="flex w-full flex-col rounded-lg border border-gray-200">
         <TaxFeePaymentMethodsItem
           title={

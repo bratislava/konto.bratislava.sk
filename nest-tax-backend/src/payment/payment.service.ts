@@ -188,6 +188,22 @@ export class PaymentService {
         return
       }
 
+      const taxData = await tx.tax.findUnique({
+        where: { id: taxPayment.taxId },
+        select: { amount: true },
+      })
+      if (!taxData) {
+        throw this.throwerErrorGuard.NotFoundException(
+          ErrorsEnum.NOT_FOUND_ERROR,
+          `Tax with id ${taxPayment.taxId} not found.`,
+        )
+      }
+      const totalPaid = await tx.taxPayment.aggregate({
+        where: { taxId: taxPayment.taxId, status: PaymentStatus.SUCCESS },
+        _sum: { amount: true },
+      })
+      const isFullyPaid = (totalPaid._sum.amount ?? 0) >= taxData.amount
+
       const result = await this.bloomreachService.trackEventTaxPayment(
         {
           amount: taxPayment.amount,
@@ -196,6 +212,7 @@ export class PaymentService {
           tax_type: taxPayment.tax.type,
           order: taxPayment.tax.order!, // non-null by DB trigger and constraint
           suppress_email: false,
+          is_fully_paid: isFullyPaid,
         },
         externalId,
       )

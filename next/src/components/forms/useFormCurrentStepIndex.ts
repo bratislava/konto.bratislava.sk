@@ -13,6 +13,7 @@ const getStepIndexByQueryParam = (
   }
 
   const step = steps.find((stepInner) => stepInner.queryParam === queryParam)
+
   return step?.index ?? null
 }
 
@@ -22,6 +23,7 @@ const getQueryParamByStepIndex = (steps: FormStepperStep[], stepIndex: FormStepI
   }
 
   const step = steps.find((stepInner) => stepInner.index === stepIndex)
+
   return step?.queryParam ?? null
 }
 

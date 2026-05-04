@@ -31,7 +31,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       : {
           title: t('menu_list.save_concept'),
           icon: <DiscIcon className="size-6" />,
-           
+
           onPress: () => saveConcept(),
           dataCy: 'save-concept-mobile',
         },
@@ -39,7 +39,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       ? {
           title: t('menu_list.download_xml'),
           icon: <DownloadIcon className="size-6" />,
-           
+
           onPress: () => exportXml(),
         }
       : null,
@@ -47,7 +47,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       ? {
           title: t('menu_list.pdf'),
           icon: <PdfIcon className="size-6" />,
-           
+
           onPress: () => exportPdf(),
         }
       : null,

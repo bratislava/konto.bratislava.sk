@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { LabelSize } from 'forms-shared/generator/uiOptionsTypes'
 import { useTranslation } from 'next-i18next/pages'
 import * as React from 'react'
@@ -52,10 +53,11 @@ const FieldHeader = ({
   const displayAsterisk = !displayOptionalLabel && isRequired
 
   const labelStyle = cn('relative text-gray-800', {
-    'text-16-semibold after:text-16-semibold': labelSize === 'default',
-    'text-h3 after:text-h3': labelSize === 'h3',
-    'text-h4 after:text-h4': labelSize === 'h4',
-    'text-h5 after:text-h5': labelSize === 'h5',
+    'text-size-p-small-r font-semibold after:text-size-p-small-r lg:text-size-p-small lg:after:text-size-p-small':
+      labelSize === 'default',
+    'text-size-h3-r after:text-size-h3-r lg:text-size-h3 lg:after:text-size-h3': labelSize === 'h3',
+    'text-size-h4-r after:text-size-h4-r lg:text-size-h4 lg:after:text-size-h4': labelSize === 'h4',
+    'text-size-h5-r after:text-size-h5-r lg:text-size-h5 lg:after:text-size-h5': labelSize === 'h5',
     'mr-2': showOptionalLabel,
     'after:absolute after:ml-0.5 after:text-main-700 after:content-["*"]': displayAsterisk,
   })
@@ -67,7 +69,11 @@ const FieldHeader = ({
           <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
             {label}
           </label>
-          {showOptionalLabel && <span className="text-16">{t('FieldHeader.optional')}</span>}
+          {showOptionalLabel && (
+            <Typography variant="p-small" as="span">
+              {t('FieldHeader.optional')}
+            </Typography>
+          )}
         </div>
       </div>
       {helptext ? (

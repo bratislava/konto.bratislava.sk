@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
@@ -16,7 +17,7 @@ const SummaryHeader = () => {
 
   return (
     <>
-      <h2 className="text-h2">{t('summary.title')}</h2>
+      <Typography variant="h2">{t('summary.title')}</Typography>
       {hasErrors && (
         <Alert
           type="error"

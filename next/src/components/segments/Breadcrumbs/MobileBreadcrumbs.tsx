@@ -23,7 +23,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
   return (
     <div className="relative">
       <div className="flex justify-between">
-        <div className="text-size-p-tiny -mx-4 flex items-center gap-2 font-medium">
+        <div className="-mx-4 flex items-center gap-2 text-size-p-tiny font-medium">
           <Button
             onPress={goBack}
             variant="link"
@@ -32,7 +32,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
           >
             {t('Breadcrumbs.back')}
           </Button>
-          <div className="bg-grey-300 h-4 w-px" />
+          <div className="h-4 w-px bg-grey-300" />
           {last?.path ? (
             <MLink href={last.path} variant="underlined" aria-hidden className="truncate py-3 pr-4">
               {last.title}
@@ -46,7 +46,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
       {/* TODO: Accordion height animation. */}
       {showDetails && (
         <details className="group">
-          <summary className="absolute right-0 top-0 -mr-4 block cursor-pointer p-4">
+          <summary className="absolute top-0 right-0 -mr-4 block cursor-pointer p-4">
             <ChevronDownIcon className="size-5 shrink-0 transition-transform group-open:rotate-180" />
           </summary>
           <ol className="flex flex-col flex-wrap gap-1 py-2">

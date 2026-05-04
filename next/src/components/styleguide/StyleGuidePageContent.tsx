@@ -89,7 +89,7 @@ const StyleGuidePageContent = () => {
               <Tab
                 key={id}
                 id={id}
-                className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 hover:border-gray-500 hover:bg-gray-50 data-selected:border-gray-700 data-selected:bg-gray-100 data-selected:font-semibold"
+                className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 hover:border-gray-500 hover:bg-gray-50 selected:border-gray-700 selected:bg-gray-100 selected:font-semibold"
               >
                 {label}
               </Tab>

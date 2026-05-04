@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
 import { ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
@@ -16,6 +16,10 @@ type ServiceCardBase = {
   tagStyle?: string
   analyticsProps?: LinkAnalyticsProps
 }
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-3034&t=Ko8aVlDp8OuC3xXc-4
+ */
 
 const ServiceCard = ({
   title,
@@ -42,22 +46,29 @@ const ServiceCard = ({
         {tags && tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {tags.map((tagItem, index) => (
-              <span key={index} className={cn('h-min rounded-[4px] px-2 text-p3-medium', tagStyle)}>
+              <Typography
+                variant="p-tiny"
+                as="span"
+                key={index}
+                className={cn('h-min rounded-sm px-2 font-medium', tagStyle)}
+              >
                 {tagItem}
-              </span>
+              </Typography>
             ))}
           </div>
         ) : null}
       </div>
       <div className="flex w-full flex-col items-start gap-3 text-left">
-        <h3
-          className={cn('text-h5 leading-5 font-semibold lg:leading-7', {
+        <Typography
+          variant="h5"
+          as="h3"
+          className={cn({
             'group-hover:underline': buttonText,
           })}
         >
           {title}
-        </h3>
-        <div className="flex items-center text-p-sm font-normal">{description}</div>
+        </Typography>
+        <Typography variant="p-tiny">{description}</Typography>
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
@@ -65,7 +76,6 @@ const ServiceCard = ({
             href={href}
             variant="link"
             hasLinkIcon={false}
-            className="text-p2-semibold"
             stretched
             analyticsProps={analyticsProps}
           >

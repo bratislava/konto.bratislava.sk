@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 import { useMemo } from 'react'
@@ -30,80 +31,84 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           icon: null,
           iconRound: null,
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
-            </p>
+            </Typography>
           ),
         },
         [GetFormResponseDtoErrorEnum.RabbitmqMaxTries]: {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_other')}
-            </p>
+            </Typography>
           ),
         },
         // should behave like a regular draft
         [GetFormResponseDtoErrorEnum.FilesNotYetScanned]: {
           icon: null,
           iconRound: null,
-          text: <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>,
+          text: (
+            <Typography>
+              {t('account_section_applications.navigation_concept_card.status_draft')}
+            </Typography>
+          ),
         },
         [GetFormResponseDtoErrorEnum.UnableToScanFiles]: {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
-            </p>
+            </Typography>
           ),
         },
         [GetFormResponseDtoErrorEnum.InfectedFiles]: {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
-            </p>
+            </Typography>
           ),
         },
         [GetFormResponseDtoErrorEnum.NasesSendError]: {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_other')}
-            </p>
+            </Typography>
           ),
         },
         [GetFormResponseDtoErrorEnum.GinisSendError]: {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_other')}
-            </p>
+            </Typography>
           ),
         },
       }[error || GetFormResponseDtoErrorEnum.None]
@@ -112,16 +117,16 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
         logger.error(`Unknown error ${error} for state ${state}`)
 
         return {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
-            </p>
+            </Typography>
           ),
         }
       }
@@ -134,7 +139,11 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
         DRAFT: {
           icon: null,
           iconRound: null,
-          text: <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>,
+          text: (
+            <Typography>
+              {t('account_section_applications.navigation_concept_card.status_draft')}
+            </Typography>
+          ),
         },
         QUEUED: {
           icon: <ScanningIcon className="size-6" />,
@@ -143,104 +152,112 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
               <ScanningIcon className="size-5" />
             </div>
           ),
-          text: <p>{t('account_section_applications.navigation_concept_card.status_scanning')}</p>,
+          text: (
+            <Typography>
+              {t('account_section_applications.navigation_concept_card.status_scanning')}
+            </Typography>
+          ),
         },
         DELIVERED_NASES: {
-          icon: <SendIcon className="text-warning-700 size-6" />,
+          icon: <SendIcon className="size-6 text-warning-700" />,
           iconRound: (
-            <div className="bg-warning-100 rounded-full p-1.5">
-              <SendIcon className="text-warning-700 size-5" />
+            <div className="rounded-full bg-warning-100 p-1.5">
+              <SendIcon className="size-5 text-warning-700" />
             </div>
           ),
           text: (
-            <p className="text-warning-700">
+            <Typography className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.delivered_nases')}
-            </p>
+            </Typography>
           ),
         },
         DELIVERED_GINIS: {
-          icon: <SendIcon className="text-warning-700 size-6" />,
+          icon: <SendIcon className="size-6 text-warning-700" />,
           iconRound: (
-            <div className="bg-warning-100 rounded-full p-1.5">
-              <SendIcon className="text-warning-700 size-5" />
+            <div className="rounded-full bg-warning-100 p-1.5">
+              <SendIcon className="size-5 text-warning-700" />
             </div>
           ),
           text: (
-            <p className="text-warning-700">
+            <Typography className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.status_sending')}
-            </p>
+            </Typography>
           ),
         },
         PROCESSING: {
-          icon: <TwoPeopleIcon className="text-warning-700 size-6" />,
+          icon: <TwoPeopleIcon className="size-6 text-warning-700" />,
           iconRound: (
-            <div className="bg-warning-100 rounded-full p-1.5">
-              <TwoPeopleIcon className="text-warning-700 size-5" />
+            <div className="rounded-full bg-warning-100 p-1.5">
+              <TwoPeopleIcon className="size-5 text-warning-700" />
             </div>
           ),
           text: (
-            <p className="text-warning-700">
+            <Typography className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.status_processing')}
-            </p>
+            </Typography>
           ),
         },
         FINISHED: {
-          icon: <CheckIcon className="text-success-700 size-6" />,
+          icon: <CheckIcon className="size-6 text-success-700" />,
           iconRound: (
-            <div className="bg-success-100 rounded-full p-1.5">
-              <CheckIcon className="text-success-700 size-5" />
+            <div className="rounded-full bg-success-100 p-1.5">
+              <CheckIcon className="size-5 text-success-700" />
             </div>
           ),
           text: (
-            <p className="text-success-700">
+            <Typography className="text-success-700">
               {t('account_section_applications.navigation_concept_card.status_finished')}
-            </p>
+            </Typography>
           ),
         },
         REJECTED: {
-          icon: <CrossIcon className="text-error size-6" />,
+          icon: <CrossIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_rejected')}
-            </p>
+            </Typography>
           ),
         },
         ERROR: {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
-            </p>
+            </Typography>
           ),
         },
         // TODO verify this / update messaging as needed - added as is to fix ts error
         ERROR_USER_CAN_REPAIR: {
-          icon: <ErrorIcon className="text-error size-6" />,
+          icon: <ErrorIcon className="size-6 text-error" />,
           iconRound: (
-            <div className="bg-negative-100 rounded-full p-1.5">
-              <CrossIcon className="text-error size-5" />
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="size-5 text-error" />
             </div>
           ),
           text: (
-            <p className="text-error">
+            <Typography className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
-            </p>
+            </Typography>
           ),
         },
         NONE: {
           icon: null,
           iconRound: null,
-          text: <p>{t('account_section_applications.navigation_concept_card.status_none')}</p>,
+          text: (
+            <Typography>
+              {t('account_section_applications.navigation_concept_card.status_none')}
+            </Typography>
+          ),
         },
       } as const
     )[state || 'NONE']

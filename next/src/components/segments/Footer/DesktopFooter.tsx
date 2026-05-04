@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next/pages'
 import EuFlagSvg from '@/src/assets/images/eu-flag.svg'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useGeneralContext } from '@/src/components/logic/GeneralContextProvider'
+import CookieConsentLink from '@/src/components/segments/CookieConsentLink/CookieConsentLink'
 import {
   FooterAccessibilityLink,
   FooterColumnLinks,
@@ -38,10 +39,10 @@ const DesktopFooter = () => {
             className="group grow"
             url={ROUTES.HOME}
             title={
-              <p className="text-p2 text-[#F23005]">
+              <Typography variant="p-small" className="text-[#F23005]">
                 {t('NavBar.capitalCityOfSR')}
                 <span className="font-semibold"> Bratislava</span>
-              </p>
+              </Typography>
             }
           />
           <div className="flex items-center gap-16">
@@ -56,12 +57,7 @@ const DesktopFooter = () => {
           <FooterContacts {...footer} />
           {footer.columns?.filter(isDefined).map((column, index) => (
             <div className="flex flex-col gap-3 lg:gap-4" key={index}>
-              <Typography
-                variant="h5"
-                as="h2"
-                // TODO Handle heading font size and weight globally
-                className="text-[1.25rem] font-semibold"
-              >
+              <Typography variant="h5" as="h2">
                 {column.title}
               </Typography>
               <div className="flex flex-col gap-3">
@@ -72,10 +68,11 @@ const DesktopFooter = () => {
         </div>
         <HorizontalDivider />
         <div className="flex justify-center gap-6 lg:justify-normal">
+          <CookieConsentLink />
           <FooterAccessibilityLink {...footer} />
         </div>
         <HorizontalDivider />
-        <div className="text-size-p-small text-center">
+        <div className="text-center text-size-p-small">
           <FooterCopyright />
         </div>
       </footer>

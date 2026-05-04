@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { FC, useState } from 'react'
 
@@ -26,26 +26,23 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
   // STYLES
-  const classStyles = cn(
-    'tag align-items-center flex h-5 min-w-14 items-center gap-2.5 px-2 text-center',
-    {
-      'text-16': size === 'large',
-      'text-p3': size === 'small' || !size,
-      'py-0.5': size === 'large',
-      'rounded-lg': size === 'large',
-      rounded: size === 'small' || !size,
-      'bg-gray-100': removable || !branded,
-      'text-gray-700': (removable || !branded) && !isHovered,
-      'text-gray-600': removable && isHovered,
-      'bg-category-200': !removable && branded,
-      'text-category-800': !removable && branded,
-      underline: !removable && isHovered,
-    },
-  )
+  const classStyles = cn('flex h-5 min-w-14 items-center gap-2.5 px-2 text-center', {
+    'text-size-p-small-r lg:text-size-p-small': size === 'large',
+    'text-size-p-tiny-r lg:text-size-p-tiny': size === 'small' || !size,
+    'py-0.5': size === 'large',
+    'rounded-lg': size === 'large',
+    rounded: size === 'small' || !size,
+    'bg-gray-100': removable || !branded,
+    'text-gray-700': (removable || !branded) && !isHovered,
+    'text-gray-600': removable && isHovered,
+    'bg-category-200': !removable && branded,
+    'text-category-800': !removable && branded,
+    underline: !removable && isHovered,
+  })
 
-  const iconClassStyles = cn('tag', {
-    'size-3 text-16': size === 'large',
-    'size-2.5 text-p3': size === 'small' || !size,
+  const iconClassStyles = cn({
+    'size-3 text-size-p-small-r lg:text-size-p-small': size === 'large',
+    'size-2.5 text-size-p-tiny-r lg:text-size-p-tiny': size === 'small' || !size,
   })
 
   const MAX_TEXT_SIZE = 10
@@ -62,7 +59,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
       onFocus={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <p className="tag inline-block cursor-default select-none">{tagText}</p>
+      <Typography className="inline-block cursor-default select-none">{tagText}</Typography>
       {removable && (
         // TODO implement correct variant and larger clickable area
         <Button

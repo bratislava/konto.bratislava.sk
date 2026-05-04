@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import Link from 'next/link'
 
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
@@ -18,21 +18,23 @@ const BottomSheetMenuRow = ({
 }: BottomSheetMenuRowProps) => {
   return url ? (
     <Link className="flex items-center gap-3" href={url} onClick={() => onLinkClick()}>
-      <div
+      <Typography
+        variant="p-small"
+        as="div"
         className={cn(
-          'flex cursor-pointer items-center gap-3 py-2 font-sans text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden',
+          'flex cursor-pointer items-center gap-3 py-2 font-sans hover:font-semibold focus:font-semibold focus:outline-hidden',
           itemClassName,
         )}
       >
         <span className="p-[10px]">{icon}</span>
         <span>{title}</span>
-      </div>
+      </Typography>
     </Link>
   ) : (
     <Button
       onPress={onPress}
       className={cn(
-        'flex cursor-pointer items-center gap-3 py-2 text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden',
+        'flex cursor-pointer items-center gap-3 py-2 hover:font-semibold focus:font-semibold focus:outline-hidden',
         itemClassName,
       )}
     >

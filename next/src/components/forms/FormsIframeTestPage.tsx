@@ -1,7 +1,7 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
+import { Typography } from '@bratislava/component-library'
 import IframeResizer from '@iframe-resizer/react'
 import { useQueryState } from 'nuqs'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SelectField from '@/src/components/widget-components/SelectField/SelectField'
@@ -64,7 +64,9 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
 
       <main className="flex-1">
         <SectionContainer className="py-6">
-          <h1 className="mb-6 text-h1 font-semibold">Formuláre</h1>
+          <Typography variant="h1" className="mb-6">
+            Formuláre
+          </Typography>
 
           <SelectField
             options={options}
@@ -87,8 +89,10 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
         <SectionContainer className="bg-gray-900 py-8 text-white">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div>
-              <div className="mb-4 font-semibold">LOGO</div>
-              <p>
+              <Typography variant="h5" className="mb-4">
+                LOGO
+              </Typography>
+              <Typography variant="p-default">
                 Názov spoločnosti
                 <br />
                 Ulica 123
@@ -96,11 +100,13 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
                 851 01 Bratislava
                 <br />
                 info@example.sk
-              </p>
+              </Typography>
             </div>
 
             <div>
-              <h5 className="mb-4 font-semibold">Menu</h5>
+              <Typography variant="h5" className="mb-4">
+                Menu
+              </Typography>
               <div className="flex flex-col gap-2">
                 <a href="#" className="hover:underline">
                   Prvá položka
@@ -118,7 +124,9 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
             </div>
 
             <div>
-              <h5 className="mb-4 font-semibold">Dokumenty</h5>
+              <Typography variant="h5" className="mb-4">
+                Dokumenty
+              </Typography>
               <div className="flex flex-col gap-2">
                 <a href="#" className="hover:underline">
                   Dokument 1

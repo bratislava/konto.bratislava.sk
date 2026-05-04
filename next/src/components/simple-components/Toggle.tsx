@@ -34,17 +34,18 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
     'cursor-not-allowed opacity-50': isDisabled,
     'cursor-pointer': !isDisabled,
   })
-  const labelStyle = cn('text-16 text-gray-700 select-none')
+  const labelStyle = cn('text-size-p-small-r text-gray-700 select-none lg:text-size-p-small')
 
   const togglerContainer = cn('flex h-6 w-12 items-center rounded-full', {
     'bg-success-700': state.isSelected,
     'bg-gray-400': !state.isSelected,
   })
 
-  const toggleBall = cn('relative h-5 w-5 rounded-full bg-white', {
+  const toggleBall = cn('relative size-5 rounded-full bg-white', {
     'left-[26px]': state.isSelected,
     'left-0.5': !state.isSelected,
   })
+
   return (
     <label
       htmlFor={generatedOrProvidedId}
@@ -56,14 +57,14 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
       </VisuallyHidden>
       <div className={togglerContainer}>
         <div
-          className={cn('absolute ml-1.5 flex h-4 w-4 items-center justify-center', {
+          className={cn('absolute ml-1.5 flex size-4 items-center justify-center', {
             hidden: !state.isSelected,
           })}
         >
           <CheckIcon className="text-gray-0" />
         </div>
         <div
-          className={cn('absolute ml-[26px] flex h-4 w-4 items-center justify-center', {
+          className={cn('absolute ml-[26px] flex size-4 items-center justify-center', {
             hidden: state.isSelected,
           })}
         >

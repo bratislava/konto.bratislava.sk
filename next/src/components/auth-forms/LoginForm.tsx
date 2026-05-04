@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
@@ -61,7 +61,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
       data-cy="login-container"
     >
-      <h1 className="text-h3">{t('auth.login_title')}</h1>
+      <Typography variant="h3" as="h1">{t('auth.login_title')}</Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="email"

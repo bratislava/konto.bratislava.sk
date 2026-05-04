@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
@@ -34,18 +34,18 @@ const SummaryRow = (props: SummaryRowProps) => {
   })
 
   const labelClassName = cn('w-full flex-1', {
-    'text-p1-semibold': size === 'large',
-    'text-p2-semibold': size === 'small',
+    'text-size-p-large-r font-semibold lg:text-size-p-large': size === 'large',
+    'text-size-p-small-r font-semibold lg:text-size-p-small': size === 'small',
   })
 
   const valueClassName = cn('grow', {
-    'text-p1': size === 'large',
-    'text-p2': size === 'small',
+    'text-size-p-large-r lg:text-size-p-large': size === 'large',
+    'text-size-p-small-r lg:text-size-p-small': size === 'small',
   })
 
   return (
     <div className={containerClassName} data-cy={`summary-row-${data.name}`}>
-      <p className={labelClassName}>{data.label}</p>
+      <Typography className={labelClassName}>{data.label}</Typography>
       <div className="flex w-full flex-1 flex-row items-center">
         <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (

@@ -1,4 +1,5 @@
-import React, { PropsWithChildren, ReactNode } from 'react'
+import { Typography } from '@bratislava/component-library'
+import { PropsWithChildren, ReactNode } from 'react'
 
 import ErrorIcon from '@/src/components/icon-components/ErrorIcon'
 import InfoIcon from '@/src/components/icon-components/InfoIcon'
@@ -52,8 +53,10 @@ const MessageModal = ({
         </div>
         <div className="flex w-full flex-col gap-5 lg:gap-6">
           <div className="flex flex-col gap-2">
-            <div className="w-full text-center text-h5 font-semibold">{title}</div>
-            <div className="flex w-full flex-col gap-4 text-center text-p2 text-p-base whitespace-pre-wrap">
+            <Typography variant="h5" as="p" className="w-full text-center font-semibold">
+              {title}
+            </Typography>
+            <div className="flex w-full flex-col gap-4 text-center text-size-p-small-r whitespace-pre-wrap lg:text-size-p-small">
               {children}
             </div>
           </div>

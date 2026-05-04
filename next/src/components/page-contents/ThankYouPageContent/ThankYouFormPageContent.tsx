@@ -90,10 +90,10 @@ const ThankYouFormPageContent = () => {
         />
         {displayAccountLinks ? (
           <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
-            <span className="text-p2 flex">
+            <span className="flex">
               <AccountMarkdown
                 variant="sm"
-                content={`<span className='text-p2'>${t('thank_you.subtitle_mail_info')}</span>.`}
+                content={`<span className='text-size-p-small-r lg:text-size-p-small'>${t('thank_you.subtitle_mail_info')}</span>.`}
               />
             </span>
             <div className="mt-4 flex flex-col gap-3 md:mt-6">

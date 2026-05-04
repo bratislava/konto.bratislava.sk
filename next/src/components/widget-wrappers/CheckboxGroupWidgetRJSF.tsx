@@ -1,7 +1,6 @@
 import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
 import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { CheckboxGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { useMemo } from 'react'
 
 import Checkbox from '@/src/components/fields/Checkbox'
 import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
@@ -26,10 +25,8 @@ const CheckboxGroupWidgetRJSF = (props: CheckboxGroupWidgetRJSFProps) => {
 
   const { enumOptions, enumMetadata, variant = 'basic' } = specificOptions
 
-  const mergedOptions = useMemo(
-    () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
-    [enumOptions, enumMetadata],
-  )
+  // No useMemo: React Compiler can't preserve memoization over deps destructured from a function return, so manual memo blocks component compilation.
+  const mergedOptions = mergeEnumOptionsMetadata(enumOptions, enumMetadata)
 
   const hasDescriptionInCheckboxGroup = mergedOptions.some((option) => option.description)
 

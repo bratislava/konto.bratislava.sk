@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { renderFormAdditionalInfo } from 'forms-shared/string-templates/renderTemplate'
 import { useTranslation } from 'next-i18next/pages'
 import React, { useMemo } from 'react'
@@ -21,7 +22,7 @@ const SummaryAdditionalInfo = () => {
 
   return (
     <div>
-      <h3 className="text-h3 mb-4">{t('summary.additional_info')}</h3>
+      <Typography variant="h3" className="mb-4">{t('summary.additional_info')}</Typography>
       <AccountMarkdown
         content={additionalInfo}
         // TODO: Replace variant statusBar

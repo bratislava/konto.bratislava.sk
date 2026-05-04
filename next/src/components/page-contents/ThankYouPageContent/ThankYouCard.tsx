@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -41,7 +41,7 @@ const ThankYouCard = ({
     <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-8 md:rounded-2xl md:px-12 md:py-10 lg:max-w-[800px]">
       <span
         className={cn(
-          'flex h-14 w-14 min-w-14 items-center justify-center rounded-full md:h-[88px] md:w-[88px] md:min-w-[88px]',
+          'flex size-14 min-w-14 items-center justify-center rounded-full md:size-[88px] md:min-w-[88px]',
           {
             'bg-background-success-soft-default': variant === 'success',
             'bg-background-error-soft-default': variant === 'error',
@@ -52,7 +52,7 @@ const ThankYouCard = ({
         {iconByVariant}
       </span>
       <div className="flex flex-col items-center gap-8 md:gap-3">
-        <h2 className="text-center text-h3">{title}</h2>
+        <Typography variant="h3" as="h2" className="text-center">{title}</Typography>
         <AccountMarkdown variant="sm" content={content} className="text-center" />
       </div>
       <div
@@ -65,7 +65,7 @@ const ThankYouCard = ({
             {firstButtonLink ? (
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
-                  <h3 className="text-left text-h3">{feedbackTitle}</h3>
+                  <Typography variant="h3" className="text-left">{feedbackTitle}</Typography>
                   <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
                     {firstButtonTitle}
                   </Button>

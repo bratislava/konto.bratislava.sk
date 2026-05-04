@@ -34,7 +34,6 @@ const useGetContext = () => {
       if (
         enabledRef.current &&
         !isShallow &&
-
         !window.confirm(t('info_messages.form_leave_protection'))
       ) {
         router.events.emit('routeChangeError')

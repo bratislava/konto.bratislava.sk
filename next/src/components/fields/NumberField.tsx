@@ -62,7 +62,7 @@ const NumberField = (
             data-cy={rest.name ? `number-${rest.name}` : undefined}
             className={({ isFocused, isDisabled, isInvalid }) =>
               cn(
-                'w-full rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',
+                'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
                 'px-3 py-2 lg:px-4 lg:py-3',
                 'placeholder:text-content-passive-tertiary',
                 {

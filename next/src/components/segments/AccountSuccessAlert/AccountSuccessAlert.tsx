@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
 import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/src/assets/ui-icons'
@@ -57,7 +57,7 @@ const AccountSuccessAlert = ({
       </div>
 
       <div className="flex flex-col gap-3 lg:gap-4">
-        <h1 className="text-center text-h3">{title}</h1>
+        <Typography variant="h3" as="h1" className="text-center">{title}</Typography>
         {description && (
           <AccountMarkdown className="text-center" content={description} variant="sm" />
         )}

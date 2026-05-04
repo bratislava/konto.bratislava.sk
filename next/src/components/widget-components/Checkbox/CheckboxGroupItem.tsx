@@ -32,7 +32,7 @@ const CheckboxGroupItem = ({
   const isSelected = state.isSelected(rest.value)
 
   const checkboxStyle = cn(
-    'flex h-6 w-6 items-center justify-center rounded-sm border-2 border-solid border-gray-700',
+    'flex size-6 items-center justify-center rounded-sm border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || isIndeterminate) && !error,
       'group-hover:border-gray-600':
@@ -65,7 +65,7 @@ const CheckboxGroupItem = ({
     'cursor-not-allowed opacity-50': isDisabled,
   })
 
-  const labelStyle = cn('flex text-16 text-gray-700', {})
+  const labelStyle = cn('flex text-size-p-small-r text-gray-700 lg:text-size-p-small', {})
 
   return (
     <div data-cy={`checkbox-${inputProps.value as string}`}>
@@ -79,7 +79,7 @@ const CheckboxGroupItem = ({
             <div className={checkboxStyle}>
               {isSelected && !isIndeterminate && (
                 <CheckIcon
-                  className={cn('h-5 w-5 text-gray-0', {
+                  className={cn('size-5 text-gray-0', {
                     hidden: !isSelected,
                   })}
                 />

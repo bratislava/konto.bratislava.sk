@@ -9,7 +9,7 @@ interface SelectCheckboxProps {
 const CheckboxIcon = ({ checked, className }: SelectCheckboxProps) => {
   // STYLES
   const checkboxClassName = cn(
-    'flex h-6 w-6 flex-col justify-center rounded-sm',
+    'flex size-6 flex-col justify-center rounded-sm',
     {
       'bg-gray-700': checked,
       'border-2 border-gray-600': !checked,
@@ -17,7 +17,7 @@ const CheckboxIcon = ({ checked, className }: SelectCheckboxProps) => {
     className,
   )
 
-  const iconClassName = cn('m-auto h-5 w-5 text-gray-0', {
+  const iconClassName = cn('m-auto size-5 text-gray-0', {
     dropdown: className && className.split(' ').includes('dropdown'),
   })
 

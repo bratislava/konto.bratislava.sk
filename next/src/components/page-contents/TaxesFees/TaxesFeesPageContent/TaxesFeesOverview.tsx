@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { TaxAvailabilityStatus, TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
@@ -27,7 +28,7 @@ const TaxesFeesOverview = ({ taxesData, taxType }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-h5-semibold">{title}</h2>
+      <Typography variant="h5" as="h2">{title}</Typography>
       {taxesData?.availabilityStatus === TaxAvailabilityStatus.LookingForYourTax ? (
         <TaxesFeesOverviewBanner taxType={taxType} variant="looking-for" />
       ) : taxesData?.availabilityStatus === TaxAvailabilityStatus.TaxNotOnRecord ? (

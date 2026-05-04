@@ -18,6 +18,8 @@ interface ReportTypeConfig {
   taxType: TaxType
   sftpPathEnvKey: string
   fileNameEnvKey: string
+  accountIdEnvKey: string
+  bankIdEnvKey: string
 }
 
 const REPORT_TYPES: ReportTypeConfig[] = [
@@ -25,11 +27,15 @@ const REPORT_TYPES: ReportTypeConfig[] = [
     taxType: TaxType.DZN,
     sftpPathEnvKey: 'REPORTING_SFTP_FILES_PATH',
     fileNameEnvKey: 'REPORTING_FILE_NAME',
+    accountIdEnvKey: 'REPORTING_ACCOUNT_ID',
+    bankIdEnvKey: 'REPORTING_BANK_ID',
   },
   {
     taxType: TaxType.KO,
     sftpPathEnvKey: 'REPORTING_PKO_SFTP_FILES_PATH',
     fileNameEnvKey: 'REPORTING_PKO_FILE_NAME',
+    accountIdEnvKey: 'REPORTING_PKO_ACCOUNT_ID',
+    bankIdEnvKey: 'REPORTING_PKO_BANK_ID',
   },
 ]
 
@@ -135,6 +141,8 @@ export class CardPaymentReportingService {
   private generateHeader(
     dateInfo: { today_DDMMYYYY: string },
     reportFileName: string,
+    accountId: string,
+    bankId: string,
     constants: {
       REPORTING_VARIABLE_SYMBOL: string
       REPORTING_SPECIFIC_SYMBOL: string
@@ -154,8 +162,8 @@ export class CardPaymentReportingService {
       '1',
       dateInfo.today_DDMMYYYY,
       dateInfo.today_DDMMYYYY,
-      this.configService.getOrThrow<string>('REPORTING_ACCOUNT_ID'),
-      this.configService.getOrThrow<string>('REPORTING_BANK_ID'),
+      accountId,
+      bankId,
       constants.REPORTING_VARIABLE_SYMBOL,
       constants.REPORTING_SPECIFIC_SYMBOL,
       constants.REPORTING_CONSTANT_SYMBOL,
@@ -166,6 +174,8 @@ export class CardPaymentReportingService {
   private generateFileBody(
     finalData: CsvColumnsWithVariableSymbol[],
     yesterday_DDMMYYYY: string,
+    accountId: string,
+    bankId: string,
     constants: { REPORTING_USER_CONSTANT_SYMBOL: string },
   ): string {
     let body = ''
@@ -183,8 +193,8 @@ export class CardPaymentReportingService {
         yesterday_DDMMYYYY,
         this.generatePrice(totalPrice, 10),
         '000017S000000S', // padding?
-        this.configService.getOrThrow<string>('REPORTING_ACCOUNT_ID'),
-        this.configService.getOrThrow<string>('REPORTING_BANK_ID'),
+        accountId,
+        bankId,
         constants.REPORTING_USER_CONSTANT_SYMBOL,
         row.variableSymbol.padStart(10, '0'),
         '00000000003',
@@ -243,6 +253,8 @@ export class CardPaymentReportingService {
   private async generateResult(
     finalData: CsvColumnsWithVariableSymbol[],
     reportFileName: string,
+    accountId: string,
+    bankId: string,
     dateInfo: {
       today_DDMMYYYY: string
       today_YYMMDD: string
@@ -255,10 +267,18 @@ export class CardPaymentReportingService {
       'REPORTING_SPECIFIC_SYMBOL',
       'REPORTING_CONSTANT_SYMBOL',
     ])
-    const head = this.generateHeader(dateInfo, reportFileName, constants)
+    const head = this.generateHeader(
+      dateInfo,
+      reportFileName,
+      accountId,
+      bankId,
+      constants,
+    )
     const body = this.generateFileBody(
       finalData,
       dateInfo.yesterday_DDMMYYYY,
+      accountId,
+      bankId,
       constants,
     )
     const footer = this.generateFooter(finalData)
@@ -278,6 +298,12 @@ export class CardPaymentReportingService {
     )
     const reportFileName = this.configService.getOrThrow<string>(
       reportType.fileNameEnvKey,
+    )
+    const accountId = this.configService.getOrThrow<string>(
+      reportType.accountIdEnvKey,
+    )
+    const bankId = this.configService.getOrThrow<string>(
+      reportType.bankIdEnvKey,
     )
     const sftpFiles = await this.sftpFileSubservice.getNewFiles(
       sftpPath,
@@ -326,6 +352,8 @@ export class CardPaymentReportingService {
         const processedFileResult = await this.generateResult(
           finalData,
           reportFileName,
+          accountId,
+          bankId,
           dateInfo,
         )
 

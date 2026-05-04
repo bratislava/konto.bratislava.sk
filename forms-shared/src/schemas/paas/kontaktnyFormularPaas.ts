@@ -41,14 +41,6 @@ const kategorieLabelByValue = Object.fromEntries(
   kategorieItems.map(({ value, label }) => [value, label]),
 ) as Record<KategoriaValue, string>
 
-const kategorieVyzadujuceCisloZiadosti: KategoriaValue[] = [
-  'ziadostOParkovaciuKartu',
-  'zmenaZrusenieParkovacejKarty',
-  'upozornenieONespravnomParkovani',
-  'rozkazOUlozeniSankcie',
-  'parkovacieListky',
-]
-
 export default schema({ title: 'Kontaktný formulár PAAS' }, [
   step('udaje', { title: 'Údaje' }, [
     select(
@@ -61,7 +53,20 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
       {},
     ),
     conditionalFields(
-      createCondition([[['kategoria'], { enum: kategorieVyzadujuceCisloZiadosti }]]),
+      createCondition([
+        [
+          ['kategoria'],
+          {
+            enum: [
+              'ziadostOParkovaciuKartu',
+              'zmenaZrusenieParkovacejKarty',
+              'upozornenieONespravnomParkovani',
+              'rozkazOUlozeniSankcie',
+              'parkovacieListky',
+            ] satisfies KategoriaValue[],
+          },
+        ],
+      ]),
       [
         input(
           'cisloZiadostiEcv',

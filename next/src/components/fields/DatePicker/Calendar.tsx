@@ -55,7 +55,7 @@ const Calendar = (props: RACCalendarProps<DateValue>) => (
               'base-focus-ring ring-offset-2!', // Making ring-offset small to not overlap so much with the grid
               'grid size-10 cursor-pointer place-items-center rounded-lg text-center text-p2 outline-hidden',
               'hover:bg-background-active-primary-soft-hover disabled:cursor-not-allowed disabled:text-content-passive-tertiary',
-              'unavailable:line-through outside-month:text-content-passive-tertiary',
+              'unavailable:line-through outside-month:invisible',
               'selected:bg-background-active-primary-default selected:text-content-active-primary-inverted-default',
             )}
           />

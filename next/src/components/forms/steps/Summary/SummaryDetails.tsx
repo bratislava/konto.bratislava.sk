@@ -12,7 +12,7 @@ import {
 } from 'forms-shared/summary-renderer/SummaryRenderer'
 import { useTranslation } from 'next-i18next/pages'
 import { useMemo } from 'react'
-import { useIsSSR } from 'react-aria'
+import { useIsSSR } from 'react-aria/SSRProvider'
 
 import { AlertIcon, ChevronDownIcon } from '@/src/assets/ui-icons'
 import SummaryFile from '@/src/components/forms/steps/Summary/SummaryFile'

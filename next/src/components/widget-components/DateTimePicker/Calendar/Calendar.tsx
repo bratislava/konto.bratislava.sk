@@ -1,8 +1,9 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { createCalendar } from '@internationalized/date'
 import { useRef } from 'react'
-import { useCalendar, useLocale } from 'react-aria'
-import { useCalendarState } from 'react-stately'
+import { useLocale } from 'react-aria/I18nProvider'
+import { useCalendar } from 'react-aria/useCalendar'
+import { useCalendarState } from 'react-stately/useCalendarState'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
 

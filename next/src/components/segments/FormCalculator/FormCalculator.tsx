@@ -9,7 +9,7 @@ import {
 } from 'forms-shared/generator/uiOptionsTypes'
 import get from 'lodash/get'
 import { useMemo } from 'react'
-import { useNumberFormatter } from 'react-aria'
+import { useNumberFormatter } from 'react-aria/useNumberFormatter'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'

@@ -1,4 +1,4 @@
-import { Placement } from 'react-aria'
+import { Placement } from 'react-aria/useOverlayPosition'
 
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 

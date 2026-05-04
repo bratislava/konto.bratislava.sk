@@ -5,7 +5,7 @@ import {
   RadioGroup as RACRadioGroup,
   RadioGroupProps as RACRadioGroupProps,
   RadioGroupStateContext,
-} from 'react-aria-components'
+} from 'react-aria-components/RadioGroup'
 
 import cn from '@/src/utils/cn'
 

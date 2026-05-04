@@ -1,9 +1,9 @@
 import { forwardRef, Ref } from 'react'
+import { TextArea as RACTextArea } from 'react-aria-components/TextArea'
 import {
-  TextArea as RACTextArea,
   TextField as RACTextField,
   TextFieldProps as RACTextFieldProps,
-} from 'react-aria-components'
+} from 'react-aria-components/TextField'
 
 import cn from '@/src/utils/cn'
 

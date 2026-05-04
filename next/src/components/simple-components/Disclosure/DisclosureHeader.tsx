@@ -1,9 +1,7 @@
 import { Button } from '@bratislava/component-library'
 import { useContext } from 'react'
-import {
-  DisclosureStateContext as RACDisclosureStateContext,
-  Heading as RACHeading,
-} from 'react-aria-components'
+import { DisclosureStateContext as RACDisclosureStateContext } from 'react-aria-components/Disclosure'
+import { Heading as RACHeading } from 'react-aria-components/Heading'
 
 import { ChevronDownIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'

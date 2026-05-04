@@ -1,5 +1,8 @@
 import { useTranslation } from 'next-i18next/pages'
-import { ToggleButton as RACToggleButton, ToggleButtonProps } from 'react-aria-components'
+import {
+  ToggleButton as RACToggleButton,
+  ToggleButtonProps,
+} from 'react-aria-components/ToggleButton'
 
 import { EyeHiddenIcon, EyeIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'

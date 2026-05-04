@@ -1,6 +1,6 @@
 import { useObjectRef } from '@react-aria/utils'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
-import { AriaTextFieldOptions, useTextField } from 'react-aria'
+import { AriaTextFieldOptions, useTextField } from 'react-aria/useTextField'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'

@@ -1,7 +1,9 @@
 import * as React from 'react'
 import { useId, useRef } from 'react'
-import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
-import { ToggleState, useToggleState } from 'react-stately'
+import { useFocusRing } from 'react-aria/useFocusRing'
+import { useSwitch } from 'react-aria/useSwitch'
+import { VisuallyHidden } from 'react-aria/VisuallyHidden'
+import { ToggleState, useToggleState } from 'react-stately/useToggleState'
 
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'

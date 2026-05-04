@@ -1,6 +1,7 @@
 import { CalendarDate, DateDuration, endOfMonth, getWeeksInMonth } from '@internationalized/date'
-import { useCalendarGrid, useLocale } from 'react-aria'
-import { CalendarState } from 'react-stately'
+import { useLocale } from 'react-aria/I18nProvider'
+import { useCalendarGrid } from 'react-aria/useCalendar'
+import { CalendarState } from 'react-stately/useCalendarState'
 
 import CalendarCell from './CalendarCell'
 

@@ -9,7 +9,6 @@ import AuthFormsShowCase from '@/src/components/styleguide/showcases/AuthFormsSh
 import BannerShowCase from '@/src/components/styleguide/showcases/BannerShowCase'
 import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
-import DateFieldShowCase from '@/src/components/styleguide/showcases/DateFieldShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
@@ -52,7 +51,6 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'password-field', label: 'Password Field', component: <PasswordFieldShowCase /> },
   { id: 'radio-group', label: 'Radio Group', component: <RadioGroupShowCase /> },
   { id: 'checkbox-group', label: 'Checkbox Group', component: <CheckboxGroupShowCase /> },
-  { id: 'date-field', label: 'Date Field', component: <DateFieldShowCase /> },
   { id: 'date-picker', label: 'Date Picker', component: <DatePickerShowCase /> },
   { id: 'time-picker', label: 'Time Picker', component: <TimePickerShowCase /> },
   { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },

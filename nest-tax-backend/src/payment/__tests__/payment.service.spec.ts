@@ -119,6 +119,12 @@ describe('PaymentService', () => {
             const mockTx = createMock<Prisma.TransactionClient>({
               taxPayment: {
                 update: mockUpdate,
+                aggregate: jest
+                  .fn()
+                  .mockResolvedValue({ _sum: { amount: 150_000 } }),
+              },
+              tax: {
+                findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
               },
             })
             return await callback(mockTx)
@@ -171,6 +177,12 @@ describe('PaymentService', () => {
             const mockTx = createMock<Prisma.TransactionClient>({
               taxPayment: {
                 update: jest.fn(),
+                aggregate: jest
+                  .fn()
+                  .mockResolvedValue({ _sum: { amount: 150_000 } }),
+              },
+              tax: {
+                findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
               },
             })
             return await callback(mockTx)
@@ -246,6 +258,12 @@ describe('PaymentService', () => {
             const mockTx = createMock<Prisma.TransactionClient>({
               taxPayment: {
                 update: jest.fn(),
+                aggregate: jest
+                  .fn()
+                  .mockResolvedValue({ _sum: { amount: 150_000 } }),
+              },
+              tax: {
+                findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
               },
             })
             return await callback(mockTx)
@@ -279,6 +297,12 @@ describe('PaymentService', () => {
             const mockTx = createMock<Prisma.TransactionClient>({
               taxPayment: {
                 update: jest.fn(),
+                aggregate: jest
+                  .fn()
+                  .mockResolvedValue({ _sum: { amount: 150_000 } }),
+              },
+              tax: {
+                findUnique: jest.fn().mockResolvedValue({ amount: 150_000 }),
               },
             })
             try {
@@ -312,23 +336,23 @@ describe('PaymentService', () => {
     it('should throw NotFoundException when tax is not found', async () => {
       const externalId = 'external-id-123'
       const mockNotFoundException = new Error('Not Found')
-      const mockTransaction = jest.fn().mockImplementation((callback) => {
-        const mockTx = {
-          taxPayment: {
-            update: jest.fn(),
-            aggregate: jest.fn(),
-          },
-          tax: {
-            findUnique: jest.fn().mockResolvedValue(null),
-          },
-        }
-        return callback(mockTx)
-      })
-
-      jest.spyOn(prismaMock, '$transaction').mockImplementation(mockTransaction)
+      jest
+        .spyOn(prismaMock, '$transaction')
+        .mockImplementation(async (callback) => {
+          const mockTx = {
+            taxPayment: {
+              update: jest.fn(),
+              aggregate: jest.fn(),
+            },
+            tax: {
+              findUnique: jest.fn().mockResolvedValue(null),
+            },
+          } as unknown as Prisma.TransactionClient
+          return callback(mockTx)
+        })
       jest
         .spyOn(throwerErrorGuard, 'NotFoundException')
-        .mockReturnValue(mockNotFoundException as any)
+        .mockReturnValue(mockNotFoundException as unknown as HttpException)
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
@@ -349,23 +373,22 @@ describe('PaymentService', () => {
       'should pass is_fully_paid: $expectedIsFullyPaid when totalPaid=$totalPaid and taxAmount=$taxAmount',
       async ({ totalPaid, taxAmount, expectedIsFullyPaid }) => {
         const externalId = 'external-id-123'
-        const mockTransaction = jest.fn().mockImplementation((callback) =>
-          callback({
-            taxPayment: {
-              update: jest.fn(),
-              aggregate: jest
-                .fn()
-                .mockResolvedValue({ _sum: { amount: totalPaid } }),
-            },
-            tax: {
-              findUnique: jest.fn().mockResolvedValue({ amount: taxAmount }),
-            },
-          }),
-        )
-
         jest
           .spyOn(prismaMock, '$transaction')
-          .mockImplementation(mockTransaction)
+          .mockImplementation(async (callback) => {
+            const tx = {
+              taxPayment: {
+                update: jest.fn(),
+                aggregate: jest
+                  .fn()
+                  .mockResolvedValue({ _sum: { amount: totalPaid } }),
+              },
+              tax: {
+                findUnique: jest.fn().mockResolvedValue({ amount: taxAmount }),
+              },
+            } as unknown as Prisma.TransactionClient
+            return callback(tx)
+          })
         jest
           .spyOn(bloomreachService, 'trackEventTaxPayment')
           .mockResolvedValue(true)

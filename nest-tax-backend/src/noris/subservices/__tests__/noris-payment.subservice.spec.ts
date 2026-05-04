@@ -827,27 +827,26 @@ describe('NorisPaymentSubservice', () => {
           },
         }
 
-        const mockTransaction = jest.fn().mockImplementation((callback) =>
-          callback({
-            $queryRaw: jest.fn().mockResolvedValue([]),
-            taxPayment: {
-              aggregate: jest
-                .fn()
-                .mockResolvedValue({ _sum: { amount: alreadyPaid } }),
-              create: jest.fn().mockResolvedValue({
-                id: 1,
-                amount: expectedCreatedAmount,
-                source: 'BANK_ACCOUNT',
-                taxId: 1,
-                status: PaymentStatus.SUCCESS,
-              }),
-            },
-          }),
-        )
-
         jest
           .spyOn(prismaMock, '$transaction')
-          .mockImplementation(mockTransaction)
+          .mockImplementation(async (callback) => {
+            const tx = {
+              $queryRaw: jest.fn().mockResolvedValue([]),
+              taxPayment: {
+                aggregate: jest
+                  .fn()
+                  .mockResolvedValue({ _sum: { amount: alreadyPaid } }),
+                create: jest.fn().mockResolvedValue({
+                  id: 1,
+                  amount: expectedCreatedAmount,
+                  source: 'BANK_ACCOUNT',
+                  taxId: 1,
+                  status: PaymentStatus.SUCCESS,
+                }),
+              },
+            } as unknown as Prisma.TransactionClient
+            return callback(tx)
+          })
 
         const trackEventMock = jest
           .spyOn(bloomreachService, 'trackEventTaxPayment')
@@ -1274,17 +1273,18 @@ describe('NorisPaymentSubservice', () => {
       })
 
       beforeEach(() => {
-        jest.spyOn(prismaMock, '$transaction').mockImplementation(
-          jest.fn().mockImplementation((callback) =>
-            callback({
+        jest
+          .spyOn(prismaMock, '$transaction')
+          .mockImplementation(async (callback) => {
+            const tx = {
               $queryRaw: jest.fn().mockResolvedValue([]),
               taxPayment: {
                 aggregate: jest.fn().mockResolvedValue({ _sum: { amount: 0 } }),
                 create: jest.fn().mockResolvedValue(MOCK_CREATED_PAYMENT),
               },
-            }),
-          ),
-        )
+            } as unknown as Prisma.TransactionClient
+            return callback(tx)
+          })
       })
 
       it('should suppress email when datum_posledni_platby is older than 6 months', async () => {

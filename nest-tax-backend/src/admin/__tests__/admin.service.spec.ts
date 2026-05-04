@@ -105,7 +105,7 @@ describe('AdminService', () => {
         {
           variabilny_symbol: 'mock-1',
           uhrazeno: 1,
-          datum_posledni_platby: expect.any(Date),
+          datum_posledni_platby: expect.any(Date) as Date,
         },
       ])
     })
@@ -152,7 +152,7 @@ describe('AdminService', () => {
         {
           variabilny_symbol: 'mock-2',
           uhrazeno: 1,
-          datum_posledni_platby: expect.any(Date),
+          datum_posledni_platby: expect.any(Date) as Date,
         },
       ])
     })

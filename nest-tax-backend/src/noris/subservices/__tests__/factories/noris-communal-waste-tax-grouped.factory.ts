@@ -12,6 +12,7 @@ export const createTestNorisCommunalWasteTaxGrouped = (
   cislo_konania: '4/25/030151-36/78/219197',
   datum_platnosti: new Date('2025-03-26T00:00:00.000Z'),
   variabilny_symbol: '3425030151',
+  datum_posledni_platby: new Date('2025-04-10T00:00:00.000Z'),
   rok: 2025,
   dan_spolu: '448,66',
   uhrazeno: 448.66,

@@ -400,11 +400,19 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
       )
 
-      expect(dznCall[3][0].content).toContain('1234567890123456')
-      expect(dznCall[3][0].content).not.toContain('6543210987654321')
+      expect((dznCall as EmailSendCall)[3][0].content).toContain(
+        '1234567890123456',
+      )
+      expect((dznCall as EmailSendCall)[3][0].content).not.toContain(
+        '6543210987654321',
+      )
 
-      expect(pkoCall[3][0].content).toContain('6543210987654321')
-      expect(pkoCall[3][0].content).not.toContain('1234567890123456')
+      expect((pkoCall as EmailSendCall)[3][0].content).toContain(
+        '6543210987654321',
+      )
+      expect((pkoCall as EmailSendCall)[3][0].content).not.toContain(
+        '1234567890123456',
+      )
     })
 
     it('should store CSV file names with their tax type', async () => {

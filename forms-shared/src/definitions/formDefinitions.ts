@@ -95,6 +95,8 @@ import nahlaseniePodnetuKElektrickymKolobezkam, {
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 import kontaktnyFormularPaas, {
+  kontaktnyFormularPaasExtractEmail,
+  kontaktnyFormularPaasExtractName,
   kontaktnyFormularPaasExtractTechnicalSubject,
 } from '../schemas/paas/kontaktnyFormularPaas'
 
@@ -684,6 +686,8 @@ export const formDefinitions: FormDefinition[] = [
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',
       },
+      extractEmail: kontaktnyFormularPaasExtractEmail,
+      extractName: kontaktnyFormularPaasExtractName,
       mailer: 'mailgun',
       // TODO use template with PAAS logo
       userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,

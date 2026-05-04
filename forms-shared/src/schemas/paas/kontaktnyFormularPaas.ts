@@ -37,10 +37,6 @@ const kategorieItems = [
 
 type KategoriaValue = (typeof kategorieItems)[number]['value']
 
-const kategorieLabelByValue = Object.fromEntries(
-  kategorieItems.map(({ value, label }) => [value, label]),
-) as Record<KategoriaValue, string>
-
 export default schema({ title: 'Kontaktný formulár PAAS' }, [
   step('udaje', { title: 'Údaje' }, [
     select(
@@ -125,9 +121,35 @@ type ExtractTechnicalSubjectFormData = {
   }
 }
 
+const kategorieLabelByValue = Object.fromEntries(
+  kategorieItems.map(({ value, label }) => [value, label]),
+) as Record<KategoriaValue, string>
+
 export const kontaktnyFormularPaasExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractTechnicalSubjectFormData> =
   {
     type: 'schemaless',
     extractFn: (formData) =>
       `Kontaktný formulár PAAS: ${kategorieLabelByValue[formData.udaje.kategoria]}`,
   }
+
+type ExtractEmailFormData = {
+  udaje: { sposobKontaktovania: 'email'; email: string } | { sposobKontaktovania: 'telefon' }
+}
+
+export const kontaktnyFormularPaasExtractEmail: SchemalessFormDataExtractor<ExtractEmailFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) =>
+      formData.udaje.sposobKontaktovania === 'email' ? formData.udaje.email : '',
+  }
+
+type ExtractNameFormData = {
+  udaje: {
+    menoPriezviskoObchodneMeno: string
+  }
+}
+
+export const kontaktnyFormularPaasExtractName: SchemalessFormDataExtractor<ExtractNameFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => formData.udaje.menoPriezviskoObchodneMeno,
+}

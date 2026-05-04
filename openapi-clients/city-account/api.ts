@@ -1185,7 +1185,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'email' is not null or undefined
       assertParamExists('adminControllerCheckUserVerifyState', 'email', email)
       const localVarPath = `/admin/status/user/{email}`.replace(
-        `{${'email'}}`,
+        '{email}',
         encodeURIComponent(String(email)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1231,7 +1231,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'externalId' is not null or undefined
       assertParamExists('adminControllerDeactivateAccount', 'externalId', externalId)
       const localVarPath = `/admin/deactivate/{externalId}`.replace(
-        `{${'externalId'}}`,
+        '{externalId}',
         encodeURIComponent(String(externalId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1277,7 +1277,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'email' is not null or undefined
       assertParamExists('adminControllerGetVerificationDataForUser', 'email', email)
       const localVarPath = `/admin/user/id-card-verification-data/{email}`.replace(
-        `{${'email'}}`,
+        '{email}',
         encodeURIComponent(String(email)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1421,7 +1421,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         manuallyVerifyUserRequestDto,
       )
       const localVarPath = `/admin/user/verify-manually/{email}`.replace(
-        `{${'email'}}`,
+        '{email}',
         encodeURIComponent(String(email)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3523,7 +3523,7 @@ export const UserIntegrationApiAxiosParamCreator = function (configuration?: Con
         externalId,
       )
       const localVarPath = `/user-integration/contact-and-id-info/{externalId}`.replace(
-        `{${'externalId'}}`,
+        '{externalId}',
         encodeURIComponent(String(externalId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4311,7 +4311,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       // verify required parameter 'category' is not null or undefined
       assertParamExists('userControllerUnsubscribePublicUser', 'category', category)
       const localVarPath = `/user/public/unsubscribe/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4374,7 +4374,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       // verify required parameter 'category' is not null or undefined
       assertParamExists('userControllerUnsubscribePublicUserByExternalId', 'category', category)
       const localVarPath = `/user/public/unsubscribe/external-id/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.

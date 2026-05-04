@@ -36,7 +36,7 @@
     "@nestjs/swagger": "^11.4.2",
     "@prisma/client": "6.17.1",
     "@types/mssql": "^9.1.9",
-    "axios": "1.15.2",
+    "axios": "1.16.0",
     "bysquare": "2.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.4",
@@ -103,11 +103,11 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": ">=24.14.x",
-    "npm": ">=11.11.x"
+    "node": ">=24.15.x",
+    "npm": ">=11.12.x"
   },
   "volta": {
-    "node": "24.14.1",
-    "npm": "11.11.0"
+    "node": "24.15.0",
+    "npm": "11.12.1"
   }
 }

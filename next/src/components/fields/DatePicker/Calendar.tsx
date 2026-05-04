@@ -38,10 +38,10 @@ const Calendar = (props: RACCalendarProps<DateValue>) => (
       </Button>
     </div>
 
-    <RACCalendarGrid className="w-full border-separate border-spacing-0">
+    <RACCalendarGrid className="w-full border-separate border-spacing-0" weekdayStyle="short">
       <RACCalendarGridHeader>
         {(day) => (
-          <RACCalendarHeaderCell className="border-b border-border-active-primary-default bg-background-passive-primary p-3 text-p3-semibold text-content-passive-secondary">
+          <RACCalendarHeaderCell className="border-b border-border-active-primary-default bg-background-passive-primary p-3 text-p3-semibold text-content-passive-secondary first-letter:uppercase">
             {day}
           </RACCalendarHeaderCell>
         )}

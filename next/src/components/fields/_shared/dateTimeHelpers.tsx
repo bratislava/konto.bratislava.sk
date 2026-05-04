@@ -12,7 +12,7 @@ export const dateOrTimeContainerClassName = ({
   isInvalid,
 }: DateInputRenderProps | GroupRenderProps) =>
   cn(
-    'flex w-full items-center rounded-lg border bg-background-passive-base text-p2 text-content-passive-secondary outline-hidden',
+    'flex w-full items-center rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
     'px-3 py-2 lg:px-4 lg:py-3',
     {
       'border-border-active-default': !isInvalid && !isFocusWithin,

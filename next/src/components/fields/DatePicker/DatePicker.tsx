@@ -15,7 +15,7 @@ import {
 import { CalendarIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'
 
-import { dateOrTimeContainerClassName, dateSegmentClassName } from '../_shared/date-time-helpers'
+import { dateOrTimeContainerClassName, dateSegmentClassName } from '../_shared/dateTimeHelpers'
 import FieldWrapper from '../_shared/FieldWrapper'
 import { FieldBaseProps } from '../_shared/types'
 import Calendar from './Calendar'

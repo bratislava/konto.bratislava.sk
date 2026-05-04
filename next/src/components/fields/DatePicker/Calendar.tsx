@@ -28,11 +28,7 @@ const Calendar = (props: RACCalendarProps<DateValue>) => (
       <Button slot="previous" variant="plain" className="-m-2 p-2" size="small">
         <ChevronLeftIcon />
       </Button>
-      {/* FIXME Typography */}
-      <RACHeading
-        level={2}
-        className="flex-1 text-center text-p2-semibold first-letter:uppercase"
-      />
+      <RACHeading className="flex-1 text-center text-size-p-small-r font-semibold first-letter:uppercase lg:text-size-p-small" />
       <Button slot="next" variant="plain" className="-m-2 p-2" size="small">
         <ChevronRightIcon />
       </Button>
@@ -41,7 +37,7 @@ const Calendar = (props: RACCalendarProps<DateValue>) => (
     <RACCalendarGrid className="w-full border-separate border-spacing-0" weekdayStyle="short">
       <RACCalendarGridHeader>
         {(day) => (
-          <RACCalendarHeaderCell className="border-b border-border-active-primary-default bg-background-passive-primary p-3 text-p3-semibold text-content-passive-secondary first-letter:uppercase">
+          <RACCalendarHeaderCell className="border-b border-border-active-primary-default bg-background-passive-primary p-3 text-size-p-small-r font-semibold text-content-passive-secondary first-letter:uppercase lg:text-size-p-small">
             {day}
           </RACCalendarHeaderCell>
         )}
@@ -53,7 +49,7 @@ const Calendar = (props: RACCalendarProps<DateValue>) => (
             date={date}
             className={cn(
               'base-focus-ring ring-offset-2!', // Making ring-offset small to not overlap so much with the grid
-              'grid size-10 cursor-pointer place-items-center rounded-lg text-center text-p2 outline-hidden',
+              'grid size-10 cursor-pointer place-items-center rounded-lg text-center text-size-p-small-r outline-hidden lg:text-size-p-small',
               'hover:bg-background-active-primary-soft-hover disabled:cursor-not-allowed disabled:text-content-passive-tertiary',
               'unavailable:line-through outside-month:invisible',
               'selected:bg-background-active-primary-default selected:text-content-active-primary-inverted-default',

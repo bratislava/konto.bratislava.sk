@@ -14,9 +14,9 @@ const Toggle = ({ children, className, ...rest }: ToggleProps) => (
     data-cy={rest.id ? `${rest.id.replaceAll('_', '-')}-toggle` : undefined}
     className={(renderProps) =>
       cn(
-        'group flex cursor-pointer items-center gap-4 rounded-full text-16 text-content-passive-secondary base-focus-ring select-none',
-        'disabled:cursor-not-allowed disabled:opacity-50',
-        'readonly:cursor-not-allowed',
+        'group flex cursor-pointer items-center gap-4 rounded-full text-size-p-small-r text-content-passive-secondary base-focus-ring select-none lg:text-size-p-small',
+        'disabled:cursor-default disabled:opacity-50',
+        'read-only:cursor-default',
         typeof className === 'function' ? className(renderProps) : className,
       )
     }

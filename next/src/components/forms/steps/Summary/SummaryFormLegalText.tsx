@@ -1,5 +1,5 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import React from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
@@ -12,7 +12,7 @@ const SummaryFormLegalText = () => {
 
   return (
     <div>
-      <h3 className="mb-4 text-h3">{t('summary.vop_agreement_title')}</h3>
+      <Typography variant="h3" className="mb-4">{t('summary.vop_agreement_title')}</Typography>
       <AccountMarkdown
         content={termsAndConditions}
         // TODO: Replace variant statusBar

@@ -1,6 +1,7 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { InstallmentPaidStatusEnum } from 'openapi-clients/tax'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { formatDate } from '@/src/components/formatting/FormatDate'
@@ -44,16 +45,18 @@ const PaymentSchedule = () => {
           <Fragment key={index}>
             {index > 0 && <HorizontalDivider asListItem />}
             <li className="flex w-full flex-col items-start py-4 max-lg:gap-2 lg:flex-row">
-              <span className="text-h6 lg:basis-200">
+              <Typography variant="h6" as="span" className="lg:basis-200">
                 {/* only first installment is calculated, others are hardcoded so they will always be available for DzN,
                how date calculation works for PKO is not yet determined same in TaxFeePaymentMethodSection */}
                 {installment.dueDate
                   ? translationMap[index]
                   : t('tax_detail_section.installments.not_available')}
-              </span>
+              </Typography>
               <div className="flex justify-between max-lg:w-full lg:grow">
-                <span
-                  className={cn('text-p2-semibold', {
+                <Typography
+                  variant="p-small"
+                  as="span"
+                  className={cn('font-semibold', {
                     'text-content-error-default':
                       installment.status === InstallmentPaidStatusEnum.AfterDueDate,
                     'text-content-warning-default':
@@ -64,10 +67,10 @@ const PaymentSchedule = () => {
                   })}
                 >
                   {statusLabel}
-                </span>
-                <span className="text-p2-semibold">
+                </Typography>
+                <Typography variant="p-small" as="span" className="font-semibold">
                   <FormatCurrencyFromCents value={installment.remainingAmount} />
-                </span>
+                </Typography>
               </div>
             </li>
           </Fragment>

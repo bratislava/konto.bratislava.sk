@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
@@ -56,7 +56,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         return onSubmit(data.email)
       })}
     >
-      <h1 className="text-h3">{t('auth.forgotten_password_title')}</h1>
+      <Typography variant="h3" as="h1">{t('auth.forgotten_password_title')}</Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
         name="email"

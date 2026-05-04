@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 import slugify from 'slugify'
 
@@ -32,14 +33,14 @@ export const Wrapper = ({ title, children, direction = 'row', noBorder }: Wrappe
   return (
     <div className={wrapperClassNames}>
       {title && (
-        <h2 id={mySlugify(title)} className="pb-2 text-h2">
+        <Typography variant="h2" id={mySlugify(title)} className="pb-2">
           <MLink href={`#${mySlugify(title)}`} className="group">
             {title}
             <span className="invisible pl-2 group-hover:visible">
               <LinkVariantIcon className="inline" />
             </span>
           </MLink>
-        </h2>
+        </Typography>
       )}
       <div className={childrenClassNames}>{children}</div>
     </div>

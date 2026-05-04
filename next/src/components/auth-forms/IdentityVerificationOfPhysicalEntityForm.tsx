@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -97,7 +97,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         return onSubmit(data)
       })}
     >
-      <h1 className="text-h3">{t('auth.identity_verification.fo.init.title')}</h1>
+      <Typography variant="h3" as="h1">
+        {t('auth.identity_verification.fo.init.title')}
+      </Typography>
       <AccountMarkdown
         variant="sm"
         content={
@@ -173,7 +175,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
               className="mb-2 self-center"
             />
             {captchaWarning === 'show' && (
-              <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
+              <Typography variant="p-tiny" className="italic">
+                {t('auth.captcha_warning')}
+              </Typography>
             )}
           </>
         )}

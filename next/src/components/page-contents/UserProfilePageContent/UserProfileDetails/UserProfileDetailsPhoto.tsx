@@ -1,3 +1,5 @@
+import { Typography } from '@bratislava/component-library'
+
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 
 type Props = {
@@ -24,7 +26,9 @@ const UserProfileDetailsPhoto = ({ userAttributes }: Props) => {
 
   return (
     <div className="flex size-26 items-center justify-center rounded-full bg-background-passive-primary text-content-passive-primary lg:size-42">
-      <span className="text-h2">{initialLetters.toUpperCase()}</span>
+      <Typography variant="h2" as="span">
+        {initialLetters.toUpperCase()}
+      </Typography>
     </div>
   )
 }

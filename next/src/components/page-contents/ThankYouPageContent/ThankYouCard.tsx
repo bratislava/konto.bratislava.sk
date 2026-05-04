@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
@@ -52,7 +52,7 @@ const ThankYouCard = ({
         {iconByVariant}
       </span>
       <div className="flex flex-col items-center gap-8 md:gap-3">
-        <h2 className="text-center text-h3">{title}</h2>
+        <Typography variant="h3" as="h2" className="text-center">{title}</Typography>
         <AccountMarkdown variant="sm" content={content} className="text-center" />
       </div>
       <div
@@ -65,7 +65,7 @@ const ThankYouCard = ({
             {firstButtonLink ? (
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
-                  <h3 className="text-left text-h3">{feedbackTitle}</h3>
+                  <Typography variant="h3" className="text-left">{feedbackTitle}</Typography>
                   <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
                     {firstButtonTitle}
                   </Button>

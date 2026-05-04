@@ -5,6 +5,7 @@ import { Fragment } from 'react'
 import EuFlagSvg from '@/src/assets/images/eu-flag.svg'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useGeneralContext } from '@/src/components/logic/GeneralContextProvider'
+import CookieConsentLink from '@/src/components/segments/CookieConsentLink/CookieConsentLink'
 import {
   FooterAccessibilityLink,
   FooterColumnLinks,
@@ -43,10 +44,10 @@ const MobileFooter = () => {
             className="group grow"
             url={ROUTES.HOME}
             title={
-              <p className="text-p2 text-[#F23005]">
+              <Typography variant="p-small" className="text-[#F23005]">
                 {t('NavBar.capitalCityOfSR')}
                 <span className="font-semibold"> Bratislava</span>
-              </p>
+              </Typography>
             }
           />
         </div>
@@ -60,12 +61,7 @@ const MobileFooter = () => {
                 <HorizontalDivider />
                 <Disclosure>
                   <DisclosureHeader className="py-6">
-                    <Typography
-                      variant="h4"
-                      as="h3"
-                      // TODO Handle heading font size and weight globally
-                      className="text-[1rem] font-semibold"
-                    >
+                    <Typography variant="h4" as="h3">
                       {column.title}
                     </Typography>
                   </DisclosureHeader>
@@ -88,6 +84,7 @@ const MobileFooter = () => {
         </div>
         <HorizontalDivider />
         <div className="flex gap-4">
+          <CookieConsentLink />
           <FooterAccessibilityLink {...footer} />
         </div>
         <HorizontalDivider />

@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { PaymentStatus, Tax, TaxType } from '@prisma/client'
+import dayjs from 'dayjs'
 import * as mssql from 'mssql'
 
 import prismaMock from '../../../../test/singleton'
@@ -135,12 +136,14 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 500,
           uhrazeno: 1500,
+          datum_posledni_platby: new Date(),
         },
         {
           variabilny_symbol: '0987654321',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 300,
           uhrazeno: 2300,
+          datum_posledni_platby: new Date(),
         },
       ]
 
@@ -259,12 +262,14 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 0,
           uhrazeno: 1000,
+          datum_posledni_platby: new Date(),
         },
         {
           variabilny_symbol: '2222222222',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 500,
           uhrazeno: 2500,
+          datum_posledni_platby: new Date(),
         },
       ]
 
@@ -370,6 +375,7 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 500,
           uhrazeno_overpayment: 200,
           uhrazeno: 700,
+          datum_posledni_platby: new Date(),
         },
       ]
 
@@ -462,12 +468,14 @@ describe('NorisPaymentSubservice', () => {
           uhrazeno_sum_saldo: 1000,
           uhrazeno_overpayment: 0,
           uhrazeno: 1000,
+          datum_posledni_platby: new Date(),
         },
         {
           variabilny_symbol: '8888888888',
           uhrazeno_sum_saldo: 2000,
           uhrazeno_overpayment: 500,
           uhrazeno: 2500,
+          datum_posledni_platby: new Date(),
         },
       ]
 
@@ -547,6 +555,8 @@ describe('NorisPaymentSubservice', () => {
   })
 
   describe('processIndividualPayment', () => {
+    const RECENT_DATE = dayjs().subtract(7, 'day').toDate()
+
     beforeEach(() => {
       jest.clearAllMocks()
     })
@@ -555,6 +565,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const taxesDataByVsMap = new Map<string, TaxWithTaxPayer>()
@@ -573,6 +584,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -618,6 +630,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1500,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -759,6 +772,7 @@ describe('NorisPaymentSubservice', () => {
         const mockNorisPayment: NorisTaxPayment = {
           variabilny_symbol: '1234567890',
           uhrazeno,
+          datum_posledni_platby: RECENT_DATE,
         }
 
         const mockTaxData: TaxWithTaxPayer = {
@@ -813,7 +827,10 @@ describe('NorisPaymentSubservice', () => {
         )
 
         expect(trackEventMock).toHaveBeenCalledWith(
-          expect.objectContaining({ is_fully_paid: expectedIsFullyPaid }),
+          expect.objectContaining({
+            is_fully_paid: expectedIsFullyPaid,
+            suppress_email: false,
+          }),
           'external-123',
         )
       },
@@ -823,6 +840,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -875,6 +893,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -939,6 +958,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -996,6 +1016,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -1045,6 +1066,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1500.5,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -1097,6 +1119,7 @@ describe('NorisPaymentSubservice', () => {
       const mockNorisPayment: NorisTaxPayment = {
         variabilny_symbol: '1234567890',
         uhrazeno: 1000,
+        datum_posledni_platby: RECENT_DATE,
       }
 
       const mockTaxData: TaxWithTaxPayer = {
@@ -1136,6 +1159,210 @@ describe('NorisPaymentSubservice', () => {
       )
 
       expect(result).toBe('ALREADY_CREATED')
+    })
+
+    describe('suppress_email based on payment date', () => {
+      const BASE_TAX_DATA: TaxWithTaxPayer = {
+        id: 1,
+        year: 2023,
+        amount: 150_000,
+        type: TaxType.DZN,
+        order: 1,
+        taxPayer: { id: 1, birthNumber: '123456/7890' },
+      } as TaxWithTaxPayer
+
+      const BASE_USER_DATA = {
+        '123456/7890': {
+          externalId: 'external-123',
+          birthNumber: '123456/7890',
+          email: 'test@example.com',
+          userAttribute: {},
+        },
+      }
+
+      const MOCK_CREATED_PAYMENT = {
+        id: 1,
+        amount: 150_000,
+        source: 'BANK_ACCOUNT',
+        taxId: 1,
+        status: PaymentStatus.SUCCESS,
+      }
+
+      function buildNorisPayment(
+        datum_posledni_platby: Date | null,
+      ): NorisTaxPayment {
+        return {
+          variabilny_symbol: '1234567890',
+          uhrazeno: 1500,
+          datum_posledni_platby,
+        }
+      }
+
+      const FIXED_NOW = new Date('2025-06-15T12:00:00.000Z')
+      const OLD_DATE = dayjs(FIXED_NOW).subtract(200, 'day').toDate()
+
+      beforeAll(() => {
+        jest.useFakeTimers()
+        jest.setSystemTime(FIXED_NOW)
+      })
+
+      afterAll(() => {
+        jest.useRealTimers()
+      })
+
+      beforeEach(() => {
+        jest.spyOn(prismaMock, '$transaction').mockImplementation(
+          jest.fn().mockImplementation((callback) =>
+            callback({
+              $queryRaw: jest.fn().mockResolvedValue([]),
+              taxPayment: {
+                aggregate: jest.fn().mockResolvedValue({ _sum: { amount: 0 } }),
+                create: jest.fn().mockResolvedValue(MOCK_CREATED_PAYMENT),
+              },
+            }),
+          ),
+        )
+      })
+
+      it('should suppress email when datum_posledni_platby is older than 6 months', async () => {
+        const trackMock = jest
+          .spyOn(bloomreachService, 'trackEventTaxPayment')
+          .mockResolvedValue(true)
+
+        await service['processIndividualPayment'](
+          buildNorisPayment(OLD_DATE),
+          new Map([['1234567890', BASE_TAX_DATA]]),
+          BASE_USER_DATA,
+        )
+
+        expect(trackMock).toHaveBeenCalledWith(
+          expect.objectContaining({ suppress_email: true }),
+          'external-123',
+        )
+      })
+
+      it('should not suppress email when datum_posledni_platby is recent', async () => {
+        const trackMock = jest
+          .spyOn(bloomreachService, 'trackEventTaxPayment')
+          .mockResolvedValue(true)
+
+        await service['processIndividualPayment'](
+          buildNorisPayment(RECENT_DATE),
+          new Map([['1234567890', BASE_TAX_DATA]]),
+          BASE_USER_DATA,
+        )
+
+        expect(trackMock).toHaveBeenCalledWith(
+          expect.objectContaining({ suppress_email: false }),
+          'external-123',
+        )
+      })
+
+      it('should not suppress email when datum_posledni_platby is null', async () => {
+        const trackMock = jest
+          .spyOn(bloomreachService, 'trackEventTaxPayment')
+          .mockResolvedValue(true)
+
+        await service['processIndividualPayment'](
+          buildNorisPayment(null),
+          new Map([['1234567890', BASE_TAX_DATA]]),
+          BASE_USER_DATA,
+        )
+
+        expect(trackMock).toHaveBeenCalledWith(
+          expect.objectContaining({ suppress_email: false }),
+          'external-123',
+        )
+      })
+
+      it('should override bloomreachSettings.suppressEmail in case of historical payment', async () => {
+        const trackMock = jest
+          .spyOn(bloomreachService, 'trackEventTaxPayment')
+          .mockResolvedValue(true)
+
+        await service['processIndividualPayment'](
+          buildNorisPayment(OLD_DATE),
+          new Map([['1234567890', BASE_TAX_DATA]]),
+          BASE_USER_DATA,
+          { suppressEmail: false },
+        )
+
+        expect(trackMock).toHaveBeenCalledWith(
+          expect.objectContaining({ suppress_email: true }),
+          'external-123',
+        )
+      })
+    })
+  })
+
+  describe('isHistoricalPayment', () => {
+    const FIXED_NOW = new Date('2025-06-15T12:00:00.000Z')
+    // Compute the boundary the same way the implementation does
+    const EXACTLY_AT_THRESHOLD = dayjs(FIXED_NOW).subtract(180, 'day').toDate()
+    const JUST_BEFORE_THRESHOLD = dayjs(FIXED_NOW).subtract(179, 'day').toDate()
+    const JUST_AFTER_THRESHOLD = dayjs(FIXED_NOW).subtract(181, 'day').toDate()
+
+    beforeAll(() => {
+      jest.useFakeTimers()
+      jest.setSystemTime(FIXED_NOW)
+    })
+
+    afterAll(() => {
+      jest.useRealTimers()
+    })
+
+    it('should return false when datum_posledni_platby is null', () => {
+      const result = service['isHistoricalPayment']({
+        variabilny_symbol: '1234567890',
+        uhrazeno: 1000,
+        datum_posledni_platby: null,
+      })
+      expect(result).toBe(false)
+    })
+
+    it('should return true when datum_posledni_platby is older than 180 days', () => {
+      const result = service['isHistoricalPayment']({
+        variabilny_symbol: '1234567890',
+        uhrazeno: 1000,
+        datum_posledni_platby: new Date('2020-01-01'),
+      })
+      expect(result).toBe(true)
+    })
+
+    it('should return false when datum_posledni_platby is within the last 180 days', () => {
+      const result = service['isHistoricalPayment']({
+        variabilny_symbol: '1234567890',
+        uhrazeno: 1000,
+        datum_posledni_platby: dayjs(FIXED_NOW).subtract(30, 'day').toDate(),
+      })
+      expect(result).toBe(false)
+    })
+
+    it('should return false when datum_posledni_platby is exactly at the 180-day boundary', () => {
+      const result = service['isHistoricalPayment']({
+        variabilny_symbol: '1234567890',
+        uhrazeno: 1000,
+        datum_posledni_platby: EXACTLY_AT_THRESHOLD,
+      })
+      expect(result).toBe(false)
+    })
+
+    it('should return false when datum_posledni_platby is 1 day before the 180-day threshold', () => {
+      const result = service['isHistoricalPayment']({
+        variabilny_symbol: '1234567890',
+        uhrazeno: 1000,
+        datum_posledni_platby: JUST_BEFORE_THRESHOLD,
+      })
+      expect(result).toBe(false)
+    })
+
+    it('should return true when datum_posledni_platby is 1 day past the 180-day threshold', () => {
+      const result = service['isHistoricalPayment']({
+        variabilny_symbol: '1234567890',
+        uhrazeno: 1000,
+        datum_posledni_platby: JUST_AFTER_THRESHOLD,
+      })
+      expect(result).toBe(true)
     })
   })
 })

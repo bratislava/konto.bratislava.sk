@@ -28,11 +28,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       <div className="flex flex-col gap-6 lg:gap-4">
         <div className="flex flex-col gap-4">
           <AccountMarkdown className="text-center" content={t('verification_modal.subtitle')} />
-          <AccountMarkdown
-            className="text-center text-p3"
-            variant="sm"
-            content={t('verification_modal.info')}
-          />
+          <AccountMarkdown variant="sm" content={t('verification_modal.info')} />
         </div>
         <div className="flex flex-col gap-3 *:w-full lg:flex-row">
           <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>
@@ -48,7 +44,9 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         </div>
         <div className="flex items-center">
           <HorizontalDivider className="w-full" />
-          <span className="px-6 text-p1">{t('verification_modal.footer_choice')}</span>
+          <span className="px-6 text-size-p-large-r lg:text-size-p-large">
+            {t('verification_modal.footer_choice')}
+          </span>
           <HorizontalDivider className="w-full" />
         </div>
         <Button

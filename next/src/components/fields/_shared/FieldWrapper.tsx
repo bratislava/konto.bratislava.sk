@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 import {
@@ -11,10 +12,10 @@ import cn from '@/src/utils/cn'
 import { LabelSize } from './types'
 
 const labelSizeStyles = {
-  default: 'text-16-semibold',
-  h3: 'text-h3',
-  h4: 'text-h4',
-  h5: 'text-h5',
+  default: 'text-size-p-small-r lg:text-size-p-small',
+  h3: 'text-size-h3-r lg:text-size-h3',
+  h4: 'text-size-h4-r lg:text-size-h4',
+  h5: 'text-size-h5-r lg:text-size-h5',
 }
 
 type FieldWrapperProps = {
@@ -50,10 +51,18 @@ const FieldWrapper = ({
       {/* TODO There is gap-2 in Figma design, but we agreed gap-1 looks better. Keeping gap-1 until the discussion is resolved. */}
       <div className="flex flex-col gap-1">
         <RACLabel className={cn('text-content-passive-primary', labelSizeStyles[labelSize])}>
-          {label}
-          {showAsterisk ? <span className="ml-0.5 text-content-error-default">*</span> : null}
+          <Typography as="span" className="font-semibold">
+            {label}
+          </Typography>
+          {showAsterisk ? (
+            <Typography as="span" className="ml-0.5 font-semibold text-content-error-default">
+              *
+            </Typography>
+          ) : null}
           {showOptional ? (
-            <span className="ml-1 text-16 font-normal">{t('FieldHeader.optional')}</span>
+            <Typography variant="p-small" className="ml-1 font-normal">
+              {t('FieldHeader.optional')}
+            </Typography>
           ) : null}
         </RACLabel>
         {helptext ? (
@@ -61,7 +70,7 @@ const FieldWrapper = ({
             slot="description"
             // We change default p to div, because we sometimes render full markdown instead of simple text.
             elementType="div"
-            className="text-p2 text-content-passive-secondary"
+            className="text-size-p-small-r text-content-passive-secondary lg:text-size-p-small"
           >
             {helptext}
           </RACText>
@@ -75,12 +84,15 @@ const FieldWrapper = ({
           slot="description"
           // We change default p to div, because we sometimes render full markdown instead of simple text.
           elementType="div"
-          className="text-p2 text-content-passive-secondary"
+          className="text-size-p-small-r text-content-passive-secondary lg:text-size-p-small"
         >
           {helptextFooter}
         </RACText>
       ) : null}
-      <RACFieldError className="text-p2 text-error" data-cy="error-message">
+      <RACFieldError
+        className="text-size-p-small-r text-error lg:text-size-p-small"
+        data-cy="error-message"
+      >
         {errorMessage}
       </RACFieldError>
     </>

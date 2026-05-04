@@ -1031,7 +1031,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'birthNumber' is not null or undefined
       assertParamExists('adminControllerRemoveDeliveryMethodsFromNoris', 'birthNumber', birthNumber)
       const localVarPath = `/admin/remove-delivery-methods-from-noris/{birthNumber}`.replace(
-        `{${'birthNumber'}}`,
+        '{birthNumber}',
         encodeURIComponent(String(birthNumber)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2073,9 +2073,9 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'order' is not null or undefined
       assertParamExists('paymentControllerGenerateFullPaymentLink', 'order', order)
       const localVarPath = `/payment/cardpay/full-payment/{year}/{type}/{order}`
-        .replace(`{${'year'}}`, encodeURIComponent(String(year)))
-        .replace(`{${'type'}}`, encodeURIComponent(String(type)))
-        .replace(`{${'order'}}`, encodeURIComponent(String(order)))
+        .replace('{year}', encodeURIComponent(String(year)))
+        .replace('{type}', encodeURIComponent(String(type)))
+        .replace('{order}', encodeURIComponent(String(order)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2128,9 +2128,9 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'order' is not null or undefined
       assertParamExists('paymentControllerGenerateInstallmentPaymentLink', 'order', order)
       const localVarPath = `/payment/cardpay/installment-payment/{year}/{type}/{order}`
-        .replace(`{${'year'}}`, encodeURIComponent(String(year)))
-        .replace(`{${'type'}}`, encodeURIComponent(String(type)))
-        .replace(`{${'order'}}`, encodeURIComponent(String(order)))
+        .replace('{year}', encodeURIComponent(String(year)))
+        .replace('{type}', encodeURIComponent(String(type)))
+        .replace('{order}', encodeURIComponent(String(order)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2202,7 +2202,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'rESULTTEXT' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'rESULTTEXT', rESULTTEXT)
       const localVarPath = `/payment/cardpay/response/{taxType}`.replace(
-        `{${'taxType'}}`,
+        '{taxType}',
         encodeURIComponent(String(taxType)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.

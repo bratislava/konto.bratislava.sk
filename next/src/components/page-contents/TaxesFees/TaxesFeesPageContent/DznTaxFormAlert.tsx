@@ -1,5 +1,5 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import React from 'react'
 
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import Alert from '@/src/components/simple-components/Alert'
@@ -15,9 +15,9 @@ const DznTaxFormAlert = () => {
       fullWidth
       message={
         <>
-          <div className="mb-2 text-h6">
+          <Typography variant="h6" as="p" className="mb-2 font-semibold">
             {t('account_section_payment.tax_form_change_ownership_alert_title')}
-          </div>
+          </Typography>
 
           <AccountMarkdown
             content={t('account_section_payment.tax_form_change_ownership_alert_text')}

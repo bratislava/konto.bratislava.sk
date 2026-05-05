@@ -29,7 +29,7 @@ export class TaxSubservice {
   }
 
   static async acquireDeliveryMethodLock(tx: Prisma.TransactionClient, birthNumber: string) {
-    return tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('noris_delivery_method'), hashtext(${birthNumber}))`
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('noris_delivery_method'), hashtext(${birthNumber}))`
   }
 
   async removeDeliveryMethodFromNoris(birthNumber: string): Promise<boolean> {

@@ -64,8 +64,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       if (typeof fn === 'function') return fn(prismaMock)
       return Promise.all(fn)
     })
-    // $queryRaw is used for pg_advisory_xact_lock — no-op in tests.
-    ;(prismaMock.$queryRaw as jest.Mock).mockResolvedValue([])
+    // $executeRaw is used for pg_advisory_xact_lock — no-op in tests.
+    ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(0)
   })
 
   describe('updateDeliveryMethodsInNoris', () => {

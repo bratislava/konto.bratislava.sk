@@ -543,7 +543,7 @@ export class UserService {
 
     // Acquire the same per-birth-number advisory lock that the Noris update cron uses.
     // This ensures the removal always lands after any in-flight cron write for this user,
-    // so the final Noris state is always "removed".
+    // so the delivery method is always removed from Noris as the final state.
     let taxDeliveryMethodsRemoved = true
     if (removedUser?.birthNumber) {
       const { birthNumber } = removedUser

@@ -146,7 +146,7 @@ export class TaxDeliveryMethodsTasksSubservice {
 
         if (Object.keys(activeData).length === 0) return null
 
-        // HTTP call to Noris happens while the locks are still held.
+        // call to Noris happens while the locks are still held.
         return this.taxSubservice.updateDeliveryMethodsInNoris({ data: activeData })
       },
       { timeout: 30_000 }

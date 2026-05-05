@@ -329,34 +329,34 @@ export default class NotificationsEventsService {
       taxes.map(async (tax) => {
         const userFromCityAccount =
           userDataFromCityAccount[tax.birthNumber] || null
-        if (userFromCityAccount && userFromCityAccount.externalId) {
-          const dueDate = calculateDueDate(
-            tax.dateTaxRuling ? dayjs(tax.dateTaxRuling) : null,
-            tax.deliveryMethod,
-            dayjs(tax.createdAt),
-          )
-          if (!dueDate || dueDate.isAfter(dayjs().endOf('day'))) {
-            return undefined
-          }
-          const taxDefinition = getTaxDefinitionByType(tax.type)
-          const areInstallmentsPossible =
-            tax.amount > taxDefinition.paymentCalendarThreshold
-          await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
-            {
-              year: tax.year,
-              tax_type: tax.type,
-              order: tax.order!,
-              installment_order: 1,
-              due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
-              due_date_month: dueDate.month() + 1,
-              due_date_day: dueDate.date(),
-              are_installments_possible: areInstallmentsPossible,
-            },
-            userFromCityAccount.externalId,
-          )
-          return tax.id
+        if (!userFromCityAccount || !userFromCityAccount.externalId) {
+          return undefined
         }
-        return undefined
+        const dueDate = calculateDueDate(
+          tax.dateTaxRuling ? dayjs(tax.dateTaxRuling) : null,
+          tax.deliveryMethod,
+          dayjs(tax.createdAt),
+        )
+        if (!dueDate || dueDate.isAfter(dayjs().endOf('day'))) {
+          return undefined
+        }
+        const taxDefinition = getTaxDefinitionByType(tax.type)
+        const areInstallmentsPossible =
+          tax.amount > taxDefinition.paymentCalendarThreshold
+        await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
+          {
+            year: tax.year,
+            tax_type: tax.type,
+            order: tax.order!,
+            installment_order: 1,
+            due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+            due_date_month: dueDate.month() + 1,
+            due_date_day: dueDate.date(),
+            are_installments_possible: areInstallmentsPossible,
+          },
+          userFromCityAccount.externalId,
+        )
+        return tax.id
       }),
     )
     const taxIdsSent = sentResults.filter(

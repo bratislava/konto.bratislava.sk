@@ -1,6 +1,7 @@
 import { execSync } from 'child_process'
 import * as path from 'path'
 import { get as getAppRootDir } from 'app-root-dir'
+import { prepareDockerBuildArgs } from './prepareDockerBuildArgs'
 
 const cleanupImage = (imageName: string) => {
   try {
@@ -33,7 +34,8 @@ async function main() {
   console.log(`Starting Docker process for target: ${target}`)
 
   try {
-    const buildCommand = `docker build -t ${imageName} --target ${target} -f "${path.join(projectRoot, dockerfileName)}" "${projectRoot}"`
+    const buildArgs = await prepareDockerBuildArgs(projectRoot)
+    const buildCommand = `docker build -t ${imageName} --target ${target} --build-arg PLAYWRIGHT_VERSION="${buildArgs.PLAYWRIGHT_VERSION}" --build-arg SLOVENSKO_MEF_JSON_LAST_MODIFIED="${buildArgs.SLOVENSKO_MEF_JSON_LAST_MODIFIED}" -f "${path.join(projectRoot, dockerfileName)}" "${projectRoot}"`
     console.log(`Executing build: ${buildCommand}`)
     execSync(buildCommand, { stdio: 'inherit', cwd: projectRoot })
     console.log(`Docker image ${imageName} built successfully.`)

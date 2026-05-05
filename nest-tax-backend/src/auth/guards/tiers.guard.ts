@@ -17,9 +17,9 @@ export class TiersGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<
-      CognitoUserAttributesTierEnum[]
+      CognitoUserAttributesTierEnum[] | undefined
     >(TIERS_KEY, [context.getHandler(), context.getClass()])
-    if (requiredRoles.length === 0) {
+    if (!requiredRoles || requiredRoles.length === 0) {
       return true
     }
     const { cognito_jwt_payload } = context

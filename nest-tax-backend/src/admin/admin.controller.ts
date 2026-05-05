@@ -139,9 +139,9 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Remove delivery methods for given birth number.',
+    summary: '[internal] Remove delivery methods for given birth number.',
     description:
-      'Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.',
+      '⚠️ Must be called through nest-city-account, which holds a per-birth-number advisory lock to prevent a race with the Noris delivery-method update cron. Calling this endpoint directly bypasses that lock and can leave Noris in an incorrect state.',
   })
   @ApiResponse({
     status: 200,

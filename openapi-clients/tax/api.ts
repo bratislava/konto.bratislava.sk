@@ -1018,8 +1018,8 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-     * @summary Remove delivery methods for given birth number.
+     * ⚠️ Must be called through nest-city-account, which holds a per-birth-number advisory lock to prevent a race with the Noris delivery-method update cron. Calling this endpoint directly bypasses that lock and can leave Noris in an incorrect state.
+     * @summary [internal] Remove delivery methods for given birth number.
      * @param {string} birthNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1365,8 +1365,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-     * @summary Remove delivery methods for given birth number.
+     * ⚠️ Must be called through nest-city-account, which holds a per-birth-number advisory lock to prevent a race with the Noris delivery-method update cron. Calling this endpoint directly bypasses that lock and can leave Noris in an incorrect state.
+     * @summary [internal] Remove delivery methods for given birth number.
      * @param {string} birthNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1578,8 +1578,8 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-     * @summary Remove delivery methods for given birth number.
+     * ⚠️ Must be called through nest-city-account, which holds a per-birth-number advisory lock to prevent a race with the Noris delivery-method update cron. Calling this endpoint directly bypasses that lock and can leave Noris in an incorrect state.
+     * @summary [internal] Remove delivery methods for given birth number.
      * @param {string} birthNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1710,8 +1710,8 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
-   * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-   * @summary Remove delivery methods for given birth number.
+   * ⚠️ Must be called through nest-city-account, which holds a per-birth-number advisory lock to prevent a race with the Noris delivery-method update cron. Calling this endpoint directly bypasses that lock and can leave Noris in an incorrect state.
+   * @summary [internal] Remove delivery methods for given birth number.
    * @param {string} birthNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

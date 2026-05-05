@@ -541,10 +541,19 @@ export class UserService {
 
     await this.bloomreachOutboxService.anonymizeCustomer(externalId)
 
-    const taxDeliveryMethodsRemoved =
-      removedUser && removedUser.birthNumber
-        ? await this.taxSubservice.removeDeliveryMethodFromNoris(removedUser.birthNumber)
-        : true
+    // Acquire the same per-birth-number advisory lock that the Noris update cron uses.
+    // This ensures the removal always lands after any in-flight cron write for this user,
+    // so the final Noris state is always "removed".
+    let taxDeliveryMethodsRemoved = true
+    if (removedUser?.birthNumber) {
+      const { birthNumber } = removedUser
+      taxDeliveryMethodsRemoved = await this.prisma.$transaction(
+        async (tx) => {
+          await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('noris_delivery_method'), hashtext(${birthNumber}))`
+          return this.taxSubservice.removeDeliveryMethodFromNoris(birthNumber)
+        }
+      )
+    }
 
     return {
       success: true,

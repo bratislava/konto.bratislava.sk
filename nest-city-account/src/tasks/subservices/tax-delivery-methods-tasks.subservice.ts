@@ -10,7 +10,7 @@ import {
   DeliveryMethodErrorsEnum,
   DeliveryMethodErrorsResponseEnum,
 } from '../../utils/guards/dtos/delivery-method.error'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { DeliveryMethodCodec } from '../../utils/norisCodec'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
@@ -111,60 +111,69 @@ export class TaxDeliveryMethodsTasksSubservice {
       {}
     )
 
-    const updateResponse = await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
-    const updatedBirthNumbers = updateResponse.data.birthNumbers.map((birthNumber) =>
-      birthNumber.replaceAll('/', '')
+    // Sorted acquisition prevents deadlocks: keys along any wait-chain T1->T2->...->Tn are strictly
+    // increasing, so the chain cannot cycle back to T1.
+    const sortedBirthNumbers = Object.keys(data).sort((a, b) => a.localeCompare(b))
+
+    // Advisory lock approach: hold a per-birth-number PostgreSQL advisory xact lock from
+    // the moment we re-check whether each user is still active until the Noris write
+    // completes. A concurrent deactivation either:
+    //   (a) set birthNumber=null before our re-check: we skip, deactivation removes from Noris
+    //   (b) runs after our lock is acquired: it blocks, waits for our write, then removes from Noris
+    // The lock is automatically released when the transaction commits.
+    const norisUpdateResponse = await this.prismaService.$transaction(
+      async (tx) => {
+        for (const bn of sortedBirthNumbers) {
+          // eslint-disable-next-line no-await-in-loop -- locks must be acquired sequentially in sorted order to prevent deadlocks
+          await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('noris_delivery_method'), hashtext(${bn}))`
+        }
+
+        // Re-check which users are still active now that we hold the locks.
+        const stillActiveUsers = await tx.user.findMany({
+          where: {
+            id: { in: users.map((u) => u.id) },
+            birthNumber: { not: null },
+            ...ACTIVE_USER_FILTER,
+          },
+          select: { birthNumber: true },
+        })
+        const activeBirthNumbers = new Set(
+          stillActiveUsers.map((u) => u.birthNumber).filter((bn): bn is string => bn !== null)
+        )
+        const activeData = Object.fromEntries(
+          Object.entries(data).filter(([bn]) => activeBirthNumbers.has(bn))
+        )
+
+        if (Object.keys(activeData).length === 0) return null
+
+        // HTTP call to Noris happens while the locks are still held.
+        return this.taxSubservice.updateDeliveryMethodsInNoris({ data: activeData })
+      },
+      { timeout: 30_000 }
     )
 
-    // Now we should check if some user was not deactivated during his update in Noris.
-    // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However, it is an edge case.
-    const deactivated = await this.prismaService.user.findMany({
-      select: {
-        id: true,
-      },
-      where: {
-        id: {
-          in: users.map((user) => user.id),
-        },
-        birthNumber: null,
-      },
-    })
-    // If someone was deactivated, we should log the error with their birth numbers.
-    if (deactivated.length > 0) {
-      const deactivatedIds = deactivated.map((user) => user.id)
-      const birthNumbersOfDeactivateUsers = users
-        .filter((user) => deactivatedIds.includes(user.id))
-        .map((user) => user.birthNumber)
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        `Some users were deactivated during the update of the delivery methods in Noris. Their birth numbers are: ${birthNumbersOfDeactivateUsers.join(
-          ', '
-        )}. Remove their delivery methods in Noris manually.`
-      )
-    }
-
-    // If OK, we should set the Users to have updated delivery methods in Noris for the current year. Otherwise the error will be thrown.
+    // Update the try-timestamp for all users in the batch regardless of outcome.
     await this.prismaService.user.updateMany({
       where: {
-        birthNumber: {
-          in: updatedBirthNumbers,
-        },
-      },
-      data: {
-        lastTaxDeliveryMethodsUpdateYear: currentYear,
-      },
-    })
-
-    // For all users, not only those who were updated, we should set the last timestamp of trying to update delivery methods in Noris.
-    await this.prismaService.user.updateMany({
-      where: {
-        id: {
-          in: users.map((user) => user.id),
-        },
+        id: { in: users.map((user) => user.id) },
       },
       data: {
         lastTaxDeliveryMethodsUpdateTry: new Date(),
+      },
+    })
+
+    if (!norisUpdateResponse) return
+
+    const updatedBirthNumbers = norisUpdateResponse.data.birthNumbers.map((birthNumber) =>
+      birthNumber.replaceAll('/', '')
+    )
+
+    await this.prismaService.user.updateMany({
+      where: {
+        birthNumber: { in: updatedBirthNumbers },
+      },
+      data: {
+        lastTaxDeliveryMethodsUpdateYear: currentYear,
       },
     })
   }

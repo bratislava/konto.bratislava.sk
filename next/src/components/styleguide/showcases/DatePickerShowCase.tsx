@@ -1,6 +1,6 @@
 import { parseDate } from '@internationalized/date'
 import { useState } from 'react'
-import { DateValue } from 'react-aria-components'
+import { DateValue } from 'react-aria-components/DatePicker'
 
 import DatePicker from '@/src/components/fields/DatePicker/DatePicker'
 import DatePickerOLD from '@/src/components/widget-components/DateTimePicker/DatePicker'
@@ -20,16 +20,8 @@ const DatePickerShowCase = () => {
           <DatePicker label="Label" />
           <DatePicker label="Label" errorMessage="Error message" />
           <DatePicker label="Label" errorMessage="Error message" isDisabled />
-          <DatePicker
-            label="Label"
-            minValue={parseDate('2024-09-01')}
-            helptext="min 2024-09-01"
-          />
-          <DatePicker
-            label="Label"
-            maxValue={parseDate('2024-09-30')}
-            helptext="max 2024-09-30"
-          />
+          <DatePicker label="Label" minValue={parseDate('2024-09-01')} helptext="min 2024-09-01" />
+          <DatePicker label="Label" maxValue={parseDate('2024-09-30')} helptext="max 2024-09-30" />
           <DatePicker
             label="Label"
             minValue={parseDate('2024-09-01')}
@@ -39,12 +31,7 @@ const DatePickerShowCase = () => {
         </Stack>
         <Stack direction="column">
           <DatePicker label="Label" helptext="Help text" isRequired />
-          <DatePicker
-            label="Label"
-            errorMessage="Error message"
-            helptext="Help text"
-            isRequired
-          />
+          <DatePicker label="Label" errorMessage="Error message" helptext="Help text" isRequired />
           <DatePicker
             label="Label"
             errorMessage="Error message"

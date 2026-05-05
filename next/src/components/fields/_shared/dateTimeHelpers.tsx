@@ -2,7 +2,7 @@ import {
   DateInputRenderProps,
   type DateSegmentProps,
   type GroupRenderProps,
-} from 'react-aria-components'
+} from 'react-aria-components/DatePicker'
 
 import cn from '@/src/utils/cn'
 

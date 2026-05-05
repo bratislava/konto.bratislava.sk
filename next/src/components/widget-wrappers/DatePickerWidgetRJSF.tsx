@@ -1,5 +1,5 @@
 import { DatePickerUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { DateValue } from 'react-aria-components'
+import { DateValue } from 'react-aria-components/DatePicker'
 
 import DatePicker from '@/src/components/fields/DatePicker/DatePicker'
 import { safeParseDate } from '@/src/components/widget-wrappers/dateTimeParse'

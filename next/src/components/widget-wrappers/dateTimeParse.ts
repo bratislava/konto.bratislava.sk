@@ -1,5 +1,6 @@
 import { parseDate, parseTime } from '@internationalized/date'
-import type { DateValue, TimeValue } from 'react-aria-components'
+import { DateValue } from 'react-aria-components/DatePicker'
+import { TimeValue } from 'react-aria-components/TimeField'
 
 export const safeParseDate = (value: string): DateValue | null => {
   try {

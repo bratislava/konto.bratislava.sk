@@ -81,7 +81,9 @@ const MunicipalServicesPageContent = ({
         title={t('account_section_services.navigation')}
       />
       <SectionContainer className="w-full pt-4 lg:pt-8">
-        <Typography variant="h2" className="sr-only">{t('account_section_services.services_list')}</Typography>
+        <Typography variant="h2" className="sr-only">
+          {t('account_section_services.services_list')}
+        </Typography>
         <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4">
           {filteredServices
             .filter(

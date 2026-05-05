@@ -39,7 +39,7 @@
     "@prisma/client": "6.17.1",
     "@types/express": "^5.0.6",
     "amqplib": "^0.10.9",
-    "axios": "1.15.2",
+    "axios": "1.16.0",
     "cache-manager": "^7.2.8",
     "cf-turnstile": "^1.0.8",
     "class-transformer": "^0.5.1",
@@ -113,11 +113,11 @@
     ]
   },
   "engines": {
-    "node": ">=24.14.x",
-    "npm": ">=11.11.x"
+    "node": ">=24.15.x",
+    "npm": ">=11.12.x"
   },
   "volta": {
-    "node": "24.14.1",
-    "npm": "11.11.0"
+    "node": "24.15.0",
+    "npm": "11.12.1"
   }
 }

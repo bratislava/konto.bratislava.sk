@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import React, { useState } from 'react'
-import { Key } from 'react-aria-components'
+import { Key } from 'react-aria-components/Breadcrumbs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'

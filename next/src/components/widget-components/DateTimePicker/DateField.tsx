@@ -1,9 +1,10 @@
 import { createCalendar } from '@internationalized/date'
 import { useObjectRef } from '@react-aria/utils'
-import { DateValue } from '@react-types/datepicker'
 import React, { forwardRef, ReactNode } from 'react'
-import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
-import { useDateFieldState } from 'react-stately'
+import { useLocale } from 'react-aria/I18nProvider'
+import { useDateField } from 'react-aria/useDateField'
+import { AriaDatePickerProps, DateValue } from 'react-aria/useDatePicker'
+import { useDateFieldState } from 'react-stately/useDateFieldState'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'

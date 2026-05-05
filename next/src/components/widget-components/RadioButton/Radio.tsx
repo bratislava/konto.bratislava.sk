@@ -1,7 +1,6 @@
-import { AriaRadioProps } from '@react-types/radio'
 import * as React from 'react'
 import { useContext, useRef } from 'react'
-import { useRadio } from 'react-aria'
+import { AriaRadioProps, useRadio } from 'react-aria/useRadioGroup'
 
 import cn from '@/src/utils/cn'
 

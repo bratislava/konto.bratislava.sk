@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 import React, { forwardRef } from 'react'
-import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
+import { Button as ReactAriaButton } from 'react-aria-components/Button'
+import { FileTrigger } from 'react-aria-components/FileTrigger'
 
 import { UploadIcon } from '@/src/assets/ui-icons'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'

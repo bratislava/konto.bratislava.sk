@@ -42,7 +42,9 @@ const HomepageContent = ({
   return (
     <>
       <PhoneNumberModal />
-      <Typography variant="h1" className="sr-only">{t('common.bratislava_account')}</Typography>
+      <Typography variant="h1" className="sr-only">
+        {t('common.bratislava_account')}
+      </Typography>
       <PageHeader
         title={
           name

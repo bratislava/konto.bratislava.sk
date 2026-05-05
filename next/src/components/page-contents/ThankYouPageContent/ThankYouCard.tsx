@@ -52,7 +52,9 @@ const ThankYouCard = ({
         {iconByVariant}
       </span>
       <div className="flex flex-col items-center gap-8 md:gap-3">
-        <Typography variant="h3" as="h2" className="text-center">{title}</Typography>
+        <Typography variant="h3" as="h2" className="text-center">
+          {title}
+        </Typography>
         <AccountMarkdown variant="sm" content={content} className="text-center" />
       </div>
       <div
@@ -65,7 +67,9 @@ const ThankYouCard = ({
             {firstButtonLink ? (
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
-                  <Typography variant="h3" className="text-left">{feedbackTitle}</Typography>
+                  <Typography variant="h3" className="text-left">
+                    {feedbackTitle}
+                  </Typography>
                   <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
                     {firstButtonTitle}
                   </Button>

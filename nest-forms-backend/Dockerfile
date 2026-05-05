@@ -1,7 +1,7 @@
 ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
-FROM node:24.14 AS base
+FROM node:24.15 AS base
 
 RUN npx playwright install-deps chromium
 

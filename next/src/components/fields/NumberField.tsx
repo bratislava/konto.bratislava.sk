@@ -1,10 +1,10 @@
 import { forwardRef, ReactNode, Ref } from 'react'
+import { ButtonContext } from 'react-aria-components/Button'
+import { Input as RACInput } from 'react-aria-components/Input'
 import {
-  ButtonContext,
-  Input as RACInput,
   NumberField as RACNumberField,
   NumberFieldProps as RACNumberFieldProps,
-} from 'react-aria-components'
+} from 'react-aria-components/NumberField'
 
 import cn from '@/src/utils/cn'
 

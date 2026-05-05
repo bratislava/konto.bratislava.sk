@@ -3,9 +3,11 @@ name: Validate and build resources (main workflow)
 on:
   workflow_call:
     secrets:
-      HARBOR_REGISTRY_PASSWORD:
+      DOCKER_REGISTRY_USERNAME:
         required: true
       DOCKER_REGISTRY_PASSWORD:
+        required: true
+      HARBOR_REGISTRY_PASSWORD:
         required: true
 
 jobs:
@@ -22,6 +24,8 @@ jobs:
       push: true
       target: prod
     secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   build-openapi-clients:
@@ -33,6 +37,8 @@ jobs:
       push: true
       target: prod
     secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   validate-forms-shared:
@@ -44,6 +50,8 @@ jobs:
       directory: forms-shared/
       image: harbor.bratislava.sk/standalone/forms-shared
     secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   build-next:

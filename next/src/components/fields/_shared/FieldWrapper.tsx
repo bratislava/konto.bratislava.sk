@@ -48,7 +48,7 @@ const FieldWrapper = ({
     <>
       {/* TODO There is gap-2 in Figma design, but we agreed gap-1 looks better. Keeping gap-1 until the discussion is resolved. */}
       <div className="flex flex-col gap-1">
-        <RACLabel className={cn('text-content-passive-primary', labelSizeStyles[labelSize])}>
+        <RACLabel className={cn('flex text-content-passive-primary', labelSizeStyles[labelSize])}>
           <Typography as="span" className="font-semibold">
             {label}
           </Typography>

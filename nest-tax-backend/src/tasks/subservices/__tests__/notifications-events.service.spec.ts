@@ -700,7 +700,9 @@ describe('NotificationsEventsSubservice', () => {
     beforeEach(() => {
       jest
         .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
-        .mockResolvedValue({ [birthNumber]: { externalId } } as any)
+        .mockResolvedValue({
+          [birthNumber]: createTestUserDataFromCityAccount({ externalId }),
+        })
       jest
         .spyOn(
           service['bloomreachService'],

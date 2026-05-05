@@ -1,0 +1,22 @@
+name: Validate Repository
+
+on:
+  workflow_call:
+
+jobs:
+  exact-package-versions:
+    name: Verify exact package versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.15
+
+      - name: Verify exact package versions
+        run: node ./scripts/verify-exact-package-versions.mjs

@@ -125,7 +125,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       async (tx) => {
         for (const bn of sortedBirthNumbers) {
           // eslint-disable-next-line no-await-in-loop -- locks must be acquired sequentially in sorted order to prevent deadlocks
-          await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('noris_delivery_method'), hashtext(${bn}))`
+          await TaxSubservice.acquireDeliveryMethodLock(tx, bn)
         }
 
         // Re-check which users are still active now that we hold the locks.

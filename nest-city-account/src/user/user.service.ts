@@ -547,12 +547,10 @@ export class UserService {
     let taxDeliveryMethodsRemoved = true
     if (removedUser?.birthNumber) {
       const { birthNumber } = removedUser
-      taxDeliveryMethodsRemoved = await this.prisma.$transaction(
-        async (tx) => {
-          await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('noris_delivery_method'), hashtext(${birthNumber}))`
-          return this.taxSubservice.removeDeliveryMethodFromNoris(birthNumber)
-        }
-      )
+      taxDeliveryMethodsRemoved = await this.prisma.$transaction(async (tx) => {
+        await TaxSubservice.acquireDeliveryMethodLock(tx, birthNumber)
+        return this.taxSubservice.removeDeliveryMethodFromNoris(birthNumber)
+      })
     }
 
     return {

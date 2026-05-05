@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { Prisma } from '@prisma/client'
 import { AxiosPromise } from 'axios'
 import {
   RequestUpdateNorisDeliveryMethodsDto,
@@ -25,6 +26,10 @@ export class TaxSubservice {
     }
 
     this.logger = new LineLoggerSubservice(TaxSubservice.name)
+  }
+
+  static async acquireDeliveryMethodLock(tx: Prisma.TransactionClient, birthNumber: string) {
+    return tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext('noris_delivery_method'), hashtext(${birthNumber}))`
   }
 
   async removeDeliveryMethodFromNoris(birthNumber: string): Promise<boolean> {

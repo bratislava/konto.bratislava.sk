@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "id",
       "defaultSortBy": "id",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,11 +22,12 @@
       },
       "alerts": {
         "edit": {
-          "label": "alerts",
+          "label": "Alerty",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "documentId"
         },
         "list": {
           "label": "alerts",
@@ -101,12 +103,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "alerts",
-        "createdAt",
-        "updatedAt"
-      ],
       "edit": [
         [
           {
@@ -114,6 +110,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "alerts",
+        "createdAt",
+        "updatedAt"
       ]
     },
     "uid": "api::general.general"

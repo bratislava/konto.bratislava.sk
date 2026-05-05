@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "title",
       "defaultSortBy": "title",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Nadpis sekcie",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -35,11 +36,12 @@
       },
       "items": {
         "edit": {
-          "label": "items",
+          "label": "Otázky",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "items",
@@ -57,17 +59,11 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "items",
-        "documentId"
-      ],
       "edit": [
         [
           {
             "name": "title",
-            "size": 6
+            "size": 12
           }
         ],
         [
@@ -76,6 +72,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "items",
+        "documentId"
       ]
     },
     "uid": "blocks.help-category",

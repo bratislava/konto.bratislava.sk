@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "id",
       "defaultSortBy": "id",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,11 +22,12 @@
       },
       "categories": {
         "edit": {
-          "label": "categories",
+          "label": "Sekcie často kladených otázok",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "categories",
@@ -101,12 +103,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "categories",
-        "createdAt",
-        "updatedAt"
-      ],
       "edit": [
         [
           {
@@ -114,6 +110,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "categories",
+        "createdAt",
+        "updatedAt"
       ]
     },
     "uid": "api::help-page.help-page"

@@ -2,7 +2,7 @@
   "name": "Author",
   "code": "strapi-author",
   "description": "Authors can manage the content they have created.",
-  "documentId": "j0i2x99mk8ubawtzmro4qrc3",
+  "documentId": "f01hqhpsc9n9f27ub2qho8m6",
   "locale": null,
   "permissions": [
     {
@@ -24,7 +24,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "pyddiaoqvwezvd79kcn0z3v0",
+      "documentId": "zv8k3hubd9ix3vt8sixu9ot3",
       "locale": null
     },
     {
@@ -46,7 +46,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "zosm40v4sdivnbzq1gqj442j",
+      "documentId": "yk8o9w9obnkwa08imhj017nl",
       "locale": null
     },
     {
@@ -68,7 +68,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "qowo18eapl6qr29x1lyz347j",
+      "documentId": "rh3qt6r5lu1qmiiyht5sact5",
       "locale": null
     },
     {
@@ -83,7 +83,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "eeq7a73f6dbf7na3qa7txkjw",
+      "documentId": "rgqsnu2rt3vh9yex40bpx8jb",
       "locale": null
     },
     {
@@ -98,7 +98,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "m2kb1rgplj0lv6wys6m8afsk",
+      "documentId": "oitn3n8sx5x0lo5hfmnepc5g",
       "locale": null
     },
     {
@@ -113,7 +113,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "i22wtm2ryn4w987mfm0hbokz",
+      "documentId": "zh2p0mq2ofwa4t6hcivay9bp",
       "locale": null
     },
     {
@@ -128,7 +128,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "tr1kc0elxsjf4wum8owbj5an",
+      "documentId": "bohevlurfcnvqmah59tukcep",
       "locale": null
     },
     {
@@ -143,7 +143,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "io7fybeo8v6frlhv2ll0xsly",
+      "documentId": "w20gd7qy6uki9uww9urw27gw",
       "locale": null
     },
     {
@@ -158,7 +158,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "xtt4yllts4y9kjcrbl2a2la2",
+      "documentId": "o5z04snmwhdbcx1siafskb4s",
       "locale": null
     },
     {
@@ -173,7 +173,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "zgdvjx032kwy5yjy1pub4rh8",
+      "documentId": "ldw2v1h9qdb5i9ydh7l1goc0",
       "locale": null
     },
     {
@@ -188,7 +188,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "jv5mod3yvk5gvbmbof1mylte",
+      "documentId": "bgjsib6pxjchsu6h4za3v7i8",
       "locale": null
     },
     {
@@ -203,7 +203,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "ob88s5gs1xbf480xqqi0abek",
+      "documentId": "j51ej4hm7o6hcj1o1m7llomb",
       "locale": null
     },
     {
@@ -212,7 +212,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "jzno3l0nwv02l5wy9y5gw9hn",
+      "documentId": "huz8t6ewlcopl7ywup2zk76w",
       "locale": null
     },
     {
@@ -221,7 +221,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "r31qjxqwegpj81udqc4v5lyn",
+      "documentId": "befknm7fcbnbob5hlraait1r",
       "locale": null
     },
     {
@@ -230,7 +230,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "mnpq6c3oyg8vr75ki7o7h00a",
+      "documentId": "ijuwtxgy5c0sglbjhpqjdh2c",
       "locale": null
     },
     {
@@ -241,7 +241,7 @@
       "conditions": [
         "admin::is-creator"
       ],
-      "documentId": "vj1nske4993hjk6403v1dkky",
+      "documentId": "zegfuulrzgl7ehr0ujnaatvp",
       "locale": null
     },
     {
@@ -250,7 +250,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "be38c6totxq1a91zj7fw6djn",
+      "documentId": "s0mpi0wqnc11395bq6z4gak4",
       "locale": null
     },
     {
@@ -261,7 +261,7 @@
       "conditions": [
         "admin::is-creator"
       ],
-      "documentId": "cy97td6tio7hz8lqamsn5pm6",
+      "documentId": "xf5bzon50gecf9gra2vklc39",
       "locale": null
     }
   ]

@@ -1,16 +1,13 @@
+/** Internal type. DO NOT USE DIRECTLY. */
+type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
+/** Internal type. DO NOT USE DIRECTLY. */
+export type Incremental<T> =
+  | T
+  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never }
 import { GraphQLClient, RequestOptions } from 'graphql-request'
 import gql from 'graphql-tag'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
-  [_ in K]?: never
-}
-export type Incremental<T> =
-  | T
-  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never }
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders']
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -19,8 +16,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
-  DateTime: { input: any; output: any }
-  JSON: { input: any; output: any }
+  DateTime: { input: unknown; output: unknown }
+  JSON: { input: unknown; output: unknown }
 }
 
 export type BooleanFilterInput = {
@@ -1865,27 +1862,53 @@ export type UsersPermissionsUserRelationResponseCollection = {
   nodes: Array<UsersPermissionsUser>
 }
 
-export type AlertFragment = {
-  __typename?: 'ComponentGeneralAlert'
-  id: string
-  content: string
-  dateFrom?: any | null
-  dateTo?: any | null
-}
+export type Enum_Municipalservice_Color =
+  | 'culture'
+  | 'education'
+  | 'environment'
+  | 'main'
+  | 'marianum'
+  | 'olo'
+  | 'social'
+  | 'transport'
+  | 'tsb'
+
+export type Enum_Municipalservice_Icon =
+  | 'administration'
+  | 'christmas_tree'
+  | 'community_gardens'
+  | 'connector'
+  | 'cultural_organizations'
+  | 'events_support'
+  | 'excavations'
+  | 'front_gardens'
+  | 'greenery'
+  | 'housing'
+  | 'kids_teenagers'
+  | 'lamp'
+  | 'library'
+  | 'management_communications'
+  | 'marianum'
+  | 'mosquito'
+  | 'parking'
+  | 'public_space_occupation'
+  | 'scooter'
+  | 'security'
+  | 'spatial_planning'
+  | 'swimming_pool'
+  | 'taxes'
+  | 'towing'
+  | 'transport'
+  | 'waste'
+  | 'zoo'
+
+export type AlertFragment = { id: string; content: string; dateFrom: unknown; dateTo: unknown }
 
 export type AlertsQueryVariables = Exact<{ [key: string]: never }>
 
 export type AlertsQuery = {
-  __typename?: 'Query'
-  general?: {
-    __typename?: 'General'
-    alerts?: Array<{
-      __typename?: 'ComponentGeneralAlert'
-      id: string
-      content: string
-      dateFrom?: any | null
-      dateTo?: any | null
-    } | null> | null
+  general: {
+    alerts: Array<{ id: string; content: string; dateFrom: unknown; dateTo: unknown } | null> | null
   } | null
 }
 
@@ -1893,7 +1916,7 @@ export type FormLandingPageLinkCtaFragment = {
   __typename: 'ComponentBlocksFormLandingPageLinkCta'
   id: string
   title: string
-  text?: string | null
+  text: string | null
   buttonLabel: string
   url: string
 }
@@ -1901,99 +1924,83 @@ export type FormLandingPageLinkCtaFragment = {
 export type FormLandingPageFormCtaFragment = {
   __typename: 'ComponentBlocksFormLandingPageFormCta'
   title: string
-  text?: string | null
+  text: string | null
   buttonLabel: string
 }
 
 export type FormLandingPageFragment = {
-  __typename?: 'ComponentBlocksFormLandingPage'
-  text?: string | null
-  linkCtas?: Array<{
+  text: string | null
+  linkCtas: Array<{
     __typename: 'ComponentBlocksFormLandingPageLinkCta'
     id: string
     title: string
-    text?: string | null
+    text: string | null
     buttonLabel: string
     url: string
   } | null> | null
   formCta: {
     __typename: 'ComponentBlocksFormLandingPageFormCta'
     title: string
-    text?: string | null
+    text: string | null
     buttonLabel: string
   }
 }
 
-export type FormBaseFragment = {
-  __typename?: 'Form'
-  slug: string
-  moreInformationUrl?: string | null
-}
+export type FormBaseFragment = { slug: string; moreInformationUrl: string | null }
 
 export type FormWithLandingPageFragment = {
-  __typename?: 'Form'
   slug: string
-  moreInformationUrl?: string | null
-  landingPage?: {
-    __typename?: 'ComponentBlocksFormLandingPage'
-    text?: string | null
-    linkCtas?: Array<{
+  moreInformationUrl: string | null
+  landingPage: {
+    text: string | null
+    linkCtas: Array<{
       __typename: 'ComponentBlocksFormLandingPageLinkCta'
       id: string
       title: string
-      text?: string | null
+      text: string | null
       buttonLabel: string
       url: string
     } | null> | null
     formCta: {
       __typename: 'ComponentBlocksFormLandingPageFormCta'
       title: string
-      text?: string | null
+      text: string | null
       buttonLabel: string
     }
   } | null
 }
 
 export type FormBaseBySlugQueryVariables = Exact<{
-  slug: Scalars['String']['input']
+  slug: string
 }>
 
 export type FormBaseBySlugQuery = {
-  __typename?: 'Query'
-  forms: Array<{
-    __typename?: 'Form'
-    documentId: string
-    slug: string
-    moreInformationUrl?: string | null
-  } | null>
+  forms: Array<{ documentId: string; slug: string; moreInformationUrl: string | null } | null>
 }
 
 export type FormWithLandingPageBySlugQueryVariables = Exact<{
-  slug: Scalars['String']['input']
+  slug: string
 }>
 
 export type FormWithLandingPageBySlugQuery = {
-  __typename?: 'Query'
   forms: Array<{
-    __typename?: 'Form'
     documentId: string
     slug: string
-    moreInformationUrl?: string | null
-    landingPage?: {
-      __typename?: 'ComponentBlocksFormLandingPage'
-      text?: string | null
-      linkCtas?: Array<{
+    moreInformationUrl: string | null
+    landingPage: {
+      text: string | null
+      linkCtas: Array<{
         __typename: 'ComponentBlocksFormLandingPageLinkCta'
         id: string
         title: string
-        text?: string | null
+        text: string | null
         buttonLabel: string
         url: string
       } | null> | null
       formCta: {
         __typename: 'ComponentBlocksFormLandingPageFormCta'
         title: string
-        text?: string | null
+        text: string | null
         buttonLabel: string
       }
     } | null
@@ -2001,130 +2008,92 @@ export type FormWithLandingPageBySlugQuery = {
 }
 
 export type CommonLinkFragment = {
-  __typename?: 'ComponentBlocksCommonLink'
-  label?: string | null
-  url?: string | null
-  municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  label: string | null
+  url: string | null
+  municipalService: { title: string; href: string } | null
 }
 
 export type FooterColumnBlockFragment = {
-  __typename?: 'ComponentBlocksFooterColumn'
   title: string
-  links?: Array<{
-    __typename?: 'ComponentBlocksCommonLink'
-    label?: string | null
-    url?: string | null
-    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  links: Array<{
+    label: string | null
+    url: string | null
+    municipalService: { title: string; href: string } | null
   } | null> | null
 }
 
 export type FooterFragment = {
-  __typename?: 'Footer'
-  facebookUrl?: string | null
-  instagramUrl?: string | null
-  youtubeUrl?: string | null
-  linkedinUrl?: string | null
-  tiktokUrl?: string | null
-  contactText?: string | null
-  columns?: Array<{
-    __typename?: 'ComponentBlocksFooterColumn'
+  facebookUrl: string | null
+  instagramUrl: string | null
+  youtubeUrl: string | null
+  linkedinUrl: string | null
+  tiktokUrl: string | null
+  contactText: string | null
+  columns: Array<{
     title: string
-    links?: Array<{
-      __typename?: 'ComponentBlocksCommonLink'
-      label?: string | null
-      url?: string | null
-      municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+    links: Array<{
+      label: string | null
+      url: string | null
+      municipalService: { title: string; href: string } | null
     } | null> | null
   } | null> | null
-  accessibilityPageLink?: {
-    __typename?: 'ComponentBlocksCommonLink'
-    label?: string | null
-    url?: string | null
-    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  accessibilityPageLink: {
+    label: string | null
+    url: string | null
+    municipalService: { title: string; href: string } | null
   } | null
 }
 
 export type GeneralQueryVariables = Exact<{ [key: string]: never }>
 
 export type GeneralQuery = {
-  __typename?: 'Query'
-  footer?: {
-    __typename?: 'Footer'
-    facebookUrl?: string | null
-    instagramUrl?: string | null
-    youtubeUrl?: string | null
-    linkedinUrl?: string | null
-    tiktokUrl?: string | null
-    contactText?: string | null
-    columns?: Array<{
-      __typename?: 'ComponentBlocksFooterColumn'
+  footer: {
+    facebookUrl: string | null
+    instagramUrl: string | null
+    youtubeUrl: string | null
+    linkedinUrl: string | null
+    tiktokUrl: string | null
+    contactText: string | null
+    columns: Array<{
       title: string
-      links?: Array<{
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      links: Array<{
+        label: string | null
+        url: string | null
+        municipalService: { title: string; href: string } | null
       } | null> | null
     } | null> | null
-    accessibilityPageLink?: {
-      __typename?: 'ComponentBlocksCommonLink'
-      label?: string | null
-      url?: string | null
-      municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+    accessibilityPageLink: {
+      label: string | null
+      url: string | null
+      municipalService: { title: string; href: string } | null
     } | null
   } | null
 }
 
-export type HelpItemFragment = {
-  __typename?: 'ComponentBlocksHelpItem'
-  id: string
-  title: string
-  content: string
-}
+export type HelpItemFragment = { id: string; title: string; content: string }
 
 export type HelpCategoryFragment = {
-  __typename?: 'ComponentBlocksHelpCategory'
   id: string
   title: string
-  items: Array<{
-    __typename?: 'ComponentBlocksHelpItem'
-    id: string
-    title: string
-    content: string
-  } | null>
+  items: Array<{ id: string; title: string; content: string } | null>
 }
 
 export type HelpPageFragment = {
-  __typename?: 'HelpPage'
   categories: Array<{
-    __typename?: 'ComponentBlocksHelpCategory'
     id: string
     title: string
-    items: Array<{
-      __typename?: 'ComponentBlocksHelpItem'
-      id: string
-      title: string
-      content: string
-    } | null>
+    items: Array<{ id: string; title: string; content: string } | null>
   } | null>
 }
 
 export type HelpPageQueryVariables = Exact<{ [key: string]: never }>
 
 export type HelpPageQuery = {
-  __typename?: 'Query'
-  helpPage?: {
-    __typename?: 'HelpPage'
+  helpPage: {
     categories: Array<{
-      __typename?: 'ComponentBlocksHelpCategory'
       id: string
       title: string
-      items: Array<{
-        __typename?: 'ComponentBlocksHelpItem'
-        id: string
-        title: string
-        content: string
-      } | null>
+      items: Array<{ id: string; title: string; content: string } | null>
     } | null>
   } | null
 }
@@ -2132,11 +2101,8 @@ export type HelpPageQuery = {
 export type HomepageQueryVariables = Exact<{ [key: string]: never }>
 
 export type HomepageQuery = {
-  __typename?: 'Query'
-  homepage?: {
-    __typename?: 'Homepage'
+  homepage: {
     services: Array<{
-      __typename?: 'MunicipalService'
       documentId: string
       title: string
       description: string
@@ -2144,10 +2110,9 @@ export type HomepageQuery = {
       href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      tags: Array<{ documentId: string; title: string } | null>
     } | null>
     servicesLegalPerson: Array<{
-      __typename?: 'MunicipalService'
       documentId: string
       title: string
       description: string
@@ -2155,59 +2120,47 @@ export type HomepageQuery = {
       href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      tags: Array<{ documentId: string; title: string } | null>
     } | null>
     announcements: Array<{
-      __typename?: 'HomepageAnnouncement'
       documentId: string
       title: string
       description: string
       buttonText: string
       href: string
-      dateFrom?: any | null
-      dateTo?: any | null
-      image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
+      dateFrom: unknown
+      dateTo: unknown
+      image: { url: string; alternativeText: string | null }
     } | null>
     announcementsLegalPerson: Array<{
-      __typename?: 'HomepageAnnouncement'
       documentId: string
       title: string
       description: string
       buttonText: string
       href: string
-      dateFrom?: any | null
-      dateTo?: any | null
-      image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
+      dateFrom: unknown
+      dateTo: unknown
+      image: { url: string; alternativeText: string | null }
     } | null>
   } | null
 }
 
 export type HomepageAnnouncementEntityFragment = {
-  __typename?: 'HomepageAnnouncement'
   documentId: string
   title: string
   description: string
   buttonText: string
   href: string
-  dateFrom?: any | null
-  dateTo?: any | null
-  image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
+  dateFrom: unknown
+  dateTo: unknown
+  image: { url: string; alternativeText: string | null }
 }
 
-export type MunicipalServiceTagEntityFragment = {
-  __typename?: 'MunicipalServiceTag'
-  documentId: string
-  title: string
-}
+export type MunicipalServiceTagEntityFragment = { documentId: string; title: string }
 
-export type MunicipalServiceCategoryEntityFragment = {
-  __typename?: 'MunicipalServiceCategory'
-  documentId: string
-  title: string
-}
+export type MunicipalServiceCategoryEntityFragment = { documentId: string; title: string }
 
 export type MunicipalServiceCardEntityFragment = {
-  __typename?: 'MunicipalService'
   documentId: string
   title: string
   description: string
@@ -2215,11 +2168,10 @@ export type MunicipalServiceCardEntityFragment = {
   href: string
   color: Enum_Municipalservice_Color
   icon: Enum_Municipalservice_Icon
-  tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+  tags: Array<{ documentId: string; title: string } | null>
 }
 
 export type MunicipalServiceEntityFragment = {
-  __typename?: 'MunicipalService'
   documentId: string
   title: string
   description: string
@@ -2227,22 +2179,15 @@ export type MunicipalServiceEntityFragment = {
   href: string
   color: Enum_Municipalservice_Color
   icon: Enum_Municipalservice_Icon
-  categories: Array<{
-    __typename?: 'MunicipalServiceCategory'
-    documentId: string
-    title: string
-  } | null>
-  tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+  categories: Array<{ documentId: string; title: string } | null>
+  tags: Array<{ documentId: string; title: string } | null>
 }
 
 export type MunicipalServicesPageQueryVariables = Exact<{ [key: string]: never }>
 
 export type MunicipalServicesPageQuery = {
-  __typename?: 'Query'
-  municipalServicesPage?: {
-    __typename?: 'MunicipalServicesPage'
+  municipalServicesPage: {
     services: Array<{
-      __typename?: 'MunicipalService'
       documentId: string
       title: string
       description: string
@@ -2250,15 +2195,10 @@ export type MunicipalServicesPageQuery = {
       href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
-      categories: Array<{
-        __typename?: 'MunicipalServiceCategory'
-        documentId: string
-        title: string
-      } | null>
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      categories: Array<{ documentId: string; title: string } | null>
+      tags: Array<{ documentId: string; title: string } | null>
     } | null>
     servicesLegalPerson: Array<{
-      __typename?: 'MunicipalService'
       documentId: string
       title: string
       description: string
@@ -2266,38 +2206,31 @@ export type MunicipalServicesPageQuery = {
       href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
-      categories: Array<{
-        __typename?: 'MunicipalServiceCategory'
-        documentId: string
-        title: string
-      } | null>
-      tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      categories: Array<{ documentId: string; title: string } | null>
+      tags: Array<{ documentId: string; title: string } | null>
     } | null>
   } | null
 }
 
 export type TaxFragment = {
-  __typename?: 'Tax'
   documentId: string
   accountCommunicationConsentText: string
-  channelChangeEffectiveNextYearText?: string | null
-  channelChangeEffectiveNextYearTitle?: string | null
-  feedbackLinkDzn?: string | null
-  feedbackLinkKo?: string | null
+  channelChangeEffectiveNextYearText: string | null
+  channelChangeEffectiveNextYearTitle: string | null
+  feedbackLinkDzn: string | null
+  feedbackLinkKo: string | null
 }
 
 export type TaxQueryVariables = Exact<{ [key: string]: never }>
 
 export type TaxQuery = {
-  __typename?: 'Query'
-  tax?: {
-    __typename?: 'Tax'
+  tax: {
     documentId: string
     accountCommunicationConsentText: string
-    channelChangeEffectiveNextYearText?: string | null
-    channelChangeEffectiveNextYearTitle?: string | null
-    feedbackLinkDzn?: string | null
-    feedbackLinkKo?: string | null
+    channelChangeEffectiveNextYearText: string | null
+    channelChangeEffectiveNextYearTitle: string | null
+    feedbackLinkDzn: string | null
+    feedbackLinkKo: string | null
   } | null
 }
 

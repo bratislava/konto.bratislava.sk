@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "documentId",
       "defaultSortBy": "id",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,7 +22,7 @@
       },
       "text": {
         "edit": {
-          "label": "text",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -35,7 +36,7 @@
       },
       "linkCtas": {
         "edit": {
-          "label": "linkCtas",
+          "label": "Odkazy CTAs",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -49,7 +50,7 @@
       },
       "formCta": {
         "edit": {
-          "label": "formCta",
+          "label": "Formulár CTA",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -71,12 +72,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "linkCtas",
-        "formCta",
-        "documentId"
-      ],
       "edit": [
         [
           {
@@ -96,6 +91,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "linkCtas",
+        "formCta",
+        "documentId"
       ]
     },
     "uid": "blocks.form-landing-page",

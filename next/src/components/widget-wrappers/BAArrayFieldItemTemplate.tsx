@@ -55,8 +55,16 @@ const BAArrayFieldItemTemplate = <
   return (
     <div className={boxStyle} data-cy={`section-${parentId}-${index}`}>
       <div className={headingStyle}>
-        {variant === 'topLevel' && <Typography variant="h3" className="grow">{title}</Typography>}
-        {variant === 'nested' && <Typography variant="h4" className="grow">{title}</Typography>}
+        {variant === 'topLevel' && (
+          <Typography variant="h3" className="grow">
+            {title}
+          </Typography>
+        )}
+        {variant === 'nested' && (
+          <Typography variant="h4" className="grow">
+            {title}
+          </Typography>
+        )}
         {hasRemove && (
           <Button
             variant="icon-wrapped"

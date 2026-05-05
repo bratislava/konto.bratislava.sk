@@ -1,9 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es2023",
-      "dom"
-    ],
+    "lib": ["es2023", "dom"],
     "module": "node16",
     "target": "es2022",
     "strict": true,
@@ -14,14 +11,7 @@
     "jsx": "react",
     "declaration": true,
     "outDir": "./dist",
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "./src/**/*",
-    "./tests/**/*",
-    "./scripts/**/*",
-    "./test-utils/**/*"
-  ]
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*", "./test-utils/**/*"]
 }

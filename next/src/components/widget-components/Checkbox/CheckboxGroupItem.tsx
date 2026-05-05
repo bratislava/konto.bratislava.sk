@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { useRef } from 'react'
-import { useCheckboxGroupItem, useFocusRing, VisuallyHidden } from 'react-aria'
+import { useCheckboxGroupItem } from 'react-aria/useCheckboxGroup'
+import { useFocusRing } from 'react-aria/useFocusRing'
+import { VisuallyHidden } from 'react-aria/VisuallyHidden'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
-import { useDateSegment } from 'react-aria'
-import { DateFieldState, DateSegment } from 'react-stately'
+import { useDateSegment } from 'react-aria/useDateField'
+import { DateFieldState, DateSegment } from 'react-stately/useDateFieldState'
 
 import cn from '@/src/utils/cn'
 

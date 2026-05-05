@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Switch as RACSwitch, SwitchProps as RACSwitchProps } from 'react-aria-components'
+import { Switch as RACSwitch, SwitchProps as RACSwitchProps } from 'react-aria-components/Switch'
 
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'

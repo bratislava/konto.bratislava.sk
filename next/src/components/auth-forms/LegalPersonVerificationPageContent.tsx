@@ -45,7 +45,9 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
     </div>
   ) : (
     <div className="flex flex-col gap-4 md:gap-6">
-      <Typography variant="h3" as="h1">{t('auth.identity_verification.fop_po_eid.init.title')}</Typography>
+      <Typography variant="h3" as="h1">
+        {t('auth.identity_verification.fop_po_eid.init.title')}
+      </Typography>
       <AccountMarkdown
         variant="sm"
         content={t('auth.identity_verification.fop_po_eid.init.content')}

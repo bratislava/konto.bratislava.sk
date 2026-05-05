@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next/pages'
-import { DateFormatterOptions } from 'react-aria'
+import { DateFormatterOptions } from 'react-aria/useDateFormatter'
 
 type Props = {
   children: string

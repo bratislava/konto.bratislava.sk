@@ -23,7 +23,9 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}
     >
       <div className="flex flex-col gap-2">
-        <Typography variant="h5" as="h3">{consent.title}</Typography>
+        <Typography variant="h5" as="h3">
+          {consent.title}
+        </Typography>
         <AccountMarkdown variant="sm" content={consent.text} className="gap-1" />
       </div>
       <Toggle

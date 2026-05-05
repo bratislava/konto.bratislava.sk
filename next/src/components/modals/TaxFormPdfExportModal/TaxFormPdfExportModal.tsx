@@ -1,6 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { Trans, useTranslation } from 'next-i18next/pages'
-import { mergeProps } from 'react-aria'
+import { mergeProps } from 'react-aria/mergeProps'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'

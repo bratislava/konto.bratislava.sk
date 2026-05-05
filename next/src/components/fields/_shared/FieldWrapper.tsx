@@ -1,11 +1,9 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
-import {
-  FieldError as RACFieldError,
-  Label as RACLabel,
-  Text as RACText,
-} from 'react-aria-components'
+import { FieldError as RACFieldError } from 'react-aria-components/FieldError'
+import { Label as RACLabel } from 'react-aria-components/Label'
+import { Text as RACText } from 'react-aria-components/Text'
 
 import cn from '@/src/utils/cn'
 

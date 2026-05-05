@@ -57,7 +57,9 @@ const AccountSuccessAlert = ({
       </div>
 
       <div className="flex flex-col gap-3 lg:gap-4">
-        <Typography variant="h3" as="h1" className="text-center">{title}</Typography>
+        <Typography variant="h3" as="h1" className="text-center">
+          {title}
+        </Typography>
         {description && (
           <AccountMarkdown className="text-center" content={description} variant="sm" />
         )}

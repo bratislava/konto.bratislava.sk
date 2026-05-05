@@ -1,4 +1,4 @@
-import { useNumberFormatter } from 'react-aria'
+import { useNumberFormatter } from 'react-aria/useNumberFormatter'
 
 export const useCurrencyFormatter = () =>
   useNumberFormatter({

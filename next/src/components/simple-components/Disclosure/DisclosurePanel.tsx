@@ -1,7 +1,7 @@
 import {
   DisclosurePanel as RACDisclosurePanel,
   DisclosurePanelProps as RACDisclosurePanelProps,
-} from 'react-aria-components'
+} from 'react-aria-components/Disclosure'
 
 import cn from '@/src/utils/cn'
 

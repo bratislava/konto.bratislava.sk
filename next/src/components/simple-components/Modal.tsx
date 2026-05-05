@@ -1,8 +1,9 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import React, { PropsWithChildren } from 'react'
-import { mergeProps } from 'react-aria'
-import { Dialog, Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components'
+import { mergeProps } from 'react-aria/mergeProps'
+import { Dialog } from 'react-aria-components/Dialog'
+import { Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components/Modal'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'

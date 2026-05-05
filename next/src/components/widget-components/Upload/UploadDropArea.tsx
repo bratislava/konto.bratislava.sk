@@ -1,13 +1,10 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { forwardRef } from 'react'
-import { DropEvent } from 'react-aria'
-import {
-  Button as ReactAriaButton,
-  DropZone,
-  DropZoneRenderProps,
-  FileTrigger,
-} from 'react-aria-components'
+import { DropEvent } from 'react-aria/useDrop'
+import { Button as ReactAriaButton } from 'react-aria-components/Button'
+import { DropZone, DropZoneRenderProps } from 'react-aria-components/DropZone'
+import { FileTrigger } from 'react-aria-components/FileTrigger'
 
 import { UploadIcon } from '@/src/assets/ui-icons'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'

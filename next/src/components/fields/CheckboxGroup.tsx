@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import {
   CheckboxGroup as RACCheckboxGroup,
   CheckboxGroupProps as RACCheckboxGroupProps,
-} from 'react-aria-components'
+} from 'react-aria-components/CheckboxGroup'
 
 import cn from '@/src/utils/cn'
 

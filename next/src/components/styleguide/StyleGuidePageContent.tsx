@@ -1,6 +1,6 @@
 import { parseAsString, useQueryState } from 'nuqs'
 import { ReactElement } from 'react'
-import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
+import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'

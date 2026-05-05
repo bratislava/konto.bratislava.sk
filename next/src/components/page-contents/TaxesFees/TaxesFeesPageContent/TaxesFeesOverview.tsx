@@ -28,7 +28,9 @@ const TaxesFeesOverview = ({ taxesData, taxType }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Typography variant="h5" as="h2">{title}</Typography>
+      <Typography variant="h5" as="h2">
+        {title}
+      </Typography>
       {taxesData?.availabilityStatus === TaxAvailabilityStatus.LookingForYourTax ? (
         <TaxesFeesOverviewBanner taxType={taxType} variant="looking-for" />
       ) : taxesData?.availabilityStatus === TaxAvailabilityStatus.TaxNotOnRecord ? (

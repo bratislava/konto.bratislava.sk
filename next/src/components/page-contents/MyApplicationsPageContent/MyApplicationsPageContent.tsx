@@ -4,7 +4,7 @@ import { AuthSession } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
-import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
+import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MyApplicationsList, {

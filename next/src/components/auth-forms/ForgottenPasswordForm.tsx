@@ -56,7 +56,9 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         return onSubmit(data.email)
       })}
     >
-      <Typography variant="h3" as="h1">{t('auth.forgotten_password_title')}</Typography>
+      <Typography variant="h3" as="h1">
+        {t('auth.forgotten_password_title')}
+      </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
         name="email"

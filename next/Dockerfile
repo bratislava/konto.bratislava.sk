@@ -2,7 +2,7 @@
 ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} AS forms-shared
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
-FROM node:24.14-alpine AS base
+FROM node:24.15-alpine AS base
 
 # used as app-base in prodution and development image
 FROM base AS app-base

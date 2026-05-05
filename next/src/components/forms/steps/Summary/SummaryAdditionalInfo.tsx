@@ -22,7 +22,9 @@ const SummaryAdditionalInfo = () => {
 
   return (
     <div>
-      <Typography variant="h3" className="mb-4">{t('summary.additional_info')}</Typography>
+      <Typography variant="h3" className="mb-4">
+        {t('summary.additional_info')}
+      </Typography>
       <AccountMarkdown
         content={additionalInfo}
         // TODO: Replace variant statusBar

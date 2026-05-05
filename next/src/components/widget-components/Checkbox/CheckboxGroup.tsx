@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
-import { useCheckboxGroup } from 'react-aria'
-import { CheckboxGroupState, useCheckboxGroupState } from 'react-stately'
+import { useCheckboxGroup } from 'react-aria/useCheckboxGroup'
+import { CheckboxGroupState, useCheckboxGroupState } from 'react-stately/useCheckboxGroupState'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'

@@ -1,12 +1,12 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import React, { ReactNode } from 'react'
-import { Orientation, useRadioGroup } from 'react-aria'
+import { Orientation, useRadioGroup } from 'react-aria/useRadioGroup'
 import {
   RadioGroupProps as ReactStatelyRadioGroupProps,
   RadioGroupState,
   useRadioGroupState,
-} from 'react-stately'
+} from 'react-stately/useRadioGroupState'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'

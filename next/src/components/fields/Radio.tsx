@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Radio as RACRadio, RadioProps as RACRadioProps } from 'react-aria-components'
+import { Radio as RACRadio, RadioProps as RACRadioProps } from 'react-aria-components/RadioGroup'
 
 import cn from '@/src/utils/cn'
 

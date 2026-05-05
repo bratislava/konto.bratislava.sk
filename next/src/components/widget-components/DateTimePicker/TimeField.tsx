@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 import React, { useRef } from 'react'
-import { TimeValue, useTimeField } from 'react-aria'
-import { useTimeFieldState } from 'react-stately'
+import { TimeValue, useTimeField } from 'react-aria/useTimeField'
+import { useTimeFieldState } from 'react-stately/useTimeFieldState'
 
 import DateTimeSegment from '@/src/components/widget-components/DateTimePicker/DateTimeSegment'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'

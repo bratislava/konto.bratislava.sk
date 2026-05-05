@@ -237,7 +237,7 @@
   "errors.DEAD_PERSON": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
   "errors.ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
   "errors.IncorrectPasswordException": "Zadané heslo nie je správne.",
-  "errors.InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number": "Konto s týmto e-mailom už existuje, avšak e-mail nebol overený. Zaregistujte sa s iným e-mailom, ktorý vzápätí overíte alebo nám napíšte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a> so žiadosťou o zmazanie existujúceho konta. Následne sa s pôvodným e-mailom budete môcť registrovať a overiť nanovo.",
+  "errors.InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number": "Konto s týmto e-mailom už existuje, ale registrácia nebola dokončená **(e-mail nebol overený)**, preto vám nemôžeme obnoviť heslo.\n\nNapíšte nám na [info@bratislava.sk](mailto:info@bratislava.sk) so žiadosťou o deaktiváciu existujúceho konta. Následne sa budete môcť zaregistrovať znova a dokončiť overenie.",
   "errors.LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
   "errors.MigrationUserNotFoundException": "E-mail {{email}} sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
   "errors.NotAuthorizedException": "Nesprávne prihlasovacie údaje",

@@ -2,10 +2,12 @@ import { forwardRef, Ref } from 'react'
 import {
   DateInput as RACDateInput,
   DateSegment as RACDateSegment,
+} from 'react-aria-components/DateField'
+import {
   TimeField as RACTimeField,
   TimeFieldProps as RACTimeFieldProps,
   TimeValue,
-} from 'react-aria-components'
+} from 'react-aria-components/TimeField'
 
 import cn from '@/src/utils/cn'
 

@@ -9,7 +9,7 @@ import {
   CalendarProps as RACCalendarProps,
   DateValue,
   Heading as RACHeading,
-} from 'react-aria-components'
+} from 'react-aria-components/Calendar'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'

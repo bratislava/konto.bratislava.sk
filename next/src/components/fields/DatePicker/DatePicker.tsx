@@ -3,14 +3,16 @@ import { useTranslation } from 'next-i18next/pages'
 import { forwardRef, Ref } from 'react'
 import {
   DateInput as RACDateInput,
+  DateSegment as RACDateSegment,
+} from 'react-aria-components/DateField'
+import {
   DatePicker as RACDatePicker,
   DatePickerProps as RACDatePickerProps,
-  DateSegment as RACDateSegment,
   DateValue,
-  Dialog as RACDialog,
-  Group as RACGroup,
-  Popover as RACPopover,
-} from 'react-aria-components'
+} from 'react-aria-components/DatePicker'
+import { Dialog as RACDialog } from 'react-aria-components/Dialog'
+import { Group as RACGroup } from 'react-aria-components/Group'
+import { Popover as RACPopover } from 'react-aria-components/Popover'
 
 import { CalendarIcon } from '@/src/assets/ui-icons'
 import cn from '@/src/utils/cn'

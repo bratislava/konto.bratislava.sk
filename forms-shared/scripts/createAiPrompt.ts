@@ -16,7 +16,7 @@ const ignorePatterns = [
 ]
 
 const rootDir = getAppRootDir()
-const outputPath = path.join(rootDir, 'dist-schemas/prompt.txt')
+const outputPath = path.join(rootDir, 'dist/schemas/prompt.txt')
 
 async function createAiPrompt() {
   const prettierConfig = await prettier.resolveConfig(rootDir)

@@ -32,14 +32,14 @@ spec:
               memory: 64Mi
           env:
             - name: DATABASE_URL
-              value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-database:5432/$(POSTGRES_DB)?schema=public
+              value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-cnpg-rw:5432/$(POSTGRES_DB)?schema=public
           envFrom:
             - configMapRef:
                 name: ${BUILD_REPOSITORY_NAME}-env
             - configMapRef:
                 name: ${BUILD_REPOSITORY_NAME}-clamav
             - secretRef:
-                name: ${BUILD_REPOSITORY_NAME}-database-secret
+                name: ${BUILD_REPOSITORY_NAME}-cnpg-database-secret
             - secretRef:
                 name: ${BUILD_REPOSITORY_NAME}-forms-secret
             - secretRef:

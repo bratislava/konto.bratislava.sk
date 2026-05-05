@@ -1,13 +1,13 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
+import { Text } from 'react-aria-components/Text'
 import {
-  Text,
   type ToastProps,
   UNSTABLE_Toast as ReactAriaToast,
   UNSTABLE_ToastContent as ToastContent,
   UNSTABLE_ToastQueue as ToastQueue,
   UNSTABLE_ToastRegion as ToastRegion,
-} from 'react-aria-components'
+} from 'react-aria-components/Toast'
 import { flushSync } from 'react-dom'
 
 import { CrossIcon } from '@/src/assets/ui-icons'

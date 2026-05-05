@@ -58,6 +58,14 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     service = module.get<TaxDeliveryMethodsTasksSubservice>(TaxDeliveryMethodsTasksSubservice)
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+
+    // Make $transaction execute its callback so the advisory-lock path is exercised in tests.
+    ;(prismaMock.$transaction as jest.Mock).mockImplementation(async (fn: any) => {
+      if (typeof fn === 'function') return fn(prismaMock)
+      return Promise.all(fn)
+    })
+    // $executeRaw is used for pg_advisory_xact_lock — no-op in tests.
+    ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(0)
   })
 
   describe('updateDeliveryMethodsInNoris', () => {
@@ -75,6 +83,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
 
       prismaMock.user.findMany
+        // Initial batch
         .mockResolvedValueOnce([
           {
             birthNumber: '1234562020',
@@ -117,7 +126,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
             id: '8',
           },
         ] as unknown as UserWithRelations[])
-        .mockResolvedValueOnce([])
+        // Re-check inside advisory-lock transaction: all users still active
+        .mockResolvedValueOnce([
+          { birthNumber: '1234562020' },
+          { birthNumber: '1234564848' },
+          { birthNumber: '1234561234' },
+          { birthNumber: '1234569999' },
+          { birthNumber: '1234567777' },
+          { birthNumber: '1234564646' },
+          { birthNumber: '1234564649' },
+          { birthNumber: '1234564521' },
+        ] as unknown as UserWithRelations[])
 
       await service.updateDeliveryMethodsInNoris()
 
@@ -178,22 +197,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(prismaUserUpdateSpy).not.toHaveBeenCalled()
     })
 
-    it('should throw error if some user was deactivated during his update in Noris', async () => {
-      const adminApiUpdateSpy = jest
-        .spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
-        .mockResolvedValue({
-          data: {
-            birthNumbers: ['123456/2020'],
-          },
-        } as AxiosResponse<UpdateDeliveryMethodsInNorisResponseDto>)
-      const internalErrorSpy = jest
-        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockImplementation(() => {
-          throw new Error('User deactivated')
-        })
-      const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
+    it('should skip deactivated users detected during the lock re-check and not call Noris for them', async () => {
+      const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
+      const removeDeliveryMethodSpy = jest.spyOn(
+        service['taxSubservice'],
+        'removeDeliveryMethodFromNoris'
+      )
+      const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
+      const prismaUserUpdateSpy = jest
+        .spyOn(prismaMock.user, 'updateMany')
+        .mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany
+        // Initial batch: one user
         .mockResolvedValueOnce([
           {
             birthNumber: '1234562020',
@@ -201,17 +217,75 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
           },
         ] as unknown as UserWithRelations[])
+        // Re-check inside the transaction: user was deactivated (birthNumber now null) → empty
+        .mockResolvedValueOnce([])
+
+      await service.updateDeliveryMethodsInNoris()
+
+      expect(internalErrorSpy).not.toHaveBeenCalled()
+      // The user was filtered out by the re-check, so Noris should not be called at all.
+      expect(adminApiUpdateSpy).not.toHaveBeenCalled()
+      // No re-remove needed — locking guarantees correctness without it.
+      expect(removeDeliveryMethodSpy).not.toHaveBeenCalled()
+      // lastTaxDeliveryMethodsUpdateTry is still stamped for the batch.
+      expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: { in: ['1'] } },
+          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+        })
+      )
+    })
+
+    it('should call Noris only with users still active after the re-check when some are deactivated mid-flight', async () => {
+      const adminApiUpdateSpy = jest
+        .spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
+        .mockResolvedValue({
+          data: { birthNumbers: ['123456/2020'] },
+        } as AxiosResponse<UpdateDeliveryMethodsInNorisResponseDto>)
+      const prismaUserUpdateSpy = jest
+        .spyOn(prismaMock.user, 'updateMany')
+        .mockResolvedValue({ count: 1 })
+
+      prismaMock.user.findMany
+        // Initial batch: two users
         .mockResolvedValueOnce([
           {
+            birthNumber: '1234562020',
             id: '1',
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
           },
-        ] as User[])
+          {
+            birthNumber: '1234564848',
+            id: '2',
+            taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
+          },
+        ] as unknown as UserWithRelations[])
+        // Re-check: only user1 is still active (user2 was deactivated between the initial query and the lock)
+        .mockResolvedValueOnce([{ birthNumber: '1234562020' }] as unknown as UserWithRelations[])
 
-      await expect(service.updateDeliveryMethodsInNoris()).rejects.toThrow('User deactivated')
+      await service.updateDeliveryMethodsInNoris()
 
-      expect(internalErrorSpy).toHaveBeenCalled()
-      expect(adminApiUpdateSpy).toHaveBeenCalled()
-      expect(prismaUserUpdateSpy).not.toHaveBeenCalled()
+      // Noris is called with only the still-active user's data.
+      expect(adminApiUpdateSpy).toHaveBeenCalledTimes(1)
+      expect(adminApiUpdateSpy).toHaveBeenCalledWith({
+        data: {
+          '1234562020': { deliveryMethod: DeliveryMethodNoris.EDESK },
+        },
+      })
+
+      // lastTaxDeliveryMethodsUpdateTry is stamped for the entire batch, including the deactivated user.
+      expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: { in: ['1', '2'] } },
+          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+        })
+      )
+
+      // lastTaxDeliveryMethodsUpdateYear is stamped only for the birth number Noris confirmed.
+      expect(prismaUserUpdateSpy).toHaveBeenCalledWith({
+        where: { birthNumber: { in: ['1234562020'] } },
+        data: { lastTaxDeliveryMethodsUpdateYear: new Date().getFullYear() },
+      })
     })
   })
 

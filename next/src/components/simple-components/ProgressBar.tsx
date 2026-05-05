@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { useProgressBar } from 'react-aria'
+import { useProgressBar } from 'react-aria/useProgressBar'
 
 import cn from '@/src/utils/cn'
 

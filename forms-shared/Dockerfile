@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1.7-labs
 # Using newer syntax adds `COPY --exclude` support
-FROM node:24.14-slim AS base
+FROM node:24.15-slim AS base
 
 WORKDIR /app
 

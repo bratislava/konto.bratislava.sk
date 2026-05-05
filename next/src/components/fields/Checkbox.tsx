@@ -1,5 +1,8 @@
 import { ReactNode } from 'react'
-import { Checkbox as RACCheckbox, CheckboxProps as RACCheckboxProps } from 'react-aria-components'
+import {
+  Checkbox as RACCheckbox,
+  CheckboxProps as RACCheckboxProps,
+} from 'react-aria-components/Checkbox'
 
 import cn from '@/src/utils/cn'
 

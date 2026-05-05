@@ -1,7 +1,7 @@
 import {
   Disclosure as RACDisclosure,
   DisclosureProps as RACDisclosureProps,
-} from 'react-aria-components'
+} from 'react-aria-components/Disclosure'
 
 interface DisclosureProps extends RACDisclosureProps {
   children: React.ReactNode

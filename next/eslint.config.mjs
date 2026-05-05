@@ -78,6 +78,30 @@ export default [
       'sonarjs/no-undefined-argument': 'warn', // 2 violations
       'sonarjs/fixme-tag': 'warn', // 2 violations
       '@typescript-eslint/no-base-to-string': 'warn', // 2 violations
+
+      // React Aria v1.17.0 added subpath imports and recommends them for smaller bundles
+      // and faster builds: https://react-aria.adobe.com/releases/v1-17-0
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-aria-components',
+              message:
+                'Use subpath imports instead, e.g. react-aria-components/Button.',
+            },
+            {
+              name: 'react-aria',
+              message: 'Use subpath imports instead, e.g. react-aria/useButton.',
+            },
+            {
+              name: 'react-stately',
+              message:
+                'Use subpath imports instead, e.g. react-stately/useListState.',
+            },
+          ],
+        },
+      ],
     },
   },
 ]

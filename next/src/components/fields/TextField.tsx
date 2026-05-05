@@ -1,10 +1,9 @@
 import { forwardRef, ReactNode, Ref } from 'react'
+import { Input as RACInput, InputProps as RACInputProps } from 'react-aria-components/Input'
 import {
-  Input as RACInput,
-  InputProps as RACInputProps,
   TextField as RACTextField,
   TextFieldProps as RACTextFieldProps,
-} from 'react-aria-components'
+} from 'react-aria-components/TextField'
 
 import cn from '@/src/utils/cn'
 

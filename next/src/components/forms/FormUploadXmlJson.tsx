@@ -1,6 +1,7 @@
 import React from 'react'
-import { VisuallyHidden } from 'react-aria'
-import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
+import { VisuallyHidden } from 'react-aria/VisuallyHidden'
+import { Button as ReactAriaButton } from 'react-aria-components/Button'
+import { FileTrigger } from 'react-aria-components/FileTrigger'
 
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 

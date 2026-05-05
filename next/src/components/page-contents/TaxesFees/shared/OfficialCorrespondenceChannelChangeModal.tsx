@@ -2,7 +2,7 @@ import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
 import { useEffect, useRef } from 'react'
-import { Heading } from 'react-aria-components'
+import { Heading } from 'react-aria-components/Heading'
 import { Controller } from 'react-hook-form'
 
 import Radio from '@/src/components/fields/Radio'

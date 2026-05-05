@@ -24,7 +24,9 @@ const MunicipalServicesPageHeader = ({
   return (
     <SectionContainer className="bg-gray-50 pt-6 pb-4 lg:pt-16 lg:pb-8">
       <div className="flex size-full flex-col justify-end">
-        <Typography variant="h1" className="mb-4 md:mb-6">{title}</Typography>
+        <Typography variant="h1" className="mb-4 md:mb-6">
+          {title}
+        </Typography>
         <SelectFieldNew
           label=""
           className="max-w-none pr-4 sm:max-w-[400px]"

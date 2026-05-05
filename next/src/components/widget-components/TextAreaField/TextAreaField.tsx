@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTextField } from 'react-aria'
+import { useTextField } from 'react-aria/useTextField'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'

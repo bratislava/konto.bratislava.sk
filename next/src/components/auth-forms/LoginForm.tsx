@@ -61,7 +61,9 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
       data-cy="login-container"
     >
-      <Typography variant="h3" as="h1">{t('auth.login_title')}</Typography>
+      <Typography variant="h3" as="h1">
+        {t('auth.login_title')}
+      </Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="email"

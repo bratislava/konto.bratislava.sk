@@ -1,7 +1,7 @@
 # check=skip=InvalidDefaultArgInFrom
 ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
-FROM node:24.14-alpine AS base
+FROM node:24.15-alpine AS base
 
 # Install Chromium and dependencies via apk
 RUN apk add --no-cache \

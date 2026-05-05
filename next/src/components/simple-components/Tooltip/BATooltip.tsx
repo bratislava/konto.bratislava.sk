@@ -1,7 +1,7 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
-import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
+import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components/Tooltip'
 
 import { HelpIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'

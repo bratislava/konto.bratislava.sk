@@ -1,7 +1,7 @@
 import {
   DisclosureGroup as RACDisclosureGroup,
   DisclosureGroupProps as RACDisclosureGroupProps,
-} from 'react-aria-components'
+} from 'react-aria-components/DisclosureGroup'
 
 interface DisclosureGroupProps extends RACDisclosureGroupProps {
   children: React.ReactNode

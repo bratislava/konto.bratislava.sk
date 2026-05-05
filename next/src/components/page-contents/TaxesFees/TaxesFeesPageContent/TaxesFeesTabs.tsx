@@ -1,6 +1,6 @@
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
-import { Tab, TabList, Tabs, TabsProps } from 'react-aria-components'
+import { Tab, TabList, Tabs, TabsProps } from 'react-aria-components/Tabs'
 
 import cn from '@/src/utils/cn'
 

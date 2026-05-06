@@ -21,7 +21,9 @@ const TaxFeePaymentPageContent = () => {
 
   const [paymentMethodParam] = useQueryState(
     'sposob-uhrady',
-    parseAsStringLiteral([PaymentMethod.RemainingAmount, PaymentMethod.Installments] as const),
+    parseAsStringLiteral([PaymentMethod.RemainingAmount, PaymentMethod.Installments] as const)
+      .withDefault(PaymentMethod.RemainingAmount)
+      .withOptions({ clearOnDefault: false }),
   )
 
   const { taxData } = useTaxFee()

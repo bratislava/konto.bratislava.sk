@@ -23,7 +23,7 @@ import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {
-  paymentMethod: PaymentMethodType | null
+  paymentMethod: PaymentMethodType
 }
 
 /**

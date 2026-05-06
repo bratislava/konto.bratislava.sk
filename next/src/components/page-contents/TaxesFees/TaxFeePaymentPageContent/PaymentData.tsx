@@ -1,5 +1,4 @@
 import { Button, Typography } from '@bratislava/component-library'
-import { useSearchParams } from 'next/navigation'
 import { Trans, useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
@@ -24,7 +23,7 @@ import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {
-  paymentMethod: PaymentMethodType
+  paymentMethod: PaymentMethodType | null
 }
 
 /**
@@ -45,9 +44,6 @@ const PaymentData = ({ paymentMethod }: Props) => {
   } = useTaxFee()
 
   const { userData } = useUser()
-
-  const searchParams = useSearchParams()
-  const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
   const qrCodeBase64oneTimePayment = `data:image/png;base64,${taxData.oneTimePayment.qrCode}`
   const qrCodeBase64InstallmentPayment = `data:image/png;base64,${taxData.installmentPayment.activeInstallment?.qrCode}`
@@ -124,7 +120,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      {paymentMethodParam === PaymentMethod.Installments && (
+      {paymentMethod === PaymentMethod.Installments && (
         <>
           <Alert
             type="warning"

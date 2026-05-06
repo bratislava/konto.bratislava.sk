@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import slugify from '@sindresorhus/slugify'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import cn from '@/src/utils/cn'
 import { SectionTitleLevel } from '@/src/utils/getCardTitleLevel'
 import { CommonLinkProps } from '@/src/utils/getLinkProps'
@@ -63,7 +63,7 @@ const SectionHeader = ({
           ) : null}
           {text ? (
             asRichtext ? (
-              <AccountMarkdown content={text} />
+              <Markdown variant="default" content={text} />
             ) : (
               <Typography variant="p-default">{text}</Typography>
             )

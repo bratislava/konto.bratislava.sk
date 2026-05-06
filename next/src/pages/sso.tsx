@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 import { useEffect } from 'react'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import {
   postMessageToApprovedDomains,
@@ -45,7 +45,7 @@ const SSOPage = ({ accessToken }: SSOPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <AccountMarkdown content={t('sso_page.sso_placeholder')} />
+  return <Markdown variant="default" content={t('sso_page.sso_placeholder')} />
 }
 
 export default SSOPage

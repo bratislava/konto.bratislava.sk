@@ -177,6 +177,17 @@ export const CognitoUserAttributesTierEnum = {
 export type CognitoUserAttributesTierEnum =
   (typeof CognitoUserAttributesTierEnum)[keyof typeof CognitoUserAttributesTierEnum]
 
+/**
+ * Type of consent
+ */
+
+export const ConsentEnum = {
+  Marketing: 'MARKETING',
+  General: 'GENERAL',
+} as const
+
+export type ConsentEnum = (typeof ConsentEnum)[keyof typeof ConsentEnum]
+
 export interface DPBUserLoginStatistics {
   /**
    * Number of times the user has logged in
@@ -589,6 +600,17 @@ export interface RequestBodyVerifyWithRpoDto {
 export interface RequestGdprDataDto {
   gdprData: Array<GdprDataDto>
 }
+export interface ResponseConsentDto {
+  /**
+   * Type of consent
+   */
+  consentType: ConsentEnum
+  /**
+   * Whether the consent is currently granted
+   */
+  isGranted: boolean
+}
+
 export interface ResponseCustomErrorVerificationEidDto {
   /**
    * status
@@ -689,7 +711,12 @@ export interface ResponseLegalPersonDataDto {
    */
   birthNumber: string | null
   /**
-   * Subscription Data in array
+   * Current consent state for the legal person, one entry per consent type.
+   */
+  consents: Array<ResponseConsentDto>
+  /**
+   * DEPRECATED. Use `consents`. Same data re-shaped into the legacy GDPR triple.
+   * @deprecated
    */
   gdprData: Array<ResponseGdprLegalPersonDataDto>
 }
@@ -850,7 +877,12 @@ export interface ResponseUserDataDto {
    */
   hasChangedDeliveryMethodAfterDeadline: boolean
   /**
-   * Subscription Data in array
+   * Current consent state for the user, one entry per consent type.
+   */
+  consents: Array<ResponseConsentDto>
+  /**
+   * DEPRECATED. Use `consents`.
+   * @deprecated
    */
   gdprData: Array<ResponseGdprUserDataDto>
 }
@@ -904,6 +936,21 @@ export interface ResponseVerificationIdentityCardToQueueDto {
    */
   errorName?: VerificationErrorsEnum
 }
+
+export interface SetDeliveryMethodRequestDto {
+  /**
+   * Preferred delivery method for tax / official communication
+   */
+  deliveryMethod: SetDeliveryMethodRequestDtoDeliveryMethodEnum
+}
+
+export const SetDeliveryMethodRequestDtoDeliveryMethodEnum = {
+  CityAccount: 'CITY_ACCOUNT',
+  Postal: 'POSTAL',
+} as const
+
+export type SetDeliveryMethodRequestDtoDeliveryMethodEnum =
+  (typeof SetDeliveryMethodRequestDtoDeliveryMethodEnum)[keyof typeof SetDeliveryMethodRequestDtoDeliveryMethodEnum]
 
 export interface StoreTokensRequestDto {
   /**
@@ -982,6 +1029,25 @@ export const TokenResponseDtoTokenTypeEnum = {
 
 export type TokenResponseDtoTokenTypeEnum =
   (typeof TokenResponseDtoTokenTypeEnum)[keyof typeof TokenResponseDtoTokenTypeEnum]
+
+export interface UpdateGdprConsentRequestDto {
+  /**
+   * The consent the user is toggling
+   */
+  consentType: UpdateGdprConsentRequestDtoConsentTypeEnum
+  /**
+   * True to accept the consent, false to revoke it
+   */
+  accept: boolean
+}
+
+export const UpdateGdprConsentRequestDtoConsentTypeEnum = {
+  Marketing: 'MARKETING',
+  General: 'GENERAL',
+} as const
+
+export type UpdateGdprConsentRequestDtoConsentTypeEnum =
+  (typeof UpdateGdprConsentRequestDtoConsentTypeEnum)[keyof typeof UpdateGdprConsentRequestDtoConsentTypeEnum]
 
 export interface UpsertUserRecordClientRequestDto {
   /**
@@ -4103,8 +4169,8 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
-     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4182,10 +4248,64 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
+     * Sets the user preference for how official / tax communication should be delivered.
+     * @summary Set tax/official delivery method preference for the logged-in user
+     * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerSetDeliveryMethod: async (
+      setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'setDeliveryMethodRequestDto' is not null or undefined
+      assertParamExists(
+        'userControllerSetDeliveryMethod',
+        'setDeliveryMethodRequestDto',
+        setDeliveryMethodRequestDto,
+      )
+      const localVarPath = `/user/delivery-method`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        setDeliveryMethodRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerSubscribeLoggedUser: async (
@@ -4240,6 +4360,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribeLoggedUser: async (
@@ -4296,6 +4417,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
      * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUser: async (
@@ -4359,6 +4481,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
      * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUserByExternalId: async (
@@ -4409,6 +4532,59 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Accept or revoke a single user-facing consent identified by `consentType`.
+     * @summary Update a single GDPR consent for the logged-in user
+     * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpdateGdprConsent: async (
+      updateGdprConsentRequestDto: UpdateGdprConsentRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'updateGdprConsentRequestDto' is not null or undefined
+      assertParamExists(
+        'userControllerUpdateGdprConsent',
+        'updateGdprConsentRequestDto',
+        updateGdprConsentRequestDto,
+      )
+      const localVarPath = `/user/gdpr-consent`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateGdprConsentRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -4552,8 +4728,8 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
-     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4604,10 +4780,39 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Sets the user preference for how official / tax communication should be delivered.
+     * @summary Set tax/official delivery method preference for the logged-in user
+     * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userControllerSetDeliveryMethod(
+      setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSetDeliveryMethod(
+        setDeliveryMethodRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerSetDeliveryMethod']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerSubscribeLoggedUser(
@@ -4641,6 +4846,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerUnsubscribeLoggedUser(
@@ -4676,6 +4882,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
      * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerUnsubscribePublicUser(
@@ -4710,6 +4917,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
      * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerUnsubscribePublicUserByExternalId(
@@ -4730,6 +4938,34 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         operationServerMap[
           'UsersManipulationApi.userControllerUnsubscribePublicUserByExternalId'
         ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Accept or revoke a single user-facing consent identified by `consentType`.
+     * @summary Update a single GDPR consent for the logged-in user
+     * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userControllerUpdateGdprConsent(
+      updateGdprConsentRequestDto: UpdateGdprConsentRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpdateGdprConsent(
+        updateGdprConsentRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerUpdateGdprConsent']?.[
+          localVarOperationServerIndex
+        ]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -4825,8 +5061,8 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
-     * @summary Get or create user with their data (use when already logged in, not duing login/registration)
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4850,10 +5086,26 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Sets the user preference for how official / tax communication should be delivered.
+     * @summary Set tax/official delivery method preference for the logged-in user
+     * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerSetDeliveryMethod(
+      setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .userControllerSetDeliveryMethod(setDeliveryMethodRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerSubscribeLoggedUser(
@@ -4869,6 +5121,7 @@ export const UsersManipulationApiFactory = function (
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribeLoggedUser(
@@ -4886,6 +5139,7 @@ export const UsersManipulationApiFactory = function (
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
      * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUser(
@@ -4905,6 +5159,7 @@ export const UsersManipulationApiFactory = function (
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
      * @param {GDPRCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUserByExternalId(
@@ -4915,6 +5170,21 @@ export const UsersManipulationApiFactory = function (
     ): AxiosPromise<string> {
       return localVarFp
         .userControllerUnsubscribePublicUserByExternalId(id, type, category, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Accept or revoke a single user-facing consent identified by `consentType`.
+     * @summary Update a single GDPR consent for the logged-in user
+     * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpdateGdprConsent(
+      updateGdprConsentRequestDto: UpdateGdprConsentRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .userControllerUpdateGdprConsent(updateGdprConsentRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4969,8 +5239,8 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
-   * @summary Get or create user with their data (use when already logged in, not duing login/registration)
+   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+   * @summary Get or create user with their data (use when already logged in, not during login/registration)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
@@ -4992,10 +5262,27 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
+   * Sets the user preference for how official / tax communication should be delivered.
+   * @summary Set tax/official delivery method preference for the logged-in user
+   * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public userControllerSetDeliveryMethod(
+    setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return UsersManipulationApiFp(this.configuration)
+      .userControllerSetDeliveryMethod(setDeliveryMethodRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
    * @summary Create subscribed or unsubscribed log for logged in users
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    */
   public userControllerSubscribeLoggedUser(
@@ -5012,6 +5299,7 @@ export class UsersManipulationApi extends BaseAPI {
    * @summary Unsubscribe logged user
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    */
   public userControllerUnsubscribeLoggedUser(
@@ -5030,6 +5318,7 @@ export class UsersManipulationApi extends BaseAPI {
    * @param {GDPRTypeEnum} type Type of Gdpr subscription
    * @param {GDPRCategoryEnum} category Type of Gdpr category
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    */
   public userControllerUnsubscribePublicUser(
@@ -5050,6 +5339,7 @@ export class UsersManipulationApi extends BaseAPI {
    * @param {GDPRTypeEnum} type Type of Gdpr subscription
    * @param {GDPRCategoryEnum} category Type of Gdpr category
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    */
   public userControllerUnsubscribePublicUserByExternalId(
@@ -5060,6 +5350,22 @@ export class UsersManipulationApi extends BaseAPI {
   ) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerUnsubscribePublicUserByExternalId(id, type, category, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Accept or revoke a single user-facing consent identified by `consentType`.
+   * @summary Update a single GDPR consent for the logged-in user
+   * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public userControllerUpdateGdprConsent(
+    updateGdprConsentRequestDto: UpdateGdprConsentRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return UsersManipulationApiFp(this.configuration)
+      .userControllerUpdateGdprConsent(updateGdprConsentRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

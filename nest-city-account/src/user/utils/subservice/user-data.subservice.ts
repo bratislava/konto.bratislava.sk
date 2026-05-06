@@ -478,6 +478,9 @@ export class UserDataSubservice {
     )
   }
 
+  /**
+   * @deprecated: only used by legacy GDPR endpoints
+   */
   private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
     const taxDeliveryData: DeliveryMethodUserEnum[] = []
     const otherGdprData: ResponseGdprUserDataDto[] = []
@@ -497,6 +500,17 @@ export class UserDataSubservice {
     return { taxDeliveryData, otherGdprData }
   }
 
+  /**
+   * Apply legacy-shaped GDPR input to a user: routes tax-delivery items to
+   * `User.taxDeliveryMethod`, consent items to `UserConsents`, and drops the
+   * rest (`UserGdprData` is no longer written to).
+   *
+   * @deprecated Exists only to serve the deprecated subscribe / unsubscribe
+   * input boundary. Do not call from new code; new code should call
+   * `setUserConsents` (and the relevant delivery-method setter) directly with
+   * the new consent shape. Slated for deletion together with the legacy
+   * subscribe/unsubscribe endpoints.
+   */
   async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -549,6 +563,15 @@ export class UserDataSubservice {
     )
   }
 
+  /**
+   * Apply legacy-shaped GDPR input to a legal person: routes consent items to
+   * `LegalPersonConsents` and drops anything else.
+   *
+   * @deprecated Exists only to serve the deprecated subscribe / unsubscribe
+   * input boundary. Do not call from new code; new code should call
+   * `setLegalPersonConsents` directly with the new consent shape. Slated for
+   * deletion together with the legacy subscribe/unsubscribe endpoints.
+   */
   async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
     const legalPerson = await this.prisma.legalPerson.findUnique({
       where: { id: legalPersonId },

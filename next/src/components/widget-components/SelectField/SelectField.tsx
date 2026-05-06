@@ -183,6 +183,7 @@ const SelectField = <
             placeholder={null}
             {...rest}
             id={id}
+            instanceId={id} // Prevents hydration errors - makes react-select use stable useId for child IDs
             unstyled
             value={value}
             onChange={onChange}

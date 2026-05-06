@@ -22,10 +22,7 @@ import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { UserIdentitySubservice } from '../../../utils/subservices/user-identity.subservice'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
-import {
-  ResponseGdprLegalPersonDataDto,
-  ResponseLegalPersonDataSimpleDto,
-} from '../../dtos/gdpr.legalperson.dto'
+import { ResponseLegalPersonDataSimpleDto } from '../../dtos/gdpr.legalperson.dto'
 import {
   ResponseGdprUserDataDto,
   UserOfficialCorrespondenceChannelEnum,
@@ -532,13 +529,10 @@ export class UserDataSubservice {
     }
 
     const consentData: { consentType: ConsentEnum; isGranted: boolean }[] = []
-    const dropped: ResponseGdprUserDataDto[] = []
     for (const elem of otherGdprData) {
       const consent = this.gdprShapeToConsent(elem)
       if (consent) {
         consentData.push(consent)
-      } else {
-        dropped.push(elem)
       }
     }
 
@@ -584,20 +578,11 @@ export class UserDataSubservice {
     }
 
     const consentData: { consentType: ConsentEnum; isGranted: boolean }[] = []
-    const dropped: ResponseGdprUserDataDto[] = []
     for (const elem of gdprData) {
       const consent = this.gdprShapeToConsent(elem)
       if (consent) {
         consentData.push(consent)
-      } else {
-        dropped.push(elem)
       }
-    }
-    if (dropped.length > 0) {
-      this.logger.warn(
-        `Ignoring ${dropped.length} legacy GDPR entries on legal person ${legalPersonId} (no longer persisted): ` +
-          dropped.map((d) => `${d.category}/${d.type}`).join(', ')
-      )
     }
 
     await this.setLegalPersonConsents(legalPersonId, consentData)

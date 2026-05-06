@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "id",
       "defaultSortBy": "id",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,8 +22,8 @@
       },
       "services": {
         "edit": {
-          "label": "services",
-          "description": "",
+          "label": "Mestské služby pre FO",
+          "description": "Zobrazia sa ako kartičky na stránke Mestké služby.",
           "placeholder": "",
           "visible": true,
           "editable": true,
@@ -36,8 +37,8 @@
       },
       "servicesLegalPerson": {
         "edit": {
-          "label": "servicesLegalPerson",
-          "description": "",
+          "label": "Mestské služby pre PO",
+          "description": "Zobrazia sa ako kartičky na stránke Mestké služby.",
           "placeholder": "",
           "visible": true,
           "editable": true,
@@ -117,23 +118,23 @@
       }
     },
     "layouts": {
+      "edit": [
+        [
+          {
+            "name": "services",
+            "size": 12
+          },
+          {
+            "name": "servicesLegalPerson",
+            "size": 12
+          }
+        ]
+      ],
       "list": [
         "id",
         "services",
         "servicesLegalPerson",
         "createdAt"
-      ],
-      "edit": [
-        [
-          {
-            "name": "services",
-            "size": 6
-          },
-          {
-            "name": "servicesLegalPerson",
-            "size": 6
-          }
-        ]
       ]
     },
     "uid": "api::municipal-services-page.municipal-services-page"

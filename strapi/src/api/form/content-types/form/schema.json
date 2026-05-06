@@ -4,7 +4,7 @@
   "info": {
     "singularName": "form",
     "pluralName": "forms",
-    "displayName": "Form",
+    "displayName": "Formuláre",
     "description": ""
   },
   "options": {
@@ -21,8 +21,8 @@
     },
     "landingPage": {
       "type": "component",
-      "repeatable": false,
       "component": "blocks.form-landing-page",
+      "repeatable": false,
       "required": false
     }
   }

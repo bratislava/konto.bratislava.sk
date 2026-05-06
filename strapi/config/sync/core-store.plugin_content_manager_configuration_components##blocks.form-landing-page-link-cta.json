@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "title",
       "defaultSortBy": "title",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -35,7 +36,7 @@
       },
       "text": {
         "edit": {
-          "label": "text",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -49,7 +50,7 @@
       },
       "buttonLabel": {
         "edit": {
-          "label": "buttonLabel",
+          "label": "Text tlačidla",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -63,7 +64,7 @@
       },
       "url": {
         "edit": {
-          "label": "url",
+          "label": "Odkaz tlačidla",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -85,33 +86,33 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "text",
-        "buttonLabel"
-      ],
       "edit": [
         [
           {
             "name": "title",
-            "size": 6
+            "size": 12
           },
           {
             "name": "text",
-            "size": 6
+            "size": 12
           }
         ],
         [
           {
             "name": "buttonLabel",
-            "size": 6
+            "size": 8
           },
           {
             "name": "url",
-            "size": 6
+            "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "text",
+        "buttonLabel"
       ]
     },
     "uid": "blocks.form-landing-page-link-cta",

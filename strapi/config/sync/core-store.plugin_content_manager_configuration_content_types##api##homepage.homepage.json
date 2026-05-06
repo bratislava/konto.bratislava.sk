@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "id",
       "defaultSortBy": "id",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,7 +22,7 @@
       },
       "announcements": {
         "edit": {
-          "label": "announcements",
+          "label": "Aktuálne (bannery)",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,7 +37,7 @@
       },
       "announcementsLegalPerson": {
         "edit": {
-          "label": "announcementsLegalPerson",
+          "label": "Aktuálne PO (bannery)",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -51,7 +52,7 @@
       },
       "services": {
         "edit": {
-          "label": "services",
+          "label": "Vybrané mestské služby FO",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -66,7 +67,7 @@
       },
       "servicesLegalPerson": {
         "edit": {
-          "label": "servicesLegalPerson",
+          "label": "Vybrané mestské služby PO",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -147,12 +148,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "announcements",
-        "announcementsLegalPerson",
-        "services"
-      ],
       "edit": [
         [
           {
@@ -174,6 +169,12 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "announcements",
+        "announcementsLegalPerson",
+        "services"
       ]
     },
     "uid": "api::homepage.homepage"

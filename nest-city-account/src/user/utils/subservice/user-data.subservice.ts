@@ -415,6 +415,12 @@ export class UserDataSubservice {
             activeEdesk: true,
           },
         },
+        deliveryMethodUserHistory: {
+          where: { method: DeliveryMethodUserEnum.CITY_ACCOUNT },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+          select: { createdAt: true },
+        },
       },
     })
     if (!user) {
@@ -429,7 +435,7 @@ export class UserDataSubservice {
       : user.taxDeliveryMethod
         ? {
             deliveryMethod: user.taxDeliveryMethod,
-            date: user.taxDeliveryMethodCityAccountDate ?? undefined,
+            date: user.deliveryMethodUserHistory[0]?.createdAt ?? undefined,
           }
         : undefined
 

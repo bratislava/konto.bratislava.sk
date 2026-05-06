@@ -1,3 +1,4 @@
+/* eslint-disable i18next/no-literal-string */
 import { useState } from 'react'
 
 import Toggle from '@/src/components/simple-components/Toggle'
@@ -10,25 +11,17 @@ const ToggleShowCase = () => {
 
   return (
     <Wrapper direction="column" title="Toggle">
-      <Stack>
-        <Toggle id="firstToggle" defaultSelected />
-        <Toggle
-          id="secondToggle"
-          isSelected={secondToggleSelected}
-          onChange={setSecondToggleSelected}
-        >
+      <Stack direction="column">
+        <Toggle />
+        <Toggle isSelected={secondToggleSelected} onChange={setSecondToggleSelected}>
+          Value (controlled)
+        </Toggle>
+        <Toggle isDisabled defaultSelected>
           Value
         </Toggle>
-        <Toggle id="thirdToggle" isDisabled>
-          Value
-        </Toggle>
-        <Toggle id="fourthToggle" isDisabled>
-          Value
-        </Toggle>
-        <Toggle id="fifthToggle" isReadOnly>
-          Read only
-        </Toggle>
-        <Toggle id="sixthToggle" />
+        <Toggle isDisabled>Value</Toggle>
+        <Toggle isReadOnly>Read only</Toggle>
+        <Toggle defaultSelected>defaultSelected (uncontrolled)</Toggle>
       </Stack>
     </Wrapper>
   )

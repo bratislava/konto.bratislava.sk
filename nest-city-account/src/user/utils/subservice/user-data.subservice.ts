@@ -104,18 +104,17 @@ export class UserDataSubservice {
 
   private async postprocessUser(externalId: string, user: User, changeGdprData = false) {
     if (changeGdprData) {
-      await this.changeUserGdprData(user.id, [
-        {
-          type: GDPRTypeEnum.MARKETING,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-        {
-          type: GDPRTypeEnum.GENERAL,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-      ])
+      const consents = [
+        { consentType: ConsentEnum.MARKETING, isGranted: true },
+        { consentType: ConsentEnum.GENERAL, isGranted: true },
+      ]
+      await this.setUserConsents(user.id, consents)
+      await this.bloomreachOutboxService.trackEventConsents(
+        consents.map((c) => this.consentToGdprShape(c)),
+        externalId,
+        user.id,
+        false
+      )
     }
 
     await this.bloomreachOutboxService.trackCustomer(externalId)
@@ -177,18 +176,17 @@ export class UserDataSubservice {
     changeGdprData = false
   ) {
     if (changeGdprData) {
-      await this.changeLegalPersonGdprData(legalPerson.id, [
-        {
-          type: GDPRTypeEnum.MARKETING,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-        {
-          type: GDPRTypeEnum.GENERAL,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-      ])
+      const consents = [
+        { consentType: ConsentEnum.MARKETING, isGranted: true },
+        { consentType: ConsentEnum.GENERAL, isGranted: true },
+      ]
+      await this.setLegalPersonConsents(legalPerson.id, consents)
+      await this.bloomreachOutboxService.trackEventConsents(
+        consents.map((c) => this.consentToGdprShape(c)),
+        externalId,
+        legalPerson.id,
+        true
+      )
     }
 
     await this.bloomreachOutboxService.trackCustomer(externalId)

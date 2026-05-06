@@ -4,7 +4,7 @@
   "info": {
     "singularName": "help-page",
     "pluralName": "help-pages",
-    "displayName": "Help page",
+    "displayName": "Pomoc",
     "description": ""
   },
   "options": {
@@ -14,8 +14,8 @@
   "attributes": {
     "categories": {
       "type": "component",
-      "repeatable": true,
       "component": "blocks.help-category",
+      "repeatable": true,
       "required": true
     }
   }

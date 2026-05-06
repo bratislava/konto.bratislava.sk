@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "documentId",
       "defaultSortBy": "id",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,8 +22,8 @@
       },
       "content": {
         "edit": {
-          "label": "content",
-          "description": "",
+          "label": "Text alertu",
+          "description": "V texte alertu by sa mal používať iba obyčaný text, bold a prípadne jeden odkaz.",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -35,7 +36,7 @@
       },
       "dateFrom": {
         "edit": {
-          "label": "dateFrom",
+          "label": "Zobrazovať od",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -49,7 +50,7 @@
       },
       "dateTo": {
         "edit": {
-          "label": "dateTo",
+          "label": "Zobrazovať do",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -71,12 +72,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "dateFrom",
-        "dateTo",
-        "documentId"
-      ],
       "edit": [
         [
           {
@@ -94,6 +89,12 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "dateFrom",
+        "dateTo",
+        "documentId"
       ]
     },
     "uid": "general.alert",

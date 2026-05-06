@@ -54,7 +54,7 @@ const MunicipalServicesPageContent = ({
   ].filter(isDefined)
 
   const [selectorValue, setSelectorValue] = useState<SelectOption>(enumOptions[0])
-  const ITEMS_PER_PAGE = width > 480 ? 20 : 5
+  const ITEMS_PER_PAGE = 12
 
   const handleCategoryChange = (newSelectorValue: SelectOption) => {
     if (newSelectorValue.value !== selectorValue.value) {

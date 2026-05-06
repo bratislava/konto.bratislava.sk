@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "title",
       "defaultSortBy": "title",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -35,7 +36,7 @@
       },
       "description": {
         "edit": {
-          "label": "description",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -49,7 +50,7 @@
       },
       "buttonText": {
         "edit": {
-          "label": "buttonText",
+          "label": "Text tlačidla",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -63,8 +64,8 @@
       },
       "href": {
         "edit": {
-          "label": "href",
-          "description": "",
+          "label": "Odkaz",
+          "description": "Mal by začínať lomítkom, napr. /mestske-sluzby/...",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -77,7 +78,7 @@
       },
       "image": {
         "edit": {
-          "label": "image",
+          "label": "Obrázok",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -91,7 +92,7 @@
       },
       "dateFrom": {
         "edit": {
-          "label": "dateFrom",
+          "label": "Zobrazovať od",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -105,7 +106,7 @@
       },
       "dateTo": {
         "edit": {
-          "label": "dateTo",
+          "label": "Zobrazovať do",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -185,49 +186,49 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "description",
-        "buttonText"
-      ],
       "edit": [
         [
           {
             "name": "title",
-            "size": 6
+            "size": 12
           },
           {
             "name": "description",
-            "size": 6
+            "size": 12
           }
         ],
         [
           {
             "name": "buttonText",
-            "size": 6
+            "size": 8
           },
           {
             "name": "href",
-            "size": 6
+            "size": 12
           }
         ],
         [
           {
             "name": "image",
             "size": 6
-          },
-          {
-            "name": "dateFrom",
-            "size": 6
           }
         ],
         [
+          {
+            "name": "dateFrom",
+            "size": 6
+          },
           {
             "name": "dateTo",
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "description",
+        "buttonText"
       ]
     },
     "uid": "api::homepage-announcement.homepage-announcement"

@@ -8,7 +8,8 @@
       "pageSize": 10,
       "mainField": "id",
       "defaultSortBy": "id",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,7 +22,7 @@
       },
       "alerts": {
         "edit": {
-          "label": "alerts",
+          "label": "Alerty",
           "description": "",
           "placeholder": "",
           "visible": true,

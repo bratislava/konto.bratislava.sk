@@ -6,9 +6,10 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "moreInformationUrl",
+      "mainField": "slug",
       "defaultSortBy": "moreInformationUrl",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -21,7 +22,7 @@
       },
       "slug": {
         "edit": {
-          "label": "slug",
+          "label": "Slug",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -35,7 +36,7 @@
       },
       "moreInformationUrl": {
         "edit": {
-          "label": "moreInformationUrl",
+          "label": "Odkaz pre viac informácií o službe",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -49,7 +50,7 @@
       },
       "landingPage": {
         "edit": {
-          "label": "landingPage",
+          "label": "Landing page",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -129,21 +130,15 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "slug",
-        "moreInformationUrl",
-        "landingPage"
-      ],
       "edit": [
         [
           {
             "name": "slug",
-            "size": 6
+            "size": 12
           },
           {
             "name": "moreInformationUrl",
-            "size": 6
+            "size": 12
           }
         ],
         [
@@ -152,6 +147,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "slug",
+        "moreInformationUrl",
+        "landingPage"
       ]
     },
     "uid": "api::form.form"

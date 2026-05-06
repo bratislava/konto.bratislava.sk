@@ -31,7 +31,11 @@ import {
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
-import { UpsertUserRecordClientRequestDto } from './dtos/user.requests.dto'
+import {
+  SetDeliveryMethodRequestDto,
+  UpdateGdprConsentRequestDto,
+  UpsertUserRecordClientRequestDto,
+} from './dtos/user.requests.dto'
 import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
 import { UserService } from './user.service'
 
@@ -362,5 +366,36 @@ export class UserController {
       UserErrorsEnum.COGNITO_TYPE_ERROR,
       UserErrorsResponseEnum.COGNITO_TYPE_ERROR
     )
+  }
+
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'Update a single GDPR consent for the logged-in user',
+    description: 'Accept or revoke a single user-facing consent identified by `consentType`.',
+  })
+  @ApiResponse({ status: 204, description: 'Consent updated' })
+  @UseGuards(CognitoGuard)
+  @Post('gdpr-consent')
+  async updateGdprConsent(
+    @User() user: CognitoGetUserData,
+    @Body() body: UpdateGdprConsentRequestDto
+  ): Promise<void> {
+    await this.userService.updateGdprConsent(user, body.consentType, body.accept)
+  }
+
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'Set tax/official delivery method preference for the logged-in user',
+    description:
+      'Sets the user preference for how official / tax communication should be delivered.',
+  })
+  @ApiResponse({ status: 204, description: 'Delivery method preference updated' })
+  @UseGuards(CognitoGuard)
+  @Post('delivery-method')
+  async setDeliveryMethod(
+    @User() user: CognitoGetUserData,
+    @Body() body: SetDeliveryMethodRequestDto
+  ): Promise<void> {
+    await this.userService.setDeliveryMethod(user, body.deliveryMethod)
   }
 }

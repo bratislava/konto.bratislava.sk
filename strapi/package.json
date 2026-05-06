@@ -11,6 +11,7 @@
     "build": "strapi build",
     "dev": "npm run develop",
     "develop": "cross-env ENV_PATH='./.env.local' strapi develop",
+    "generate:graphql-schema": "node scripts/generate-graphql-schema.js",
     "postinstall": "patch-package",
     "start": "strapi start",
     "strapi": "strapi"
@@ -32,9 +33,12 @@
   "devDependencies": {
     "@babel/core": "7.29.0",
     "@babel/eslint-parser": "7.28.6",
+    "@testcontainers/postgresql": "11.14.0",
+    "app-root-dir": "1.0.2",
     "eslint": "8.57.1",
     "eslint-config-prettier": "8.10.2",
-    "eslint-scope": "7.2.2"
+    "eslint-scope": "7.2.2",
+    "tmp-promise": "3.0.3"
   },
   "engines": {
     "node": ">=24.15.x",

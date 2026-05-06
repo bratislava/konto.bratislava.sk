@@ -331,6 +331,59 @@ export class UserDataSubservice {
                    "createdAt" DESC`
     )
     return data
+
+  // ===========================================================================
+  // TEMPORARY shape translators between consents (new) and GDPR data (old).
+  // ---------------------------------------------------------------------------
+  // These exist only to bridge the legacy GDPR format to the consent model
+  // while external consumers migrate. **Do not call from new code.**
+  // Once Bloomreach accepts the consent shape and the frontend stops reading
+  // the deprecated `gdprData` response field, both functions and their callers
+  // must be deleted.
+  // ===========================================================================
+
+  /**
+   * Translate consent shape into the legacy GDPR triple.
+   *
+   * Used at output boundaries only:
+   *  - Bloomreach payload (its builder is keyed by category/type/subType).
+   *  - The deprecated `gdprData` field on response DTOs, alongside the new
+   *    `consents` field as a transitional dual-write.
+   *
+   * @deprecated Temporary - do not use in new code. Slated for deletion
+   * together with the deprecated `gdprData` response field once external
+   * consumers migrate to the new Consent shape.
+   */
+  consentToGdprShape(c: { consentType: ConsentEnum; isGranted: boolean }): ResponseGdprUserDataDto {
+    return {
+      category: GDPRCategoryEnum.ESBS,
+      type: c.consentType as unknown as GDPRTypeEnum,
+      subType: c.isGranted ? GDPRSubTypeEnum.subscribe : GDPRSubTypeEnum.unsubscribe,
+    }
+  }
+
+  /**
+   * Translate the legacy GDPR triple into consent shape.
+   *
+   * Used at input boundaries only - the legacy subscribe/unsubscribe endpoints
+   * peel consent items out of incoming GDPR-shaped requests. Returns `null`
+   * for items that don't belong on the consents path.
+   *
+   * @deprecated Temporary - do not use in new code. Slated for deletion
+   * together with the legacy GDPR-shaped input endpoints.
+   */
+  private gdprShapeToConsent(g: {
+    category: GDPRCategoryEnum
+    type: GDPRTypeEnum
+    subType?: GDPRSubTypeEnum | null
+  }): { consentType: ConsentEnum; isGranted: boolean } | null {
+    if (g.category !== GDPRCategoryEnum.ESBS) return null
+    if (g.type !== GDPRTypeEnum.MARKETING && g.type !== GDPRTypeEnum.GENERAL) return null
+    if (g.subType == null) return null
+    return {
+      consentType: g.type as unknown as ConsentEnum,
+      isGranted: g.subType === GDPRSubTypeEnum.subscribe,
+    }
   }
 
   async getOfficialCorrespondenceChannel(

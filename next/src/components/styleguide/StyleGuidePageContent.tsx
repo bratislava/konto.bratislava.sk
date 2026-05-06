@@ -72,7 +72,10 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
 ]
 
 const StyleGuidePageContent = () => {
-  const [selectedKey, setSelectedKey] = useQueryState('showcase', parseAsString)
+  const [selectedKey, setSelectedKey] = useQueryState(
+    'showcase',
+    parseAsString.withOptions({ clearOnDefault: false }),
+  )
 
   return (
     <>

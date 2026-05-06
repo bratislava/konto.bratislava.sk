@@ -1,5 +1,5 @@
-import { useSearchParams } from 'next/navigation'
 import { useTranslation } from 'next-i18next/pages'
+import { parseAsStringLiteral, useQueryState } from 'nuqs'
 import { TaxType } from 'openapi-clients/tax'
 import React from 'react'
 
@@ -11,7 +11,7 @@ import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
-import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
+import { PaymentMethod } from '@/src/frontend/types/types'
 import { ROUTES } from '@/src/utils/routes'
 
 // query param "sposob-uhrady" could have "zvysna suma" split to "zvysna-suma" and "jednorazova-uhrada"
@@ -19,8 +19,12 @@ import { ROUTES } from '@/src/utils/routes'
 const TaxFeePaymentPageContent = () => {
   const { t } = useTranslation('account')
 
-  const searchParams = useSearchParams()
-  const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
+  const [paymentMethodParam] = useQueryState(
+    'sposob-uhrady',
+    parseAsStringLiteral([PaymentMethod.RemainingAmount, PaymentMethod.Installments] as const)
+      .withDefault(PaymentMethod.RemainingAmount)
+      .withOptions({ clearOnDefault: false }),
+  )
 
   const { taxData } = useTaxFee()
   const isSinglePayment = taxData.overallAmount === taxData.overallBalance

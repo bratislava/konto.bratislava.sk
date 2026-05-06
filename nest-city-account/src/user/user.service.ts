@@ -2,7 +2,9 @@
 import { Injectable } from '@nestjs/common'
 import {
   CognitoUserAttributesTierEnum,
+  ConsentEnum,
   DeliveryMethodEnum,
+  DeliveryMethodUserEnum,
   GDPRSubTypeEnum,
   LoginClientEnum,
   User,
@@ -102,12 +104,13 @@ export class UserService {
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
       await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
+    const consents = await this.userDataSubservice.getUserConsents(user.id)
     return {
       ...user,
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
-      gdprData: getGdprData,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
         user.id
       ),
@@ -118,8 +121,12 @@ export class UserService {
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataDto> {
     const user = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
-    const getGdprData = await this.userDataSubservice.getLegalPersonGdprData(user.id)
-    return { ...user, gdprData: getGdprData }
+    const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
+    return {
+      ...user,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
+    }
   }
 
   async recordUserLoginClient(externalId: string, loginClient: LoginClientEnum): Promise<void> {
@@ -155,12 +162,13 @@ export class UserService {
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
       await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
+    const consents = await this.userDataSubservice.getUserConsents(user.id)
     return {
       ...user,
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
-      gdprData: getGdprData,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
         user.id
       ),
@@ -169,11 +177,12 @@ export class UserService {
 
   async removeLegalPersonBirthNumber(id: string) {
     const user = await this.userDataSubservice.removeLegalPersonBirthNumber(id)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
+    const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
     return {
       ...user,
       officialCorrespondenceChannel: null,
-      gdprData: getGdprData,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       showEmailCommunicationBanner: false, // TODO add this for legal persons
       hasChangedDeliveryMethodAfterDeadline: false,
     }
@@ -194,12 +203,13 @@ export class UserService {
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
       await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
+    const consents = await this.userDataSubservice.getUserConsents(user.id)
     return {
       ...user,
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
-      gdprData: getGdprData,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
         user.id
       ),
@@ -219,8 +229,12 @@ export class UserService {
         subType: gdprSubType,
       }))
     )
-    const getGdprData = await this.userDataSubservice.getLegalPersonGdprData(user.id)
-    return { ...user, gdprData: getGdprData }
+    const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
+    return {
+      ...user,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
+    }
   }
 
   async unsubscribePublicUser(
@@ -231,7 +245,7 @@ export class UserService {
       id,
       gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe }))
     )
-    const getGdprData = await this.userDataSubservice.getUserGdprData(id)
+    const consents = await this.userDataSubservice.getUserConsents(id)
     const user = await this.userDataSubservice.getUserById(id)
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -240,7 +254,13 @@ export class UserService {
       )
     }
 
-    return { id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
+    return {
+      id,
+      message: 'user was unsubscribed',
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
+      userData: user,
+    }
   }
 
   async unsubscribePublicUserByExternalId(

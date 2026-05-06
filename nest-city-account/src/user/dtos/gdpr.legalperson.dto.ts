@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, LegalPerson } from '@prisma/client'
+import { IsEnum } from 'class-validator'
 
 import { ResponseConsentDto } from './gdpr.user.dto'
-import { IsEnum } from 'class-validator'
 
 export class ResponseGdprLegalPersonDataDto {
   @ApiProperty({

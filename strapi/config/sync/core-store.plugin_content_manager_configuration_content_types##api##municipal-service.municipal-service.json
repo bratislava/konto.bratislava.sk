@@ -51,7 +51,7 @@
       "buttonText": {
         "edit": {
           "label": "Text tlačidla",
-          "description": null,
+          "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -244,12 +244,7 @@
           }
         ]
       ],
-      "list": [
-        "id",
-        "title",
-        "description",
-        "buttonText"
-      ]
+      "list": ["id", "title", "description", "buttonText"]
     },
     "uid": "api::municipal-service.municipal-service"
   },

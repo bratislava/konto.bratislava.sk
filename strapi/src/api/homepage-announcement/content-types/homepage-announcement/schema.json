@@ -4,7 +4,7 @@
   "info": {
     "singularName": "homepage-announcement",
     "pluralName": "homepage-announcements",
-    "displayName": "Aktuálne (bannery na homepagE)"
+    "displayName": "Aktuálne (bannery na HP)"
   },
   "options": {
     "draftAndPublish": false

@@ -40,8 +40,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "items",
@@ -59,6 +58,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "items",
+        "documentId"
+      ],
       "edit": [
         [
           {
@@ -72,12 +77,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "title",
-        "items",
-        "documentId"
       ]
     },
     "uid": "blocks.help-category",

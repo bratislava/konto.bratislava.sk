@@ -497,7 +497,7 @@ export interface ApiHelpPageHelpPage extends Struct.SingleTypeSchema {
 export interface ApiHomepageAnnouncementHomepageAnnouncement extends Struct.CollectionTypeSchema {
   collectionName: 'homepage_announcements'
   info: {
-    displayName: 'Aktu\u00E1lne (bannery na homepagE)'
+    displayName: 'Aktu\u00E1lne (bannery na HP)'
     pluralName: 'homepage-announcements'
     singularName: 'homepage-announcement'
   }

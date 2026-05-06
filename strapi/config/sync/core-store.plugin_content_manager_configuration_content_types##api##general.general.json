@@ -26,8 +26,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "documentId"
+          "editable": true
         },
         "list": {
           "label": "alerts",
@@ -103,6 +102,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "alerts",
+        "createdAt",
+        "updatedAt"
+      ],
       "edit": [
         [
           {
@@ -110,12 +115,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "alerts",
-        "createdAt",
-        "updatedAt"
       ]
     },
     "uid": "api::general.general"

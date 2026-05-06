@@ -26,8 +26,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "categories",
@@ -103,6 +102,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "categories",
+        "createdAt",
+        "updatedAt"
+      ],
       "edit": [
         [
           {
@@ -110,12 +115,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "categories",
-        "createdAt",
-        "updatedAt"
       ]
     },
     "uid": "api::help-page.help-page"

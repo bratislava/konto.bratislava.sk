@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import {
+  ConsentEnum,
   DeliveryMethodEnum,
   DeliveryMethodUserEnum,
   GDPRCategoryEnum,
@@ -291,46 +292,59 @@ export class UserDataSubservice {
     return user
   }
 
-  // is this ok?
-  async getUserGdprData(userId: string): Promise<ResponseGdprUserDataDto[]> {
-    const data: ResponseGdprUserDataDto[] = await this.prisma.$queryRawUnsafe(
-      //language=postgresql
-      `
-          SELECT DISTINCT ON (category, "type") category,
-                                                "type",
-                                                "subType"
-          FROM (SELECT category,
-                       "type",
-                       "subType",
-                       "createdAt"
-                FROM public."UserGdprData"
-                WHERE "userId" = '${userId}') AS main
-          ORDER BY category,
-                   "type",
-                   "createdAt" DESC`
+  async setUserConsents(
+    userId: string,
+    consents: { consentType: ConsentEnum; isGranted: boolean }[]
+  ): Promise<void> {
+    if (consents.length === 0) {
+      return
+    }
+    await this.prisma.$transaction(
+      consents.map((c) =>
+        this.prisma.userConsents.upsert({
+          where: { userId_consentType: { userId, consentType: c.consentType } },
+          update: { isGranted: c.isGranted },
+          create: { userId, consentType: c.consentType, isGranted: c.isGranted },
+        })
+      )
     )
-    return data
   }
 
-  // is this ok?
-  async getLegalPersonGdprData(legalPersonId: string): Promise<ResponseGdprLegalPersonDataDto[]> {
-    const data: ResponseGdprLegalPersonDataDto[] = await this.prisma.$queryRawUnsafe(
-      //language=postgresql
-      `
-          SELECT DISTINCT ON (category, "type") category,
-                                                "type",
-                                                "subType"
-          FROM (SELECT category,
-                       "type",
-                       "subType",
-                       "createdAt"
-                FROM public."LegalPersonGdprData"
-                WHERE "legalPersonId" = '${legalPersonId}') AS main
-          ORDER BY category,
-                   "type",
-                   "createdAt" DESC`
+  async setLegalPersonConsents(
+    legalPersonId: string,
+    consents: { consentType: ConsentEnum; isGranted: boolean }[]
+  ): Promise<void> {
+    if (consents.length === 0) {
+      return
+    }
+    await this.prisma.$transaction(
+      consents.map((c) =>
+        this.prisma.legalPersonConsents.upsert({
+          where: { legalPersonId_consentType: { legalPersonId, consentType: c.consentType } },
+          update: { isGranted: c.isGranted },
+          create: { legalPersonId, consentType: c.consentType, isGranted: c.isGranted },
+        })
+      )
     )
-    return data
+  }
+
+  async getUserConsents(
+    userId: string
+  ): Promise<{ consentType: ConsentEnum; isGranted: boolean }[]> {
+    return this.prisma.userConsents.findMany({
+      where: { userId },
+      select: { consentType: true, isGranted: true },
+    })
+  }
+
+  async getLegalPersonConsents(
+    legalPersonId: string
+  ): Promise<{ consentType: ConsentEnum; isGranted: boolean }[]> {
+    return this.prisma.legalPersonConsents.findMany({
+      where: { legalPersonId },
+      select: { consentType: true, isGranted: true },
+    })
+  }
 
   // ===========================================================================
   // TEMPORARY shape translators between consents (new) and GDPR data (old).
@@ -659,5 +673,12 @@ export class UserDataSubservice {
           return !!userLoginListItem.id
         })
     )
+  }
+
+  async setDeliveryMethod(sub: string, deliveryMethod: DeliveryMethodUserEnum) {
+    await this.prisma.user.update({
+      where: { externalId: sub },
+      data: { taxDeliveryMethod: deliveryMethod },
+    })
   }
 }

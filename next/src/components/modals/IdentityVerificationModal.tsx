@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { ModalProps } from '@/src/components/simple-components/Modal'
@@ -28,7 +29,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       <div className="flex flex-col gap-6 lg:gap-4">
         <div className="flex flex-col gap-4">
           <AccountMarkdown className="text-center" content={t('verification_modal.subtitle')} />
-          <AccountMarkdown variant="sm" content={t('verification_modal.info')} />
+          <Markdown variant="small" content={t('verification_modal.info')} />
         </div>
         <div className="flex flex-col gap-3 *:w-full lg:flex-row">
           <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>

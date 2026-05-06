@@ -1,7 +1,7 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import ThankYouCard from '@/src/components/page-contents/ThankYouPageContent/ThankYouCard'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -91,8 +91,8 @@ const ThankYouFormPageContent = () => {
         {displayAccountLinks ? (
           <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
             <span className="flex">
-              <AccountMarkdown
-                variant="sm"
+              <Markdown
+                variant="small"
                 content={`<span className='text-size-p-small-r lg:text-size-p-small'>${t('thank_you.subtitle_mail_info')}</span>.`}
               />
             </span>

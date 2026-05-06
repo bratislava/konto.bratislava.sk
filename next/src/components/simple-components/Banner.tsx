@@ -2,7 +2,7 @@ import { Button, Typography } from '@bratislava/component-library'
 import Image, { ImageProps } from 'next/image'
 
 import { PhoneIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import cn from '@/src/utils/cn'
 
 type BannerBase = {
@@ -33,10 +33,14 @@ const Banner = ({
         className,
       )}
     >
-      <div className="mb-6 flex size-full max-w-[488px] flex-col justify-center gap-6 rounded-l-3xl px-4 text-white md:px-0 lg:mb-0 lg:w-1/2">
+      <div className="mb-6 flex size-full max-w-[488px] flex-col justify-center gap-6 rounded-l-3xl px-4 text-content-passive-inverted-primary md:px-0 lg:mb-0 lg:w-1/2">
         <div className="flex flex-col items-start gap-3">
           <Typography variant="h2">{title}</Typography>
-          <AccountMarkdown content={content} variant="sm" className="text-gray-200" />
+          <Markdown
+            variant="small"
+            content={content}
+            className="text-content-passive-inverted-secondary"
+          />
         </div>
         <div className="flex flex-col gap-4 lg:flex-row">
           <Button href={href} variant="solid-inverted" onPress={onPress} fullWidthMobile>

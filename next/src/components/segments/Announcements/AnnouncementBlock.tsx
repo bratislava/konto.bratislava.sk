@@ -2,7 +2,7 @@ import { Button, ButtonProps } from '@bratislava/component-library'
 import Image from 'next/image'
 import { ComponentProps } from 'react'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import cn from '@/src/utils/cn'
 
 type AnnouncementBlockProps = {
@@ -39,7 +39,7 @@ const AnnouncementBlock = ({
     >
       <div className="flex w-full flex-col justify-center gap-4 p-4 lg:w-1/2 lg:gap-6 lg:p-12 lg:pr-14">
         <div className="flex flex-col gap-2">
-          <AccountMarkdown content={announcementContent} variant="sm" />
+          <Markdown variant="small" content={announcementContent} />
         </div>
         {buttons.length > 0 && (
           <div className="flex flex-col gap-4 lg:flex-row">

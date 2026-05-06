@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components/Tooltip'
 
 import { HelpIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import HorizontalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-vertical-arrow.svg'
 import cn from '@/src/utils/cn'
@@ -46,7 +46,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
         }}
       </OverlayArrow>
       <div className="w-max">
-        <AccountMarkdown content={children} variant="sm" uLinkVariant="primary" />
+        <Markdown variant="small" content={children} />
       </div>
     </Tooltip>
   )

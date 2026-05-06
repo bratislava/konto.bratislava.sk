@@ -11,8 +11,8 @@ import get from 'lodash/get'
 import { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria/useNumberFormatter'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormData } from '@/src/components/forms/useFormData'
 import cn from '@/src/utils/cn'
 
@@ -104,7 +104,7 @@ const Calculator = ({
   return (
     <div className={wrapperClassName}>
       {value == null ? (
-        <AccountMarkdown content={missingFieldsMessage} variant="sm" />
+        <Markdown variant="small" content={missingFieldsMessage} />
       ) : (
         <>
           <div className={labelClassName}>{label}</div>

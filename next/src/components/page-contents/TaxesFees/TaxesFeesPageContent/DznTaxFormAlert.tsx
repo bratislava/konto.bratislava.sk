@@ -1,7 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 import MLink from '@/src/components/simple-components/MLink'
 import { ROUTES } from '@/src/utils/routes'
@@ -19,9 +19,9 @@ const DznTaxFormAlert = () => {
             {t('account_section_payment.tax_form_change_ownership_alert_title')}
           </Typography>
 
-          <AccountMarkdown
+          <Markdown
+            variant="small"
             content={t('account_section_payment.tax_form_change_ownership_alert_text')}
-            variant="sm"
           />
           <div className="pt-2">
             <MLink

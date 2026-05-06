@@ -31,7 +31,7 @@ const placements: Placement[] = [
 ]
 
 const getSampleText = (placement: string) => {
-  return `Tooltip placement: ${placement}\n\nHeslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak. Heslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak.`
+  return `Tooltip placement: ${placement}\n\nHeslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak. Heslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak.\n\n[link](https://www.bratislava.sk)`
 }
 
 const TooltipShowCase = () => (

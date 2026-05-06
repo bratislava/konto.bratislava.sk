@@ -294,15 +294,17 @@ export class UserDataSubservice {
     if (consents.length === 0) {
       return
     }
-    await this.prisma.$transaction(
-      consents.map((c) =>
-        this.prisma.userConsents.upsert({
-          where: { userId_consentType: { userId, consentType: c.consentType } },
-          update: { isGranted: c.isGranted },
-          create: { userId, consentType: c.consentType, isGranted: c.isGranted },
-        })
+    await this.prisma.$transaction(async (tx) => {
+      await Promise.all(
+        consents.map(async (c) =>
+          tx.userConsents.upsert({
+            where: { userId_consentType: { userId, consentType: c.consentType } },
+            update: { isGranted: c.isGranted },
+            create: { userId, consentType: c.consentType, isGranted: c.isGranted },
+          })
+        )
       )
-    )
+    })
   }
 
   async setLegalPersonConsents(
@@ -312,15 +314,19 @@ export class UserDataSubservice {
     if (consents.length === 0) {
       return
     }
-    await this.prisma.$transaction(
-      consents.map((c) =>
-        this.prisma.legalPersonConsents.upsert({
-          where: { legalPersonId_consentType: { legalPersonId, consentType: c.consentType } },
-          update: { isGranted: c.isGranted },
-          create: { legalPersonId, consentType: c.consentType, isGranted: c.isGranted },
-        })
+    await this.prisma.$transaction(async (tx) => {
+      await Promise.all(
+        consents.map(async (c) =>
+          tx.legalPersonConsents.upsert({
+            where: {
+              legalPersonId_consentType: { legalPersonId, consentType: c.consentType },
+            },
+            update: { isGranted: c.isGranted },
+            create: { legalPersonId, consentType: c.consentType, isGranted: c.isGranted },
+          })
+        )
       )
-    )
+    })
   }
 
   async getUserConsents(

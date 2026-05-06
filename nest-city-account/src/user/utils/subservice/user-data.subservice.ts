@@ -508,8 +508,7 @@ export class UserDataSubservice {
       )
     }
 
-    // TODO we want to separate this into an endpoint
-    const { taxDeliveryData } = this.separateTaxDeliveryData(gdprData)
+    const { taxDeliveryData, otherGdprData } = this.separateTaxDeliveryData(gdprData)
     if (taxDeliveryData.length > 1) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -518,28 +517,36 @@ export class UserDataSubservice {
       )
     }
 
+    const consentData: { consentType: ConsentEnum; isGranted: boolean }[] = []
+    const dropped: ResponseGdprUserDataDto[] = []
+    for (const elem of otherGdprData) {
+      const consent = this.gdprShapeToConsent(elem)
+      if (consent) {
+        consentData.push(consent)
+      } else {
+        dropped.push(elem)
+      }
+    }
+
     if (taxDeliveryData.length > 0) {
       await this.prisma.user.update({
         where: { id: userId },
         data: {
           taxDeliveryMethod: taxDeliveryData[0],
-          ...(taxDeliveryData[0] === DeliveryMethodUserEnum.CITY_ACCOUNT && {
-            taxDeliveryMethodCityAccountDate: new Date(),
-          }),
         },
       })
     }
 
-    await this.prisma.userGdprData.createMany({
-      data: gdprData.map((elem) => ({
-        type: elem.type,
-        category: elem.category,
-        subType: elem.subType,
-        userId: user.id,
-      })),
-    })
+    await this.setUserConsents(userId, consentData)
 
-    await this.bloomreachOutboxService.trackEventConsents(gdprData, user.externalId, user.id, false)
+    // Bloomreach still expects the legacy GDPR shape - re-shape consent items
+    // back to the old triple at the outbox boundary.
+    await this.bloomreachOutboxService.trackEventConsents(
+      consentData.map((c) => this.consentToGdprShape(c)),
+      user.externalId,
+      user.id,
+      false
+    )
   }
 
   async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
@@ -552,17 +559,28 @@ export class UserDataSubservice {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
-    await this.prisma.legalPersonGdprData.createMany({
-      data: gdprData.map((elem) => ({
-        type: elem.type,
-        category: elem.category,
-        subType: elem.subType,
-        legalPersonId: legalPerson.id,
-      })),
-    })
+
+    const consentData: { consentType: ConsentEnum; isGranted: boolean }[] = []
+    const dropped: ResponseGdprUserDataDto[] = []
+    for (const elem of gdprData) {
+      const consent = this.gdprShapeToConsent(elem)
+      if (consent) {
+        consentData.push(consent)
+      } else {
+        dropped.push(elem)
+      }
+    }
+    if (dropped.length > 0) {
+      this.logger.warn(
+        `Ignoring ${dropped.length} legacy GDPR entries on legal person ${legalPersonId} (no longer persisted): ` +
+          dropped.map((d) => `${d.category}/${d.type}`).join(', ')
+      )
+    }
+
+    await this.setLegalPersonConsents(legalPersonId, consentData)
 
     await this.bloomreachOutboxService.trackEventConsents(
-      gdprData,
+      consentData.map((c) => this.consentToGdprShape(c)),
       legalPerson.externalId,
       legalPerson.id,
       true

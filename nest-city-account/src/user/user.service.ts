@@ -744,4 +744,49 @@ export class UserService {
   async getUserLoginClientList(client: LoginClientEnum) {
     return await this.userDataSubservice.getUserLoginClientList(client)
   }
+
+  async setDeliveryMethod(user: CognitoGetUserData, deliveryMethod: DeliveryMethodUserEnum) {
+    await this.userDataSubservice.setDeliveryMethod(user.sub, deliveryMethod)
+  }
+
+  async updateGdprConsent(
+    cognitoUserData: CognitoGetUserData,
+    consentType: ConsentEnum,
+    isGranted: boolean
+  ): Promise<void> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    const consents = [{ consentType, isGranted }]
+
+    // Resolve the right entity, persist the consent, and capture what the
+    // single Bloomreach call below needs (id / externalId / isLegalPerson).
+    let target: { id: string; externalId: string | null; isLegalPerson: boolean }
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
+        await this.userDataSubservice.setUserConsents(user.id, consents)
+        target = { id: user.id, externalId: user.externalId, isLegalPerson: false }
+        break
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const legalPerson = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+        await this.userDataSubservice.setLegalPersonConsents(legalPerson.id, consents)
+        target = { id: legalPerson.id, externalId: legalPerson.externalId, isLegalPerson: true }
+        break
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+    }
+
+    // Bloomreach still expects the legacy GDPR shape - re-shape at the call site.
+    await this.bloomreachOutboxService.trackEventConsents(
+      consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
+      target.externalId,
+      target.id,
+      target.isLegalPerson
+    )
+  }
 }

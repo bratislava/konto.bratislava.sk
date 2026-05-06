@@ -188,6 +188,15 @@ export class UserService {
     }
   }
 
+  /**
+   * Apply a subscribe / unsubscribe request expressed in legacy GDPR shape to
+   * a physical user.
+   *
+   * @deprecated Backs the deprecated `/subscribe` and `/unsubscribe` endpoints
+   * only. New code should call `updateGdprConsent` (or the consent setters
+   * directly) with the new consent shape. Slated for deletion together with
+   * those endpoints.
+   */
   async subUnsubUser(
     cognitoUserData: CognitoGetUserData,
     gdprSubType: GDPRSubTypeEnum,
@@ -216,6 +225,15 @@ export class UserService {
     }
   }
 
+  /**
+   * Apply a subscribe / unsubscribe request expressed in legacy GDPR shape to
+   * a legal person.
+   *
+   * @deprecated Backs the deprecated `/subscribe` and `/unsubscribe` endpoints
+   * only. New code should call `updateGdprConsent` (or the consent setters
+   * directly) with the new consent shape. Slated for deletion together with
+   * those endpoints.
+   */
   async subUnsubLegalPerson(
     cognitoUserData: CognitoGetUserData,
     gdprSubType: GDPRSubTypeEnum,
@@ -237,6 +255,14 @@ export class UserService {
     }
   }
 
+  /**
+   * Public-unsubscribe handler keyed by internal user id.
+   *
+   * @deprecated Backs the deprecated `/public/unsubscribe/:id` endpoint and is
+   * also reused internally by `unsubscribePublicUserByExternalId`. New code
+   * should call the consent setters directly with the new shape. Slated for
+   * deletion together with the public unsubscribe endpoints.
+   */
   async unsubscribePublicUser(
     id: string,
     gdprData: GdprDataDto[]
@@ -263,6 +289,13 @@ export class UserService {
     }
   }
 
+  /**
+   * Public-unsubscribe handler keyed by Cognito external id.
+   *
+   * @deprecated Backs the deprecated `/public/unsubscribe/external-id/:id`
+   * endpoint only. New code should call the consent setters directly with
+   * the new shape. Slated for deletion together with that endpoint.
+   */
   async unsubscribePublicUserByExternalId(
     externalId: string,
     gdprData: GdprDataDto[]

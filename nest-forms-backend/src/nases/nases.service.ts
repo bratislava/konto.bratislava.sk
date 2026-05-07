@@ -216,7 +216,7 @@ export default class NasesService {
     await this.updateForm(formId, data, user)
 
     const form = await this.formsService.checkFormBeforeSending(formId)
-    // All extra files should be already deleted at this point.
+    // All extra files should be already deleted at this point and remaining files should be SAFE.
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -226,11 +226,14 @@ export default class NasesService {
       )
     }
 
-    // Cumulative file size check at submission time — this is the authoritative point
-    // because the set of active files is only final after the form data has been updated
-    // and extra files deleted.
-    if (this.baConfigService.featureToggles.fileSizeLimits) {
-      await this.enforceFileSizeConstraints(formId, formDefinition)
+    // File size check at submission time — this is the authoritative point because
+    // the set of files is only final after the form data has been updated and extra
+    // files deleted. All files at this point are expected to be in SAFE state.
+    if (
+      this.baConfigService.featureToggles.fileSizeLimits &&
+      formDefinition.files
+    ) {
+      await this.enforceFileSizeConstraints(formId, formDefinition.files)
     }
 
     const evaluatedSendPolicy = evaluateFormSendPolicy(

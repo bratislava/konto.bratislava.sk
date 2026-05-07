@@ -406,15 +406,7 @@ export default class FilesHelper {
     return this.prisma.files.findMany({
       where: {
         formId,
-        status: {
-          in: [
-            FileStatus.UPLOADED,
-            FileStatus.ACCEPTED,
-            FileStatus.QUEUED,
-            FileStatus.SCANNING,
-            FileStatus.SAFE,
-          ],
-        },
+        status: FileStatus.SAFE,
       },
       select: { id: true, slotId: true, fileSize: true },
     })

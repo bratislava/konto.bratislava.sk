@@ -195,7 +195,7 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
-    slotId?: string,
+    slotId: string | null,
   ): Promise<PostFileResponseDto> {
     const fileName = data.filename
     const fileId = data.id

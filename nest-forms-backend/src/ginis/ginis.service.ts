@@ -5,7 +5,7 @@ import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState, GinisState } from '@prisma/client'
-import { Channel, ConsumeMessage } from 'amqplib'
+import type { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {

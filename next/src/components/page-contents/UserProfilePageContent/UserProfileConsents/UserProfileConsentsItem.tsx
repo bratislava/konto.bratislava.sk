@@ -26,12 +26,7 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
         <Typography variant="h5" as="h3">
           {consent.title}
         </Typography>
-        <Markdown
-          variant="small"
-          content={consent.text}
-          // TODO Markdown style
-          className="gap-1"
-        />
+        <Markdown variant="small" content={consent.text} />
       </div>
       <Toggle
         id={consent.id}

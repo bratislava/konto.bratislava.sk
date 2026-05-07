@@ -19,14 +19,14 @@ export enum FormDefinitionType {
 export type FormFiles<SlotId extends string> = {
   /** Max size of a single file in bytes. Falls back to global MAX_FILE_SIZE if not set. */
   maxFileSize?: number
-  /** Max cumulative size of all active files on a form instance in bytes. No limit if not set. */
+  /** Max cumulative size of all active files on a form instance in bytes. Falls back to global MAX_CUMULATIVE_FILE_SIZE if not set. */
   maxTotalFileSize?: number
   /**
-   * Per-field file size limits. When set, the upload endpoint requires a `fieldId` query parameter
-   * and enforces the limit for the matching field. Fields not listed fall back to `maxFileSize`.
+   * Per-slot file size limits. When set, the upload endpoint requires a `slotId` query parameter
+   * and enforces the limit for the matching slot. Slots not listed fall back to `maxFileSize`.
    *
-   * A field limit can only **restrict** below `maxFileSize` (or the global `MAX_FILE_SIZE`),
-   * never exceed it — the effective limit is `min(fileLimits[fieldId].maxFileSize, maxFileSize, globalMaxFIle)`.
+   * A slot limit can only **restrict** below `maxFileSize` (or the global `MAX_FILE_SIZE`),
+   * never exceed it — the effective limit is `min(slots[slotId].maxFileSize, maxFileSize, globalMaxFile)`.
    */
   slots: readonly {
     slotId: SlotId

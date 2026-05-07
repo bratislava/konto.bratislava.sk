@@ -150,7 +150,7 @@ export default class FilesHelper {
     fileSize: number,
     formId: string,
     pospIdOrSlug: string,
-    slotId?: string,
+    slotId: string | null,
   ): Promise<Files> {
     try {
       return await this.prisma.files.create({

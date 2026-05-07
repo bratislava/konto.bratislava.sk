@@ -1,62 +1,43 @@
+/* eslint-disable i18next/no-literal-string */
+import { Typography } from '@bratislava/component-library'
 import { parseAsString, useQueryState } from 'nuqs'
+import { useState } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Checkbox from '@/src/components/fields/Checkbox'
 import FormMarkdown from '@/src/components/formatting/FormMarkdown/FormMarkdown'
-import Markdown from '@/src/components/formatting/Markdown'
+import Markdown, { MarkdownProps } from '@/src/components/formatting/Markdown'
 import { Stack } from '@/src/components/styleguide/Stack'
-import { styleguideMarkdownMock } from '@/src/components/styleguide/utils/styleguideMarkdownMock'
+import { styleguideMarkdownContent } from '@/src/components/styleguide/utils/styleguideMarkdownContent'
+import cn from '@/src/utils/cn'
 
 import { Wrapper } from '../Wrapper'
 
 const markdownShowcaseTabs = [
-  {
-    id: 'markdown',
-    label: 'Markdown',
-    panel: (
-      <Stack className="grid items-start lg:grid-cols-4">
-        <Markdown content={`variant: small ${styleguideMarkdownMock}`} variant="small" />
-        <Markdown content={`variant: large ${styleguideMarkdownMock}`} variant="large" />
-        <Markdown content={`variant: accordion ${styleguideMarkdownMock}`} variant="accordion" />
-        <Markdown content={`variant: default ${styleguideMarkdownMock}`} />
-      </Stack>
-    ),
-  },
-  {
-    id: 'account-markdown',
-    label: 'AccountMarkdown',
-    panel: (
-      <Stack className="grid items-start lg:grid-cols-3">
-        <AccountMarkdown content={`variant: small ${styleguideMarkdownMock}`} variant="sm" />
-        <AccountMarkdown
-          content={`variant: statusBar ${styleguideMarkdownMock}`}
-          variant="statusBar"
-        />
-        <AccountMarkdown content={`variant: normal ${styleguideMarkdownMock}`} />
-      </Stack>
-    ),
-  },
-  {
-    id: 'form-markdown',
-    label: 'FormMarkdown',
-    panel: <FormMarkdown>{styleguideMarkdownMock}</FormMarkdown>,
-  },
+  { id: 'markdown', label: 'Markdown' },
+  { id: 'form-markdown', label: 'FormMarkdown' },
 ] as const
+
+const markdownVariants: { id: string; label: string; variant?: MarkdownProps['variant'] }[] = [
+  { id: 'small', label: 'Small', variant: 'small' },
+  { id: 'large', label: 'Large', variant: 'large' },
+  { id: 'accordion', label: 'Accordion', variant: 'accordion' },
+  { id: 'default', label: 'Default', variant: 'default' },
+]
 
 const MarkdownShowCase = () => {
   const [selectedKey, setSelectedKey] = useQueryState(
     'markdown-component',
     parseAsString.withDefault(markdownShowcaseTabs[0].id),
   )
+  const [selectedVariants, setSelectedVariants] = useState(markdownVariants.map((v) => v.id))
 
-  const validKey = markdownShowcaseTabs.some((t) => t.id === selectedKey)
-    ? selectedKey
-    : markdownShowcaseTabs[0].id
+  const visibleVariants = markdownVariants.filter(({ id }) => selectedVariants.includes(id))
 
   return (
     <Wrapper direction="column" title="Markdown">
       <Tabs
-        selectedKey={validKey}
+        selectedKey={selectedKey}
         onSelectionChange={(value) => setSelectedKey(value.toString())}
         className="flex flex-col gap-4"
       >
@@ -71,11 +52,48 @@ const MarkdownShowCase = () => {
             </Tab>
           ))}
         </TabList>
-        {markdownShowcaseTabs.map(({ id, panel }) => (
-          <TabPanel key={id} id={id}>
-            {panel}
-          </TabPanel>
-        ))}
+        <TabPanel id="markdown">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap gap-3">
+              <Typography variant="p-small" className="text-gray-700">
+                Variant:
+              </Typography>
+              {markdownVariants.map(({ id, label }) => (
+                <Checkbox
+                  key={id}
+                  isSelected={selectedVariants.includes(id)}
+                  onChange={(checked) =>
+                    setSelectedVariants((prev) =>
+                      checked ? [...prev, id] : prev.filter((v) => v !== id),
+                    )
+                  }
+                  className="w-fit"
+                >
+                  {label}
+                </Checkbox>
+              ))}
+            </div>
+            <Stack
+              className={cn('grid items-start', {
+                'lg:grid-cols-1': visibleVariants.length === 1,
+                'lg:grid-cols-2': visibleVariants.length === 2,
+                'lg:grid-cols-3': visibleVariants.length === 3,
+                'lg:grid-cols-4': visibleVariants.length >= 4,
+              })}
+            >
+              {visibleVariants.map(({ id, variant }) => (
+                <Markdown
+                  key={id}
+                  content={`variant: ${variant} ${styleguideMarkdownContent}`}
+                  variant={variant}
+                />
+              ))}
+            </Stack>
+          </div>
+        </TabPanel>
+        <TabPanel id="form-markdown">
+          <FormMarkdown>{styleguideMarkdownContent}</FormMarkdown>
+        </TabPanel>
       </Tabs>
     </Wrapper>
   )

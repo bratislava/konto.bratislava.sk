@@ -1,10 +1,10 @@
 /**
  * Shared markdown content for styleguide showcases.
  */
-export const styleguideMarkdownMock = `
+export const styleguideMarkdownContent = `
 
 ---
-#### Paragraphs
+###### Paragraphs
 
 Paragraph 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fringilla ac arcu quis pulvinar. Morbi vulputate, ipsum sed bibendum sollicitudin, neque ex lacinia sem, nec tincidunt nunc massa vel mauris.
 
@@ -13,7 +13,7 @@ Paragraph 2: Morbi in molestie libero. Nulla elementum orci a quam tempus, non g
 _italic_ *text*, **bold** __text__, ~~strikethrough text~~, 21^st^, H~2~O, E = mc^2^
 
 ---
-#### Headers
+###### Headers
 
 # Header 1 is not supported, because it is reserved for page title
 ## Header 2
@@ -23,7 +23,7 @@ _italic_ *text*, **bold** __text__, ~~strikethrough text~~, 21^st^, H~2~O, E = m
 ###### Header 6
 
 ---
-#### URL Links
+###### URL Links
 
 [External link - Bratislava](https://www.bratislava.sk/)
 [Internal link - Moje žiadosti](moje-ziadosti)
@@ -32,17 +32,7 @@ _italic_ *text*, **bold** __text__, ~~strikethrough text~~, 21^st^, H~2~O, E = m
 [example@example.com](mailto:example@example.com)
 
 ---
-####  Underlined (unused)
-
-<u> Contents... </u>
-
----
-####  Tooltip (unused)
-
-::tooltip[Tooltip text]
-
----
-#### Ordered lists *(use 4 spaces)*
+###### Ordered lists (use 4 spaces)
 
 1. Aenean rutrum augue in dictum tempus
 2. Lorem ipsum dolor sit amet
@@ -55,7 +45,7 @@ _italic_ *text*, **bold** __text__, ~~strikethrough text~~, 21^st^, H~2~O, E = m
 4. Quisque eu nunc ac elit maximus efficitur
 
 ---
-#### Unordered list
+###### Unordered list
 
 + Create a list by starting a line with \`+\`, \`-\`, or \`*\`
 + Sub-lists are made by indenting 2 spaces:
@@ -67,14 +57,14 @@ _italic_ *text*, **bold** __text__, ~~strikethrough text~~, 21^st^, H~2~O, E = m
 + Very easy!
 
 ---
-#### Blockquotes
+###### Blockquotes
 
 > blockquote
 >> blockquote 
 >>> _italic_ **bold text** ~~strikethrough~~
 
 ---
-####  Code
+###### Code
 
 This sentence contains \`inline code\` in the middle of it.
 
@@ -92,16 +82,22 @@ const CodeBlockExample = () => {
 | Beta | Two |
 
 ---
-
-Daňový rok:
-::tax-year[]
-
-Nasledujúci rok:
-::tax-year-next[]
-
----
+###### Image
 
 ![Accessible alt text](/apple-touch-icon.png "Caption shown below the image")
 
+---
+###### Custom components (Markdown only)
+
+Tooltip :tooltip[Tooltip text]
+
+---
+###### Custom components (FormMarkdown only)
+
+Daňový rok: :tax-year
+
+Nasledujúci rok: :tax-year-next
+
+Form image preview: :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/5_stavba_spoluvlastnicky_podiel_d931ee97e7.png"}
 
 `

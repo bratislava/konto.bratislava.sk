@@ -348,9 +348,16 @@ export default class NasesService {
     formDefinitionFiles: NonNullable<FormDefinition['files']>,
   ) {
     const safeFiles = await this.filesService.getActiveFileSizes(formId)
-    const totalFileSize = safeFiles.reduce((sum, f) => sum + f.fileSize, 0)
 
-    // Per-form cumulative check
+    this.enforceFormCumulativeSize(safeFiles, formDefinitionFiles)
+    this.enforcePerSlotConstraints(safeFiles, formDefinitionFiles)
+  }
+
+  private enforceFormCumulativeSize(
+    safeFiles: { id: string; slotId: string | null; fileSize: number }[],
+    formDefinitionFiles: NonNullable<FormDefinition['files']>,
+  ) {
+    const totalFileSize = safeFiles.reduce((sum, f) => sum + f.fileSize, 0)
     const maxTotalFileSize =
       formDefinitionFiles.maxTotalFileSize ??
       this.baConfigService.fileLimits.maxCumulativeSizeGlobal
@@ -360,9 +367,16 @@ export default class NasesService {
         `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
       )
     }
+  }
 
-    // Per-slot checks (cumulative size + per-file size). Files with null slotId
-    // were uploaded before slots existed; they only contribute to the form-level total.
+  /**
+   * Per-slot checks (cumulative size + per-file size). Files with null slotId
+   * were uploaded before slots existed; they only contribute to the form-level total.
+   */
+  private enforcePerSlotConstraints(
+    safeFiles: { id: string; slotId: string | null; fileSize: number }[],
+    formDefinitionFiles: NonNullable<FormDefinition['files']>,
+  ) {
     const slotsById = new Map(
       formDefinitionFiles.slots.map((s) => [s.slotId, s]),
     )
@@ -377,27 +391,35 @@ export default class NasesService {
     for (const [slotId, slotFiles] of filesBySlot) {
       const slot = slotsById.get(slotId)
       if (!slot) continue
+      this.enforceSingleSlotConstraints(slotId, slotFiles, slot)
+    }
+  }
 
-      if (slot.maxFileSize !== undefined) {
-        const oversized = slotFiles.find((f) => f.fileSize > slot.maxFileSize!)
-        if (oversized) {
-          throw this.throwerErrorGuard.BadRequestException(
-            FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,
-            FilesErrorsResponseEnum.FILE_SIZE_EXCEEDED_ERROR,
-            `Slot: ${slotId}, fileId: ${oversized.id}, size: ${oversized.fileSize}, limit: ${slot.maxFileSize}`,
-          )
-        }
+  private enforceSingleSlotConstraints(
+    slotId: string,
+    slotFiles: { id: string; fileSize: number }[],
+    slot: NonNullable<FormDefinition['files']>['slots'][number],
+  ) {
+    const { maxFileSize, maxTotalFileSize } = slot
+    if (maxFileSize !== undefined) {
+      const oversized = slotFiles.find((f) => f.fileSize > maxFileSize)
+      if (oversized) {
+        throw this.throwerErrorGuard.BadRequestException(
+          FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,
+          FilesErrorsResponseEnum.FILE_SIZE_EXCEEDED_ERROR,
+          `Slot: ${slotId}, fileId: ${oversized.id}, size: ${oversized.fileSize}, limit: ${maxFileSize}`,
+        )
       }
+    }
 
-      if (slot.maxTotalFileSize !== undefined) {
-        const slotTotalSize = slotFiles.reduce((sum, f) => sum + f.fileSize, 0)
-        if (slotTotalSize > slot.maxTotalFileSize) {
-          throw this.throwerErrorGuard.BadRequestException(
-            FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-            FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
-            `Slot: ${slotId}, total: ${slotTotalSize}, limit: ${slot.maxTotalFileSize}`,
-          )
-        }
+    if (maxTotalFileSize !== undefined) {
+      const slotTotalSize = slotFiles.reduce((sum, f) => sum + f.fileSize, 0)
+      if (slotTotalSize > maxTotalFileSize) {
+        throw this.throwerErrorGuard.BadRequestException(
+          FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          `Slot: ${slotId}, total: ${slotTotalSize}, limit: ${maxTotalFileSize}`,
+        )
       }
     }
   }

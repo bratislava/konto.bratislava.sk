@@ -137,9 +137,9 @@ export default class FilesController {
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
-    @Query('fieldId') fieldId?: string,
+    @Query('slotId') slotId?: string,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(formId, file, body, fieldId)
+    return this.filesService.uploadFile(formId, file, body, slotId ?? null)
   }
 
   @ApiOperation({

@@ -1,0 +1,73 @@
+# Depot CI Migration
+# Source: .github\workflows\pull-request-public-images.yml
+#
+# Changes made:
+# - Changed GitHub runs-on labels to their Depot equivalents
+
+name: Validate Nest Forms Backend With Public Shared Images
+on:
+  pull_request:
+    branches:
+      - "**"
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+env:
+  FORMS_SHARED_IMAGE: marekbodingerba/forms-shared
+  OPENAPI_CLIENTS_IMAGE: marekbodingerba/openapi-clients
+  SHARED_PACKAGE_TAG: latest
+jobs:
+  validate:
+    name: Validate and build nest-forms-backend
+    runs-on: depot-ubuntu-latest # was: ubuntu-latest. Mapped standard GitHub runner to Depot equivalent.
+    defaults:
+      run:
+        working-directory: nest-forms-shared
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Set up Depot CLI
+        uses: depot/setup-action@v1
+      - name: Run unit tests
+        uses: depot/build-push-action@v1
+        with:
+          context: .
+          target: test
+          build-args: |
+            FORMS_SHARED_IMAGE=${{ env.FORMS_SHARED_IMAGE }}
+            OPENAPI_CLIENTS_IMAGE=${{ env.OPENAPI_CLIENTS_IMAGE }}
+            SHARED_PACKAGE_TAG=${{ env.SHARED_PACKAGE_TAG }}
+      - name: ESLint check
+        uses: depot/build-push-action@v1
+        with:
+          context: .
+          target: lint
+          build-args: |
+            FORMS_SHARED_IMAGE=${{ env.FORMS_SHARED_IMAGE }}
+            OPENAPI_CLIENTS_IMAGE=${{ env.OPENAPI_CLIENTS_IMAGE }}
+            SHARED_PACKAGE_TAG=${{ env.SHARED_PACKAGE_TAG }}
+#      - name: Build validation image for E2E
+#        uses: depot/build-push-action@v1
+#        with:
+#          context: .
+#          target: prebuild
+#          load: true
+#          tags: nest-forms-backend-validate:${{ github.sha }}
+#          build-args: |
+#            FORMS_SHARED_IMAGE=${{ env.FORMS_SHARED_IMAGE }}
+#            OPENAPI_CLIENTS_IMAGE=${{ env.OPENAPI_CLIENTS_IMAGE }}
+#            SHARED_PACKAGE_TAG=${{ env.SHARED_PACKAGE_TAG }}
+#      - name: Run E2E tests
+#        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock nest-forms-backend-validate:${{ github.sha }} /bin/sh -lc "NODE_OPTIONS='--max-old-space-size=4096' npm run test:e2e"
+      - name: Build application image
+        uses: depot/build-push-action@v1
+        with:
+          context: .
+          target: build
+          build-args: |
+            FORMS_SHARED_IMAGE=${{ env.FORMS_SHARED_IMAGE }}
+            OPENAPI_CLIENTS_IMAGE=${{ env.OPENAPI_CLIENTS_IMAGE }}
+            SHARED_PACKAGE_TAG=${{ env.SHARED_PACKAGE_TAG }}

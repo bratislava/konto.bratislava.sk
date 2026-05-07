@@ -746,7 +746,10 @@ describe('NasesService', () => {
       it('should not throw if total file size is within limit', async () => {
         ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
           ...mockFormDefinition,
-          maxTotalFileSize: 200_000,
+          files: {
+            ...mockFormDefinition.files,
+            maxTotalFileSize: 250_000_000,
+          },
         })
         jest
           .spyOn(service['filesService'], 'getActiveFileSizes')

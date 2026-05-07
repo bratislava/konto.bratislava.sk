@@ -4,6 +4,8 @@ import slugify from '@sindresorhus/slugify'
 import Image from 'next/image'
 import { ComponentType, ReactElement } from 'react'
 import _ReactMarkdown, { defaultUrlTransform, ExtraProps, Options } from 'react-markdown'
+import remarkDirective from 'remark-directive'
+import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import remarkUnwrapImages from 'remark-unwrap-images'
@@ -69,6 +71,8 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
             { singleTilde: false },
           ],
           supersub,
+          remarkDirective,
+          remarkDirectiveRehype,
         ]}
         components={{
           /**

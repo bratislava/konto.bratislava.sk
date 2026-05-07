@@ -341,7 +341,6 @@ export default schema(
   ],
 )
 
-
 type ExtractFormData = {
   ziadatel: {
     email: string

@@ -136,7 +136,6 @@ export default schema(
   ],
 )
 
-
 type ExtractFormData = {
   ziadatel: {
     menoPriezvisko: {

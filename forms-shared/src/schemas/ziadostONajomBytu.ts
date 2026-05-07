@@ -1615,7 +1615,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
   ],
 )
 
-
 export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných dokumentov
 <% let maPrijem = (prijem) => it.helpers.safeBoolean(prijem?.zamestnanie) || it.helpers.safeBoolean(prijem?.samostatnaZarobkovaCinnost) || it.helpers.safeBoolean(prijem?.dochodok) || it.helpers.safeBoolean(prijem?.vyzivne) || it.helpers.safeBoolean(prijem?.davkaVNezamestnanosti) || it.helpers.safeBoolean(prijem?.inePrijmy) %>
 <% let dokladRodinnyStav = (osobneUdaje) => it.helpers.safeString(osobneUdaje?.rodinnyStav) && ['zenaty', 'rozvedeny', 'vdovec', 'ine'].includes(osobneUdaje?.rodinnyStav) %>

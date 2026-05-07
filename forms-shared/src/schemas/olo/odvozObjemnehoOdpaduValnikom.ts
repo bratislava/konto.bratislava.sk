@@ -133,7 +133,6 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
   ]),
 ])
 
-
 type ExtractFormData = {
   ziadatel: {
     email: string

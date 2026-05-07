@@ -46,7 +46,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
                   variant="small"
                   content={`${t('taxes.communication_channel.info.youCanChangeChannelOnThisPage', {
                     url: ROUTES.TAXES_AND_FEES,
-                  })} <br /> ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
+                  })} \n ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
                 />
               </div>
             )}

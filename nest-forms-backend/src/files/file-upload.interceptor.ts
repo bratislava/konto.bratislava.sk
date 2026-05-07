@@ -136,21 +136,24 @@ export class FileUploadInterceptor implements NestInterceptor {
       )
     }
 
-    const formPerFileMax = formDefinition.files.maxFileSize ?? globalMax
+    if (!formDefinition.files) {
+      return globalMax
+    }
 
-    const fieldId = req.query.fieldId as string | undefined
-    if (!fieldId) {
+    const slotId = req.query.slotId as string | undefined
+    if (!slotId) {
       throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.MISSING_FIELD_ID_ERROR,
-        FilesErrorsResponseEnum.MISSING_FIELD_ID_ERROR,
+        FilesErrorsEnum.MISSING_SLOT_ID_ERROR,
+        FilesErrorsResponseEnum.MISSING_SLOT_ID_ERROR,
       )
     }
 
-    const slot = formDefinition.files.slots.find((s) => s.slotId === fieldId)
-    if (!slot?.maxFileSize) {
-      return formPerFileMax
-    }
+    const slot = formDefinition.files.slots.find((s) => s.slotId === slotId)
 
-    return Math.min(slot.maxFileSize, formPerFileMax)
+    return Math.min(
+      slot?.maxFileSize ?? Infinity,
+      formDefinition.files.maxFileSize ?? Infinity,
+      globalMax,
+    )
   }
 }

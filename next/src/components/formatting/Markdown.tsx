@@ -2,12 +2,14 @@
 import { Typography } from '@bratislava/component-library'
 import slugify from '@sindresorhus/slugify'
 import Image from 'next/image'
-import ReactMarkdown, { defaultUrlTransform } from 'react-markdown'
+import { ComponentType, ReactElement } from 'react'
+import _ReactMarkdown, { defaultUrlTransform, ExtraProps, Options } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import remarkUnwrapImages from 'remark-unwrap-images'
 
 import MLink from '@/src/components/simple-components/MLink'
+import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import cn from '@/src/utils/cn'
 
 export type MarkdownProps = {
@@ -16,6 +18,16 @@ export type MarkdownProps = {
   className?: string
 }
 
+type GenericReactMarkdownComponent = ComponentType<
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & ExtraProps
+>
+
+type CustomComponents = Record<'tooltip', GenericReactMarkdownComponent>
+
+const ReactMarkdown = _ReactMarkdown as (
+  options: Readonly<Options & { components: CustomComponents }>,
+) => ReactElement
+
 /**
  * See documentation: https://github.com/remarkjs/react-markdown#appendix-b-components
  *
@@ -23,8 +35,8 @@ export type MarkdownProps = {
  * @param content
  * @param variant
  * @constructor
- * 
- * Based on Bratislava.sk: TODO:
+ *
+ * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/formatting/Markdown/Markdown.tsx
  *
  * This is the closest design we have is in OLO Figma:
  * https://www.figma.com/design/2qF09hDT9QNcpdztVMNAY4/OLO-Web?node-id=39-2452&p=f&t=aHLvMYm9cct0bnP3-0
@@ -37,15 +49,18 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
         'markdown',
         {
           'text-size-p-large-r lg:text-size-p-large': variant === 'large',
-          'text-size-p-default-r lg:text-size-p-default': variant === 'default' || variant === 'accordion',
+          'text-size-p-default-r lg:text-size-p-default':
+            variant === 'default' || variant === 'accordion',
           'text-size-p-small-r lg:text-size-p-small': variant === 'small',
         },
         className,
       )}
     >
       <ReactMarkdown
-        // Fixes non-functioning phone links - more at https://github.com/orgs/remarkjs/discussions/1329
-        urlTransform={(url) => (url.startsWith('tel:') ? url : defaultUrlTransform(url))}
+        urlTransform={
+          // Fixes non-functioning phone links - more at https://github.com/orgs/remarkjs/discussions/1329
+          (url) => (url.startsWith('tel:') ? url : defaultUrlTransform(url))
+        }
         remarkPlugins={[
           remarkUnwrapImages,
           [
@@ -56,10 +71,13 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
           supersub,
         ]}
         components={{
-          // Standard components: a, blockquote, br, code, em, h1, h2, h3, h4, h5, h6, hr, img, li, ol, p, pre, strong, and ul
-
-          // We don't want to use h1 in markdown, so it returns standard <p> tag
-          // Accordion uses h3 as its own heading, we want to display all the headings in markdown smaller or equal to h4.
+          /**
+           * STANDARD COMPONENTS
+           * a, blockquote, br, code, em, h1, h2, h3, h4, h5, h6, hr, img, li, ol, p, pre, strong, and ul
+           *
+           * - We don't want to use h1 in markdown, so it returns standard <p> tag
+           * - Accordion uses h3 as its own heading, so we want to display all the headings in markdown smaller or equal to h4.
+           */
           h1: 'p',
           h2: ({ children, node, ...props }) => (
             <Typography
@@ -114,6 +132,7 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
                 variant="underlined-medium"
                 href={href ?? '#'}
                 target={isExternal ? '_blank' : undefined}
+                {...props}
               >
                 {!!children && children}
                 {/* add nbsp and arrow to indicate external link */}
@@ -173,10 +192,17 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
           ),
           li: ({ children, node, ...props }) => <li {...props}>{children}</li>,
 
-          // Remark-gfm components: del, input, table, tbody, td, th, thead, and tr
-          // FIXME tables need revisit - align, spacing, etc.
+          /**
+           * REMARK-GFM COMPONENTS
+           * del, input, table, tbody, td, th, thead, and tr
+           *
+           * - TODO tables need revisit - align, spacing, etc.
+           */
           table: ({ children, node, ...props }) => (
-            <div className="overflow-x-auto rounded-lg border" {...props}>
+            <div
+              className="overflow-x-auto rounded-lg border bg-background-passive-base"
+              {...props}
+            >
               <table className="w-full table-auto">{children}</table>
             </div>
           ),
@@ -204,6 +230,17 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
               {children}
             </th>
           ),
+
+          /**
+           * CUSTOM COMPONENTS
+           *
+           * - extend the CustomComponents type if you want to add more custom components
+           * - TODO Consider unifying with FormMarkdown and including 'form-image-preview', 'tax-year', 'tax-year-next'
+           */
+          tooltip: ({ children }) =>
+            children && typeof children === 'string' ? (
+              <BATooltip placement="top right">{children}</BATooltip>
+            ) : null,
         }}
       >
         {content ?? ''}

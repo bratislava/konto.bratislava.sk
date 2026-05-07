@@ -81,7 +81,7 @@ export const objednavkaInformativnehoZakresuSietiFiles = {
       slotId: 'snimkaMapy',
     },
   ],
-}
+} as const
 
 type ExtractFormData = {
   objednavatel: { email: string } & (

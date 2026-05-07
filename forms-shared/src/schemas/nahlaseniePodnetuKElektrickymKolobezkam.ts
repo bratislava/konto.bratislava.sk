@@ -7,7 +7,6 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { SchemalessFormDataExtractor } from '../form-utils/evaluateFormDataExtractor'
-import nahlaseniePodnetuKElektrickymKolobezkamExample from '../example-forms/examples/nahlaseniePodnetuKElektrickymKolobezkamExample'
 
 export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám' }, [
   step('podnet', { title: 'Podnet' }, [

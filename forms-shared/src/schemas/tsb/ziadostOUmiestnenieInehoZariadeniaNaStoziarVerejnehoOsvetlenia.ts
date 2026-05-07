@@ -142,13 +142,13 @@ export default schema(
 export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles = {
   slots: [
     {
-      slotId: 'fotografiaVizualizacia',
+      slotId: 'umiestnenieStoziare',
     },
     {
       slotId: 'fotografiaVizualizacia',
     },
   ],
-}
+} as const
 
 type ExtractFormData = {
   ziadatel: { email: string } & (

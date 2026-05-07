@@ -140,8 +140,8 @@ export class FileUploadInterceptor implements NestInterceptor {
       return globalMax
     }
 
-    const slotId = req.query.slotId as string | undefined
-    if (!slotId) {
+    const slotId = req.query.slotId
+    if (!slotId || typeof slotId !== 'string') {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.MISSING_SLOT_ID_ERROR,
         FilesErrorsResponseEnum.MISSING_SLOT_ID_ERROR,

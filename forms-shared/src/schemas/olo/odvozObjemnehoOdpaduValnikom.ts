@@ -133,9 +133,6 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
   ]),
 ])
 
-export const odvozObjemnehoOdpaduValnikomFiles = {
-  slots: [],
-} as const
 
 type ExtractFormData = {
   ziadatel: {

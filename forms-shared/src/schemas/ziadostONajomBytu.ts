@@ -1615,9 +1615,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
   ],
 )
 
-export const ziadostONajomBytuFiles = {
-  slots: [],
-} as const
 
 export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných dokumentov
 <% let maPrijem = (prijem) => it.helpers.safeBoolean(prijem?.zamestnanie) || it.helpers.safeBoolean(prijem?.samostatnaZarobkovaCinnost) || it.helpers.safeBoolean(prijem?.dochodok) || it.helpers.safeBoolean(prijem?.vyzivne) || it.helpers.safeBoolean(prijem?.davkaVNezamestnanosti) || it.helpers.safeBoolean(prijem?.inePrijmy) %>

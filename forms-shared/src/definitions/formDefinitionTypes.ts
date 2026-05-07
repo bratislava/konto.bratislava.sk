@@ -32,7 +32,6 @@ export type FormFiles<SlotId extends string> = {
     slotId: SlotId
     maxFileSize?: number
     maxTotalFileSize?: number
-    allowedFileTypes?: string[]
   }[]
 }
 
@@ -52,7 +51,7 @@ type FormDefinitionBase = {
   exampleFormNotRequired?: boolean
   feedbackLink?: string
 
-  files: FormFiles<string>
+  files?: FormFiles<string>
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {

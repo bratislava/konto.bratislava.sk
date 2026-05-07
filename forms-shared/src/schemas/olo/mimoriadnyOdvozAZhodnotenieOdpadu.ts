@@ -341,9 +341,6 @@ export default schema(
   ],
 )
 
-export const mimoriadnyOdvozAZhodnotenieOdpaduFiles = {
-  slots: [],
-} as const
 
 type ExtractFormData = {
   ziadatel: {

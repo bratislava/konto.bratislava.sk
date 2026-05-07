@@ -253,10 +253,6 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
   ]),
 ])
 
-export const odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromFiles = {
-  slots: [],
-} as const
-
 type ExtractFormData = {
   ziadatel: {
     email: string

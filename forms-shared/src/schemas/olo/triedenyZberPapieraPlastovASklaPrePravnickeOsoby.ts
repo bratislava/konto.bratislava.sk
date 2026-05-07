@@ -458,9 +458,6 @@ export default schema(
   ],
 )
 
-export const triedenyZberPapieraPlastovASklaPrePravnickeOsobyFiles = {
-  slots: [],
-} as const
 
 type ExtractFormData = {
   ziadatel: (

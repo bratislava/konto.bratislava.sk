@@ -33,33 +33,27 @@ import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
 import ziadostONajomBytu, {
   ziadostONajomBytuAdditionalInfoTemplate,
-  ziadostONajomBytuFiles,
 } from '../schemas/ziadostONajomBytu'
 import mimoriadnyOdvozAZhodnotenieOdpadu, {
   mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
   mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
-  mimoriadnyOdvozAZhodnotenieOdpaduFiles,
 } from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
 import energetickeZhodnotenieOdpaduVZevo from '../schemas/olo/energetickeZhodnotenieOdpaduVZevo'
-import uzatvorenieZmluvyONakladaniSOdpadom, {
-  uzatvorenieZmluvyONakladaniSOdpadomFiles,
-} from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
+import uzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
 import docisteniStanovistaZbernychNadob, {
   docisteniStanovistaZbernychNadobExtractEmail,
   docisteniStanovistaZbernychNadobExtractName,
-  docisteniStanovistaZbernychNadobFiles,
 } from '../schemas/olo/docisteniStanovistaZbernychNadob'
 import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom, {
   odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
   odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
-  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromFiles,
 } from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
 import koloTaxi, {
   koloTaxiExtractEmail,
   koloTaxiExtractName,
   koloTaxiFiles,
 } from '../schemas/olo/koloTaxi'
-import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName, oloTaxiFiles } from '../schemas/olo/oloTaxi'
+import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName } from '../schemas/olo/oloTaxi'
 import podnetyAPochvalyObcanov, {
   podnetyAPochvalyObcanovExtractEmail,
   podnetyAPochvalyObcanovExtractName,
@@ -68,17 +62,14 @@ import podnetyAPochvalyObcanov, {
 import odvozObjemnehoOdpaduValnikom, {
   odvozObjemnehoOdpaduValnikomExtractEmail,
   odvozObjemnehoOdpaduValnikomExtractName,
-  odvozObjemnehoOdpaduValnikomFiles,
 } from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
 import triedenyZberPapieraPlastovASklaPrePravnickeOsoby, {
   triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
   triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
-  triedenyZberPapieraPlastovASklaPrePravnickeOsobyFiles,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
 import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
-  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiFiles,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
 import {
   energetickeZhodnotenieOdpaduVZevoFiles,
@@ -282,7 +273,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     additionalInfoTemplate: ziadostONajomBytuAdditionalInfoTemplate,
-    files: ziadostONajomBytuFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -302,7 +292,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: mimoriadnyOdvozAZhodnotenieOdpaduFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -342,7 +331,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: uzatvorenieZmluvyONakladaniSOdpadomFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -362,7 +350,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: docisteniStanovistaZbernychNadobFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -382,7 +369,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -422,7 +408,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: oloTaxiFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -462,7 +447,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: odvozObjemnehoOdpaduValnikomFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -482,7 +466,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: triedenyZberPapieraPlastovASklaPrePravnickeOsobyFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -502,7 +485,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
-    files: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiFiles,
   },
   {
     type: FormDefinitionType.Email,

@@ -2,9 +2,9 @@
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "entryFile": "generate-api-spec",
+  "entryFile": "main",
   "compilerOptions": {
-    "tsConfigPath": "tsconfig.build-generate-api-spec.json",
+    "tsConfigPath": "tsconfig.build.json",
     "plugins": [
       {
         "name": "@nestjs/swagger",

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": false,
   "license": "EUPL-1.2",
+  "bin": {
+    "openapi-clients": "./dist/generate-nest/cli.js"
+  },
   "exports": {
     "./city-account": "./dist/city-account/index.js",
     "./forms": "./dist/forms/index.js",

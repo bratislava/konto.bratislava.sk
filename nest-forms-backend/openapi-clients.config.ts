@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core'
-import { generateOpenApiClientsCli } from 'openapi-clients/generate-nest'
+import { defineNestOpenApiProject } from 'openapi-clients/generate-nest'
 
-import AppModule from './app.module'
-import { createSwaggerDocument } from './bootstrap'
+import AppModule from './src/app.module'
+import { createSwaggerDocument } from './src/bootstrap'
 
-generateOpenApiClientsCli({
+export default defineNestOpenApiProject({
   createApp: async () =>
     NestFactory.create(AppModule, {
       preview: true,

@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "types": []
-  },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "dist", "scripts"]
+  "include": [
+    "**/*.ts",
+    "script/generate-nest.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scripts"
+  ]
 }

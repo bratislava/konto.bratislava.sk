@@ -2,6 +2,8 @@
 PORT=3000
 SELF_URL=https://nest-forms-backend.dev.bratislava.sk
 CLUSTER_ENV=dev
+NODE_ENV=production
+DATABASE_URL=adsasd
 
 # Authentication
 NEST_FORMS_BACKEND_USERNAME=e2e-user

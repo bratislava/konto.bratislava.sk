@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "outDir": "C:\\Projects\\konto.bratislava.sk\\xxx\\dist-generate-api-spec"
+  }
+}

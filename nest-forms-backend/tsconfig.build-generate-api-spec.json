@@ -2,9 +2,15 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "outDir": "./dist-generate-api-spec",
+    "plugins": [
+      {
+        "transform": "@nestjs/swagger/plugin",
+        "introspectComments": true
+      }
+    ]
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", "prisma/types.ts"],
   "ts-node": {
+    "compiler": "ts-patch/compiler",
     "files": true
   }
 }

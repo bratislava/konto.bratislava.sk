@@ -48,6 +48,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareMigrationOutput"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -84,6 +94,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimMigrationOutput"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -112,6 +132,16 @@
         },
         "responses": {
           "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFormOutput"
+                }
+              }
+            }
+          },
+          "201": {
             "description": "",
             "content": {
               "application/json": {
@@ -285,6 +315,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -331,6 +371,16 @@
         "responses": {
           "200": {
             "description": "Return Json form",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/XmlToJsonResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -391,6 +441,9 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": ""
           }
         },
         "security": [
@@ -427,6 +480,16 @@
         "responses": {
           "200": {
             "description": "Version successfully bumped",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BumpJsonVersionResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -587,6 +650,16 @@
         },
         "responses": {
           "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFileResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
             "description": "",
             "content": {
               "application/json": {
@@ -895,6 +968,9 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": ""
           }
         },
         "security": [
@@ -948,6 +1024,16 @@
                 }
               }
             }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendFormResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -994,6 +1080,16 @@
         "responses": {
           "200": {
             "description": "Form was successfully send to rabbit, ant then to nases.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendFormResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -1179,6 +1275,16 @@
         "responses": {
           "200": {
             "description": "Return signer data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignerDataResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -1551,6 +1657,25 @@
           "requiresVersionConfirmation"
         ]
       },
+      "SimplifiedClientFileInfoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "file": {
+            "type": "object"
+          },
+          "status": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "file",
+          "status"
+        ]
+      },
       "ConvertToPdfRequestDto": {
         "type": "object",
         "properties": {
@@ -1616,7 +1741,7 @@
             "description": "Used only in the FE requests to display files not yet uploaded to the server.",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/SimplifiedClientFileInfoDto"
             }
           }
         }
@@ -2047,13 +2172,13 @@
             "format": "date-time",
             "type": "string",
             "description": "Create date of record",
-            "default": "2026-05-08T14:10:47.871Z"
+            "default": "2026-05-08T14:16:13.389Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
             "description": "Update date of record",
-            "default": "2026-05-08T14:10:47.871Z"
+            "default": "2026-05-08T14:16:13.389Z"
           },
           "externalId": {
             "type": "string",
@@ -2279,13 +2404,13 @@
             "format": "date-time",
             "type": "string",
             "description": "Create date of record",
-            "default": "2026-05-08T14:10:47.872Z"
+            "default": "2026-05-08T14:16:13.390Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
             "description": "Update date of record",
-            "default": "2026-05-08T14:10:47.872Z"
+            "default": "2026-05-08T14:16:13.390Z"
           },
           "state": {
             "type": "string",
@@ -2531,25 +2656,6 @@
           "eidToken"
         ]
       },
-      "StatusResponseDto": {
-        "type": "object",
-        "properties": {
-          "prisma": {
-            "type": "object"
-          },
-          "minio": {
-            "type": "object"
-          },
-          "scanner": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "prisma",
-          "minio",
-          "scanner"
-        ]
-      },
       "ServiceRunningDto": {
         "type": "object",
         "properties": {
@@ -2561,6 +2667,61 @@
         },
         "required": [
           "running"
+        ]
+      },
+      "StatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "prisma": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "minio": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          },
+          "scanner": {
+            "$ref": "#/components/schemas/ServiceRunningDto"
+          }
+        },
+        "required": [
+          "prisma",
+          "minio",
+          "scanner"
+        ]
+      },
+      "GinisSdkHistorieDokumentuWithAssignedCategory": {
+        "type": "object",
+        "properties": {
+          "Id-dokumentu": {
+            "type": "string"
+          },
+          "Text-zmeny": {
+            "type": "string"
+          },
+          "Poznamka": {
+            "type": "string"
+          },
+          "Datum-zmeny": {
+            "type": "string"
+          },
+          "Id-zmenu-provedl": {
+            "type": "string"
+          },
+          "Id-ktg-zmeny": {
+            "type": "string"
+          },
+          "assignedCategory": {
+            "type": "string",
+            "enum": [
+              "DOCUMENT_CREATED"
+            ]
+          }
+        },
+        "required": [
+          "Id-dokumentu",
+          "Datum-zmeny",
+          "Id-zmenu-provedl",
+          "Id-ktg-zmeny",
+          "assignedCategory"
         ]
       },
       "GinisDocumentDetailResponseDto": {
@@ -2584,7 +2745,7 @@
           "documentHistory": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/GinisSdkHistorieDokumentuWithAssignedCategory"
             }
           }
         },

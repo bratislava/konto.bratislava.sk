@@ -3,7 +3,6 @@ import path from 'node:path'
 
 import { get as getAppRootDir } from 'app-root-dir'
 import { Command } from 'commander'
-import { NestFactory } from '@nestjs/core'
 import type { OpenAPIObject } from '@nestjs/swagger'
 
 const appRootDir = getAppRootDir()
@@ -16,21 +15,22 @@ const projects = {
 
 type ProjectName = keyof typeof projects
 
-type GenerateOpenApiClientsCliOptions = {
-  appModule: Parameters<typeof NestFactory.create>[0]
-  createSwaggerDocument: (app: Awaited<ReturnType<typeof NestFactory.create>>) => OpenAPIObject
+type NestApplicationLike = {
+  close: () => Promise<void> | void
+}
+
+type GenerateOpenApiClientsCliOptions<TApp extends NestApplicationLike> = {
+  createApp: () => Promise<TApp>
+  createSwaggerDocument: (app: TApp) => OpenAPIObject
   project: ProjectName
 }
 
-const generateProjectSpec = async ({
-  appModule,
+const generateProjectSpec = async <TApp extends NestApplicationLike>({
+  createApp,
   createSwaggerDocument,
   project,
-}: GenerateOpenApiClientsCliOptions) => {
-  const app = await NestFactory.create(appModule, {
-    preview: true,
-    abortOnError: false,
-  })
+}: GenerateOpenApiClientsCliOptions<TApp>) => {
+  const app = await createApp()
 
   try {
     const document = createSwaggerDocument(app)
@@ -43,7 +43,9 @@ const generateProjectSpec = async ({
   }
 }
 
-export const generateOpenApiClientsCli = (options: GenerateOpenApiClientsCliOptions) => {
+export const generateOpenApiClientsCli = (
+  options: GenerateOpenApiClientsCliOptions<NestApplicationLike>,
+) => {
   const program = new Command()
 
   program.name('openapi-clients').description('Generate OpenAPI client artifacts for Nest backends')

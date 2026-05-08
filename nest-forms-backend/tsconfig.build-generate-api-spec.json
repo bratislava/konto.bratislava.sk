@@ -2,5 +2,9 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "outDir": "./dist-generate-api-spec",
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts", "prisma/types.ts"],
+  "ts-node": {
+    "files": true
   }
 }

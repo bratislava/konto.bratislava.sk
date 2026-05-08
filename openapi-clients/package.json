@@ -67,14 +67,10 @@
     "typescript": "6.0.3"
   },
   "peerDependencies": {
-    "@nestjs/core": "^11.0.0",
     "@nestjs/swagger": "^11.0.0",
     "axios": "1.16.0"
   },
   "peerDependenciesMeta": {
-    "@nestjs/core": {
-      "optional": true
-    },
     "@nestjs/swagger": {
       "optional": true
     }

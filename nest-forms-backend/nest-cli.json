@@ -4,12 +4,12 @@
   "sourceRoot": "src",
   "entryFile": "generate-api-spec",
   "compilerOptions": {
-    "tsConfigPath": "C:\\Projects\\konto.bratislava.sk\\xxx\\tsconfig.build-generate-api-spec.json",
+    "tsConfigPath": "tsconfig.build-generate-api-spec.json",
     "plugins": [
       {
         "name": "@nestjs/swagger",
         "options": {
-          "introspectComments": true
+          "introspectComments": false
         }
       }
     ]

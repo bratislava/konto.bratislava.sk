@@ -13,7 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
-    "generate-api-spec": "ts-node scripts/openapi-clients.ts",
+    "generate-api-spec": "ts-node --project tsconfig.build-generate-api-spec.json --transpile-only scripts/openapi-clients.ts",
     "seed:prod": "node dist/prisma/seed.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",

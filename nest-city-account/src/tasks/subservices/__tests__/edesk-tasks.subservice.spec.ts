@@ -4,7 +4,6 @@ import { ExternalEdeskCheck, PhysicalEntity, QueueItemStatusEnum } from '@prisma
 
 import prismaMock from '../../../../test/singleton'
 import { NorisService } from '../../../noris/noris.service'
-import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { UpvsQueueService } from '../../../upvs-queue/upvs-queue.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
@@ -44,7 +43,6 @@ describe('EdeskTasksSubservice', () => {
         { provide: UpvsQueueService, useValue: createMock<UpvsQueueService>() },
         { provide: NorisService, useValue: createMock<NorisService>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
-        { provide: PdfGeneratorService, useValue: createMock<PdfGeneratorService>() },
       ],
     }).compile()
 

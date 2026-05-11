@@ -2172,13 +2172,13 @@
             "format": "date-time",
             "type": "string",
             "description": "Create date of record",
-            "default": "2026-05-08T14:30:06.390Z"
+            "default": "2026-05-08T14:37:57.567Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
             "description": "Update date of record",
-            "default": "2026-05-08T14:30:06.390Z"
+            "default": "2026-05-08T14:37:57.567Z"
           },
           "externalId": {
             "type": "string",
@@ -2404,13 +2404,13 @@
             "format": "date-time",
             "type": "string",
             "description": "Create date of record",
-            "default": "2026-05-08T14:30:06.390Z"
+            "default": "2026-05-08T14:37:57.567Z"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
             "description": "Update date of record",
-            "default": "2026-05-08T14:30:06.391Z"
+            "default": "2026-05-08T14:37:57.567Z"
           },
           "state": {
             "type": "string",

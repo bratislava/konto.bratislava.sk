@@ -2,7 +2,10 @@ import type {
   GenerateOpenApiClientsConfig,
   NestApplicationLike,
 } from './generate-nest'
-import { generateProjectSpec } from './generate-nest'
+import {
+  getPendingRunPromise,
+  isOpenApiClientsInternalRunEnabled,
+} from './generate-nest'
 
 const getConfigPathFromArgs = () => {
   const configIndex = process.argv.indexOf('--config')
@@ -13,18 +16,33 @@ const getConfigPathFromArgs = () => {
   return process.argv[configIndex + 1]
 }
 
-const loadConfig = (
-  configPath: string,
-): GenerateOpenApiClientsConfig<NestApplicationLike> => {
+const loadConfig = (configPath: string) => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const imported = require(configPath)
-  return imported.default ?? imported
+  require(configPath)
 }
 
-const configPath = getConfigPathFromArgs()
-const config = loadConfig(configPath)
+const run = async () => {
+  if (!isOpenApiClientsInternalRunEnabled()) {
+    throw new Error(
+      'This runner can only be executed by openapi-clients internal tooling.',
+    )
+  }
 
-generateProjectSpec(config).catch((error) => {
+  const configPath = getConfigPathFromArgs()
+  loadConfig(configPath)
+
+  const pendingRunPromise = getPendingRunPromise()
+
+  if (!pendingRunPromise) {
+    throw new Error(
+      'The provided config did not register an internal OpenAPI generation run.',
+    )
+  }
+
+  await pendingRunPromise
+}
+
+run().catch((error) => {
   console.error(error)
   process.exit(1)
 })

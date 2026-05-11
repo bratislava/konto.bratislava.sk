@@ -85,6 +85,10 @@ const generateNestSpecFromConfig = ({
       ],
       {
         cwd: backendDir,
+        env: {
+          ...process.env,
+          OPENAPI_CLIENTS_INTERNAL_RUN: 'generate-spec',
+        },
         stdio: 'inherit',
       },
     )

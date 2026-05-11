@@ -23,9 +23,33 @@ export type GenerateOpenApiClientsConfig<TApp extends NestApplicationLike> = {
   project: ProjectName
 }
 
+const internalRunModeEnvKey = 'OPENAPI_CLIENTS_INTERNAL_RUN'
+const internalRunModeGenerate = 'generate-spec'
+const pendingRunPromiseKey = '__openapiClientsPendingRunPromise'
+
+type GlobalWithPendingRun = typeof globalThis & {
+  [pendingRunPromiseKey]?: Promise<void>
+}
+
+export const isOpenApiClientsInternalRunEnabled = () =>
+  process.env[internalRunModeEnvKey] === internalRunModeGenerate
+
+const setPendingRunPromise = (promise: Promise<void>) => {
+  ;(globalThis as GlobalWithPendingRun)[pendingRunPromiseKey] = promise
+}
+
+export const getPendingRunPromise = () =>
+  (globalThis as GlobalWithPendingRun)[pendingRunPromiseKey]
+
 export const defineNestOpenApiProject = <TApp extends NestApplicationLike>(
   config: GenerateOpenApiClientsConfig<TApp>,
-) => config
+) => {
+  if (isOpenApiClientsInternalRunEnabled()) {
+    setPendingRunPromise(generateProjectSpec(config))
+  }
+
+  return config
+}
 
 export const getProjectSpecOutputPath = (project: ProjectName) =>
   projects[project].specOutputPath

@@ -24,7 +24,6 @@ import { TasksService } from './tasks.service'
     UpvsQueueModule,
     NorisModule,
     BloomreachModule,
-    PdfGeneratorModule,
   ],
   providers: [
     TaxSubservice,

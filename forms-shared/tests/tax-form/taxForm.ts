@@ -3,7 +3,6 @@ import { getTaxFormPdfMapping } from '../../src/tax-form/mapping/pdf/pdf'
 import { generateTaxPdf } from '../../src/tax-form/generateTaxPdf'
 import { generateTaxXml } from '../../src/tax-form/generateTaxXml'
 import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
-import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { screenshotTestTimeout } from '../../test-utils/consts'
@@ -42,17 +41,9 @@ describe('taxForm', () => {
       test(
         `should match snapshot for generated PDF ${exampleForm.name}`,
         async () => {
-          const restore = filterConsole(
-            'log',
-            (message) =>
-              message ===
-              'Warning: _getAppearance: OffscreenCanvas is not supported, annotation may not render correctly.',
-          )
-
           const base64Pdf = await generateTaxPdf({ formData: exampleForm.formData })
 
           await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)
-          restore()
         },
         screenshotTestTimeout,
       )

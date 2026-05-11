@@ -290,6 +290,7 @@ describe('EdeskTasksSubservice', () => {
         upvsStatus: null,
         edeskStatus: null,
         edeskNumber: null,
+        edeskDeathDate: null,
         failCount: 3,
         newUri: null,
       }

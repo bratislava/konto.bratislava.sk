@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { Injectable } from '@nestjs/common'
-import { Browser, chromium } from 'playwright'
+import { Browser, BrowserContext, chromium, Page } from 'playwright'
 import { v4 as uuidv4 } from 'uuid'
 
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
@@ -15,6 +15,10 @@ import { PdfTemplateKeys, pdfTemplates, PdfTemplateVariables } from './templates
 @Injectable()
 export class PdfGeneratorService {
   private readonly logger: LineLoggerSubservice
+
+  private sharedBrowser: Browser | null = null
+
+  private sharedBrowserRefCount = 0
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     this.logger = new LineLoggerSubservice(PdfGeneratorService.name)

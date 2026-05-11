@@ -29,12 +29,12 @@ export class PdfGeneratorService {
    * Ref-counted so nested/concurrent callers share a single browser; pair with releaseSharedBrowser in a finally block.
    */
   async acquireSharedBrowser(): Promise<void> {
+    this.sharedBrowserRefCount++
     if (this.sharedBrowserRefCount === 0) {
       this.sharedBrowser = await chromium.launch({
         executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
       })
     }
-    this.sharedBrowserRefCount++
   }
 
   async releaseSharedBrowser(): Promise<void> {

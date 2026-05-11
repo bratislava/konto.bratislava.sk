@@ -16,7 +16,7 @@ concurrency:
       || startsWith(github.ref, 'refs/tags/dev') && 'dev'
       || startsWith(github.ref, 'refs/tags/prod') && 'prod'
     }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{github.ref == 'refs/heads/master'}}
 
 jobs:
   build-forms-shared:

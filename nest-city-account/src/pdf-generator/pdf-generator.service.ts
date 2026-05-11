@@ -30,7 +30,7 @@ export class PdfGeneratorService {
    */
   async acquireSharedBrowser(): Promise<void> {
     this.sharedBrowserRefCount++
-    if (this.sharedBrowserRefCount === 0) {
+    if (this.sharedBrowserRefCount === 1) {
       this.sharedBrowser = await chromium.launch({
         executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
       })

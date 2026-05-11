@@ -12,6 +12,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
 
 type PhysicalEntityWithUri = Omit<PhysicalEntity, 'uri'> & { uri: string }
 
@@ -149,6 +150,7 @@ export class UpvsQueueService {
             upvsStatus: item.data.status ?? null,
             edeskStatus: item.data.upvs?.edesk_status ?? null,
             edeskNumber: item.data.upvs?.edesk_number ?? null,
+            edeskDeathDate: (item.data as UpvsNaturalPerson).natural_person?.death?.date ?? null,
             processedAt: new Date(),
             newUri: item.inputUri !== item.data.uri ? item.data.uri : undefined,
           },

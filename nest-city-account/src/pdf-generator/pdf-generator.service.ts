@@ -70,10 +70,12 @@ export class PdfGeneratorService {
     let page: Page | null = null
 
     try {
-      // the next 3 rows must be inside a synchronous block - never await between them
       if (this.sharedBrowser) {
-        pinnedSharedBrowser = this.sharedBrowser
-        this.sharedBrowserRefCount++
+        // the next block must be inside a synchronous block - never await inside it
+        {
+          pinnedSharedBrowser = this.sharedBrowser
+          this.sharedBrowserRefCount++
+        }
         // await allowed below
 
         context = await pinnedSharedBrowser.newContext()

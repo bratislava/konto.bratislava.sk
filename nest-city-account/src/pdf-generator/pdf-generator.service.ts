@@ -25,6 +25,35 @@ export class PdfGeneratorService {
   }
 
   /**
+   * Opens a long-lived Chromium instance reused by subsequent generateFromTemplate calls.
+   * Ref-counted so nested/concurrent callers share a single browser; pair with releaseSharedBrowser in a finally block.
+   */
+  async acquireSharedBrowser(): Promise<void> {
+    if (this.sharedBrowserRefCount === 0) {
+      this.sharedBrowser = await chromium.launch({
+        executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
+      })
+    }
+    this.sharedBrowserRefCount++
+  }
+
+  async releaseSharedBrowser(): Promise<void> {
+    if (this.sharedBrowserRefCount === 0) {
+      return
+    }
+    this.sharedBrowserRefCount--
+    if (this.sharedBrowserRefCount === 0 && this.sharedBrowser) {
+      const browser = this.sharedBrowser
+      this.sharedBrowser = null
+      try {
+        await browser.close()
+      } catch (error) {
+        this.logger.error('Failed to close shared Chromium browser', error)
+      }
+    }
+  }
+
+  /**
    * Generates a password-protected PDF from a Mailgun template
    */
   async generateFromTemplate<T extends PdfTemplateKeys>(
@@ -33,15 +62,28 @@ export class PdfGeneratorService {
     templateVariables: PdfTemplateVariables<T>,
     password: string
   ): Promise<{ data: Buffer; filename: string; contentType: string }> {
-    let browser: Browser | null = null
-
     const template = pdfTemplates[templateName]
 
+    let ownBrowser: Browser | null = null
+    let pinnedSharedBrowser: Browser | null = null
+    let context: BrowserContext | null = null
+    let page: Page | null = null
+
     try {
-      browser = await chromium.launch({
-        executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
-      })
-      const page = await browser.newPage()
+      // the next 3 rows must be inside a synchronous block - never await between them
+      if (this.sharedBrowser) {
+        pinnedSharedBrowser = this.sharedBrowser
+        this.sharedBrowserRefCount++
+        // await allowed below
+
+        context = await pinnedSharedBrowser.newContext()
+        page = await context.newPage()
+      } else {
+        ownBrowser = await chromium.launch({
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
+        })
+        page = await ownBrowser.newPage()
+      }
 
       // Restrict to word chars (\\w+) to avoid ReDoS; template keys are identifiers only
       const htmlWithFilledOutVariables = template.html.replace(/\{\{(\w+)}}/g, (match, key) => {
@@ -63,25 +105,38 @@ export class PdfGeneratorService {
         },
       })
 
-      await browser.close()
-      browser = null
-
       return {
         data: await this.addPasswordToPdf(pdfBuffer, password),
         filename,
         contentType: 'application/pdf',
       }
     } catch (error) {
-      if (browser) {
-        await browser.close()
-      }
-
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
         'Error generating PDF from Mailgun template',
         error
       )
+    } finally {
+      if (page) {
+        await page.close().catch((err: unknown) => {
+          this.logger.error('Failed to close page', err)
+        })
+      }
+      if (context) {
+        await context.close().catch((err: unknown) => {
+          this.logger.error('Failed to close browser context', err)
+        })
+      }
+      if (ownBrowser) {
+        await ownBrowser.close().catch((err: unknown) => {
+          this.logger.error('Failed to close per-call browser', err)
+        })
+      }
+      if (pinnedSharedBrowser) {
+        // Release our pin; this may close the shared browser if we were the last holder.
+        await this.releaseSharedBrowser()
+      }
     }
   }
 

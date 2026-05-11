@@ -1,0 +1,151 @@
+name: Build
+
+on:
+  workflow_call:
+    secrets:
+      DOCKER_REGISTRY_USERNAME:
+        required: true
+      DOCKER_REGISTRY_PASSWORD:
+        required: true
+      HARBOR_REGISTRY_PASSWORD:
+        required: true
+
+jobs:
+  build-forms-shared:
+    name: Forms Shared Build
+    uses: ./.github/workflows/build-shared-package.yml
+    with:
+      directory: forms-shared/
+      image: harbor.bratislava.sk/standalone/forms-shared
+      push: true
+      target: prod
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-openapi-clients:
+    name: OpenAPI Clients Build
+    uses: ./.github/workflows/build-shared-package.yml
+    with:
+      directory: openapi-clients/
+      image: harbor.bratislava.sk/standalone/openapi-clients
+      push: true
+      target: prod
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-forms-shared-test:
+    name: Forms Shared Test
+    needs: [ build-forms-shared ]
+    uses: ./.github/workflows/test-forms-shared.yml
+    with:
+      directory: forms-shared/
+      image: harbor.bratislava.sk/standalone/forms-shared
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-next:
+    name: Next Build
+    needs: [ build-forms-shared, build-openapi-clients ]
+    uses: ./.github/workflows/build-next.yml
+    with:
+      directory: next/
+      image: harbor.bratislava.sk/standalone/next
+      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+      build_target: prod
+      build_env: staging
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-strapi:
+    name: Strapi Build
+    uses: ./.github/workflows/build-strapi.yml
+    with:
+      directory: strapi/
+      image: harbor.bratislava.sk/standalone/strapi
+      build_target: prod
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-nest-forms-backend:
+    name: Forms BE Build
+    needs: [ build-forms-shared, build-openapi-clients ]
+    uses: ./.github/workflows/build-nest.yml
+    with:
+      directory: nest-forms-backend/
+      image: harbor.bratislava.sk/standalone/nest-forms-backend
+      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+      target_validate: prebuild
+      target_build: build
+      target_unit_test: test
+      target_lint: lint
+      target_e2e_test: test-e2e
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-nest-clamav-scanner:
+    name: ClamAV Scanner Build
+    needs: [ build-forms-shared, build-openapi-clients ]
+    uses: ./.github/workflows/build-nest.yml
+    with:
+      directory: nest-clamav-scanner/
+      image: harbor.bratislava.sk/standalone/nest-clamav-scanner
+      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+      target_validate: prebuild
+      target_build: build
+      target_unit_test: test
+      target_lint: lint
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-nest-tax-backend:
+    name: Tax BE Build
+    needs: [ build-forms-shared, build-openapi-clients ]
+    uses: ./.github/workflows/build-nest.yml
+    with:
+      directory: nest-tax-backend/
+      image: harbor.bratislava.sk/standalone/nest-tax-backend
+      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+      target_validate: prebuild
+      target_build: build
+      target_unit_test: test
+      target_lint: lint
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  build-nest-city-account:
+    name: City Account BE Build
+    needs: [ build-forms-shared, build-openapi-clients ]
+    uses: ./.github/workflows/build-nest.yml
+    with:
+      directory: nest-city-account/
+      image: harbor.bratislava.sk/standalone/nest-city-account
+      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+      target_validate: prebuild
+      target_build: build
+      target_unit_test: test
+      target_lint: lint
+    secrets:
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}

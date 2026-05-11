@@ -1,0 +1,109 @@
+name: Build Next
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: true
+      image:
+        description: "Full image name including registry/repository for Docker cache."
+        type: string
+        required: true
+      forms_shared_digest:
+        description: "Immutable forms-shared image digest used during Docker build."
+        type: string
+        required: false
+        default: ""
+      openapi_clients_digest:
+        description: "Immutable openapi-clients image digest used during Docker build."
+        type: string
+        required: false
+        default: ""
+      build_target:
+        description: "Docker target used for final image build."
+        type: string
+        required: false
+        default: prod
+      build_env:
+        description: "Environment suffix for .env.bratiska-cli-build.<env>."
+        type: string
+        required: true
+    secrets:
+      DOCKER_REGISTRY_USERNAME:
+        required: true
+      DOCKER_REGISTRY_PASSWORD:
+        required: true
+      HARBOR_REGISTRY_PASSWORD:
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+
+jobs:
+  build:
+    name: Build Next
+    runs-on: "bratislava"
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Resolve cache refs
+        id: cache_ref
+        uses: ./.github/actions/resolve-cache-refs
+        with:
+          image: ${{ inputs.image }}
+          suffixes: |
+            build
+
+      - name: Prepare Next.js build env
+        shell: bash
+        run: |
+          # Mimic bratiska-cli build_image behavior by promoting the
+          # bratiska-cli build env file to .env.production.local
+          # before docker build starts.
+          case "${{ inputs.build_env }}" in
+            dev|staging|prod)
+              ;;
+            *)
+              echo "::error::Unsupported build_env '${{ inputs.build_env }}'. Allowed values: dev, staging, prod."
+              exit 1
+              ;;
+          esac
+
+          source_env_file=".env.bratiska-cli-build.${{ inputs.build_env }}"
+          if [[ ! -f "$source_env_file" ]]; then
+            echo "::error file=$source_env_file::Missing $source_env_file in $PWD"
+            exit 1
+          fi
+          cp "$source_env_file" .env.production.local
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+      - name: Build
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ inputs.directory }}
+          target: ${{ inputs.build_target }}
+          cache-from: ${{ fromJSON(steps.cache_ref.outputs.cache_refs).build.cache_from }}
+          cache-to: ${{ fromJSON(steps.cache_ref.outputs.cache_refs).build.cache_to }}
+          build-args: |
+            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
+            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}

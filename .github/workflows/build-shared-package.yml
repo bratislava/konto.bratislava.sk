@@ -20,6 +20,10 @@ on:
         description: Docker build target stage
         required: true
         type: string
+    outputs:
+      image_digest:
+        description: Pushed image digest
+        value: ${{ jobs.build.outputs.image_digest }}
     secrets:
       DOCKER_REGISTRY_USERNAME:
         required: true
@@ -36,17 +40,27 @@ jobs:
   build:
     name: Build
     runs-on: bratislava
+    outputs:
+      image_digest: ${{ steps.build.outputs.digest }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
       - name: Resolve commit
         id: commit
         shell: bash
         run: |
           echo "tag=${{ inputs.image }}:build-${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Resolve cache refs
+        id: cache_ref
+        uses: ./.github/actions/resolve-cache-refs
         with:
-          ref: ${{ github.sha }}
+          image: ${{ inputs.image }}
+          suffixes: |
+            build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -65,18 +79,19 @@ jobs:
           password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
       - name: Build and push
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: ${{ inputs.directory }}
           target: ${{ inputs.target }}
           push: ${{ inputs.push }}
           tags: ${{ steps.commit.outputs.tag }}
-          cache-from: type=registry,ref=${{ inputs.image }}:cache
-          cache-to: type=registry,ref=${{ inputs.image }}:cache,mode=max
+          cache-from: ${{ fromJSON(steps.cache_ref.outputs.cache_refs).build.cache_from }}
+          cache-to: ${{ fromJSON(steps.cache_ref.outputs.cache_refs).build.cache_to }}
 
       - name: Print summary
         shell: bash
         run: |
           echo "### Build Complete" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Image: \`${{ steps.commit.outputs.tag }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Digest: \`${{ steps.build.outputs.digest }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Pushed: \`${{ inputs.push }}\`" >> "$GITHUB_STEP_SUMMARY"

@@ -1,16 +1,20 @@
-name: Validate forms-shared
+name: Build Strapi
 on:
   workflow_call:
     inputs:
       directory:
         description: "Base dir where whole app is located."
         type: string
-        required: false
-        default: './forms-shared'
+        required: true
       image:
-        description: "Full image name including registry/repository for shared Docker cache."
+        description: "Full image name including registry/repository for Docker cache."
         type: string
         required: true
+      build_target:
+        description: "Docker target used for final image build."
+        type: string
+        required: false
+        default: prod
     secrets:
       DOCKER_REGISTRY_USERNAME:
         required: true
@@ -19,34 +23,37 @@ on:
       HARBOR_REGISTRY_PASSWORD:
         required: true
 
+permissions:
+  contents: read
+
 env:
   REGISTRY: harbor.bratislava.sk
   REGISTRY_USERNAME: robot$github_actions
 
 jobs:
-  test:
-    name: Forms-shared tests
-    runs-on: bratislava
+  build:
+    name: Build Strapi
+    runs-on: "bratislava"
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
+      - name: Resolve cache refs
+        id: cache_ref
+        uses: ./.github/actions/resolve-cache-refs
+        with:
+          image: ${{ inputs.image }}
+          suffixes: |
+            build
+
       - name: Pipelines Version
         run: |
           echo "Pipelines version: 2.3.0"
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24.14
-
-      - name: Prepare Docker build args
-        id: docker-build-args
-        shell: bash
-        run: |
-          node "${{ inputs.directory }}/scripts/printDockerBuildArgs.ts" "${{ inputs.directory }}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -64,19 +71,10 @@ jobs:
           username: ${{ env.REGISTRY_USERNAME }}
           password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Build Docker image on test target with shared cache
+      - name: Build
         uses: docker/build-push-action@v5
         with:
           context: ${{ inputs.directory }}
-          target: test
-          load: true
-          tags: forms-shared-test:${{ github.sha }}
-          cache-from: type=registry,ref=${{ inputs.image }}:cache
-          cache-to: type=registry,ref=${{ inputs.image }}:cache,mode=max
-          build-args: |
-            PLAYWRIGHT_VERSION=${{ steps.docker-build-args.outputs.PLAYWRIGHT_VERSION }}
-            SLOVENSKO_MEF_JSON_LAST_MODIFIED=${{ steps.docker-build-args.outputs.SLOVENSKO_MEF_JSON_LAST_MODIFIED }}
-
-      - name: Run tests
-        run: |
-          docker run forms-shared-test:${{ github.sha }}
+          target: ${{ inputs.build_target }}
+          cache-from: ${{ fromJSON(steps.cache_ref.outputs.cache_refs).build.cache_from }}
+          cache-to: ${{ fromJSON(steps.cache_ref.outputs.cache_refs).build.cache_to }}

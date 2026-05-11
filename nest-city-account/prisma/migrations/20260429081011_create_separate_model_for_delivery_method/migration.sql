@@ -34,7 +34,7 @@ INSERT INTO
     (
         "id", "createdAt", "userId", "method"
     )
-SELECT uuidv7(),
+SELECT gen_random_uuid(),
     "createdAt",
     "userId",
     CASE "subType"

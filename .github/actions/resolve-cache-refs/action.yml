@@ -1,0 +1,86 @@
+name: Resolve Docker cache refs
+description: Resolve stable Docker registry cache refs for master and the current branch/PR
+
+inputs:
+  image:
+    description: Full image name including registry/repository
+    required: true
+  suffixes:
+    description: Newline-delimited cache suffixes to resolve in one call
+    required: true
+
+outputs:
+  cache_refs:
+    description: JSON object keyed by suffix with cache_from and cache_to entries
+    value: ${{ steps.resolve.outputs.cache_refs }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "24.15"
+
+    - name: Resolve Docker-safe ref token
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ""
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix=sha-
+
+    - name: Build cache refs
+      id: resolve
+      shell: bash
+      env:
+        INPUT_IMAGE: ${{ inputs.image }}
+        INPUT_SUFFIXES: ${{ inputs.suffixes }}
+        INPUT_TOKEN: ${{ steps.meta.outputs.tag-names }}
+      run: |
+        # Why this action exists:
+        # - all builds read from a shared "master" cache first because it is the
+        #   warmest baseline across branches
+        # - non-master refs also read from a branch-specific cache so follow-up
+        #   branch and PR runs can reuse work that exists only there
+        # - non-master refs write only to their branch cache so they do not
+        #   constantly overwrite the shared master cache
+        # - master writes directly to the master cache, so there is no duplicate
+        #   "master + master" cache-from list
+        # - docker/metadata-action gives us Docker-safe branch and PR tokens
+        # - the metadata config also includes a SHA tag, so there is always a
+        #   fallback token even when no branch or PR ref tag applies
+        #
+        # Example outputs for image "harbor.bratislava.sk/app" and suffix "build":
+        # - on master:
+        #     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build"
+        #     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build,mode=max"
+        # - on branch "feature/foo":
+        #     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build
+        #                   type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build"
+        #     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build,mode=max"
+        # - on pull_request for PR 4099:
+        #     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build
+        #                   type=registry,ref=harbor.bratislava.sk/app:cache-pr-4099-build"
+        #     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-pr-4099-build,mode=max"
+        # - on an event without a branch/pr ref:
+        #     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build
+        #                   type=registry,ref=harbor.bratislava.sk/app:cache-sha-abcdef1-build"
+        #     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-sha-abcdef1-build,mode=max"
+        #
+        # Example cache_refs output for suffixes "validate" and "build":
+        # {
+        #   "validate": {
+        #     "cache_from": "type=registry,ref=harbor.bratislava.sk/app:cache-master-validate\n
+        #                    type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-validate",
+        #     "cache_to": "type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-validate,mode=max"
+        #   },
+        #   "build": {
+        #     "cache_from": "type=registry,ref=harbor.bratislava.sk/app:cache-master-build\n
+        #                    type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build",
+        #     "cache_to": "type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build,mode=max"
+        #   }
+        # }
+        node scripts/resolve-cache-refs.mjs

@@ -226,7 +226,7 @@
   "ClipboardCopy.aria.copyToClipboard": "Kopírovať do schránky",
   "ClipboardCopy.success": "Skopírované do schránky.",
   "common.bratislava_account": "Bratislavské konto",
-  "CookieConsentButton.label": "Cookies",
+  "CookieConsentButton.label": "Nastavenia cookies",
   "DatePicker.aria.openCalendar": "Otvoriť kalendár",
   "DatePicker.clear": "Vymazať",
   "errors.AliasExistsException": "E-mail {{email}} už používa iné Bratislavské konto. Ak si stále želáte zmeniť e-mail svojho konta, vráťte sa do svojho profilu kliknutím na šípku späť vedľa bratislavského loga a zopakujte proces zmeny e-mailu s inou e-mailovou adresou.",

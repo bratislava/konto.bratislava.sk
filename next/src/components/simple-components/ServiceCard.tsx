@@ -33,10 +33,8 @@ const ServiceCard = ({
   analyticsProps,
 }: ServiceCardBase) => {
   const style = cn(
-    'group relative flex w-full flex-col items-start gap-5 rounded-lg border border-solid border-gray-200 bg-gray-0 p-4',
+    'group relative flex w-full flex-col items-start gap-5 rounded-lg border border-solid border-gray-200 bg-gray-0 p-4 wrapper-focus-ring!',
     className,
-    { 'cursor-pointer': buttonText },
-    { 'cursor-default': !buttonText },
   )
 
   return (

@@ -43,6 +43,8 @@ jobs:
     name: after dev Backends deploy Next
     needs:
       [
+        build-forms-shared,
+        build-openapi-clients,
         conditions,
         deploy-dev-strapi,
         deploy-dev-nest-forms-backend,
@@ -54,7 +56,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -69,12 +71,12 @@ jobs:
 
   deploy-dev-next:
     name: dev Next
-    needs: [build-forms-shared, conditions]
+    needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.dev-next == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -113,7 +115,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -171,7 +173,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-clamav-scanner/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -191,7 +193,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-tax-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -210,7 +212,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-city-account/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: development
       url: https://dev.tkgis.bratislava.sk:6443
@@ -226,6 +228,8 @@ jobs:
     name: after staging Backends deploy Next
     needs:
       [
+        build-forms-shared,
+        build-openapi-clients,
         conditions,
         deploy-staging-strapi,
         deploy-staging-nest-forms-backend,
@@ -237,7 +241,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -252,12 +256,12 @@ jobs:
 
   deploy-staging-next:
     name: staging Next
-    needs: [build-forms-shared, conditions]
+    needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.staging-next == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -277,7 +281,6 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -297,7 +300,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -355,7 +358,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -375,7 +378,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -394,7 +397,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
@@ -428,6 +431,8 @@ jobs:
     name: after prod Backends deploy Next
     needs:
       [
+        build-forms-shared,
+        build-openapi-clients,
         conditions,
         deploy-prod-strapi,
         deploy-prod-nest-forms-backend,
@@ -439,7 +444,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -454,12 +459,12 @@ jobs:
 
   deploy-prod-next:
     name: prod Next
-    needs: [build-forms-shared, conditions]
+    needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.prod-next == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -498,7 +503,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -556,7 +561,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -576,7 +581,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443
@@ -595,7 +600,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
-      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
       skip_deployment_check: "--no_image_repo_check"
       cluster: production
       url: https://prod.tkgis.bratislava.sk:6443

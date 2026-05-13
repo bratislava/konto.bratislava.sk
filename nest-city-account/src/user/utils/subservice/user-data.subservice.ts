@@ -105,13 +105,7 @@ export class UserDataSubservice {
         { consentType: ConsentEnum.MARKETING, isGranted: true },
         { consentType: ConsentEnum.GENERAL, isGranted: true },
       ]
-      await this.setUserConsents(user.id, consents)
-      await this.bloomreachOutboxService.trackEventConsents(
-        consents.map((c) => this.consentToGdprShape(c)),
-        externalId,
-        user.id,
-        false
-      )
+      await this.setUserConsents(user.id, user.externalId, consents)
     }
 
     await this.bloomreachOutboxService.trackCustomer(externalId)
@@ -177,13 +171,7 @@ export class UserDataSubservice {
         { consentType: ConsentEnum.MARKETING, isGranted: true },
         { consentType: ConsentEnum.GENERAL, isGranted: true },
       ]
-      await this.setLegalPersonConsents(legalPerson.id, consents)
-      await this.bloomreachOutboxService.trackEventConsents(
-        consents.map((c) => this.consentToGdprShape(c)),
-        externalId,
-        legalPerson.id,
-        true
-      )
+      await this.setLegalPersonConsents(legalPerson.id, legalPerson.externalId, consents)
     }
 
     await this.bloomreachOutboxService.trackCustomer(externalId)
@@ -289,6 +277,7 @@ export class UserDataSubservice {
 
   async setUserConsents(
     userId: string,
+    externalId: string,
     consents: { consentType: ConsentEnum; isGranted: boolean }[]
   ): Promise<void> {
     if (consents.length === 0) {
@@ -305,10 +294,17 @@ export class UserDataSubservice {
         )
       )
     })
+    await this.bloomreachOutboxService.trackEventConsents(
+      consents.map((c) => this.consentToGdprShape(c)),
+      externalId,
+      userId,
+      false
+    )
   }
 
   async setLegalPersonConsents(
     legalPersonId: string,
+    externalId: string,
     consents: { consentType: ConsentEnum; isGranted: boolean }[]
   ): Promise<void> {
     if (consents.length === 0) {
@@ -327,6 +323,12 @@ export class UserDataSubservice {
         )
       )
     })
+    await this.bloomreachOutboxService.trackEventConsents(
+      consents.map((c) => this.consentToGdprShape(c)),
+      externalId,
+      legalPersonId,
+      true
+    )
   }
 
   async getUserConsents(
@@ -551,16 +553,7 @@ export class UserDataSubservice {
       })
     }
 
-    await this.setUserConsents(userId, consentData)
-
-    // Bloomreach still expects the legacy GDPR shape - re-shape consent items
-    // back to the old triple at the outbox boundary.
-    await this.bloomreachOutboxService.trackEventConsents(
-      consentData.map((c) => this.consentToGdprShape(c)),
-      user.externalId,
-      user.id,
-      false
-    )
+    await this.setUserConsents(userId, user.externalId, consentData)
   }
 
   /**
@@ -591,14 +584,7 @@ export class UserDataSubservice {
       }
     }
 
-    await this.setLegalPersonConsents(legalPersonId, consentData)
-
-    await this.bloomreachOutboxService.trackEventConsents(
-      consentData.map((c) => this.consentToGdprShape(c)),
-      legalPerson.externalId,
-      legalPerson.id,
-      true
-    )
+    await this.setLegalPersonConsents(legalPersonId, legalPerson.externalId, consentData)
   }
 
   private async removePhysicalEntityUserIdRelation(userId: string): Promise<void> {

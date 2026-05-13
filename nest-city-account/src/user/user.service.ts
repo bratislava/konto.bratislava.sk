@@ -766,14 +766,18 @@ export class UserService {
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
         const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
-        await this.userDataSubservice.setUserConsents(user.id, consents)
+        await this.userDataSubservice.setUserConsents(user.id, user.externalId, consents)
         target = { id: user.id, externalId: user.externalId, isLegalPerson: false }
         break
       }
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
         const legalPerson = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
-        await this.userDataSubservice.setLegalPersonConsents(legalPerson.id, consents)
+        await this.userDataSubservice.setLegalPersonConsents(
+          legalPerson.id,
+          legalPerson.externalId,
+          consents
+        )
         target = { id: legalPerson.id, externalId: legalPerson.externalId, isLegalPerson: true }
         break
       }
@@ -783,13 +787,5 @@ export class UserService {
           UserErrorsResponseEnum.COGNITO_TYPE_ERROR
         )
     }
-
-    // Bloomreach still expects the legacy GDPR shape - re-shape at the call site.
-    await this.bloomreachOutboxService.trackEventConsents(
-      consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
-      target.externalId,
-      target.id,
-      target.isLegalPerson
-    )
   }
 }

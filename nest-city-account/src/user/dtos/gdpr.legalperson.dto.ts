@@ -53,11 +53,10 @@ export class ResponseLegalPersonDataSimpleDto {
   updatedAt!: Date
 
   @ApiProperty({
-    description:
-      'Id from cognito, it is not required. We can have also only subscribed user, who are not city account users',
+    description: 'Id from cognito',
     default: 'e51754f2-3367-43f6-b9bc-b5c6131b041a',
   })
-  externalId: string | null
+  externalId: string
 
   @ApiProperty({
     description: 'Ico of company, which this user represents',

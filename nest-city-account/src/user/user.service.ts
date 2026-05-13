@@ -745,7 +745,7 @@ export class UserService {
     return await this.userDataSubservice.getUserLoginClientList(client)
   }
 
-  async setDeliveryMethod(
+  async setDeliveryMethodPreference(
     user: CognitoGetUserData,
     deliveryMethod: DeliveryMethodUserPreferenceEnum
   ) {

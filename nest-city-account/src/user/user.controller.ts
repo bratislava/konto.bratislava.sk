@@ -391,11 +391,11 @@ export class UserController {
   })
   @ApiResponse({ status: 204, description: 'Delivery method preference updated' })
   @UseGuards(CognitoGuard)
-  @Post('delivery-method')
-  async setDeliveryMethod(
+  @Post('set-delivery-method-preference')
+  async setDeliveryMethodPreference(
     @User() user: CognitoGetUserData,
     @Body() body: SetDeliveryMethodPreferenceDto
   ): Promise<void> {
-    await this.userService.setDeliveryMethod(user, body.deliveryMethod)
+    await this.userService.setDeliveryMethodPreference(user, body.deliveryMethod)
   }
 }

@@ -380,7 +380,7 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() body: UpdateGdprConsentRequestDto
   ): Promise<void> {
-    await this.userService.updateGdprConsent(user, body.consentType, body.accept)
+    await this.userService.updateGdprConsent(user, body.consentType, body.grant)
   }
 
   @HttpCode(204)

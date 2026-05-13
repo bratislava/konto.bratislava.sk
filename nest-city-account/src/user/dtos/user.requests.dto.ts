@@ -26,7 +26,7 @@ export class UpdateGdprConsentRequestDto {
     example: true,
   })
   @IsBoolean()
-  accept!: boolean
+  grant!: boolean
 }
 
 export class SetDeliveryMethodRequestDto {

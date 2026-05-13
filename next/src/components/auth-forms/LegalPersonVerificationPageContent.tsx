@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 
 import { ErrorIcon } from '@/src/assets/ui-icons'
 import { useVerifyEid, VerificationStatus } from '@/src/components/auth-forms/useVerifyEid'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 
@@ -33,10 +33,10 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
       <Typography variant="h3" as="h1" className="text-center">
         {t('auth.identity_verification.fop_po_eid.error.title')}
       </Typography>
-      <AccountMarkdown
-        className="text-center"
+      <Markdown
+        variant="small"
         content={t('auth.identity_verification.fop_po_eid.error.content')}
-        variant="sm"
+        className="text-center"
       />
 
       <Button variant="solid" onPress={() => redirect()} fullWidth>
@@ -48,10 +48,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
       <Typography variant="h3" as="h1">
         {t('auth.identity_verification.fop_po_eid.init.title')}
       </Typography>
-      <AccountMarkdown
-        variant="sm"
-        content={t('auth.identity_verification.fop_po_eid.init.content')}
-      />
+      <Markdown variant="small" content={t('auth.identity_verification.fop_po_eid.init.content')} />
       <Button
         variant="solid"
         onPress={loginWithEid}

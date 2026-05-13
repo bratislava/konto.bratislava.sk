@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import IdentityVerificationModal from '@/src/components/modals/IdentityVerificationModal'
@@ -407,10 +407,7 @@ export const FormMessageModals = () => {
       onOpenChange: setSignerIsDeploying,
       type: 'info',
       title: t('signer_deploying_modal.title'),
-      children: (
-        // TODO Replace statusBar variant
-        <AccountMarkdown variant="statusBar" content={t('signer_deploying_modal.content')} />
-      ),
+      children: <Markdown variant="small" content={t('signer_deploying_modal.content')} />,
     },
     {
       key: 'xmlImportVersionConfirmationModal',

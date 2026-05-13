@@ -2,7 +2,7 @@ import { Button, Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
 import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import Spinner from '@/src/components/simple-components/Spinner'
 import cn from '@/src/utils/cn'
 
@@ -60,9 +60,7 @@ const AccountSuccessAlert = ({
         <Typography variant="h3" as="h1" className="text-center">
           {title}
         </Typography>
-        {description && (
-          <AccountMarkdown className="text-center" content={description} variant="sm" />
-        )}
+        {description && <Markdown variant="small" content={description} className="text-center" />}
       </div>
 
       {children}

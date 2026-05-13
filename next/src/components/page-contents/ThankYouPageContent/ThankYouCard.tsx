@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 
 import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import WarningIcon from '@/src/components/icon-components/WarningIcon'
 import cn from '@/src/utils/cn'
 
@@ -55,7 +55,7 @@ const ThankYouCard = ({
         <Typography variant="h3" as="h2" className="text-center">
           {title}
         </Typography>
-        <AccountMarkdown variant="sm" content={content} className="text-center" />
+        <Markdown variant="small" content={content} className="text-center" />
       </div>
       <div
         className={cn('flex w-full flex-col items-center gap-4', {

@@ -7,7 +7,7 @@ import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import TextField from '@/src/components/fields/TextField'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import { environment } from '@/src/environment'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
@@ -117,7 +117,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
       <Typography variant="h3" as="h1">
         {t('auth.identity_verification.fo.init.title')}
       </Typography>
-      <AccountMarkdown variant="sm" content={t('auth.identity_verification.fo.init.content')} />
+      <Markdown variant="small" content={t('auth.identity_verification.fo.init.content')} />
       <AccountErrorAlert error={error} />
 
       <Controller

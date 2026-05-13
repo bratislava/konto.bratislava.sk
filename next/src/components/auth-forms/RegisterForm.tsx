@@ -9,7 +9,7 @@ import PasswordField from '@/src/components/fields/PasswordField'
 import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
 import TextField from '@/src/components/fields/TextField'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import { environment } from '@/src/environment'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
@@ -289,10 +289,10 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         )}
       />
-      <AccountMarkdown
-        variant="sm"
-        className="text-center"
+      <Markdown
+        variant="small"
         content={t('auth.marketing_confirmation_text')}
+        className="text-center"
       />
       <Controller
         name="turnstileToken"

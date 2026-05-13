@@ -20,9 +20,9 @@ const markdownShowcaseTabs = [
 
 const markdownVariants: { id: string; label: string; variant?: MarkdownProps['variant'] }[] = [
   { id: 'small', label: 'Small', variant: 'small' },
-  { id: 'large', label: 'Large', variant: 'large' },
-  { id: 'accordion', label: 'Accordion', variant: 'accordion' },
   { id: 'default', label: 'Default', variant: 'default' },
+  { id: 'accordion', label: 'Accordion', variant: 'accordion' },
+  { id: 'large', label: 'Large', variant: 'large' },
 ]
 
 const MarkdownShowCase = () => {

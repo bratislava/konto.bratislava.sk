@@ -28,7 +28,7 @@ ALTER TABLE "DeliveryMethodPreferenceHistory"
 
 -- Backfill DeliveryMethodPreferenceHistory from UserGdprData
 -- (category=TAXES, type=FORMAL_COMMUNICATION): subscribe -> CITY_ACCOUNT, unsubscribe -> POSTAL.
--- EDESK is not migrated here: it's derived from PhysicalEntity.activeEdesk and is not part of DeliveryMethodUserEnum.
+-- EDESK is not migrated here: it's derived from PhysicalEntity.activeEdesk and is not part of DeliveryMethodUserPreferenceEnum.
 INSERT INTO
     "DeliveryMethodPreferenceHistory"
     (
@@ -92,3 +92,7 @@ EXECUTE PROCEDURE delivery_method_history_reject_modification();
 -- AlterTable
 ALTER TABLE "User"
     DROP COLUMN "taxDeliveryMethodCityAccountDate";
+
+-- Rename Enum
+
+ALTER TYPE "DeliveryMethodUserEnum" RENAME TO "DeliveryMethodUserPreferenceEnum";

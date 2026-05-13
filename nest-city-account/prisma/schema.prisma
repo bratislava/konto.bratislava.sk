@@ -30,7 +30,7 @@ enum DeliveryMethodEnum {
 }
 
 // Edesk is stored in PhysicalEntity and we do not want to duplicate it in User
-enum DeliveryMethodUserEnum {
+enum DeliveryMethodUserPreferenceEnum {
   CITY_ACCOUNT
   POSTAL
 }
@@ -101,7 +101,7 @@ model User {
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
   lastTaxDeliveryMethodsUpdateYear     Int?
-  taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
+  taxDeliveryMethod                    DeliveryMethodUserPreferenceEnum? // User's current delivery method preference for tax documents
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
@@ -276,11 +276,11 @@ model LegalPersonConsentsHistory {
  * result in an error
  */
 model DeliveryMethodPreferenceHistory {
-  id        String                 @id @default(uuid(7)) @db.Uuid
-  createdAt DateTime               @default(now())
-  userId    String                 @db.Uuid
-  user      User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  method    DeliveryMethodUserEnum
+  id        String                           @id @default(uuid(7)) @db.Uuid
+  createdAt DateTime                         @default(now())
+  userId    String                           @db.Uuid
+  user      User                             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  method    DeliveryMethodUserPreferenceEnum
 
   @@unique([userId, createdAt])
   @@index([userId])

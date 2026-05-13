@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DeliveryMethodEnum, DeliveryMethodUserEnum, Prisma, User } from '@prisma/client'
+import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum, Prisma, User } from '@prisma/client'
 import { AxiosResponse } from 'axios'
 import { UpdateDeliveryMethodsInNorisResponseDto } from 'openapi-clients/tax'
 
@@ -332,7 +332,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          taxDeliveryMethod: DeliveryMethodUserEnum.CITY_ACCOUNT,
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
           deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
           physicalEntity: {
             activeEdesk: false,
@@ -363,7 +363,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          taxDeliveryMethod: DeliveryMethodUserEnum.CITY_ACCOUNT,
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
           deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
           physicalEntity: {
             activeEdesk: null,
@@ -395,7 +395,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          taxDeliveryMethod: DeliveryMethodUserEnum.POSTAL,
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.POSTAL,
           deliveryMethodUserHistory: [],
           physicalEntity: {
             activeEdesk: false,
@@ -427,7 +427,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          taxDeliveryMethod: DeliveryMethodUserEnum.CITY_ACCOUNT,
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
           deliveryMethodUserHistory: [{ createdAt: new Date('2024-01-15') }],
           physicalEntity: {
             activeEdesk: true,
@@ -459,7 +459,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          taxDeliveryMethod: DeliveryMethodUserEnum.POSTAL,
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.POSTAL,
           deliveryMethodUserHistory: [],
           physicalEntity: {
             activeEdesk: null,
@@ -492,7 +492,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          taxDeliveryMethod: DeliveryMethodUserEnum.CITY_ACCOUNT,
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
           deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
           physicalEntity: {
             activeEdesk: true, // EDESK should take priority
@@ -695,7 +695,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Latest delivery method - user prefers CITY_ACCOUNT
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: new Date(yesterday.getTime() - 86400000), // Day before yesterday
           },
         ] as any)
@@ -746,7 +746,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Latest delivery method
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -755,7 +755,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Yesterday delivery method change
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -800,7 +800,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Latest delivery method
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.POSTAL,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)
@@ -808,7 +808,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Previous delivery method
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
           },
         ] as any)
@@ -816,7 +816,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Yesterday delivery method change
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.POSTAL,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)
@@ -859,7 +859,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValueOnce([
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -901,7 +901,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Latest delivery method - CITY_ACCOUNT
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -909,7 +909,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Previous delivery method - also CITY_ACCOUNT (no change)
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
           },
         ] as any)
@@ -917,7 +917,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Yesterday delivery method change
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -1066,7 +1066,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Latest delivery method
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -1114,12 +1114,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Latest delivery method
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
           {
             userId: 'user2',
-            method: DeliveryMethodUserEnum.POSTAL,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)
@@ -1127,7 +1127,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Previous delivery method
           {
             userId: 'user2',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
           },
         ] as any)
@@ -1135,12 +1135,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           // Yesterday delivery method change
           {
             userId: 'user1',
-            method: DeliveryMethodUserEnum.CITY_ACCOUNT,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
           {
             userId: 'user2',
-            method: DeliveryMethodUserEnum.POSTAL,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)

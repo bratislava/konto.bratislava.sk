@@ -4,7 +4,7 @@ import {
   CognitoUserAttributesTierEnum,
   ConsentEnum,
   DeliveryMethodEnum,
-  DeliveryMethodUserEnum,
+  DeliveryMethodUserPreferenceEnum,
   GDPRSubTypeEnum,
   LoginClientEnum,
   User,
@@ -745,7 +745,10 @@ export class UserService {
     return await this.userDataSubservice.getUserLoginClientList(client)
   }
 
-  async setDeliveryMethod(user: CognitoGetUserData, deliveryMethod: DeliveryMethodUserEnum) {
+  async setDeliveryMethod(
+    user: CognitoGetUserData,
+    deliveryMethod: DeliveryMethodUserPreferenceEnum
+  ) {
     await this.userDataSubservice.setDeliveryMethod(user.sub, deliveryMethod)
   }
 

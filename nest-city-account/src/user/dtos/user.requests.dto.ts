@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { ConsentEnum, DeliveryMethodUserEnum, LoginClientEnum } from '@prisma/client'
+import { ConsentEnum, DeliveryMethodUserPreferenceEnum, LoginClientEnum } from '@prisma/client'
 import { IsBoolean, IsEnum } from 'class-validator'
 
 export class UpsertUserRecordClientRequestDto {
@@ -32,9 +32,9 @@ export class UpdateGdprConsentRequestDto {
 export class SetDeliveryMethodRequestDto {
   @ApiProperty({
     description: 'Preferred delivery method for tax / official communication',
-    enum: DeliveryMethodUserEnum,
-    example: DeliveryMethodUserEnum.CITY_ACCOUNT,
+    enum: DeliveryMethodUserPreferenceEnum,
+    example: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
   })
-  @IsEnum(DeliveryMethodUserEnum)
-  deliveryMethod!: DeliveryMethodUserEnum
+  @IsEnum(DeliveryMethodUserPreferenceEnum)
+  deliveryMethod!: DeliveryMethodUserPreferenceEnum
 }

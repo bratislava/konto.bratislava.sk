@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { DeliveryMethodEnum, DeliveryMethodUserEnum } from '@prisma/client'
+import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { z } from 'zod'
 
@@ -197,7 +197,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         },
         include: {
           deliveryMethodUserHistory: {
-            where: { method: DeliveryMethodUserEnum.CITY_ACCOUNT },
+            where: { method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT },
             orderBy: { createdAt: 'desc' },
             take: 1,
             select: { createdAt: true },
@@ -229,7 +229,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         if (user.physicalEntity?.activeEdesk) {
           return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
         }
-        if (user.taxDeliveryMethod === DeliveryMethodUserEnum.CITY_ACCOUNT) {
+        if (user.taxDeliveryMethod === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT) {
           return {
             birthNumber,
             deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
@@ -425,8 +425,9 @@ export class TaxDeliveryMethodsTasksSubservice {
         }),
       ])
 
-    const toMap = (rows: { userId: string; method: DeliveryMethodUserEnum; createdAt: Date }[]) =>
-      new Map(rows.map((r) => [r.userId, { method: r.method, createdAt: r.createdAt }]))
+    const toMap = (
+      rows: { userId: string; method: DeliveryMethodUserPreferenceEnum; createdAt: Date }[]
+    ) => new Map(rows.map((r) => [r.userId, { method: r.method, createdAt: r.createdAt }]))
 
     return {
       latestDeliveryMethod: toMap(latestDeliveryMethod),
@@ -481,9 +482,15 @@ export class TaxDeliveryMethodsTasksSubservice {
         edeskStatusChangedAt: Date | null
       } | null
     },
-    latestDeliveryMethod: { method: DeliveryMethodUserEnum | null; createdAt: Date } | undefined,
-    previousDeliveryMethod: { method: DeliveryMethodUserEnum | null; createdAt: Date } | undefined,
-    yesterdayDeliveryMethod: { method: DeliveryMethodUserEnum | null; createdAt: Date } | undefined,
+    latestDeliveryMethod:
+      | { method: DeliveryMethodUserPreferenceEnum | null; createdAt: Date }
+      | undefined,
+    previousDeliveryMethod:
+      | { method: DeliveryMethodUserPreferenceEnum | null; createdAt: Date }
+      | undefined,
+    yesterdayDeliveryMethod:
+      | { method: DeliveryMethodUserPreferenceEnum | null; createdAt: Date }
+      | undefined,
     yesterdayStart: Date,
     yesterdayEnd: Date
   ): Promise<void> {
@@ -511,7 +518,7 @@ export class TaxDeliveryMethodsTasksSubservice {
 
     // Handle eDesk deactivation - check current delivery preference
     if (edeskChangedYesterday) {
-      if (latestDeliveryMethod?.method === DeliveryMethodUserEnum.CITY_ACCOUNT) {
+      if (latestDeliveryMethod?.method === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT) {
         await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'email', {
           birthNumber: user.birthNumber,
         })
@@ -543,7 +550,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     }
 
     // Send appropriate email based on Delivery preference change
-    if (currentMethod === DeliveryMethodUserEnum.CITY_ACCOUNT) {
+    if (currentMethod === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT) {
       await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'email', {
         birthNumber: user.birthNumber,
       })

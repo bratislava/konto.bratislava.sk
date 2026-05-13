@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import {
   ConsentEnum,
   DeliveryMethodEnum,
-  DeliveryMethodUserEnum,
+  DeliveryMethodUserPreferenceEnum,
   GDPRCategoryEnum,
   GDPRSubTypeEnum,
   GDPRTypeEnum,
@@ -419,7 +419,7 @@ export class UserDataSubservice {
           },
         },
         deliveryMethodUserHistory: {
-          where: { method: DeliveryMethodUserEnum.CITY_ACCOUNT },
+          where: { method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT },
           orderBy: { createdAt: 'desc' },
           take: 1,
           select: { createdAt: true },
@@ -485,15 +485,15 @@ export class UserDataSubservice {
    * @deprecated: only used by legacy GDPR endpoints
    */
   private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
-    const taxDeliveryData: DeliveryMethodUserEnum[] = []
+    const taxDeliveryData: DeliveryMethodUserPreferenceEnum[] = []
     const otherGdprData: ResponseGdprUserDataDto[] = []
 
     gdprData.forEach((elem) => {
       if (this.isTaxDeliveryData(elem)) {
         if (elem.subType === GDPRSubTypeEnum.subscribe) {
-          taxDeliveryData.push(DeliveryMethodUserEnum.CITY_ACCOUNT)
+          taxDeliveryData.push(DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT)
         } else {
-          taxDeliveryData.push(DeliveryMethodUserEnum.POSTAL)
+          taxDeliveryData.push(DeliveryMethodUserPreferenceEnum.POSTAL)
         }
       } else {
         otherGdprData.push(elem)
@@ -711,7 +711,7 @@ export class UserDataSubservice {
     )
   }
 
-  async setDeliveryMethod(sub: string, deliveryMethod: DeliveryMethodUserEnum) {
+  async setDeliveryMethod(sub: string, deliveryMethod: DeliveryMethodUserPreferenceEnum) {
     await this.prisma.user.update({
       where: { externalId: sub },
       data: { taxDeliveryMethod: deliveryMethod },

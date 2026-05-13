@@ -54,7 +54,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
-        { provide: PdfGeneratorService, useValue: createMock<PdfGeneratorService>() },
+        {
+          provide: PdfGeneratorService,
+          useValue: createMock<PdfGeneratorService>({
+            withSharedBrowser: jest.fn(async (fn: () => Promise<unknown>) => fn()),
+          }),
+        },
       ],
     }).compile()
 

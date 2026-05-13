@@ -1833,7 +1833,7 @@ describe('TaxService', () => {
 
     describe('getAmountsAlreadyPaidByTaxIds', () => {
       it('should return Map with paid amounts for multiple tax IDs', async () => {
-        prismaMock.taxPayment.groupBy.mockResolvedValue([
+        jest.spyOn(prismaMock.taxPayment, 'groupBy').mockResolvedValue([
           { taxId: 1, _sum: { amount: 500 } },
           { taxId: 2, _sum: { amount: 1000 } },
           { taxId: 3, _sum: { amount: null } },
@@ -1867,7 +1867,7 @@ describe('TaxService', () => {
       })
 
       it('should return 0 for taxes with no payments', async () => {
-        prismaMock.taxPayment.groupBy.mockResolvedValue([
+        jest.spyOn(prismaMock.taxPayment, 'groupBy').mockResolvedValue([
           { taxId: 1, _sum: { amount: 200 } },
         ] as any)
 
@@ -1879,7 +1879,7 @@ describe('TaxService', () => {
       })
 
       it('should handle null amounts correctly', async () => {
-        prismaMock.taxPayment.groupBy.mockResolvedValue([
+        jest.spyOn(prismaMock.taxPayment, 'groupBy').mockResolvedValue([
           { taxId: 1, _sum: { amount: null } },
           { taxId: 2, _sum: { amount: 0 } },
         ] as any)

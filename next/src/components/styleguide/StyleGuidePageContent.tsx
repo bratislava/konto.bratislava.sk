@@ -13,6 +13,7 @@ import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePicker
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
 import InputFieldShowCase from '@/src/components/styleguide/showcases/InputFieldShowCase'
+import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShowCase'
 import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
 import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
@@ -58,6 +59,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
   { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
   { id: 'accordion', label: 'Accordion', component: <AccordionShowCase /> },
+  { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
   { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
   { id: 'banner', label: 'Banner', component: <BannerShowCase /> },

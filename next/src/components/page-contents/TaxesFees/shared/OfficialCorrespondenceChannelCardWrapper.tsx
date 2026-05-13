@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 
 import { MailIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
@@ -42,13 +42,11 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
             <Typography variant="p-large">{title}</Typography>
             {canUserChangeChannel && (
               <div className="pt-3 pb-2 lg:px-0">
-                <AccountMarkdown
+                <Markdown
+                  variant="small"
                   content={`${t('taxes.communication_channel.info.youCanChangeChannelOnThisPage', {
                     url: ROUTES.TAXES_AND_FEES,
-                  })} <br /> ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
-                  // variant added to change text size on mobile devices,
-                  // not the best solution but this problem needs more complex solution across whole project
-                  variant="statusBar"
+                  })} \n ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
                 />
               </div>
             )}

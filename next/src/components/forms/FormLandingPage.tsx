@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next/pages'
 
 import { formsClient } from '@/src/clients/forms'
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -82,7 +82,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       <SectionContainer className="py-6 lg:py-10">
         <div className="flex max-w-[800px] flex-col gap-10">
           {strapiForm.landingPage.text && (
-            <AccountMarkdown content={strapiForm.landingPage.text} variant="sm" />
+            <Markdown variant="small" content={strapiForm.landingPage.text} />
           )}
           <div className="flex flex-col rounded-xl border border-gray-200">
             {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (

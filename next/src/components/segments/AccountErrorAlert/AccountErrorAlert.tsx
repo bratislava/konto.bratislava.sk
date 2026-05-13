@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 import { useMemo } from 'react'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from '@/src/frontend/utils/errors'
 import logger from '@/src/frontend/utils/logger'
@@ -103,15 +103,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
 
   return (
     <Alert
-      message={
-        <AccountMarkdown
-          // not sure, but maybe there need to be error variant
-          // uLinkVariant="error"
-          content={errorMessage}
-          variant="sm"
-          disableRemarkGfm
-        />
-      }
+      message={<Markdown variant="small" content={errorMessage} />}
       type="error"
       className="min-w-full"
       close={close}

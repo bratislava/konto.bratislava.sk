@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
 import TextField from '@/src/components/fields/TextField'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import logger from '@/src/frontend/utils/logger'
@@ -122,7 +122,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
             <span>{t('auth.verification_cnt_description', { cnt: count })}</span>
           </div>
         )}
-        <AccountMarkdown variant="sm" content={t('auth.verification_cnt_info')} />
+        <Markdown variant="small" content={t('auth.verification_cnt_info')} />
       </div>
 
       <Button

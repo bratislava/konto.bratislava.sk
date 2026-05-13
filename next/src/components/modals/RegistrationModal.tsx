@@ -3,7 +3,7 @@ import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next/pages'
 
 import { CheckIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
@@ -134,7 +134,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
     >
       <div className="mb-6 flex flex-col gap-2">
         {title && <Typography variant="h3">{title}</Typography>}
-        {subtitle && <AccountMarkdown content={subtitle} />}
+        {subtitle && <Markdown variant="large" content={subtitle} />}
       </div>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col">

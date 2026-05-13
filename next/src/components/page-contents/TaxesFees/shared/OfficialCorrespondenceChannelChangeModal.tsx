@@ -7,7 +7,7 @@ import { Controller } from 'react-hook-form'
 
 import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
@@ -50,7 +50,7 @@ const Agreement = ({ onScrollToBottom, agreementContent }: AgreementProps) => {
       className="max-h-[200px] overflow-auto rounded-lg bg-gray-50 p-4 lg:p-8"
       onScroll={checkScroll}
     >
-      <AccountMarkdown content={agreementContent} variant="sm" />
+      <Markdown variant="small" content={agreementContent} />
     </div>
   )
 }
@@ -242,10 +242,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
           <Heading slot="title" className="text-size-h3-r lg:text-size-h3">
             {t('taxes.delivery_method_change_modal.title')}
           </Heading>
-          <AccountMarkdown
-            content={t('taxes.delivery_method_change_modal.description')}
-            variant="sm"
-          />
+          <Markdown variant="small" content={t('taxes.delivery_method_change_modal.description')} />
         </div>
         {hasChangedDeliveryMethodAfterDeadline && (
           <OfficialCorrespondenceChannelAlert

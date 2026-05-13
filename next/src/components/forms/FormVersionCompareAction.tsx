@@ -7,7 +7,7 @@ import { useState } from 'react'
 
 import { AlertIcon, ErrorIcon } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -92,8 +92,8 @@ const FormVersionCompareAction = () => {
                 }[versionCompareContinueAction]
               }
             </Typography>
-            <AccountMarkdown
-              variant="sm"
+            <Markdown
+              variant="small"
               content={
                 {
                   [VersionCompareContinueAction.CannotContinue]: t(

@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useState } from 'react'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import FormProviders from '@/src/components/forms/FormProviders'
 import { FormContextProvider } from '@/src/components/forms/useFormContext'
 import { FormSentProvider } from '@/src/components/forms/useFormSent'
@@ -175,7 +175,7 @@ const ModalShowCaseContent = () => {
                 <Button variant="solid" onPress={value.onPress}>
                   Open
                 </Button>
-                <AccountMarkdown variant="sm" content={`**${key}** – ${value.label}`} />
+                <Markdown variant="small" content={`**${key}** – ${value.label}`} />
               </div>
             </div>
           ))}

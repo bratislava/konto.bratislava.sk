@@ -60,7 +60,7 @@ BEGIN
         AND (TG_OP = 'INSERT' OR NEW."taxDeliveryMethod" IS DISTINCT FROM OLD."taxDeliveryMethod")
         THEN
         INSERT INTO "DeliveryMethodPreferenceHistory" ("id", "userId", "method")
-        VALUES (gen_random_uuid()::text, NEW."id", NEW."taxDeliveryMethod");
+        VALUES (gen_random_uuid(), NEW."id", NEW."taxDeliveryMethod");
     END IF;
     RETURN NEW;
 END;

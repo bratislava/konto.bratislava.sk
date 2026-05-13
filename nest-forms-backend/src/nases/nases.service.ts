@@ -26,6 +26,7 @@ import {
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
 import FilesService from '../files/files.service'
@@ -74,11 +75,19 @@ export default class NasesService {
     private readonly configService: ConfigService,
     private readonly clientsService: ClientsService,
     private readonly convertPdfService: ConvertPdfService,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
       this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
       'true'
+  }
+
+  createUserJwtToken(oboToken: string): string {
+    return this.apiJwtTokensService.createUserJwtToken(
+      oboToken,
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
+    )
   }
 
   async getUpvsIdentity(
@@ -332,7 +341,7 @@ export default class NasesService {
     user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
-    const jwt = this.apiJwtTokensService.createUserJwtToken(oboToken)
+    const jwt = this.createUserJwtToken(oboToken)
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {

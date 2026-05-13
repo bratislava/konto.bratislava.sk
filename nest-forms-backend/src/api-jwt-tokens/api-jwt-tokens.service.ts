@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import jwt from 'jsonwebtoken'
 import { v1 as uuidv1 } from 'uuid'
+
+const defaultOptions: jwt.SignOptions = {
+  algorithm: 'RS256',
+  expiresIn: '5m', // 5 minutes
+}
 
 /**
  * RS256 JWTs signed with API_TOKEN_PRIVATE for Slovensko.sk / IAM-style APIs.
@@ -9,62 +13,41 @@ import { v1 as uuidv1 } from 'uuid'
  */
 @Injectable()
 export default class ApiJwtTokensService {
-  constructor(private readonly configService: ConfigService) {}
-
-  createUserJwtToken(oboToken: string): string {
+  createUserJwtToken(oboToken: string, privateToken: string): string {
     const payload = {
       jti: uuidv1(),
       obo: oboToken,
     }
     const options: jwt.SignOptions = {
-      algorithm: 'RS256',
-      expiresIn: '5m', // 5 minutes
+      ...defaultOptions,
       header: {
         alg: 'RS256',
         cty: 'JWT',
       },
     }
 
-    return jwt.sign(
-      payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
-      options,
-    )
+    return jwt.sign(payload, privateToken, options)
   }
 
-  createTechnicalAccountJwtToken(): string {
+  createTechnicalAccountJwtToken(sub: string, privateToken: string): string {
     const payload = {
-      sub: this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
+      sub,
       jti: uuidv1(),
       obo: null,
     }
 
-    const options: jwt.SignOptions = {
-      algorithm: 'RS256',
-      expiresIn: '5m', // 5 minutes
-    }
+    const options: jwt.SignOptions = defaultOptions
 
-    return jwt.sign(
-      payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
-      options,
-    )
+    return jwt.sign(payload, privateToken, options)
   }
 
-  createAdministrationJwtToken(): string {
+  createAdministrationJwtToken(privateToken: string): string {
     const payload = {
       jti: uuidv1(),
     }
 
-    const options: jwt.SignOptions = {
-      algorithm: 'RS256',
-      expiresIn: '5m', // 5 minutes
-    }
+    const options: jwt.SignOptions = defaultOptions
 
-    return jwt.sign(
-      payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
-      options,
-    )
+    return jwt.sign(payload, privateToken, options)
   }
 }

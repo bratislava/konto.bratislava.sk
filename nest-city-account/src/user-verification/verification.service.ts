@@ -1,5 +1,6 @@
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 
@@ -63,7 +64,8 @@ export class VerificationService {
     private readonly prisma: PrismaService,
     private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
-    private readonly userTierService: UserTierService
+    private readonly userTierService: UserTierService,
+    private readonly configService: ConfigService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -334,7 +336,10 @@ export class VerificationService {
     user: CognitoGetUserData,
     oboToken: string
   ): Promise<ResponseVerificationDto> {
-    const jwtToken = this.apiJwtTokensService.createUserJwtToken(oboToken)
+    const jwtToken = this.apiJwtTokensService.createUserJwtToken(
+      oboToken,
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+    )
     try {
       // we do this only to verify that the token is valid, we don't need the result
       await this.nasesService.getUpvsIdentity(jwtToken)

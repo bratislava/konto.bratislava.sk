@@ -86,7 +86,10 @@ export default class NasesCronSubservice {
         }
 
         const validateEformJwtToken =
-          this.apiJwtTokensService.createTechnicalAccountJwtToken()
+          this.apiJwtTokensService.createTechnicalAccountJwtToken(
+            this.baConfigService.slovenskoSk.subNasesTechnicalAccount,
+            this.baConfigService.slovenskoSk.apiTokenPrivate,
+          )
 
         const { pospID, pospVersion } = formDefinition
 

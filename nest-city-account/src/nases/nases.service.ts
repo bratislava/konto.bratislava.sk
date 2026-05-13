@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import _ from 'lodash'
 import {
   ApiIamIdentitiesIdGet200Response,
@@ -52,7 +53,8 @@ export class NasesService {
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
     private clientsService: ClientsService,
-    private readonly apiJwtTokensService: ApiJwtTokensService
+    private readonly apiJwtTokensService: ApiJwtTokensService,
+    private readonly configService: ConfigService
   ) {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
@@ -79,7 +81,10 @@ export class NasesService {
   }
 
   private async searchUpvsIdentitiesByUri(uris: string[]) {
-    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken()
+    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
+      this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+    )
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesSearchPost(
         {

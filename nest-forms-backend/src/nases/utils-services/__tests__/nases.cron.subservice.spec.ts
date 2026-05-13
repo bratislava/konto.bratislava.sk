@@ -87,6 +87,10 @@ describe('NasesCronSubservice', () => {
             environment: {
               clusterEnv: ClusterEnv.Production,
             },
+            slovenskoSk: {
+              subNasesTechnicalAccount: 'test-sub',
+              apiTokenPrivate: 'test-private-key',
+            },
           },
         },
         {

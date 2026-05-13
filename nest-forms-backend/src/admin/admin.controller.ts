@@ -8,19 +8,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import AdminGuard from '../auth/guards/admin.guard'
 import { ValidateFormRegistrationsResultDto } from '../nases/dtos/responses.dto'
 import NasesCronSubservice from '../nases/utils-services/nases.cron.subservice'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import AdminService from './admin.service'
 
 @ApiTags('ADMIN')
 @Controller('admin')
 @ApiSecurity('apiKey')
 export default class AdminController {
   constructor(
-    private readonly apiJwtTokensService: ApiJwtTokensService,
+    private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesCronSubservice: NasesCronSubservice,
   ) {}
@@ -38,7 +38,7 @@ export default class AdminController {
   @UseGuards(AdminGuard)
   @Get('technical-jwt')
   getTechnicalJwt(): string {
-    return this.apiJwtTokensService.createTechnicalAccountJwtToken()
+    return this.adminService.createTechnicalAccountJwtToken()
   }
 
   @ApiOperation({
@@ -52,7 +52,7 @@ export default class AdminController {
   @UseGuards(AdminGuard)
   @Get('administration-jwt')
   getAdministrationJwt(): string {
-    return this.apiJwtTokensService.createAdministrationJwtToken()
+    return this.adminService.createAdministrationJwtToken()
   }
 
   @ApiOperation({
@@ -72,7 +72,7 @@ export default class AdminController {
         'Authorization not provided',
       )
     }
-    return this.apiJwtTokensService.createUserJwtToken(head.authorization)
+    return this.adminService.createUserJwtToken(head.authorization)
   }
 
   @ApiOperation({

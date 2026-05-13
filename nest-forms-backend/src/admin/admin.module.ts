@@ -10,6 +10,7 @@ import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import AdminController from './admin.controller'
+import AdminService from './admin.service'
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import AdminController from './admin.controller'
     UserInfoPipeModule,
     NasesModule,
   ],
-  providers: [ThrowerErrorGuard, MinioClientSubservice],
+  providers: [AdminService, ThrowerErrorGuard, MinioClientSubservice],
   exports: [],
   controllers: [AdminController],
 })

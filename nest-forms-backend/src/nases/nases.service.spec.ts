@@ -23,6 +23,7 @@ import {
 import prismaMock from '../../test/singleton'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -97,6 +98,15 @@ describe('NasesService', () => {
         {
           provide: ConvertPdfService,
           useValue: createMock<ConvertPdfService>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: {
+            slovenskoSk: {
+              subNasesTechnicalAccount: 'test-sub',
+              apiTokenPrivate: 'test-private-key',
+            },
+          },
         },
       ],
     }).compile()

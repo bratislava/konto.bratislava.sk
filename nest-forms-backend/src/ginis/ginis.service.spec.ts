@@ -122,6 +122,10 @@ describe('GinisService', () => {
             cityAccountBackend: {
               apiKey: 'test-api-key',
             },
+            slovenskoSk: {
+              subNasesTechnicalAccount: 'test-sub',
+              apiTokenPrivate: 'test-private-key',
+            },
           },
         },
       ],

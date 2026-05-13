@@ -520,7 +520,10 @@ export default class GinisService {
   private async fetchContactByUri(
     uri: string,
   ): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
-    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken()
+    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
+      this.baConfigService.slovenskoSk.subNasesTechnicalAccount,
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
+    )
     const response =
       await this.clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost(
         {

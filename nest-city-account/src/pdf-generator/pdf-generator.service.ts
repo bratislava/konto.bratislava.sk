@@ -25,10 +25,19 @@ export class PdfGeneratorService {
   }
 
   /**
-   * Opens a long-lived Chromium instance reused by subsequent generateFromTemplate calls.
-   * Ref-counted so nested/concurrent callers share a single browser; pair with releaseSharedBrowser in a finally block.
+   * Runs the callback with a shared Chromium instance that is reused by any
+   * generateFromTemplate calls inside it.
    */
-  async acquireSharedBrowser(): Promise<void> {
+  async withSharedBrowser<T>(fn: () => Promise<T>): Promise<T> {
+    await this.acquireSharedBrowser()
+    try {
+      return await fn()
+    } finally {
+      await this.releaseSharedBrowser()
+    }
+  }
+
+  private async acquireSharedBrowser(): Promise<void> {
     this.sharedBrowserRefCount++
     if (this.sharedBrowserRefCount === 1) {
       this.sharedBrowser = await chromium.launch({
@@ -37,7 +46,7 @@ export class PdfGeneratorService {
     }
   }
 
-  async releaseSharedBrowser(): Promise<void> {
+  private async releaseSharedBrowser(): Promise<void> {
     if (this.sharedBrowserRefCount === 0) {
       return
     }
@@ -48,7 +57,14 @@ export class PdfGeneratorService {
       try {
         await browser.close()
       } catch (error) {
-        this.logger.error('Failed to close shared Chromium browser', error)
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Failed to close shared Chromium browser',
+            undefined,
+            error
+          )
+        )
       }
     }
   }
@@ -64,28 +80,15 @@ export class PdfGeneratorService {
   ): Promise<{ data: Buffer; filename: string; contentType: string }> {
     const template = pdfTemplates[templateName]
 
-    let ownBrowser: Browser | null = null
-    let pinnedSharedBrowser: Browser | null = null
+    await this.acquireSharedBrowser()
+    // sharedBrowser is guaranteed non-null while we hold our pin
+    const browser = this.sharedBrowser!
     let context: BrowserContext | null = null
     let page: Page | null = null
 
     try {
-      if (this.sharedBrowser) {
-        // the next block must be inside a synchronous block - never await inside it
-        {
-          pinnedSharedBrowser = this.sharedBrowser
-          this.sharedBrowserRefCount++
-        }
-        // await allowed below
-
-        context = await pinnedSharedBrowser.newContext()
-        page = await context.newPage()
-      } else {
-        ownBrowser = await chromium.launch({
-          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
-        })
-        page = await ownBrowser.newPage()
-      }
+      context = await browser.newContext()
+      page = await context.newPage()
 
       // Restrict to word chars (\\w+) to avoid ReDoS; template keys are identifiers only
       const htmlWithFilledOutVariables = template.html.replace(/\{\{(\w+)}}/g, (match, key) => {
@@ -122,23 +125,29 @@ export class PdfGeneratorService {
     } finally {
       if (page) {
         await page.close().catch((err: unknown) => {
-          this.logger.error('Failed to close page', err)
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to close page',
+              undefined,
+              err
+            )
+          )
         })
       }
       if (context) {
         await context.close().catch((err: unknown) => {
-          this.logger.error('Failed to close browser context', err)
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to close browser context',
+              undefined,
+              err
+            )
+          )
         })
       }
-      if (ownBrowser) {
-        await ownBrowser.close().catch((err: unknown) => {
-          this.logger.error('Failed to close per-call browser', err)
-        })
-      }
-      if (pinnedSharedBrowser) {
-        // Release our pin; this may close the shared browser if we were the last holder.
-        await this.releaseSharedBrowser()
-      }
+      await this.releaseSharedBrowser()
     }
   }
 
@@ -162,7 +171,14 @@ export class PdfGeneratorService {
         child.stderr.on('data', (chunk: Buffer) => stderrChunks.push(chunk))
 
         child.on('error', (err) => {
-          this.logger.error(`Failed to start qpdf process: ${err.message}`)
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to start qpdf process',
+              undefined,
+              err
+            )
+          )
           reject(
             this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,

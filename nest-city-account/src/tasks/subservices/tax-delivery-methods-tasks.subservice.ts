@@ -619,8 +619,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     ])
 
     // Process all users with in-memory data.
-    try {
-      await this.pdfGeneratorService.acquireSharedBrowser()
+    await this.pdfGeneratorService.withSharedBrowser(async () => {
       const limit = pLimit(DELIVERY_METHOD_EMAIL_CONCURRENCY)
       await Promise.all(
         users.map(async (user) =>
@@ -636,8 +635,6 @@ export class TaxDeliveryMethodsTasksSubservice {
           )
         )
       )
-    } finally {
-      await this.pdfGeneratorService.releaseSharedBrowser()
-    }
+    })
   }
 }

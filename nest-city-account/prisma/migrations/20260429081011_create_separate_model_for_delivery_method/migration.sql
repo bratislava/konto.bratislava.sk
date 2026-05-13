@@ -1,7 +1,7 @@
 /*
   Warnings:
 
-  - You are about to drop the column `taxDeliveryMethodCityAccountDate` on the `User` table. All the data in the column will be lost. Its value (the date when CITY_ACCOUNT was last activated) is now derived from the latest matching row in `DeliveryMethodHistory`.
+  - You are about to drop the column `taxDeliveryMethodCityAccountDate` on the `User` table. All the data in the column will be lost. Its value (the date when CITY_ACCOUNT was last activated) is now derived from the latest matching row in `DeliveryMethodPreferenceHistory`.
 
 */
 

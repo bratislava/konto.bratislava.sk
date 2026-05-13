@@ -33,7 +33,7 @@ const buildMockPage = () => ({
 })
 
 const buildMockBrowser = (): MockBrowser => ({
-  newContext: jest.fn().mockImplementation(async () => ({
+  newContext: jest.fn().mockImplementation(() => ({
     newPage: jest.fn().mockResolvedValue(buildMockPage()),
     close: jest.fn().mockResolvedValue(undefined),
   })),
@@ -47,9 +47,9 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
   beforeEach(async () => {
     mockBrowsers = []
-    launchMock = chromium.launch as unknown as jest.Mock
+    launchMock = jest.mocked(chromium.launch) as unknown as jest.Mock
     launchMock.mockReset()
-    launchMock.mockImplementation(async () => {
+    launchMock.mockImplementation(() => {
       const browser = buildMockBrowser()
       mockBrowsers.push(browser)
       return browser
@@ -63,7 +63,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
     jest
       .spyOn(service as any, 'addPasswordToPdf')
-      .mockImplementation(async (buf: unknown) => buf as Buffer)
+      .mockImplementation((buf: unknown) => buf as Buffer)
   })
 
   afterEach(() => {
@@ -86,7 +86,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
   it('releases the inner pin in finally when generateFromTemplate throws', async () => {
     await service.withSharedBrowser(async () => {
-      mockBrowsers[0].newContext.mockImplementationOnce(async () => ({
+      mockBrowsers[0].newContext.mockImplementationOnce(() => ({
         newPage: jest.fn().mockResolvedValue({
           setContent: jest.fn().mockResolvedValue(undefined),
           pdf: jest.fn().mockRejectedValue(new Error('page.pdf boom')),

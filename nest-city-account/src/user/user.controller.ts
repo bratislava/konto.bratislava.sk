@@ -32,7 +32,7 @@ import {
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
 import {
-  SetDeliveryMethodRequestDto,
+  SetDeliveryMethodPreferenceDto,
   UpdateGdprConsentRequestDto,
   UpsertUserRecordClientRequestDto,
 } from './dtos/user.requests.dto'
@@ -394,7 +394,7 @@ export class UserController {
   @Post('delivery-method')
   async setDeliveryMethod(
     @User() user: CognitoGetUserData,
-    @Body() body: SetDeliveryMethodRequestDto
+    @Body() body: SetDeliveryMethodPreferenceDto
   ): Promise<void> {
     await this.userService.setDeliveryMethod(user, body.deliveryMethod)
   }

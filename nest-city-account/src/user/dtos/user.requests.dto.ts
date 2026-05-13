@@ -29,7 +29,7 @@ export class UpdateGdprConsentRequestDto {
   grant!: boolean
 }
 
-export class SetDeliveryMethodRequestDto {
+export class SetDeliveryMethodPreferenceDto {
   @ApiProperty({
     description: 'Preferred delivery method for tax / official communication',
     enum: DeliveryMethodUserPreferenceEnum,

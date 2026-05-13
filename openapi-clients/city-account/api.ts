@@ -695,9 +695,9 @@ export interface ResponseLegalPersonDataDto {
    */
   updatedAt: string
   /**
-   * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
+   * Id from cognito
    */
-  externalId: string | null
+  externalId: string
   /**
    * Ico of company, which this user represents
    */
@@ -734,9 +734,9 @@ export interface ResponseLegalPersonDataSimpleDto {
    */
   updatedAt: string
   /**
-   * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
+   * Id from cognito
    */
-  externalId: string | null
+  externalId: string
   /**
    * Ico of company, which this user represents
    */
@@ -937,20 +937,20 @@ export interface ResponseVerificationIdentityCardToQueueDto {
   errorName?: VerificationErrorsEnum
 }
 
-export interface SetDeliveryMethodRequestDto {
+export interface SetDeliveryMethodPreferenceDto {
   /**
    * Preferred delivery method for tax / official communication
    */
-  deliveryMethod: SetDeliveryMethodRequestDtoDeliveryMethodEnum
+  deliveryMethod: SetDeliveryMethodPreferenceDtoDeliveryMethodEnum
 }
 
-export const SetDeliveryMethodRequestDtoDeliveryMethodEnum = {
+export const SetDeliveryMethodPreferenceDtoDeliveryMethodEnum = {
   CityAccount: 'CITY_ACCOUNT',
   Postal: 'POSTAL',
 } as const
 
-export type SetDeliveryMethodRequestDtoDeliveryMethodEnum =
-  (typeof SetDeliveryMethodRequestDtoDeliveryMethodEnum)[keyof typeof SetDeliveryMethodRequestDtoDeliveryMethodEnum]
+export type SetDeliveryMethodPreferenceDtoDeliveryMethodEnum =
+  (typeof SetDeliveryMethodPreferenceDtoDeliveryMethodEnum)[keyof typeof SetDeliveryMethodPreferenceDtoDeliveryMethodEnum]
 
 export interface StoreTokensRequestDto {
   /**
@@ -1038,7 +1038,7 @@ export interface UpdateGdprConsentRequestDto {
   /**
    * True to accept the consent, false to revoke it
    */
-  accept: boolean
+  grant: boolean
 }
 
 export const UpdateGdprConsentRequestDtoConsentTypeEnum = {
@@ -4250,21 +4250,21 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
     /**
      * Sets the user preference for how official / tax communication should be delivered.
      * @summary Set tax/official delivery method preference for the logged-in user
-     * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+     * @param {SetDeliveryMethodPreferenceDto} setDeliveryMethodPreferenceDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userControllerSetDeliveryMethod: async (
-      setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+    userControllerSetDeliveryMethodPreference: async (
+      setDeliveryMethodPreferenceDto: SetDeliveryMethodPreferenceDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'setDeliveryMethodRequestDto' is not null or undefined
+      // verify required parameter 'setDeliveryMethodPreferenceDto' is not null or undefined
       assertParamExists(
-        'userControllerSetDeliveryMethod',
-        'setDeliveryMethodRequestDto',
-        setDeliveryMethodRequestDto,
+        'userControllerSetDeliveryMethodPreference',
+        'setDeliveryMethodPreferenceDto',
+        setDeliveryMethodPreferenceDto,
       )
-      const localVarPath = `/user/delivery-method`
+      const localVarPath = `/user/set-delivery-method-preference`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -4290,7 +4290,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        setDeliveryMethodRequestDto,
+        setDeliveryMethodPreferenceDto,
         localVarRequestOptions,
         configuration,
       )
@@ -4782,21 +4782,22 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
     /**
      * Sets the user preference for how official / tax communication should be delivered.
      * @summary Set tax/official delivery method preference for the logged-in user
-     * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+     * @param {SetDeliveryMethodPreferenceDto} setDeliveryMethodPreferenceDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async userControllerSetDeliveryMethod(
-      setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+    async userControllerSetDeliveryMethodPreference(
+      setDeliveryMethodPreferenceDto: SetDeliveryMethodPreferenceDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSetDeliveryMethod(
-        setDeliveryMethodRequestDto,
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.userControllerSetDeliveryMethodPreference(
+          setDeliveryMethodPreferenceDto,
+          options,
+        )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['UsersManipulationApi.userControllerSetDeliveryMethod']?.[
+        operationServerMap['UsersManipulationApi.userControllerSetDeliveryMethodPreference']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -5088,16 +5089,16 @@ export const UsersManipulationApiFactory = function (
     /**
      * Sets the user preference for how official / tax communication should be delivered.
      * @summary Set tax/official delivery method preference for the logged-in user
-     * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+     * @param {SetDeliveryMethodPreferenceDto} setDeliveryMethodPreferenceDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userControllerSetDeliveryMethod(
-      setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+    userControllerSetDeliveryMethodPreference(
+      setDeliveryMethodPreferenceDto: SetDeliveryMethodPreferenceDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .userControllerSetDeliveryMethod(setDeliveryMethodRequestDto, options)
+        .userControllerSetDeliveryMethodPreference(setDeliveryMethodPreferenceDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5264,16 +5265,16 @@ export class UsersManipulationApi extends BaseAPI {
   /**
    * Sets the user preference for how official / tax communication should be delivered.
    * @summary Set tax/official delivery method preference for the logged-in user
-   * @param {SetDeliveryMethodRequestDto} setDeliveryMethodRequestDto
+   * @param {SetDeliveryMethodPreferenceDto} setDeliveryMethodPreferenceDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
-  public userControllerSetDeliveryMethod(
-    setDeliveryMethodRequestDto: SetDeliveryMethodRequestDto,
+  public userControllerSetDeliveryMethodPreference(
+    setDeliveryMethodPreferenceDto: SetDeliveryMethodPreferenceDto,
     options?: RawAxiosRequestConfig,
   ) {
     return UsersManipulationApiFp(this.configuration)
-      .userControllerSetDeliveryMethod(setDeliveryMethodRequestDto, options)
+      .userControllerSetDeliveryMethodPreference(setDeliveryMethodPreferenceDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

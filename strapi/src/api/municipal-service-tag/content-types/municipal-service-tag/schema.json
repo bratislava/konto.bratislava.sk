@@ -4,7 +4,7 @@
   "info": {
     "singularName": "municipal-service-tag",
     "pluralName": "municipal-service-tags",
-    "displayName": "Municipal service tag"
+    "displayName": "Mestské služby - tagy"
   },
   "options": {
     "draftAndPublish": false

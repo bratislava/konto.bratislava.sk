@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { FormError } from '@prisma/client'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { IMailgunClient } from 'mailgun.js/Interfaces'
+import { Interfaces } from 'mailgun.js/definitions'
 
 import PrismaService from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
@@ -15,7 +15,7 @@ import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
 export default class MailgunService implements Mailer {
-  mailgunClient: IMailgunClient
+  mailgunClient: Interfaces.IMailgunClient
 
   logger: LineLoggerSubservice
 

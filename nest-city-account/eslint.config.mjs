@@ -33,13 +33,11 @@ export default [
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      'dot-notation': 'off', // to test private methods
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
-      'sonarjs/no-nested-functions': 'off',
       '@typescript-eslint/no-empty-function': 'off',
     },
   },

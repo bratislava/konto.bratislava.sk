@@ -1,3 +1,4 @@
+import { updateUserAttributes } from 'aws-amplify/auth'
 import { useTranslation } from 'next-i18next/pages'
 import { useRef, useState } from 'react'
 
@@ -19,6 +20,7 @@ import {
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useRefreshServerSideProps } from '@/src/frontend/hooks/useRefreshServerSideProps'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import { useUserUpdateBloomreachData } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
@@ -58,6 +60,7 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
   const { tierStatus, isLegalEntity } = useSsrAuth()
 
   const { refreshData } = useRefreshServerSideProps(tierStatus)
+  const { updateBloomreachData } = useUserUpdateBloomreachData()
 
   const accountContainerRef = useRef<HTMLDivElement>(null)
 
@@ -77,6 +80,14 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
     handleErrorChange(null)
 
     try {
+      await updateUserAttributes({
+        userAttributes: {
+          given_name: data.givenName,
+          family_name: data.familyName,
+        },
+      })
+      await updateBloomreachData()
+
       await cityAccountClient.verificationControllerVerifyBirthNumberAndIdentityCard(
         {
           birthNumber: data.rc.replace('/', ''),

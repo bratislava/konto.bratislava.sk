@@ -2,7 +2,7 @@
   "name": "Editor",
   "code": "strapi-editor",
   "description": "Editors can manage and publish contents including those of other users.",
-  "documentId": "r2phq32izeghucfbn8a4kcvo",
+  "documentId": "j67mw7kj6vn1j9ndtg2f4zqb",
   "locale": null,
   "permissions": [
     {
@@ -11,7 +11,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "ot994lsgtaj10y8l0mvvjhlq",
+      "documentId": "kw28pz4h47btmzg9hdwi193j",
       "locale": null
     },
     {
@@ -20,7 +20,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "m8gmddifqyzv6eop2d92c58m",
+      "documentId": "j4xnl6lv1vsjnhlc4ohk5rm1",
       "locale": null
     },
     {
@@ -29,7 +29,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "mso12xx5fbqomqelzz5wge2d",
+      "documentId": "drsbat7z8qnydixg094wd1aw",
       "locale": null
     },
     {
@@ -38,7 +38,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "uxjwt21m1p0arz1qyb8ekli1",
+      "documentId": "tajmjovo9weeztm6mbwwmap1",
       "locale": null
     },
     {
@@ -47,7 +47,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "ojkpkncpm8vj02w8xf1vzier",
+      "documentId": "ryr1w5vxkbpzpa5pox68q8r7",
       "locale": null
     },
     {
@@ -56,7 +56,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "qw28zyancl9q6n5x3jh2658p",
+      "documentId": "a39shbchnyvgmle02np5l1dn",
       "locale": null
     }
   ]

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "municipal-service-category",
     "pluralName": "municipal-service-categories",
-    "displayName": "Municipal service category"
+    "displayName": "Mestské služby - kategórie"
   },
   "options": {
     "draftAndPublish": false

@@ -1,6 +1,5 @@
 resources:
   - ../../base
-  - secrets/database.secret.yml
   - ./secrets/cognito.secret.yml
   - ./secrets/azure-magproxy.secret.yml
   - ./secrets/bloomreach-contact-database.secret.yml

@@ -4,6 +4,12 @@ FROM node:24.15-slim AS base
 
 WORKDIR /app
 
+# Required only for ARM builds so native Node modules can compile during npm ci.
+RUN apt-get update && apt-get install -y \
+    python3 \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 FROM base AS test-base
 # Install Java and other dependencies
 RUN apt-get update && apt-get install -y \

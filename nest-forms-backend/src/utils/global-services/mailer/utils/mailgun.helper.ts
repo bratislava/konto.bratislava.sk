@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import FormData from 'form-data'
 import Handlebars from 'handlebars'
-import Mailgun, { TemplateQuery } from 'mailgun.js'
-import { IMailgunClient } from 'mailgun.js/Interfaces'
+import Mailgun from 'mailgun.js'
+import { Interfaces, TemplateQuery } from 'mailgun.js/definitions'
 
 import {
   SendEmailInputDto,
@@ -18,7 +18,7 @@ import { MAILGUN_CONFIG, MailgunConfigVariableType } from '../mailgun.constants'
 
 @Injectable()
 export default class MailgunHelper {
-  mailgunClient: IMailgunClient
+  mailgunClient: Interfaces.IMailgunClient
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,

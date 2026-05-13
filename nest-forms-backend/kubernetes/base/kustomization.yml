@@ -2,9 +2,6 @@ resources:
 - deployment.yml
 - service-app.yml
 - ingress.yml
-# Comment-out these lines if no database is used
-- stateful-set.yml
-- service-database.yml
 - rabbitmq.yml
 # Redis configuration
 - stateful-set-redis.yml

@@ -84,19 +84,19 @@ enum BloomreachOutboxStatus {
 }
 
 model User {
-  id                                   String                         @id @default(uuid()) @db.Uuid
-  createdAt                            DateTime                       @default(now())
-  updatedAt                            DateTime                       @updatedAt
+  id                                   String                            @id @default(uuid()) @db.Uuid
+  createdAt                            DateTime                          @default(now())
+  updatedAt                            DateTime                          @updatedAt
   registeredAt                         DateTime?
-  externalId                           String                         @unique
-  email                                String?                        @unique
-  ifo                                  String?                        @unique
-  birthNumber                          String?                        @unique
+  externalId                           String                            @unique
+  email                                String?                           @unique
+  ifo                                  String?                           @unique
+  birthNumber                          String?                           @unique
   lastVerificationIdentityCard         DateTime?
-  oldMagproxyDatabase                  Int                            @default(0)
-  requeuedInVerification               Int                            @default(0)
+  oldMagproxyDatabase                  Int                               @default(0)
+  requeuedInVerification               Int                               @default(0)
   birthnumberAlreadyExistsLast         String?
-  birthnumberAlreadyExistsCounter      Int                            @default(0)
+  birthnumberAlreadyExistsCounter      Int                               @default(0)
   userAttribute                        String?
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
@@ -105,13 +105,13 @@ model User {
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
-  lastTaxDeliveryMethodsUpdateTry      DateTime                       @default(now())
+  lastTaxDeliveryMethodsUpdateTry      DateTime                          @default(now())
   cognitoTier                          CognitoUserAttributesTierEnum?
   userIdCardVerify                     UserIdCardVerify[]
   userLoginClients                     UserLoginClient[]
-  isDeceased                           Boolean                        @default(false)
+  isDeceased                           Boolean                           @default(false)
   markedDeceasedAt                     DateTime?
-  deliveryMethodUserHistory            DeliveryMethodHistory[]
+  deliveryMethodUserHistory            DeliveryMethodPreferenceHistory[]
   userConsents                         UserConsents[]
   userConsentsHistory                  UserConsentsHistory[]
 }
@@ -275,7 +275,7 @@ model LegalPersonConsentsHistory {
  * **This table is managed by database** and any edits from the app user will
  * result in an error
  */
-model DeliveryMethodHistory {
+model DeliveryMethodPreferenceHistory {
   id        String                 @id @default(uuid(7)) @db.Uuid
   createdAt DateTime               @default(now())
   userId    String                 @db.Uuid

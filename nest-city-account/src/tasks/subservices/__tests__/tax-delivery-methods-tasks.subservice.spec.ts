@@ -542,7 +542,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       expect(sendEmailSpy).not.toHaveBeenCalled()
       // Should not query for changes if disabled
-      expect(prismaMock.deliveryMethodHistory.findMany).not.toHaveBeenCalled()
+      expect(prismaMock.deliveryMethodPreferenceHistory.findMany).not.toHaveBeenCalled()
       expect(prismaMock.physicalEntity.findMany).not.toHaveBeenCalled()
     })
 
@@ -552,7 +552,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       } as any)
 
       // Mock initial query for users with changes
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([
           { userId: 'user1' },
           { userId: 'user2' },
@@ -602,7 +602,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       } as any)
 
       // Mock initial query for users with eDesk changes
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query - no delivery method changes
         .mockResolvedValueOnce([]) // Latest delivery method
         .mockResolvedValueOnce([]) // Previous delivery method
@@ -646,7 +646,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query - no delivery method changes
         .mockResolvedValueOnce([]) // Latest delivery method - none
         .mockResolvedValueOnce([]) // Previous delivery method
@@ -689,7 +689,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query - no delivery method changes
         .mockResolvedValueOnce([
           // Latest delivery method - user prefers CITY_ACCOUNT
@@ -740,7 +740,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - user has delivery method change
         .mockResolvedValueOnce([
           // Latest delivery method
@@ -794,7 +794,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
         .mockResolvedValueOnce([
           // Latest delivery method
@@ -854,7 +854,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - delivery method change
         .mockResolvedValueOnce([
           {
@@ -895,7 +895,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
         .mockResolvedValueOnce([
           // Latest delivery method - CITY_ACCOUNT
@@ -950,7 +950,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       } as any)
 
       // User1 and User2 have delivery method changes, User1 and User3 have eDesk changes
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any)
         .mockResolvedValueOnce([]) // Latest delivery method
         .mockResolvedValueOnce([]) // Previous delivery method
@@ -1016,7 +1016,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query
         .mockResolvedValueOnce([]) // Latest delivery method
         .mockResolvedValueOnce([]) // Previous delivery method
@@ -1027,7 +1027,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.sendDailyDeliveryMethodSummaries()
 
       // Verify delivery-method initial query uses correct date range
-      const initialCall = (prismaMock.deliveryMethodHistory.findMany as jest.Mock).mock.calls[0][0]
+      const initialCall = (prismaMock.deliveryMethodPreferenceHistory.findMany as jest.Mock).mock
+        .calls[0][0]
       const rangeStart = initialCall.where.createdAt.gte
       const rangeEnd = initialCall.where.createdAt.lte
 
@@ -1059,7 +1060,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - delivery method change
         .mockResolvedValueOnce([
           // Latest delivery method
@@ -1107,7 +1108,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
-      prismaMock.deliveryMethodHistory.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any) // Initial query
         .mockResolvedValueOnce([
           // Latest delivery method

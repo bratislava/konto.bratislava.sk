@@ -335,7 +335,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     yesterdayEnd: Date
   ): Promise<string[]> {
     const [deliveryMethodChanges, edeskChanges] = await Promise.all([
-      this.prismaService.deliveryMethodHistory.findMany({
+      this.prismaService.deliveryMethodPreferenceHistory.findMany({
         where: {
           createdAt: { gte: yesterdayStart, lte: yesterdayEnd },
           user: {
@@ -398,7 +398,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     const [latestDeliveryMethod, previousDeliveryMethod, yesterdayDeliveryMethodChange] =
       await Promise.all([
         // Latest delivery-method change for each user (all time).
-        this.prismaService.deliveryMethodHistory.findMany({
+        this.prismaService.deliveryMethodPreferenceHistory.findMany({
           where: { userId: { in: userIds } },
           orderBy: { createdAt: 'desc' },
           distinct: ['userId'],
@@ -406,7 +406,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         }),
 
         // Previous state (before yesterday) for each user.
-        this.prismaService.deliveryMethodHistory.findMany({
+        this.prismaService.deliveryMethodPreferenceHistory.findMany({
           where: { userId: { in: userIds }, createdAt: { lt: yesterdayStart } },
           orderBy: { createdAt: 'desc' },
           distinct: ['userId'],
@@ -414,7 +414,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         }),
 
         // Changes that happened yesterday only.
-        this.prismaService.deliveryMethodHistory.findMany({
+        this.prismaService.deliveryMethodPreferenceHistory.findMany({
           where: {
             userId: { in: userIds },
             createdAt: { gte: yesterdayStart, lte: yesterdayEnd },

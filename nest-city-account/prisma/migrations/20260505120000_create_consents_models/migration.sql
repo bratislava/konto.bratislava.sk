@@ -265,7 +265,7 @@ EXECUTE PROCEDURE legal_person_consents_to_history();
 
 -- Make *ConsentsHistory rows immutable: every row is write-once.
 -- DELETE is allowed so FK CASCADE on User / LegalPerson removal still works
--- (GDPR right-to-erasure). Same pattern as DeliveryMethodHistory.
+-- (GDPR right-to-erasure). Same pattern as DeliveryMethodPreferenceHistory.
 CREATE OR REPLACE FUNCTION consents_history_reject_modification()
     RETURNS TRIGGER
     LANGUAGE plpgsql

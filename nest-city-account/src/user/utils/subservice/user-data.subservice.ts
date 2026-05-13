@@ -374,7 +374,7 @@ export class UserDataSubservice {
   consentToGdprShape(c: { consentType: ConsentEnum; isGranted: boolean }): ResponseGdprUserDataDto {
     return {
       category: GDPRCategoryEnum.ESBS,
-      type: c.consentType as unknown as GDPRTypeEnum,
+      type: c.consentType as GDPRTypeEnum,
       subType: c.isGranted ? GDPRSubTypeEnum.subscribe : GDPRSubTypeEnum.unsubscribe,
     }
   }
@@ -398,7 +398,7 @@ export class UserDataSubservice {
     if (g.type !== GDPRTypeEnum.MARKETING && g.type !== GDPRTypeEnum.GENERAL) return null
     if (g.subType == null) return null
     return {
-      consentType: g.type as unknown as ConsentEnum,
+      consentType: g.type as ConsentEnum,
       isGranted: g.subType === GDPRSubTypeEnum.subscribe,
     }
   }

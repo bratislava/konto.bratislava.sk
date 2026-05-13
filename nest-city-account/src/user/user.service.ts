@@ -762,12 +762,10 @@ export class UserService {
 
     // Resolve the right entity, persist the consent, and capture what the
     // single Bloomreach call below needs (id / externalId / isLegalPerson).
-    let target: { id: string; externalId: string | null; isLegalPerson: boolean }
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
         const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
         await this.userDataSubservice.setUserConsents(user.id, user.externalId, consents)
-        target = { id: user.id, externalId: user.externalId, isLegalPerson: false }
         break
       }
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
@@ -778,7 +776,6 @@ export class UserService {
           legalPerson.externalId,
           consents
         )
-        target = { id: legalPerson.id, externalId: legalPerson.externalId, isLegalPerson: true }
         break
       }
       default:

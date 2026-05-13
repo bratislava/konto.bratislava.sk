@@ -443,7 +443,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     deliveryMethod: 'edesk' | 'postal' | 'email',
     options?: {
       birthNumber?: string
-      reason?: 'edesk-deactivated' | 'delivery-preference-change'
+      reason?: 'edesk-deactivated' | 'delivery-method-preference-change'
     }
   ): Promise<void> {
     try {
@@ -462,8 +462,8 @@ export class TaxDeliveryMethodsTasksSubservice {
 
       const logSuffixMap = {
         'edesk-deactivated': ' (eDesk deactivated)',
-        'delivery-preference-change': ' (Delivery preference change)',
-      } as const satisfies Record<'edesk-deactivated' | 'delivery-preference-change', string>
+        'delivery-method-preference-change': ' (Delivery preference change)',
+      } as const satisfies Record<'edesk-deactivated' | 'delivery-method-preference-change', string>
       const logSuffix = options?.reason ? logSuffixMap[options.reason] : ''
       this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
     } catch (err) {
@@ -556,7 +556,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       })
     } else {
       await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'postal', {
-        reason: 'delivery-preference-change',
+        reason: 'delivery-method-preference-change',
       })
     }
   }

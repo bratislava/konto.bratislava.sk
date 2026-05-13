@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { Injectable } from '@nestjs/common'
+import pLimit from 'p-limit'
 import { Browser, BrowserContext, chromium, Page } from 'playwright'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -19,6 +20,8 @@ export class PdfGeneratorService {
   private sharedBrowser: Browser | null = null
 
   private sharedBrowserRefCount = 0
+
+  private readonly sharedBrowserLock = pLimit(1)
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     this.logger = new LineLoggerSubservice(PdfGeneratorService.name)
@@ -38,35 +41,44 @@ export class PdfGeneratorService {
   }
 
   private async acquireSharedBrowser(): Promise<void> {
-    this.sharedBrowserRefCount++
-    if (this.sharedBrowserRefCount === 1) {
-      this.sharedBrowser = await chromium.launch({
-        executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
-      })
-    }
+    await this.sharedBrowserLock(async () => {
+      this.sharedBrowserRefCount++
+      if (this.sharedBrowserRefCount === 1) {
+        try {
+          this.sharedBrowser = await chromium.launch({
+            executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
+          })
+        } catch (error) {
+          this.sharedBrowserRefCount--
+          throw error
+        }
+      }
+    })
   }
 
   private async releaseSharedBrowser(): Promise<void> {
-    if (this.sharedBrowserRefCount === 0) {
-      return
-    }
-    this.sharedBrowserRefCount--
-    if (this.sharedBrowserRefCount === 0 && this.sharedBrowser) {
-      const browser = this.sharedBrowser
-      this.sharedBrowser = null
-      try {
-        await browser.close()
-      } catch (error) {
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Failed to close shared Chromium browser',
-            undefined,
-            error
-          )
-        )
+    await this.sharedBrowserLock(async () => {
+      if (this.sharedBrowserRefCount === 0) {
+        return
       }
-    }
+      this.sharedBrowserRefCount--
+      if (this.sharedBrowserRefCount === 0 && this.sharedBrowser) {
+        const browser = this.sharedBrowser
+        this.sharedBrowser = null
+        try {
+          await browser.close()
+        } catch (error) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to close shared Chromium browser',
+              undefined,
+              error
+            )
+          )
+        }
+      }
+    })
   }
 
   /**

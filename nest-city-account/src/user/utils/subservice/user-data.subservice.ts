@@ -697,10 +697,13 @@ export class UserDataSubservice {
     )
   }
 
-  async setDeliveryMethod(sub: string, deliveryMethod: DeliveryMethodUserPreferenceEnum) {
+  async setDeliveryMethodPreference(
+    sub: string,
+    deliveryMethodPreference: DeliveryMethodUserPreferenceEnum
+  ) {
     await this.prisma.user.update({
       where: { externalId: sub },
-      data: { taxDeliveryMethod: deliveryMethod },
+      data: { taxDeliveryMethod: deliveryMethodPreference },
     })
   }
 }

@@ -749,7 +749,7 @@ export class UserService {
     user: CognitoGetUserData,
     deliveryMethod: DeliveryMethodUserPreferenceEnum
   ) {
-    await this.userDataSubservice.setDeliveryMethod(user.sub, deliveryMethod)
+    await this.userDataSubservice.setDeliveryMethodPreference(user.sub, deliveryMethod)
   }
 
   async updateGdprConsent(

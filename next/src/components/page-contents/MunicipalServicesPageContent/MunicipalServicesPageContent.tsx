@@ -1,7 +1,6 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
-import { useWindowSize } from 'usehooks-ts'
 
 import {
   MunicipalServiceCategoryEntityFragment,
@@ -33,7 +32,6 @@ const MunicipalServicesPageContent = ({
   categoriesLegalPerson,
 }: MunicipalServicesPageContentProps) => {
   const { t } = useTranslation('account')
-  const { width } = useWindowSize()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const { isLegalEntity } = useSsrAuth()
   const servicesByPersonType = isLegalEntity ? servicesLegalPerson : services

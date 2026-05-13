@@ -204,7 +204,6 @@ ON CONFLICT ("legalPersonId", "consentType") DO NOTHING;
 CREATE OR REPLACE FUNCTION user_consents_to_history()
     RETURNS TRIGGER
     LANGUAGE plpgsql
-    SECURITY DEFINER
 
 AS
 $$

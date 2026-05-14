@@ -122,6 +122,7 @@ import kontaktnyFormularPaas, {
   kontaktnyFormularPaasExtractEmail,
   kontaktnyFormularPaasExtractName,
   kontaktnyFormularPaasExtractTechnicalSubject,
+  kontaktnyFormularPaasFiles,
 } from '../schemas/paas/kontaktnyFormularPaas'
 
 export const formDefinitions: FormDefinition[] = [
@@ -714,6 +715,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Kontaktný formulár PAAS',
     jsonVersion: '1.0.0',
     schema: kontaktnyFormularPaas,
+    files: kontaktnyFormularPaasFiles,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     subject: {
       extractTechnical: kontaktnyFormularPaasExtractTechnicalSubject,

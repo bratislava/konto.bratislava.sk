@@ -41400,6 +41400,7 @@ exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapsh
                 "ui:options": {
                   "type": "dragAndDrop",
                 },
+                "ui:slot": "prilohy",
                 "ui:widget": "FileUploadMultiple",
               },
               "default": [],

@@ -1,10 +1,11 @@
+import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
+
+import ClientsService from '../../clients/clients.service'
+import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.test'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { MagproxyService } from '../magproxy.service'
-import ClientsService from '../../clients/clients.service'
-import { createMock } from '@golevelup/ts-jest'
-import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.test'
-import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 
 describe('MagproxyService', () => {
   let service: MagproxyService
@@ -50,7 +51,7 @@ describe('MagproxyService', () => {
 
     it('should log error for invalid RFO data, however still return', () => {
       const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       const mockRfoResponseListOneItemsInvalid = mockRfoResponseListOneItems as any
       mockRfoResponseListOneItemsInvalid[0].rodnePriezviskaOsoby[0].meno = 1222 // Invalid data - name as number
       const response = service['validateRfoDataFormat'](
@@ -64,7 +65,6 @@ describe('MagproxyService', () => {
     it('should throw error if the data is not an array', () => {
       const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
       expect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         service['validateRfoDataFormat']({} as any)
       }).toThrow()
 

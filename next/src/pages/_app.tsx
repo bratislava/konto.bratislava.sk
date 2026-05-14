@@ -14,7 +14,7 @@ import { appWithTranslation } from 'next-i18next/pages'
 import PlausibleProvider from 'next-plausible'
 import { NuqsAdapter } from 'nuqs/adapters/next/pages'
 import { useEffect, useState } from 'react'
-import { I18nProvider } from 'react-aria'
+import { I18nProvider } from 'react-aria/I18nProvider'
 
 import { NavMenuContextProvider } from '@/src/components/segments/NavBar/navMenuContext'
 import MLink from '@/src/components/simple-components/MLink'

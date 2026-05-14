@@ -1,6 +1,6 @@
 import { useObjectRef } from '@react-aria/utils'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
-import { AriaTextFieldOptions, useTextField } from 'react-aria'
+import { AriaTextFieldOptions, useTextField } from 'react-aria/useTextField'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
@@ -17,6 +17,7 @@ export type InputFieldProps = FieldWrapperProps & {
   endIcon?: ReactNode
   autoComplete?: string
   autoCapitalize?: AriaTextFieldOptions<'input'>['autoCapitalize']
+  autoCorrect?: AriaTextFieldOptions<'input'>['autoCorrect']
   placeholder?: string
   className?: string
 }
@@ -32,6 +33,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       endIcon,
       autoComplete,
       autoCapitalize,
+      autoCorrect,
       placeholder,
       className,
       ...rest
@@ -70,12 +72,13 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         },
         autoComplete,
         autoCapitalize,
+        autoCorrect,
       },
       ref,
     )
 
     const style = cn(
-      'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-16 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
+      'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-size-p-small-r caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 lg:text-size-p-small',
       {
         // hover
         'hover:border-gray-400': !rest.isDisabled,

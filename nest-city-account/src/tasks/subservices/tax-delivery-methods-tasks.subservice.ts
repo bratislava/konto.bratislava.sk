@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common'
+import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
+import { z } from 'zod'
+
+import { MailgunService } from '../../mailgun/mailgun.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../../utils/constants/tax-deadline'
-import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { DeliveryMethodNoris } from '../../utils/types/tax.types'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { TaxSubservice } from '../../utils/subservices/tax.subservice'
-import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
-import { DeliveryMethodCodec } from '../../utils/norisCodec'
 import {
   DeliveryMethodErrorsEnum,
   DeliveryMethodErrorsResponseEnum,
 } from '../../utils/guards/dtos/delivery-method.error'
-import { MailgunService } from '../../mailgun/mailgun.service'
-import { z } from 'zod'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { DeliveryMethodCodec } from '../../utils/norisCodec'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { TaxSubservice } from '../../utils/subservices/tax.subservice'
+import { DeliveryMethodNoris } from '../../utils/types/tax.types'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 const LOCK_DELIVERY_METHODS_BATCH = 100
@@ -82,7 +83,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       return
     }
 
-    const data = users.reduce<{ [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue }>(
+    const data = users.reduce<Record<string, RequestUpdateNorisDeliveryMethodsDtoDataValue>>(
       (acc, user) => {
         // We know that birthNumber is not null from the query.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -110,60 +111,69 @@ export class TaxDeliveryMethodsTasksSubservice {
       {}
     )
 
-    const updateResponse = await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
-    const updatedBirthNumbers = updateResponse.data.birthNumbers.map((birthNumber) =>
-      birthNumber.replaceAll('/', '')
+    // Sorted acquisition prevents deadlocks: keys along any wait-chain T1->T2->...->Tn are strictly
+    // increasing, so the chain cannot cycle back to T1.
+    const sortedBirthNumbers = Object.keys(data).sort((a, b) => a.localeCompare(b))
+
+    // Advisory lock approach: hold a per-birth-number PostgreSQL advisory xact lock from
+    // the moment we re-check whether each user is still active until the Noris write
+    // completes. A concurrent deactivation either:
+    //   (a) set birthNumber=null before our re-check: we skip, deactivation removes from Noris
+    //   (b) runs after our lock is acquired: it blocks, waits for our write, then removes from Noris
+    // The lock is automatically released when the transaction commits.
+    const norisUpdateResponse = await this.prismaService.$transaction(
+      async (tx) => {
+        for (const bn of sortedBirthNumbers) {
+          // eslint-disable-next-line no-await-in-loop -- locks must be acquired sequentially in sorted order to prevent deadlocks
+          await TaxSubservice.acquireDeliveryMethodLock(tx, bn)
+        }
+
+        // Re-check which users are still active now that we hold the locks.
+        const stillActiveUsers = await tx.user.findMany({
+          where: {
+            id: { in: users.map((u) => u.id) },
+            birthNumber: { not: null },
+            ...ACTIVE_USER_FILTER,
+          },
+          select: { birthNumber: true },
+        })
+        const activeBirthNumbers = new Set(
+          stillActiveUsers.map((u) => u.birthNumber).filter((bn): bn is string => bn !== null)
+        )
+        const activeData = Object.fromEntries(
+          Object.entries(data).filter(([bn]) => activeBirthNumbers.has(bn))
+        )
+
+        if (Object.keys(activeData).length === 0) return null
+
+        // call to Noris happens while the locks are still held.
+        return this.taxSubservice.updateDeliveryMethodsInNoris({ data: activeData })
+      },
+      { timeout: 30_000 }
     )
 
-    // Now we should check if some user was not deactivated during his update in Noris.
-    // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However, it is an edge case.
-    const deactivated = await this.prismaService.user.findMany({
-      select: {
-        id: true,
-      },
-      where: {
-        id: {
-          in: users.map((user) => user.id),
-        },
-        birthNumber: null,
-      },
-    })
-    // If someone was deactivated, we should log the error with their birth numbers.
-    if (deactivated.length > 0) {
-      const deactivatedIds = deactivated.map((user) => user.id)
-      const birthNumbersOfDeactivateUsers = users
-        .filter((user) => deactivatedIds.includes(user.id))
-        .map((user) => user.birthNumber)
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        `Some users were deactivated during the update of the delivery methods in Noris. Their birth numbers are: ${birthNumbersOfDeactivateUsers.join(
-          ', '
-        )}. Remove their delivery methods in Noris manually.`
-      )
-    }
-
-    // If OK, we should set the Users to have updated delivery methods in Noris for the current year. Otherwise the error will be thrown.
+    // Update the try-timestamp for all users in the batch regardless of outcome.
     await this.prismaService.user.updateMany({
       where: {
-        birthNumber: {
-          in: updatedBirthNumbers,
-        },
-      },
-      data: {
-        lastTaxDeliveryMethodsUpdateYear: currentYear,
-      },
-    })
-
-    // For all users, not only those who were updated, we should set the last timestamp of trying to update delivery methods in Noris.
-    await this.prismaService.user.updateMany({
-      where: {
-        id: {
-          in: users.map((user) => user.id),
-        },
+        id: { in: users.map((user) => user.id) },
       },
       data: {
         lastTaxDeliveryMethodsUpdateTry: new Date(),
+      },
+    })
+
+    if (!norisUpdateResponse) return
+
+    const updatedBirthNumbers = norisUpdateResponse.data.birthNumbers.map((birthNumber) =>
+      birthNumber.replaceAll('/', '')
+    )
+
+    await this.prismaService.user.updateMany({
+      where: {
+        birthNumber: { in: updatedBirthNumbers },
+      },
+      data: {
+        lastTaxDeliveryMethodsUpdateYear: currentYear,
       },
     })
   }
@@ -176,7 +186,9 @@ export class TaxDeliveryMethodsTasksSubservice {
     let processedCount = 0
     let batchNumber = 1
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- this is intentional to process batches sequentially
     while (true) {
+      // eslint-disable-next-line no-await-in-loop -- this is intentional to process batches sequentially
       const users = await this.prismaService.user.findMany({
         where: {
           birthNumber: { not: null },
@@ -225,7 +237,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         if (user.physicalEntity?.activeEdesk) {
           return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
         }
-        if (user.userGdprData?.[0]?.subType === GDPRSubTypeEnum.subscribe) {
+        if (user.userGdprData[0]?.subType === GDPRSubTypeEnum.subscribe) {
           return {
             birthNumber,
             deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
@@ -242,30 +254,32 @@ export class TaxDeliveryMethodsTasksSubservice {
         (entry) => entry.deliveryMethod === DeliveryMethodEnum.CITY_ACCOUNT
       )
 
-      // Batch updates for users with same delivery method
-      const updatePromises = [
-        // EDESK users - all have undefined date
-        edeskUsers.length > 0 &&
+      // Batch updates for users with same delivery method (only Promises so Promise.all is safe)
+      const updatePromises: Promise<unknown>[] = []
+      if (edeskUsers.length > 0) {
+        updatePromises.push(
           this.prismaService.user.updateMany({
             where: { birthNumber: { in: edeskUsers.map((u) => u.birthNumber) } },
             data: {
               taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
               taxDeliveryMethodCityAccountLockDate: null,
             },
-          }),
-
-        // POSTAL users - all have undefined date
-        postalUsers.length > 0 &&
+          })
+        )
+      }
+      if (postalUsers.length > 0) {
+        updatePromises.push(
           this.prismaService.user.updateMany({
             where: { birthNumber: { in: postalUsers.map((u) => u.birthNumber) } },
             data: {
               taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
               taxDeliveryMethodCityAccountLockDate: null,
             },
-          }),
-
-        // CITY_ACCOUNT users still need individual updates due to different dates
-        ...cityAccountUsers.map((entry) =>
+          })
+        )
+      }
+      updatePromises.push(
+        ...cityAccountUsers.map(async (entry) =>
           this.prismaService.user.update({
             where: { birthNumber: entry.birthNumber },
             data: {
@@ -273,10 +287,10 @@ export class TaxDeliveryMethodsTasksSubservice {
               taxDeliveryMethodCityAccountLockDate: entry.date,
             },
           })
-        ),
-        // If postalUsers.length > 0 or edeskUsers.length > 0 evaluates to false, we want to filter out this result
-      ].filter(Boolean)
+        )
+      )
 
+      // eslint-disable-next-line no-await-in-loop -- this is intentional to process batches sequentially
       await Promise.all(updatePromises)
 
       processedCount += users.length
@@ -287,6 +301,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       // Break between batches (except for the last one)
       if (users.length === LOCK_DELIVERY_METHODS_BATCH) {
         this.logger.log(`Waiting ${BATCH_DELAY_MS}ms before next batch...`)
+        // eslint-disable-next-line no-await-in-loop -- this is intentional to process batches sequentially
         await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS))
         batchNumber++
       }
@@ -490,8 +505,8 @@ export class TaxDeliveryMethodsTasksSubservice {
       const logSuffixMap = {
         'edesk-deactivated': ' (eDesk deactivated)',
         'gdpr-change': ' (GDPR change)',
-      }
-      const logSuffix = options?.reason ? (logSuffixMap[options.reason] ?? '') : ''
+      } as const satisfies Record<'edesk-deactivated' | 'gdpr-change', string>
+      const logSuffix = options?.reason ? logSuffixMap[options.reason] : ''
       this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
     } catch (err) {
       this.logger.error(`Failed to send ${deliveryMethod} email for user ${userId}`, err)
@@ -600,7 +615,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     ])
 
     // Process all users with in-memory data
-    const emailPromises = users.map((user) =>
+    const emailPromises = users.map(async (user) =>
       this.processUserDeliveryMethodChange(
         user,
         latestGdprData.get(user.id),

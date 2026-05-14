@@ -353,7 +353,7 @@ export const ScannerApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'resourceId' is not null or undefined
       assertParamExists('scannerControllerDeleteFileById', 'resourceId', resourceId)
       const localVarPath = `/api/scan/file/{resourceId}`.replace(
-        `{${'resourceId'}}`,
+        '{resourceId}',
         encodeURIComponent(String(resourceId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -403,8 +403,8 @@ export const ScannerApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'fileUid64' is not null or undefined
       assertParamExists('scannerControllerGetStatus', 'fileUid64', fileUid64)
       const localVarPath = `/api/scan/file/{fileUid64}/{bucketUid64}`
-        .replace(`{${'bucketUid64'}}`, encodeURIComponent(String(bucketUid64)))
-        .replace(`{${'fileUid64'}}`, encodeURIComponent(String(fileUid64)))
+        .replace('{bucketUid64}', encodeURIComponent(String(bucketUid64)))
+        .replace('{fileUid64}', encodeURIComponent(String(fileUid64)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -448,7 +448,7 @@ export const ScannerApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'resourceId' is not null or undefined
       assertParamExists('scannerControllerGetStatusById', 'resourceId', resourceId)
       const localVarPath = `/api/scan/file/{resourceId}`.replace(
-        `{${'resourceId'}}`,
+        '{resourceId}',
         encodeURIComponent(String(resourceId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.

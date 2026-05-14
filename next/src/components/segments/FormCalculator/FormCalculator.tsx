@@ -8,11 +8,11 @@ import {
   CustomComponentCalculatorProps,
 } from 'forms-shared/generator/uiOptionsTypes'
 import get from 'lodash/get'
-import React, { useMemo } from 'react'
-import { useNumberFormatter } from 'react-aria'
+import { useMemo } from 'react'
+import { useNumberFormatter } from 'react-aria/useNumberFormatter'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormData } from '@/src/components/forms/useFormData'
 import cn from '@/src/utils/cn'
 
@@ -85,20 +85,26 @@ const Calculator = ({
     'border-white': !isLast && variant === 'black',
   })
 
-  const labelClassName = cn('max-w-[400px] shrink text-p2-semibold font-semibold', {
-    'text-gray-800': variant === 'white',
-    'text-white': variant === 'black',
-  })
+  const labelClassName = cn(
+    'max-w-[400px] shrink text-size-p-small-r font-semibold lg:text-size-p-small',
+    {
+      'text-gray-800': variant === 'white',
+      'text-white': variant === 'black',
+    },
+  )
 
-  const valueClassName = cn('grow basis-0 text-right text-p2-semibold', {
-    'text-gray-700': variant === 'white',
-    'text-white': variant === 'black',
-  })
+  const valueClassName = cn(
+    'grow basis-0 text-right text-size-p-small-r font-semibold lg:text-size-p-small',
+    {
+      'text-gray-700': variant === 'white',
+      'text-white': variant === 'black',
+    },
+  )
 
   return (
     <div className={wrapperClassName}>
       {value == null ? (
-        <AccountMarkdown content={missingFieldsMessage} variant="sm" />
+        <Markdown variant="small" content={missingFieldsMessage} />
       ) : (
         <>
           <div className={labelClassName}>{label}</div>
@@ -120,7 +126,7 @@ const FormCalculator = ({
   label,
   calculators,
 }: CustomComponentCalculatorProps & { id: string }) => {
-  const labelClassName = cn('text-h5', {
+  const labelClassName = cn('text-size-h5-r lg:text-size-h5', {
     'text-white': variant === 'black',
     'text-gray-700': variant === 'white',
   })

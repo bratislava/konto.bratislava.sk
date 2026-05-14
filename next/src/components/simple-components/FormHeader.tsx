@@ -1,5 +1,4 @@
-import { Button } from '@bratislava/component-library'
-import Link from 'next/link'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { DiscIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
@@ -21,18 +20,19 @@ const FormHeader = () => {
   const menuItems = useFormMenuItems()
 
   return (
-    <SectionContainer className="min-h-none size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
+    <SectionContainer className="size-full bg-gray-50 py-6 lg:min-h-[120px] lg:py-12">
       <div className="flex justify-between">
         <div className="flex flex-col gap-2 lg:gap-4">
-          <h1 className="text-h1-form">{schema.title}</h1>
+          <Typography variant="h1">{schema.title}</Typography>
           {strapiForm?.moreInformationUrl ? (
-            <Link
-              className="text-p1 w-max underline"
+            <Button
+              variant="link"
+              size="large"
+              className="w-max"
               href={strapiForm.moreInformationUrl}
-              target="_blank"
             >
               {t('form_header.services_link')}
-            </Link>
+            </Button>
           ) : null}
         </div>
         <div className="hidden h-full shrink-0 gap-3 lg:flex">
@@ -40,10 +40,9 @@ const FormHeader = () => {
             <Button
               size="small"
               variant="outline"
-              startIcon={<DiscIcon className="size-5" />}
+              startIcon={<DiscIcon />}
               onPress={() => saveConcept()}
               data-cy="save-concept-desktop"
-              className="data-hovered:border-gray-600 data-pressed:border-gray-800 border-gray-700" // TODO remove when Button is updated according to DS
             >
               {t('menu_list.save_concept')}
             </Button>
@@ -54,8 +53,7 @@ const FormHeader = () => {
                 variant="outline"
                 size="small"
                 icon={<EllipsisVerticalIcon />}
-                aria-label="Menu"
-                className="data-hovered:border-gray-600 data-pressed:border-gray-800 border-gray-700" // TODO remove when Button is updated according to DS
+                aria-label={t('form_header.additional_fom_action_menu_aria_label')}
               />
             }
             items={menuItems}

@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
@@ -35,9 +36,9 @@ const MyApplicationDetails = ({
       <SectionContainer className="py-12">
         <div className="flex flex-col gap-16">
           <div className="flex flex-col gap-2 px-4 lg:px-0">
-            <h3 className="text-h3">
+            <Typography variant="h3">
               {t('account_section_applications.details.application_details.title')}
-            </h3>
+            </Typography>
             <div className="flex w-full flex-col">
               <SummaryRow
                 size="small"
@@ -79,7 +80,7 @@ const MyApplicationDetails = ({
                 label={t('account_section_applications.details.application_details.contact')}
                 isError={false}
               >
-                <p>
+                <Typography variant="p-default">
                   {ginisData?.ownerPhone ? (
                     <MLink variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
                       {`${ginisData.ownerPhone}, `}
@@ -94,14 +95,14 @@ const MyApplicationDetails = ({
                   ) : (
                     t('account_section_applications.details.application_details.email_unavailable')
                   )}
-                </p>
+                </Typography>
               </SummaryRowSimple>
             </div>
           </div>
           <div className="flex flex-col gap-2 px-4 lg:px-0">
-            <h3 className="text-h3">
+            <Typography variant="h3">
               {t('account_section_applications.details.application_history.title')}
-            </h3>
+            </Typography>
             <MyApplicationHistory historyData={ginisData?.documentHistory} />
           </div>
         </div>

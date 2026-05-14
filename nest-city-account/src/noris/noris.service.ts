@@ -1,13 +1,14 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import { connect, ConnectionError, ConnectionPool } from 'mssql'
-import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
-import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
 import * as mssql from 'mssql'
 import pLimit from 'p-limit'
+
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
+import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
 
 @Injectable()
 export class NorisService implements OnModuleDestroy {
@@ -144,7 +145,7 @@ export class NorisService implements OnModuleDestroy {
   }
 
   async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
-    const edeskUpdateProcessed = edeskChecks.map((edeskCheck) =>
+    const edeskUpdateProcessed = edeskChecks.map(async (edeskCheck) =>
       this.concurrencyLimit(async () =>
         this.withConnection(
           async (connection) => {

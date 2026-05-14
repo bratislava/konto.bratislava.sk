@@ -1,6 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
-import { useWindowSize } from 'usehooks-ts'
 
 import {
   MunicipalServiceCategoryEntityFragment,
@@ -32,7 +32,6 @@ const MunicipalServicesPageContent = ({
   categoriesLegalPerson,
 }: MunicipalServicesPageContentProps) => {
   const { t } = useTranslation('account')
-  const { width } = useWindowSize()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const { isLegalEntity } = useSsrAuth()
   const servicesByPersonType = isLegalEntity ? servicesLegalPerson : services
@@ -53,7 +52,7 @@ const MunicipalServicesPageContent = ({
   ].filter(isDefined)
 
   const [selectorValue, setSelectorValue] = useState<SelectOption>(enumOptions[0])
-  const ITEMS_PER_PAGE = width > 480 ? 20 : 5
+  const ITEMS_PER_PAGE = 12
 
   const handleCategoryChange = (newSelectorValue: SelectOption) => {
     if (newSelectorValue.value !== selectorValue.value) {
@@ -80,8 +79,10 @@ const MunicipalServicesPageContent = ({
         title={t('account_section_services.navigation')}
       />
       <SectionContainer className="w-full pt-4 lg:pt-8">
-        <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
-        <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 sm:gap-6 md:gap-8 min-[960px]:grid-cols-3 lg:grid-cols-4">
+        <Typography variant="h2" className="sr-only">
+          {t('account_section_services.services_list')}
+        </Typography>
+        <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4">
           {filteredServices
             .filter(
               (_, i) =>

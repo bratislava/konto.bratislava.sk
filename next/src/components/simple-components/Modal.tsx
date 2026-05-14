@@ -1,8 +1,9 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import React, { PropsWithChildren } from 'react'
-import { mergeProps } from 'react-aria'
-import { Dialog, Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components'
+import { mergeProps } from 'react-aria/mergeProps'
+import { Dialog } from 'react-aria-components/Dialog'
+import { Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components/Modal'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'
@@ -47,7 +48,7 @@ const ModalInIframeResizerWrapper = ({ children }: PropsWithChildren) => {
           '--iframe-margin-top': `${marginTop}px`,
         } as React.CSSProperties
       }
-      className="mt-[var(--iframe-margin-top)] flex h-[var(--iframe-viewport-height)] items-center self-start"
+      className="mt-(--iframe-margin-top) flex h-(--iframe-viewport-height) items-center self-start"
     >
       {children}
     </div>
@@ -71,7 +72,7 @@ const Modal = ({
   return (
     <ModalOverlay
       className={cn(
-        'fixed top-0 left-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40 pt-[var(--modal-offset-x)]',
+        'fixed top-0 left-0 z-50 flex h-(--visual-viewport-height) w-screen items-center justify-center bg-gray-800/40 pt-(--modal-offset-x)',
         modalOverlayClassname,
       )}
       {...modalProps}
@@ -98,7 +99,7 @@ const Modal = ({
                     aria-label={t('Modal.aria.close')}
                     onPress={close}
                     data-cy="close-modal"
-                    className="absolute right-3 top-3 md:right-4 md:top-4"
+                    className="absolute top-3 right-3 md:top-4 md:right-4"
                   />
                 )}
                 {children}

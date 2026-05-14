@@ -1,8 +1,10 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next/pages'
 
+import { strapiClient } from '@/src/clients/graphql-strapi'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -21,10 +23,14 @@ export const getServerSideProps = amplifyGetServerSideProps(
     const queryClient = new QueryClient()
     await prefetchUserQuery(queryClient, fetchAuthSession)
 
-    const clientInfo = await fetchClientInfo(context.query)
+    const [general, clientInfo] = await Promise.all([
+      strapiClient.General(),
+      fetchClientInfo(context.query),
+    ])
 
     return {
       props: {
+        general,
         clientInfo,
         dehydratedState: dehydrate(queryClient),
         ...(await slovakServerSideTranslations()),
@@ -34,18 +40,20 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { isOAuthRedirect: true, redirectOAuthParams: true },
 )
 
-const OAuthPage = ({ clientInfo, dehydratedState }: PageProps) => {
+const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
   const { t } = useTranslation('account')
 
   // This page should never render, instead, redirect to LOGIN or OAUTH_CONFIRM page should happen on server
   return (
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-        <PageLayout variant="auth" hideBackButton>
-          <AccountContainer>
-            <AccountSuccessAlert variant="loading" title={t('auth.oauth_page.title')} />
-          </AccountContainer>
-        </PageLayout>
+        <GeneralContextProvider general={general}>
+          <PageLayout variant="auth" hideBackButton>
+            <AccountContainer>
+              <AccountSuccessAlert variant="loading" title={t('auth.oauth_page.title')} />
+            </AccountContainer>
+          </PageLayout>
+        </GeneralContextProvider>
       </AmplifyClientOAuthProvider>
     </HydrationBoundary>
   )

@@ -36,7 +36,6 @@ OBO_TOKEN_PUBLIC=test-public-token
 SUB_NASES_TECHNICAL_ACCOUNT=test-technical-account
 
 # NASES
-NASES_SENDER_URI=ico://sk/test-sender
 NASES_RECIPIENT_URI=ico://sk/test-recipient
 
 # Frontend

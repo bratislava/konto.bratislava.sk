@@ -1,5 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsEmail, IsNotEmpty, IsString, IsUUID } from 'class-validator'
+import { Type } from 'class-transformer'
+import {
+  IsArray,
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator'
+
 import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
 
 export class VerificationDataForUser {
@@ -33,12 +44,15 @@ export class VerificationDataForUser {
     example: '65451354',
   })
   @IsString()
+  @IsOptional()
   ico?: string
 
   @ApiProperty({
     description: 'Created timestamp',
     default: '2023-02-10T10:31:49.247Z',
   })
+  @IsDate()
+  @Type(() => Date)
   verifyStart!: Date
 }
 
@@ -49,6 +63,7 @@ export class VerificationDataForUserResponseDto {
   })
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   externalId!: string | null
 
   @ApiProperty({
@@ -56,6 +71,7 @@ export class VerificationDataForUserResponseDto {
     example: 'test@bratislava.sk',
   })
   @IsEmail()
+  @IsOptional()
   email!: string | null
 
   @ApiProperty({
@@ -63,5 +79,9 @@ export class VerificationDataForUserResponseDto {
     description:
       'Verification data for the user in the last month. Ordered by start date descending.',
   })
+  @IsArray()
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => VerificationDataForUser)
   verificationDataLastMonth!: VerificationDataForUser[]
 }

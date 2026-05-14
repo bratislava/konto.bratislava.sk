@@ -3,9 +3,11 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { useRef, useState } from 'react'
 
+import { strapiClient } from '@/src/clients/graphql-strapi'
 import PasswordChangeForm from '@/src/components/auth-forms/PasswordChangeForm'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -25,10 +27,14 @@ enum PasswordChangeStatus {
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context }) => {
-    const clientInfo = await fetchClientInfo(context.query)
+    const [general, clientInfo] = await Promise.all([
+      strapiClient.General(),
+      fetchClientInfo(context.query),
+    ])
 
     return {
       props: {
+        general,
         clientInfo,
         ...(await slovakServerSideTranslations()),
       },
@@ -37,7 +43,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignIn: true },
 )
 
-const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
+const PasswordChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
   const { userAttributes } = useSsrAuth()
 
   const { t } = useTranslation('account')
@@ -83,22 +89,24 @@ const PasswordChangePage = ({ clientInfo }: AuthPageCommonProps) => {
 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
-      <PageLayout
-        variant="auth"
-        hideBackButton={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
-      >
-        <AccountContainer ref={accountContainerRef}>
-          {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
-            <AccountSuccessAlert
-              title={t('auth.password_change_success_title')}
-              confirmLabel={t('auth.continue_to_account')}
-              onConfirm={onConfirm}
-            />
-          ) : (
-            <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
-          )}
-        </AccountContainer>
-      </PageLayout>
+      <GeneralContextProvider general={general}>
+        <PageLayout
+          variant="auth"
+          hideBackButton={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+        >
+          <AccountContainer ref={accountContainerRef}>
+            {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
+              <AccountSuccessAlert
+                title={t('auth.password_change_success_title')}
+                confirmLabel={t('auth.continue_to_account')}
+                onConfirm={onConfirm}
+              />
+            ) : (
+              <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
+            )}
+          </AccountContainer>
+        </PageLayout>
+      </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )
 }

@@ -27,6 +27,49 @@ input BooleanFilterInput {
   startsWith: Boolean
 }
 
+type ComponentBlocksCommonLink {
+  id: ID!
+  label: String
+  municipalService: MunicipalService
+  url: String
+}
+
+input ComponentBlocksCommonLinkFiltersInput {
+  and: [ComponentBlocksCommonLinkFiltersInput]
+  label: StringFilterInput
+  municipalService: MunicipalServiceFiltersInput
+  not: ComponentBlocksCommonLinkFiltersInput
+  or: [ComponentBlocksCommonLinkFiltersInput]
+  url: StringFilterInput
+}
+
+input ComponentBlocksCommonLinkInput {
+  id: ID
+  label: String
+  municipalService: ID
+  url: String
+}
+
+type ComponentBlocksFooterColumn {
+  id: ID!
+  links(filters: ComponentBlocksCommonLinkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksCommonLink]
+  title: String!
+}
+
+input ComponentBlocksFooterColumnFiltersInput {
+  and: [ComponentBlocksFooterColumnFiltersInput]
+  links: ComponentBlocksCommonLinkFiltersInput
+  not: ComponentBlocksFooterColumnFiltersInput
+  or: [ComponentBlocksFooterColumnFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksFooterColumnInput {
+  id: ID
+  links: [ComponentBlocksCommonLinkInput]
+  title: String
+}
+
 type ComponentBlocksFormLandingPage {
   formCta: ComponentBlocksFormLandingPageFormCta!
   id: ID!
@@ -304,6 +347,68 @@ input FloatFilterInput {
   startsWith: Float
 }
 
+type Footer {
+  accessibilityPageLink: ComponentBlocksCommonLink
+  columns(filters: ComponentBlocksFooterColumnFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFooterColumn]
+  contactText: String
+  createdAt: DateTime
+  documentId: ID!
+  facebookUrl: String
+  instagramUrl: String
+  linkedinUrl: String
+  publishedAt: DateTime
+  tiktokUrl: String
+  updatedAt: DateTime
+  youtubeUrl: String
+}
+
+type FooterEntity {
+  attributes: Footer
+  id: ID
+}
+
+type FooterEntityResponse {
+  data: Footer
+}
+
+type FooterEntityResponseCollection {
+  nodes: [Footer!]!
+  pageInfo: Pagination!
+}
+
+input FooterFiltersInput {
+  accessibilityPageLink: ComponentBlocksCommonLinkFiltersInput
+  and: [FooterFiltersInput]
+  columns: ComponentBlocksFooterColumnFiltersInput
+  contactText: StringFilterInput
+  createdAt: DateTimeFilterInput
+  facebookUrl: StringFilterInput
+  instagramUrl: StringFilterInput
+  linkedinUrl: StringFilterInput
+  not: FooterFiltersInput
+  or: [FooterFiltersInput]
+  publishedAt: DateTimeFilterInput
+  tiktokUrl: StringFilterInput
+  updatedAt: DateTimeFilterInput
+  youtubeUrl: StringFilterInput
+}
+
+input FooterInput {
+  accessibilityPageLink: ComponentBlocksCommonLinkInput
+  columns: [ComponentBlocksFooterColumnInput]
+  contactText: String
+  facebookUrl: String
+  instagramUrl: String
+  linkedinUrl: String
+  publishedAt: DateTime
+  tiktokUrl: String
+  youtubeUrl: String
+}
+
+type FooterRelationResponseCollection {
+  nodes: [Footer!]!
+}
+
 type Form {
   createdAt: DateTime
   documentId: ID!
@@ -393,7 +498,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -926,6 +1031,7 @@ type Mutation {
 
   """Create a new user"""
   createUsersPermissionsUser(data: UsersPermissionsUserInput!): UsersPermissionsUserEntityResponse!
+  deleteFooter: DeleteMutationResponse
   deleteForm(documentId: ID!): DeleteMutationResponse
   deleteGeneral: DeleteMutationResponse
   deleteHelpPage: DeleteMutationResponse
@@ -960,6 +1066,7 @@ type Mutation {
   Reset user password. Confirm with a code (resetToken from forgotPassword)
   """
   resetPassword(code: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
+  updateFooter(data: FooterInput!, status: PublicationStatus = PUBLISHED): Footer
   updateForm(data: FormInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): Form
   updateGeneral(data: GeneralInput!, status: PublicationStatus = PUBLISHED): General
   updateHelpPage(data: HelpPageInput!, status: PublicationStatus = PUBLISHED): HelpPage
@@ -1001,6 +1108,7 @@ enum PublicationStatus {
 }
 
 type Query {
+  footer(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Footer
   form(documentId: ID!): Form
   forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [Form]!
   forms_connection(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection

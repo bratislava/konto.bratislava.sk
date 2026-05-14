@@ -48,7 +48,7 @@ describe('F04 -', { testIsolation: false }, () => {
 
         it('3. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-meno]', form)).type(this.fileData.first_name)
 
@@ -84,7 +84,7 @@ describe('F04 -', { testIsolation: false }, () => {
 
         it('5. Filling out the registration form.', () => {
           cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
 

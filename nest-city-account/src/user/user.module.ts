@@ -7,8 +7,8 @@ import { PrismaModule } from '../prisma/prisma.module'
 import { UserController } from './user.controller'
 import { UserIntegrationController } from './user.integration.controller'
 import { UserService } from './user.service'
-import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 import { UserTierService } from './user-tier.service'
+import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
 @Module({
   imports: [PassportModule, PrismaModule, BloomreachModule],

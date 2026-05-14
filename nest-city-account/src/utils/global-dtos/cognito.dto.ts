@@ -1,13 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { IsString } from 'class-validator'
+import { IsDefined, IsEnum, IsOptional, IsString } from 'class-validator'
+
 import { OAuth2ClientName } from '../../oauth2/subservices/oauth2-client.subservice'
-
-export class CognitoUserAttributesValuesDateDto {
-  Name!: CognitoUserAttributesEnum
-
-  Value!: string | CognitoUserAttributesTierEnum
-}
 
 export enum CognitoUserAccountTypesEnum {
   PHYSICAL_ENTITY = 'fo', // fyzicka osoba
@@ -40,12 +35,16 @@ export class CognitoGetUserAttributesData {
     description: 'Id from cognito',
     default: '9e7791b2-787b-4b93-8473-94a70a516025',
   })
+  @IsString()
+  @IsDefined()
   sub!: string
 
   @ApiPropertyOptional({
     description: 'Is email verified in cognito?',
     default: 'true',
   })
+  @IsString()
+  @IsOptional()
   email_verified?: string
 
   @ApiPropertyOptional({
@@ -53,6 +52,7 @@ export class CognitoGetUserAttributesData {
     example: 'Company s.r.o.',
   })
   @IsString()
+  @IsOptional()
   name?: string;
 
   @ApiPropertyOptional({
@@ -60,42 +60,57 @@ export class CognitoGetUserAttributesData {
     enum: CognitoUserAttributesTierEnum,
     default: CognitoUserAttributesTierEnum.IDENTITY_CARD,
   })
+  @IsEnum(CognitoUserAttributesTierEnum)
+  @IsOptional()
   [CognitoUserAttributesEnum.TIER]?: CognitoUserAttributesTierEnum;
 
   @ApiProperty({
     description: 'Which type of account it is?',
     enum: CognitoUserAccountTypesEnum,
+    enumName: 'CognitoUserAccountTypesEnum',
     default: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
   })
-  [CognitoUserAttributesEnum.ACCOUNT_TYPE]!: CognitoUserAccountTypesEnum;
+  @IsEnum(CognitoUserAccountTypesEnum)
+  @IsDefined()
+  [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum;
 
   @ApiPropertyOptional({
     description: 'client_id of the oAuth origin',
   })
+  @IsString()
+  @IsOptional()
   [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID]?: string;
 
   @ApiPropertyOptional({
     description: `Name of the oAuth origin corresponding to the ${CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_ID}`,
     example: OAuth2ClientName.DPB,
   })
+  @IsString()
+  @IsOptional()
   [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_NAME]?: string
 
   @ApiPropertyOptional({
     description: 'First name',
     default: 'Jožko',
   })
+  @IsString()
+  @IsOptional()
   given_name?: string
 
   @ApiPropertyOptional({
     description: 'Last name',
     default: 'Bratislavský',
   })
+  @IsString()
+  @IsOptional()
   family_name?: string
 
   @ApiProperty({
     description: 'email',
     default: 'janko.bratislavsky@bratislava.sk',
   })
+  @IsString()
+  @IsDefined()
   email: string
 }
 

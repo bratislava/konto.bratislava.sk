@@ -1,6 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsBoolean, IsEnum, IsObject, IsString } from 'class-validator'
-import { AnonymizeResponse } from '../../bloomreach/bloomreach.dto'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsBoolean, IsEnum, IsObject, IsOptional, IsString } from 'class-validator'
+
+/**
+ * Marks the state of anonymization of a user in bloomreach.
+ * - NOT_FOUND = The user was not found in bloomreach.
+ * - NOT_ACTIVE = Bloomreach integration state is not active.
+ * - ERROR = There has been an unknown error. Check logs.
+ * - SUCCESS = The user has been successfuly anonymized in bloomreach.
+ */
+export enum AnonymizeResponse {
+  NOT_FOUND = 'NOT_FOUND',
+  NOT_ACTIVE = 'NOT_ACTIVE',
+  ERROR = 'ERROR',
+  SUCCESS = 'SUCCESS',
+}
 
 export class DeactivateAccountResponseDto {
   @ApiProperty({
@@ -14,6 +27,7 @@ export class DeactivateAccountResponseDto {
     description: 'Status of the anonymization of user in bloomreach',
     example: AnonymizeResponse.SUCCESS,
     enum: AnonymizeResponse,
+    enumName: 'AnonymizeResponse',
   })
   @IsEnum(AnonymizeResponse)
   bloomreachRemoved!: AnonymizeResponse
@@ -49,12 +63,13 @@ export class MarkDeceasedAccountResponseItemDto {
   @IsBoolean()
   cognitoArchived!: boolean
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Status of the anonymization of user in Bloomreach',
     example: AnonymizeResponse.SUCCESS,
     enum: AnonymizeResponse,
   })
   @IsEnum(AnonymizeResponse)
+  @IsOptional()
   bloomreachRemoved?: AnonymizeResponse
 }
 

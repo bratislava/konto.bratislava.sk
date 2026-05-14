@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
-
 import { LegalPerson, User } from '@prisma/client'
+
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
-import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { VerificationErrorsEnum } from '../../verification.errors.enum'
 import {
   CatchDatabaseError,
   IHasThrowerErrorGuard,
 } from '../../../utils/decorators/CatchDatabaseError.decorators'
+import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { VerificationReturnType } from '../../types'
+import { VerificationErrorsEnum } from '../../verification.errors.enum'
 
 @Injectable()
 export class VerificationDataSubservice implements IHasThrowerErrorGuard {
@@ -169,7 +169,7 @@ export class VerificationDataSubservice implements IHasThrowerErrorGuard {
           birthnumberIcoAlreadyExistsCounter: {
             increment: 1,
           },
-          birthnumberIcoAlreadyExistsLast: birthNumber + '-' + ico,
+          birthnumberIcoAlreadyExistsLast: `${birthNumber}-${ico}`,
           externalId: cognitoUser.idUser,
         },
       })

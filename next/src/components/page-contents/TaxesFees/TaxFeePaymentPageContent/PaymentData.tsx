@@ -1,5 +1,4 @@
-import { Button } from '@bratislava/component-library'
-import { useSearchParams } from 'next/navigation'
+import { Button, Typography } from '@bratislava/component-library'
 import { Trans, useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
@@ -45,9 +44,6 @@ const PaymentData = ({ paymentMethod }: Props) => {
   } = useTaxFee()
 
   const { userData } = useUser()
-
-  const searchParams = useSearchParams()
-  const paymentMethodParam = searchParams.get('sposob-uhrady') as PaymentMethodType
 
   const qrCodeBase64oneTimePayment = `data:image/png;base64,${taxData.oneTimePayment.qrCode}`
   const qrCodeBase64InstallmentPayment = `data:image/png;base64,${taxData.installmentPayment.activeInstallment?.qrCode}`
@@ -124,7 +120,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      {paymentMethodParam === PaymentMethod.Installments && (
+      {paymentMethod === PaymentMethod.Installments && (
         <>
           <Alert
             type="warning"
@@ -141,7 +137,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
 
           {hasMultipleInstallments && (
             <div className="flex flex-col gap-3">
-              <span className="text-h5">{t('taxes.payment_data.installments.title')}</span>
+              <Typography variant="h5">{t('taxes.payment_data.installments.title')}</Typography>
               <PaymentSchedule />
             </div>
           )}
@@ -149,16 +145,16 @@ const PaymentData = ({ paymentMethod }: Props) => {
       )}
 
       <div className="flex flex-col gap-2 lg:gap-4">
-        <div className="text-h5">{t('taxes.payment_data.payment_methods_title')}</div>
+        <Typography variant="h5">{t('taxes.payment_data.payment_methods_title')}</Typography>
         <div className="rounded-lg border px-4 lg:px-6">
           <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
               <div className="flex flex-row-reverse items-center justify-between gap-4 lg:flex-row lg:justify-start">
                 <PaymentHandIcon className="size-8 lg:size-12" />
-                <span className="text-h5">{t('taxes.payment_data.card_payment_title')}</span>
+                <Typography variant="h5">{t('taxes.payment_data.card_payment_title')}</Typography>
               </div>
               <div className="flex flex-row items-center gap-1.5 lg:gap-3">
-                <div className="bg-background-passive-primary rounded-lg px-3 py-1">
+                <div className="rounded-lg bg-background-passive-primary px-3 py-1">
                   <CreditCardIcon className="size-5" />
                 </div>
                 <ApplePayIcon className="size-12" />
@@ -166,9 +162,9 @@ const PaymentData = ({ paymentMethod }: Props) => {
               </div>
             </div>
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
-              <span className="text-h5 w-full lg:w-auto">
+              <Typography variant="h5" as="span" className="w-full lg:w-auto">
                 {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
-              </span>
+              </Typography>
               <Button
                 variant="solid"
                 onPress={handleRedirectToPayment}
@@ -187,13 +183,13 @@ const PaymentData = ({ paymentMethod }: Props) => {
             <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
               <div className="flex w-full flex-row-reverse items-center justify-between gap-5 lg:flex-row lg:justify-start">
                 <QrCodeIcon className="size-8 lg:size-12" />
-                <span className="text-h5">
+                <Typography variant="h5">
                   {t('taxes.payment_data.qr_code_and_bank_transfer_title')}
-                </span>
+                </Typography>
               </div>
-              <span className="text-h5 max-lg:w-full">
+              <Typography variant="h5" className="max-lg:w-full">
                 {amountToPay && <FormatCurrencyFromCents value={amountToPay} />}
-              </span>
+              </Typography>
             </div>
             <div className="flex w-full flex-col gap-6 lg:flex-row lg:gap-4">
               <ul className="flex w-full flex-col rounded-lg border px-4 py-2 lg:px-6">
@@ -204,8 +200,12 @@ const PaymentData = ({ paymentMethod }: Props) => {
                       {/* TODO consider separating this row into a component */}
                       <div className="flex gap-3 self-stretch py-3 lg:gap-4 lg:py-4">
                         <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-                          <span className="text-p2-semibold">{row.label}</span>
-                          <span className="text-p2">{row.value}</span>
+                          <Typography variant="p-small" as="span" className="font-semibold">
+                            {row.label}
+                          </Typography>
+                          <Typography variant="p-small" as="span">
+                            {row.value}
+                          </Typography>
                         </div>
                         <span className="size-6">
                           {row.clipboardCopyValue ? (
@@ -217,13 +217,15 @@ const PaymentData = ({ paymentMethod }: Props) => {
                   )
                 })}
               </ul>
-              <div className="max-w-120 flex flex-col gap-4 self-stretch rounded-lg border p-4 lg:flex-row">
+              <div className="flex max-w-120 flex-col gap-4 self-stretch rounded-lg border p-4 lg:flex-row">
                 <div className="flex w-full grow flex-col items-start justify-between gap-4">
                   <div className="flex flex-col items-start gap-2">
-                    <div className="text-h6">{t('taxes.payment_data.qr_code')}</div>
-                    <div className="text-16">
+                    <Typography variant="h6" as="p" className="font-semibold">
+                      {t('taxes.payment_data.qr_code')}
+                    </Typography>
+                    <Typography variant="p-small">
                       {t('taxes.payment_data.use_your_banking_app_to_load')}
-                    </div>
+                    </Typography>
                   </div>
                   <Button
                     startIcon={<DownloadIcon />}
@@ -234,7 +236,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                     {t('taxes.payment_data.download_qr_code')}
                   </Button>
                 </div>
-                <div className="lg:w-100 flex h-full flex-col justify-center">
+                <div className="flex h-full flex-col justify-center lg:w-100">
                   <img className="aspect-square w-full" src={qrCodeImageSrc} alt="QR code" />{' '}
                 </div>
               </div>

@@ -64,19 +64,23 @@ export type WidgetSpacing = {
   spaceBottom?: FormSpacingType
 }
 
-export type WidgetUiOptions = WidgetSpacing & {
-  helptext?: string
-  helptextMarkdown?: boolean
-  helptextFooter?: string
-  helptextFooterMarkdown?: boolean
+export type WidgetWrapperOptions = {
   className?: string
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
-  size?: 'full' | 'medium' | 'small'
-  labelSize?: LabelSize
-  /* @defaultValue `4/4` */
-  selfColumn?: '1/4' | '2/4' | '3/4' | '4/4'
 }
+
+export type WidgetUiOptions = WidgetSpacing &
+  WidgetWrapperOptions & {
+    helptext?: string
+    helptextMarkdown?: boolean
+    helptextFooter?: string
+    helptextFooterMarkdown?: boolean
+    size?: 'full' | 'medium' | 'small'
+    labelSize?: LabelSize
+    /* @defaultValue `4/4` */
+    selfColumn?: '1/4' | '2/4' | '3/4' | '4/4'
+  }
 
 export type CheckboxGroupUiOptions = {
   enumMetadata: EnumMetadata<string>[]

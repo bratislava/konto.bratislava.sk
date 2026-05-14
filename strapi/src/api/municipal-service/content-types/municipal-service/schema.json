@@ -4,7 +4,7 @@
   "info": {
     "singularName": "municipal-service",
     "pluralName": "municipal-services",
-    "displayName": "Municipal service",
+    "displayName": "Mestské služby",
     "description": ""
   },
   "options": {
@@ -36,6 +36,7 @@
     },
     "icon": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "administration",
         "public-space-occupation",
@@ -64,11 +65,12 @@
         "parking",
         "towing",
         "scooter"
-      ],
-      "required": true
+      ]
     },
     "color": {
       "type": "enumeration",
+      "required": true,
+      "default": "main",
       "enum": [
         "main",
         "transport",
@@ -79,9 +81,7 @@
         "marianum",
         "olo",
         "tsb"
-      ],
-      "default": "main",
-      "required": true
+      ]
     },
     "categories": {
       "type": "relation",

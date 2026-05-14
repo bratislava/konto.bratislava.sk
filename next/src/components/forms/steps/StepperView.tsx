@@ -1,7 +1,8 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
-import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
+import { Dialog, Heading } from 'react-aria-components/Dialog'
+import { Modal, ModalOverlay } from 'react-aria-components/Modal'
 
 import { ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
 import StepperViewList from '@/src/components/forms/steps/StepperViewList'
@@ -24,7 +25,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
     <ModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
-      className="data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0"
+      className="fixed top-0 left-0 z-50 h-(--visual-viewport-height) w-screen bg-white outline-0 entering:animate-stepper-slide exiting:animate-stepper-slide-reverse"
       isDismissable
     >
       <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
@@ -32,7 +33,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
-                <Heading slot="title" className="text-h6 grow">
+                <Heading slot="title" className="grow text-size-h6-r lg:text-size-h6">
                   {t('StepperView.all_steps')}
                 </Heading>
                 {/* TODO Unify modal close button with other modals */}

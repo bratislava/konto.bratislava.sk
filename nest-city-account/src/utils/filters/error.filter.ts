@@ -1,8 +1,9 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { Response } from 'express'
 import { RequiredError } from 'openapi-clients/magproxy/base'
-import { symbolKeysToStrings } from '../logging'
+
 import { errorTypeKeys } from '../guards/dtos/error.dto'
+import { symbolKeysToStrings } from '../logging'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
 function rethrowIfNotHttp(host: ArgumentsHost, exception: unknown, filterName: string): void {

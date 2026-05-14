@@ -52,7 +52,7 @@ export const uploadFile = async ({
     onSuccess(response)
   } catch (error: any) {
     // TODO: Error type
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
     onError(error)
   }
 }
@@ -96,8 +96,9 @@ function getFileExtension(filename: string | null) {
   }
 
   // https://stackoverflow.com/a/680982
-  // eslint-disable-next-line security/detect-unsafe-regex
+
   const match = filename.match(/(?:\.([^.]+))?$/i)
+
   return match ? match[0] : null
 }
 

@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import Link from 'next/link'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -6,7 +7,6 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 
-// eslint-disable-next-line import/no-cycle
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
@@ -41,19 +41,20 @@ const AccountMarkdown = ({
     disableRemarkDirective ? null : remarkDirective,
     disableRemarkDirectiveRehype ? null : remarkDirectiveRehype,
   ].filter(isDefined)
-  const textStyle = cn({
-    'text-p3 lg:text-p2': variant === 'sm',
-    'text-p2': variant === 'statusBar',
-    'text-p1': variant === 'normal',
+
+  const textStyle = cn('whitespace-pre-line', {
+    'text-size-p-tiny-r lg:text-size-p-small': variant === 'sm',
+    'text-size-p-small-r lg:text-size-p-small': variant === 'statusBar',
+    'text-size-p-small-r lg:text-size-p-large': variant === 'normal',
   })
 
   const componentsGroup: Record<string, React.FC<ChildrenParent>> = {
-    h2: ({ children }: ChildrenParent) => <h2 className="text-h2">{children}</h2>,
-    h3: ({ children }: ChildrenParent) => <h3 className="text-h3">{children}</h3>,
-    h4: ({ children }: ChildrenParent) => <h4 className="text-h4">{children}</h4>,
-    h5: ({ children }: ChildrenParent) => <h5 className="text-h5">{children}</h5>,
-    h6: ({ children }: ChildrenParent) => <h6 className="text-h6">{children}</h6>,
-    p: ({ children }: ChildrenParent) => <p className={textStyle}>{children}</p>,
+    h2: ({ children }: ChildrenParent) => <Typography variant="h2">{children}</Typography>,
+    h3: ({ children }: ChildrenParent) => <Typography variant="h3">{children}</Typography>,
+    h4: ({ children }: ChildrenParent) => <Typography variant="h4">{children}</Typography>,
+    h5: ({ children }: ChildrenParent) => <Typography variant="h5">{children}</Typography>,
+    h6: ({ children }: ChildrenParent) => <Typography variant="h6">{children}</Typography>,
+    p: ({ children }: ChildrenParent) => <Typography className={textStyle}>{children}</Typography>,
     strong: ({ children }: ChildrenParent) => <strong className="font-semibold">{children}</strong>,
     ol: ({ children, ordered, ...props }: ChildrenParent) => (
       <ol className="list-decimal pl-8" {...props}>
@@ -73,7 +74,7 @@ const AccountMarkdown = ({
     a: ({ href, children }: ChildrenParent) => (
       <Link
         href={href ?? '#'}
-        className={cn('font-semibold break-words underline underline-offset-4', {
+        className={cn('font-semibold wrap-break-word underline underline-offset-4', {
           'text-white hover:text-category-600': uLinkVariant === 'primary',
           'text-font hover:text-category-600': uLinkVariant === 'default',
           'text-white hover:text-white': uLinkVariant === 'error',

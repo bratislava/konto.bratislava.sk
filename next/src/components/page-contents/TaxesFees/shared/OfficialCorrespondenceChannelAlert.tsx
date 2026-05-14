@@ -1,7 +1,7 @@
-import React from 'react'
+import { Typography } from '@bratislava/component-library'
 
 import { TaxFragment } from '@/src/clients/graphql-strapi/api'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 
 type Props = {
@@ -23,10 +23,12 @@ const OfficialCorrespondenceChannelAlert = ({ strapiTax }: Props) => {
       message={
         <>
           {channelChangeEffectiveNextYearTitle ? (
-            <span className="text-h6">{channelChangeEffectiveNextYearTitle}</span>
+            <Typography variant="h6" as="span">
+              {channelChangeEffectiveNextYearTitle}
+            </Typography>
           ) : null}
           {channelChangeEffectiveNextYearText ? (
-            <AccountMarkdown content={channelChangeEffectiveNextYearText} variant="sm" />
+            <Markdown variant="small" content={channelChangeEffectiveNextYearText} />
           ) : null}
         </>
       }

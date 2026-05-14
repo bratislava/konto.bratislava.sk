@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
+
 import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
 
 export interface RequestWithClientCredentials extends Request {
@@ -27,7 +28,7 @@ export class TokenRequestGuard implements CanActivate {
     this.validationSubservice.validateTokenRequest({
       clientId,
       clientSecret,
-      redirectUri: request.body?.redirect_uri || request.query?.redirect_uri,
+      redirectUri: request.body?.redirect_uri || request.query.redirect_uri,
       grantType: request.body?.grant_type,
       codeVerifier: request.body?.code_verifier,
     })

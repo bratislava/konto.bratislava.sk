@@ -72,7 +72,7 @@ const Carousel = ({
       <ul
         className={cn(
           // if gap is changed, also change card width calculation
-          'max-md:negative-x-spacing scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-clip lg:gap-8',
+          'scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-clip max-md:negative-x-spacing lg:gap-8',
           // show the whole focus ring
           '-my-2 py-2 lg:-mx-2 lg:px-2',
           { 'py-8 lg:py-8': hasVerticalPadding },
@@ -119,7 +119,7 @@ const Carousel = ({
                 excludeFromTabOrder
                 onPress={handleGoToPrevious}
                 className={cn(
-                  'absolute top-0 bottom-0 z-10 my-auto h-12 w-12 rounded-full',
+                  'absolute inset-y-0 z-10 my-auto size-12 rounded-full',
                   'left-0 -translate-x-1/2 transform',
                   { hidden: isLeftControlHidden },
                 )}
@@ -131,7 +131,7 @@ const Carousel = ({
                 excludeFromTabOrder
                 onPress={handleGoToNext}
                 className={cn(
-                  'absolute top-0 bottom-0 z-10 my-auto h-12 w-12 rounded-full',
+                  'absolute inset-y-0 z-10 my-auto size-12 rounded-full',
                   'right-0 translate-x-1/2 transform',
                   { hidden: isRightControlHidden },
                 )}

@@ -1,10 +1,10 @@
 import { Controller, Get, HttpCode, Param, UseGuards } from '@nestjs/common'
 import {
+  ApiExtraModels,
   ApiOperation,
   ApiResponse,
   ApiSecurity,
   ApiTags,
-  ApiExtraModels,
   getSchemaPath,
 } from '@nestjs/swagger'
 

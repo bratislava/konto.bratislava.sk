@@ -153,7 +153,10 @@ describe('NorisConnectionSubservice', () => {
     })
 
     it('should throw getNorisUrgentError when error is MSSQLError with code not in the silent list', async () => {
-      const mssqlError = new MSSQLError('Query failed', 'ESOMEOTHER')
+      const mssqlError = new MSSQLError(
+        'Query failed',
+        'ESOMEOTHER' as mssql.MSSQL_ERROR_CODE,
+      )
       const throwerErrorGuardSpy = jest.spyOn(
         throwerErrorGuard,
         'InternalServerErrorException',

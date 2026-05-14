@@ -1,16 +1,16 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import PasswordField from '@/src/components/fields/PasswordField'
+import Radio from '@/src/components/fields/Radio'
+import RadioGroup from '@/src/components/fields/RadioGroup'
+import TextField from '@/src/components/fields/TextField'
+import Markdown from '@/src/components/formatting/Markdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
-import Radio from '@/src/components/widget-components/RadioButton/Radio'
-import RadioGroup from '@/src/components/widget-components/RadioButton/RadioGroup'
 import { environment } from '@/src/environment'
 import { AccountType, UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
@@ -173,9 +173,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         return onSubmit(data.email, data.password, data.turnstileToken, userAttributes)
       })}
     >
-      <h1 className="text-h2" data-cy="register-form-title">
+      <Typography variant="h2" as="h1" data-cy="register-form-title">
         {t('auth.register_title')}
-      </h1>
+      </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
       {disablePO ? null : (
@@ -190,13 +190,13 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               label={t('auth.fields.account_type_label')}
               orientation="vertical"
             >
-              <Radio value="fo" variant="boxed">
+              <Radio value="fo" variant="boxed" data-cy="radio-fyzická-osoba">
                 {t('auth.fields.fo_label')}
               </Radio>
-              <Radio value="fo-p" variant="boxed">
+              <Radio value="fo-p" variant="boxed" data-cy="radio-fyzická-osoba---podnikateľ">
                 {t('auth.fields.fop_label')}
               </Radio>
-              <Radio value="po" variant="boxed">
+              <Radio value="po" variant="boxed" data-cy="radio-právnická-osoba">
                 {t('auth.fields.po_label')}
               </Radio>
             </RadioGroup>
@@ -207,13 +207,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         name="email"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             helptext={emailHelptextTranslationMap[type]}
             label={t('auth.fields.email_label')}
             autoComplete="username"
             autoCapitalize="none"
-            // TODO consider adding autoCorrect="off" and spellCheck={false}
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.email}
           />
@@ -225,12 +226,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             name="given_name"
             control={control}
             render={({ field }) => (
-              <InputField
+              <TextField
                 isRequired
                 label={t('auth.fields.given_name_label')}
                 helptext={t('auth.fields.given_name_helptext')}
                 autoComplete="given-name"
-                capitalize
+                autoCapitalize="on"
+                autoCorrect="off"
+                spellCheck="false"
                 {...field}
                 errorMessage={errors.given_name}
               />
@@ -240,12 +243,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             name="family_name"
             control={control}
             render={({ field }) => (
-              <InputField
+              <TextField
                 isRequired
                 label={t('auth.fields.family_name_label')}
                 helptext={t('auth.fields.family_name_helptext')}
                 autoComplete="family-name"
-                capitalize
+                autoCapitalize="on"
+                autoCorrect="off"
+                spellCheck="false"
                 {...field}
                 errorMessage={errors.family_name}
               />
@@ -258,10 +263,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           name="name"
           control={control}
           render={({ field }) => (
-            <InputField
+            <TextField
               isRequired
               label={t('auth.fields.business_name_label')}
-              capitalize
+              autoCapitalize="on"
+              autoCorrect="off"
+              spellCheck="false"
               {...field}
               errorMessage={errors.name}
             />
@@ -282,10 +289,10 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         )}
       />
-      <AccountMarkdown
-        variant="sm"
-        className="text-center"
+      <Markdown
+        variant="small"
         content={t('auth.marketing_confirmation_text')}
+        className="text-center"
       />
       <Controller
         name="turnstileToken"
@@ -317,8 +324,11 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
                 onChange(null)
               }}
             />
+
             {captchaWarning === 'show' && (
-              <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
+              <Typography variant="p-tiny" className="italic">
+                {t('auth.captcha_warning')}
+              </Typography>
             )}
           </>
         )}

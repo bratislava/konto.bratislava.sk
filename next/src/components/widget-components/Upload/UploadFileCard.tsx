@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import {
   FileInfo,
   FileStatusType,
@@ -10,7 +10,6 @@ import {
   UploadClientErrorReasonType,
 } from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next/pages'
-import React from 'react'
 
 import {
   AttachmentIcon,
@@ -78,6 +77,10 @@ const useGetMessage = (fileInfo: FileInfo) => {
   )
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16743-7965&m=dev
+ */
+
 const UploadFileCard = ({
   fileInfo,
   onFileRetry,
@@ -125,7 +128,9 @@ const UploadFileCard = ({
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full items-center justify-between gap-4">
             <div className="flex grow flex-col">
-              <h3 className="break-all font-semibold text-gray-800">{fileInfo.fileName}</h3>
+              <Typography variant="p-small" as="h3" className="break-all">
+                {fileInfo.fileName}
+              </Typography>
               <div className="flex gap-2">
                 {/* TODO Translations - download aria label size and format */}
                 {isDownloadable && (
@@ -174,7 +179,7 @@ const UploadFileCard = ({
 
       {isErrorStatus && (
         <div className="flex justify-between gap-6 pb-2">
-          {errorMessage && <div className="text-error max-w-[80%]">{errorMessage}</div>}
+          {errorMessage && <div className="max-w-[80%] text-error">{errorMessage}</div>}
 
           {'canRetry' in fileInfo.status && fileInfo.status.canRetry && (
             <Button

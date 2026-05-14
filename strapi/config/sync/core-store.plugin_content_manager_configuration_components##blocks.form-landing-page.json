@@ -1,0 +1,108 @@
+{
+  "key": "plugin_content_manager_configuration_components::blocks.form-landing-page",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "documentId",
+      "defaultSortBy": "id",
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "text": {
+        "edit": {
+          "label": "Text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "text",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "linkCtas": {
+        "edit": {
+          "label": "Odkazy CTAs",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "linkCtas",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "formCta": {
+        "edit": {
+          "label": "Formulár CTA",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "formCta",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "edit": [
+        [
+          {
+            "name": "text",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "linkCtas",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "formCta",
+            "size": 12
+          }
+        ]
+      ],
+      "list": [
+        "id",
+        "linkCtas",
+        "formCta",
+        "documentId"
+      ]
+    },
+    "uid": "blocks.form-landing-page",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

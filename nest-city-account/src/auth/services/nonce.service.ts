@@ -1,8 +1,9 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable } from '@nestjs/common'
 import { Cache } from 'cache-manager'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 /**
  * Service for managing nonce-based replay protection

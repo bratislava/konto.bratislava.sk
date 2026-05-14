@@ -8,9 +8,10 @@ import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { FormBaseFragment } from '@/src/clients/graphql-strapi/api'
+import { FormBaseFragment, GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import { makeClientFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import FormPage, { FormPageProps } from '@/src/components/forms/FormPage'
+import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import { environment } from '@/src/environment'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -33,7 +34,9 @@ type Params = {
   id: string
 }
 
-export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & GlobalAppProps, Params>(
+type Props = FormPageProps & GlobalAppProps & { general: GeneralQuery }
+
+export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
   async ({ context, fetchAuthSession, isSignedIn }) => {
     const nonce = context.req.headers['x-nonce'] as string | undefined // TODO type
 
@@ -61,7 +64,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
         return { notFound: true }
       }
 
-      const [{ data: files }, strapiForm] = await Promise.all([
+      const [general, { data: files }, strapiForm] = await Promise.all([
+        strapiClient.General(),
         formsClient.filesControllerGetFilesStatusByForm(formId, {
           authStrategy: 'authOrGuestWithToken',
           getSsrAuthSession: fetchAuthSession,
@@ -82,6 +86,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
 
       return {
         props: {
+          general,
           nonce,
           formServerContext: {
             formDefinition: makeClientFormDefinition(serverFormDefinition),
@@ -139,4 +144,10 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
   },
 )
 
-export default SsrAuthProviderHOC(FormPage)
+const MunicipalServicesFormDetailPage = ({ general, ...props }: Props) => (
+  <GeneralContextProvider general={general}>
+    <FormPage {...props} />
+  </GeneralContextProvider>
+)
+
+export default SsrAuthProviderHOC(MunicipalServicesFormDetailPage)

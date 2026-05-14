@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import slugify from '@sindresorhus/slugify'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import cn from '@/src/utils/cn'
 import { SectionTitleLevel } from '@/src/utils/getCardTitleLevel'
 import { CommonLinkProps } from '@/src/utils/getLinkProps'
@@ -57,21 +57,13 @@ const SectionHeader = ({
           })}
         >
           {title ? (
-            <Typography
-              // TODO Implement correct classes for Typography component - this classname is just a temporary override
-              className={cn({
-                'text-h2': titleLevel === 'h2',
-                'text-h3': titleLevel === 'h3',
-              })}
-              variant={titleLevel ?? 'h2'}
-              id={titleId ?? slugify(title)}
-            >
+            <Typography variant={titleLevel ?? 'h2'} id={titleId ?? slugify(title)}>
               {title}
             </Typography>
           ) : null}
           {text ? (
             asRichtext ? (
-              <AccountMarkdown content={text} />
+              <Markdown variant="default" content={text} />
             ) : (
               <Typography variant="p-default">{text}</Typography>
             )

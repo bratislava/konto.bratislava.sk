@@ -1,5 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import React, { useId } from 'react'
+import { useId } from 'react'
 import Select, {
   ClearIndicatorProps,
   components,
@@ -79,8 +80,8 @@ const CustomOption = <
       <components.Option {...props}>
         {selectHasDescriptions ? (
           <div>
-            <div className="text-p1-semibold">{children}</div>
-            {description && <div className="text-p2">{description}</div>}
+            <div className="text-size-p-large-r font-semibold lg:text-size-p-large">{children}</div>
+            {description && <Typography variant="p-small">{description}</Typography>}
           </div>
         ) : (
           <div>{children}</div>
@@ -182,6 +183,7 @@ const SelectField = <
             placeholder={null}
             {...rest}
             id={id}
+            instanceId={id} // Prevents hydration errors - makes react-select use stable useId for child IDs
             unstyled
             value={value}
             onChange={onChange}
@@ -210,7 +212,7 @@ const SelectField = <
                   'items-center gap-1 rounded-sm pr-1.5 pl-2',
                   isDisabled ? 'bg-gray-200' : 'bg-gray-100',
                 ),
-              multiValueLabel: () => 'text-p3',
+              multiValueLabel: () => 'text-size-p-tiny-r lg:text-size-p-tiny',
               multiValueRemove: () =>
                 'hover:bg-negative-100 hover:text-red-800 rounded-sm h-5 [&>svg]:w-4 [&>svg]:h-4',
               indicatorsContainer: ({ isDisabled }) =>
@@ -220,7 +222,8 @@ const SelectField = <
               indicatorSeparator: () => 'hidden',
               dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',
               menu: () => 'py-2 mt-2 border border-gray-900 bg-white rounded-lg',
-              groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
+              groupHeading: () =>
+                'ml-3 mt-2 mb-1 text-gray-500 text-size-p-tiny-r lg:text-size-p-tiny',
               option: ({ isFocused }) =>
                 cn('flex! items-center justify-between px-5 py-3 hover:cursor-pointer', {
                   'bg-gray-100 active:bg-gray-200': isFocused,

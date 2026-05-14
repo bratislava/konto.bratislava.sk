@@ -1,9 +1,9 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
 export interface PhoneNumberData {
@@ -46,17 +46,19 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
-      <div className="whitespace-pre-line">
-        <div className="text-p2">{t('phone_number_modal.description')}</div>
-      </div>
+      <Typography variant="p-small">{t('phone_number_modal.description')}</Typography>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
         name="phone_number"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             label={t('my_profile.profile_detail.phone_number')}
             helptext={t('my_profile.profile_detail.phone_number_helptext')}
+            autoComplete="tel"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.phone_number}
           />

@@ -1,11 +1,11 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import TextField from '@/src/components/fields/TextField'
+import Markdown from '@/src/components/formatting/Markdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import logger from '@/src/frontend/utils/logger'
 
@@ -36,6 +36,10 @@ const schema = {
   },
   required: ['verificationCode'],
 }
+
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=814-60380&p=f&m=dev
+ */
 
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
@@ -77,10 +81,12 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         )
       })}
     >
-      <h1 className="text-h3">{t('auth.email_verification_title')}</h1>
-      <p className="text-p3 lg:text-p2" data-cy="verification-description">
+      <Typography variant="h3" as="h1">
+        {t('auth.email_verification_title')}
+      </Typography>
+      <Typography variant="p-small" data-cy="verification-description">
         {t('auth.email_verification_description', { email: lastEmail || '' })}
-      </p>
+      </Typography>
       <AccountErrorAlert
         error={error}
         args={{
@@ -92,9 +98,12 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         name="verificationCode"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             autoComplete="off"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             label={t('auth.fields.verification_code_label')}
             {...field}
             errorMessage={errors.verificationCode}
@@ -106,14 +115,14 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       </Button>
       {/* don't show timer if error */}
 
-      <div className="text-p3 lg:text-p2">
+      <div className="text-size-p-small-r lg:text-size-p-small">
         {noError && count > 0 && (
           <div className="mb-4">
             <span>{t('auth.verification_description')}</span>{' '}
             <span>{t('auth.verification_cnt_description', { cnt: count })}</span>
           </div>
         )}
-        <AccountMarkdown variant="sm" content={t('auth.verification_cnt_info')} />
+        <Markdown variant="small" content={t('auth.verification_cnt_info')} />
       </div>
 
       <Button

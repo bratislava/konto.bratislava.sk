@@ -98,8 +98,8 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   // `authSession.tokens` is synonymous with user being signed in
   if (authSession.tokens) {
-    // eslint-disable-next-line no-param-reassign
     config.headers.Authorization = `Bearer ${authSession.tokens.accessToken.toString()}`
+
     return config
   }
 
@@ -108,7 +108,6 @@ axiosInstance.interceptors.request.use(async (config) => {
       throw new Error('Authentication required, but no access token found in session.')
 
     case 'authOrGuestWithToken':
-      // eslint-disable-next-line no-param-reassign
       config.headers['X-Cognito-Guest-Identity-Id'] = authSession.identityId
       break
 

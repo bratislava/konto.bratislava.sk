@@ -1,5 +1,8 @@
 @import 'tailwindcss' source(none);
 @import 'tailwind-scrollbar-hide/v4';
+@import '../components/formatting/markdown.css';
+
+@plugin 'tailwindcss-react-aria-components';
 
 @source './';
 @source '../components/';
@@ -7,7 +10,12 @@
 
 @source '../../node_modules/@bratislava/component-library/dist';
 
+/** 
+ * Figma: https://www.figma.com/design/ctDKMhAPIjLUVNNmq430D4/DS--Foundations 
+ */
+
 /* When updating the theme don't forget to update the `baTwMerge` implementation in `cn.ts`. */
+
 @theme inline {
   /* previously defaultTheme.fontFamily.sans in tailwind.config.js */
   --font-sans:
@@ -26,6 +34,12 @@
   --breakpoint-2xl: initial;
 
   /* COLORS */
+
+  --color-white: var(--color-grey-0);
+  --color-font: var(--color-content-passive-primary);
+  --color-font-contrast: var(--color-content-passive-inverted-primary);
+
+  --color-error: #d00000; /* TODO consolidate with correct tokens */
 
   --color-main-800: rgb(147, 37, 27); /*#93251B*/
   --color-main-700: rgb(216, 55, 40); /*#D83728*/
@@ -151,11 +165,7 @@
   --color-municipal-services-marianum: rgb(68, 102, 80); /*#446650*/
   --color-municipal-services-marianum-bg: rgb(180, 194, 185); /*#B4C2B9*/
 
-  --color-error: #d00000;
-  --color-font: #333;
-  --color-font-contrast: var(--color-gray-50);
-
-  /* New tokens - border */
+  /* Color tokens - border */
 
   --color-border-error: var(--color-negative-700);
   --color-border-error-hover: var(--color-negative-600);
@@ -196,7 +206,7 @@
   --color-border-active-tertiary-inverted-hover: var(--color-grey-500);
   --color-border-active-tertiary-inverted-pressed: var(--color-grey-400);
 
-  /* New tokens - background */
+  /* Color tokens - background */
 
   --color-background-error-default: var(--color-negative-700);
   --color-background-error-hover: var(--color-negative-600);
@@ -232,7 +242,7 @@
   --color-background-active-primary-soft-inverted-pressed: var(--color-grey-500);
   /* active secondary and tertiary variants are part of DS but not used currently  */
 
-  /* New tokens - content */
+  /* Color tokens - content */
 
   --color-content-error-default: var(--color-negative-700);
   --color-content-error-hover: var(--color-negative-600);
@@ -262,10 +272,87 @@
   --color-content-active-tertiary-disabled: var(--color-grey-500);
 
   /* Box shadows */
+
   --shadow-lg: 0px 16px 24px rgba(0, 0, 0, 0.12);
   --shadow-md: 0px 8px 16px rgba(0, 0, 0, 0.12);
   --shadow-default: 0px 4px 12px rgba(0, 0, 0, 0.12);
   --shadow-sm: 0px 2px 8px rgba(0, 0, 0, 0.12);
+
+  /* Text - weight, size, line height */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --text-h1-hero: 3.5rem; /* 56px */
+  --leading-h1-hero: 4rem; /* 64px */
+  --text-h1-hero-r: 2rem; /* 32px */
+  --leading-h1-hero-r: 2.5rem; /* 40px */
+
+  --text-h1: 2.5rem; /* 40px */
+  --leading-h1: 3rem; /* 48px */
+  --text-h1-r: 1.75rem; /* 28px */
+  --leading-h1-r: 2.25rem; /* 36px */
+
+  --text-h2: 2rem; /* 32px */
+  --leading-h2: 2.5rem; /* 40px */
+  --text-h2-r: 1.5rem; /* 24px */
+  --leading-h2-r: 2rem; /* 32px */
+
+  --text-h3: 1.75rem; /* 28px */
+  --leading-h3: 2.25rem; /* 36px */
+  --text-h3-r: 1.25rem; /* 20px */
+  --leading-h3-r: 1.75rem; /* 28px */
+
+  --text-h4: 1.5rem; /* 24px */
+  --leading-h4: 2rem; /* 32px */
+  --text-h4-r: 1.125rem; /* 18px */
+  --leading-h4-r: 1.625rem; /* 26px */
+
+  --text-h5: 1.25rem; /* 20px */
+  --leading-h5: 1.75rem; /* 28px */
+  --text-h5-r: 1rem; /* 16px */
+  --leading-h5-r: 1.5rem; /* 24px */
+
+  --text-h6: 1rem; /* 16px */
+  --leading-h6: 1.5rem; /* 24px */
+  --text-h6-r: 1rem; /* 16px */
+  --leading-h6-r: 1.5rem; /* 24px */
+
+  --text-p-large: 1.25rem; /* 20px */
+  --leading-p-large: 1.75rem; /* 28px */
+  --text-p-large-r: 1.125rem; /* 18px */
+  --leading-p-large-r: 1.75rem; /* 28px */
+
+  --text-p-default: 1.125rem; /* 18px */
+  --leading-p-default: 1.75rem; /* 28px */
+  --text-p-default-r: 1rem; /* 16px */
+  --leading-p-default-r: 1.5rem; /* 24px */
+
+  --text-p-small: 1rem; /* 16px */
+  --leading-p-small: 1.5rem; /* 24px */
+  --text-p-small-r: 1rem; /* 16px */
+  --leading-p-small-r: 1.5rem; /* 24px */
+
+  --text-p-tiny: 0.875rem; /* 14px */
+  --leading-p-tiny: 1.25rem; /* 20px */
+  --text-p-tiny-r: 0.875rem; /* 14px */
+  --leading-p-tiny-r: 1.25rem; /* 20px */
+
+  --text-button-large: 1rem; /* 16px */
+  --leading-button-large: 1.5rem; /* 24px */
+  --text-button-large-r: 1rem; /* 16px */
+  --leading-button-large-r: 1.5rem; /* 24px */
+
+  --text-button-default: 0.875rem; /* 14px */
+  --leading-button-default: 1.5rem; /* 24px */
+  --text-button-default-r: 0.875rem; /* 14px */
+  --leading-button-default-r: 1.5rem; /* 24px */
+
+  /* Animations */
 
   --animate-stepper-slide: stepper-slide 500ms;
   --animate-stepper-slide-reverse: stepper-slide 500ms reverse;
@@ -278,394 +365,45 @@
       transform: translateY(0);
     }
   }
-
-  /* Button font variables */
-  --text-btn-base: 16px;
-  --text-btn-base--line-height: 24px;
-  --text-btn-lg: 20px;
-  --text-btn-lg--line-height: 32px;
-
-  /* Paragraph font variables */
-  --text-p-xs: 12px;
-  --text-p-xs--line-height: 18px;
-  --text-p-sm: 14px;
-  --text-p-sm--line-height: 20px;
-  --text-p-base: 16px;
-  --text-p-base--line-height: 24px;
-  --text-p-md: 20px;
-  --text-p-md--line-height: 28px;
-
-  /* Heading font variables */
-  --text-h-xs: 16px;
-  --text-h-xs--line-height: 24px;
-  --text-h-sm: 18px;
-  --text-h-sm--line-height: 26px;
-  --text-h-base: 20px;
-  --text-h-base--line-height: 28px;
-  --text-h-md: 24px;
-  --text-h-md--line-height: 32px;
-  --text-h-lg: 28px;
-  --text-h-lg--line-height: 36px;
-  --text-h-xl: 32px;
-  --text-h-xl--line-height: 40px;
-  --text-h-2xl: 40px;
-  --text-h-2xl--line-height: 48px;
-  --text-h-3xl: 56px;
-  --text-h-3xl--line-height: 64px;
-}
-
-@utility text-h1-lg {
-  @apply text-h-xl font-semibold lg:text-h-3xl;
-}
-
-@utility text-h1 {
-  @apply text-h-lg font-semibold lg:text-h-2xl;
-}
-
-@utility text-h1-form {
-  @apply text-h-md font-semibold lg:text-h-2xl;
-}
-
-@utility text-h2 {
-  @apply text-h-md font-semibold lg:text-h-xl;
-}
-
-@utility text-h3 {
-  @apply text-h-base font-semibold lg:text-h-lg;
-}
-
-@utility text-h4 {
-  @apply text-h-sm font-semibold lg:text-h-md;
-}
-
-@utility text-h5 {
-  @apply text-h-xs font-semibold lg:text-h-base;
-}
-
-@utility text-h6 {
-  @apply text-h-xs font-semibold;
-}
-
-@utility text-p1 {
-  /* paragraphs */
-  @apply text-p-base font-normal lg:text-p-md;
-}
-
-@utility text-p1-medium {
-  @apply text-p-base font-medium lg:text-p-md;
-}
-
-@utility text-p1-semibold {
-  @apply text-p-base font-semibold lg:text-p-md;
-}
-
-@utility text-p2 {
-  @apply text-p-base font-normal;
-}
-
-@utility text-p2-medium {
-  @apply text-p-base font-medium;
-}
-
-@utility text-p2-semibold {
-  @apply text-p-base font-semibold;
-}
-
-@utility text-p3 {
-  @apply text-p-sm font-normal;
-}
-
-@utility text-p3-medium {
-  @apply text-p-sm font-medium;
-}
-
-@utility text-p3-semibold {
-  @apply text-p-sm font-semibold;
-}
-
-@utility text-h1-lg-light {
-  /* Figma template variables - end */
-
-  /* Other variables - all of these to be removed as the redesign progresses - start */
-
-  /* heading */
-  @apply text-h-xl font-light lg:text-h-3xl;
-}
-
-@utility text-h1-lg-normal {
-  @apply text-h-xl font-normal lg:text-h-3xl;
-}
-
-@utility text-h1-lg-medium {
-  @apply text-h-xl font-medium lg:text-h-3xl;
-}
-
-@utility text-h1-lg-semibold {
-  @apply text-h-xl font-semibold lg:text-h-3xl;
-}
-
-@utility text-h1-lg-bold {
-  @apply text-h-xl font-bold lg:text-h-3xl;
-}
-
-@utility text-h1-form-light {
-  @apply text-h-md font-light lg:text-h-2xl;
-}
-
-@utility text-h1-form-normal {
-  @apply text-h-md font-normal lg:text-h-2xl;
-}
-
-@utility text-h1-form-medium {
-  @apply text-h-md font-medium lg:text-h-2xl;
-}
-
-@utility text-h1-form-semibold {
-  @apply text-h-md font-semibold lg:text-h-2xl;
-}
-
-@utility text-h1-form-bold {
-  @apply text-h-md font-bold lg:text-h-2xl;
-}
-
-@utility text-h1-light {
-  @apply text-h-lg font-light lg:text-h-2xl;
-}
-
-@utility text-h1-normal {
-  @apply text-h-lg font-normal lg:text-h-2xl;
-}
-
-@utility text-h1-medium {
-  @apply text-h-lg font-medium lg:text-h-2xl;
-}
-
-@utility text-h1-semibold {
-  @apply text-h-lg font-semibold lg:text-h-2xl;
-}
-
-@utility text-h1-bold {
-  @apply text-h-lg font-bold lg:text-h-2xl;
-}
-
-@utility text-h2-light {
-  @apply text-h-md font-light lg:text-h-xl;
-}
-
-@utility text-h2-normal {
-  @apply text-h-md font-normal lg:text-h-xl;
-}
-
-@utility text-h2-medium {
-  @apply text-h-md font-medium lg:text-h-xl;
-}
-
-@utility text-h2-semibold {
-  @apply text-h-md font-semibold lg:text-h-xl;
-}
-
-@utility text-h2-bold {
-  @apply text-h-md font-bold lg:text-h-xl;
-}
-
-@utility text-h3-light {
-  @apply text-h-base font-light lg:text-h-lg;
-}
-
-@utility text-h3-normal {
-  @apply text-h-base font-normal lg:text-h-lg;
-}
-
-@utility text-h3-medium {
-  @apply text-h-base font-medium lg:text-h-lg;
-}
-
-@utility text-h3-semibold {
-  @apply text-h-base font-semibold lg:text-h-lg;
-}
-
-@utility text-h3-bold {
-  @apply text-h-base font-bold lg:text-h-lg;
-}
-
-@utility text-h4-light {
-  @apply text-h-sm font-light lg:text-h-md;
-}
-
-@utility text-h4-normal {
-  @apply text-h-sm font-normal lg:text-h-md;
-}
-
-@utility text-h4-medium {
-  @apply text-h-sm font-medium lg:text-h-md;
-}
-
-@utility text-h4-semibold {
-  @apply text-h-sm font-semibold lg:text-h-md;
-}
-
-@utility text-h4-bold {
-  @apply text-h-sm font-bold lg:text-h-md;
-}
-
-@utility text-h5-light {
-  @apply text-h-xs font-light lg:text-h-base;
-}
-
-@utility text-h5-normal {
-  @apply text-h-xs font-normal lg:text-h-base;
-}
-
-@utility text-h5-medium {
-  @apply text-h-xs font-medium lg:text-h-base;
-}
-
-@utility text-h5-semibold {
-  @apply text-h-xs font-semibold lg:text-h-base;
-}
-
-@utility text-h5-bold {
-  @apply text-h-xs font-bold lg:text-h-base;
-}
-
-@utility text-h6-light {
-  @apply text-h-xs font-light;
-}
-
-@utility text-h6-normal {
-  @apply text-h-xs font-normal;
-}
-
-@utility text-h6-medium {
-  @apply text-h-xs font-medium;
-}
-
-@utility text-h6-semibold {
-  @apply text-h-xs font-semibold;
-}
-
-@utility text-h6-bold {
-  @apply text-h-xs font-bold;
-}
-
-@utility text-p1-light {
-  /* paragraphs */
-  @apply text-p-base font-light lg:text-p-md;
-}
-
-@utility text-p1-bold {
-  @apply text-p-base font-bold lg:text-p-md;
-}
-
-@utility text-p2-light {
-  @apply text-p-base font-light;
-}
-
-@utility text-p2-medium {
-  @apply text-p-base font-medium;
-}
-
-@utility text-p2-semibold {
-  @apply text-p-base font-semibold;
-}
-
-@utility text-p2-bold {
-  @apply text-p-base font-bold;
-}
-
-@utility text-p3-light {
-  @apply text-p-sm font-light;
-}
-
-@utility text-p3-medium {
-  @apply text-p-sm font-medium;
-}
-
-@utility text-p3-semibold {
-  @apply text-p-sm font-semibold;
-}
-
-@utility text-p3-bold {
-  @apply text-p-sm font-bold;
-}
-
-@utility text-p4-light {
-  @apply text-p-xs font-light;
-}
-
-@utility text-p4 {
-  @apply text-p-xs font-normal;
-}
-
-@utility text-p4-medium {
-  @apply text-p-xs font-medium;
-}
-
-@utility text-p4-semibold {
-  @apply text-p-xs font-semibold;
-}
-
-@utility text-p4-bold {
-  @apply text-p-xs font-bold;
-}
-@utility text-20-light {
-  /* other */
-  @apply text-p-md font-light;
-}
-
-@utility text-20 {
-  @apply text-p-md font-normal;
-}
-
-@utility text-20-medium {
-  @apply text-p-md font-medium;
-}
-
-@utility text-20-semibold {
-  @apply text-p-md font-semibold;
-}
-
-@utility text-20-bold {
-  @apply text-p-md font-bold;
-}
-
-@utility text-16-light {
-  @apply text-p-base font-light;
-}
-
-@utility text-16 {
-  @apply text-p-base font-normal;
-}
-
-@utility text-16-medium {
-  @apply text-p-base font-medium;
-}
-
-@utility text-16-semibold {
-  @apply text-p-base font-semibold;
-}
-
-@utility text-16-bold {
-  @apply text-p-base font-bold;
 }
 
-/*
+@layer base {
+  body {
+    @apply font-sans text-font antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold;
+  }
+
+  /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
 
   If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
+  color utility to any element that depends on these defaults. */
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-grey-200, currentColor);
+  }
+
+  /* https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 }
+
+/* Scroll fade utilities */
 
 @utility scroll-fade-left {
   /* useHorizontalScrollFade */
@@ -700,25 +438,125 @@
   }
 }
 
-/* https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor */
-@layer base {
-  button:not(:disabled),
-  [role='button']:not(:disabled) {
-    cursor: pointer;
-  }
-}
+/* Various utilities */
 
-body {
-  @apply font-sans text-font antialiased;
-}
-
-.base-focus-ring {
+@utility base-focus-ring {
   @apply ring-border-active-primary-default ring-offset-3 outline-none;
   @apply focus-visible:ring-3 focus-visible:transition-shadow;
 }
 
-.wrapper-focus-ring {
+@utility wrapper-focus-ring {
   @apply ring-border-active-primary-default ring-offset-3 outline-none;
   @apply focus-within:[&:has(:focus-visible)]:ring-3 focus-within:[&:has(:focus-visible)]:transition-shadow;
-  @apply [&_*]:focus-visible:ring-0 [&_*]:focus-visible:ring-offset-0 [&_*]:focus-visible:outline-none;
+  @apply **:focus-visible:ring-0 **:focus-visible:ring-offset-0 **:focus-visible:outline-none;
+}
+
+@utility negative-x-spacing {
+  @apply -mx-4 px-4;
+}
+
+/* Text utilities (new) */
+
+@utility text-size-h1-hero {
+  @apply text-h1-hero leading-h1-hero;
+}
+
+@utility text-size-h1-hero-r {
+  @apply text-h1-hero-r leading-h1-hero-r;
+}
+
+@utility text-size-h1 {
+  @apply text-h1 leading-h1;
+}
+
+@utility text-size-h1-r {
+  @apply text-h1-r leading-h1-r;
+}
+
+@utility text-size-h2 {
+  @apply text-h2 leading-h2;
+}
+
+@utility text-size-h2-r {
+  @apply text-h2-r leading-h2-r;
+}
+
+@utility text-size-h3 {
+  @apply text-h3 leading-h3;
+}
+
+@utility text-size-h3-r {
+  @apply text-h3-r leading-h3-r;
+}
+
+@utility text-size-h4 {
+  @apply text-h4 leading-h4;
+}
+
+@utility text-size-h4-r {
+  @apply text-h4-r leading-h4-r;
+}
+
+@utility text-size-h5 {
+  @apply text-h5 leading-h5;
+}
+
+@utility text-size-h5-r {
+  @apply text-h5-r leading-h5-r;
+}
+
+@utility text-size-h6 {
+  @apply text-h6 leading-h6;
+}
+
+@utility text-size-h6-r {
+  @apply text-h6-r leading-h6-r;
+}
+
+@utility text-size-p-large {
+  @apply text-p-large leading-p-large;
+}
+
+@utility text-size-p-large-r {
+  @apply text-p-large-r leading-p-large-r;
+}
+
+@utility text-size-p-default {
+  @apply text-p-default leading-p-default;
+}
+
+@utility text-size-p-default-r {
+  @apply text-p-default-r leading-p-default-r;
+}
+
+@utility text-size-p-small {
+  @apply text-p-small leading-p-small;
+}
+
+@utility text-size-p-small-r {
+  @apply text-p-small-r leading-p-small-r;
+}
+
+@utility text-size-p-tiny {
+  @apply text-p-tiny leading-p-tiny;
+}
+
+@utility text-size-p-tiny-r {
+  @apply text-p-tiny-r leading-p-tiny-r;
+}
+
+@utility text-size-button-large {
+  @apply text-button-large leading-button-large;
+}
+
+@utility text-size-button-large-r {
+  @apply text-button-large-r leading-button-large-r;
+}
+
+@utility text-size-button-default {
+  @apply text-button-default leading-button-default;
+}
+
+@utility text-size-button-default-r {
+  @apply text-button-default-r leading-button-default-r;
 }

@@ -1,5 +1,6 @@
-import { DeliveryMethodCodec } from '../norisCodec'
 import { DeliveryMethodEnum } from '@prisma/client'
+
+import { DeliveryMethodCodec } from '../norisCodec'
 import { DeliveryMethodNoris } from '../types/tax.types'
 
 describe('DeliveryMethodCodec', () => {

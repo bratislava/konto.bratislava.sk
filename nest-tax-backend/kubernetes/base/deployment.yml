@@ -32,7 +32,7 @@ spec:
             memory: ${NEST_MEMORY_REQUESTS}
         envFrom:
         - secretRef:
-            name: database-secret
+            name: cnpg-database-secret
         - secretRef:
             name: mailgun-secret
         - secretRef:

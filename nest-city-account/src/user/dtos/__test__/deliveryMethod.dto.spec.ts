@@ -1,7 +1,8 @@
-import { validate } from 'class-validator'
-import { plainToInstance } from 'class-transformer'
 import { DeliveryMethodEnum } from '@prisma/client'
-import { DeliveryMethodDto, DeliveryMethodActiveAndLockedDto } from '../deliveryMethod.dto'
+import { plainToInstance } from 'class-transformer'
+import { validate } from 'class-validator'
+
+import { DeliveryMethodActiveAndLockedDto, DeliveryMethodDto } from '../deliveryMethod.dto'
 
 describe('DeliveryMethodDto', () => {
   describe('IsRequiredForCityAccount Decorator', () => {
@@ -217,13 +218,18 @@ describe('Custom Decorator Edge Cases', () => {
       { date: '2025-99-99', shouldFail: true },
     ]
 
-    for (const testCase of testCases) {
-      const dto = plainToInstance(DeliveryMethodDto, {
-        deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
-        date: testCase.date,
+    const results = await Promise.all(
+      testCases.map(async (testCase) => {
+        const dto = plainToInstance(DeliveryMethodDto, {
+          deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
+          date: testCase.date,
+        })
+        const errors = await validate(dto)
+        return { testCase, errors }
       })
+    )
 
-      const errors = await validate(dto)
+    for (const { testCase, errors } of results) {
       if (testCase.shouldFail) {
         expect(errors.length).toBeGreaterThan(0)
         const dateError = errors.find((error) => error.property === 'date')

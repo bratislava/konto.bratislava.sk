@@ -608,6 +608,7 @@ export const ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum = {
   AfterDueDate: 'AFTER_DUE_DATE',
   AlreadyPaid: 'ALREADY_PAID',
   TaxIsCancelled: 'TAX_IS_CANCELLED',
+  JustOneInstallment: 'JUST_ONE_INSTALLMENT',
 } as const
 
 export type ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum =
@@ -1017,8 +1018,8 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-     * @summary Remove delivery methods for given birth number.
+     * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
+     * @summary [internal] Remove delivery methods for given birth number.
      * @param {string} birthNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1030,7 +1031,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'birthNumber' is not null or undefined
       assertParamExists('adminControllerRemoveDeliveryMethodsFromNoris', 'birthNumber', birthNumber)
       const localVarPath = `/admin/remove-delivery-methods-from-noris/{birthNumber}`.replace(
-        `{${'birthNumber'}}`,
+        '{birthNumber}',
         encodeURIComponent(String(birthNumber)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1364,8 +1365,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-     * @summary Remove delivery methods for given birth number.
+     * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
+     * @summary [internal] Remove delivery methods for given birth number.
      * @param {string} birthNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1577,8 +1578,8 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-     * @summary Remove delivery methods for given birth number.
+     * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
+     * @summary [internal] Remove delivery methods for given birth number.
      * @param {string} birthNumber
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1709,8 +1710,8 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
-   * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
-   * @summary Remove delivery methods for given birth number.
+   * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
+   * @summary [internal] Remove delivery methods for given birth number.
    * @param {string} birthNumber
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2072,9 +2073,9 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'order' is not null or undefined
       assertParamExists('paymentControllerGenerateFullPaymentLink', 'order', order)
       const localVarPath = `/payment/cardpay/full-payment/{year}/{type}/{order}`
-        .replace(`{${'year'}}`, encodeURIComponent(String(year)))
-        .replace(`{${'type'}}`, encodeURIComponent(String(type)))
-        .replace(`{${'order'}}`, encodeURIComponent(String(order)))
+        .replace('{year}', encodeURIComponent(String(year)))
+        .replace('{type}', encodeURIComponent(String(type)))
+        .replace('{order}', encodeURIComponent(String(order)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2127,9 +2128,9 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'order' is not null or undefined
       assertParamExists('paymentControllerGenerateInstallmentPaymentLink', 'order', order)
       const localVarPath = `/payment/cardpay/installment-payment/{year}/{type}/{order}`
-        .replace(`{${'year'}}`, encodeURIComponent(String(year)))
-        .replace(`{${'type'}}`, encodeURIComponent(String(type)))
-        .replace(`{${'order'}}`, encodeURIComponent(String(order)))
+        .replace('{year}', encodeURIComponent(String(year)))
+        .replace('{type}', encodeURIComponent(String(type)))
+        .replace('{order}', encodeURIComponent(String(order)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2201,7 +2202,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       // verify required parameter 'rESULTTEXT' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'rESULTTEXT', rESULTTEXT)
       const localVarPath = `/payment/cardpay/response/{taxType}`.replace(
-        `{${'taxType'}}`,
+        '{taxType}',
         encodeURIComponent(String(taxType)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.

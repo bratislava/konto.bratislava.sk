@@ -6,7 +6,7 @@ import { useLocalStorage } from 'usehooks-ts'
 
 import { CrossIcon } from '@/src/assets/ui-icons'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import WarningIcon from '@/src/components/icon-components/WarningIcon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { environment } from '@/src/environment'
@@ -65,14 +65,14 @@ export const StatusBar = () => {
   }
 
   return (
-    <div className="bg-warning-700 w-full text-white">
+    <div className="w-full bg-warning-700 text-white">
       <SectionContainer>
         <div className="flex justify-between py-4">
           <div className="flex">
             <span className="mr-3">
               <WarningIcon solid className="size-5" />
             </span>
-            <AccountMarkdown variant="statusBar" content={alertData.content} />
+            <Markdown variant="small" content={alertData.content} />
           </div>
           <Button
             className="h-fit shrink-0"

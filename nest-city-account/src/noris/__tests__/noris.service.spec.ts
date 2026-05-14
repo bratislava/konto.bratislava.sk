@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createMock } from '@golevelup/ts-jest'
-import { Test, TestingModule } from '@nestjs/testing'
-import { ConfigService } from '@nestjs/config'
 import { HttpException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { Test, TestingModule } from '@nestjs/testing'
 import { ConnectionPool } from 'mssql'
-import { NorisService } from '../noris.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { NorisValidatorSubservice } from '../subservices/noris-validator.subservice'
-import { EdeskRecordSchema } from '../types/noris.types'
-import { EdeskStatus } from '../types/noris.types'
 import * as mssql from 'mssql'
+
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { NorisService } from '../noris.service'
+import { NorisValidatorSubservice } from '../subservices/noris-validator.subservice'
+import { EdeskRecordSchema, EdeskStatus } from '../types/noris.types'
 
 // Inline jest.fn() avoids the temporal-dead-zone issue that occurs when const
 // variables declared outside the factory are referenced inside jest.mock().
@@ -44,6 +43,7 @@ describe('NorisService', () => {
     process.env.MSSQL_PORT = '1433'
     process.env.MSSQL_DB = 'testdb'
     process.env.MSSQL_USERNAME = 'user'
+    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
     process.env.MSSQL_PASSWORD = 'pass'
 
     module = await Test.createTestingModule({
@@ -64,11 +64,12 @@ describe('NorisService', () => {
     norisValidatorSubservice = module.get<NorisValidatorSubservice>(NorisValidatorSubservice)
 
     jest.mocked(configService.getOrThrow).mockImplementation((key: string) => {
-      const map: Record<string, string | number> = {
+      const map: Record<string, string> = {
         MSSQL_HOST: 'localhost',
-        MSSQL_PORT: 1433,
+        MSSQL_PORT: '1433',
         MSSQL_DB: 'testdb',
         MSSQL_USERNAME: 'user',
+        // eslint-disable-next-line sonarjs/no-hardcoded-passwords
         MSSQL_PASSWORD: 'pass',
       }
       if (key in map) {

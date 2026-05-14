@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -6,9 +6,9 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import TextField from '@/src/components/fields/TextField'
+import Markdown from '@/src/components/formatting/Markdown'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
 import { environment } from '@/src/environment'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
@@ -17,6 +17,8 @@ import { isBrowser } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
 export interface IdentityVerificationOfPhysicalEntityFormData {
+  givenName: string
+  familyName: string
   rc: string
   idCard: string
   turnstileToken: string
@@ -32,6 +34,16 @@ interface Props {
 const foSchema = {
   type: 'object',
   properties: {
+    givenName: {
+      type: 'string',
+      minLength: 1,
+      errorMessage: { minLength: 'account:auth.fields.given_name_required' },
+    },
+    familyName: {
+      type: 'string',
+      minLength: 1,
+      errorMessage: { minLength: 'account:auth.fields.family_name_required' },
+    },
     rc: {
       type: 'string',
       minLength: 1,
@@ -55,7 +67,7 @@ const foSchema = {
       minLength: 1,
     },
   },
-  required: ['rc', 'idCard', 'turnstileToken'],
+  required: ['givenName', 'familyName', 'rc', 'idCard', 'turnstileToken'],
 }
 
 const IdentityVerificationOfPhysicalEntityForm = ({
@@ -79,7 +91,12 @@ const IdentityVerificationOfPhysicalEntityForm = ({
     formState: { isSubmitting },
   } = useHookForm<IdentityVerificationOfPhysicalEntityFormData>({
     schema: foSchema,
-    defaultValues: { rc: '', idCard: '' },
+    defaultValues: {
+      givenName: givenName ?? '',
+      familyName: familyName ?? '',
+      rc: '',
+      idCard: '',
+    },
   })
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
 
@@ -97,27 +114,57 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         return onSubmit(data)
       })}
     >
-      <h1 className="text-h3">{t('auth.identity_verification.fo.init.title')}</h1>
-      <AccountMarkdown
-        variant="sm"
-        content={
-          givenName && familyName
-            ? t('auth.identity_verification.fo.init.content', {
-                name: `${givenName} ${familyName}`,
-              })
-            : t('auth.identity_verification.fo.init.content_without_data')
-        }
-      />
+      <Typography variant="h3" as="h1">
+        {t('auth.identity_verification.fo.init.title')}
+      </Typography>
+      <Markdown variant="small" content={t('auth.identity_verification.fo.init.content')} />
       <AccountErrorAlert error={error} />
 
+      <Controller
+        name="givenName"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            isRequired
+            label={t('auth.fields.given_name_label')}
+            helptext={t('auth.identity_verification.fo.init.given_name_helptext')}
+            autoComplete="given-name"
+            autoCapitalize="on"
+            autoCorrect="off"
+            spellCheck="false"
+            {...field}
+            errorMessage={errors.givenName}
+          />
+        )}
+      />
+      <Controller
+        name="familyName"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            isRequired
+            label={t('auth.fields.family_name_label')}
+            helptext={t('auth.identity_verification.fo.init.family_name_helptext')}
+            autoComplete="family-name"
+            autoCapitalize="on"
+            autoCorrect="off"
+            spellCheck="false"
+            {...field}
+            errorMessage={errors.familyName}
+          />
+        )}
+      />
       <Controller
         name="rc"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             helptext={t('auth.fields.rc_description')}
             label={t('auth.fields.rc_label')}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.rc}
           />
@@ -127,10 +174,13 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         name="idCard"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             label={t('auth.fields.id_card_label')}
             helptext={t('auth.fields.id_card_description')}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.idCard}
           />
@@ -167,7 +217,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
               className="mb-2 self-center"
             />
             {captchaWarning === 'show' && (
-              <p className="text-p3 italic">{t('auth.captcha_warning')}</p>
+              <Typography variant="p-tiny" className="italic">
+                {t('auth.captcha_warning')}
+              </Typography>
             )}
           </>
         )}

@@ -7,6 +7,7 @@ version: 2
 updates:
   - package-ecosystem: 'npm'
     directory: '/forms-shared'
+    versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
@@ -29,11 +30,13 @@ updates:
           - '@react-email/*'
   - package-ecosystem: 'npm'
     directory: '/openapi-clients'
+    versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
   - package-ecosystem: 'npm'
     directory: '/next'
+    versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
@@ -41,6 +44,7 @@ updates:
     open-pull-requests-limit: 0
   - package-ecosystem: 'npm'
     directory: '/nest-forms-backend'
+    versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
@@ -85,6 +89,7 @@ updates:
           - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-clamav-scanner'
+    versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
@@ -109,6 +114,7 @@ updates:
           - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-tax-backend'
+    versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'
@@ -129,6 +135,7 @@ updates:
           - '@bratislava/eslint-config-nest'
   - package-ecosystem: 'npm'
     directory: '/nest-city-account'
+    versioning-strategy: increase
     schedule:
       interval: 'weekly'
       day: 'sunday'

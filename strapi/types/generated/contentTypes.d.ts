@@ -385,11 +385,47 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   }
 }
 
+export interface ApiFooterFooter extends Struct.SingleTypeSchema {
+  collectionName: 'footers'
+  info: {
+    displayName: 'P\u00E4ti\u010Dka'
+    pluralName: 'footers'
+    singularName: 'footer'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    accessibilityPageLink: Schema.Attribute.Component<'blocks.common-link', false>
+    columns: Schema.Attribute.Component<'blocks.footer-column', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 2
+        },
+        number
+      >
+    contactText: Schema.Attribute.RichText
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    facebookUrl: Schema.Attribute.String
+    instagramUrl: Schema.Attribute.String
+    linkedinUrl: Schema.Attribute.String
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::footer.footer'> &
+      Schema.Attribute.Private
+    publishedAt: Schema.Attribute.DateTime
+    tiktokUrl: Schema.Attribute.String
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    youtubeUrl: Schema.Attribute.String
+  }
+}
+
 export interface ApiFormForm extends Struct.CollectionTypeSchema {
   collectionName: 'forms'
   info: {
     description: ''
-    displayName: 'Form'
+    displayName: 'Formul\u00E1re'
     pluralName: 'forms'
     singularName: 'form'
   }
@@ -438,7 +474,7 @@ export interface ApiHelpPageHelpPage extends Struct.SingleTypeSchema {
   collectionName: 'help_pages'
   info: {
     description: ''
-    displayName: 'Help page'
+    displayName: 'Pomoc'
     pluralName: 'help-pages'
     singularName: 'help-page'
   }
@@ -461,7 +497,7 @@ export interface ApiHelpPageHelpPage extends Struct.SingleTypeSchema {
 export interface ApiHomepageAnnouncementHomepageAnnouncement extends Struct.CollectionTypeSchema {
   collectionName: 'homepage_announcements'
   info: {
-    displayName: 'Homepage announcement'
+    displayName: 'Aktu\u00E1lne (bannery na HP)'
     pluralName: 'homepage-announcements'
     singularName: 'homepage-announcement'
   }
@@ -530,7 +566,7 @@ export interface ApiMunicipalServiceCategoryMunicipalServiceCategory
   extends Struct.CollectionTypeSchema {
   collectionName: 'municipal_service_categories'
   info: {
-    displayName: 'Municipal service category'
+    displayName: 'Mestsk\u00E9 slu\u017Eby - kateg\u00F3rie'
     pluralName: 'municipal-service-categories'
     singularName: 'municipal-service-category'
   }
@@ -560,7 +596,7 @@ export interface ApiMunicipalServiceCategoryMunicipalServiceCategory
 export interface ApiMunicipalServiceTagMunicipalServiceTag extends Struct.CollectionTypeSchema {
   collectionName: 'municipal_service_tags'
   info: {
-    displayName: 'Municipal service tag'
+    displayName: 'Mestsk\u00E9 slu\u017Eby - tagy'
     pluralName: 'municipal-service-tags'
     singularName: 'municipal-service-tag'
   }
@@ -591,7 +627,7 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
   collectionName: 'municipal_services'
   info: {
     description: ''
-    displayName: 'Municipal service'
+    displayName: 'Mestsk\u00E9 slu\u017Eby'
     pluralName: 'municipal-services'
     singularName: 'municipal-service'
   }
@@ -676,7 +712,7 @@ export interface ApiMunicipalServicesPageMunicipalServicesPage extends Struct.Si
   collectionName: 'municipal_services_pages'
   info: {
     description: ''
-    displayName: 'Municipal services page'
+    displayName: 'Mestsk\u00E9 slu\u017Eby'
     pluralName: 'municipal-services-pages'
     singularName: 'municipal-services-page'
   }
@@ -707,7 +743,7 @@ export interface ApiTaxTax extends Struct.SingleTypeSchema {
   collectionName: 'taxes'
   info: {
     description: ''
-    displayName: 'Tax'
+    displayName: 'Dane a poplatky'
     pluralName: 'taxes'
     singularName: 'tax'
   }
@@ -1160,6 +1196,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken
       'admin::transfer-token-permission': AdminTransferTokenPermission
       'admin::user': AdminUser
+      'api::footer.footer': ApiFooterFooter
       'api::form.form': ApiFormForm
       'api::general.general': ApiGeneralGeneral
       'api::help-page.help-page': ApiHelpPageHelpPage

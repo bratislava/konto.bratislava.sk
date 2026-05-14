@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { AdminService } from 'src/admin/admin.service'
 import * as z from 'zod'
+
 import { PrismaService } from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { COGNITO_SYNC_CONFIG_DB_KEY } from '../utils/constants'
 
 const SyncCognitoToDbConfigValueSchema = z.object({

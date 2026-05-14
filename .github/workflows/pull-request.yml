@@ -18,13 +18,22 @@ jobs:
       - name: Wait for approval
         run: echo "Approved to run CI for Dependabot PR"
 
-  validate-and-build:
+  validate-repository:
     if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
-    needs: [dependabot-approval]
+    needs: [ dependabot-approval ]
+    name: Validate Repository
+    uses: ./.github/workflows/validate-repository.yml
+    permissions:
+      contents: read
+
+  validate-and-build:
+    if: always() && needs.validate-repository.result == 'success'
+    needs: [ dependabot-approval, validate-repository ]
     uses: ./.github/workflows/validate-and-build.yml
     secrets:
-      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions:
       pull-requests: write
       contents: read

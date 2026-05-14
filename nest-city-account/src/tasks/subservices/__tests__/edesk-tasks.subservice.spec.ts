@@ -1,12 +1,13 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PrismaService } from '../../../prisma/prisma.service'
+import { ExternalEdeskCheck, PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
+
 import prismaMock from '../../../../test/singleton'
-import { EdeskTasksSubservice } from '../edesk-tasks.subservice'
-import { UpvsQueueService } from '../../../upvs-queue/upvs-queue.service'
-import { PhysicalEntity, ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
 import { NorisService } from '../../../noris/noris.service'
+import { PrismaService } from '../../../prisma/prisma.service'
+import { UpvsQueueService } from '../../../upvs-queue/upvs-queue.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { EdeskTasksSubservice } from '../edesk-tasks.subservice'
 
 const EXTERNAL_ITEMS_PROCESS_BATCH_SIZE = 500
 

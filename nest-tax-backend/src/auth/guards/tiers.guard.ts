@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
+import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 import { TIERS_KEY } from '../../utils/decorators/tier.decorator'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
@@ -17,7 +17,7 @@ export class TiersGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<
-      UserVerifyStateCognitoTierEnum[]
+      CognitoUserAttributesTierEnum[]
     >(TIERS_KEY, [context.getHandler(), context.getClass()])
     if (!requiredRoles) {
       return true

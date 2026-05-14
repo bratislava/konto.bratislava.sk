@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+
 import { NorisService } from './noris.service'
 import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
 

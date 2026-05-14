@@ -1,5 +1,6 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common'
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
+
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from './dtos/error.dto'
 

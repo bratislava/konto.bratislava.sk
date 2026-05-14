@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import { TaxType } from '@prisma/client'
-import { UserVerifyStateCognitoTierEnum } from 'openapi-clients/city-account'
+import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
@@ -71,7 +71,7 @@ export class PaymentController {
     type: ResponseInternalServerErrorDto,
   })
   @ApiBearerAuth()
-  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
+  @Tiers(CognitoUserAttributesTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
   @Post('cardpay/full-payment/:year/:type/:order')
@@ -115,7 +115,7 @@ export class PaymentController {
     type: ResponseInternalServerErrorDto,
   })
   @ApiBearerAuth()
-  @Tiers(UserVerifyStateCognitoTierEnum.IdentityCard)
+  @Tiers(CognitoUserAttributesTierEnum.IdentityCard)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
   @Post('cardpay/installment-payment/:year/:type/:order')

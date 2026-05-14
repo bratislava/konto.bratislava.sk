@@ -1,56 +1,31 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { TimePickerUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
+import { TimeValue } from 'react-aria-components/TimeField'
 
-import TimePicker from '@/src/components/widget-components/DateTimePicker/TimePicker'
+import TimeField from '@/src/components/fields/TimeField'
 import FieldBlurWrapper from '@/src/components/widget-components/FieldBlurWrapper/FieldBlurWrapper'
+import { formatTime, safeParseTime } from '@/src/components/widget-wrappers/dateTimeParse'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-interface TimePickerWidgetRJSFProps extends WidgetProps {
-  options: TimePickerUiOptions
-  value: string | undefined
-  errorMessage?: string
-  schema: StrictRJSFSchema
-  onChange: (value?: string) => void
-}
+type TimePickerWidgetRJSFProps = RJSFWidgetProps<string | undefined, TimePickerUiOptions>
 
-const TimePickerWidgetRJSF = ({
-  id,
-  label,
-  options,
-  rawErrors = [],
-  required,
-  disabled,
-  value,
-  onChange,
-  readonly,
-}: TimePickerWidgetRJSFProps) => {
-  const { helptext, helptextMarkdown, helptextFooter, helptextFooterMarkdown, size, labelSize } =
-    options
+const TimePickerWidgetRJSF = (props: TimePickerWidgetRJSFProps) => {
+  const { wrapperProps, fieldProps } = mapRjsfToReactAriaProps(props, {
+    toFieldValue: (value) => (value ? safeParseTime(value) : null),
+    fromFieldValue: (value: TimeValue | null) => (value ? formatTime(value) : undefined),
+  })
 
   return (
-    <WidgetWrapper id={id} options={options}>
-      <FieldBlurWrapper value={value} onChange={onChange}>
-        {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
-          <TimePicker
-            label={label}
-            errorMessage={rawErrors}
-            isRequired={required}
-            isDisabled={disabled || readonly}
-            helptext={helptext}
-            helptextMarkdown={helptextMarkdown}
-            helptextFooter={helptextFooter}
-            helptextFooterMarkdown={helptextFooterMarkdown}
-            value={wrapperValue ?? null}
-            onChange={(value) => wrapperOnChange(value ?? undefined)}
-            onBlur={onBlur}
-            size={size}
-            labelSize={labelSize}
-            displayOptionalLabel
-          />
+    <WidgetWrapper {...wrapperProps}>
+      <FieldBlurWrapper value={fieldProps.value} onChange={fieldProps.onChange}>
+        {({ value, onChange, onBlur }) => (
+          <TimeField {...fieldProps} value={value} onChange={onChange} onBlur={onBlur} />
         )}
       </FieldBlurWrapper>
     </WidgetWrapper>
   )
 }
+
 export default TimePickerWidgetRJSF

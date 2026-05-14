@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
@@ -21,9 +21,9 @@ import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsP
 import MenuDropdown, {
   MenuItemBase,
 } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
-import useToast from '@/src/components/simple-components/Toast/useToast'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
@@ -54,8 +54,9 @@ const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
   )
 }
 
-// designs here https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?node-id=7120%3A20498&mode=dev
-// TODO write docs
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19579-6052&t=MkpmmyHKdgx0IlKq-4
+ */
 
 const MyApplicationsCard = ({
   form,
@@ -202,19 +203,21 @@ const MyApplicationsCard = ({
           <div className="flex w-full gap-6">
             <div className="flex w-full grow flex-col gap-1">
               {(category || isLoading) && (
-                <div className="text-p3-semibold text-main-700">
+                <Typography variant="p-tiny" as="div" className="font-semibold">
                   {isLoading ? <Skeleton width="25%" /> : category}
-                </div>
+                </Typography>
               )}
-              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : subject}</h3>
+              <Typography variant="h5" as="h3">
+                {isLoading ? <Skeleton width="75%" /> : subject}
+              </Typography>
               {(createdAt || isLoading) && (
-                <div className="text-p3">
+                <Typography variant="p-tiny" as="div">
                   {isLoading ? (
                     <Skeleton width="50%" />
                   ) : (
                     <FormatDate>{createdAt || ''}</FormatDate>
                   )}
-                </div>
+                </Typography>
               )}
             </div>
 
@@ -223,9 +226,9 @@ const MyApplicationsCard = ({
                 <div className="flex gap-2">
                   {!isLoading && stateIconAndText.icon}
                   <div className="flex w-[200px] flex-col gap-1">
-                    <div className="text-16-semibold">
+                    <Typography variant="p-small" as="div" className="font-semibold">
                       {isLoading ? <Skeleton width="50%" /> : stateIconAndText.text}
-                    </div>
+                    </Typography>
                     {variant === 'SENT' &&
                       (isLoading ? (
                         <Skeleton width="75%" />
@@ -298,25 +301,25 @@ const MyApplicationsCard = ({
             <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">
                 {(category || isLoading) && (
-                  <div className="text-p3-semibold text-main-700">
+                  <Typography variant="p-tiny" as="div" className="font-semibold">
                     {isLoading ? <Skeleton width="25%" /> : category}
-                  </div>
+                  </Typography>
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="pb-3 text-20-semibold">
+              <Typography variant="h5" as="h3" className="pb-3">
                 {isLoading ? <Skeleton width="75%" /> : subject}
-              </h3>
+              </Typography>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="flex items-center text-p3">
+                  <Typography variant="p-tiny" as="span" className="flex items-center">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (
                       <FormatDate>{createdAt || ''}</FormatDate>
                     )}
-                  </span>
+                  </Typography>
                 )}
 
                 {stateIconAndText.iconRound}

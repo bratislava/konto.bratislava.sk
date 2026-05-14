@@ -1,9 +1,9 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
 interface Data {
@@ -56,15 +56,21 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         return onSubmit(data.email)
       })}
     >
-      <h1 className="text-h3">{t('auth.forgotten_password_title')}</h1>
+      <Typography variant="h3" as="h1">
+        {t('auth.forgotten_password_title')}
+      </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
         name="email"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             label={t('auth.fields.email_label')}
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.email}
           />

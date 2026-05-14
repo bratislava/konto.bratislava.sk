@@ -1,5 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`formDataExtractors > extractEmailFormEmail > kontaktnyFormularPaasExample1 email should match snapshot 1`] = `"jan.kovac@priklad.sk"`;
+
+exports[`formDataExtractors > extractEmailFormEmail > kontaktnyFormularPaasExample2 email should match snapshot 1`] = `""`;
+
 exports[`formDataExtractors > extractEmailFormEmail > nahlaseniePodnetuKElektrickymKolobezkamExample email should match snapshot 1`] = `undefined`;
 
 exports[`formDataExtractors > extractEmailFormEmail > oloDocistenieStanovistaZbernychNadobExample email should match snapshot 1`] = `"test@email.com"`;
@@ -23,6 +27,10 @@ exports[`formDataExtractors > extractEmailFormEmail > oloTriedenyZberPapieraPlas
 exports[`formDataExtractors > extractEmailFormEmail > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample email should match snapshot 1`] = `"test@test.test"`;
 
 exports[`formDataExtractors > extractEmailFormEmail > oloUzatvorenieZmluvyONakladaniSOdpadom email should match snapshot 1`] = `"test@test.ts"`;
+
+exports[`formDataExtractors > extractEmailFormName > kontaktnyFormularPaasExample1 name should match snapshot 1`] = `"Ján Kováč"`;
+
+exports[`formDataExtractors > extractEmailFormName > kontaktnyFormularPaasExample2 name should match snapshot 1`] = `"Marta Nováková"`;
 
 exports[`formDataExtractors > extractEmailFormName > nahlaseniePodnetuKElektrickymKolobezkamExample name should match snapshot 1`] = `undefined`;
 
@@ -49,6 +57,10 @@ exports[`formDataExtractors > extractEmailFormName > oloTriedenyZberPapieraPlast
 exports[`formDataExtractors > extractEmailFormName > oloUzatvorenieZmluvyONakladaniSOdpadom name should match snapshot 1`] = `"Test"`;
 
 exports[`formDataExtractors > extractFormSubjectPlain > komunitneZahradyExample form subject should match snapshot 1`] = `"Žiadosť o komunitnú záhradu - odporúčaný mestský pozemok"`;
+
+exports[`formDataExtractors > extractFormSubjectPlain > kontaktnyFormularPaasExample1 form subject should match snapshot 1`] = `"Kontaktný formulár PAAS"`;
+
+exports[`formDataExtractors > extractFormSubjectPlain > kontaktnyFormularPaasExample2 form subject should match snapshot 1`] = `"Kontaktný formulár PAAS"`;
 
 exports[`formDataExtractors > extractFormSubjectPlain > nahlaseniePodnetuKElektrickymKolobezkamExample form subject should match snapshot 1`] = `"Nahlásenie podnetu k elektrickým kolobežkám"`;
 

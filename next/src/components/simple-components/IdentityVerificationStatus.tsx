@@ -1,4 +1,4 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 
@@ -20,20 +20,20 @@ const IdentityVerificationStatus = () => {
 
   if (tierStatus.isIdentityVerified)
     return (
-      <div className="bg-success-100 flex rounded-sm px-2 py-0 lg:px-3 lg:py-1.5">
-        <span className="text-p3-medium text-success-700">
+      <div className="flex rounded-sm bg-success-100 px-2 py-0 lg:px-3 lg:py-1.5">
+        <Typography variant="p-tiny" className="font-medium text-success-700">
           {t('IdentityVerificationStatus.verification_status_success')}
-        </span>
+        </Typography>
       </div>
     )
 
   if (tierStatus.isIdentityVerificationNotYetAttempted || tierStatus.isNotVerifiedIdentityCard)
     return (
       <div className="flex items-center gap-1.5">
-        <div className="bg-warning-100 flex items-center gap-2 rounded-sm px-2 py-0 lg:px-3 lg:py-1.5">
-          <span className="text-p3-medium text-warning-700">
+        <div className="flex items-center gap-2 rounded-sm bg-warning-100 px-2 py-0 lg:px-3 lg:py-1.5">
+          <Typography variant="p-tiny" className="font-medium text-warning-700">
             {t('IdentityVerificationStatus.verification_status_required')}
-          </span>
+          </Typography>
         </div>
         <Button
           variant="plain"

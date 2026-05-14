@@ -1,9 +1,12 @@
 import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
-import type { NumberFieldProps as ReactAriaNumberFieldProps } from '@react-types/numberfield'
 import { forwardRef, ReactNode } from 'react'
-import { useLocale, useNumberField } from 'react-aria'
-import { useNumberFieldState } from 'react-stately'
+import { useLocale } from 'react-aria/I18nProvider'
+import { useNumberField } from 'react-aria/useNumberField'
+import {
+  NumberFieldStateOptions as RACNumberFieldStateOptions,
+  useNumberFieldState,
+} from 'react-stately/useNumberFieldState'
 
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
@@ -15,7 +18,7 @@ export type NumberFieldProps = FieldWrapperProps & {
   endIcon?: ReactNode
   placeholder?: string
   className?: string
-} & Pick<ReactAriaNumberFieldProps, 'minValue' | 'maxValue' | 'step' | 'formatOptions'>
+} & Pick<RACNumberFieldStateOptions, 'minValue' | 'maxValue' | 'step' | 'formatOptions'>
 
 /**
  * This is a temporary implementation of the NumberField component. Most of the code is copied from InputField and
@@ -56,7 +59,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
     )
 
     const style = cn(
-      'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-16 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
+      'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-size-p-small-r caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 lg:text-size-p-small',
       {
         // hover
         'hover:border-gray-400': !rest.isDisabled,

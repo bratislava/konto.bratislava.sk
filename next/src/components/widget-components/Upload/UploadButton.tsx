@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 import React, { forwardRef } from 'react'
-import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
+import { Button as ReactAriaButton } from 'react-aria-components/Button'
+import { FileTrigger } from 'react-aria-components/FileTrigger'
 
 import { UploadIcon } from '@/src/assets/ui-icons'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
@@ -53,9 +54,12 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       },
     )
 
-    const buttonInfoClassNames = cn('flex flex-col justify-center text-p3', {
-      'min-w-40': supportedFormats || sizeLimit,
-    })
+    const buttonInfoClassNames = cn(
+      'flex flex-col justify-center text-size-p-tiny-r lg:text-size-p-tiny',
+      {
+        'min-w-40': supportedFormats || sizeLimit,
+      },
+    )
 
     const handleOnSelect = async (files: FileList | null) => {
       if (isDisabled) {

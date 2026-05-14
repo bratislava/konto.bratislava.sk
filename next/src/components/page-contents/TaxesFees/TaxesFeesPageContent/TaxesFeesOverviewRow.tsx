@@ -1,6 +1,6 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-clients/tax'
-import React from 'react'
 
 import { ChevronRightIcon } from '@/src/assets/ui-icons'
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
@@ -29,9 +29,9 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
   }[status]
 
   return (
-    <div className="flex items-center gap-[6px]">
+    <div className="flex items-center gap-1.5">
       <span
-        className={cn('w-max text-p3-semibold lg:text-16-semibold', {
+        className={cn('w-max text-size-p-small-r font-semibold lg:text-size-p-small', {
           'text-content-error-default': status === TaxStatusEnum.NotPaid,
           'text-content-warning-default':
             // partially paid should be blue color but we don't such color,
@@ -68,27 +68,31 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
   return (
     <>
       {/* Desktop */}
-      <div className="wrapper-focus-ring group relative hidden w-full items-center justify-between gap-6 py-4 lg:flex">
+      <div className="group relative hidden w-full items-center justify-between gap-6 py-4 wrapper-focus-ring lg:flex">
         <div className="flex w-full max-w-[450px] flex-col">
           {isActiveLink ? (
             <MLink href={href} variant="unstyled" stretched>
-              <h3 className="text-16-semibold mb-1 group-hover:underline">{title}</h3>
+              <Typography variant="h6" as="h3" className="mb-1 group-hover:underline">
+                {title}
+              </Typography>
             </MLink>
           ) : (
-            <h3 className="text-16-semibold mb-1">{title}</h3>
+            <Typography variant="h6" as="h3" className="mb-1">
+              {title}
+            </Typography>
           )}
         </div>
-        <div className="gap-18 flex w-full items-center">
+        <div className="flex w-full items-center gap-18">
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
               {t('account_section_payment.tax_card_delivered')}
-            </span>
+            </Typography>
             <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
               {t('account_section_payment.tax_card_amount')}
-            </span>
+            </Typography>
             {amountToBePaid === undefined ? (
               <span>-</span>
             ) : (
@@ -98,9 +102,9 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
             )}
           </div>
           <div className="flex flex-col">
-            <span className="text-p3-semibold mb-1">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
               {t('account_section_payment.tax_card_status')}
-            </span>
+            </Typography>
             <PaymentStatus status={status} />
           </div>
         </div>
@@ -116,18 +120,25 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
       <div className="relative flex w-full items-start justify-between py-4 lg:hidden">
         <div className="flex flex-col gap-2">
           {isActiveLink ? (
-            <MLink href={href} variant="unstyled" stretched className="text-p2-semibold">
+            <MLink
+              href={href}
+              variant="unstyled"
+              stretched
+              className="text-size-p-small-r font-semibold lg:text-size-p-small"
+            >
               {title}
             </MLink>
           ) : (
-            <span className="text-p2-semibold">{title}</span>
+            <Typography variant="p-small" className="font-semibold">
+              {title}
+            </Typography>
           )}
           {createdAt && <span>{formatDate(createdAt)}</span>}
           <div className="flex flex-row">
             {isDefined(amountToBePaid) && (
-              <span className="text-p3">
+              <Typography variant="p-tiny" as="span">
                 <FormatCurrencyFromCents value={amountToBePaid} />
-              </span>
+              </Typography>
             )}
             <span className="flex items-center">
               {isDefined(amountToBePaid) && (

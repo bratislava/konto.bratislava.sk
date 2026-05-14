@@ -1,36 +1,49 @@
-name: "PR Labeler"
+name: 'PR Labeler'
 on:
   pull_request_review:
-    types: [submitted]
+    types: [ submitted ]
   pull_request:
-    types: [review_requested]
+    types: [ review_requested ]
+
+permissions:
+  pull-requests: write
 
 jobs:
-  created:
-    if: github.event.review.state != 'changes_requested' && github.event.review.state != 'approved'
+  label:
     runs-on: ubuntu-latest
     steps:
-      - name: Add basic label
-        uses: andymckay/labeler@1.0.4
+      - name: Update PR labels
+        uses: actions/github-script@v9
         with:
-          add-labels: 'pr: needs review :pray:'
+          script: |
+            const state = context.payload.review?.state
+            const managedLabels = [
+              'pr: needs review :pray:',
+              'pr: fix & ship :ship:',
+              'pr: needs work :hammer_and_wrench:'
+            ]
+            const labelByState = {
+              default: managedLabels[0],
+              approved: managedLabels[1],
+              changes_requested: managedLabels[2],
+            }
+            const nextLabel = labelByState[state] ?? labelByState.default
+            const issue_number = context.payload.pull_request.number
 
-  approved:
-    if: github.event.review.state == 'approved'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add approve labels
-        uses: andymckay/labeler@1.0.4
-        with:
-          add-labels: 'pr: fix & ship :ship:'
-          remove-labels: 'pr: needs review :pray:, pr: needs work :hammer_and_wrench:'
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number
+            })
 
-  needs-work:
-    if: github.event.review.state == 'changes_requested'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add needs-work labels
-        uses: andymckay/labeler@1.0.4
-        with:
-          add-labels: 'pr: needs work :hammer_and_wrench:'
-          remove-labels: 'pr: fix & ship :ship:, pr: needs review :pray:'
+            const labels = issue.data.labels
+              .map((label) => label.name)
+            const unmanagedLabels = labels.filter((name) => !managedLabels.includes(name))
+            const nextLabels = [...unmanagedLabels, nextLabel]
+
+            await github.rest.issues.setLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              labels: nextLabels
+            })

@@ -1,0 +1,99 @@
+{
+  "name": "Public",
+  "description": "Default role given to unauthenticated user.",
+  "type": "public",
+  "documentId": "ua5o1v5vj2ex91flu2gbkhij",
+  "locale": null,
+  "permissions": [
+    {
+      "action": "api::footer.footer.find",
+      "documentId": "y8obu53zyhd153he79yizt7r",
+      "locale": null
+    },
+    {
+      "action": "api::form.form.find",
+      "documentId": "ii0kux92ychxr3mzaladfi68",
+      "locale": null
+    },
+    {
+      "action": "api::form.form.findOne",
+      "documentId": "zjf41ibq3vxtkp1a17lqm6uy",
+      "locale": null
+    },
+    {
+      "action": "api::general.general.find",
+      "documentId": "oqxjcvpytqb4hed97yzrhtqe",
+      "locale": null
+    },
+    {
+      "action": "api::help-page.help-page.find",
+      "documentId": "b8rm1222e6wchvb9z2buiq3i",
+      "locale": null
+    },
+    {
+      "action": "api::homepage-announcement.homepage-announcement.find",
+      "documentId": "be391vlm298vhbafd0iof8zm",
+      "locale": null
+    },
+    {
+      "action": "api::homepage-announcement.homepage-announcement.findOne",
+      "documentId": "llq8war59hgefes0dsiy4kpp",
+      "locale": null
+    },
+    {
+      "action": "api::homepage.homepage.find",
+      "documentId": "cdcbqulw5lz8ww9y3tjok9mh",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-service-category.municipal-service-category.find",
+      "documentId": "ehhc0stxkrwsou4nrdwk5z0k",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-service-category.municipal-service-category.findOne",
+      "documentId": "cnfo7728youforzyhf5ls0ql",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-service-tag.municipal-service-tag.find",
+      "documentId": "vgu63dq358y2ofks6ute90z6",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-service-tag.municipal-service-tag.findOne",
+      "documentId": "hha42xsd7i4oesjf4fls2tm0",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-service.municipal-service.find",
+      "documentId": "zygaj9gtdsfbi9r9t72mmkx4",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-service.municipal-service.findOne",
+      "documentId": "ftl7qabhn7xj1n820troojvk",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-services-page.municipal-services-page.find",
+      "documentId": "bcou5vdsf11etmj9ruwqprie",
+      "locale": null
+    },
+    {
+      "action": "api::tax.tax.find",
+      "documentId": "grfavszay1bonm3eqehzd9fj",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.content-api.find",
+      "documentId": "cgrxk6fqgdnmtq3iyg2mwjgk",
+      "locale": null
+    },
+    {
+      "action": "plugin::upload.content-api.findOne",
+      "documentId": "s1609rms2zr807jy01mliekt",
+      "locale": null
+    }
+  ]
+}

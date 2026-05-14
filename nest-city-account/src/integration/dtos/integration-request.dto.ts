@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsArray, IsDate, IsNotEmpty, IsNumber, IsOptional } from 'class-validator'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
+import { IsArray, IsDate, IsNotEmpty, IsNumber, IsOptional } from 'class-validator'
+
 import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
 
 export class RequestQueryUserByBirthNumberDto {
@@ -36,7 +37,7 @@ export class RequestBatchNewUserBirthNumbers {
   @Type(() => Date)
   since: Date
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'Optionally specify maximum number to return. Will not return more than internal limit (100).',
     example: 20,

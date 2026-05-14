@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+
 import { CognitoUserAccountTypesEnum } from '../../utils/global-dtos/cognito.dto'
 abstract class BaseContactAndIdInfoResponseDto {
   @ApiProperty({
@@ -10,11 +11,11 @@ abstract class BaseContactAndIdInfoResponseDto {
   @ApiProperty({
     description: 'Account type from Cognito',
     enum: CognitoUserAccountTypesEnum,
-    enumName: 'ContactAndIdInfoTypeEnum',
+    enumName: 'CognitoUserAccountTypesEnum',
   })
   accountType!: CognitoUserAccountTypesEnum
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Email address',
     required: false,
     example: 'user@example.com',
@@ -23,21 +24,21 @@ abstract class BaseContactAndIdInfoResponseDto {
 }
 
 export class UserContactAndIdInfoResponseDto extends BaseContactAndIdInfoResponseDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'First name',
     example: 'John',
     required: false,
   })
   firstName?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Last name',
     example: 'Doe',
     required: false,
   })
   lastName?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Birth number',
     example: '0011223344',
     required: false,
@@ -46,14 +47,14 @@ export class UserContactAndIdInfoResponseDto extends BaseContactAndIdInfoRespons
 }
 
 export class LegalPersonContactAndIdInfoResponseDto extends BaseContactAndIdInfoResponseDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Company name',
     example: 'Company Name, s. r. o.',
     required: false,
   })
   name?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'ICO (Company identification number)',
     example: '12345678',
     required: false,

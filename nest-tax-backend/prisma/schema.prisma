@@ -129,7 +129,10 @@ model CsvFile {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  name      String   @unique
+  name      String
+  taxType   TaxType
+
+  @@unique([name, taxType])
 }
 
 model Config {

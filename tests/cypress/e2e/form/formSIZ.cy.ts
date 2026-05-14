@@ -52,7 +52,7 @@ xdescribe('F01 -', { testIsolation: false }, () => {
 
         it('3. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-meno]', form)).type(this.fileData.first_name)
             cy.wrap(Cypress.$('[data-cy=input-priezvisko]', form)).type(this.fileData.last_name)
@@ -75,7 +75,7 @@ xdescribe('F01 -', { testIsolation: false }, () => {
         it('4. Filling out the "Stavebník" step', () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).should('be.checked')
+            cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).find('input').should('be.checked')
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 1)
 
@@ -94,7 +94,7 @@ xdescribe('F01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(designerErrorBorderFields, form)).should(
               'have.class',
-              'border-negative-700',
+              'border-border-error',
             )
           })
 
@@ -148,7 +148,7 @@ xdescribe('F01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(constructionErrorBorderFields, form)).should(
               'have.class',
-              'border-negative-700',
+              'border-border-error',
             )
           })
           cy.dataCy('form-container').should('be.visible') //.matchImage()

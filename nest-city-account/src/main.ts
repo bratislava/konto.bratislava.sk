@@ -31,7 +31,7 @@ async function bootstrap() {
     )
     .setVersion('1.0')
     .setContact('Bratislava Inovations', 'https://inovacie.bratislava.sk', 'inovacie@bratislava.sk')
-    .addServer('http://localhost:' + port + '/')
+    .addServer(`http://localhost:${port}/`)
     .addServer('https://nest-city-account.dev.bratislava.sk/')
     .addServer('https://nest-city-account.staging.bratislava.sk/')
     .addServer('https://nest-city-account.bratislava.sk/')
@@ -49,4 +49,4 @@ async function bootstrap() {
   await app.listen(port)
   logger.log(`Nest is running on port: ${port}`)
 }
-bootstrap()
+void bootstrap()

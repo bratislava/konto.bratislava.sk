@@ -24,7 +24,8 @@ export const useQueryParamRedirect = () => {
   const { isOAuth, authRequestId, isIdentityVerificationRequired } = useOAuthParams()
 
   const safeRedirect = useMemo(() => {
-    const param = searchParams.get(redirectQueryParam)
+    const param = searchParams?.get(redirectQueryParam) ?? null
+
     return getSafeRedirect(param)
   }, [searchParams])
 
@@ -77,6 +78,7 @@ export const useQueryParamRedirect = () => {
    */
   const redirect = useCallback(async () => {
     const url = await getRedirectUrl(safeRedirect, fetchAuthSession)
+
     return router.push(url)
   }, [router, safeRedirect])
 

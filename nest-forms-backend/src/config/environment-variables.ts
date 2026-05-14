@@ -96,9 +96,6 @@ export default class EnvironmentVariables {
   SUB_NASES_TECHNICAL_ACCOUNT: string
 
   @EnvString()
-  NASES_SENDER_URI: string
-
-  @EnvString()
   NASES_RECIPIENT_URI: string
 
   @EnvUrl()

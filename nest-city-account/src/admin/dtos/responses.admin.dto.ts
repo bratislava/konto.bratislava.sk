@@ -1,20 +1,25 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
-import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator'
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator'
+
 import { CognitoUserAccountTypesEnum } from '../../utils/global-dtos/cognito.dto'
 
 export class UserVerifyState {
   @ApiPropertyOptional({
     description: "Id of given user's email, if exists",
   })
+  @IsString()
+  @IsOptional()
   externalId?: string | null
 
   @ApiPropertyOptional({
     description: 'Type of user.',
     example: CognitoUserAccountTypesEnum.LEGAL_ENTITY,
     enum: CognitoUserAccountTypesEnum,
+    enumName: 'CognitoUserAccountTypesEnum',
   })
   @IsEnum(CognitoUserAccountTypesEnum)
+  @IsOptional()
   type?: CognitoUserAccountTypesEnum
 
   @ApiProperty({
@@ -31,28 +36,32 @@ export class UserVerifyState {
   @IsBoolean()
   isInCognito!: boolean
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Current cognito tier, marks the status of verifying.',
     example: CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
     enum: CognitoUserAttributesTierEnum,
+    enumName: 'CognitoUserAttributesTierEnum',
   })
   @IsEnum(CognitoUserAttributesTierEnum)
+  @IsOptional()
   cognitoTier?: CognitoUserAttributesTierEnum
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'If set, then this number was used for verifying, but is already in our database for other user.',
     example: '7902301011',
   })
   @IsString()
+  @IsOptional()
   birthNumberAlreadyExists?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'If set, then this number was used for verifying, but is already in our database for other user.',
     example: '7902301011',
   })
   @IsString()
+  @IsOptional()
   birthNumberIcoAlreadyExists?: string
 
   @ApiProperty({
@@ -67,6 +76,7 @@ export class UserVerifyState {
     example: 'TODO',
   })
   @IsString()
+  @IsOptional()
   possibleCause?: string
 }
 
@@ -77,22 +87,6 @@ export class OnlySuccessDto {
   })
   @IsBoolean()
   success!: boolean
-}
-
-export class ValidateEdeskForUserIdsResponseDto {
-  @ApiProperty({
-    description: 'Number of users that were validated',
-    example: 1,
-  })
-  @IsNumber()
-  validatedUsers!: number
-
-  @ApiProperty({
-    description: 'Temp debug data',
-    example: null,
-  })
-  //TODO: add types
-  enitites: unknown
 }
 
 export class ResponseValidatePhysicalEntityRfoDto {

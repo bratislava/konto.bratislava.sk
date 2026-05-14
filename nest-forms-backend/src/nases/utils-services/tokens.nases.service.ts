@@ -42,10 +42,6 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
-import {
-  SendMessageNasesSender,
-  SendMessageNasesSenderType,
-} from '../types/send-message-nases-sender.type'
 
 export interface NaturalPersonData {
   given_names?: string[]
@@ -336,17 +332,6 @@ export default class NasesUtilsService {
     return message
   }
 
-  private getSenderId(sender: SendMessageNasesSender): string {
-    switch (sender.type) {
-      case SendMessageNasesSenderType.Eid:
-        return sender.senderUri
-      case SendMessageNasesSenderType.Self:
-        return this.configService.getOrThrow<string>('NASES_SENDER_URI')
-      default:
-        throw new Error('Invalid sender type')
-    }
-  }
-
   /**
    * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
    * it uses default from the form definition.
@@ -364,7 +349,7 @@ export default class NasesUtilsService {
    */
   private async createEnvelopeSendMessage(
     form: Forms,
-    sender: SendMessageNasesSender,
+    senderUri: string,
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -394,7 +379,6 @@ export default class NasesUtilsService {
       formDefinition,
       form.formDataJson,
     )
-    const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
     const mimeType = isSigned
       ? 'application/vnd.etsi.asic-e+zip'
@@ -455,7 +439,7 @@ export default class NasesUtilsService {
               xmlns: 'http://schemas.gov.sk/core/MessageContainer/1.0',
             },
             MessageId: form.id,
-            SenderId: senderId,
+            SenderId: senderUri,
             RecipientId: this.configService.getOrThrow<string>(
               'NASES_RECIPIENT_URI',
             ),
@@ -490,30 +474,15 @@ export default class NasesUtilsService {
     }`
   }
 
-  private getSendMessageNasesEndpoint = (sender: SendMessageNasesSender) => {
-    switch (sender.type) {
-      case SendMessageNasesSenderType.Eid:
-        return this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost.bind(
-          this.clientsService.slovenskoSkApi,
-        )
-      case SendMessageNasesSenderType.Self:
-        return this.clientsService.slovenskoSkApi.apiSktalkReceivePost.bind(
-          this.clientsService.slovenskoSkApi,
-        )
-      default:
-        throw new Error('Invalid sender type')
-    }
-  }
-
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
-    sender: SendMessageNasesSender,
+    senderUri: string,
   ): Promise<NasesSendResponse> {
     let message
     try {
-      message = await this.createEnvelopeSendMessage(data, sender)
+      message = await this.createEnvelopeSendMessage(data, senderUri)
     } catch (error) {
       return {
         status: 500,
@@ -523,16 +492,17 @@ export default class NasesUtilsService {
       }
     }
     try {
-      const response = await this.getSendMessageNasesEndpoint(sender)(
-        {
-          message,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
+      const response =
+        await this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost(
+          {
+            message,
           },
-        },
-      )
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          },
+        )
 
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove

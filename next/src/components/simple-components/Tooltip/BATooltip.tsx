@@ -1,10 +1,10 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
-import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
+import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components/Tooltip'
 
 import { HelpIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import HorizontalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-vertical-arrow.svg'
 import cn from '@/src/utils/cn'
@@ -24,7 +24,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
   return (
     <Tooltip
       {...props}
-      className="text-p3 sm:text-p2 m-0 flex w-fit min-w-[118px] max-w-[230px] flex-row justify-center break-words rounded-sm border-0 bg-gray-700 px-3 py-2 text-white sm:max-w-[280px] sm:px-4 sm:py-3"
+      className="m-0 flex w-fit max-w-[230px] min-w-[118px] flex-row justify-center rounded-sm border-0 bg-gray-700 px-3 py-2 text-size-p-small-r wrap-break-word text-white sm:max-w-[280px] sm:px-4 sm:py-3 sm:text-size-p-small"
     >
       <OverlayArrow>
         {({ placement }) => {
@@ -46,7 +46,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
         }}
       </OverlayArrow>
       <div className="w-max">
-        <AccountMarkdown content={children} variant="sm" uLinkVariant="primary" />
+        <Markdown variant="small" content={children} />
       </div>
     </Tooltip>
   )

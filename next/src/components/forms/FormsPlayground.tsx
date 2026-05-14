@@ -22,12 +22,11 @@ import {
   FormValidatorRegistryProvider,
   useFormValidatorRegistry,
 } from '@/src/components/forms/useFormValidatorRegistry'
+import useToast from '@/src/components/simple-components/Toast/useToast'
 import SelectField, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
 import { downloadBlob } from '@/src/frontend/utils/general'
-
-import useToast from '@/src/components/simple-components/Toast/useToast'
 
 export type FormsPlaygroundProps = {
   formDefinitions: ClientPlaygroundFormDefinition[]
@@ -121,7 +120,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const [formInstanceIndex, setFormInstanceIndex] = useState(0)
   const forceReset = () => setFormInstanceIndex((prev) => prev + 1)
 
-  const [slug, setSlug] = useQueryState('slug', { defaultValue: allForms[0].slug })
+  const [slug, setSlug] = useQueryState('slug', {
+    defaultValue: allForms[0].slug,
+    clearOnDefault: false,
+  })
   useEffect(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)
     // https://github.com/47ng/nuqs/issues/405

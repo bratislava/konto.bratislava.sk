@@ -1,10 +1,10 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
+import PasswordField from '@/src/components/fields/PasswordField'
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
 interface Data {
@@ -39,6 +39,10 @@ const schema = {
   required: ['newEmail', 'password'],
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=822-65528&p=f&t=exwgWgm6FlZ6RJVr-0
+ */
+
 const EmailChangeForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
 
@@ -58,16 +62,22 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
       data-cy="change-email-form"
     >
-      <h1 className="text-h3">{t('auth.email_change_title')}</h1>
-      <p className="text-p3 lg:text-p2">{t('auth.email_change_description')}</p>
+      <Typography variant="h3" as="h1">
+        {t('auth.email_change_title')}
+      </Typography>
+      <Typography variant="p-small">{t('auth.email_change_description')}</Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="newEmail"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             label={t('auth.fields.new_email_label')}
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             {...field}
             errorMessage={errors.email}
           />

@@ -1,12 +1,10 @@
+import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import React, { forwardRef } from 'react'
-import { DropEvent } from 'react-aria'
-import {
-  Button as ReactAriaButton,
-  DropZone,
-  DropZoneRenderProps,
-  FileTrigger,
-} from 'react-aria-components'
+import { forwardRef } from 'react'
+import { DropEvent } from 'react-aria/useDrop'
+import { Button as ReactAriaButton } from 'react-aria-components/Button'
+import { DropZone, DropZoneRenderProps } from 'react-aria-components/DropZone'
+import { FileTrigger } from 'react-aria-components/FileTrigger'
 
 import { UploadIcon } from '@/src/assets/ui-icons'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
@@ -45,7 +43,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)
 
     const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
-      cn('h-full w-full rounded-lg border border-dashed border-gray-300', {
+      cn('size-full rounded-lg border border-dashed border-gray-300', {
         'bg-white': !isDisabled && !isDropTarget,
         'cursor-not-allowed bg-gray-200 opacity-50': isDisabled,
         'cursor-pointer': !isDisabled,
@@ -113,12 +111,12 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
                 </div>
               </div>
 
-              <div className="text-16-semibold">
+              <Typography variant="p-small" className="font-semibold">
                 {allowsMultiple ? t('Upload.uploadFiles') : t('Upload.uploadFile')}
-              </div>
+              </Typography>
 
               {sizeLimit || supportedFormats?.length ? (
-                <dl className="text-p3 flex gap-2">
+                <dl className="flex gap-2 text-size-p-tiny-r lg:text-size-p-tiny">
                   {displayMaxFileSize ? (
                     <>
                       <dt className="sr-only">{t('Upload.sizeLimit')}</dt>

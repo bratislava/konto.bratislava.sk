@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { PrismaService } from '../../../prisma/prisma.service'
-import prismaMock from '../../../../test/singleton'
-import { CleanupTasksSubservice } from '../cleanup-tasks.subservice'
 import { OAuth2Data } from '@prisma/client'
+
+import prismaMock from '../../../../test/singleton'
+import { PrismaService } from '../../../prisma/prisma.service'
+import { CleanupTasksSubservice } from '../cleanup-tasks.subservice'
 
 describe('CleanupTasksSubservice', () => {
   let service: CleanupTasksSubservice

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
 
@@ -91,6 +91,9 @@ export class NorisTaxRealEstateSubservice extends AbstractNorisTaxSubservice<
     try {
       norisData = await this.getTaxDataByYearAndBirthNumber(year, birthNumbers)
     } catch (error) {
+      if (error instanceof HttpException) {
+        throw error
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         'Failed to get taxes from Noris',

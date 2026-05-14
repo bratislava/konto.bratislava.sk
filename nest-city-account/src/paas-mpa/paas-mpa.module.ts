@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { OAuth2Module } from '../oauth2/oauth2.module'
 import { PrismaModule } from '../prisma/prisma.module'

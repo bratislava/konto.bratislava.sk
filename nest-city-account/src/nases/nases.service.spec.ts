@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+
+import ClientsService from '../clients/clients.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NasesService } from './nases.service'
-import ClientsService from '../clients/clients.service'
-import { createMock } from '@golevelup/ts-jest'
 
 describe('NasesService', () => {
   let service: NasesService
@@ -224,4 +224,3 @@ describe('NasesService', () => {
     })
   })
 })
-/* eslint-enable @typescript-eslint/no-explicit-any */

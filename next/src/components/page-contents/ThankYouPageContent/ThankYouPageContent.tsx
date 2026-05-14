@@ -125,7 +125,7 @@ const ThankYouPageContent = () => {
       <ThankYouCard
         variant={cardProps.variant}
         title={cardProps.title}
-        content={`<span className='text-p2'>${cardProps.content}</span>`}
+        content={cardProps.content}
         firstButtonTitle={cardProps.firstButtonTitle}
         firstButtonLink={cardProps.firstButtonLink}
         secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}

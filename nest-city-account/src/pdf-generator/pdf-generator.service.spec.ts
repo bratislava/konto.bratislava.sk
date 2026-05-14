@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { PdfGeneratorService } from './pdf-generator.service'
+
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { PdfGeneratorService } from './pdf-generator.service'
 
 describe('PdfGeneratorService', () => {
   let service: PdfGeneratorService

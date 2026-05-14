@@ -6,8 +6,8 @@ import { PhysicalEntityService } from '../../../../physical-entity/physical-enti
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
-import { VerificationDataSubservice } from '../verification-data.subservice'
 import { VerificationSubservice } from '../verification.subservice'
+import { VerificationDataSubservice } from '../verification-data.subservice'
 
 const IDENTITY_CARD = 'Občiansky preukaz'
 
@@ -258,9 +258,8 @@ describe('VerificationSubservice', () => {
 
     it('should ignore empty/non-string entries in RFO name arrays', () => {
       const rfoData = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         menaOsoby: [{ meno: '' }, { meno: '   ' }, { meno: 'Ján' }, { meno: undefined as any }],
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         priezviskaOsoby: [{ meno: 'Novák' }, { meno: null as any }],
       } as unknown as RfoIdentityListElement
 

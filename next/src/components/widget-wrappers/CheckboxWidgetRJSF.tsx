@@ -1,67 +1,33 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { CheckboxUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
 
-import CheckboxGroup from '@/src/components/widget-components/Checkbox/CheckboxGroup'
-import CheckboxGroupItem from '@/src/components/widget-components/Checkbox/CheckboxGroupItem'
+import Checkbox from '@/src/components/fields/Checkbox'
+import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
+import mapRjsfToReactAriaProps, {
+  RJSFWidgetProps,
+} from '@/src/components/widget-wrappers/mapRjsfToReactAriaProps'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
 
-interface CheckboxRJSFProps extends WidgetProps {
-  options: CheckboxUiOptions
-  value: boolean | null
-  schema: StrictRJSFSchema
-  onChange: (value: boolean) => void
-}
+type CheckboxWidgetRJSFProps = RJSFWidgetProps<boolean | null, CheckboxUiOptions>
 
-const CheckboxWidgetRJSF = ({
-  id,
-  options,
-  value,
-  onChange,
-  label,
-  rawErrors,
-  required,
-  readonly,
-}: CheckboxRJSFProps) => {
-  const {
-    className,
-    variant = 'basic',
-    size,
-    labelSize,
-    helptext,
-    helptextMarkdown,
-    helptextFooter,
-    helptextFooterMarkdown,
-    checkboxLabel,
-  } = options
-
-  const checkboxGroupValue = value ? ['true'] : []
-  const checkboxGroupOnChange = (value: string[]) => {
-    onChange(value.includes('true'))
-  }
+const CheckboxWidgetRJSF = (props: CheckboxWidgetRJSFProps) => {
+  const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
+    toFieldValue: (value) => (value ? ['true'] : []),
+    fromFieldValue: (value) => Array.isArray(value) && value.length === 1 && value[0] === 'true',
+  })
 
   return (
-    <WidgetWrapper id={id} options={options}>
-      {/* TODO: Refactor SingleCheckBox to have field properties and use it.  */}
+    <WidgetWrapper {...wrapperProps}>
+      {/* TODO: Implement single checkbox */}
       <CheckboxGroup
-        errorMessage={rawErrors}
-        value={checkboxGroupValue ?? undefined}
-        onChange={checkboxGroupOnChange}
-        className={className}
-        label={label}
-        isRequired={required}
-        isDisabled={readonly}
-        size={size}
-        labelSize={labelSize}
-        helptext={helptext}
-        helptextMarkdown={helptextMarkdown}
-        helptextFooter={helptextFooter}
-        helptextFooterMarkdown={helptextFooterMarkdown}
-        displayOptionalLabel
+        {...fieldProps}
+        data-cy={`checkbox-group-${fieldProps.label
+          ?.toLowerCase()
+          .replaceAll(' ', '-')
+          .replace(/[?.,§/()]/g, '')}`}
       >
-        <CheckboxGroupItem value="true" variant={variant} isDisabled={readonly}>
-          {checkboxLabel}
-        </CheckboxGroupItem>
+        <Checkbox value="true" variant={specificOptions.variant ?? 'basic'} data-cy="checkbox-true">
+          {specificOptions.checkboxLabel}
+        </Checkbox>
       </CheckboxGroup>
     </WidgetWrapper>
   )

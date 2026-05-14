@@ -1,12 +1,12 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 
+import PasswordField from '@/src/components/fields/PasswordField'
+import TextField from '@/src/components/fields/TextField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
-import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import logger from '@/src/frontend/utils/logger'
 
@@ -49,6 +49,10 @@ const schema = {
   required: ['verificationCode', 'password'],
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13414-66534
+ */
+
 const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState<string>('')
   const { t } = useTranslation('account')
@@ -86,12 +90,12 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         )
       })}
     >
-      <h1 className="text-h3">
+      <Typography variant="h3" as="h1">
         {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
-      </h1>
-      <p className="text-p3 lg:text-p2">
+      </Typography>
+      <Typography variant="p-small">
         {t('auth.new_password_description', { email: lastEmail })}
-      </p>
+      </Typography>
       <AccountErrorAlert
         error={error}
         args={{
@@ -103,9 +107,12 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         name="verificationCode"
         control={control}
         render={({ field }) => (
-          <InputField
+          <TextField
             isRequired
             autoComplete="off"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck="false"
             label={t('auth.fields.verification_code_label')}
             {...field}
             errorMessage={errors.verificationCode}
@@ -131,10 +138,10 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
         {fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')}
       </Button>
-      <div className="text-p3 lg:text-p2">
+      <Typography variant="p-small">
         <span>{t('auth.verification_description')}</span>{' '}
         {cnt > 0 && <span>{t('auth.verification_cnt_description', { cnt })}</span>}
-      </div>
+      </Typography>
       <Button variant="outline" onPress={handleResend} fullWidth isDisabled={cnt > 0}>
         {t('auth.verification_resend')}
       </Button>

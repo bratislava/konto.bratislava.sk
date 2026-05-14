@@ -1,9 +1,9 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Controller } from 'react-hook-form'
 
+import PasswordField from '@/src/components/fields/PasswordField'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
-import PasswordField from '@/src/components/widget-components/PasswordField/PasswordField'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 
 interface Data {
@@ -58,7 +58,9 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.oldPassword, data.password))}
       data-cy="change-password-form"
     >
-      <h1 className="text-h3">{t('auth.password_change_title')}</h1>
+      <Typography variant="h3" as="h1">
+        {t('auth.password_change_title')}
+      </Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="oldPassword"

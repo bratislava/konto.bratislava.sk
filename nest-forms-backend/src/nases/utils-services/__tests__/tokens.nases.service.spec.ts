@@ -19,7 +19,6 @@ import TaxService from '../../../tax/tax.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../../../utils/subservices/minio-client.subservice'
 import { NasesErrorsResponseEnum } from '../../nases.errors.enum'
-import { SendMessageNasesSenderType } from '../../types/send-message-nases-sender.type'
 import NasesUtilsService, {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,
@@ -50,7 +49,6 @@ describe('NasesUtilsService', () => {
     const app: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forFeature(() => ({
-          NASES_SENDER_URI: 'example_sender',
           NASES_RECIPIENT_URI: 'example_recipient',
           MINIO_SAFE_BUCKET: '',
         })),
@@ -201,7 +199,7 @@ describe('NasesUtilsService', () => {
           ginisState: 'CREATED',
           formSentAt: new Date(),
         },
-        { type: SendMessageNasesSenderType.Self },
+        'test-uri',
       )
 
       const parser = new Parser()
@@ -229,7 +227,7 @@ describe('NasesUtilsService', () => {
             `      <Body>\n` +
             `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
             `          <MessageId>123456678901234567890</MessageId>\n` +
-            `          <SenderId>example_sender</SenderId>\n` +
+            `          <SenderId>test-uri</SenderId>\n` +
             `          <RecipientId>example_recipient</RecipientId>\n` +
             `          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n` +
             `          <MessageSubject>Podávanie daňového priznania k dani z nehnuteľností</MessageSubject>\n` +
@@ -282,7 +280,7 @@ describe('NasesUtilsService', () => {
           ginisState: 'CREATED',
           formSentAt: new Date(),
         },
-        { type: SendMessageNasesSenderType.Self },
+        'test-uri',
       )
 
       xmlExample = builder.buildObject(
@@ -302,7 +300,7 @@ describe('NasesUtilsService', () => {
             `      <Body>\n` +
             `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
             `          <MessageId>123456678901234567890</MessageId>\n` +
-            `          <SenderId>example_sender</SenderId>\n` +
+            `          <SenderId>test-uri</SenderId>\n` +
             `          <RecipientId>example_recipient</RecipientId>\n` +
             `          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
             `          <MessageSubject>e-SIZ ž. Ulica1 StavbaA, p.č. 1234/56, kú RZ, TR</MessageSubject>\n` +

@@ -1,8 +1,9 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { createCalendar } from '@internationalized/date'
 import { useRef } from 'react'
-import { useCalendar, useLocale } from 'react-aria'
-import { useCalendarState } from 'react-stately'
+import { useLocale } from 'react-aria/I18nProvider'
+import { useCalendar } from 'react-aria/useCalendar'
+import { useCalendarState } from 'react-stately/useCalendarState'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
 
@@ -52,7 +53,9 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
           icon={<ChevronLeftIcon />}
           aria-label="Left"
         />
-        <span className="text-p2-semibold">{title.charAt(0).toUpperCase() + title.slice(1)}</span>
+        <Typography variant="p-small" as="span" className="font-semibold">
+          {title.charAt(0).toUpperCase() + title.slice(1)}
+        </Typography>
         <Button
           {...nextButtonPropsFixed}
           variant="icon-wrapped-negative-margin"

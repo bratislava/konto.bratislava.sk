@@ -1,9 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+
 import { IsBirthNumber, IsIco } from '../../utils/decorators/validation.decorators'
 
 export class RequestBodyValidateEdeskForUserIdsDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'How many records to skip',
     example: 0,
   })
@@ -23,10 +24,12 @@ export class ManuallyVerifyUserRequestDto {
   })
   birthNumber!: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Ifo of the user',
     example: '123456987',
   })
+  @IsOptional()
+  @IsString()
   ifo?: string
 
   @ApiPropertyOptional({

@@ -1,3 +1,4 @@
+import { Typography } from '@bratislava/component-library'
 import Link, { LinkProps } from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 
@@ -37,7 +38,9 @@ const AccountLink = ({ variant }: Props) => {
 
   return (
     <div className="flex flex-col justify-between md:flex-row">
-      <div className="text-16-semibold text-gray-800">{description}</div>
+      <Typography variant="p-small" className="font-semibold text-gray-800">
+        {description}
+      </Typography>
       <Link
         href={href}
         className="font-semibold text-gray-700 underline hover:text-gray-600 focus:text-gray-800"

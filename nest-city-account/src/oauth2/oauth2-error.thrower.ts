@@ -1,10 +1,10 @@
 // nest-city-account/src/oauth2/oauth2-error.thrower.ts
 
-import { Injectable } from '@nestjs/common'
-import { OAuth2Exception, OAuth2ErrorMetadata } from './oauth2.exception'
+import { HttpStatus, Injectable } from '@nestjs/common'
+
 import { OAuth2AuthorizationErrorDto, OAuth2TokenErrorDto } from './dtos/errors.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
-import { HttpStatus } from '@nestjs/common'
+import { OAuth2ErrorMetadata, OAuth2Exception } from './oauth2.exception'
 
 /**
  * Dedicated error thrower for OAuth2 endpoints

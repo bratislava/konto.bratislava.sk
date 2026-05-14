@@ -3,6 +3,7 @@ import {
   DeliveryMethodNamed,
   PaymentStatus,
   Prisma,
+  TaxType,
   UnpaidReminderSent,
 } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
@@ -13,9 +14,11 @@ import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
   bratislavaTimeZone,
+  calculateDueDate,
   DUE_DATE_OFFSET,
   parseInstallmentDueDate,
 } from '../../tax/utils/unified-tax.util'
+import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
@@ -147,6 +150,11 @@ export default class NotificationsEventsService {
         }
 
         const dueDate = parseInstallmentDueDate(installmentInfo.dueDate)
+
+        const taxDefinition = getTaxDefinitionByType(tax.type)
+        const areInstallmentsPossible =
+          tax.amount > taxDefinition.paymentCalendarThreshold
+
         const eventData = {
           year: tax.year,
           tax_type: tax.type,
@@ -155,6 +163,7 @@ export default class NotificationsEventsService {
           due_date_type: dueDateType,
           due_date_month: dueDate.month() + 1,
           due_date_day: dueDate.date(),
+          are_installments_possible: areInstallmentsPossible,
         }
         try {
           const result =
@@ -241,55 +250,64 @@ export default class NotificationsEventsService {
       .tz('Europe/Bratislava')
       .subtract(DUE_DATE_OFFSET, 'day')
       .toDate()
-    const taxes = await this.prismaService.tax.findMany({
-      select: {
-        id: true,
-        year: true,
-        type: true,
-        order: true,
-        taxPayer: {
-          select: {
-            birthNumber: true,
-          },
-        },
-      },
-      where: {
-        bloomreachUnpaidTaxReminderSent: false,
-        isCancelled: false,
-        // Such taxes are not paid directly by the taxpayer. Therefore, we do not send reminders for them
-        paymentMethodIsInkaso: false,
-        taxPayments: {
-          none: {
-            status: PaymentStatus.SUCCESS,
-          },
-        },
-        OR: [
-          {
-            deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
-            createdAt: {
-              lte: DUE_DATE_OFFSET_DATE,
-            },
-          },
-          {
-            deliveryMethod: {
-              not: DeliveryMethodNamed.CITY_ACCOUNT,
-            },
-            dateTaxRuling: {
-              lte: DUE_DATE_OFFSET_DATE,
-            },
-          },
-          {
-            deliveryMethod: null,
-            dateTaxRuling: {
-              lte: DUE_DATE_OFFSET_DATE,
-            },
-          },
-        ],
-      },
-      // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
-      // 50 * 6 * 24 h = 7200 is max number of konto visitors in dayhours
-      take: 50,
-    })
+
+    // Raw query so that LIMIT applies after all eligibility filters.
+    // Eligibility rules:
+    //   - 2+ installments: no successful payment at all
+    //   - 1 installment:   sum of successful payments < tax amount (partial or unpaid)
+    // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
+    // 50 * 6 * 24 h = 7200 is max number of konto visitors in dayhours
+    const taxes = await this.prismaService.$queryRaw<
+      {
+        id: number
+        year: number
+        type: TaxType
+        order: number | null
+        birthNumber: string
+        dateTaxRuling: Date | null
+        deliveryMethod: DeliveryMethodNamed | null
+        createdAt: Date
+        amount: number
+      }[]
+    >`
+      WITH paid AS (
+        SELECT tp."taxId", SUM(tp.amount) AS total_paid
+        FROM "TaxPayment" tp
+        WHERE tp.status = 'SUCCESS'::"PaymentStatus"
+        GROUP BY tp."taxId"
+      ),
+      installment_counts AS (
+        SELECT ti."taxId", COUNT(*) AS installment_count
+        FROM "TaxInstallment" ti
+        GROUP BY ti."taxId"
+      )
+      SELECT
+        t.id,
+        t.year,
+        t.type,
+        t."order",
+        taxp."birthNumber",
+        t."dateTaxRuling",
+        t."deliveryMethod",
+        t."createdAt",
+        t."amount"
+      FROM "Tax" t
+      JOIN "TaxPayer" taxp ON taxp.id = t."taxPayerId"
+      LEFT JOIN paid p ON p."taxId" = t.id
+      LEFT JOIN installment_counts ic ON ic."taxId" = t.id
+      WHERE t."bloomreachUnpaidTaxReminderSent" = false
+        AND t."isCancelled" = false
+        AND t."paymentMethodIsInkaso" = false
+        AND (
+          (t."deliveryMethod" = 'CITY_ACCOUNT'::"DeliveryMethodNamed" AND t."createdAt" <= ${DUE_DATE_OFFSET_DATE})
+          OR (t."deliveryMethod" IS DISTINCT FROM 'CITY_ACCOUNT'::"DeliveryMethodNamed" AND t."dateTaxRuling" <= ${DUE_DATE_OFFSET_DATE})
+        )
+        AND (
+          (COALESCE(ic.installment_count, 0) >= 2 AND COALESCE(p.total_paid, 0) = 0)
+          OR (COALESCE(ic.installment_count, 0) < 2 AND COALESCE(p.total_paid, 0) < t.amount)
+        )
+      LIMIT ${UNPAID_INSTALLMENT_REMINDER_BATCH_LIMIT}
+    `
 
     if (taxes.length === 0) {
       return
@@ -304,26 +322,51 @@ export default class NotificationsEventsService {
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
-        taxes.map((taxData) => taxData.taxPayer.birthNumber),
+        taxes.map((tax) => tax.birthNumber),
       )
 
-    await Promise.all(
+    const sentResults = await Promise.all(
       taxes.map(async (tax) => {
         const userFromCityAccount =
-          userDataFromCityAccount[tax.taxPayer.birthNumber] || null
-        if (userFromCityAccount && userFromCityAccount.externalId) {
-          await this.bloomreachService.trackEventUnpaidTaxReminder(
-            { year: tax.year, tax_type: tax.type, order: tax.order! },
-            userFromCityAccount.externalId,
-          )
+          userDataFromCityAccount[tax.birthNumber] || null
+        if (!userFromCityAccount || !userFromCityAccount.externalId) {
+          return undefined
         }
+        const dueDate = calculateDueDate(
+          tax.dateTaxRuling ? dayjs(tax.dateTaxRuling) : null,
+          tax.deliveryMethod,
+          dayjs(tax.createdAt),
+        )
+        if (!dueDate || dueDate.isAfter(dayjs().endOf('day'))) {
+          return undefined
+        }
+        const taxDefinition = getTaxDefinitionByType(tax.type)
+        const areInstallmentsPossible =
+          tax.amount > taxDefinition.paymentCalendarThreshold
+        await this.bloomreachService.trackEventUnpaidTaxInstallmentReminder(
+          {
+            year: tax.year,
+            tax_type: tax.type,
+            order: tax.order!,
+            installment_order: 1,
+            due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,
+            due_date_month: dueDate.month() + 1,
+            due_date_day: dueDate.date(),
+            are_installments_possible: areInstallmentsPossible,
+          },
+          userFromCityAccount.externalId,
+        )
+        return tax.id
       }),
+    )
+    const taxIdsSent = sentResults.filter(
+      (id): id is number => id !== undefined,
     )
 
     await this.prismaService.tax.updateMany({
       where: {
         id: {
-          in: taxes.map((tax) => tax.id),
+          in: taxIdsSent,
         },
       },
       data: {

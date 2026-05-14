@@ -2,7 +2,7 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { ArrowRightIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { ModalProps } from '@/src/components/simple-components/Modal'
@@ -27,12 +27,12 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
     <MessageModal type="warning" title={t('verification_modal.title')} {...rest}>
       <div className="flex flex-col gap-6 lg:gap-4">
         <div className="flex flex-col gap-4">
-          <AccountMarkdown className="text-center" content={t('verification_modal.subtitle')} />
-          <AccountMarkdown
-            className="text-p3 text-center"
-            variant="sm"
-            content={t('verification_modal.info')}
+          <Markdown
+            variant="large"
+            className="text-center"
+            content={t('verification_modal.subtitle')}
           />
+          <Markdown variant="small" content={t('verification_modal.info')} />
         </div>
         <div className="flex flex-col gap-3 *:w-full lg:flex-row">
           <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>
@@ -48,7 +48,9 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         </div>
         <div className="flex items-center">
           <HorizontalDivider className="w-full" />
-          <span className="text-p1 px-6">{t('verification_modal.footer_choice')}</span>
+          <span className="px-6 text-size-p-large-r lg:text-size-p-large">
+            {t('verification_modal.footer_choice')}
+          </span>
           <HorizontalDivider className="w-full" />
         </div>
         <Button

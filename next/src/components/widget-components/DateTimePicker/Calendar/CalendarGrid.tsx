@@ -1,6 +1,7 @@
 import { CalendarDate, DateDuration, endOfMonth, getWeeksInMonth } from '@internationalized/date'
-import { useCalendarGrid, useLocale } from 'react-aria'
-import { CalendarState } from 'react-stately'
+import { useLocale } from 'react-aria/I18nProvider'
+import { useCalendarGrid } from 'react-aria/useCalendar'
+import { CalendarState } from 'react-stately/useCalendarState'
 
 import CalendarCell from './CalendarCell'
 
@@ -32,7 +33,7 @@ const CalendarGrid = ({ state, offset = {}, ...rest }: CalendarGridBase) => {
     <div {...gridProps} className="flex flex-col items-center">
       <div
         {...headerProps}
-        className="flex w-full justify-between border-y-2 border-gray-700 bg-gray-50 p-3 text-p3-medium"
+        className="flex w-full justify-between border-y-2 border-gray-700 bg-gray-50 p-3 text-size-p-tiny-r font-medium lg:text-size-p-tiny"
       >
         {weekDays.map((day, index) => (
           <span className="flex h-5 w-10 items-center justify-center" key={index}>

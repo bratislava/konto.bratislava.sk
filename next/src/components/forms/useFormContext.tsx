@@ -5,7 +5,7 @@ import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
-import { useIsSSR } from 'react-aria'
+import { useIsSSR } from 'react-aria/SSRProvider'
 
 import { FormBaseFragment } from '@/src/clients/graphql-strapi/api'
 import {
@@ -108,6 +108,7 @@ export const FormContextProvider = ({
   children,
 }: PropsWithChildren<FormContextProviderProps>) => {
   const context = useGetContext(formServerContext)
+
   return <FormContextContext.Provider value={context}>{children}</FormContextContext.Provider>
 }
 

@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
 
+import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
+import { CustomErrorAdminTypesEnum } from '../../../admin/dtos/error.dto'
+import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
+import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import {
   SendToQueueErrorsEnum,
   VerificationErrorsEnum,
 } from '../../../user-verification/verification.errors.enum'
-import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
-import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { DeliveryMethodErrorsEnum } from './delivery-method.error'
-import { CustomErrorAdminTypesEnum } from '../../../admin/dtos/error.dto'
-import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
 
 // copied over from nest-forms-backend
 export enum ErrorsEnum {

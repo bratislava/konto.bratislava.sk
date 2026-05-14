@@ -1,8 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
+
 import {
-  OAuth2ValidationSubservice,
   AuthorizationParams,
+  OAuth2ValidationSubservice,
 } from '../subservices/oauth2-validation.subservice'
 
 /**
@@ -25,13 +26,13 @@ export class AuthorizationRequestGuard implements CanActivate {
 
     // Extract parameters from query string
     const params: AuthorizationParams = {
-      responseType: query?.response_type,
-      clientId: query?.client_id,
-      redirectUri: query?.redirect_uri,
-      scope: query?.scope,
-      state: query?.state,
-      codeChallenge: query?.code_challenge,
-      codeChallengeMethod: query?.code_challenge_method,
+      responseType: query.response_type,
+      clientId: query.client_id,
+      redirectUri: query.redirect_uri,
+      scope: query.scope,
+      state: query.state,
+      codeChallenge: query.code_challenge,
+      codeChallengeMethod: query.code_challenge_method,
     }
 
     // Validate using shared validation subservice

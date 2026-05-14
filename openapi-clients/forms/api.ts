@@ -1142,7 +1142,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         jsonToXmlV2RequestDto,
       )
       const localVarPath = `/convert/json-to-xml-v2/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1206,7 +1206,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         convertToPdfRequestDto,
       )
       const localVarPath = `/convert/pdf/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1270,7 +1270,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         xmlToJsonRequestDto,
       )
       const localVarPath = `/convert/xml-to-json/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1559,7 +1559,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'jwtToken' is not null or undefined
       assertParamExists('filesControllerDownloadFile', 'jwtToken', jwtToken)
       const localVarPath = `/files/download/file/{jwtToken}`.replace(
-        `{${'jwtToken'}}`,
+        '{jwtToken}',
         encodeURIComponent(String(jwtToken)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1610,8 +1610,8 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'fileId' is not null or undefined
       assertParamExists('filesControllerDownloadToken', 'fileId', fileId)
       const localVarPath = `/files/download/jwt/{formId}/{fileId}`
-        .replace(`{${'formId'}}`, encodeURIComponent(String(formId)))
-        .replace(`{${'fileId'}}`, encodeURIComponent(String(fileId)))
+        .replace('{formId}', encodeURIComponent(String(formId)))
+        .replace('{fileId}', encodeURIComponent(String(fileId)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1659,7 +1659,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('filesControllerGetFilesStatusByForm', 'formId', formId)
       const localVarPath = `/files/forms/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1717,7 +1717,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
         updateFileStatusRequestDto,
       )
       const localVarPath = `/files/scan/{scannerId}`.replace(
-        `{${'scannerId'}}`,
+        '{scannerId}',
         encodeURIComponent(String(scannerId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1784,7 +1784,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'slotId' is not null or undefined
       assertParamExists('filesControllerUploadFile', 'slotId', slotId)
       const localVarPath = `/files/upload/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2221,7 +2221,7 @@ export const FormMigrationsApiAxiosParamCreator = function (configuration?: Conf
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('formMigrationsControllerClaimMigration', 'formId', formId)
       const localVarPath = `/forms/migrations/claim/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2464,7 +2464,7 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('formsControllerBumpJsonVersion', 'formId', formId)
       const localVarPath = `/forms/{formId}/bump-version`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2752,10 +2752,7 @@ export const GinisApiAxiosParamCreator = function (configuration?: Configuration
     ): Promise<RequestArgs> => {
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('ginisControllerGetGinisDocumentByFormId', 'formId', formId)
-      const localVarPath = `/ginis/{formId}`.replace(
-        `{${'formId'}}`,
-        encodeURIComponent(String(formId)),
-      )
+      const localVarPath = `/ginis/{formId}`.replace('{formId}', encodeURIComponent(String(formId)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -3002,10 +2999,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     ): Promise<RequestArgs> => {
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('nasesControllerDeleteForm', 'formId', formId)
-      const localVarPath = `/nases/{formId}`.replace(
-        `{${'formId'}}`,
-        encodeURIComponent(String(formId)),
-      )
+      const localVarPath = `/nases/{formId}`.replace('{formId}', encodeURIComponent(String(formId)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -3051,7 +3045,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('nasesControllerGetForm', 'formId', formId)
       const localVarPath = `/nases/form/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3179,7 +3173,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         updateFormRequestDto,
       )
       const localVarPath = `/nases/send-and-update-form/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3243,7 +3237,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         eidUpdateSendFormRequestDto,
       )
       const localVarPath = `/nases/eid/send-and-update-form/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3303,7 +3297,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       // verify required parameter 'updateFormRequestDto' is not null or undefined
       assertParamExists('nasesControllerUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
       const localVarPath = `/nases/update-form/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3804,7 +3798,7 @@ export const SignerApiAxiosParamCreator = function (configuration?: Configuratio
         signerDataRequestDto,
       )
       const localVarPath = `/signer/get-signer-data/{formId}`.replace(
-        `{${'formId'}}`,
+        '{formId}',
         encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.

@@ -1,9 +1,9 @@
 import {
   ADMINApiFactory,
-  AppApiFactory,
   AuthApiFactory,
   BackendIntegrationAPIApiFactory,
   DPBApiFactory,
+  DefaultApiFactory,
   OAuth2ApiFactory,
   PAASMPAApiFactory,
   UserIntegrationApiFactory,
@@ -31,10 +31,10 @@ export const createCityAccountClient = ({
 
   return {
     ...ADMINApiFactory(...args),
-    ...AppApiFactory(...args),
     ...AuthApiFactory(...args),
     ...BackendIntegrationAPIApiFactory(...args),
     ...DPBApiFactory(...args),
+    ...DefaultApiFactory(...args),
     ...OAuth2ApiFactory(...args),
     ...PAASMPAApiFactory(...args),
     ...UserIntegrationApiFactory(...args),

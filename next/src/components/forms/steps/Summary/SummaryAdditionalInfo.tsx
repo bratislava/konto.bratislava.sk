@@ -1,8 +1,9 @@
+import { Typography } from '@bratislava/component-library'
 import { renderFormAdditionalInfo } from 'forms-shared/string-templates/renderTemplate'
 import { useTranslation } from 'next-i18next/pages'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 
@@ -21,11 +22,12 @@ const SummaryAdditionalInfo = () => {
 
   return (
     <div>
-      <h3 className="text-h3 mb-4">{t('summary.additional_info')}</h3>
-      <AccountMarkdown
+      <Typography variant="h3" className="mb-4">
+        {t('summary.additional_info')}
+      </Typography>
+      <Markdown
         content={additionalInfo}
-        // TODO: Replace variant statusBar
-        variant="statusBar"
+        variant="small"
         className="rounded-[10px] bg-gray-50 p-4 md:p-6 lg:p-8"
       />
     </div>

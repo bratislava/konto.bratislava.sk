@@ -1,7 +1,7 @@
 import { Button } from '@bratislava/component-library'
 import { CustomComponentType } from 'forms-shared/generator/uiOptionsTypes'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import FormCalculator from '@/src/components/segments/FormCalculator/FormCalculator'
 import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import Alert from '@/src/components/simple-components/Alert'
@@ -10,7 +10,7 @@ const CustomComponent = ({ id, component }: { id: string; component: CustomCompo
   if (component.type === 'accordion') {
     return (
       <AccordionV2 title={component.props?.title}>
-        <AccountMarkdown content={component.props?.content} />
+        <Markdown variant="accordion" content={component.props?.content} />
       </AccordionV2>
     )
   }

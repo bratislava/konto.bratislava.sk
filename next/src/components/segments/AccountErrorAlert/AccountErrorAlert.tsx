@@ -68,6 +68,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       CodeDeliveryFailureException: t('errors.CodeDeliveryFailureException'),
       InternalErrorException: t('errors.InternalErrorException'),
       AuthTokenMissingError: t('errors.AuthTokenMissingError'),
+      IdentityIdMissingError: t('errors.IdentityIdMissingError'),
       NetworkError: t('errors.NetworkError'),
       AliasExistsException: t('errors.AliasExistsException', args),
       API_ERROR: t('errors.API_ERROR'),

@@ -518,8 +518,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-
-      prismaMock.taxPayment.groupBy.mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 200 } },
       ] as TaxPaymentGroupByResult)
 
@@ -574,7 +573,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue(
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
         [] as TaxPaymentGroupByResult,
       )
 
@@ -632,7 +631,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 200 } },
       ] as TaxPaymentGroupByResult)
 
@@ -683,7 +682,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 300 } },
         { taxId: 2, _sum: { amount: 500 } },
       ] as TaxPaymentGroupByResult)
@@ -742,7 +741,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue(
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
         [] as TaxPaymentGroupByResult,
       )
 
@@ -779,7 +778,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue(
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
         [] as TaxPaymentGroupByResult,
       )
 
@@ -816,7 +815,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue(
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
         [] as TaxPaymentGroupByResult,
       )
 
@@ -858,7 +857,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 500 } },
       ] as TaxPaymentGroupByResult)
 
@@ -920,7 +919,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes)
-      prismaMock.taxPayment.groupBy.mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 500 } },
         { taxId: 2, _sum: { amount: 2000 } },
       ] as TaxPaymentGroupByResult)
@@ -1016,7 +1015,7 @@ describe('TaxService', () => {
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes)
 
       // Mock different payment amounts for each tax
-      prismaMock.taxPayment.groupBy.mockResolvedValue([
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 1200 } },
         { taxId: 2, _sum: { amount: 400 } },
         { taxId: 4, _sum: { amount: 2000 } },
@@ -1658,7 +1657,9 @@ describe('TaxService', () => {
           { taxId: 2, _sum: { amount: 1000 } },
           { taxId: 3, _sum: { amount: null } },
         ] as TaxPaymentGroupByResult
-        prismaMock.taxPayment.groupBy.mockResolvedValue(groupByRows)
+        ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
+          groupByRows,
+        )
 
         const result = await service['getAmountsAlreadyPaidByTaxIds']([
           1, 2, 3, 4,
@@ -1691,7 +1692,9 @@ describe('TaxService', () => {
         const groupByRows = [
           { taxId: 1, _sum: { amount: 200 } },
         ] as TaxPaymentGroupByResult
-        prismaMock.taxPayment.groupBy.mockResolvedValue(groupByRows)
+        ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
+          groupByRows,
+        )
 
         const result = await service['getAmountsAlreadyPaidByTaxIds']([1, 2, 3])
 
@@ -1705,7 +1708,9 @@ describe('TaxService', () => {
           { taxId: 1, _sum: { amount: null } },
           { taxId: 2, _sum: { amount: 0 } },
         ] as TaxPaymentGroupByResult
-        prismaMock.taxPayment.groupBy.mockResolvedValue(groupByRows)
+        ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
+          groupByRows,
+        )
 
         const result = await service['getAmountsAlreadyPaidByTaxIds']([1, 2])
 

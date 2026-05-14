@@ -913,7 +913,6 @@ describe('NorisTaxRealEstateSubservice', () => {
 
         bloomreachService = service['bloomreachService']
         bloomreachService.trackEventTax = jest.fn().mockResolvedValue(true)
-
         ;(prismaMock.$transaction as jest.Mock).mockImplementation(
           async (callback: unknown) => {
             const mockTx = {
@@ -940,6 +939,7 @@ describe('NorisTaxRealEstateSubservice', () => {
                 }),
               },
               taxInstallment: {
+                deleteMany: jest.fn().mockResolvedValue({}),
                 createMany: jest.fn().mockResolvedValue({}),
               },
               taxDetail: {
@@ -984,6 +984,7 @@ describe('NorisTaxRealEstateSubservice', () => {
                 }),
               },
               taxInstallment: {
+                deleteMany: jest.fn().mockResolvedValue({}),
                 createMany: jest.fn().mockResolvedValue({}),
               },
               taxDetail: {
@@ -1071,6 +1072,7 @@ describe('NorisTaxRealEstateSubservice', () => {
                 }),
               },
               taxInstallment: {
+                deleteMany: jest.fn().mockResolvedValue({}),
                 createMany: jest.fn().mockResolvedValue({}),
               },
               taxDetail: {

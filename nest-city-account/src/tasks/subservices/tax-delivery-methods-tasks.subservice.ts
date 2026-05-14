@@ -623,15 +623,16 @@ export class TaxDeliveryMethodsTasksSubservice {
       const limit = pLimit(DELIVERY_METHOD_EMAIL_CONCURRENCY)
       await Promise.all(
         users.map(async (user) =>
-          limit(() =>
-            this.processUserDeliveryMethodChange(
-              user,
-              latestGdprData.get(user.id),
-              previousGdprData.get(user.id),
-              yesterdayGdprChanges.get(user.id),
-              yesterdayStart,
-              yesterdayEnd
-            )
+          limit(
+            async () =>
+              await this.processUserDeliveryMethodChange(
+                user,
+                latestGdprData.get(user.id),
+                previousGdprData.get(user.id),
+                yesterdayGdprChanges.get(user.id),
+                yesterdayStart,
+                yesterdayEnd
+              )
           )
         )
       )

@@ -40,19 +40,24 @@ export class PdfGeneratorService {
     }
   }
 
-  private async acquireSharedBrowser(): Promise<void> {
-    await this.sharedBrowserLock(async () => {
-      this.sharedBrowserRefCount++
-      if (this.sharedBrowserRefCount === 1) {
-        try {
-          this.sharedBrowser = await chromium.launch({
-            executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
-          })
-        } catch (error) {
-          this.sharedBrowserRefCount--
-          throw error
-        }
+  private async acquireSharedBrowser(): Promise<Browser> {
+    return this.sharedBrowserLock(async () => {
+      if (this.sharedBrowserRefCount === 0) {
+        const browser = await chromium.launch({
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
+        })
+        this.sharedBrowser = browser
+        this.sharedBrowserRefCount = 1
+        return browser
       }
+      if (!this.sharedBrowser) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Shared Chromium browser missing despite active refcount'
+        )
+      }
+      this.sharedBrowserRefCount++
+      return this.sharedBrowser
     })
   }
 
@@ -92,9 +97,7 @@ export class PdfGeneratorService {
   ): Promise<{ data: Buffer; filename: string; contentType: string }> {
     const template = pdfTemplates[templateName]
 
-    await this.acquireSharedBrowser()
-    // sharedBrowser is guaranteed non-null while we hold our pin
-    const browser = this.sharedBrowser!
+    const browser = await this.acquireSharedBrowser()
     let context: BrowserContext | null = null
     let page: Page | null = null
 

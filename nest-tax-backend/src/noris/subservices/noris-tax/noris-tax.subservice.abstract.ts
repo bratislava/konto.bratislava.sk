@@ -492,6 +492,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     })
 
     const taxInstallments = mapNorisToTaxInstallmentsData(dataFromNoris, tax.id)
+    await transaction.taxInstallment.deleteMany({ where: { taxId: tax.id } })
     await transaction.taxInstallment.createMany({
       data: taxInstallments,
     })

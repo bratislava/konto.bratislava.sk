@@ -908,6 +908,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               }),
             },
             taxInstallment: {
+              deleteMany: jest.fn().mockResolvedValue({}),
               createMany: jest.fn().mockResolvedValue({}),
             },
             taxDetail: {
@@ -947,6 +948,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               }),
             },
             taxInstallment: {
+              deleteMany: jest.fn().mockResolvedValue({}),
               createMany: jest.fn().mockResolvedValue({}),
             },
             taxDetail: {
@@ -1029,6 +1031,7 @@ describe('NorisTaxRealEstateSubservice', () => {
               }),
             },
             taxInstallment: {
+              deleteMany: jest.fn().mockResolvedValue({}),
               createMany: jest.fn().mockResolvedValue({}),
             },
             taxDetail: {

@@ -10,7 +10,7 @@ type FileUploadMultipleOptions<K extends FormFiles<string>> = GeneratorBaseOptio
 export const fileUploadMultiple = <K extends FormFiles<string> = never>(
   property: string,
   options: FileUploadMultipleOptions<K>,
-  uiOptions: FileUploadUiOptions,
+  uiOptions: Omit<FileUploadUiOptions, 'slot'>
 ): GeneratorField => ({
   property,
   schema: removeUndefinedValues({
@@ -25,8 +25,7 @@ export const fileUploadMultiple = <K extends FormFiles<string> = never>(
     default: [],
     baUiSchema: {
       'ui:widget': BaWidgetType.FileUploadMultiple,
-      'ui:options': uiOptions,
-      'ui:slot': options.slotId,
+      'ui:options': { uiOptions, slot: options.slotId },
     },
   }),
   required: Boolean(options.required),

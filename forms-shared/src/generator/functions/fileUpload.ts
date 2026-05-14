@@ -10,7 +10,7 @@ type FileUploadOptions<K extends FormFiles<string>> = GeneratorBaseOptions & {
 export const fileUpload = <K extends FormFiles<string> = never>(
   property: string,
   options: FileUploadOptions<K>,
-  uiOptions: FileUploadUiOptions,
+  uiOptions: Omit<FileUploadUiOptions, 'slot'>,
 ): GeneratorField => ({
   property,
   schema: removeUndefinedValues({

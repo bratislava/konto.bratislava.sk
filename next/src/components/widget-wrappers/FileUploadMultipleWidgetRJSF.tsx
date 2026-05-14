@@ -34,6 +34,7 @@ const FileUploadMultipleWidgetRJSF = ({
     className,
     size,
     labelSize,
+    slot,
   } = options
 
   const supportedFormats = accept?.split(',')
@@ -42,7 +43,7 @@ const FileUploadMultipleWidgetRJSF = ({
   const formFileUpload = useFormFileUpload()
 
   const handleUpload = (files: File[]) => {
-    const ids = formFileUpload.uploadFiles(files, constraints)
+    const ids = formFileUpload.uploadFiles(files, slot, constraints)
     if (ids.length === 0) {
       return
     }

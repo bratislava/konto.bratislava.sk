@@ -26,7 +26,7 @@ import {
 import { usePrepareFormMigration } from '@/src/frontend/hooks/usePrepareFormMigration'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
-import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
+import { errorToLogFields, GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import logger from '@/src/frontend/utils/logger'
 import { SafeRedirectType } from '@/src/frontend/utils/queryParamRedirect'
@@ -140,15 +140,26 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
 
         await prepareFormMigration()
 
-        // This endpoint must be called to register user also to the City Account BE
-        await cityAccountClient.userControllerUpsertUserAndRecordClient(
-          {
-            loginClient:
-              (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
-              LoginClientEnum.CityAccount,
-          },
-          { authStrategy: 'authOnly' },
-        )
+        // Recording the login client is non-fatal: the user is already
+        // signed up + signed in. A token-propagation race (AuthTokenMissingError)
+        // or BE hiccup here used to surface as a generic "unexpected error"
+        // even though registration had succeeded.
+        try {
+          await cityAccountClient.userControllerUpsertUserAndRecordClient(
+            {
+              loginClient:
+                (clientInfo?.clientName as UpsertUserRecordClientRequestDtoLoginClientEnum) ??
+                LoginClientEnum.CityAccount,
+            },
+            { authStrategy: 'authOnly' },
+          )
+        } catch (upsertError) {
+          logger.error(
+            { err: errorToLogFields(upsertError), email: lastEmail, phase: 'postSignUpUpsert' },
+            '[AUTH] post-signin upsert failed; continuing as success',
+          )
+        }
+
         setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
       } else {
         throw new Error(
@@ -156,7 +167,10 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
         )
       }
     } catch (error) {
-      logger.error(`[AUTH] Failed to complete auto sign in for email ${lastEmail}`, error)
+      logger.error(
+        { err: errorToLogFields(error), email: lastEmail, phase: 'autoSignIn' },
+        '[AUTH] Failed to complete auto sign in',
+      )
       if (isError(error)) {
         handleErrorChange(error)
       } else {
@@ -203,7 +217,10 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
         throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)
       }
     } catch (error) {
-      logger.error(`[AUTH] Failed to sign up for email ${email}`, error)
+      logger.error(
+        { err: errorToLogFields(error), email, phase: 'signUp' },
+        '[AUTH] Failed to sign up',
+      )
       if (isError(error)) {
         handleErrorChange(error)
       } else {
@@ -219,7 +236,10 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
       await resendSignUpCode({ username: lastEmail })
       logger.info(`[AUTH] Successfully resent verification code for email ${lastEmail}`)
     } catch (error) {
-      logger.error(`[AUTH] Failed to resend verification code for email ${lastEmail}`, error)
+      logger.error(
+        { err: errorToLogFields(error), email: lastEmail, phase: 'resendCode' },
+        '[AUTH] Failed to resend verification code',
+      )
 
       if (isSpecialAlreadyConfirmedError(error)) {
         logger.info(
@@ -263,7 +283,10 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
         )
       }
     } catch (error) {
-      logger.error(`[AUTH] Failed to verify email for email ${lastEmail}`, error)
+      logger.error(
+        { err: errorToLogFields(error), email: lastEmail, phase: 'verifyEmail' },
+        '[AUTH] Failed to verify email',
+      )
 
       if (isSpecialAlreadyConfirmedError(error)) {
         logger.info(

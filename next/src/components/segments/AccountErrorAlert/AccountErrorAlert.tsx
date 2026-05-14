@@ -3,7 +3,12 @@ import { useMemo } from 'react'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
-import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from '@/src/frontend/utils/errors'
+import {
+  errorToLogFields,
+  GENERIC_ERROR_MESSAGE,
+  isError,
+  isErrorWithoutName,
+} from '@/src/frontend/utils/errors'
 import logger from '@/src/frontend/utils/logger'
 
 interface Props {
@@ -23,18 +28,16 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     // typescript should guard this mostly, but we're also passing in error from 3rd parties
     if (!isError(error)) {
       logger.error(
-        `${GENERIC_ERROR_MESSAGE} - something not error-like passed into AccountErrorAlert: `,
-        JSON.stringify(error),
+        { event: 'unknown_error_rendered', err: errorToLogFields(error) },
+        `${GENERIC_ERROR_MESSAGE} - something not error-like passed into AccountErrorAlert`,
       )
 
       return t('errors.unknown')
     }
     if (isErrorWithoutName(error)) {
-      // JSON.stringify here because amplify returns custom errors which pino tries to serialize but fails (they either don't have 'message' attribute or have it as private)
       logger.error(
-        `${GENERIC_ERROR_MESSAGE} - unknown error without error code in AccountErrorAlert: `,
-        error.message,
-        JSON.stringify(error),
+        { event: 'unknown_error_rendered', err: errorToLogFields(error) },
+        `${GENERIC_ERROR_MESSAGE} - error without name in AccountErrorAlert`,
       )
 
       return t('errors.unknown')
@@ -44,6 +47,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     const errorTranslationMap: Record<string, string> = {
       unknown: t('errors.unknown'),
       UserLambdaValidationException: t('errors.UserLambdaValidationException'),
+      UnexpectedLambdaException: t('errors.UnexpectedLambdaException'),
       'Bad Request': t('errors.Bad Request'),
       NotAuthorizedException: t('errors.NotAuthorizedException'),
       'NotAuthorizedException User is disabled.': t(
@@ -51,12 +55,20 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       ),
       CodeMismatchException: t('errors.CodeMismatchException'),
       LimitExceededException: t('errors.LimitExceededException'),
+      TooManyRequestsException: t('errors.TooManyRequestsException'),
+      TooManyFailedAttemptsException: t('errors.TooManyFailedAttemptsException'),
       UserNotFoundException: t('errors.UserNotFoundException'),
       MigrationUserNotFoundException: t('errors.MigrationUserNotFoundException', args),
       UserNotConfirmedException: t('errors.UserNotConfirmedException'),
       UsernameExistsException: t('errors.UsernameExistsException', args),
       ExpiredCodeException: t('errors.ExpiredCodeException'),
       IncorrectPasswordException: t('errors.IncorrectPasswordException'),
+      InvalidParameterException: t('errors.InvalidParameterException'),
+      InvalidPasswordException: t('errors.InvalidPasswordException'),
+      CodeDeliveryFailureException: t('errors.CodeDeliveryFailureException'),
+      InternalErrorException: t('errors.InternalErrorException'),
+      AuthTokenMissingError: t('errors.AuthTokenMissingError'),
+      NetworkError: t('errors.NetworkError'),
       AliasExistsException: t('errors.AliasExistsException', args),
       API_ERROR: t('errors.API_ERROR'),
       RFO_ACCESS_ERROR: t('errors.RFO_ACCESS_ERROR'),
@@ -90,8 +102,12 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       return formattedMessage
     }
 
-    // Unknown error
-    logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error)
+    // Unknown error - log error.name/message as structured fields so Grafana
+    // search by `event:unknown_error_rendered` and `err.name` works.
+    logger.error(
+      { event: 'unknown_error_rendered', err: errorToLogFields(error) },
+      `${GENERIC_ERROR_MESSAGE} - unknown error with code`,
+    )
 
     return t('errors.unknown')
     // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render

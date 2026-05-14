@@ -2,6 +2,8 @@ import { AuthSession, fetchAuthSession } from 'aws-amplify/auth'
 import axios, { AxiosRequestConfig } from 'axios'
 import axiosRetry from 'axios-retry'
 
+import { ErrorWithName } from '@/src/frontend/utils/errors'
+
 export const axiosInstance = axios.create()
 
 axiosRetry(axiosInstance, { retries: 0 })
@@ -91,8 +93,9 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   if (!authSession.identityId) {
     // If guest access is enabled both in Amplify client configuration and Amplify admin console administration, this should never happen.
-    throw new Error(
+    throw new ErrorWithName(
       'Failed to retrieve identityId from authentication session. Please check that guest access is enabled in the Amplify client configuration and the Amplify admin console.',
+      'IdentityIdMissingError',
     )
   }
 
@@ -105,7 +108,10 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   switch (config.authStrategy) {
     case 'authOnly':
-      throw new Error('Authentication required, but no access token found in session.')
+      throw new ErrorWithName(
+        'Authentication required, but no access token found in session.',
+        'AuthTokenMissingError',
+      )
 
     case 'authOrGuestWithToken':
       config.headers['X-Cognito-Guest-Identity-Id'] = authSession.identityId

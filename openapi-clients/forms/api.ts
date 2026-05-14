@@ -1764,7 +1764,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
      * You can upload file to form.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} slotId
+     * @param {string} [slotId]
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -1773,7 +1773,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
      */
     filesControllerUploadFile: async (
       formId: string,
-      slotId: string,
+      slotId?: string,
       file?: File,
       filename?: string,
       id?: string,
@@ -1781,8 +1781,6 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
     ): Promise<RequestArgs> => {
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('filesControllerUploadFile', 'formId', formId)
-      // verify required parameter 'slotId' is not null or undefined
-      assertParamExists('filesControllerUploadFile', 'slotId', slotId)
       const localVarPath = `/files/upload/{formId}`.replace(
         '{formId}',
         encodeURIComponent(String(formId)),
@@ -1974,7 +1972,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
      * You can upload file to form.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} slotId
+     * @param {string} [slotId]
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -1983,7 +1981,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
      */
     async filesControllerUploadFile(
       formId: string,
-      slotId: string,
+      slotId?: string,
       file?: File,
       filename?: string,
       id?: string,
@@ -2090,7 +2088,7 @@ export const FilesApiFactory = function (
      * You can upload file to form.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} slotId
+     * @param {string} [slotId]
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -2099,7 +2097,7 @@ export const FilesApiFactory = function (
      */
     filesControllerUploadFile(
       formId: string,
-      slotId: string,
+      slotId?: string,
       file?: File,
       filename?: string,
       id?: string,
@@ -2182,7 +2180,7 @@ export class FilesApi extends BaseAPI {
    * You can upload file to form.
    * @summary Upload file to form
    * @param {string} formId
-   * @param {string} slotId
+   * @param {string} [slotId]
    * @param {File} [file]
    * @param {string} [filename]
    * @param {string} [id]
@@ -2191,7 +2189,7 @@ export class FilesApi extends BaseAPI {
    */
   public filesControllerUploadFile(
     formId: string,
-    slotId: string,
+    slotId?: string,
     file?: File,
     filename?: string,
     id?: string,

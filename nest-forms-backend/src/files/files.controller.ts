@@ -19,6 +19,7 @@ import {
   ApiConsumes,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
 import contentDisposition from 'content-disposition'
@@ -129,6 +130,7 @@ export default class FilesController {
   })
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
+  @ApiQuery({ name: 'slotId', required: false, type: String })
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
   @Post('upload/:formId')

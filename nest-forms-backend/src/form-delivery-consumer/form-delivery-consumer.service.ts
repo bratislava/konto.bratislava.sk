@@ -14,12 +14,12 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import GinisService from '../ginis/ginis.service'
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../nases/nases.errors.enum'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ } from '../utils/constants'
@@ -28,6 +28,10 @@ import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import {
+  FormDeliveryConsumerErrorsEnum,
+  FormDeliveryConsumerErrorsResponseEnum,
+} from './dtos/form-delivery-consumer.errors.enum'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
@@ -86,8 +90,8 @@ export default class FormDeliveryConsumerService {
     if (form === null) {
       this.logger.error(
         this.throwerErrorGuard.BadRequestException(
-          NasesErrorsEnum.FORM_NOT_FOUND,
-          NasesErrorsResponseEnum.FORM_NOT_FOUND,
+          FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+          FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
           { formId: data.formId },
         ),
       )
@@ -97,8 +101,8 @@ export default class FormDeliveryConsumerService {
     if (form.archived) {
       this.logger.error(
         this.throwerErrorGuard.BadRequestException(
-          NasesErrorsEnum.FORM_ARCHIVED,
-          NasesErrorsResponseEnum.FORM_ARCHIVED,
+          FormsErrorsEnum.FORM_ARCHIVED,
+          FormsErrorsResponseEnum.FORM_ARCHIVED,
           { formId: data.formId },
         ),
       )
@@ -109,8 +113,8 @@ export default class FormDeliveryConsumerService {
     if (!formDefinition) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+          FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
           { formDefinitionSug: form.formDefinitionSlug },
         ),
       )
@@ -135,8 +139,8 @@ export default class FormDeliveryConsumerService {
     if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
           { formId: form.id },
         ),
       )
@@ -269,8 +273,8 @@ export default class FormDeliveryConsumerService {
     } else {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.MAX_TRIES_REACHED,
-          NasesErrorsResponseEnum.MAX_TRIES_REACHED,
+          FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
+          FormDeliveryConsumerErrorsResponseEnum.MAX_TRIES_REACHED,
           {
             formId,
             lastErrorState: error,
@@ -301,8 +305,8 @@ export default class FormDeliveryConsumerService {
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.SENDING_EMAIL_FAILED,
-          NasesErrorsResponseEnum.SENDING_EMAIL_FAILED,
+          FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
+          FormDeliveryConsumerErrorsResponseEnum.SENDING_EMAIL_FAILED,
           { formId: form.id },
           error,
         ),
@@ -320,7 +324,7 @@ export default class FormDeliveryConsumerService {
         .catch((error_: unknown) => {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
-              NasesErrorsEnum.DATABASE_ERROR,
+              ErrorsEnum.DATABASE_ERROR,
               'Setting form error to EMAIL_SEND_ERROR failed.',
               { formId: form.id },
               error_,
@@ -339,8 +343,8 @@ export default class FormDeliveryConsumerService {
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.WEBHOOK_ERROR,
-          NasesErrorsResponseEnum.WEBHOOK_ERROR,
+          FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
+          FormDeliveryConsumerErrorsResponseEnum.WEBHOOK_ERROR,
           { formId: form.id },
           error,
         ),
@@ -358,7 +362,7 @@ export default class FormDeliveryConsumerService {
         .catch((error_: unknown) => {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
-              NasesErrorsEnum.DATABASE_ERROR,
+              ErrorsEnum.DATABASE_ERROR,
               `Setting form error to WEBHOOK_SEND_ERROR failed.`,
               { formId: form.id },
               error_,

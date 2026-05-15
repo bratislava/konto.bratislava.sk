@@ -1,5 +1,6 @@
 import { ConvertErrorsEnum } from '../../../convert/errors/convert.errors.enum'
 import { FilesErrorsEnum } from '../../../files/files.errors.enum'
+import { FormDeliveryConsumerErrorsEnum } from '../../../form-delivery-consumer/dtos/form-delivery-consumer.errors.enum'
 import { EmailFormsErrorsEnum } from '../../../form-delivery-consumer/subservices/dtos/email-forms.errors.enum'
 import { WebhookErrorsEnum } from '../../../form-delivery-consumer/subservices/dtos/webhook.errors.enum'
 import { FormsErrorsEnum } from '../../../forms/forms.errors.enum'
@@ -15,6 +16,7 @@ import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.e
 export type CustomErrorEnums =
   | ErrorsEnum
   | FormsErrorsEnum
+  | FormDeliveryConsumerErrorsEnum
   | GinisTaskErrorEnum
   | NasesErrorsEnum
   | MailgunErrorsEnum

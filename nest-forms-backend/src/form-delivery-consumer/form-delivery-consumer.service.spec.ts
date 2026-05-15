@@ -13,7 +13,6 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FormsService from '../forms/forms.service'
 import GinisService from '../ginis/ginis.service'
-import NasesSenderService from '../nases/services/nases.sender.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
@@ -45,10 +44,6 @@ describe('FormDeliveryConsumerService', () => {
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         FormDeliveryConsumerService,
-        {
-          provide: NasesSenderService,
-          useValue: createMock<NasesSenderService>(),
-        },
         {
           provide: RabbitmqClientService,
           useValue: createMock<RabbitmqClientService>(),

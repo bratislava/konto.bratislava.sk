@@ -13,41 +13,61 @@ const defaultOptions: jwt.SignOptions = {
  */
 @Injectable()
 export default class ApiJwtTokensService {
-  createUserJwtToken(oboToken: string, privateToken: string): string {
+  /**
+   * Default options: RS256, 5-minute expiry.
+   * Pass `options` to override any of the defaults further.
+   */
+  createUserJwtToken(
+    oboToken: string,
+    privateToken: string,
+    options?: jwt.SignOptions,
+  ): string {
     const payload = {
       jti: uuidv1(),
       obo: oboToken,
     }
-    const options: jwt.SignOptions = {
+    const signOptions: jwt.SignOptions = {
       ...defaultOptions,
       header: {
         alg: 'RS256',
         cty: 'JWT',
       },
+      ...options,
     }
 
-    return jwt.sign(payload, privateToken, options)
+    return jwt.sign(payload, privateToken, signOptions)
   }
 
-  createTechnicalAccountJwtToken(sub: string, privateToken: string): string {
+  /**
+   * Default options: RS256, 5-minute expiry.
+   * Pass `options` to override any of the defaults.
+   */
+  createTechnicalAccountJwtToken(
+    sub: string,
+    privateToken: string,
+    options?: jwt.SignOptions,
+  ): string {
     const payload = {
       sub,
       jti: uuidv1(),
       obo: null,
     }
 
-    const options: jwt.SignOptions = defaultOptions
-
-    return jwt.sign(payload, privateToken, options)
+    return jwt.sign(payload, privateToken, { ...defaultOptions, ...options })
   }
 
-  createAdministrationJwtToken(privateToken: string): string {
+  /**
+   * Default options: RS256, 5-minute expiry.
+   * Pass `options` to override any of the defaults.
+   */
+  createAdministrationJwtToken(
+    privateToken: string,
+    options?: jwt.SignOptions,
+  ): string {
     const payload = {
       jti: uuidv1(),
     }
 
-    const options: jwt.SignOptions = defaultOptions
-
-    return jwt.sign(payload, privateToken, options)
+    return jwt.sign(payload, privateToken, { ...defaultOptions, ...options })
   }
 }

@@ -99,7 +99,7 @@ const mockFormDefinitionWithSendEmail = {
     extractEmail: { type: 'schemaless', extractFn: () => mockExtractedEmail },
     extractName: { type: 'schemaless', extractFn: () => mockExtractedName },
     newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
-    userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
+    userResponseTemplate: MailgunTemplateEnum.GINIS_SENT,
     sendJsonDataAttachmentInTechnicalMail: true,
   },
 }
@@ -115,7 +115,7 @@ const mockFormDefinitionWithSendOloEmail = {
   email: {
     mailer: 'olo',
     newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
-    userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
+    userResponseTemplate: MailgunTemplateEnum.GINIS_SENT,
     extractEmail: {
       type: 'schemaless',
       extractFn: () => mockExtractedOloEmail,

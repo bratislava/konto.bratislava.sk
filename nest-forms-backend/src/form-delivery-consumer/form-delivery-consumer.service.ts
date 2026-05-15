@@ -209,7 +209,7 @@ export default class FormDeliveryConsumerService {
         const toEmail = data.userData.email || form.email
         if (data.tries === 2 && toEmail) {
           await this.sendFormSubmissionEmail(form, formDefinition, {
-            template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+            template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
             to: toEmail,
             firstName: data.userData.firstName,
           })
@@ -237,7 +237,7 @@ export default class FormDeliveryConsumerService {
     const toEmail = data.userData.email || form.email
     if (toEmail) {
       await this.sendFormSubmissionEmail(form, formDefinition, {
-        template: MailgunTemplateEnum.NASES_SENT,
+        template: MailgunTemplateEnum.GINIS_SENT,
         to: toEmail,
         firstName: data.userData.firstName,
       })

@@ -30,7 +30,7 @@ interface MailgunConfig {
 }
 
 export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
-  NASES_SENT: {
+  GINIS_SENT: {
     template: '2023-application-status-sent',
     subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
     variables: {
@@ -76,7 +76,7 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
       },
     },
   },
-  NASES_GINIS_IN_PROGRESS: {
+  GINIS_IN_PROGRESS: {
     template: '2023-application-status-in-progress',
     subject: 'Bratislavské konto: Na odoslaní Vašej žiadosti pracujeme',
     variables: {

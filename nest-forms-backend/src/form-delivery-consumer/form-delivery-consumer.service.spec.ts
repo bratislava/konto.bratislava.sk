@@ -382,7 +382,7 @@ describe('FormDeliveryConsumerService', () => {
 
       expect(pdfServiceSpy).toHaveBeenCalled()
       expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
-        template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+        template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
         to: mockRabbitPayloadDto.userData.email,
         firstName: mockRabbitPayloadDto.userData.firstName,
       })
@@ -494,7 +494,7 @@ describe('FormDeliveryConsumerService', () => {
       )
 
       expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
-        template: MailgunTemplateEnum.NASES_SENT,
+        template: MailgunTemplateEnum.GINIS_SENT,
         to: mockRabbitPayloadDto.userData.email,
         firstName: mockRabbitPayloadDto.userData.firstName,
       })

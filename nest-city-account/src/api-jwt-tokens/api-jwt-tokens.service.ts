@@ -15,6 +15,7 @@ const defaultOptions: jwt.SignOptions = {
 export default class ApiJwtTokensService {
   /**
    * Default options: RS256, 5-minute expiry.
+   * Header override (alg: RS256, cty: JWT) is always applied on top.
    * Pass `options` to override any of the defaults further.
    */
   createUserJwtToken(oboToken: string, privateToken: string, options?: jwt.SignOptions): string {

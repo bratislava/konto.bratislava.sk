@@ -13,7 +13,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FormsService from '../forms/forms.service'
 import GinisService from '../ginis/ginis.service'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
+import NasesSenderService from '../nases/services/nases.sender.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
@@ -46,8 +46,8 @@ describe('NasesConsumerService', () => {
       providers: [
         NasesConsumerService,
         {
-          provide: NasesUtilsService,
-          useValue: createMock<NasesUtilsService>(),
+          provide: NasesSenderService,
+          useValue: createMock<NasesSenderService>(),
         },
         {
           provide: RabbitmqClientService,

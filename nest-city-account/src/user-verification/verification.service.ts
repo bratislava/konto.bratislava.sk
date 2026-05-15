@@ -1,10 +1,12 @@
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 
 import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
 import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.dto'
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
@@ -37,7 +39,6 @@ import {
 } from './dtos/requests.verification.dto'
 import { VerificationDataForUserResponseDto } from './dtos/verification-response.dto'
 import { VerificationReturnType } from './types'
-import TokenSubservice from './utils/subservice/token.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { VerificationDataSubservice } from './utils/subservice/verification-data.subservice'
 import { extractBirthNumberFromUri, extractIcoFromUri } from './utils/utils'
@@ -62,8 +63,9 @@ export class VerificationService {
     private verificationSubservice: VerificationSubservice,
     private readonly prisma: PrismaService,
     private readonly bloomreachOutboxService: BloomreachOutboxService,
-    private readonly tokenSubservice: TokenSubservice,
-    private readonly userTierService: UserTierService
+    private readonly apiJwtTokensService: ApiJwtTokensService,
+    private readonly userTierService: UserTierService,
+    private readonly configService: ConfigService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -334,7 +336,10 @@ export class VerificationService {
     user: CognitoGetUserData,
     oboToken: string
   ): Promise<ResponseVerificationDto> {
-    const jwtToken = this.tokenSubservice.createUserJwtToken(oboToken)
+    const jwtToken = this.apiJwtTokensService.createUserJwtToken(
+      oboToken,
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+    )
     try {
       // we do this only to verify that the token is valid, we don't need the result
       await this.nasesService.getUpvsIdentity(jwtToken)

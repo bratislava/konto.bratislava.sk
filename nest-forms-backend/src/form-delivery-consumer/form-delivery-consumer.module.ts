@@ -1,39 +1,27 @@
 import { Module } from '@nestjs/common'
 
-import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
-import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
-import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
-import NasesModule from '../nases/nases.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
-import TaxModule from '../tax/tax.module'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../utils/global-services/mailer/olo-mailer.service'
 import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import FormDeliveryConsumerService from './form-delivery-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
 
 @Module({
   imports: [
-    ApiJwtTokensModule,
     RabbitmqClientModule,
     FormsModule,
     GinisModule,
     ConvertModule,
-    TaxModule,
     FormValidatorRegistryModule,
-    ClientsModule,
-    UserInfoPipeModule,
     ConvertPdfModule,
-    NasesModule,
-    GinisModule,
   ],
   providers: [
     FormDeliveryConsumerService,
@@ -41,7 +29,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
     MailgunHelper,
     MailgunService,
     OloMailerService,
-    MinioClientSubservice,
     EmailFormsSubservice,
     WebhookSubservice,
   ],

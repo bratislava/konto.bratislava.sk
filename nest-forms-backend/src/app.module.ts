@@ -10,10 +10,10 @@ import { AuthV2Module } from './auth-v2/auth-v2.module'
 import ConvertModule from './convert/convert.module'
 import ConvertPdfModule from './convert-pdf/convert-pdf.module'
 import FilesModule from './files/files.module'
+import FormDeliveryConsumerModule from './form-delivery-consumer/form-delivery-consumer.module'
 import FormsModule from './forms/forms.module'
 import GinisModule from './ginis/ginis.module'
 import NasesModule from './nases/nases.module'
-import NasesConsumerModule from './nases-consumer/nases-consumer.module'
 import RabbitmqClientModule from './rabbitmq-client/rabbitmq-client.module'
 import SignerModule from './signer/signer.module'
 import StatusModule from './status/status.module'
@@ -34,7 +34,7 @@ import WebhookModule from './webhook/webhook.module'
     NasesModule,
     StatusModule,
     RabbitmqClientModule,
-    NasesConsumerModule,
+    FormDeliveryConsumerModule,
     ConvertModule,
     ConvertPdfModule,
     GinisModule,

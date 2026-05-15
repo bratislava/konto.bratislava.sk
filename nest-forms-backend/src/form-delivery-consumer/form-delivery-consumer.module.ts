@@ -16,7 +16,7 @@ import OloMailerService from '../utils/global-services/mailer/olo-mailer.service
 import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import NasesConsumerService from './nases-consumer.service'
+import FormDeliveryConsumerService from './form-delivery-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
 
@@ -36,7 +36,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
     GinisModule,
   ],
   providers: [
-    NasesConsumerService,
+    FormDeliveryConsumerService,
     ThrowerErrorGuard,
     MailgunHelper,
     MailgunService,
@@ -45,6 +45,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
     EmailFormsSubservice,
     WebhookSubservice,
   ],
-  exports: [NasesConsumerService],
+  exports: [FormDeliveryConsumerService],
 })
-export default class NasesConsumerModule {}
+export default class FormDeliveryConsumerModule {}

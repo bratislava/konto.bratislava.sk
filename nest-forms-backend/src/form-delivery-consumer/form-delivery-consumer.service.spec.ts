@@ -20,14 +20,14 @@ import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import { FormWithFiles } from '../utils/types/prisma'
-import NasesConsumerService from './nases-consumer.service'
+import FormDeliveryConsumerService from './form-delivery-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 
-describe('NasesConsumerService', () => {
-  let service: NasesConsumerService
+describe('FormDeliveryConsumerService', () => {
+  let service: FormDeliveryConsumerService
   let formsService: FormsService
   let ginisService: GinisService
 
@@ -44,7 +44,7 @@ describe('NasesConsumerService', () => {
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        NasesConsumerService,
+        FormDeliveryConsumerService,
         {
           provide: NasesSenderService,
           useValue: createMock<NasesSenderService>(),
@@ -76,7 +76,7 @@ describe('NasesConsumerService', () => {
       ],
     }).compile()
 
-    service = app.get<NasesConsumerService>(NasesConsumerService)
+    service = app.get<FormDeliveryConsumerService>(FormDeliveryConsumerService)
     formsService = app.get<FormsService>(FormsService)
     ginisService = app.get<GinisService>(GinisService)
     Object.defineProperty(service, 'logger', {

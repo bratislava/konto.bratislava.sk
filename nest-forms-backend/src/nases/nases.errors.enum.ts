@@ -52,7 +52,7 @@ export enum NasesErrorsResponseEnum {
   FORM_NOT_FOUND = 'Form not found in database.',
   FORM_ARCHIVED = 'Form is archived.',
   FORM_DEFINITION_NOT_FOUND = 'Form definition was not found for given slug.',
-  FORM_DEFINITION_NOT_SUPPORTED_TYPE = 'Got unsupported type of FormDefinition. In the nases-consumer queue only generic Slovensko.sk forms can be processed.',
+  FORM_DEFINITION_NOT_SUPPORTED_TYPE = 'Got unsupported type of FormDefinition. In the form-delivery-consumer queue only generic Slovensko.sk forms can be processed.',
   MAX_TRIES_REACHED = 'Max tries reached for formId.',
   SENDING_EMAIL_FAILED = 'Sending email of form has failed.',
   WEBHOOK_ERROR = 'Sending webhook of form has failed.',

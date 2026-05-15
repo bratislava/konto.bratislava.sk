@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
-import WebhookDto from '../nases-consumer/subservices/dtos/webhook.dto'
+import WebhookDto from '../form-delivery-consumer/subservices/dtos/webhook.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @ApiTags('webhook')

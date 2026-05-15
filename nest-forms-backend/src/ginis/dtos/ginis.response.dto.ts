@@ -1,4 +1,4 @@
-import { RabbitPayloadUserDataDto } from '../../nases-consumer/nases-consumer.dto'
+import { RabbitPayloadUserDataDto } from '../../form-delivery-consumer/form-delivery-consumer.dto'
 
 export class GinisCheckNasesPayloadDto {
   formId: string

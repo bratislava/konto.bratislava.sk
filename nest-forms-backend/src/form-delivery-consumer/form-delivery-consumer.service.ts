@@ -31,12 +31,12 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
-} from './nases-consumer.dto'
+} from './form-delivery-consumer.dto'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
 
 @Injectable()
-export default class NasesConsumerService {
+export default class FormDeliveryConsumerService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
@@ -50,7 +50,7 @@ export default class NasesConsumerService {
     private readonly convertPdfService: ConvertPdfService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new LineLoggerSubservice('NasesConsumerService')
+    this.logger = new LineLoggerSubservice('FormDeliveryConsumerService')
   }
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {
@@ -63,13 +63,13 @@ export default class NasesConsumerService {
     routingKey: RABBIT_MQ.ROUTING_KEY,
     queue: RABBIT_MQ.QUEUE,
     errorHandler: (channel, msg, error) => {
-      const logger = new LineLoggerSubservice('NasesConsumerService')
+      const logger = new LineLoggerSubservice('FormDeliveryConsumerService')
       const throwerErrorGuard = new ThrowerErrorGuard()
 
       logger.error(
         throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error during NasesConsumerService handling',
+          'Error during FormDeliveryConsumerService handling',
           error instanceof Error ? error.message : undefined,
           error,
         ),
@@ -131,7 +131,7 @@ export default class NasesConsumerService {
       return webhookResult
     }
 
-    // this filters out tax forms, as they should always be sent with eID and never fall under the nases-consumer queue
+    // this filters out tax forms, as they should always be sent with eID and never fall under the form-delivery-consumer queue
     if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(

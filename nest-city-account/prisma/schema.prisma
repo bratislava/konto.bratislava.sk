@@ -129,7 +129,6 @@ model UserConsents {
   isGranted   Boolean
 
   @@unique([userId, consentType])
-  @@index([userId])
 }
 
 /**
@@ -252,7 +251,6 @@ model LegalPersonConsents {
   isGranted     Boolean
 
   @@unique([legalPersonId, consentType])
-  @@index([legalPersonId])
 }
 
 /**

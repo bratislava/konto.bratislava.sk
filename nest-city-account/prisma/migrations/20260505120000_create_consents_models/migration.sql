@@ -17,8 +17,6 @@ CREATE TABLE "UserConsents"
 CREATE UNIQUE INDEX "UserConsents_userId_consentType_key"
     ON "UserConsents" ("userId", "consentType");
 
-CREATE INDEX "UserConsents_userId_idx" ON "UserConsents" ("userId");
-
 ALTER TABLE "UserConsents"
     ADD CONSTRAINT "UserConsents_userId_fkey" FOREIGN KEY ("userId")
         REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -57,8 +55,6 @@ CREATE TABLE "LegalPersonConsents"
 
 CREATE UNIQUE INDEX "LegalPersonConsents_legalPersonId_consentType_key"
     ON "LegalPersonConsents" ("legalPersonId", "consentType");
-
-CREATE INDEX "LegalPersonConsents_legalPersonId_idx" ON "LegalPersonConsents" ("legalPersonId");
 
 ALTER TABLE "LegalPersonConsents"
     ADD CONSTRAINT "LegalPersonConsents_legalPersonId_fkey" FOREIGN KEY ("legalPersonId")

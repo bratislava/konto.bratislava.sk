@@ -26,13 +26,6 @@ const IconShowCase = () => {
         </span>
       </Stack>
       <Stack>
-        {/* TODO: set fill color to currentColor */}
-        {/* TODO: check and remove icn-components folder */}
-        {/* TODO: Create new icons: */}
-        {/* <QrCodeIcon />*/}
-        {/* <ApplePayIcon /> */}
-        {/* <GooglePayIcon /> */}
-        {/* <LinkVariantIcon /> */}
         {Object.keys(iconNameMap).map((name) => {
           return <Icon key={name} name={name as IconName} fill="white" />
         })}

@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { formsClient } from '@/src/clients/forms'
 import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
-import Icon from '@/src/components/icon-components/Icon'
+import Icon, { type IconName } from '@/src/components/icon-components/Icon'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
@@ -49,10 +49,10 @@ const FormVersionCompareAction = () => {
     return null
   }
 
-  const IconComponent = {
-    [VersionCompareContinueAction.CannotContinue]: <Icon name="error" />,
-    [VersionCompareContinueAction.RequiresBump]: <Icon name="warning" />,
-  }[versionCompareContinueAction]
+  const iconName: IconName =
+    versionCompareContinueAction === VersionCompareContinueAction.CannotContinue
+      ? 'error'
+      : 'warning'
 
   return (
     <div className="flex flex-col justify-between bg-gray-0 py-16 md:bg-gray-50 md:py-28">
@@ -69,7 +69,8 @@ const FormVersionCompareAction = () => {
               },
             )}
           >
-            <IconComponent
+            <Icon
+              name={iconName}
               className={cn('flex size-8 items-center justify-center md:size-10', {
                 'text-warning-700':
                   versionCompareContinueAction === VersionCompareContinueAction.RequiresBump,

@@ -77,7 +77,6 @@ export const iconNameMap = {
   search: 'SearchIcon',
   send: 'SendIcon',
   settings: 'SettingsIcon',
-  'share-outline': 'ShareOutlineIcon',
   speaker: 'SpeakerIcon',
   submission: 'MySubmissionsIcon',
   upload: 'UploadIcon',
@@ -93,8 +92,11 @@ type IconType = React.FunctionComponent<React.SVGProps<SVGSVGElement>>
 export type IconProps = {
   name: IconName
   className?: string
-  // } & Omit<React.SVGProps<SVGSVGElement>, 'name' | 'className'>
 } & React.SVGProps<SVGSVGElement>
+
+{
+  /* TODO: check old icons in icon-components folder and remove */
+}
 
 const Icon = ({ name, className, ...otherProps }: IconProps) => {
   const IconComponent: IconType = Icons[iconNameMap[name]]

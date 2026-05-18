@@ -157,6 +157,7 @@ export class NorisService implements OnModuleDestroy {
               .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
               .input('edesk_pco', mssql.VarChar, null)
               .input('last_check', mssql.DateTime, edeskCheck.lastCheck)
+              .input('death_date', mssql.DateTime, null) // TODO add correct date in https://github.com/bratislava/private-konto.bratislava.sk/issues/1467
               .execute('lcs.usp21_ino_edesk_update')
           },
           (error) => {

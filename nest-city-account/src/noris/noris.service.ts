@@ -106,7 +106,7 @@ export class NorisService implements OnModuleDestroy {
    * @param errorHandler - Error handler for any errors that occur during the operation
    * @returns Result of the operation
    */
-  private async withConnection<T>(
+  async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
     errorHandler: (error: unknown) => never
   ): Promise<T> {

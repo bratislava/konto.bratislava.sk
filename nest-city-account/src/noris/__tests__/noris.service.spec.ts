@@ -147,13 +147,11 @@ describe('NorisService', () => {
       jest.spyOn(service as any, 'createConnection').mockResolvedValue(mockConnection)
 
       const operation = jest.fn().mockRejectedValue(opError)
-      const errorHandler = jest.fn().mockImplementation(() => {
+      const errorHandler = jest.fn<never, [unknown], unknown>().mockImplementation(() => {
         throw handlerError
       })
 
-      await expect((service as any).withConnection(operation, errorHandler)).rejects.toThrow(
-        handlerError
-      )
+      await expect(service.withConnection(operation, errorHandler)).rejects.toThrow(handlerError)
       expect(errorHandler).toHaveBeenCalledWith(opError)
       expect(mockConnection.close).not.toHaveBeenCalled()
     })
@@ -169,7 +167,7 @@ describe('NorisService', () => {
       const operation = jest.fn().mockResolvedValue(result)
 
       await expect(
-        (service as any).withConnection(operation, () => {
+        service.withConnection(operation, () => {
           throw new Error('unexpected')
         })
       ).resolves.toEqual(result)
@@ -250,7 +248,7 @@ describe('NorisService', () => {
 
   describe('updateEdeskChecks', () => {
     beforeEach(() => {
-      jest.spyOn(service as any, 'withConnection').mockResolvedValue(undefined)
+      jest.spyOn(service, 'withConnection').mockResolvedValue(undefined)
     })
 
     afterEach(() => {
@@ -268,7 +266,7 @@ describe('NorisService', () => {
           deathDate: null,
         },
       ]
-      const withConnectionSpy = jest.spyOn(service as any, 'withConnection')
+      const withConnectionSpy = jest.spyOn(service, 'withConnection')
 
       await expect(service.updateEdeskChecks(edeskChecks)).resolves.toBeUndefined()
 
@@ -276,14 +274,14 @@ describe('NorisService', () => {
     })
 
     it('should process empty array without throwing', async () => {
-      const withConnectionSpy = jest.spyOn(service as any, 'withConnection')
+      const withConnectionSpy = jest.spyOn(service, 'withConnection')
       await expect(service.updateEdeskChecks([])).resolves.toBeUndefined()
       expect(withConnectionSpy).not.toHaveBeenCalled()
     })
 
     it('should reject when withConnection rejects', async () => {
       const internalError = new HttpException('Internal', 500)
-      jest.spyOn(service as any, 'withConnection').mockRejectedValue(internalError)
+      jest.spyOn(service, 'withConnection').mockRejectedValue(internalError)
 
       await expect(
         service.updateEdeskChecks([
@@ -297,6 +295,57 @@ describe('NorisService', () => {
           },
         ])
       ).rejects.toThrow(internalError)
+    })
+
+    it('should pass deathDate to death_date SQL parameter', async () => {
+      const deathDate = new Date('2023-06-15')
+      const mockRequest = createMock<mssql.Request>()
+      mockRequest.input.mockReturnValue(mockRequest)
+
+      const mockPool = createMock<ConnectionPool>()
+      mockPool.request.mockReturnValue(mockRequest)
+
+      jest
+        .spyOn(service, 'withConnection')
+        .mockImplementation((operation: any) => operation(mockPool))
+
+      await service.updateEdeskChecks([
+        {
+          idNoris: 1,
+          lastCheck: new Date('2024-01-15'),
+          edeskStatus: EdeskStatus.ACTIVE,
+          edeskNumber: '12345',
+          uri: 'https://edesk.example/sk/123',
+          deathDate,
+        },
+      ])
+
+      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.DateTime, deathDate)
+    })
+
+    it('should pass null to death_date SQL parameter when deathDate is null', async () => {
+      const mockRequest = createMock<mssql.Request>()
+      mockRequest.input.mockReturnValue(mockRequest)
+
+      const mockPool = createMock<ConnectionPool>()
+      mockPool.request.mockReturnValue(mockRequest)
+
+      jest
+        .spyOn(service, 'withConnection')
+        .mockImplementation((operation: any) => operation(mockPool))
+
+      await service.updateEdeskChecks([
+        {
+          idNoris: 1,
+          lastCheck: new Date('2024-01-15'),
+          edeskStatus: EdeskStatus.ACTIVE,
+          edeskNumber: '12345',
+          uri: 'https://edesk.example/sk/123',
+          deathDate: null,
+        },
+      ])
+
+      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.DateTime, null)
     })
   })
 })

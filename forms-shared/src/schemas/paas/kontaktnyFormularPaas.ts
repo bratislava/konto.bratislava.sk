@@ -7,6 +7,7 @@ import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { object } from '../../generator/object'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 const kategorieItems = [
@@ -84,37 +85,39 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
       { title: 'Prílohy', slotId: 'prilohy' },
       { type: 'dragAndDrop' },
     ),
-    input(
-      'menoPriezviskoObchodneMeno',
-      { type: 'text', title: 'Meno a priezvisko / Obchodné meno', required: true },
-      { helptext: 'Ak ste právnická osoba alebo podnikateľ, uveďte obchodné meno.' },
-    ),
-    radioGroup(
-      'sposobKontaktovania',
-      {
-        type: 'string',
-        title: 'Ako vás máme kontaktovať?',
-        required: true,
-        items: [
-          { value: 'email', label: 'E-mailom', isDefault: true },
-          { value: 'telefon', label: 'Telefonicky' },
-        ],
-      },
-      { variant: 'boxed', orientations: 'column' },
-    ),
-    conditionalFields(createCondition([[['sposobKontaktovania'], { const: 'email' }]]), [
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-    ]),
-    conditionalFields(createCondition([[['sposobKontaktovania'], { const: 'telefon' }]]), [
+    object('kontaktneUdaje', { title: 'Kontaktné údaje' }, [
       input(
-        'telefon',
-        { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
-        {
-          size: 'medium',
-          helptext:
-            'Zadajte platné slovenské telefónne číslo v tvare +421 alebo si zvoľte kontaktovanie e-mailom.',
-        },
+        'menoPriezviskoObchodneMeno',
+        { type: 'text', title: 'Meno a priezvisko / Obchodné meno', required: true },
+        { helptext: 'Ak ste právnická osoba alebo podnikateľ, uveďte obchodné meno.' },
       ),
+      radioGroup(
+        'sposobKontaktovania',
+        {
+          type: 'string',
+          title: 'Akou cestou chcete byť kontaktovaný?',
+          required: true,
+          items: [
+            { value: 'email', label: 'E-mailom', isDefault: true },
+            { value: 'telefon', label: 'Telefonicky' },
+          ],
+        },
+        { variant: 'boxed', orientations: 'column' },
+      ),
+      conditionalFields(createCondition([[['sposobKontaktovania'], { const: 'email' }]]), [
+        input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      ]),
+      conditionalFields(createCondition([[['sposobKontaktovania'], { const: 'telefon' }]]), [
+        input(
+          'telefon',
+          { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
+          {
+            size: 'medium',
+            helptext:
+              'Zadajte platné slovenské telefónne číslo v tvare +421 alebo si zvoľte kontaktovanie e-mailom.',
+          },
+        ),
+      ]),
     ]),
   ]),
 ])
@@ -141,23 +144,31 @@ export const kontaktnyFormularPaasExtractTechnicalSubject: SchemalessFormDataExt
   }
 
 type ExtractEmailFormData = {
-  udaje: { sposobKontaktovania: 'email'; email: string } | { sposobKontaktovania: 'telefon' }
+  udaje: {
+    kontaktneUdaje:
+      | { sposobKontaktovania: 'email'; email: string }
+      | { sposobKontaktovania: 'telefon' }
+  }
 }
 
 export const kontaktnyFormularPaasExtractEmail: SchemalessFormDataExtractor<ExtractEmailFormData> =
   {
     type: 'schemaless',
     extractFn: (formData) =>
-      formData.udaje.sposobKontaktovania === 'email' ? formData.udaje.email : '',
+      formData.udaje.kontaktneUdaje.sposobKontaktovania === 'email'
+        ? formData.udaje.kontaktneUdaje.email
+        : '',
   }
 
 type ExtractNameFormData = {
   udaje: {
-    menoPriezviskoObchodneMeno: string
+    kontaktneUdaje: {
+      menoPriezviskoObchodneMeno: string
+    }
   }
 }
 
 export const kontaktnyFormularPaasExtractName: SchemalessFormDataExtractor<ExtractNameFormData> = {
   type: 'schemaless',
-  extractFn: (formData) => formData.udaje.menoPriezviskoObchodneMeno,
+  extractFn: (formData) => formData.udaje.kontaktneUdaje.menoPriezviskoObchodneMeno,
 }

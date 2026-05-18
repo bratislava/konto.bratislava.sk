@@ -30,7 +30,7 @@ import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
 import FilesService from '../files/files.service'
-import { RabbitPayloadDto } from '../form-delivery-consumer/form-delivery-consumer.dto'
+import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import {

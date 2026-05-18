@@ -13,31 +13,31 @@ import {
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
-import ConvertPdfService from '../convert-pdf/convert-pdf.service'
+import ConvertPdfService from '../../convert-pdf/convert-pdf.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
-} from '../forms/forms.errors.enum'
-import FormsService from '../forms/forms.service'
-import GinisService from '../ginis/ginis.service'
-import PrismaService from '../prisma/prisma.service'
-import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import { RABBIT_MQ } from '../utils/constants'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import MailgunService from '../utils/global-services/mailer/mailgun.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import {
-  FormDeliveryConsumerErrorsEnum,
-  FormDeliveryConsumerErrorsResponseEnum,
-} from './dtos/form-delivery-consumer.errors.enum'
+} from '../../forms/forms.errors.enum'
+import FormsService from '../../forms/forms.service'
+import GinisService from '../../ginis/ginis.service'
+import PrismaService from '../../prisma/prisma.service'
+import RabbitmqClientService from '../../rabbitmq-client/rabbitmq-client.service'
+import { RABBIT_MQ } from '../../utils/constants'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
+import MailgunService from '../../utils/global-services/mailer/mailgun.service'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import rabbitmqRequeueDelay from '../../utils/handlers/rabbitmq.handlers'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
-} from './form-delivery-consumer.dto'
-import EmailFormsSubservice from './subservices/email-forms.subservice'
-import WebhookSubservice from './subservices/webhook.subservice'
+} from '../dtos/form-delivery-consumer.dto'
+import {
+  FormDeliveryConsumerErrorsEnum,
+  FormDeliveryConsumerErrorsResponseEnum,
+} from '../errors/form-delivery-consumer.errors.enum'
+import EmailFormsService from './email-forms.service'
+import WebhookService from './webhook.service'
 
 @Injectable()
 export default class FormDeliveryConsumerService {
@@ -47,8 +47,8 @@ export default class FormDeliveryConsumerService {
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly formsService: FormsService,
     private readonly mailgunService: MailgunService,
-    private readonly emailFormsSubservice: EmailFormsSubservice,
-    private readonly webhookSubservice: WebhookSubservice,
+    private readonly emailFormsService: EmailFormsService,
+    private readonly webhookService: WebhookService,
     private readonly prismaService: PrismaService,
     private readonly ginisService: GinisService,
     private readonly convertPdfService: ConvertPdfService,
@@ -296,7 +296,7 @@ export default class FormDeliveryConsumerService {
     userFirstName: string | null,
   ): Promise<Nack> {
     try {
-      await this.emailFormsSubservice.sendEmailForm(
+      await this.emailFormsService.sendEmailForm(
         form.id,
         userEmail,
         userFirstName,
@@ -338,7 +338,7 @@ export default class FormDeliveryConsumerService {
 
   private async handleWebhookForm(form: Forms): Promise<Nack> {
     try {
-      await this.webhookSubservice.sendWebhook(form.id)
+      await this.webhookService.sendWebhook(form.id)
       return new Nack(false)
     } catch (error) {
       this.logger.error(

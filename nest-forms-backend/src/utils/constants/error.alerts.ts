@@ -1,7 +1,7 @@
 import { FormError } from '@prisma/client'
 
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
-import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/dtos/form-delivery-consumer.errors.enum'
+import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
 import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
 import { GinisTaskErrorEnum } from '../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'

@@ -10,9 +10,9 @@ import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../utils/global-services/mailer/olo-mailer.service'
 import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import FormDeliveryConsumerService from './form-delivery-consumer.service'
-import EmailFormsSubservice from './subservices/email-forms.subservice'
-import WebhookSubservice from './subservices/webhook.subservice'
+import EmailFormsService from './services/email-forms.service'
+import FormDeliveryConsumerService from './services/form-delivery-consumer.service'
+import WebhookService from './services/webhook.service'
 
 @Module({
   imports: [
@@ -29,8 +29,8 @@ import WebhookSubservice from './subservices/webhook.subservice'
     MailgunHelper,
     MailgunService,
     OloMailerService,
-    EmailFormsSubservice,
-    WebhookSubservice,
+    EmailFormsService,
+    WebhookService,
   ],
   exports: [FormDeliveryConsumerService],
 })

@@ -24,8 +24,8 @@ import MailgunService from '../../../utils/global-services/mailer/mailgun.servic
 import OloMailerService from '../../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
-import EmailFormsSubservice from '../email-forms.subservice'
+import { EmailFormsErrorsResponseEnum } from '../../errors/email-forms.errors.enum'
+import EmailFormsService from '../email-forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
@@ -130,8 +130,8 @@ const mockFormDefinitionWithSendOloEmail = {
   },
 }
 
-describe('EmailFormsSubservice', () => {
-  let service: EmailFormsSubservice
+describe('EmailFormsService', () => {
+  let service: EmailFormsService
   let mailgunService: jest.Mocked<MailgunService>
   let oloMailerService: jest.Mocked<OloMailerService>
   let configService: jest.Mocked<ConfigService>
@@ -139,7 +139,7 @@ describe('EmailFormsSubservice', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        EmailFormsSubservice,
+        EmailFormsService,
         {
           provide: PrismaService,
           useValue: prismaMock,
@@ -168,7 +168,7 @@ describe('EmailFormsSubservice', () => {
       ],
     }).compile()
 
-    service = module.get<EmailFormsSubservice>(EmailFormsSubservice)
+    service = module.get<EmailFormsService>(EmailFormsService)
     mailgunService = module.get(MailgunService)
     oloMailerService = module.get(OloMailerService)
     configService = module.get(ConfigService)

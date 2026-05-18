@@ -70,4 +70,6 @@ export interface UpdateEdeskChecks {
   edeskNumber: string | null
   /** Must be null when status is NONEXISTENT. */
   uri: string | null
+
+  deathDate: Date | null
 }

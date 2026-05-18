@@ -265,6 +265,7 @@ describe('NorisService', () => {
           edeskStatus: EdeskStatus.ACTIVE,
           edeskNumber: '12345',
           uri: 'https://edesk.example/sk/123',
+          deathDate: null,
         },
       ]
       const withConnectionSpy = jest.spyOn(service as any, 'withConnection')
@@ -292,6 +293,7 @@ describe('NorisService', () => {
             edeskStatus: EdeskStatus.ACTIVE,
             edeskNumber: '12345',
             uri: 'https://edesk.example/sk/123',
+            deathDate: null,
           },
         ])
       ).rejects.toThrow(internalError)

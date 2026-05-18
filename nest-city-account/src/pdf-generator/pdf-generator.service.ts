@@ -28,8 +28,11 @@ export class PdfGeneratorService {
   }
 
   /**
-   * Runs the callback with a shared Chromium instance that is reused by any
-   * generateFromTemplate calls inside it.
+   * Runs the callback that ensures a single shared Chromium instance will be
+   * reused by all {@link generateFromTemplate} calls inside it.
+   *
+   * Without acquiring a lock, multiple calls to `withSharedBrowser` could
+   * result in multiple Chromium instances being launched.
    */
   async withSharedBrowser<T>(fn: () => Promise<T>): Promise<T> {
     await this.acquireSharedBrowser()

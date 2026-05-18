@@ -2,9 +2,9 @@ import { Button, Typography } from '@bratislava/component-library'
 import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next/pages'
 
-import { CheckIcon } from '@/src/assets/ui-icons'
 import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import Icon from '@/src/components/icon-components/Icon'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 
@@ -145,7 +145,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
               {bodyList.map((item, index) => (
                 <li key={index} className="flex items-center gap-4">
                   <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
-                    <CheckIcon className="size-7" />
+                    <Icon name="check" className="size-7" />
                   </span>
                   <Typography variant="p-tiny" className="lg:text-size-p-large">
                     {item}

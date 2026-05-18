@@ -8,8 +8,8 @@ import {
 } from '@rjsf/utils'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
-import { AddIcon } from '@/src/assets/ui-icons'
 import ConditionalFormMarkdown from '@/src/components/formatting/FormMarkdown/ConditionalFormMarkdown'
+import Icon from '@/src/components/icon-components/Icon'
 import Alert from '@/src/components/simple-components/Alert'
 import FieldErrorMessage from '@/src/components/widget-components/FieldErrorMessage'
 import WidgetWrapper from '@/src/components/widget-wrappers/WidgetWrapper'
@@ -113,7 +113,7 @@ const BAArrayFieldTemplate = <
             )}
             <Button
               variant={({ topLevel: 'outline', nested: 'plain' } as const)[variant]}
-              startIcon={<AddIcon />}
+              startIcon={<Icon name="add" />}
               onPress={onAddClickPatched}
               isDisabled={!canAdd || disabled || readonly}
               fullWidth

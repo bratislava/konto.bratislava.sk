@@ -1,8 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 
-import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
 import Markdown from '@/src/components/formatting/Markdown'
-import WarningIcon from '@/src/components/icon-components/WarningIcon'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 export type ThankYouCardProps = {
@@ -32,9 +31,9 @@ const ThankYouCard = ({
 }: ThankYouCardProps) => {
   const iconClassname = 'flex size-8 items-center justify-center md:size-10'
   const iconByVariant = {
-    success: <CheckIcon className={cn(iconClassname, 'text-content-success-default')} />,
-    error: <CrossIcon className={cn(iconClassname, 'text-content-error-default')} />,
-    warning: <WarningIcon className={cn(iconClassname, 'text-content-warning-default')} />,
+    success: <Icon name="check" className={cn(iconClassname, 'text-content-success-default')} />,
+    error: <Icon name="close" className={cn(iconClassname, 'text-content-error-default')} />,
+    warning: <Icon name="warning" className={cn(iconClassname, 'text-content-warning-default')} />,
   }[variant]
 
   return (

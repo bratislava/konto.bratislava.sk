@@ -3,6 +3,7 @@ type WarningIconProps = {
   className?: string
 }
 
+// todo: remove
 const WarningIcon = ({ solid = false, className }: WarningIconProps) => {
   return (
     <svg

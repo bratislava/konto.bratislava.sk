@@ -11,14 +11,7 @@ import {
 } from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next/pages'
 
-import {
-  AttachmentIcon,
-  CheckInCircleIcon,
-  CrossInCircleIcon,
-  DownloadIcon,
-  ErrorIcon,
-  ScanningIcon,
-} from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
 import ProgressBar from '@/src/components/simple-components/ProgressBar'
 import cn from '@/src/utils/cn'
@@ -115,13 +108,13 @@ const UploadFileCard = ({
           })}
         >
           {isErrorStatus ? (
-            <ErrorIcon className="text-error" />
+            <Icon name="error" className="text-error" />
           ) : isScanStatus ? (
-            <ScanningIcon />
+            <Icon name="scan" />
           ) : isDoneStatus ? (
-            <CheckInCircleIcon className="text-success-700" />
+            <Icon name="check-circle" className="text-success-700" />
           ) : (
-            <AttachmentIcon />
+            <Icon name="attachment" />
           )}
         </div>
 
@@ -136,7 +129,7 @@ const UploadFileCard = ({
                 {isDownloadable && (
                   <Button
                     variant="icon-wrapped-negative-margin"
-                    icon={<DownloadIcon />}
+                    icon={<Icon name="download" />}
                     aria-label={t('Upload.aria.download')}
                     onPress={onFileDownload}
                   />
@@ -159,7 +152,7 @@ const UploadFileCard = ({
               {/* TODO unified styling */}
               <Button
                 variant="icon-wrapped-negative-margin"
-                icon={<CrossInCircleIcon />}
+                icon={<Icon name="close-circle" />}
                 aria-label={t('Upload.aria.removeFile')}
                 className={cn('relative', {
                   'hover:bg-negative-200 focus:bg-negative-300': isErrorStatus,

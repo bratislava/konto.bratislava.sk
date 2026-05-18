@@ -3,6 +3,7 @@ type ErrorIconProps = {
   className?: string
 }
 
+// todo: remove
 const ErrorIcon = ({ solid = false, className }: ErrorIconProps) => {
   return (
     <svg

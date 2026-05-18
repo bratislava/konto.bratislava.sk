@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react'
 import { Button as ReactAriaButton } from 'react-aria-components/Button'
 import { FileTrigger } from 'react-aria-components/FileTrigger'
 
-import { UploadIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
 import {
   getDisplaySupportedFileExtensions,
@@ -85,7 +85,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
           <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={isDisabled}>
             <div className="flex items-center justify-center gap-2">
               <span>
-                <UploadIcon />
+                <Icon name="upload" />
               </span>
               <span>{allowsMultiple ? t('Upload.uploadFiles') : t('Upload.uploadFile')}</span>
             </div>

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
 
-import { ArrowLeftIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
@@ -28,7 +28,7 @@ const BackButton = () => {
       <Button
         variant="icon-wrapped-negative-margin"
         size="large"
-        icon={<ArrowLeftIcon />}
+        icon={<Icon name="arrow-left" />}
         aria-label={t('BackButton.aria')}
         onPress={() => router.back()}
         className="max-lg:mx-1"

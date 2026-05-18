@@ -5,17 +5,9 @@ import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-c
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
-import {
-  BinIcon,
-  ChevronRightIcon,
-  DownloadIcon,
-  EditIcon,
-  EllipsisVerticalIcon,
-  EyeIcon,
-  PdfIcon,
-} from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
+import Icon from '@/src/components/icon-components/Icon'
 import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
 import MenuDropdown, {
@@ -156,31 +148,31 @@ const MyApplicationsCard = ({
     ? [
         {
           title: t('account_section_applications.concept_menu_list.download_xml'),
-          icon: <DownloadIcon className="size-6" />,
+          icon: <Icon name="download" className="size-6" />,
           onPress: () => exportXml(),
         },
         {
           title: t('account_section_applications.concept_menu_list.download_pdf'),
-          icon: <PdfIcon className="size-6" />,
+          icon: <Icon name="pdf" className="size-6" />,
           onPress: () => exportPdf(),
         },
         {
           title: t('account_section_applications.concept_menu_list.delete'),
           itemClassName: 'text-negative-700',
-          icon: <BinIcon className="size-6" />,
+          icon: <Icon name="bin" className="size-6" />,
           onPress: () => setDeleteConceptModalShow(true),
         },
       ]
     : [
         {
           title: t('account_section_applications.concept_menu_list.download_xml'),
-          icon: <DownloadIcon className="size-6" />,
+          icon: <Icon name="download" className="size-6" />,
           onPress: () => exportXml(),
         },
         {
           title: t('account_section_applications.concept_menu_list.delete'),
           itemClassName: 'text-negative-700',
-          icon: <BinIcon className="size-6" />,
+          icon: <Icon name="bin" className="size-6" />,
           onPress: () => setDeleteConceptModalShow(true),
         },
       ]
@@ -244,16 +236,16 @@ const MyApplicationsCard = ({
                 {isLoading ? (
                   <Skeleton width="100px" height="20px" />
                 ) : variant === 'SENT' ? (
-                  <ChevronRightIcon />
+                  <Icon name="chevron-right" />
                 ) : (
                   <>
                     <Button
                       variant="outline"
                       startIcon={
                         isEditable ? (
-                          <EditIcon className="size-5 shrink-0" />
+                          <Icon name="edit" className="size-5 shrink-0" />
                         ) : (
-                          <EyeIcon className="size-5 shrink-0" />
+                          <Icon name="eye" className="size-5 shrink-0" />
                         )
                       }
                       href={formPageHref}
@@ -277,7 +269,7 @@ const MyApplicationsCard = ({
                       buttonTrigger={
                         <Button
                           variant="outline"
-                          icon={<EllipsisVerticalIcon />}
+                          icon={<Icon name="menu-kebab" />}
                           aria-label="Menu"
                         />
                       }
@@ -305,7 +297,7 @@ const MyApplicationsCard = ({
                     {isLoading ? <Skeleton width="25%" /> : category}
                   </Typography>
                 )}
-                {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
+                {variant !== 'SENT' && category && <Icon name="menu-kebab" />}
               </div>
               <Typography variant="h5" as="h3" className="pb-3">
                 {isLoading ? <Skeleton width="75%" /> : subject}
@@ -363,7 +355,11 @@ const MyApplicationsCard = ({
                 ? t('account_section_applications.navigation_concept_card.continue_button_text')
                 : t('account_section_applications.navigation_concept_card.edit_button_text')
               : t('account_section_applications.navigation_concept_card.view_button_text'),
-            icon: isEditable ? <EditIcon className="size-6" /> : <EyeIcon className="size-6" />,
+            icon: isEditable ? (
+              <Icon name="edit" className="size-6" />
+            ) : (
+              <Icon name="eye" className="size-6" />
+            ),
             url: formPageHref,
           },
           ...conceptMenuContent,

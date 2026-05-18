@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { Dialog } from 'react-aria-components/Dialog'
 import { Modal, ModalOverlay } from 'react-aria-components/Modal'
 
-import { CrossIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 
@@ -47,7 +47,7 @@ const BottomSheetMenuModal = ({
                 <Button
                   variant="icon-wrapped-negative-margin"
                   size="large"
-                  icon={<CrossIcon />}
+                  icon={<Icon name="close" />}
                   onPress={close}
                   aria-label={t('BottomSheetMenuModal.aria.close')}
                 />

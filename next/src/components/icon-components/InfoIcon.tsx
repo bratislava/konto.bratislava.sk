@@ -3,6 +3,7 @@ type InfoIconProps = {
   className?: string
 }
 
+// todo: remove
 const InfoIcon = ({ solid = false, className }: InfoIconProps) => {
   return (
     <svg

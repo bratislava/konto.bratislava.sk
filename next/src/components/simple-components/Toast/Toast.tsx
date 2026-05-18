@@ -10,7 +10,7 @@ import {
 } from 'react-aria-components/Toast'
 import { flushSync } from 'react-dom'
 
-import { CrossIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 export type ToastVariant = 'info' | 'success' | 'error' | 'warning'
@@ -75,7 +75,7 @@ const AppToastRegion = () => {
           <Button
             slot="close"
             variant="icon-wrapped"
-            icon={<CrossIcon className="size-2" aria-hidden />}
+            icon={<Icon name="close" className="size-2" aria-hidden />}
             aria-label={t('Toast.aria.close')}
             className="mr-2 text-white"
           />

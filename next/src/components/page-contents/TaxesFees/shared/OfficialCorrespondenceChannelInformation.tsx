@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
-import { MailIcon, SettingsIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
@@ -42,7 +42,7 @@ const OfficialCorrespondenceChannelInformation = () => {
         <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
-              <MailIcon className="size-6" />
+              <Icon name="mail" className="size-6" />
             </div>
             <Typography variant="p-large" className="font-semibold">
               {channelLabel}
@@ -54,7 +54,7 @@ const OfficialCorrespondenceChannelInformation = () => {
               <Button
                 onPress={() => setIsModalOpen(true)}
                 variant="link"
-                startIcon={<SettingsIcon />}
+                startIcon={<Icon name="settings" />}
                 className="max-lg:hidden"
               >
                 {t('taxes.communication_channel.change_button')}
@@ -63,7 +63,7 @@ const OfficialCorrespondenceChannelInformation = () => {
               <Button
                 onPress={() => setIsModalOpen(true)}
                 variant="icon-wrapped"
-                icon={<SettingsIcon />}
+                icon={<Icon name="settings" />}
                 className="self-start lg:hidden"
                 aria-label={t('taxes.communication_channel.change_button.aria')}
               />

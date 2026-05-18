@@ -5,10 +5,10 @@ import { router } from 'next/client'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 
-import { AlertIcon, ErrorIcon } from '@/src/assets/ui-icons'
 import { formsClient } from '@/src/clients/forms'
 import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import Icon from '@/src/components/icon-components/Icon'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
@@ -49,9 +49,9 @@ const FormVersionCompareAction = () => {
     return null
   }
 
-  const Icon = {
-    [VersionCompareContinueAction.CannotContinue]: ErrorIcon,
-    [VersionCompareContinueAction.RequiresBump]: AlertIcon,
+  const IconComponent = {
+    [VersionCompareContinueAction.CannotContinue]: <Icon name="error" />,
+    [VersionCompareContinueAction.RequiresBump]: <Icon name="warning" />,
   }[versionCompareContinueAction]
 
   return (
@@ -69,7 +69,7 @@ const FormVersionCompareAction = () => {
               },
             )}
           >
-            <Icon
+            <IconComponent
               className={cn('flex size-8 items-center justify-center md:size-10', {
                 'text-warning-700':
                   versionCompareContinueAction === VersionCompareContinueAction.RequiresBump,

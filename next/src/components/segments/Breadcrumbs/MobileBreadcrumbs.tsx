@@ -1,7 +1,7 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { ChevronDownIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import type { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
 import MLink from '@/src/components/simple-components/MLink'
 
@@ -28,7 +28,7 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
             onPress={goBack}
             variant="link"
             className="shrink-0 py-3 pl-4 text-[14px]"
-            startIcon={<ChevronRightIcon className="shrink-0 rotate-180" />}
+            startIcon={<Icon name="chevron-right" className="shrink-0 rotate-180" />}
           >
             {t('Breadcrumbs.back')}
           </Button>
@@ -47,7 +47,10 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
       {showDetails && (
         <details className="group">
           <summary className="absolute top-0 right-0 -mr-4 block cursor-pointer p-4">
-            <ChevronDownIcon className="size-5 shrink-0 transition-transform group-open:rotate-180" />
+            <Icon
+              name="chevron-down"
+              className="size-5 shrink-0 transition-transform group-open:rotate-180"
+            />
           </summary>
           <ol className="flex flex-col flex-wrap gap-1 py-2">
             {withHomeWithoutCurrent.map((breadcrumb, index) => (
@@ -55,12 +58,12 @@ const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
               <li className="text-size-p-tiny font-medium" key={index}>
                 {breadcrumb.path ? (
                   <MLink href={breadcrumb.path} variant="underlined" className="flex gap-1">
-                    <ChevronRightIcon className="size-5 shrink-0 rotate-180" />
+                    <Icon name="chevron-right" className="size-5 shrink-0 rotate-180" />
                     {breadcrumb.title}
                   </MLink>
                 ) : (
                   <div className="flex gap-1">
-                    <ChevronRightIcon className="size-5 shrink-0 rotate-180" />
+                    <Icon name="chevron-right" className="size-5 shrink-0 rotate-180" />
                     {breadcrumb.title}
                   </div>
                 )}

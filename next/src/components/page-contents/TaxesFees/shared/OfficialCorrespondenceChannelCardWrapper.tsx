@@ -2,8 +2,8 @@ import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 
-import { MailIcon } from '@/src/assets/ui-icons'
 import Markdown from '@/src/components/formatting/Markdown'
+import Icon from '@/src/components/icon-components/Icon'
 import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
@@ -52,7 +52,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
             )}
           </div>
           <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
-            <MailIcon className="size-6" />
+            <Icon name="mail" className="size-6" />
           </div>
         </div>
       </div>

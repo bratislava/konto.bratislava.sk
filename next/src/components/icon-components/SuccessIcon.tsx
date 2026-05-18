@@ -3,6 +3,7 @@ type SuccessIconProps = {
   className?: string
 }
 
+// todo: remove
 const SuccessIcon = ({ solid = false, className }: SuccessIconProps) => {
   return (
     <svg

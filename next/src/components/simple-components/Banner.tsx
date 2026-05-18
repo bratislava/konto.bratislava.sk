@@ -1,8 +1,8 @@
 import { Button, Typography } from '@bratislava/component-library'
 import Image, { ImageProps } from 'next/image'
 
-import { PhoneIcon } from '@/src/assets/ui-icons'
 import Markdown from '@/src/components/formatting/Markdown'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 type BannerBase = {
@@ -52,7 +52,7 @@ const Banner = ({
           </Button>
           {mobileNumber && (
             <div className="flex items-center gap-2 px-3 py-2">
-              <PhoneIcon />
+              <Icon name="phone-call" className="size-5 shrink-0" />
               <Typography variant="p-small" className="font-semibold">
                 {mobileNumber}
               </Typography>

@@ -5,9 +5,9 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import TextField from '@/src/components/fields/TextField'
 import Markdown from '@/src/components/formatting/Markdown'
+import Icon from '@/src/components/icon-components/Icon'
 import AccountErrorAlert from '@/src/components/segments/AccountErrorAlert/AccountErrorAlert'
 import { environment } from '@/src/environment'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
@@ -229,7 +229,12 @@ const IdentityVerificationOfPhysicalEntityForm = ({
           {t('auth.identity_verification.fo.init.submit_button_text')}
         </Button>
         {showSkipButton ? (
-          <Button variant="plain" fullWidth onPress={() => redirect()} endIcon={<ArrowRightIcon />}>
+          <Button
+            variant="plain"
+            fullWidth
+            onPress={() => redirect()}
+            endIcon={<Icon name="arrow-right" />}
+          >
             {t('auth.identity_verification.common.skip_verification_button_text')}
           </Button>
         ) : null}

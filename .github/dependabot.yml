@@ -23,6 +23,9 @@ updates:
       - dependency-name: 'postcss'
       # Playwright must be updated in nest-forms-backend at the same time
       - dependency-name: 'playwright'
+      # Major version updates of Node types are done manually when Node version is upgraded
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
     groups:
       react-email-dependencies:
         patterns:
@@ -34,6 +37,10 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    ignore:
+      # Major version updates of Node types are done manually when Node version is upgraded
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: 'npm'
     directory: '/next'
     versioning-strategy: increase
@@ -42,6 +49,10 @@ updates:
       day: 'sunday'
     # Open only security updates https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
     open-pull-requests-limit: 0
+    ignore:
+      # Major version updates of Node types are done manually when Node version is upgraded
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: 'npm'
     directory: '/nest-forms-backend'
     versioning-strategy: increase
@@ -56,6 +67,9 @@ updates:
       - dependency-name: 'ajv-*'
       # Playwright must be updated in forms-shared at the same time
       - dependency-name: 'playwright'
+      # Major version updates of Node types are done manually when Node version is upgraded
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
       # ESLint and related tooling are pinned and must be upgraded manually to version 9 and reconfigured.
       # Once ready for an upgrade, remove these ignores to allow grouped updates via the eslint-dependencies group.
       - dependency-name: 'eslint'
@@ -93,6 +107,10 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    ignore:
+      # Major version updates of Node types are done manually when Node version is upgraded
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
     groups:
       nestjs-dependencies:
         patterns:
@@ -118,6 +136,10 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    ignore:
+      # Major version updates of Node types are done manually when Node version is upgraded
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
     groups:
       nestjs-dependencies:
         patterns:
@@ -149,6 +171,9 @@ updates:
       - dependency-name: '@darraghor/eslint-plugin-nestjs-typed'
       - dependency-name: 'typescript-eslint'
       - dependency-name: '@typescript-eslint/*'
+      # Major version updates of Node types are done manually when Node version is upgraded
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
     groups:
       nestjs-dependencies:
         patterns:

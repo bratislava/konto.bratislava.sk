@@ -46,6 +46,19 @@ export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<
   uri: string
 }
 
+export function isUpvsNaturalPerson(
+  contact: UpvsNaturalPerson | UpvsCorporateBody
+): contact is UpvsNaturalPerson {
+  return contact.type === 'natural_person'
+}
+
+export function getUpvsDeathDate(contact: UpvsNaturalPerson | UpvsCorporateBody): string | null {
+  if (!isUpvsNaturalPerson(contact)) {
+    return null
+  }
+  return contact.natural_person?.death?.date ?? null
+}
+
 @Injectable()
 export class NasesService {
   private readonly logger: LineLoggerSubservice

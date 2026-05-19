@@ -160,13 +160,9 @@ export default class FormsService {
     id: string,
   ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
     const form = await this.getForm(id)
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
-    }
+    // getForm already validates the definition exists, so non-null is safe here
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)!
     return {
       ...form,
       formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
@@ -177,7 +173,7 @@ export default class FormsService {
     id: string,
     requestData: FormUpdateBodyDto,
     user: User,
-  ): Promise<UpdateFormResponseDto> {
+  ): Promise<Forms> {
     const form = await this.getUniqueForm(id)
     if (form === null) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -197,7 +193,7 @@ export default class FormsService {
     nasesUser: JwtNasesPayload,
     requestData: UpdateFormRequestDto,
     user: User,
-  ): Promise<UpdateFormResponseDto> {
+  ): Promise<Forms> {
     return this.updateFormWithUser(
       id,
       { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },

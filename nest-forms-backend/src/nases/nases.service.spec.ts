@@ -26,7 +26,6 @@ import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FilesErrorsResponseEnum } from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import { UpdateFormRequestDto } from '../forms/dtos/requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -525,7 +524,7 @@ describe('NasesService', () => {
     it('should throw an error if form definition is not found', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
-      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+      await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
       )
     })
@@ -541,7 +540,7 @@ describe('NasesService', () => {
           }),
         })
 
-      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+      await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DATA_INVALID,
       )
     })
@@ -552,7 +551,7 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+      await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     })
@@ -563,7 +562,7 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+      await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     })
@@ -573,13 +572,13 @@ describe('NasesService', () => {
         .spyOn(service['rabbitmqClientService'], 'publishDelay')
         .mockRejectedValue(new Error('RabbitMQ error'))
 
-      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+      await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow(
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
       )
     })
 
     it('should queue the form', async () => {
-      const result = await service.sendForm('1', authUser.user)
+      const result = await service.sendForm('1', {}, authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -593,7 +592,7 @@ describe('NasesService', () => {
         ...mockFormDefinitionEmail,
       })
 
-      const result = await service.sendForm('1', authUser.user)
+      const result = await service.sendForm('1', {}, authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -608,7 +607,7 @@ describe('NasesService', () => {
         .spyOn(service as any, 'getFormSummaryOrThrow')
         .mockReturnValue(mockSummary)
 
-      await service.sendForm('1', authUser.user)
+      await service.sendForm('1', {}, authUser.user)
 
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
@@ -625,7 +624,7 @@ describe('NasesService', () => {
           throw new Error('Summary generation failed')
         })
 
-      await expect(service.sendForm('1', authUser.user)).rejects.toThrow()
+      await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow()
     })
 
     describe('cumulative file size limits', () => {
@@ -662,7 +661,7 @@ describe('NasesService', () => {
             { id: 'test-id-3', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
           ])
 
-        await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+        await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow(
           FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
         )
       })
@@ -692,7 +691,7 @@ describe('NasesService', () => {
             { id: 'test-id-5', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
           ])
 
-        await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+        await expect(service.sendForm('1', {}, authUser.user)).rejects.toThrow(
           FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
         )
       })
@@ -714,7 +713,7 @@ describe('NasesService', () => {
             { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
           ])
 
-        const result = await service.sendForm('1', authUser.user)
+        const result = await service.sendForm('1', {}, authUser.user)
 
         expect(result).toEqual({
           id: '1',
@@ -747,7 +746,7 @@ describe('NasesService', () => {
             { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 100 },
           ])
 
-        const result = await service.sendForm('1', authUser.user)
+        const result = await service.sendForm('1', {}, authUser.user)
 
         expect(result).toEqual({
           id: '1',

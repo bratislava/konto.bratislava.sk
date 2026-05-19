@@ -14,6 +14,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
+import { Forms } from '@prisma/client'
 
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
@@ -31,7 +32,6 @@ import FormDeleteResponseDto, {
   BumpJsonVersionResponseDto,
   GetFormResponseDto,
   GetFormsResponseDto,
-  UpdateFormResponseDto,
 } from './dtos/responses.dto'
 import FormsService from './forms.service'
 
@@ -139,7 +139,6 @@ export default class FormsController {
   })
   @ApiOkResponse({
     description: 'Return updated form',
-    type: UpdateFormResponseDto,
   })
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
@@ -150,7 +149,7 @@ export default class FormsController {
     @Body() data: UpdateFormRequestDto,
     @Param('formId') formId: string,
     @GetUser() user: User,
-  ): Promise<UpdateFormResponseDto> {
+  ): Promise<Forms> {
     return this.formsService.updateFormWithUser(formId, data, user)
   }
 }

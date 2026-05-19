@@ -35,7 +35,10 @@ import FilesService from '../files/files.service'
 import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 import { SendFormResponseDto } from '../form-sender/dtos/responses.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import { FormUpdateBodyDto } from '../forms/dtos/requests.dto'
+import {
+  FormUpdateBodyDto,
+  UpdateFormRequestDto,
+} from '../forms/dtos/requests.dto'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -134,11 +137,14 @@ export default class NasesService {
     }
   }
 
-  // TODO: rename to updateAndSendForm, move to new form sender service, and at beginning add await this.updateForm(formId, data, user)
-  // so change from https://github.com/bratislava/konto.bratislava.sk/commit/75d3d9bce757d710b023aa7c4fb3f445348b8fc9#diff-fc67a0ecefbdaff9e5af8cbe3a5ff156c82463f4858d2d4db367bd38adb1f6c4
-  // will be back. It had to be put back because of circular dependencies.
-  // After release of https://github.com/bratislava/konto.bratislava.sk/pull/4189
-  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
+  async sendForm(
+    formId: string,
+    data: UpdateFormRequestDto,
+    user: User,
+  ): Promise<SendFormResponseDto> {
+    await this.formsService.updateFormWithUser(formId, data, user)
+
+
     const form = await this.formsService.checkFormBeforeSending(formId)
     // All extra files should be already deleted at this point and remaining files should be SAFE.
 

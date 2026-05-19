@@ -56,7 +56,7 @@ export interface DatabaseBaseTaxData {
   year: number
   taxPayerId: number
   variableSymbol: string
-  dateCreateTax: Date | null
+  dateCreateTax: Date
   dateTaxRuling: Date | null
   taxId: string | null
   isCancelled: boolean

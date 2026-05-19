@@ -183,7 +183,7 @@ export const testCommunalWasteTax5: NorisCommunalWasteTax = {
   datum_posledni_platby: new Date(),
   subjekt_refer: null,
   subjekt_nazev: null,
-  datum_realizacie: null,
+  datum_realizacie: new Date(),
   vyb_nazov: 'Mgr. Peter Príkladný',
   SPL1: '300,00',
   SPL4_1: '',

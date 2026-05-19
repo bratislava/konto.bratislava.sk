@@ -99,7 +99,7 @@ export const testRealEstateTax2: NorisRealEstateTax = {
   ulica_tb_cislo: null,
   psc_ref_tb: null,
   obec_nazev_tb: null,
-  datum_realizacie: null,
+  datum_realizacie: new Date(),
   datum_platnosti: null,
   vyb_nazov: 'Mgr. Peter Testovací',
   vyb_telefon_prace: null,

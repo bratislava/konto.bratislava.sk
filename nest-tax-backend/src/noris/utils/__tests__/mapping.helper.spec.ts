@@ -460,12 +460,6 @@ describe('mapNorisToDatabaseBaseTax', () => {
     expect(result2.taxPayerId).toBe(999)
   })
 
-  it('should handle null dateCreateTax (datum_realizacie)', () => {
-    const data = { ...baseMockData, datum_realizacie: null } as NorisBaseTax
-    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
-    expect(result.dateCreateTax).toBeNull()
-  })
-
   it('should handle null dateTaxRuling (datum_platnosti)', () => {
     const data = { ...baseMockData, datum_platnosti: null } as NorisBaseTax
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)

@@ -106,7 +106,7 @@ export class NorisService implements OnModuleDestroy {
    * @param errorHandler - Error handler for any errors that occur during the operation
    * @returns Result of the operation
    */
-  private async withConnection<T>(
+  async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
     errorHandler: (error: unknown) => never
   ): Promise<T> {
@@ -157,7 +157,7 @@ export class NorisService implements OnModuleDestroy {
               .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
               .input('edesk_pco', mssql.VarChar, null)
               .input('last_check', mssql.DateTime, edeskCheck.lastCheck)
-              .input('death_date', mssql.DateTime, null) // TODO add correct date in https://github.com/bratislava/private-konto.bratislava.sk/issues/1467
+              .input('death_date', mssql.DateTime, edeskCheck.deathDate)
               .execute('lcs.usp21_ino_edesk_update')
           },
           (error) => {

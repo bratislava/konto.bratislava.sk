@@ -59,7 +59,7 @@
     "@types/node": "24.12.2",
     "@types/passport-http": "0.3.11",
     "eslint": "9.39.2",
-    "jest": "30.3.0",
+    "jest": "30.4.2",
     "path": "0.12.7",
     "prettier": "3.6.2",
     "source-map-support": "0.5.21",

@@ -25,7 +25,7 @@ const TaxFeePaymentMethodsItem = ({
       <div className="flex flex-col items-start justify-center gap-3">
         <Markdown content={title} variant="small" />
         {subtitle ? (
-          <Typography variant="p-small" className="font-semibold text-category-600">
+          <Typography variant="p-small" className="font-semibold text-content-passive-secondary">
             {subtitle}
           </Typography>
         ) : null}
@@ -40,7 +40,7 @@ const TaxFeePaymentMethodsItem = ({
           fullWidthMobile
           // fixed width is wanted, however size doesn't match figma,
           // Button has to be implemented as part of design system then we can adjust size,
-          // othervise text will be split into two lines
+          // otherwise text will be split into two lines
           className="lg:w-55"
         >
           {buttonText}

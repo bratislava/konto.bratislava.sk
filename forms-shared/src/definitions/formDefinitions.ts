@@ -253,7 +253,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-mimoriadny-odvoz-a-zhodnotenie-odpadu',
     title: 'Mimoriadny odvoz a zhodnotenie odpadu',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: mimoriadnyOdvozAZhodnotenieOdpadu,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -272,7 +272,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-energeticke-zhodnotenie-odpadu-v-zevo',
     title: 'Energetické zhodnotenie odpadu v ZEVO',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.1.1',
     schema: energetickeZhodnotenieOdpaduVZevo,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -291,7 +291,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom',
     title: 'Uzatvorenie zmluvy o nakladaní s odpadom',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.1.1',
     schema: uzatvorenieZmluvyONakladaniSOdpadom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -310,7 +310,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-docistenie-stanovista-zbernych-nadob',
     title: 'Dočistenie stanovišťa zberných nádob',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: docisteniStanovistaZbernychNadob,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -329,7 +329,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom',
     title: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -405,7 +405,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-odvoz-objemneho-odpadu-valnikom',
     title: 'Odvoz objemného odpadu valníkom',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: odvozObjemnehoOdpaduValnikom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -424,7 +424,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby',
     title: 'Triedený zber papiera, plastov a skla pre právnické osoby',
-    jsonVersion: '1.2.0',
+    jsonVersion: '1.2.1',
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -443,7 +443,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti',
     title: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.1.1',
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {

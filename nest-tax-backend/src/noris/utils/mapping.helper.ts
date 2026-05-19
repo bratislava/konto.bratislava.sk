@@ -56,7 +56,7 @@ export interface DatabaseBaseTaxData {
   year: number
   taxPayerId: number
   variableSymbol: string
-  dateCreateTax: string | null
+  dateCreateTax: Date | null
   dateTaxRuling: Date | null
   taxId: string | null
   isCancelled: boolean
@@ -148,7 +148,7 @@ export const mapNorisToDatabaseBaseTax = (
     year,
     taxPayerId,
     variableSymbol: data.variabilny_symbol,
-    dateCreateTax: data.akt_datum,
+    dateCreateTax: data.datum_realizacie,
     dateTaxRuling: data.datum_platnosti,
     taxId: data.cislo_konania,
     isCancelled: data.stav_dokladu === 'S',

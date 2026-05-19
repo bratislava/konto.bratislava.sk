@@ -63,7 +63,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       ulica_tb_cislo: 'Test Street 1',
       psc_ref_tb: '12345',
       obec_nazev_tb: 'Test City',
-      akt_datum: '2023-01-01',
+      datum_realizacie: new Date('2023-01-01'),
       datum_platnosti: new Date('2023-12-31'),
       vyb_nazov: 'Test Office',
       vyb_telefon_prace: '+421123456789',

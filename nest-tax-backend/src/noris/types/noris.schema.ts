@@ -14,7 +14,7 @@ export const NorisBaseTaxWithoutPaymentSchema = z.object({
   dan_spolu: z.string(),
   subjekt_refer: z.string().nullable(),
   subjekt_nazev: z.string().nullable(),
-  akt_datum: z.string().nullable(),
+  datum_realizacie: z.date().nullable(),
   vyb_nazov: z.string(),
   SPL1: z.string(),
   SPL4_1: z.string(),

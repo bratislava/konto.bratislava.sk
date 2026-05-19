@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
 import BaConfigService from '../config/ba-config.service'
-import { RABBIT_MQ } from '../utils/constants'
+import { RABBIT_FORM_DELIVERY } from '../utils/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import RabbitmqClientService from './rabbitmq-client.service'
 
@@ -15,7 +15,7 @@ import RabbitmqClientService from './rabbitmq-client.service'
         uri: configService.get('RABBIT_MQ_URI') ?? '',
         exchanges: [
           {
-            name: RABBIT_MQ.EXCHANGE,
+            name: RABBIT_FORM_DELIVERY.EXCHANGE,
             type: 'x-delayed-message',
             options: {
               arguments: { 'x-delayed-type': 'direct' },

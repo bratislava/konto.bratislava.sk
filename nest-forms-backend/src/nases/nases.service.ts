@@ -625,8 +625,8 @@ export default class NasesService {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             NasesErrorsEnum.SEND_TO_GINIS_ERROR,
-            `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
-            undefined,
+            NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR,
+            { formId: data.formId },
             error,
           ),
         )

@@ -27,15 +27,16 @@ import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FilesErrorsResponseEnum } from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
+import { UpdateFormRequestDto } from '../forms/dtos/requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesSenderService from './services/nases.sender.service'
+import { JwtNasesPayload } from './types/jwt-nases.types'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/validators')
@@ -175,7 +176,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       const mockFormDefinition: FormDefinition = {
         jsonVersion: '1.0.0',
         schema: {},
@@ -241,7 +242,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       const mockFormDefinition = {
         slug: 'test-slug',
         sendPolicy: FormSendPolicy.AuthenticatedVerified,
@@ -284,7 +285,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -326,7 +327,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -369,7 +370,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -414,7 +415,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -471,7 +472,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )

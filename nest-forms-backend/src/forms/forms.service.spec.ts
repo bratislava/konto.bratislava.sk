@@ -14,11 +14,11 @@ import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
-import { GetFormsRequestDto } from '../nases/dtos/requests.dto'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
+import { GetFormsRequestDto } from './dtos/requests.dto'
 import FormsService from './forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({

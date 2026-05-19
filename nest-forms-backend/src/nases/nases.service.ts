@@ -35,7 +35,15 @@ import {
 import FilesService from '../files/files.service'
 import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
+import {
+  FormUpdateBodyDto,
+  GetFormsRequestDto,
+  UpdateFormRequestDto,
+} from '../forms/dtos/requests.dto'
+import {
+  GetFormResponseDto,
+  GetFormsResponseDto,
+} from '../forms/dtos/responses.dto'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -47,17 +55,11 @@ import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import {
-  GetFormResponseDto,
-  GetFormsRequestDto,
-  GetFormsResponseDto,
-  JwtNasesPayloadDto,
-  SendFormResponseDto,
-  UpdateFormRequestDto,
-} from './dtos/requests.dto'
+import { SendFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesSenderService from './services/nases.sender.service'
+import { JwtNasesPayload } from './types/jwt-nases.types'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
 @Injectable()
@@ -141,7 +143,7 @@ export default class NasesService {
 
   async updateFormEid(
     id: string,
-    nasesUser: JwtNasesPayloadDto,
+    nasesUser: JwtNasesPayload,
     requestData: UpdateFormRequestDto,
     user: User,
   ): Promise<Forms> {
@@ -433,7 +435,7 @@ export default class NasesService {
   async sendFormEid(
     id: string,
     oboToken: string,
-    nasesUser: JwtNasesPayloadDto,
+    nasesUser: JwtNasesPayload,
     user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)

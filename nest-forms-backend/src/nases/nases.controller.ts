@@ -22,7 +22,14 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { AuthUser, User, UserType } from '../auth-v2/types/user'
-import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
+import {
+  GetFormsRequestDto,
+  UpdateFormRequestDto,
+} from '../forms/dtos/requests.dto'
+import FormDeleteResponseDto, {
+  GetFormResponseDto,
+  GetFormsResponseDto,
+} from '../forms/dtos/responses.dto'
 import FormsService from '../forms/forms.service'
 import {
   FormAccessAllowMigrations,
@@ -37,16 +44,10 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import {
-  EidUpdateSendFormRequestDto,
-  GetFormResponseDto,
-  GetFormsRequestDto,
-  GetFormsResponseDto,
-  JwtNasesPayloadDto,
-  SendFormResponseDto,
-  UpdateFormRequestDto,
-} from './dtos/requests.dto'
+import { EidUpdateSendFormRequestDto } from './dtos/requests.dto'
+import { SendFormResponseDto } from './dtos/responses.dto'
 import NasesService from './nases.service'
+import { JwtNasesPayload } from './types/jwt-nases.types'
 
 @ApiTags('nases')
 @ApiBearerAuth()
@@ -203,7 +204,7 @@ export default class NasesController {
     }
     const nasesUser = jwt.decode(data.eidToken, {
       json: true,
-    }) as JwtNasesPayloadDto
+    }) as JwtNasesPayload
 
     // eslint-disable-next-line @typescript-eslint/no-misused-spread -- we are spreading a DTO object, which is not a problem
     const updateData = { ...data, eidToken: undefined }

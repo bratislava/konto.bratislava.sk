@@ -9,11 +9,6 @@ import { AuthUser } from '../auth-v2/types/user'
 import { getUserIco } from '../auth-v2/utils/user-utils'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import {
-  GetFormResponseSimpleDto,
-  GetFormsRequestDto,
-  GetFormsResponseDto,
-} from '../nases/dtos/requests.dto'
 import PrismaService from '../prisma/prisma.service'
 import {
   DEFAULT_PAGE,
@@ -25,7 +20,11 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { FormUpdateBodyDto } from './dtos/forms.requests.dto'
+import { FormUpdateBodyDto, GetFormsRequestDto } from './dtos/requests.dto'
+import {
+  GetFormResponseSimpleDto,
+  GetFormsResponseDto,
+} from './dtos/responses.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
 
 @Injectable()

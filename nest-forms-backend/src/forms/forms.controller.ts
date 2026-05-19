@@ -11,7 +11,7 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { UserType } from '../auth-v2/types/user'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
-import { BumpJsonVersionResponseDto } from './dtos/forms.responses.dto'
+import { BumpJsonVersionResponseDto } from './dtos/responses.dto'
 import FormsService from './forms.service'
 
 @ApiTags('forms')

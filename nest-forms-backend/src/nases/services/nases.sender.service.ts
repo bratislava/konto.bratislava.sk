@@ -27,12 +27,12 @@ import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesSendResponse } from '../dtos/responses.dto'
-import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import { NasesAttachmentXmlObject } from '../types/xml.types'
 
 @Injectable()
 export default class NasesSenderService {

@@ -175,6 +175,38 @@ describe('FormsService', () => {
     })
   })
 
+  describe('updateFormWithUser', () => {
+    it('should throw not found when form does not exist', async () => {
+      prismaMock.forms.findUnique.mockResolvedValue(null)
+
+      await expect(
+        service.updateFormWithUser('1', {}, authUser.user),
+      ).rejects.toThrow()
+    })
+
+    it('should merge user fields with request data and call updateForm', async () => {
+      prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
+      const spy = jest
+        .spyOn(service, 'updateForm')
+        .mockResolvedValue({} as Forms)
+
+      await service.updateFormWithUser(
+        '1',
+        { formDataJson: { field: 'value' } },
+        authUser.user,
+      )
+
+      expect(spy).toHaveBeenCalledWith('1', {
+        userExternalId: authUser.sub,
+        cognitoGuestIdentityId: null,
+        ico: null,
+        ownerType: 'FO',
+        email: authUser.user.cityAccountUser.email,
+        formDataJson: { field: 'value' },
+      })
+    })
+  })
+
   describe('getFormsCount', () => {
     it('should return all 0 if there is no record in database', async () => {
       prismaMock.forms.groupBy.mockResolvedValue([])

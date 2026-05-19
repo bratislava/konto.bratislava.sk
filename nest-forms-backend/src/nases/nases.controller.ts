@@ -160,10 +160,12 @@ export default class NasesController {
     return this.formsService.updateFormWithUser(formId, data, user)
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
@@ -183,10 +185,12 @@ export default class NasesController {
     return returnData
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',

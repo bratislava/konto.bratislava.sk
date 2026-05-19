@@ -1867,9 +1867,9 @@ describe('TaxService', () => {
       })
 
       it('should return 0 for taxes with no payments', async () => {
-        jest.spyOn(prismaMock.taxPayment, 'groupBy').mockResolvedValue([
-          { taxId: 1, _sum: { amount: 200 } },
-        ] as any)
+        jest
+          .spyOn(prismaMock.taxPayment, 'groupBy')
+          .mockResolvedValue([{ taxId: 1, _sum: { amount: 200 } }] as any)
 
         const result = await service['getAmountsAlreadyPaidByTaxIds']([1, 2, 3])
 

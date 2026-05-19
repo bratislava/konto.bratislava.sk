@@ -5,10 +5,12 @@ import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtract
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
-import { AuthUser } from '../auth-v2/types/user'
+import { AuthUser, User } from '../auth-v2/types/user'
 import { getUserIco } from '../auth-v2/utils/user-utils'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
+import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
+import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import PrismaService from '../prisma/prisma.service'
 import {
   DEFAULT_PAGE,
@@ -20,8 +22,13 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { FormUpdateBodyDto, GetFormsRequestDto } from './dtos/requests.dto'
 import {
+  FormUpdateBodyDto,
+  GetFormsRequestDto,
+  UpdateFormRequestDto,
+} from './dtos/requests.dto'
+import {
+  GetFormResponseDto,
   GetFormResponseSimpleDto,
   GetFormsResponseDto,
 } from './dtos/responses.dto'
@@ -146,6 +153,51 @@ export default class FormsService {
     }
 
     return form
+  }
+
+  async getFormWithSubject(
+    id: string,
+  ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
+    const form = await this.getForm(id)
+    // getForm already validates the definition exists, so non-null is safe here
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)!
+    return {
+      ...form,
+      formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
+    }
+  }
+
+  async updateFormWithUser(
+    id: string,
+    requestData: FormUpdateBodyDto,
+    user: User,
+  ): Promise<Forms> {
+    const form = await this.getUniqueForm(id)
+    if (form === null) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+      )
+    }
+
+    return this.updateForm(id, {
+      ...getUserFormFields(user),
+      ...requestData,
+    })
+  }
+
+  async updateFormEid(
+    id: string,
+    nasesUser: JwtNasesPayload,
+    requestData: UpdateFormRequestDto,
+    user: User,
+  ): Promise<Forms> {
+    return this.updateFormWithUser(
+      id,
+      { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },
+      user,
+    )
   }
 
   async getForms(

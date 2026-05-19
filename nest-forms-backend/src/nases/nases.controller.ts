@@ -62,9 +62,11 @@ export default class NasesController {
 
   // WORK ENDPOINTS
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description: 'Return form by ID and by logged user',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Return form',
@@ -81,16 +83,18 @@ export default class NasesController {
     @GetUser() user: User,
     @GetFormAccessType() accessType: FormAccessType,
   ): Promise<GetFormResponseDto> {
-    const data = await this.nasesService.getForm(id)
+    const data = await this.formsService.getFormWithSubject(id)
     return {
       ...data,
       requiresMigration: accessType === FormAccessType.Migration,
     }
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: 'Get paginated forms',
     description: 'Get paginated forms',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Return forms',
@@ -104,13 +108,15 @@ export default class NasesController {
     @Query() query: GetFormsRequestDto,
     @GetUser() user: AuthUser,
   ): Promise<GetFormsResponseDto> {
-    const data = await this.nasesService.getForms(query, user)
+    const data = await this.formsService.getForms(query, user)
     return data
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description: 'Archive form (hide from user but keep in database)',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Form successfully deleted',
@@ -130,9 +136,11 @@ export default class NasesController {
     }
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description: 'Update form',
+    deprecated: true,
   })
   @ApiOkResponse({
     description:
@@ -149,8 +157,7 @@ export default class NasesController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<Forms> {
-    const returnData = await this.nasesService.updateForm(formId, data, user)
-    return returnData
+    return this.formsService.updateFormWithUser(formId, data, user)
   }
 
   @ApiOperation({
@@ -215,7 +222,7 @@ export default class NasesController {
       updateData.formSignature,
     )
 
-    await this.nasesService.updateFormEid(formId, nasesUser, updateData, user)
+    await this.formsService.updateFormEid(formId, nasesUser, updateData, user)
 
     const returnData = await this.nasesService.sendFormEid(
       formId,

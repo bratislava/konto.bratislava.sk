@@ -59,7 +59,7 @@ export default class NasesContactsService {
   private readonly logger: LineLoggerSubservice
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
-    this.logger = new LineLoggerSubservice('NasesContactsService')
+    this.logger = new LineLoggerSubservice(NasesContactsService.name)
   }
 
   extractNaturalPersonData(

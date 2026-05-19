@@ -1,7 +1,6 @@
 export enum NasesErrorsEnum {
   UNABLE_ADD_FORM_TO_RABBIT = 'UNABLE_ADD_FORM_TO_RABBIT',
   FORM_ASSIGNED_TO_OTHER_USER = 'FORM_ASSIGNED_TO_OTHER_USER',
-  CITY_ACCOUNT_USER_GET_ERROR = 'CITY_ACCOUNT_USER_GET_ERROR',
   FORBIDDEN_SEND = 'FORBIDDEN_SEND',
   INFECTED_FILE = 'INFECTED_FILE',
   FILE_NOT_SCANNED = 'FILE_NOT_SCANNED',
@@ -24,7 +23,6 @@ export enum NasesErrorsEnum {
 export enum NasesErrorsResponseEnum {
   UNABLE_ADD_FORM_TO_RABBIT = 'There was an issue sending form to rabbitmq.',
   FORM_ASSIGNED_TO_OTHER_USER = 'This form is already assigned to another user.',
-  CITY_ACCOUNT_USER_GET_ERROR = 'There was an error when getting user info from city account backend.',
   FORBIDDEN_SEND = 'Sending this form is forbidden to given user.',
   INFECTED_FILE = 'This form contains an infected file.',
   FILE_NOT_SCANNED = "This form contains a file that hasn't been scanned.",
@@ -41,6 +39,7 @@ export enum NasesErrorsResponseEnum {
   FAILED_FORM_REGISTRATION_VERIFICATION = 'Failed to verify form registration in Slovensko.sk.',
   CREATE_PDF_IMAGE_ERROR = 'Error while creating pdf image.',
   IDENTITY_SEARCH_DATA_INCONSISTENT = 'Data from identity search is inconsistent or missing.',
+  FORM_DEFINITION_NOT_IN_SLOVENSKO_SK = 'Some form definitions are not correctly registered in slovensko.sk.',
 }
 
 export enum NasesErrorCodesEnum {

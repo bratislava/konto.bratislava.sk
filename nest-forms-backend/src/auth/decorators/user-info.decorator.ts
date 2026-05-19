@@ -11,11 +11,11 @@ import {
 } from 'openapi-clients/city-account'
 
 import ClientsService from '../../clients/clients.service'
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../../nases/nases.errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import {
+  CityAccountErrorsEnum,
+  CityAccountErrorsResponseEnum,
+} from '../errors/city-account.errors.enum'
 
 /**
  * This is a temporary solution. It's not possible to distinguish between ResponseLegalPersonDataDto
@@ -64,8 +64,10 @@ export class UserInfoPipe implements PipeTransform {
     } catch (error) {
       const thrower = new ThrowerErrorGuard()
       throw thrower.NotFoundException(
-        NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-        `${NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR} error: ${String(error)}`,
+        CityAccountErrorsEnum.GET_USER_ERROR,
+        CityAccountErrorsResponseEnum.GET_USER_ERROR,
+        undefined,
+        error,
       )
     }
   }

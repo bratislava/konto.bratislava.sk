@@ -413,6 +413,21 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     userDataFromCityAccount: ResponseUserByBirthNumberDto | null,
     suppressEmail?: boolean,
   ): Promise<TaxWithTaxPayer> {
+    const existsNewerTax = await transaction.tax.findFirst({
+      select: {
+        id: true,
+      },
+      where: {
+        taxPayer: {
+          birthNumber: dataFromNoris.ICO_RC,
+        },
+        dateCreateTax: {
+          gt: dataFromNoris.datum_realizacie,
+        },
+        type: taxDefinition.type,
+      },
+    })
+
     const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
     const taxAdministrator = taxAdministratorData
       ? await transaction.taxAdministrator.upsert({
@@ -433,7 +448,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       update: taxPayerData,
     })
 
-    if (taxAdministrator?.id) {
+    if (taxAdministrator?.id && !existsNewerTax) {
       const taxPayerTaxAdministratorData = {
         taxPayerId: taxPayer.id,
         taxAdministratorId: taxAdministrator.id,

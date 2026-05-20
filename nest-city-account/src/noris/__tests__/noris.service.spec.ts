@@ -298,7 +298,7 @@ describe('NorisService', () => {
     })
 
     it('should pass deathDate to death_date SQL parameter', async () => {
-      const deathDate = new Date('2023-06-15')
+      const deathDate = '2023-06-15'
       const mockRequest = createMock<mssql.Request>()
       mockRequest.input.mockReturnValue(mockRequest)
 

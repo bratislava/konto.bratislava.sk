@@ -298,7 +298,7 @@ describe('NorisService', () => {
     })
 
     it('should pass deathDate to death_date SQL parameter', async () => {
-      const deathDate = new Date('2023-06-15')
+      const deathDate = '2023-06-15'
       const mockRequest = createMock<mssql.Request>()
       mockRequest.input.mockReturnValue(mockRequest)
 
@@ -320,7 +320,7 @@ describe('NorisService', () => {
         },
       ])
 
-      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.DateTime, deathDate)
+      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.VarChar, deathDate)
     })
 
     it('should pass null to death_date SQL parameter when deathDate is null', async () => {
@@ -345,7 +345,7 @@ describe('NorisService', () => {
         },
       ])
 
-      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.DateTime, null)
+      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.VarChar, null)
     })
   })
 })

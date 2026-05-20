@@ -322,7 +322,7 @@ describe('EdeskTasksSubservice', () => {
     })
 
     it('should pass edeskDeathDate as deathDate for completed items', async () => {
-      const deathDate = new Date('2023-06-15')
+      const deathDate = '2023-06-15'
       const completedItem = createMockCompletedItem({
         id: 'id-1',
         norisId: 1,

@@ -159,7 +159,7 @@ export class EdeskTasksSubservice {
       edeskStatus: EdeskStatus
       edeskNumber: string | null
       uri: string | null
-      deathDate: Date | null
+      deathDate: string | null
     }[] = []
     for (const item of completedItems) {
       try {

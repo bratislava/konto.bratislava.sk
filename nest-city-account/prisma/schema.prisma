@@ -168,7 +168,7 @@ model ExternalEdeskCheck {
   upvsStatus     String?
   edeskStatus    String?
   edeskNumber    String?
-  edeskDeathDate DateTime?
+  edeskDeathDate String?
 
   norisId Int @unique
 

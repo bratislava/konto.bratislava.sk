@@ -160,9 +160,13 @@ export default class FormsService {
     id: string,
   ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
     const form = await this.getForm(id)
-    // getForm already validates the definition exists, so non-null is safe here
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)!
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
     return {
       ...form,
       formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),

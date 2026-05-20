@@ -11,8 +11,18 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import FormSenderController from './form-sender.controller'
 
 @Module({
-  imports: [NasesModule, FormsModule, FormsV2Module, AuthV2Module, PrismaModule],
-  providers: [ThrowerErrorGuard, LineLoggerSubservice, FormRegistrationStatusRepository],
+  imports: [
+    NasesModule,
+    FormsModule,
+    FormsV2Module,
+    AuthV2Module,
+    PrismaModule,
+  ],
+  providers: [
+    ThrowerErrorGuard,
+    LineLoggerSubservice,
+    FormRegistrationStatusRepository,
+  ],
   controllers: [FormSenderController],
 })
 export default class FormSenderModule {}

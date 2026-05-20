@@ -320,7 +320,7 @@ describe('NorisService', () => {
         },
       ])
 
-      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.DateTime, deathDate)
+      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.VarChar, deathDate)
     })
 
     it('should pass null to death_date SQL parameter when deathDate is null', async () => {
@@ -345,7 +345,7 @@ describe('NorisService', () => {
         },
       ])
 
-      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.DateTime, null)
+      expect(mockRequest.input).toHaveBeenCalledWith('death_date', mssql.VarChar, null)
     })
   })
 })

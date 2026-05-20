@@ -165,9 +165,10 @@ model ExternalEdeskCheck {
   newUri      String?
   queueStatus QueueItemStatusEnum @default(PENDING)
 
-  upvsStatus  String?
-  edeskStatus String?
-  edeskNumber String?
+  upvsStatus     String?
+  edeskStatus    String?
+  edeskNumber    String?
+  edeskDeathDate String?
 
   norisId Int @unique
 

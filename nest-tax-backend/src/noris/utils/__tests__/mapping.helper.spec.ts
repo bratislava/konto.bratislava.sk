@@ -382,7 +382,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
   const baseMockData: NorisBaseTax = {
     dan_spolu: '150,50',
     variabilny_symbol: '2024000123',
-    akt_datum: '2024-01-15',
+    datum_realizacie: new Date('2024-01-15'),
     datum_platnosti: new Date('2024-02-01'),
     cislo_konania: 'KON-2024-001',
     stav_dokladu: 'Z',
@@ -397,7 +397,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
       year: 2024,
       taxPayerId: 42,
       variableSymbol: '2024000123',
-      dateCreateTax: '2024-01-15',
+      dateCreateTax: new Date('2024-01-15'),
       dateTaxRuling: new Date('2024-02-01'),
       taxId: 'KON-2024-001',
       isCancelled: false,
@@ -458,12 +458,6 @@ describe('mapNorisToDatabaseBaseTax', () => {
     const result2 = mapNorisToDatabaseBaseTax(baseMockData, 2025, 999)
     expect(result2.year).toBe(2025)
     expect(result2.taxPayerId).toBe(999)
-  })
-
-  it('should handle null dateCreateTax (akt_datum)', () => {
-    const data = { ...baseMockData, akt_datum: null } as NorisBaseTax
-    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
-    expect(result.dateCreateTax).toBeNull()
   })
 
   it('should handle null dateTaxRuling (datum_platnosti)', () => {

@@ -2,8 +2,8 @@ import { AmqpConnection } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { Replies } from 'amqplib'
 
+import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 import { GinisCheckNasesPayloadDto } from '../ginis/dtos/ginis.response.dto'
-import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 

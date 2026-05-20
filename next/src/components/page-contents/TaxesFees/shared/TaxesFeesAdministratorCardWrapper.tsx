@@ -43,6 +43,11 @@ const TaxesFeesAdministratorCardWrapper = ({
     return null
   }
 
+  // TODO Temporarily hidden until we fetch the administator correctly 
+  if (taxType !== TaxType.Dzn && !beTaxAdministrator ) {
+    return null
+  }
+
   const cardTitle = {
     [TaxType.Dzn]: t('account_section_payment.your_tax_administrator.tax'),
     [TaxType.Ko]: t('account_section_payment.your_tax_administrator.fee'),

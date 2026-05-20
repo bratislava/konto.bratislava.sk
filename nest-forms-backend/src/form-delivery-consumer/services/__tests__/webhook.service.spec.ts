@@ -18,20 +18,20 @@ import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { FormWithFiles } from '../../../utils/types/prisma'
-import { WebhookErrorsResponseEnum } from '../dtos/webhook.errors.enum'
-import WebhookSubservice from '../webhook.subservice'
+import { WebhookErrorsResponseEnum } from '../../errors/webhook.errors.enum'
+import WebhookService from '../webhook.service'
 
 jest.mock('axios')
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/omitExtraData')
 
-describe('WebhookSubservice', () => {
-  let service: WebhookSubservice
+describe('WebhookService', () => {
+  let service: WebhookService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        WebhookSubservice,
+        WebhookService,
         {
           provide: PrismaService,
           useValue: prismaMock,
@@ -45,7 +45,7 @@ describe('WebhookSubservice', () => {
       ],
     }).compile()
 
-    service = module.get<WebhookSubservice>(WebhookSubservice)
+    service = module.get<WebhookService>(WebhookService)
     const mockLogger = {
       error: jest.fn(),
       log: jest.fn(),

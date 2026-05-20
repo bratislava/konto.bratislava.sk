@@ -24,7 +24,7 @@ WITH NorisRows AS (
         a_tb.psc_refer as psc_ref_tb,
         a_tb.obec_nazev obec_nazev_tb, 
         lcs.dane21_doklad.datum_realizacie datum_realizacie, 
-        lcs.fn21_meno_osoby_org(lcs.dane21_doklad.vybavuje, null) vyb_nazov, 
+        lcs.fn21_meno_osoby_org(dp_conf.vybavuje, null) vyb_nazov, 
         z_vybav.telefon_prace vyb_telefon_prace, 
         z_vybav.e_mail vyb_email, 
         dp_conf.vybavuje vyb_id,
@@ -528,7 +528,7 @@ export const getCommunalWasteTaxesFromNoris = `
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         doklad.datum_realizacie datum_realizacie,
-        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov,
+        lcs.fn21_meno_osoby_org(pop_conf.vybavuje, null) vyb_nazov,
 
         poplatok.forma_uhrady AS forma_uhrady,
 

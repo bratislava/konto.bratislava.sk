@@ -83,6 +83,8 @@ export class UserDataSubservice {
       return existingUser
     }
 
+    this.logger.warn(`Requested user does not exist. externalId: ${cognitoUserData.idUser}`)
+
     return this.createUser(cognitoUserData)
   }
 
@@ -180,6 +182,10 @@ export class UserDataSubservice {
     if (existingLegalPerson) {
       return existingLegalPerson
     }
+
+    this.logger.warn(
+      `Requested legalPerson does not exist. externalId: ${cognitoLegalPersonData.idUser}`
+    )
 
     return this.createLegalPerson(cognitoLegalPersonData)
   }

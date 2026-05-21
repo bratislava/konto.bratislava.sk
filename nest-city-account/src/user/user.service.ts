@@ -98,10 +98,12 @@ export class UserService {
     return false
   }
 
-  async upsertUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.upsertUser(cognitoUserData)
-    const officialCorrespondenceChannel =
-      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
+  private async convertUserToResponseUserData(
+    user: Omit<User, 'ifo'>
+  ): Promise<ResponseUserDataDto> {
+    const officialCorrespondenceChannel = await this.userDataSubservice.getActiveDeliveryMethod(
+      user.id
+    )
     const showEmailCommunicationBanner =
       await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
     const consents = await this.userDataSubservice.getUserConsents(user.id)
@@ -115,6 +117,11 @@ export class UserService {
         user.id
       ),
     }
+  }
+
+  async upsertUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
+    const user = await this.userDataSubservice.upsertUser(cognitoUserData)
+    return await this.convertUserToResponseUserData(user)
   }
 
   async upsertLegalPersonData(
@@ -157,22 +164,8 @@ export class UserService {
   }
 
   async removeBirthNumber(id: string): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.removeBirthNumber(id)
-    const officialCorrespondenceChannel =
-      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
-    const showEmailCommunicationBanner =
-      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const consents = await this.userDataSubservice.getUserConsents(user.id)
-    return {
-      ...user,
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      consents,
-      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
-      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
-        user.id
-      ),
-    }
+    const user = await this.userDataSubservice.removeUserBirthNumber(id)
+    return await this.convertUserToResponseUserData(user)
   }
 
   async removeLegalPersonBirthNumber(id: string) {
@@ -208,21 +201,7 @@ export class UserService {
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
 
-    const officialCorrespondenceChannel =
-      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
-    const showEmailCommunicationBanner =
-      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const consents = await this.userDataSubservice.getUserConsents(user.id)
-    return {
-      ...user,
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      consents,
-      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
-      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
-        user.id
-      ),
-    }
+    return await this.convertUserToResponseUserData(user)
   }
 
   /**

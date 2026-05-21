@@ -1,11 +1,16 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DeliveryMethodEnum } from '@prisma/client'
+import { ConsentEnum, DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+  CognitoUserAttributesEnum,
+} from '../utils/global-dtos/cognito.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
@@ -15,9 +20,23 @@ import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
 jest.mock('../utils/constants/tax-deadline')
 
+const buildCognitoUserData = (
+  accountType: CognitoUserAccountTypesEnum,
+  overrides: Partial<CognitoGetUserData> = {}
+): CognitoGetUserData =>
+  ({
+    sub: 'sub-id',
+    idUser: 'sub-id',
+    email: 'test@example.com',
+    Enabled: true,
+    [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
+    ...overrides,
+  }) as CognitoGetUserData
+
 describe('UserService', () => {
   let service: UserService
   let userDataSubservice: jest.Mocked<UserDataSubservice>
+  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,6 +72,7 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService)
     userDataSubservice = module.get(UserDataSubservice)
+    throwerErrorGuard = module.get(ThrowerErrorGuard)
   })
 
   afterEach(() => {
@@ -177,6 +197,116 @@ describe('UserService', () => {
       expect(userDataSubservice.getActiveAndLockedDeliveryMethodsWithDates).toHaveBeenCalledWith({
         id: userId,
       })
+    })
+  })
+
+  describe('updateGdprConsent', () => {
+    it('should persist a user consent for a physical entity', async () => {
+      const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY)
+      userDataSubservice.getOrCreateUser.mockResolvedValue({
+        id: 'user-id',
+        externalId: 'external-id',
+      } as never)
+
+      await service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
+
+      expect(userDataSubservice.getOrCreateUser).toHaveBeenCalledWith(cognitoUserData)
+      expect(userDataSubservice.setUserConsents).toHaveBeenCalledWith('user-id', 'external-id', [
+        { consentType: ConsentEnum.MARKETING, isGranted: true },
+      ])
+      expect(userDataSubservice.getOrCreateLegalPerson).not.toHaveBeenCalled()
+      expect(userDataSubservice.setLegalPersonConsents).not.toHaveBeenCalled()
+    })
+
+    it('should persist a revoked consent for a physical entity', async () => {
+      const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY)
+      userDataSubservice.getOrCreateUser.mockResolvedValue({
+        id: 'user-id',
+        externalId: 'external-id',
+      } as never)
+
+      await service.updateGdprConsent(cognitoUserData, ConsentEnum.GENERAL, false)
+
+      expect(userDataSubservice.setUserConsents).toHaveBeenCalledWith('user-id', 'external-id', [
+        { consentType: ConsentEnum.GENERAL, isGranted: false },
+      ])
+    })
+
+    it.each([
+      CognitoUserAccountTypesEnum.LEGAL_ENTITY,
+      CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY,
+    ])('should persist a legal person consent for account type %s', async (accountType) => {
+      const cognitoUserData = buildCognitoUserData(accountType)
+      userDataSubservice.getOrCreateLegalPerson.mockResolvedValue({
+        id: 'legal-person-id',
+        externalId: 'external-id',
+      } as never)
+
+      await service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
+
+      expect(userDataSubservice.getOrCreateLegalPerson).toHaveBeenCalledWith(cognitoUserData)
+      expect(userDataSubservice.setLegalPersonConsents).toHaveBeenCalledWith(
+        'legal-person-id',
+        'external-id',
+        [{ consentType: ConsentEnum.MARKETING, isGranted: true }]
+      )
+      expect(userDataSubservice.getOrCreateUser).not.toHaveBeenCalled()
+      expect(userDataSubservice.setUserConsents).not.toHaveBeenCalled()
+    })
+
+    it('should throw for an unknown account type', async () => {
+      const cognitoUserData = buildCognitoUserData(
+        'unknown' as unknown as CognitoUserAccountTypesEnum
+      )
+      throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
+        new Error('invalid account type') as never
+      )
+
+      await expect(
+        service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
+      ).rejects.toThrow('invalid account type')
+
+      expect(throwerErrorGuard.UnprocessableEntityException).toHaveBeenCalled()
+      expect(userDataSubservice.setUserConsents).not.toHaveBeenCalled()
+      expect(userDataSubservice.setLegalPersonConsents).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('setDeliveryMethodPreference', () => {
+    it('should delegate to the subservice for a physical entity', async () => {
+      const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY, {
+        sub: 'cognito-sub-id',
+      })
+
+      await service.setDeliveryMethodPreference(
+        cognitoUserData,
+        DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
+      )
+
+      expect(userDataSubservice.setDeliveryMethodPreference).toHaveBeenCalledWith(
+        'cognito-sub-id',
+        DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
+      )
+    })
+
+    it.each([
+      CognitoUserAccountTypesEnum.LEGAL_ENTITY,
+      CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY,
+      'unknown' as unknown as CognitoUserAccountTypesEnum,
+    ])('should reject account type %s', async (accountType) => {
+      const cognitoUserData = buildCognitoUserData(accountType)
+      throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
+        new Error('invalid account type') as never
+      )
+
+      await expect(
+        service.setDeliveryMethodPreference(
+          cognitoUserData,
+          DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
+        )
+      ).rejects.toThrow('invalid account type')
+
+      expect(userDataSubservice.setDeliveryMethodPreference).not.toHaveBeenCalled()
     })
   })
 })

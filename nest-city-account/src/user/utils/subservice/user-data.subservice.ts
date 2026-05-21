@@ -138,8 +138,8 @@ export class UserDataSubservice {
     return this.postprocessUser(userData.externalId, user)
   }
 
-  private async postprocessUser(externalId: string, user: User, changeGdprData = false) {
-    if (changeGdprData) {
+  private async postprocessUser(externalId: string, user: User, setDefaultConsents = false) {
+    if (setDefaultConsents) {
       const consents = [
         { consentType: ConsentEnum.MARKETING, isGranted: true },
         { consentType: ConsentEnum.GENERAL, isGranted: true },
@@ -237,9 +237,9 @@ export class UserDataSubservice {
   private async postprocessLegalPerson(
     externalId: string,
     legalPerson: LegalPerson,
-    changeGdprData = false
+    setDefaultConsents = false
   ) {
-    if (changeGdprData) {
+    if (setDefaultConsents) {
       const consents = [
         { consentType: ConsentEnum.MARKETING, isGranted: true },
         { consentType: ConsentEnum.GENERAL, isGranted: true },

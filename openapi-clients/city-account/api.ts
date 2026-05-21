@@ -4169,7 +4169,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).  **Deprecated** — renamed to \'POST /user/upsert\' to better reflect the actual semantics (this endpoint always upserts; the legacy \"get-or-create\" name was misleading because it also updates existing records). Use \'POST /user/upsert\' instead — the behaviour and response shape are identical.
      * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -4302,7 +4302,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -4357,7 +4357,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -4412,7 +4412,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * Unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4476,7 +4476,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * Unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4540,7 +4540,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * Accept or revoke a single user-facing consent identified by `consentType`.
+     * Accept or revoke a single user-facing consent identified by \'consentType\'.
      * @summary Update a single GDPR consent for the logged-in user
      * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
      * @param {*} [options] Override http request option.
@@ -4633,7 +4633,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
      * @summary Upsert user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4671,7 +4671,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use \'/get-or-create\' instead. This endpoint should be called once per login/registration to properly track which client was used.
      * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
      * @param {*} [options] Override http request option.
@@ -4767,7 +4767,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).  **Deprecated** — renamed to \'POST /user/upsert\' to better reflect the actual semantics (this endpoint always upserts; the legacy \"get-or-create\" name was misleading because it also updates existing records). Use \'POST /user/upsert\' instead — the behaviour and response shape are identical.
      * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -4849,7 +4849,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -4883,7 +4883,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -4917,7 +4917,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4952,7 +4952,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -4988,7 +4988,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Accept or revoke a single user-facing consent identified by `consentType`.
+     * Accept or revoke a single user-facing consent identified by \'consentType\'.
      * @summary Update a single GDPR consent for the logged-in user
      * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
      * @param {*} [options] Override http request option.
@@ -5040,7 +5040,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
      * @summary Upsert user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5068,7 +5068,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use \'/get-or-create\' instead. This endpoint should be called once per login/registration to properly track which client was used.
      * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
      * @param {*} [options] Override http request option.
@@ -5130,7 +5130,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).  **Deprecated** — renamed to \'POST /user/upsert\' to better reflect the actual semantics (this endpoint always upserts; the legacy \"get-or-create\" name was misleading because it also updates existing records). Use \'POST /user/upsert\' instead — the behaviour and response shape are identical.
      * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -5171,7 +5171,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -5187,7 +5187,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -5203,7 +5203,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Unsubscribe any user by uuid with different categories of subscription
+     * Unsubscribe any user by uuid with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
      * @summary Unsubscribe user by uuid
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -5223,7 +5223,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Unsubscribe any user by external Id from cognito with different categories of subscription
+     * Unsubscribe any user by external Id from cognito with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
      * @summary Unsubscribe user by external Id
      * @param {string} id
      * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -5243,7 +5243,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Accept or revoke a single user-facing consent identified by `consentType`.
+     * Accept or revoke a single user-facing consent identified by \'consentType\'.
      * @summary Update a single GDPR consent for the logged-in user
      * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
      * @param {*} [options] Override http request option.
@@ -5271,7 +5271,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
      * @summary Upsert user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5284,7 +5284,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+     * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use \'/get-or-create\' instead. This endpoint should be called once per login/registration to properly track which client was used.
      * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
      * @param {*} [options] Override http request option.
@@ -5322,7 +5322,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).  **Deprecated** — renamed to \'POST /user/upsert\' to better reflect the actual semantics (this endpoint always upserts; the legacy \"get-or-create\" name was misleading because it also updates existing records). Use \'POST /user/upsert\' instead — the behaviour and response shape are identical.
    * @summary Get or create user with their data (use when already logged in, not during login/registration)
    * @param {*} [options] Override http request option.
    * @deprecated
@@ -5362,7 +5362,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+   * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
    * @summary Create subscribed or unsubscribed log for logged in users
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
@@ -5379,7 +5379,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
+   * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.  **Deprecated** — replaced by the consents and delivery-method endpoints. The legacy \'category\' / \'type\' / \'subType\' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / official delivery method (previously encoded as \'TAXES\' + \'FORMAL_COMMUNICATION\' in the same payload) is now a separate concern. Use: - \'POST /user/gdpr-consent\' to grant or revoke a single consent (MARKETING, GENERAL). - \'POST /user/set-delivery-method-preference\' to change the tax / official delivery method.
    * @summary Unsubscribe logged user
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
@@ -5396,7 +5396,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * Unsubscribe any user by uuid with different categories of subscription
+   * Unsubscribe any user by uuid with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
    * @summary Unsubscribe user by uuid
    * @param {string} id
    * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -5417,7 +5417,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * Unsubscribe any user by external Id from cognito with different categories of subscription
+   * Unsubscribe any user by external Id from cognito with different categories of subscription.  **Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists today; for authenticated flows use \'POST /user/gdpr-consent\' and \'POST /user/set-delivery-method-preference\'.
    * @summary Unsubscribe user by external Id
    * @param {string} id
    * @param {GDPRTypeEnum} type Type of Gdpr subscription
@@ -5438,7 +5438,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * Accept or revoke a single user-facing consent identified by `consentType`.
+   * Accept or revoke a single user-facing consent identified by \'consentType\'.
    * @summary Update a single GDPR consent for the logged-in user
    * @param {UpdateGdprConsentRequestDto} updateGdprConsentRequestDto
    * @param {*} [options] Override http request option.
@@ -5466,7 +5466,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use \'/upsert-user-record-client\' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
    * @summary Upsert user with their data (use when already logged in, not during login/registration)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -5478,7 +5478,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
+   * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use \'/get-or-create\' instead. This endpoint should be called once per login/registration to properly track which client was used.
    * @summary Upsert user and record login client (use during login/registration)
    * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
    * @param {*} [options] Override http request option.

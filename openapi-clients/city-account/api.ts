@@ -4172,6 +4172,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
      * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerGetOrCreateUser: async (
@@ -4632,6 +4633,44 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Upsert user with their data (use when already logged in, not during login/registration)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpsertUser: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/user/upsert`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
      * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
@@ -4731,6 +4770,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
      * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerGetOrCreateUser(
@@ -5000,6 +5040,34 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Upsert user with their data (use when already logged in, not during login/registration)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userControllerUpsertUser(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<UserControllerGetOrCreateUser200Response>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpsertUser(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerUpsertUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
      * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
@@ -5065,6 +5133,7 @@ export const UsersManipulationApiFactory = function (
      * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
      * @summary Get or create user with their data (use when already logged in, not during login/registration)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     userControllerGetOrCreateUser(
@@ -5202,6 +5271,19 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+     * @summary Upsert user with their data (use when already logged in, not during login/registration)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpsertUser(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UserControllerGetOrCreateUser200Response> {
+      return localVarFp
+        .userControllerUpsertUser(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per login/registration to properly track which client was used.
      * @summary Upsert user and record login client (use during login/registration)
      * @param {UpsertUserRecordClientRequestDto} upsertUserRecordClientRequestDto
@@ -5243,6 +5325,7 @@ export class UsersManipulationApi extends BaseAPI {
    * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
    * @summary Get or create user with their data (use when already logged in, not during login/registration)
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    */
   public userControllerGetOrCreateUser(options?: RawAxiosRequestConfig) {
@@ -5379,6 +5462,18 @@ export class UsersManipulationApi extends BaseAPI {
   public userControllerUpdateOrCreateBloomreachCustomer(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerUpdateOrCreateBloomreachCustomer(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).
+   * @summary Upsert user with their data (use when already logged in, not during login/registration)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public userControllerUpsertUser(options?: RawAxiosRequestConfig) {
+    return UsersManipulationApiFp(this.configuration)
+      .userControllerUpsertUser(options)
       .then((request) => request(this.axios, this.basePath))
   }
 

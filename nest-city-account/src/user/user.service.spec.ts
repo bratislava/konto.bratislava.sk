@@ -203,24 +203,24 @@ describe('UserService', () => {
   describe('updateGdprConsent', () => {
     it('should persist a user consent for a physical entity', async () => {
       const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY)
-      userDataSubservice.getOrCreateUser.mockResolvedValue({
+      userDataSubservice.getOrFallbackCreateUser.mockResolvedValue({
         id: 'user-id',
         externalId: 'external-id',
       } as never)
 
       await service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
 
-      expect(userDataSubservice.getOrCreateUser).toHaveBeenCalledWith(cognitoUserData)
+      expect(userDataSubservice.getOrFallbackCreateUser).toHaveBeenCalledWith(cognitoUserData)
       expect(userDataSubservice.setUserConsents).toHaveBeenCalledWith('user-id', 'external-id', [
         { consentType: ConsentEnum.MARKETING, isGranted: true },
       ])
-      expect(userDataSubservice.getOrCreateLegalPerson).not.toHaveBeenCalled()
+      expect(userDataSubservice.getOrFallbackCreateLegalPerson).not.toHaveBeenCalled()
       expect(userDataSubservice.setLegalPersonConsents).not.toHaveBeenCalled()
     })
 
     it('should persist a revoked consent for a physical entity', async () => {
       const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY)
-      userDataSubservice.getOrCreateUser.mockResolvedValue({
+      userDataSubservice.getOrFallbackCreateUser.mockResolvedValue({
         id: 'user-id',
         externalId: 'external-id',
       } as never)
@@ -237,20 +237,20 @@ describe('UserService', () => {
       CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY,
     ])('should persist a legal person consent for account type %s', async (accountType) => {
       const cognitoUserData = buildCognitoUserData(accountType)
-      userDataSubservice.getOrCreateLegalPerson.mockResolvedValue({
+      userDataSubservice.getOrFallbackCreateLegalPerson.mockResolvedValue({
         id: 'legal-person-id',
         externalId: 'external-id',
       } as never)
 
       await service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
 
-      expect(userDataSubservice.getOrCreateLegalPerson).toHaveBeenCalledWith(cognitoUserData)
+      expect(userDataSubservice.getOrFallbackCreateLegalPerson).toHaveBeenCalledWith(cognitoUserData)
       expect(userDataSubservice.setLegalPersonConsents).toHaveBeenCalledWith(
         'legal-person-id',
         'external-id',
         [{ consentType: ConsentEnum.MARKETING, isGranted: true }]
       )
-      expect(userDataSubservice.getOrCreateUser).not.toHaveBeenCalled()
+      expect(userDataSubservice.getOrFallbackCreateUser).not.toHaveBeenCalled()
       expect(userDataSubservice.setUserConsents).not.toHaveBeenCalled()
     })
 

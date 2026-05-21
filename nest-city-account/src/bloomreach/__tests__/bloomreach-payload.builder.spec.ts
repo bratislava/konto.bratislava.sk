@@ -71,7 +71,7 @@ describe('BloomreachPayloadBuilder', () => {
   describe('buildCustomerCommand', () => {
     it('should build a basic customer command with user data', async () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
-      userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
+      userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(null)
 
       const result = await builder.buildCustomerCommand(externalId)
 
@@ -85,7 +85,7 @@ describe('BloomreachPayloadBuilder', () => {
 
     it('should include phone number when provided', async () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
-      userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
+      userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(null)
 
       const result = await builder.buildCustomerCommand(externalId, '0900123456')
 
@@ -103,7 +103,7 @@ describe('BloomreachPayloadBuilder', () => {
         ico: undefined,
       })
       contactDbService.upsert.mockResolvedValue('contact-123')
-      userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(
+      userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(
         UserOfficialCorrespondenceChannelEnum.EDESK
       )
 
@@ -128,7 +128,7 @@ describe('BloomreachPayloadBuilder', () => {
         birthNumber: '9001011234',
       })
       contactDbService.upsert.mockResolvedValue('contact-456')
-      userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
+      userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(null)
 
       await builder.buildCustomerCommand(externalId, '0900123456')
 
@@ -137,7 +137,7 @@ describe('BloomreachPayloadBuilder', () => {
 
     it('should not look up contact for non-verified users', async () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
-      userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(null)
+      userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(null)
 
       const result = await builder.buildCustomerCommand(externalId)
 
@@ -147,7 +147,7 @@ describe('BloomreachPayloadBuilder', () => {
 
     it('should include correspondence channel for physical entities', async () => {
       cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
-      userIdentitySubservice.getOfficialCorrespondenceChannel.mockResolvedValue(
+      userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(
         UserOfficialCorrespondenceChannelEnum.EDESK
       )
 
@@ -167,7 +167,7 @@ describe('BloomreachPayloadBuilder', () => {
 
       const result = await builder.buildCustomerCommand(externalId)
 
-      expect(userIdentitySubservice.getOfficialCorrespondenceChannel).not.toHaveBeenCalled()
+      expect(userIdentitySubservice.getActiveDeliveryMethod).not.toHaveBeenCalled()
       expect(result.commandData.properties.current_tax_correspondence_channel).toBeUndefined()
     })
   })

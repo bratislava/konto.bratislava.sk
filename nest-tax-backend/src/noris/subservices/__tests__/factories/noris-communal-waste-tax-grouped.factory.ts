@@ -18,7 +18,7 @@ export const createTestNorisCommunalWasteTaxGrouped = (
   uhrazeno: 448.66,
   subjekt_refer: '0219197',
   subjekt_nazev: 'Ing. Ján Testovací',
-  akt_datum: '13.02.2025',
+  datum_realizacie: new Date('2025-02-13T00:00:00.000Z'),
   vyb_nazov: 'Ing. Mária Príkladná',
   SPL1: '',
   SPL4_1: '112,16',

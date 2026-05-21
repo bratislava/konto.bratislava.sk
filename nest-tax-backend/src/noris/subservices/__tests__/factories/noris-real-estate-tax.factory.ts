@@ -14,7 +14,7 @@ export const createTestNorisRealEstateTax = (
   ulica_tb_cislo: 'Hlavná ulica 20',
   psc_ref_tb: '12345',
   obec_nazev_tb: 'Testovacia Obec',
-  akt_datum: '07.04.2025',
+  datum_realizacie: new Date('2025-04-07T00:00:00.000Z'),
   datum_platnosti: new Date('2025-05-07T00:00:00.000Z'),
   vyb_nazov: 'Ing. Mária Testová',
   vyb_telefon_prace: '+421 910 123 456',

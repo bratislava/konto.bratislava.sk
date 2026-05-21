@@ -76,7 +76,7 @@ export const createTestTax = (overrides?: TestTaxOverrides): TestTax => {
     order: 1,
     variableSymbol: '1234567890',
     taxId: '1234567890',
-    dateCreateTax: '2024-01-01',
+    dateCreateTax: DEFAULT_DATE,
     dateTaxRuling: DEFAULT_DATE,
     amount: 1000,
     taxDetails: defaultDznTaxDetails as TestTax['taxDetails'],

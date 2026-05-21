@@ -4301,7 +4301,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -4356,7 +4356,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       }
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWTtoken. You can send unsubscription data from model in array, or you can send empty array in gdprData and it will automatically create unsubscribed data.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -4809,7 +4809,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -4843,7 +4843,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWTtoken. You can send unsubscription data from model in array, or you can send empty array in gdprData and it will automatically create unsubscribed data.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -5102,7 +5102,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -5118,7 +5118,7 @@ export const UsersManipulationApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * This endpoint is used only for logged user, user is paired by JWTtoken. You can send unsubscription data from model in array, or you can send empty array in gdprData and it will automatically create unsubscribed data.
+     * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
@@ -5279,7 +5279,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
+   * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
    * @summary Create subscribed or unsubscribed log for logged in users
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
@@ -5296,7 +5296,7 @@ export class UsersManipulationApi extends BaseAPI {
   }
 
   /**
-   * This endpoint is used only for logged user, user is paired by JWTtoken. You can send unsubscription data from model in array, or you can send empty array in gdprData and it will automatically create unsubscribed data.
+   * This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as subscribed regardless of the gdprData payload.
    * @summary Unsubscribe logged user
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.

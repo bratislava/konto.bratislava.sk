@@ -61,7 +61,7 @@ export class UserController {
       'Get or create user with their data (use when already logged in, not during login/registration)',
     description:
       'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr ' +
-      'means is not subscribe neither unsubscribe. If this endpoint will create user,  create automatically ' +
+      'means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically ' +
       'Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For ' +
       'login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in ' +
       'through. This endpoint is intended for subsequent user data fetches after the user is already authenticated ' +

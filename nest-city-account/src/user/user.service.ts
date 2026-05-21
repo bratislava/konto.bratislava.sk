@@ -747,10 +747,27 @@ export class UserService {
   }
 
   async setDeliveryMethodPreference(
-    user: CognitoGetUserData,
+    cognitoUserData: CognitoGetUserData,
     deliveryMethod: DeliveryMethodUserPreferenceEnum
   ) {
-    await this.userDataSubservice.setDeliveryMethodPreference(user.sub, deliveryMethod)
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        await this.userDataSubservice.setDeliveryMethodPreference(
+          cognitoUserData.sub,
+          deliveryMethod
+        )
+        break
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+      default: {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+      }
+    }
   }
 
   async updateGdprConsent(

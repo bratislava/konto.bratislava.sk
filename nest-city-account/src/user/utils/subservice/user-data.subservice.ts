@@ -60,11 +60,11 @@ export class UserDataSubservice {
    * @private
    */
   private async createUser(userData: CognitoGetUserData) {
-    const user = await this.prisma.legalPerson.create({
+    const user = await this.prisma.user.create({
       data: this.cognitoDataToDatabaseData(userData),
     })
 
-    return this.postprocessLegalPerson(userData.sub, user, true)
+    return this.postprocessUser(userData.sub, user, true)
   }
 
   /**

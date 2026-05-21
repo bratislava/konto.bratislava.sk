@@ -518,7 +518,8 @@ export class UserService {
   }
 
   /**
-   * Similar to function getUserDataByBirthNumber, returns data about users based on their birth number, but instead of separately, it does it in batch in one request.
+   * Similar to function getUserDataByBirthNumber, returns data about users based on their birth number, but instead of
+   * separately, it does it in batch in one request.
    * @param birthNumbers Array of birth numbers without slash, for which users should be retrieved from database.
    * @returns A map of birth numbers (those which were found in database) to user information.
    */

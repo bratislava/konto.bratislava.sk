@@ -618,6 +618,14 @@ export class UserDataSubservice {
       const consent = this.gdprShapeToConsent(elem)
       if (consent) {
         consentData.push(consent)
+      } else {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Invalid consents error',
+            `Deprecated GDPR data shape encountered: ${JSON.stringify(elem)}`
+          )
+        )
       }
     }
 

@@ -63,9 +63,12 @@ export class UserController {
       'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr ' +
       'means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically ' +
       'Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For ' +
-      'login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in ' +
+      "login/registration flows, use '/upsert-user-record-client' instead to track which client the user logged in " +
       'through. This endpoint is intended for subsequent user data fetches after the user is already authenticated ' +
-      '(e.g., forms backend, next.js app fetching user data).',
+      '(e.g., forms backend, next.js app fetching user data).\n\n' +
+      "**Deprecated** — renamed to 'POST /user/upsert' to better reflect the actual semantics (this endpoint " +
+      'always upserts; the legacy "get-or-create" name was misleading because it also updates existing records). ' +
+      "Use 'POST /user/upsert' instead — the behaviour and response shape are identical.",
     deprecated: true,
   })
   @ApiResponse({
@@ -99,7 +102,7 @@ export class UserController {
       'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr ' +
       'means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically ' +
       'Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For ' +
-      'login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in ' +
+      "login/registration flows, use '/upsert-user-record-client' instead to track which client the user logged in " +
       'through. This endpoint is intended for subsequent user data fetches after the user is already authenticated ' +
       '(e.g., forms backend, next.js app fetching user data).',
   })
@@ -133,7 +136,7 @@ export class UserController {
       'Gets or creates the user/legal person and records a login client for the currently authenticated user. This ' +
       'tracks which client the user logged in through and increments the login count. Use this endpoint DURING ' +
       'login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., ' +
-      'forms backend, next.js app), use `/get-or-create` instead. This endpoint should be called once per ' +
+      "forms backend, next.js app), use '/get-or-create' instead. This endpoint should be called once per " +
       'login/registration to properly track which client was used.',
   })
   @ApiResponse({
@@ -213,7 +216,13 @@ export class UserController {
     description:
       'This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from ' +
       'model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as ' +
-      'subscribed regardless of the gdprData payload.',
+      'subscribed regardless of the gdprData payload.\n\n' +
+      "**Deprecated** — replaced by the consents and delivery-method endpoints. The legacy 'category' / 'type' / " +
+      "'subType' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / " +
+      "official delivery method (previously encoded as 'TAXES' + 'FORMAL_COMMUNICATION' in the same payload) is " +
+      'now a separate concern. Use:\n' +
+      "- 'POST /user/gdpr-consent' to grant or revoke a single consent (MARKETING, GENERAL).\n" +
+      "- 'POST /user/set-delivery-method-preference' to change the tax / official delivery method.",
     deprecated: true,
   })
   @ApiResponse({
@@ -265,7 +274,13 @@ export class UserController {
     description:
       'This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data ' +
       'from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as ' +
-      'subscribed regardless of the gdprData payload.',
+      'subscribed regardless of the gdprData payload.\n\n' +
+      "**Deprecated** — replaced by the consents and delivery-method endpoints. The legacy 'category' / 'type' / " +
+      "'subType' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / " +
+      "official delivery method (previously encoded as 'TAXES' + 'FORMAL_COMMUNICATION' in the same payload) is " +
+      'now a separate concern. Use:\n' +
+      "- 'POST /user/gdpr-consent' to grant or revoke a single consent (MARKETING, GENERAL).\n" +
+      "- 'POST /user/set-delivery-method-preference' to change the tax / official delivery method.",
     deprecated: true,
   })
   @ApiResponse({
@@ -314,7 +329,13 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({
     summary: 'Unsubscribe user by uuid',
-    description: 'Unsubscribe any user by uuid with different categories of subscription',
+    description:
+      'Unsubscribe any user by uuid with different categories of subscription.\n\n' +
+      '**Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single ' +
+      'category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, ' +
+      'and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists ' +
+      "today; for authenticated flows use 'POST /user/gdpr-consent' and " +
+      "'POST /user/set-delivery-method-preference'.",
     deprecated: true,
   })
   @ApiResponse({
@@ -337,7 +358,12 @@ export class UserController {
   @ApiOperation({
     summary: 'Unsubscribe user by external Id',
     description:
-      'Unsubscribe any user by external Id from cognito with different categories of subscription',
+      'Unsubscribe any user by external Id from cognito with different categories of subscription.\n\n' +
+      '**Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single ' +
+      'category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, ' +
+      'and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists ' +
+      "today; for authenticated flows use 'POST /user/gdpr-consent' and " +
+      "'POST /user/set-delivery-method-preference'.",
     deprecated: true,
   })
   @ApiResponse({
@@ -408,7 +434,7 @@ export class UserController {
   @HttpCode(204)
   @ApiOperation({
     summary: 'Update a single GDPR consent for the logged-in user',
-    description: 'Accept or revoke a single user-facing consent identified by `consentType`.',
+    description: "Accept or revoke a single user-facing consent identified by 'consentType'.",
   })
   @ApiResponse({ status: 204, description: 'Consent updated' })
   @UseGuards(CognitoGuard)

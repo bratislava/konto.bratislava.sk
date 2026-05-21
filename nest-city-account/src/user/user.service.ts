@@ -99,7 +99,7 @@ export class UserService {
   }
 
   async getOrCreateUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
+    const user = await this.userDataSubservice.upsertUser(cognitoUserData)
     const officialCorrespondenceChannel =
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
     const showEmailCommunicationBanner =
@@ -120,7 +120,7 @@ export class UserService {
   async getOrCreateLegalPersonData(
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+    const user = await this.userDataSubservice.upsertLegalPerson(cognitoUserData)
     const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
     return {
       ...user,
@@ -202,7 +202,7 @@ export class UserService {
     gdprSubType: GDPRSubTypeEnum,
     gdprData: GdprDataDto[]
   ): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
+    const user = await this.userDataSubservice.upsertUser(cognitoUserData)
     await this.userDataSubservice.changeUserGdprData(
       user.id,
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
@@ -239,7 +239,7 @@ export class UserService {
     gdprSubType: GDPRSubTypeEnum,
     gdprData: GdprDataDto[]
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+    const user = await this.userDataSubservice.upsertLegalPerson(cognitoUserData)
     await this.userDataSubservice.changeLegalPersonGdprData(
       user.id,
       gdprData.map((elem) => ({
@@ -378,11 +378,11 @@ export class UserService {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
-        return this.userDataSubservice.getOrCreateUser(cognitoUserData, true)
+        return this.userDataSubservice.upsertUser(cognitoUserData, true)
       }
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
-        return this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+        return this.userDataSubservice.upsertLegalPerson(cognitoUserData)
       }
       default:
         throw this.throwerErrorGuard.UnprocessableEntityException(

@@ -193,7 +193,7 @@ export class UserDataSubservice {
     }
 
     this.logger.warn(
-      `Requested legalPerson does not exist. externalId: ${cognitoLegalPersonData.idUser}`
+      `Requested user does not exist. Creating the legalPerson as a fallback option. externalId: ${cognitoLegalPersonData.idUser}`
     )
 
     return this.createLegalPerson(cognitoLegalPersonData)

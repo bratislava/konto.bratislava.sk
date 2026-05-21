@@ -104,14 +104,8 @@ describe('NorisConnectionSubservice', () => {
 
     it('should call mssql.connect() on every invocation so the pool is always obtained or recreated', async () => {
       // connect() is idempotent: it resolves immediately when already connected
-      await service.withConnection(
-        async () => Promise.resolve('a' as unknown as never),
-        'err',
-      )
-      await service.withConnection(
-        async () => Promise.resolve('b' as unknown as never),
-        'err',
-      )
+      await service.withConnection(async () => Promise.resolve('a'), 'err')
+      await service.withConnection(async () => Promise.resolve('b'), 'err')
 
       expect(mockMssqlConnect).toHaveBeenCalledTimes(2)
     })

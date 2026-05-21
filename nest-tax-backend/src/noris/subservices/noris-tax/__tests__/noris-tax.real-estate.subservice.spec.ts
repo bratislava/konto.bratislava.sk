@@ -1,10 +1,11 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Tax, TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
+import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
 import prismaMock from '../../../../../test/singleton'
+import { createTestTax } from '../../../../__tests__/factories/tax.factory'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import { QrCodeService } from '../../../../qrcode/qrcode.service'
@@ -240,8 +241,11 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest,
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: mockRequest.input,
+          query: mockRequest.query,
+        }),
       )
 
       const result = await service['getTaxDataByYearAndBirthNumber'](2023, [
@@ -279,8 +283,11 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest,
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: mockRequest.input,
+          query: mockRequest.query,
+        }),
       )
 
       const birthNumbers = ['123456/7890', '987654/3210']
@@ -304,10 +311,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(() => ({
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-      }))
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: jest.fn(),
+          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        }),
+      )
       jest
         .spyOn(service, 'processNorisTaxData')
         .mockResolvedValue({ birthNumbers: ['123456/7890'] })
@@ -396,8 +405,8 @@ describe('NorisTaxRealEstateSubservice', () => {
 
     it('should filter out existing taxes', async () => {
       const existingTaxes = [
-        { taxPayer: { birthNumber: '123456/7890' } },
-      ] as unknown as Tax[]
+        createTestTax({ taxPayer: { birthNumber: '123456/7890' } }),
+      ]
       prismaMock.tax.findMany.mockResolvedValue(existingTaxes)
 
       const result = await service.processNorisTaxData(mockNorisData, 2023, {
@@ -436,13 +445,8 @@ describe('NorisTaxRealEstateSubservice', () => {
         mockUserData,
       )
       prismaMock.tax.findMany.mockResolvedValue([
-        {
-          id: 1,
-          taxPayer: {
-            birthNumber: '123456/7890',
-          },
-        },
-      ] as unknown as Tax[])
+        createTestTax({ id: 1, taxPayer: { birthNumber: '123456/7890' } }),
+      ])
       ;(prismaMock.$transaction as jest.Mock).mockImplementation(
         async (callback: unknown) => {
           const mockTx = {
@@ -487,10 +491,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(() => ({
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-      }))
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: jest.fn(),
+          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        }),
+      )
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -555,10 +561,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(() => ({
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-      }))
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: jest.fn(),
+          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        }),
+      )
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -577,10 +585,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(() => ({
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-      }))
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: jest.fn(),
+          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        }),
+      )
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -670,13 +680,8 @@ describe('NorisTaxRealEstateSubservice', () => {
         mockUserData,
       )
       prismaMock.tax.findMany.mockResolvedValue([
-        {
-          id: 1,
-          taxPayer: {
-            birthNumber: '123456/7890',
-          },
-        },
-      ] as unknown as Tax[])
+        createTestTax({ id: 1, taxPayer: { birthNumber: '123456/7890' } }),
+      ])
       ;(prismaMock.$transaction as jest.Mock).mockImplementation(
         async (callback: unknown) => {
           const mockTx = {
@@ -721,10 +726,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(() => ({
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-      }))
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: jest.fn(),
+          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        }),
+      )
 
       const result =
         await service.getNorisTaxDataByBirthNumberAndYearAndUpdateExistingRecords(
@@ -739,10 +746,12 @@ describe('NorisTaxRealEstateSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(() => ({
-        input: jest.fn(),
-        query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
-      }))
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: jest.fn(),
+          query: jest.fn().mockResolvedValue({ recordset: mockNorisData }),
+        }),
+      )
       prismaMock.$transaction.mockRejectedValue(new Error('Test error'))
 
       const result =

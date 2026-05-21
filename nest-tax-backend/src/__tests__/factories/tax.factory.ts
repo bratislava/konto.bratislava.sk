@@ -63,7 +63,7 @@ const defaultDznTaxDetails: RealEstateTaxDetail = {
 }
 
 export const createTestTax = (overrides?: TestTaxOverrides): TestTax => {
-  const barePayer = createTestTaxPayer()
+  const baseTaxPayer = createTestTaxPayer()
 
   const base: TestTax = {
     id: 1,
@@ -79,16 +79,16 @@ export const createTestTax = (overrides?: TestTaxOverrides): TestTax => {
     dateCreateTax: DEFAULT_DATE,
     dateTaxRuling: DEFAULT_DATE,
     amount: 1000,
-    taxDetails: defaultDznTaxDetails as TestTax['taxDetails'],
+    taxDetails: defaultDznTaxDetails,
     lastCheckedPayments: DEFAULT_DATE,
     deliveryMethod: DeliveryMethodNamed.EDESK,
     bloomreachUnpaidTaxReminderSent: false,
     isCancelled: false,
     paymentMethodIsInkaso: false,
     taxPayer: {
-      ...barePayer,
+      ...baseTaxPayer,
       taxAdministrators: [],
-    } as TestTax['taxPayer'],
+    },
     taxInstallments: [],
     taxPayments: [],
   }
@@ -110,7 +110,7 @@ export const createTestTax = (overrides?: TestTaxOverrides): TestTax => {
     taxPayer: {
       ...base.taxPayer,
       ...taxPayerOverrides,
-    } as TestTax['taxPayer'],
+    },
     taxInstallments:
       taxInstallmentsOverrides !== undefined
         ? taxInstallmentsOverrides

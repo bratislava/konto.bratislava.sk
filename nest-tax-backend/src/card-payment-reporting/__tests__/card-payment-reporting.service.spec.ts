@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -313,24 +314,20 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       expect(mockEmailSubservice.send).toHaveBeenCalledTimes(2)
 
-      const sendCalls1 = mockEmailSubservice.send.mock.calls
-      const dznCall = sendCalls1.find(
+      const sendCalls = mockEmailSubservice.send.mock.calls
+      const dznCall = sendCalls.find(
         (call) => call[1] === 'Report platieb kartou - DZN',
       )
-      const pkoCall = sendCalls1.find(
+      const pkoCall = sendCalls.find(
         (call) => call[1] === 'Report platieb kartou - KO',
       )
 
       expect(dznCall).toBeDefined()
       expect(pkoCall).toBeDefined()
-      expect((dznCall as EmailSendCall)[3]).toHaveLength(1)
-      expect((dznCall as EmailSendCall)[3][0].filename).toBe(
-        'st1pbr24_260410.txt',
-      )
-      expect((pkoCall as EmailSendCall)[3]).toHaveLength(1)
-      expect((pkoCall as EmailSendCall)[3][0].filename).toBe(
-        'st1pbr26_260410.txt',
-      )
+      expect(dznCall?.[3]).toHaveLength(1)
+      expect(dznCall?.[3]?.[0].filename).toBe('st1pbr24_260410.txt')
+      expect(pkoCall?.[3]).toHaveLength(1)
+      expect(pkoCall?.[3]?.[0].filename).toBe('st1pbr26_260410.txt')
     })
 
     it('should generate correct file content with proper header for each report type', async () => {
@@ -356,18 +353,18 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       await service.generateAndSendPaymentReport(['test@example.com'])
 
-      const sendCalls2 = mockEmailSubservice.send.mock.calls
-      const dznCall2 = sendCalls2.find(
+      const sendCalls = mockEmailSubservice.send.mock.calls
+      const dznCall = sendCalls.find(
         (call) => call[1] === 'Report platieb kartou - DZN',
       )
-      const pkoCall2 = sendCalls2.find(
+      const pkoCall = sendCalls.find(
         (call) => call[1] === 'Report platieb kartou - KO',
       )
 
-      expect((dznCall2 as EmailSendCall)[3][0].content).toContain('pbr24')
-      expect((dznCall2 as EmailSendCall)[3][0].content).not.toContain('pbr26')
-      expect((pkoCall2 as EmailSendCall)[3][0].content).toContain('pbr26')
-      expect((pkoCall2 as EmailSendCall)[3][0].content).not.toContain('pbr24')
+      expect(dznCall?.[3]?.[0].content).toContain('pbr24')
+      expect(dznCall?.[3]?.[0].content).not.toContain('pbr26')
+      expect(pkoCall?.[3]?.[0].content).toContain('pbr26')
+      expect(pkoCall?.[3]?.[0].content).not.toContain('pbr24')
     })
 
     it('should use separate account IDs for each report type', async () => {
@@ -400,19 +397,11 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         (call: unknown[]) => call[1] === 'Report platieb kartou - KO',
       )
 
-      expect((dznCall as EmailSendCall)[3][0].content).toContain(
-        '1234567890123456',
-      )
-      expect((dznCall as EmailSendCall)[3][0].content).not.toContain(
-        '6543210987654321',
-      )
+      expect(dznCall?.[3]?.[0].content).toContain('1234567890123456')
+      expect(dznCall?.[3]?.[0].content).not.toContain('6543210987654321')
 
-      expect((pkoCall as EmailSendCall)[3][0].content).toContain(
-        '6543210987654321',
-      )
-      expect((pkoCall as EmailSendCall)[3][0].content).not.toContain(
-        '1234567890123456',
-      )
+      expect(pkoCall?.[3]?.[0].content).toContain('6543210987654321')
+      expect(pkoCall?.[3]?.[0].content).not.toContain('1234567890123456')
     })
 
     it('should store CSV file names with their tax type', async () => {
@@ -442,7 +431,7 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         data: expect.arrayContaining([
           { name: 'dzn_file_2604101234.csv', taxType: 'DZN' },
           { name: 'pko_file_2604101234.csv', taxType: 'KO' },
-        ]) as unknown,
+        ]) as Prisma.CsvFileCreateManyInput[],
       })
     })
 
@@ -495,19 +484,17 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       await service.generateAndSendPaymentReport(['test@example.com'])
 
-      const sendCalls3 = mockEmailSubservice.send.mock.calls
-      const dznCall3 = sendCalls3.find(
+      const sendCalls = mockEmailSubservice.send.mock.calls
+      const dznCall = sendCalls.find(
         (call) => call[1] === 'Report platieb kartou - DZN',
       )
-      const pkoCall3 = sendCalls3.find(
+      const pkoCall = sendCalls.find(
         (call) => call[1] === 'Report platieb kartou - KO',
       )
 
-      expect((dznCall3 as EmailSendCall)[3]).toHaveLength(0)
-      expect((pkoCall3 as EmailSendCall)[3]).toHaveLength(1)
-      expect((pkoCall3 as EmailSendCall)[3][0].filename).toBe(
-        'st1pbr26_260410.txt',
-      )
+      expect(dznCall?.[3]).toHaveLength(0)
+      expect(pkoCall?.[3]).toHaveLength(1)
+      expect(pkoCall?.[3]?.[0].filename).toBe('st1pbr26_260410.txt')
     })
   })
 })

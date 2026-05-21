@@ -14,10 +14,13 @@ import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice'
 import { NorisValidatorSubservice } from '../noris-validator.subservice'
 
-const mockRequest = {
-  query: jest.fn(),
-  input: jest.fn(),
-}
+const mockQuery = jest.fn()
+const mockInput = jest.fn()
+
+const mockRequest = createMock<mssql.Request>({
+  query: mockQuery,
+  input: mockInput,
+})
 
 jest.mock('mssql', () => ({
   Request: jest.fn().mockImplementation(() => mockRequest),
@@ -40,9 +43,7 @@ describe('NorisDeliveryMethodSubservice', () => {
   beforeEach(async () => {
     jest.clearAllMocks()
     jest.restoreAllMocks()
-    jest
-      .mocked(mssql.Request)
-      .mockImplementation(() => mockRequest as unknown as mssql.Request)
+    jest.mocked(mssql.Request).mockImplementation(() => mockRequest)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -96,7 +97,7 @@ describe('NorisDeliveryMethodSubservice', () => {
 
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -127,7 +128,7 @@ describe('NorisDeliveryMethodSubservice', () => {
 
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -155,7 +156,7 @@ describe('NorisDeliveryMethodSubservice', () => {
 
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -206,7 +207,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         { ico: '017766/2244' },
       ]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
         .mockResolvedValueOnce({ recordset: mockUpdateResult2 })
         .mockResolvedValueOnce({ recordset: mockUpdateResult3 })
@@ -242,7 +243,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -282,7 +283,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       // First query returns empty (no subjects updated)
       // Second query should not be called because getBirthNumbersWithUpdatedDeliveryMethods
       // returns early when data is empty
-      mockRequest.query.mockResolvedValueOnce({ recordset: [] })
+      mockQuery.mockResolvedValueOnce({ recordset: [] })
 
       let callCount = 0
       jest
@@ -309,7 +310,7 @@ describe('NorisDeliveryMethodSubservice', () => {
 
       const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockRejectedValueOnce(new Error('Query failed'))
 
@@ -332,7 +333,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -364,7 +365,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         { ico: '010366/4555' },
       ]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -418,7 +419,7 @@ describe('NorisDeliveryMethodSubservice', () => {
         { ico: '010366/4558' },
       ]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
         .mockResolvedValueOnce({ recordset: mockUpdateResult2 })
         .mockResolvedValueOnce({ recordset: mockUpdateResult3 })
@@ -476,7 +477,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -506,7 +507,7 @@ describe('NorisDeliveryMethodSubservice', () => {
       const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
-      mockRequest.query
+      mockQuery
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -541,7 +542,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           { ico: '010366/4555' },
         ]
 
-        mockRequest.query
+        mockQuery
           .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
           .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
@@ -602,7 +603,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           { ico: '010366/4555' },
         ]
 
-        mockRequest.query
+        mockQuery
           .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
           .mockResolvedValueOnce({ recordset: mockUpdateResult2 })
           .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
@@ -635,7 +636,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           { cislo_subjektu: 12_346 },
         ]
 
-        mockRequest.query.mockResolvedValueOnce({
+        mockQuery.mockResolvedValueOnce({
           recordset: mockUpdateResult,
         })
 
@@ -683,7 +684,7 @@ describe('NorisDeliveryMethodSubservice', () => {
 
         const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
 
-        mockRequest.query.mockResolvedValueOnce({
+        mockQuery.mockResolvedValueOnce({
           recordset: mockUpdateResult,
         })
 
@@ -707,7 +708,7 @@ describe('NorisDeliveryMethodSubservice', () => {
 
         const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
 
-        mockRequest.query.mockResolvedValueOnce({
+        mockQuery.mockResolvedValueOnce({
           recordset: mockUpdateResult,
         })
 
@@ -733,7 +734,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           { ico: '010366/4555' },
         ]
 
-        mockRequest.query.mockResolvedValueOnce({
+        mockQuery.mockResolvedValueOnce({
           recordset: mockBirthNumbersResult,
         })
 
@@ -781,7 +782,7 @@ describe('NorisDeliveryMethodSubservice', () => {
 
         const mockBirthNumbersResult = [{ ico: '  010366/4554  ' }] // With spaces
 
-        mockRequest.query.mockResolvedValueOnce({
+        mockQuery.mockResolvedValueOnce({
           recordset: mockBirthNumbersResult,
         })
 

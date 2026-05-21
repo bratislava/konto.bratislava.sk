@@ -335,11 +335,14 @@ describe('PaymentService', () => {
 
     it('should throw NotFoundException when tax is not found', async () => {
       const externalId = 'external-id-123'
-      const mockNotFoundException = new Error('Not Found')
+      const mockNotFoundException = new HttpException(
+        'Not Found',
+        HttpStatus.NOT_FOUND,
+      )
       jest
         .spyOn(prismaMock, '$transaction')
         .mockImplementation(async (callback) => {
-          const mockTx = {
+          const mockTx = createMock<Prisma.TransactionClient>({
             taxPayment: {
               update: jest.fn(),
               aggregate: jest.fn(),
@@ -347,12 +350,12 @@ describe('PaymentService', () => {
             tax: {
               findUnique: jest.fn().mockResolvedValue(null),
             },
-          } as unknown as Prisma.TransactionClient
+          })
           return callback(mockTx)
         })
       jest
         .spyOn(throwerErrorGuard, 'NotFoundException')
-        .mockReturnValue(mockNotFoundException as unknown as HttpException)
+        .mockReturnValue(mockNotFoundException)
 
       await expect(
         service.trackPaymentInBloomreach(mockTaxPayment, externalId),
@@ -376,7 +379,7 @@ describe('PaymentService', () => {
         jest
           .spyOn(prismaMock, '$transaction')
           .mockImplementation(async (callback) => {
-            const tx = {
+            const tx = createMock<Prisma.TransactionClient>({
               taxPayment: {
                 update: jest.fn(),
                 aggregate: jest
@@ -386,7 +389,7 @@ describe('PaymentService', () => {
               tax: {
                 findUnique: jest.fn().mockResolvedValue({ amount: taxAmount }),
               },
-            } as unknown as Prisma.TransactionClient
+            })
             return callback(tx)
           })
         jest

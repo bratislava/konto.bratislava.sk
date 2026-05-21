@@ -9,6 +9,7 @@ import {
   DeliveryMethod,
   DeliveryMethodNoris,
 } from '../../types/noris.enums'
+import { createTestNorisCommunalWasteTaxGrouped } from '../../subservices/__tests__/factories/noris-communal-waste-tax-grouped.factory'
 import {
   NorisBaseTax,
   NorisCommunalWasteTaxGrouped,
@@ -968,7 +969,7 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
   })
 
   it('should handle empty containers array', () => {
-    const mockData = {
+    const mockData = createTestNorisCommunalWasteTaxGrouped({
       addresses: [
         {
           addressDetail: {
@@ -978,7 +979,7 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
           containers: [],
         },
       ],
-    } as unknown as NorisCommunalWasteTaxGrouped
+    })
 
     const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
 
@@ -987,9 +988,9 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
   })
 
   it('should handle empty addresses array', () => {
-    const mockData = {
+    const mockData = createTestNorisCommunalWasteTaxGrouped({
       addresses: [],
-    } as unknown as NorisCommunalWasteTaxGrouped
+    })
 
     const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
 

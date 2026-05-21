@@ -622,22 +622,23 @@ describe('UnifiedTaxUtil', () => {
             taxPayments: [{ amount: 6601, status: PaymentStatus.SUCCESS }],
           })
 
-          const expected = createExpectedOutput((draft) => {
-            draft.overallPaid = 6601
-            draft.overallBalance = 0
-            const d = draft as GetTaxDetailPureResponse<TaxType>
-            d.installmentPayment = {
-              isPossible: false,
-              reasonNotPossible:
-                InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-              dueDateLastPayment: new Date('2025-10-31T23:00:00.000Z'),
-            }
-            d.oneTimePayment = {
-              isPossible: false,
-              reasonNotPossible:
-                OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
-            }
-          })
+          const expected = createExpectedOutput(
+            (draft: GetTaxDetailPureResponse<TaxType>) => {
+              draft.overallPaid = 6601
+              draft.overallBalance = 0
+              draft.installmentPayment = {
+                isPossible: false,
+                reasonNotPossible:
+                  InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+                dueDateLastPayment: new Date('2025-10-31T23:00:00.000Z'),
+              }
+              draft.oneTimePayment = {
+                isPossible: false,
+                reasonNotPossible:
+                  OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
+              }
+            },
+          )
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -970,15 +971,16 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-11-01'),
           })
 
-          const expected = createExpectedOutput((draft) => {
-            const d = draft as GetTaxDetailPureResponse<TaxType>
-            d.installmentPayment = {
-              isPossible: false,
-              reasonNotPossible:
-                InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
-              dueDateLastPayment: draft.installmentPayment.dueDateLastPayment,
-            }
-          })
+          const expected = createExpectedOutput(
+            (draft: GetTaxDetailPureResponse<TaxType>) => {
+              draft.installmentPayment = {
+                isPossible: false,
+                reasonNotPossible:
+                  InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+                dueDateLastPayment: draft.installmentPayment.dueDateLastPayment,
+              }
+            },
+          )
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -1523,22 +1525,24 @@ describe('UnifiedTaxUtil', () => {
             taxPayments: [{ amount: 8000, status: PaymentStatus.SUCCESS }],
           })
 
-          const expected = createExpectedOutput((draft) => {
-            draft.overallPaid = 8000
-            draft.overallBalance = 0
-            const d = draft as GetTaxDetailPureResponse<TaxType>
-            d.installmentPayment = {
-              isPossible: false,
-              reasonNotPossible:
-                InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-              dueDateLastPayment: new Date('2025-10-31T22:00:00.000Z'),
-            }
-            d.oneTimePayment = {
-              isPossible: false,
-              reasonNotPossible:
-                OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
-            }
-          }, defaultOutput4Installments)
+          const expected = createExpectedOutput(
+            (draft: GetTaxDetailPureResponse<TaxType>) => {
+              draft.overallPaid = 8000
+              draft.overallBalance = 0
+              draft.installmentPayment = {
+                isPossible: false,
+                reasonNotPossible:
+                  InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+                dueDateLastPayment: new Date('2025-10-31T22:00:00.000Z'),
+              }
+              draft.oneTimePayment = {
+                isPossible: false,
+                reasonNotPossible:
+                  OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
+              }
+            },
+            defaultOutput4Installments,
+          )
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })
@@ -1552,15 +1556,17 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-11-01'),
           })
 
-          const expected = createExpectedOutput((draft) => {
-            const d = draft as GetTaxDetailPureResponse<TaxType>
-            d.installmentPayment = {
-              isPossible: false,
-              reasonNotPossible:
-                InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
-              dueDateLastPayment: draft.installmentPayment.dueDateLastPayment,
-            }
-          }, defaultOutput4Installments)
+          const expected = createExpectedOutput(
+            (draft: GetTaxDetailPureResponse<TaxType>) => {
+              draft.installmentPayment = {
+                isPossible: false,
+                reasonNotPossible:
+                  InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+                dueDateLastPayment: draft.installmentPayment.dueDateLastPayment,
+              }
+            },
+            defaultOutput4Installments,
+          )
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })

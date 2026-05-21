@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Prisma } from '@prisma/client'
 
@@ -74,12 +75,12 @@ describe('TasksConfigSubservice', () => {
       jest
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
-          const tx = {
+          const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as unknown as Prisma.TransactionClient
+          })
           return callback(tx)
         })
 
@@ -102,12 +103,12 @@ describe('TasksConfigSubservice', () => {
       jest
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
-          const tx = {
+          const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as unknown as Prisma.TransactionClient
+          })
           return callback(tx)
         })
 
@@ -126,12 +127,12 @@ describe('TasksConfigSubservice', () => {
       jest
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
-          const tx = {
+          const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as unknown as Prisma.TransactionClient
+          })
           return callback(tx)
         })
 
@@ -162,12 +163,12 @@ describe('TasksConfigSubservice', () => {
       jest
         .spyOn(service['prismaService'], '$transaction')
         .mockImplementation(async (callback) => {
-          const tx = {
+          const tx = createMock<Prisma.TransactionClient>({
             config: {
               findFirst: mockFindFirst,
               updateMany: mockUpdateMany,
             },
-          } as unknown as Prisma.TransactionClient
+          })
           return callback(tx)
         })
 

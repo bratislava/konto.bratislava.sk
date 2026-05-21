@@ -21,11 +21,8 @@ describe('testing-tax-mock', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    mockRandomBytes.mockReturnValue(
-      Buffer.from('abcd1234', 'hex') as unknown as ReturnType<
-        typeof randomBytes
-      >,
+    ;(mockRandomBytes as jest.Mock).mockReturnValue(
+      Buffer.from('abcd1234', 'hex'),
     )
 
     mockTaxAdministrator = {

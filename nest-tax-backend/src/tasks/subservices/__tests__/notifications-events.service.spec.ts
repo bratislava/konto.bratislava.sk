@@ -91,7 +91,7 @@ function getQueryRawArgs(): {
   yearArg: number
 } {
   const [, windowStart, windowEnd, filterSql, yearArg] = prismaMock.$queryRaw
-    .mock.calls[0] as unknown as [
+    .mock.calls[0] as [
     TemplateStringsArray,
     Date,
     Date,

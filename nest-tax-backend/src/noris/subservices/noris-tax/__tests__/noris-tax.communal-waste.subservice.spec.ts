@@ -207,8 +207,11 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest,
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: mockRequest.input,
+          query: mockRequest.query,
+        }),
       )
 
       const result = await service[
@@ -232,8 +235,11 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest,
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: mockRequest.input,
+          query: mockRequest.query,
+        }),
       )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
@@ -255,8 +261,11 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest,
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: mockRequest.input,
+          query: mockRequest.query,
+        }),
       )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [
@@ -280,8 +289,11 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest,
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: mockRequest.input,
+          query: mockRequest.query,
+        }),
       )
 
       const birthNumbers = ['123456/7890', '987654/3210', '111111/1111']
@@ -317,8 +329,11 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       connectionService.withConnection.mockImplementation(async (callback) => {
         return callback(createMock<mssql.ConnectionPool>())
       })
-      ;(mssql.Request as unknown as jest.Mock).mockImplementation(
-        () => mockRequest,
+      jest.mocked(mssql.Request).mockImplementation(() =>
+        createMock<mssql.Request>({
+          input: mockRequest.input,
+          query: mockRequest.query,
+        }),
       )
 
       await service['getCommunalWasteTaxDataByBirthNumberAndYear'](2025, [

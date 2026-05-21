@@ -467,9 +467,15 @@ export class UserDataSubservice {
     type: GDPRTypeEnum
     subType?: GDPRSubTypeEnum | null
   }): { consentType: ConsentEnum; isGranted: boolean } | null {
-    if (g.category !== GDPRCategoryEnum.ESBS) return null
-    if (g.type !== GDPRTypeEnum.MARKETING && g.type !== GDPRTypeEnum.GENERAL) return null
-    if (g.subType == null) return null
+    if (g.category !== GDPRCategoryEnum.ESBS) {
+      return null
+    }
+    if (g.type !== GDPRTypeEnum.MARKETING && g.type !== GDPRTypeEnum.GENERAL) {
+      return null
+    }
+    if (g.subType == null) {
+      return null
+    }
     return {
       consentType: g.type as ConsentEnum,
       isGranted: g.subType === GDPRSubTypeEnum.subscribe,

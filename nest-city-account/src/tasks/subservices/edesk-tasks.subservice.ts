@@ -159,6 +159,7 @@ export class EdeskTasksSubservice {
       edeskStatus: EdeskStatus
       edeskNumber: string | null
       uri: string | null
+      deathDate: string | null
     }[] = []
     for (const item of completedItems) {
       try {
@@ -166,6 +167,7 @@ export class EdeskTasksSubservice {
         completedNorisUpdates.push({
           idNoris: item.norisId,
           lastCheck: item.processedAt,
+          deathDate: item.edeskDeathDate,
           ...edeskData,
         })
       } catch (error) {
@@ -187,6 +189,7 @@ export class EdeskTasksSubservice {
       edeskStatus: EdeskStatus.NONEXISTENT,
       edeskNumber: null,
       uri: null,
+      deathDate: null,
     }))
 
     await this.norisService.updateEdeskChecks([...completedNorisUpdates, ...failedNorisUpdates])

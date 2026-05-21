@@ -4,7 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { Injectable } from '@nestjs/common'
-import { Browser, chromium } from 'playwright'
+import pLimit from 'p-limit'
+import { Browser, BrowserContext, chromium, Page } from 'playwright'
 import { v4 as uuidv4 } from 'uuid'
 
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
@@ -16,8 +17,76 @@ import { PdfTemplateKeys, pdfTemplates, PdfTemplateVariables } from './templates
 export class PdfGeneratorService {
   private readonly logger: LineLoggerSubservice
 
+  private sharedBrowser: Browser | null = null
+
+  private sharedBrowserRefCount = 0
+
+  private readonly sharedBrowserLock = pLimit(1)
+
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     this.logger = new LineLoggerSubservice(PdfGeneratorService.name)
+  }
+
+  /**
+   * Runs the callback that ensures a single shared Chromium instance will be
+   * reused by all {@link generateFromTemplate} calls inside it.
+   *
+   * Without acquiring a lock, multiple calls to `withSharedBrowser` could
+   * result in multiple Chromium instances being launched.
+   */
+  async withSharedBrowser<T>(fn: () => Promise<T>): Promise<T> {
+    await this.acquireSharedBrowser()
+    try {
+      return await fn()
+    } finally {
+      await this.releaseSharedBrowser()
+    }
+  }
+
+  private async acquireSharedBrowser(): Promise<Browser> {
+    return this.sharedBrowserLock(async () => {
+      if (this.sharedBrowserRefCount === 0) {
+        const browser = await chromium.launch({
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
+        })
+        this.sharedBrowser = browser
+        this.sharedBrowserRefCount = 1
+        return browser
+      }
+      if (!this.sharedBrowser) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Shared Chromium browser missing despite active refcount'
+        )
+      }
+      this.sharedBrowserRefCount++
+      return this.sharedBrowser
+    })
+  }
+
+  private async releaseSharedBrowser(): Promise<void> {
+    await this.sharedBrowserLock(async () => {
+      if (this.sharedBrowserRefCount === 0) {
+        return
+      }
+      this.sharedBrowserRefCount--
+      if (this.sharedBrowserRefCount === 0 && this.sharedBrowser) {
+        const browser = this.sharedBrowser
+        this.sharedBrowser = null
+        try {
+          await browser.close()
+        } catch (error) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to close shared Chromium browser',
+              undefined,
+              error
+            )
+          )
+        }
+      }
+    })
   }
 
   /**
@@ -29,15 +98,15 @@ export class PdfGeneratorService {
     templateVariables: PdfTemplateVariables<T>,
     password: string
   ): Promise<{ data: Buffer; filename: string; contentType: string }> {
-    let browser: Browser | null = null
-
     const template = pdfTemplates[templateName]
 
+    const browser = await this.acquireSharedBrowser()
+    let context: BrowserContext | null = null
+    let page: Page | null = null
+
     try {
-      browser = await chromium.launch({
-        executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
-      })
-      const page = await browser.newPage()
+      context = await browser.newContext()
+      page = await context.newPage()
 
       // Restrict to word chars (\\w+) to avoid ReDoS; template keys are identifiers only
       const htmlWithFilledOutVariables = template.html.replace(/\{\{(\w+)}}/g, (match, key) => {
@@ -59,25 +128,44 @@ export class PdfGeneratorService {
         },
       })
 
-      await browser.close()
-      browser = null
-
       return {
         data: await this.addPasswordToPdf(pdfBuffer, password),
         filename,
         contentType: 'application/pdf',
       }
     } catch (error) {
-      if (browser) {
-        await browser.close()
-      }
-
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
         'Error generating PDF from Mailgun template',
         error
       )
+    } finally {
+      if (page) {
+        await page.close().catch((err: unknown) => {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to close page',
+              undefined,
+              err
+            )
+          )
+        })
+      }
+      if (context) {
+        await context.close().catch((err: unknown) => {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to close browser context',
+              undefined,
+              err
+            )
+          )
+        })
+      }
+      await this.releaseSharedBrowser()
     }
   }
 
@@ -101,7 +189,14 @@ export class PdfGeneratorService {
         child.stderr.on('data', (chunk: Buffer) => stderrChunks.push(chunk))
 
         child.on('error', (err) => {
-          this.logger.error(`Failed to start qpdf process: ${err.message}`)
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to start qpdf process',
+              undefined,
+              err
+            )
+          )
           reject(
             this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,

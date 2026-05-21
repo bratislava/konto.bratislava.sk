@@ -13,44 +13,48 @@ import {
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
-import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import FormsService from '../forms/forms.service'
-import GinisService from '../ginis/ginis.service'
+import ConvertPdfService from '../../convert-pdf/convert-pdf.service'
 import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../nases/nases.errors.enum'
-import PrismaService from '../prisma/prisma.service'
-import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import { RABBIT_MQ } from '../utils/constants'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import MailgunService from '../utils/global-services/mailer/mailgun.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../forms/forms.errors.enum'
+import FormsService from '../../forms/forms.service'
+import GinisService from '../../ginis/ginis.service'
+import PrismaService from '../../prisma/prisma.service'
+import RabbitmqClientService from '../../rabbitmq-client/rabbitmq-client.service'
+import { RABBIT_MQ } from '../../utils/constants'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
+import MailgunService from '../../utils/global-services/mailer/mailgun.service'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import rabbitmqRequeueDelay from '../../utils/handlers/rabbitmq.handlers'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
-} from './nases-consumer.dto'
-import EmailFormsSubservice from './subservices/email-forms.subservice'
-import WebhookSubservice from './subservices/webhook.subservice'
+} from '../dtos/form-delivery-consumer.dto'
+import {
+  FormDeliveryConsumerErrorsEnum,
+  FormDeliveryConsumerErrorsResponseEnum,
+} from '../errors/form-delivery-consumer.errors.enum'
+import EmailFormsService from './email-forms.service'
+import WebhookService from './webhook.service'
 
 @Injectable()
-export default class NasesConsumerService {
+export default class FormDeliveryConsumerService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly rabbitmqClientService: RabbitmqClientService,
     private readonly formsService: FormsService,
     private readonly mailgunService: MailgunService,
-    private readonly emailFormsSubservice: EmailFormsSubservice,
-    private readonly webhookSubservice: WebhookSubservice,
+    private readonly emailFormsService: EmailFormsService,
+    private readonly webhookService: WebhookService,
     private readonly prismaService: PrismaService,
     private readonly ginisService: GinisService,
     private readonly convertPdfService: ConvertPdfService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new LineLoggerSubservice('NasesConsumerService')
+    this.logger = new LineLoggerSubservice('FormDeliveryConsumerService')
   }
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {
@@ -63,13 +67,13 @@ export default class NasesConsumerService {
     routingKey: RABBIT_MQ.ROUTING_KEY,
     queue: RABBIT_MQ.QUEUE,
     errorHandler: (channel, msg, error) => {
-      const logger = new LineLoggerSubservice('NasesConsumerService')
+      const logger = new LineLoggerSubservice('FormDeliveryConsumerService')
       const throwerErrorGuard = new ThrowerErrorGuard()
 
       logger.error(
         throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error during NasesConsumerService handling',
+          'Error during FormDeliveryConsumerService handling',
           error instanceof Error ? error.message : undefined,
           error,
         ),
@@ -86,8 +90,8 @@ export default class NasesConsumerService {
     if (form === null) {
       this.logger.error(
         this.throwerErrorGuard.BadRequestException(
-          NasesErrorsEnum.FORM_NOT_FOUND,
-          NasesErrorsResponseEnum.FORM_NOT_FOUND,
+          FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+          FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
           { formId: data.formId },
         ),
       )
@@ -97,8 +101,8 @@ export default class NasesConsumerService {
     if (form.archived) {
       this.logger.error(
         this.throwerErrorGuard.BadRequestException(
-          NasesErrorsEnum.FORM_ARCHIVED,
-          NasesErrorsResponseEnum.FORM_ARCHIVED,
+          FormsErrorsEnum.FORM_ARCHIVED,
+          FormsErrorsResponseEnum.FORM_ARCHIVED,
           { formId: data.formId },
         ),
       )
@@ -109,8 +113,8 @@ export default class NasesConsumerService {
     if (!formDefinition) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+          FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
           { formDefinitionSug: form.formDefinitionSlug },
         ),
       )
@@ -131,12 +135,12 @@ export default class NasesConsumerService {
       return webhookResult
     }
 
-    // this filters out tax forms, as they should always be sent with eID and never fall under the nases-consumer queue
+    // this filters out tax forms, as they should always be sent with eID and never fall under the form-delivery-consumer queue
     if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
           { formId: form.id },
         ),
       )
@@ -205,7 +209,7 @@ export default class NasesConsumerService {
         const toEmail = data.userData.email || form.email
         if (data.tries === 2 && toEmail) {
           await this.sendFormSubmissionEmail(form, formDefinition, {
-            template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+            template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
             to: toEmail,
             firstName: data.userData.firstName,
           })
@@ -233,7 +237,7 @@ export default class NasesConsumerService {
     const toEmail = data.userData.email || form.email
     if (toEmail) {
       await this.sendFormSubmissionEmail(form, formDefinition, {
-        template: MailgunTemplateEnum.NASES_SENT,
+        template: MailgunTemplateEnum.GINIS_SENT,
         to: toEmail,
         firstName: data.userData.firstName,
       })
@@ -269,8 +273,8 @@ export default class NasesConsumerService {
     } else {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.MAX_TRIES_REACHED,
-          NasesErrorsResponseEnum.MAX_TRIES_REACHED,
+          FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
+          FormDeliveryConsumerErrorsResponseEnum.MAX_TRIES_REACHED,
           {
             formId,
             lastErrorState: error,
@@ -292,7 +296,7 @@ export default class NasesConsumerService {
     userFirstName: string | null,
   ): Promise<Nack> {
     try {
-      await this.emailFormsSubservice.sendEmailForm(
+      await this.emailFormsService.sendEmailForm(
         form.id,
         userEmail,
         userFirstName,
@@ -301,8 +305,8 @@ export default class NasesConsumerService {
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.SENDING_EMAIL_FAILED,
-          NasesErrorsResponseEnum.SENDING_EMAIL_FAILED,
+          FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
+          FormDeliveryConsumerErrorsResponseEnum.SENDING_EMAIL_FAILED,
           { formId: form.id },
           error,
         ),
@@ -320,7 +324,7 @@ export default class NasesConsumerService {
         .catch((error_: unknown) => {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
-              NasesErrorsEnum.DATABASE_ERROR,
+              ErrorsEnum.DATABASE_ERROR,
               'Setting form error to EMAIL_SEND_ERROR failed.',
               { formId: form.id },
               error_,
@@ -334,13 +338,13 @@ export default class NasesConsumerService {
 
   private async handleWebhookForm(form: Forms): Promise<Nack> {
     try {
-      await this.webhookSubservice.sendWebhook(form.id)
+      await this.webhookService.sendWebhook(form.id)
       return new Nack(false)
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.WEBHOOK_ERROR,
-          NasesErrorsResponseEnum.WEBHOOK_ERROR,
+          FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
+          FormDeliveryConsumerErrorsResponseEnum.WEBHOOK_ERROR,
           { formId: form.id },
           error,
         ),
@@ -358,7 +362,7 @@ export default class NasesConsumerService {
         .catch((error_: unknown) => {
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
-              NasesErrorsEnum.DATABASE_ERROR,
+              ErrorsEnum.DATABASE_ERROR,
               `Setting form error to WEBHOOK_SEND_ERROR failed.`,
               { formId: form.id },
               error_,

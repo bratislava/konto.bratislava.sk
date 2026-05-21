@@ -10,24 +10,23 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
-import ConvertPdfService from '../convert-pdf/convert-pdf.service'
-import FormsService from '../forms/forms.service'
-import GinisService from '../ginis/ginis.service'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
-import PrismaService from '../prisma/prisma.service'
-import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import MailgunService from '../utils/global-services/mailer/mailgun.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
-import { FormWithFiles } from '../utils/types/prisma'
-import NasesConsumerService from './nases-consumer.service'
-import EmailFormsSubservice from './subservices/email-forms.subservice'
-import WebhookSubservice from './subservices/webhook.subservice'
+import ConvertPdfService from '../../../convert-pdf/convert-pdf.service'
+import FormsService from '../../../forms/forms.service'
+import GinisService from '../../../ginis/ginis.service'
+import PrismaService from '../../../prisma/prisma.service'
+import RabbitmqClientService from '../../../rabbitmq-client/rabbitmq-client.service'
+import MailgunService from '../../../utils/global-services/mailer/mailgun.service'
+import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import rabbitmqRequeueDelay from '../../../utils/handlers/rabbitmq.handlers'
+import { FormWithFiles } from '../../../utils/types/prisma'
+import EmailFormsService from '../email-forms.service'
+import FormDeliveryConsumerService from '../form-delivery-consumer.service'
+import WebhookService from '../webhook.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 
-describe('NasesConsumerService', () => {
-  let service: NasesConsumerService
+describe('FormDeliveryConsumerService', () => {
+  let service: FormDeliveryConsumerService
   let formsService: FormsService
   let ginisService: GinisService
 
@@ -44,11 +43,7 @@ describe('NasesConsumerService', () => {
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
       providers: [
-        NasesConsumerService,
-        {
-          provide: NasesUtilsService,
-          useValue: createMock<NasesUtilsService>(),
-        },
+        FormDeliveryConsumerService,
         {
           provide: RabbitmqClientService,
           useValue: createMock<RabbitmqClientService>(),
@@ -56,12 +51,12 @@ describe('NasesConsumerService', () => {
         { provide: FormsService, useValue: createMock<FormsService>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
-          provide: EmailFormsSubservice,
-          useValue: createMock<EmailFormsSubservice>(),
+          provide: EmailFormsService,
+          useValue: createMock<EmailFormsService>(),
         },
         {
-          provide: WebhookSubservice,
-          useValue: createMock<WebhookSubservice>(),
+          provide: WebhookService,
+          useValue: createMock<WebhookService>(),
         },
         { provide: PrismaService, useValue: createMock<PrismaService>() },
         { provide: GinisService, useValue: createMock<GinisService>() },
@@ -76,7 +71,7 @@ describe('NasesConsumerService', () => {
       ],
     }).compile()
 
-    service = app.get<NasesConsumerService>(NasesConsumerService)
+    service = app.get<FormDeliveryConsumerService>(FormDeliveryConsumerService)
     formsService = app.get<FormsService>(FormsService)
     ginisService = app.get<GinisService>(GinisService)
     Object.defineProperty(service, 'logger', {
@@ -296,7 +291,7 @@ describe('NasesConsumerService', () => {
     it('should send email and return Nack(false) when successful', async () => {
       const mockForm = { id: 'test-id' } as Forms
       jest
-        .spyOn(service['emailFormsSubservice'], 'sendEmailForm')
+        .spyOn(service['emailFormsService'], 'sendEmailForm')
         .mockResolvedValue()
 
       const result = await service['handleEmailForm'](mockForm, null, null)
@@ -307,7 +302,7 @@ describe('NasesConsumerService', () => {
     it('should handle error when sending email fails', async () => {
       const mockForm = { id: 'test-id' } as Forms
       jest
-        .spyOn(service['emailFormsSubservice'], 'sendEmailForm')
+        .spyOn(service['emailFormsService'], 'sendEmailForm')
         .mockRejectedValue(new Error('Failed to send email'))
       jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
@@ -322,9 +317,7 @@ describe('NasesConsumerService', () => {
   describe('handleWebhookForm', () => {
     it('should send webhook and return Nack(false) when successful', async () => {
       const mockForm = { id: 'test-id' } as Forms
-      jest
-        .spyOn(service['webhookSubservice'], 'sendWebhook')
-        .mockResolvedValue()
+      jest.spyOn(service['webhookService'], 'sendWebhook').mockResolvedValue()
 
       const result = await service['handleWebhookForm'](mockForm)
 
@@ -334,7 +327,7 @@ describe('NasesConsumerService', () => {
     it('should handle error when sending webhook fails', async () => {
       const mockForm = { id: 'test-id' } as Forms
       jest
-        .spyOn(service['webhookSubservice'], 'sendWebhook')
+        .spyOn(service['webhookService'], 'sendWebhook')
         .mockRejectedValue(new Error('Failed to send webhook'))
       jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
@@ -387,7 +380,7 @@ describe('NasesConsumerService', () => {
 
       expect(pdfServiceSpy).toHaveBeenCalled()
       expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
-        template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+        template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
         to: mockRabbitPayloadDto.userData.email,
         firstName: mockRabbitPayloadDto.userData.firstName,
       })
@@ -499,7 +492,7 @@ describe('NasesConsumerService', () => {
       )
 
       expect(sendEmailSpy).toHaveBeenCalledWith(mockForm, mockFormDefinition, {
-        template: MailgunTemplateEnum.NASES_SENT,
+        template: MailgunTemplateEnum.GINIS_SENT,
         to: mockRabbitPayloadDto.userData.email,
         firstName: mockRabbitPayloadDto.userData.firstName,
       })

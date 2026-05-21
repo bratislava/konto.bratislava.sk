@@ -6,6 +6,7 @@ import { UpdateDeliveryMethodsInNorisResponseDto } from 'openapi-clients/tax'
 
 import prismaMock from '../../../../test/singleton'
 import { MailgunService } from '../../../mailgun/mailgun.service'
+import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { TaxSubservice } from '../../../utils/subservices/tax.subservice'
@@ -53,6 +54,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
+        {
+          provide: PdfGeneratorService,
+          useValue: createMock<PdfGeneratorService>({
+            withSharedBrowser: jest.fn(async (fn: () => Promise<unknown>) => fn()),
+          }),
+        },
       ],
     }).compile()
 

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
+import pLimit from 'p-limit'
 import { z } from 'zod'
 
 import { MailgunService } from '../../mailgun/mailgun.service'
+import { PdfGeneratorService } from '../../pdf-generator/pdf-generator.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../../utils/constants/tax-deadline'
 import {
@@ -21,6 +23,7 @@ const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 const LOCK_DELIVERY_METHODS_BATCH = 100
 const BATCH_DELAY_MS = 1000
 const DELIVERY_METHOD_EMAIL_KEY = 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES'
+const DELIVERY_METHOD_EMAIL_CONCURRENCY = 5
 
 const EmailConfigSchema = z.object({
   active: z.boolean(),
@@ -34,7 +37,8 @@ export class TaxDeliveryMethodsTasksSubservice {
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxSubservice: TaxSubservice,
-    private readonly mailgunService: MailgunService
+    private readonly mailgunService: MailgunService,
+    private readonly pdfGeneratorService: PdfGeneratorService
   ) {
     this.logger = new LineLoggerSubservice(TaxDeliveryMethodsTasksSubservice.name)
   }
@@ -583,18 +587,23 @@ export class TaxDeliveryMethodsTasksSubservice {
         this.fetchDeliveryMethodChangesForUsers(allUserIds, yesterdayStart, yesterdayEnd),
       ])
 
-    // Process all users with in-memory data
-    const emailPromises = users.map(async (user) =>
-      this.processUserDeliveryMethodChange(
-        user,
-        latestDeliveryMethod.get(user.id),
-        previousDeliveryMethod.get(user.id),
-        yesterdayDeliveryMethodChange.get(user.id),
-        yesterdayStart,
-        yesterdayEnd
+    // Process all users with in-memory data.
+    await this.pdfGeneratorService.withSharedBrowser(async () => {
+      const limit = pLimit(DELIVERY_METHOD_EMAIL_CONCURRENCY)
+      await Promise.all(
+        users.map(async (user) =>
+          limit(async () => {
+            await this.processUserDeliveryMethodChange(
+              user,
+              latestDeliveryMethod.get(user.id),
+              previousDeliveryMethod.get(user.id),
+              yesterdayDeliveryMethodChange.get(user.id),
+              yesterdayStart,
+              yesterdayEnd
+            )
+          })
+        )
       )
-    )
-
-    await Promise.all(emailPromises)
+    })
   }
 }

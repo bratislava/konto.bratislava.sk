@@ -98,7 +98,7 @@ export class UserService {
     return false
   }
 
-  async getOrCreateUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
+  async upsertUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
     const user = await this.userDataSubservice.upsertUser(cognitoUserData)
     const officialCorrespondenceChannel =
       await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
@@ -117,7 +117,7 @@ export class UserService {
     }
   }
 
-  async getOrCreateLegalPersonData(
+  async upsertLegalPersonData(
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataDto> {
     const user = await this.userDataSubservice.upsertLegalPerson(cognitoUserData)
@@ -374,7 +374,7 @@ export class UserService {
    * @param cognitoUserData Cognito user data
    * @returns raw database entity without additional computed fields
    */
-  async getOrCreateUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
+  async upsertUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
@@ -393,17 +393,17 @@ export class UserService {
     }
   }
 
-  async getOrCreateUserOrLegalPerson(
+  async upsertUserOrLegalPerson(
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
 
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
-        return this.getOrCreateUserData(cognitoUserData)
+        return this.upsertUserData(cognitoUserData)
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
-        return this.getOrCreateLegalPersonData(cognitoUserData)
+        return this.upsertLegalPersonData(cognitoUserData)
       default:
         throw this.throwerErrorGuard.UnprocessableEntityException(
           UserErrorsEnum.COGNITO_TYPE_ERROR,
@@ -782,13 +782,14 @@ export class UserService {
     // single Bloomreach call below needs (id / externalId / isLegalPerson).
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
-        const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
+        const user = await this.userDataSubservice.getOrFallbackCreateUser(cognitoUserData)
         await this.userDataSubservice.setUserConsents(user.id, user.externalId, consents)
         break
       }
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
-        const legalPerson = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+        const legalPerson =
+          await this.userDataSubservice.getOrFallbackCreateLegalPerson(cognitoUserData)
         await this.userDataSubservice.setLegalPersonConsents(
           legalPerson.id,
           legalPerson.externalId,

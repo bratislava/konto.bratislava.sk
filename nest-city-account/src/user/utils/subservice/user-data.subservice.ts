@@ -77,7 +77,7 @@ export class UserDataSubservice {
    * ⚠️ **Warning**: This is not the old getOrCreate method. That has been moved
    * to {@link upsertUser}
    */
-  async getOrCreateUser(cognitoUserData: CognitoGetUserData) {
+  async getOrFallbackCreateUser(cognitoUserData: CognitoGetUserData) {
     const existingUser = await this.getUserByExternalId(cognitoUserData.idUser)
     if (existingUser) {
       return existingUser
@@ -175,7 +175,7 @@ export class UserDataSubservice {
    * ⚠️ **Warning**: This is not the old getOrCreate method. That has been moved
    * to {@link upsertLegalPerson}
    */
-  async getOrCreateLegalPerson(cognitoLegalPersonData: CognitoGetUserData) {
+  async getOrFallbackCreateLegalPerson(cognitoLegalPersonData: CognitoGetUserData) {
     const existingLegalPerson = await this.getLegalPersonByExternalId(cognitoLegalPersonData.sub)
     if (existingLegalPerson) {
       return existingLegalPerson

@@ -87,7 +87,42 @@ export class UserController {
   async getOrCreateUser(
     @User() user: CognitoGetUserData
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    return this.userService.getOrCreateUserOrLegalPerson(user)
+    return this.userService.upsertUserOrLegalPerson(user)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary:
+      'Upsert user with their data (use when already logged in, not during login/registration)',
+    description:
+      'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr ' +
+      'means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically ' +
+      'Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For ' +
+      'login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in ' +
+      'through. This endpoint is intended for subsequent user data fetches after the user is already authenticated ' +
+      '(e.g., forms backend, next.js app fetching user data).',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return subscribed value for logged user',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataDto) },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @UseGuards(CognitoGuard)
+  @Post('upsert')
+  async upsertUser(
+    @User() user: CognitoGetUserData
+  ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
+    return this.userService.upsertUserOrLegalPerson(user)
   }
 
   @HttpCode(200)
@@ -121,7 +156,7 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() body: UpsertUserRecordClientRequestDto
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    const userData = await this.userService.getOrCreateUserOrLegalPerson(user)
+    const userData = await this.userService.upsertUserOrLegalPerson(user)
     await this.userService.recordLoginClient(user, body.loginClient)
     return userData
   }

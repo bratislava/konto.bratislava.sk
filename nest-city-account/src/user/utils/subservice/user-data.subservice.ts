@@ -86,7 +86,9 @@ export class UserDataSubservice {
       return existingUser
     }
 
-    this.logger.warn(`Requested user does not exist. externalId: ${cognitoUserData.idUser}`)
+    this.logger.warn(
+      `Requested user does not exist. Creating the user as a fallback option. externalId: ${cognitoUserData.idUser}`
+    )
 
     return this.createUser(cognitoUserData)
   }

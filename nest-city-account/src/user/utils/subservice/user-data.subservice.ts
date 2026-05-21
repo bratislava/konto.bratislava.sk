@@ -54,6 +54,9 @@ export class UserDataSubservice {
     }
   }
 
+  // ===========================================================================
+  // 1. User lifecycle (create/upsert)
+  // ===========================================================================
   /**
    * Create User from cognito data.
    *
@@ -152,6 +155,10 @@ export class UserDataSubservice {
     await this.bloomreachOutboxService.trackCustomer(externalId)
     return prismaExclude(user, ['ifo'])
   }
+
+  // ===========================================================================
+  // 2. LegalPerson lifecycle (create/upsert)
+  // ===========================================================================
 
   /**
    * Create LegalPerson from cognito data.
@@ -257,6 +264,42 @@ export class UserDataSubservice {
     return legalPerson
   }
 
+  // ===========================================================================
+  // 3. Lookups (read by id / externalId)
+  // ===========================================================================
+  async getUserById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+        ...ACTIVE_USER_FILTER,
+      },
+    })
+    return user
+  }
+
+  async getUserByExternalId(externalId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { externalId, ...ACTIVE_USER_FILTER },
+    })
+    return user
+  }
+
+  async getLegalPersonById(id: string) {
+    const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id } })
+    return legalPerson
+  }
+
+  async getLegalPersonByExternalId(externalId: string) {
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: { externalId },
+    })
+    return legalPerson
+  }
+
+  // ===========================================================================
+  // 4. Login client tracking
+  // ===========================================================================
+
   async recordUserLoginClient(loginClient: LoginClientEnum, userId: string) {
     await this.prisma.userLoginClient.upsert({
       where: {
@@ -299,60 +342,42 @@ export class UserDataSubservice {
     })
   }
 
-  async getUserById(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id,
-        ...ACTIVE_USER_FILTER,
+  async getUserLoginClientList(client: LoginClientEnum): Promise<DPBUserLoginStatistics[]> {
+    const userLoginList = await this.prisma.userLoginClient.findMany({
+      where: { loginClient: client },
+      select: {
+        loginCount: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
+          select: {
+            externalId: true,
+          },
+        },
       },
     })
-    return user
+
+    return (
+      userLoginList
+        .map((userLoginClient) => {
+          return {
+            loginCount: userLoginClient.loginCount,
+            firstLogin: userLoginClient.createdAt,
+            latestLogin: userLoginClient.updatedAt,
+            id: userLoginClient.user.externalId,
+          }
+        })
+        // This is here just for type safety since our database does not have a constraint implemented for this scenario.
+        // Real data should never be null here.
+        .filter((userLoginListItem): userLoginListItem is DPBUserLoginStatistics => {
+          return !!userLoginListItem.id
+        })
+    )
   }
 
-  async getUserByExternalId(externalId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { externalId, ...ACTIVE_USER_FILTER },
-    })
-    return user
-  }
-
-  async getLegalPersonById(id: string) {
-    const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id } })
-    return legalPerson
-  }
-
-  async getLegalPersonByExternalId(externalId: string) {
-    const legalPerson = await this.prisma.legalPerson.findUnique({
-      where: { externalId },
-    })
-    return legalPerson
-  }
-
-  async removeBirthNumber(externalId: string) {
-    const user = await this.prisma.user.update({
-      where: {
-        externalId,
-      },
-      data: {
-        birthNumber: null,
-        ifo: null,
-      },
-    })
-    return user
-  }
-
-  async removeLegalPersonBirthNumber(externalId: string) {
-    const user = await this.prisma.legalPerson.update({
-      where: {
-        externalId,
-      },
-      data: {
-        birthNumber: null,
-        ico: null,
-      },
-    })
-    return user
-  }
+  // ===========================================================================
+  // 5. Consents
+  // ===========================================================================
 
   async setUserConsents(
     userId: string,
@@ -379,6 +404,15 @@ export class UserDataSubservice {
       userId,
       false
     )
+  }
+
+  async getUserConsents(
+    userId: string
+  ): Promise<{ consentType: ConsentEnum; isGranted: boolean }[]> {
+    return this.prisma.userConsents.findMany({
+      where: { userId },
+      select: { consentType: true, isGranted: true },
+    })
   }
 
   async setLegalPersonConsents(
@@ -410,15 +444,6 @@ export class UserDataSubservice {
     )
   }
 
-  async getUserConsents(
-    userId: string
-  ): Promise<{ consentType: ConsentEnum; isGranted: boolean }[]> {
-    return this.prisma.userConsents.findMany({
-      where: { userId },
-      select: { consentType: true, isGranted: true },
-    })
-  }
-
   async getLegalPersonConsents(
     legalPersonId: string
   ): Promise<{ consentType: ConsentEnum; isGranted: boolean }[]> {
@@ -427,71 +452,43 @@ export class UserDataSubservice {
       select: { consentType: true, isGranted: true },
     })
   }
-
   // ===========================================================================
-  // TEMPORARY shape translators between consents (new) and GDPR data (old).
-  // ---------------------------------------------------------------------------
-  // These exist only to bridge the legacy GDPR format to the consent model
-  // while external consumers migrate. **Do not call from new code.**
-  // Once Bloomreach accepts the consent shape and the frontend stops reading
-  // the deprecated `gdprData` response field, both functions and their callers
-  // must be deleted.
+  // 6. Delivery method
   // ===========================================================================
 
-  /**
-   * Translate consent shape into the legacy GDPR triple.
-   *
-   * Used at output boundaries only:
-   *  - Bloomreach payload (its builder is keyed by category/type/subType).
-   *  - The deprecated `gdprData` field on response DTOs, alongside the new
-   *    `consents` field as a transitional dual-write.
-   *
-   * @deprecated Temporary - do not use in new code. Slated for deletion
-   * together with the deprecated `gdprData` response field once external
-   * consumers migrate to the new Consent shape.
-   */
-  consentToGdprShape(c: { consentType: ConsentEnum; isGranted: boolean }): ResponseGdprUserDataDto {
-    return {
-      category: GDPRCategoryEnum.ESBS,
-      type: c.consentType as GDPRTypeEnum,
-      subType: c.isGranted ? GDPRSubTypeEnum.subscribe : GDPRSubTypeEnum.unsubscribe,
-    }
+  async setDeliveryMethodPreference(
+    sub: string,
+    deliveryMethodPreference: DeliveryMethodUserPreferenceEnum
+  ) {
+    await this.prisma.user.update({
+      where: { externalId: sub },
+      data: { taxDeliveryMethod: deliveryMethodPreference },
+    })
+
+    await this.bloomreachOutboxService.trackCustomer(sub)
+
+    // TODO TAXES FORMAL_COMMUNICATION left for legacy reasons.
+    await this.bloomreachOutboxService.trackEventConsents(
+      [
+        {
+          category: GDPRCategoryEnum.TAXES,
+          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+          subType:
+            deliveryMethodPreference === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
+              ? GDPRSubTypeEnum.subscribe
+              : GDPRSubTypeEnum.unsubscribe,
+        },
+      ],
+      sub,
+      undefined,
+      false
+    )
   }
 
-  /**
-   * Translate the legacy GDPR triple into consent shape.
-   *
-   * Used at input boundaries only - the legacy subscribe/unsubscribe endpoints
-   * peel consent items out of incoming GDPR-shaped requests. Returns `null`
-   * for items that don't belong on the consents path.
-   *
-   * @deprecated Temporary - do not use in new code. Slated for deletion
-   * together with the legacy GDPR-shaped input endpoints.
-   */
-  private gdprShapeToConsent(g: {
-    category: GDPRCategoryEnum
-    type: GDPRTypeEnum
-    subType?: GDPRSubTypeEnum | null
-  }): { consentType: ConsentEnum; isGranted: boolean } | null {
-    if (g.category !== GDPRCategoryEnum.ESBS) {
-      return null
-    }
-    if (g.type !== GDPRTypeEnum.MARKETING && g.type !== GDPRTypeEnum.GENERAL) {
-      return null
-    }
-    if (g.subType == null) {
-      return null
-    }
-    return {
-      consentType: g.type as ConsentEnum,
-      isGranted: g.subType === GDPRSubTypeEnum.subscribe,
-    }
-  }
-
-  async getOfficialCorrespondenceChannel(
+  async getActiveDeliveryMethod(
     userId: string
   ): Promise<UserOfficialCorrespondenceChannelEnum | null> {
-    return this.userIdentitySubservice.getOfficialCorrespondenceChannel({ id: userId })
+    return this.userIdentitySubservice.getActiveDeliveryMethod({ id: userId })
   }
 
   async getActiveAndLockedDeliveryMethodsWithDates(
@@ -562,34 +559,9 @@ export class UserDataSubservice {
     return !(user?.taxDeliveryMethod || hasEdesk?.activeEdesk)
   }
 
-  private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
-    return (
-      elem.category === GDPRCategoryEnum.TAXES && elem.type === GDPRTypeEnum.FORMAL_COMMUNICATION
-    )
-  }
-
-  /**
-   * @deprecated: only used by legacy GDPR endpoints
-   */
-  private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
-    const taxDeliveryData: DeliveryMethodUserPreferenceEnum[] = []
-    const otherGdprData: ResponseGdprUserDataDto[] = []
-
-    gdprData.forEach((elem) => {
-      if (this.isTaxDeliveryData(elem)) {
-        if (elem.subType === GDPRSubTypeEnum.subscribe) {
-          taxDeliveryData.push(DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT)
-        } else {
-          taxDeliveryData.push(DeliveryMethodUserPreferenceEnum.POSTAL)
-        }
-      } else {
-        otherGdprData.push(elem)
-      }
-    })
-
-    return { taxDeliveryData, otherGdprData }
-  }
-
+  // ===========================================================================
+  // 7. Legacy GDPR shape (deprecated)
+  // ===========================================================================
   /**
    * Apply legacy-shaped GDPR input to a user: routes tax-delivery items to
    * `User.taxDeliveryMethod`, consent items to `UserConsents`, and drops the
@@ -676,6 +648,123 @@ export class UserDataSubservice {
     await this.setLegalPersonConsents(legalPersonId, legalPerson.externalId, consentData)
   }
 
+  /**
+   * @deprecated: only used by legacy GDPR endpoints
+   */
+  private separateTaxDeliveryData(gdprData: ResponseGdprUserDataDto[]) {
+    const taxDeliveryData: DeliveryMethodUserPreferenceEnum[] = []
+    const otherGdprData: ResponseGdprUserDataDto[] = []
+
+    gdprData.forEach((elem) => {
+      if (this.isTaxDeliveryData(elem)) {
+        if (elem.subType === GDPRSubTypeEnum.subscribe) {
+          taxDeliveryData.push(DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT)
+        } else {
+          taxDeliveryData.push(DeliveryMethodUserPreferenceEnum.POSTAL)
+        }
+      } else {
+        otherGdprData.push(elem)
+      }
+    })
+
+    return { taxDeliveryData, otherGdprData }
+  }
+
+  // ===========================================================================
+  // TEMPORARY shape translators between consents (new) and GDPR data (old).
+  // ---------------------------------------------------------------------------
+  // These exist only to bridge the legacy GDPR format to the consent model
+  // while external consumers migrate. **Do not call from new code.**
+  // Once Bloomreach accepts the consent shape and the frontend stops reading
+  // the deprecated `gdprData` response field, both functions and their callers
+  // must be deleted.
+  // ===========================================================================
+
+  /**
+   * Translate consent shape into the legacy GDPR triple.
+   *
+   * Used at output boundaries only:
+   *  - Bloomreach payload (its builder is keyed by category/type/subType).
+   *  - The deprecated `gdprData` field on response DTOs, alongside the new
+   *    `consents` field as a transitional dual-write.
+   *
+   * @deprecated Temporary - do not use in new code. Slated for deletion
+   * together with the deprecated `gdprData` response field once external
+   * consumers migrate to the new Consent shape.
+   */
+  consentToGdprShape(c: { consentType: ConsentEnum; isGranted: boolean }): ResponseGdprUserDataDto {
+    return {
+      category: GDPRCategoryEnum.ESBS,
+      type: c.consentType as GDPRTypeEnum,
+      subType: c.isGranted ? GDPRSubTypeEnum.subscribe : GDPRSubTypeEnum.unsubscribe,
+    }
+  }
+
+  /**
+   * Translate the legacy GDPR triple into consent shape.
+   *
+   * Used at input boundaries only - the legacy subscribe/unsubscribe endpoints
+   * peel consent items out of incoming GDPR-shaped requests. Returns `null`
+   * for items that don't belong on the consents path.
+   *
+   * @deprecated Temporary - do not use in new code. Slated for deletion
+   * together with the legacy GDPR-shaped input endpoints.
+   */
+  private gdprShapeToConsent(g: {
+    category: GDPRCategoryEnum
+    type: GDPRTypeEnum
+    subType?: GDPRSubTypeEnum | null
+  }): { consentType: ConsentEnum; isGranted: boolean } | null {
+    if (g.category !== GDPRCategoryEnum.ESBS) {
+      return null
+    }
+    if (g.type !== GDPRTypeEnum.MARKETING && g.type !== GDPRTypeEnum.GENERAL) {
+      return null
+    }
+    if (g.subType == null) {
+      return null
+    }
+    return {
+      consentType: g.type as ConsentEnum,
+      isGranted: g.subType === GDPRSubTypeEnum.subscribe,
+    }
+  }
+
+  private isTaxDeliveryData(elem: ResponseGdprUserDataDto): boolean {
+    return (
+      elem.category === GDPRCategoryEnum.TAXES && elem.type === GDPRTypeEnum.FORMAL_COMMUNICATION
+    )
+  }
+
+  // ===========================================================================
+  // 8. Data removal / anonymization
+  // ===========================================================================
+  async removeUserBirthNumber(externalId: string) {
+    const user = await this.prisma.user.update({
+      where: {
+        externalId,
+      },
+      data: {
+        birthNumber: null,
+        ifo: null,
+      },
+    })
+    return user
+  }
+
+  async removeLegalPersonBirthNumber(externalId: string) {
+    const user = await this.prisma.legalPerson.update({
+      where: {
+        externalId,
+      },
+      data: {
+        birthNumber: null,
+        ico: null,
+      },
+    })
+    return user
+  }
+
   private async removePhysicalEntityUserIdRelation(userId: string): Promise<void> {
     const physicalEntity = await this.prisma.physicalEntity.findUnique({
       where: {
@@ -743,67 +832,5 @@ export class UserDataSubservice {
         },
       })
     }
-  }
-
-  async getUserLoginClientList(client: LoginClientEnum): Promise<DPBUserLoginStatistics[]> {
-    const userLoginList = await this.prisma.userLoginClient.findMany({
-      where: { loginClient: client },
-      select: {
-        loginCount: true,
-        createdAt: true,
-        updatedAt: true,
-        user: {
-          select: {
-            externalId: true,
-          },
-        },
-      },
-    })
-
-    return (
-      userLoginList
-        .map((userLoginClient) => {
-          return {
-            loginCount: userLoginClient.loginCount,
-            firstLogin: userLoginClient.createdAt,
-            latestLogin: userLoginClient.updatedAt,
-            id: userLoginClient.user.externalId,
-          }
-        })
-        // This is here just for type safety since our database does not have a constraint implemented for this scenario.
-        // Real data should never be null here.
-        .filter((userLoginListItem): userLoginListItem is DPBUserLoginStatistics => {
-          return !!userLoginListItem.id
-        })
-    )
-  }
-
-  async setDeliveryMethodPreference(
-    sub: string,
-    deliveryMethodPreference: DeliveryMethodUserPreferenceEnum
-  ) {
-    await this.prisma.user.update({
-      where: { externalId: sub },
-      data: { taxDeliveryMethod: deliveryMethodPreference },
-    })
-
-    await this.bloomreachOutboxService.trackCustomer(sub)
-
-    // TODO TAXES FORMAL_COMMUNICATION left for legacy reasons.
-    await this.bloomreachOutboxService.trackEventConsents(
-      [
-        {
-          category: GDPRCategoryEnum.TAXES,
-          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          subType:
-            deliveryMethodPreference === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
-              ? GDPRSubTypeEnum.subscribe
-              : GDPRSubTypeEnum.unsubscribe,
-        },
-      ],
-      sub,
-      undefined,
-      false
-    )
   }
 }

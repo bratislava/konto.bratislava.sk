@@ -321,8 +321,9 @@ export class UserService {
           email: newEmail,
         },
       })
-      const officialCorrespondenceChannel =
-        await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
+      const officialCorrespondenceChannel = await this.userDataSubservice.getActiveDeliveryMethod(
+        user.id
+      )
       const showEmailCommunicationBanner =
         await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
       return {

@@ -42,35 +42,75 @@ export class UserDataSubservice {
     this.logger = new LineLoggerSubservice(UserDataSubservice.name)
   }
 
-  /**
-   * Gets or creates a user from the database using cognito user data.
-   * @param {CognitoGetUserData} cognitoUserData - The cognito user data.
-   * @param {boolean} isAdminCall - Whether the call is made by an admin to bypass the deceased user check.
-   */
-  async getOrCreateUser(cognitoUserData: CognitoGetUserData, isAdminCall = false) {
-    const userData = {
-      externalId: cognitoUserData.idUser,
-      email: cognitoUserData.email,
-      registeredAt: cognitoUserData.UserCreateDate,
+  private cognitoDataToDatabaseData(cognitoData: CognitoGetUserData): {
+    externalId: string
+    email: string
+    registeredAt: Date | null
+  } {
+    return {
+      externalId: cognitoData.idUser,
+      email: cognitoData.email,
+      registeredAt: cognitoData.UserCreateDate ?? null,
     }
+  }
+
+  /**
+   * Create User from cognito data.
+   *
+   * @private
+   */
+  private async createUser(userData: CognitoGetUserData) {
+    const user = await this.prisma.legalPerson.create({
+      data: this.cognitoDataToDatabaseData(userData),
+    })
+
+    return this.postprocessLegalPerson(userData.sub, user, true)
+  }
+
+  /**
+   * Get User from the database by externalId (⚠️ not email) if it exists or
+   * create it if it can't be found.
+   *
+   * This method creates a call to Bloomreach only if the User did not exist and
+   * was created. Otherwise, no Bloomreach calls are created.
+   *
+   * ⚠️ **Warning**: This is not the old getOrCreate method. That has been moved
+   * to {@link upsertUser}
+   */
+  async getOrCreateUser(cognitoUserData: CognitoGetUserData) {
+    const existingUser = await this.getUserByExternalId(cognitoUserData.idUser)
+    if (existingUser) {
+      return existingUser
+    }
+
+    return this.createUser(cognitoUserData)
+  }
+
+  /**
+   * Updates if the User exists in our database. Creates if it does not exist.
+   *
+   * Calls Bloomreach track. In the case of new User, Bloomreach is called also
+   * with new GDPR consents.
+   *
+   * @returns created or updated User from the database.
+   *
+   * @param {CognitoGetUserData} cognitoUserData - The cognito user data.
+   * @param {boolean} isAdminCall - Whether the call is made by an admin to
+   *   bypass the deceased user check.
+   */
+  async upsertUser(cognitoUserData: CognitoGetUserData, isAdminCall = false) {
+    const userData = this.cognitoDataToDatabaseData(cognitoUserData)
 
     let user = await this.prisma.user.findUnique({
       where: { email: userData.email },
     })
     const foundByEmail = !!user
     if (!foundByEmail) {
-      user = await this.prisma.user.findUnique({
-        where: { externalId: userData.externalId },
-      })
+      user = await this.getUserByExternalId(userData.externalId)
     }
 
     if (!user) {
-      // user is not found, create a new one
-      user = await this.prisma.user.create({
-        data: userData,
-      })
-
-      return this.postprocessUser(userData.externalId, user, true)
+      return this.createUser(cognitoUserData)
     }
 
     if (user.isDeceased) {
@@ -85,7 +125,6 @@ export class UserDataSubservice {
     }
 
     // user found, update data
-
     if (!foundByEmail) {
       this.logger.log(
         `Email changed for user ${userData.externalId}. Old email: ${user.email}, new email: ${userData.email}.`
@@ -112,13 +151,55 @@ export class UserDataSubservice {
     return prismaExclude(user, ['ifo'])
   }
 
-  async getOrCreateLegalPerson(
-    cognitoUserData: CognitoGetUserData
+  /**
+   * Create LegalPerson from cognito data.
+   *
+   * @private
+   */
+  private async createLegalPerson(legalPersonData: CognitoGetUserData) {
+    // legal person not found, create a new one
+    const legalPerson = await this.prisma.legalPerson.create({
+      data: this.cognitoDataToDatabaseData(legalPersonData),
+    })
+
+    return this.postprocessLegalPerson(legalPersonData.sub, legalPerson, true)
+  }
+
+  /**
+   * Get LegalPerson from the database by externalId (⚠️ not email) if it exists
+   * or create it if it can't be found.
+   *
+   * This method creates a call to Bloomreach only if the LegalPerson did not
+   * exist and was created. Otherwise, no Bloomreach calls are created.
+   *
+   * ⚠️ **Warning**: This is not the old getOrCreate method. That has been moved
+   * to {@link upsertLegalPerson}
+   */
+  async getOrCreateLegalPerson(cognitoLegalPersonData: CognitoGetUserData) {
+    const existingLegalPerson = await this.getLegalPersonByExternalId(cognitoLegalPersonData.sub)
+    if (existingLegalPerson) {
+      return existingLegalPerson
+    }
+
+    return this.createLegalPerson(cognitoLegalPersonData)
+  }
+
+  /**
+   * Updates if the LegalPerson exists in our database. Creates if it does not
+   * exist.
+   *
+   * Calls Bloomreach track. In the case of new LegalPerson, Bloomreach is called
+   * also with new GDPR consents.
+   *
+   * @returns created or updated LegalPerson from the database.
+   */
+  async upsertLegalPerson(
+    cognitoLegalPersonData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataSimpleDto> {
     const legalPersonData = {
-      externalId: cognitoUserData.idUser,
-      email: cognitoUserData.email,
-      registeredAt: cognitoUserData.UserCreateDate,
+      externalId: cognitoLegalPersonData.idUser,
+      email: cognitoLegalPersonData.email,
+      registeredAt: cognitoLegalPersonData.UserCreateDate,
     }
 
     let legalPerson = await this.prisma.legalPerson.findUnique({
@@ -126,26 +207,18 @@ export class UserDataSubservice {
     })
     const foundByEmail = !!legalPerson
     if (!foundByEmail) {
-      legalPerson = await this.prisma.legalPerson.findUnique({
-        where: { externalId: legalPersonData.externalId },
-      })
+      legalPerson = await this.getLegalPersonByExternalId(legalPersonData.externalId)
     }
 
     if (!legalPerson) {
-      // legal person not found, create a new one
-      legalPerson = await this.prisma.legalPerson.create({
-        data: legalPersonData,
-      })
-
-      return this.postprocessLegalPerson(legalPersonData.externalId, legalPerson, true)
+      return await this.createLegalPerson(cognitoLegalPersonData)
     }
 
     // TODO: we are missing attribute for isDeceased,
     // if we are implementing it, let's add admin call,
     // same as in getOrCreateUser
 
-    // user found, update data
-
+    // LegalPerson found, update data
     if (!foundByEmail) {
       this.logger.log(
         `Email changed for legal person ${legalPersonData.externalId}. Old email: ${legalPerson.email}, new email: ${legalPersonData.email}.`

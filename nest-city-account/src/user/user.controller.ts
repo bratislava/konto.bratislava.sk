@@ -66,6 +66,7 @@ export class UserController {
       'login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in ' +
       'through. This endpoint is intended for subsequent user data fetches after the user is already authenticated ' +
       '(e.g., forms backend, next.js app fetching user data).',
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,

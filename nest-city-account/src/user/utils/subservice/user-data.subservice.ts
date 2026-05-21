@@ -787,6 +787,9 @@ export class UserDataSubservice {
       data: { taxDeliveryMethod: deliveryMethodPreference },
     })
 
+    await this.bloomreachOutboxService.trackCustomer(sub)
+
+    // TODO TAXES FORMAL_COMMUNICATION left for legacy reasons.
     await this.bloomreachOutboxService.trackEventConsents(
       [
         {

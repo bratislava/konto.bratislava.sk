@@ -596,9 +596,7 @@ export class UserDataSubservice {
    * subscribe/unsubscribe endpoints.
    */
   async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    })
+    const user = await this.getUserById(userId)
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
@@ -645,9 +643,7 @@ export class UserDataSubservice {
    * deletion together with the legacy subscribe/unsubscribe endpoints.
    */
   async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
-    const legalPerson = await this.prisma.legalPerson.findUnique({
-      where: { id: legalPersonId },
-    })
+    const legalPerson = await this.getLegalPersonById(legalPersonId)
     if (!legalPerson) {
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
@@ -685,11 +681,7 @@ export class UserDataSubservice {
   }
 
   async removeUserDataFromDatabase(externalId: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        externalId,
-      },
-    })
+    const user = await this.getUserByExternalId(externalId)
     if (user) {
       await this.prisma.user.update({
         where: {
@@ -716,11 +708,7 @@ export class UserDataSubservice {
   }
 
   async removeLegalPersonDataFromDatabase(externalId: string): Promise<void> {
-    const legalPerson = await this.prisma.legalPerson.findUnique({
-      where: {
-        externalId,
-      },
-    })
+    const legalPerson = await this.getLegalPersonByExternalId(externalId)
 
     if (legalPerson) {
       await this.prisma.legalPerson.update({
@@ -784,5 +772,21 @@ export class UserDataSubservice {
       where: { externalId: sub },
       data: { taxDeliveryMethod: deliveryMethodPreference },
     })
+
+    await this.bloomreachOutboxService.trackEventConsents(
+      [
+        {
+          category: GDPRCategoryEnum.TAXES,
+          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
+          subType:
+            deliveryMethodPreference === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
+              ? GDPRSubTypeEnum.subscribe
+              : GDPRSubTypeEnum.unsubscribe,
+        },
+      ],
+      sub,
+      undefined,
+      false
+    )
   }
 }

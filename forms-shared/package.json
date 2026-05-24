@@ -99,7 +99,7 @@
     "jest-image-snapshot": "6.5.2",
     "libxml2-wasm": "0.7.1",
     "node-font2base64": "0.9.2",
-    "pdf-to-img": "6.0.0",
+    "pdf-to-img": "6.1.0",
     "playwright": "1.59.1",
     "postcss": "8.5.14",
     "prettier": "3.8.3",

@@ -73,7 +73,6 @@ export default class NasesService {
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
     private readonly convertPdfService: ConvertPdfService,
     private readonly baConfigService: BaConfigService,

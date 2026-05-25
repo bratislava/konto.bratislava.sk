@@ -9,7 +9,7 @@ import { CognitoUserAccountTypesEnum } from '../global-dtos/cognito.dto'
 export class UserIdentitySubservice {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOfficialCorrespondenceChannel(
+  async getActiveDeliveryMethod(
     where: Prisma.UserWhereUniqueInput
   ): Promise<UserOfficialCorrespondenceChannelEnum | null> {
     const user = await this.prisma.user.findUnique({

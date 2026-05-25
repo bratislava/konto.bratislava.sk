@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DeliveryMethodEnum, GDPRSubTypeEnum, Prisma, User } from '@prisma/client'
+import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum, Prisma, User } from '@prisma/client'
 import { AxiosResponse } from 'axios'
 import { UpdateDeliveryMethodsInNorisResponseDto } from 'openapi-clients/tax'
 
@@ -16,7 +16,7 @@ import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks
 type UserWithRelations = Prisma.UserGetPayload<{
   include: {
     physicalEntity: true
-    userGdprData: true
+    deliveryMethodUserHistory: true
   }
 }>
 
@@ -308,7 +308,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [],
+          taxDeliveryMethod: null,
+          deliveryMethodUserHistory: [],
           physicalEntity: {
             activeEdesk: true,
           },
@@ -328,9 +329,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should set CITY_ACCOUNT delivery method when GDPR subscribe exists and no active eDesk', async () => {
+    it('should set CITY_ACCOUNT delivery method when taxDeliveryMethod is CITY_ACCOUNT and no active eDesk', async () => {
       const jobStartTime = new Date()
-      const gdprDate = new Date('2024-01-15')
+      const cityAccountDate = new Date('2024-01-15')
       const updateSpy = jest.spyOn(prismaMock.user, 'update').mockResolvedValue({} as User)
 
       prismaMock.user.findMany.mockResolvedValueOnce([
@@ -338,12 +339,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [
-            {
-              subType: GDPRSubTypeEnum.subscribe,
-              createdAt: gdprDate,
-            },
-          ],
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
+          deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
           physicalEntity: {
             activeEdesk: false,
           },
@@ -358,14 +355,14 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         where: { birthNumber: '1234567890' },
         data: {
           taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
-          taxDeliveryMethodCityAccountLockDate: gdprDate,
+          taxDeliveryMethodCityAccountLockDate: cityAccountDate,
         },
       })
     })
 
-    it('should set taxDeliveryMethodCityAccountLockDate to GDPR consent date for CITY_ACCOUNT users', async () => {
+    it('should set taxDeliveryMethodCityAccountLockDate to latest CITY_ACCOUNT history date', async () => {
       const jobStartTime = new Date()
-      const gdprDate = new Date('2024-01-15T10:30:00Z')
+      const cityAccountDate = new Date('2024-01-15T10:30:00Z')
       const updateSpy = jest.spyOn(prismaMock.user, 'update').mockResolvedValue({} as User)
 
       prismaMock.user.findMany.mockResolvedValueOnce([
@@ -373,12 +370,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [
-            {
-              subType: GDPRSubTypeEnum.subscribe,
-              createdAt: gdprDate,
-            },
-          ],
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
+          deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
           physicalEntity: {
             activeEdesk: null,
           },
@@ -393,12 +386,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         where: { birthNumber: '1234567890' },
         data: {
           taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
-          taxDeliveryMethodCityAccountLockDate: gdprDate,
+          taxDeliveryMethodCityAccountLockDate: cityAccountDate,
         },
       })
     })
 
-    it('should set POSTAL delivery method when no GDPR subscribe and no active eDesk', async () => {
+    it('should set POSTAL delivery method when taxDeliveryMethod is not CITY_ACCOUNT and no active eDesk', async () => {
       const jobStartTime = new Date()
       const updateManySpy = jest
         .spyOn(prismaMock.user, 'updateMany')
@@ -409,7 +402,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [],
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.POSTAL,
+          deliveryMethodUserHistory: [],
           physicalEntity: {
             activeEdesk: false,
           },
@@ -440,12 +434,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [
-            {
-              subType: GDPRSubTypeEnum.subscribe,
-              createdAt: new Date('2024-01-15'),
-            },
-          ],
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
+          deliveryMethodUserHistory: [{ createdAt: new Date('2024-01-15') }],
           physicalEntity: {
             activeEdesk: true,
           },
@@ -476,12 +466,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [
-            {
-              subType: GDPRSubTypeEnum.unsubscribe,
-              createdAt: new Date('2024-01-15'),
-            },
-          ],
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.POSTAL,
+          deliveryMethodUserHistory: [],
           physicalEntity: {
             activeEdesk: null,
           },
@@ -501,9 +487,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should prioritize activeEdesk over GDPR subscribe preference', async () => {
+    it('should prioritize activeEdesk over CITY_ACCOUNT preference', async () => {
       const jobStartTime = new Date()
-      const gdprDate = new Date('2024-01-15')
+      const cityAccountDate = new Date('2024-01-15')
       const updateManySpy = jest
         .spyOn(prismaMock.user, 'updateMany')
         .mockResolvedValue({ count: 1 })
@@ -513,12 +499,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
-          userGdprData: [
-            {
-              subType: GDPRSubTypeEnum.subscribe,
-              createdAt: gdprDate,
-            },
-          ],
+          taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
+          deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
           physicalEntity: {
             activeEdesk: true, // EDESK should take priority
           },
@@ -529,7 +511,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       await service.lockDeliveryMethods()
 
-      // Should set EDESK, not CITY_ACCOUNT, even though GDPR subscribe exists
+      // Should set EDESK, not CITY_ACCOUNT, even though user preference is CITY_ACCOUNT
       expect(updateManySpy).toHaveBeenCalledWith({
         where: { birthNumber: { in: ['1234567890'] } },
         data: {
@@ -567,7 +549,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       expect(sendEmailSpy).not.toHaveBeenCalled()
       // Should not query for changes if disabled
-      expect(prismaMock.userGdprData.findMany).not.toHaveBeenCalled()
+      expect(prismaMock.deliveryMethodPreferenceHistory.findMany).not.toHaveBeenCalled()
       expect(prismaMock.physicalEntity.findMany).not.toHaveBeenCalled()
     })
 
@@ -577,15 +559,15 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       } as any)
 
       // Mock initial query for users with changes
-      prismaMock.userGdprData.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([
           { userId: 'user1' },
           { userId: 'user2' },
           { userId: 'user3' },
         ] as any)
-        .mockResolvedValueOnce([]) // Latest GDPR data
-        .mockResolvedValueOnce([]) // Previous GDPR data
-        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+        .mockResolvedValueOnce([]) // Latest delivery method
+        .mockResolvedValueOnce([]) // Previous delivery method
+        .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
@@ -627,11 +609,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       } as any)
 
       // Mock initial query for users with eDesk changes
-      prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([]) // Initial query - no GDPR changes
-        .mockResolvedValueOnce([]) // Latest GDPR data
-        .mockResolvedValueOnce([]) // Previous GDPR data
-        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+      prismaMock.deliveryMethodPreferenceHistory.findMany
+        .mockResolvedValueOnce([]) // Initial query - no delivery method changes
+        .mockResolvedValueOnce([]) // Latest delivery method
+        .mockResolvedValueOnce([]) // Previous delivery method
+        .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
         {
@@ -666,16 +648,16 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should send postal email when eDesk was deactivated yesterday (no GDPR subscription)', async () => {
+    it('should send postal email when eDesk was deactivated yesterday (no CITY_ACCOUNT preference)', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([]) // Initial query - no GDPR changes
-        .mockResolvedValueOnce([]) // Latest GDPR data - no subscription
-        .mockResolvedValueOnce([]) // Previous GDPR data
-        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+      prismaMock.deliveryMethodPreferenceHistory.findMany
+        .mockResolvedValueOnce([]) // Initial query - no delivery method changes
+        .mockResolvedValueOnce([]) // Latest delivery method - none
+        .mockResolvedValueOnce([]) // Previous delivery method
+        .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
         {
@@ -709,23 +691,23 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should send City Account email when eDesk was deactivated yesterday and user has GDPR subscription', async () => {
+    it('should send City Account email when eDesk was deactivated yesterday and user has CITY_ACCOUNT preference', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([]) // Initial query - no GDPR changes
+      prismaMock.deliveryMethodPreferenceHistory.findMany
+        .mockResolvedValueOnce([]) // Initial query - no delivery method changes
         .mockResolvedValueOnce([
-          // Latest GDPR data - user has subscription
+          // Latest delivery method - user prefers CITY_ACCOUNT
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: new Date(yesterday.getTime() - 86400000), // Day before yesterday
           },
         ] as any)
-        .mockResolvedValueOnce([]) // Previous GDPR data
-        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+        .mockResolvedValueOnce([]) // Previous delivery method
+        .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
         {
@@ -760,27 +742,27 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should send City Account email when GDPR changed to subscribe yesterday', async () => {
+    it('should send City Account email when delivery method changed to CITY_ACCOUNT yesterday', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - user has GDPR change
+      prismaMock.deliveryMethodPreferenceHistory.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - user has delivery method change
         .mockResolvedValueOnce([
-          // Latest GDPR data
+          // Latest delivery method
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
-        .mockResolvedValueOnce([]) // Previous GDPR data - no previous state
+        .mockResolvedValueOnce([]) // Previous delivery method - no previous state
         .mockResolvedValueOnce([
-          // Yesterday GDPR changes
+          // Yesterday delivery method change
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -812,36 +794,36 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should send postal email when GDPR changed to unsubscribe yesterday', async () => {
+    it('should send postal email when delivery method changed to POSTAL yesterday', async () => {
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
         .mockResolvedValueOnce([
-          // Latest GDPR data
+          // Latest delivery method
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.unsubscribe,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)
         .mockResolvedValueOnce([
-          // Previous GDPR data
+          // Previous delivery method
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
           },
         ] as any)
         .mockResolvedValueOnce([
-          // Yesterday GDPR changes
+          // Yesterday delivery method change
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.unsubscribe,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)
@@ -872,19 +854,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       })
     })
 
-    it('should skip users with active eDesk who had GDPR changes but no eDesk status change', async () => {
+    it('should skip users with active eDesk who had delivery method changes but no eDesk status change', async () => {
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - GDPR change
+      prismaMock.deliveryMethodPreferenceHistory.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - delivery method change
         .mockResolvedValueOnce([
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -913,36 +895,36 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(sendEmailSpy).not.toHaveBeenCalled()
     })
 
-    it('should skip users when GDPR subType did not change from previous state', async () => {
+    it('should skip users when delivery method did not change from previous state', async () => {
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
         .mockResolvedValueOnce([
-          // Latest GDPR data - subscribe
+          // Latest delivery method - CITY_ACCOUNT
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
         .mockResolvedValueOnce([
-          // Previous GDPR data - also subscribe (no change)
+          // Previous delivery method - also CITY_ACCOUNT (no change)
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
           },
         ] as any)
         .mockResolvedValueOnce([
-          // Yesterday GDPR changes
+          // Yesterday delivery method change
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
@@ -969,17 +951,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(sendEmailSpy).not.toHaveBeenCalled()
     })
 
-    it('should combine both GDPR and eDesk changes and deduplicate by userId', async () => {
+    it('should combine both delivery method and eDesk changes and deduplicate by userId', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      // User1 and User2 have GDPR changes, User1 and User3 have eDesk changes
-      prismaMock.userGdprData.findMany
+      // User1 and User2 have delivery method changes, User1 and User3 have eDesk changes
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any)
-        .mockResolvedValueOnce([]) // Latest GDPR data
-        .mockResolvedValueOnce([]) // Previous GDPR data
-        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+        .mockResolvedValueOnce([]) // Latest delivery method
+        .mockResolvedValueOnce([]) // Previous delivery method
+        .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
         {
@@ -1041,30 +1023,31 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query
-        .mockResolvedValueOnce([]) // Latest GDPR data
-        .mockResolvedValueOnce([]) // Previous GDPR data
-        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+        .mockResolvedValueOnce([]) // Latest delivery method
+        .mockResolvedValueOnce([]) // Previous delivery method
+        .mockResolvedValueOnce([]) // Yesterday delivery method change
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
       prismaMock.user.findMany.mockResolvedValue([])
 
       await service.sendDailyDeliveryMethodSummaries()
 
-      // Verify GDPR initial query uses correct date range
-      const gdprCall = (prismaMock.userGdprData.findMany as jest.Mock).mock.calls[0][0]
-      const gdprStart = gdprCall.where.createdAt.gte
-      const gdprEnd = gdprCall.where.createdAt.lte
+      // Verify delivery-method initial query uses correct date range
+      const initialCall = (prismaMock.deliveryMethodPreferenceHistory.findMany as jest.Mock).mock
+        .calls[0][0]
+      const rangeStart = initialCall.where.createdAt.gte
+      const rangeEnd = initialCall.where.createdAt.lte
 
-      expect(gdprStart.getHours()).toBe(0)
-      expect(gdprStart.getMinutes()).toBe(0)
-      expect(gdprStart.getSeconds()).toBe(0)
-      expect(gdprStart.getMilliseconds()).toBe(0)
+      expect(rangeStart.getHours()).toBe(0)
+      expect(rangeStart.getMinutes()).toBe(0)
+      expect(rangeStart.getSeconds()).toBe(0)
+      expect(rangeStart.getMilliseconds()).toBe(0)
 
-      expect(gdprEnd.getHours()).toBe(23)
-      expect(gdprEnd.getMinutes()).toBe(59)
-      expect(gdprEnd.getSeconds()).toBe(59)
-      expect(gdprEnd.getMilliseconds()).toBe(999)
+      expect(rangeEnd.getHours()).toBe(23)
+      expect(rangeEnd.getMinutes()).toBe(59)
+      expect(rangeEnd.getSeconds()).toBe(59)
+      expect(rangeEnd.getMilliseconds()).toBe(999)
 
       // Verify eDesk query uses same date range
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith(
@@ -1079,27 +1062,27 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       )
     })
 
-    it('should prioritize eDesk status over GDPR changes when eDesk is active', async () => {
+    it('should prioritize eDesk status over delivery method changes when eDesk is active', async () => {
       prismaMock.config.findFirst.mockResolvedValue({
         value: { active: true },
       } as any)
 
-      prismaMock.userGdprData.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - GDPR change
+      prismaMock.deliveryMethodPreferenceHistory.findMany
+        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - delivery method change
         .mockResolvedValueOnce([
-          // Latest GDPR data
+          // Latest delivery method
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
         ] as any)
-        .mockResolvedValueOnce([]) // Previous GDPR data
-        .mockResolvedValueOnce([]) // Yesterday GDPR changes
+        .mockResolvedValueOnce([]) // Previous delivery method
+        .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
-      // User has active eDesk (changed yesterday) AND GDPR change yesterday
+      // User has active eDesk (changed yesterday) AND delivery method change yesterday
       prismaMock.user.findMany.mockResolvedValue([
         {
           id: 'user1',
@@ -1132,39 +1115,39 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
-      prismaMock.userGdprData.findMany
+      prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any) // Initial query
         .mockResolvedValueOnce([
-          // Latest GDPR data
+          // Latest delivery method
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
           {
             userId: 'user2',
-            subType: GDPRSubTypeEnum.unsubscribe,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)
         .mockResolvedValueOnce([
-          // Previous GDPR data
+          // Previous delivery method
           {
             userId: 'user2',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
           },
         ] as any)
         .mockResolvedValueOnce([
-          // Yesterday GDPR changes
+          // Yesterday delivery method change
           {
             userId: 'user1',
-            subType: GDPRSubTypeEnum.subscribe,
+            method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
           },
           {
             userId: 'user2',
-            subType: GDPRSubTypeEnum.unsubscribe,
+            method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
           },
         ] as any)
@@ -1216,7 +1199,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       expect(sendEmailSpy).toHaveBeenCalledTimes(3)
 
-      // User1: GDPR subscribe (new)
+      // User1: switched to CITY_ACCOUNT (new)
       expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
         userEmail: 'user1@example.com',
         externalId: 'ext-1',
@@ -1224,7 +1207,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         deliveryMethod: 'email',
       })
 
-      // User2: GDPR unsubscribe (changed from subscribe)
+      // User2: switched to POSTAL (changed from CITY_ACCOUNT)
       expect(sendEmailSpy).toHaveBeenCalledWith('2025-delivery-method-changed-from-user-data', {
         userEmail: 'user2@example.com',
         externalId: 'ext-2',

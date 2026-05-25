@@ -31,7 +31,11 @@ import {
   ResponseUserDataBasicDto,
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
-import { UpsertUserRecordClientRequestDto } from './dtos/user.requests.dto'
+import {
+  SetDeliveryMethodPreferenceDto,
+  UpdateGdprConsentRequestDto,
+  UpsertUserRecordClientRequestDto,
+} from './dtos/user.requests.dto'
 import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
 import { UserService } from './user.service'
 
@@ -54,12 +58,18 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({
     summary:
-      'Get or create user with their data (use when already logged in, not duing login/registration)',
+      'Get or create user with their data (use when already logged in, not during login/registration)',
     description:
-      'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer. ' +
-      'Use this endpoint AFTER login/registration, not during the login/registration flow. ' +
-      'For login/registration flows, use `/upsert-user-record-client` instead to track which client the user logged in through. ' +
-      'This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).',
+      'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr ' +
+      'means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically ' +
+      'Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For ' +
+      "login/registration flows, use '/upsert-user-record-client' instead to track which client the user logged in " +
+      'through. This endpoint is intended for subsequent user data fetches after the user is already authenticated ' +
+      '(e.g., forms backend, next.js app fetching user data).\n\n' +
+      "**Deprecated** — renamed to 'POST /user/upsert' to better reflect the actual semantics (this endpoint " +
+      'always upserts; the legacy "get-or-create" name was misleading because it also updates existing records). ' +
+      "Use 'POST /user/upsert' instead — the behaviour and response shape are identical.",
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -81,17 +91,53 @@ export class UserController {
   async getOrCreateUser(
     @User() user: CognitoGetUserData
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    return this.userService.getOrCreateUserOrLegalPerson(user)
+    return this.userService.upsertUserOrLegalPerson(user)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary:
+      'Upsert user with their data (use when already logged in, not during login/registration)',
+    description:
+      'This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr ' +
+      'means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically ' +
+      'Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For ' +
+      "login/registration flows, use '/upsert-user-record-client' instead to track which client the user logged in " +
+      'through. This endpoint is intended for subsequent user data fetches after the user is already authenticated ' +
+      '(e.g., forms backend, next.js app fetching user data).',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return subscribed value for logged user',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataDto) },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @UseGuards(CognitoGuard)
+  @Post('upsert')
+  async upsertUser(
+    @User() user: CognitoGetUserData
+  ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
+    return this.userService.upsertUserOrLegalPerson(user)
   }
 
   @HttpCode(200)
   @ApiOperation({
     summary: 'Upsert user and record login client (use during login/registration)',
     description:
-      'Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. ' +
-      'Use this endpoint DURING login/registration flows to track login client usage. ' +
-      'For subsequent user data fetches after login (e.g., forms backend, next.js app), use `/get-or-create` instead. ' +
-      'This endpoint should be called once per login/registration to properly track which client was used.',
+      'Gets or creates the user/legal person and records a login client for the currently authenticated user. This ' +
+      'tracks which client the user logged in through and increments the login count. Use this endpoint DURING ' +
+      'login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., ' +
+      "forms backend, next.js app), use '/get-or-create' instead. This endpoint should be called once per " +
+      'login/registration to properly track which client was used.',
   })
   @ApiResponse({
     status: 200,
@@ -114,7 +160,7 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() body: UpsertUserRecordClientRequestDto
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
-    const userData = await this.userService.getOrCreateUserOrLegalPerson(user)
+    const userData = await this.userService.upsertUserOrLegalPerson(user)
     await this.userService.recordLoginClient(user, body.loginClient)
     return userData
   }
@@ -123,7 +169,9 @@ export class UserController {
   @ApiOperation({
     summary: 'Update or create bloomreach customer for logged user',
     description:
-      'This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.',
+      'This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint ' +
+      'is used to update or create bloomreach customer for logged user. It is used to track user attributes change ' +
+      'in cognito.',
   })
   @ApiResponse({
     status: 200,
@@ -166,7 +214,16 @@ export class UserController {
   @ApiOperation({
     summary: 'Create subscribed or unsubscribed log for logged in users',
     description:
-      'This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.',
+      'This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from ' +
+      'model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as ' +
+      'subscribed regardless of the gdprData payload.\n\n' +
+      "**Deprecated** — replaced by the consents and delivery-method endpoints. The legacy 'category' / 'type' / " +
+      "'subType' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / " +
+      "official delivery method (previously encoded as 'TAXES' + 'FORMAL_COMMUNICATION' in the same payload) is " +
+      'now a separate concern. Use:\n' +
+      "- 'POST /user/gdpr-consent' to grant or revoke a single consent (MARKETING, GENERAL).\n" +
+      "- 'POST /user/set-delivery-method-preference' to change the tax / official delivery method.",
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -215,7 +272,16 @@ export class UserController {
   @ApiOperation({
     summary: 'Unsubscribe logged user',
     description:
-      'This endpoint is used only for logged user, user is paired by JWTtoken. You can send unsubscription data from model in array, or you can send empty array in gdprData and it will automatically create unsubscribed data.',
+      'This endpoint is used only for logged user, user is paired by JWT token. You can send unsubscription data ' +
+      'from model in array. If the user does not exist yet, default consents (MARKETING, GENERAL) are created as ' +
+      'subscribed regardless of the gdprData payload.\n\n' +
+      "**Deprecated** — replaced by the consents and delivery-method endpoints. The legacy 'category' / 'type' / " +
+      "'subType' triple is dropped in favour of a simpler, more strictly validated consent shape, and tax / " +
+      "official delivery method (previously encoded as 'TAXES' + 'FORMAL_COMMUNICATION' in the same payload) is " +
+      'now a separate concern. Use:\n' +
+      "- 'POST /user/gdpr-consent' to grant or revoke a single consent (MARKETING, GENERAL).\n" +
+      "- 'POST /user/set-delivery-method-preference' to change the tax / official delivery method.",
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
@@ -263,12 +329,20 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({
     summary: 'Unsubscribe user by uuid',
-    description: 'Unsubscribe any user by uuid with different categories of subscription',
+    description:
+      'Unsubscribe any user by uuid with different categories of subscription.\n\n' +
+      '**Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single ' +
+      'category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, ' +
+      'and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists ' +
+      "today; for authenticated flows use 'POST /user/gdpr-consent' and " +
+      "'POST /user/set-delivery-method-preference'.",
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
     description:
-      'Return unsubscribed and subscribed value for logged user. You can send unsubscription data from model in array in Query, or you can send empty query and it will automatically create subscribed data.',
+      'Return unsubscribed and subscribed value for logged user. You can send unsubscription data from model in ' +
+      'array in Query, or you can send empty query and it will automatically create subscribed data.',
     type: String,
   })
   @Get('public/unsubscribe/:id')
@@ -284,12 +358,19 @@ export class UserController {
   @ApiOperation({
     summary: 'Unsubscribe user by external Id',
     description:
-      'Unsubscribe any user by external Id from cognito with different categories of subscription',
+      'Unsubscribe any user by external Id from cognito with different categories of subscription.\n\n' +
+      '**Deprecated** — part of the legacy GDPR shape that bundled consents and delivery method into a single ' +
+      'category / type / subType payload. The consents model now uses a simpler, more strictly validated shape, ' +
+      'and tax / official delivery method is handled separately. No public (unauthenticated) replacement exists ' +
+      "today; for authenticated flows use 'POST /user/gdpr-consent' and " +
+      "'POST /user/set-delivery-method-preference'.",
+    deprecated: true,
   })
   @ApiResponse({
     status: 200,
     description:
-      'Return unsubscribed and subscribed value for logged user. You can send unsubscription data from model in array in Query, or you can send empty query and it will automatically create subscribed data.',
+      'Return unsubscribed and subscribed value for logged user. You can send unsubscription data from model in ' +
+      'array in Query, or you can send empty query and it will automatically create subscribed data.',
     type: String,
   })
   @Get('public/unsubscribe/external-id/:id')
@@ -348,5 +429,36 @@ export class UserController {
       UserErrorsEnum.COGNITO_TYPE_ERROR,
       UserErrorsResponseEnum.COGNITO_TYPE_ERROR
     )
+  }
+
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'Update a single GDPR consent for the logged-in user',
+    description: "Accept or revoke a single user-facing consent identified by 'consentType'.",
+  })
+  @ApiResponse({ status: 204, description: 'Consent updated' })
+  @UseGuards(CognitoGuard)
+  @Post('gdpr-consent')
+  async updateGdprConsent(
+    @User() user: CognitoGetUserData,
+    @Body() body: UpdateGdprConsentRequestDto
+  ): Promise<void> {
+    await this.userService.updateGdprConsent(user, body.consentType, body.grant)
+  }
+
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'Set tax/official delivery method preference for the logged-in user',
+    description:
+      'Sets the user preference for how official / tax communication should be delivered.',
+  })
+  @ApiResponse({ status: 204, description: 'Delivery method preference updated' })
+  @UseGuards(CognitoGuard)
+  @Post('set-delivery-method-preference')
+  async setDeliveryMethodPreference(
+    @User() user: CognitoGetUserData,
+    @Body() body: SetDeliveryMethodPreferenceDto
+  ): Promise<void> {
+    await this.userService.setDeliveryMethodPreference(user, body.deliveryMethod)
   }
 }

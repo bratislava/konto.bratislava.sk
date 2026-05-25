@@ -89,16 +89,6 @@ export class AdminService {
     })
   }
 
-  async updateDeliveryMethodsInNoris({
-    data,
-  }: RequestUpdateNorisDeliveryMethodsDto): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return this.norisService.updateDeliveryMethodsInNoris({ data })
-  }
-
-  async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    await this.norisService.removeDeliveryMethodsFromNoris(birthNumber)
-  }
-
   /**
    * Creates a testing tax record with specified details for development and testing purposes.
    * @WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.

@@ -73,7 +73,7 @@ export default class NotificationsEventsService {
           AND ti2."order" <= ti."order"
         GROUP BY ti."taxId", ti."order"
       )
-      SELECT t."id" as taxId, ti_check."dueDate" as dueDate, ti_check."order" as order, ti_check."id" as id
+      SELECT t."id" as "taxId", ti_check."dueDate" as "dueDate", ti_check."order" as "order", ti_check."id" as "id"
       FROM "Tax" t
       JOIN "TaxInstallment" ti_check
         ON ti_check."taxId" = t.id

@@ -1,5 +1,6 @@
-import { forwardRef, ReactNode, Ref } from 'react'
+import { forwardRef, ReactNode, Ref, useId } from 'react'
 import { ButtonContext } from 'react-aria-components/Button'
+import { Group as RACGroup } from 'react-aria-components/Group'
 import { Input as RACInput } from 'react-aria-components/Input'
 import {
   NumberField as RACNumberField,
@@ -14,6 +15,7 @@ import { FieldBaseProps } from './_shared/types'
 export interface NumberFieldProps extends RACNumberFieldProps, FieldBaseProps {
   placeholder?: string
   endIcon?: ReactNode
+  unit?: string
 }
 
 const NumberField = (
@@ -26,10 +28,13 @@ const NumberField = (
     errorMessage,
     placeholder,
     endIcon,
+    unit,
     ...rest
   }: NumberFieldProps,
   ref: Ref<HTMLInputElement>,
 ) => {
+  const unitId = useId()
+
   return (
     <RACNumberField
       {...rest}
@@ -56,30 +61,76 @@ const NumberField = (
           helptextFooter={helptextFooter}
           errorMessage={errorMessage}
         >
-          <div className="relative">
-            <RACInput
-              ref={ref}
-              placeholder={placeholder}
-              data-cy={rest.name ? `number-${rest.name}` : undefined}
-              className={({ isFocused, isDisabled, isInvalid }) =>
-                cn(
-                  'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
-                  'px-3 py-2 lg:px-4 lg:py-3',
-                  'placeholder:text-content-passive-tertiary',
-                  {
-                    'border-border-active-default': !isInvalid && !isFocused,
-                    'border-border-active-focused': !isInvalid && isFocused,
-                    'border-border-error': isInvalid,
-                    'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
-                    'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,
-                  },
-                )
+          {unit ? (
+            <RACGroup
+              className={({ isFocusWithin, isInvalid, isDisabled, isHovered }) =>
+                cn('flex w-full overflow-hidden rounded-lg border bg-background-passive-base', {
+                  'border-border-active-default': !isInvalid && !isFocusWithin,
+                  'border-border-active-focused': !isInvalid && isFocusWithin,
+                  'border-border-error': isInvalid,
+                  'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
+                  'border-border-active-hover':
+                    !isDisabled && !isInvalid && !isFocusWithin && isHovered,
+                })
               }
-            />
-            {endIcon ? (
-              <div className="absolute inset-y-0 right-0 flex items-center">{endIcon}</div>
-            ) : null}
-          </div>
+            >
+              {({ isFocusWithin, isInvalid, isDisabled }) => (
+                <>
+                  <RACInput
+                    ref={ref}
+                    placeholder={placeholder}
+                    // Thanks to aria-describedby, screen readers will read the suffix value after announcing the label, with a short pause.
+                    aria-describedby={unitId}
+                    data-cy={rest.name ? `number-${rest.name}` : undefined}
+                    className={cn(
+                      'min-w-0 flex-1 bg-transparent text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
+                      'px-3 py-2 lg:px-4 lg:py-3',
+                      'placeholder:text-content-passive-tertiary',
+                    )}
+                  />
+                  <div
+                    id={unitId}
+                    className={cn(
+                      'flex items-center self-stretch border-l px-3 font-semibold text-content-passive-secondary lg:px-4',
+                      {
+                        'border-border-active-default': !isInvalid && !isFocusWithin,
+                        'border-border-active-focused': !isInvalid && isFocusWithin,
+                        'border-border-error': isInvalid,
+                        'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
+                      },
+                    )}
+                  >
+                    {unit}
+                  </div>
+                </>
+              )}
+            </RACGroup>
+          ) : (
+            <div className="relative">
+              <RACInput
+                ref={ref}
+                placeholder={placeholder}
+                data-cy={rest.name ? `number-${rest.name}` : undefined}
+                className={({ isFocused, isDisabled, isInvalid }) =>
+                  cn(
+                    'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
+                    'px-3 py-2 lg:px-4 lg:py-3',
+                    'placeholder:text-content-passive-tertiary',
+                    {
+                      'border-border-active-default': !isInvalid && !isFocused,
+                      'border-border-active-focused': !isInvalid && isFocused,
+                      'border-border-error': isInvalid,
+                      'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
+                      'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocused,
+                    },
+                  )
+                }
+              />
+              {endIcon ? (
+                <div className="absolute inset-y-0 right-0 flex items-center">{endIcon}</div>
+              ) : null}
+            </div>
+          )}
         </FieldWrapper>
       </ButtonContext.Provider>
     </RACNumberField>

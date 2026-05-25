@@ -43,7 +43,7 @@ describe('taxForm', () => {
         `should match snapshot for generated PDF ${exampleForm.name}`,
         async () => {
           const restore = filterConsole(
-            'log',
+            'warn',
             (message) =>
               message ===
               'Warning: _getAppearance: OffscreenCanvas is not supported, annotation may not render correctly.',

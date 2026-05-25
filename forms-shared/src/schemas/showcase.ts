@@ -91,6 +91,22 @@ export default schema(
         ],
       ),
       object(
+        'labelSizeVariants',
+        {
+          title: 'Label Size Variants',
+        },
+        [
+          input(
+            'labelSizeDefault',
+            { type: 'text', title: 'Default Label Size' },
+            { labelSize: 'default' },
+          ),
+          input('labelSizeH5', { type: 'text', title: 'Label Size H5' }, { labelSize: 'h5' }),
+          input('labelSizeH4', { type: 'text', title: 'Label Size H4' }, { labelSize: 'h4' }),
+          input('labelSizeH3', { type: 'text', title: 'Label Size H3' }, { labelSize: 'h3' }),
+        ],
+      ),
+      object(
         'formattedInputs',
         {
           title: 'Formatted Inputs',

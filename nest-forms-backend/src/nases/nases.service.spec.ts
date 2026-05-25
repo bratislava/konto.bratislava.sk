@@ -20,6 +20,7 @@ import {
   UserFixtureFactory,
 } from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -34,7 +35,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
-import NasesUtilsService from './utils-services/tokens.nases.service'
+import NasesSenderService from './services/nases.sender.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/validators')
@@ -71,8 +72,12 @@ describe('NasesService', () => {
         },
         ThrowerErrorGuard,
         {
-          provide: NasesUtilsService,
-          useValue: createMock<NasesUtilsService>(),
+          provide: NasesSenderService,
+          useValue: createMock<NasesSenderService>(),
+        },
+        {
+          provide: ApiJwtTokensService,
+          useValue: createMock<ApiJwtTokensService>(),
         },
         {
           provide: PrismaService,
@@ -98,6 +103,15 @@ describe('NasesService', () => {
         {
           provide: ConvertPdfService,
           useValue: createMock<ConvertPdfService>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: {
+            slovenskoSk: {
+              subNasesTechnicalAccount: 'test-sub',
+              apiTokenPrivate: 'test-private-key',
+            },
+          },
         },
       ],
     }).compile()
@@ -156,7 +170,7 @@ describe('NasesService', () => {
   })
 
   describe('sendFormEid', () => {
-    it('should throw an error if sendMessageNases throws', async () => {
+    it('should throw an error if send throws', async () => {
       // Mock dependencies
       const mockForm = {
         id: '1',
@@ -192,7 +206,7 @@ describe('NasesService', () => {
       service['formsService'].checkFormBeforeSending = jest
         .fn()
         .mockResolvedValue(mockForm)
-      service['nasesUtilsService'].createUserJwtToken = jest
+      service['apiJwtTokensService'].createUserJwtToken = jest
         .fn()
         .mockReturnValue('mock-jwt')
       service['filesService'].areFormAttachmentsReady = jest
@@ -207,7 +221,7 @@ describe('NasesService', () => {
 
       // this is the important mock we're testing against
       jest
-        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 404, data: {} })
 
       const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
@@ -322,7 +336,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 404, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
 
@@ -365,7 +379,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 200, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = jest
@@ -410,7 +424,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 200, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = jest.spyOn(
@@ -467,7 +481,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       jest
-        .spyOn(service['nasesUtilsService'], 'sendMessageNases')
+        .spyOn(service['nasesSenderService'], 'send')
         .mockResolvedValue({ status: 200, data: {} })
       const sendToNasesSpy = jest.spyOn(service, 'sendToNasesAndUpdateState')
       const publishToGinisSpy = jest.spyOn(
@@ -856,7 +870,7 @@ describe('NasesService', () => {
 
   describe('sendToNasesAndUpdateState', () => {
     it('should throw if status is not 200', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 401 })
 
@@ -878,7 +892,7 @@ describe('NasesService', () => {
     })
 
     it('should start checking for nases delivery and not trigger any errors', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 200 })
 
@@ -901,7 +915,7 @@ describe('NasesService', () => {
     })
 
     it('should pass additionalFormUpdates to formsService.updateForm', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 200 })
 
@@ -933,7 +947,7 @@ describe('NasesService', () => {
     })
 
     it('should update to ERROR an throw error if sending to NASES fails', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 500 })
 
@@ -962,7 +976,7 @@ describe('NasesService', () => {
     })
 
     it('should update to DELIVERED_NASES if sending to NASES is successful', async () => {
-      service['nasesUtilsService'].sendMessageNases = jest
+      service['nasesSenderService'].send = jest
         .fn()
         .mockResolvedValue({ status: 200 })
 

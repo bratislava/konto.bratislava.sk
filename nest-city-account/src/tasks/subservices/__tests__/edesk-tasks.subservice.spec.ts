@@ -25,7 +25,9 @@ const createMockCompletedItem = (
     upvsStatus: null,
     edeskStatus: 'active',
     edeskNumber: '12345',
+    edeskDeathDate: null,
     failCount: 0,
+    newUri: null,
     ...overrides,
   } as ExternalEdeskCheck
 }
@@ -290,6 +292,7 @@ describe('EdeskTasksSubservice', () => {
         upvsStatus: null,
         edeskStatus: null,
         edeskNumber: null,
+        edeskDeathDate: null,
         failCount: 3,
         newUri: null,
       }
@@ -312,6 +315,64 @@ describe('EdeskTasksSubservice', () => {
             edeskStatus: 'NONEXISTENT',
             edeskNumber: null,
             uri: null,
+            deathDate: null,
+          }),
+        ])
+      )
+    })
+
+    it('should pass edeskDeathDate as deathDate for completed items', async () => {
+      const deathDate = '2023-06-15'
+      const completedItem = createMockCompletedItem({
+        id: 'id-1',
+        norisId: 1,
+        edeskDeathDate: deathDate,
+      })
+
+      jest.spyOn(upvsQueueService, 'getNumberOfPendingExternalItemsInQueue').mockResolvedValue(0)
+      jest.spyOn(service, 'retrieveNewRecordsFromNorisToUpdate').mockResolvedValue(undefined)
+      jest
+        .spyOn(upvsQueueService, 'retrieveCompletedAndFailedExternalItems')
+        .mockResolvedValue([completedItem])
+
+      const updateEdeskChecksSpy = jest.spyOn(norisService, 'updateEdeskChecks').mockResolvedValue()
+      prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: 1 })
+
+      await service.updateEdeskInNoris()
+
+      expect(updateEdeskChecksSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            idNoris: 1,
+            deathDate,
+          }),
+        ])
+      )
+    })
+
+    it('should pass null as deathDate for completed items without a death date', async () => {
+      const completedItem = createMockCompletedItem({
+        id: 'id-1',
+        norisId: 1,
+        edeskDeathDate: null,
+      })
+
+      jest.spyOn(upvsQueueService, 'getNumberOfPendingExternalItemsInQueue').mockResolvedValue(0)
+      jest.spyOn(service, 'retrieveNewRecordsFromNorisToUpdate').mockResolvedValue(undefined)
+      jest
+        .spyOn(upvsQueueService, 'retrieveCompletedAndFailedExternalItems')
+        .mockResolvedValue([completedItem])
+
+      const updateEdeskChecksSpy = jest.spyOn(norisService, 'updateEdeskChecks').mockResolvedValue()
+      prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: 1 })
+
+      await service.updateEdeskInNoris()
+
+      expect(updateEdeskChecksSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            idNoris: 1,
+            deathDate: null,
           }),
         ])
       )

@@ -1,6 +1,7 @@
 import { FormError } from '@prisma/client'
 
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
+import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
 import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
 import { GinisTaskErrorEnum } from '../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
@@ -30,14 +31,13 @@ export default [
   NasesErrorsEnum.SEND_TO_NASES_ERROR,
   NasesErrorsEnum.SEND_TO_GINIS_ERROR,
   NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
-  NasesErrorsEnum.FORM_NOT_FOUND,
-  NasesErrorsEnum.FORM_ARCHIVED,
-  NasesErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-  NasesErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-  NasesErrorsEnum.MAX_TRIES_REACHED,
-  NasesErrorsEnum.SENDING_EMAIL_FAILED,
-  NasesErrorsEnum.DATABASE_ERROR,
-  NasesErrorsEnum.WEBHOOK_ERROR,
+  FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+  FormsErrorsEnum.FORM_ARCHIVED,
+  FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+  FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+  FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
+  FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
+  FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
   NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
   ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
   ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,

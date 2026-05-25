@@ -1,5 +1,5 @@
 import { Button, Typography } from '@bratislava/component-library'
-import { Trans, useTranslation } from 'next-i18next/pages'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
 
@@ -13,6 +13,7 @@ import {
   QrCodeIcon,
 } from '@/src/assets/ui-icons'
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
+import Markdown from '@/src/components/formatting/Markdown'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Alert from '@/src/components/simple-components/Alert'
 import ClipboardCopy from '@/src/components/simple-components/ClipboardCopy'
@@ -126,11 +127,11 @@ const PaymentData = ({ paymentMethod }: Props) => {
             type="warning"
             fullWidth
             message={
-              <Trans
-                ns="account"
-                i18nKey="tax_detail_section.tax_payment_installment_alert_before_next_payment"
-                components={{ strong: <strong className="font-semibold" /> }}
-                values={{ email: userData.email }}
+              <Markdown
+                content={t('tax_detail_section.tax_payment_installment_alert_before_next_payment', {
+                  email: userData.email,
+                })}
+                variant="small"
               />
             }
           />

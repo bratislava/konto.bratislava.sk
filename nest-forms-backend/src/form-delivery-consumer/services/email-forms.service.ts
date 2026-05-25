@@ -40,10 +40,10 @@ import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,
   EmailFormsErrorsResponseEnum,
-} from './dtos/email-forms.errors.enum'
+} from '../errors/email-forms.errors.enum'
 
 @Injectable()
-export default class EmailFormsSubservice {
+export default class EmailFormsService {
   private logger: LineLoggerSubservice
 
   constructor(
@@ -55,7 +55,7 @@ export default class EmailFormsSubservice {
     private convertService: ConvertService,
     private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new LineLoggerSubservice('EmailFormsSubservice')
+    this.logger = new LineLoggerSubservice('EmailFormsService')
   }
 
   /**

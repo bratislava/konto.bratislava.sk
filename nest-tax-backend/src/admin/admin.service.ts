@@ -17,11 +17,9 @@ import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import {
   CreateBirthNumbersResponseDto,
-  UpdateDeliveryMethodsInNorisResponseDto,
 } from './dtos/responses.dto'
 
 @Injectable()

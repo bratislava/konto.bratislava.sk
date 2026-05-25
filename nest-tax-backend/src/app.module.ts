@@ -6,13 +6,13 @@ import { CognitoAuthModule } from '@nestjs-cognito/auth'
 import { AdminModule } from './admin/admin.module'
 import { AppController } from './app.controller'
 import { CardPaymentReportingModule } from './card-payment-reporting/card-payment-reporting.module'
+import { IntegrationModule } from './integration/integration.module'
 import { PaymentModule } from './payment/payment.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
 import { TaxModule } from './tax/tax.module'
 import AppLoggerMiddleware from './utils/middlewares/logger'
 import { UtilsModule } from './utils-module/utils.module'
-import { IntegrationModule } from './integration/integration.module'
 
 @Module({
   imports: [

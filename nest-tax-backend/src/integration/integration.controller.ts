@@ -1,4 +1,3 @@
-import { IntegrationService } from './integration.service'
 import {
   Body,
   Controller,
@@ -7,10 +6,17 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common'
-import { AdminGuard } from '../auth/guards/admin.guard'
-import { ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger'
-import { UpdateDeliveryMethodsInNorisResponseDto } from '../admin/dtos/responses.dto'
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger'
+
 import { RequestUpdateNorisDeliveryMethodsDto } from '../admin/dtos/requests.dto'
+import { UpdateDeliveryMethodsInNorisResponseDto } from '../admin/dtos/responses.dto'
+import { AdminGuard } from '../auth/guards/admin.guard'
+import { IntegrationService } from './integration.service'
 
 /**
  * IntegrationController - Backend-to-Backend Integration APIs

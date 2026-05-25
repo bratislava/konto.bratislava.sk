@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
 
-import { IntegrationService } from './integration.service'
-import { IntegrationController } from './integration.controller'
 import { NorisModule } from '../noris/noris.module'
+import { IntegrationController } from './integration.controller'
+import { IntegrationService } from './integration.service'
 
 /**
  * IntegrationModule - Backend-to-Backend Integration APIs

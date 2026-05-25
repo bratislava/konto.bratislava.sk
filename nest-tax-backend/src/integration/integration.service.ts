@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { NorisService } from '../noris/noris.service'
+
 import { RequestUpdateNorisDeliveryMethodsDto } from '../admin/dtos/requests.dto'
+import { NorisService } from '../noris/noris.service'
 
 /**
  * IntegrationService - Thin delegation layer for backend-to-backend integration APIs

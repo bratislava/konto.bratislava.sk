@@ -93,6 +93,48 @@ export class NasesService {
     return result
   }
 
+  /**
+   * Look up a single natural person's (FO) UPVS identity by:
+   *  - birth number
+   *  - given names
+   *  - family names.
+   *
+   * @param personalIdentificationNumber - 10-digit birth number without slash.
+   * @param givenName - Given name as stored in Cognito.
+   * @param familyName - Family name; same conventions as `givenName`.
+   * @returns The identity record (`UpvsNaturalPerson | UpvsCorporateBody`). On
+   *   a successful FO lookup this is `UpvsNaturalPerson` with the UPVS `uri`.
+   * @throws `UnprocessableEntityException` with code `VERIFY_EID_ERROR` for any
+   *   upstream failure — including "identity not found" (400) and outages (5xx).
+   *   Callers cannot distinguish transient infra errors from absent identities.
+   */
+  async lookupIdentityFO(
+    personalIdentificationNumber: string,
+    givenName: string,
+    familyName: string
+  ): Promise<ApiIamIdentitiesIdGet200Response> {
+    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
+      this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+    )
+    const result = await this.clientsService.slovenskoSkApi
+      .apiIamIdentitiesLookupGet(personalIdentificationNumber, givenName, familyName, undefined, {
+        headers: { Authorization: `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+      })
+      .then((response) => {
+        return response.data
+      })
+      .catch((error: unknown) => {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.VERIFY_EID_ERROR,
+          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          undefined,
+          error
+        )
+      })
+    return result
+  }
+
   private async searchUpvsIdentitiesByUri(uris: string[]) {
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
       this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),

@@ -220,4 +220,13 @@ export default class EnvironmentVariables {
 
   @EnvBoolean()
   FEATURE_TOGGLE_VERSIONING: boolean
+
+  @EnvBoolean()
+  FEATURE_TOGGLE_FILE_SIZE_LIMITS: boolean
+
+  @EnvInt(0)
+  MAX_FILE_SIZE: number
+
+  @EnvInt(0)
+  MAX_CUMULATIVE_FILE_SIZE: number
 }

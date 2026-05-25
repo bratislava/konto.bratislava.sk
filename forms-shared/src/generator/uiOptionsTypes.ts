@@ -121,6 +121,7 @@ export type TextAreaUiOptions = { placeholder?: string } & WidgetUiOptions
 export type TimePickerUiOptions = WidgetUiOptions
 
 export type FileUploadUiOptions = {
+  slotId: string
   sizeLimit?: number
   accept?: string
   type?: 'button' | 'dragAndDrop'

@@ -79,7 +79,11 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
           'Pre rýchle vybavenie uveďte čo najviac informácií k podnetu. Prípadné dokumenty priložte tak, aby neobsahovali viditeľné osobné údaje.',
       },
     ),
-    fileUploadMultiple('prilohy', { title: 'Prílohy' }, { type: 'dragAndDrop' }),
+    fileUploadMultiple<typeof kontaktnyFormularPaasFiles>(
+      'prilohy',
+      { title: 'Prílohy', slotId: 'prilohy' },
+      { type: 'dragAndDrop' },
+    ),
     input(
       'menoPriezviskoObchodneMeno',
       { type: 'text', title: 'Meno a priezvisko / Obchodné meno', required: true },
@@ -114,6 +118,10 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
     ]),
   ]),
 ])
+
+export const kontaktnyFormularPaasFiles = {
+  slots: [{ slotId: 'prilohy' }],
+} as const
 
 type ExtractTechnicalSubjectFormData = {
   udaje: {

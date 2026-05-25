@@ -102,6 +102,9 @@ const mockFormDefinitionWithSendEmail = {
     userResponseTemplate: MailgunTemplateEnum.GINIS_SENT,
     sendJsonDataAttachmentInTechnicalMail: true,
   },
+  files: {
+    slots: [],
+  },
 }
 
 const mockFormDefinitionWithSendOloEmail = {
@@ -127,6 +130,9 @@ const mockFormDefinitionWithSendOloEmail = {
       test: 'from-olo-test@bratislava.sk',
     }, // Test with specified emailFrom
     // No sendJsonDataAttachmentInTechnicalMail specified, to test undefined behavior
+  },
+  files: {
+    slots: [],
   },
 }
 

@@ -12,6 +12,7 @@ import { TasksModule } from './tasks/tasks.module'
 import { TaxModule } from './tax/tax.module'
 import AppLoggerMiddleware from './utils/middlewares/logger'
 import { UtilsModule } from './utils-module/utils.module'
+import { IntegrationModule } from './integration/integration.module'
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UtilsModule } from './utils-module/utils.module'
     ScheduleModule.forRoot(),
     CardPaymentReportingModule,
     UtilsModule,
+    IntegrationModule,
   ],
   controllers: [AppController],
   providers: [],

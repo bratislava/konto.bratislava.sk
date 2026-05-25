@@ -94,6 +94,10 @@ describe('NasesService', () => {
               versioning: false,
               fileSizeLimits: false,
             },
+            slovenskoSk: {
+              subNasesTechnicalAccount: 'test-sub',
+              apiTokenPrivate: 'test-private-key',
+            },
           },
         },
         {
@@ -103,15 +107,6 @@ describe('NasesService', () => {
         {
           provide: ConvertPdfService,
           useValue: createMock<ConvertPdfService>(),
-        },
-        {
-          provide: BaConfigService,
-          useValue: {
-            slovenskoSk: {
-              subNasesTechnicalAccount: 'test-sub',
-              apiTokenPrivate: 'test-private-key',
-            },
-          },
         },
       ],
     }).compile()

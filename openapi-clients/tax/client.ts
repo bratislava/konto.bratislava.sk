@@ -1,5 +1,6 @@
 import {
   AdminApiFactory,
+  BackendIntegrationAPIApiFactory,
   CardPaymentReportingApiFactory,
   DefaultApiFactory,
   PaymentApiFactory,
@@ -26,6 +27,7 @@ export const createTaxClient = ({
 
   return {
     ...AdminApiFactory(...args),
+    ...BackendIntegrationAPIApiFactory(...args),
     ...CardPaymentReportingApiFactory(...args),
     ...DefaultApiFactory(...args),
     ...PaymentApiFactory(...args),

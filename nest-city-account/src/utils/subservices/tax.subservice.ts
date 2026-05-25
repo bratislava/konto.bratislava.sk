@@ -34,7 +34,7 @@ export class TaxSubservice {
 
   async removeDeliveryMethodFromNoris(birthNumber: string): Promise<boolean> {
     try {
-      await this.clientsService.taxBackendApi.adminControllerRemoveDeliveryMethodsFromNoris(
+      await this.clientsService.taxBackendApi.integrationControllerRemoveDeliveryMethodsFromNoris(
         birthNumber,
         {
           headers: {
@@ -58,7 +58,7 @@ export class TaxSubservice {
   async updateDeliveryMethodsInNoris(
     data: RequestUpdateNorisDeliveryMethodsDto
   ): AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
+    return this.clientsService.taxBackendApi.integrationControllerUpdateDeliveryMethodsInNoris(data, {
       headers: {
         apiKey: this.configService.getOrThrow<string>('TAX_BACKEND_API_KEY'),
       },

@@ -94,6 +94,7 @@ export default class NotificationsEventsService {
     dueDateType: INSTALLMENT_DUE_DATE_TYPE,
     year: number,
   ) {
+    return
     const reminderSentFilter: UnpaidReminderSent[] =
       dueDateType === INSTALLMENT_DUE_DATE_TYPE.NEXT
         ? [UnpaidReminderSent.NONE]

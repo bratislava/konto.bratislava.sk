@@ -2,7 +2,7 @@ import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { PropsWithChildren } from 'react'
 
-import { EditIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 type SummaryRowProps = PropsWithChildren<{
@@ -41,7 +41,7 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
         {isEditable && (
           <Button
             variant="icon-wrapped-negative-margin"
-            icon={<EditIcon />}
+            icon={<Icon name="edit" />}
             aria-label={t('SummaryRow.EditButton.aria')}
             onPress={onGoToStep}
           />

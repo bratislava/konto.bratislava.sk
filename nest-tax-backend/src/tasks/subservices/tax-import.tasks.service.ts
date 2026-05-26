@@ -237,20 +237,22 @@ export default class TaxImportTasksService {
       (item) => `${item.year}-${item.taxType}`,
     )
 
-    // Import taxes for each group
-    await Promise.all(
-      Object.values(grouped).map(async (items) => {
-        const first = items[0]
-        this.logger.log(
-          `Importing ${first.taxType} taxes for ${items.length} users for year ${first.year}`,
-        )
-        return this.taxImportHelperService.importTaxes(
-          first.taxType,
-          items.map((item) => item.birthNumber),
-          first.year,
-        )
-      }),
+    const sortedGroups = Object.values(grouped).sort(
+      (a, b) => a[0].year - b[0].year,
     )
+    for (const items of sortedGroups) {
+      const first = items[0]
+      this.logger.log(
+        `Importing ${first.taxType} taxes for ${items.length} users for year ${first.year}`,
+      )
+      // Intentionally sequential: avoid hammering slow DB
+      // eslint-disable-next-line no-await-in-loop
+      await this.taxImportHelperService.importTaxes(
+        first.taxType,
+        items.map((item) => item.birthNumber),
+        first.year,
+      )
+    }
 
     this.logger.log('Completed loadHistoricalTaxes task')
   }

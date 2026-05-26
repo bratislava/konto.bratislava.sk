@@ -5,8 +5,8 @@ import { mergeProps } from 'react-aria/mergeProps'
 import { Dialog } from 'react-aria-components/Dialog'
 import { Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components/Modal'
 
-import { CrossIcon } from '@/src/assets/ui-icons'
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
@@ -95,7 +95,7 @@ const Modal = ({
                 {noCloseButton ? null : (
                   <Button
                     variant="icon-wrapped-negative-margin"
-                    icon={<CrossIcon className="size-6" />}
+                    icon={<Icon name="close" className="size-6" />}
                     aria-label={t('Modal.aria.close')}
                     onPress={close}
                     data-cy="close-modal"

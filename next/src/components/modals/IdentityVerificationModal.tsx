@@ -1,9 +1,9 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import Markdown from '@/src/components/formatting/Markdown'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
+import Icon from '@/src/components/icon-components/Icon'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { ModalProps } from '@/src/components/simple-components/Modal'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
@@ -55,7 +55,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         </div>
         <Button
           variant="plain"
-          endIcon={<ArrowRightIcon className="size-6" />}
+          endIcon={<Icon name="arrow-right" className="size-6" />}
           onPress={() => rest?.onOpenChange?.(false)}
           fullWidth
         >

@@ -4,7 +4,7 @@ import { useCheckboxGroupItem } from 'react-aria/useCheckboxGroup'
 import { useFocusRing } from 'react-aria/useFocusRing'
 import { VisuallyHidden } from 'react-aria/VisuallyHidden'
 
-import { CheckIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 import { CheckboxGroupContext } from './CheckboxGroup'
@@ -80,7 +80,8 @@ const CheckboxGroupItem = ({
           <div>
             <div className={checkboxStyle}>
               {isSelected && !isIndeterminate && (
-                <CheckIcon
+                <Icon
+                  name="check"
                   className={cn('size-5 text-gray-0', {
                     hidden: !isSelected,
                   })}

@@ -6,7 +6,7 @@ import { PropsWithChildren, useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
-import { CrossIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import Spinner from '@/src/components/simple-components/Spinner'
 
 type FormLightboxModalProps = { imageUrl: string }
@@ -43,7 +43,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
               variant="icon-wrapped-negative-margin"
               size="large"
               onPress={() => setIsOpen(false)}
-              icon={<CrossIcon className="size-6" />}
+              icon={<Icon name="close" className="size-6" />}
               aria-label={t('Modal.aria.close')}
               className="text-content-active-primary-inverted-default hover:text-content-active-primary-inverted-hover active:text-content-active-primary-inverted-pressed"
             />

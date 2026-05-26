@@ -1,10 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 import { PropsWithChildren, ReactNode } from 'react'
 
-import ErrorIcon from '@/src/components/icon-components/ErrorIcon'
-import InfoIcon from '@/src/components/icon-components/InfoIcon'
-import SuccessIcon from '@/src/components/icon-components/SuccessIcon'
-import WarningIcon from '@/src/components/icon-components/WarningIcon'
+import Icon from '@/src/components/icon-components/Icon'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import cn from '@/src/utils/cn'
 
@@ -19,11 +16,12 @@ export type MessageModalProps = PropsWithChildren<{
     'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton' | 'mobileFullScreen' | 'dataCy'
   >
 
+// TODO: remove these
 const icons = {
-  error: <ErrorIcon />,
-  info: <InfoIcon />,
-  warning: <WarningIcon />,
-  success: <SuccessIcon />,
+  error: <Icon name="error" className="text-(--color-negative-700)" />,
+  info: <Icon name="info" className="text-(--color-gray-700)" />,
+  warning: <Icon name="warning" className="text-(--color-warning-700)" />,
+  success: <Icon name="check-circle" className="text-(--color-success-700)" />,
 }
 
 /**

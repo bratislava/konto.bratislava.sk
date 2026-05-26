@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { Dialog, Heading } from 'react-aria-components/Dialog'
 import { Modal, ModalOverlay } from 'react-aria-components/Modal'
 
-import { ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
 import StepperViewList from '@/src/components/forms/steps/StepperViewList'
 import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { FormStepIndex } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 type StepperModalProps = {
@@ -39,7 +39,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
                 {/* TODO Unify modal close button with other modals */}
                 <Button
                   variant="icon-wrapped-negative-margin"
-                  icon={<CrossIcon />}
+                  icon={<Icon name="close" />}
                   onPress={close}
                   aria-label={t('StepperView.aria.close')}
                 />
@@ -92,7 +92,7 @@ const StepperView = ({ className }: { className?: string }) => {
           onPress={handleOnClickDropdownIcon}
         >
           <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
-          <ChevronDownIcon className={cn({ 'rotate-180': !isOpen })} />
+          <Icon name="chevron-down" className={cn({ 'rotate-180': !isOpen })} />
         </Button>
 
         <StepperModal

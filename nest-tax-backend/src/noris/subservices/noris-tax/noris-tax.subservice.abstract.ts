@@ -427,7 +427,21 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       update: taxPayerData,
     })
 
-    if (taxAdministrator?.id) {
+    const existsNewerTax = await transaction.tax.findFirst({
+      select: {
+        id: true,
+      },
+      where: {
+        taxPayer: {
+          birthNumber: dataFromNoris.ICO_RC,
+        },
+        dateCreateTax: {
+          gt: dataFromNoris.datum_realizacie,
+        },
+        type: taxDefinition.type,
+      },
+    })
+    if (taxAdministrator?.id && !existsNewerTax) {
       const taxPayerTaxAdministratorData = {
         taxPayerId: taxPayer.id,
         taxAdministratorId: taxAdministrator.id,

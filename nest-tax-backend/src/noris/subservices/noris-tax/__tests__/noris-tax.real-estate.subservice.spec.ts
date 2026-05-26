@@ -6,6 +6,7 @@ import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'ope
 
 import prismaMock from '../../../../../test/singleton'
 import { createTestTax } from '../../../../__tests__/factories/tax.factory'
+import { createTestTaxAdministratorEntry } from '../../../../__tests__/factories/taxAdministrator.factory'
 import { createTestTaxPayer } from '../../../../__tests__/factories/taxPayer.factory'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
 import { PrismaService } from '../../../../prisma/prisma.service'
@@ -471,6 +472,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             upsert: jest.fn().mockResolvedValue({}),
           },
           tax: {
+            findFirst: jest.fn().mockResolvedValue(null),
             upsert: jest.fn().mockResolvedValue({
               id: 1,
               taxPayer: { id: 1 },
@@ -694,6 +696,7 @@ describe('NorisTaxRealEstateSubservice', () => {
             upsert: jest.fn().mockResolvedValue({}),
           },
           tax: {
+            findFirst: jest.fn().mockResolvedValue(null),
             upsert: jest.fn().mockResolvedValue({
               id: 1,
               taxPayer: { id: 1 },
@@ -862,6 +865,63 @@ describe('NorisTaxRealEstateSubservice', () => {
           taxPayer: { id: 1 },
         })
       })
+
+      it('should check for newer tax with correct parameters', async () => {
+        prismaMock.tax.findFirst.mockResolvedValue(null)
+
+        await service['insertTaxDataToDatabase'](
+          mockTaxDefinitionForInsert,
+          mockNorisData[0],
+          2023,
+          prismaMock,
+          mockUserData,
+        )
+
+        expect(prismaMock.tax.findFirst).toHaveBeenCalledWith({
+          select: { id: true },
+          where: {
+            taxPayer: { birthNumber: mockNorisData[0].ICO_RC },
+            dateCreateTax: { gt: mockNorisData[0].datum_realizacie },
+            type: TaxType.DZN,
+          },
+        })
+      })
+
+      it('should update tax payer administrator when no newer tax exists', async () => {
+        prismaMock.tax.findFirst.mockResolvedValue(null)
+        prismaMock.taxPayerTaxAdministrator.upsert.mockResolvedValue(
+          createTestTaxAdministratorEntry(),
+        )
+
+        await service['insertTaxDataToDatabase'](
+          mockTaxDefinitionForInsert,
+          mockNorisData[0],
+          2023,
+          prismaMock,
+          mockUserData,
+        )
+
+        expect(prismaMock.taxPayerTaxAdministrator.upsert).toHaveBeenCalled()
+      })
+
+      it('should not update tax payer administrator when newer tax exists', async () => {
+        prismaMock.tax.findFirst.mockResolvedValue(createTestTax({ id: 99 }))
+        prismaMock.taxPayerTaxAdministrator.upsert.mockResolvedValue(
+          createTestTaxAdministratorEntry(),
+        )
+
+        await service['insertTaxDataToDatabase'](
+          mockTaxDefinitionForInsert,
+          mockNorisData[0],
+          2023,
+          prismaMock,
+          mockUserData,
+        )
+
+        expect(
+          prismaMock.taxPayerTaxAdministrator.upsert,
+        ).not.toHaveBeenCalled()
+      })
     })
 
     describe('processTaxRecordFromNoris', () => {
@@ -973,6 +1033,7 @@ describe('NorisTaxRealEstateSubservice', () => {
                 upsert: jest.fn().mockResolvedValue({}),
               },
               tax: {
+                findFirst: jest.fn().mockResolvedValue(null),
                 upsert: jest.fn().mockResolvedValue({
                   id: 1,
                   order: 1,
@@ -1061,6 +1122,7 @@ describe('NorisTaxRealEstateSubservice', () => {
                 upsert: jest.fn().mockResolvedValue({}),
               },
               tax: {
+                findFirst: jest.fn().mockResolvedValue(null),
                 upsert: jest.fn().mockResolvedValue({
                   id: 1,
                   order: 1,

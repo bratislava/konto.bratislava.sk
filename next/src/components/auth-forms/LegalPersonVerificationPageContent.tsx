@@ -1,9 +1,9 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { ErrorIcon } from '@/src/assets/ui-icons'
 import { useVerifyEid, VerificationStatus } from '@/src/components/auth-forms/useVerifyEid'
 import Markdown from '@/src/components/formatting/Markdown'
+import Icon from '@/src/components/icon-components/Icon'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 
@@ -27,7 +27,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
     <div className="flex flex-col gap-4 md:gap-6">
       <div className="mx-auto size-14 rounded-full bg-negative-100 p-4">
         <div className="flex size-6 items-center justify-center">
-          <ErrorIcon className="size-6 text-negative-700" />
+          <Icon name="error" className="size-6 text-negative-700" />
         </div>
       </div>
       <Typography variant="h3" as="h1" className="text-center">

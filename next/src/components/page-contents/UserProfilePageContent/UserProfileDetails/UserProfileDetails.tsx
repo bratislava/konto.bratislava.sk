@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { EditIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationAlert from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/IdentityVerificationAlert'
 import UserProfileDetailsEdit from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/UserProfileDetailsEdit'
@@ -48,7 +48,7 @@ const UserProfileDetails = () => {
             ) : (
               <Button
                 variant="solid"
-                startIcon={<EditIcon />}
+                startIcon={<Icon name="edit" />}
                 onPress={() => setIsEditing(true)}
                 data-cy="edit-personal-information-button"
               >

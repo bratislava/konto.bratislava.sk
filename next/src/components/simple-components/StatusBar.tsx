@@ -4,10 +4,9 @@ import { useTranslation } from 'next-i18next/pages'
 import objectHash from 'object-hash'
 import { useLocalStorage } from 'usehooks-ts'
 
-import { CrossIcon } from '@/src/assets/ui-icons'
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import Markdown from '@/src/components/formatting/Markdown'
-import WarningIcon from '@/src/components/icon-components/WarningIcon'
+import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { environment } from '@/src/environment'
 
@@ -70,13 +69,13 @@ export const StatusBar = () => {
         <div className="flex justify-between py-4">
           <div className="flex">
             <span className="mr-3">
-              <WarningIcon solid className="size-5" />
+              <Icon name="warning" className="size-5" />
             </span>
             <Markdown variant="small" content={alertData.content} />
           </div>
           <Button
             className="h-fit shrink-0"
-            icon={<CrossIcon />}
+            icon={<Icon name="close" />}
             aria-label={t('StatusBar.aria.close') ?? ''}
             onPress={handleDismiss}
           />

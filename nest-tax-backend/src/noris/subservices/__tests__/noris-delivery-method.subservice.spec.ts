@@ -4,11 +4,7 @@ import * as mssql from 'mssql'
 
 import { RequestUpdateNorisDeliveryMethodsData } from '../../../admin/dtos/requests.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import {
-  DeliveryMethod,
-  IsInCityAccount,
-  type UpdateNorisDeliveryMethods,
-} from '../../types/noris.enums'
+import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
 import { NorisDeliveryMethodsUpdateResult } from '../../types/noris.types'
 import { NorisConnectionSubservice } from '../noris-connection.subservice'
 import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice'
@@ -27,13 +23,6 @@ jest.mock('mssql', () => ({
   VarChar: jest.fn().mockImplementation((length: number) => ({ length })),
   DateTime: jest.fn(),
 }))
-
-interface NorisDeliveryMethodPrivate {
-  executeDeliveryMethodUpdate: (
-    connection: mssql.ConnectionPool,
-    dataItem: UpdateNorisDeliveryMethods,
-  ) => Promise<NorisDeliveryMethodsUpdateResult[]>
-}
 
 describe('NorisDeliveryMethodSubservice', () => {
   let service: NorisDeliveryMethodSubservice
@@ -247,15 +236,12 @@ describe('NorisDeliveryMethodSubservice', () => {
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
-      const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        service as unknown as NorisDeliveryMethodPrivate,
-        'executeDeliveryMethodUpdate',
-      )
-
       const result = await service.updateDeliveryMethods({ data: mockData })
 
       expect(result.birthNumbers).toEqual(['010366/4554'])
-      expect(executeDeliveryMethodUpdateSpy).toHaveBeenCalledTimes(1)
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('uda_21_organizacia_mag'),
+      )
     })
 
     it('should handle connection errors and throw appropriate exception', async () => {
@@ -369,11 +355,6 @@ describe('NorisDeliveryMethodSubservice', () => {
         .mockResolvedValueOnce({ recordset: mockUpdateResult })
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
-      const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        service as unknown as NorisDeliveryMethodPrivate,
-        'executeDeliveryMethodUpdate',
-      )
-
       const result = await service.updateDeliveryMethods({ data: mockData })
 
       expect(result.birthNumbers).toHaveLength(2)
@@ -381,12 +362,19 @@ describe('NorisDeliveryMethodSubservice', () => {
       expect(result.birthNumbers).toContain('010366/4555')
 
       // it should group the birth numbers into a single query
-      expect(executeDeliveryMethodUpdateSpy).toHaveBeenCalledTimes(1)
-      expect(executeDeliveryMethodUpdateSpy).toHaveBeenCalledWith(
+      const numberOfUpdateCalls = mockQuery.mock.calls.filter(
+        (call: string[]) => call[0].includes('uda_21_organizacia_mag'),
+      ).length
+      expect(numberOfUpdateCalls).toBe(1)
+      expect(mockInput).toHaveBeenCalledWith(
+        'birthnumber0',
         expect.anything(),
-        expect.objectContaining({
-          birthNumbers: ['010366/4554', '010366/4555'],
-        }),
+        '010366/4554',
+      )
+      expect(mockInput).toHaveBeenCalledWith(
+        'birthnumber1',
+        expect.anything(),
+        '010366/4555',
       )
     })
 
@@ -426,7 +414,8 @@ describe('NorisDeliveryMethodSubservice', () => {
         .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
 
       const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        service as unknown as NorisDeliveryMethodPrivate,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this private method was tested in its own test suite, no need to test its implementation here
+        service as any,
         'executeDeliveryMethodUpdate',
       )
 

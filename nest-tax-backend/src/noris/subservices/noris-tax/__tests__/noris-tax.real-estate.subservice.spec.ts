@@ -451,8 +451,8 @@ describe('NorisTaxRealEstateSubservice', () => {
         async (callback: unknown) => {
           const mockTx = {
             taxInstallment: {
+              upsert: jest.fn().mockResolvedValue({}),
               deleteMany: jest.fn().mockResolvedValue({}),
-              createMany: jest.fn().mockResolvedValue({ count: 0 }),
             },
             taxDetail: {
               deleteMany: jest.fn().mockResolvedValue({}),
@@ -686,8 +686,8 @@ describe('NorisTaxRealEstateSubservice', () => {
         async (callback: unknown) => {
           const mockTx = {
             taxInstallment: {
+              upsert: jest.fn().mockResolvedValue({}),
               deleteMany: jest.fn().mockResolvedValue({}),
-              createMany: jest.fn().mockResolvedValue({ count: 0 }),
             },
             taxDetail: {
               deleteMany: jest.fn().mockResolvedValue({}),

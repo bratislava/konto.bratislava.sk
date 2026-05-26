@@ -44,6 +44,7 @@ export default [
   ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
   ErrorsEnum.DATABASE_ERROR,
   ErrorsEnum.INTERNAL_SERVER_ERROR,
+  ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
   FormError.UNABLE_TO_SCAN_FILES,
   FormError.GINIS_SEND_ERROR,
   FormError.NASES_SEND_ERROR,

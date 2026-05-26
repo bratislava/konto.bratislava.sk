@@ -4,7 +4,7 @@ import {
   ToggleButtonProps,
 } from 'react-aria-components/ToggleButton'
 
-import { EyeHiddenIcon, EyeIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 type Props = {
@@ -28,7 +28,7 @@ const PasswordEyeButton = ({ isPasswordHidden, onToggle, className, ...restProps
       className={cn('flex items-center justify-center', className)}
       {...restProps}
     >
-      {isPasswordHidden ? <EyeHiddenIcon /> : <EyeIcon />}
+      {isPasswordHidden ? <Icon name="eye-hide" /> : <Icon name="eye" />}
     </RACToggleButton>
   )
 }

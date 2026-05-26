@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { LockIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -24,7 +24,7 @@ const UserProfilePassword = () => {
           </div>
           <Button
             variant="solid"
-            startIcon={<LockIcon />}
+            startIcon={<Icon name="lock" />}
             href={ROUTES.PASSWORD_CHANGE}
             hasLinkIcon={false}
             data-cy="change-password-button"

@@ -14,7 +14,7 @@ import { Dialog as RACDialog } from 'react-aria-components/Dialog'
 import { Group as RACGroup } from 'react-aria-components/Group'
 import { Popover as RACPopover } from 'react-aria-components/Popover'
 
-import { CalendarIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 import { dateOrTimeContainerClassName, dateSegmentClassName } from '../_shared/dateTimeHelpers'
@@ -71,7 +71,7 @@ const DatePicker = (
           <Button
             variant="icon-wrapped-negative-margin"
             aria-label={t('DatePicker.aria.openCalendar')}
-            icon={<CalendarIcon />}
+            icon={<Icon name="calendar" />}
           />
         </RACGroup>
       </FieldWrapper>

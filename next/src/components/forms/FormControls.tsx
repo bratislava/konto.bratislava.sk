@@ -1,8 +1,8 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { ArrowRightIcon, ChevronLeftIcon } from '@/src/assets/ui-icons'
 import { useFormState } from '@/src/components/forms/useFormState'
+import Icon from '@/src/components/icon-components/Icon'
 
 const FormControls = () => {
   const { canGoToPreviousStep, goToPreviousStep, canGoToNextStep, goToNextStep } = useFormState()
@@ -14,7 +14,11 @@ const FormControls = () => {
       <div className="mt-10 hidden flex-wrap gap-5 md:flex md:items-center md:justify-between">
         <div className="grow">
           {canGoToPreviousStep && (
-            <Button variant="plain" onPress={goToPreviousStep} startIcon={<ChevronLeftIcon />}>
+            <Button
+              variant="plain"
+              onPress={goToPreviousStep}
+              startIcon={<Icon name="chevron-left" />}
+            >
               {t('form_controls.back')}
             </Button>
           )}
@@ -30,7 +34,7 @@ const FormControls = () => {
             variant="solid"
             type="submit"
             data-cy="continue-button-desktop"
-            endIcon={<ArrowRightIcon />}
+            endIcon={<Icon name="arrow-right" />}
           >
             {t('form_controls.continue')}
           </Button>

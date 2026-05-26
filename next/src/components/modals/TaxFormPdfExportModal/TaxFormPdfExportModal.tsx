@@ -2,9 +2,9 @@ import { Button, Typography } from '@bratislava/component-library'
 import { Trans, useTranslation } from 'next-i18next/pages'
 import { mergeProps } from 'react-aria/mergeProps'
 
-import { CheckIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
+import Icon from '@/src/components/icon-components/Icon'
 import { TaxFormPdfExportModalState } from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import Spinner from '@/src/components/simple-components/Spinner'
@@ -73,7 +73,7 @@ const SuccessContent = () => {
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="flex size-[88px] items-center justify-center rounded-full bg-success-100 p-4">
-        <CheckIcon className="size-10 text-success-700" />
+        <Icon name="check" className="size-10 text-success-700" />
       </div>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-1">
@@ -147,7 +147,7 @@ const SuccessContent = () => {
                   {advantages.map((item, index) => (
                     <li key={index} className="flex items-center gap-4">
                       <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
-                        <CheckIcon className="size-7" />
+                        <Icon name="check" className="size-7" />
                       </span>
                       <Typography variant="p-small">{item}</Typography>
                     </li>

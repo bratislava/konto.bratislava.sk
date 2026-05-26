@@ -10,7 +10,7 @@ import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
-import { RemoveIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 /**
@@ -68,7 +68,7 @@ const BAArrayFieldItemTemplate = <
         {hasRemove && (
           <Button
             variant="icon-wrapped"
-            icon={<RemoveIcon />}
+            icon={<Icon name="clear" />}
             // TODO: Translation + improve message
             aria-label="Vymazať"
             onPress={onRemoveItemPatched}

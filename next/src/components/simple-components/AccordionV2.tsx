@@ -1,7 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
-import { ChevronDownIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 
 export type AccordionV2Props = {
   title: string | ReactNode | null | undefined
@@ -31,7 +31,10 @@ const AccordionV2 = ({ title, noTitleWrapper, children }: AccordionV2Props) => {
       <summary className="flex cursor-pointer items-center gap-4 p-4 text-left group-open:pb-2 lg:px-8 lg:py-6 lg:group-open:pb-4">
         {renderTitle()}
         <span className="shrink-0" aria-hidden>
-          <ChevronDownIcon className="size-6 text-content-passive-secondary transition-transform group-open:rotate-180 lg:size-8" />
+          <Icon
+            name="chevron-down"
+            className="size-6 text-content-passive-secondary transition-transform group-open:rotate-180 lg:size-8"
+          />
         </span>
       </summary>
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 
-import { BinIcon, ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import Icon from '@/src/components/icon-components/Icon'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
@@ -30,7 +30,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       ? null
       : {
           title: t('menu_list.save_concept'),
-          icon: <DiscIcon className="size-6" />,
+          icon: <Icon name="save" className="size-6" />,
 
           onPress: () => saveConcept(),
           dataCy: 'save-concept-mobile',
@@ -38,7 +38,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
     xmlImportExportAllowed
       ? {
           title: t('menu_list.download_xml'),
-          icon: <DownloadIcon className="size-6" />,
+          icon: <Icon name="download" className="size-6" />,
 
           onPress: () => exportXml(),
         }
@@ -46,7 +46,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
     pdfDownloadInMenuAllowed
       ? {
           title: t('menu_list.pdf'),
-          icon: <PdfIcon className="size-6" />,
+          icon: <Icon name="pdf" className="size-6" />,
 
           onPress: () => exportPdf(),
         }
@@ -54,21 +54,21 @@ export const useFormMenuItems = (): FormMenuItem[] => {
     !isReadonly && xmlImportExportAllowed
       ? {
           title: t('menu_list.upload_xml'),
-          icon: <ConnectionIcon className="size-6" />,
+          icon: <Icon name="import-export" className="size-6" />,
           onPress: importXml,
         }
       : null,
     jsonImportExportAllowed
       ? {
           title: t('menu_list.download_json'),
-          icon: <DownloadIcon className="size-6" />,
+          icon: <Icon name="download" className="size-6" />,
           onPress: exportJson,
         }
       : null,
     !isReadonly && jsonImportExportAllowed
       ? {
           title: t('menu_list.upload_json'),
-          icon: <ConnectionIcon className="size-6" />,
+          icon: <Icon name="import-export" className="size-6" />,
           onPress: importJson,
         }
       : null,
@@ -76,7 +76,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       ? null
       : {
           title: t('menu_list.delete'),
-          icon: <BinIcon className="size-6" />,
+          icon: <Icon name="bin" className="size-6" />,
           onPress: () => setDeleteConceptModal({ isOpen: true, confirmCallback: deleteConcept }),
           className: 'text-negative-700',
         },

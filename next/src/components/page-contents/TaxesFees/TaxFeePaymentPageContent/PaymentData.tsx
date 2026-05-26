@@ -3,16 +3,8 @@ import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
 
-import {
-  ApplePayIcon,
-  ArrowRightIcon,
-  CreditCardIcon,
-  DownloadIcon,
-  GooglePayIcon,
-  PaymentHandIcon,
-  QrCodeIcon,
-} from '@/src/assets/ui-icons'
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
+import Icon from '@/src/components/icon-components/Icon'
 import Markdown from '@/src/components/formatting/Markdown'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import Alert from '@/src/components/simple-components/Alert'
@@ -151,15 +143,15 @@ const PaymentData = ({ paymentMethod }: Props) => {
           <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
               <div className="flex flex-row-reverse items-center justify-between gap-4 lg:flex-row lg:justify-start">
-                <PaymentHandIcon className="size-8 lg:size-12" />
+                <Icon name="payment" className="size-8 lg:size-12" />
                 <Typography variant="h5">{t('taxes.payment_data.card_payment_title')}</Typography>
               </div>
               <div className="flex flex-row items-center gap-1.5 lg:gap-3">
                 <div className="rounded-lg bg-background-passive-primary px-3 py-1">
-                  <CreditCardIcon className="size-5" />
+                  <Icon name="payment" className="size-5" />
                 </div>
-                <ApplePayIcon className="size-12" />
-                <GooglePayIcon className="size-12" />
+                <Icon name="apple-pay" className="size-12" />
+                <Icon name="google-pay" className="size-12" />
               </div>
             </div>
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-12">
@@ -170,7 +162,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                 variant="solid"
                 onPress={handleRedirectToPayment}
                 isLoading={isLoading}
-                endIcon={<ArrowRightIcon />}
+                endIcon={<Icon name="arrow-right" />}
                 loadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
                 className="max-lg:w-full"
               >
@@ -183,7 +175,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
           <div className="flex flex-col gap-4 py-4 lg:gap-6 lg:py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
               <div className="flex w-full flex-row-reverse items-center justify-between gap-5 lg:flex-row lg:justify-start">
-                <QrCodeIcon className="size-8 lg:size-12" />
+                <Icon name="qr-code" className="size-8 lg:size-12" />
                 <Typography variant="h5">
                   {t('taxes.payment_data.qr_code_and_bank_transfer_title')}
                 </Typography>
@@ -229,7 +221,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
                     </Typography>
                   </div>
                   <Button
-                    startIcon={<DownloadIcon />}
+                    startIcon={<Icon name="download" />}
                     variant="outline"
                     className="text-nowrap max-lg:w-full"
                     onPress={handleDownloadQrCode}

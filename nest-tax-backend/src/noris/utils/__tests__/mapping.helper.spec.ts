@@ -4,12 +4,12 @@ import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
+import { createTestNorisCommunalWasteTaxGrouped } from '../../subservices/__tests__/factories/noris-communal-waste-tax-grouped.factory'
 import {
   AreaTypesEnum,
   DeliveryMethod,
   DeliveryMethodNoris,
 } from '../../types/noris.enums'
-import { createTestNorisCommunalWasteTaxGrouped } from '../../subservices/__tests__/factories/noris-communal-waste-tax-grouped.factory'
 import {
   NorisBaseTax,
   NorisCommunalWasteTaxGrouped,

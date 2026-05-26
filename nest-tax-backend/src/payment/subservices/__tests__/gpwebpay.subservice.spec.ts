@@ -103,13 +103,11 @@ describe('GpWebpaySubservice', () => {
 
   describe('getSignedData', () => {
     it('should return signed data with digest', () => {
-      jest
-        .spyOn(crypto, 'createSign')
-        .mockReturnValue(
-          createMock<Sign>({
-            sign: jest.fn().mockReturnValue('mock-signature'),
-          }),
-        )
+      jest.spyOn(crypto, 'createSign').mockReturnValue(
+        createMock<Sign>({
+          sign: jest.fn().mockReturnValue('mock-signature'),
+        }),
+      )
 
       const mockData: CreateOrderData = {
         MERCHANTNUMBER: '123',

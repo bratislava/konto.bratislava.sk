@@ -44,10 +44,6 @@ const koTaxDetailsEmpty: CommunalWasteTaxDetail = {
   addresses: [],
 }
 
-type TaxPaymentGroupByResult = Awaited<
-  ReturnType<typeof prismaMock.taxPayment.groupBy>
->
-
 // Type definitions for the mock objects
 type MockTaxPayer = Prisma.TaxPayerGetPayload<{
   include: { taxAdministrators: { include: { taxAdministrator: true } } }
@@ -521,7 +517,7 @@ describe('TaxService', () => {
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
       ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 200 } },
-      ] as TaxPaymentGroupByResult)
+      ])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -574,9 +570,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
-        [] as TaxPaymentGroupByResult,
-      )
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -634,7 +628,7 @@ describe('TaxService', () => {
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
       ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 200 } },
-      ] as TaxPaymentGroupByResult)
+      ])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -686,7 +680,7 @@ describe('TaxService', () => {
       ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 300 } },
         { taxId: 2, _sum: { amount: 500 } },
-      ] as TaxPaymentGroupByResult)
+      ])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -742,9 +736,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
-        [] as TaxPaymentGroupByResult,
-      )
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -779,9 +771,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
-        [] as TaxPaymentGroupByResult,
-      )
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -816,9 +806,7 @@ describe('TaxService', () => {
 
       prismaMock.taxPayer.findUnique.mockResolvedValue(mockTaxPayer)
       prismaMock.tax.findMany.mockResolvedValue(mockTaxes)
-      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
-        [] as TaxPaymentGroupByResult,
-      )
+      ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -860,7 +848,7 @@ describe('TaxService', () => {
       prismaMock.tax.findMany.mockResolvedValue(mockKoTaxes)
       ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 500 } },
-      ] as TaxPaymentGroupByResult)
+      ])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -923,7 +911,7 @@ describe('TaxService', () => {
       ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue([
         { taxId: 1, _sum: { amount: 500 } },
         { taxId: 2, _sum: { amount: 2000 } },
-      ] as TaxPaymentGroupByResult)
+      ])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -1020,7 +1008,7 @@ describe('TaxService', () => {
         { taxId: 1, _sum: { amount: 1200 } },
         { taxId: 2, _sum: { amount: 400 } },
         { taxId: 4, _sum: { amount: 2000 } },
-      ] as TaxPaymentGroupByResult)
+      ])
 
       const result = await service.getListOfTaxesByBirthnumberAndType(
         '123456/789',
@@ -1649,7 +1637,7 @@ describe('TaxService', () => {
           { taxId: 1, _sum: { amount: 500 } },
           { taxId: 2, _sum: { amount: 1000 } },
           { taxId: 3, _sum: { amount: null } },
-        ] as TaxPaymentGroupByResult
+        ]
         ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
           groupByRows,
         )
@@ -1682,9 +1670,7 @@ describe('TaxService', () => {
       })
 
       it('should return 0 for taxes with no payments', async () => {
-        const groupByRows = [
-          { taxId: 1, _sum: { amount: 200 } },
-        ] as TaxPaymentGroupByResult
+        const groupByRows = [{ taxId: 1, _sum: { amount: 200 } }]
         ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
           groupByRows,
         )
@@ -1700,7 +1686,7 @@ describe('TaxService', () => {
         const groupByRows = [
           { taxId: 1, _sum: { amount: null } },
           { taxId: 2, _sum: { amount: 0 } },
-        ] as TaxPaymentGroupByResult
+        ]
         ;(prismaMock.taxPayment.groupBy as jest.Mock).mockResolvedValue(
           groupByRows,
         )

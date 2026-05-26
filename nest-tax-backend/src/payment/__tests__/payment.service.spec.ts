@@ -685,9 +685,13 @@ describe('PaymentService', () => {
         PRCODE: '1',
       })
 
-      expect(prismaMock.taxPayment.update).toHaveBeenCalled()
-      const failUpdateArg = prismaMock.taxPayment.update.mock.calls[0][0]
-      expect(failUpdateArg.data).toMatchObject({ status: PaymentStatus.FAIL })
+      expect(prismaMock.taxPayment.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            status: PaymentStatus.FAIL,
+          }) as Prisma.TaxPaymentUpdateInput,
+        }),
+      )
       expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toContain(
         `status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,

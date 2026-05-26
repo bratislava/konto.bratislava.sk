@@ -286,9 +286,13 @@ describe('NorisValidatorSubservice', () => {
       expect(result).not.toContainEqual(testPaymentInvalidVariabilnySymbol)
 
       expect(errorLogSpy).toHaveBeenCalledTimes(1)
-      expect(errorLogSpy.mock.calls[0][0]).toMatchObject({
-        response: { [ErrorSymbols.alert]: 1 },
-      })
+      expect(errorLogSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          response: expect.objectContaining({
+            [ErrorSymbols.alert]: 1,
+          }) as Record<symbol | string, unknown>,
+        }),
+      )
     })
 
     it('should validate all real estate taxes, return only valid and error log the rest', () => {
@@ -307,12 +311,16 @@ describe('NorisValidatorSubservice', () => {
       expect(errorLogSpy).toHaveBeenCalledTimes(
         invalidNorisRealEstateTaxes.length,
       )
-      expect(errorLogSpy.mock.calls[0][0]).toMatchObject({
-        response: { [ErrorSymbols.alert]: 1 },
-      })
-      expect(JSON.stringify(errorLogSpy.mock.calls[1][0])).toContain(
-        'det_pozemky_DAN_E',
-      ) // field name that is invalid
+      expect(errorLogSpy).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          response: expect.objectContaining({
+            [ErrorSymbols.alert]: 1,
+          }) as Record<symbol | string, unknown>,
+        }),
+      )
+      const [, [secondError]] = errorLogSpy.mock.calls
+      expect(JSON.stringify(secondError)).toContain('det_pozemky_DAN_E') // field name that is invalid
     })
 
     it('should validate all communal waste taxes, return only valid and error log the rest', () => {
@@ -334,12 +342,16 @@ describe('NorisValidatorSubservice', () => {
       expect(errorLogSpy).toHaveBeenCalledTimes(
         invalidNorisCommunalWasteTaxes.length,
       )
-      expect(errorLogSpy.mock.calls[0][0]).toMatchObject({
-        response: { [ErrorSymbols.alert]: 1 },
-      })
-      expect(JSON.stringify(errorLogSpy.mock.calls[1][0])).toContain(
-        'objem_nadoby',
-      ) // field name that is invalid
+      expect(errorLogSpy).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          response: expect.objectContaining({
+            [ErrorSymbols.alert]: 1,
+          }) as Record<symbol | string, unknown>,
+        }),
+      )
+      const [, [secondError]] = errorLogSpy.mock.calls
+      expect(JSON.stringify(secondError)).toContain('objem_nadoby') // field name that is invalid
     })
   })
 })

@@ -764,7 +764,7 @@ describe('UnifiedTaxUtil', () => {
             today: new Date('2025-01-21 21:00'),
           })
 
-          const expected = createExpectedOutput(() => undefined)
+          const expected = createExpectedOutput(jest.fn())
 
           expectEqualAsJsonStringsWithDates(output, expected)
         })

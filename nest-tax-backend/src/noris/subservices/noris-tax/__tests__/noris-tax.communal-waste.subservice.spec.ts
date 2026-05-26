@@ -127,16 +127,19 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
   describe('getTaxDataByYearAndBirthNumber', () => {
     it('should fetch and return grouped data for a single record', async () => {
-      const flatRecord: NorisCommunalWasteTax = {
-        ...testCommunalWasteTax1,
-        ulica: 'Hlavná ulica',
-        orientacne_cislo: '22',
+      const container = {
         objem_nadoby: 120,
         pocet_nadob: 1,
         pocet_odvozov: 52,
         sadzba: 4.314,
         poplatok: 224.33,
         druh_nadoby: 'N12',
+      }
+      const flatRecord: NorisCommunalWasteTax = {
+        ...testCommunalWasteTax1,
+        ulica: 'Hlavná ulica',
+        orientacne_cislo: '22',
+        ...container,
       }
       jest
         .spyOn(connectionService, 'withConnection')
@@ -151,16 +154,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
       expect(result[0].addresses).toEqual([
         {
           addressDetail: { street: 'Hlavná ulica', orientationNumber: '22' },
-          containers: [
-            {
-              objem_nadoby: 120,
-              pocet_nadob: 1,
-              pocet_odvozov: 52,
-              sadzba: 4.314,
-              poplatok: 224.33,
-              druh_nadoby: 'N12',
-            },
-          ],
+          containers: [container],
         },
       ])
     })

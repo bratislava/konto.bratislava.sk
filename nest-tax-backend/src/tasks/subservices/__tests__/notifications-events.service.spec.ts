@@ -321,12 +321,17 @@ describe('NotificationsEventsSubservice', () => {
         UnpaidReminderSent.AFTER_DUE,
         UnpaidReminderSent.BEFORE_DUE,
       )
-      expect(updateManySpy.mock.calls[0][0].where).toMatchObject({
-        id: { in: [101] },
-      })
-      expect(updateManySpy.mock.calls[0][0].data).toMatchObject({
-        bloomreachUnpaidReminderSent: UnpaidReminderSent.BOTH,
-      })
+      expect(updateManySpy).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          where: expect.objectContaining({
+            id: { in: [101] },
+          }) as Prisma.TaxInstallmentWhereInput,
+          data: expect.objectContaining({
+            bloomreachUnpaidReminderSent: UnpaidReminderSent.BOTH,
+          }) as Prisma.TaxInstallmentUpdateInput,
+        }),
+      )
     })
 
     it('calls trackEvent with full payload and uses newReminderSent=AFTER_DUE and alreadyOtherSent=BEFORE_DUE when AFTER', async () => {
@@ -386,9 +391,14 @@ describe('NotificationsEventsSubservice', () => {
         UnpaidReminderSent.BEFORE_DUE,
         UnpaidReminderSent.AFTER_DUE,
       )
-      expect(updateManySpyAfter.mock.calls[0][0].where).toMatchObject({
-        id: { in: [202] },
-      })
+      expect(updateManySpyAfter).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          where: expect.objectContaining({
+            id: { in: [202] },
+          }) as Prisma.TaxInstallmentWhereInput,
+        }),
+      )
     })
 
     it('calls trackEvent for each tax with full payload and updates all with two updateMany calls', async () => {
@@ -464,9 +474,14 @@ describe('NotificationsEventsSubservice', () => {
         prismaMock.taxInstallment,
         'updateMany',
       )
-      expect(updateManySpyMulti.mock.calls[0][0].where).toMatchObject({
-        id: { in: [301, 302] },
-      })
+      expect(updateManySpyMulti).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          where: expect.objectContaining({
+            id: { in: [301, 302] },
+          }) as Prisma.TaxInstallmentWhereInput,
+        }),
+      )
     })
 
     it('calls getUserDataAdminBatch with all tax payer birth numbers', async () => {

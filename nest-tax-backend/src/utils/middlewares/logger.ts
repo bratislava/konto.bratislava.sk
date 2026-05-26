@@ -117,7 +117,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     // Parse string-type exitData if it is JSON
     if (typeof exitData === 'string') {
       try {
-        data = z.unknown().parse(JSON.parse(exitData))
+        data = JSON.parse(exitData)
       } catch {
         // If parsing fails, assume it's a plain string
         return {

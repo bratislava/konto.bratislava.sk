@@ -65,6 +65,7 @@ export type FileStatus =
 export type ClientFileInfo = {
   status: FileStatus
   id: string
+  slotId: string
   file: File
 }
 

@@ -248,21 +248,23 @@ export default schema(
         [
           match(typPozemku)
             .with('inyPozemok', () =>
-              fileUpload(
+              fileUpload<typeof komunitneZahradyFiles>(
                 'fotografie',
                 {
                   title: 'Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu',
                   required: true,
+                  slotId: 'fotografie',
                 },
                 { type: 'dragAndDrop' },
               ),
             )
             .otherwise(() => null),
-          fileUpload(
+          fileUpload<typeof komunitneZahradyFiles>(
             'umiestnenie',
             {
               title: 'Presné umiestnenie záhrady na pozemku',
               required: true,
+              slotId: 'umiestnenie',
             },
             {
               type: 'dragAndDrop',
@@ -271,11 +273,12 @@ export default schema(
               helptextMarkdown: true,
             },
           ),
-          fileUpload(
+          fileUpload<typeof komunitneZahradyFiles>(
             'dizajn',
             {
               title: 'Dizajn/projekt záhrady',
               required: true,
+              slotId: 'dizajn',
             },
             {
               type: 'dragAndDrop',
@@ -286,21 +289,39 @@ export default schema(
           ),
           match(typPozemku)
             .with('odporucanyPozemok', () =>
-              fileUpload(
+              fileUpload<typeof komunitneZahradyFiles>(
                 'fotografie',
                 {
                   title: 'Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu',
+                  slotId: 'fotografie',
                 },
                 { type: 'dragAndDrop' },
               ),
             )
             .otherwise(() => null),
-          fileUpload('ine', { title: 'Iné' }, { type: 'dragAndDrop' }),
+          fileUpload<typeof komunitneZahradyFiles>('ine', { title: 'Iné', slotId: 'ine' }, { type: 'dragAndDrop' }),
         ],
       ),
     ),
   ],
 )
+
+export const komunitneZahradyFiles = {
+  slots: [
+    {
+      slotId: 'fotografie',
+    },
+    {
+      slotId: 'umiestnenie',
+    },
+    {
+      slotId: 'dizajn',
+    },
+    {
+      slotId: 'ine',
+    },
+  ],
+} as const
 
 type ExtractFormData = {
   pozemok: {

@@ -16,6 +16,25 @@ export enum FormDefinitionType {
   Webhook = 'Webhook',
 }
 
+export type FormFiles<SlotId extends string> = {
+  /** Max size of a single file in bytes. Falls back to global MAX_FILE_SIZE if not set. */
+  maxFileSize?: number
+  /** Max cumulative size of all active files on a form instance in bytes. Falls back to global MAX_CUMULATIVE_FILE_SIZE if not set. */
+  maxTotalFileSize?: number
+  /**
+   * Per-slot file size limits. When set, the upload endpoint requires a `slotId` query parameter
+   * and enforces the limit for the matching slot. Slots not listed fall back to `maxFileSize`.
+   *
+   * A slot limit can only **restrict** below `maxFileSize` (or the global `MAX_FILE_SIZE`),
+   * never exceed it — the effective limit is `min(slots[slotId].maxFileSize, maxFileSize, globalMaxFile)`.
+   */
+  slots: readonly {
+    slotId: SlotId
+    maxFileSize?: number
+    maxTotalFileSize?: number
+  }[]
+}
+
 type FormDefinitionBase = {
   slug: string
   title: string
@@ -31,6 +50,8 @@ type FormDefinitionBase = {
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
   feedbackLink?: string
+
+  files?: FormFiles<string>
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {

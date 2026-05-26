@@ -23,6 +23,7 @@ export const uploadFile = async ({
   formId,
   file,
   id,
+  slotId,
   abortController,
   onProgress,
   onSuccess,
@@ -31,6 +32,7 @@ export const uploadFile = async ({
   formId: string
   file: File
   id: string
+  slotId: string
   abortController: AbortController
   onProgress: (progressPercentage: number) => void
   onSuccess: (response: AxiosResponse<PostFileResponseDto>) => void
@@ -39,7 +41,7 @@ export const uploadFile = async ({
   ) => void
 }) => {
   try {
-    const response = await formsClient.filesControllerUploadFile(formId, file, file.name, id, {
+    const response = await formsClient.filesControllerUploadFile(formId, slotId, file, file.name, id, {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         if (progressEvent.total == null) {
           return
@@ -221,11 +223,12 @@ const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints)
   return { type: FileStatusType.UploadQueued as const }
 }
 
-export const getFileInfoForNewFiles = (files: File[], constraints: FormFileUploadConstraints) =>
+export const getFileInfoForNewFiles = (files: File[], slotId: string, constraints: FormFileUploadConstraints) =>
   files.map((file) => {
     return {
       id: createUuid(),
       file,
+      slotId,
       status: getStatusForNewFile(file, constraints),
     } satisfies ClientFileInfo
   })

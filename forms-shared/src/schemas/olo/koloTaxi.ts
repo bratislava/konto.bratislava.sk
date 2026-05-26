@@ -121,11 +121,12 @@ export default schema({ title: 'KOLO Taxi' }, [
         helptext: 'Okrem čalúneného nábytku a elektrospotrebičov',
       },
     ),
-    fileUploadMultiple(
+    fileUploadMultiple<typeof koloTaxiFiles>(
       'fotoDarovanychVeci',
       {
         title: 'Foto darovaných vecí',
         required: true,
+        slotId: 'fotoDarovanychVeci',
       },
       {
         type: 'dragAndDrop',
@@ -175,6 +176,14 @@ export default schema({ title: 'KOLO Taxi' }, [
     ),
   ]),
 ])
+
+export const koloTaxiFiles = {
+  slots: [
+    {
+      slotId: 'fotoDarovanychVeci',
+    },
+  ],
+} as const
 
 type ExtractFormData =
   | {

@@ -699,6 +699,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
 
  Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.",
                     "helptextMarkdown": true,
+                    "slotId": "dizajn",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -712,6 +713,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "baOrder": 3,
                 "baUiSchema": {
                   "ui:options": {
+                    "slotId": "fotografie",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -725,6 +727,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "baOrder": 4,
                 "baUiSchema": {
                   "ui:options": {
+                    "slotId": "ine",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -740,6 +743,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                   "ui:options": {
                     "helptext": "Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
                     "helptextMarkdown": true,
+                    "slotId": "umiestnenie",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -802,6 +806,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
 
  Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.",
                     "helptextMarkdown": true,
+                    "slotId": "dizajn",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -815,6 +820,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
+                    "slotId": "fotografie",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -828,6 +834,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "baOrder": 4,
                 "baUiSchema": {
                   "ui:options": {
+                    "slotId": "ine",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -843,6 +850,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                   "ui:options": {
                     "helptext": "Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
                     "helptextMarkdown": true,
+                    "slotId": "umiestnenie",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -934,6 +942,7 @@ exports[`Form definitions > nahlasenie-podnetu-k-elektrickym-kolobezkam > schema
                 "ui:options": {
                   "accept": ".jpg,.jpeg,.png",
                   "helptext": "Snažte sa odfotiť kolobežku tak, aby bolo vidieť aj širšie okolie.",
+                  "slotId": "fotografia",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -4686,6 +4695,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Nahrajte fotografie odpadu, ktorý priveziete na zhodnotenie (povolené typy súborov jpg, gif, png, max. veľkosť 1 súboru 10 MB, maximálne 5 súborov.)",
+                  "slotId": "fotoOdpadu",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -5404,6 +5414,7 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Nahrajte fotografiu vecí, ktoré chcete darovať (jpg, jpeg, png, max. 5MB)",
+                  "slotId": "fotoDarovanychVeci",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -8719,6 +8730,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "baOrder": 14,
               "baUiSchema": {
                 "ui:options": {
+                  "slotId": "prilohy",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -16421,6 +16433,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                         "baUiSchema": {
                           "ui:options": {
                             "helptext": "Tu nahrajte sken plnej moci. Po odoslaní formulára bude potrebné, aby ste doručili originál plnej moci v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.",
+                            "slotId": "splnomocnenie",
                             "type": "dragAndDrop",
                           },
                           "ui:widget": "FileUploadMultiple",
@@ -40984,6 +40997,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.",
                     "helptextMarkdown": true,
+                    "slotId": "prilohy",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUploadMultiple",
@@ -41066,6 +41080,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.",
                     "helptextMarkdown": true,
+                    "slotId": "prilohy",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUploadMultiple",
@@ -41152,6 +41167,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.",
                     "helptextMarkdown": true,
+                    "slotId": "prilohy",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUploadMultiple",
@@ -41382,6 +41398,7 @@ exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapsh
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
+                  "slotId": "prilohy",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -41885,6 +41902,7 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
+                  "slotId": "fotografie",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUpload",
@@ -41898,6 +41916,7 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
+                  "slotId": "inePrilohy",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUpload",
@@ -41911,6 +41930,7 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
+                  "slotId": "mapa",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUpload",
@@ -41925,6 +41945,7 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Napríklad, vo forme jednoduchého nákresu rozloženia jednotlivých prvkov.",
+                  "slotId": "projekt",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUpload",
@@ -42362,6 +42383,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                           "ui:options": {
                             "helptextFooter": "Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.",
                             "helptextFooterMarkdown": true,
+                            "slotId": "splnomocnenie",
                             "type": "dragAndDrop",
                           },
                           "ui:widget": "FileUploadMultiple",
@@ -48712,6 +48734,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -48826,6 +48849,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                               "ui:options": {
                                                 "helptextFooter": "V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
                                                 "helptextFooterMarkdown": true,
+                                                "slotId": "znaleckyPosudok",
                                                 "type": "dragAndDrop",
                                               },
                                               "ui:widget": "FileUploadMultiple",
@@ -49362,6 +49386,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -49476,6 +49501,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                               "ui:options": {
                                                 "helptextFooter": "V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
                                                 "helptextFooterMarkdown": true,
+                                                "slotId": "znaleckyPosudok",
                                                 "type": "dragAndDrop",
                                               },
                                               "ui:widget": "FileUploadMultiple",
@@ -50190,6 +50216,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -50839,6 +50866,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -51653,6 +51681,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -52384,6 +52413,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -53284,6 +53314,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -54038,6 +54069,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -57196,6 +57228,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                           "ui:options": {
                             "helptextFooter": "Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.",
                             "helptextFooterMarkdown": true,
+                            "slotId": "splnomocnenie",
                             "type": "dragAndDrop",
                           },
                           "ui:widget": "FileUploadMultiple",
@@ -63546,6 +63579,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -63660,6 +63694,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                               "ui:options": {
                                                 "helptextFooter": "V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
                                                 "helptextFooterMarkdown": true,
+                                                "slotId": "znaleckyPosudok",
                                                 "type": "dragAndDrop",
                                               },
                                               "ui:widget": "FileUploadMultiple",
@@ -64196,6 +64231,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -64310,6 +64346,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                               "ui:options": {
                                                 "helptextFooter": "V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
                                                 "helptextFooterMarkdown": true,
+                                                "slotId": "znaleckyPosudok",
                                                 "type": "dragAndDrop",
                                               },
                                               "ui:widget": "FileUploadMultiple",
@@ -65024,6 +65061,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -65673,6 +65711,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -66487,6 +66526,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -67218,6 +67258,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -68118,6 +68159,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -68872,6 +68914,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                             },
                                           ],
                                           "helptextFooter": "Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.",
+                                          "slotId": "splnomocnenie",
                                           "type": "dragAndDrop",
                                         },
                                         "ui:widget": "FileUploadMultiple",
@@ -72294,6 +72337,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     "baUiSchema": {
                       "ui:options": {
                         "helptext": "nahrajte splnomocnenie od stavebníka",
+                        "slotId": "splnomocnenie",
                         "type": "button",
                       },
                       "ui:widget": "FileUpload",
@@ -72790,6 +72834,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     },
                   ],
                   "helptext": "Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.",
+                  "slotId": "architektonickaStudia",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -73539,6 +73584,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
 **Ako vytvoriť snímku?**
 Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
                   "helptextMarkdown": true,
+                  "slotId": "snimkaMapy",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUpload",
@@ -74320,6 +74366,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                   "accept": ".pdf,.jpg,.jpeg,.png",
                   "helptext": "Požiadať o informatívny zákres vydaný Technickými sieťami Bratislava, a.s. môžete formou spoplatnenej služby [Objednávka informatívneho zákresu sietí](https://konto.bratislava.sk/mestske-sluzby/tsb-objednavka-informativneho-zakresu-sieti)",
                   "helptextMarkdown": true,
+                  "slotId": "informativnyZakresSieti",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -75053,6 +75100,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
               "baOrder": 3,
               "baUiSchema": {
                 "ui:options": {
+                  "slotId": "situacnyVykres",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -75072,6 +75120,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Výpočet je nutné doložiť v prípade stavby verejného osvetlenia.",
+                  "slotId": "svetelnoTechnickyVypocet",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -75090,6 +75139,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Technická správa s popisom navrhovaného technického riešenia.",
+                  "slotId": "technickaSprava",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -75113,6 +75163,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
 **Ako vytvoriť snímku?**
 Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
                   "helptextMarkdown": true,
+                  "slotId": "vyznaceneZaujmoveUzemie",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -75623,6 +75674,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                   "accept": ".xlsx",
                   "helptext": "V prípade, že požadovaný súbor na vyplnenie ešte nemáte, stiahnuť si ho viete [na tomto odkaze](https://bratislava.sk/mesto-bratislava/technicke-siete-bratislava/ziadosti). Dbajte na to, aby ste v súbore spomenuli všetky zariadenia, ktoré si želáte umiestniť. Bez vyplnenia a nahratia tohto súboru nebude možné vašu žiadosť spracovať.",
                   "helptextMarkdown": true,
+                  "slotId": "umiestnenieStoziare",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -75884,6 +75936,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Nahrajte jednu prílohu obsahujúcu fotografie alebo vizualizácie všetkých zariadení.",
+                  "slotId": "fotografiaVizualizacia",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -75955,6 +76008,7 @@ exports[`Form definitions > webhook-showcase > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Click button to upload files",
+                  "slotId": "upload",
                   "type": "button",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -76689,6 +76743,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "baUiSchema": {
                       "ui:options": {
                         "helptext": "nahrajte splnomocnenie od stavebníka",
+                        "slotId": "splnomocnenie",
                         "type": "button",
                       },
                       "ui:widget": "FileUpload",
@@ -77401,6 +77456,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     },
                   ],
                   "helptext": "Jednotlivé časti dokumentácie môžete nahrať samostatne alebo ako jeden súbor.",
+                  "slotId": "projektovaDokumentacia",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -89920,6 +89976,7 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
               "baOrder": 3,
               "baUiSchema": {
                 "ui:options": {
+                  "slotId": "prilohyZiadosti",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -91035,6 +91092,7 @@ exports[`Form definitions > ziadost-o-uzemnoplanovaciu-informaciu > schema match
 **Ako vytvoriť zákres?**
 Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Po vyznačení plochy do mapy pri položke „Meranie 1“ kliknite na ikonu troch bodiek a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.",
                   "helptextMarkdown": true,
+                  "slotId": "zakresZaujmovychParciel",
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { DeliveryMethodEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
+import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import pLimit from 'p-limit'
 import { z } from 'zod'
@@ -200,19 +200,11 @@ export class TaxDeliveryMethodsTasksSubservice {
           createdAt: { lt: jobStartTime },
         },
         include: {
-          userGdprData: {
-            orderBy: {
-              createdAt: 'desc',
-            },
-            where: {
-              category: GDPRCategoryEnum.TAXES,
-              type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-            },
+          deliveryMethodUserHistory: {
+            where: { method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT },
+            orderBy: { createdAt: 'desc' },
             take: 1,
-            select: {
-              subType: true,
-              createdAt: true,
-            },
+            select: { createdAt: true },
           },
           physicalEntity: {
             select: {
@@ -241,11 +233,11 @@ export class TaxDeliveryMethodsTasksSubservice {
         if (user.physicalEntity?.activeEdesk) {
           return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
         }
-        if (user.userGdprData[0]?.subType === GDPRSubTypeEnum.subscribe) {
+        if (user.taxDeliveryMethod === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT) {
           return {
             birthNumber,
             deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
-            date: user.userGdprData[0].createdAt,
+            date: user.deliveryMethodUserHistory[0]?.createdAt,
           }
         }
         return { birthNumber, deliveryMethod: DeliveryMethodEnum.POSTAL, date: undefined }
@@ -346,12 +338,9 @@ export class TaxDeliveryMethodsTasksSubservice {
     yesterdayStart: Date,
     yesterdayEnd: Date
   ): Promise<string[]> {
-    const [gdprChanges, edeskChanges] = await Promise.all([
-      // Find all users with GDPR changes yesterday (excluding those with active eDesk)
-      this.prismaService.userGdprData.findMany({
+    const [deliveryMethodChanges, edeskChanges] = await Promise.all([
+      this.prismaService.deliveryMethodPreferenceHistory.findMany({
         where: {
-          category: GDPRCategoryEnum.TAXES,
-          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
           createdAt: { gte: yesterdayStart, lte: yesterdayEnd },
           user: {
             physicalEntity: {
@@ -379,12 +368,12 @@ export class TaxDeliveryMethodsTasksSubservice {
     ])
 
     // Combine both sets of changes, deduplicate by userId
-    const userIdsFromGdpr = new Set(gdprChanges.map((c) => c.userId))
+    const userIdsFromUserMethod = new Set(deliveryMethodChanges.map((c) => c.userId))
     const userIdsFromEdesk = new Set(
       edeskChanges.map((e) => e.userId).filter((id): id is string => id !== null)
     )
 
-    return Array.from(new Set([...userIdsFromGdpr, ...userIdsFromEdesk]))
+    return Array.from(new Set([...userIdsFromUserMethod, ...userIdsFromEdesk]))
   }
 
   private async fetchUsersWithPhysicalEntityData(userIds: string[]) {
@@ -405,81 +394,50 @@ export class TaxDeliveryMethodsTasksSubservice {
     })
   }
 
-  private async fetchGdprDataForUsers(userIds: string[], yesterdayStart: Date, yesterdayEnd: Date) {
-    const [latestGdprDataArray, previousGdprDataArray, yesterdayGdprChangesArray] =
+  private async fetchDeliveryMethodChangesForUsers(
+    userIds: string[],
+    yesterdayStart: Date,
+    yesterdayEnd: Date
+  ) {
+    const [latestDeliveryMethod, previousDeliveryMethod, yesterdayDeliveryMethodChange] =
       await Promise.all([
-        // Latest GDPR state for all users (all time)
-        this.prismaService.userGdprData.findMany({
-          where: {
-            userId: { in: userIds },
-            category: GDPRCategoryEnum.TAXES,
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          },
+        // Latest delivery-method change for each user (all time).
+        this.prismaService.deliveryMethodPreferenceHistory.findMany({
+          where: { userId: { in: userIds } },
           orderBy: { createdAt: 'desc' },
           distinct: ['userId'],
-          select: {
-            userId: true,
-            subType: true,
-            createdAt: true,
-          },
+          select: { userId: true, method: true, createdAt: true },
         }),
 
-        // Previous GDPR state (before yesterday) for all users
-        this.prismaService.userGdprData.findMany({
-          where: {
-            userId: { in: userIds },
-            category: GDPRCategoryEnum.TAXES,
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-            createdAt: { lt: yesterdayStart },
-          },
+        // Previous state (before yesterday) for each user.
+        this.prismaService.deliveryMethodPreferenceHistory.findMany({
+          where: { userId: { in: userIds }, createdAt: { lt: yesterdayStart } },
           orderBy: { createdAt: 'desc' },
           distinct: ['userId'],
-          select: {
-            userId: true,
-            subType: true,
-            createdAt: true,
-          },
+          select: { userId: true, method: true, createdAt: true },
         }),
 
-        // GDPR changes from yesterday only
-        this.prismaService.userGdprData.findMany({
+        // Changes that happened yesterday only.
+        this.prismaService.deliveryMethodPreferenceHistory.findMany({
           where: {
             userId: { in: userIds },
-            category: GDPRCategoryEnum.TAXES,
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
             createdAt: { gte: yesterdayStart, lte: yesterdayEnd },
           },
           orderBy: { createdAt: 'desc' },
           distinct: ['userId'],
-          select: {
-            userId: true,
-            subType: true,
-            createdAt: true,
-          },
+          select: { userId: true, method: true, createdAt: true },
         }),
       ])
 
-    // Convert to Maps for O(1) lookup
-    const latestGdprData = new Map(
-      latestGdprDataArray.map((gdpr) => [
-        gdpr.userId,
-        { subType: gdpr.subType, createdAt: gdpr.createdAt },
-      ])
-    )
-    const previousGdprData = new Map(
-      previousGdprDataArray.map((gdpr) => [
-        gdpr.userId,
-        { subType: gdpr.subType, createdAt: gdpr.createdAt },
-      ])
-    )
-    const yesterdayGdprChanges = new Map(
-      yesterdayGdprChangesArray.map((gdpr) => [
-        gdpr.userId,
-        { subType: gdpr.subType, createdAt: gdpr.createdAt },
-      ])
-    )
+    const toMap = (
+      rows: { userId: string; method: DeliveryMethodUserPreferenceEnum; createdAt: Date }[]
+    ) => new Map(rows.map((r) => [r.userId, { method: r.method, createdAt: r.createdAt }]))
 
-    return { latestGdprData, previousGdprData, yesterdayGdprChanges }
+    return {
+      latestDeliveryMethod: toMap(latestDeliveryMethod),
+      previousDeliveryMethod: toMap(previousDeliveryMethod),
+      yesterdayDeliveryMethodChange: toMap(yesterdayDeliveryMethodChange),
+    }
   }
 
   private async sendDeliveryMethodChangedEmail(
@@ -489,7 +447,7 @@ export class TaxDeliveryMethodsTasksSubservice {
     deliveryMethod: 'edesk' | 'postal' | 'email',
     options?: {
       birthNumber?: string
-      reason?: 'edesk-deactivated' | 'gdpr-change'
+      reason?: 'edesk-deactivated' | 'delivery-method-preference-change'
     }
   ): Promise<void> {
     try {
@@ -508,8 +466,8 @@ export class TaxDeliveryMethodsTasksSubservice {
 
       const logSuffixMap = {
         'edesk-deactivated': ' (eDesk deactivated)',
-        'gdpr-change': ' (GDPR change)',
-      } as const satisfies Record<'edesk-deactivated' | 'gdpr-change', string>
+        'delivery-method-preference-change': ' (Delivery preference change)',
+      } as const satisfies Record<'edesk-deactivated' | 'delivery-method-preference-change', string>
       const logSuffix = options?.reason ? logSuffixMap[options.reason] : ''
       this.logger.log(`Sent ${deliveryMethodLabel} activation email to user ${userId}${logSuffix}`)
     } catch (err) {
@@ -528,9 +486,15 @@ export class TaxDeliveryMethodsTasksSubservice {
         edeskStatusChangedAt: Date | null
       } | null
     },
-    latestGdprData: { subType: GDPRSubTypeEnum | null; createdAt: Date } | undefined,
-    previousGdprData: { subType: GDPRSubTypeEnum | null; createdAt: Date } | undefined,
-    yesterdayGdprChange: { subType: GDPRSubTypeEnum | null; createdAt: Date } | undefined,
+    latestDeliveryMethod:
+      | { method: DeliveryMethodUserPreferenceEnum | null; createdAt: Date }
+      | undefined,
+    previousDeliveryMethod:
+      | { method: DeliveryMethodUserPreferenceEnum | null; createdAt: Date }
+      | undefined,
+    yesterdayDeliveryMethod:
+      | { method: DeliveryMethodUserPreferenceEnum | null; createdAt: Date }
+      | undefined,
     yesterdayStart: Date,
     yesterdayEnd: Date
   ): Promise<void> {
@@ -556,9 +520,9 @@ export class TaxDeliveryMethodsTasksSubservice {
       return
     }
 
-    // Handle eDesk deactivation - check current GDPR preference
+    // Handle eDesk deactivation - check current delivery preference
     if (edeskChangedYesterday) {
-      if (latestGdprData?.subType === GDPRSubTypeEnum.subscribe) {
+      if (latestDeliveryMethod?.method === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT) {
         await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'email', {
           birthNumber: user.birthNumber,
         })
@@ -570,29 +534,33 @@ export class TaxDeliveryMethodsTasksSubservice {
       return
     }
 
-    // Handle GDPR changes (when eDesk didn't change)
+    // Handle Delivery method changes (when eDesk didn't change)
 
-    if (!yesterdayGdprChange) {
-      this.logger.log(`Skipping user ${user.id}: No GDPR or eDesk changes yesterday.`)
+    if (!yesterdayDeliveryMethod) {
+      this.logger.log(
+        `Skipping user ${user.id}: No user delivery preference or eDesk changes yesterday.`
+      )
       return
     }
 
-    const currentSubType = yesterdayGdprChange.subType
-    const previousSubType = previousGdprData?.subType
+    const currentMethod = yesterdayDeliveryMethod.method
+    const previousMethod = previousDeliveryMethod?.method
 
-    if (currentSubType === previousSubType) {
-      this.logger.log(`Skipping user ${user.id}: GDPR state unchanged (${currentSubType}).`)
+    if (currentMethod === previousMethod) {
+      this.logger.log(
+        `Skipping user ${user.id}: delivery preference state unchanged (${currentMethod}).`
+      )
       return
     }
 
-    // Send appropriate email based on GDPR change
-    if (currentSubType === GDPRSubTypeEnum.subscribe) {
+    // Send appropriate email based on Delivery preference change
+    if (currentMethod === DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT) {
       await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'email', {
         birthNumber: user.birthNumber,
       })
     } else {
       await this.sendDeliveryMethodChangedEmail(user.id, user.email, user.externalId, 'postal', {
-        reason: 'gdpr-change',
+        reason: 'delivery-method-preference-change',
       })
     }
   }
@@ -613,10 +581,11 @@ export class TaxDeliveryMethodsTasksSubservice {
     this.logger.log(`Found ${allUserIds.length} users with delivery method changes`)
 
     // Batch fetch all required data
-    const [users, { latestGdprData, previousGdprData, yesterdayGdprChanges }] = await Promise.all([
-      this.fetchUsersWithPhysicalEntityData(allUserIds),
-      this.fetchGdprDataForUsers(allUserIds, yesterdayStart, yesterdayEnd),
-    ])
+    const [users, { latestDeliveryMethod, previousDeliveryMethod, yesterdayDeliveryMethodChange }] =
+      await Promise.all([
+        this.fetchUsersWithPhysicalEntityData(allUserIds),
+        this.fetchDeliveryMethodChangesForUsers(allUserIds, yesterdayStart, yesterdayEnd),
+      ])
 
     // Process all users with in-memory data.
     await this.pdfGeneratorService.withSharedBrowser(async () => {
@@ -626,9 +595,9 @@ export class TaxDeliveryMethodsTasksSubservice {
           limit(async () => {
             await this.processUserDeliveryMethodChange(
               user,
-              latestGdprData.get(user.id),
-              previousGdprData.get(user.id),
-              yesterdayGdprChanges.get(user.id),
+              latestDeliveryMethod.get(user.id),
+              previousDeliveryMethod.get(user.id),
+              yesterdayDeliveryMethodChange.get(user.id),
               yesterdayStart,
               yesterdayEnd
             )

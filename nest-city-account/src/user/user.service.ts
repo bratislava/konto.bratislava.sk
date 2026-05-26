@@ -2,7 +2,9 @@
 import { Injectable } from '@nestjs/common'
 import {
   CognitoUserAttributesTierEnum,
+  ConsentEnum,
   DeliveryMethodEnum,
+  DeliveryMethodUserPreferenceEnum,
   GDPRSubTypeEnum,
   LoginClientEnum,
   User,
@@ -96,30 +98,42 @@ export class UserService {
     return false
   }
 
-  async getOrCreateUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
-    const officialCorrespondenceChannel =
-      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
+  private async convertUserToResponseUserData(
+    user: Omit<User, 'ifo'>
+  ): Promise<ResponseUserDataDto> {
+    const officialCorrespondenceChannel = await this.userDataSubservice.getActiveDeliveryMethod(
+      user.id
+    )
     const showEmailCommunicationBanner =
       await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
+    const consents = await this.userDataSubservice.getUserConsents(user.id)
     return {
       ...user,
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
-      gdprData: getGdprData,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
         user.id
       ),
     }
   }
 
-  async getOrCreateLegalPersonData(
+  async upsertUserData(cognitoUserData: CognitoGetUserData): Promise<ResponseUserDataDto> {
+    const user = await this.userDataSubservice.upsertUser(cognitoUserData)
+    return await this.convertUserToResponseUserData(user)
+  }
+
+  async upsertLegalPersonData(
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
-    const getGdprData = await this.userDataSubservice.getLegalPersonGdprData(user.id)
-    return { ...user, gdprData: getGdprData }
+    const user = await this.userDataSubservice.upsertLegalPerson(cognitoUserData)
+    const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
+    return {
+      ...user,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
+    }
   }
 
   async recordUserLoginClient(externalId: string, loginClient: LoginClientEnum): Promise<void> {
@@ -150,68 +164,61 @@ export class UserService {
   }
 
   async removeBirthNumber(id: string): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.removeBirthNumber(id)
-    const officialCorrespondenceChannel =
-      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
-    const showEmailCommunicationBanner =
-      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
-    return {
-      ...user,
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      gdprData: getGdprData,
-      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
-        user.id
-      ),
-    }
+    const user = await this.userDataSubservice.removeUserBirthNumber(id)
+    return await this.convertUserToResponseUserData(user)
   }
 
   async removeLegalPersonBirthNumber(id: string) {
     const user = await this.userDataSubservice.removeLegalPersonBirthNumber(id)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
+    const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
     return {
       ...user,
       officialCorrespondenceChannel: null,
-      gdprData: getGdprData,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       showEmailCommunicationBanner: false, // TODO add this for legal persons
       hasChangedDeliveryMethodAfterDeadline: false,
     }
   }
 
+  /**
+   * Apply a subscribe / unsubscribe request expressed in legacy GDPR shape to
+   * a physical user.
+   *
+   * @deprecated Backs the deprecated `/subscribe` and `/unsubscribe` endpoints
+   * only. New code should call `updateGdprConsent` (or the consent setters
+   * directly) with the new consent shape. Slated for deletion together with
+   * those endpoints.
+   */
   async subUnsubUser(
     cognitoUserData: CognitoGetUserData,
     gdprSubType: GDPRSubTypeEnum,
     gdprData: GdprDataDto[]
   ): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.getOrCreateUser(cognitoUserData)
+    const user = await this.userDataSubservice.upsertUser(cognitoUserData)
     await this.userDataSubservice.changeUserGdprData(
       user.id,
       gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
     )
 
-    const officialCorrespondenceChannel =
-      await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
-    const showEmailCommunicationBanner =
-      await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
-    const getGdprData = await this.userDataSubservice.getUserGdprData(user.id)
-    return {
-      ...user,
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      gdprData: getGdprData,
-      hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
-        user.id
-      ),
-    }
+    return await this.convertUserToResponseUserData(user)
   }
 
+  /**
+   * Apply a subscribe / unsubscribe request expressed in legacy GDPR shape to
+   * a legal person.
+   *
+   * @deprecated Backs the deprecated `/subscribe` and `/unsubscribe` endpoints
+   * only. New code should call `updateGdprConsent` (or the consent setters
+   * directly) with the new consent shape. Slated for deletion together with
+   * those endpoints.
+   */
   async subUnsubLegalPerson(
     cognitoUserData: CognitoGetUserData,
     gdprSubType: GDPRSubTypeEnum,
     gdprData: GdprDataDto[]
   ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+    const user = await this.userDataSubservice.upsertLegalPerson(cognitoUserData)
     await this.userDataSubservice.changeLegalPersonGdprData(
       user.id,
       gdprData.map((elem) => ({
@@ -219,10 +226,22 @@ export class UserService {
         subType: gdprSubType,
       }))
     )
-    const getGdprData = await this.userDataSubservice.getLegalPersonGdprData(user.id)
-    return { ...user, gdprData: getGdprData }
+    const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
+    return {
+      ...user,
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
+    }
   }
 
+  /**
+   * Public-unsubscribe handler keyed by internal user id.
+   *
+   * @deprecated Backs the deprecated `/public/unsubscribe/:id` endpoint and is
+   * also reused internally by `unsubscribePublicUserByExternalId`. New code
+   * should call the consent setters directly with the new shape. Slated for
+   * deletion together with the public unsubscribe endpoints.
+   */
   async unsubscribePublicUser(
     id: string,
     gdprData: GdprDataDto[]
@@ -231,7 +250,7 @@ export class UserService {
       id,
       gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe }))
     )
-    const getGdprData = await this.userDataSubservice.getUserGdprData(id)
+    const consents = await this.userDataSubservice.getUserConsents(id)
     const user = await this.userDataSubservice.getUserById(id)
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -240,9 +259,22 @@ export class UserService {
       )
     }
 
-    return { id, message: 'user was unsubscribed', gdprData: getGdprData, userData: user }
+    return {
+      id,
+      message: 'user was unsubscribed',
+      consents,
+      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
+      userData: user,
+    }
   }
 
+  /**
+   * Public-unsubscribe handler keyed by Cognito external id.
+   *
+   * @deprecated Backs the deprecated `/public/unsubscribe/external-id/:id`
+   * endpoint only. New code should call the consent setters directly with
+   * the new shape. Slated for deletion together with that endpoint.
+   */
   async unsubscribePublicUserByExternalId(
     externalId: string,
     gdprData: GdprDataDto[]
@@ -268,8 +300,9 @@ export class UserService {
           email: newEmail,
         },
       })
-      const officialCorrespondenceChannel =
-        await this.userDataSubservice.getOfficialCorrespondenceChannel(user.id)
+      const officialCorrespondenceChannel = await this.userDataSubservice.getActiveDeliveryMethod(
+        user.id
+      )
       const showEmailCommunicationBanner =
         await this.userDataSubservice.getShowEmailCommunicationBanner(user.id, !!user.birthNumber)
       return {
@@ -321,15 +354,15 @@ export class UserService {
    * @param cognitoUserData Cognito user data
    * @returns raw database entity without additional computed fields
    */
-  async getOrCreateUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
+  async upsertUserOrLegalPersonRaw(cognitoUserData: CognitoGetUserData) {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
-        return this.userDataSubservice.getOrCreateUser(cognitoUserData, true)
+        return this.userDataSubservice.upsertUser(cognitoUserData, true)
       }
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
-        return this.userDataSubservice.getOrCreateLegalPerson(cognitoUserData)
+        return this.userDataSubservice.upsertLegalPerson(cognitoUserData)
       }
       default:
         throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -340,17 +373,17 @@ export class UserService {
     }
   }
 
-  async getOrCreateUserOrLegalPerson(
+  async upsertUserOrLegalPerson(
     cognitoUserData: CognitoGetUserData
   ): Promise<ResponseUserDataDto | ResponseLegalPersonDataDto> {
     const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
 
     switch (accountType) {
       case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY:
-        return this.getOrCreateUserData(cognitoUserData)
+        return this.upsertUserData(cognitoUserData)
       case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
       case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
-        return this.getOrCreateLegalPersonData(cognitoUserData)
+        return this.upsertLegalPersonData(cognitoUserData)
       default:
         throw this.throwerErrorGuard.UnprocessableEntityException(
           UserErrorsEnum.COGNITO_TYPE_ERROR,
@@ -465,7 +498,8 @@ export class UserService {
   }
 
   /**
-   * Similar to function getUserDataByBirthNumber, returns data about users based on their birth number, but instead of separately, it does it in batch in one request.
+   * Similar to function getUserDataByBirthNumber, returns data about users based on their birth number, but instead of
+   * separately, it does it in batch in one request.
    * @param birthNumbers Array of birth numbers without slash, for which users should be retrieved from database.
    * @returns A map of birth numbers (those which were found in database) to user information.
    */
@@ -690,5 +724,64 @@ export class UserService {
 
   async getUserLoginClientList(client: LoginClientEnum) {
     return await this.userDataSubservice.getUserLoginClientList(client)
+  }
+
+  async setDeliveryMethodPreference(
+    cognitoUserData: CognitoGetUserData,
+    deliveryMethod: DeliveryMethodUserPreferenceEnum
+  ) {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        await this.userDataSubservice.setDeliveryMethodPreference(
+          cognitoUserData.sub,
+          deliveryMethod
+        )
+        break
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY:
+      default: {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+      }
+    }
+  }
+
+  async updateGdprConsent(
+    cognitoUserData: CognitoGetUserData,
+    consentType: ConsentEnum,
+    isGranted: boolean
+  ): Promise<void> {
+    const accountType = cognitoUserData[CognitoUserAttributesEnum.ACCOUNT_TYPE]
+    const consents = [{ consentType, isGranted }]
+
+    // Resolve the right entity, persist the consent, and capture what the
+    // single Bloomreach call below needs (id / externalId / isLegalPerson).
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const user = await this.userDataSubservice.getOrFallbackCreateUser(cognitoUserData)
+        await this.userDataSubservice.setUserConsents(user.id, user.externalId, consents)
+        break
+      }
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const legalPerson =
+          await this.userDataSubservice.getOrFallbackCreateLegalPerson(cognitoUserData)
+        await this.userDataSubservice.setLegalPersonConsents(
+          legalPerson.id,
+          legalPerson.externalId,
+          consents
+        )
+        break
+      }
+      default:
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          UserErrorsEnum.COGNITO_TYPE_ERROR,
+          UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+        )
+    }
   }
 }

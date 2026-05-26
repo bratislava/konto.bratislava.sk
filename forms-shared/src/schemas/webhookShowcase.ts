@@ -2,6 +2,7 @@ import { input } from '../generator/functions/input'
 import { step } from '../generator/functions/step'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
+import { FormFiles } from '../definitions/formDefinitionTypes'
 
 export default schema(
   {
@@ -21,11 +22,12 @@ export default schema(
           helptext: 'Basic text input example',
         },
       ),
-      fileUploadMultiple(
+      fileUploadMultiple<typeof webhookShowcaseFiles>(
         'buttonUpload',
         {
           title: 'Button Upload',
           required: true,
+          slotId: 'upload',
         },
         {
           type: 'button',
@@ -35,3 +37,13 @@ export default schema(
     ]),
   ],
 )
+
+export const webhookShowcaseFiles = {
+  maxFileSize: undefined,
+  maxTotalFileSize: undefined,
+  slots: [
+    {
+      slotId: 'upload',
+    },
+  ],
+} as const

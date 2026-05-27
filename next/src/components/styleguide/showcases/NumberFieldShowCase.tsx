@@ -25,6 +25,13 @@ const NumberFieldShowCase = () => {
           isDisabled
         />
       </Stack>
+      <Stack direction="column">
+        <NumberField label="Plocha" unit="m²" />
+        <NumberField label="Plocha" unit="m²" value={42} />
+        <NumberField label="Plocha" unit="m²" errorMessage="Error message" />
+        <NumberField label="Plocha" unit="m²" value={42} isDisabled />
+        <NumberField label="Suma" unit="€" helptext="Help text" isRequired />
+      </Stack>
     </Wrapper>
   )
 }

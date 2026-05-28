@@ -2,7 +2,7 @@
 
 exports[`formDataExtractors > extractEmailFormEmail > kontaktnyFormularPaasExample1 email should match snapshot 1`] = `"jan.kovac@priklad.sk"`;
 
-exports[`formDataExtractors > extractEmailFormEmail > kontaktnyFormularPaasExample2 email should match snapshot 1`] = `""`;
+exports[`formDataExtractors > extractEmailFormEmail > kontaktnyFormularPaasExample2 email should match snapshot 1`] = `"marta.novakova@priklad.sk"`;
 
 exports[`formDataExtractors > extractEmailFormEmail > nahlaseniePodnetuKElektrickymKolobezkamExample email should match snapshot 1`] = `undefined`;
 

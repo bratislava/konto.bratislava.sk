@@ -1,7 +1,6 @@
 import { createCondition } from '../../generator/helpers'
 import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
-import { radioGroup } from '../../generator/functions/radioGroup'
 import { textArea } from '../../generator/functions/textArea'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
@@ -91,33 +90,7 @@ export default schema({ title: 'Kontaktný formulár PAAS' }, [
         { type: 'text', title: 'Meno a priezvisko / Obchodné meno', required: true },
         { helptext: 'Ak ste právnická osoba alebo podnikateľ, uveďte obchodné meno.' },
       ),
-      radioGroup(
-        'sposobKontaktovania',
-        {
-          type: 'string',
-          title: 'Akou cestou chcete byť kontaktovaný?',
-          required: true,
-          items: [
-            { value: 'email', label: 'E-mailom', isDefault: true },
-            { value: 'telefon', label: 'Telefonicky' },
-          ],
-        },
-        { variant: 'boxed', orientations: 'column' },
-      ),
-      conditionalFields(createCondition([[['sposobKontaktovania'], { const: 'email' }]]), [
-        input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-      ]),
-      conditionalFields(createCondition([[['sposobKontaktovania'], { const: 'telefon' }]]), [
-        input(
-          'telefon',
-          { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
-          {
-            size: 'medium',
-            helptext:
-              'Zadajte platné slovenské telefónne číslo v tvare +421 alebo si zvoľte kontaktovanie e-mailom.',
-          },
-        ),
-      ]),
+      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
     ]),
   ]),
 ])
@@ -145,19 +118,16 @@ export const kontaktnyFormularPaasExtractTechnicalSubject: SchemalessFormDataExt
 
 type ExtractEmailFormData = {
   udaje: {
-    kontaktneUdaje:
-      | { sposobKontaktovania: 'email'; email: string }
-      | { sposobKontaktovania: 'telefon' }
+    kontaktneUdaje: {
+      email: string
+    }
   }
 }
 
 export const kontaktnyFormularPaasExtractEmail: SchemalessFormDataExtractor<ExtractEmailFormData> =
   {
     type: 'schemaless',
-    extractFn: (formData) =>
-      formData.udaje.kontaktneUdaje.sposobKontaktovania === 'email'
-        ? formData.udaje.kontaktneUdaje.email
-        : '',
+    extractFn: (formData) => formData.udaje.kontaktneUdaje.email,
   }
 
 type ExtractNameFormData = {

@@ -429,18 +429,6 @@ exports[`getSummaryJsonBrowser > kontaktnyFormularPaasExample1 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "E-mailom",
-            },
-          ],
-          "id": "root_udaje_kontaktneUdaje_sposobKontaktovania",
-          "label": "Akou cestou chcete byť kontaktovaný?",
-          "type": "Field",
-          "value": "email",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
               "value": "jan.kovac@priklad.sk",
             },
           ],
@@ -517,25 +505,13 @@ exports[`getSummaryJsonBrowser > kontaktnyFormularPaasExample2 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "Telefonicky",
+              "value": "marta.novakova@priklad.sk",
             },
           ],
-          "id": "root_udaje_kontaktneUdaje_sposobKontaktovania",
-          "label": "Akou cestou chcete byť kontaktovaný?",
+          "id": "root_udaje_kontaktneUdaje_email",
+          "label": "E-mail",
           "type": "Field",
-          "value": "telefon",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "+421902123456",
-            },
-          ],
-          "id": "root_udaje_kontaktneUdaje_telefon",
-          "label": "Telefónne číslo",
-          "type": "Field",
-          "value": "+421902123456",
+          "value": "marta.novakova@priklad.sk",
         },
       ],
       "id": "root_udaje",

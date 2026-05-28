@@ -9,8 +9,7 @@ const exampleForm: ExampleForm = {
         'Navrhujem rozšíriť parkovaciu zónu o ulicu pri obchodnom centre, kde je problém s parkovaním pre rezidentov.',
       kontaktneUdaje: {
         menoPriezviskoObchodneMeno: 'Marta Nováková',
-        sposobKontaktovania: 'telefon',
-        telefon: '+421902123456',
+        email: 'marta.novakova@priklad.sk',
       },
     },
   },

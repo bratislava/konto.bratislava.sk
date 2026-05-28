@@ -41201,9 +41201,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
 exports[`Form definitions > paas-kontaktny-formular-paas > default form state should match snapshot 1`] = `
 {
   "udaje": {
-    "kontaktneUdaje": {
-      "sposobKontaktovania": "email",
-    },
+    "kontaktneUdaje": {},
     "prilohy": [],
   },
 }
@@ -41317,76 +41315,6 @@ exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapsh
               "type": "string",
             },
             "kontaktneUdaje": {
-              "allOf": [
-                {
-                  "if": {
-                    "properties": {
-                      "sposobKontaktovania": {
-                        "const": "email",
-                      },
-                    },
-                    "required": [
-                      "sposobKontaktovania",
-                    ],
-                    "type": "object",
-                  },
-                  "then": {
-                    "properties": {
-                      "email": {
-                        "baOrder": 3,
-                        "baUiSchema": {
-                          "ui:options": {
-                            "inputType": "email",
-                          },
-                          "ui:widget": "Input",
-                        },
-                        "format": "email",
-                        "title": "E-mail",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "email",
-                    ],
-                    "type": "object",
-                  },
-                },
-                {
-                  "if": {
-                    "properties": {
-                      "sposobKontaktovania": {
-                        "const": "telefon",
-                      },
-                    },
-                    "required": [
-                      "sposobKontaktovania",
-                    ],
-                    "type": "object",
-                  },
-                  "then": {
-                    "properties": {
-                      "telefon": {
-                        "baOrder": 4,
-                        "baUiSchema": {
-                          "ui:options": {
-                            "helptext": "Zadajte platné slovenské telefónne číslo v tvare +421 alebo si zvoľte kontaktovanie e-mailom.",
-                            "inputType": "tel",
-                            "size": "medium",
-                          },
-                          "ui:widget": "Input",
-                        },
-                        "format": "ba-slovak-phone-number",
-                        "title": "Telefónne číslo",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "telefon",
-                    ],
-                    "type": "object",
-                  },
-                },
-              ],
               "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
@@ -41394,6 +41322,18 @@ exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapsh
                 },
               },
               "properties": {
+                "email": {
+                  "baOrder": 2,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "inputType": "email",
+                    },
+                    "ui:widget": "Input",
+                  },
+                  "format": "email",
+                  "title": "E-mail",
+                  "type": "string",
+                },
                 "menoPriezviskoObchodneMeno": {
                   "baOrder": 1,
                   "baUiSchema": {
@@ -41406,37 +41346,10 @@ exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapsh
                   "title": "Meno a priezvisko / Obchodné meno",
                   "type": "string",
                 },
-                "sposobKontaktovania": {
-                  "baOrder": 2,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "enumMetadata": [
-                        {
-                          "label": "E-mailom",
-                          "value": "email",
-                        },
-                        {
-                          "label": "Telefonicky",
-                          "value": "telefon",
-                        },
-                      ],
-                      "orientations": "column",
-                      "variant": "boxed",
-                    },
-                    "ui:widget": "RadioGroup",
-                  },
-                  "default": "email",
-                  "enum": [
-                    "email",
-                    "telefon",
-                  ],
-                  "title": "Akou cestou chcete byť kontaktovaný?",
-                  "type": "string",
-                },
               },
               "required": [
                 "menoPriezviskoObchodneMeno",
-                "sposobKontaktovania",
+                "email",
               ],
               "type": "object",
             },

@@ -11,7 +11,6 @@ const exampleForm: ExampleForm = {
       prilohy: ['b1feb5ae-da31-4619-a735-c3389dc9e17b'],
       kontaktneUdaje: {
         menoPriezviskoObchodneMeno: 'Ján Kováč',
-        sposobKontaktovania: 'email',
         email: 'jan.kovac@priklad.sk',
       },
     },

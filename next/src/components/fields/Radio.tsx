@@ -25,7 +25,7 @@ const Radio = ({
     {...rest}
     className={({ isSelected, isDisabled, isInvalid }) =>
       cn(
-        'group flex w-full cursor-pointer gap-3 rounded-lg text-size-p-small-r lg:text-size-p-small',
+        'group flex w-full cursor-pointer gap-3 rounded-lg text-size-p-small-r base-focus-ring lg:text-size-p-small',
         {
           'items-center': variant === 'basic',
           'flex-col items-start': variant === 'card',
@@ -47,7 +47,7 @@ const Radio = ({
       )
     }
   >
-    {({ isSelected, isDisabled, isInvalid, isFocusVisible }) => (
+    {({ isSelected, isDisabled, isInvalid }) => (
       <>
         <div
           className={cn(
@@ -56,7 +56,7 @@ const Radio = ({
             {
               'border-border-error': isInvalid && !isDisabled,
               'opacity-50': isDisabled,
-              'ring-2 ring-offset-2': isFocusVisible,
+              // 'ring-2 ring-offset-2': isFocusVisible,
             },
           )}
         >

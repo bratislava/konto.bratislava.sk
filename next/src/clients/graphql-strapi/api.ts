@@ -20,6 +20,7 @@ export type Scalars = {
   Int: { input: number; output: number }
   Float: { input: number; output: number }
   DateTime: { input: any; output: any }
+  FormLandingPageSectionsDynamicZoneInput: { input: any; output: any }
   JSON: { input: any; output: any }
 }
 
@@ -104,6 +105,7 @@ export type ComponentBlocksFormLandingPage = {
   formCta: ComponentBlocksFormLandingPageFormCta
   id: Scalars['ID']['output']
   linkCtas?: Maybe<Array<Maybe<ComponentBlocksFormLandingPageLinkCta>>>
+  sections?: Maybe<Array<Maybe<FormLandingPageSectionsDynamicZone>>>
   text?: Maybe<Scalars['String']['output']>
 }
 
@@ -150,6 +152,7 @@ export type ComponentBlocksFormLandingPageInput = {
   formCta?: InputMaybe<ComponentBlocksFormLandingPageFormCtaInput>
   id?: InputMaybe<Scalars['ID']['input']>
   linkCtas?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageLinkCtaInput>>>
+  sections?: InputMaybe<Array<Scalars['FormLandingPageSectionsDynamicZoneInput']['input']>>
   text?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -252,6 +255,12 @@ export type ComponentGeneralAlertInput = {
   id?: InputMaybe<Scalars['ID']['input']>
 }
 
+export type ComponentSectionsRichtext = {
+  __typename?: 'ComponentSectionsRichtext'
+  content?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+}
+
 export type DateTimeFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>
   between?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>
@@ -322,6 +331,12 @@ export enum Enum_Municipalservice_Icon {
   Transport = 'transport',
   Waste = 'waste',
   Zoo = 'zoo',
+}
+
+export type Error = {
+  __typename?: 'Error'
+  code: Scalars['String']['output']
+  message?: Maybe<Scalars['String']['output']>
 }
 
 export type FileInfoInput = {
@@ -426,6 +441,8 @@ export type FormInput = {
   slug?: InputMaybe<Scalars['String']['input']>
 }
 
+export type FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
+
 export type General = {
   __typename?: 'General'
   alerts?: Maybe<Array<Maybe<ComponentGeneralAlert>>>
@@ -455,6 +472,7 @@ export type GenericMorph =
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
+  | ComponentSectionsRichtext
   | Footer
   | Form
   | General
@@ -1922,6 +1940,11 @@ export type FormLandingPageFragment = {
     text?: string | null
     buttonLabel: string
   }
+  sections?: Array<
+    | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+    | { __typename: 'Error' }
+    | null
+  > | null
 }
 
 export type FormBaseFragment = {
@@ -1951,6 +1974,11 @@ export type FormWithLandingPageFragment = {
       text?: string | null
       buttonLabel: string
     }
+    sections?: Array<
+      | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+      | { __typename: 'Error' }
+      | null
+    > | null
   } | null
 }
 
@@ -1996,6 +2024,11 @@ export type FormWithLandingPageBySlugQuery = {
         text?: string | null
         buttonLabel: string
       }
+      sections?: Array<
+        | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+        | { __typename: 'Error' }
+        | null
+      > | null
     } | null
   } | null>
 }
@@ -2276,6 +2309,22 @@ export type MunicipalServicesPageQuery = {
   } | null
 }
 
+export type RichTextSectionFragment = {
+  __typename?: 'ComponentSectionsRichtext'
+  content?: string | null
+}
+
+type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
+  __typename: 'ComponentSectionsRichtext'
+  content?: string | null
+}
+
+type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
+
+export type FormLandingPageSectionsFragment =
+  | FormLandingPageSections_ComponentSectionsRichtext_Fragment
+  | FormLandingPageSections_Error_Fragment
+
 export type TaxFragment = {
   __typename?: 'Tax'
   documentId: string
@@ -2333,6 +2382,20 @@ export const FormLandingPageFormCtaFragmentDoc = gql`
     buttonLabel
   }
 `
+export const RichTextSectionFragmentDoc = gql`
+  fragment RichTextSection on ComponentSectionsRichtext {
+    content
+  }
+`
+export const FormLandingPageSectionsFragmentDoc = gql`
+  fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
+    __typename
+    ... on ComponentSectionsRichtext {
+      ...RichTextSection
+    }
+  }
+  ${RichTextSectionFragmentDoc}
+`
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {
     text
@@ -2342,9 +2405,13 @@ export const FormLandingPageFragmentDoc = gql`
     formCta {
       ...FormLandingPageFormCta
     }
+    sections {
+      ...FormLandingPageSections
+    }
   }
   ${FormLandingPageLinkCtaFragmentDoc}
   ${FormLandingPageFormCtaFragmentDoc}
+  ${FormLandingPageSectionsFragmentDoc}
 `
 export const FormWithLandingPageFragmentDoc = gql`
   fragment FormWithLandingPage on Form {

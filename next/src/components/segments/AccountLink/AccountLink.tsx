@@ -1,6 +1,6 @@
 import { Typography } from '@bratislava/component-library'
-import Link, { LinkProps } from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
+import Link, { LinkProps } from 'next/link'
 
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { ROUTES } from '@/src/utils/routes'
@@ -43,7 +43,7 @@ const AccountLink = ({ variant }: Props) => {
       </Typography>
       <Link
         href={href}
-        className="font-semibold text-gray-700 underline hover:text-gray-600 focus:text-gray-800"
+        className="rounded-xs font-semibold text-gray-700 underline base-focus-ring hover:text-gray-600 focus:text-gray-800"
       >
         {label}
       </Link>

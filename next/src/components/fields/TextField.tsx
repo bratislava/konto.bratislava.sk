@@ -41,7 +41,7 @@ const TextField = (
     {...rest}
     isInvalid={!!errorMessage}
     validationBehavior="aria"
-    className={cn('flex w-full flex-col gap-2', rest.className)}
+    className={cn('flex w-full flex-col gap-2 base-focus-ring', rest.className)}
   >
     <FieldWrapper
       label={label}
@@ -63,7 +63,7 @@ const TextField = (
           data-cy={rest.name ? `input-${rest.name}` : undefined}
           className={({ isFocused, isDisabled, isInvalid }) =>
             cn(
-              'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
+              'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
               'px-3 py-2 lg:px-4 lg:py-3',
               'placeholder:text-content-passive-tertiary',
               {

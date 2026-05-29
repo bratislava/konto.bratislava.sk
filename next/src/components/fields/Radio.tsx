@@ -56,7 +56,6 @@ const Radio = ({
             {
               'border-border-error': isInvalid && !isDisabled,
               'opacity-50': isDisabled,
-              // 'ring-2 ring-offset-2': isFocusVisible,
             },
           )}
         >

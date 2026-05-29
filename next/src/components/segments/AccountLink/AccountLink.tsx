@@ -1,6 +1,6 @@
 import { Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next/pages'
 import Link, { LinkProps } from 'next/link'
+import { useTranslation } from 'next-i18next/pages'
 
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { ROUTES } from '@/src/utils/routes'

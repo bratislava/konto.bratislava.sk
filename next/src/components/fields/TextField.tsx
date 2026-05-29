@@ -41,7 +41,7 @@ const TextField = (
     {...rest}
     isInvalid={!!errorMessage}
     validationBehavior="aria"
-    className={cn('flex w-full flex-col gap-2 base-focus-ring', rest.className)}
+    className={cn('flex w-full flex-col gap-2', rest.className)}
   >
     <FieldWrapper
       label={label}

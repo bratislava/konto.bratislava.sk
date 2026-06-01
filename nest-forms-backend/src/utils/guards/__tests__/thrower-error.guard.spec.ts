@@ -1,10 +1,10 @@
+import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { AxiosError, AxiosHeaders, InternalAxiosRequestConfig } from 'axios'
 
 import { ErrorsEnum, ErrorsResponseEnum } from '../../global-enums/errors.enum'
 import { ErrorSymbols, ResponseErrorInternalDto } from '../dtos/error.dto'
 import ThrowerErrorGuard from '../thrower-error.guard'
-import { AxiosError, AxiosHeaders, InternalAxiosRequestConfig } from 'axios'
-import { HttpStatus } from '@nestjs/common'
 
 describe('ThrowerErrorGuard', () => {
   let guard: ThrowerErrorGuard

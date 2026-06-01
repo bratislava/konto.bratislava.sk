@@ -3,8 +3,8 @@ import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components/Tooltip'
 
-import { HelpIcon } from '@/src/assets/ui-icons'
 import Markdown from '@/src/components/formatting/Markdown'
+import Icon from '@/src/components/icon-components/Icon'
 import HorizontalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@/src/components/simple-components/Tooltip/tooltip-vertical-arrow.svg'
 import cn from '@/src/utils/cn'
@@ -74,7 +74,7 @@ const BATooltip = ({ placement, children }: BATooltipProps) => {
         variant="icon-wrapped-negative-margin"
         // className="-m-1.5 flex cursor-pointer items-center justify-center rounded-lg p-1.5"
         aria-label={t('Tooltip.aria.tooltip')}
-        icon={<HelpIcon className="size-5 lg:size-6" />}
+        icon={<Icon name="help" className="size-5 lg:size-6" />}
         // If the tooltip is open, and we click on it, it's first closed and then onPress is triggered, onPressStart
         // is triggered before the tooltip is closed, so it won't reopen again.
         onPressStart={() => {

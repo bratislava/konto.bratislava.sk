@@ -92,12 +92,6 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     >,
   ): Promise<void> {
     await this.prismaService.$transaction(async (tx) => {
-      await tx.taxInstallment.deleteMany({
-        where: {
-          taxId: existingTax.id,
-        },
-      })
-
       const userFromCityAccount: ResponseUserByBirthNumberDto | null =
         userDataFromCityAccount[norisItem.ICO_RC] || null
 
@@ -433,7 +427,21 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
       update: taxPayerData,
     })
 
-    if (taxAdministrator?.id) {
+    const existsNewerTax = await transaction.tax.findFirst({
+      select: {
+        id: true,
+      },
+      where: {
+        taxPayer: {
+          birthNumber: dataFromNoris.ICO_RC,
+        },
+        dateCreateTax: {
+          gt: dataFromNoris.datum_realizacie,
+        },
+        type: taxDefinition.type,
+      },
+    })
+    if (taxAdministrator?.id && !existsNewerTax) {
       const taxPayerTaxAdministratorData = {
         taxPayerId: taxPayer.id,
         taxAdministratorId: taxAdministrator.id,
@@ -492,9 +500,20 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     })
 
     const taxInstallments = mapNorisToTaxInstallmentsData(dataFromNoris, tax.id)
-    await transaction.taxInstallment.deleteMany({ where: { taxId: tax.id } })
-    await transaction.taxInstallment.createMany({
-      data: taxInstallments,
+    await Promise.all(
+      taxInstallments.map(async (installment) =>
+        transaction.taxInstallment.upsert({
+          where: { taxId_order: { taxId: tax.id, order: installment.order } },
+          create: installment,
+          update: { amount: installment.amount, dueDate: installment.dueDate },
+        }),
+      ),
+    )
+    await transaction.taxInstallment.deleteMany({
+      where: {
+        taxId: tax.id,
+        order: { notIn: taxInstallments.map((i) => i.order) },
+      },
     })
 
     await transaction.taxImportAttempt.upsert({
@@ -519,7 +538,7 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     return tax
   }
 
-  protected readonly processTaxRecordFromNoris = async (
+  private readonly processTaxRecordFromNoris = async (
     taxDefinition: TaxDefinition<TTaxType>,
     birthNumbersResult: Set<string>,
     norisItem: TaxTypeToNorisData[TTaxType],

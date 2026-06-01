@@ -1,5 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
@@ -23,11 +22,18 @@ import {
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FormFilesReadyResultDto } from '../files/files.dto'
+import {
+  FilesErrorsEnum,
+  FilesErrorsResponseEnum,
+} from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
+import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import {
@@ -36,7 +42,6 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
-import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -52,31 +57,34 @@ import {
 } from './dtos/requests.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
-import NasesUtilsService from './utils-services/tokens.nases.service'
+import NasesSenderService from './services/nases.sender.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
 @Injectable()
 export default class NasesService {
   private readonly logger: LineLoggerSubservice
 
-  private readonly versioningEnabled: boolean
-
   constructor(
     private readonly formsService: FormsService,
     private readonly filesService: FilesService,
     private readonly rabbitmqClientService: RabbitmqClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly nasesSenderService: NasesSenderService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly configService: ConfigService,
     private readonly clientsService: ClientsService,
     private readonly convertPdfService: ConvertPdfService,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
-    this.versioningEnabled =
-      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
-      'true'
+  }
+
+  createUserJwtToken(oboToken: string): string {
+    return this.apiJwtTokensService.createUserJwtToken(
+      oboToken,
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
+    )
   }
 
   async getUpvsIdentity(
@@ -205,14 +213,32 @@ export default class NasesService {
     }
   }
 
-  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
+  async sendForm(
+    formId: string,
+    data: UpdateFormRequestDto,
+    user: User,
+  ): Promise<SendFormResponseDto> {
+    await this.updateForm(formId, data, user)
+
     const form = await this.formsService.checkFormBeforeSending(formId)
+    // All extra files should be already deleted at this point and remaining files should be SAFE.
+
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
+    }
+
+    // File size check at submission time — this is the authoritative point because
+    // the set of files is only final after the form data has been updated and extra
+    // files deleted. All files at this point are expected to be in SAFE state.
+    if (
+      this.baConfigService.featureToggles.fileSizeLimits &&
+      formDefinition.files
+    ) {
+      await this.enforceFileSizeConstraints(formId, formDefinition.files)
     }
 
     const evaluatedSendPolicy = evaluateFormSendPolicy(
@@ -235,7 +261,7 @@ export default class NasesService {
     }
 
     if (
-      this.versioningEnabled &&
+      this.baConfigService.featureToggles.versioning &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -300,7 +326,7 @@ export default class NasesService {
     }
 
     const shouldBumpJsonVersion =
-      !this.versioningEnabled ||
+      !this.baConfigService.featureToggles.versioning ||
       versionCompareBumpDuringSend({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -322,6 +348,87 @@ export default class NasesService {
     }
   }
 
+  private async enforceFileSizeConstraints(
+    formId: string,
+    formDefinitionFiles: NonNullable<FormDefinition['files']>,
+  ) {
+    const safeFiles = await this.filesService.getActiveFileSizes(formId)
+
+    this.enforceFormCumulativeSize(safeFiles, formDefinitionFiles)
+    this.enforcePerSlotConstraints(safeFiles, formDefinitionFiles)
+  }
+
+  private enforceFormCumulativeSize(
+    safeFiles: { id: string; slotId: string | null; fileSize: number }[],
+    formDefinitionFiles: NonNullable<FormDefinition['files']>,
+  ) {
+    const totalFileSize = safeFiles.reduce((sum, f) => sum + f.fileSize, 0)
+    const maxTotalFileSize =
+      formDefinitionFiles.maxTotalFileSize ??
+      this.baConfigService.fileLimits.maxCumulativeSizeGlobal
+    if (totalFileSize > maxTotalFileSize) {
+      throw this.throwerErrorGuard.BadRequestException(
+        FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+        `${FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR} Total: ${totalFileSize}, limit: ${maxTotalFileSize}`,
+      )
+    }
+  }
+
+  /**
+   * Per-slot checks (cumulative size + per-file size). Files with null slotId
+   * were uploaded before slots existed; they only contribute to the form-level total.
+   */
+  private enforcePerSlotConstraints(
+    safeFiles: { id: string; slotId: string | null; fileSize: number }[],
+    formDefinitionFiles: NonNullable<FormDefinition['files']>,
+  ) {
+    const slotsById = new Map(
+      formDefinitionFiles.slots.map((s) => [s.slotId, s]),
+    )
+    const filesBySlot = new Map<string, { id: string; fileSize: number }[]>()
+    for (const file of safeFiles) {
+      if (file.slotId === null) continue
+      const list = filesBySlot.get(file.slotId) ?? []
+      list.push({ id: file.id, fileSize: file.fileSize })
+      filesBySlot.set(file.slotId, list)
+    }
+
+    for (const [slotId, slotFiles] of filesBySlot) {
+      const slot = slotsById.get(slotId)
+      if (!slot) continue
+      this.enforceSingleSlotConstraints(slotId, slotFiles, slot)
+    }
+  }
+
+  private enforceSingleSlotConstraints(
+    slotId: string,
+    slotFiles: { id: string; fileSize: number }[],
+    slot: NonNullable<FormDefinition['files']>['slots'][number],
+  ) {
+    const { maxFileSize, maxTotalFileSize } = slot
+    if (maxFileSize !== undefined) {
+      const oversized = slotFiles.find((f) => f.fileSize > maxFileSize)
+      if (oversized) {
+        throw this.throwerErrorGuard.BadRequestException(
+          FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,
+          FilesErrorsResponseEnum.FILE_SIZE_EXCEEDED_ERROR,
+          `Slot: ${slotId}, fileId: ${oversized.id}, size: ${oversized.fileSize}, limit: ${maxFileSize}`,
+        )
+      }
+    }
+
+    if (maxTotalFileSize !== undefined) {
+      const slotTotalSize = slotFiles.reduce((sum, f) => sum + f.fileSize, 0)
+      if (slotTotalSize > maxTotalFileSize) {
+        throw this.throwerErrorGuard.BadRequestException(
+          FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
+          `Slot: ${slotId}, total: ${slotTotalSize}, limit: ${maxTotalFileSize}`,
+        )
+      }
+    }
+  }
+
   // eslint-disable-next-line sonarjs/cognitive-complexity
   async sendFormEid(
     id: string,
@@ -330,7 +437,7 @@ export default class NasesService {
     user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
-    const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
+    const jwt = this.createUserJwtToken(oboToken)
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -395,7 +502,7 @@ export default class NasesService {
     }
 
     if (
-      this.versioningEnabled &&
+      this.baConfigService.featureToggles.versioning &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -447,7 +554,7 @@ export default class NasesService {
     this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
     const shouldBumpJsonVersion =
-      !this.versioningEnabled ||
+      !this.baConfigService.featureToggles.versioning ||
       versionCompareBumpDuringSend({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -560,12 +667,8 @@ export default class NasesService {
     senderUri: string,
     additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<void> {
-    // sendMessageNases is implemented in a way that it does not throw. Therefore this is not in try-catch block.
-    const sendData = await this.nasesUtilsService.sendMessageNases(
-      jwt,
-      form,
-      senderUri,
-    )
+    // send is implemented in a way that it does not throw. Therefore this is not in try-catch block.
+    const sendData = await this.nasesSenderService.send(jwt, form, senderUri)
 
     if (sendData.status !== HttpStatus.OK) {
       await this.formsService.updateForm(data.formId, {

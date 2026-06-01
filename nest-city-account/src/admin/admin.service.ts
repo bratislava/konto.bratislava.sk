@@ -84,7 +84,7 @@ export class AdminService {
     await Promise.all(
       cognitoUsers.map(async (user) => {
         try {
-          await this.userService.getOrCreateUserOrLegalPersonRaw(user)
+          await this.userService.upsertUserOrLegalPersonRaw(user)
         } catch (error) {
           this.logger.error(error)
         }

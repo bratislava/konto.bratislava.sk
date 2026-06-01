@@ -73,7 +73,7 @@ export default class NotificationsEventsService {
           AND ti2."order" <= ti."order"
         GROUP BY ti."taxId", ti."order"
       )
-      SELECT t."id" as taxId, ti_check."dueDate" as dueDate, ti_check."order" as order, ti_check."id" as id
+      SELECT t."id" as "taxId", ti_check."dueDate" as "dueDate", ti_check."order" as "order", ti_check."id" as "id"
       FROM "Tax" t
       JOIN "TaxInstallment" ti_check
         ON ti_check."taxId" = t.id
@@ -158,6 +158,7 @@ export default class NotificationsEventsService {
         const eventData = {
           year: tax.year,
           tax_type: tax.type,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- tax.order is guaranteed to be not null by database constraint
           order: tax.order!,
           installment_order: installmentInfo.order,
           due_date_type: dueDateType,
@@ -225,7 +226,9 @@ export default class NotificationsEventsService {
     await this.prismaService.taxInstallment.updateMany({
       where: {
         ...baseWhere,
-        bloomreachUnpaidReminderSent: { not: alreadyOtherSent },
+        bloomreachUnpaidReminderSent: {
+          notIn: [alreadyOtherSent, UnpaidReminderSent.BOTH],
+        },
       },
       data: { bloomreachUnpaidReminderSent: newReminderSent },
     })
@@ -347,6 +350,7 @@ export default class NotificationsEventsService {
           {
             year: tax.year,
             tax_type: tax.type,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- tax.order is guaranteed to be not null by database constraint
             order: tax.order!,
             installment_order: 1,
             due_date_type: INSTALLMENT_DUE_DATE_TYPE.PAST,

@@ -4,6 +4,7 @@ import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
+import { createTestNorisCommunalWasteTaxGrouped } from '../../subservices/__tests__/factories/noris-communal-waste-tax-grouped.factory'
 import {
   AreaTypesEnum,
   DeliveryMethod,
@@ -382,7 +383,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
   const baseMockData: NorisBaseTax = {
     dan_spolu: '150,50',
     variabilny_symbol: '2024000123',
-    akt_datum: '2024-01-15',
+    datum_realizacie: new Date('2024-01-15'),
     datum_platnosti: new Date('2024-02-01'),
     cislo_konania: 'KON-2024-001',
     stav_dokladu: 'Z',
@@ -397,7 +398,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
       year: 2024,
       taxPayerId: 42,
       variableSymbol: '2024000123',
-      dateCreateTax: '2024-01-15',
+      dateCreateTax: new Date('2024-01-15'),
       dateTaxRuling: new Date('2024-02-01'),
       taxId: 'KON-2024-001',
       isCancelled: false,
@@ -460,12 +461,6 @@ describe('mapNorisToDatabaseBaseTax', () => {
     expect(result2.taxPayerId).toBe(999)
   })
 
-  it('should handle null dateCreateTax (akt_datum)', () => {
-    const data = { ...baseMockData, akt_datum: null } as NorisBaseTax
-    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
-    expect(result.dateCreateTax).toBeNull()
-  })
-
   it('should handle null dateTaxRuling (datum_platnosti)', () => {
     const data = { ...baseMockData, datum_platnosti: null } as NorisBaseTax
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
@@ -512,9 +507,9 @@ describe('mapDeliveryMethodToNoris', () => {
   })
 
   it('should throw an error for unknown delivery method', () => {
-    expect(() => mapDeliveryMethodToNoris('UNKNOWN' as any)).toThrow(
-      'Unknown delivery method: UNKNOWN',
-    )
+    expect(() =>
+      mapDeliveryMethodToNoris('UNKNOWN' as unknown as DeliveryMethod),
+    ).toThrow('Unknown delivery method: UNKNOWN')
   })
 })
 
@@ -974,7 +969,7 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
   })
 
   it('should handle empty containers array', () => {
-    const mockData = {
+    const mockData = createTestNorisCommunalWasteTaxGrouped({
       addresses: [
         {
           addressDetail: {
@@ -984,7 +979,7 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
           containers: [],
         },
       ],
-    } as unknown as NorisCommunalWasteTaxGrouped
+    })
 
     const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
 
@@ -993,9 +988,9 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
   })
 
   it('should handle empty addresses array', () => {
-    const mockData = {
+    const mockData = createTestNorisCommunalWasteTaxGrouped({
       addresses: [],
-    } as unknown as NorisCommunalWasteTaxGrouped
+    })
 
     const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
 

@@ -21,11 +21,8 @@ describe('testing-tax-mock', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    mockRandomBytes.mockReturnValue(
-      Buffer.from('abcd1234', 'hex') as unknown as ReturnType<
-        typeof randomBytes
-      >,
+    ;(mockRandomBytes as jest.Mock).mockReturnValue(
+      Buffer.from('abcd1234', 'hex'),
     )
 
     mockTaxAdministrator = {
@@ -208,14 +205,14 @@ describe('testing-tax-mock', () => {
         expect(result.subjekt_refer).toBe('123456789')
       })
 
-      it('should set akt_datum to current date in YYYY-MM-DD format', () => {
+      it('should set datum_realizacie to current date', () => {
         const result = createTestingRealEstateTaxMock(
           mockNorisData,
           mockTaxAdministrator,
           2024,
         )
 
-        expect(result.akt_datum).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+        expect(result.datum_realizacie).toBeInstanceOf(Date)
       })
 
       it('should populate tax detail fields with mock numeric values', () => {
@@ -459,14 +456,14 @@ describe('testing-tax-mock', () => {
         expect(result.subjekt_refer).toBe('123456789')
       })
 
-      it('should set akt_datum to current date in YYYY-MM-DD format', () => {
+      it('should set datum_realizacie to current date', () => {
         const result = createTestingCommunalWasteTaxMock(
           mockNorisData,
           mockTaxAdministrator,
           2024,
         )
 
-        expect(result.akt_datum).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+        expect(result.datum_realizacie).toBeInstanceOf(Date)
       })
     })
   })

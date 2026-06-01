@@ -5,13 +5,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
 import {
   ApiBasicAuth,
   ApiBearerAuth,
@@ -35,6 +35,7 @@ import {
   FormAccessGuard,
 } from '../forms-v2/guards/form-access.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { FileUploadInterceptor } from './file-upload.interceptor'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
@@ -131,13 +132,14 @@ export default class FilesController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
   @Post('upload/:formId')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileUploadInterceptor)
   async uploadFile(
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
+    @Query('slotId') slotId?: string,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(formId, file, body)
+    return this.filesService.uploadFile(formId, file, body, slotId ?? null)
   }
 
   @ApiOperation({

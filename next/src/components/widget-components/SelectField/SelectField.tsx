@@ -11,8 +11,8 @@ import Select, {
   Props as ReactSelectProps,
 } from 'react-select'
 
-import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
 import CheckboxIcon from '@/src/components/icon-components/CheckboxIcon'
+import Icon from '@/src/components/icon-components/Icon'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import cn from '@/src/utils/cn'
 
@@ -30,7 +30,8 @@ const DropdownIndicator = <
   return (
     // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.DropdownIndicator {...props}>
-      <ChevronDownIcon
+      <Icon
+        name="chevron-down"
         data-cy="dropdown-close"
         className={cn({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })}
       />
@@ -48,7 +49,7 @@ const ClearIndicator = <
   return (
     // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.ClearIndicator {...props}>
-      <CrossIcon />
+      <Icon name="close" />
     </components.ClearIndicator>
   )
 }
@@ -57,7 +58,7 @@ const MultiValueRemove = (props: MultiValueRemoveProps) => {
   return (
     // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.MultiValueRemove {...props}>
-      <CrossIcon />
+      <Icon name="close" />
     </components.MultiValueRemove>
   )
 }
@@ -90,7 +91,7 @@ const CustomOption = <
           {isMulti ? (
             <CheckboxIcon checked={isSelected} />
           ) : isSelected ? (
-            <CheckInCircleIcon />
+            <Icon name="check-circle" />
           ) : null}
         </div>
       </components.Option>

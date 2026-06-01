@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { Switch as RACSwitch, SwitchProps as RACSwitchProps } from 'react-aria-components/Switch'
 
-import { CheckIcon, CrossIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 export interface ToggleProps extends Omit<RACSwitchProps, 'children'> {
@@ -33,9 +33,12 @@ const Toggle = ({ children, className, ...rest }: ToggleProps) => (
           )}
         >
           {isSelected ? (
-            <CheckIcon className="absolute left-1.5 size-4 text-background-passive-base" />
+            <Icon name="check" className="absolute left-1.5 size-4 text-background-passive-base" />
           ) : (
-            <CrossIcon className="absolute right-1.5 size-4 text-content-passive-tertiary" />
+            <Icon
+              name="close"
+              className="absolute right-1.5 size-4 text-content-passive-tertiary"
+            />
           )}
           <div
             className={cn(

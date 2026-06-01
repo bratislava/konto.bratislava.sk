@@ -1,13 +1,16 @@
 import stanoviskoKInvesticnemuZameru, {
   stanoviskoKInvesticnemuZameruExtractPlainSubject,
   stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
+  stanoviskoKInvesticnemuZameruFiles,
 } from '../schemas/stanoviskoKInvesticnemuZameru'
 import predzahradky, {
   predzahradkyExtractPlainSubject,
   predzahradkyExtractTechnicalSubject,
+  predzahradkyFiles,
 } from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti, {
   priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+  priznanieKDaniZNehnutelnostiFiles,
 } from '../schemas/priznanieKDaniZNehnutelnosti'
 import {
   generalTermsAndConditions,
@@ -19,10 +22,12 @@ import {
 import zavazneStanoviskoKInvesticnejCinnosti, {
   zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
   zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
+  zavazneStanoviskoKInvesticnejCinnostiFiles,
 } from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady, {
   komunitneZahradyExtractPlainSubject,
   komunitneZahradyExtractTechnicalSubject,
+  komunitneZahradyFiles,
 } from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
@@ -43,11 +48,16 @@ import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom, {
   odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
   odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
 } from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
-import koloTaxi, { koloTaxiExtractEmail, koloTaxiExtractName } from '../schemas/olo/koloTaxi'
+import koloTaxi, {
+  koloTaxiExtractEmail,
+  koloTaxiExtractName,
+  koloTaxiFiles,
+} from '../schemas/olo/koloTaxi'
 import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName } from '../schemas/olo/oloTaxi'
 import podnetyAPochvalyObcanov, {
   podnetyAPochvalyObcanovExtractEmail,
   podnetyAPochvalyObcanovExtractName,
+  podnetyAPochvalyObcanovFiles,
 } from '../schemas/olo/podnetyAPochvalyObcanov'
 import odvozObjemnehoOdpaduValnikom, {
   odvozObjemnehoOdpaduValnikomExtractEmail,
@@ -61,43 +71,58 @@ import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
-import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoShared'
+import {
+  energetickeZhodnotenieOdpaduVZevoFiles,
+  zevoExtractEmail,
+  zevoExtractName,
+} from '../schemas/olo/shared/zevoShared'
 import objednavkaInformativnehoZakresuSieti, {
   objednavkaInformativnehoZakresuSietiExtractEmail,
   objednavkaInformativnehoZakresuSietiExtractName,
   objednavkaInformativnehoZakresuSietiExtractTechnicalSubject,
+  objednavkaInformativnehoZakresuSietiFiles,
 } from '../schemas/tsb/objednavkaInformativnehoZakresuSieti'
 import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia, {
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
   objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractTechnicalSubject,
+  objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaFiles,
 } from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
 import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia, {
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
   ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractTechnicalSubject,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles,
 } from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
 import ziadostOStanoviskoKProjektovejDokumentacii, {
   ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
   ziadostOStanoviskoKProjektovejDokumentaciiExtractTechnicalSubject,
+  ziadostOStanoviskoKProjektovejDokumentaciiFiles,
 } from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
-import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
+import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady, {
+  oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles,
+} from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
-import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPristupKInformaciam'
+import ziadostOSlobodnyPristupKInformaciam, {
+  ziadostOSlobodyPristupKInformaciamFiles,
+} from '../schemas/ziadostOSlobodnyPristupKInformaciam'
 import ziadostOUzemnoplanovaciuInformaciu, {
+  ziadostOUzemnoplanovaciuInformaciuFiles,
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
-import webhookShowcase from '../schemas/webhookShowcase'
+import webhookShowcase, { webhookShowcaseFiles } from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
   nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress,
   nahlaseniePodnetuKElektrickymKolobezkamExtractTechnicalSubject,
+  nahlaseniePodnetuKElektrickymKolobezkamFiles,
 } from '../schemas/nahlaseniePodnetuKElektrickymKolobezkam'
 import kontaktnyFormularPaas, {
   kontaktnyFormularPaasExtractEmail,
   kontaktnyFormularPaasExtractName,
   kontaktnyFormularPaasExtractTechnicalSubject,
+  kontaktnyFormularPaasFiles,
 } from '../schemas/paas/kontaktnyFormularPaas'
 
 export const formDefinitions: FormDefinition[] = [
@@ -105,7 +130,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'stanovisko-k-investicnemu-zameru',
     title: 'Žiadosť o stanovisko k investičnému zámeru',
-    jsonVersion: '2.0.0',
+    jsonVersion: '2.0.1',
     schema: stanoviskoKInvesticnemuZameru,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.stanoviskoKInvesticnemuZameru',
@@ -123,12 +148,13 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
+    files: stanoviskoKInvesticnemuZameruFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'zavazne-stanovisko-k-investicnej-cinnosti',
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
-    jsonVersion: '3.0.0',
+    jsonVersion: '3.0.1',
     schema: zavazneStanoviskoKInvesticnejCinnosti,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',
@@ -146,12 +172,13 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
+    files: zavazneStanoviskoKInvesticnejCinnostiFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'predzahradky',
     title: 'Predzáhradky',
-    jsonVersion: '2.0.0',
+    jsonVersion: '2.0.1',
     schema: predzahradky,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedNotVerified,
     pospID: '00603481.predzahradky',
@@ -168,12 +195,13 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A381',
       ginisFunctionId: 'MAG0SF00AG9O',
     },
+    files: predzahradkyFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'komunitne-zahrady',
     title: 'Komunitné záhrady',
-    jsonVersion: '2.0.0',
+    jsonVersion: '2.0.1',
     schema: komunitneZahrady,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedNotVerified,
     pospID: '00603481.komunitneZahrady',
@@ -190,12 +218,13 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A0Q4',
       ginisFunctionId: 'MAG0SF00A93V',
     },
+    files: komunitneZahradyFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkTax,
     title: 'Priznanie k dani z nehnuteľností',
     slug: 'priznanie-k-dani-z-nehnutelnosti',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: priznanieKDaniZNehnutelnosti,
     sendPolicy: FormSendPolicy.EidSigned,
     pospID: 'esmao.eforms.bratislava.obec_024',
@@ -207,13 +236,14 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFtP1By',
+    files: priznanieKDaniZNehnutelnostiFiles,
   },
   // testing integration of new posID against GINIS&NORIS, will be removed afterwards
   {
     type: FormDefinitionType.SlovenskoSkTax,
     title: 'Priznanie k dani z nehnuteľností',
     slug: 'priznanie-k-dani-z-nehnutelnosti-test',
-    jsonVersion: '1.0.1',
+    jsonVersion: '1.0.2',
     schema: priznanieKDaniZNehnutelnosti,
     sendPolicy: FormSendPolicy.EidSigned,
     pospID: 'hmba.eforms.bratislava.obec_024',
@@ -226,12 +256,13 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: true,
     exampleFormNotRequired: true,
     skipProductionRegistrationCheck: true,
+    files: priznanieKDaniZNehnutelnostiFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'ziadost-o-najom-bytu',
     title: 'Žiadosť o nájom bytu',
-    jsonVersion: '2.0.2',
+    jsonVersion: '2.0.3',
     schema: ziadostONajomBytu,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedNotVerified,
     // pospID contains different wording because the original form was created with a different name
@@ -253,7 +284,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-mimoriadny-odvoz-a-zhodnotenie-odpadu',
     title: 'Mimoriadny odvoz a zhodnotenie odpadu',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: mimoriadnyOdvozAZhodnotenieOdpadu,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -272,7 +303,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-energeticke-zhodnotenie-odpadu-v-zevo',
     title: 'Energetické zhodnotenie odpadu v ZEVO',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.1.1',
     schema: energetickeZhodnotenieOdpaduVZevo,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -286,12 +317,13 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: energetickeZhodnotenieOdpaduVZevoFiles,
   },
   {
     type: FormDefinitionType.Email,
     slug: 'olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom',
     title: 'Uzatvorenie zmluvy o nakladaní s odpadom',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.1.1',
     schema: uzatvorenieZmluvyONakladaniSOdpadom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -310,7 +342,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-docistenie-stanovista-zbernych-nadob',
     title: 'Dočistenie stanovišťa zberných nádob',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: docisteniStanovistaZbernychNadob,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -329,7 +361,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom',
     title: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -362,6 +394,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloKoloTaxiTermsAndConditions,
     embedded: 'olo',
+    files: koloTaxiFiles,
   },
   {
     type: FormDefinitionType.Email,
@@ -400,12 +433,13 @@ export const formDefinitions: FormDefinition[] = [
     },
     termsAndConditions: oloTermsAndConditions,
     embedded: 'olo',
+    files: podnetyAPochvalyObcanovFiles,
   },
   {
     type: FormDefinitionType.Email,
     slug: 'olo-odvoz-objemneho-odpadu-valnikom',
     title: 'Odvoz objemného odpadu valníkom',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: odvozObjemnehoOdpaduValnikom,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -424,7 +458,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby',
     title: 'Triedený zber papiera, plastov a skla pre právnické osoby',
-    jsonVersion: '1.2.0',
+    jsonVersion: '1.2.1',
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -443,7 +477,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti',
     title: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.1.1',
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -462,7 +496,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-informativneho-zakresu-sieti',
     title: 'Objednávka informatívneho zákresu sietí',
-    jsonVersion: '1.0.1',
+    jsonVersion: '1.0.2',
     schema: objednavkaInformativnehoZakresuSieti,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     subject: {
@@ -484,12 +518,13 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: objednavkaInformativnehoZakresuSietiFiles,
   },
   {
     type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
     title: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     subject: {
@@ -512,12 +547,13 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaFiles,
   },
   {
     type: FormDefinitionType.Email,
     slug: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
     title: 'Žiadosť o stanovisko k projektovej dokumentácii',
-    jsonVersion: '1.0.1',
+    jsonVersion: '1.0.2',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     subject: {
@@ -539,12 +575,13 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: ziadostOStanoviskoKProjektovejDokumentaciiFiles,
   },
   {
     type: FormDefinitionType.Email,
     slug: 'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
     title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     subject: {
@@ -567,12 +604,13 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
+    files: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady',
     title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
-    jsonVersion: '1.0.1',
+    jsonVersion: '1.0.2',
     schema: oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady,
     sendPolicy: FormSendPolicy.EidSigned,
     pospID: '00603481.oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady',
@@ -585,12 +623,13 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
+    files: oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'ziadost-o-slobodny-pristup-k-informaciam',
     title: 'Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: ziadostOSlobodnyPristupKInformaciam,
     sendPolicy: FormSendPolicy.EidOrNotAuthenticated,
     pospID: '00603481.ziadostOSlobodnyPristupKInformaciam',
@@ -602,12 +641,13 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A3M3',
     },
     isSigned: false,
+    files: ziadostOSlobodyPristupKInformaciamFiles,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'ziadost-o-uzemnoplanovaciu-informaciu',
     title: 'Žiadosť o územnoplánovaciu informáciu',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: ziadostOUzemnoplanovaciuInformaciu,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.ziadostOUzemnoplanovaciuInformaciu',
@@ -624,23 +664,25 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKjwznb',
+    files: ziadostOUzemnoplanovaciuInformaciuFiles,
   },
   {
     type: FormDefinitionType.Webhook,
     slug: 'webhook-showcase',
     title: 'Webhook showcase',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: webhookShowcase,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     webhookUrl: 'https://nest-forms-backend.staging.bratislava.sk/webhook',
     termsAndConditions: generalTermsAndConditions,
     exampleFormNotRequired: true,
+    files: webhookShowcaseFiles,
   },
   {
     type: FormDefinitionType.Email,
     slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
     title: 'Nahlásenie podnetu k elektrickým kolobežkám',
-    jsonVersion: '1.0.1',
+    jsonVersion: '1.0.2',
     schema: nahlaseniePodnetuKElektrickymKolobezkam,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     subject: {
@@ -665,13 +707,15 @@ export const formDefinitions: FormDefinition[] = [
       technicalEmailSubjectAppendId: true,
     },
     termsAndConditions: generalTermsAndConditions,
+    files: nahlaseniePodnetuKElektrickymKolobezkamFiles,
   },
   {
     type: FormDefinitionType.Email,
     slug: 'paas-kontaktny-formular-paas',
     title: 'Kontaktný formulár PAAS',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: kontaktnyFormularPaas,
+    files: kontaktnyFormularPaasFiles,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     subject: {
       extractTechnical: kontaktnyFormularPaasExtractTechnicalSubject,

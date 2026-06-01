@@ -11,7 +11,7 @@ import {
   Heading as RACHeading,
 } from 'react-aria-components/Calendar'
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 import ClearButton from './ClearButton'
@@ -26,11 +26,11 @@ const Calendar = (props: RACCalendarProps<DateValue>) => (
     {/*  - styling - plain variant is used for hover styles, size="small" + custom padding + negative margin is used similarly as ison-with-negative-margin */}
     <div className="flex items-center gap-2 border-b border-border-active-primary-default bg-background-passive-base p-4">
       <Button slot="previous" variant="plain" className="-m-2 p-2" size="small">
-        <ChevronLeftIcon />
+        <Icon name="chevron-left" />
       </Button>
       <RACHeading className="flex-1 text-center text-size-p-small-r font-semibold first-letter:uppercase lg:text-size-p-small" />
       <Button slot="next" variant="plain" className="-m-2 p-2" size="small">
-        <ChevronRightIcon />
+        <Icon name="chevron-right" />
       </Button>
     </div>
 

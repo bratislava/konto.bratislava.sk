@@ -115,6 +115,7 @@ export class UserFixtureFactory {
         email,
         birthNumber: null,
         gdprData: [],
+        consents: [],
         hasChangedDeliveryMethodAfterDeadline: false,
       }
       if (params.accountType === CognitoUserAccountTypesEnum.Fo) {

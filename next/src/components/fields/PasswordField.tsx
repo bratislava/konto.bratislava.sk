@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { forwardRef, Ref, useState } from 'react'
 import { ToggleButton as RACToggleButton } from 'react-aria-components/ToggleButton'
 
-import { EyeHiddenIcon, EyeIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 
 import TextField, { TextFieldProps } from './TextField'
 
@@ -26,7 +26,7 @@ const PasswordField = (props: PasswordFieldProps, ref: Ref<HTMLInputElement>) =>
           isDisabled={props.isDisabled}
           className="flex items-center justify-center p-3"
         >
-          {isHidden ? <EyeHiddenIcon /> : <EyeIcon />}
+          {isHidden ? <Icon name="eye-hide" /> : <Icon name="eye" />}
         </RACToggleButton>
       }
     />

@@ -1,4 +1,4 @@
-import { ProfileIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 
 /**
@@ -16,7 +16,7 @@ const UserAvatar = ({ userAttributes }: { userAttributes?: UserAttributes | null
           {userAttributes && userAttributes.given_name && userAttributes.family_name ? (
             userAttributes.given_name[0] + userAttributes.family_name[0]
           ) : (
-            <ProfileIcon className="size-6 text-main-700" />
+            <Icon name="user" className="size-6 text-main-700" />
           )}
         </span>
       </div>

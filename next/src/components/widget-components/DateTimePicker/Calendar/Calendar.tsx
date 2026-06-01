@@ -5,7 +5,7 @@ import { useLocale } from 'react-aria/I18nProvider'
 import { useCalendar } from 'react-aria/useCalendar'
 import { useCalendarState } from 'react-stately/useCalendarState'
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 
 import CalendarGrid from './CalendarGrid'
 
@@ -50,7 +50,7 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
         <Button
           {...prevButtonPropsFixed}
           variant="icon-wrapped-negative-margin"
-          icon={<ChevronLeftIcon />}
+          icon={<Icon name="chevron-left" />}
           aria-label="Left"
         />
         <Typography variant="p-small" as="span" className="font-semibold">
@@ -59,7 +59,7 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
         <Button
           {...nextButtonPropsFixed}
           variant="icon-wrapped-negative-margin"
-          icon={<ChevronRightIcon />}
+          icon={<Icon name="chevron-right" />}
           aria-label="Right"
         />
       </div>

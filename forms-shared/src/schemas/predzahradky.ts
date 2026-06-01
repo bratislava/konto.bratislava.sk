@@ -129,31 +129,49 @@ export default schema(
       ],
     ),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUpload(
+      fileUpload<typeof predzahradkyFiles>(
         'mapa',
-        { title: 'Snímka z mapy so zakreslením miesta predzáhradky', required: true },
+        { title: 'Snímka z mapy so zakreslením miesta predzáhradky', required: true, slotId: 'mapa' },
         { type: 'dragAndDrop' },
       ),
-      fileUpload(
+      fileUpload<typeof predzahradkyFiles>(
         'fotografie',
         {
           title: 'Fotografie predzáhradky alebo miesta, na ktorom si chcete vytvoriť predzáhradku',
           required: true,
+          slotId: 'fotografie',
         },
         { type: 'dragAndDrop' },
       ),
-      fileUpload(
+      fileUpload<typeof predzahradkyFiles>(
         'projekt',
-        { title: 'Projekt predzáhradky' },
+        { title: 'Projekt predzáhradky', slotId: 'projekt' },
         {
           type: 'dragAndDrop',
           helptext: 'Napríklad, vo forme jednoduchého nákresu rozloženia jednotlivých prvkov.',
         },
       ),
-      fileUpload('inePrilohy', { title: 'Iné' }, { type: 'dragAndDrop' }),
+      fileUpload<typeof predzahradkyFiles>('inePrilohy', { title: 'Iné', slotId: 'inePrilohy' }, { type: 'dragAndDrop' }),
     ]),
   ],
 )
+
+export const predzahradkyFiles = {
+  slots: [
+    {
+      slotId: 'mapa',
+    },
+    {
+      slotId: 'fotografie',
+    },
+    {
+      slotId: 'projekt',
+    },
+    {
+      slotId: 'inePrilohy',
+    },
+  ],
+} as const
 
 type ExtractSubjectFormData = {
   predzahradka: {

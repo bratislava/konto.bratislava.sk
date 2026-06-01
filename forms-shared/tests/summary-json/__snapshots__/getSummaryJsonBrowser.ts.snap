@@ -420,7 +420,7 @@ exports[`getSummaryJsonBrowser > kontaktnyFormularPaasExample1 summary JSON shou
               "value": "Ján Kováč",
             },
           ],
-          "id": "root_udaje_menoPriezviskoObchodneMeno",
+          "id": "root_udaje_kontaktneUdaje_menoPriezviskoObchodneMeno",
           "label": "Meno a priezvisko / Obchodné meno",
           "type": "Field",
           "value": "Ján Kováč",
@@ -429,22 +429,10 @@ exports[`getSummaryJsonBrowser > kontaktnyFormularPaasExample1 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "E-mailom",
-            },
-          ],
-          "id": "root_udaje_sposobKontaktovania",
-          "label": "Ako vás máme kontaktovať?",
-          "type": "Field",
-          "value": "email",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
               "value": "jan.kovac@priklad.sk",
             },
           ],
-          "id": "root_udaje_email",
+          "id": "root_udaje_kontaktneUdaje_email",
           "label": "E-mail",
           "type": "Field",
           "value": "jan.kovac@priklad.sk",
@@ -508,7 +496,7 @@ exports[`getSummaryJsonBrowser > kontaktnyFormularPaasExample2 summary JSON shou
               "value": "Marta Nováková",
             },
           ],
-          "id": "root_udaje_menoPriezviskoObchodneMeno",
+          "id": "root_udaje_kontaktneUdaje_menoPriezviskoObchodneMeno",
           "label": "Meno a priezvisko / Obchodné meno",
           "type": "Field",
           "value": "Marta Nováková",
@@ -517,25 +505,13 @@ exports[`getSummaryJsonBrowser > kontaktnyFormularPaasExample2 summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "Telefonicky",
+              "value": "marta.novakova@priklad.sk",
             },
           ],
-          "id": "root_udaje_sposobKontaktovania",
-          "label": "Ako vás máme kontaktovať?",
+          "id": "root_udaje_kontaktneUdaje_email",
+          "label": "E-mail",
           "type": "Field",
-          "value": "telefon",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "+421902123456",
-            },
-          ],
-          "id": "root_udaje_telefon",
-          "label": "Telefónne číslo",
-          "type": "Field",
-          "value": "+421902123456",
+          "value": "marta.novakova@priklad.sk",
         },
       ],
       "id": "root_udaje",

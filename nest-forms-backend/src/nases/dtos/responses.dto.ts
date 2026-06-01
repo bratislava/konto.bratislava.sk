@@ -1,14 +1,7 @@
 import { HttpStatus } from '@nestjs/common'
 import { ApiProperty } from '@nestjs/swagger'
-import { FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
-import {
-  IsArray,
-  IsEnum,
-  IsString,
-  IsUUID,
-  ValidateNested,
-} from 'class-validator'
+import { IsArray, IsString, ValidateNested } from 'class-validator'
 
 export interface NasesSendResponse {
   status: HttpStatus
@@ -65,27 +58,4 @@ export class ValidateFormRegistrationsResultDto {
   @ValidateNested({ each: true })
   @Type(() => ValidateFormRegistrationDto)
   valid: ValidateFormRegistrationDto[]
-}
-
-export class SendFormResponseDto {
-  @ApiProperty({
-    description: 'Id of record',
-    default: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  declare id: string
-
-  @ApiProperty({
-    description: 'Message response regarding the process',
-    default: 'Form was sucessfully queued to rabbitmq.',
-  })
-  @IsString()
-  declare message: string
-
-  @ApiProperty({
-    description: 'Form state',
-    default: FormState.QUEUED,
-  })
-  @IsEnum(FormState)
-  declare state: FormState
 }

@@ -17,7 +17,6 @@ import FormsService from '../forms/forms.service'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
 import { EidUpdateSendFormRequestDto } from '../nases/dtos/requests.dto'
-import { SendFormResponseDto } from '../nases/dtos/responses.dto'
 import NasesService from '../nases/nases.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import {
@@ -26,6 +25,7 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { SendFormResponseDto } from './dtos/responses.dto'
 
 @ApiTags('form-sender')
 @ApiBearerAuth()

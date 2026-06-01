@@ -22,6 +22,7 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { AuthUser, User, UserType } from '../auth-v2/types/user'
+import { SendFormResponseDto } from '../form-sender/dtos/responses.dto'
 import {
   GetFormsRequestDto,
   UpdateFormRequestDto,
@@ -45,7 +46,6 @@ import {
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { EidUpdateSendFormRequestDto } from './dtos/requests.dto'
-import { SendFormResponseDto } from './dtos/responses.dto'
 import NasesService from './nases.service'
 import { JwtNasesPayload } from './types/jwt-nases.types'
 

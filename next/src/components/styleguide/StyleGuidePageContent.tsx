@@ -16,7 +16,7 @@ import FormVersionCompareActionShowCase from '@/src/components/styleguide/showca
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
 import InputFieldShowCase from '@/src/components/styleguide/showcases/InputFieldShowCase'
 import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShowCase'
-import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase'
+import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase/ModalsShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
 import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
 import PasswordFieldShowCase from '@/src/components/styleguide/showcases/PasswordFieldShowCase'

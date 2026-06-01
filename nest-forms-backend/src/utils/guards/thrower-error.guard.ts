@@ -255,7 +255,7 @@ export default class ThrowerErrorGuard {
     const override =
       status !== undefined ? statusOverrides?.[status] : undefined
 
-    if (override !== undefined && status !== undefined) {
+    if (override !== undefined) {
       const overrideStatus = override.status ?? status
       return this.LoggingHttpException(
         overrideStatus,
@@ -269,7 +269,7 @@ export default class ThrowerErrorGuard {
 
     if (
       status === HttpStatus.SERVICE_UNAVAILABLE &&
-      error.response?.headers?.['retry-after']
+      error.response?.headers['retry-after']
     ) {
       return this.ServiceUnavailableException(
         errorEnumOverwrite ?? ErrorsEnum.SERVICE_UNAVAILABLE_ERROR,

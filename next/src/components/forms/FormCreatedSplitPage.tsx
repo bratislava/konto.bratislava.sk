@@ -1,7 +1,10 @@
 import FormCreatedRedirectPage, {
   FormCreatedRedirectPageProps,
 } from '@/src/components/forms/FormCreatedRedirectPage'
-import FormLandingPage, { FormLandingPageProps } from '@/src/components/forms/FormLandingPage'
+import PageLayout from '@/src/components/layouts/PageLayout'
+import FormLandingPage, {
+  FormLandingPageProps,
+} from '@/src/components/page-contents/FormLandingPageContent/FormLandingPageContent'
 
 export type FormCreatedSplitPageProps =
   | ({
@@ -18,7 +21,11 @@ const FormCreatedSplitPage = (props: FormCreatedSplitPageProps) => {
   }
   // eslint-disable-next-line react/destructuring-assignment
   if (props.type === 'landingPage') {
-    return <FormLandingPage {...props} />
+    return (
+      <PageLayout>
+        <FormLandingPage {...props} />
+      </PageLayout>
+    )
   }
 
   throw new Error('Invalid form type')

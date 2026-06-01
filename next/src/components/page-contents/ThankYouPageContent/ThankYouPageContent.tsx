@@ -55,13 +55,61 @@ const useGetPaymentQueryParams = (router: NextRouter) => {
   return { status, type, order, year }
 }
 
+export const usePaymentCardPropsMap = ({
+  feedbackLink,
+  taxDetailLink,
+}: {
+  feedbackLink?: string | null
+  taxDetailLink: string
+}) => {
+  const { t } = useTranslation('account')
+
+  const commonProps = {
+    secondButtonTitle: t('thank_you.button_back_to_taxes_fees_text'),
+    secondButtonLink: ROUTES.TAXES_AND_FEES,
+  }
+
+  const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouCardProps> = {
+    [PaymentRedirectStateEnum.PaymentSuccess]: {
+      variant: 'success',
+      title: t('thank_you.result.payment_success.title'),
+      content: t('thank_you.result.payment_success.content'),
+      firstButtonTitle: t('thank_you.button_to_formular_text'),
+      firstButtonLink: feedbackLink ?? '#',
+      ...commonProps,
+    },
+    [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
+      variant: 'success',
+      title: t('thank_you.result.payment_already_paid.title'),
+      content: t('thank_you.result.payment_success.content'),
+      ...commonProps,
+    },
+    [PaymentRedirectStateEnum.FailedToVerify]: {
+      variant: 'warning',
+      title: t('thank_you.result.failed_to_verify.title'),
+      content: t('thank_you.result.payment_failed.content'),
+      firstButtonTitle: t('thank_you.button_restart_text'),
+      firstButtonLink: taxDetailLink,
+      ...commonProps,
+    },
+    [PaymentRedirectStateEnum.PaymentFailed]: {
+      variant: 'error',
+      title: t('thank_you.result.payment_failed.title'),
+      content: t('thank_you.result.payment_failed.content'),
+      firstButtonTitle: t('thank_you.button_restart_text'),
+      firstButtonLink: taxDetailLink,
+      ...commonProps,
+    },
+  }
+
+  return { cardPropsMap }
+}
+
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20618-3635&t=29s2lbVQdpQg3sQU-4
  */
 
 const ThankYouPageContent = () => {
-  const { t } = useTranslation('account')
-
   const { feedbackLinkDzn, feedbackLinkKo } = useStrapiTax()
 
   const router = useRouter()
@@ -89,48 +137,14 @@ const ThankYouPageContent = () => {
     return null
   }, [type, feedbackLinkDzn, feedbackLinkKo])
 
-  const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouCardProps> = {
-    [PaymentRedirectStateEnum.PaymentSuccess]: {
-      variant: 'success',
-      title: t('thank_you.result.payment_success.title'),
-      content: t('thank_you.result.payment_success.content'),
-      firstButtonTitle: t('thank_you.button_to_formular_text'),
-      firstButtonLink: feedbackLink ?? '#',
-    },
-    [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
-      variant: 'success',
-      title: t('thank_you.result.payment_already_paid.title'),
-      content: t('thank_you.result.payment_success.content'),
-    },
-    [PaymentRedirectStateEnum.FailedToVerify]: {
-      variant: 'warning',
-      title: t('thank_you.result.failed_to_verify.title'),
-      content: t('thank_you.result.payment_failed.content'),
-      firstButtonTitle: t('thank_you.button_restart_text'),
-      firstButtonLink: taxDetailLink,
-    },
-    [PaymentRedirectStateEnum.PaymentFailed]: {
-      variant: 'error',
-      title: t('thank_you.result.payment_failed.title'),
-      content: t('thank_you.result.payment_failed.content'),
-      firstButtonTitle: t('thank_you.button_restart_text'),
-      firstButtonLink: taxDetailLink,
-    },
-  }
-
-  const cardProps = cardPropsMap[status]
+  const { cardPropsMap } = usePaymentCardPropsMap({
+    feedbackLink,
+    taxDetailLink,
+  })
 
   return (
     <div className="bg-gray-0 pt-16 lg:bg-gray-50 lg:pt-8">
-      <ThankYouCard
-        variant={cardProps.variant}
-        title={cardProps.title}
-        content={cardProps.content}
-        firstButtonTitle={cardProps.firstButtonTitle}
-        firstButtonLink={cardProps.firstButtonLink}
-        secondButtonTitle={t('thank_you.button_back_to_taxes_fees_text')}
-        secondButtonLink={ROUTES.TAXES_AND_FEES}
-      />
+      <ThankYouCard {...cardPropsMap[status]} />
     </div>
   )
 }

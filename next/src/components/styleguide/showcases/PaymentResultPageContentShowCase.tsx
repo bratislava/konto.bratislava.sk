@@ -1,9 +1,9 @@
 import { Typography } from '@bratislava/component-library'
 import { PaymentRedirectStateEnum } from 'openapi-clients/tax'
 
-import { Stack } from '@/src/components/styleguide/Stack'
-import ThankYouTile from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
 import { usePaymentResultPropsMap } from '@/src/components/page-contents/PaymentResultPageContent/PaymentResultPageContent'
+import ThankYouTile from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
+import { Stack } from '@/src/components/styleguide/Stack'
 
 const variantLabels: Record<PaymentRedirectStateEnum, string> = {
   [PaymentRedirectStateEnum.PaymentSuccess]: 'Payment Success',

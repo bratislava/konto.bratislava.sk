@@ -1,9 +1,9 @@
 import { parseAsString, useQueryState } from 'nuqs'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
-import { Wrapper } from '@/src/components/styleguide/Wrapper'
 import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
 import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
+import { Wrapper } from '@/src/components/styleguide/Wrapper'
 
 const showcaseTabs = [
   { id: 'form', label: 'Form send', component: <FormSentPageContentShowCase /> },

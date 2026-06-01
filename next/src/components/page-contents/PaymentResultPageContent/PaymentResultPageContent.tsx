@@ -4,11 +4,11 @@ import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
-import logger from '@/src/frontend/utils/logger'
-import { ROUTES } from '@/src/utils/routes'
 import ThankYouTile, {
   ThankYouTileProps,
 } from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
+import logger from '@/src/frontend/utils/logger'
+import { ROUTES } from '@/src/utils/routes'
 
 // TODO use the nuqs library to get query params
 // example: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/sections/ArticlesSection/ArticlesAll/useArticlesFilters.tsx

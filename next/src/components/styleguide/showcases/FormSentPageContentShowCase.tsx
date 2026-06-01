@@ -1,11 +1,10 @@
-/* eslint-disable i18next/no-literal-string */
 import { Typography } from '@bratislava/component-library'
 import { PropsWithChildren } from 'react'
 
 import { FormContextContext } from '@/src/components/forms/useFormContext'
 import { SsrAuthContext } from '@/src/components/logic/SsrAuthContext'
-import { Stack } from '@/src/components/styleguide/Stack'
 import FormSentPageContent from '@/src/components/page-contents/FormSentPageContent/FormSentPageContent'
+import { Stack } from '@/src/components/styleguide/Stack'
 
 type MockFormContextValue = {
   isTaxForm: boolean

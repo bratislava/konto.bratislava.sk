@@ -53,7 +53,9 @@ function assertUpdateManyUsesReminderEnums(
     bloomreachUnpaidReminderSent: UnpaidReminderSent.BOTH,
   })
   expect(second.where).toMatchObject({
-    bloomreachUnpaidReminderSent: { not: alreadyOtherSent },
+    bloomreachUnpaidReminderSent: {
+      notIn: [alreadyOtherSent, UnpaidReminderSent.BOTH],
+    },
   })
   expect(second.data).toEqual({
     bloomreachUnpaidReminderSent: newReminderSent,

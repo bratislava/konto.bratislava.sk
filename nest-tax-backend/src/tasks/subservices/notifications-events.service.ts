@@ -226,7 +226,9 @@ export default class NotificationsEventsService {
     await this.prismaService.taxInstallment.updateMany({
       where: {
         ...baseWhere,
-        bloomreachUnpaidReminderSent: { not: alreadyOtherSent },
+        bloomreachUnpaidReminderSent: {
+          notIn: [alreadyOtherSent, UnpaidReminderSent.BOTH],
+        },
       },
       data: { bloomreachUnpaidReminderSent: newReminderSent },
     })

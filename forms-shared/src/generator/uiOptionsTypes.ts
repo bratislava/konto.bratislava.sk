@@ -103,6 +103,7 @@ export type InputUiOptions = {
 
 export type NumberUiOptions = Omit<InputUiOptions, 'inputType'> & {
   formatOptions?: Intl.NumberFormatOptions
+  unit?: string
 }
 
 export type RadioGroupUiOptions = {

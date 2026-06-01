@@ -1,14 +1,58 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
 import alertReporting from '../constants/error.alerts'
-import { CustomErrorEnums, ErrorSymbols, ResponseErrorInternalDto } from './dtos/error.dto'
+import {
+  CustomErrorEnums,
+  ErrorsEnum,
+  ErrorsResponseEnum,
+  ErrorSymbols,
+  ResponseErrorInternalDto,
+} from './dtos/error.dto'
+import { AxiosError } from 'axios'
+import { STATUS_CODES } from 'node:http'
+
+/**
+ * A single per-status entry for {@link FromAxiosErrorOptions.statusOverrides}.
+ *
+ * @param status HttpStatus
+ * @param errorEnum stored as `errorName` on the produced exception. Drives
+ *        alerting via {@link alertReporting}).
+ * @param message human-readable text on the exception's `message` field.
+ */
+export type StatusOverride = {
+  status: number
+  errorEnum: CustomErrorEnums
+  message: string
+}
+
+/**
+ * Options for {@link ThrowerErrorGuard.fromAxiosError}.
+ *
+ * @param message human-readable text on the produced exception's `message`
+ *        field. Applies to all statuses except overridden ones.
+ * @param errorEnumOverwrite replaces the default `errorEnum` on the default
+ *        branches ({@link ThrowerErrorGuard.BadGatewayException} / {@link
+ *        ThrowerErrorGuard.ServiceUnavailableException}). Ignored on the
+ *        statusOverrides path.
+ * @param console  extra context attached to the log entry only and stripped
+ *        from the client response.
+ * @param statusOverrides per-status overrides; override a specific downstream
+ *        status with custom status, errorEnum, and message. See {@link
+ *        StatusOverride}.
+ */
+export type FromAxiosErrorOptions = {
+  message?: string
+  errorEnumOverwrite?: CustomErrorEnums
+  console?: string | Record<string, unknown>
+  statusOverrides?: Record<number, StatusOverride>
+}
 
 @Injectable()
 export default class ThrowerErrorGuard {
   NotAcceptableException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -24,7 +68,7 @@ export default class ThrowerErrorGuard {
   GoneException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -40,7 +84,7 @@ export default class ThrowerErrorGuard {
   PayloadTooLargeException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -56,7 +100,7 @@ export default class ThrowerErrorGuard {
   InternalServerErrorException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -69,10 +113,42 @@ export default class ThrowerErrorGuard {
     )
   }
 
+  BadGatewayException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    console?: string | Record<string, unknown>,
+    error?: unknown
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.BAD_GATEWAY,
+      'Bad gateway',
+      errorEnum,
+      message,
+      console,
+      error
+    )
+  }
+
+  ServiceUnavailableException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    console?: string | Record<string, unknown>,
+    error?: unknown
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.SERVICE_UNAVAILABLE,
+      'Service unavailable',
+      errorEnum,
+      message,
+      console,
+      error
+    )
+  }
+
   ForbiddenException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -88,7 +164,7 @@ export default class ThrowerErrorGuard {
   UnprocessableEntityException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -104,7 +180,7 @@ export default class ThrowerErrorGuard {
   NotFoundException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -120,7 +196,7 @@ export default class ThrowerErrorGuard {
   BadRequestException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -136,7 +212,7 @@ export default class ThrowerErrorGuard {
   UnauthorizedException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string,
+    console?: string | Record<string, unknown>,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -144,6 +220,74 @@ export default class ThrowerErrorGuard {
       'Unauthorized',
       errorEnum,
       message,
+      console,
+      error
+    )
+  }
+
+  /**
+   * Maps an `AxiosError` to an `HttpException`, picking the variant
+   * from the downstream response:
+   * - status included in opts.statusOverrides -> custom status, errorEnum, and
+   *     message from the override entry
+   * - `503` with `Retry-After` -> {@link ServiceUnavailableException}
+   * - `401` / `403` -> {@link BadGatewayException} with
+   *     `ErrorsEnum.BAD_GATEWAY_AUTH_ERROR`
+   * - anything else -> {@link BadGatewayException} with
+   *     `ErrorsEnum.BAD_GATEWAY_ERROR`
+   *
+   * `ErrorsEnum.BAD_GATEWAY_AUTH_ERROR` must be listed in {@link alertReporting}
+   * so misconfigured credentials/secrets alert instead of failing silently.
+   * `ErrorsEnum.SERVICE_UNAVAILABLE_ERROR` and `ErrorsEnum.BAD_GATEWAY_ERROR`
+   * should not be alerted.
+   *
+   * @param error the processed AxiosError
+   * @param options for overriding message and errorEnum. Adds an option to
+   * write a console message. `options: overrides` allows for custom
+   * response based on `AxiosError.response.status` (for more see
+   * {@link FromAxiosErrorOptions.statusOverrides})
+   */
+  fromAxiosError(error: AxiosError, options: FromAxiosErrorOptions): HttpException {
+    const { message, console, errorEnumOverwrite, statusOverrides } = options
+    const status = error.response?.status
+    const override = status !== undefined ? statusOverrides?.[status] : undefined
+
+    if (override !== undefined) {
+      const overrideStatus = override.status ?? status
+      return this.LoggingHttpException(
+        overrideStatus,
+        STATUS_CODES[overrideStatus] ?? message ?? '',
+        override.errorEnum,
+        override.message,
+        console,
+        error
+      )
+    }
+
+    if (status === HttpStatus.SERVICE_UNAVAILABLE && error.response?.headers['retry-after']) {
+      return this.ServiceUnavailableException(
+        errorEnumOverwrite ?? ErrorsEnum.SERVICE_UNAVAILABLE_ERROR,
+        message ?? ErrorsResponseEnum.SERVICE_UNAVAILABLE_ERROR,
+        console,
+        error
+      )
+    }
+
+    // 401/403 from the downstream means our credentials are wrong/expired — the
+    // request is never going to succeed without direct intervention, so alert
+    // by default.
+    if (status === HttpStatus.UNAUTHORIZED || status === HttpStatus.FORBIDDEN) {
+      return this.BadGatewayException(
+        errorEnumOverwrite ?? ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
+        message ?? ErrorsResponseEnum.BAD_GATEWAY_AUTH_ERROR,
+        console,
+        error
+      )
+    }
+
+    return this.BadGatewayException(
+      errorEnumOverwrite ?? ErrorsEnum.BAD_GATEWAY_ERROR,
+      message ?? ErrorsResponseEnum.BAD_GATEWAY_ERROR,
       console,
       error
     )

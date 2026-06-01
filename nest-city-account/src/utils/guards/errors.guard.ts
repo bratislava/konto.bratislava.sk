@@ -43,7 +43,7 @@ export type StatusOverride = {
 export type FromAxiosErrorOptions = {
   message?: string
   errorEnumOverwrite?: CustomErrorEnums
-  console?: string | Record<string, unknown>
+  console?: string
   statusOverrides?: Record<number, StatusOverride>
 }
 
@@ -52,7 +52,7 @@ export default class ThrowerErrorGuard {
   NotAcceptableException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -68,7 +68,7 @@ export default class ThrowerErrorGuard {
   GoneException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -84,7 +84,7 @@ export default class ThrowerErrorGuard {
   PayloadTooLargeException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -100,7 +100,7 @@ export default class ThrowerErrorGuard {
   InternalServerErrorException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -116,7 +116,7 @@ export default class ThrowerErrorGuard {
   BadGatewayException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -132,7 +132,7 @@ export default class ThrowerErrorGuard {
   ServiceUnavailableException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -148,7 +148,7 @@ export default class ThrowerErrorGuard {
   ForbiddenException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -164,7 +164,7 @@ export default class ThrowerErrorGuard {
   UnprocessableEntityException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -180,7 +180,7 @@ export default class ThrowerErrorGuard {
   NotFoundException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -196,7 +196,7 @@ export default class ThrowerErrorGuard {
   BadRequestException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(
@@ -212,7 +212,7 @@ export default class ThrowerErrorGuard {
   UnauthorizedException(
     errorEnum: CustomErrorEnums,
     message: string,
-    console?: string | Record<string, unknown>,
+    console?: string,
     error?: unknown
   ): HttpException {
     return this.LoggingHttpException(

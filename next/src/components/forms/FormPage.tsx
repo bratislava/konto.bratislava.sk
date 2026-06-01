@@ -1,5 +1,4 @@
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
-import React from 'react'
 
 import FormContent from '@/src/components/forms/FormContent'
 import FormVersionCompareAction from '@/src/components/forms/FormVersionCompareAction'
@@ -12,8 +11,8 @@ import {
 import { FormSentProvider, useFormSent } from '@/src/components/forms/useFormSent'
 import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import PageLayout from '@/src/components/layouts/PageLayout'
-import ThankYouFormPageContent from '@/src/components/page-contents/ThankYouPageContent/ThankYouFormPageContent'
 import cn from '@/src/utils/cn'
+import FormSentPageContent from '@/src/components/page-contents/FormSentPageContent/FormSentPageContent'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=17622-2066&t=9VxOW0GxS2SEYDIL-4
@@ -41,7 +40,7 @@ const FormPageContent = ({ nonce }: { nonce?: string }) => {
         )}
       >
         {isFormSent ? (
-          <ThankYouFormPageContent />
+          <FormSentPageContent />
         ) : isFormOutdated ? (
           // It is not possible to display outdated form in any meaningful way,
           // so the user needs to first make an action (if possible)

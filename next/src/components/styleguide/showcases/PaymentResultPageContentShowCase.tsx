@@ -1,9 +1,9 @@
 import { Typography } from '@bratislava/component-library'
 import { PaymentRedirectStateEnum } from 'openapi-clients/tax'
 
-import ThankYouCard from '@/src/components/page-contents/ThankYouPageContent/ThankYouCard'
-import { usePaymentCardPropsMap } from '@/src/components/page-contents/ThankYouPageContent/ThankYouPageContent'
 import { Stack } from '@/src/components/styleguide/Stack'
+import ThankYouTile from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
+import { usePaymentResultPropsMap } from '@/src/components/page-contents/PaymentResultPageContent/PaymentResultPageContent'
 
 const variantLabels: Record<PaymentRedirectStateEnum, string> = {
   [PaymentRedirectStateEnum.PaymentSuccess]: 'Payment Success',
@@ -12,8 +12,8 @@ const variantLabels: Record<PaymentRedirectStateEnum, string> = {
   [PaymentRedirectStateEnum.PaymentFailed]: 'Payment Failed',
 }
 
-const ThankYouPaymentShowCase = () => {
-  const { cardPropsMap } = usePaymentCardPropsMap({
+const PaymentResultPageContentShowCase = () => {
+  const { cardPropsMap } = usePaymentResultPropsMap({
     feedbackLink: '#',
     taxDetailLink: '#',
   })
@@ -26,7 +26,7 @@ const ThankYouPaymentShowCase = () => {
             {variantLabels[status]}
           </Typography>
           <Stack className="justify-center">
-            <ThankYouCard {...props} />
+            <ThankYouTile {...props} />
           </Stack>
         </div>
       ))}
@@ -34,4 +34,4 @@ const ThankYouPaymentShowCase = () => {
   )
 }
 
-export default ThankYouPaymentShowCase
+export default PaymentResultPageContentShowCase

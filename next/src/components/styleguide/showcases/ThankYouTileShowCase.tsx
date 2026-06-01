@@ -1,23 +1,23 @@
 import { parseAsString, useQueryState } from 'nuqs'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
-import ThankYouFormShowCase from '@/src/components/styleguide/showcases/ThankYouFormShowCase'
-import ThankYouPaymentShowCase from '@/src/components/styleguide/showcases/ThankYouPaymentShowCase'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
+import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
+import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
 
 const showcaseTabs = [
-  { id: 'form', label: 'Form', component: <ThankYouFormShowCase /> },
-  { id: 'payment', label: 'Payment', component: <ThankYouPaymentShowCase /> },
+  { id: 'form', label: 'Form send', component: <FormSentPageContentShowCase /> },
+  { id: 'payment', label: 'Payment result', component: <PaymentResultPageContentShowCase /> },
 ] as const
 
-const ThankYouCardShowCase = () => {
+const ThankYouTileShowCase = () => {
   const [selectedKey, setSelectedKey] = useQueryState(
     'thank-you-type',
     parseAsString.withDefault(showcaseTabs[0].id),
   )
 
   return (
-    <Wrapper title="ThankYou Cards" direction="column">
+    <Wrapper title="ThankYou Tiles" direction="column">
       <Tabs
         selectedKey={selectedKey}
         onSelectionChange={(value) => setSelectedKey(value.toString())}
@@ -45,4 +45,4 @@ const ThankYouCardShowCase = () => {
   )
 }
 
-export default ThankYouCardShowCase
+export default ThankYouTileShowCase

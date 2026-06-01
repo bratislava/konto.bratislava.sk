@@ -4,8 +4,8 @@ import { PropsWithChildren } from 'react'
 
 import { FormContextContext } from '@/src/components/forms/useFormContext'
 import { SsrAuthContext } from '@/src/components/logic/SsrAuthContext'
-import ThankYouFormPageContent from '@/src/components/page-contents/ThankYouPageContent/ThankYouFormPageContent'
 import { Stack } from '@/src/components/styleguide/Stack'
+import FormSentPageContent from '@/src/components/page-contents/FormSentPageContent/FormSentPageContent'
 
 type MockFormContextValue = {
   isTaxForm: boolean
@@ -50,7 +50,7 @@ const formVariants: FormVariant[] = [
   { label: 'Embedded', formContext: mockFormContext({ isEmbedded: true }) },
 ]
 
-const ThankYouFormShowCase = () => (
+const FormSentPageContentShowCase = () => (
   <>
     {formVariants.map(({ label, formContext, isSignedIn }) => (
       <div key={label} className="flex flex-col items-start gap-1">
@@ -59,7 +59,7 @@ const ThankYouFormShowCase = () => (
         </Typography>
         <Stack className="justify-center *:py-0 *:lg:py-0">
           <MockProviders formContext={formContext} isSignedIn={isSignedIn}>
-            <ThankYouFormPageContent />
+            <FormSentPageContent />
           </MockProviders>
         </Stack>
       </div>
@@ -67,4 +67,4 @@ const ThankYouFormShowCase = () => (
   </>
 )
 
-export default ThankYouFormShowCase
+export default FormSentPageContentShowCase

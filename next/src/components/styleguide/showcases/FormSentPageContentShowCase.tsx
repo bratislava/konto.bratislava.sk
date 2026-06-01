@@ -5,6 +5,7 @@ import { FormContextContext } from '@/src/components/forms/useFormContext'
 import { SsrAuthContext } from '@/src/components/logic/SsrAuthContext'
 import FormSentPageContent from '@/src/components/page-contents/FormSentPageContent/FormSentPageContent'
 import { Stack } from '@/src/components/styleguide/Stack'
+import { Wrapper } from '@/src/components/styleguide/Wrapper'
 
 type MockFormContextValue = {
   isTaxForm: boolean
@@ -36,8 +37,12 @@ type FormVariant = {
 }
 
 const formVariants: FormVariant[] = [
-  { label: 'Generic – not signed in', formContext: mockFormContext() },
-  { label: 'Generic – signed in', formContext: mockFormContext(), isSignedIn: true },
+  { label: 'Generic – not signed in - no feedback link', formContext: mockFormContext() },
+  {
+    label: 'Generic – signed in - no feedback link',
+    formContext: mockFormContext(),
+    isSignedIn: true,
+  },
   {
     label: 'Generic – with feedback link',
     formContext: mockFormContext({ formDefinition: { feedbackLink: '#' } }),
@@ -50,7 +55,7 @@ const formVariants: FormVariant[] = [
 ]
 
 const FormSentPageContentShowCase = () => (
-  <>
+  <Wrapper title="Form Sent Page Content" direction="column">
     {formVariants.map(({ label, formContext, isSignedIn }) => (
       <div key={label} className="flex flex-col items-start gap-1">
         <Typography variant="h5" as="h3">
@@ -63,7 +68,7 @@ const FormSentPageContentShowCase = () => (
         </Stack>
       </div>
     ))}
-  </>
+  </Wrapper>
 )
 
 export default FormSentPageContentShowCase

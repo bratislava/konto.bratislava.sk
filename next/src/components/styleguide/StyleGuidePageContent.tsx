@@ -11,6 +11,7 @@ import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
+import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
 import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
 import InputFieldShowCase from '@/src/components/styleguide/showcases/InputFieldShowCase'
@@ -19,6 +20,7 @@ import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
 import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
 import PasswordFieldShowCase from '@/src/components/styleguide/showcases/PasswordFieldShowCase'
+import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
 import ProgressBarShowCase from '@/src/components/styleguide/showcases/ProgressBarShowCase'
 import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroupShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
@@ -38,11 +40,8 @@ import StyleGuideWrapper from './StyleGuideWrapper'
 
 const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'button', label: 'Button', component: <ButtonShowCase /> },
-  {
-    id: 'modal',
-    label: 'Modal',
-    component: <ModalShowCase />,
-  },
+  { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
+  { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },
   { id: 'tag', label: 'Tag', component: <TagShowCase /> },
   { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },
@@ -61,7 +60,6 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
   { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
   { id: 'accordion', label: 'Accordion', component: <AccordionShowCase /> },
-  { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
   { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
   { id: 'banner', label: 'Banner', component: <BannerShowCase /> },
@@ -72,11 +70,13 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     component: <MyApplicationsCardShowCase />,
   },
   { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
+  { id: 'thank-you-tile', label: 'ThankYou Tile', component: <ThankYouTileShowCase /> },
   { id: 'auth-forms', label: 'Auth Forms', component: <AuthFormsShowCase /> },
+  { id: 'form-sent', label: 'Form Sent', component: <FormSentPageContentShowCase /> },
   {
-    id: 'thank-you-form',
-    label: 'ThankYou Tiles',
-    component: <ThankYouTileShowCase />,
+    id: 'payment-result',
+    label: 'Payment Result',
+    component: <PaymentResultPageContentShowCase />,
   },
   {
     id: 'form-version-compare-action',

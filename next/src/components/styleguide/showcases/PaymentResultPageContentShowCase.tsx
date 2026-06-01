@@ -4,6 +4,7 @@ import { PaymentRedirectStateEnum } from 'openapi-clients/tax'
 import { usePaymentResultPropsMap } from '@/src/components/page-contents/PaymentResultPageContent/PaymentResultPageContent'
 import ThankYouTile from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
 import { Stack } from '@/src/components/styleguide/Stack'
+import { Wrapper } from '@/src/components/styleguide/Wrapper'
 
 const variantLabels: Record<PaymentRedirectStateEnum, string> = {
   [PaymentRedirectStateEnum.PaymentSuccess]: 'Payment Success',
@@ -19,7 +20,7 @@ const PaymentResultPageContentShowCase = () => {
   })
 
   return (
-    <>
+    <Wrapper title="Payment Result Page Content" direction="column">
       {Object.entries(cardPropsMap).map(([status, props]) => (
         <div key={status} className="flex flex-col items-start gap-1">
           <Typography variant="h5" as="h3">
@@ -30,7 +31,7 @@ const PaymentResultPageContentShowCase = () => {
           </Stack>
         </div>
       ))}
-    </>
+    </Wrapper>
   )
 }
 

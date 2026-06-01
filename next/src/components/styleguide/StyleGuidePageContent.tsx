@@ -28,6 +28,7 @@ import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCa
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
+import TaxesFeesShowCase from '@/src/components/styleguide/showcases/TaxesFeesShowCase/TaxesFeesShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
 import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
 import TimePickerShowCase from '@/src/components/styleguide/showcases/TimePickerShowCase'
@@ -83,6 +84,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     label: 'Form Version Compare Action',
     component: <FormVersionCompareActionShowCase />,
   },
+  { id: 'taxes-fees', label: 'Taxes & Fees Pages', component: <TaxesFeesShowCase /> },
 ]
 
 const StyleGuidePageContent = () => {

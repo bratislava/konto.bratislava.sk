@@ -69,6 +69,38 @@ export default class ThrowerErrorGuard {
     )
   }
 
+  BadGatewayException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    console?: string,
+    error?: unknown
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.BAD_GATEWAY,
+      'Bad gateway',
+      errorEnum,
+      message,
+      console,
+      error
+    )
+  }
+
+  ServiceUnavailableException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    console?: string,
+    error?: unknown
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.SERVICE_UNAVAILABLE,
+      'Service unavailable',
+      errorEnum,
+      message,
+      console,
+      error
+    )
+  }
+
   ForbiddenException(
     errorEnum: CustomErrorEnums,
     message: string,

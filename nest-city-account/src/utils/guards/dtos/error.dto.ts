@@ -4,6 +4,7 @@ import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
 import { CustomErrorAdminTypesEnum } from '../../../admin/dtos/error.dto'
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
+import { TowingErrorsEnum } from '../../../towing/towing.errors.enum'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import {
   SendToQueueErrorsEnum,
@@ -56,6 +57,7 @@ export type CustomErrorEnums =
   | DeliveryMethodErrorsEnum
   | CustomErrorAdminTypesEnum
   | CustomErrorNorisTypesEnum
+  | TowingErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

@@ -35,10 +35,7 @@ import FilesService from '../files/files.service'
 import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 import { SendFormResponseDto } from '../form-sender/dtos/responses.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import {
-  FormUpdateBodyDto,
-  UpdateFormRequestDto,
-} from '../forms/dtos/requests.dto'
+import { FormUpdateBodyDto } from '../forms/dtos/requests.dto'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -137,14 +134,7 @@ export default class NasesService {
     }
   }
 
-  async sendForm(
-    formId: string,
-    data: UpdateFormRequestDto,
-    user: User,
-  ): Promise<SendFormResponseDto> {
-    await this.formsService.updateFormWithUser(formId, data, user)
-
-
+  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(formId)
     // All extra files should be already deleted at this point and remaining files should be SAFE.
 

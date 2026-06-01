@@ -1,5 +1,5 @@
 import { FormLandingPageSectionsFragment } from '@/src/clients/graphql-strapi/api'
-import RichtextSection from '@/src/components/sections/RichTextSection'
+import RichtextSection from '@/src/components/sections/RichtextSection'
 
 /**
  * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/be7785e45d5e61c9b2a23177b9dcfb8af109ebc6/next/src/components/layouts/Sections.tsx

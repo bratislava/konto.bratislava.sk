@@ -11,6 +11,7 @@ import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
+import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
 import InputFieldShowCase from '@/src/components/styleguide/showcases/InputFieldShowCase'
 import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShowCase'
@@ -26,6 +27,7 @@ import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCa
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
+import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
 import TimePickerShowCase from '@/src/components/styleguide/showcases/TimePickerShowCase'
 import ToastShowCase from '@/src/components/styleguide/showcases/ToastShowCase'
 import ToggleShowCase from '@/src/components/styleguide/showcases/ToggleShowCase'
@@ -33,7 +35,6 @@ import TooltipShowCase from '@/src/components/styleguide/showcases/TooltipShowCa
 import UploadShowCase from '@/src/components/styleguide/showcases/UploadShowCase'
 
 import StyleGuideWrapper from './StyleGuideWrapper'
-import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
 
 const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'button', label: 'Button', component: <ButtonShowCase /> },
@@ -76,6 +77,11 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     id: 'thank-you-form',
     label: 'ThankYou Tiles',
     component: <ThankYouTileShowCase />,
+  },
+  {
+    id: 'form-version-compare-action',
+    label: 'Form Version Compare Action',
+    component: <FormVersionCompareActionShowCase />,
   },
 ]
 

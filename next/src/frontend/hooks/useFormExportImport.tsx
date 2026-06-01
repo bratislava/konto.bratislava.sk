@@ -55,7 +55,7 @@ export const useGetContext = () => {
     { fromModal?: boolean }
   >({
     mutationFn: () =>
-      formsClient.nasesControllerUpdateForm(
+      formsClient.formsControllerUpdateForm(
         formId,
         {
           formDataJson: formData,
@@ -274,7 +274,7 @@ export const useGetContext = () => {
   const deleteConcept = async () => {
     showToast({ message: t('info_messages.concept_delete'), variant: 'info' })
     try {
-      await formsClient.nasesControllerDeleteForm(formId, {
+      await formsClient.formsControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
       closeToasts()

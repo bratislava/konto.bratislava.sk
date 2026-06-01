@@ -132,7 +132,7 @@ const MyApplicationsCard = ({
     showToast({ message: t('forms:info_messages.concept_delete'), variant: 'info' })
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
-      await formsClient.nasesControllerDeleteForm(formId, {
+      await formsClient.formsControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
       closeToasts()

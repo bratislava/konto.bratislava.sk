@@ -1,0 +1,308 @@
+{
+  "key": "plugin_content_manager_configuration_components::sections.kontakty",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "relationOpenMode": "modal",
+      "mainField": "title",
+      "defaultSortBy": "title",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "title": {
+        "edit": {
+          "label": "title",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "addressContacts": {
+        "edit": {
+          "label": "addressContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "addressContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "openingHoursContacts": {
+        "edit": {
+          "label": "openingHoursContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "openingHoursContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "emailContacts": {
+        "edit": {
+          "label": "emailContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "emailContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "phoneContacts": {
+        "edit": {
+          "label": "phoneContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "phoneContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "webContacts": {
+        "edit": {
+          "label": "webContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "webContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "postalAddressContacts": {
+        "edit": {
+          "label": "postalAddressContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "postalAddressContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "billingInfoContacts": {
+        "edit": {
+          "label": "billingInfoContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "billingInfoContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "bankConnectionContacts": {
+        "edit": {
+          "label": "bankConnectionContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "bankConnectionContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "personContacts": {
+        "edit": {
+          "label": "personContacts",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "personContacts",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "directionsContact": {
+        "edit": {
+          "label": "directionsContact",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "directionsContact",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "titleLevel": {
+        "edit": {
+          "label": "titleLevel",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "titleLevel",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "title",
+        "addressContacts",
+        "openingHoursContacts"
+      ],
+      "edit": [
+        [
+          {
+            "name": "title",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "description",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "addressContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "openingHoursContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "emailContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "phoneContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "webContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "postalAddressContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "billingInfoContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "bankConnectionContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "personContacts",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "directionsContact",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "titleLevel",
+            "size": 6
+          }
+        ]
+      ]
+    },
+    "uid": "sections.kontakty",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

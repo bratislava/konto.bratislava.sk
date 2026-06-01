@@ -50,6 +50,84 @@ input ComponentBlocksCommonLinkInput {
   url: String
 }
 
+type ComponentBlocksContactCard {
+  id: ID!
+  overrideLabel: String
+  value: String!
+}
+
+input ComponentBlocksContactCardFiltersInput {
+  and: [ComponentBlocksContactCardFiltersInput]
+  not: ComponentBlocksContactCardFiltersInput
+  or: [ComponentBlocksContactCardFiltersInput]
+  overrideLabel: StringFilterInput
+  value: StringFilterInput
+}
+
+input ComponentBlocksContactCardInput {
+  id: ID
+  overrideLabel: String
+  value: String
+}
+
+type ComponentBlocksContactDirectionsCard {
+  address: String!
+  barrierFreeInfo: String
+  id: ID!
+  iframeUrl: String
+  overrideLabel: String
+  parkingInfo: String
+  publicTransportInfo: String
+}
+
+input ComponentBlocksContactDirectionsCardFiltersInput {
+  address: StringFilterInput
+  and: [ComponentBlocksContactDirectionsCardFiltersInput]
+  barrierFreeInfo: StringFilterInput
+  iframeUrl: StringFilterInput
+  not: ComponentBlocksContactDirectionsCardFiltersInput
+  or: [ComponentBlocksContactDirectionsCardFiltersInput]
+  overrideLabel: StringFilterInput
+  parkingInfo: StringFilterInput
+  publicTransportInfo: StringFilterInput
+}
+
+input ComponentBlocksContactDirectionsCardInput {
+  address: String
+  barrierFreeInfo: String
+  id: ID
+  iframeUrl: String
+  overrideLabel: String
+  parkingInfo: String
+  publicTransportInfo: String
+}
+
+type ComponentBlocksContactPersonCard {
+  email: String
+  id: ID!
+  phone: String
+  subtext: String
+  title: String!
+}
+
+input ComponentBlocksContactPersonCardFiltersInput {
+  and: [ComponentBlocksContactPersonCardFiltersInput]
+  email: StringFilterInput
+  not: ComponentBlocksContactPersonCardFiltersInput
+  or: [ComponentBlocksContactPersonCardFiltersInput]
+  phone: StringFilterInput
+  subtext: StringFilterInput
+  title: StringFilterInput
+}
+
+input ComponentBlocksContactPersonCardInput {
+  email: String
+  id: ID
+  phone: String
+  subtext: String
+  title: String
+}
+
 type ComponentBlocksFooterColumn {
   id: ID!
   links(filters: ComponentBlocksCommonLinkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksCommonLink]
@@ -207,6 +285,59 @@ input ComponentGeneralAlertInput {
   id: ID
 }
 
+type ComponentSectionsContactsSection {
+  addressContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  bankConnectionContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  billingInfoContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  description: String
+  directionsContact: ComponentBlocksContactDirectionsCard
+  emailContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  id: ID!
+  openingHoursContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  personContacts(filters: ComponentBlocksContactPersonCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactPersonCard]
+  phoneContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  postalAddressContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  title: String
+  titleLevel: ENUM_COMPONENTSECTIONSCONTACTSSECTION_TITLELEVEL
+  webContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+}
+
+input ComponentSectionsContactsSectionFiltersInput {
+  addressContacts: ComponentBlocksContactCardFiltersInput
+  and: [ComponentSectionsContactsSectionFiltersInput]
+  bankConnectionContacts: ComponentBlocksContactCardFiltersInput
+  billingInfoContacts: ComponentBlocksContactCardFiltersInput
+  description: StringFilterInput
+  directionsContact: ComponentBlocksContactDirectionsCardFiltersInput
+  emailContacts: ComponentBlocksContactCardFiltersInput
+  not: ComponentSectionsContactsSectionFiltersInput
+  openingHoursContacts: ComponentBlocksContactCardFiltersInput
+  or: [ComponentSectionsContactsSectionFiltersInput]
+  personContacts: ComponentBlocksContactPersonCardFiltersInput
+  phoneContacts: ComponentBlocksContactCardFiltersInput
+  postalAddressContacts: ComponentBlocksContactCardFiltersInput
+  title: StringFilterInput
+  titleLevel: StringFilterInput
+  webContacts: ComponentBlocksContactCardFiltersInput
+}
+
+input ComponentSectionsContactsSectionInput {
+  addressContacts: [ComponentBlocksContactCardInput]
+  bankConnectionContacts: [ComponentBlocksContactCardInput]
+  billingInfoContacts: [ComponentBlocksContactCardInput]
+  description: String
+  directionsContact: ComponentBlocksContactDirectionsCardInput
+  emailContacts: [ComponentBlocksContactCardInput]
+  id: ID
+  openingHoursContacts: [ComponentBlocksContactCardInput]
+  personContacts: [ComponentBlocksContactPersonCardInput]
+  phoneContacts: [ComponentBlocksContactCardInput]
+  postalAddressContacts: [ComponentBlocksContactCardInput]
+  title: String
+  titleLevel: ENUM_COMPONENTSECTIONSCONTACTSSECTION_TITLELEVEL
+  webContacts: [ComponentBlocksContactCardInput]
+}
+
 type ComponentSectionsRichtext {
   content: String
   id: ID!
@@ -286,6 +417,11 @@ input DateTimeFilterInput {
 
 type DeleteMutationResponse {
   documentId: ID!
+}
+
+enum ENUM_COMPONENTSECTIONSCONTACTSSECTION_TITLELEVEL {
+  h2
+  h3
 }
 
 enum ENUM_MUNICIPALSERVICE_COLOR {
@@ -521,7 +657,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsRichtext | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsContactsSection | ComponentSectionsRichtext | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!

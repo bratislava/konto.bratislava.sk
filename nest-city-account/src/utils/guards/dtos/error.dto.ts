@@ -38,7 +38,6 @@ export enum ErrorsResponseEnum {
   SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
 }
 
-
 export class ResponseInternalServerErrorDto {
   @ApiProperty({
     description: 'statusCode',

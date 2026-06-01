@@ -1,4 +1,7 @@
+import { STATUS_CODES } from 'node:http'
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { AxiosError } from 'axios'
 
 import alertReporting from '../constants/error.alerts'
 import {
@@ -8,8 +11,6 @@ import {
   ErrorSymbols,
   ResponseErrorInternalDto,
 } from './dtos/error.dto'
-import { AxiosError } from 'axios'
-import { STATUS_CODES } from 'node:http'
 
 /**
  * A single per-status entry for {@link FromAxiosErrorOptions.statusOverrides}.
@@ -19,7 +20,7 @@ import { STATUS_CODES } from 'node:http'
  *        alerting via {@link alertReporting}).
  * @param message human-readable text on the exception's `message` field.
  */
-export type StatusOverride = {
+export interface StatusOverride {
   status: number
   errorEnum: CustomErrorEnums
   message: string
@@ -40,7 +41,7 @@ export type StatusOverride = {
  *        status with custom status, errorEnum, and message. See {@link
  *        StatusOverride}.
  */
-export type FromAxiosErrorOptions = {
+export interface FromAxiosErrorOptions {
   message?: string
   errorEnumOverwrite?: CustomErrorEnums
   console?: string

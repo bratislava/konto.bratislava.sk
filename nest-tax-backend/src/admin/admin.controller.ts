@@ -141,7 +141,7 @@ export class AdminController {
   @ApiOperation({
     summary: '[internal] Remove delivery methods for given birth number.',
     description:
-      '⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.',
+      "⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account's business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.",
   })
   @ApiResponse({
     status: 200,

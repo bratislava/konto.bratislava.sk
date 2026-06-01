@@ -13,28 +13,35 @@ export class NorisValidatorSubservice {
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 
+  /**
+   * Validates an array of Noris records against the given schema.
+   * Invalid items are logged and silently dropped — the returned array may be shorter than the input.
+   * If any invalid record should fail the whole batch, use {@link validateSingleNorisData} instead.
+   */
   validateNorisData<T extends z.ZodType>(
     schema: T,
     data: unknown[],
-  ): z.infer<T>[]
-  validateNorisData<T extends z.ZodType>(schema: T, data: unknown): z.infer<T>
-  validateNorisData<T extends z.ZodType>(
+  ): z.infer<T>[] {
+    return data
+      .map((item) => {
+        try {
+          return this.validateSingleNorisData(schema, item)
+        } catch (error) {
+          this.logger.error(error)
+          return undefined
+        }
+      })
+      .filter((item): item is z.infer<T> => item !== undefined)
+  }
+
+  /**
+   * Validates a single Noris record against the given schema.
+   * Throws a `BadRequestException` if validation fails.
+   */
+  validateSingleNorisData<T extends z.ZodType>(
     schema: T,
     data: unknown,
-  ): z.infer<T> | z.infer<T>[] {
-    if (Array.isArray(data)) {
-      return data
-        .map((item) => {
-          try {
-            return this.validateNorisData(schema, item)
-          } catch (error) {
-            this.logger.error(error)
-            return undefined
-          }
-        })
-        .filter((item): item is z.infer<T> => item !== undefined)
-    }
-
+  ): z.infer<T> {
     const result = schema.safeParse(data)
     if (!result.success) {
       throw this.throwerErrorGuard.BadRequestException(

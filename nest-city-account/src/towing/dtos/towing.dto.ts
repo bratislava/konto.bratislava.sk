@@ -18,8 +18,12 @@ export class TowingSearchQueryDto {
  * with the upstream contract to avoid response-shape drift.
  */
 export class TowingSearchResponseDto {
-  @ApiProperty({ description: 'Date when the vehicle was towed' })
-  loadingDate!: Date
+  @ApiProperty({
+    description: 'Date when the vehicle was towed',
+    type: String,
+    format: 'date-time',
+  })
+  loadingDate!: string
 
   @ApiProperty({ description: 'Pickup location - where the vehicle was towed from' })
   loadingLocation!: string

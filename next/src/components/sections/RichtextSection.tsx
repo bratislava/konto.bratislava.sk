@@ -1,16 +1,16 @@
-import { RichTextSectionFragment } from '@/src/clients/graphql-strapi/api'
+import { RichtextSectionFragment } from '@/src/clients/graphql-strapi/api'
 import Markdown from '@/src/components/formatting/Markdown'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 
 type NarrowTextSectionProps = {
-  section: RichTextSectionFragment
+  section: RichtextSectionFragment
 }
 
 /**
  * TODO Figma link
  */
 
-const NarrowTextSection = ({ section }: NarrowTextSectionProps) => {
+const RichtextSection = ({ section }: NarrowTextSectionProps) => {
   if (!section.content) {
     return null
   }
@@ -22,4 +22,4 @@ const NarrowTextSection = ({ section }: NarrowTextSectionProps) => {
   )
 }
 
-export default NarrowTextSection
+export default RichtextSection

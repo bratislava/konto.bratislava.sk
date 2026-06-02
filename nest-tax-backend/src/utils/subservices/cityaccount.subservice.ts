@@ -116,13 +116,18 @@ export class CityAccountSubservice {
       )
       return { birthNumbers, nextSince: new Date(requestResult.data.nextSince) }
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get birth numbers for new verified user accounts.',
-        undefined,
-        undefined,
-        error,
-      )
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get birth numbers for new verified user accounts.',
+          undefined,
+          undefined,
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        message: 'Failed to get birth numbers for new verified user accounts.',
+      })
     }
   }
 }

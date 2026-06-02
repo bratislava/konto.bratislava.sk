@@ -31,7 +31,7 @@ fragment ContactDirectionsCardBlock on ComponentBlocksContactDirectionsCard {
   iframeUrl
 }
 
-fragment ContactsSection on ComponentSectionsContactsSection {
+fragment Contacts on ComponentSectionsContacts {
   id
   title
   description
@@ -65,5 +65,5 @@ fragment ContactsSection on ComponentSectionsContactsSection {
   directionsContact {
     ...ContactDirectionsCardBlock
   }
-  titleLevelContactsSection: titleLevel
+  titleLevelContacts: titleLevel
 }

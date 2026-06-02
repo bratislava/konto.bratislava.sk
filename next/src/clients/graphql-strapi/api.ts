@@ -346,8 +346,8 @@ export type ComponentGeneralAlertInput = {
   id?: InputMaybe<Scalars['ID']['input']>
 }
 
-export type ComponentSectionsContactsSection = {
-  __typename?: 'ComponentSectionsContactsSection'
+export type ComponentSectionsContacts = {
+  __typename?: 'ComponentSectionsContacts'
   addressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
   bankConnectionContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
   billingInfoContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
@@ -360,75 +360,75 @@ export type ComponentSectionsContactsSection = {
   phoneContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
   postalAddressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
   title?: Maybe<Scalars['String']['output']>
-  titleLevel?: Maybe<Enum_Componentsectionscontactssection_Titlelevel>
+  titleLevel?: Maybe<Enum_Componentsectionscontacts_Titlelevel>
   webContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
 }
 
-export type ComponentSectionsContactsSectionAddressContactsArgs = {
+export type ComponentSectionsContactsAddressContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionBankConnectionContactsArgs = {
+export type ComponentSectionsContactsBankConnectionContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionBillingInfoContactsArgs = {
+export type ComponentSectionsContactsBillingInfoContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionEmailContactsArgs = {
+export type ComponentSectionsContactsEmailContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionOpeningHoursContactsArgs = {
+export type ComponentSectionsContactsOpeningHoursContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionPersonContactsArgs = {
+export type ComponentSectionsContactsPersonContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionPhoneContactsArgs = {
+export type ComponentSectionsContactsPhoneContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionPostalAddressContactsArgs = {
+export type ComponentSectionsContactsPostalAddressContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionWebContactsArgs = {
+export type ComponentSectionsContactsWebContactsArgs = {
   filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-export type ComponentSectionsContactsSectionFiltersInput = {
+export type ComponentSectionsContactsFiltersInput = {
   addressContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  and?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsSectionFiltersInput>>>
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsFiltersInput>>>
   bankConnectionContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   billingInfoContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   description?: InputMaybe<StringFilterInput>
   directionsContact?: InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>
   emailContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  not?: InputMaybe<ComponentSectionsContactsSectionFiltersInput>
+  not?: InputMaybe<ComponentSectionsContactsFiltersInput>
   openingHoursContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  or?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsSectionFiltersInput>>>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsFiltersInput>>>
   personContacts?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
   phoneContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
   postalAddressContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
@@ -437,7 +437,7 @@ export type ComponentSectionsContactsSectionFiltersInput = {
   webContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
 }
 
-export type ComponentSectionsContactsSectionInput = {
+export type ComponentSectionsContactsInput = {
   addressContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
   bankConnectionContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
   billingInfoContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
@@ -450,7 +450,7 @@ export type ComponentSectionsContactsSectionInput = {
   phoneContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
   postalAddressContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
   title?: InputMaybe<Scalars['String']['input']>
-  titleLevel?: InputMaybe<Enum_Componentsectionscontactssection_Titlelevel>
+  titleLevel?: InputMaybe<Enum_Componentsectionscontacts_Titlelevel>
   webContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
 }
 
@@ -527,7 +527,7 @@ export type DeleteMutationResponse = {
   documentId: Scalars['ID']['output']
 }
 
-export enum Enum_Componentsectionscontactssection_Titlelevel {
+export enum Enum_Componentsectionscontacts_Titlelevel {
   H2 = 'h2',
   H3 = 'h3',
 }
@@ -732,7 +732,10 @@ export type FormInput = {
   slug?: InputMaybe<Scalars['String']['input']>
 }
 
-export type FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
+export type FormLandingPageSectionsDynamicZone =
+  | ComponentSectionsContacts
+  | ComponentSectionsRichtext
+  | Error
 
 export type FormRelationResponseCollection = {
   __typename?: 'FormRelationResponseCollection'
@@ -803,7 +806,7 @@ export type GenericMorph =
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
-  | ComponentSectionsContactsSection
+  | ComponentSectionsContacts
   | ComponentSectionsRichtext
   | Footer
   | Form
@@ -2729,6 +2732,7 @@ export type FormLandingPageFragment = {
     buttonLabel: string
   }
   sections?: Array<
+    | { __typename: 'ComponentSectionsContacts' }
     | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
     | { __typename: 'Error' }
     | null
@@ -2763,6 +2767,7 @@ export type FormWithLandingPageFragment = {
       buttonLabel: string
     }
     sections?: Array<
+      | { __typename: 'ComponentSectionsContacts' }
       | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
       | { __typename: 'Error' }
       | null
@@ -2813,6 +2818,7 @@ export type FormWithLandingPageBySlugQuery = {
         buttonLabel: string
       }
       sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
         | { __typename: 'Error' }
         | null
@@ -3102,6 +3108,10 @@ export type RichtextSectionFragment = {
   content?: string | null
 }
 
+type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
+  __typename: 'ComponentSectionsContacts'
+}
+
 type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
   __typename: 'ComponentSectionsRichtext'
   content?: string | null
@@ -3110,6 +3120,7 @@ type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
 type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
+  | FormLandingPageSections_ComponentSectionsContacts_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_Error_Fragment
 
@@ -3137,12 +3148,12 @@ export type ContactDirectionsCardBlockFragment = {
   iframeUrl?: string | null
 }
 
-export type ContactsSectionFragment = {
-  __typename?: 'ComponentSectionsContactsSection'
+export type ContactsFragment = {
+  __typename?: 'ComponentSectionsContacts'
   id: string
   title?: string | null
   description?: string | null
-  titleLevelContactsSection?: Enum_Componentsectionscontactssection_Titlelevel | null
+  titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
   addressContacts?: Array<{
     __typename?: 'ComponentBlocksContactCard'
     overrideLabel?: string | null
@@ -3437,8 +3448,8 @@ export const ContactDirectionsCardBlockFragmentDoc = gql`
     iframeUrl
   }
 `
-export const ContactsSectionFragmentDoc = gql`
-  fragment ContactsSection on ComponentSectionsContactsSection {
+export const ContactsFragmentDoc = gql`
+  fragment Contacts on ComponentSectionsContacts {
     id
     title
     description
@@ -3472,7 +3483,7 @@ export const ContactsSectionFragmentDoc = gql`
     directionsContact {
       ...ContactDirectionsCardBlock
     }
-    titleLevelContactsSection: titleLevel
+    titleLevelContacts: titleLevel
   }
   ${ContactCardBlockFragmentDoc}
   ${ContactPersonCardBlockFragmentDoc}

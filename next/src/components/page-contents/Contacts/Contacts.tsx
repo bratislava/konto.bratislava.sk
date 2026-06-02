@@ -1,0 +1,79 @@
+import { ContactCardBlockFragment, ContactsFragment } from '@/src/clients/graphql-strapi/api'
+import SectionHeader from '@/src/components/layouts/SectionHeader'
+import ContactCtaCard, {
+  ContactCtaCardType,
+} from '@/src/components/page-contents/Contacts/ContactCtaCard'
+import { isDefined } from '@/src/frontend/utils/general'
+
+type ContactsProps = {
+  section: ContactsFragment
+}
+
+const mapSection = (
+  array: (ContactCardBlockFragment | null | undefined)[] | null | undefined,
+  type: ContactCtaCardType,
+) => array?.filter(isDefined).map((contact) => ({ type, ...contact })) ?? []
+
+/**
+ * Figma: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%3A-Component-library?type=design&node-id=8988-24516&t=ZrNmOvM307DSHwAu-0
+ */
+
+const Contacts = ({ section }: ContactsProps) => {
+  const {
+    title,
+    description,
+    titleLevelContacts: titleLevel,
+    addressContacts,
+    openingHoursContacts,
+    emailContacts,
+    phoneContacts,
+    webContacts,
+    postalAddressContacts,
+    billingInfoContacts,
+    bankConnectionContacts,
+    directionsContact,
+    personContacts,
+  } = section
+
+  const contacts = [
+    ...mapSection(addressContacts, ContactCtaCardType.Address),
+    ...mapSection(openingHoursContacts, ContactCtaCardType.OpeningHours),
+    ...mapSection(emailContacts, ContactCtaCardType.Email),
+    ...mapSection(phoneContacts, ContactCtaCardType.Phone),
+    ...mapSection(webContacts, ContactCtaCardType.Web),
+    ...mapSection(postalAddressContacts, ContactCtaCardType.PostalAddress),
+    ...mapSection(billingInfoContacts, ContactCtaCardType.BillingInfo),
+    ...mapSection(bankConnectionContacts, ContactCtaCardType.BankConnection),
+  ]
+
+  return (
+    <div className="flex flex-col gap-6 rounded-xl bg-background-passive-primary p-4 lg:gap-8 lg:p-8">
+      <SectionHeader title={title} titleLevel={titleLevel} text={description} asRichtext />
+
+      <div className="flex flex-col gap-6 lg:gap-8">
+        {contacts.map((contact, index) => (
+          <ContactCtaCard key={index} contact={contact} />
+        ))}
+        {personContacts?.filter(isDefined).map((person, index) => (
+          <ContactCtaCard
+            key={index}
+            contact={{
+              type: 'Person',
+              ...person,
+            }}
+          />
+        ))}
+        {directionsContact ? (
+          <ContactCtaCard
+            contact={{
+              type: 'Directions',
+              ...directionsContact,
+            }}
+          />
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+export default Contacts

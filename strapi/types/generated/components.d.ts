@@ -76,7 +76,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<['sections.richtext']>
+    sections: Schema.Attribute.DynamicZone<['sections.richtext', 'sections.contacts']>
     text: Schema.Attribute.RichText
   }
 }
@@ -142,8 +142,8 @@ export interface GeneralAlert extends Struct.ComponentSchema {
   }
 }
 
-export interface SectionsContactsSection extends Struct.ComponentSchema {
-  collectionName: 'components_sections_contacts_sections'
+export interface SectionsContacts extends Struct.ComponentSchema {
+  collectionName: 'components_sections_contacts'
   info: {
     description: ''
     displayName: 'Kontakty'
@@ -189,7 +189,7 @@ declare module '@strapi/strapi' {
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert
-      'sections.contacts-section': SectionsContactsSection
+      'sections.contacts': SectionsContacts
       'sections.richtext': SectionsRichtext
     }
   }

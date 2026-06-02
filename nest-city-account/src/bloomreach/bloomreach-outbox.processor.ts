@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '@prisma/client'
 import axios, { isAxiosError } from 'axios'
 
@@ -126,14 +126,18 @@ export class BloomreachOutboxProcessor {
         `Processed batch: ${succeededIds.length} succeeded, ${failedEntries.length} failed`
       )
     } catch (error) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Bloomreach batch send failed',
-          toLogfmt({ batchSize: commands.length, entryCount: entries.length }),
-          error
+      if (error instanceof HttpException) {
+        this.logger.error(error, { batchSize: commands.length, entryCount: entries.length })
+      } else {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Bloomreach batch send failed',
+            toLogfmt({ batchSize: commands.length, entryCount: entries.length }),
+            error
+          )
         )
-      )
+      }
 
       await this.revertEntries(entries, error instanceof Error ? error.message : String(error))
     }

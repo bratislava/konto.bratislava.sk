@@ -2,14 +2,6 @@ fragment RichtextSection on ComponentSectionsRichtext {
   content
 }
 
-fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
-  __typename
-
-  ... on ComponentSectionsRichtext {
-    ...RichtextSection
-  }
-}
-
 fragment ContactCardBlock on ComponentBlocksContactCard {
   overrideLabel
   value
@@ -31,7 +23,7 @@ fragment ContactDirectionsCardBlock on ComponentBlocksContactDirectionsCard {
   iframeUrl
 }
 
-fragment Contacts on ComponentSectionsContacts {
+fragment ContactsSection on ComponentSectionsContacts {
   id
   title
   description
@@ -66,4 +58,16 @@ fragment Contacts on ComponentSectionsContacts {
     ...ContactDirectionsCardBlock
   }
   titleLevelContacts: titleLevel
+}
+
+fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
+  __typename
+
+  ... on ComponentSectionsRichtext {
+    ...RichtextSection
+  }
+
+  ... on ComponentSectionsContacts {
+    ...ContactsSection
+  }
 }

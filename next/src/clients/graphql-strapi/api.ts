@@ -2732,7 +2732,69 @@ export type FormLandingPageFragment = {
     buttonLabel: string
   }
   sections?: Array<
-    | { __typename: 'ComponentSectionsContacts' }
+    | {
+        __typename: 'ComponentSectionsContacts'
+        id: string
+        title?: string | null
+        description?: string | null
+        titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+        addressContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        openingHoursContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        emailContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        phoneContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        webContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        postalAddressContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        billingInfoContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        bankConnectionContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        personContacts?: Array<{
+          __typename?: 'ComponentBlocksContactPersonCard'
+          title: string
+          subtext?: string | null
+          email?: string | null
+          phone?: string | null
+        } | null> | null
+        directionsContact?: {
+          __typename?: 'ComponentBlocksContactDirectionsCard'
+          overrideLabel?: string | null
+          address: string
+          parkingInfo?: string | null
+          publicTransportInfo?: string | null
+          barrierFreeInfo?: string | null
+          iframeUrl?: string | null
+        } | null
+      }
     | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
     | { __typename: 'Error' }
     | null
@@ -2767,7 +2829,69 @@ export type FormWithLandingPageFragment = {
       buttonLabel: string
     }
     sections?: Array<
-      | { __typename: 'ComponentSectionsContacts' }
+      | {
+          __typename: 'ComponentSectionsContacts'
+          id: string
+          title?: string | null
+          description?: string | null
+          titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+          addressContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          openingHoursContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          emailContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          phoneContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          webContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          postalAddressContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          billingInfoContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          bankConnectionContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          personContacts?: Array<{
+            __typename?: 'ComponentBlocksContactPersonCard'
+            title: string
+            subtext?: string | null
+            email?: string | null
+            phone?: string | null
+          } | null> | null
+          directionsContact?: {
+            __typename?: 'ComponentBlocksContactDirectionsCard'
+            overrideLabel?: string | null
+            address: string
+            parkingInfo?: string | null
+            publicTransportInfo?: string | null
+            barrierFreeInfo?: string | null
+            iframeUrl?: string | null
+          } | null
+        }
       | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
       | { __typename: 'Error' }
       | null
@@ -2818,7 +2942,69 @@ export type FormWithLandingPageBySlugQuery = {
         buttonLabel: string
       }
       sections?: Array<
-        | { __typename: 'ComponentSectionsContacts' }
+        | {
+            __typename: 'ComponentSectionsContacts'
+            id: string
+            title?: string | null
+            description?: string | null
+            titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+            addressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            openingHoursContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            emailContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            phoneContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            webContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            postalAddressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            billingInfoContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            bankConnectionContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            personContacts?: Array<{
+              __typename?: 'ComponentBlocksContactPersonCard'
+              title: string
+              subtext?: string | null
+              email?: string | null
+              phone?: string | null
+            } | null> | null
+            directionsContact?: {
+              __typename?: 'ComponentBlocksContactDirectionsCard'
+              overrideLabel?: string | null
+              address: string
+              parkingInfo?: string | null
+              publicTransportInfo?: string | null
+              barrierFreeInfo?: string | null
+              iframeUrl?: string | null
+            } | null
+          }
         | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
         | { __typename: 'Error' }
         | null
@@ -3108,22 +3294,6 @@ export type RichtextSectionFragment = {
   content?: string | null
 }
 
-type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
-  __typename: 'ComponentSectionsContacts'
-}
-
-type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
-  __typename: 'ComponentSectionsRichtext'
-  content?: string | null
-}
-
-type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
-
-export type FormLandingPageSectionsFragment =
-  | FormLandingPageSections_ComponentSectionsContacts_Fragment
-  | FormLandingPageSections_ComponentSectionsRichtext_Fragment
-  | FormLandingPageSections_Error_Fragment
-
 export type ContactCardBlockFragment = {
   __typename?: 'ComponentBlocksContactCard'
   overrideLabel?: string | null
@@ -3148,7 +3318,7 @@ export type ContactDirectionsCardBlockFragment = {
   iframeUrl?: string | null
 }
 
-export type ContactsFragment = {
+export type ContactsSectionFragment = {
   __typename?: 'ComponentSectionsContacts'
   id: string
   title?: string | null
@@ -3212,6 +3382,82 @@ export type ContactsFragment = {
   } | null
 }
 
+type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
+  __typename: 'ComponentSectionsContacts'
+  id: string
+  title?: string | null
+  description?: string | null
+  titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+  addressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  openingHoursContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  emailContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  phoneContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  webContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  postalAddressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  billingInfoContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  bankConnectionContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  personContacts?: Array<{
+    __typename?: 'ComponentBlocksContactPersonCard'
+    title: string
+    subtext?: string | null
+    email?: string | null
+    phone?: string | null
+  } | null> | null
+  directionsContact?: {
+    __typename?: 'ComponentBlocksContactDirectionsCard'
+    overrideLabel?: string | null
+    address: string
+    parkingInfo?: string | null
+    publicTransportInfo?: string | null
+    barrierFreeInfo?: string | null
+    iframeUrl?: string | null
+  } | null
+}
+
+type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
+  __typename: 'ComponentSectionsRichtext'
+  content?: string | null
+}
+
+type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
+
+export type FormLandingPageSectionsFragment =
+  | FormLandingPageSections_ComponentSectionsContacts_Fragment
+  | FormLandingPageSections_ComponentSectionsRichtext_Fragment
+  | FormLandingPageSections_Error_Fragment
+
 export type TaxFragment = {
   __typename?: 'Tax'
   documentId: string
@@ -3274,14 +3520,83 @@ export const RichtextSectionFragmentDoc = gql`
     content
   }
 `
+export const ContactCardBlockFragmentDoc = gql`
+  fragment ContactCardBlock on ComponentBlocksContactCard {
+    overrideLabel
+    value
+  }
+`
+export const ContactPersonCardBlockFragmentDoc = gql`
+  fragment ContactPersonCardBlock on ComponentBlocksContactPersonCard {
+    title
+    subtext
+    email
+    phone
+  }
+`
+export const ContactDirectionsCardBlockFragmentDoc = gql`
+  fragment ContactDirectionsCardBlock on ComponentBlocksContactDirectionsCard {
+    overrideLabel
+    address
+    parkingInfo
+    publicTransportInfo
+    barrierFreeInfo
+    iframeUrl
+  }
+`
+export const ContactsSectionFragmentDoc = gql`
+  fragment ContactsSection on ComponentSectionsContacts {
+    id
+    title
+    description
+    addressContacts {
+      ...ContactCardBlock
+    }
+    openingHoursContacts {
+      ...ContactCardBlock
+    }
+    emailContacts {
+      ...ContactCardBlock
+    }
+    phoneContacts {
+      ...ContactCardBlock
+    }
+    webContacts {
+      ...ContactCardBlock
+    }
+    postalAddressContacts {
+      ...ContactCardBlock
+    }
+    billingInfoContacts {
+      ...ContactCardBlock
+    }
+    bankConnectionContacts {
+      ...ContactCardBlock
+    }
+    personContacts {
+      ...ContactPersonCardBlock
+    }
+    directionsContact {
+      ...ContactDirectionsCardBlock
+    }
+    titleLevelContacts: titleLevel
+  }
+  ${ContactCardBlockFragmentDoc}
+  ${ContactPersonCardBlockFragmentDoc}
+  ${ContactDirectionsCardBlockFragmentDoc}
+`
 export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
     ... on ComponentSectionsRichtext {
       ...RichtextSection
     }
+    ... on ComponentSectionsContacts {
+      ...ContactsSection
+    }
   }
   ${RichtextSectionFragmentDoc}
+  ${ContactsSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {
@@ -3423,71 +3738,6 @@ export const MunicipalServiceEntityFragmentDoc = gql`
   }
   ${MunicipalServiceCardEntityFragmentDoc}
   ${MunicipalServiceCategoryEntityFragmentDoc}
-`
-export const ContactCardBlockFragmentDoc = gql`
-  fragment ContactCardBlock on ComponentBlocksContactCard {
-    overrideLabel
-    value
-  }
-`
-export const ContactPersonCardBlockFragmentDoc = gql`
-  fragment ContactPersonCardBlock on ComponentBlocksContactPersonCard {
-    title
-    subtext
-    email
-    phone
-  }
-`
-export const ContactDirectionsCardBlockFragmentDoc = gql`
-  fragment ContactDirectionsCardBlock on ComponentBlocksContactDirectionsCard {
-    overrideLabel
-    address
-    parkingInfo
-    publicTransportInfo
-    barrierFreeInfo
-    iframeUrl
-  }
-`
-export const ContactsFragmentDoc = gql`
-  fragment Contacts on ComponentSectionsContacts {
-    id
-    title
-    description
-    addressContacts {
-      ...ContactCardBlock
-    }
-    openingHoursContacts {
-      ...ContactCardBlock
-    }
-    emailContacts {
-      ...ContactCardBlock
-    }
-    phoneContacts {
-      ...ContactCardBlock
-    }
-    webContacts {
-      ...ContactCardBlock
-    }
-    postalAddressContacts {
-      ...ContactCardBlock
-    }
-    billingInfoContacts {
-      ...ContactCardBlock
-    }
-    bankConnectionContacts {
-      ...ContactCardBlock
-    }
-    personContacts {
-      ...ContactPersonCardBlock
-    }
-    directionsContact {
-      ...ContactDirectionsCardBlock
-    }
-    titleLevelContacts: titleLevel
-  }
-  ${ContactCardBlockFragmentDoc}
-  ${ContactPersonCardBlockFragmentDoc}
-  ${ContactDirectionsCardBlockFragmentDoc}
 `
 export const TaxFragmentDoc = gql`
   fragment Tax on Tax {

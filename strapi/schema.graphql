@@ -200,7 +200,6 @@ input ComponentBlocksFormLandingPageInput {
   id: ID
   linkCtas: [ComponentBlocksFormLandingPageLinkCtaInput]
   sections: [FormLandingPageSectionsDynamicZoneInput!]
-  sections: [FormLandingPageSectionsDynamicZoneInput!]
   text: String
 }
 

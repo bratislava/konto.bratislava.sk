@@ -12,7 +12,6 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
 
 fragment ContactCardBlock on ComponentBlocksContactCard {
   overrideLabel
-  sdfsas
   value
 }
 

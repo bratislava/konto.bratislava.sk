@@ -18,6 +18,7 @@ fragment ContactCardBlock on ComponentBlocksContactCard {
 fragment ContactPersonCardBlock on ComponentBlocksContactPersonCard {
   title
   subtext
+  openingHoursContacts
   email
   phone
 }

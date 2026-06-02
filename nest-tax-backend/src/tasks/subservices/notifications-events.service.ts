@@ -133,13 +133,13 @@ export default class NotificationsEventsService {
     })
 
     const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
+      await this.cityAccountSubservice.getUserDataAdminBatchOptional(
         taxes.map((t) => t.taxPayer.birthNumber),
       )
 
     const sentResults = await Promise.all(
       taxes.map(async (tax): Promise<number | undefined> => {
-        const user = userDataFromCityAccount[tax.taxPayer.birthNumber]
+        const user = userDataFromCityAccount?.[tax.taxPayer.birthNumber]
         const externalId = user?.externalId
         if (!externalId) {
           return undefined
@@ -324,14 +324,14 @@ export default class NotificationsEventsService {
     )
 
     const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
+      await this.cityAccountSubservice.getUserDataAdminBatchOptional(
         taxes.map((tax) => tax.birthNumber),
       )
 
     const sentResults = await Promise.all(
       taxes.map(async (tax) => {
         const userFromCityAccount =
-          userDataFromCityAccount[tax.birthNumber] || null
+          userDataFromCityAccount?.[tax.birthNumber] || null
         if (!userFromCityAccount || !userFromCityAccount.externalId) {
           return undefined
         }
@@ -404,7 +404,7 @@ export default class NotificationsEventsService {
     const concurrencyLimit = pLimit(concurrency)
 
     const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
+      await this.cityAccountSubservice.getUserDataAdminBatchOptional(
         payments.map((payment) => payment.tax.taxPayer.birthNumber),
       )
 
@@ -414,7 +414,7 @@ export default class NotificationsEventsService {
       try {
         await concurrencyLimit(async () => {
           const userFromCityAccount =
-            userDataFromCityAccount[payment.tax.taxPayer.birthNumber] || null
+            userDataFromCityAccount?.[payment.tax.taxPayer.birthNumber] || null
           await this.paymentService.trackPaymentInBloomreach(
             payment,
             userFromCityAccount?.externalId ?? undefined,

@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common'
-import { AxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import ClientsService from '../../clients/clients.service'
@@ -37,22 +37,36 @@ export class CityAccountSubservice {
       }
       return null
     } catch (error) {
-      // Since we add all taxes from noris, not only for people in city account, we shall not log errors
-      // when the people do not exist in city account, or their birth number is in bad format for city account.
+      if (!isAxiosError(error)) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Failed to get user data from city account.',
+            undefined,
+            undefined,
+            error,
+          ),
+        )
+        return null
+      }
+
+      // The returned user data is only used for Bloomreach tracking. When city
+      // account has no record for this birth number (NOT_FOUND) or rejects its
+      // format (BAD_REQUEST), we simply skip tracking and return null.
+      const status = error.response?.status
       if (
-        (error as AxiosError).response?.status === HttpStatus.NOT_FOUND ||
-        (error as AxiosError).response?.status === HttpStatus.BAD_REQUEST
+        status === HttpStatus.NOT_FOUND ||
+        status === HttpStatus.BAD_REQUEST
       ) {
         return null
       }
+
+      // Any other downstream failure also only affects tracking, so log it
+      // (classified via fromAxiosError) without breaking callers.
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to get birthnumber:`,
-          undefined,
-          undefined,
-          error,
-        ),
+        this.throwerErrorGuard.fromAxiosError(error, {
+          message: 'Failed to get user data from city account.',
+        }),
       )
       return null
     }

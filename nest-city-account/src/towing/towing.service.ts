@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios, { isAxiosError } from 'axios'
 
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { TowingSearchResponseDto } from './dtos/towing.dto'
@@ -32,9 +32,9 @@ export class TowingService {
    * Returns the upstream payload. The upstream contract is captured by
    * {@link TowingSearchResponseDto} - keep them in sync.
    *
-   * Error mapping is intentionally narrow: upstream product statuses
-   * (`200`, `400`, `404`) are preserved, while transport or unexpected upstream
-   * failures are translated to gateway-style statuses (`503`, `502`).
+   * Error mapping preserves product statuses (`200`, `400`, `404`) and uses
+   * the shared downstream Axios mapper for all other downstream HTTP failures.
+   * Transport failures with no downstream response are mapped to `503`.
    *
    * @param ecv License plate to search for (forwarded to upstream)
    * @throws NotFoundException (404) when no active towing or relocation exists
@@ -55,25 +55,8 @@ export class TowingService {
       if (!isAxiosError(error)) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
           toLogfmt({ ecv, url }),
-          error
-        )
-      }
-
-      if (error.response?.status === HttpStatus.NOT_FOUND) {
-        throw this.throwerErrorGuard.NotFoundException(
-          TowingErrorsEnum.TOWING_NOT_FOUND,
-          TowingErrorsResponseEnum.TOWING_NOT_FOUND,
-          toLogfmt({ ecv })
-        )
-      }
-
-      if (error.response?.status === HttpStatus.BAD_REQUEST) {
-        throw this.throwerErrorGuard.BadRequestException(
-          TowingErrorsEnum.ENFORCEMENT_BACKEND_REJECTED_REQUEST,
-          TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_REJECTED_REQUEST,
-          toLogfmt({ ecv, url, status: error.response.status }),
           error
         )
       }
@@ -87,12 +70,27 @@ export class TowingService {
         )
       }
 
-      throw this.throwerErrorGuard.BadGatewayException(
-        TowingErrorsEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
-        TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
-        toLogfmt({ ecv, url, status: error.response.status }),
-        error
-      )
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE,
+        console: toLogfmt({ ecv, url, status: error.response.status }),
+        statusOverrides: {
+          [HttpStatus.NOT_FOUND]: {
+            status: HttpStatus.NOT_FOUND,
+            errorEnum: TowingErrorsEnum.TOWING_NOT_FOUND,
+            message: TowingErrorsResponseEnum.TOWING_NOT_FOUND,
+          },
+          [HttpStatus.BAD_REQUEST]: {
+            status: HttpStatus.BAD_REQUEST,
+            errorEnum: TowingErrorsEnum.ENFORCEMENT_BACKEND_REJECTED_REQUEST,
+            message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_REJECTED_REQUEST,
+          },
+          [HttpStatus.SERVICE_UNAVAILABLE]: {
+            status: HttpStatus.SERVICE_UNAVAILABLE,
+            errorEnum: TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+            message: TowingErrorsResponseEnum.ENFORCEMENT_BACKEND_UNAVAILABLE,
+          },
+        },
+      })
     }
   }
 }

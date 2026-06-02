@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { TowingErrorsEnum } from '../towing.errors.enum'
 import { TowingService } from '../towing.service'
@@ -140,12 +141,27 @@ describe('TowingService', () => {
       }
     })
 
+    it('maps upstream 503 to 503 ENFORCEMENT_BACKEND_UNAVAILABLE', async () => {
+      mockedAxios.get.mockRejectedValueOnce(makeAxiosError(HttpStatus.SERVICE_UNAVAILABLE))
+
+      try {
+        await service.getPublicTowingByEcv('BA123AB')
+        fail('expected to throw')
+      } catch (error) {
+        expect(error).toBeInstanceOf(HttpException)
+        const httpError = error as HttpException
+        expect(httpError.getStatus()).toBe(HttpStatus.SERVICE_UNAVAILABLE)
+        expect((httpError.getResponse() as { errorName: string }).errorName).toBe(
+          TowingErrorsEnum.ENFORCEMENT_BACKEND_UNAVAILABLE
+        )
+      }
+    })
+
     it.each([
-      ['5xx', HttpStatus.BAD_GATEWAY],
-      ['unhandled 4xx', HttpStatus.I_AM_A_TEAPOT],
-      ['unhandled 3xx', HttpStatus.MOVED_PERMANENTLY],
-    ])(
-      'maps an unexpected upstream %s to 502 ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE',
+      ['401', HttpStatus.UNAUTHORIZED],
+      ['403', HttpStatus.FORBIDDEN],
+    ] as const)(
+      'maps downstream auth error %s to 502 BAD_GATEWAY_AUTH_ERROR',
       async (_label, status) => {
         mockedAxios.get.mockRejectedValueOnce(makeAxiosError(status))
 
@@ -157,7 +173,30 @@ describe('TowingService', () => {
           const httpError = error as HttpException
           expect(httpError.getStatus()).toBe(HttpStatus.BAD_GATEWAY)
           expect((httpError.getResponse() as { errorName: string }).errorName).toBe(
-            TowingErrorsEnum.ENFORCEMENT_BACKEND_UNEXPECTED_RESPONSE
+            ErrorsEnum.BAD_GATEWAY_AUTH_ERROR
+          )
+        }
+      }
+    )
+
+    it.each([
+      ['5xx', HttpStatus.BAD_GATEWAY],
+      ['unhandled 4xx', HttpStatus.I_AM_A_TEAPOT],
+      ['unhandled 3xx', HttpStatus.MOVED_PERMANENTLY],
+    ])(
+      'maps an unexpected upstream %s to 502 BAD_GATEWAY_ERROR',
+      async (_label, status) => {
+        mockedAxios.get.mockRejectedValueOnce(makeAxiosError(status))
+
+        try {
+          await service.getPublicTowingByEcv('BA123AB')
+          fail('expected to throw')
+        } catch (error) {
+          expect(error).toBeInstanceOf(HttpException)
+          const httpError = error as HttpException
+          expect(httpError.getStatus()).toBe(HttpStatus.BAD_GATEWAY)
+          expect((httpError.getResponse() as { errorName: string }).errorName).toBe(
+            ErrorsEnum.BAD_GATEWAY_ERROR
           )
         }
       }

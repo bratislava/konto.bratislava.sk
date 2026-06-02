@@ -3134,6 +3134,7 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3295,7 +3296,7 @@ export const FormsApiFp = function (configuration?: Configuration) {
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerUpdateForm(
         formId,
         updateFormRequestDto,
@@ -3413,7 +3414,7 @@ export const FormsApiFactory = function (
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .formsControllerUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))

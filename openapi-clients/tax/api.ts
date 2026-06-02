@@ -266,43 +266,6 @@ export interface RequestPostReportingSendReport {
    */
   emailRecipients: Array<string>
 }
-export interface RequestUpdateNorisDeliveryMethodsDto {
-  /**
-   * The new delivery methods for the birth numbers. For city account notification, date must be provided.
-   */
-  data: { [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue }
-}
-/**
- * @type RequestUpdateNorisDeliveryMethodsDtoDataValue
- */
-export type RequestUpdateNorisDeliveryMethodsDtoDataValue =
-  | RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf
-  | RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1
-
-export interface RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf {
-  deliveryMethod: RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum
-  date: string
-}
-
-export const RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum = {
-  O: 'O',
-} as const
-
-export type RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum =
-  (typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum)[keyof typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum]
-
-export interface RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1 {
-  deliveryMethod: RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum
-}
-
-export const RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum = {
-  E: 'E',
-  P: 'P',
-} as const
-
-export type RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum =
-  (typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum)[keyof typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum]
-
 export interface ResponseActiveInstallmentDto {
   /**
    * Remaining amount to pay in the installment
@@ -836,17 +799,6 @@ export const TaxType = {
 
 export type TaxType = (typeof TaxType)[keyof typeof TaxType]
 
-export interface UpdateDeliveryMethodsInNorisResponseDto {
-  /**
-   * An array of birth numbers which were added to TaxPayers in this batch.
-   */
-  birthNumbers: Array<string>
-  /**
-   * An array of birth numbers which were found in Noris (regardless of whether they were processed).
-   */
-  foundInNoris?: Array<string>
-}
-
 /**
  * AdminApi - axios parameter creator
  */
@@ -1018,50 +970,6 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
-     * @summary [internal] Remove delivery methods for given birth number.
-     * @param {string} birthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerRemoveDeliveryMethodsFromNoris: async (
-      birthNumber: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'birthNumber' is not null or undefined
-      assertParamExists('adminControllerRemoveDeliveryMethodsFromNoris', 'birthNumber', birthNumber)
-      const localVarPath = `/admin/remove-delivery-methods-from-noris/{birthNumber}`.replace(
-        '{birthNumber}',
-        encodeURIComponent(String(birthNumber)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1104,59 +1012,6 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
         requestPostNorisLoadDataDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary Update delivery methods for given birth numbers and date.
-     * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerUpdateDeliveryMethodsInNoris: async (
-      requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'requestUpdateNorisDeliveryMethodsDto' is not null or undefined
-      assertParamExists(
-        'adminControllerUpdateDeliveryMethodsInNoris',
-        'requestUpdateNorisDeliveryMethodsDto',
-        requestUpdateNorisDeliveryMethodsDto,
-      )
-      const localVarPath = `/admin/update-delivery-methods-in-noris`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        requestUpdateNorisDeliveryMethodsDto,
         localVarRequestOptions,
         configuration,
       )
@@ -1365,35 +1220,6 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
-     * @summary [internal] Remove delivery methods for given birth number.
-     * @param {string} birthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerRemoveDeliveryMethodsFromNoris(
-      birthNumber: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerRemoveDeliveryMethodsFromNoris(
-          birthNumber,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.adminControllerRemoveDeliveryMethodsFromNoris']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1411,40 +1237,6 @@ export const AdminApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['AdminApi.adminControllerUpdateDataFromNoris']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
-     * @summary Update delivery methods for given birth numbers and date.
-     * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerUpdateDeliveryMethodsInNoris(
-      requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerUpdateDeliveryMethodsInNoris(
-          requestUpdateNorisDeliveryMethodsDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.adminControllerUpdateDeliveryMethodsInNoris']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1578,21 +1370,6 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
-     * @summary [internal] Remove delivery methods for given birth number.
-     * @param {string} birthNumber
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerRemoveDeliveryMethodsFromNoris(
-      birthNumber: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
      * @summary Updates data from Noris.
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1605,21 +1382,6 @@ export const AdminApiFactory = function (
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpdateDataFromNoris(requestPostNorisLoadDataDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary Update delivery methods for given birth numbers and date.
-     * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerUpdateDeliveryMethodsInNoris(
-      requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto> {
-      return localVarFp
-        .adminControllerUpdateDeliveryMethodsInNoris(requestUpdateNorisDeliveryMethodsDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1710,22 +1472,6 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
-   * ⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account\'s business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.
-   * @summary [internal] Remove delivery methods for given birth number.
-   * @param {string} birthNumber
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerRemoveDeliveryMethodsFromNoris(
-    birthNumber: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return AdminApiFp(this.configuration)
-      .adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * Updates existing taxes with new data from Noris by birth numbers and year, and saves it to our database.
    * @summary Updates data from Noris.
    * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1738,22 +1484,6 @@ export class AdminApi extends BaseAPI {
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerUpdateDataFromNoris(requestPostNorisLoadDataDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Update delivery methods for given birth numbers and date.
-   * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public adminControllerUpdateDeliveryMethodsInNoris(
-    requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return AdminApiFp(this.configuration)
-      .adminControllerUpdateDeliveryMethodsInNoris(requestUpdateNorisDeliveryMethodsDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

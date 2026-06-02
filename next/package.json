@@ -136,7 +136,6 @@
     "eslint-plugin-better-tailwindcss": "4.5.0",
     "i18next-parser": "9.4.0",
     "postcss": "8.5.14",
-    "pre-commit": "2.0.0",
     "prettier": "3.8.3",
     "prettier-plugin-tailwindcss": "0.8.0",
     "tailwindcss": "4.2.4",
@@ -150,8 +149,5 @@
   "volta": {
     "node": "24.15.0",
     "npm": "11.12.1"
-  },
-  "allowScripts": {
-    "pre-commit@2.0.0": true
   }
 }

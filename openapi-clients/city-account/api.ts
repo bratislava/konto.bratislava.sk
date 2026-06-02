@@ -1030,6 +1030,12 @@ export const TokenResponseDtoTokenTypeEnum = {
 export type TokenResponseDtoTokenTypeEnum =
   (typeof TokenResponseDtoTokenTypeEnum)[keyof typeof TokenResponseDtoTokenTypeEnum]
 
+export interface TowingSearchRequestDto {
+  /**
+   * Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.
+   */
+  turnstileToken: string
+}
 export interface TowingSearchResponseDto {
   /**
    * Date when the vehicle was towed
@@ -3594,22 +3600,26 @@ export class PAASMPAApi extends BaseAPI {
 export const TowingApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied to mitigate enumeration attacks.
+     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
      * @summary Public lookup of an active towing / relocation by license plate
      * @param {string} ecv
-     * @param {string} turnstileToken Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.
+     * @param {TowingSearchRequestDto} towingSearchRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     towingControllerGetPublicTowingByEcv: async (
       ecv: string,
-      turnstileToken: string,
+      towingSearchRequestDto: TowingSearchRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ecv' is not null or undefined
       assertParamExists('towingControllerGetPublicTowingByEcv', 'ecv', ecv)
-      // verify required parameter 'turnstileToken' is not null or undefined
-      assertParamExists('towingControllerGetPublicTowingByEcv', 'turnstileToken', turnstileToken)
+      // verify required parameter 'towingSearchRequestDto' is not null or undefined
+      assertParamExists(
+        'towingControllerGetPublicTowingByEcv',
+        'towingSearchRequestDto',
+        towingSearchRequestDto,
+      )
       const localVarPath = `/towing/public/{ecv}`.replace('{ecv}', encodeURIComponent(String(ecv)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3618,14 +3628,11 @@ export const TowingApiAxiosParamCreator = function (configuration?: Configuratio
         baseOptions = configuration.baseOptions
       }
 
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      if (turnstileToken !== undefined) {
-        localVarQueryParameter['turnstileToken'] = turnstileToken
-      }
-
+      localVarHeaderParameter['Content-Type'] = 'application/json'
       localVarHeaderParameter['Accept'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -3635,6 +3642,11 @@ export const TowingApiAxiosParamCreator = function (configuration?: Configuratio
         ...headersFromBaseOptions,
         ...options.headers,
       }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        towingSearchRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -3651,16 +3663,16 @@ export const TowingApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = TowingApiAxiosParamCreator(configuration)
   return {
     /**
-     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied to mitigate enumeration attacks.
+     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
      * @summary Public lookup of an active towing / relocation by license plate
      * @param {string} ecv
-     * @param {string} turnstileToken Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.
+     * @param {TowingSearchRequestDto} towingSearchRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async towingControllerGetPublicTowingByEcv(
       ecv: string,
-      turnstileToken: string,
+      towingSearchRequestDto: TowingSearchRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TowingSearchResponseDto>
@@ -3668,7 +3680,7 @@ export const TowingApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.towingControllerGetPublicTowingByEcv(
           ecv,
-          turnstileToken,
+          towingSearchRequestDto,
           options,
         )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -3698,20 +3710,20 @@ export const TowingApiFactory = function (
   const localVarFp = TowingApiFp(configuration)
   return {
     /**
-     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied to mitigate enumeration attacks.
+     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
      * @summary Public lookup of an active towing / relocation by license plate
      * @param {string} ecv
-     * @param {string} turnstileToken Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.
+     * @param {TowingSearchRequestDto} towingSearchRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     towingControllerGetPublicTowingByEcv(
       ecv: string,
-      turnstileToken: string,
+      towingSearchRequestDto: TowingSearchRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<TowingSearchResponseDto> {
       return localVarFp
-        .towingControllerGetPublicTowingByEcv(ecv, turnstileToken, options)
+        .towingControllerGetPublicTowingByEcv(ecv, towingSearchRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -3722,20 +3734,20 @@ export const TowingApiFactory = function (
  */
 export class TowingApi extends BaseAPI {
   /**
-   * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied to mitigate enumeration attacks.
+   * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
    * @summary Public lookup of an active towing / relocation by license plate
    * @param {string} ecv
-   * @param {string} turnstileToken Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.
+   * @param {TowingSearchRequestDto} towingSearchRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public towingControllerGetPublicTowingByEcv(
     ecv: string,
-    turnstileToken: string,
+    towingSearchRequestDto: TowingSearchRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return TowingApiFp(this.configuration)
-      .towingControllerGetPublicTowingByEcv(ecv, turnstileToken, options)
+      .towingControllerGetPublicTowingByEcv(ecv, towingSearchRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

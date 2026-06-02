@@ -108,7 +108,6 @@ export default class WebhookService {
         },
       })
     } catch (error) {
-      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

@@ -50,7 +50,6 @@ export default class GinisTasksSubservice {
         return docDetail['Wfl-dokument']['Stav-dokumentu']
       })
     } catch (error) {
-      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,

@@ -127,7 +127,6 @@ export default class GinisService {
       await this.updateSuccessfulRegistration(formId, documentId)
       return true
     } catch (error) {
-      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -192,7 +191,6 @@ export default class GinisService {
 
       await this.updateSuccessfulAttachmentUpload(file.id)
     } catch (error) {
-      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -291,7 +289,6 @@ export default class GinisService {
       await this.updateSuccessfulAssignment(ginisDocumentId)
       this.logger.debug('---- assigned in ginis ----')
     } catch (error) {
-      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

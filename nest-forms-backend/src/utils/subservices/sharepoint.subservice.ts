@@ -73,7 +73,6 @@ export default class SharepointSubservice {
         },
       })
       .catch((error: unknown) => {
-        // FIXME
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             SharepointErrorsEnum.GENERAL_ERROR,

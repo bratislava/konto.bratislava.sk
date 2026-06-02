@@ -17,7 +17,6 @@ export default function HandleErrors(
         const result = await originalMethod.apply(this, args)
         return result
       } catch (error) {
-        // FIXME
         logger.error(error)
       }
       return null

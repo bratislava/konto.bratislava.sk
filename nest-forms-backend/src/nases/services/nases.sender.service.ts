@@ -121,7 +121,6 @@ export default class NasesSenderService {
           _: formPdfBase64,
         })
       } catch (error) {
-        // FIXME
         console.error(
           `ERROR - Printing form to attachment to Nases and Noris error for form id ${form.id}`,
           error,
@@ -151,7 +150,6 @@ export default class NasesSenderService {
           _: summaryPdfBase64,
         })
       } catch (error) {
-        // FIXME
         console.error(
           `ERROR - Printing summary to attachment to Nases and Noris error for form id ${form.id}`,
           error,
@@ -177,7 +175,6 @@ export default class NasesSenderService {
       try {
         message = await this.convertService.convertJsonToXmlObjectForForm(form)
       } catch (error) {
-        // FIXME
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'There was an error during converting json form data to xml.',
@@ -347,7 +344,6 @@ export default class NasesSenderService {
     try {
       message = await this.createEnvelopeSendMessage(data, senderUri)
     } catch (error) {
-      // FIXME
       return {
         status: 500,
         data: {
@@ -401,7 +397,6 @@ export default class NasesSenderService {
 
       return { status: 200, data: response.data }
     } catch (error) {
-      // FIXME
       if (isAxiosError(error) && error.response?.data) {
         return { status: error.response.status, data: error.response.data }
       }

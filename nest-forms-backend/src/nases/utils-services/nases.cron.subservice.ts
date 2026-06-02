@@ -110,7 +110,6 @@ export default class NasesCronSubservice {
             ? addToResult('valid', formDefinition, true)
             : addToResult('not-published', formDefinition, false))
         } catch (error) {
-          // FIXME
           if (isAxiosError(error) && error.response?.status === 404) {
             await addToResult('not-found', formDefinition, false)
           } else {

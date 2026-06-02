@@ -74,7 +74,6 @@ export default class AppLoggerMiddleware implements NestMiddleware {
         userId = tokenData.sub ?? '<NO USER ID>'
       }
     } catch {
-      // FIXME
       /* empty */
     }
 
@@ -109,7 +108,6 @@ export default class AppLoggerMiddleware implements NestMiddleware {
       try {
         data = JSON.parse(exitData) as unknown
       } catch {
-        // FIXME
         // If parsing fails, assume it's a plain string
         return {
           responseData: exitData,

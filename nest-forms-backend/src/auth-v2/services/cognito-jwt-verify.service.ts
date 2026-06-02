@@ -25,7 +25,6 @@ export class CognitoJwtVerifyService {
     try {
       return await this.verifier.verify(bearerToken)
     } catch (error) {
-      // FIXME
       throw new UnauthorizedException(
         `Failed to verify JWT: ${errorToLogfmt(error)}`,
       )

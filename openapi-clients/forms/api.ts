@@ -3296,7 +3296,7 @@ export const FormsApiFp = function (configuration?: Configuration) {
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerUpdateForm(
         formId,
         updateFormRequestDto,
@@ -3414,7 +3414,7 @@ export const FormsApiFactory = function (
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
+    ): AxiosPromise<UpdateFormResponseDto> {
       return localVarFp
         .formsControllerUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))

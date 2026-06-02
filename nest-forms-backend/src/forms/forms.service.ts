@@ -177,7 +177,7 @@ export default class FormsService {
     id: string,
     requestData: FormUpdateBodyDto,
     user: User,
-  ): Promise<Forms> {
+  ): Promise<UpdateFormResponseDto> {
     const form = await this.getUniqueForm(id)
     if (form === null) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -197,7 +197,7 @@ export default class FormsService {
     nasesUser: JwtNasesPayload,
     requestData: UpdateFormRequestDto,
     user: User,
-  ): Promise<Forms> {
+  ): Promise<UpdateFormResponseDto> {
     return this.updateFormWithUser(
       id,
       { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },

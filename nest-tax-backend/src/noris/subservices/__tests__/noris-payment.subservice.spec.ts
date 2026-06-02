@@ -174,7 +174,7 @@ describe('NorisPaymentSubservice', () => {
       jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
 
       jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
         .mockResolvedValue({
           '123456/7890': {
             externalId: 'external-123',
@@ -302,7 +302,7 @@ describe('NorisPaymentSubservice', () => {
       jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
 
       jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
         .mockResolvedValue({
           '111111/1111': {
             externalId: 'external-111',
@@ -409,7 +409,7 @@ describe('NorisPaymentSubservice', () => {
       jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue(mockTaxData)
 
       jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
         .mockResolvedValue({
           '333333/3333': {
             externalId: 'external-333',
@@ -507,7 +507,7 @@ describe('NorisPaymentSubservice', () => {
       jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue([])
 
       jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
         .mockResolvedValue({})
 
       const result =
@@ -539,7 +539,7 @@ describe('NorisPaymentSubservice', () => {
 
       jest.spyOn(prismaMock.tax, 'findMany').mockResolvedValue([])
       jest
-        .spyOn(cityAccountSubservice, 'getUserDataAdminBatch')
+        .spyOn(cityAccountSubservice, 'getUserDataAdminBatchOptional')
         .mockResolvedValue({})
 
       const result =
@@ -561,7 +561,7 @@ describe('NorisPaymentSubservice', () => {
         },
       })
 
-      expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith(
+      expect(cityAccountSubservice.getUserDataAdminBatchOptional).toHaveBeenCalledWith(
         [],
       )
     })

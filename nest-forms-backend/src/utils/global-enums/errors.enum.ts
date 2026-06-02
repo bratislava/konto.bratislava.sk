@@ -8,6 +8,7 @@ export enum ErrorsEnum {
   BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
   BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
   SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
+  FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
 }
 
 export enum ErrorsResponseEnum {
@@ -20,4 +21,5 @@ export enum ErrorsResponseEnum {
   BAD_GATEWAY_ERROR = 'Bad gateway.',
   BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
   SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
+  FORBIDDEN_ERROR = 'Forbidden.',
 }

@@ -95,12 +95,19 @@ export class MagproxyService {
           return response.data
         })
         .catch((error: unknown) => {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            MagproxyErrorsEnum.RFO_ACCESS_ERROR,
-            MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
-            isAxiosError(error) ? JSON.stringify(error.response?.data) : undefined,
-            error
-          )
+          if (!isAxiosError(error)) {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+              'Error is not an instance of AxiosError',
+              error
+            )
+          }
+          throw this.throwerErrorGuard.fromAxiosError(error, {
+            errorEnumOverwrite: MagproxyErrorsEnum.RFO_ACCESS_ERROR,
+            message: MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
+            console: JSON.stringify(error.response?.data),
+          })
         })
       return result.access_token
     }
@@ -154,25 +161,22 @@ export class MagproxyService {
           error
         )
       }
-      if (error.response?.status === HttpStatus.UNAUTHORIZED) {
-        throw this.throwerErrorGuard.UnauthorizedException(
-          MagproxyErrorsEnum.RFO_ACCESS_ERROR,
-          MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
-          undefined,
-          error
-        )
-      }
       if (error.response?.status === HttpStatus.NOT_FOUND) {
         // Non-retryable error. Return failure.
         return { success: false as const, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
       }
-      // RFO responded but with unexpected data
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE,
-        MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE,
-        undefined,
-        error
-      )
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        statusOverrides: {
+          [HttpStatus.UNAUTHORIZED]: {
+            status: HttpStatus.UNAUTHORIZED,
+            errorEnum: MagproxyErrorsEnum.RFO_ACCESS_ERROR,
+            message: MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
+          },
+        },
+        // RFO responded but with unexpected data
+        errorEnumOverwrite: MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE,
+        message: MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE,
+      })
     }
   }
 
@@ -194,24 +198,32 @@ export class MagproxyService {
         }
       })
       .catch((error: unknown) => {
-        if (isAxiosError(error) && error.response?.status === HttpStatus.UNAUTHORIZED) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.RFO_ACCESS_ERROR,
-            'There is problem with authentication to registry. More details in app logs.',
-            undefined,
-            error
-          )
-        } else if (isAxiosError(error) && error.response?.status === HttpStatus.NOT_FOUND) {
-          // Non-retryable error. Return failure.
-          return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
-        } else {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.RFO_NOT_RESPONDING,
-            'There is problem with unexpected registry response. More details in app logs.',
-            undefined,
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
             error
           )
         }
+
+        if (error.response?.status === HttpStatus.NOT_FOUND) {
+          // Non-retryable error. Return failure.
+          return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+        }
+
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          statusOverrides: {
+            [HttpStatus.UNAUTHORIZED]: {
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errorEnum: VerificationErrorsEnum.RFO_ACCESS_ERROR,
+              message:
+                'There is problem with authentication to registry. More details in app logs.',
+            },
+          },
+          errorEnumOverwrite: VerificationErrorsEnum.RFO_NOT_RESPONDING,
+          message: 'There is problem with unexpected registry response. More details in app logs.',
+        })
       })
     return result
   }
@@ -230,20 +242,30 @@ export class MagproxyService {
         return { success: true as const, data: response.data }
       })
       .catch((error: unknown) => {
-        if (isAxiosError(error) && error.response?.status === HttpStatus.UNAUTHORIZED) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            VerificationErrorsEnum.RPO_ACCESS_ERROR,
-            'There is problem with authentication to registry. More details in app logs.'
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
+            error
           )
         }
-        if (isAxiosError(error) && error.response?.status === HttpStatus.NOT_FOUND) {
+        if (error.response?.status === HttpStatus.NOT_FOUND) {
           // Non-retryable error. Return failure.
           return { success: false as const, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
         }
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.RPO_NOT_RESPONDING,
-          'There is problem with unexpected registry response. More details in app logs.'
-        )
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          statusOverrides: {
+            [HttpStatus.UNAUTHORIZED]: {
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errorEnum: VerificationErrorsEnum.RPO_ACCESS_ERROR,
+              message:
+                'There is problem with authentication to registry. More details in app logs.',
+            },
+          },
+          errorEnumOverwrite: VerificationErrorsEnum.RPO_NOT_RESPONDING,
+          message: 'There is problem with unexpected registry response. More details in app logs.',
+        })
       })
     return result
   }

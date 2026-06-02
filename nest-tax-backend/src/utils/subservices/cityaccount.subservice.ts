@@ -121,13 +121,13 @@ export class CityAccountSubservice {
   async getUserDataAdminBatchOptional(
     birthNumbers: string[],
   ): Promise<
-    Partial<Record<string, ResponseUserByBirthNumberDto>> | undefined
+    Partial<Record<string, ResponseUserByBirthNumberDto> | undefined>
   > {
     try {
       return await this.getUserDataAdminBatch(birthNumbers)
     } catch (error) {
       this.logger.error(error)
-      return
+      return undefined
     }
   }
 

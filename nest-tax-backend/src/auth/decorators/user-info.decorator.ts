@@ -5,13 +5,13 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common'
+import { isAxiosError } from 'axios'
 import express from 'express'
 
 import ClientsService from '../../clients/clients.service'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { isAxiosError } from 'axios'
 
 @Injectable()
 export class UserInfoPipe implements PipeTransform {

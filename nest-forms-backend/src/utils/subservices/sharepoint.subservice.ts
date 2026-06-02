@@ -1,7 +1,7 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosResponse, isAxiosError } from 'axios'
 import { Job } from 'bull'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -25,6 +25,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
+import { ErrorsEnum, ErrorsResponseEnum } from '../global-enums/errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
 import {
   SharepointErrorsEnum,
@@ -403,16 +404,22 @@ export default class SharepointSubservice {
 
       return { id: parseInt(res.data.id, 10) }
     } catch (error) {
-      // FIXME
-      throw this.throwerErrorGuard.BadRequestException(
-        SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
-        SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
-        JSON.stringify({
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+          'Error is not an instance of AxiosError',
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        errorEnumOverwrite: SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
+        message: SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
+        console: JSON.stringify({
           databaseName: dbName,
           postedData: JSON.stringify(fieldValues),
         }),
-        error,
-      )
+      })
     }
   }
 
@@ -434,13 +441,18 @@ export default class SharepointSubservice {
           response.data.access_token,
       )
       .catch((error: unknown) => {
-        // FIXME
-        throw this.throwerErrorGuard.BadRequestException(
-          SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
-          SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,
-          undefined,
-          error,
-        )
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
+            error,
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          errorEnumOverwrite: SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
+          message: SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,
+        })
       })
 
     return result

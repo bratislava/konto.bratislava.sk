@@ -561,9 +561,9 @@ describe('NorisPaymentSubservice', () => {
         },
       })
 
-      expect(cityAccountSubservice.getUserDataAdminBatchOptional).toHaveBeenCalledWith(
-        [],
-      )
+      expect(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).toHaveBeenCalledWith([])
     })
   })
 

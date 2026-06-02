@@ -512,10 +512,9 @@ describe('NotificationsEventsSubservice', () => {
         year,
       )
 
-      expect(cityAccountSubservice.getUserDataAdminBatchOptional).toHaveBeenCalledWith([
-        birth1,
-        birth2,
-      ])
+      expect(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).toHaveBeenCalledWith([birth1, birth2])
     })
   })
 
@@ -596,7 +595,10 @@ describe('NotificationsEventsSubservice', () => {
         'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatchOptional')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-123',
@@ -664,7 +666,10 @@ describe('NotificationsEventsSubservice', () => {
         'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatchOptional')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-1',
@@ -716,7 +721,10 @@ describe('NotificationsEventsSubservice', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatchOptional')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           [birthNumber]: createTestUserDataFromCityAccount({ externalId }),
         })
@@ -905,7 +913,10 @@ describe('NotificationsEventsSubservice', () => {
       }
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatchOptional')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue(mockUserData)
 
       const trackPaymentInBloomreachSpy = jest.spyOn(
@@ -952,7 +963,10 @@ describe('NotificationsEventsSubservice', () => {
         .mockResolvedValue(mockPayments)
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatchOptional')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({})
 
       const trackPaymentInBloomreachSpy = jest
@@ -996,7 +1010,10 @@ describe('NotificationsEventsSubservice', () => {
         .mockResolvedValue(mockPayments)
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatchOptional')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-1',
@@ -1053,7 +1070,10 @@ describe('NotificationsEventsSubservice', () => {
         .mockResolvedValue(mockPayments)
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatchOptional')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-1',

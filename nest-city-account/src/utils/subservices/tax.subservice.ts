@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Prisma } from '@prisma/client'
 import { AxiosPromise, isAxiosError } from 'axios'
-import { RequestUpdateNorisDeliveryMethodsDto, UpdateDeliveryMethodsInNorisResponseDto, } from 'openapi-clients/tax'
+import {
+  RequestUpdateNorisDeliveryMethodsDto,
+  UpdateDeliveryMethodsInNorisResponseDto,
+} from 'openapi-clients/tax'
 
 import ClientsService from '../../clients/clients.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
@@ -60,11 +63,14 @@ export class TaxSubservice {
     data: RequestUpdateNorisDeliveryMethodsDto
   ): AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto> {
     try {
-      return this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
-        headers: {
-          apiKey: this.configService.getOrThrow<string>('TAX_BACKEND_API_KEY'),
-        },
-      })
+      return await this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(
+        data,
+        {
+          headers: {
+            apiKey: this.configService.getOrThrow<string>('TAX_BACKEND_API_KEY'),
+          },
+        }
+      )
     } catch (error) {
       if (!isAxiosError(error)) {
         throw this.throwerErrorGuard.InternalServerErrorException(

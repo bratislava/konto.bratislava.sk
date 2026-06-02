@@ -1,9 +1,9 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '@prisma/client'
 import axios, { isAxiosError } from 'axios'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -126,8 +126,12 @@ export class BloomreachOutboxProcessor {
         `Processed batch: ${succeededIds.length} succeeded, ${failedEntries.length} failed`
       )
     } catch (error) {
-      if (error instanceof HttpException) {
-        this.logger.error(error, { batchSize: commands.length, entryCount: entries.length })
+      if (isAxiosError(error)) {
+        this.logger.error(
+          this.throwerErrorGuard.fromAxiosError(error, {
+            console: toLogfmt({ batchSize: commands.length, entryCount: entries.length }),
+          })
+        )
       } else {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
@@ -294,34 +298,21 @@ export class BloomreachOutboxProcessor {
   }
 
   private async sendBatch(commands: BloomreachBatchCommand[]): Promise<BloomreachBatchResponse> {
-    try {
-      const response = await axios.post(
-        `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/batch`,
-        { commands },
-        {
-          headers: {
-            Authorization: `Basic ${this.bloomreachCredentials}`,
-          },
-        }
-      )
-
-      const body = response.data as BloomreachBatchResponse
-      if (!body.results) {
-        throw new Error(
-          `Bloomreach batch API returned unexpected response: ${JSON.stringify(body)}`
-        )
+    const response = await axios.post(
+      `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/batch`,
+      { commands },
+      {
+        headers: {
+          Authorization: `Basic ${this.bloomreachCredentials}`,
+        },
       }
+    )
 
-      return body
-    } catch (error) {
-      if (!isAxiosError(error)) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          JSON.stringify(error)
-        )
-      }
-      throw this.throwerErrorGuard.fromAxiosError(error, {})
+    const body = response.data as BloomreachBatchResponse
+    if (!body.results) {
+      throw new Error(`Bloomreach batch API returned unexpected response: ${JSON.stringify(body)}`)
     }
+
+    return body
   }
 }

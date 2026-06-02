@@ -217,7 +217,8 @@ export class MagproxyService {
             [HttpStatus.UNAUTHORIZED]: {
               status: HttpStatus.UNPROCESSABLE_ENTITY,
               errorEnum: VerificationErrorsEnum.RFO_ACCESS_ERROR,
-              message: 'There is problem with authentication to registry. More details in app logs.',
+              message:
+                'There is problem with authentication to registry. More details in app logs.',
             },
           },
           errorEnumOverwrite: VerificationErrorsEnum.RFO_NOT_RESPONDING,
@@ -258,7 +259,8 @@ export class MagproxyService {
             [HttpStatus.UNAUTHORIZED]: {
               status: HttpStatus.UNPROCESSABLE_ENTITY,
               errorEnum: VerificationErrorsEnum.RPO_ACCESS_ERROR,
-              message: 'There is problem with authentication to registry. More details in app logs.',
+              message:
+                'There is problem with authentication to registry. More details in app logs.',
             },
           },
           errorEnumOverwrite: VerificationErrorsEnum.RPO_NOT_RESPONDING,

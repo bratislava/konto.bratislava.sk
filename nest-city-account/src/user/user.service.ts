@@ -20,6 +20,8 @@ import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
   ResponseUserByBirthNumberDto,
 } from '../integration/dtos/integration-response.dto'
+import { CustomErrorNorisTypesEnum, CustomErrorNorisTypesResponseEnum } from '../noris/noris.errors'
+import { NorisDeliveryMethodService } from '../noris/noris-delivery-method.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import {
@@ -30,7 +32,7 @@ import {
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { TaxSubservice } from '../utils/subservices/tax.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
@@ -58,6 +60,8 @@ const USER_REQUEST_LIMIT = 100
 
 @Injectable()
 export class UserService {
+  private readonly logger = new LineLoggerSubservice(UserService.name)
+
   constructor(
     private userDataSubservice: UserDataSubservice,
     private prisma: PrismaService,
@@ -65,7 +69,7 @@ export class UserService {
     private bloomreachOutboxService: BloomreachOutboxService,
     private cognitoSubservice: CognitoSubservice,
     private userTierService: UserTierService,
-    private taxSubservice: TaxSubservice
+    private norisDeliveryMethodService: NorisDeliveryMethodService
   ) {}
 
   private async hasChangedDeliveryMethodAfterDeadline(userId: string): Promise<boolean> {
@@ -581,10 +585,22 @@ export class UserService {
     let taxDeliveryMethodsRemoved = true
     if (removedUser?.birthNumber) {
       const { birthNumber } = removedUser
-      taxDeliveryMethodsRemoved = await this.prisma.$transaction(async (tx) => {
-        await TaxSubservice.acquireDeliveryMethodLock(tx, birthNumber)
-        return this.taxSubservice.removeDeliveryMethodFromNoris(birthNumber)
-      })
+      try {
+        await this.prisma.$transaction(async (tx) => {
+          await NorisDeliveryMethodService.acquireDeliveryMethodLock(tx, birthNumber)
+          await this.norisDeliveryMethodService.removeDeliveryMethodsFromNoris(birthNumber)
+        })
+      } catch (error) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            CustomErrorNorisTypesEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
+            CustomErrorNorisTypesResponseEnum.FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS,
+            undefined,
+            error
+          )
+        )
+        taxDeliveryMethodsRemoved = false
+      }
     }
 
     return {

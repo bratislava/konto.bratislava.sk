@@ -1,27 +1,23 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { connect, ConnectionError, ConnectionPool } from 'mssql'
-import * as mssql from 'mssql'
-import pLimit from 'p-limit'
+import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
+import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
-import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
+import { CustomErrorNorisTypesEnum } from './noris.errors'
+
+const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
 
 @Injectable()
-export class NorisService implements OnModuleDestroy {
-  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
-
-  private readonly concurrencyLimit = pLimit(this.concurrency)
-
-  private readonly logger = new LineLoggerSubservice(NorisService.name)
+export class NorisConnectionService implements OnModuleDestroy {
+  private readonly logger = new LineLoggerSubservice(NorisConnectionService.name)
 
   constructor(
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly norisValidatorSubservice: NorisValidatorSubservice
+    private readonly prismaService: PrismaService
   ) {
     if (
       !process.env.MSSQL_HOST ||
@@ -91,6 +87,51 @@ export class NorisService implements OnModuleDestroy {
     })
   }
 
+  private addMssqlErrorDetailsToErrorMessage(errorMessage: string, error: unknown): string {
+    if (error instanceof MSSQLError) {
+      const mssqlErrorDetails = {
+        code: error.code,
+        message: error.message,
+        name: error.name,
+      }
+      return `${errorMessage}: ${JSON.stringify(mssqlErrorDetails)}`
+    }
+    return errorMessage
+  }
+
+  private getNorisUrgentError(errorMessage: string, error: unknown) {
+    return this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+      undefined,
+      error
+    )
+  }
+
+  private async handleDatabaseError(error: unknown, errorMessage: string): Promise<never> {
+    // https://www.npmjs.com/package/mssql#errors
+    if (!(error instanceof MSSQLError)) {
+      throw this.getNorisUrgentError(errorMessage, error)
+    }
+
+    if (['ETIMEOUT', 'ENOTOPEN', 'ECONNCLOSED', 'EABORT', 'ECANCEL'].includes(error.code)) {
+      await this.prismaService.$executeRaw`
+        UPDATE "Config"
+        SET "value" = (COALESCE("value",'0')::int + 1)::text
+        WHERE "key" = ${NORIS_SILENT_CONNECTION_ERRORS_KEY}
+      `
+
+      throw this.throwerErrorGuard.BadRequestException(
+        CustomErrorNorisTypesEnum.CONNECTION_ERROR,
+        this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
+        undefined,
+        error
+      )
+    }
+
+    throw this.getNorisUrgentError(errorMessage, error)
+  }
+
   /**
    * Executes a function using the mssql global connection pool.
    *
@@ -102,76 +143,20 @@ export class NorisService implements OnModuleDestroy {
    *
    * The connection is not closed, as it is expected to be shared and used for the lifetime of the application.
    *
-   * @param operation - Function to execute within the connection context
-   * @param errorHandler - Error handler for any errors that occur during the operation
+   * @param operation - Function to execute with the connection pool
+   * @param errorMessage - Message passed to {@link handleDatabaseError} on failure
    * @returns Result of the operation
    */
   async withConnection<T>(
     operation: (connection: ConnectionPool) => Promise<T>,
-    errorHandler: (error: unknown) => never
+    errorMessage: string
   ): Promise<T> {
     try {
       const connection = await this.createConnection()
       await this.waitForConnection(connection)
       return await operation(connection)
     } catch (error) {
-      return errorHandler(error)
+      return await this.handleDatabaseError(error, errorMessage)
     }
-  }
-
-  async getExternalEdeskChecks(
-    physicalPersons: number,
-    legalPersons: number
-  ): Promise<EdeskRecord[]> {
-    return this.withConnection(
-      async (connection) => {
-        const result = await connection
-          .request()
-          .input('numSO', mssql.Int, physicalPersons)
-          .input('numPO', mssql.Int, legalPersons)
-          .execute('lcs.usp21_ino_check_edesk')
-
-        return this.norisValidatorSubservice.validateNorisData(EdeskRecordSchema, result.recordset)
-      },
-      (error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to get external edesk checks',
-          undefined,
-          error
-        )
-      }
-    )
-  }
-
-  async updateEdeskChecks(edeskChecks: UpdateEdeskChecks[]): Promise<void> {
-    const edeskUpdateProcessed = edeskChecks.map(async (edeskCheck) =>
-      this.concurrencyLimit(async () =>
-        this.withConnection(
-          async (connection) => {
-            await connection
-              .request()
-              .input('id_noris', mssql.Int, edeskCheck.idNoris)
-              .input('edesk_status', mssql.VarChar, edeskCheck.edeskStatus)
-              .input('edesk_number', mssql.VarChar, edeskCheck.edeskNumber)
-              .input('edesk_uri', mssql.VarChar, edeskCheck.uri)
-              .input('edesk_pco', mssql.VarChar, null)
-              .input('last_check', mssql.DateTime, edeskCheck.lastCheck)
-              .input('death_date', mssql.VarChar, edeskCheck.deathDate)
-              .execute('lcs.usp21_ino_edesk_update')
-          },
-          (error) => {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to update edesk checks',
-              undefined,
-              error
-            )
-          }
-        )
-      )
-    )
-
-    await Promise.all(edeskUpdateProcessed)
   }
 }

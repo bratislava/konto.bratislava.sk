@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import noop from 'lodash/noop'
 
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { NorisValidatorService } from '../../noris-validator.service'
 import { EdeskRecordSchema } from '../../types/noris.types'
-import { NorisValidatorSubservice } from '../noris-validator.subservice'
 import {
   allEdeskRecords,
   edeskRecordWithNewlineUri,
@@ -20,14 +20,14 @@ import {
   validEdeskRecords,
 } from './data/test.edesk-record'
 
-describe('NorisValidatorSubservice', () => {
-  let service: NorisValidatorSubservice
+describe('NorisValidatorService', () => {
+  let service: NorisValidatorService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NorisValidatorSubservice, ThrowerErrorGuard],
+      providers: [NorisValidatorService, ThrowerErrorGuard],
     }).compile()
-    service = module.get<NorisValidatorSubservice>(NorisValidatorSubservice)
+    service = module.get<NorisValidatorService>(NorisValidatorService)
   })
 
   it('should be defined', () => {

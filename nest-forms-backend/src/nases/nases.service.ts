@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { isAxiosError } from 'axios'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -100,15 +101,23 @@ export default class NasesService {
       })
       .then((response) => response.data)
       .catch((error: unknown) => {
-        // FIXME
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Failed to get nases identity, verify if this is because of invalid token or a server issue',
-            undefined,
-            error,
-          ),
-        )
+        if (isAxiosError(error)) {
+          this.logger.error(
+            this.throwerErrorGuard.fromAxiosError(error, {
+              message:
+                'Failed to get nases identity, verify if this is because of invalid token or a server issue',
+            }),
+          )
+        } else {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to get nases identity, verify if this is because of invalid token or a server issue',
+              undefined,
+              error,
+            ),
+          )
+        }
         return null
       })
     return result

@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   HttpCode,
-  Param,
   ParseEnumPipe,
   Post,
   Query,

@@ -479,7 +479,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
       AND MAX(dane21_doklad_overpayment.datum_realizacie) IS NOT NULL
 `
 
-
 /**
  * @remarks
  * ⚠️ **Warning:** This returns a record for each communal waste container.

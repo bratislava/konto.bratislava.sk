@@ -129,4 +129,3 @@ export const NorisRawRealEstateTaxDetailSchema = z.object({
 export const NorisRealEstateTaxSchema = NorisBaseTaxSchema.extend(
   NorisRawRealEstateTaxDetailSchema.shape,
 )
-

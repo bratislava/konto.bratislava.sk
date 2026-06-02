@@ -173,7 +173,6 @@ export class DateRangeDto {
   toDate?: Date
 }
 
-
 export class RequestAdminCreateTestingTaxNorisData {
   @ApiProperty({
     description: 'Variable symbol of the tax',

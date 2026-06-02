@@ -78,23 +78,57 @@ export class CityAccountSubservice {
     const birthNumbersWithoutSlash = birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', ''),
     )
-    const userDataResult =
-      await this.clientsService.cityAccountApi.integrationControllerGetUserDataByBirthNumbersBatch(
-        { birthNumbers: birthNumbersWithoutSlash },
-        {
-          headers: {
-            apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+    try {
+      const userDataResult =
+        await this.clientsService.cityAccountApi.integrationControllerGetUserDataByBirthNumbersBatch(
+          { birthNumbers: birthNumbersWithoutSlash },
+          {
+            headers: {
+              apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+            },
           },
-        },
-      )
+        )
 
-    const result: Record<string, ResponseUserByBirthNumberDto> = {}
-    Object.keys(userDataResult.data.users).forEach((birthNumber) => {
-      const modifiedKey = addSlashToBirthNumber(birthNumber)
-      result[modifiedKey] = userDataResult.data.users[birthNumber]
-    })
+      const result: Record<string, ResponseUserByBirthNumberDto> = {}
+      Object.keys(userDataResult.data.users).forEach((birthNumber) => {
+        const modifiedKey = addSlashToBirthNumber(birthNumber)
+        result[modifiedKey] = userDataResult.data.users[birthNumber]
+      })
 
-    return result
+      return result
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get user data batch from city account.',
+          undefined,
+          undefined,
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        message: 'Failed to get user data batch from city account.',
+      })
+    }
+  }
+
+  /**
+   * Non-throwing variant of {@link getUserDataAdminBatch}: on any failure it
+   * logs the error and resolves to an empty map instead of propagating. A city
+   * account outage therefore degrades to missing data rather than a thrown
+   * error.
+   */
+  async getUserDataAdminBatchOptional(
+    birthNumbers: string[],
+  ): Promise<
+    Partial<Record<string, ResponseUserByBirthNumberDto>> | undefined
+  > {
+    try {
+      return await this.getUserDataAdminBatch(birthNumbers)
+    } catch (error) {
+      this.logger.error(error)
+      return
+    }
   }
 
   async getNewUserBirtNumbersAdminBatch(

@@ -1,6 +1,7 @@
 import {
   createParamDecorator,
   ExecutionContext,
+  HttpStatus,
   Injectable,
   PipeTransform,
 } from '@nestjs/common'
@@ -11,11 +12,9 @@ import {
 } from 'openapi-clients/city-account'
 
 import ClientsService from '../../clients/clients.service'
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../../nases/nases.errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { isAxiosError } from 'axios'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 
 /**
  * This is a temporary solution. It's not possible to distinguish between ResponseLegalPersonDataDto
@@ -63,10 +62,39 @@ export class UserInfoPipe implements PipeTransform {
       return response.data
     } catch (error) {
       const thrower = new ThrowerErrorGuard()
-      throw thrower.NotFoundException(
-        NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-        `${NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR} error: ${String(error)}`,
-      )
+      if (!isAxiosError(error)) {
+        throw thrower.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Internal error occurred while trying to fetch user from City Account',
+          error,
+        )
+      }
+      // The Authorization header is the end user's bearer token, so 401/403
+      // from city-account mean the user's token is bad. Surface them as-is
+      // instead of letting fromAxiosError's default treat them as our own
+      // credentials failing (BAD_GATEWAY_AUTH_ERROR, which alerts).
+      throw thrower.fromAxiosError(error, {
+        statusOverrides: {
+          [HttpStatus.UNAUTHORIZED]: {
+            status: HttpStatus.UNAUTHORIZED,
+            errorEnum: ErrorsEnum.UNAUTHORIZED_ERROR,
+            message: 'The provided authorization token is invalid or expired.',
+          },
+          [HttpStatus.FORBIDDEN]: {
+            status: HttpStatus.FORBIDDEN,
+            errorEnum: ErrorsEnum.FORBIDDEN_ERROR,
+            message:
+              'The provided authorization token is not allowed to get or create this user.',
+          },
+          [HttpStatus.NOT_FOUND]: {
+            status: HttpStatus.BAD_REQUEST,
+            errorEnum: ErrorsEnum.BAD_REQUEST_ERROR,
+            message:
+              'User could not be retrieved or created from city account.',
+          },
+        },
+      })
     }
   }
 }

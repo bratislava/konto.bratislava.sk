@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsString } from 'class-validator'
 
-export class TowingSearchQueryDto {
+export class TowingSearchRequestDto {
   @ApiProperty({
     description: 'Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.',
     example: '',

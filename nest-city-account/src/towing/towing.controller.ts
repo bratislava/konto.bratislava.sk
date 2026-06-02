@@ -1,9 +1,9 @@
-import { Controller, Get, HttpCode, Param, Query } from '@nestjs/common'
+import { Body, Controller, HttpCode, Param, Post } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { ResponseInternalServerErrorDto } from '../utils/guards/dtos/error.dto'
 import { TurnstileSubservice } from '../utils/subservices/turnstile.subservice'
-import { TowingSearchQueryDto, TowingSearchResponseDto } from './dtos/towing.dto'
+import { TowingSearchRequestDto, TowingSearchResponseDto } from './dtos/towing.dto'
 import { TowingService } from './towing.service'
 
 @ApiTags('Towing')
@@ -14,14 +14,14 @@ export class TowingController {
     private readonly turnstileSubservice: TurnstileSubservice
   ) {}
 
-  @Get('public/:ecv')
+  @Post('public/:ecv')
   @HttpCode(200)
   @ApiOperation({
     summary: 'Public lookup of an active towing / relocation by license plate',
     description:
       'Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and ' +
       'normalization are owned by the upstream service. The path parameter is forwarded to upstream. ' +
-      'A valid Turnstile token must be supplied to mitigate enumeration attacks.',
+      'A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.',
   })
   @ApiOkResponse({ type: TowingSearchResponseDto })
   @ApiResponse({
@@ -46,9 +46,9 @@ export class TowingController {
   })
   async getPublicTowingByEcv(
     @Param('ecv') ecv: string,
-    @Query() query: TowingSearchQueryDto
+    @Body() body: TowingSearchRequestDto
   ): Promise<TowingSearchResponseDto> {
-    await this.turnstileSubservice.validateToken(query.turnstileToken)
+    await this.turnstileSubservice.validateToken(body.turnstileToken)
     return this.towingService.getPublicTowingByEcv(ecv)
   }
 }

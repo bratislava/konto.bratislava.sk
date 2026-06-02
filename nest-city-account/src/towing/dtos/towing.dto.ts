@@ -1,6 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Type } from 'class-transformer'
-import { IsDate, IsDefined, IsOptional, IsString } from 'class-validator'
+import { IsString } from 'class-validator'
 
 export class TowingSearchQueryDto {
   @ApiProperty({
@@ -20,28 +19,17 @@ export class TowingSearchQueryDto {
  */
 export class TowingSearchResponseDto {
   @ApiProperty({ description: 'Date when the vehicle was towed' })
-  @IsDefined()
-  @IsDate()
-  @Type(() => Date)
   loadingDate!: Date
 
   @ApiProperty({ description: 'Pickup location - where the vehicle was towed from' })
-  @IsDefined()
-  @IsString()
   loadingLocation!: string
 
   @ApiPropertyOptional({ description: 'Reason for towing' })
-  @IsOptional()
-  @IsString()
   towReason?: string
 
   @ApiPropertyOptional({ description: 'Dropoff location - where the vehicle was relocated to' })
-  @IsOptional()
-  @IsString()
   unloadingLocation?: string
 
   @ApiPropertyOptional({ description: 'Reason for vehicle relocation' })
-  @IsOptional()
-  @IsString()
   relocationReason?: string
 }

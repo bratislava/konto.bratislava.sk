@@ -3,7 +3,7 @@ import {
   GinisError,
   SslDetailDokumentuWflDokument,
 } from '@bratislava/ginis-sdk'
-import { Controller, Get, Param, UseGuards } from '@nestjs/common'
+import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -84,23 +84,26 @@ export default class GinisController {
       ownerDetail = owner['Detail-referenta']
       documentHistory = mapGinisHistory(document)
     } catch (error) {
-      // FIXME
-      const errorToThrow =
-        error instanceof GinisError && error.axiosError?.status === 404
-          ? this.throwerErrorGuard.NotFoundException(
-              ErrorsEnum.NOT_FOUND_ERROR,
-              `Document or document owner not found in GINIS - document id, if available: ${
+      if (error instanceof GinisError && error.axiosError) {
+        throw this.throwerErrorGuard.fromAxiosError(error.axiosError, {
+          statusOverrides: {
+            [HttpStatus.NOT_FOUND]: {
+              status: HttpStatus.NOT_FOUND,
+              errorEnum: ErrorsEnum.NOT_FOUND_ERROR,
+              message: `Document or document owner not found in GINIS - document id, if available: ${
                 wflDocument?.['Id-dokumentu'] ||
                 'unavailable - document not found or invalid'
               }`,
-            )
-          : this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Error while getting document or owner from GINIS:',
-              undefined,
-              error,
-            )
-      throw errorToThrow
+            },
+          },
+        })
+      }
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Error while getting document or owner from GINIS:',
+        undefined,
+        error,
+      )
     }
     return {
       id: wflDocument['Id-dokumentu'],

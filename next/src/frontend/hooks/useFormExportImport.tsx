@@ -3,7 +3,7 @@ import { AxiosResponse, isAxiosError } from 'axios'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { usePlausible } from 'next-plausible'
-import { GetFormResponseDto } from 'openapi-clients/forms'
+import { UpdateFormResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { formsClient } from '@/src/clients/forms'
@@ -50,7 +50,7 @@ export const useGetContext = () => {
   const importJsonButtonRef = useRef<HTMLButtonElement>(null)
 
   const { mutate: saveConceptMutate, isPending: saveConceptIsPending } = useMutation<
-    AxiosResponse<GetFormResponseDto>,
+    AxiosResponse<UpdateFormResponseDto>,
     unknown,
     { fromModal?: boolean }
   >({

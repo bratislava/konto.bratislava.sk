@@ -14,7 +14,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
-import { Forms } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
@@ -30,6 +29,7 @@ import {
 import FormDeleteResponseDto, {
   GetFormResponseDto,
   GetFormsResponseDto,
+  UpdateFormResponseDto,
 } from '../forms/dtos/responses.dto'
 import FormsService from '../forms/forms.service'
 import {
@@ -145,7 +145,7 @@ export default class NasesController {
   @ApiOkResponse({
     description:
       'Return charging details - price and used free minutes / hours.',
-    type: GetFormResponseDto,
+    type: UpdateFormResponseDto,
   })
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
@@ -156,7 +156,7 @@ export default class NasesController {
     @Body() data: UpdateFormRequestDto,
     @Param('formId') formId: string,
     @GetUser() user: User,
-  ): Promise<Forms> {
+  ): Promise<UpdateFormResponseDto> {
     return this.formsService.updateFormWithUser(formId, data, user)
   }
 

@@ -250,10 +250,6 @@ export interface GetFormResponseDto {
    */
   formDataJson: object | null
   /**
-   * Form subject
-   */
-  formSubject: string
-  /**
    * Form signature with metadata
    */
   formSignature?: FormSignatureDto | null
@@ -277,6 +273,10 @@ export interface GetFormResponseDto {
    * JSON version
    */
   jsonVersion: string
+  /**
+   * Form subject
+   */
+  formSubject: string
   requiresMigration: boolean
 }
 
@@ -692,6 +692,115 @@ export interface UpdateFormRequestDto {
    */
   formSignature?: FormSignatureDto | null
 }
+export interface UpdateFormResponseDto {
+  /**
+   * Change email, on which you can be contacted
+   */
+  email: string | null
+  /**
+   * Id of record
+   */
+  id: string
+  /**
+   * Create date of record
+   */
+  createdAt: string
+  /**
+   * Update date of record
+   */
+  updatedAt: string
+  /**
+   * Id of send form from other system, (probably ginis)
+   */
+  externalId: string | null
+  /**
+   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
+   */
+  userExternalId: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   */
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   */
+  actorUri: string | null
+  /**
+   * State of form
+   */
+  state: UpdateFormResponseDtoStateEnum
+  /**
+   * Specific error type
+   */
+  error: UpdateFormResponseDtoErrorEnum
+  /**
+   * Data from ginis saved in our db
+   */
+  formDataGinis: string | null
+  /**
+   * Ginis document id generated after registering the submission
+   */
+  ginisDocumentId: string | null
+  /**
+   * Data in JSON format
+   */
+  formDataJson: object | null
+  /**
+   * Form signature with metadata
+   */
+  formSignature?: FormSignatureDto | null
+  /**
+   * Technical NASES id of sender
+   */
+  senderId: string | null
+  /**
+   * Technical NASES id of recipient
+   */
+  recipientId: string | null
+  /**
+   * end of submition
+   */
+  finishSubmission: string | null
+  /**
+   * Slug of the form definition
+   */
+  formDefinitionSlug: string
+  /**
+   * JSON version
+   */
+  jsonVersion: string
+}
+
+export const UpdateFormResponseDtoStateEnum = {
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  DeliveredNases: 'DELIVERED_NASES',
+  DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
+  Processing: 'PROCESSING',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+  Error: 'ERROR',
+} as const
+
+export type UpdateFormResponseDtoStateEnum =
+  (typeof UpdateFormResponseDtoStateEnum)[keyof typeof UpdateFormResponseDtoStateEnum]
+export const UpdateFormResponseDtoErrorEnum = {
+  None: 'NONE',
+  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
+  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
+  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
+  InfectedFiles: 'INFECTED_FILES',
+  NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
+  SharepointSendError: 'SHAREPOINT_SEND_ERROR',
+  EmailSendError: 'EMAIL_SEND_ERROR',
+  WebhookSendError: 'WEBHOOK_SEND_ERROR',
+} as const
+
+export type UpdateFormResponseDtoErrorEnum =
+  (typeof UpdateFormResponseDtoErrorEnum)[keyof typeof UpdateFormResponseDtoErrorEnum]
+
 export interface ValidateFormRegistrationDto {
   /**
    * Form slug
@@ -3187,7 +3296,7 @@ export const FormsApiFp = function (configuration?: Configuration) {
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerUpdateForm(
         formId,
         updateFormRequestDto,
@@ -3305,7 +3414,7 @@ export const FormsApiFactory = function (
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
+    ): AxiosPromise<UpdateFormResponseDto> {
       return localVarFp
         .formsControllerUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
@@ -4343,7 +4452,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateForm(
         formId,
         updateFormRequestDto,
@@ -4483,7 +4592,7 @@ export const NasesApiFactory = function (
       formId: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
+    ): AxiosPromise<UpdateFormResponseDto> {
       return localVarFp
         .nasesControllerUpdateForm(formId, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))

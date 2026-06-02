@@ -154,7 +154,7 @@ export class GetFormsResponseDto {
   meta!: GetFormMetaDto
 }
 
-export class GetFormResponseDto {
+export class UpdateFormResponseDto {
   @ApiProperty({
     description: 'Change email, on which you can be contacted',
     default: 'janko.mrkvicka@bratislava.sk',
@@ -261,12 +261,6 @@ export class GetFormResponseDto {
   @IsOptional()
   declare formDataJson: PrismaJson.FormDataJson | null
 
-  @ApiProperty({
-    description: 'Form subject',
-  })
-  @IsString()
-  declare formSubject: string
-
   @ApiPropertyOptional({
     description: 'Form signature with metadata',
     type: FormSignatureDto,
@@ -317,6 +311,14 @@ export class GetFormResponseDto {
   @IsNotEmpty()
   @IsString()
   declare jsonVersion: string
+}
+
+export class GetFormResponseDto extends UpdateFormResponseDto {
+  @ApiProperty({
+    description: 'Form subject',
+  })
+  @IsString()
+  declare formSubject: string
 
   @ApiProperty()
   @IsBoolean()

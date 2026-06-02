@@ -73,6 +73,7 @@ export default class SharepointSubservice {
         },
       })
       .catch((error: unknown) => {
+        // FIXME
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             SharepointErrorsEnum.GENERAL_ERROR,
@@ -403,6 +404,7 @@ export default class SharepointSubservice {
 
       return { id: parseInt(res.data.id, 10) }
     } catch (error) {
+      // FIXME
       throw this.throwerErrorGuard.BadRequestException(
         SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
         SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
@@ -433,6 +435,7 @@ export default class SharepointSubservice {
           response.data.access_token,
       )
       .catch((error: unknown) => {
+        // FIXME
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
           SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,

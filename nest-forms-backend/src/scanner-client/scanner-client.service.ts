@@ -35,6 +35,7 @@ export default class ScannerClientService {
       )
       return response.status === 200
     } catch (error) {
+      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
@@ -68,6 +69,7 @@ export default class ScannerClientService {
       )
       return response.data
     } catch (error) {
+      // FIXME
       throw this.throwerErrorGuard.InternalServerErrorException(
         ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
         ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
@@ -105,6 +107,7 @@ export default class ScannerClientService {
       )
       return response.data
     } catch (error) {
+      // FIXME
       throw this.errorHandling(
         // TODO - fix these casts to AxiosError in the whole file. This is a temporary fix to avoid type errors.
         error as AxiosError,
@@ -130,6 +133,7 @@ export default class ScannerClientService {
 
       return response.data
     } catch (error) {
+      // FIXME
       throw this.errorHandling(error as AxiosError, scannerId)
     }
   }
@@ -151,6 +155,7 @@ export default class ScannerClientService {
 
       return response.data
     } catch (error) {
+      // FIXME
       throw this.errorHandling(error as AxiosError, scannerId)
     }
   }

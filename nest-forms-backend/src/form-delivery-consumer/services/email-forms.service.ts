@@ -243,6 +243,7 @@ export default class EmailFormsService {
         attachments,
       })
     } catch (error) {
+      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -269,6 +270,7 @@ export default class EmailFormsService {
         },
       })
       .catch((error: unknown) => {
+        // FIXME
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,

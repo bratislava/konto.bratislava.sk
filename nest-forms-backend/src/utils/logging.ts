@@ -115,6 +115,7 @@ function httpExceptionToObj(
       stack: error.stack,
     }
   } catch {
+    // FIXME
     // TODO do we want to log this caught error?
     return {
       errorType: error.name,

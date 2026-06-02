@@ -39,6 +39,7 @@ export default class MinioClientSubservice {
     try {
       return await this.minioService.client.bucketExists(bucketName)
     } catch (error) {
+      // FIXME
       this.logger.error(error)
       return false
     }
@@ -85,6 +86,7 @@ export default class MinioClientSubservice {
 
       return files
     } catch (error) {
+      // FIXME
       this.logger.error(error)
       return false
     }
@@ -103,6 +105,7 @@ export default class MinioClientSubservice {
         0,
       )
     } catch (error) {
+      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -122,6 +125,7 @@ export default class MinioClientSubservice {
       await this.minioService.client.removeObject(bucket, path)
       return true
     } catch (error) {
+      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -148,6 +152,7 @@ export default class MinioClientSubservice {
     try {
       return await this.minioService.client.statObject(bucketName, fileName)
     } catch (error) {
+      // FIXME
       this.logger.error(
         `File: ${fileName} does not exist in bucket: ${bucketName}`,
       )
@@ -168,6 +173,7 @@ export default class MinioClientSubservice {
         file.buffer,
       )
     } catch (error) {
+      // FIXME
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
         FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
@@ -197,6 +203,7 @@ export default class MinioClientSubservice {
       )
       return result
     } catch (error) {
+      // FIXME
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
         FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,

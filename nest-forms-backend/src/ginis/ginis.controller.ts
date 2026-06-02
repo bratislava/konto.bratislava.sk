@@ -84,6 +84,7 @@ export default class GinisController {
       ownerDetail = owner['Detail-referenta']
       documentHistory = mapGinisHistory(document)
     } catch (error) {
+      // FIXME
       const errorToThrow =
         error instanceof GinisError && error.axiosError?.status === 404
           ? this.throwerErrorGuard.NotFoundException(

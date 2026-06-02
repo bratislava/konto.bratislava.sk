@@ -100,6 +100,7 @@ export default class NasesService {
       })
       .then((response) => response.data)
       .catch((error: unknown) => {
+        // FIXME
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -200,6 +201,7 @@ export default class NasesService {
         validatorRegistry: this.formValidatorRegistryService.getRegistry(),
       })
     } catch (error) {
+      // FIXME
       this.logger.error(
         `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}`,
         error,
@@ -315,6 +317,7 @@ export default class NasesService {
         10_000,
       )
     } catch (error) {
+      // FIXME
       throw this.throwerErrorGuard.NotFoundException(
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
         `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
@@ -488,6 +491,7 @@ export default class NasesService {
           form.formSignature,
         )
       } catch (error) {
+        // FIXME
         if (error instanceof VerifyFormSignatureError) {
           const { error: errorEnum, message: errorMessage } =
             verifyFormSignatureErrorMapping[error.type]
@@ -579,6 +583,7 @@ export default class NasesService {
         formDefinition,
       )
     } catch (error) {
+      // FIXME
       await this.formsService.updateForm(id, {
         state: FormState.DRAFT,
         error: FormError.NASES_SEND_ERROR,
@@ -595,6 +600,7 @@ export default class NasesService {
     try {
       await this.sendToNasesAndUpdateState(jwt, form, data, nasesUser.sub)
     } catch (error) {
+      // FIXME
       this.logger.error(`Error sending form to nases.`, error)
 
       // TODO temp SEND_TO_NASES_ERROR log, remove.
@@ -621,6 +627,7 @@ export default class NasesService {
           userData: data.userData,
         })
       } catch (error) {
+        // FIXME
         // We do not want to show the user error when the submission was already delivered to Nases. Therefore Ginis errors should only be logged for us.
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(

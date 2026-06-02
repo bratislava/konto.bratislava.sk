@@ -15,6 +15,7 @@ export default class GinisHelper {
         error: FormError.GINIS_SEND_ERROR,
       })
     } catch {
+      // FIXME
       // ignore
     }
   }
@@ -27,6 +28,7 @@ export default class GinisHelper {
     try {
       return await fn()
     } catch (error) {
+      // FIXME
       if (retries <= 0) {
         throw error
       }

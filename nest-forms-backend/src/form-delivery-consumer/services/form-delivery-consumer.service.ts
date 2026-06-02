@@ -197,6 +197,7 @@ export default class FormDeliveryConsumerService {
 
       await this.ginisService.createDocument(form, formDefinition)
     } catch (error) {
+      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -303,6 +304,7 @@ export default class FormDeliveryConsumerService {
       )
       return new Nack(false)
     } catch (error) {
+      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
@@ -322,6 +324,7 @@ export default class FormDeliveryConsumerService {
           },
         })
         .catch((error_: unknown) => {
+          // FIXME
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.DATABASE_ERROR,
@@ -341,6 +344,7 @@ export default class FormDeliveryConsumerService {
       await this.webhookService.sendWebhook(form.id)
       return new Nack(false)
     } catch (error) {
+      // FIXME
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
@@ -360,6 +364,7 @@ export default class FormDeliveryConsumerService {
           },
         })
         .catch((error_: unknown) => {
+          // FIXME
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.DATABASE_ERROR,

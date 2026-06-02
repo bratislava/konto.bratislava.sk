@@ -61,6 +61,7 @@ export default class OloMailerService implements Mailer {
         attachments,
       })
     } catch (error) {
+      // FIXME
       throw this.throwerErrorGuard.InternalServerErrorException(
         MailgunErrorsEnum.SEND_OLO_MAIL_ERROR,
         MailgunErrorsResponseEnum.SEND_OLO_MAIL_ERROR,

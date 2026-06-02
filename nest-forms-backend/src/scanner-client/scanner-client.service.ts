@@ -1,9 +1,10 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files } from '@prisma/client'
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
 
 import { ServiceRunningDto } from '../status/dtos/status.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import PostScanFileResponseDto, { GetScanFileDto } from './scanner-client.dto'
@@ -35,15 +36,22 @@ export default class ScannerClientService {
       )
       return response.status === 200
     } catch (error) {
-      // FIXME
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-          'ScannerClientService.health error',
-          undefined,
-          error,
-        ),
-      )
+      if (isAxiosError(error)) {
+        this.logger.error(
+          this.throwerErrorGuard.fromAxiosError(error, {
+            message: 'ScannerClientService.health error',
+          }),
+        )
+      } else {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
+            'ScannerClientService.health error',
+            undefined,
+            error,
+          ),
+        )
+      }
       return false
     }
   }
@@ -69,13 +77,18 @@ export default class ScannerClientService {
       )
       return response.data
     } catch (error) {
-      // FIXME
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-        ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
-        undefined,
-        error,
-      )
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
+          ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
+          undefined,
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        errorEnumOverwrite: ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
+        message: ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
+      })
     }
   }
 
@@ -107,10 +120,16 @@ export default class ScannerClientService {
       )
       return response.data
     } catch (error) {
-      // FIXME
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+          'Error is not an instance of AxiosError',
+          error,
+        )
+      }
       throw this.errorHandling(
-        // TODO - fix these casts to AxiosError in the whole file. This is a temporary fix to avoid type errors.
-        error as AxiosError,
+        error,
         `minioFileName: ${minioFileName}, userUid: ${userUid as string}`,
       )
     }
@@ -133,8 +152,15 @@ export default class ScannerClientService {
 
       return response.data
     } catch (error) {
-      // FIXME
-      throw this.errorHandling(error as AxiosError, scannerId)
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+          'Error is not an instance of AxiosError',
+          error,
+        )
+      }
+      throw this.errorHandling(error, scannerId)
     }
   }
 
@@ -155,45 +181,44 @@ export default class ScannerClientService {
 
       return response.data
     } catch (error) {
-      // FIXME
-      throw this.errorHandling(error as AxiosError, scannerId)
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+          'Error is not an instance of AxiosError',
+          error,
+        )
+      }
+      throw this.errorHandling(error, scannerId)
     }
   }
 
   private errorHandling(error: AxiosError, scannerId: string): HttpException {
-    if (error.response && error.response.status.toString().startsWith('4')) {
-      if (error.response.status === 404) {
-        return this.throwerErrorGuard.NotFoundException(
-          ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
-          `File  ${scannerId} was not found at the scanner: ${error.message}`,
-          error.response.data as string,
-        )
-      }
-      if (error.response.status === 413) {
-        return this.throwerErrorGuard.PayloadTooLargeException(
-          ScannerClientErrorsEnum.FILE_SIZE_TOO_LARRGE,
-          `File ${scannerId} is too big for scannig: ${error.message}`,
-          error.response.data as string,
-        )
-      }
-      if (error.response.status === 410) {
-        return this.throwerErrorGuard.GoneException(
-          ScannerClientErrorsEnum.FILE_WAS_PROCESSED,
-          `File ${scannerId} was already processed: ${error.message}`,
-          error.response.data as string,
-        )
-      }
-      if (error.response.status === 400) {
-        return this.throwerErrorGuard.BadRequestException(
-          ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
-          `Params which where sent was not accepted by scanner: ${error.message}`,
-          error.response.data as string,
-        )
-      }
-    }
-    return this.throwerErrorGuard.InternalServerErrorException(
-      ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-      `Error while notifying scanner backend. ScannerId if available: ${scannerId} Error: ${error.message}`,
-    )
+    return this.throwerErrorGuard.fromAxiosError(error, {
+      message: `Error while notifying scanner backend. ScannerId if available: ${scannerId} Error: ${error.message}`,
+      console: error.response?.data as string | undefined,
+      statusOverrides: {
+        [HttpStatus.NOT_FOUND]: {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errorEnum: ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
+          message: `File  ${scannerId} was not found at the scanner: ${error.message}`,
+        },
+        [HttpStatus.PAYLOAD_TOO_LARGE]: {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          errorEnum: ScannerClientErrorsEnum.FILE_SIZE_TOO_LARRGE,
+          message: `File ${scannerId} is too big for scannig: ${error.message}`,
+        },
+        [HttpStatus.GONE]: {
+          status: HttpStatus.ALREADY_REPORTED,
+          errorEnum: ScannerClientErrorsEnum.FILE_WAS_PROCESSED,
+          message: `File ${scannerId} was already processed: ${error.message}`,
+        },
+        [HttpStatus.BAD_REQUEST]: {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          errorEnum: ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
+          message: `Params which where sent was not accepted by scanner: ${error.message}`,
+        },
+      },
+    })
   }
 }

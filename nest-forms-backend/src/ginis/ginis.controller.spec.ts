@@ -1,8 +1,9 @@
 import { GinisError } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 
 import { mockGinisDocumentData } from '../__tests__/ginisContants'
 import ClientsService from '../clients/clients.service'
@@ -66,17 +67,17 @@ describe('GinisController', () => {
     })
 
     it('should throw error if there is some error in the ginis api', async () => {
-      const notFoundSpy = jest.spyOn(
-        controller['throwerErrorGuard'],
-        'NotFoundException',
-      )
       const internalServerErrorSpy = jest.spyOn(
         controller['throwerErrorGuard'],
         'InternalServerErrorException',
       )
 
+      // A real ginis 404 carries the underlying AxiosError with a populated
+      // response, which fromAxiosError reads via error.response?.status.
       const axiosError = new AxiosError('Error')
-      axiosError.status = 404
+      axiosError.response = createMock<AxiosResponse>({
+        status: HttpStatus.NOT_FOUND,
+      })
       const ginisError = new GinisError('Error', axiosError)
 
       controller['formsService'].getUniqueForm = jest
@@ -85,8 +86,13 @@ describe('GinisController', () => {
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
         .mockRejectedValue(ginisError)
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
-      expect(notFoundSpy).toHaveBeenCalled()
+      try {
+        await controller.getGinisDocumentByFormId('123')
+        expect(true).toBeFalsy()
+      } catch (error) {
+        expect(error).toBeInstanceOf(HttpException)
+        expect((error as HttpException).getStatus()).toBe(HttpStatus.NOT_FOUND)
+      }
 
       controller['ginisAPIService'].getDocumentDetail = jest.fn()
       controller['ginisAPIService'].getOwnerDetail = jest

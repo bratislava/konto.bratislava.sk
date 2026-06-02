@@ -17,12 +17,8 @@ import {
   NorisRequestGeneral,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
-  RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import {
-  CreateBirthNumbersResponseDto,
-  UpdateDeliveryMethodsInNorisResponseDto,
-} from './dtos/responses.dto'
+import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 
 @Injectable()
 export class AdminService {
@@ -87,16 +83,6 @@ export class AdminService {
     return this.norisService.updateOverpaymentsDataFromNorisByDateRange(data, {
       suppressEmail: true,
     })
-  }
-
-  async updateDeliveryMethodsInNoris({
-    data,
-  }: RequestUpdateNorisDeliveryMethodsDto): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return this.norisService.updateDeliveryMethodsInNoris({ data })
-  }
-
-  async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    await this.norisService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   /**

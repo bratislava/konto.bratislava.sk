@@ -18,4 +18,3 @@ export class CreateBirthNumbersResponseDto {
   foundInNoris?: string[]
 }
 
-export class UpdateDeliveryMethodsInNorisResponseDto extends CreateBirthNumbersResponseDto {}

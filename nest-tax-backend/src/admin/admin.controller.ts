@@ -28,12 +28,8 @@ import {
   RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
-  RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import {
-  CreateBirthNumbersResponseDto,
-  UpdateDeliveryMethodsInNorisResponseDto,
-} from './dtos/responses.dto'
+import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -118,41 +114,6 @@ export class AdminController {
     @Body() data: DateRangeDto,
   ): Promise<ResponseCreatedAlreadyCreatedDto> {
     return this.adminService.updateOverpaymentsDataFromNorisByDateRange(data)
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: 'Update delivery methods for given birth numbers and date.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Records successfully updated in Noris',
-    type: UpdateDeliveryMethodsInNorisResponseDto,
-  })
-  @UseGuards(AdminGuard)
-  @Post('update-delivery-methods-in-noris')
-  async updateDeliveryMethodsInNoris(
-    @Body() data: RequestUpdateNorisDeliveryMethodsDto,
-  ): Promise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return this.adminService.updateDeliveryMethodsInNoris(data)
-  }
-
-  @HttpCode(200)
-  @ApiOperation({
-    summary: '[internal] Remove delivery methods for given birth number.',
-    description:
-      "⚠️ Must be called only through nest-city-account, which is the source of truth for delivery methods. Calling this endpoint directly bypasses nest-city-account's business logic (including the per-birth-number advisory lock) and can leave Noris in an incorrect state.",
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Records successfully updated in Noris',
-  })
-  @UseGuards(AdminGuard)
-  @Post('remove-delivery-methods-from-noris/:birthNumber')
-  async removeDeliveryMethodsFromNoris(
-    @Param('birthNumber') birthNumber: string,
-  ): Promise<void> {
-    await this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 
   @HttpCode(200)

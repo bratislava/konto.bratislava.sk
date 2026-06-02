@@ -9,3 +9,62 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     ...RichTextSection
   }
 }
+
+fragment ContactCardBlock on ComponentBlocksContactCard {
+  overrideLabel
+  sdfsas
+  value
+}
+
+fragment ContactPersonCardBlock on ComponentBlocksContactPersonCard {
+  title
+  subtext
+  email
+  phone
+}
+
+fragment ContactDirectionsCardBlock on ComponentBlocksContactDirectionsCard {
+  overrideLabel
+  address
+  parkingInfo
+  publicTransportInfo
+  barrierFreeInfo
+  iframeUrl
+}
+
+fragment ContactsSection on ComponentSectionsContactsSection {
+  id
+  title
+  description
+  addressContacts {
+    ...ContactCardBlock
+  }
+  openingHoursContacts {
+    ...ContactCardBlock
+  }
+  emailContacts {
+    ...ContactCardBlock
+  }
+  phoneContacts {
+    ...ContactCardBlock
+  }
+  webContacts {
+    ...ContactCardBlock
+  }
+  postalAddressContacts {
+    ...ContactCardBlock
+  }
+  billingInfoContacts {
+    ...ContactCardBlock
+  }
+  bankConnectionContacts {
+    ...ContactCardBlock
+  }
+  personContacts {
+    ...ContactPersonCardBlock
+  }
+  directionsContact {
+    ...ContactDirectionsCardBlock
+  }
+  titleLevelContactsSection: titleLevel
+}

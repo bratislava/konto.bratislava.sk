@@ -126,10 +126,11 @@ export class BloomreachOutboxProcessor {
         `Processed batch: ${succeededIds.length} succeeded, ${failedEntries.length} failed`
       )
     } catch (error) {
+      const console = toLogfmt({ batchSize: commands.length, entryCount: entries.length })
       if (isAxiosError(error)) {
         this.logger.error(
           this.throwerErrorGuard.fromAxiosError(error, {
-            console: toLogfmt({ batchSize: commands.length, entryCount: entries.length }),
+            console,
           })
         )
       } else {
@@ -137,7 +138,7 @@ export class BloomreachOutboxProcessor {
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
             'Bloomreach batch send failed',
-            toLogfmt({ batchSize: commands.length, entryCount: entries.length }),
+            console,
             error
           )
         )

@@ -16,8 +16,6 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/types/noris.enums'
-
 /**
  * Options for processing Noris tax data.
  *
@@ -180,15 +178,6 @@ export class RequestAdminCreateTestingTaxNorisData {
   })
   @IsString()
   variableSymbol: string
-
-  @ApiProperty({
-    description: 'Delivery method for the tax',
-    enum: DeliveryMethod,
-    nullable: true,
-  })
-  @IsEnum(DeliveryMethod)
-  @IsOptional()
-  deliveryMethod: DeliveryMethod | null
 
   @ApiProperty({
     description: 'Birth number in format with slash',

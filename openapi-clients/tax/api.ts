@@ -148,10 +148,6 @@ export interface RequestAdminCreateTestingTaxNorisData {
    */
   variableSymbol: string
   /**
-   * Delivery method for the tax
-   */
-  deliveryMethod: RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum | null
-  /**
    * Birth number in format with slash
    */
   fakeBirthNumber: string
@@ -176,16 +172,6 @@ export interface RequestAdminCreateTestingTaxNorisData {
    */
   isCancelled: boolean
 }
-
-export const RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum = {
-  E: 'E',
-  O: 'O',
-  P: 'P',
-} as const
-
-export type RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum =
-  (typeof RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum)[keyof typeof RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum]
-
 export interface RequestAdminDeleteTaxDto {
   /**
    * Year of tax

@@ -98,6 +98,12 @@ export type ComponentBlocksContactCardFiltersInput = {
   value?: InputMaybe<StringFilterInput>
 }
 
+export type ComponentBlocksContactCardInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  overrideLabel?: InputMaybe<Scalars['String']['input']>
+  value?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksContactDirectionsCard = {
   __typename?: 'ComponentBlocksContactDirectionsCard'
   address: Scalars['String']['output']
@@ -107,6 +113,28 @@ export type ComponentBlocksContactDirectionsCard = {
   overrideLabel?: Maybe<Scalars['String']['output']>
   parkingInfo?: Maybe<Scalars['String']['output']>
   publicTransportInfo?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksContactDirectionsCardFiltersInput = {
+  address?: InputMaybe<StringFilterInput>
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>>>
+  barrierFreeInfo?: InputMaybe<StringFilterInput>
+  iframeUrl?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>>>
+  overrideLabel?: InputMaybe<StringFilterInput>
+  parkingInfo?: InputMaybe<StringFilterInput>
+  publicTransportInfo?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksContactDirectionsCardInput = {
+  address?: InputMaybe<Scalars['String']['input']>
+  barrierFreeInfo?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  iframeUrl?: InputMaybe<Scalars['String']['input']>
+  overrideLabel?: InputMaybe<Scalars['String']['input']>
+  parkingInfo?: InputMaybe<Scalars['String']['input']>
+  publicTransportInfo?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentBlocksContactPersonCard = {
@@ -126,6 +154,14 @@ export type ComponentBlocksContactPersonCardFiltersInput = {
   phone?: InputMaybe<StringFilterInput>
   subtext?: InputMaybe<StringFilterInput>
   title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksContactPersonCardInput = {
+  email?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  phone?: InputMaybe<Scalars['String']['input']>
+  subtext?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentBlocksFooterColumn = {
@@ -308,6 +344,114 @@ export type ComponentGeneralAlertInput = {
   dateFrom?: InputMaybe<Scalars['DateTime']['input']>
   dateTo?: InputMaybe<Scalars['DateTime']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type ComponentSectionsContactsSection = {
+  __typename?: 'ComponentSectionsContactsSection'
+  addressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  bankConnectionContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  billingInfoContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  description?: Maybe<Scalars['String']['output']>
+  directionsContact?: Maybe<ComponentBlocksContactDirectionsCard>
+  emailContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  id: Scalars['ID']['output']
+  openingHoursContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  personContacts?: Maybe<Array<Maybe<ComponentBlocksContactPersonCard>>>
+  phoneContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  postalAddressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  title?: Maybe<Scalars['String']['output']>
+  titleLevel?: Maybe<Enum_Componentsectionscontactssection_Titlelevel>
+  webContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+}
+
+export type ComponentSectionsContactsSectionAddressContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionBankConnectionContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionBillingInfoContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionEmailContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionOpeningHoursContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionPersonContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionPhoneContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionPostalAddressContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionWebContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsSectionFiltersInput = {
+  addressContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsSectionFiltersInput>>>
+  bankConnectionContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  billingInfoContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  directionsContact?: InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>
+  emailContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  not?: InputMaybe<ComponentSectionsContactsSectionFiltersInput>
+  openingHoursContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsSectionFiltersInput>>>
+  personContacts?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
+  phoneContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  postalAddressContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  title?: InputMaybe<StringFilterInput>
+  titleLevel?: InputMaybe<StringFilterInput>
+  webContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+}
+
+export type ComponentSectionsContactsSectionInput = {
+  addressContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  bankConnectionContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  billingInfoContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  directionsContact?: InputMaybe<ComponentBlocksContactDirectionsCardInput>
+  emailContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  id?: InputMaybe<Scalars['ID']['input']>
+  openingHoursContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  personContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactPersonCardInput>>>
+  phoneContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  postalAddressContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  title?: InputMaybe<Scalars['String']['input']>
+  titleLevel?: InputMaybe<Enum_Componentsectionscontactssection_Titlelevel>
+  webContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
 }
 
 export type ComponentSectionsRichtext = {
@@ -659,6 +803,7 @@ export type GenericMorph =
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
+  | ComponentSectionsContactsSection
   | ComponentSectionsRichtext
   | Footer
   | Form
@@ -1940,6 +2085,7 @@ export type QueryUsersPermissionsUsers_ConnectionArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type ResponseCollectionMeta = {
@@ -2966,6 +3112,94 @@ type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_Error_Fragment
+
+export type ContactCardBlockFragment = {
+  __typename?: 'ComponentBlocksContactCard'
+  overrideLabel?: string | null
+  value: string
+}
+
+export type ContactPersonCardBlockFragment = {
+  __typename?: 'ComponentBlocksContactPersonCard'
+  title: string
+  subtext?: string | null
+  email?: string | null
+  phone?: string | null
+}
+
+export type ContactDirectionsCardBlockFragment = {
+  __typename?: 'ComponentBlocksContactDirectionsCard'
+  overrideLabel?: string | null
+  address: string
+  parkingInfo?: string | null
+  publicTransportInfo?: string | null
+  barrierFreeInfo?: string | null
+  iframeUrl?: string | null
+}
+
+export type ContactsSectionFragment = {
+  __typename?: 'ComponentSectionsContactsSection'
+  id: string
+  title?: string | null
+  description?: string | null
+  titleLevelContactsSection?: Enum_Componentsectionscontactssection_Titlelevel | null
+  addressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  openingHoursContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  emailContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  phoneContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  webContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  postalAddressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  billingInfoContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  bankConnectionContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  personContacts?: Array<{
+    __typename?: 'ComponentBlocksContactPersonCard'
+    title: string
+    subtext?: string | null
+    email?: string | null
+    phone?: string | null
+  } | null> | null
+  directionsContact?: {
+    __typename?: 'ComponentBlocksContactDirectionsCard'
+    overrideLabel?: string | null
+    address: string
+    parkingInfo?: string | null
+    publicTransportInfo?: string | null
+    barrierFreeInfo?: string | null
+    iframeUrl?: string | null
+  } | null
+}
 
 export type TaxFragment = {
   __typename?: 'Tax'

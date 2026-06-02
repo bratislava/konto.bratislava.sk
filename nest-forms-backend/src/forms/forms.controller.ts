@@ -139,6 +139,7 @@ export default class FormsController {
   })
   @ApiOkResponse({
     description: 'Return updated form',
+    type: GetFormResponseDto,
   })
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()

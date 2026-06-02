@@ -6,6 +6,7 @@ import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
+import { isAxiosError } from 'axios'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
@@ -42,7 +43,10 @@ import NasesContactsService, {
 } from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
-import { ErrorsEnum } from '../utils/global-enums/errors.enum'
+import {
+  ErrorsEnum,
+  ErrorsResponseEnum,
+} from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -524,8 +528,8 @@ export default class GinisService {
       this.baConfigService.slovenskoSk.subNasesTechnicalAccount,
       this.baConfigService.slovenskoSk.apiTokenPrivate,
     )
-    const response =
-      await this.clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost(
+    const result = await this.clientsService.slovenskoSkApi
+      .apiIamIdentitiesSearchPost(
         {
           uris: [uri],
         },
@@ -535,7 +539,20 @@ export default class GinisService {
           },
         },
       )
-    const result = response.data
+      .then((response) => response.data)
+      .catch((error: unknown) => {
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            `Failed to search nases identity for uri: ${uri}`,
+            error,
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          console: `Failed to search nases identity for uri: ${uri}`,
+        })
+      })
 
     if (result.length === 0) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -624,8 +641,8 @@ export default class GinisService {
     }
 
     const params: GinContactParams = {}
-    const contactResponse =
-      await this.clientsService.cityAccountApi.userIntegrationControllerGetContactAndIdInfoByExternalId(
+    const contactInfo = await this.clientsService.cityAccountApi
+      .userIntegrationControllerGetContactAndIdInfoByExternalId(
         form.userExternalId,
         {
           headers: {
@@ -633,8 +650,20 @@ export default class GinisService {
           },
         },
       )
-
-    const contactInfo = contactResponse.data
+      .then((contactResponse) => contactResponse.data)
+      .catch((error: unknown) => {
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
+            error,
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          console: `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
+        })
+      })
     if (!contactInfo) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,

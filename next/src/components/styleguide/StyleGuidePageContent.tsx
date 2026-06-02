@@ -11,13 +11,16 @@ import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
+import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
+import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
 import InputFieldShowCase from '@/src/components/styleguide/showcases/InputFieldShowCase'
 import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShowCase'
-import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase'
+import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase/ModalsShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
 import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
 import PasswordFieldShowCase from '@/src/components/styleguide/showcases/PasswordFieldShowCase'
+import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
 import ProgressBarShowCase from '@/src/components/styleguide/showcases/ProgressBarShowCase'
 import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroupShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
@@ -25,7 +28,9 @@ import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCa
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
+import TaxesFeesShowCase from '@/src/components/styleguide/showcases/TaxesFeesShowCase/TaxesFeesShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
+import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
 import TimePickerShowCase from '@/src/components/styleguide/showcases/TimePickerShowCase'
 import ToastShowCase from '@/src/components/styleguide/showcases/ToastShowCase'
 import ToggleShowCase from '@/src/components/styleguide/showcases/ToggleShowCase'
@@ -36,11 +41,8 @@ import StyleGuideWrapper from './StyleGuideWrapper'
 
 const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'button', label: 'Button', component: <ButtonShowCase /> },
-  {
-    id: 'modal',
-    label: 'Modal',
-    component: <ModalShowCase />,
-  },
+  { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
+  { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },
   { id: 'tag', label: 'Tag', component: <TagShowCase /> },
   { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },
@@ -59,7 +61,6 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
   { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
   { id: 'accordion', label: 'Accordion', component: <AccordionShowCase /> },
-  { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
   { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
   { id: 'banner', label: 'Banner', component: <BannerShowCase /> },
@@ -70,7 +71,20 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     component: <MyApplicationsCardShowCase />,
   },
   { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
+  { id: 'thank-you-tile', label: 'ThankYou Tile', component: <ThankYouTileShowCase /> },
   { id: 'auth-forms', label: 'Auth Forms', component: <AuthFormsShowCase /> },
+  { id: 'form-sent', label: 'Form Sent', component: <FormSentPageContentShowCase /> },
+  {
+    id: 'payment-result',
+    label: 'Payment Result',
+    component: <PaymentResultPageContentShowCase />,
+  },
+  {
+    id: 'form-version-compare-action',
+    label: 'Form Version Compare Action',
+    component: <FormVersionCompareActionShowCase />,
+  },
+  { id: 'taxes-fees', label: 'Taxes & Fees Pages', component: <TaxesFeesShowCase /> },
 ]
 
 const StyleGuidePageContent = () => {
@@ -89,12 +103,12 @@ const StyleGuidePageContent = () => {
           onSelectionChange={(value) => setSelectedKey(value.toString())}
           className="mb-10 flex flex-col"
         >
-          <TabList className="flex flex-wrap gap-2 pb-4">
+          <TabList className="flex flex-wrap gap-1.5 pb-4">
             {showcases.map(({ id, label }) => (
               <Tab
                 key={id}
                 id={id}
-                className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-2 hover:border-gray-500 hover:bg-gray-50 selected:border-gray-700 selected:bg-gray-100 selected:font-semibold"
+                className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-1.5 hover:border-gray-500 hover:bg-gray-50 selected:border-gray-700 selected:bg-gray-100 selected:font-semibold"
               >
                 {label}
               </Tab>

@@ -11,7 +11,7 @@ const ToggleShowCase = () => {
 
   return (
     <Wrapper direction="column" title="Toggle">
-      <Stack direction="column">
+      <Stack direction="column" className="items-start gap-4">
         <Toggle />
         <Toggle isSelected={secondToggleSelected} onChange={setSecondToggleSelected}>
           Value (controlled)

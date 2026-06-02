@@ -15,6 +15,7 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
 export default [
   ErrorsEnum.INTERNAL_SERVER_ERROR,
   ErrorsEnum.DATABASE_ERROR,
+  ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
   CustomErrorPaymentTypesEnum.DATABASE_ERROR,
   CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
   CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

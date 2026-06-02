@@ -1,5 +1,6 @@
-import crypto from 'node:crypto'
+import crypto, { Sign, Verify } from 'node:crypto'
 
+import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { TaxType } from '@prisma/client'
@@ -63,7 +64,7 @@ describe('GpWebpaySubservice', () => {
         PAYMETHODS: 'CARD',
       }
 
-      const result = (service as any).getDataToSign(mockData)
+      const result = service['getDataToSign'](mockData)
       expect(result).toBe(
         '123|CREATE|456|100|EUR|1|http://example.com|Test order|test@example.com|CARD',
       )
@@ -80,7 +81,7 @@ describe('GpWebpaySubservice', () => {
         CURRENCY: 'EUR',
       }
 
-      const result = (service as any).getDataToSign(mockData)
+      const result = service['getDataToSign'](mockData)
       expect(result).toBe('123|CREATE|456|100|EUR|1|http://example.com')
     })
   })
@@ -102,11 +103,11 @@ describe('GpWebpaySubservice', () => {
 
   describe('getSignedData', () => {
     it('should return signed data with digest', () => {
-      jest.spyOn(crypto, 'createSign').mockReturnValue({
-        write: jest.fn(),
-        end: jest.fn(),
-        sign: jest.fn().mockReturnValue('mock-signature'),
-      } as any)
+      jest.spyOn(crypto, 'createSign').mockReturnValue(
+        createMock<Sign>({
+          sign: jest.fn().mockReturnValue('mock-signature'),
+        }),
+      )
 
       const mockData: CreateOrderData = {
         MERCHANTNUMBER: '123',
@@ -128,11 +129,11 @@ describe('GpWebpaySubservice', () => {
 
   describe('verifyData', () => {
     it('should verify data with digest', () => {
-      jest.spyOn(crypto, 'createVerify').mockReturnValue({
-        write: jest.fn(),
-        end: jest.fn(),
-        verify: jest.fn().mockReturnValue(true),
-      } as any)
+      jest
+        .spyOn(crypto, 'createVerify')
+        .mockReturnValue(
+          createMock<Verify>({ verify: jest.fn().mockReturnValue(true) }),
+        )
 
       const result = service.verifyData(TaxType.DZN, 'test-data', 'test-digest')
       expect(result).toBe(true)

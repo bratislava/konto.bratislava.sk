@@ -11,6 +11,7 @@ import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
 import { TaxModule } from './tax/tax.module'
 import AppLoggerMiddleware from './utils/middlewares/logger'
+import { SharedModule } from './utils/subservices/shared.module'
 import { UtilsModule } from './utils-module/utils.module'
 
 @Module({
@@ -27,6 +28,7 @@ import { UtilsModule } from './utils-module/utils.module'
       },
     }),
     PrismaModule,
+    SharedModule,
     TaxModule,
     PaymentModule,
     AdminModule,

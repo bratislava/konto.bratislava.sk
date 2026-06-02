@@ -3,12 +3,12 @@ import { useTranslation } from 'next-i18next/pages'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
-import ThankYouCard from '@/src/components/page-contents/ThankYouPageContent/ThankYouCard'
+import ThankYouTile from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
-const useThankYouFormPageContent = () => {
+const useFormSentPageContent = () => {
   const {
     isTaxForm,
     formDefinition: { feedbackLink },
@@ -58,7 +58,7 @@ const useThankYouFormPageContent = () => {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21637-5313&t=9VxOW0GxS2SEYDIL-4
  */
 
-const ThankYouFormPageContent = () => {
+const FormSentPageContent = () => {
   const {
     title,
     firstButtonTitle,
@@ -68,7 +68,7 @@ const ThankYouFormPageContent = () => {
     feedbackTitle,
     largePadding,
     displayAccountLinks,
-  } = useThankYouFormPageContent()
+  } = useFormSentPageContent()
   const { t } = useTranslation('account')
 
   return (
@@ -79,7 +79,7 @@ const ThankYouFormPageContent = () => {
       })}
     >
       <div className="flex flex-col">
-        <ThankYouCard
+        <ThankYouTile
           variant="success"
           title={title}
           firstButtonTitle={firstButtonTitle}
@@ -108,4 +108,4 @@ const ThankYouFormPageContent = () => {
   )
 }
 
-export default ThankYouFormPageContent
+export default FormSentPageContent

@@ -48,20 +48,14 @@ export class ResponseErrorDto {
   errorName: CustomErrorEnums
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-extraneous-class */
-export class ErrorSymbols {
-  static readonly alert: unique symbol = Symbol('alert')
-
-  static readonly console: unique symbol = Symbol('console')
-
-  static readonly errorType: unique symbol = Symbol('errorType')
-
-  static readonly stack: unique symbol = Symbol('stack')
-
-  static readonly errorCause = Symbol('errorCause')
-
-  static readonly causedByMessage = Symbol('causedByMessage')
-}
+export const ErrorSymbols = {
+  alert: Symbol('alert'),
+  console: Symbol('console'),
+  errorType: Symbol('errorType'),
+  stack: Symbol('stack'),
+  errorCause: Symbol('errorCause'),
+  causedByMessage: Symbol('causedByMessage'),
+} as const
 
 export const errorTypeKeys: Record<string, string> = {
   alert: `$Symbol-alert`,

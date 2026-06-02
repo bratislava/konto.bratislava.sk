@@ -440,11 +440,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
       (case
           when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
           else 0 end
-      ) uhrazeno_sum_saldo,
-      sum(dane21_doklad_overpayment.suma_mena) as uhrazeno_overpayment, -- TODO use just uhrazeno, these two are only for debugging
-      (case
-          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
-          else 0 end
       ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
       (SELECT MAX(v) FROM (VALUES(MAX(view_doklad_saldo.datum_posledni_platby)), (MAX(dane21_doklad_overpayment.datum_realizacie))) AS maxDate(v)) AS datum_posledni_platby
   FROM lcs.dane21_doklad as dane21_doklad

@@ -4,9 +4,6 @@ import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import ClientsModule from '../clients/clients.module'
 import { PrismaModule } from '../prisma/prisma.module'
 import { QrCodeModule } from '../qrcode/qrcode.module'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
-import DatabaseSubservice from '../utils/subservices/database.subservice'
 import { NorisService } from './noris.service'
 import { NorisConnectionSubservice } from './subservices/noris-connection.subservice'
 import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
@@ -24,9 +21,6 @@ import { NorisValidatorSubservice } from './subservices/noris-validator.subservi
     NorisDeliveryMethodSubservice,
     NorisPaymentSubservice,
     NorisTaxSubservice,
-    ThrowerErrorGuard,
-    DatabaseSubservice,
-    CityAccountSubservice,
     NorisTaxRealEstateSubservice,
     NorisTaxCommunalWasteSubservice,
     NorisValidatorSubservice,

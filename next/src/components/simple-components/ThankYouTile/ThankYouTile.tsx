@@ -4,7 +4,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
-export type ThankYouCardProps = {
+export type ThankYouTileProps = {
   variant: 'success' | 'error' | 'warning'
   title?: string
   firstButtonTitle?: string
@@ -19,7 +19,7 @@ export type ThankYouCardProps = {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20618-3493&t=PbcmCPTKtvfExOYw-4
  */
 
-const ThankYouCard = ({
+const ThankYouTile = ({
   variant,
   title,
   firstButtonTitle,
@@ -28,7 +28,7 @@ const ThankYouCard = ({
   feedbackTitle,
   firstButtonLink,
   secondButtonLink,
-}: ThankYouCardProps) => {
+}: ThankYouTileProps) => {
   const iconClassname = 'flex size-8 items-center justify-center md:size-10'
   const iconByVariant = {
     success: <Icon name="check" className={cn(iconClassname, 'text-content-success-default')} />,
@@ -104,4 +104,4 @@ const ThankYouCard = ({
   )
 }
 
-export default ThankYouCard
+export default ThankYouTile

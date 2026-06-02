@@ -1,4 +1,4 @@
-fragment RichTextSection on ComponentSectionsRichtext {
+fragment RichtextSection on ComponentSectionsRichtext {
   content
 }
 
@@ -6,7 +6,7 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   __typename
 
   ... on ComponentSectionsRichtext {
-    ...RichTextSection
+    ...RichtextSection
   }
 }
 

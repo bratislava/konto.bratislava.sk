@@ -17,17 +17,19 @@ export class TiersGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<
-      CognitoUserAttributesTierEnum[]
+      CognitoUserAttributesTierEnum[] | undefined
     >(TIERS_KEY, [context.getHandler(), context.getClass()])
-    if (!requiredRoles) {
+    if (!requiredRoles || requiredRoles.length === 0) {
       return true
     }
-    const { cognito_jwt_payload } = context.switchToHttp().getRequest()
+    const { cognito_jwt_payload } = context
+      .switchToHttp()
+      .getRequest<{ cognito_jwt_payload: { sub: string } }>()
 
     const tier = await this.cognitoSubservice.getUserTierFromCognito(
       cognito_jwt_payload.sub,
     )
-    const result = requiredRoles.some((role) => [tier]?.includes(role))
+    const result = requiredRoles.includes(tier)
     if (!result) {
       throw this.throwerErrorGuard.ForbiddenException(
         ErrorsEnum.FORBIDDEN_ERROR,

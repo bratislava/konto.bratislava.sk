@@ -19,9 +19,19 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
+  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  Date: { input: any; output: any }
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: { input: any; output: any }
   FormLandingPageSectionsDynamicZoneInput: { input: any; output: any }
+  /** A string used to identify an i18n locale */
+  I18NLocaleCode: { input: any; output: any }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any }
+  /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
+  Long: { input: any; output: any }
+  /** A time string with format HH:mm:ss.SSS */
+  Time: { input: any; output: any }
 }
 
 export type BooleanFilterInput = {
@@ -300,82 +310,47 @@ export type ComponentGeneralAlertInput = {
   id?: InputMaybe<Scalars['ID']['input']>
 }
 
-export type ComponentSectionsContactsSection = {
-  __typename?: 'ComponentSectionsContactsSection'
-  addressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-  bankConnectionContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-  billingInfoContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-  description?: Maybe<Scalars['String']['output']>
-  directionsContact?: Maybe<ComponentBlocksContactDirectionsCard>
-  emailContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-  id: Scalars['ID']['output']
-  openingHoursContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-  personContacts?: Maybe<Array<Maybe<ComponentBlocksContactPersonCard>>>
-  phoneContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-  postalAddressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-  title?: Maybe<Scalars['String']['output']>
-  titleLevel?: Maybe<Enum_Componentsectionscontactssection_Titlelevel>
-  webContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
-}
-
-export type ComponentSectionsContactsSectionAddressContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionBankConnectionContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionBillingInfoContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionEmailContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionOpeningHoursContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionPersonContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionPhoneContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionPostalAddressContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsContactsSectionWebContactsArgs = {
-  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
 export type ComponentSectionsRichtext = {
   __typename?: 'ComponentSectionsRichtext'
   content?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
+}
+
+export type ComponentSectionsRichtextFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsRichtextFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentSectionsRichtextFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsRichtextFiltersInput>>>
+}
+
+export type ComponentSectionsRichtextInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type DateFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  contains?: InputMaybe<Scalars['Date']['input']>
+  containsi?: InputMaybe<Scalars['Date']['input']>
+  endsWith?: InputMaybe<Scalars['Date']['input']>
+  eq?: InputMaybe<Scalars['Date']['input']>
+  eqi?: InputMaybe<Scalars['Date']['input']>
+  gt?: InputMaybe<Scalars['Date']['input']>
+  gte?: InputMaybe<Scalars['Date']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  lt?: InputMaybe<Scalars['Date']['input']>
+  lte?: InputMaybe<Scalars['Date']['input']>
+  ne?: InputMaybe<Scalars['Date']['input']>
+  nei?: InputMaybe<Scalars['Date']['input']>
+  not?: InputMaybe<DateFilterInput>
+  notContains?: InputMaybe<Scalars['Date']['input']>
+  notContainsi?: InputMaybe<Scalars['Date']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  startsWith?: InputMaybe<Scalars['Date']['input']>
 }
 
 export type DateTimeFilterInput = {
@@ -514,6 +489,40 @@ export type FooterColumnsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type FooterEntity = {
+  __typename?: 'FooterEntity'
+  attributes?: Maybe<Footer>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type FooterEntityResponse = {
+  __typename?: 'FooterEntityResponse'
+  data?: Maybe<Footer>
+}
+
+export type FooterEntityResponseCollection = {
+  __typename?: 'FooterEntityResponseCollection'
+  nodes: Array<Footer>
+  pageInfo: Pagination
+}
+
+export type FooterFiltersInput = {
+  accessibilityPageLink?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<FooterFiltersInput>>>
+  columns?: InputMaybe<ComponentBlocksFooterColumnFiltersInput>
+  contactText?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  facebookUrl?: InputMaybe<StringFilterInput>
+  instagramUrl?: InputMaybe<StringFilterInput>
+  linkedinUrl?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<FooterFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<FooterFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  tiktokUrl?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+  youtubeUrl?: InputMaybe<StringFilterInput>
+}
+
 export type FooterInput = {
   accessibilityPageLink?: InputMaybe<ComponentBlocksCommonLinkInput>
   columns?: InputMaybe<Array<InputMaybe<ComponentBlocksFooterColumnInput>>>
@@ -526,6 +535,11 @@ export type FooterInput = {
   youtubeUrl?: InputMaybe<Scalars['String']['input']>
 }
 
+export type FooterRelationResponseCollection = {
+  __typename?: 'FooterRelationResponseCollection'
+  nodes: Array<Footer>
+}
+
 export type Form = {
   __typename?: 'Form'
   createdAt?: Maybe<Scalars['DateTime']['output']>
@@ -535,6 +549,17 @@ export type Form = {
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   slug: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type FormEntity = {
+  __typename?: 'FormEntity'
+  attributes?: Maybe<Form>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type FormEntityResponse = {
+  __typename?: 'FormEntityResponse'
+  data?: Maybe<Form>
 }
 
 export type FormEntityResponseCollection = {
@@ -565,6 +590,11 @@ export type FormInput = {
 
 export type FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
 
+export type FormRelationResponseCollection = {
+  __typename?: 'FormRelationResponseCollection'
+  nodes: Array<Form>
+}
+
 export type General = {
   __typename?: 'General'
   alerts?: Maybe<Array<Maybe<ComponentGeneralAlert>>>
@@ -580,9 +610,41 @@ export type GeneralAlertsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type GeneralEntity = {
+  __typename?: 'GeneralEntity'
+  attributes?: Maybe<General>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type GeneralEntityResponse = {
+  __typename?: 'GeneralEntityResponse'
+  data?: Maybe<General>
+}
+
+export type GeneralEntityResponseCollection = {
+  __typename?: 'GeneralEntityResponseCollection'
+  nodes: Array<General>
+  pageInfo: Pagination
+}
+
+export type GeneralFiltersInput = {
+  alerts?: InputMaybe<ComponentGeneralAlertFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<GeneralFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<GeneralFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<GeneralFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type GeneralInput = {
   alerts?: InputMaybe<Array<InputMaybe<ComponentGeneralAlertInput>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type GeneralRelationResponseCollection = {
+  __typename?: 'GeneralRelationResponseCollection'
+  nodes: Array<General>
 }
 
 export type GenericMorph =
@@ -597,7 +659,6 @@ export type GenericMorph =
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
-  | ComponentSectionsContactsSection
   | ComponentSectionsRichtext
   | Footer
   | Form
@@ -633,9 +694,41 @@ export type HelpPageCategoriesArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type HelpPageEntity = {
+  __typename?: 'HelpPageEntity'
+  attributes?: Maybe<HelpPage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HelpPageEntityResponse = {
+  __typename?: 'HelpPageEntityResponse'
+  data?: Maybe<HelpPage>
+}
+
+export type HelpPageEntityResponseCollection = {
+  __typename?: 'HelpPageEntityResponseCollection'
+  nodes: Array<HelpPage>
+  pageInfo: Pagination
+}
+
+export type HelpPageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<HelpPageFiltersInput>>>
+  categories?: InputMaybe<ComponentBlocksHelpCategoryFiltersInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<HelpPageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<HelpPageFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type HelpPageInput = {
   categories?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpCategoryInput>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type HelpPageRelationResponseCollection = {
+  __typename?: 'HelpPageRelationResponseCollection'
+  nodes: Array<HelpPage>
 }
 
 export type Homepage = {
@@ -717,6 +810,17 @@ export type HomepageAnnouncement = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type HomepageAnnouncementEntity = {
+  __typename?: 'HomepageAnnouncementEntity'
+  attributes?: Maybe<HomepageAnnouncement>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HomepageAnnouncementEntityResponse = {
+  __typename?: 'HomepageAnnouncementEntityResponse'
+  data?: Maybe<HomepageAnnouncement>
+}
+
 export type HomepageAnnouncementEntityResponseCollection = {
   __typename?: 'HomepageAnnouncementEntityResponseCollection'
   nodes: Array<HomepageAnnouncement>
@@ -755,12 +859,47 @@ export type HomepageAnnouncementRelationResponseCollection = {
   nodes: Array<HomepageAnnouncement>
 }
 
+export type HomepageEntity = {
+  __typename?: 'HomepageEntity'
+  attributes?: Maybe<Homepage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HomepageEntityResponse = {
+  __typename?: 'HomepageEntityResponse'
+  data?: Maybe<Homepage>
+}
+
+export type HomepageEntityResponseCollection = {
+  __typename?: 'HomepageEntityResponseCollection'
+  nodes: Array<Homepage>
+  pageInfo: Pagination
+}
+
+export type HomepageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<HomepageFiltersInput>>>
+  announcements?: InputMaybe<HomepageAnnouncementFiltersInput>
+  announcementsLegalPerson?: InputMaybe<HomepageAnnouncementFiltersInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<HomepageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<HomepageFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  services?: InputMaybe<MunicipalServiceFiltersInput>
+  servicesLegalPerson?: InputMaybe<MunicipalServiceFiltersInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type HomepageInput = {
   announcements?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   announcementsLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   services?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   servicesLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+}
+
+export type HomepageRelationResponseCollection = {
+  __typename?: 'HomepageRelationResponseCollection'
+  nodes: Array<Homepage>
 }
 
 export type I18NLocale = {
@@ -771,6 +910,17 @@ export type I18NLocale = {
   name?: Maybe<Scalars['String']['output']>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type I18NLocaleEntity = {
+  __typename?: 'I18NLocaleEntity'
+  attributes?: Maybe<I18NLocale>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type I18NLocaleEntityResponse = {
+  __typename?: 'I18NLocaleEntityResponse'
+  data?: Maybe<I18NLocale>
 }
 
 export type I18NLocaleEntityResponseCollection = {
@@ -789,6 +939,17 @@ export type I18NLocaleFiltersInput = {
   or?: InputMaybe<Array<InputMaybe<I18NLocaleFiltersInput>>>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type I18NLocaleInput = {
+  code?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type I18NLocaleRelationResponseCollection = {
+  __typename?: 'I18NLocaleRelationResponseCollection'
+  nodes: Array<I18NLocale>
 }
 
 export type IdFilterInput = {
@@ -866,6 +1027,31 @@ export type JsonFilterInput = {
   startsWith?: InputMaybe<Scalars['JSON']['input']>
 }
 
+export type LongFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  contains?: InputMaybe<Scalars['Long']['input']>
+  containsi?: InputMaybe<Scalars['Long']['input']>
+  endsWith?: InputMaybe<Scalars['Long']['input']>
+  eq?: InputMaybe<Scalars['Long']['input']>
+  eqi?: InputMaybe<Scalars['Long']['input']>
+  gt?: InputMaybe<Scalars['Long']['input']>
+  gte?: InputMaybe<Scalars['Long']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  lt?: InputMaybe<Scalars['Long']['input']>
+  lte?: InputMaybe<Scalars['Long']['input']>
+  ne?: InputMaybe<Scalars['Long']['input']>
+  nei?: InputMaybe<Scalars['Long']['input']>
+  not?: InputMaybe<LongFilterInput>
+  notContains?: InputMaybe<Scalars['Long']['input']>
+  notContainsi?: InputMaybe<Scalars['Long']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  startsWith?: InputMaybe<Scalars['Long']['input']>
+}
+
 export type MunicipalService = {
   __typename?: 'MunicipalService'
   buttonText: Scalars['String']['output']
@@ -931,6 +1117,17 @@ export type MunicipalServiceCategoryMunicipalServices_ConnectionArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type MunicipalServiceCategoryEntity = {
+  __typename?: 'MunicipalServiceCategoryEntity'
+  attributes?: Maybe<MunicipalServiceCategory>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceCategoryEntityResponse = {
+  __typename?: 'MunicipalServiceCategoryEntityResponse'
+  data?: Maybe<MunicipalServiceCategory>
+}
+
 export type MunicipalServiceCategoryEntityResponseCollection = {
   __typename?: 'MunicipalServiceCategoryEntityResponseCollection'
   nodes: Array<MunicipalServiceCategory>
@@ -958,6 +1155,17 @@ export type MunicipalServiceCategoryInput = {
 export type MunicipalServiceCategoryRelationResponseCollection = {
   __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
   nodes: Array<MunicipalServiceCategory>
+}
+
+export type MunicipalServiceEntity = {
+  __typename?: 'MunicipalServiceEntity'
+  attributes?: Maybe<MunicipalService>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceEntityResponse = {
+  __typename?: 'MunicipalServiceEntityResponse'
+  data?: Maybe<MunicipalService>
 }
 
 export type MunicipalServiceEntityResponseCollection = {
@@ -1022,6 +1230,17 @@ export type MunicipalServiceTagMunicipalServices_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServiceTagEntity = {
+  __typename?: 'MunicipalServiceTagEntity'
+  attributes?: Maybe<MunicipalServiceTag>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceTagEntityResponse = {
+  __typename?: 'MunicipalServiceTagEntityResponse'
+  data?: Maybe<MunicipalServiceTag>
 }
 
 export type MunicipalServiceTagEntityResponseCollection = {
@@ -1089,10 +1308,43 @@ export type MunicipalServicesPageServices_ConnectionArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type MunicipalServicesPageEntity = {
+  __typename?: 'MunicipalServicesPageEntity'
+  attributes?: Maybe<MunicipalServicesPage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServicesPageEntityResponse = {
+  __typename?: 'MunicipalServicesPageEntityResponse'
+  data?: Maybe<MunicipalServicesPage>
+}
+
+export type MunicipalServicesPageEntityResponseCollection = {
+  __typename?: 'MunicipalServicesPageEntityResponseCollection'
+  nodes: Array<MunicipalServicesPage>
+  pageInfo: Pagination
+}
+
+export type MunicipalServicesPageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalServicesPageFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<MunicipalServicesPageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalServicesPageFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  services?: InputMaybe<MunicipalServiceFiltersInput>
+  servicesLegalPerson?: InputMaybe<MunicipalServiceFiltersInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type MunicipalServicesPageInput = {
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   services?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   servicesLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+}
+
+export type MunicipalServicesPageRelationResponseCollection = {
+  __typename?: 'MunicipalServicesPageRelationResponseCollection'
+  nodes: Array<MunicipalServicesPage>
 }
 
 export type Mutation = {
@@ -1688,7 +1940,11 @@ export type QueryUsersPermissionsUsers_ConnectionArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-  status?: InputMaybe<PublicationStatus>
+}
+
+export type ResponseCollectionMeta = {
+  __typename?: 'ResponseCollectionMeta'
+  pagination: Pagination
 }
 
 export type ReviewWorkflowsWorkflow = {
@@ -1714,6 +1970,17 @@ export type ReviewWorkflowsWorkflowStages_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ReviewWorkflowsWorkflowEntity = {
+  __typename?: 'ReviewWorkflowsWorkflowEntity'
+  attributes?: Maybe<ReviewWorkflowsWorkflow>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type ReviewWorkflowsWorkflowEntityResponse = {
+  __typename?: 'ReviewWorkflowsWorkflowEntityResponse'
+  data?: Maybe<ReviewWorkflowsWorkflow>
 }
 
 export type ReviewWorkflowsWorkflowEntityResponseCollection = {
@@ -1744,6 +2011,11 @@ export type ReviewWorkflowsWorkflowInput = {
   stages?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
 }
 
+export type ReviewWorkflowsWorkflowRelationResponseCollection = {
+  __typename?: 'ReviewWorkflowsWorkflowRelationResponseCollection'
+  nodes: Array<ReviewWorkflowsWorkflow>
+}
+
 export type ReviewWorkflowsWorkflowStage = {
   __typename?: 'ReviewWorkflowsWorkflowStage'
   color?: Maybe<Scalars['String']['output']>
@@ -1753,6 +2025,17 @@ export type ReviewWorkflowsWorkflowStage = {
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   workflow?: Maybe<ReviewWorkflowsWorkflow>
+}
+
+export type ReviewWorkflowsWorkflowStageEntity = {
+  __typename?: 'ReviewWorkflowsWorkflowStageEntity'
+  attributes?: Maybe<ReviewWorkflowsWorkflowStage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type ReviewWorkflowsWorkflowStageEntityResponse = {
+  __typename?: 'ReviewWorkflowsWorkflowStageEntityResponse'
+  data?: Maybe<ReviewWorkflowsWorkflowStage>
 }
 
 export type ReviewWorkflowsWorkflowStageEntityResponseCollection = {
@@ -1825,6 +2108,38 @@ export type Tax = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type TaxEntity = {
+  __typename?: 'TaxEntity'
+  attributes?: Maybe<Tax>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type TaxEntityResponse = {
+  __typename?: 'TaxEntityResponse'
+  data?: Maybe<Tax>
+}
+
+export type TaxEntityResponseCollection = {
+  __typename?: 'TaxEntityResponseCollection'
+  nodes: Array<Tax>
+  pageInfo: Pagination
+}
+
+export type TaxFiltersInput = {
+  accountCommunicationConsentText?: InputMaybe<StringFilterInput>
+  and?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
+  channelChangeEffectiveNextYearText?: InputMaybe<StringFilterInput>
+  channelChangeEffectiveNextYearTitle?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  feedbackLinkDzn?: InputMaybe<StringFilterInput>
+  feedbackLinkKo?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<TaxFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
+  paymentAlertText?: InputMaybe<StringFilterInput>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type TaxInput = {
   accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
@@ -1833,6 +2148,36 @@ export type TaxInput = {
   feedbackLinkKo?: InputMaybe<Scalars['String']['input']>
   paymentAlertText?: InputMaybe<Scalars['String']['input']>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type TaxRelationResponseCollection = {
+  __typename?: 'TaxRelationResponseCollection'
+  nodes: Array<Tax>
+}
+
+export type TimeFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  contains?: InputMaybe<Scalars['Time']['input']>
+  containsi?: InputMaybe<Scalars['Time']['input']>
+  endsWith?: InputMaybe<Scalars['Time']['input']>
+  eq?: InputMaybe<Scalars['Time']['input']>
+  eqi?: InputMaybe<Scalars['Time']['input']>
+  gt?: InputMaybe<Scalars['Time']['input']>
+  gte?: InputMaybe<Scalars['Time']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  lt?: InputMaybe<Scalars['Time']['input']>
+  lte?: InputMaybe<Scalars['Time']['input']>
+  ne?: InputMaybe<Scalars['Time']['input']>
+  nei?: InputMaybe<Scalars['Time']['input']>
+  not?: InputMaybe<TimeFilterInput>
+  notContains?: InputMaybe<Scalars['Time']['input']>
+  notContainsi?: InputMaybe<Scalars['Time']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  startsWith?: InputMaybe<Scalars['Time']['input']>
 }
 
 export type UploadFile = {
@@ -1857,6 +2202,17 @@ export type UploadFile = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   url: Scalars['String']['output']
   width?: Maybe<Scalars['Int']['output']>
+}
+
+export type UploadFileEntity = {
+  __typename?: 'UploadFileEntity'
+  attributes?: Maybe<UploadFile>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type UploadFileEntityResponse = {
+  __typename?: 'UploadFileEntityResponse'
+  data?: Maybe<UploadFile>
 }
 
 export type UploadFileEntityResponseCollection = {
@@ -1888,6 +2244,30 @@ export type UploadFileFiltersInput = {
   updatedAt?: InputMaybe<DateTimeFilterInput>
   url?: InputMaybe<StringFilterInput>
   width?: InputMaybe<IntFilterInput>
+}
+
+export type UploadFileInput = {
+  alternativeText?: InputMaybe<Scalars['String']['input']>
+  caption?: InputMaybe<Scalars['String']['input']>
+  ext?: InputMaybe<Scalars['String']['input']>
+  focalPoint?: InputMaybe<Scalars['JSON']['input']>
+  formats?: InputMaybe<Scalars['JSON']['input']>
+  hash?: InputMaybe<Scalars['String']['input']>
+  height?: InputMaybe<Scalars['Int']['input']>
+  mime?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+  previewUrl?: InputMaybe<Scalars['String']['input']>
+  provider?: InputMaybe<Scalars['String']['input']>
+  provider_metadata?: InputMaybe<Scalars['JSON']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  size?: InputMaybe<Scalars['Float']['input']>
+  url?: InputMaybe<Scalars['String']['input']>
+  width?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type UploadFileRelationResponseCollection = {
+  __typename?: 'UploadFileRelationResponseCollection'
+  nodes: Array<UploadFile>
 }
 
 export type UsersPermissionsCreateRolePayload = {
@@ -1946,6 +2326,23 @@ export type UsersPermissionsPermission = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type UsersPermissionsPermissionEntity = {
+  __typename?: 'UsersPermissionsPermissionEntity'
+  attributes?: Maybe<UsersPermissionsPermission>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type UsersPermissionsPermissionEntityResponse = {
+  __typename?: 'UsersPermissionsPermissionEntityResponse'
+  data?: Maybe<UsersPermissionsPermission>
+}
+
+export type UsersPermissionsPermissionEntityResponseCollection = {
+  __typename?: 'UsersPermissionsPermissionEntityResponseCollection'
+  nodes: Array<UsersPermissionsPermission>
+  pageInfo: Pagination
+}
+
 export type UsersPermissionsPermissionFiltersInput = {
   action?: InputMaybe<StringFilterInput>
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsPermissionFiltersInput>>>
@@ -1956,6 +2353,12 @@ export type UsersPermissionsPermissionFiltersInput = {
   publishedAt?: InputMaybe<DateTimeFilterInput>
   role?: InputMaybe<UsersPermissionsRoleFiltersInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type UsersPermissionsPermissionInput = {
+  action?: InputMaybe<Scalars['String']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  role?: InputMaybe<Scalars['ID']['input']>
 }
 
 export type UsersPermissionsPermissionRelationResponseCollection = {
@@ -2008,6 +2411,17 @@ export type UsersPermissionsRoleUsers_ConnectionArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type UsersPermissionsRoleEntity = {
+  __typename?: 'UsersPermissionsRoleEntity'
+  attributes?: Maybe<UsersPermissionsRole>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type UsersPermissionsRoleEntityResponse = {
+  __typename?: 'UsersPermissionsRoleEntityResponse'
+  data?: Maybe<UsersPermissionsRole>
+}
+
 export type UsersPermissionsRoleEntityResponseCollection = {
   __typename?: 'UsersPermissionsRoleEntityResponseCollection'
   nodes: Array<UsersPermissionsRole>
@@ -2038,6 +2452,11 @@ export type UsersPermissionsRoleInput = {
   users?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
 }
 
+export type UsersPermissionsRoleRelationResponseCollection = {
+  __typename?: 'UsersPermissionsRoleRelationResponseCollection'
+  nodes: Array<UsersPermissionsRole>
+}
+
 export type UsersPermissionsUpdateRolePayload = {
   __typename?: 'UsersPermissionsUpdateRolePayload'
   ok: Scalars['Boolean']['output']
@@ -2055,6 +2474,12 @@ export type UsersPermissionsUser = {
   role?: Maybe<UsersPermissionsRole>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   username: Scalars['String']['output']
+}
+
+export type UsersPermissionsUserEntity = {
+  __typename?: 'UsersPermissionsUserEntity'
+  attributes?: Maybe<UsersPermissionsUser>
+  id?: Maybe<Scalars['ID']['output']>
 }
 
 export type UsersPermissionsUserEntityResponse = {
@@ -2526,7 +2951,7 @@ export type MunicipalServicesPageQuery = {
   } | null
 }
 
-export type RichTextSectionFragment = {
+export type RichtextSectionFragment = {
   __typename?: 'ComponentSectionsRichtext'
   content?: string | null
 }
@@ -2541,94 +2966,6 @@ type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_Error_Fragment
-
-export type ContactCardBlockFragment = {
-  __typename?: 'ComponentBlocksContactCard'
-  overrideLabel?: string | null
-  value: string
-}
-
-export type ContactPersonCardBlockFragment = {
-  __typename?: 'ComponentBlocksContactPersonCard'
-  title: string
-  subtext?: string | null
-  email?: string | null
-  phone?: string | null
-}
-
-export type ContactDirectionsCardBlockFragment = {
-  __typename?: 'ComponentBlocksContactDirectionsCard'
-  overrideLabel?: string | null
-  address: string
-  parkingInfo?: string | null
-  publicTransportInfo?: string | null
-  barrierFreeInfo?: string | null
-  iframeUrl?: string | null
-}
-
-export type ContactsSectionFragment = {
-  __typename?: 'ComponentSectionsContactsSection'
-  id: string
-  title?: string | null
-  description?: string | null
-  titleLevelContactsSection?: Enum_Componentsectionscontactssection_Titlelevel | null
-  addressContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  openingHoursContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  emailContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  phoneContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  webContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  postalAddressContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  billingInfoContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  bankConnectionContacts?: Array<{
-    __typename?: 'ComponentBlocksContactCard'
-    overrideLabel?: string | null
-    value: string
-  } | null> | null
-  personContacts?: Array<{
-    __typename?: 'ComponentBlocksContactPersonCard'
-    title: string
-    subtext?: string | null
-    email?: string | null
-    phone?: string | null
-  } | null> | null
-  directionsContact?: {
-    __typename?: 'ComponentBlocksContactDirectionsCard'
-    overrideLabel?: string | null
-    address: string
-    parkingInfo?: string | null
-    publicTransportInfo?: string | null
-    barrierFreeInfo?: string | null
-    iframeUrl?: string | null
-  } | null
-}
 
 export type TaxFragment = {
   __typename?: 'Tax'
@@ -2687,8 +3024,8 @@ export const FormLandingPageFormCtaFragmentDoc = gql`
     buttonLabel
   }
 `
-export const RichTextSectionFragmentDoc = gql`
-  fragment RichTextSection on ComponentSectionsRichtext {
+export const RichtextSectionFragmentDoc = gql`
+  fragment RichtextSection on ComponentSectionsRichtext {
     content
   }
 `
@@ -2696,10 +3033,10 @@ export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
     ... on ComponentSectionsRichtext {
-      ...RichTextSection
+      ...RichtextSection
     }
   }
-  ${RichTextSectionFragmentDoc}
+  ${RichtextSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {

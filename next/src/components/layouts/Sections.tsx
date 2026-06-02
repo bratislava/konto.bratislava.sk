@@ -1,5 +1,5 @@
 import { FormLandingPageSectionsFragment } from '@/src/clients/graphql-strapi/api'
-import Contacts from '@/src/components/page-contents/Contacts/Contacts'
+import ContactsSection from '@/src/components/sections/ContactsSection'
 import RichtextSection from '@/src/components/sections/RichtextSection'
 
 /**
@@ -16,7 +16,7 @@ const SectionContent = ({ section }: { section: SectionsProps['sections'][number
       return <RichtextSection section={section} />
 
     case 'ComponentSectionsContacts':
-      return <Contacts section={section} />
+      return <ContactsSection section={section} />
 
     default:
       return null

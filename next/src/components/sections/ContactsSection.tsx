@@ -1,12 +1,12 @@
-import { ContactsFragment } from '@/src/clients/graphql-strapi/api'
+import { ContactsSectionFragment } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Contacts from '@/src/components/page-contents/Contacts/Contacts'
 
 type ContactsProps = {
-  section: ContactsFragment
+  section: ContactsSectionFragment
 }
 
-const Contacts = ({ section }: ContactsProps) => {
+const ContactsSection = ({ section }: ContactsProps) => {
   return (
     <SectionContainer>
       <Contacts section={section} />
@@ -14,4 +14,4 @@ const Contacts = ({ section }: ContactsProps) => {
   )
 }
 
-export default Contacts
+export default ContactsSection

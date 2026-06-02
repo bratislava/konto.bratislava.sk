@@ -114,14 +114,23 @@ export default class NasesCronSubservice {
             await addToResult('not-found', formDefinition, false)
           } else {
             await addToResult('error', formDefinition)
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-                NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
-                undefined,
-                error,
-              ),
-            )
+            if (isAxiosError(error)) {
+              this.logger.error(
+                this.throwerErrorGuard.fromAxiosError(error, {
+                  message:
+                    NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+                }),
+              )
+            } else {
+              this.logger.error(
+                this.throwerErrorGuard.InternalServerErrorException(
+                  NasesErrorsEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+                  NasesErrorsResponseEnum.FAILED_FORM_REGISTRATION_VERIFICATION,
+                  undefined,
+                  error,
+                ),
+              )
+            }
           }
         }
       }),

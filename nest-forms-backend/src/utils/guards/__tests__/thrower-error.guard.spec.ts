@@ -180,7 +180,6 @@ describe('ThrowerErrorGuard', () => {
         expect(response.status).toBe('fallback status text')
         expect(response.message).toBe('override message')
       })
-
     })
 
     describe('503 + retry-after branch', () => {
@@ -212,7 +211,6 @@ describe('ThrowerErrorGuard', () => {
         const response = result.getResponse() as ResponseErrorInternalDto
         expect(response.errorName).toBe(ErrorsEnum.BAD_GATEWAY_ERROR)
       })
-
     })
 
     describe('401/403 branch', () => {
@@ -235,7 +233,6 @@ describe('ThrowerErrorGuard', () => {
           expect(response[ErrorSymbols.alert]).toBe(1)
         },
       )
-
     })
 
     describe('default branch', () => {

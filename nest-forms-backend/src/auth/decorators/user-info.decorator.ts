@@ -5,6 +5,7 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common'
+import { isAxiosError } from 'axios'
 import express from 'express'
 import {
   ResponseLegalPersonDataDto,
@@ -12,9 +13,8 @@ import {
 } from 'openapi-clients/city-account'
 
 import ClientsService from '../../clients/clients.service'
-import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { isAxiosError } from 'axios'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 
 /**
  * This is a temporary solution. It's not possible to distinguish between ResponseLegalPersonDataDto

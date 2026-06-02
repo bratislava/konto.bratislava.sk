@@ -4,7 +4,10 @@ import { Files } from '@prisma/client'
 import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
 
 import { ServiceRunningDto } from '../status/dtos/status.dto'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/global-enums/errors.enum'
+import {
+  ErrorsEnum,
+  ErrorsResponseEnum,
+} from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import PostScanFileResponseDto, { GetScanFileDto } from './scanner-client.dto'

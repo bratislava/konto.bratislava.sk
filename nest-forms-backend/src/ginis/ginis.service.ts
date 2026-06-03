@@ -36,10 +36,11 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases/nases.errors.enum'
-import NasesContactsService, {
+import NasesContactsService from '../nases/services/nases.contacts.service'
+import {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,
-} from '../nases/services/nases.contacts.service'
+} from '../nases/utils/nases.identity.utils'
 import PrismaService from '../prisma/prisma.service'
 import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'

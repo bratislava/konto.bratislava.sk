@@ -10,7 +10,7 @@ import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
 
-export interface NaturalPersonData {
+interface NaturalPersonData {
   given_names?: string[]
   family_names?: { value?: string; primary?: boolean }[]
   birth?: {
@@ -18,32 +18,12 @@ export interface NaturalPersonData {
   }
 }
 
-export interface CorporateBodyData {
+interface CorporateBodyData {
   name?: string
   /** IČO */
   cin?: string
   /** DIČ */
   tin?: string | null
-}
-
-export function isUpvsNaturalPerson(
-  contact: UpvsNaturalPerson | UpvsCorporateBody,
-): contact is UpvsNaturalPerson {
-  return (
-    contact.type === 'natural_person' &&
-    'natural_person' in contact &&
-    contact.natural_person !== undefined
-  )
-}
-
-export function isUpvsCorporateBody(
-  contact: UpvsNaturalPerson | UpvsCorporateBody,
-): contact is UpvsCorporateBody {
-  return (
-    contact.type === 'legal_entity' &&
-    'corporate_body' in contact &&
-    contact.corporate_body !== undefined
-  )
 }
 
 export interface NaturalPersonExtractedData {

@@ -7,10 +7,11 @@ import {
 
 import ClientsService from '../../../clients/clients.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import NasesContactsService, {
+import {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,
-} from '../nases.contacts.service'
+} from '../../utils/nases.identity.utils'
+import NasesContactsService from '../nases.contacts.service'
 
 describe('NasesContactsService', () => {
   let service: NasesContactsService

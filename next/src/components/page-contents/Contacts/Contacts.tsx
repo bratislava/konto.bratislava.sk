@@ -1,4 +1,4 @@
-import { ContactCardBlockFragment, ContactsFragment } from '@/src/clients/graphql-strapi/api'
+import { ContactCardBlockFragment, ContactsSectionFragment } from '@/src/clients/graphql-strapi/api'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import ContactCtaCard, {
   ContactCtaCardType,
@@ -6,7 +6,7 @@ import ContactCtaCard, {
 import { isDefined } from '@/src/frontend/utils/general'
 
 type ContactsProps = {
-  section: ContactsFragment
+  section: ContactsSectionFragment
 }
 
 const mapSection = (

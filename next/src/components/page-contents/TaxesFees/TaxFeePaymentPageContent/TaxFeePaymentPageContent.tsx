@@ -7,8 +7,8 @@ import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
 import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/PaymentData'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { PaymentMethod } from '@/src/frontend/types/types'
@@ -31,7 +31,7 @@ const TaxFeePaymentPageContent = () => {
 
   const { tierStatus } = useSsrAuth()
   const { isIdentityVerified, isInQueue } = tierStatus
-  const { showChannelNeededBanner } = useOfficialCorrespondenceChannel()
+  const { showChannelNeededBanner } = useUserDataDeliveryMethod()
 
   const getTitle = () => {
     switch (paymentMethodParam) {

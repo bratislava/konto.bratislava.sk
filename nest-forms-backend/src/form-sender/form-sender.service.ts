@@ -35,22 +35,22 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import { verifyFormSignatureErrorMapping } from '../nases/nases.errors.dto'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases/nases.errors.enum'
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
-import userToSendPolicyAccountType from '../nases/utils-services/user-to-send-policy-account-type'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { SendFormResponseDto } from './dtos/responses.dto'
+import { verifyFormSignatureErrorMapping } from './form-sender.errors.dto'
 import {
   FormSenderErrorsEnum,
   FormSenderErrorsResponseEnum,
 } from './form-sender.errors.enum'
+import userToSendPolicyAccountType from './user-to-send-policy-account-type'
 
 @Injectable()
 export class FormSenderService {

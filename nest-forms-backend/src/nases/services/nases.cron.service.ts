@@ -16,14 +16,14 @@ import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { ValidateFormRegistrationsResultDto } from '../dtos/responses.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
-import FormRegistrationStatusRepository from './form-registration-status.repository'
+import FormRegistrationStatusRepository from '../repositories/form-registration-status.repository'
 
 enum FormRegistrationStatus {
   PUBLISHED = 'Publikovaný',
 }
 
 @Injectable()
-export default class NasesCronSubservice {
+export default class NasesCronService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
@@ -33,7 +33,7 @@ export default class NasesCronSubservice {
     private readonly baConfigService: BaConfigService,
     private readonly formRegistrationStatusRepository: FormRegistrationStatusRepository,
   ) {
-    this.logger = new LineLoggerSubservice('NasesCronSubservice')
+    this.logger = new LineLoggerSubservice('NasesCronService')
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

@@ -9,7 +9,7 @@ import FormValidatorRegistryModule from '../form-validator-registry/form-validat
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
 import NasesModule from '../nases/nases.module'
-import FormRegistrationStatusRepository from '../nases/utils-services/form-registration-status.repository'
+import FormRegistrationStatusRepository from '../nases/repositories/form-registration-status.repository'
 import PrismaModule from '../prisma/prisma.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'

@@ -15,8 +15,8 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../../nases.errors.enum'
-import FormRegistrationStatusRepository from '../form-registration-status.repository'
-import NasesCronSubservice from '../nases.cron.subservice'
+import FormRegistrationStatusRepository from '../../repositories/form-registration-status.repository'
+import NasesCronService from '../nases.cron.service'
 
 jest.mock('../../../utils/subservices/line-logger.subservice', () => ({
   __esModule: true,
@@ -48,8 +48,8 @@ jest.mock('forms-shared/definitions/formDefinitions', () => ({
   ] as unknown as FormDefinition[],
 }))
 
-describe('NasesCronSubservice', () => {
-  let service: NasesCronSubservice
+describe('NasesCronService', () => {
+  let service: NasesCronService
   let apiJwtTokensService: jest.Mocked<ApiJwtTokensService>
   let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
@@ -62,7 +62,7 @@ describe('NasesCronSubservice', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        NasesCronSubservice,
+        NasesCronService,
         {
           provide: ClientsService,
           useValue: {
@@ -100,7 +100,7 @@ describe('NasesCronSubservice', () => {
       ],
     }).compile()
 
-    service = module.get<NasesCronSubservice>(NasesCronSubservice)
+    service = module.get<NasesCronService>(NasesCronService)
     apiJwtTokensService = module.get(ApiJwtTokensService)
     throwerErrorGuard = module.get(ThrowerErrorGuard)
   })

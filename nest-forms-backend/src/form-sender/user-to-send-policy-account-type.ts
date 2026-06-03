@@ -1,7 +1,7 @@
 import { SendPolicyAccountType } from 'forms-shared/send-policy/sendPolicy'
 
-import { isAuthUser, isGuestUser, User } from '../../auth-v2/types/user'
-import { isUserVerified } from '../../auth-v2/utils/user-utils'
+import { isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
+import { isUserVerified } from '../auth-v2/utils/user-utils'
 
 export default function userToSendPolicyAccountType(user: User) {
   if (isGuestUser(user)) {

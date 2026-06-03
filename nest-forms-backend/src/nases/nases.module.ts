@@ -8,10 +8,10 @@ import PrismaModule from '../prisma/prisma.module'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
+import FormRegistrationStatusRepository from './repositories/form-registration-status.repository'
 import NasesContactsService from './services/nases.contacts.service'
+import NasesCronService from './services/nases.cron.service'
 import NasesSenderService from './services/nases.sender.service'
-import FormRegistrationStatusRepository from './utils-services/form-registration-status.repository'
-import NasesCronSubservice from './utils-services/nases.cron.subservice'
 
 @Module({
   imports: [
@@ -27,9 +27,9 @@ import NasesCronSubservice from './utils-services/nases.cron.subservice'
     MinioClientSubservice,
     NasesSenderService,
     ThrowerErrorGuard,
-    NasesCronSubservice,
+    NasesCronService,
     NasesContactsService,
   ],
-  exports: [NasesSenderService, NasesCronSubservice, NasesContactsService],
+  exports: [NasesSenderService, NasesCronService, NasesContactsService],
 })
 export default class NasesModule {}

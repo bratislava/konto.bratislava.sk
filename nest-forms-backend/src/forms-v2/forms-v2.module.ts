@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
-import FormRegistrationStatusRepository from '../nases/utils-services/form-registration-status.repository'
+import FormRegistrationStatusRepository from '../nases/repositories/form-registration-status.repository'
 import PrismaModule from '../prisma/prisma.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormMigrationsController } from './controllers/form-migrations.controller'

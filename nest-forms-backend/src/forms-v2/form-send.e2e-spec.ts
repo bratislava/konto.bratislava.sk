@@ -14,7 +14,7 @@ import {
   TestingApp,
 } from '../../test/initialize-testing-app'
 import { AppV2Module } from '../app-v2.module'
-import FormRegistrationStatusRepository from '../nases/utils-services/form-registration-status.repository'
+import FormRegistrationStatusRepository from '../nases/repositories/form-registration-status.repository'
 import PrismaService from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormSendOnlyRegisteredGuard } from './guards/form-send-only-registered.guard'

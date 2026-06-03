@@ -30,10 +30,6 @@ import NasesCronSubservice from './utils-services/nases.cron.subservice'
     NasesCronSubservice,
     NasesContactsService,
   ],
-  exports: [
-    NasesSenderService,
-    NasesCronSubservice,
-    NasesContactsService,
-  ],
+  exports: [NasesSenderService, NasesCronSubservice, NasesContactsService],
 })
 export default class NasesModule {}

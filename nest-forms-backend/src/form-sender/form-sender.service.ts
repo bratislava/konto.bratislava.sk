@@ -47,6 +47,10 @@ import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { SendFormResponseDto } from './dtos/responses.dto'
+import {
+  FormSenderErrorsEnum,
+  FormSenderErrorsResponseEnum,
+} from './form-sender.errors.enum'
 
 @Injectable()
 export class FormSenderService {
@@ -108,15 +112,15 @@ export class FormSenderService {
 
     if (!evaluatedSendPolicy.sendPossible) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
-        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+        FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     }
 
     if (!evaluatedSendPolicy.sendAllowedForUser) {
       throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
-        NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+        FormSenderErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+        FormSenderErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     }
 
@@ -128,8 +132,8 @@ export class FormSenderService {
       })
     ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
-        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+        FormSenderErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        FormSenderErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
       )
     }
 
@@ -176,8 +180,8 @@ export class FormSenderService {
       )
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(
-        NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-        `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
+        FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
+        `${FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
           form.id
         }`,
         undefined,
@@ -233,8 +237,8 @@ export class FormSenderService {
 
     if (!evaluatedSendPolicy.eidSendPossible) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
-        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+        FormSenderErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     }
 
@@ -288,8 +292,8 @@ export class FormSenderService {
       })
     ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
-        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+        FormSenderErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        FormSenderErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
       )
     }
 
@@ -364,8 +368,8 @@ export class FormSenderService {
       })
 
       throw this.throwerErrorGuard.InternalServerErrorException(
-        NasesErrorsEnum.CREATE_PDF_IMAGE_ERROR,
-        `${NasesErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR} Received form id: ${data.formId}.`,
+        FormSenderErrorsEnum.CREATE_PDF_IMAGE_ERROR,
+        `${FormSenderErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR} Received form id: ${data.formId}.`,
         undefined,
         error,
       )
@@ -403,8 +407,8 @@ export class FormSenderService {
         // We do not want to show the user error when the submission was already delivered to Nases. Therefore Ginis errors should only be logged for us.
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
-            NasesErrorsEnum.SEND_TO_GINIS_ERROR,
-            NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR,
+            FormSenderErrorsEnum.SEND_TO_GINIS_ERROR,
+            FormSenderErrorsResponseEnum.SEND_TO_GINIS_ERROR,
             { formId: data.formId },
             error,
           ),
@@ -428,14 +432,14 @@ export class FormSenderService {
 
     if (formAttachmentsReady.error === FormError.INFECTED_FILES) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        NasesErrorsEnum.INFECTED_FILE,
-        NasesErrorsResponseEnum.INFECTED_FILE,
+        FormSenderErrorsEnum.INFECTED_FILE,
+        FormSenderErrorsResponseEnum.INFECTED_FILE,
       )
     }
 
     throw this.throwerErrorGuard.BadRequestException(
-      NasesErrorsEnum.FILE_NOT_SCANNED,
-      NasesErrorsResponseEnum.FILE_NOT_SCANNED,
+      FormSenderErrorsEnum.FILE_NOT_SCANNED,
+      FormSenderErrorsResponseEnum.FILE_NOT_SCANNED,
     )
   }
 
@@ -505,8 +509,8 @@ export class FormSenderService {
         error,
       )
       throw this.throwerErrorGuard.InternalServerErrorException(
-        NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
-        NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+        FormSenderErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+        FormSenderErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
         undefined,
         error,
       )

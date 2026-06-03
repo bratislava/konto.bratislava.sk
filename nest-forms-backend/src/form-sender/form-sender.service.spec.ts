@@ -28,14 +28,15 @@ import FormValidatorRegistryService from '../form-validator-registry/form-valida
 import { FormUpdateBodyDto } from '../forms/dtos/requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../nases/nases.errors.enum'
+import { NasesErrorsResponseEnum } from '../nases/nases.errors.enum'
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import {
+  FormSenderErrorsEnum,
+  FormSenderErrorsResponseEnum,
+} from './form-sender.errors.enum'
 import { FormSenderService } from './form-sender.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -214,7 +215,7 @@ describe('FormSenderService', () => {
 
       await expect(
         service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
-      ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
+      ).rejects.toThrow(FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
     })
 
     it('should log and throw error if creating pdf fails, and the last update should be with state: DRAFT', async () => {
@@ -248,7 +249,7 @@ describe('FormSenderService', () => {
 
       await expect(
         service.sendFormEid('1', 'mock-obo-token', mockUser, authUser.user),
-      ).rejects.toThrow(NasesErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR)
+      ).rejects.toThrow(FormSenderErrorsResponseEnum.CREATE_PDF_IMAGE_ERROR)
       expect(sendToNasesSpy).not.toHaveBeenCalled()
       expect(updateSpy).toHaveBeenLastCalledWith(
         '1',
@@ -548,7 +549,7 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
-      ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
+      ).rejects.toThrow(FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
     })
 
     it('should throw an error if sending is not allowed for the user according to policy', async () => {
@@ -560,7 +561,7 @@ describe('FormSenderService', () => {
       await expect(
         service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
       ).rejects.toThrow(
-        NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+        FormSenderErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     })
 
@@ -571,7 +572,7 @@ describe('FormSenderService', () => {
 
       await expect(
         service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
-      ).rejects.toThrow(NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT)
+      ).rejects.toThrow(FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT)
     })
 
     it('should queue the form', async () => {
@@ -826,7 +827,7 @@ describe('FormSenderService', () => {
 
       expect(() =>
         service['getFormSummaryOrThrow'](mockForm, mockFormDefinition),
-      ).toThrow(NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR)
+      ).toThrow(FormSenderErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR)
     })
   })
 

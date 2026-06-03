@@ -244,7 +244,9 @@ describe('UserService', () => {
 
       await service.updateGdprConsent(cognitoUserData, ConsentEnum.MARKETING, true)
 
-      expect(userDataSubservice.getOrFallbackCreateLegalPerson).toHaveBeenCalledWith(cognitoUserData)
+      expect(userDataSubservice.getOrFallbackCreateLegalPerson).toHaveBeenCalledWith(
+        cognitoUserData
+      )
       expect(userDataSubservice.setLegalPersonConsents).toHaveBeenCalledWith(
         'legal-person-id',
         'external-id',

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Prisma } from '@prisma/client'
-import { AxiosPromise } from 'axios'
+import { AxiosPromise, isAxiosError } from 'axios'
 import {
   RequestUpdateNorisDeliveryMethodsDto,
   UpdateDeliveryMethodsInNorisResponseDto,
@@ -44,13 +44,17 @@ export class TaxSubservice {
       )
       return true
     } catch (error) {
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          JSON.stringify(error)
+      if (!isAxiosError(error)) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            JSON.stringify(error)
+          )
         )
-      )
+        return false
+      }
+      this.logger.error(this.throwerErrorGuard.fromAxiosError(error, {}))
       return false
     }
   }
@@ -58,10 +62,24 @@ export class TaxSubservice {
   async updateDeliveryMethodsInNoris(
     data: RequestUpdateNorisDeliveryMethodsDto
   ): AxiosPromise<UpdateDeliveryMethodsInNorisResponseDto> {
-    return this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
-      headers: {
-        apiKey: this.configService.getOrThrow<string>('TAX_BACKEND_API_KEY'),
-      },
-    })
+    try {
+      return await this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(
+        data,
+        {
+          headers: {
+            apiKey: this.configService.getOrThrow<string>('TAX_BACKEND_API_KEY'),
+          },
+        }
+      )
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+          JSON.stringify(error)
+        )
+      }
+      throw this.throwerErrorGuard.fromAxiosError(error, {})
+    }
   }
 }

@@ -12,8 +12,8 @@ import TaxesFeesOverview from '@/src/components/page-contents/TaxesFees/TaxesFee
 import TaxesFeesTabs, {
   TaxTypeTabOptions,
 } from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesTabs'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useTaxesFees } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 
@@ -27,7 +27,7 @@ const TaxesFeesPageContent = () => {
   const {
     tierStatus: { isInQueue, isIdentityVerified },
   } = useSsrAuth()
-  const { showChannelNeededBanner } = useOfficialCorrespondenceChannel()
+  const { showChannelNeededBanner } = useUserDataDeliveryMethod()
   const { taxesData, strapiTaxAdministrator } = useTaxesFees()
 
   const taxTypeTabOptions: TaxTypeTabOptions = [

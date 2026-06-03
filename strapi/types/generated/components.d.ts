@@ -1,5 +1,28 @@
 import type { Schema, Struct } from '@strapi/strapi'
 
+export interface BlocksChecklist extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklists'
+  info: {
+    displayName: 'Checklist'
+  }
+  attributes: {
+    checklistItems: Schema.Attribute.Component<'blocks.checklist-item', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface BlocksChecklistItem extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklist_items'
+  info: {
+    displayName: 'Checklist item'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 export interface BlocksCommonLink extends Struct.ComponentSchema {
   collectionName: 'components_blocks_common_links'
   info: {
@@ -112,9 +135,23 @@ export interface SectionsRichtext extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsStepper extends Struct.ComponentSchema {
+  collectionName: 'components_sections_steppers'
+  info: {
+    displayName: 'Stepper'
+  }
+  attributes: {
+    checklists: Schema.Attribute.Component<'blocks.checklist', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'blocks.checklist': BlocksChecklist
+      'blocks.checklist-item': BlocksChecklistItem
       'blocks.common-link': BlocksCommonLink
       'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
@@ -124,6 +161,7 @@ declare module '@strapi/strapi' {
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert
       'sections.richtext': SectionsRichtext
+      'sections.stepper': SectionsStepper
     }
   }
 }

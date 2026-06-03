@@ -1,77 +1,63 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.form-landing-page",
+  "key": "plugin_content_manager_configuration_components::sections.stepper",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "documentId",
-      "defaultSortBy": "id",
-      "defaultSortOrder": "ASC",
-      "relationOpenMode": "modal"
+      "relationOpenMode": "modal",
+      "mainField": "title",
+      "defaultSortBy": "title",
+      "defaultSortOrder": "ASC"
     },
     "metadatas": {
       "id": {
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": false,
-          "sortable": false
+          "searchable": true,
+          "sortable": true
         }
       },
-      "text": {
+      "title": {
         "edit": {
-          "label": "Text",
+          "label": "title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "text",
-          "searchable": false,
-          "sortable": false
+          "label": "title",
+          "searchable": true,
+          "sortable": true
         }
       },
-      "linkCtas": {
+      "description": {
         "edit": {
-          "label": "Odkazy CTAs",
+          "label": "description",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "linkCtas",
+          "label": "description",
           "searchable": false,
           "sortable": false
         }
       },
-      "formCta": {
+      "checklists": {
         "edit": {
-          "label": "Formulár CTA",
+          "label": "checklists",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "formCta",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "sections": {
-        "edit": {
-          "label": "Sekcie",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "sections",
+          "label": "checklists",
           "searchable": false,
           "sortable": false
         }
@@ -88,38 +74,31 @@
     "layouts": {
       "list": [
         "id",
-        "linkCtas",
-        "formCta",
-        "documentId"
+        "title",
+        "checklists"
       ],
       "edit": [
         [
           {
-            "name": "text",
+            "name": "title",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "description",
             "size": 12
           }
         ],
         [
           {
-            "name": "linkCtas",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "formCta",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "sections",
+            "name": "checklists",
             "size": 12
           }
         ]
       ]
     },
-    "uid": "blocks.form-landing-page",
+    "uid": "sections.stepper",
     "isComponent": true
   },
   "type": "object",

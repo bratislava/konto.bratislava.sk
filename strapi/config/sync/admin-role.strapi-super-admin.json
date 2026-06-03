@@ -783,6 +783,60 @@
       "locale": null
     },
     {
+      "action": "admin::admin-tokens.access",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "qg2l1myobovnt3mk9lyka8ll",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.create",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "gyc8ul37t4ldccisivfjj3sz",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.delete",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "e15wjcn8gesk3yop3qapiuc3",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.read",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "hcrd32z9t9ki8xps037cpv6h",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.regenerate",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "qk8atvoo1ek9itu5k1rq4zc9",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "uy5v7tmsyfetvtg0vym0faek",
+      "locale": null
+    },
+    {
       "action": "admin::api-tokens.access",
       "actionParameters": {},
       "subject": null,

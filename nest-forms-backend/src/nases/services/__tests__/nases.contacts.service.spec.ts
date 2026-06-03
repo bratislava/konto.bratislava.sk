@@ -1,9 +1,11 @@
+import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
   UpvsCorporateBody,
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import ClientsService from '../../../clients/clients.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import NasesContactsService, {
   isUpvsCorporateBody,
@@ -16,7 +18,14 @@ describe('NasesContactsService', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
-      providers: [NasesContactsService, ThrowerErrorGuard],
+      providers: [
+        NasesContactsService,
+        ThrowerErrorGuard,
+        {
+          provide: ClientsService,
+          useValue: createMock<ClientsService>(),
+        },
+      ],
     }).compile()
 
     service = app.get<NasesContactsService>(NasesContactsService)
@@ -370,6 +379,29 @@ describe('NasesContactsService', () => {
       expect(result.name).toBe('Test Company')
       expect(result.ico).toBeUndefined()
       expect(loggerSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('getUpvsIdentity', () => {
+    it('should return identity if request succeeds', async () => {
+      const mockIdentity = { uri: 'test-uri', type: 'natural_person' }
+      service['clientsService'].slovenskoSkApi.apiUpvsIdentityGet = jest
+        .fn()
+        .mockResolvedValue({ data: mockIdentity })
+
+      const result = await service.getUpvsIdentity('test-token')
+
+      expect(result).toEqual(mockIdentity)
+    })
+
+    it('should return null if request fails', async () => {
+      service['clientsService'].slovenskoSkApi.apiUpvsIdentityGet = jest
+        .fn()
+        .mockRejectedValue(new Error('Request failed'))
+
+      const result = await service.getUpvsIdentity('test-token')
+
+      expect(result).toBeNull()
     })
   })
 })

@@ -17,7 +17,7 @@ import FormsService from '../forms/forms.service'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
 import { EidUpdateSendFormRequestDto } from '../nases/dtos/requests.dto'
-import NasesService from '../nases/nases.service'
+import NasesContactsService from '../nases/services/nases.contacts.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import {
   ErrorsEnum,
@@ -37,7 +37,7 @@ export default class FormSenderController {
     private readonly formSenderService: FormSenderService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly logger: LineLoggerSubservice,
-    private readonly nasesService: NasesService,
+    private readonly nasesContactsService: NasesContactsService,
   ) {}
 
   @ApiOperation({
@@ -82,7 +82,7 @@ export default class FormSenderController {
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.formSenderService.createUserJwtToken(data.eidToken)
-    if ((await this.nasesService.getUpvsIdentity(jwtTest)) === null) {
+    if ((await this.nasesContactsService.getUpvsIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,

@@ -15,11 +15,6 @@
     },
     "peacock.color": "#e08b53",
     "typescript.tsdk": "./next/node_modules/typescript/lib",
-    "graphql-config.load.rootDir": "./next",
-    "graphql-config.load.fileName": "graphql.config.yml",
-    "files.associations": {
-      "*.graphql": "graphql",
-      "*.gql": "graphql"
-    }
+    "graphql-config.load.filepath": "./next/codegen.ts"
   }
 }

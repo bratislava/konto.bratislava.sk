@@ -26,16 +26,18 @@ import {
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { SendFormResponseDto } from './dtos/responses.dto'
+import { FormSenderService } from './form-sender.service'
 
 @ApiTags('form-sender')
 @ApiBearerAuth()
 @Controller('form-sender')
 export default class FormSenderController {
   constructor(
-    private readonly nasesService: NasesService,
     private readonly formsService: FormsService,
+    private readonly formSenderService: FormSenderService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly logger: LineLoggerSubservice,
+    private readonly nasesService: NasesService,
   ) {}
 
   @ApiOperation({
@@ -57,7 +59,9 @@ export default class FormSenderController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    return this.nasesService.sendForm(formId, data, user)
+    await this.formsService.updateFormWithUser(formId, data, user)
+
+    return this.formSenderService.sendForm(formId, user)
   }
 
   @ApiOperation({
@@ -79,7 +83,7 @@ export default class FormSenderController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    const jwtTest = this.nasesService.createUserJwtToken(data.eidToken)
+    const jwtTest = this.formSenderService.createUserJwtToken(data.eidToken)
     if ((await this.nasesService.getUpvsIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
@@ -101,6 +105,11 @@ export default class FormSenderController {
 
     await this.formsService.updateFormEid(formId, nasesUser, updateData, user)
 
-    return this.nasesService.sendFormEid(formId, data.eidToken, nasesUser, user)
+    return this.formSenderService.sendFormEid(
+      formId,
+      data.eidToken,
+      nasesUser,
+      user,
+    )
   }
 }

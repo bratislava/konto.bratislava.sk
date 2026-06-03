@@ -143,7 +143,7 @@ export interface GeneralAlert extends Struct.ComponentSchema {
 }
 
 export interface SectionsContacts extends Struct.ComponentSchema {
-  collectionName: 'components_sections_contacts_sections'
+  collectionName: 'components_sections_contacts'
   info: {
     description: ''
     displayName: 'Kontakty'

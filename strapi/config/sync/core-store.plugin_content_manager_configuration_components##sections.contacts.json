@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::sections.kontakty",
+  "key": "plugin_content_manager_configuration_components::sections.contacts",
   "value": {
     "settings": {
       "bulkable": true,
@@ -299,7 +299,7 @@
         ]
       ]
     },
-    "uid": "sections.kontakty",
+    "uid": "sections.contacts",
     "isComponent": true
   },
   "type": "object",

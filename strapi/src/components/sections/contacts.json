@@ -1,5 +1,5 @@
 {
-  "collectionName": "components_sections_contacts_sections",
+  "collectionName": "components_sections_contacts",
   "info": {
     "displayName": "Kontakty",
     "description": ""
@@ -67,5 +67,6 @@
       "default": "h2",
       "enum": ["h2", "h3"]
     }
-  }
+  },
+  "config": {}
 }

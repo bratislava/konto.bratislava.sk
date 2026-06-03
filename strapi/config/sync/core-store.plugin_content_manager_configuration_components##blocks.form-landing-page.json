@@ -40,8 +40,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "linkCtas",
@@ -55,8 +54,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "formCta",

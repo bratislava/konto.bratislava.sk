@@ -59,9 +59,7 @@ export default class FormSenderController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    await this.formsService.updateFormWithUser(formId, data, user)
-
-    return this.formSenderService.sendForm(formId, user)
+    return this.formSenderService.updateAndSendForm(formId, data, user)
   }
 
   @ApiOperation({

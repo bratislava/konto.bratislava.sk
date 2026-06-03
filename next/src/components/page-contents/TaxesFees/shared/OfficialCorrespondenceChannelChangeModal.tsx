@@ -12,8 +12,8 @@ import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
 import Markdown from '@/src/components/formatting/Markdown'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
@@ -200,20 +200,20 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
  */
 
 const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
-  const { changeDeliveryMethod } = useDeliveryMethod()
   const { t } = useTranslation('account')
 
   const { showToast } = useToast()
 
-  const { channel, hasChangedDeliveryMethodAfterDeadline } = useOfficialCorrespondenceChannel()
+  const { deliveryMethod, hasChangedDeliveryMethodAfterDeadline } = useUserDataDeliveryMethod()
+  const { changeDeliveryMethod } = useDeliveryMethod()
 
   const strapiTax = useStrapiTax()
   const { accountCommunicationConsentText } = strapiTax
 
-  const defaultIsSubscribed =
-    channel === UserOfficialCorrespondenceChannelEnum.Email
+  const isSubscribedDefaultValue =
+    deliveryMethod === UserOfficialCorrespondenceChannelEnum.Email
       ? true
-      : channel === UserOfficialCorrespondenceChannelEnum.Postal
+      : deliveryMethod === UserOfficialCorrespondenceChannelEnum.Postal
         ? false
         : undefined
 
@@ -264,7 +264,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
         )}
         <Form
           defaultValues={{
-            isSubscribed: defaultIsSubscribed,
+            isSubscribed: isSubscribedDefaultValue,
             scrolledToBottom: false,
           }}
           onSubmit={handleSubmit}

@@ -19,7 +19,7 @@ export const prefetchUserQuery = async (
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient
-        .userControllerGetOrCreateUser({ authStrategy: 'authOnly', getSsrAuthSession })
+        .userControllerUpsertUser({ authStrategy: 'authOnly', getSsrAuthSession })
         .then((response) => response.data),
   })
 
@@ -30,7 +30,7 @@ export const useUser = () => {
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient
-        .userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        .userControllerUpsertUser({ authStrategy: 'authOnly' })
         .then((response) => response.data),
     staleTime: Infinity,
   })

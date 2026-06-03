@@ -2,7 +2,7 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Dialog, Heading } from 'react-aria-components/Dialog'
-import { Modal, ModalOverlay } from 'react-aria-components/Modal'
+import { Modal as RACModal, ModalOverlay as RACModalOverlay } from 'react-aria-components/Modal'
 
 import StepperViewList from '@/src/components/forms/steps/StepperViewList'
 import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
@@ -22,13 +22,13 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
   const { t } = useTranslation('forms')
 
   return (
-    <ModalOverlay
+    <RACModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
       className="fixed top-0 left-0 z-50 h-(--visual-viewport-height) w-screen bg-white outline-0 entering:animate-stepper-slide exiting:animate-stepper-slide-reverse"
       isDismissable
     >
-      <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
+      <RACModal className="h-full outline-0">
         <Dialog className="flex h-full flex-col outline-0">
           {({ close }) => (
             <>
@@ -50,8 +50,8 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
             </>
           )}
         </Dialog>
-      </Modal>
-    </ModalOverlay>
+      </RACModal>
+    </RACModalOverlay>
   )
 }
 

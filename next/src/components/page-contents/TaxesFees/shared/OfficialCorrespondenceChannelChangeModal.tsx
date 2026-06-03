@@ -198,7 +198,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20612-3394&m=dev
  */
-
+// TODO Rewrite the radio group to actual values instead of true/false?
 const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
   const { t } = useTranslation('account')
 
@@ -210,12 +210,17 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
   const strapiTax = useStrapiTax()
   const { accountCommunicationConsentText } = strapiTax
 
-  const isSubscribedDefaultValue =
-    deliveryMethod === UserOfficialCorrespondenceChannelEnum.Email
-      ? true
-      : deliveryMethod === UserOfficialCorrespondenceChannelEnum.Postal
-        ? false
-        : undefined
+  // EDESK users should not be able to change the delivery method. Modal shouls never be available to them, we return null in case.
+  if (deliveryMethod === UserOfficialCorrespondenceChannelEnum.Edesk) {
+    return null
+  }
+
+  const isSubscribedDefaultValue = isDefined(deliveryMethod)
+    ? {
+        [UserOfficialCorrespondenceChannelEnum.Email]: true,
+        [UserOfficialCorrespondenceChannelEnum.Postal]: false,
+      }[deliveryMethod]
+    : undefined
 
   const handleSubmit = async ({ data }: { data: FormData }) => {
     return changeDeliveryMethod(

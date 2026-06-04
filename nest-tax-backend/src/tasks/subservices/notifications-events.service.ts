@@ -404,7 +404,7 @@ export default class NotificationsEventsService {
     const concurrencyLimit = pLimit(concurrency)
 
     const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatchOptional(
+      await this.cityAccountSubservice.getUserDataAdminBatch(
         payments.map((payment) => payment.tax.taxPayer.birthNumber),
       )
 
@@ -414,7 +414,7 @@ export default class NotificationsEventsService {
       try {
         await concurrencyLimit(async () => {
           const userFromCityAccount =
-            userDataFromCityAccount?.[payment.tax.taxPayer.birthNumber] || null
+            userDataFromCityAccount[payment.tax.taxPayer.birthNumber] || null
           await this.paymentService.trackPaymentInBloomreach(
             payment,
             userFromCityAccount?.externalId ?? undefined,

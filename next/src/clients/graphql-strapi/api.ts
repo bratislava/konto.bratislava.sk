@@ -619,7 +619,10 @@ export type FormInput = {
   slug?: InputMaybe<Scalars['String']['input']>
 }
 
-export type FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
+export type FormLandingPageSectionsDynamicZone =
+  | ComponentSectionsRichtext
+  | ComponentSectionsStepper
+  | Error
 
 export type FormRelationResponseCollection = {
   __typename?: 'FormRelationResponseCollection'
@@ -2616,6 +2619,21 @@ export type FormLandingPageFragment = {
   }
   sections?: Array<
     | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+    | {
+        __typename: 'ComponentSectionsStepper'
+        title?: string | null
+        description?: string | null
+        checklists?: Array<{
+          __typename?: 'ComponentBlocksChecklist'
+          title?: string | null
+          description?: string | null
+          checklistItems?: Array<{
+            __typename?: 'ComponentBlocksChecklistItem'
+            title?: string | null
+            content?: string | null
+          } | null> | null
+        } | null> | null
+      }
     | { __typename: 'Error' }
     | null
   > | null
@@ -2650,6 +2668,21 @@ export type FormWithLandingPageFragment = {
     }
     sections?: Array<
       | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+      | {
+          __typename: 'ComponentSectionsStepper'
+          title?: string | null
+          description?: string | null
+          checklists?: Array<{
+            __typename?: 'ComponentBlocksChecklist'
+            title?: string | null
+            description?: string | null
+            checklistItems?: Array<{
+              __typename?: 'ComponentBlocksChecklistItem'
+              title?: string | null
+              content?: string | null
+            } | null> | null
+          } | null> | null
+        }
       | { __typename: 'Error' }
       | null
     > | null
@@ -2700,6 +2733,21 @@ export type FormWithLandingPageBySlugQuery = {
       }
       sections?: Array<
         | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+        | {
+            __typename: 'ComponentSectionsStepper'
+            title?: string | null
+            description?: string | null
+            checklists?: Array<{
+              __typename?: 'ComponentBlocksChecklist'
+              title?: string | null
+              description?: string | null
+              checklistItems?: Array<{
+                __typename?: 'ComponentBlocksChecklistItem'
+                title?: string | null
+                content?: string | null
+              } | null> | null
+            } | null> | null
+          }
         | { __typename: 'Error' }
         | null
       > | null
@@ -2993,11 +3041,61 @@ type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
   content?: string | null
 }
 
+type FormLandingPageSections_ComponentSectionsStepper_Fragment = {
+  __typename: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
 type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
+  | FormLandingPageSections_ComponentSectionsStepper_Fragment
   | FormLandingPageSections_Error_Fragment
+
+export type ChecklistItemsFragment = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  title?: string | null
+  content?: string | null
+}
+
+export type ChecklistsFragment = {
+  __typename?: 'ComponentBlocksChecklist'
+  title?: string | null
+  description?: string | null
+  checklistItems?: Array<{
+    __typename?: 'ComponentBlocksChecklistItem'
+    title?: string | null
+    content?: string | null
+  } | null> | null
+}
+
+export type StepperFragment = {
+  __typename?: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
 
 export type TaxFragment = {
   __typename?: 'Tax'
@@ -3061,14 +3159,44 @@ export const RichtextSectionFragmentDoc = gql`
     content
   }
 `
+export const ChecklistItemsFragmentDoc = gql`
+  fragment ChecklistItems on ComponentBlocksChecklistItem {
+    title
+    content
+  }
+`
+export const ChecklistsFragmentDoc = gql`
+  fragment Checklists on ComponentBlocksChecklist {
+    title
+    description
+    checklistItems {
+      ...ChecklistItems
+    }
+  }
+  ${ChecklistItemsFragmentDoc}
+`
+export const StepperFragmentDoc = gql`
+  fragment Stepper on ComponentSectionsStepper {
+    title
+    description
+    checklists {
+      ...Checklists
+    }
+  }
+  ${ChecklistsFragmentDoc}
+`
 export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
     ... on ComponentSectionsRichtext {
       ...RichtextSection
     }
+    ... on ComponentSectionsStepper {
+      ...Stepper
+    }
   }
   ${RichtextSectionFragmentDoc}
+  ${StepperFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {

@@ -8,4 +8,29 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   ... on ComponentSectionsRichtext {
     ...RichtextSection
   }
+
+  ... on ComponentSectionsStepper {
+    ...StepperSection
+  }
+}
+
+fragment ChecklistItems on ComponentBlocksChecklistItem {
+  title
+  content
+}
+
+fragment Checklists on ComponentBlocksChecklist {
+  title
+  description
+  checklistItems {
+    ...ChecklistItems
+  }
+}
+
+fragment StepperSection on ComponentSectionsStepper {
+  title
+  description
+  checklists {
+    ...Checklists
+  }
 }

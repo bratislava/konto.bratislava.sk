@@ -538,7 +538,7 @@ input FormInput {
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
+union FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | ComponentSectionsStepper | Error
 
 scalar FormLandingPageSectionsDynamicZoneInput
 

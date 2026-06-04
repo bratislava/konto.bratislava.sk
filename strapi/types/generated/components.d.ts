@@ -59,7 +59,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<['sections.richtext']>
+    sections: Schema.Attribute.DynamicZone<['sections.richtext', 'sections.stepper']>
     text: Schema.Attribute.RichText
   }
 }

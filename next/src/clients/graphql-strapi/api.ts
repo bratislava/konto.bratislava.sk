@@ -59,6 +59,57 @@ export type BooleanFilterInput = {
   startsWith?: InputMaybe<Scalars['Boolean']['input']>
 }
 
+export type ComponentBlocksChecklist = {
+  __typename?: 'ComponentBlocksChecklist'
+  checklistItems?: Maybe<Array<Maybe<ComponentBlocksChecklistItem>>>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksChecklistChecklistItemsArgs = {
+  filters?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentBlocksChecklistFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistFiltersInput>>>
+  checklistItems?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksChecklistInput = {
+  checklistItems?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksChecklistItem = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  content?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksChecklistItemFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksChecklistItemInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksCommonLink = {
   __typename?: 'ComponentBlocksCommonLink'
   id: Scalars['ID']['output']
@@ -281,6 +332,36 @@ export type ComponentSectionsRichtextFiltersInput = {
 export type ComponentSectionsRichtextInput = {
   content?: InputMaybe<Scalars['String']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type ComponentSectionsStepper = {
+  __typename?: 'ComponentSectionsStepper'
+  checklists?: Maybe<Array<Maybe<ComponentBlocksChecklist>>>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsStepperChecklistsArgs = {
+  filters?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsStepperFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsStepperFiltersInput>>>
+  checklists?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentSectionsStepperFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsStepperFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsStepperInput = {
+  checklists?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type DateFilterInput = {
@@ -598,6 +679,8 @@ export type GeneralRelationResponseCollection = {
 }
 
 export type GenericMorph =
+  | ComponentBlocksChecklist
+  | ComponentBlocksChecklistItem
   | ComponentBlocksCommonLink
   | ComponentBlocksFooterColumn
   | ComponentBlocksFormLandingPage
@@ -607,6 +690,7 @@ export type GenericMorph =
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
   | ComponentSectionsRichtext
+  | ComponentSectionsStepper
   | Footer
   | Form
   | General
@@ -1625,178 +1709,269 @@ export type QueryFooterArgs = {
 
 export type QueryFormArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryFormsArgs = {
   filters?: InputMaybe<FormFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryForms_ConnectionArgs = {
   filters?: InputMaybe<FormFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryGeneralArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryHelpPageArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryHomepageArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageAnnouncementArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageAnnouncementsArgs = {
   filters?: InputMaybe<HomepageAnnouncementFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageAnnouncements_ConnectionArgs = {
   filters?: InputMaybe<HomepageAnnouncementFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryI18NLocaleArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryI18NLocales_ConnectionArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceCategoriesArgs = {
   filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceCategories_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceCategoryArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceTagArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceTagsArgs = {
   filters?: InputMaybe<MunicipalServiceTagFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceTags_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceTagFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServicesArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryMunicipalServicesPageArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServices_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowStageArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowStagesArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowStages_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowsArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflows_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryTaxArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUploadFileArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUploadFilesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUploadFiles_ConnectionArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsRoleArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsRolesArgs = {
   filters?: InputMaybe<UsersPermissionsRoleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsRoles_ConnectionArgs = {
   filters?: InputMaybe<UsersPermissionsRoleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsUserArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsUsersArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsUsers_ConnectionArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type ResponseCollectionMeta = {

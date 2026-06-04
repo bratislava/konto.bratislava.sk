@@ -331,12 +331,8 @@ export default class NasesSenderService {
 
     return `${
       NasesErrorsResponseEnum.SEND_TO_NASES_ERROR
-    } Code: ${code}, Text: ${
-      NasesErrorCodesEnum[codeString as keyof typeof NasesErrorCodesEnum]
-    } - ${
-      NasesErrorCodesResponseEnum[
-        codeString as keyof typeof NasesErrorCodesResponseEnum
-      ]
+    } Code: ${code}, Text: ${NasesErrorCodesEnum[codeString]} - ${
+      NasesErrorCodesResponseEnum[codeString]
     }`
   }
 

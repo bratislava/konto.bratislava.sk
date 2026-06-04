@@ -22,7 +22,6 @@ export default [
       'no-await-in-loop': 'warn', // 7 occurrences
       'no-console': 'warn', // 9 occurrences
       '@typescript-eslint/no-explicit-any': 'warn', // 3 occurrences
-      '@typescript-eslint/no-duplicate-enum-values': 'warn', // 90 occurrences
       '@typescript-eslint/no-extraneous-class': 'warn', // 2 occurrences
       '@typescript-eslint/restrict-template-expressions': 'warn', // 2 occurrences
       'sonarjs/function-return-type': 'warn', // 1 occurrence

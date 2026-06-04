@@ -4,10 +4,10 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ConnectionPool } from 'mssql'
 import * as mssql from 'mssql'
 
+import { EdeskRecordSchema, EdeskStatus } from '../../types/noris.types'
 import { NorisConnectionService } from '../noris-connection.service'
 import { NorisEdeskService } from '../noris-edesk.service'
 import { NorisValidatorService } from '../noris-validator.service'
-import { EdeskRecordSchema, EdeskStatus } from '../types/noris.types'
 
 describe('NorisEdeskService', () => {
   let service: NorisEdeskService
@@ -69,7 +69,7 @@ describe('NorisEdeskService', () => {
       expect(mockRequest.execute).toHaveBeenCalledWith('lcs.usp21_ino_check_edesk')
       expect(validatorService.validateNorisData).toHaveBeenCalledWith(
         EdeskRecordSchema,
-        mockRecordset,
+        mockRecordset
       )
     })
 
@@ -157,7 +157,7 @@ describe('NorisEdeskService', () => {
             uri: 'https://edesk.example/sk/123',
             deathDate: null,
           },
-        ]),
+        ])
       ).rejects.toThrow(internalError)
     })
 

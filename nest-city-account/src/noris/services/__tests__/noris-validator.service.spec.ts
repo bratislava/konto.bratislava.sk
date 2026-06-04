@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import noop from 'lodash/noop'
 
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { NorisValidatorService } from '../../noris-validator.service'
 import { EdeskRecordSchema } from '../../types/noris.types'
+import { NorisValidatorService } from '../noris-validator.service'
 import {
   allEdeskRecords,
   edeskRecordWithNewlineUri,

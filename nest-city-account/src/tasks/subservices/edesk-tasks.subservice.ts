@@ -3,7 +3,7 @@ import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
 
-import { NorisEdeskService } from '../../noris/noris-edesk.service'
+import { NorisEdeskService } from '../../noris/services/noris-edesk.service'
 import { EdeskStatus } from '../../noris/types/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
 import { UpvsQueueService } from '../../upvs-queue/upvs-queue.service'

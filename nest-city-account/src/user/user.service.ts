@@ -21,7 +21,7 @@ import {
   ResponseUserByBirthNumberDto,
 } from '../integration/dtos/integration-response.dto'
 import { CustomErrorNorisTypesEnum, CustomErrorNorisTypesResponseEnum } from '../noris/noris.errors'
-import { NorisDeliveryMethodService } from '../noris/noris-delivery-method.service'
+import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-method.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import {

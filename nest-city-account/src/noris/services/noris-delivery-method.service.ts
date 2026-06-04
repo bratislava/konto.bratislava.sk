@@ -2,18 +2,18 @@ import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import * as mssql from 'mssql'
 
-import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { NorisConnectionService } from './noris-connection.service'
-import { NorisValidatorService } from './noris-validator.service'
-import { DeliveryMethod, IsInCityAccount, UpdateNorisDeliveryMethods } from './types/noris.enums'
+import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { DeliveryMethod, IsInCityAccount, UpdateNorisDeliveryMethods } from '../types/noris.enums'
 import {
   NorisDeliveryMethodsUpdateResultSchema,
   NorisOrganizationResultSchema,
-} from './types/noris.schema'
-import { mapDeliveryMethodToNoris } from './utils/mapping.helper'
-import { getBirthNumbersForSubjects, setDeliveryMethodsForUser } from './utils/noris.queries'
+} from '../types/noris.schema'
+import { mapDeliveryMethodToNoris } from '../utils/mapping.helper'
+import { getBirthNumbersForSubjects, setDeliveryMethodsForUser } from '../utils/noris.queries'
+import { NorisConnectionService } from './noris-connection.service'
+import { NorisValidatorService } from './noris-validator.service'
 
 export type UpdateNorisDeliveryMethodsData = Record<
   string,
@@ -152,7 +152,10 @@ export class NorisDeliveryMethodService {
 
       deliveryGroups[methodInfo.deliveryMethod].push({
         birthNumber: addSlashToBirthNumber(birthNumber),
-        date: methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT ? methodInfo.date : null,
+        date:
+          methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT
+            ? (methodInfo.date ?? null)
+            : null,
       })
     })
 

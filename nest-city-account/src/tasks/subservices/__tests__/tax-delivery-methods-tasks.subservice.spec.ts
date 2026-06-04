@@ -4,7 +4,7 @@ import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum, Prisma, User } fr
 
 import prismaMock from '../../../../test/singleton'
 import { MailgunService } from '../../../mailgun/mailgun.service'
-import { NorisDeliveryMethodService } from '../../../noris/noris-delivery-method.service'
+import { NorisDeliveryMethodService } from '../../../noris/services/noris-delivery-method.service'
 import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'

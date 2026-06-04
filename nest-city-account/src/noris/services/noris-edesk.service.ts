@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common'
 import * as mssql from 'mssql'
 import pLimit from 'p-limit'
 
+import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from '../types/noris.types'
 import { NorisConnectionService } from './noris-connection.service'
 import { NorisValidatorService } from './noris-validator.service'
-import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from './types/noris.types'
 
 @Injectable()
 export class NorisEdeskService {

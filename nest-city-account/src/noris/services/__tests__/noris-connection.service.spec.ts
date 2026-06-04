@@ -4,9 +4,9 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ConnectionPool } from 'mssql'
 import * as mssql from 'mssql'
 
-import prismaMock from '../../../test/singleton'
-import { PrismaService } from '../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import prismaMock from '../../../../test/singleton'
+import { PrismaService } from '../../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisConnectionService } from '../noris-connection.service'
 
 jest.mock('mssql', () => ({

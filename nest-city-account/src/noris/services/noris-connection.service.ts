@@ -2,11 +2,11 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
-import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CustomErrorNorisTypesEnum } from './noris.errors'
+import { PrismaService } from '../../prisma/prisma.service'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 const NORIS_SILENT_CONNECTION_ERRORS_KEY = 'NORIS_SILENT_CONNECTION_ERRORS'
 

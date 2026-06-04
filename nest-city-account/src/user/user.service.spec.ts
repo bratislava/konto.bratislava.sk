@@ -4,7 +4,7 @@ import { ConsentEnum, DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } fro
 
 import prismaMock from '../../test/singleton'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
-import { NorisDeliveryMethodService } from '../noris/noris-delivery-method.service'
+import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-method.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import {

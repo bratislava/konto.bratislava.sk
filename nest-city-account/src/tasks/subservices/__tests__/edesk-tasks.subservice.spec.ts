@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ExternalEdeskCheck, PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
-import { NorisEdeskService } from '../../../noris/noris-edesk.service'
+import { NorisEdeskService } from '../../../noris/services/noris-edesk.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { UpvsQueueService } from '../../../upvs-queue/upvs-queue.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
@@ -190,7 +190,7 @@ describe('EdeskTasksSubservice', () => {
 
       const updateEdeskChecksSpy = jest
         .spyOn(norisEdeskService, 'updateEdeskChecks')
-        .mockResolvedValue()
+        .mockResolvedValue(undefined)
       prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: fullBatch.length })
 
       await service.updateEdeskInNoris()
@@ -217,7 +217,7 @@ describe('EdeskTasksSubservice', () => {
 
       const updateEdeskChecksSpy = jest
         .spyOn(norisEdeskService, 'updateEdeskChecks')
-        .mockResolvedValue()
+        .mockResolvedValue(undefined)
       prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: partialBatch.length })
 
       await service.updateEdeskInNoris()
@@ -244,7 +244,7 @@ describe('EdeskTasksSubservice', () => {
 
       const updateEdeskChecksSpy = jest
         .spyOn(norisEdeskService, 'updateEdeskChecks')
-        .mockResolvedValue()
+        .mockResolvedValue(undefined)
       prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: partialBatch.length })
 
       await service.updateEdeskInNoris()
@@ -311,7 +311,7 @@ describe('EdeskTasksSubservice', () => {
 
       const updateEdeskChecksSpy = jest
         .spyOn(norisEdeskService, 'updateEdeskChecks')
-        .mockResolvedValue()
+        .mockResolvedValue(undefined)
       prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: 1 })
 
       await service.updateEdeskInNoris()
@@ -345,7 +345,7 @@ describe('EdeskTasksSubservice', () => {
 
       const updateEdeskChecksSpy = jest
         .spyOn(norisEdeskService, 'updateEdeskChecks')
-        .mockResolvedValue()
+        .mockResolvedValue(undefined)
       prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: 1 })
 
       await service.updateEdeskInNoris()
@@ -375,7 +375,7 @@ describe('EdeskTasksSubservice', () => {
 
       const updateEdeskChecksSpy = jest
         .spyOn(norisEdeskService, 'updateEdeskChecks')
-        .mockResolvedValue()
+        .mockResolvedValue(undefined)
       prismaMock.externalEdeskCheck.deleteMany.mockResolvedValue({ count: 1 })
 
       await service.updateEdeskInNoris()

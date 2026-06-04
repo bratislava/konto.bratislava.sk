@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import z from 'zod'
 
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CustomErrorNorisTypesEnum } from './noris.errors'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
 export class NorisValidatorService {

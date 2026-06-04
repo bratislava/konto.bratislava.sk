@@ -3081,7 +3081,7 @@ export type ChecklistsFragment = {
   } | null> | null
 }
 
-export type StepperFragment = {
+export type StepperSectionFragment = {
   __typename?: 'ComponentSectionsStepper'
   title?: string | null
   description?: string | null
@@ -3175,8 +3175,8 @@ export const ChecklistsFragmentDoc = gql`
   }
   ${ChecklistItemsFragmentDoc}
 `
-export const StepperFragmentDoc = gql`
-  fragment Stepper on ComponentSectionsStepper {
+export const StepperSectionFragmentDoc = gql`
+  fragment StepperSection on ComponentSectionsStepper {
     title
     description
     checklists {
@@ -3192,11 +3192,11 @@ export const FormLandingPageSectionsFragmentDoc = gql`
       ...RichtextSection
     }
     ... on ComponentSectionsStepper {
-      ...Stepper
+      ...StepperSection
     }
   }
   ${RichtextSectionFragmentDoc}
-  ${StepperFragmentDoc}
+  ${StepperSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {

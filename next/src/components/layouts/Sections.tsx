@@ -1,5 +1,6 @@
 import { FormLandingPageSectionsFragment } from '@/src/clients/graphql-strapi/api'
 import RichtextSection from '@/src/components/sections/RichtextSection'
+import { StepperSection } from '@/src/components/sections/StepperSection'
 
 /**
  * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/be7785e45d5e61c9b2a23177b9dcfb8af109ebc6/next/src/components/layouts/Sections.tsx
@@ -14,6 +15,9 @@ const SectionContent = ({ section }: { section: SectionsProps['sections'][number
   switch (section.__typename) {
     case 'ComponentSectionsRichtext':
       return <RichtextSection section={section} />
+
+    case 'ComponentSectionsStepper':
+      return <StepperSection section={section} />
 
     default:
       return null

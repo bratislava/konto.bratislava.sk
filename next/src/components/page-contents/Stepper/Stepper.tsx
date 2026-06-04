@@ -1,9 +1,9 @@
-import { StepperFragment } from '@/src/clients/graphql-strapi/api'
+import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
 import { Checklist } from '@/src/components/page-contents/Stepper/Checklist'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {
-  section: StepperFragment
+  section: StepperSectionFragment
 }
 
 export const Stepper = ({ section }: Props) => {

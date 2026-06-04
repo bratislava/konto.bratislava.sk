@@ -109,8 +109,8 @@ import ziadostOSlobodnyPristupKInformaciam, {
   ziadostOSlobodyPristupKInformaciamFiles,
 } from '../schemas/ziadostOSlobodnyPristupKInformaciam'
 import ziadostOUzemnoplanovaciuInformaciu, {
-  ziadostOUzemnoplanovaciuInformaciuFiles,
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
+  ziadostOUzemnoplanovaciuInformaciuFiles,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 import webhookShowcase, { webhookShowcaseFiles } from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
@@ -722,8 +722,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     email: {
       address: {
-        // TODO change to prod email
-        prod: ['inovacie.bratislava@gmail.com'],
+        prod: ['paas@bratislava.sk'],
         test: ['inovacie.bratislava@gmail.com'],
       },
       fromAddress: {

@@ -21,7 +21,7 @@ export type UpdateNorisDeliveryMethodsData = Record<
   | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL; date?: string }
 >
 
-export interface UpdateDeliveryMethodsInNorisResponseDto {
+interface UpdateDeliveryMethodsInNorisResponseDto {
   birthNumbers: string[]
 }
 

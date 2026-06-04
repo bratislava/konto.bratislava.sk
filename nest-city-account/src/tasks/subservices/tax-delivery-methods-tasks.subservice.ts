@@ -98,19 +98,21 @@ export class TaxDeliveryMethodsTasksSubservice {
         ? user.taxDeliveryMethodCityAccountLockDate.toISOString().substring(0, 10)
         : undefined
 
-      if (deliveryMethod === DeliveryMethod.CITY_ACCOUNT) {
-        if (!date) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-            DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-            undefined,
-            user
-          )
-        }
-        acc[birthNumber] = { deliveryMethod, date }
-      } else {
+      if (deliveryMethod !== DeliveryMethod.CITY_ACCOUNT) {
         acc[birthNumber] = { deliveryMethod }
+        return acc
       }
+
+      if (!date) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          undefined,
+          user,
+        )
+      }
+
+      acc[birthNumber] = { deliveryMethod, date }
       return acc
     }, {})
 

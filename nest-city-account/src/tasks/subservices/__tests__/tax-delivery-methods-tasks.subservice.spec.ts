@@ -75,7 +75,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
   describe('updateDeliveryMethods', () => {
     it('should call the endpoint with the correct data, and update only users who are really updated in Noris', async () => {
-      const adminApiUpdateSpy = jest
+      const updateDeliveryMethodsSpy = jest
         .spyOn(service['norisDeliveryMethodService'], 'updateDeliveryMethods')
         .mockResolvedValue({
           birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
@@ -144,8 +144,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.updateDeliveryMethodsInNoris()
 
       expect(internalErrorSpy).not.toHaveBeenCalled()
-      expect(adminApiUpdateSpy).toHaveBeenCalledTimes(1)
-      expect(adminApiUpdateSpy).toHaveBeenCalledWith({
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledTimes(1)
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledWith({
         data: {
           '1234562020': {
             deliveryMethod: DeliveryMethod.EDESK,
@@ -189,7 +189,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should not call the endpoint if there are no users', async () => {
-      const adminApiUpdateSpy = jest.spyOn(
+      const updateDeliveryMethodsSpy = jest.spyOn(
         service['norisDeliveryMethodService'],
         'updateDeliveryMethods'
       )
@@ -199,12 +199,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       await service.updateDeliveryMethodsInNoris()
 
-      expect(adminApiUpdateSpy).not.toHaveBeenCalled()
+      expect(updateDeliveryMethodsSpy).not.toHaveBeenCalled()
       expect(prismaUserUpdateSpy).not.toHaveBeenCalled()
     })
 
     it('should skip deactivated users detected during the lock re-check and not call Noris for them', async () => {
-      const adminApiUpdateSpy = jest.spyOn(
+      const updateDeliveryMethodsSpy = jest.spyOn(
         service['norisDeliveryMethodService'],
         'updateDeliveryMethods'
       )
@@ -229,7 +229,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       expect(internalErrorSpy).not.toHaveBeenCalled()
       // The user was filtered out by the re-check, so Noris should not be called at all.
-      expect(adminApiUpdateSpy).not.toHaveBeenCalled()
+      expect(updateDeliveryMethodsSpy).not.toHaveBeenCalled()
       // lastTaxDeliveryMethodsUpdateTry is still stamped for the batch.
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -240,7 +240,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should call Noris only with users still active after the re-check when some are deactivated mid-flight', async () => {
-      const adminApiUpdateSpy = jest
+      const updateDeliveryMethodsSpy = jest
         .spyOn(service['norisDeliveryMethodService'], 'updateDeliveryMethods')
         .mockResolvedValue({ birthNumbers: ['123456/2020'] })
       const prismaUserUpdateSpy = jest
@@ -267,8 +267,8 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.updateDeliveryMethodsInNoris()
 
       // Noris is called with only the still-active user's data.
-      expect(adminApiUpdateSpy).toHaveBeenCalledTimes(1)
-      expect(adminApiUpdateSpy).toHaveBeenCalledWith({
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledTimes(1)
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledWith({
         data: { '1234562020': { deliveryMethod: DeliveryMethod.EDESK } },
       })
 

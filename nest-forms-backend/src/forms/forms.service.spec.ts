@@ -217,14 +217,9 @@ describe('FormsService', () => {
     })
 
     it('should return correct count otherwise', async () => {
-      prismaMock.forms.groupBy.mockResolvedValue([
-        {
-          _count: {
-            _all: 10,
-          },
-          state: FormState.DRAFT,
-        },
-      ] as any)
+      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([
+        { _count: { _all: 10 }, state: FormState.DRAFT },
+      ])
       const result = await service.getFormsCount({})
       Object.values(FormState).forEach((state) => {
         if (state === FormState.DRAFT) {

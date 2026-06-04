@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 import { AxiosError, AxiosResponse } from 'axios'
 
-import { mockGinisDocumentData } from '../__tests__/ginisContants'
+import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
 import ClientsService from '../clients/clients.service'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
@@ -118,7 +118,7 @@ describe('GinisController', () => {
         .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
-        .mockResolvedValue(mockGinisDocumentData)
+        .mockResolvedValue(createMockGinisDocumentData())
       controller['ginisAPIService'].getOwnerDetail = jest
         .fn()
         .mockResolvedValue({
@@ -143,7 +143,7 @@ describe('GinisController', () => {
         .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
-        .mockResolvedValue(mockGinisDocumentData)
+        .mockResolvedValue(createMockGinisDocumentData())
       controller['ginisAPIService'].getOwnerDetail = jest
         .fn()
         .mockResolvedValue({

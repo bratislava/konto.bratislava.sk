@@ -443,7 +443,7 @@ describe('EmailFormsService', () => {
           message: expect.stringContaining(
             EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM,
           ),
-        }),
+        }) as Error,
       )
     })
 

@@ -12,6 +12,7 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
+import { createTestFormWithFiles } from '../../../__tests__/factories/form.factory'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
@@ -117,15 +118,14 @@ describe('WebhookService', () => {
         expect.objectContaining({
           message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
           status: HttpStatus.NOT_FOUND,
-        }),
+        }) as Error,
       )
     })
 
     it('should throw NotFoundException when form definition is not found', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue({
-        formDefinitionSlug: 'test-slug',
-        files: [],
-      } as any)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithFiles({ formDefinitionSlug: 'test-slug' }),
+      )
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(null)
@@ -135,15 +135,14 @@ describe('WebhookService', () => {
             FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
           ),
           status: HttpStatus.NOT_FOUND,
-        }),
+        }) as Error,
       )
     })
 
     it('should throw UnprocessableEntityException when form is not a webhook form', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue({
-        formDefinitionSlug: 'test-slug',
-        files: [],
-      } as any)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithFiles({ formDefinitionSlug: 'test-slug' }),
+      )
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue({ type: 'NotWebhook' })
@@ -153,17 +152,16 @@ describe('WebhookService', () => {
             WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
           ),
           status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
+        }) as Error,
       )
     })
 
     it('should throw UnprocessableEntityException when formDataJson is null', async () => {
-      const mockForm = {
+      const mockForm = createTestFormWithFiles({
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: null,
-        files: [],
-      } as unknown as FormWithFiles
+      })
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
@@ -180,7 +178,7 @@ describe('WebhookService', () => {
         expect.objectContaining({
           message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
           status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
+        }) as Error,
       )
     })
   })

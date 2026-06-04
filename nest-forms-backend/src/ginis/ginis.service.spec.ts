@@ -6,10 +6,15 @@ import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Files, FormError, Forms, FormState, GinisState } from '@prisma/client'
+import { AxiosResponse } from 'axios'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { UserIntegrationControllerGetContactAndIdInfoByExternalId200Response } from 'openapi-clients/city-account'
+import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 import prismaMock from '../../test/singleton'
+import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
+import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -823,10 +828,11 @@ describe('GinisService', () => {
       ginisDocumentId: null,
     } as unknown as Forms
 
-    const formDefinitionBase = {
-      type: FormDefinitionType.SlovenskoSkGeneric,
+    const formDefinitionBase = createTestFormDefinitionSlovenskoSkGeneric({
       ginisDocumentTypeId: 'docType1',
-    }
+    })
+
+    const mockWflDocument = createMockGinisDocumentData()['Wfl-dokument']
 
     beforeEach(() => {
       const { extractFormSubjectTechnical } = jest.requireMock(
@@ -846,12 +852,15 @@ describe('GinisService', () => {
 
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue({
-          'Cj-dokumentu': 'ref123',
-          'Wfl-dokument': {
-            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS,
-          },
-        } as any)
+        .mockResolvedValue(
+          createMockGinisDocumentData({
+            'Wfl-dokument': {
+              ...mockWflDocument,
+              'Priznak-el-obrazu':
+                SslWflDocumentElectronicSourceExistence.EXISTS,
+            },
+          }),
+        )
 
       jest
         .spyOn(service['ginisApiService'], 'findDocumentId')
@@ -878,7 +887,7 @@ describe('GinisService', () => {
       const form = { ...formBase, formDataJson: null } as Forms
 
       await expect(
-        service.createDocument(form, formDefinitionBase as any),
+        service.createDocument(form, formDefinitionBase),
       ).rejects.toThrow('Form data is empty.')
     })
 
@@ -894,16 +903,20 @@ describe('GinisService', () => {
           service['clientsService'].cityAccountApi,
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
-        .mockResolvedValue({
-          data: {
-            email: 'test@example.com',
-            accountType: 'fo',
-            firstName: 'John',
-            lastName: 'Doe',
-          },
-        } as any)
+        .mockResolvedValue(
+          createMock<
+            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
+          >({
+            data: {
+              email: 'test@example.com',
+              accountType: 'fo',
+              firstName: 'John',
+              lastName: 'Doe',
+            },
+          }),
+        )
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -938,21 +951,23 @@ describe('GinisService', () => {
           service['clientsService'].slovenskoSkApi,
           'apiIamIdentitiesSearchPost',
         )
-        .mockResolvedValue({
-          data: [
-            {
-              type: 'natural_person',
-              uri: 'uri://test',
-              emails: [{ address: 'test@example.com' }],
-              natural_person: {
-                given_names: ['John'],
-                family_names: [{ value: 'Doe', primary: true }],
+        .mockResolvedValue(
+          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
+            data: [
+              {
+                type: 'natural_person',
+                uri: 'uri://test',
+                emails: [{ address: 'test@example.com' }],
+                natural_person: {
+                  given_names: ['John'],
+                  family_names: [{ value: 'Doe', primary: true }],
+                },
               },
-            },
-          ],
-        } as any)
+            ],
+          }),
+        )
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -977,21 +992,23 @@ describe('GinisService', () => {
           service['clientsService'].slovenskoSkApi,
           'apiIamIdentitiesSearchPost',
         )
-        .mockResolvedValue({
-          data: [
-            {
-              type: 'legal_entity',
-              uri: 'uri://test',
-              emails: [{ address: 'test@example.com' }],
-              corporate_body: {
-                name: 'Test Company',
-                cin: '12345678',
+        .mockResolvedValue(
+          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
+            data: [
+              {
+                type: 'legal_entity',
+                uri: 'uri://test',
+                emails: [{ address: 'test@example.com' }],
+                corporate_body: {
+                  name: 'Test Company',
+                  cin: '12345678',
+                },
               },
-            },
-          ],
-        } as any)
+            ],
+          }),
+        )
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1016,35 +1033,41 @@ describe('GinisService', () => {
           service['clientsService'].cityAccountApi,
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
-        .mockResolvedValue({
-          data: {
-            email: 'external@example.com',
-            accountType: 'fo',
-            firstName: 'External',
-            lastName: 'User',
-          },
-        } as any)
+        .mockResolvedValue(
+          createMock<
+            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
+          >({
+            data: {
+              email: 'external@example.com',
+              accountType: 'fo',
+              firstName: 'External',
+              lastName: 'User',
+            },
+          }),
+        )
 
       jest
         .spyOn(
           service['clientsService'].slovenskoSkApi,
           'apiIamIdentitiesSearchPost',
         )
-        .mockResolvedValue({
-          data: [
-            {
-              type: 'natural_person',
-              uri: 'uri://test',
-              emails: [{ address: 'uri@example.com' }],
-              natural_person: {
-                given_names: ['John'],
-                family_names: [{ value: 'Doe', primary: true }],
+        .mockResolvedValue(
+          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
+            data: [
+              {
+                type: 'natural_person',
+                uri: 'uri://test',
+                emails: [{ address: 'uri@example.com' }],
+                natural_person: {
+                  given_names: ['John'],
+                  family_names: [{ value: 'Doe', primary: true }],
+                },
               },
-            },
-          ],
-        } as any)
+            ],
+          }),
+        )
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1064,7 +1087,7 @@ describe('GinisService', () => {
         mainUri: null,
       } as Forms
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).not.toHaveBeenCalled()
       expect(service['ginisApiService'].createDocument).toHaveBeenCalledWith(
@@ -1082,7 +1105,7 @@ describe('GinisService', () => {
         ginisDocumentId: 'existingDocId',
       } as Forms
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].createDocument).not.toHaveBeenCalled()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
@@ -1097,17 +1120,22 @@ describe('GinisService', () => {
     it('should assign reference number if not present', async () => {
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue({
-          'Wfl-dokument': {
-            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS, // skip uploading sopurce document,
-          },
-        } as any) // no 'Cj-dokumentu'
+        .mockResolvedValue(
+          createMockGinisDocumentData({
+            'Cj-dokumentu': undefined,
+            'Wfl-dokument': {
+              ...mockWflDocument,
+              'Priznak-el-obrazu':
+                SslWflDocumentElectronicSourceExistence.EXISTS, // skip uploading sopurce document,
+            },
+          }),
+        )
 
       jest
         .spyOn(service['ginisApiService'], 'assignReferenceNumber')
         .mockResolvedValue()
 
-      await service.createDocument(formBase, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase)
 
       expect(
         service['ginisApiService'].assignReferenceNumber,
@@ -1119,7 +1147,7 @@ describe('GinisService', () => {
         .spyOn(service['ginisApiService'], 'findDocumentId')
         .mockResolvedValue('differentDocId') // different from created
 
-      await service.createDocument(formBase, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase)
 
       expect(
         service['ginisApiService'].createFormIdProperty,
@@ -1136,7 +1164,7 @@ describe('GinisService', () => {
         .spyOn(service['ginisApiService'], 'findDocumentId')
         .mockResolvedValue('newDocId') // same as created
 
-      await service.createDocument(formBase, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase)
 
       expect(
         service['ginisApiService'].createFormIdProperty,
@@ -1190,12 +1218,18 @@ describe('GinisService', () => {
           service['clientsService'].slovenskoSkApi,
           'apiIamIdentitiesSearchPost',
         )
-        .mockResolvedValue({
-          data: [],
-        } as any)
+        .mockResolvedValue(
+          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
+            data: [],
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: { headers: {} },
+          }),
+        )
 
       await expect(
-        service.createDocument(form, formDefinitionBase as any),
+        service.createDocument(form, formDefinitionBase),
       ).rejects.toThrow('Form uri not found in nases')
     })
 
@@ -1211,12 +1245,14 @@ describe('GinisService', () => {
           service['clientsService'].slovenskoSkApi,
           'apiIamIdentitiesSearchPost',
         )
-        .mockResolvedValue({
-          data: [{ type: 'natural_person' }, { type: 'natural_person' }],
-        } as any)
+        .mockResolvedValue(
+          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
+            data: [{ type: 'natural_person' }, { type: 'natural_person' }],
+          }),
+        )
 
       await expect(
-        service.createDocument(form, formDefinitionBase as any),
+        service.createDocument(form, formDefinitionBase),
       ).rejects.toThrow('Multiple results found for form uri')
     })
 
@@ -1232,12 +1268,20 @@ describe('GinisService', () => {
           service['clientsService'].cityAccountApi,
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
-        .mockResolvedValue({
-          data: null,
-        } as any)
+        .mockResolvedValue(
+          createMock<
+            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
+          >({
+            data: undefined,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: { headers: {} },
+          }),
+        )
 
       await expect(
-        service.createDocument(form, formDefinitionBase as any),
+        service.createDocument(form, formDefinitionBase),
       ).rejects.toThrow('Contact info not found in city account')
     })
 
@@ -1253,16 +1297,20 @@ describe('GinisService', () => {
           service['clientsService'].cityAccountApi,
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
-        .mockResolvedValue({
-          data: {
-            email: 'test@example.com',
-            accountType: 'po',
-            name: 'Company Name',
-            ico: '87654321',
-          },
-        } as any)
+        .mockResolvedValue(
+          createMock<
+            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
+          >({
+            data: {
+              email: 'test@example.com',
+              accountType: 'po',
+              name: 'Company Name',
+              ico: '87654321',
+            },
+          }),
+        )
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1285,16 +1333,20 @@ describe('GinisService', () => {
           service['clientsService'].cityAccountApi,
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
-        .mockResolvedValue({
-          data: {
-            email: 'test@example.com',
-            accountType: 'fo-p',
-            name: 'Self Employed',
-            ico: '11223344',
-          },
-        } as any)
+        .mockResolvedValue(
+          createMock<
+            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
+          >({
+            data: {
+              email: 'test@example.com',
+              accountType: 'fo-p',
+              name: 'Self Employed',
+              ico: '11223344',
+            },
+          }),
+        )
 
-      await service.createDocument(form, formDefinitionBase as any)
+      await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1315,13 +1367,15 @@ describe('GinisService', () => {
 
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue({
-          'Cj-dokumentu': 'ref123',
-          'Wfl-dokument': {
-            'Priznak-el-obrazu':
-              SslWflDocumentElectronicSourceExistence.DOES_NOT_EXIST,
-          },
-        } as any)
+        .mockResolvedValue(
+          createMockGinisDocumentData({
+            'Wfl-dokument': {
+              ...mockWflDocument,
+              'Priznak-el-obrazu':
+                SslWflDocumentElectronicSourceExistence.DOES_NOT_EXIST,
+            },
+          }),
+        )
 
       jest
         .spyOn(service['convertService'], 'convertJsonToXmlObjectForForm')
@@ -1330,9 +1384,9 @@ describe('GinisService', () => {
 
       jest
         .spyOn(service['ginisApiService'], 'uploadFile')
-        .mockResolvedValue({} as any)
+        .mockResolvedValue(createMock<SslPridatSouborPridatSoubor>({}))
 
-      await service.createDocument(formBase, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase)
 
       expect(
         service['convertService'].convertJsonToXmlObjectForForm,
@@ -1352,12 +1406,15 @@ describe('GinisService', () => {
     it('should not upload XML source file when electronic source exists', async () => {
       jest
         .spyOn(service['ginisApiService'], 'getDocumentDetail')
-        .mockResolvedValue({
-          'Cj-dokumentu': 'ref123',
-          'Wfl-dokument': {
-            'Priznak-el-obrazu': SslWflDocumentElectronicSourceExistence.EXISTS,
-          },
-        } as any)
+        .mockResolvedValue(
+          createMockGinisDocumentData({
+            'Wfl-dokument': {
+              ...mockWflDocument,
+              'Priznak-el-obrazu':
+                SslWflDocumentElectronicSourceExistence.EXISTS,
+            },
+          }),
+        )
 
       jest
         .spyOn(service['convertService'], 'convertJsonToXmlObjectForForm')
@@ -1365,9 +1422,9 @@ describe('GinisService', () => {
 
       jest
         .spyOn(service['ginisApiService'], 'uploadFile')
-        .mockResolvedValue({} as any)
+        .mockResolvedValue(createMock<SslPridatSouborPridatSoubor>({}))
 
-      await service.createDocument(formBase, formDefinitionBase as any)
+      await service.createDocument(formBase, formDefinitionBase)
 
       expect(
         service['convertService'].convertJsonToXmlObjectForForm,

@@ -429,7 +429,7 @@ describe('SharepointSubservice', () => {
         expect.objectContaining({
           message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
           status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
+        }) as Error,
       )
 
       // Verify that no update was attempted

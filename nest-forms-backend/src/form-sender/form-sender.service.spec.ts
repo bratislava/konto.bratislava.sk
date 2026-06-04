@@ -19,6 +19,7 @@ import {
   AuthFixtureUser,
   UserFixtureFactory,
 } from '../../test/fixtures/auth/user-fixture-factory'
+import { createTestForm } from '../__tests__/factories/form.factory'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -501,7 +502,7 @@ describe('FormSenderService', () => {
     beforeEach(() => {
       jest
         .spyOn(service['formsService'], 'updateFormWithUser')
-        .mockResolvedValue(undefined as any)
+        .mockResolvedValue(createTestForm())
       jest
         .spyOn(service['formsService'], 'checkFormBeforeSending')
         .mockResolvedValue(mockForm)

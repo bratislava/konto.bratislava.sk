@@ -5,9 +5,9 @@ import {
 
 export type ChecklistProps = {
   order: number
-  title: string
-  description: string
-  checklistItems: ChecklistItemProps[]
+  title?: string | null
+  description?: string | null
+  checklistItems?: ChecklistItemProps[] | null
 }
 
 export const Checklist = ({ order, title, description, checklistItems }: ChecklistProps) => {
@@ -30,7 +30,7 @@ export const Checklist = ({ order, title, description, checklistItems }: Checkli
         <h3 className="text-size-p-large font-bold">{title}</h3>
         <div className="text-size-p-large">{description}</div>
         <div className="flex flex-col gap-2">
-          {checklistItems.map((item) => (
+          {checklistItems?.map((item) => (
             <ChecklistItem key={item.title} {...item} />
           ))}
         </div>

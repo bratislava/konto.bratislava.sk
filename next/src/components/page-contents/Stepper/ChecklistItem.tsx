@@ -1,3 +1,5 @@
+import { Typography } from '@bratislava/component-library'
+
 import { CheckInCircleIcon } from '@/src/assets/ui-icons'
 
 export type ChecklistItemProps = {
@@ -8,12 +10,14 @@ export type ChecklistItemProps = {
 export const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
   return (
     <div className="flex flex-row gap-2">
-      <CheckInCircleIcon className="size-6 text-gray-0" />
+      <CheckInCircleIcon className="size-6 text-black" />
 
       <div className="flex flex-col gap-2">
-        <h3 className="text-size-p-large font-bold">{title}</h3>
+        <Typography variant="h4" className="font-bold">
+          {title}
+        </Typography>
 
-        <div className="text-size-p-large">{content}</div>
+        <Typography variant="p-default">{content}</Typography>
       </div>
     </div>
   )

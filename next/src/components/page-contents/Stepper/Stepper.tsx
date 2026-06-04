@@ -1,3 +1,5 @@
+import { Typography } from '@bratislava/component-library'
+
 import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
 import { Checklist } from '@/src/components/page-contents/Stepper/Checklist'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -11,11 +13,13 @@ export const Stepper = ({ section }: Props) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-size-h2 font-bold">{title}</h2>
+      <Typography variant="h2" className="font-bold">
+        {title}
+      </Typography>
 
-      <p className="text-size-p-large">{description}</p>
+      <Typography variant="p-default">{description}</Typography>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 rounded-xl border border-gray-200 px-5 py-6">
         {checklists?.filter(isDefined).map((checklist, index) => (
           <>
             <Checklist

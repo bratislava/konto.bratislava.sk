@@ -1,4 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
+import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ConnectionPool } from 'mssql'
 import * as mssql from 'mssql'
@@ -51,6 +52,7 @@ describe('NorisEdeskService', () => {
       }
       const mockConnection = {
         connected: true,
+        close: jest.fn().mockResolvedValue(undefined),
         request: jest.fn().mockReturnValue(mockRequest),
       } as any
 
@@ -67,14 +69,83 @@ describe('NorisEdeskService', () => {
       expect(mockRequest.execute).toHaveBeenCalledWith('lcs.usp21_ino_check_edesk')
       expect(validatorService.validateNorisData).toHaveBeenCalledWith(
         EdeskRecordSchema,
-        mockRecordset
+        mockRecordset,
       )
+    })
+
+    it('should throw when validator throws', async () => {
+      const validatorError = new HttpException('Validation failed', 400)
+      const mockConnection = {
+        connected: true,
+        close: jest.fn().mockResolvedValue(undefined),
+        request: jest.fn().mockReturnValue({
+          input: jest.fn().mockReturnThis(),
+          execute: jest.fn().mockResolvedValue({ recordset: [{}] }),
+        }),
+      } as any
+
+      jest
+        .mocked(connectionService.withConnection)
+        .mockImplementation((operation: any) => operation(mockConnection))
+      jest.mocked(validatorService.validateNorisData).mockImplementation(() => {
+        throw validatorError
+      })
+
+      await expect(service.getExternalEdeskChecks(1, 2)).rejects.toThrow(validatorError)
+    })
+
+    it('should throw when execute fails', async () => {
+      const dbError = new Error('Execute failed')
+      const mockConnection = {
+        connected: true,
+        close: jest.fn().mockResolvedValue(undefined),
+        request: jest.fn().mockReturnValue({
+          input: jest.fn().mockReturnThis(),
+          execute: jest.fn().mockRejectedValue(dbError),
+        }),
+      } as any
+
+      jest
+        .mocked(connectionService.withConnection)
+        .mockImplementation((operation: any) => operation(mockConnection))
+
+      await expect(service.getExternalEdeskChecks(10, 20)).rejects.toThrow(dbError)
     })
   })
 
   describe('updateEdeskChecks', () => {
-    it('should call withConnection for each edesk check', async () => {
+    beforeEach(() => {
       jest.mocked(connectionService.withConnection).mockResolvedValue(undefined)
+    })
+
+    afterEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('should call withConnection for each edesk check', async () => {
+      const edeskChecks = [
+        {
+          idNoris: 42,
+          lastCheck: new Date('2024-01-15'),
+          edeskStatus: EdeskStatus.ACTIVE,
+          edeskNumber: '12345',
+          uri: 'https://edesk.example/sk/123',
+          deathDate: null,
+        },
+      ]
+
+      await expect(service.updateEdeskChecks(edeskChecks)).resolves.toBeUndefined()
+      expect(connectionService.withConnection).toHaveBeenCalled()
+    })
+
+    it('should process empty array without calling withConnection', async () => {
+      await expect(service.updateEdeskChecks([])).resolves.toBeUndefined()
+      expect(connectionService.withConnection).not.toHaveBeenCalled()
+    })
+
+    it('should reject when withConnection rejects', async () => {
+      const internalError = new HttpException('Internal', 500)
+      jest.mocked(connectionService.withConnection).mockRejectedValue(internalError)
 
       await expect(
         service.updateEdeskChecks([
@@ -86,14 +157,8 @@ describe('NorisEdeskService', () => {
             uri: 'https://edesk.example/sk/123',
             deathDate: null,
           },
-        ])
-      ).resolves.toBeUndefined()
-      expect(connectionService.withConnection).toHaveBeenCalledTimes(1)
-    })
-
-    it('should process empty array without calling withConnection', async () => {
-      await expect(service.updateEdeskChecks([])).resolves.toBeUndefined()
-      expect(connectionService.withConnection).not.toHaveBeenCalled()
+        ]),
+      ).rejects.toThrow(internalError)
     })
 
     it('should pass deathDate to death_date SQL parameter', async () => {

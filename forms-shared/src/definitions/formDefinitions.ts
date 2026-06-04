@@ -733,8 +733,7 @@ export const formDefinitions: FormDefinition[] = [
       extractEmail: kontaktnyFormularPaasExtractEmail,
       extractName: kontaktnyFormularPaasExtractName,
       mailer: 'mailgun',
-      // TODO use template with PAAS logo
-      userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
+      userResponseTemplate: MailgunTemplateEnum.PAAS_CONTACT_FORM_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
       technicalEmailSubjectAppendId: true,
     },

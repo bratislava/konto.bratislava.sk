@@ -1,6 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
@@ -69,7 +69,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
                 <Button
                   variant="unstyled"
                   data-cy="account-button"
-                  className="flex items-center gap-4 font-semibold text-font/75"
+                  className="flex items-center gap-4 rounded-lg font-semibold text-font/75 wrapper-focus-ring"
                 >
                   <UserAvatar userAttributes={userAttributes} />
                   <div className="flex items-center gap-1 font-light lg:font-semibold">

@@ -1,8 +1,9 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import FormMenuItem from '@/src/components/simple-components/MenuDropdown/FormMenuItem'
 import HeaderMenuItem from '@/src/components/simple-components/MenuDropdown/HeaderMenuItem'
+import cn from '@/src/utils/cn'
 
 export type MenuItemBase = {
   id?: number
@@ -26,6 +27,7 @@ const MenuDropdown = ({
   items,
   itemVariant = 'form',
   buttonTrigger,
+  buttonClassName,
   setIsOpen,
 }: MenuDropdownBase) => {
   return (
@@ -35,7 +37,7 @@ const MenuDropdown = ({
         <DropdownMenu.Content
           loop
           align="end"
-          className="z-50 rounded-lg bg-gray-0 py-2 shadow-md"
+          className={cn('z-50 rounded-lg bg-gray-0 py-2 shadow-md', buttonClassName)}
           sideOffset={2}
         >
           {itemVariant === 'form' &&

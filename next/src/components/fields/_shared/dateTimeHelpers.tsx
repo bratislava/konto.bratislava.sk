@@ -10,6 +10,7 @@ export const dateOrTimeContainerClassName = ({
   isFocusWithin,
   isDisabled,
   isInvalid,
+  isFocusVisible,
 }: DateInputRenderProps | GroupRenderProps) =>
   cn(
     'flex w-full items-center rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
@@ -20,6 +21,7 @@ export const dateOrTimeContainerClassName = ({
       'border-border-error': isInvalid,
       'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
       'hover:border-border-active-hover': !isDisabled && !isInvalid && !isFocusWithin,
+      'base-focus-ring': isFocusVisible,
     },
   )
 
@@ -29,7 +31,4 @@ const commonDateSegmentClassName: DateSegmentProps['className'] =
 export const timeSegmentClassName = commonDateSegmentClassName
 
 // Remove space before dots using negative margin
-export const dateSegmentClassName = cn(
-  commonDateSegmentClassName,
-  'base-focus-ring type-literal:-ml-0.5',
-)
+export const dateSegmentClassName = cn(commonDateSegmentClassName, 'type-literal:-ml-0.5')

@@ -47,7 +47,7 @@ export const Stepper = ({ section }: Props) => {
                 </div>
               </DisclosureHeader>
 
-              <DisclosurePanel className="px-4 lg:px-6">
+              <DisclosurePanel className="ml-14 px-4 lg:px-6">
                 <Checklist
                   description={checklist.description}
                   checklistItems={checklist.checklistItems?.filter(isDefined)}

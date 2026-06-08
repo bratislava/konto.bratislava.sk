@@ -10,7 +10,7 @@ export type ChecklistProps = {
 }
 export const Checklist = ({ description, checklistItems }: ChecklistProps) => {
   return (
-    <div className="ml-14 flex flex-col gap-5">
+    <div className="flex flex-col gap-5">
       <Markdown variant="default" content={description} />
 
       {checklistItems?.map((item, index) => (

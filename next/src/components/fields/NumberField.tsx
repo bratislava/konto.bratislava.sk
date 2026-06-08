@@ -64,14 +64,17 @@ const NumberField = (
           {unit ? (
             <RACGroup
               className={({ isFocusWithin, isInvalid, isDisabled, isHovered }) =>
-                cn('flex w-full overflow-hidden rounded-lg border bg-background-passive-base', {
-                  'border-border-active-default': !isInvalid && !isFocusWithin,
-                  'border-border-active-focused': !isInvalid && isFocusWithin,
-                  'border-border-error': isInvalid,
-                  'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
-                  'border-border-active-hover':
-                    !isDisabled && !isInvalid && !isFocusWithin && isHovered,
-                })
+                cn(
+                  'flex w-full overflow-hidden rounded-lg border bg-background-passive-base base-focus-ring',
+                  {
+                    'border-border-active-default': !isInvalid && !isFocusWithin,
+                    'border-border-active-focused': !isInvalid && isFocusWithin,
+                    'border-border-error': isInvalid,
+                    'border-border-active-disabled bg-background-passive-tertiary': isDisabled,
+                    'border-border-active-hover':
+                      !isDisabled && !isInvalid && !isFocusWithin && isHovered,
+                  },
+                )
               }
             >
               {({ isFocusWithin, isInvalid, isDisabled }) => (
@@ -113,7 +116,7 @@ const NumberField = (
                 data-cy={rest.name ? `number-${rest.name}` : undefined}
                 className={({ isFocused, isDisabled, isInvalid }) =>
                   cn(
-                    'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary outline-hidden lg:text-size-p-small',
+                    'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
                     'px-3 py-2 lg:px-4 lg:py-3',
                     'placeholder:text-content-passive-tertiary',
                     {

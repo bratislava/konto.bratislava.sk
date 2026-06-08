@@ -3,15 +3,20 @@ import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBase64,
+  IsBoolean,
   IsDate,
   IsEnum,
   IsHash,
   IsNotEmpty,
+  IsNumberString,
   IsObject,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator'
+
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../../utils/constants'
+import { ToBoolean } from '../../utils/decorators/request.decorator'
 
 export class FormSignatureDto {
   @ApiProperty({
@@ -185,4 +190,72 @@ export class FormUpdateBodyDto {
   @Type(() => Date)
   @IsDate()
   formSentAt?: Date | null
+}
+
+export class UpdateFormRequestDto {
+  // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
+  @ApiPropertyOptional({
+    description: 'Send JSON body of form',
+    default: {},
+  })
+  @IsOptional()
+  formDataJson?: PrismaJson.FormDataJson
+
+  @ApiPropertyOptional({
+    description: 'Form signature with metadata',
+    type: FormSignatureDto,
+    nullable: true,
+  })
+  @IsOptional()
+  @Type(() => FormSignatureDto)
+  @IsObject()
+  @ValidateNested()
+  formSignature?: FormSignatureDto
+}
+
+export class GetFormsRequestDto {
+  @ApiPropertyOptional({
+    description: 'Page number',
+    example: DEFAULT_PAGE,
+  })
+  @IsOptional()
+  @IsNumberString()
+  currentPage?: string
+
+  @ApiPropertyOptional({
+    description: 'Number of items per page',
+    example: DEFAULT_PAGE_SIZE,
+  })
+  @IsOptional()
+  @IsNumberString()
+  pagination?: string
+
+  @ApiPropertyOptional({
+    description:
+      'Forms in which states are searched - when omitted, all forms of the user are searched',
+    example: [FormState.DRAFT, FormState.QUEUED],
+    enumName: 'FormState',
+    enum: FormState,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsEnum(FormState, { each: true })
+  states?: FormState[]
+
+  @ApiPropertyOptional({
+    description: 'Get only forms in such a state, that user can still edit it.',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @ToBoolean()
+  userCanEdit?: boolean
+
+  @ApiPropertyOptional({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsString()
+  @IsOptional()
+  formDefinitionSlug?: string
 }

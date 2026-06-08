@@ -135,7 +135,7 @@ export default class NasesCronSubservice {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
-          'Some form definitions are not correctly registered in slovensko.sk.',
+          NasesErrorsResponseEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
           { validationResult: result },
         ),
       )

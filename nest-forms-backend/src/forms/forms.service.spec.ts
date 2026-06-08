@@ -14,11 +14,11 @@ import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
-import { GetFormsRequestDto } from '../nases/dtos/requests.dto'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
+import { GetFormsRequestDto } from './dtos/requests.dto'
 import FormsService from './forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
@@ -172,6 +172,38 @@ describe('FormsService', () => {
 
       const result = await service.checkFormBeforeSending('123')
       expect(result).toEqual(insertForm)
+    })
+  })
+
+  describe('updateFormWithUser', () => {
+    it('should throw not found when form does not exist', async () => {
+      prismaMock.forms.findUnique.mockResolvedValue(null)
+
+      await expect(
+        service.updateFormWithUser('1', {}, authUser.user),
+      ).rejects.toThrow()
+    })
+
+    it('should merge user fields with request data and call updateForm', async () => {
+      prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
+      const spy = jest
+        .spyOn(service, 'updateForm')
+        .mockResolvedValue({} as Forms)
+
+      await service.updateFormWithUser(
+        '1',
+        { formDataJson: { field: 'value' } },
+        authUser.user,
+      )
+
+      expect(spy).toHaveBeenCalledWith('1', {
+        userExternalId: authUser.sub,
+        cognitoGuestIdentityId: null,
+        ico: null,
+        ownerType: 'FO',
+        email: authUser.user.cityAccountUser.email,
+        formDataJson: { field: 'value' },
+      })
     })
   })
 

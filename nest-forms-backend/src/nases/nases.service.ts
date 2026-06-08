@@ -6,7 +6,6 @@ import {
   isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { evaluateFormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import {
   verifyFormSignature,
@@ -23,7 +22,7 @@ import {
 } from 'openapi-clients/slovensko-sk'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
-import { AuthUser, isAuthUser, User } from '../auth-v2/types/user'
+import { isAuthUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -34,30 +33,22 @@ import {
 } from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
 import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
+import { SendFormResponseDto } from '../form-sender/dtos/responses.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
+import { FormUpdateBodyDto } from '../forms/dtos/requests.dto'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
-import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import {
-  GetFormResponseDto,
-  GetFormsRequestDto,
-  GetFormsResponseDto,
-  JwtNasesPayloadDto,
-  SendFormResponseDto,
-  UpdateFormRequestDto,
-} from './dtos/requests.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesSenderService from './services/nases.sender.service'
+import { JwtNasesPayload } from './types/jwt-nases.types'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
 @Injectable()
@@ -71,7 +62,6 @@ export default class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesSenderService: NasesSenderService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
-    private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly clientsService: ClientsService,
     private readonly convertPdfService: ConvertPdfService,
@@ -113,75 +103,6 @@ export default class NasesService {
     return result
   }
 
-  async getForm(
-    id: string,
-  ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
-    const form = await this.formsService.getForm(id)
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
-      )
-    }
-
-    return {
-      ...form,
-      formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
-    }
-  }
-
-  async getForms(
-    query: GetFormsRequestDto,
-    user: AuthUser,
-  ): Promise<GetFormsResponseDto> {
-    const result = await this.formsService.getForms(query, user)
-    return result
-  }
-
-  async updateFormEid(
-    id: string,
-    nasesUser: JwtNasesPayloadDto,
-    requestData: UpdateFormRequestDto,
-    user: User,
-  ): Promise<Forms> {
-    const data: FormUpdateBodyDto = {
-      mainUri: nasesUser.sub,
-      actorUri: nasesUser.actor.sub,
-      ...requestData,
-    }
-    const result = await this.updateForm(id, data, user)
-    return result
-  }
-
-  async updateForm(
-    id: string,
-    requestData: UpdateFormRequestDto,
-    user: User,
-  ): Promise<Forms> {
-    const form = await this.prisma.forms.findFirst({
-      where: {
-        id,
-        archived: false,
-      },
-    })
-
-    if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        ErrorsEnum.NOT_FOUND_ERROR,
-        `Form with id ${id} not found.`,
-      )
-    }
-
-    const data = {
-      ...getUserFormFields(user),
-      ...requestData,
-    }
-
-    const result = await this.formsService.updateForm(id, data)
-    return result
-  }
-
   private getFormSummaryOrThrow(
     form: Forms,
     formDefinition: FormDefinition,
@@ -213,13 +134,11 @@ export default class NasesService {
     }
   }
 
-  async sendForm(
-    formId: string,
-    data: UpdateFormRequestDto,
-    user: User,
-  ): Promise<SendFormResponseDto> {
-    await this.updateForm(formId, data, user)
-
+  // TODO: rename to updateAndSendForm, move to new form sender service, and at beginning add await this.updateForm(formId, data, user)
+  // so change from https://github.com/bratislava/konto.bratislava.sk/commit/75d3d9bce757d710b023aa7c4fb3f445348b8fc9#diff-fc67a0ecefbdaff9e5af8cbe3a5ff156c82463f4858d2d4db367bd38adb1f6c4
+  // will be back. It had to be put back because of circular dependencies.
+  // After release of https://github.com/bratislava/konto.bratislava.sk/pull/4189
+  async sendForm(formId: string, user: User): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(formId)
     // All extra files should be already deleted at this point and remaining files should be SAFE.
 
@@ -433,7 +352,7 @@ export default class NasesService {
   async sendFormEid(
     id: string,
     oboToken: string,
-    nasesUser: JwtNasesPayloadDto,
+    nasesUser: JwtNasesPayload,
     user: User,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
@@ -625,8 +544,8 @@ export default class NasesService {
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             NasesErrorsEnum.SEND_TO_GINIS_ERROR,
-            `${NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR} Received form id: ${data.formId}.`,
-            undefined,
+            NasesErrorsResponseEnum.SEND_TO_GINIS_ERROR,
+            { formId: data.formId },
             error,
           ),
         )

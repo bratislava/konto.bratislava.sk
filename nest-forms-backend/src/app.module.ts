@@ -11,6 +11,7 @@ import ConvertModule from './convert/convert.module'
 import ConvertPdfModule from './convert-pdf/convert-pdf.module'
 import FilesModule from './files/files.module'
 import FormDeliveryConsumerModule from './form-delivery-consumer/form-delivery-consumer.module'
+import FormSenderModule from './form-sender/form-sender.module'
 import FormsModule from './forms/forms.module'
 import GinisModule from './ginis/ginis.module'
 import NasesModule from './nases/nases.module'
@@ -35,6 +36,7 @@ import WebhookModule from './webhook/webhook.module'
     StatusModule,
     RabbitmqClientModule,
     FormDeliveryConsumerModule,
+    FormSenderModule,
     ConvertModule,
     ConvertPdfModule,
     GinisModule,

@@ -20,7 +20,7 @@ import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
-import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
+import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService, {
@@ -161,7 +161,7 @@ describe('GinisService', () => {
   })
 
   describe('onQueueConsumption', () => {
-    const messageBase: GinisCheckNasesPayloadDto = {
+    const messageBase: GinisCheckDeliveryPayloadDto = {
       formId: 'id1',
       tries: 0,
       userData: {

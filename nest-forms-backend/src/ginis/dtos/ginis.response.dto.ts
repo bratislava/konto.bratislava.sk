@@ -1,6 +1,6 @@
 import { RabbitPayloadUserDataDto } from '../../form-delivery-consumer/dtos/form-delivery-consumer.dto'
 
-export class GinisCheckNasesPayloadDto {
+export class GinisCheckDeliveryPayloadDto {
   formId: string
 
   tries: number

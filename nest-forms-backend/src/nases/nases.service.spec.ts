@@ -19,7 +19,6 @@ import {
   AuthFixtureUser,
   UserFixtureFactory,
 } from '../../test/fixtures/auth/user-fixture-factory'
-import prismaMock from '../../test/singleton'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -29,13 +28,12 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
-import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesSenderService from './services/nases.sender.service'
+import { JwtNasesPayload } from './types/jwt-nases.types'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/validators')
@@ -78,10 +76,6 @@ describe('NasesService', () => {
         {
           provide: ApiJwtTokensService,
           useValue: createMock<ApiJwtTokensService>(),
-        },
-        {
-          provide: PrismaService,
-          useValue: prismaMock,
         },
         {
           provide: FormValidatorRegistryService,
@@ -131,39 +125,6 @@ describe('NasesService', () => {
     })
   })
 
-  describe('updateForm', () => {
-    it('should throw not found', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue(null)
-
-      await expect(
-        service.updateForm(
-          '1',
-          { email: 'email' } as UpdateFormRequestDto,
-          authUser.user,
-        ),
-      ).rejects.toThrow()
-    })
-
-    it('should correctly update', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
-      const spy = jest.spyOn(service['formsService'], 'updateForm')
-
-      await service.updateForm(
-        '1',
-        { email: 'emailOverride', formDataXml: 'xml' } as UpdateFormRequestDto,
-        authUser.user,
-      )
-      expect(spy).toHaveBeenCalledWith('1', {
-        userExternalId: authUser.sub,
-        cognitoGuestIdentityId: null,
-        ico: null,
-        ownerType: 'FO',
-        email: 'emailOverride',
-        formDataXml: 'xml',
-      })
-    })
-  })
-
   describe('sendFormEid', () => {
     it('should throw an error if send throws', async () => {
       // Mock dependencies
@@ -175,7 +136,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       const mockFormDefinition: FormDefinition = {
         jsonVersion: '1.0.0',
         schema: {},
@@ -241,7 +202,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       const mockFormDefinition = {
         slug: 'test-slug',
         sendPolicy: FormSendPolicy.AuthenticatedVerified,
@@ -284,7 +245,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -326,7 +287,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -369,7 +330,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -414,7 +375,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -471,7 +432,7 @@ describe('NasesService', () => {
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
-      } as JwtNasesPayloadDto
+      } as JwtNasesPayload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
@@ -563,9 +524,9 @@ describe('NasesService', () => {
     it('should throw an error if form definition is not found', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
-      await expect(
-        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND)
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+        FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+      )
     })
 
     it('should throw an error if form data is invalid', async () => {
@@ -579,9 +540,9 @@ describe('NasesService', () => {
           }),
         })
 
-      await expect(
-        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-      ).rejects.toThrow(FormsErrorsResponseEnum.FORM_DATA_INVALID)
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+        FormsErrorsResponseEnum.FORM_DATA_INVALID,
+      )
     })
 
     it('should throw an error if sending is not possible according to policy', async () => {
@@ -590,9 +551,9 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(
-        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-      ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+      )
     })
 
     it('should throw an error if sending is not allowed for the user according to policy', async () => {
@@ -601,9 +562,7 @@ describe('NasesService', () => {
         sendAllowedForUser: false,
       })
 
-      await expect(
-        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-      ).rejects.toThrow(
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     })
@@ -613,17 +572,13 @@ describe('NasesService', () => {
         .spyOn(service['rabbitmqClientService'], 'publishDelay')
         .mockRejectedValue(new Error('RabbitMQ error'))
 
-      await expect(
-        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-      ).rejects.toThrow(NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT)
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
+        NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
+      )
     })
 
     it('should queue the form', async () => {
-      const result = await service.sendForm(
-        '1',
-        {} as UpdateFormRequestDto,
-        authUser.user,
-      )
+      const result = await service.sendForm('1', authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -637,11 +592,7 @@ describe('NasesService', () => {
         ...mockFormDefinitionEmail,
       })
 
-      const result = await service.sendForm(
-        '1',
-        {} as UpdateFormRequestDto,
-        authUser.user,
-      )
+      const result = await service.sendForm('1', authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -656,7 +607,7 @@ describe('NasesService', () => {
         .spyOn(service as any, 'getFormSummaryOrThrow')
         .mockReturnValue(mockSummary)
 
-      await service.sendForm('1', {} as UpdateFormRequestDto, authUser.user)
+      await service.sendForm('1', authUser.user)
 
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
@@ -673,9 +624,7 @@ describe('NasesService', () => {
           throw new Error('Summary generation failed')
         })
 
-      await expect(
-        service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-      ).rejects.toThrow()
+      await expect(service.sendForm('1', authUser.user)).rejects.toThrow()
     })
 
     describe('cumulative file size limits', () => {
@@ -712,9 +661,7 @@ describe('NasesService', () => {
             { id: 'test-id-3', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
           ])
 
-        await expect(
-          service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-        ).rejects.toThrow(
+        await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
           FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
         )
       })
@@ -744,9 +691,7 @@ describe('NasesService', () => {
             { id: 'test-id-5', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
           ])
 
-        await expect(
-          service.sendForm('1', {} as UpdateFormRequestDto, authUser.user),
-        ).rejects.toThrow(
+        await expect(service.sendForm('1', authUser.user)).rejects.toThrow(
           FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
         )
       })
@@ -768,11 +713,7 @@ describe('NasesService', () => {
             { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
           ])
 
-        const result = await service.sendForm(
-          '1',
-          {} as UpdateFormRequestDto,
-          authUser.user,
-        )
+        const result = await service.sendForm('1', authUser.user)
 
         expect(result).toEqual({
           id: '1',
@@ -805,11 +746,7 @@ describe('NasesService', () => {
             { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 100 },
           ])
 
-        const result = await service.sendForm(
-          '1',
-          {} as UpdateFormRequestDto,
-          authUser.user,
-        )
+        const result = await service.sendForm('1', authUser.user)
 
         expect(result).toEqual({
           id: '1',

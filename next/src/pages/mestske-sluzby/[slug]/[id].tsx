@@ -52,7 +52,7 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
 
     try {
       // These promises cannot be run in parallel because the redirects in catch blocks depends on the error response of the first promise.
-      const { data: form } = await formsClient.nasesControllerGetForm(formId, {
+      const { data: form } = await formsClient.formsControllerGetForm(formId, {
         authStrategy: 'authOrGuestWithToken',
         getSsrAuthSession: fetchAuthSession,
       })

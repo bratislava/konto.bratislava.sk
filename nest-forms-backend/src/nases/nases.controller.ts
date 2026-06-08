@@ -14,7 +14,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
-import { Forms } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
@@ -22,7 +21,16 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { AuthUser, User, UserType } from '../auth-v2/types/user'
-import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
+import { SendFormResponseDto } from '../form-sender/dtos/responses.dto'
+import {
+  GetFormsRequestDto,
+  UpdateFormRequestDto,
+} from '../forms/dtos/requests.dto'
+import FormDeleteResponseDto, {
+  GetFormResponseDto,
+  GetFormsResponseDto,
+  UpdateFormResponseDto,
+} from '../forms/dtos/responses.dto'
 import FormsService from '../forms/forms.service'
 import {
   FormAccessAllowMigrations,
@@ -37,16 +45,9 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import {
-  EidUpdateSendFormRequestDto,
-  GetFormResponseDto,
-  GetFormsRequestDto,
-  GetFormsResponseDto,
-  JwtNasesPayloadDto,
-  SendFormResponseDto,
-  UpdateFormRequestDto,
-} from './dtos/requests.dto'
+import { EidUpdateSendFormRequestDto } from './dtos/requests.dto'
 import NasesService from './nases.service'
+import { JwtNasesPayload } from './types/jwt-nases.types'
 
 @ApiTags('nases')
 @ApiBearerAuth()
@@ -61,9 +62,11 @@ export default class NasesController {
 
   // WORK ENDPOINTS
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description: 'Return form by ID and by logged user',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Return form',
@@ -80,16 +83,18 @@ export default class NasesController {
     @GetUser() user: User,
     @GetFormAccessType() accessType: FormAccessType,
   ): Promise<GetFormResponseDto> {
-    const data = await this.nasesService.getForm(id)
+    const data = await this.formsService.getFormWithSubject(id)
     return {
       ...data,
       requiresMigration: accessType === FormAccessType.Migration,
     }
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: 'Get paginated forms',
     description: 'Get paginated forms',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Return forms',
@@ -103,13 +108,15 @@ export default class NasesController {
     @Query() query: GetFormsRequestDto,
     @GetUser() user: AuthUser,
   ): Promise<GetFormsResponseDto> {
-    const data = await this.nasesService.getForms(query, user)
+    const data = await this.formsService.getForms(query, user)
     return data
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description: 'Archive form (hide from user but keep in database)',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Form successfully deleted',
@@ -129,14 +136,16 @@ export default class NasesController {
     }
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description: 'Update form',
+    deprecated: true,
   })
   @ApiOkResponse({
     description:
       'Return charging details - price and used free minutes / hours.',
-    type: GetFormResponseDto,
+    type: UpdateFormResponseDto,
   })
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
@@ -147,15 +156,16 @@ export default class NasesController {
     @Body() data: UpdateFormRequestDto,
     @Param('formId') formId: string,
     @GetUser() user: User,
-  ): Promise<Forms> {
-    const returnData = await this.nasesService.updateForm(formId, data, user)
-    return returnData
+  ): Promise<UpdateFormResponseDto> {
+    return this.formsService.updateFormWithUser(formId, data, user)
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
@@ -171,14 +181,17 @@ export default class NasesController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    const returnData = await this.nasesService.sendForm(formId, data, user)
+    await this.formsService.updateFormWithUser(formId, data, user)
+    const returnData = await this.nasesService.sendForm(formId, user)
     return returnData
   }
 
+  // TODO delete after migrating frontend to new forms controller
   @ApiOperation({
     summary: '',
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
+    deprecated: true,
   })
   @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
@@ -203,7 +216,7 @@ export default class NasesController {
     }
     const nasesUser = jwt.decode(data.eidToken, {
       json: true,
-    }) as JwtNasesPayloadDto
+    }) as JwtNasesPayload
 
     // eslint-disable-next-line @typescript-eslint/no-misused-spread -- we are spreading a DTO object, which is not a problem
     const updateData = { ...data, eidToken: undefined }
@@ -214,7 +227,7 @@ export default class NasesController {
       updateData.formSignature,
     )
 
-    await this.nasesService.updateFormEid(formId, nasesUser, updateData, user)
+    await this.formsService.updateFormEid(formId, nasesUser, updateData, user)
 
     const returnData = await this.nasesService.sendFormEid(
       formId,

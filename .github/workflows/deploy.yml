@@ -246,6 +246,7 @@ jobs:
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
+      version: alpha
       flag: --staging
       fetch-depth: 1
     secrets:
@@ -266,6 +267,7 @@ jobs:
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
+      version: alpha
       flag: --staging
       fetch-depth: 1
     secrets:
@@ -285,6 +287,7 @@ jobs:
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
+      version: alpha
       flag: --staging
       fetch-depth: 1
     secrets:
@@ -305,6 +308,7 @@ jobs:
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
+      version: alpha
       flag: --staging
       fetch-depth: 1
     secrets:
@@ -324,6 +328,7 @@ jobs:
       url: https://stage.tkgis.bratislava.sk:6443
       skip_deployment_check: "--no_image_repo_check"
       debug: --debug
+      version: alpha
       flag: --staging
       fetch-depth: 1
     secrets:
@@ -343,6 +348,7 @@ jobs:
       url: https://stage.tkgis.bratislava.sk:6443
       skip_deployment_check: "--no_image_repo_check"
       debug: --debug
+      version: alpha
       flag: --staging
       fetch-depth: 1
     secrets:
@@ -363,6 +369,7 @@ jobs:
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
+      version: alpha
       flag: --staging
       fetch-depth: 1
     secrets:
@@ -383,6 +390,7 @@ jobs:
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
+      version: alpha
       flag: --staging
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
@@ -402,6 +410,7 @@ jobs:
       cluster: staging
       url: https://stage.tkgis.bratislava.sk:6443
       debug: --debug
+      version: alpha
       flag: --staging
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
@@ -451,6 +460,7 @@ jobs:
       flag: --production
       fetch-depth: 1
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -471,6 +481,7 @@ jobs:
       flag: --production
       fetch-depth: 1
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -490,6 +501,7 @@ jobs:
       flag: --production
       fetch-depth: 1
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -510,6 +522,7 @@ jobs:
       flag: --production
       fetch-depth: 1
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -529,6 +542,7 @@ jobs:
       flag: --production
       fetch-depth: 1
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -548,6 +562,7 @@ jobs:
       flag: --production
       fetch-depth: 1
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -568,6 +583,7 @@ jobs:
       flag: --production
       fetch-depth: 1
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -587,6 +603,7 @@ jobs:
       url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -606,6 +623,7 @@ jobs:
       url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       debug: --debug
+      version: alpha
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}

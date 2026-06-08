@@ -1,8 +1,8 @@
 import { Typography } from '@bratislava/component-library'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
+import { useTranslation } from 'next-i18next/pages'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
@@ -44,7 +44,7 @@ export const NavMenu = ({ menuSections }: Props) => {
           >
             <NavigationMenu.List className="flex size-full items-center">
               {menuSections.map((sectionItem) => (
-                <NavigationMenu.Item key={sectionItem.id} className="size-full">
+                <NavigationMenu.Item key={sectionItem.id} className="size-full wrapper-focus-ring">
                   <NavigationMenu.Link asChild>
                     <NextLink href={sectionItem.url}>
                       <div

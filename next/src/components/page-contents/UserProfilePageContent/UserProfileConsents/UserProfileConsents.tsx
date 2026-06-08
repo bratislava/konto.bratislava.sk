@@ -1,26 +1,23 @@
 import { useTranslation } from 'next-i18next/pages'
-import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
+import { ConsentEnum } from 'openapi-clients/city-account'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import UserProfileConsentsItem from '@/src/components/page-contents/UserProfilePageContent/UserProfileConsents/UserProfileConsentsItem'
 import useToast from '@/src/components/simple-components/Toast/useToast'
-import { useUserSubscription } from '@/src/frontend/hooks/useUser'
+import { useGdprConsent } from '@/src/frontend/hooks/useUser'
 
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
   const { showToast } = useToast()
 
-  const { isSubscribed, changeSubscription, subscriptionChangePending } = useUserSubscription({
-    category: GDPRCategoryEnum.Esbs,
-    type: GDPRTypeEnum.Marketing,
-  })
+  const { isGranted, changeConsent, consentChangePending } = useGdprConsent(ConsentEnum.Marketing)
 
   const handleOnChangeConsent = async (newValue: boolean) => {
-    if (subscriptionChangePending) {
+    if (consentChangePending) {
       return
     }
 
-    await changeSubscription(newValue, {
+    await changeConsent(newValue, {
       onSuccess: () => {
         showToast({
           message: newValue
@@ -43,8 +40,8 @@ const UserProfileConsents = () => {
             id: 'receive_information',
             title: t('my_profile.consents.receive_information.title'),
             text: t('my_profile.consents.receive_information.text'),
-            isDisabled: subscriptionChangePending,
-            isSelected: isSubscribed,
+            isDisabled: consentChangePending,
+            isSelected: isGranted,
           }}
           onChange={handleOnChangeConsent}
         />

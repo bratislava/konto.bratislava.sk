@@ -1,10 +1,8 @@
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
-import { AxiosError, AxiosResponse } from 'axios'
 import {
-  GdprDataDto,
-  GDPRSubTypeEnum,
-  UserControllerGetOrCreateUser200Response,
+  ConsentEnum,
+  SetDeliveryMethodPreferenceDtoDeliveryMethodEnum,
 } from 'openapi-clients/city-account'
 
 import { cityAccountClient } from '@/src/clients/city-account'
@@ -21,7 +19,7 @@ export const prefetchUserQuery = async (
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient
-        .userControllerGetOrCreateUser({ authStrategy: 'authOnly', getSsrAuthSession })
+        .userControllerUpsertUser({ authStrategy: 'authOnly', getSsrAuthSession })
         .then((response) => response.data),
   })
 
@@ -32,7 +30,7 @@ export const useUser = () => {
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient
-        .userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
+        .userControllerUpsertUser({ authStrategy: 'authOnly' })
         .then((response) => response.data),
     staleTime: Infinity,
   })
@@ -48,49 +46,48 @@ export const useUser = () => {
   }
 }
 
-export const useUserSubscription = (gdprData: GdprDataDto) => {
+export const useGdprConsent = (consentType: ConsentEnum) => {
   const queryClient = useQueryClient()
   const { userData } = useUser()
 
-  const currentGdprData = userData?.gdprData.find(
-    ({ category, type }) => category === gdprData.category && type === gdprData.type,
-  )
+  const currentConsent = userData.consents.find((consent) => consent.consentType === consentType)
+  const isGranted = currentConsent?.isGranted ?? false
 
-  const subType = currentGdprData?.subType
-  const isSubscribed = subType === GDPRSubTypeEnum.Subscribe
-
-  const { mutateAsync: changeSubscription, isPending: subscriptionChangePending } = useMutation<
-    AxiosResponse<UserControllerGetOrCreateUser200Response>,
-    AxiosError,
-    boolean
-  >({
-    mutationFn: (subscribe) => {
-      const endpoint = subscribe
-        ? cityAccountClient.userControllerSubscribeLoggedUser
-        : cityAccountClient.userControllerUnsubscribeLoggedUser
-
-      return endpoint(
-        {
-          gdprData: [gdprData],
-        },
-        {
-          authStrategy: 'authOnly',
-        },
-      )
-    },
-    onSuccess: (response) => {
-      // Subscribe / unsubscribe endpoints return new user data, so we can update the cache and there is no need for
-      // refetch.
-      queryClient.setQueryData(userQueryKey, () => response.data)
-    },
+  const { mutateAsync: changeConsent, isPending: consentChangePending } = useMutation({
+    mutationFn: (grant: boolean) =>
+      cityAccountClient.userControllerUpdateGdprConsent(
+        { consentType, grant },
+        { authStrategy: 'authOnly' },
+      ),
+    onSuccess: () => queryClient.refetchQueries({ queryKey: userQueryKey }),
     networkMode: 'always',
   })
 
   return {
-    subType,
-    isSubscribed,
-    changeSubscription,
-    subscriptionChangePending,
+    isGranted,
+    changeConsent,
+    consentChangePending,
+  }
+}
+
+export const useDeliveryMethod = () => {
+  const queryClient = useQueryClient()
+
+  const { mutateAsync: changeDeliveryMethod, isPending: deliveryMethodChangePending } = useMutation(
+    {
+      mutationFn: (deliveryMethod: SetDeliveryMethodPreferenceDtoDeliveryMethodEnum) =>
+        cityAccountClient.userControllerSetDeliveryMethodPreference(
+          { deliveryMethod },
+          { authStrategy: 'authOnly' },
+        ),
+      onSuccess: () => queryClient.refetchQueries({ queryKey: userQueryKey }),
+      networkMode: 'always',
+    },
+  )
+
+  return {
+    changeDeliveryMethod,
+    deliveryMethodChangePending,
   }
 }
 

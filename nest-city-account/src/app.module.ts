@@ -13,6 +13,7 @@ import { OAuth2Module } from './oauth2/oauth2.module'
 import { PaasMpaModule } from './paas-mpa/paas-mpa.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
+import { TowingModule } from './towing/towing.module'
 import { UserModule } from './user/user.module'
 import { VerificationModule } from './user-verification/verification.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
@@ -37,6 +38,7 @@ import { TaxSubservice } from './utils/subservices/tax.subservice'
     DpbModule,
     PaasMpaModule,
     NorisModule,
+    TowingModule,
   ],
   controllers: [AppController],
   providers: [TaxSubservice],

@@ -40,7 +40,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "linkCtas",
@@ -54,10 +55,25 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "formCta",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "sections": {
+        "edit": {
+          "label": "Sekcie",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sections",
           "searchable": false,
           "sortable": false
         }
@@ -88,6 +104,12 @@
         [
           {
             "name": "formCta",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "sections",
             "size": 12
           }
         ]

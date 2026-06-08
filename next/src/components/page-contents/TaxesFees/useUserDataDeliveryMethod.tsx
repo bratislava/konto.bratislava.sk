@@ -2,7 +2,7 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 
 import { useUser } from '@/src/frontend/hooks/useUser'
 
-export const useOfficialCorrespondenceChannel = () => {
+export const useUserDataDeliveryMethod = () => {
   const { userData } = useUser()
 
   if (
@@ -19,18 +19,18 @@ export const useOfficialCorrespondenceChannel = () => {
     hasChangedDeliveryMethodAfterDeadline,
   } = userData
 
-  const channelEffectiveInCurrentYear = hasChangedDeliveryMethodAfterDeadline
+  const deliveryMethodEffectiveInCurrentYear = hasChangedDeliveryMethodAfterDeadline
     ? UserOfficialCorrespondenceChannelEnum.Postal
     : officialCorrespondenceChannel
 
-  const canUserChangeChannel =
+  const canUserChangeDeliveryMethod =
     officialCorrespondenceChannel !== UserOfficialCorrespondenceChannelEnum.Edesk
 
   return {
-    channel: officialCorrespondenceChannel,
-    channelEffectiveInCurrentYear,
+    deliveryMethod: officialCorrespondenceChannel,
+    deliveryMethodEffectiveInCurrentYear,
     hasChangedDeliveryMethodAfterDeadline,
-    canUserChangeChannel,
+    canUserChangeDeliveryMethod,
     showChannelNeededBanner: showEmailCommunicationBanner,
   }
 }

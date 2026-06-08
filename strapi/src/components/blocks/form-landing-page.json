@@ -12,14 +12,18 @@
     },
     "linkCtas": {
       "type": "component",
-      "repeatable": true,
-      "component": "blocks.form-landing-page-link-cta"
+      "component": "blocks.form-landing-page-link-cta",
+      "repeatable": true
     },
     "formCta": {
       "type": "component",
-      "repeatable": false,
       "component": "blocks.form-landing-page-form-cta",
+      "repeatable": false,
       "required": true
+    },
+    "sections": {
+      "type": "dynamiczone",
+      "components": ["sections.richtext"]
     }
   }
 }

@@ -74,6 +74,7 @@ type ComponentBlocksFormLandingPage {
   formCta: ComponentBlocksFormLandingPageFormCta!
   id: ID!
   linkCtas(filters: ComponentBlocksFormLandingPageLinkCtaFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFormLandingPageLinkCta]
+  sections: [FormLandingPageSectionsDynamicZone]
   text: String
 }
 
@@ -113,6 +114,7 @@ input ComponentBlocksFormLandingPageInput {
   formCta: ComponentBlocksFormLandingPageFormCtaInput
   id: ID
   linkCtas: [ComponentBlocksFormLandingPageLinkCtaInput]
+  sections: [FormLandingPageSectionsDynamicZoneInput!]
   text: String
 }
 
@@ -202,6 +204,23 @@ input ComponentGeneralAlertInput {
   content: String
   dateFrom: DateTime
   dateTo: DateTime
+  id: ID
+}
+
+type ComponentSectionsRichtext {
+  content: String
+  id: ID!
+}
+
+input ComponentSectionsRichtextFiltersInput {
+  and: [ComponentSectionsRichtextFiltersInput]
+  content: StringFilterInput
+  not: ComponentSectionsRichtextFiltersInput
+  or: [ComponentSectionsRichtextFiltersInput]
+}
+
+input ComponentSectionsRichtextInput {
+  content: String
   id: ID
 }
 
@@ -453,6 +472,10 @@ input FormInput {
   slug: String
 }
 
+union FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
+
+scalar FormLandingPageSectionsDynamicZoneInput
+
 type FormRelationResponseCollection {
   nodes: [Form!]!
 }
@@ -498,7 +521,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsRichtext | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!

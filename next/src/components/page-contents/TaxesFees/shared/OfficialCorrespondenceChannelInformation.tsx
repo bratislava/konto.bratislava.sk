@@ -6,8 +6,8 @@ import { useState } from 'react'
 import Icon from '@/src/components/icon-components/Icon'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4
@@ -17,12 +17,12 @@ const OfficialCorrespondenceChannelInformation = () => {
   const { t } = useTranslation('account')
 
   const strapiTax = useStrapiTax()
-  const { channel, canUserChangeChannel, hasChangedDeliveryMethodAfterDeadline } =
-    useOfficialCorrespondenceChannel()
+  const { deliveryMethod, canUserChangeDeliveryMethod, hasChangedDeliveryMethodAfterDeadline } =
+    useUserDataDeliveryMethod()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  if (!channel) {
+  if (!deliveryMethod) {
     return null
   }
 
@@ -30,7 +30,7 @@ const OfficialCorrespondenceChannelInformation = () => {
     [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
     [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
     [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
-  }[channel]
+  }[deliveryMethod]
 
   return (
     <>
@@ -48,7 +48,7 @@ const OfficialCorrespondenceChannelInformation = () => {
               {channelLabel}
             </Typography>
           </div>
-          {canUserChangeChannel && (
+          {canUserChangeDeliveryMethod && (
             <>
               {/* Desktop */}
               <Button

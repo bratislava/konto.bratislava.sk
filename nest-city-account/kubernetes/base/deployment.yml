@@ -99,6 +99,8 @@ spec:
             name: ${BUILD_REPOSITORY_NAME}-oauth2-paas-mpa-secret
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-noris-secret
+        - secretRef:
+            name: ${BUILD_REPOSITORY_NAME}-enforcement-secret
         - configMapRef:
             name: ${BUILD_REPOSITORY_NAME}-env
         readinessProbe:

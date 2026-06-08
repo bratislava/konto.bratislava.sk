@@ -39,7 +39,7 @@
     "@prisma/client": "6.17.1",
     "@types/express": "5.0.6",
     "amqplib": "0.10.9",
-    "axios": "1.16.0",
+    "axios": "1.17.0",
     "cache-manager": "7.2.8",
     "cf-turnstile": "1.0.8",
     "class-transformer": "0.5.1",

@@ -1109,45 +1109,45 @@ enum PublicationStatus {
 
 type Query {
   footer(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Footer
-  form(documentId: ID!): Form
-  forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [Form]!
-  forms_connection(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection
-  general: General
-  helpPage: HelpPage
-  homepage: Homepage
-  homepageAnnouncement(documentId: ID!): HomepageAnnouncement
-  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [HomepageAnnouncement]!
-  homepageAnnouncements_connection(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementEntityResponseCollection
-  i18NLocale(documentId: ID!): I18NLocale
-  i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [I18NLocale]!
-  i18NLocales_connection(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
+  form(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Form
+  forms(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [Form]!
+  forms_connection(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): FormEntityResponseCollection
+  general(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): General
+  helpPage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): HelpPage
+  homepage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Homepage
+  homepageAnnouncement(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
+  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [HomepageAnnouncement]!
+  homepageAnnouncements_connection(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): HomepageAnnouncementEntityResponseCollection
+  i18NLocale(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): I18NLocale
+  i18NLocales(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [I18NLocale]!
+  i18NLocales_connection(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe
-  municipalService(documentId: ID!): MunicipalService
-  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceCategory]!
-  municipalServiceCategories_connection(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
-  municipalServiceCategory(documentId: ID!): MunicipalServiceCategory
-  municipalServiceTag(documentId: ID!): MunicipalServiceTag
-  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceTag]!
-  municipalServiceTags_connection(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagEntityResponseCollection
-  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
-  municipalServicesPage: MunicipalServicesPage
-  municipalServices_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceEntityResponseCollection
-  reviewWorkflowsWorkflow(documentId: ID!): ReviewWorkflowsWorkflow
-  reviewWorkflowsWorkflowStage(documentId: ID!): ReviewWorkflowsWorkflowStage
-  reviewWorkflowsWorkflowStages(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ReviewWorkflowsWorkflowStage]!
-  reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ReviewWorkflowsWorkflowStageEntityResponseCollection
-  reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ReviewWorkflowsWorkflow]!
-  reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ReviewWorkflowsWorkflowEntityResponseCollection
-  tax: Tax
-  uploadFile(documentId: ID!): UploadFile
-  uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UploadFile]!
-  uploadFiles_connection(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection
-  usersPermissionsRole(documentId: ID!): UsersPermissionsRole
-  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsRole]!
-  usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsRoleEntityResponseCollection
-  usersPermissionsUser(documentId: ID!): UsersPermissionsUser
-  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsUser]!
-  usersPermissionsUsers_connection(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsUserEntityResponseCollection
+  municipalService(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalService
+  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceCategory]!
+  municipalServiceCategories_connection(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceCategoryEntityResponseCollection
+  municipalServiceCategory(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
+  municipalServiceTag(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
+  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceTag]!
+  municipalServiceTags_connection(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceTagEntityResponseCollection
+  municipalServices(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalService]!
+  municipalServicesPage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServicesPage
+  municipalServices_connection(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceEntityResponseCollection
+  reviewWorkflowsWorkflow(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflow
+  reviewWorkflowsWorkflowStage(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStage
+  reviewWorkflowsWorkflowStages(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflowStage]!
+  reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStageEntityResponseCollection
+  reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflow]!
+  reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowEntityResponseCollection
+  tax(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Tax
+  uploadFile(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UploadFile
+  uploadFiles(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UploadFile]!
+  uploadFiles_connection(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UploadFileEntityResponseCollection
+  usersPermissionsRole(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UsersPermissionsRole
+  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsRole]!
+  usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsRoleEntityResponseCollection
+  usersPermissionsUser(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UsersPermissionsUser
+  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsUser]!
+  usersPermissionsUsers_connection(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsUserEntityResponseCollection
 }
 
 type ResponseCollectionMeta {

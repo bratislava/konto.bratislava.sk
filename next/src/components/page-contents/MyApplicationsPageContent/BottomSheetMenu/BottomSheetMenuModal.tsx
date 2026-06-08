@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { Dialog } from 'react-aria-components/Dialog'
-import { Modal, ModalOverlay } from 'react-aria-components/Modal'
+import { Modal as RACModal, ModalOverlay as RACModalOverlay } from 'react-aria-components/Modal'
 
 import Icon from '@/src/components/icon-components/Icon'
 import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
@@ -25,18 +25,13 @@ const BottomSheetMenuModal = ({
   }
 
   return (
-    <ModalOverlay
+    <RACModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
       className="fixed top-0 left-0 z-50 h-(--visual-viewport-height) w-screen bg-gray-800/40 outline-0"
       isDismissable
     >
-      <Modal
-        isDismissable
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        className="fixed bottom-0 w-full outline-0 entering:animate-stepper-slide exiting:animate-stepper-slide-reverse"
-      >
+      <RACModal className="fixed bottom-0 w-full outline-0 entering:animate-stepper-slide exiting:animate-stepper-slide-reverse">
         <Dialog className="flex h-full flex-col outline-0">
           {({ close }) => (
             <>
@@ -71,8 +66,8 @@ const BottomSheetMenuModal = ({
             </>
           )}
         </Dialog>
-      </Modal>
-    </ModalOverlay>
+      </RACModal>
+    </RACModalOverlay>
   )
 }
 

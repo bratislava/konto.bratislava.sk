@@ -2,7 +2,9 @@
 
 import { Button, Typography } from '@bratislava/component-library'
 import { useState } from 'react'
+import { Heading } from 'react-aria-components/Heading'
 
+import Dialog from '@/src/components/simple-components/Dialog'
 import Modal from '@/src/components/simple-components/Modal'
 import { Stack } from '@/src/components/styleguide/Stack'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
@@ -28,26 +30,28 @@ const BaseModalsShowcase = () => {
       </Stack>
 
       <Modal isOpen={simpleModal} onOpenChange={setSimpleModalOpen} modalClassname="max-w-[700px]">
-        <div className="flex flex-col gap-4">
-          <Typography variant="h3" as="h2">
-            Simple Modal Example
-          </Typography>
+        <Dialog>
           <div className="flex flex-col gap-4">
-            <div className="flex w-full items-center justify-center rounded-lg bg-background-passive-primary p-4">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-              has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown
-              printer took a galley of type and scrambled it to make a type specimen book.
-            </div>
-            <div className="mt-2 flex justify-between">
-              <Button variant="outline" onPress={() => setSimpleModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button variant="solid" onPress={() => setSimpleModalOpen(false)}>
-                Submit
-              </Button>
+            <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
+              Simple Modal Example
+            </Heading>
+            <div className="flex flex-col gap-4">
+              <div className="flex w-full items-center justify-center rounded-lg bg-background-passive-primary p-4">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an
+                unknown printer took a galley of type and scrambled it to make a type specimen book.
+              </div>
+              <div className="mt-2 flex justify-between">
+                <Button variant="outline" onPress={() => setSimpleModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="solid" onPress={() => setSimpleModalOpen(false)}>
+                  Submit
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        </Dialog>
       </Modal>
 
       <MessageModal

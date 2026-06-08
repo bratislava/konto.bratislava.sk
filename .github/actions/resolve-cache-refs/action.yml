@@ -1,0 +1,122 @@
+# Why this action exists:
+# - all builds read from a shared "master" cache first because it is the
+#   warmest baseline across branches
+# - non-master refs also read from a branch-specific cache so follow-up
+#   branch and PR runs can reuse work that exists only there
+# - non-master refs write only to their branch cache so they do not
+#   constantly overwrite the shared master cache
+# - master writes directly to the master cache, so there is no duplicate
+#   "master + master" cache-from list
+# - docker/metadata-action gives us Docker-safe branch and PR tokens
+# - the metadata config also includes a SHA tag, so there is always a
+#   fallback token even when no branch or PR ref tag applies
+#
+# Example outputs for image "harbor.bratislava.sk/app" and suffix "build":
+# - on master:
+#     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build"
+#     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build,mode=max"
+# - on branch "feature/foo":
+#     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build
+#                   type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build"
+#     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build,mode=max"
+# - on pull_request for PR 4099:
+#     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build
+#                   type=registry,ref=harbor.bratislava.sk/app:cache-pr-4099-build"
+#     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-pr-4099-build,mode=max"
+# - on an event without a branch/pr ref:
+#     cache_from = "type=registry,ref=harbor.bratislava.sk/app:cache-master-build
+#                   type=registry,ref=harbor.bratislava.sk/app:cache-sha-abcdef1-build"
+#     cache_to   = "type=registry,ref=harbor.bratislava.sk/app:cache-sha-abcdef1-build,mode=max"
+#
+# Example cache_refs output for suffixes "validate" and "build":
+# {
+#   "validate": {
+#     "cache_from": "type=registry,ref=harbor.bratislava.sk/app:cache-master-validate\n
+#                    type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-validate",
+#     "cache_to": "type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-validate,mode=max"
+#   },
+#   "build": {
+#     "cache_from": "type=registry,ref=harbor.bratislava.sk/app:cache-master-build\n
+#                    type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build",
+#     "cache_to": "type=registry,ref=harbor.bratislava.sk/app:cache-feature-foo-build,mode=max"
+#   }
+# }
+name: Resolve Docker cache refs
+description: Resolve stable Docker registry cache refs for master and the current branch/PR
+
+inputs:
+  image:
+    description: Full image name including registry/repository
+    required: true
+  suffixes:
+    description: Newline-delimited cache suffixes to resolve in one call
+    required: true
+
+outputs:
+  cache_refs:
+    description: JSON object keyed by suffix with cache_from and cache_to entries
+    value: ${{ steps.resolve.outputs.cache_refs }}
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve Docker-safe ref token
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: ""
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix=sha-
+
+    - name: Build cache refs
+      id: resolve
+      uses: actions/github-script@v8
+      env:
+        INPUT_IMAGE: ${{ inputs.image }}
+        INPUT_SUFFIXES: ${{ inputs.suffixes }}
+        INPUT_META_JSON: ${{ steps.meta.outputs.json }}
+      with:
+        script: |
+          const image = process.env.INPUT_IMAGE
+          const rawSuffixes = process.env.INPUT_SUFFIXES
+          const rawMetaJson = process.env.INPUT_META_JSON
+
+          const suffixes = rawSuffixes
+            .split(/\r?\n/)
+            .map((suffix) => suffix.trim())
+            .filter(Boolean)
+
+          if (suffixes.length === 0) {
+            throw new Error('At least one suffix is required')
+          }
+
+          const meta = JSON.parse(rawMetaJson)
+          const token = meta['tag-names']?.[0]
+          if (!token) {
+            throw new Error('No metadata-action tag-names value found')
+          }
+
+          function buildCacheRefs(suffix) {
+            const masterRef = `${image}:cache-master-${suffix}`
+            const branchRef = `${image}:cache-${token}-${suffix}`
+
+            if (token === 'master') {
+              return {
+                cache_from: `type=registry,ref=${masterRef}`,
+                cache_to: `type=registry,ref=${masterRef},mode=max`,
+              }
+            }
+
+            return {
+              cache_from: `type=registry,ref=${masterRef}\ntype=registry,ref=${branchRef}`,
+              cache_to: `type=registry,ref=${branchRef},mode=max`,
+            }
+          }
+
+          const cacheRefs = Object.fromEntries(
+            suffixes.map((suffix) => [suffix, buildCacheRefs(suffix)]),
+          )
+
+          core.setOutput('cache_refs', JSON.stringify(cacheRefs))

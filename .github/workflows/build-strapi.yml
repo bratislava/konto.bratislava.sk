@@ -1,29 +1,20 @@
-name: Build Shared Package
-
+name: Build Strapi
 on:
   workflow_call:
     inputs:
       directory:
-        description: Docker build context directory
-        required: false
+        description: "Base dir where whole app is located."
         type: string
-        default: .
+        required: true
       image:
-        description: Full image name including registry/repository
-        required: true
+        description: "Full image name including registry/repository for Docker cache."
         type: string
-      push:
-        description: Whether to push the built image
         required: true
-        type: boolean
-      target:
-        description: Docker build target stage
-        required: true
+      target_build:
+        description: "Docker target used for final image build."
         type: string
-    outputs:
-      image_digest:
-        description: Pushed image digest
-        value: ${{ jobs.build.outputs.image_digest }}
+        required: false
+        default: prod
     secrets:
       DOCKER_REGISTRY_USERNAME:
         required: true
@@ -41,15 +32,16 @@ env:
 
 jobs:
   build:
-    name: Build Shared Package
+    name: Build Strapi
     runs-on: bratislava
-    outputs:
-      image_digest: ${{ steps.build.outputs.digest }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.sha }}
+          fetch-depth: 1
 
       - name: Set up Docker build
         id: docker
@@ -64,20 +56,10 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Build and push
-        id: build
+      - name: Build final image
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
-          target: ${{ inputs.target }}
-          push: ${{ inputs.push }}
-          tags: ${{ inputs.image }}:build-${{ github.sha }}
+          target: ${{ inputs.target_build }}
           cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_from }}
           cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_to }}
-
-      - name: Print summary
-        shell: bash
-        run: |
-          echo "### Build Complete" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Digest: \`${{ steps.build.outputs.digest }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Pushed: \`${{ inputs.push }}\`" >> "$GITHUB_STEP_SUMMARY"

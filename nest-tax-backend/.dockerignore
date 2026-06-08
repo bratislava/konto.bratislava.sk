@@ -18,6 +18,3 @@ manifest-*.y?ml
 *.pem
 *.md
 kubernetes/
-# test files not necessary for the build. If needed copy them
-# specifically in seperate stage
-test/

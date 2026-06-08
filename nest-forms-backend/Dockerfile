@@ -1,13 +1,14 @@
 # check=skip=InvalidDefaultArgInFrom
-ARG SHARED_PACKAGE_TAG
-FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} AS forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
+ARG FORMS_SHARED_DIGEST
+ARG OPENAPI_CLIENTS_DIGEST
+FROM harbor.bratislava.sk/standalone/forms-shared@${FORMS_SHARED_DIGEST} AS forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
 FROM node:24.15 AS base
 
 RUN npx playwright install-deps chromium
 
 # build
-FROM base AS build
+FROM base AS prebuild
 
 # Temporary workaround until this repository uses npm workspaces. Locally, shared
 # packages are symlinked through file: dependencies and their folders already
@@ -29,8 +30,20 @@ COPY package*.json ./
 RUN npm ci --include=dev
 
 COPY . ./
-
 RUN npx prisma generate --schema=./prisma/schema.prisma
+
+FROM prebuild AS test
+RUN npm run test
+
+FROM prebuild AS lint
+RUN npm run lint
+
+FROM prebuild AS test-e2e
+ARG CI_E2E_DATABASE_URL
+ENV CI_E2E_DATABASE_URL=${CI_E2E_DATABASE_URL}
+RUN npm run test:e2e
+
+FROM prebuild AS build
 RUN npm run build
 
 # development

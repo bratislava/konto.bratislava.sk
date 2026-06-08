@@ -1,8 +1,8 @@
 import { Typography } from '@bratislava/component-library'
 import { useQuery } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
+import { useRouter } from 'next/router'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
@@ -132,7 +132,7 @@ const MyApplicationsPageContent = ({
                   id={item.tag}
                   data-before-text={text}
                   className={cn(
-                    'cursor-pointer p-4 text-center text-size-p-large lg:px-0 lg:text-size-p-large',
+                    'cursor-pointer p-4 text-center text-size-p-large base-focus-ring lg:px-0 lg:text-size-p-large',
                     'hover:border-gray-700 hover:font-semibold',
                     'selected:border-b-2 selected:border-gray-700 selected:font-semibold',
                     // Hover without layout shift based on: https://stackoverflow.com/a/20249560

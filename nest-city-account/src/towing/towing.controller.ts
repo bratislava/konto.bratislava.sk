@@ -21,7 +21,8 @@ export class TowingController {
     description:
       'Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and ' +
       'normalization are owned by the upstream service. The path parameter is forwarded to upstream. ' +
-      'A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.',
+      'The upstream call is authenticated with an internal API key. A valid Turnstile token must be supplied ' +
+      'in request body to mitigate enumeration attacks.',
   })
   @ApiOkResponse({ type: TowingSearchResponseDto })
   @ApiResponse({

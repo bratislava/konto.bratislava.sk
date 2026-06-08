@@ -109,8 +109,8 @@ import ziadostOSlobodnyPristupKInformaciam, {
   ziadostOSlobodyPristupKInformaciamFiles,
 } from '../schemas/ziadostOSlobodnyPristupKInformaciam'
 import ziadostOUzemnoplanovaciuInformaciu, {
-  ziadostOUzemnoplanovaciuInformaciuFiles,
   ziadostOUzemnoplanovaciuInformaciuExtractTechnicalSubject,
+  ziadostOUzemnoplanovaciuInformaciuFiles,
 } from '../schemas/ziadostOUzemnoplanovaciuInformaciu'
 import webhookShowcase, { webhookShowcaseFiles } from '../schemas/webhookShowcase'
 import nahlaseniePodnetuKElektrickymKolobezkam, {
@@ -722,8 +722,7 @@ export const formDefinitions: FormDefinition[] = [
     },
     email: {
       address: {
-        // TODO change to prod email
-        prod: ['inovacie.bratislava@gmail.com'],
+        prod: ['paas@bratislava.sk'],
         test: ['inovacie.bratislava@gmail.com'],
       },
       fromAddress: {
@@ -733,8 +732,7 @@ export const formDefinitions: FormDefinition[] = [
       extractEmail: kontaktnyFormularPaasExtractEmail,
       extractName: kontaktnyFormularPaasExtractName,
       mailer: 'mailgun',
-      // TODO use template with PAAS logo
-      userResponseTemplate: MailgunTemplateEnum.BRATISLAVA_SENT_SUCCESS,
+      userResponseTemplate: MailgunTemplateEnum.PAAS_CONTACT_FORM_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
       technicalEmailSubjectAppendId: true,
     },

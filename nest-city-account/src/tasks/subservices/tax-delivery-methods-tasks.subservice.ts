@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
-import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import pLimit from 'p-limit'
 import { z } from 'zod'
 
 import { MailgunService } from '../../mailgun/mailgun.service'
+import {
+  NorisDeliveryMethodService,
+  UpdateNorisDeliveryMethodsData,
+} from '../../noris/services/noris-delivery-method.service'
+import { DeliveryMethod } from '../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../pdf-generator/pdf-generator.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../../utils/constants/tax-deadline'
@@ -16,8 +20,6 @@ import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { DeliveryMethodCodec } from '../../utils/norisCodec'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import { TaxSubservice } from '../../utils/subservices/tax.subservice'
-import { DeliveryMethodNoris } from '../../utils/types/tax.types'
 
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 const LOCK_DELIVERY_METHODS_BATCH = 100
@@ -36,7 +38,7 @@ export class TaxDeliveryMethodsTasksSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly taxSubservice: TaxSubservice,
+    private readonly norisDeliveryMethodService: NorisDeliveryMethodService,
     private readonly mailgunService: MailgunService,
     private readonly pdfGeneratorService: PdfGeneratorService
   ) {
@@ -87,33 +89,32 @@ export class TaxDeliveryMethodsTasksSubservice {
       return
     }
 
-    const data = users.reduce<Record<string, RequestUpdateNorisDeliveryMethodsDtoDataValue>>(
-      (acc, user) => {
-        // We know that birthNumber is not null from the query.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const birthNumber: string = user.birthNumber!
-        const deliveryMethod = DeliveryMethodCodec.decode(user.taxDeliveryMethodAtLockDate)
-        const date: string | undefined = user.taxDeliveryMethodCityAccountLockDate
-          ? user.taxDeliveryMethodCityAccountLockDate.toISOString().substring(0, 10)
-          : undefined
-        if (date) {
-          acc[birthNumber] = { deliveryMethod, date }
-        } else {
-          if (deliveryMethod === DeliveryMethodNoris.CITY_ACCOUNT) {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-              DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
-              undefined,
-              user
-            )
-          }
+    const data = users.reduce<UpdateNorisDeliveryMethodsData>((acc, user) => {
+      // We know that birthNumber is not null from the query.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const birthNumber: string = user.birthNumber!
+      const deliveryMethod = DeliveryMethodCodec.decode(user.taxDeliveryMethodAtLockDate)
+      const date: string | undefined = user.taxDeliveryMethodCityAccountLockDate
+        ? user.taxDeliveryMethodCityAccountLockDate.toISOString().substring(0, 10)
+        : undefined
 
-          acc[birthNumber] = { deliveryMethod }
-        }
+      if (deliveryMethod !== DeliveryMethod.CITY_ACCOUNT) {
+        acc[birthNumber] = { deliveryMethod }
         return acc
-      },
-      {}
-    )
+      }
+
+      if (!date) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          undefined,
+          user,
+        )
+      }
+
+      acc[birthNumber] = { deliveryMethod, date }
+      return acc
+    }, {})
 
     // Sorted acquisition prevents deadlocks: keys along any wait-chain T1->T2->...->Tn are strictly
     // increasing, so the chain cannot cycle back to T1.
@@ -129,7 +130,7 @@ export class TaxDeliveryMethodsTasksSubservice {
       async (tx) => {
         for (const bn of sortedBirthNumbers) {
           // eslint-disable-next-line no-await-in-loop -- locks must be acquired sequentially in sorted order to prevent deadlocks
-          await TaxSubservice.acquireDeliveryMethodLock(tx, bn)
+          await NorisDeliveryMethodService.acquireDeliveryMethodLock(tx, bn)
         }
 
         // Re-check which users are still active now that we hold the locks.
@@ -151,7 +152,7 @@ export class TaxDeliveryMethodsTasksSubservice {
         if (Object.keys(activeData).length === 0) return null
 
         // call to Noris happens while the locks are still held.
-        return this.taxSubservice.updateDeliveryMethodsInNoris({ data: activeData })
+        return this.norisDeliveryMethodService.updateDeliveryMethods({ data: activeData })
       },
       { timeout: 30_000 }
     )
@@ -168,7 +169,7 @@ export class TaxDeliveryMethodsTasksSubservice {
 
     if (!norisUpdateResponse) return
 
-    const updatedBirthNumbers = norisUpdateResponse.data.birthNumbers.map((birthNumber) =>
+    const updatedBirthNumbers = norisUpdateResponse.birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', '')
     )
 

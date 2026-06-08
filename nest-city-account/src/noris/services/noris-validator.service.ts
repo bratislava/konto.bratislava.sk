@@ -6,8 +6,8 @@ import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subser
 import { CustomErrorNorisTypesEnum } from '../noris.errors'
 
 @Injectable()
-export class NorisValidatorSubservice {
-  private readonly logger = new LineLoggerSubservice(NorisValidatorSubservice.name)
+export class NorisValidatorService {
+  private readonly logger = new LineLoggerSubservice(NorisValidatorService.name)
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
 

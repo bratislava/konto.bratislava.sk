@@ -8,7 +8,6 @@ import { createTestTax } from '../../__tests__/factories/tax.factory'
 import { createTestTaxPayer } from '../../__tests__/factories/taxPayer.factory'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { NorisService } from '../../noris/noris.service'
-import { DeliveryMethod } from '../../noris/types/noris.enums'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -189,7 +188,6 @@ describe('AdminService', () => {
 
     const mockNorisData: RequestAdminCreateTestingTaxNorisData = {
       variableSymbol: 'mock-vs',
-      deliveryMethod: DeliveryMethod.EDESK,
       fakeBirthNumber: '0123456789',
       nameSurname: 'John Doe',
       taxTotal: '300.04',

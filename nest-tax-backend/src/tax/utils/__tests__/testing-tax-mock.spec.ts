@@ -3,7 +3,6 @@ import { randomBytes } from 'node:crypto'
 import { TaxAdministrator, TaxType } from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
-import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
@@ -36,7 +35,6 @@ describe('testing-tax-mock', () => {
     }
 
     mockNorisData = {
-      deliveryMethod: DeliveryMethod.EDESK,
       fakeBirthNumber: '9001011234',
       nameSurname: 'Ján Testovací',
       taxTotal: '150,00',

@@ -25,7 +25,7 @@ const LoadingContent = () => {
       <Spinner size="lg" />
       <div className="flex flex-col gap-3 text-center">
         {/* Accessible Dialog heading */}
-        <Heading slot="title" className="text-size-h3-r lg:text-size-h3">
+        <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
           {t('tax_form_pdf_export_modal.preparing')}
         </Heading>
         <Typography variant="p-default">
@@ -83,7 +83,7 @@ const SuccessContent = () => {
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-1">
           {/* Accessible Dialog heading */}
-          <Heading slot="title" className="text-size-h2-r lg:text-size-h2">
+          <Heading slot="title" className="text-size-h2-r font-semibold lg:text-size-h2">
             {t('tax_form_pdf_export_modal.heading')}
           </Heading>
           <Typography variant="p-small">{t('tax_form_pdf_export_modal.subheading')}</Typography>

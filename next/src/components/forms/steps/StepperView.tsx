@@ -33,7 +33,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
-                <Heading slot="title" className="grow text-size-h6-r lg:text-size-h6">
+                <Heading slot="title" className="grow text-size-h6-r font-semibold lg:text-size-h6">
                   {t('StepperView.all_steps')}
                 </Heading>
                 {/* TODO Unify modal close button with other modals */}

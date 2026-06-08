@@ -32,7 +32,7 @@ const BaseModalsShowcase = () => {
       <Modal isOpen={simpleModal} onOpenChange={setSimpleModalOpen} modalClassname="max-w-[700px]">
         <Dialog>
           <div className="flex flex-col gap-4">
-            <Heading slot="title" className="text-size-h3-r lg:text-size-h3">
+            <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
               Simple Modal Example
             </Heading>
             <div className="flex flex-col gap-4">

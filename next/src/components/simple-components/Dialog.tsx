@@ -1,11 +1,11 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { Dialog as AriaDialog, DialogProps as AriaDialogProps } from 'react-aria-components/Dialog'
+import { Dialog as RACDialog, DialogProps as RACDialogProps } from 'react-aria-components/Dialog'
 
 import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
-export type DialogProps = AriaDialogProps & {
+export type DialogProps = RACDialogProps & {
   noCloseButton?: boolean
 }
 
@@ -23,7 +23,7 @@ const Dialog = ({ children, className, noCloseButton, ...rest }: DialogProps) =>
   const { t } = useTranslation('account')
 
   return (
-    <AriaDialog {...rest} className={cn('outline-0', className)}>
+    <RACDialog {...rest} className={cn('outline-0', className)}>
       {(renderProps) => (
         <>
           {noCloseButton ? null : (
@@ -39,7 +39,7 @@ const Dialog = ({ children, className, noCloseButton, ...rest }: DialogProps) =>
           {typeof children === 'function' ? children(renderProps) : children}
         </>
       )}
-    </AriaDialog>
+    </RACDialog>
   )
 }
 

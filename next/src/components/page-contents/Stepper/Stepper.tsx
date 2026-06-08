@@ -30,14 +30,15 @@ export const Stepper = ({ section }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Typography variant="h2">{title}</Typography>
+      {title && <Typography variant="h2">{title}</Typography>}
 
-      <Typography variant="p-default">{description}</Typography>
+      {description && <Typography variant="p-default">{description}</Typography>}
 
       <DisclosureGroup className="rounded-lg border border-border-active-default bg-background-passive-base py-2">
         {checklists?.filter(isDefined).map((checklist, index) => (
           <Fragment key={`fragment-checklist-${index}`}>
             {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}
+
             <Disclosure id={`disclosure-faq-${index}`}>
               <DisclosureHeader className="p-4 ring-inset lg:px-6">
                 <div className="flex flex-row gap-4">

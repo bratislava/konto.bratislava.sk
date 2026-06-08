@@ -29,4 +29,7 @@ const commonDateSegmentClassName: DateSegmentProps['className'] =
 export const timeSegmentClassName = commonDateSegmentClassName
 
 // Remove space before dots using negative margin
-export const dateSegmentClassName = cn(commonDateSegmentClassName, 'type-literal:-ml-0.5')
+export const dateSegmentClassName = cn(
+  commonDateSegmentClassName,
+  'base-focus-ring type-literal:-ml-0.5',
+)

@@ -1,10 +1,10 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { forwardRef } from 'react'
-import { DropEvent } from 'react-aria/useDrop'
 import { Button as ReactAriaButton } from 'react-aria-components/Button'
 import { DropZone, DropZoneRenderProps } from 'react-aria-components/DropZone'
 import { FileTrigger } from 'react-aria-components/FileTrigger'
+import { DropEvent } from 'react-aria/useDrop'
 
 import Icon from '@/src/components/icon-components/Icon'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
@@ -102,7 +102,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
           >
             <ReactAriaButton
               ref={ref}
-              className="flex size-full flex-col items-center justify-evenly p-6 text-center"
+              className="flex size-full flex-col items-center justify-evenly rounded-lg p-6 text-center base-focus-ring"
               isDisabled={isDisabled}
             >
               <div className="flex justify-center">

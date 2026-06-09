@@ -19,6 +19,8 @@ import {
   ApiConsumes,
   ApiOkResponse,
   ApiOperation,
+  ApiPayloadTooLargeResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
 import contentDisposition from 'content-disposition'
@@ -104,10 +106,22 @@ export default class FilesController {
 
   @ApiOperation({
     summary: 'Upload file to form',
-    description: 'You can upload file to form. ',
+    description:
+      'You can upload a file to a form.\n\n' +
+      'Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, ' +
+      'and global limits. Oversized uploads are rejected with 413.',
   })
   @ApiOkResponse({
     type: PostFileResponseDto,
+  })
+  @ApiQuery({
+    name: 'slotId',
+    required: false,
+    description:
+      'Slot the file belongs to. Determines the applicable per-slot file size limit.',
+  })
+  @ApiPayloadTooLargeResponse({
+    description: 'File exceeds the applicable per-file size limit.',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({

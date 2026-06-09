@@ -44,7 +44,7 @@
     "currency.js": "2.0.4",
     "dayjs": "1.11.21",
     "express": "5.2.1",
-    "form-urlencoded": "6.1.6",
+    "form-urlencoded": "6.1.7",
     "lodash": "4.18.1",
     "mssql": "12.5.2",
     "nodemailer": "8.0.8",

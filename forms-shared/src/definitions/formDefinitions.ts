@@ -733,6 +733,10 @@ export const formDefinitions: FormDefinition[] = [
       extractName: kontaktnyFormularPaasExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.PAAS_CONTACT_FORM_SENT_SUCCESS,
+      replyToAddress: {
+        prod: 'paas@bratislava.sk',
+        test: 'inovacie.bratislava@gmail.com',
+      },
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
       technicalEmailSubjectAppendId: true,
     },

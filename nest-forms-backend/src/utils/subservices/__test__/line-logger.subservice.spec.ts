@@ -7,7 +7,7 @@ describe('LineLoggerService', () => {
   beforeEach(() => {
     service = new LineLoggerSubservice('LineLogger TEST')
     consoleSpy = jest.spyOn(console, 'log')
-    consoleSpy.mockImplementation(() => {})
+    consoleSpy.mockImplementation(jest.fn())
   })
 
   afterEach(() => {

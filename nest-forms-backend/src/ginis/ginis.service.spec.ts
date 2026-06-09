@@ -6,13 +6,14 @@ import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Files, FormError, Forms, FormState, GinisState } from '@prisma/client'
-import { AxiosResponse } from 'axios'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { UserIntegrationControllerGetContactAndIdInfoByExternalId200Response } from 'openapi-clients/city-account'
-import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
 import prismaMock from '../../test/singleton'
+import {
+  createCityAccountUserApiResponseMock,
+  createSlovenskoSkIdentitiesApiResponseMock,
+} from '../__tests__/factories/apiResponse.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
@@ -40,13 +41,9 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
 }))
 jest.mock('./subservices/ginis.helper')
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
-jest.mock('node:crypto', () => {
-  const actualCrypto = jest.requireActual('node:crypto')
-  return {
-    ...actualCrypto,
-    randomUUID: jest.fn(),
-  }
-})
+jest.mock('node:crypto', () => ({
+  randomUUID: jest.fn(),
+}))
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
   extractFormSubjectTechnical: jest.fn(),
@@ -904,15 +901,11 @@ describe('GinisService', () => {
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue(
-          createMock<
-            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
-          >({
-            data: {
-              email: 'test@example.com',
-              accountType: 'fo',
-              firstName: 'John',
-              lastName: 'Doe',
-            },
+          createCityAccountUserApiResponseMock({
+            email: 'test@example.com',
+            accountType: 'fo',
+            firstName: 'John',
+            lastName: 'Doe',
           }),
         )
 
@@ -952,19 +945,17 @@ describe('GinisService', () => {
           'apiIamIdentitiesSearchPost',
         )
         .mockResolvedValue(
-          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
-            data: [
-              {
-                type: 'natural_person',
-                uri: 'uri://test',
-                emails: [{ address: 'test@example.com' }],
-                natural_person: {
-                  given_names: ['John'],
-                  family_names: [{ value: 'Doe', primary: true }],
-                },
+          createSlovenskoSkIdentitiesApiResponseMock([
+            {
+              type: 'natural_person',
+              uri: 'uri://test',
+              emails: [{ address: 'test@example.com' }],
+              natural_person: {
+                given_names: ['John'],
+                family_names: [{ value: 'Doe', primary: true }],
               },
-            ],
-          }),
+            },
+          ]),
         )
 
       await service.createDocument(form, formDefinitionBase)
@@ -993,19 +984,17 @@ describe('GinisService', () => {
           'apiIamIdentitiesSearchPost',
         )
         .mockResolvedValue(
-          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
-            data: [
-              {
-                type: 'legal_entity',
-                uri: 'uri://test',
-                emails: [{ address: 'test@example.com' }],
-                corporate_body: {
-                  name: 'Test Company',
-                  cin: '12345678',
-                },
+          createSlovenskoSkIdentitiesApiResponseMock([
+            {
+              type: 'legal_entity',
+              uri: 'uri://test',
+              emails: [{ address: 'test@example.com' }],
+              corporate_body: {
+                name: 'Test Company',
+                cin: '12345678',
               },
-            ],
-          }),
+            },
+          ]),
         )
 
       await service.createDocument(form, formDefinitionBase)
@@ -1034,15 +1023,11 @@ describe('GinisService', () => {
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue(
-          createMock<
-            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
-          >({
-            data: {
-              email: 'external@example.com',
-              accountType: 'fo',
-              firstName: 'External',
-              lastName: 'User',
-            },
+          createCityAccountUserApiResponseMock({
+            email: 'external@example.com',
+            accountType: 'fo',
+            firstName: 'External',
+            lastName: 'User',
           }),
         )
 
@@ -1052,19 +1037,17 @@ describe('GinisService', () => {
           'apiIamIdentitiesSearchPost',
         )
         .mockResolvedValue(
-          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
-            data: [
-              {
-                type: 'natural_person',
-                uri: 'uri://test',
-                emails: [{ address: 'uri@example.com' }],
-                natural_person: {
-                  given_names: ['John'],
-                  family_names: [{ value: 'Doe', primary: true }],
-                },
+          createSlovenskoSkIdentitiesApiResponseMock([
+            {
+              type: 'natural_person',
+              uri: 'uri://test',
+              emails: [{ address: 'uri@example.com' }],
+              natural_person: {
+                given_names: ['John'],
+                family_names: [{ value: 'Doe', primary: true }],
               },
-            ],
-          }),
+            },
+          ]),
         )
 
       await service.createDocument(form, formDefinitionBase)
@@ -1218,15 +1201,7 @@ describe('GinisService', () => {
           service['clientsService'].slovenskoSkApi,
           'apiIamIdentitiesSearchPost',
         )
-        .mockResolvedValue(
-          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
-            data: [],
-            status: 200,
-            statusText: 'OK',
-            headers: {},
-            config: { headers: {} },
-          }),
-        )
+        .mockResolvedValue(createSlovenskoSkIdentitiesApiResponseMock([]))
 
       await expect(
         service.createDocument(form, formDefinitionBase),
@@ -1246,9 +1221,10 @@ describe('GinisService', () => {
           'apiIamIdentitiesSearchPost',
         )
         .mockResolvedValue(
-          createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({
-            data: [{ type: 'natural_person' }, { type: 'natural_person' }],
-          }),
+          createSlovenskoSkIdentitiesApiResponseMock([
+            { type: 'natural_person' },
+            { type: 'natural_person' },
+          ]),
         )
 
       await expect(
@@ -1268,17 +1244,7 @@ describe('GinisService', () => {
           service['clientsService'].cityAccountApi,
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
-        .mockResolvedValue(
-          createMock<
-            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
-          >({
-            data: undefined,
-            status: 200,
-            statusText: 'OK',
-            headers: {},
-            config: { headers: {} },
-          }),
-        )
+        .mockResolvedValue(createCityAccountUserApiResponseMock())
 
       await expect(
         service.createDocument(form, formDefinitionBase),
@@ -1298,15 +1264,11 @@ describe('GinisService', () => {
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue(
-          createMock<
-            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
-          >({
-            data: {
-              email: 'test@example.com',
-              accountType: 'po',
-              name: 'Company Name',
-              ico: '87654321',
-            },
+          createCityAccountUserApiResponseMock({
+            email: 'test@example.com',
+            accountType: 'po',
+            name: 'Company Name',
+            ico: '87654321',
           }),
         )
 
@@ -1334,15 +1296,11 @@ describe('GinisService', () => {
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
         .mockResolvedValue(
-          createMock<
-            AxiosResponse<UserIntegrationControllerGetContactAndIdInfoByExternalId200Response>
-          >({
-            data: {
-              email: 'test@example.com',
-              accountType: 'fo-p',
-              name: 'Self Employed',
-              ico: '11223344',
-            },
+          createCityAccountUserApiResponseMock({
+            email: 'test@example.com',
+            accountType: 'fo-p',
+            name: 'Self Employed',
+            ico: '11223344',
           }),
         )
 

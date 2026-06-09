@@ -11,9 +11,11 @@ class Nack {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- descriptor is intentionally returned as-is in this no-op decorator mock
 const rabbitRpcDecorator = (target, propertyKey, descriptor) => descriptor
 const RabbitRPC = () => rabbitRpcDecorator
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- descriptor is intentionally returned as-is in this no-op decorator mock
 const rabbitSubscribeDecorator = (target, propertyKey, descriptor) => descriptor
 const RabbitSubscribe = () => rabbitSubscribeDecorator
 

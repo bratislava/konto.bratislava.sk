@@ -18,6 +18,6 @@ module.exports = {
     mergeArrayOfSchemaDefinitions: () => [],
   }),
   createShallowAllOfMerge: () => identity,
-  createDeduplicator: () => () => {},
-  createIntersector: () => () => {},
+  createDeduplicator: () => () => undefined,
+  createIntersector: () => () => undefined,
 }

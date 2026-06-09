@@ -116,7 +116,7 @@ describe('FilesHelper', () => {
 
   describe('areErrorFilesInForm', () => {
     beforeEach(() => {
-      jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+      jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
     })
 
     afterEach(() => {

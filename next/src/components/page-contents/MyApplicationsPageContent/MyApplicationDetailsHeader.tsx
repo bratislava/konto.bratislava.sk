@@ -1,6 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
+import Link from 'next/link'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'
@@ -65,7 +65,10 @@ const MyApplicationDetailsHeader = ({
     <SectionContainer className="bg-gray-50">
       <div className="flex size-full flex-col justify-end gap-4 py-4 lg:gap-6 lg:py-8">
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
-          <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
+          <Link
+            href="/moje-ziadosti"
+            className="flex w-max items-center gap-1 rounded-sm base-focus-ring"
+          >
             <Icon name="chevron-left" className="size-5" />
             <Typography variant="p-tiny" className="font-medium underline underline-offset-2">
               {t('back_to_list')}

@@ -38,7 +38,9 @@ export type WrapperProps = {
 
 const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
   return variant === 'SENT' && href ? (
-    <Link href={href}>{children}</Link>
+    <Link href={href} className="rounded-lg base-focus-ring lg:hidden">
+      {children}
+    </Link>
   ) : (
     <Button className="relative w-full bg-white text-left lg:hidden" onPress={onClick}>
       {children}
@@ -188,7 +190,11 @@ const MyApplicationsCard = ({
     <>
       <ConditionalWrap
         condition={variant === 'SENT'}
-        wrap={(children) => <Link href={detailPageHref}>{children}</Link>}
+        wrap={(children) => (
+          <Link className="rounded-lg base-focus-ring" href={detailPageHref}>
+            {children}
+          </Link>
+        )}
       >
         {/* Desktop */}
         <div className="relative flex w-full items-stretch rounded-lg border border-gray-200 bg-white p-6 max-lg:hidden">
@@ -271,6 +277,7 @@ const MyApplicationsCard = ({
                           variant="outline"
                           icon={<Icon name="menu-kebab" />}
                           aria-label="Menu"
+                          className="menu-dropdown-focus-ring"
                         />
                       }
                       items={conceptMenuContent}

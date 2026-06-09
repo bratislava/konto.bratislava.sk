@@ -4,6 +4,7 @@ import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
 import { CustomErrorAdminTypesEnum } from '../../../admin/dtos/error.dto'
 import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
+import { TowingErrorsEnum } from '../../../towing/towing.errors.enum'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import {
   SendToQueueErrorsEnum,
@@ -20,16 +21,22 @@ export enum ErrorsEnum {
   UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
   BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
   FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
+  BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
+  BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
+  SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
 }
 
 export enum ErrorsResponseEnum {
-  NOT_FOUND_ERROR = 'Not found',
-  DATABASE_ERROR = 'Error to write or update or read from/to database',
-  INTERNAL_SERVER_ERROR = 'Unexpected error',
-  UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
-  UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
-  BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
-  FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
+  NOT_FOUND_ERROR = 'Resource not found.',
+  DATABASE_ERROR = 'There was database error.',
+  INTERNAL_SERVER_ERROR = 'Internal server error.',
+  UNAUTHORIZED_ERROR = 'Unauthorized.',
+  UNPROCESSABLE_ENTITY_ERROR = 'Unprocessable entity.',
+  BAD_REQUEST_ERROR = 'Bad request.',
+  FORBIDDEN_ERROR = 'Forbidden error',
+  BAD_GATEWAY_ERROR = 'Bad gateway.',
+  BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
+  SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
 }
 
 export class ResponseInternalServerErrorDto {
@@ -56,6 +63,7 @@ export type CustomErrorEnums =
   | DeliveryMethodErrorsEnum
   | CustomErrorAdminTypesEnum
   | CustomErrorNorisTypesEnum
+  | TowingErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

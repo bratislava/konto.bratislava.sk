@@ -1,6 +1,6 @@
 # check=skip=InvalidDefaultArgInFrom
-ARG SHARED_PACKAGE_TAG
-FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
+ARG OPENAPI_CLIENTS_DIGEST
+FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
 FROM node:24.15-alpine AS base
 
 ENV NODE_ENV=production
@@ -29,14 +29,22 @@ RUN npm ci --include=dev
 
 WORKDIR /build
 COPY package.json package-lock.json prisma ./
-RUN npm ci --include=dev \
-      && npx prisma generate
+RUN npm ci --include=dev
 
-FROM build-base AS build
+FROM build-base AS prebuild
 WORKDIR /build
 COPY . ./
+RUN npx prisma generate
+
+FROM prebuild AS build
 RUN npm run build \
   && npm prune --production
+
+FROM prebuild AS test
+RUN npm run test
+
+FROM prebuild AS lint
+RUN npm run lint
 
 FROM app-base AS dev
 ENV NODE_ENV=development

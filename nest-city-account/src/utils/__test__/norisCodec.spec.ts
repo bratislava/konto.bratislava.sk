@@ -1,49 +1,49 @@
 import { DeliveryMethodEnum } from '@prisma/client'
 
+import { DeliveryMethod } from '../../noris/types/noris.enums'
 import { DeliveryMethodCodec } from '../norisCodec'
-import { DeliveryMethodNoris } from '../types/tax.types'
 
 describe('DeliveryMethodCodec', () => {
   describe('`decode`', () => {
     it('should decode CITY_ACCOUNT correctly', () => {
       const result = DeliveryMethodCodec.decode(DeliveryMethodEnum.CITY_ACCOUNT)
-      expect(result).toBe(DeliveryMethodNoris.CITY_ACCOUNT)
+      expect(result).toBe(DeliveryMethod.CITY_ACCOUNT)
     })
 
     it('should decode EDESK correctly', () => {
       const result = DeliveryMethodCodec.decode(DeliveryMethodEnum.EDESK)
-      expect(result).toBe(DeliveryMethodNoris.EDESK)
+      expect(result).toBe(DeliveryMethod.EDESK)
     })
 
     it('should decode POSTAL correctly', () => {
       const result = DeliveryMethodCodec.decode(DeliveryMethodEnum.POSTAL)
-      expect(result).toBe(DeliveryMethodNoris.POSTAL)
+      expect(result).toBe(DeliveryMethod.POSTAL)
     })
 
     it('should return POSTAL as default when value is null', () => {
       const result = DeliveryMethodCodec.decode(null)
-      expect(result).toBe(DeliveryMethodNoris.POSTAL)
+      expect(result).toBe(DeliveryMethod.POSTAL)
     })
 
     it('should return POSTAL as default when value is undefined', () => {
       const result = DeliveryMethodCodec.decode(undefined)
-      expect(result).toBe(DeliveryMethodNoris.POSTAL)
+      expect(result).toBe(DeliveryMethod.POSTAL)
     })
   })
 
   describe('`encode`', () => {
     it('should encode CITY_ACCOUNT correctly', () => {
-      const result = DeliveryMethodCodec.encode(DeliveryMethodNoris.CITY_ACCOUNT)
+      const result = DeliveryMethodCodec.encode(DeliveryMethod.CITY_ACCOUNT)
       expect(result).toBe(DeliveryMethodEnum.CITY_ACCOUNT)
     })
 
     it('should encode EDESK correctly', () => {
-      const result = DeliveryMethodCodec.encode(DeliveryMethodNoris.EDESK)
+      const result = DeliveryMethodCodec.encode(DeliveryMethod.EDESK)
       expect(result).toBe(DeliveryMethodEnum.EDESK)
     })
 
     it('should encode POSTAL correctly', () => {
-      const result = DeliveryMethodCodec.encode(DeliveryMethodNoris.POSTAL)
+      const result = DeliveryMethodCodec.encode(DeliveryMethod.POSTAL)
       expect(result).toBe(DeliveryMethodEnum.POSTAL)
     })
   })
@@ -73,7 +73,7 @@ describe('DeliveryMethodCodec', () => {
     it('should handle null input and maintain consistency', () => {
       const encoded = DeliveryMethodCodec.decode(null)
       const decoded = DeliveryMethodCodec.encode(encoded)
-      expect(encoded).toBe(DeliveryMethodNoris.POSTAL)
+      expect(encoded).toBe(DeliveryMethod.POSTAL)
       expect(decoded).toBe(DeliveryMethodEnum.POSTAL)
     })
   })
@@ -84,12 +84,12 @@ describe('DeliveryMethodCodec', () => {
 
       allEnumValues.forEach((enumValue) => {
         const decoded = DeliveryMethodCodec.decode(enumValue)
-        expect(Object.values(DeliveryMethodNoris)).toContain(decoded)
+        expect(Object.values(DeliveryMethod)).toContain(decoded)
       })
     })
 
-    it('should correctly reverse map all DeliveryMethodNoris values', () => {
-      const allNorisValues = Object.values(DeliveryMethodNoris)
+    it('should correctly reverse map all DeliveryMethod values', () => {
+      const allNorisValues = Object.values(DeliveryMethod)
 
       allNorisValues.forEach((norisValue) => {
         const encoded = DeliveryMethodCodec.encode(norisValue)
@@ -120,19 +120,19 @@ describe('DeliveryMethodCodec', () => {
 
     it('should throw when decoding empty string', () => {
       expect(() => {
-        DeliveryMethodCodec.encode('' as DeliveryMethodNoris)
+        DeliveryMethodCodec.encode('' as DeliveryMethod)
       }).toThrow()
     })
 
     it('should throw when decoding numeric input', () => {
       expect(() => {
-        DeliveryMethodCodec.encode(123 as unknown as DeliveryMethodNoris)
+        DeliveryMethodCodec.encode(123 as unknown as DeliveryMethod)
       }).toThrow()
     })
 
     it('should throw when decoding object input', () => {
       expect(() => {
-        DeliveryMethodCodec.encode({} as DeliveryMethodNoris)
+        DeliveryMethodCodec.encode({} as DeliveryMethod)
       }).toThrow()
     })
   })

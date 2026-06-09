@@ -113,11 +113,12 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "landingPage.sections"
         ]
       },
       "conditions": [],
-      "documentId": "vnunkaoyadr8aa25h3hsc11d",
+      "documentId": "ca72ri00xvnmcfi7tzdtd9sg",
       "locale": null
     },
     {
@@ -153,11 +154,12 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "landingPage.sections"
         ]
       },
       "conditions": [],
-      "documentId": "jtajmmqxsa2j1dvan2wuz64t",
+      "documentId": "orukdxw8jajuo6gekutcprp0",
       "locale": null
     },
     {
@@ -175,11 +177,12 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "landingPage.sections"
         ]
       },
       "conditions": [],
-      "documentId": "pjdn9p5p51wzkms2uin2z923",
+      "documentId": "vuwgp39u391fyswwirt9qn53",
       "locale": null
     },
     {

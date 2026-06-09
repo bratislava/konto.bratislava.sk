@@ -34,7 +34,6 @@ export const GP_WEBPAY_CONFIG_KEY_MAP: Record<
     PAYGATE_PASSPHRASE: 'PAYGATE_PASSPHRASE_KO',
   },
 }
-// TODO finalize all calls
 
 @Injectable()
 export class GpWebpaySubservice {

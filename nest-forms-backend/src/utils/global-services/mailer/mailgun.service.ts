@@ -54,7 +54,7 @@ export default class MailgunService implements Mailer {
   }
 
   async sendEmail(params: MailerSendEmailParams): Promise<void> {
-    const { data, emailFrom, attachments, subject } = params
+    const { data, emailFrom, replyTo, attachments, subject } = params
     const mailgunAttachments = attachments?.map((attachment) => ({
       data: attachment.content,
       filename: attachment.filename,
@@ -86,6 +86,7 @@ export default class MailgunService implements Mailer {
           to: data.to,
           subject: subject ?? MAILGUN_CONFIG[data.template].subject,
           attachment: mailgunAttachments,
+          ...(replyTo ? { 'h:Reply-To': replyTo } : {}),
           ...emailContent,
         },
       )

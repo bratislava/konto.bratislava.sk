@@ -1,0 +1,11 @@
+fragment RichtextSection on ComponentSectionsRichtext {
+  content
+}
+
+fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
+  __typename
+
+  ... on ComponentSectionsRichtext {
+    ...RichtextSection
+  }
+}

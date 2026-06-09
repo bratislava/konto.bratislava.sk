@@ -1,3 +1,9 @@
 export enum CustomErrorNorisTypesEnum {
   VALIDATE_NORIS_DATA_ERROR = 'VALIDATE_NORIS_DATA_ERROR',
+  CONNECTION_ERROR = 'CONNECTION_ERROR',
+  FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS = 'FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS',
+}
+
+export enum CustomErrorNorisTypesResponseEnum {
+  FAILED_TO_REMOVE_DELIVERY_METHOD_FROM_NORIS = 'Failed to remove delivery method from Noris',
 }

@@ -3,7 +3,6 @@ import { randomBytes } from 'node:crypto'
 import { TaxAdministrator, TaxType } from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
-import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,
@@ -21,11 +20,8 @@ describe('testing-tax-mock', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    mockRandomBytes.mockReturnValue(
-      Buffer.from('abcd1234', 'hex') as unknown as ReturnType<
-        typeof randomBytes
-      >,
+    ;(mockRandomBytes as jest.Mock).mockReturnValue(
+      Buffer.from('abcd1234', 'hex'),
     )
 
     mockTaxAdministrator = {
@@ -39,7 +35,6 @@ describe('testing-tax-mock', () => {
     }
 
     mockNorisData = {
-      deliveryMethod: DeliveryMethod.EDESK,
       fakeBirthNumber: '9001011234',
       nameSurname: 'Ján Testovací',
       taxTotal: '150,00',

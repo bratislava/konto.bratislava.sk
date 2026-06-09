@@ -5,15 +5,12 @@ import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtract
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
-import { AuthUser } from '../auth-v2/types/user'
+import { AuthUser, User } from '../auth-v2/types/user'
 import { getUserIco } from '../auth-v2/utils/user-utils'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import {
-  GetFormResponseSimpleDto,
-  GetFormsRequestDto,
-  GetFormsResponseDto,
-} from '../nases/dtos/requests.dto'
+import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
+import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import PrismaService from '../prisma/prisma.service'
 import {
   DEFAULT_PAGE,
@@ -25,7 +22,17 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { FormUpdateBodyDto } from './dtos/forms.requests.dto'
+import {
+  FormUpdateBodyDto,
+  GetFormsRequestDto,
+  UpdateFormRequestDto,
+} from './dtos/requests.dto'
+import {
+  GetFormResponseDto,
+  GetFormResponseSimpleDto,
+  GetFormsResponseDto,
+  UpdateFormResponseDto,
+} from './dtos/responses.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
 
 @Injectable()
@@ -147,6 +154,55 @@ export default class FormsService {
     }
 
     return form
+  }
+
+  async getFormWithSubject(
+    id: string,
+  ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
+    const form = await this.getForm(id)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+    return {
+      ...form,
+      formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
+    }
+  }
+
+  async updateFormWithUser(
+    id: string,
+    requestData: FormUpdateBodyDto,
+    user: User,
+  ): Promise<UpdateFormResponseDto> {
+    const form = await this.getUniqueForm(id)
+    if (form === null) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+      )
+    }
+
+    return this.updateForm(id, {
+      ...getUserFormFields(user),
+      ...requestData,
+    })
+  }
+
+  async updateFormEid(
+    id: string,
+    nasesUser: JwtNasesPayload,
+    requestData: UpdateFormRequestDto,
+    user: User,
+  ): Promise<UpdateFormResponseDto> {
+    return this.updateFormWithUser(
+      id,
+      { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },
+      user,
+    )
   }
 
   async getForms(

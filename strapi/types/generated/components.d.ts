@@ -36,6 +36,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
+    sections: Schema.Attribute.DynamicZone<['sections.richtext']>
     text: Schema.Attribute.RichText
   }
 }
@@ -101,6 +102,16 @@ export interface GeneralAlert extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsRichtext extends Struct.ComponentSchema {
+  collectionName: 'components_sections_richtexts'
+  info: {
+    displayName: 'Richtext'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -112,6 +123,7 @@ declare module '@strapi/strapi' {
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert
+      'sections.richtext': SectionsRichtext
     }
   }
 }

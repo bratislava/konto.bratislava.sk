@@ -440,11 +440,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
       (case
           when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
           else 0 end
-      ) uhrazeno_sum_saldo,
-      sum(dane21_doklad_overpayment.suma_mena) as uhrazeno_overpayment, -- TODO use just uhrazeno, these two are only for debugging
-      (case
-          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
-          else 0 end
       ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
       (SELECT MAX(v) FROM (VALUES(MAX(view_doklad_saldo.datum_posledni_platby)), (MAX(dane21_doklad_overpayment.datum_realizacie))) AS maxDate(v)) AS datum_posledni_platby
   FROM lcs.dane21_doklad as dane21_doklad
@@ -482,27 +477,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
       MAX(dane21_doklad_overpayment.datum_realizacie) >= @fromDate 
       AND MAX(dane21_doklad_overpayment.datum_realizacie) <= @toDate
       AND MAX(dane21_doklad_overpayment.datum_realizacie) IS NOT NULL
-`
-
-export const setDeliveryMethodsForUser = `
-    UPDATE org_mag
-    SET
-        org_mag.dkba_stav = @dkba_stav,
-        org_mag.dkba_datum_suhlasu = @dkba_datum_suhlasu,
-        org_mag.dkba_sposob_dorucovania = @dkba_sposob_dorucovania
-    OUTPUT
-        inserted.cislo_subjektu
-    FROM lcs.uda_21_organizacia_mag org_mag
-    INNER JOIN lcs.organizace org
-        ON org_mag.cislo_subjektu = org.cislo_subjektu
-    WHERE TRIM(org.ico) IN (@birth_numbers)
-`
-
-export const getBirthNumbersForSubjects = `
-    -- birth numbers are stored in column 'ico'
-    SELECT ico
-    FROM lcs.organizace
-    WHERE cislo_subjektu IN (@subjects)
 `
 
 /**

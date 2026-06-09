@@ -30,7 +30,6 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'warn', // 5 occurrences
       '@typescript-eslint/no-misused-spread': 'warn', // 6 occurrences
       '@typescript-eslint/no-unnecessary-type-parameters': 'warn', // 1 occurrence
-      'sonarjs/no-clear-text-protocols': 'warn', // 8 occurrences
     },
   },
 ]

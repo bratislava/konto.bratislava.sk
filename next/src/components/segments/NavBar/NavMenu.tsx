@@ -44,7 +44,10 @@ export const NavMenu = ({ menuSections }: Props) => {
           >
             <NavigationMenu.List className="flex size-full items-center">
               {menuSections.map((sectionItem) => (
-                <NavigationMenu.Item key={sectionItem.id} className="size-full wrapper-focus-ring">
+                <NavigationMenu.Item
+                  key={sectionItem.id}
+                  className="size-full rounded-sm wrapper-focus-ring"
+                >
                   <NavigationMenu.Link asChild>
                     <NextLink href={sectionItem.url}>
                       <div

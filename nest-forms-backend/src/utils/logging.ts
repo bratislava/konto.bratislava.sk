@@ -80,7 +80,7 @@ export function objToLogfmt(obj: object): string {
           if (typeof formattedSubValue === 'string') {
             formattedSubValue = escapeForLogfmt(formattedSubValue)
           }
-          return `${subKey}="${formattedSubValue}"`
+          return `${subKey}="${String(formattedSubValue)}"`
         })
       }
 
@@ -93,7 +93,7 @@ export function objToLogfmt(obj: object): string {
         formattedValue = escapeForLogfmt(formattedValue)
       }
 
-      return `${key}="${formattedValue}"`
+      return [`${key}="${String(formattedValue)}"`]
     })
     .join(' ')
 }

@@ -90,7 +90,8 @@ export default class EmailFormsService {
       default:
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Unsupported mailer: ${formDefinition.email.mailer}`,
+          'Unsupported mailer',
+          { mailer: formDefinition.email.mailer },
         )
     }
   }

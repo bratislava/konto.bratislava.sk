@@ -21,11 +21,7 @@ export default [
       '@typescript-eslint/no-unnecessary-condition': 'warn', // 8 occurrences
       'no-await-in-loop': 'warn', // 7 occurrences
       'no-console': 'warn', // 9 occurrences
-      '@typescript-eslint/no-extraneous-class': 'warn', // 2 occurrences
-      '@typescript-eslint/restrict-template-expressions': 'warn', // 2 occurrences
-      'sonarjs/function-return-type': 'warn', // 1 occurrence
       '@typescript-eslint/no-misused-spread': 'warn', // 6 occurrences
-      '@typescript-eslint/no-unnecessary-type-parameters': 'warn', // 1 occurrence
     },
   },
 ]

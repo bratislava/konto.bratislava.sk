@@ -10,7 +10,9 @@ import type {
 } from 'openapi-clients/slovensko-sk'
 
 type CityAccountUserApiResponse = Awaited<
-  ReturnType<CityAccountClient['userIntegrationControllerGetContactAndIdInfoByExternalId']>
+  ReturnType<
+    CityAccountClient['userIntegrationControllerGetContactAndIdInfoByExternalId']
+  >
 >
 
 type SlovenskoSkIdentitiesApiResponse = Awaited<

@@ -9,7 +9,10 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import BaConfigService from '../../config/ba-config.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import GinisAPIService, { GinContactType } from './ginis-api.service'
+import GinisAPIService, {
+  GinContactDatabase,
+  GinContactType,
+} from './ginis-api.service'
 
 jest.mock('@bratislava/ginis-sdk', () => ({
   Ginis: class {
@@ -316,7 +319,7 @@ describe('GinisAPIService', () => {
 
   describe('extractTitleFromGinContactParams', () => {
     it('should return name for non-physical entity', () => {
-      const title = (service as any).extractTitleFromGinContactParams({
+      const title = service['extractTitleFromGinContactParams']({
         type: GinContactType.LEGAL_ENTITY,
         name: 'Company Name',
       })
@@ -324,7 +327,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should return lastName when firstName is missing for physical entity', () => {
-      const title = (service as any).extractTitleFromGinContactParams({
+      const title = service['extractTitleFromGinContactParams']({
         type: GinContactType.PHYSICAL_ENTITY,
         lastName: 'Doe',
       })
@@ -332,7 +335,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should return formatted name "lastName firstName" for physical entity', () => {
-      const title = (service as any).extractTitleFromGinContactParams({
+      const title = service['extractTitleFromGinContactParams']({
         type: GinContactType.PHYSICAL_ENTITY,
         firstName: 'John',
         lastName: 'Doe',
@@ -341,7 +344,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should return undefined when no valid name data', () => {
-      const title = (service as any).extractTitleFromGinContactParams({
+      const title = service['extractTitleFromGinContactParams']({
         type: GinContactType.PHYSICAL_ENTITY,
         firstName: 'John',
       })
@@ -378,10 +381,10 @@ describe('GinisAPIService', () => {
         type: GinContactType.PHYSICAL_ENTITY,
       }
 
-      const result = await (service as any).updateContactInContactDatabase(
+      const result = await service.updateContactInContactDatabase(
         mockContact,
         params,
-        '5', // CITY_ACCOUNT
+        GinContactDatabase.CITY_ACCOUNT,
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
@@ -411,10 +414,10 @@ describe('GinisAPIService', () => {
         lastName: 'Doe',
       }
 
-      const result = await (service as any).updateContactInContactDatabase(
+      const result = await service.updateContactInContactDatabase(
         contactWithoutUri,
         params,
-        '0', // COMMON
+        GinContactDatabase.COMMON,
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
@@ -438,10 +441,10 @@ describe('GinisAPIService', () => {
         lastName: 'Doe',
       }
 
-      const result = await (service as any).updateContactInContactDatabase(
+      const result = await service.updateContactInContactDatabase(
         contactWithUri,
         params,
-        '0', // COMMON
+        GinContactDatabase.COMMON,
       )
 
       expect(service['ginis'].gin.editEsu).not.toHaveBeenCalled()
@@ -455,10 +458,10 @@ describe('GinisAPIService', () => {
         'Id-dat-schranky': undefined,
       }
 
-      const result = await (service as any).updateContactInContactDatabase(
+      const result = await service.updateContactInContactDatabase(
         contactWithoutUri,
         params,
-        '0', // COMMON
+        GinContactDatabase.COMMON,
       )
 
       expect(service['ginis'].gin.editEsu).not.toHaveBeenCalled()
@@ -472,10 +475,10 @@ describe('GinisAPIService', () => {
         type: GinContactType.PHYSICAL_ENTITY,
       }
 
-      await (service as any).updateContactInContactDatabase(
+      await service.updateContactInContactDatabase(
         mockContact,
         params,
-        '5', // CITY_ACCOUNT
+        GinContactDatabase.CITY_ACCOUNT,
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
@@ -492,10 +495,10 @@ describe('GinisAPIService', () => {
         type: GinContactType.PHYSICAL_ENTITY,
       }
 
-      await (service as any).updateContactInContactDatabase(
+      await service.updateContactInContactDatabase(
         mockContact,
         params,
-        '5', // CITY_ACCOUNT
+        GinContactDatabase.CITY_ACCOUNT,
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
@@ -523,7 +526,7 @@ describe('GinisAPIService', () => {
     it('should search databases in order', async () => {
       const findSpy = jest.spyOn(service['ginis'].gin, 'najdiEsu')
 
-      await (service as any).findAndUpdateContactInContactDatabase(
+      await service.findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
       )
@@ -533,7 +536,7 @@ describe('GinisAPIService', () => {
         1,
         {
           Aktivita: 'aktivni',
-          'Uroven-pristupu': '5', // CITY_ACCOUNT
+          'Uroven-pristupu': GinContactDatabase.CITY_ACCOUNT,
           'Id-dat-schranky': 'test-uri',
         },
         { 'Rozsah-prehledu': 'standardni' },
@@ -543,7 +546,7 @@ describe('GinisAPIService', () => {
     it('should use extended search when extended is true', async () => {
       const findSpy = jest.spyOn(service['ginis'].gin, 'najdiEsu')
 
-      await (service as any).findAndUpdateContactInContactDatabase(
+      await service.findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
         true,
@@ -563,15 +566,10 @@ describe('GinisAPIService', () => {
         'Najdi-esu': [mockContact],
       })
 
-      const updateSpy = jest.spyOn(
-        service as any,
-        'updateContactInContactDatabase',
-      )
+      const updateSpy = jest.spyOn(service, 'updateContactInContactDatabase')
       updateSpy.mockResolvedValueOnce('updated-contact-id')
 
-      const result = await (
-        service as any
-      ).findAndUpdateContactInContactDatabase(
+      const result = await service.findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
       )
@@ -580,14 +578,12 @@ describe('GinisAPIService', () => {
       expect(updateSpy).toHaveBeenCalledWith(
         mockContact,
         { email: 'test@example.com' },
-        '5', // CITY_ACCOUNT
+        GinContactDatabase.CITY_ACCOUNT,
       )
     })
 
     it('should return undefined when contact not found', async () => {
-      const result = await (
-        service as any
-      ).findAndUpdateContactInContactDatabase(
+      const result = await service.findAndUpdateContactInContactDatabase(
         { 'Id-dat-schranky': 'test-uri' },
         { email: 'test@example.com' },
       )
@@ -598,7 +594,7 @@ describe('GinisAPIService', () => {
 
   describe('findAndUpdateContactByUri', () => {
     it('should return undefined when uri is missing', async () => {
-      const result = await (service as any).findAndUpdateContactByUri({})
+      const result = await service['findAndUpdateContactByUri']({})
 
       expect(result).toBeUndefined()
       expect(service['ginis'].gin.najdiEsu).not.toHaveBeenCalled()
@@ -606,10 +602,10 @@ describe('GinisAPIService', () => {
 
     it('should call findAndUpdateContactInContactDatabase with uri', async () => {
       const findAndUpdateSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findAndUpdateContactByUri({
+      const result = await service['findAndUpdateContactByUri']({
         uri: 'test-uri',
         email: 'test@example.com',
       })
@@ -625,10 +621,10 @@ describe('GinisAPIService', () => {
   describe('findAndUpdateContactByIdentifier', () => {
     it('should search by firstName, lastName, and birthNumber', async () => {
       const findAndUpdateSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findAndUpdateContactByIdentifier({
+      const result = await service.findAndUpdateContactByIdentifier({
         firstName: 'John',
         lastName: 'Doe',
         birthNumber: '001122/3344',
@@ -655,10 +651,10 @@ describe('GinisAPIService', () => {
 
     it('should search by name and ico for legal entity', async () => {
       const findAndUpdateSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findAndUpdateContactByIdentifier({
+      const result = await service.findAndUpdateContactByIdentifier({
         name: 'Company',
         ico: '12345678',
         uri: 'test-uri',
@@ -681,7 +677,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should return undefined when no identifier provided', async () => {
-      const result = await (service as any).findAndUpdateContactByIdentifier({})
+      const result = await service.findAndUpdateContactByIdentifier({})
 
       expect(result).toBeUndefined()
     })
@@ -690,10 +686,10 @@ describe('GinisAPIService', () => {
   describe('findAndUpdateContactByEmail', () => {
     it('should search by firstName, lastName, and email', async () => {
       const findAndUpdateSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findAndUpdateContactByEmail({
+      const result = await service.findAndUpdateContactByEmail({
         firstName: 'John',
         lastName: 'Doe',
         email: 'test@example.com',
@@ -719,10 +715,10 @@ describe('GinisAPIService', () => {
 
     it('should search by name and email for legal entity', async () => {
       const findAndUpdateSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactInContactDatabase')
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
 
-      const result = await (service as any).findAndUpdateContactByEmail({
+      const result = await service.findAndUpdateContactByEmail({
         name: 'Company',
         email: 'test@example.com',
         type: GinContactType.LEGAL_ENTITY,
@@ -744,7 +740,7 @@ describe('GinisAPIService', () => {
     })
 
     it('should return undefined when no email provided', async () => {
-      const result = await (service as any).findAndUpdateContactByEmail({})
+      const result = await service.findAndUpdateContactByEmail({})
 
       expect(result).toBeUndefined()
     })
@@ -752,14 +748,14 @@ describe('GinisAPIService', () => {
 
   describe('findAndUpdateContact', () => {
     it('should try uri first, then identifier, then email', async () => {
-      const uriSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactByUri')
+      jest
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue(undefined)
       const identifierSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactByIdentifier')
+        .spyOn(service, 'findAndUpdateContactByIdentifier')
         .mockResolvedValue(undefined)
       const emailSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactByEmail')
+        .spyOn(service, 'findAndUpdateContactByEmail')
         .mockResolvedValue('contact-id')
 
       const result = await service.findAndUpdateContact({
@@ -771,20 +767,20 @@ describe('GinisAPIService', () => {
       })
 
       expect(result).toBe('contact-id')
-      expect(uriSpy).toHaveBeenCalled()
+      expect(service.findAndUpdateContactInContactDatabase).toHaveBeenCalled()
       expect(identifierSpy).toHaveBeenCalled()
       expect(emailSpy).toHaveBeenCalled()
     })
 
     it('should return immediately when uri search succeeds', async () => {
-      const uriSpy = jest
-        .spyOn(service as any, 'findAndUpdateContactByUri')
+      jest
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue('contact-id')
       const identifierSpy = jest.spyOn(
-        service as any,
+        service,
         'findAndUpdateContactByIdentifier',
       )
-      const emailSpy = jest.spyOn(service as any, 'findAndUpdateContactByEmail')
+      const emailSpy = jest.spyOn(service, 'findAndUpdateContactByEmail')
 
       const result = await service.findAndUpdateContact({
         uri: 'test-uri',
@@ -792,20 +788,20 @@ describe('GinisAPIService', () => {
       })
 
       expect(result).toBe('contact-id')
-      expect(uriSpy).toHaveBeenCalled()
+      expect(service.findAndUpdateContactInContactDatabase).toHaveBeenCalled()
       expect(identifierSpy).not.toHaveBeenCalled()
       expect(emailSpy).not.toHaveBeenCalled()
     })
 
     it('should return undefined when all searches fail', async () => {
       jest
-        .spyOn(service as any, 'findAndUpdateContactByUri')
+        .spyOn(service, 'findAndUpdateContactInContactDatabase')
         .mockResolvedValue(undefined)
       jest
-        .spyOn(service as any, 'findAndUpdateContactByIdentifier')
+        .spyOn(service, 'findAndUpdateContactByIdentifier')
         .mockResolvedValue(undefined)
       jest
-        .spyOn(service as any, 'findAndUpdateContactByEmail')
+        .spyOn(service, 'findAndUpdateContactByEmail')
         .mockResolvedValue(undefined)
 
       const result = await service.findAndUpdateContact({
@@ -842,7 +838,7 @@ describe('GinisAPIService', () => {
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
         expect.objectContaining({
-          'Uroven-pristupu': '5', // CITY_ACCOUNT
+          'Uroven-pristupu': GinContactDatabase.CITY_ACCOUNT,
           'Typ-esu': GinContactType.PHYSICAL_ENTITY,
           'E-mail': 'test@example.com',
           'Id-dat-schranky': 'test-uri',
@@ -868,7 +864,7 @@ describe('GinisAPIService', () => {
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
         expect.objectContaining({
-          'Uroven-pristupu': '5', // CITY_ACCOUNT
+          'Uroven-pristupu': GinContactDatabase.CITY_ACCOUNT,
           'Typ-esu': GinContactType.LEGAL_ENTITY,
           'E-mail': 'test@example.com',
           'Id-dat-schranky': 'test-uri',

@@ -570,9 +570,7 @@ export default class GinisService {
     return result[0]
   }
 
-  private async extractContactParamsFromUri(
-    form: Forms,
-  ): Promise<GinContactParams> {
+  async extractContactParamsFromUri(form: Forms): Promise<GinContactParams> {
     if (!form.mainUri) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DATA_INVALID,
@@ -631,7 +629,7 @@ export default class GinisService {
     return params
   }
 
-  private async extractContactParamsFromExternalId(
+  async extractContactParamsFromExternalId(
     form: Forms,
   ): Promise<GinContactParams> {
     if (!form.userExternalId) {
@@ -697,7 +695,7 @@ export default class GinisService {
     return params
   }
 
-  private sanitizeEmployeeContactParams(
+  sanitizeEmployeeContactParams(
     contactParams: GinContactParams,
   ): GinContactParams {
     let department: string | undefined

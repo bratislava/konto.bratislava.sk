@@ -54,9 +54,9 @@ export default class NasesSenderService {
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-      const _buf = new Array<any>()
+      const _buf: Buffer[] = []
 
-      stream.on('data', (chunk) => _buf.push(chunk))
+      stream.on('data', (chunk: Buffer) => _buf.push(chunk))
       stream.on('end', () => {
         resolve(Buffer.concat(_buf))
       })

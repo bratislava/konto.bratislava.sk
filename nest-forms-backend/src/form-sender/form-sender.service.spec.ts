@@ -13,7 +13,7 @@ import {
   evaluateFormSendPolicy,
   FormSendPolicy,
 } from 'forms-shared/send-policy/sendPolicy'
-import { getFormSummary } from 'forms-shared/summary/summary'
+import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
 
 import {
   AuthFixtureUser,
@@ -609,10 +609,8 @@ describe('FormSenderService', () => {
     })
 
     it('should include form summary in form update', async () => {
-      const mockSummary = { summary: 'test' }
-      jest
-        .spyOn(service as any, 'getFormSummaryOrThrow')
-        .mockReturnValue(mockSummary)
+      const mockSummary = createMock<FormSummary>({ additionalInfo: 'test' })
+      jest.spyOn(service, 'getFormSummaryOrThrow').mockReturnValue(mockSummary)
 
       await service.updateAndSendForm(
         '1',
@@ -623,17 +621,15 @@ describe('FormSenderService', () => {
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
         formSummary: mockSummary,
-        formSentAt: expect.any(Date),
+        formSentAt: expect.any(Date) as Date,
         jsonVersion: mockFormDefinition.jsonVersion,
       })
     })
 
     it('should throw error if form summary generation fails', async () => {
-      jest
-        .spyOn(service as any, 'getFormSummaryOrThrow')
-        .mockImplementation(() => {
-          throw new Error('Summary generation failed')
-        })
+      jest.spyOn(service, 'getFormSummaryOrThrow').mockImplementation(() => {
+        throw new Error('Summary generation failed')
+      })
 
       await expect(
         service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),

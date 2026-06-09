@@ -16,6 +16,7 @@ import {
 } from '../__tests__/factories/apiResponse.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
+import { objectContaining } from '../__tests__/jest-matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -832,12 +833,10 @@ describe('GinisService', () => {
     const mockWflDocument = createMockGinisDocumentData()['Wfl-dokument']
 
     beforeEach(() => {
-      const { extractFormSubjectTechnical } = jest.requireMock(
-        'forms-shared/form-utils/formDataExtractors',
-      )
-      ;(extractFormSubjectTechnical as jest.Mock).mockReturnValue(
-        'Test Subject',
-      )
+      const { extractFormSubjectTechnical } = jest.requireMock<{
+        extractFormSubjectTechnical: jest.Mock
+      }>('forms-shared/form-utils/formDataExtractors')
+      extractFormSubjectTechnical.mockReturnValue('Test Subject')
 
       jest
         .spyOn(service['ginisHelper'], 'retryWithDelay')
@@ -1092,8 +1091,8 @@ describe('GinisService', () => {
 
       expect(service['ginisApiService'].createDocument).not.toHaveBeenCalled()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
+        objectContaining({
+          data: objectContaining({
             ginisDocumentId: 'existingDocId',
           }),
         }),
@@ -1164,12 +1163,7 @@ describe('GinisService', () => {
         mainUri: null,
       } as Forms
 
-      // Access private method through type assertion
-      const extractMethod = (service as any).extractContactParamsFromUri.bind(
-        service,
-      )
-
-      await expect(extractMethod(form)).rejects.toThrow(
+      await expect(service.extractContactParamsFromUri(form)).rejects.toThrow(
         'Form uri not found in form',
       )
     })
@@ -1180,13 +1174,9 @@ describe('GinisService', () => {
         userExternalId: null,
       } as Forms
 
-      const extractMethod = (
-        service as any
-      ).extractContactParamsFromExternalId.bind(service)
-
-      await expect(extractMethod(form)).rejects.toThrow(
-        'External id not found in form',
-      )
+      await expect(
+        service.extractContactParamsFromExternalId(form),
+      ).rejects.toThrow('External id not found in form')
     })
 
     it('should throw error when contact not found in nases', async () => {
@@ -1316,9 +1306,9 @@ describe('GinisService', () => {
     })
 
     it('should upload XML source file when electronic source does not exist', async () => {
-      const { buildSlovenskoSkXml } = jest.requireMock(
-        'forms-shared/slovensko-sk/xmlBuilder',
-      )
+      const { buildSlovenskoSkXml } = jest.requireMock<{
+        buildSlovenskoSkXml: jest.Mock
+      }>('forms-shared/slovensko-sk/xmlBuilder')
       const mockXmlObject = { root: { data: 'test' } }
       const mockXmlString =
         '<?xml version="1.0"?><root><data>test</data></root>'
@@ -1338,7 +1328,7 @@ describe('GinisService', () => {
       jest
         .spyOn(service['convertService'], 'convertJsonToXmlObjectForForm')
         .mockResolvedValue(mockXmlObject)
-      ;(buildSlovenskoSkXml as jest.Mock).mockReturnValue(mockXmlString)
+      buildSlovenskoSkXml.mockReturnValue(mockXmlString)
 
       jest
         .spyOn(service['ginisApiService'], 'uploadFile')
@@ -1392,7 +1382,7 @@ describe('GinisService', () => {
   })
 
   describe('sanitizeEmployeeContactParams', () => {
-    it('should transform contact params when ico is Bratislava-OKM', async () => {
+    it('should transform contact params when ico is Bratislava-OKM', () => {
       const contactParams: GinContactParams = {
         type: GinContactType.LEGAL_ENTITY,
         ico: 'Bratislava-OKM',
@@ -1400,9 +1390,7 @@ describe('GinisService', () => {
         name: 'John Doe',
       }
 
-      const result = await (service as any).sanitizeEmployeeContactParams(
-        contactParams,
-      )
+      const result = service.sanitizeEmployeeContactParams(contactParams)
 
       expect(result).toEqual({
         type: GinContactType.LEGAL_ENTITY,
@@ -1412,7 +1400,7 @@ describe('GinisService', () => {
       })
     })
 
-    it('should transform contact params when ico is BA-SNB', async () => {
+    it('should transform contact params when ico is BA-SNB', () => {
       const contactParams: GinContactParams = {
         type: GinContactType.LEGAL_ENTITY,
         ico: 'BA-SNB',
@@ -1420,9 +1408,7 @@ describe('GinisService', () => {
         name: 'Bratislava',
       }
 
-      const result = await (service as any).sanitizeEmployeeContactParams(
-        contactParams,
-      )
+      const result = service.sanitizeEmployeeContactParams(contactParams)
 
       expect(result).toEqual({
         type: GinContactType.LEGAL_ENTITY,
@@ -1432,7 +1418,7 @@ describe('GinisService', () => {
       })
     })
 
-    it('should return original contact params when ico is undefined (physical entity)', async () => {
+    it('should return original contact params when ico is undefined (physical entity)', () => {
       const contactParams: GinContactParams = {
         type: GinContactType.PHYSICAL_ENTITY,
         ico: undefined,
@@ -1442,14 +1428,12 @@ describe('GinisService', () => {
         birthNumber: '9001011234',
       }
 
-      const result = await (service as any).sanitizeEmployeeContactParams(
-        contactParams,
-      )
+      const result = service.sanitizeEmployeeContactParams(contactParams)
 
       expect(result).toEqual(contactParams)
     })
 
-    it('should return original contact params when ico is a regular number', async () => {
+    it('should return original contact params when ico is a regular number', () => {
       const contactParams: GinContactParams = {
         type: GinContactType.LEGAL_ENTITY,
         ico: '12345678',
@@ -1457,14 +1441,12 @@ describe('GinisService', () => {
         name: 'Test Company',
       }
 
-      const result = await (service as any).sanitizeEmployeeContactParams(
-        contactParams,
-      )
+      const result = service.sanitizeEmployeeContactParams(contactParams)
 
       expect(result).toEqual(contactParams)
     })
 
-    it('should return original contact params when ico is other string', async () => {
+    it('should return original contact params when ico is other string', () => {
       const contactParams: GinContactParams = {
         type: GinContactType.LEGAL_ENTITY,
         ico: 'BA-UNSPECIFIED',
@@ -1472,14 +1454,12 @@ describe('GinisService', () => {
         name: 'Other Company',
       }
 
-      const result = await (service as any).sanitizeEmployeeContactParams(
-        contactParams,
-      )
+      const result = service.sanitizeEmployeeContactParams(contactParams)
 
       expect(result).toEqual(contactParams)
     })
 
-    it('should handle undefined email when sanitizing employee contact params', async () => {
+    it('should handle undefined email when sanitizing employee contact params', () => {
       const contactParams: GinContactParams = {
         type: GinContactType.LEGAL_ENTITY,
         ico: 'Bratislava-OKM',
@@ -1487,9 +1467,7 @@ describe('GinisService', () => {
         name: 'John Doe',
       }
 
-      const result = await (service as any).sanitizeEmployeeContactParams(
-        contactParams,
-      )
+      const result = service.sanitizeEmployeeContactParams(contactParams)
 
       expect(result).toEqual({
         type: GinContactType.LEGAL_ENTITY,

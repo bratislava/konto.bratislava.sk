@@ -7,6 +7,7 @@ class AmqpConnection {
 
 class Nack {
   constructor(requeue) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- JavaScript file; constructor parameter is untyped by design
     this.requeue = requeue
   }
 }

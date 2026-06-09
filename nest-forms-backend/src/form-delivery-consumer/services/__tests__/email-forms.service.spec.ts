@@ -16,10 +16,16 @@ import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
 
 import prismaMock from '../../../../test/singleton'
+import {
+  arrayContaining,
+  objectContaining,
+} from '../../../__tests__/jest-matchers'
 import ConvertService from '../../../convert/convert.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
+import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
+import { MailerAttachment } from '../../../utils/global-services/mailer/mailer.interface'
 import MailgunService from '../../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
@@ -272,20 +278,20 @@ describe('EmailFormsService', () => {
       // Should send email to department
       expect(mailgunService.sendEmail).toHaveBeenCalledTimes(2)
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: mockFormDefinitionWithSendEmail.email.address.prod.join(', '),
           template: mockFormDefinitionWithSendEmail.email.newSubmissionTemplate,
-          data: expect.objectContaining({
+          data: objectContaining({
             formId: mockForm.id,
             slug: mockFormDefinitionWithSendEmail.slug,
             messageSubject: mockExtractedSubject,
           }),
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
-        attachments: expect.arrayContaining([
-          expect.objectContaining({
+        attachments: arrayContaining([
+          objectContaining({
             filename: 'submission.json',
-            content: expect.any(Buffer),
+            content: expect.any(Buffer) as Buffer,
           }),
         ]),
         subject: undefined,
@@ -293,10 +299,10 @@ describe('EmailFormsService', () => {
 
       // Should send confirmation email to user
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: userEmail,
           template: mockFormDefinitionWithSendEmail.email.userResponseTemplate,
-          data: expect.objectContaining({
+          data: objectContaining({
             formId: mockForm.id,
             firstName: userFirstName,
             slug: mockFormDefinitionWithSendEmail.slug,
@@ -304,8 +310,8 @@ describe('EmailFormsService', () => {
           }),
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
-        attachments: expect.arrayContaining([
-          expect.objectContaining({
+        attachments: arrayContaining([
+          objectContaining({
             filename: 'potvrdenie.pdf',
           }),
         ]),
@@ -360,11 +366,11 @@ describe('EmailFormsService', () => {
       // Should send email to department using sendOloEmail
       expect(oloMailerService.sendEmail).toHaveBeenCalledTimes(2)
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: mockFormDefinitionWithSendOloEmail.email.address.prod.join(', '),
           template:
             mockFormDefinitionWithSendOloEmail.email.newSubmissionTemplate,
-          data: expect.objectContaining({
+          data: objectContaining({
             formId: mockFormWithOloDefinition.id,
             slug: mockFormDefinitionWithSendOloEmail.slug,
             messageSubject: mockExtractedSubject,
@@ -377,11 +383,11 @@ describe('EmailFormsService', () => {
 
       // Should send confirmation email to user using sendOloEmail
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(2, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: userEmail,
           template:
             mockFormDefinitionWithSendOloEmail.email.userResponseTemplate,
-          data: expect.objectContaining({
+          data: objectContaining({
             formId: mockFormWithOloDefinition.id,
             firstName: userFirstName,
             slug: mockFormDefinitionWithSendOloEmail.slug,
@@ -389,8 +395,8 @@ describe('EmailFormsService', () => {
           }),
         }),
         emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress.prod,
-        attachments: expect.arrayContaining([
-          expect.objectContaining({
+        attachments: arrayContaining([
+          objectContaining({
             filename: 'potvrdenie.pdf',
           }),
         ]),
@@ -439,10 +445,10 @@ describe('EmailFormsService', () => {
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),
       ).rejects.toThrow(
-        expect.objectContaining({
+        objectContaining({
           message: expect.stringContaining(
             EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM,
-          ),
+          ) as string,
         }) as Error,
       )
     })
@@ -481,11 +487,11 @@ describe('EmailFormsService', () => {
         mockForm.formDataJson,
       )
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: mockExtractedEmail,
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
-        attachments: expect.any(Array),
+        attachments: expect.any(Array) as unknown[],
       })
     })
 
@@ -499,13 +505,13 @@ describe('EmailFormsService', () => {
         mockForm.formDataJson,
       )
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
-        data: expect.objectContaining({
-          data: expect.objectContaining({
+        data: objectContaining({
+          data: objectContaining({
             firstName: mockExtractedName,
           }),
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
-        attachments: expect.any(Array),
+        attachments: expect.any(Array) as unknown[],
       })
     })
 
@@ -549,12 +555,12 @@ describe('EmailFormsService', () => {
 
       // First call (department email) should include JSON attachment
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.anything(),
-        emailFrom: expect.anything(),
-        attachments: expect.arrayContaining([
-          expect.objectContaining({
+        data: expect.anything() as SendEmailInputDto,
+        emailFrom: expect.anything() as string | undefined,
+        attachments: arrayContaining([
+          objectContaining({
             filename: 'submission.json',
-            content: expect.any(Buffer),
+            content: expect.any(Buffer) as Buffer,
           }),
         ]),
         subject: undefined,
@@ -573,8 +579,8 @@ describe('EmailFormsService', () => {
 
       // First call (department email) should not include JSON attachment as sendJsonDataAttachmentInTechnicalMail is undefined
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.anything(),
-        emailFrom: expect.anything(),
+        data: expect.anything() as SendEmailInputDto,
+        emailFrom: expect.anything() as string | undefined,
         attachments: undefined,
         subject: undefined,
       })
@@ -596,8 +602,8 @@ describe('EmailFormsService', () => {
 
       // First call (department email) should not include JSON attachment
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.anything(),
-        emailFrom: expect.anything(),
+        data: expect.anything() as SendEmailInputDto,
+        emailFrom: expect.anything() as string | undefined,
         attachments: undefined,
         subject: undefined,
       })
@@ -618,11 +624,11 @@ describe('EmailFormsService', () => {
       await service.sendEmailForm(formId, null, null)
 
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: 'department@bratislava.sk',
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.fromAddress.prod,
-        attachments: expect.any(Array),
+        attachments: expect.any(Array) as MailerAttachment[],
         subject: undefined,
       })
     })
@@ -634,7 +640,7 @@ describe('EmailFormsService', () => {
       await service.sendEmailForm(mockFormWithOloDefinition.id, null, null)
 
       expect(oloMailerService.sendEmail).toHaveBeenCalledWith({
-        data: expect.objectContaining({
+        data: objectContaining({
           to: 'olo-test@bratislava.sk',
         }),
         emailFrom: 'from-olo-test@bratislava.sk',
@@ -653,7 +659,7 @@ describe('EmailFormsService', () => {
       )
 
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: 'olo@bratislava.sk',
         }),
         emailFrom: 'from-olo@bratislava.sk',
@@ -661,11 +667,11 @@ describe('EmailFormsService', () => {
         subject: undefined,
       })
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(2, {
-        data: expect.objectContaining({
+        data: objectContaining({
           to: 'some@mail.com',
         }),
         emailFrom: 'from-olo@bratislava.sk',
-        attachments: expect.any(Array),
+        attachments: expect.any(Array) as MailerAttachment[],
       })
     })
 
@@ -688,9 +694,9 @@ describe('EmailFormsService', () => {
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.anything(),
-        emailFrom: expect.anything(),
-        attachments: expect.anything(),
+        data: expect.anything() as SendEmailInputDto,
+        emailFrom: expect.anything() as string | undefined,
+        attachments: expect.anything() as MailerAttachment[] | undefined,
         subject: mockExtractedTechnicalSubject,
       })
     })
@@ -719,9 +725,9 @@ describe('EmailFormsService', () => {
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
-        data: expect.anything(),
-        emailFrom: expect.anything(),
-        attachments: expect.anything(),
+        data: expect.anything() as SendEmailInputDto,
+        emailFrom: expect.anything() as string | undefined,
+        attachments: expect.anything() as MailerAttachment[] | undefined,
         subject: `${mockExtractedTechnicalSubject} [${formId}]`,
       })
     })

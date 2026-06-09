@@ -1,7 +1,8 @@
 # check=skip=InvalidDefaultArgInFrom
-ARG SHARED_PACKAGE_TAG
-FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} AS forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
+ARG FORMS_SHARED_DIGEST
+ARG OPENAPI_CLIENTS_DIGEST
+FROM harbor.bratislava.sk/standalone/forms-shared@${FORMS_SHARED_DIGEST} AS forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
 FROM node:24.15-alpine AS base
 
 # used as app-base in prodution and development image

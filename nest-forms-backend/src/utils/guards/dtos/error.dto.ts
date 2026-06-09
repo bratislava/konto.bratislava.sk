@@ -1,3 +1,4 @@
+import { CityAccountErrorsEnum } from '../../../auth/errors/city-account.errors.enum'
 import { ConvertErrorsEnum } from '../../../convert/errors/convert.errors.enum'
 import { FilesErrorsEnum } from '../../../files/files.errors.enum'
 import { EmailFormsErrorsEnum } from '../../../form-delivery-consumer/errors/email-forms.errors.enum'
@@ -28,6 +29,7 @@ export type CustomErrorEnums =
   | ConvertErrorsEnum
   | SignerErrorsEnum
   | StatusErrorsEnum
+  | CityAccountErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

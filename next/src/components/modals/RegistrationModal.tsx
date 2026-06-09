@@ -6,6 +6,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Icon from '@/src/components/icon-components/Icon'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
+import Dialog from '@/src/components/simple-components/Dialog'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 
 export enum RegistrationModalType {
@@ -132,79 +133,82 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       {...rest}
       data-cy="registration-modal"
     >
-      <div className="mb-6 flex flex-col gap-2">
-        {title && <Typography variant="h3">{title}</Typography>}
-        {subtitle && <Markdown variant="large" content={subtitle} />}
-      </div>
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col">
-          <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
-            <Typography variant="h4">{t('registration_modal.body_title')}</Typography>
-            <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
-              {}
-              {bodyList.map((item, index) => (
-                <li key={index} className="flex items-center gap-4">
-                  <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
-                    <Icon name="check" className="size-7" />
-                  </span>
-                  <Typography variant="p-tiny" className="lg:text-size-p-large">
-                    {item}
-                  </Typography>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-b-lg bg-gray-100 px-4 pb-4 md:px-0 md:pb-0">
-            <Button
-              variant="solid"
-              fullWidth
-              onPress={() => register()}
-              className="md:rounded-t-none lg:py-6"
-              data-cy="registration-modal-button"
-            >
-              {t('registration_modal.body_action')}
-            </Button>
-          </div>
+      {/* Accessible title. */}
+      <Dialog aria-label={t('auth.register_title')}>
+        <div className="mb-6 flex flex-col gap-2">
+          {title && <Typography variant="h3">{title}</Typography>}
+          {subtitle && <Markdown variant="large" content={subtitle} />}
         </div>
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col">
+            <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
+              <Typography variant="h4">{t('registration_modal.body_title')}</Typography>
+              <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
+                {}
+                {bodyList.map((item, index) => (
+                  <li key={index} className="flex items-center gap-4">
+                    <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
+                      <Icon name="check" className="size-7" />
+                    </span>
+                    <Typography variant="p-tiny" className="lg:text-size-p-large">
+                      {item}
+                    </Typography>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-b-lg bg-gray-100 px-4 pb-4 md:px-0 md:pb-0">
+              <Button
+                variant="solid"
+                fullWidth
+                onPress={() => register()}
+                className="md:rounded-t-none lg:py-6"
+                data-cy="registration-modal-button"
+              >
+                {t('registration_modal.body_action')}
+              </Button>
+            </div>
+          </div>
 
-        <AccountLink variant="login" />
-      </div>
-      {(type === RegistrationModalType.Initial ||
-        type === RegistrationModalType.NotAuthenticatedSubmitForm) && (
-        <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
-          <div className="mt-3 flex items-center md:mt-6">
-            <span className="h-0.5 w-full bg-gray-200" />
-            <span className="px-6 text-size-p-large-r lg:text-size-p-large">
-              {t('registration_modal.footer_choice')}
-            </span>
-            <span className="h-0.5 w-full bg-gray-200" />
-          </div>
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
-            {type === RegistrationModalType.Initial && (
-              <>
-                {eidSendPossible ? (
-                  <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                    {t('registration_modal.buttons_initial_continue_eid')}
-                  </Button>
-                ) : null}
-                <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                  {t('registration_modal.buttons_initial_skip')}
-                </Button>
-              </>
-            )}
-            {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
-              <>
-                <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                  {t('registration_modal.buttons_not_verified_submit_back')}
-                </Button>
-                <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                  {t('registration_modal.buttons_not_verified_submit_send')}
-                </Button>
-              </>
-            )}
-          </div>
+          <AccountLink variant="login" />
         </div>
-      )}
+        {(type === RegistrationModalType.Initial ||
+          type === RegistrationModalType.NotAuthenticatedSubmitForm) && (
+          <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
+            <div className="mt-3 flex items-center md:mt-6">
+              <span className="h-0.5 w-full bg-gray-200" />
+              <span className="px-6 text-size-p-large-r lg:text-size-p-large">
+                {t('registration_modal.footer_choice')}
+              </span>
+              <span className="h-0.5 w-full bg-gray-200" />
+            </div>
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
+              {type === RegistrationModalType.Initial && (
+                <>
+                  {eidSendPossible ? (
+                    <Button variant="outline-soft" size="small" onPress={close} fullWidth>
+                      {t('registration_modal.buttons_initial_continue_eid')}
+                    </Button>
+                  ) : null}
+                  <Button variant="outline-soft" size="small" onPress={close} fullWidth>
+                    {t('registration_modal.buttons_initial_skip')}
+                  </Button>
+                </>
+              )}
+              {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
+                <>
+                  <Button variant="outline-soft" size="small" onPress={close} fullWidth>
+                    {t('registration_modal.buttons_not_verified_submit_back')}
+                  </Button>
+                  <Button variant="outline-soft" size="small" onPress={close} fullWidth>
+                    {t('registration_modal.buttons_not_verified_submit_send')}
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </Dialog>
     </Modal>
   )
 }

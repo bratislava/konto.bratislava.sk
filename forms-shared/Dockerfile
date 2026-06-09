@@ -71,6 +71,10 @@ CMD [ "npm", "run", "test:ci" ]
 FROM test-base AS test-update
 CMD [ "npm", "run", "test:ci:update" ]
 
+# CI runs tests inside `docker build` so the target can be cached.
+FROM test-base AS ci-test
+RUN npm run test:ci
+
 FROM base AS prod-build
 
 COPY package.json package-lock.json ./

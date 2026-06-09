@@ -5,11 +5,7 @@ import {
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
 import { createTestNorisCommunalWasteTaxGrouped } from '../../subservices/__tests__/factories/noris-communal-waste-tax-grouped.factory'
-import {
-  AreaTypesEnum,
-  DeliveryMethod,
-  DeliveryMethodNoris,
-} from '../../types/noris.enums'
+import { AreaTypesEnum } from '../../types/noris.enums'
 import {
   NorisBaseTax,
   NorisCommunalWasteTaxGrouped,
@@ -17,7 +13,6 @@ import {
 } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
-  mapDeliveryMethodToNoris,
   mapNorisToCommunalWasteDatabaseDetail,
   mapNorisToDatabaseBaseTax,
   mapNorisToRealEstateDatabaseDetail,
@@ -480,36 +475,6 @@ describe('mapNorisToDatabaseBaseTax', () => {
     } as NorisBaseTax
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
     expect(result.variableSymbol).toBe('VS-12345')
-  })
-})
-
-describe('mapDeliveryMethodToNoris', () => {
-  it('should map CITY_ACCOUNT to CITY_ACCOUNT', () => {
-    expect(mapDeliveryMethodToNoris(DeliveryMethod.CITY_ACCOUNT)).toBe(
-      DeliveryMethodNoris.CITY_ACCOUNT,
-    )
-  })
-
-  it('should map EDESK to EDESK', () => {
-    expect(mapDeliveryMethodToNoris(DeliveryMethod.EDESK)).toBe(
-      DeliveryMethodNoris.EDESK,
-    )
-  })
-
-  it('should map POSTAL to EDESK', () => {
-    expect(mapDeliveryMethodToNoris(DeliveryMethod.POSTAL)).toBe(
-      DeliveryMethodNoris.EDESK,
-    )
-  })
-
-  it('should return null for null input', () => {
-    expect(mapDeliveryMethodToNoris(null)).toBeNull()
-  })
-
-  it('should throw an error for unknown delivery method', () => {
-    expect(() =>
-      mapDeliveryMethodToNoris('UNKNOWN' as unknown as DeliveryMethod),
-    ).toThrow('Unknown delivery method: UNKNOWN')
   })
 })
 

@@ -11,7 +11,7 @@ import { TowingErrorsEnum, TowingErrorsResponseEnum } from './towing.errors.enum
 /**
  * Thin proxy around `nest-enforcement-backend`'s public towing lookup endpoint.
  *
- * The upstream endpoint (`GET /api/public/tow/:ecv`) is currently unauthenticated.
+ * The upstream endpoint (`GET /api/public/tow/:ecv`) is protected by API key.
  * This service exposes it through `nest-city-account` and keeps room for
  * local protections (for example Turnstile, rate limiting, or additional logging).
  */
@@ -49,6 +49,9 @@ export class TowingService {
     try {
       const { data } = await axios.get<TowingSearchResponseDto>(url, {
         timeout: 10_000,
+        headers: {
+          'X-Api-Key': this.configService.getOrThrow<string>('ENFORCEMENT_BACKEND_TOW_API_KEY'),
+        },
       })
       return data
     } catch (error) {

@@ -191,13 +191,13 @@ const MyApplicationsCard = ({
       <ConditionalWrap
         condition={variant === 'SENT'}
         wrap={(children) => (
-          <Link className="rounded-lg base-focus-ring" href={detailPageHref}>
+          <Link className="block rounded-lg base-focus-ring max-lg:hidden" href={detailPageHref}>
             {children}
           </Link>
         )}
       >
         {/* Desktop */}
-        <div className="relative flex w-full items-stretch rounded-lg border border-gray-200 bg-white p-6 max-lg:hidden">
+        <div className="relative flex w-full items-stretch rounded-lg border border-gray-200 bg-white p-6">
           <div className="flex w-full gap-6">
             <div className="flex w-full grow flex-col gap-1">
               {(category || isLoading) && (
@@ -277,7 +277,6 @@ const MyApplicationsCard = ({
                           variant="outline"
                           icon={<Icon name="menu-kebab" />}
                           aria-label="Menu"
-                          className="menu-dropdown-focus-ring"
                         />
                       }
                       items={conceptMenuContent}
@@ -295,7 +294,7 @@ const MyApplicationsCard = ({
         href={variant === 'SENT' ? detailPageHref : formPageHref}
         onClick={openBottomSheetModal}
       >
-        <div className="relative flex w-full items-start justify-between border-b border-gray-200 bg-white py-4 lg:hidden">
+        <div className="relative flex w-full items-start justify-between border-b border-gray-200 bg-white py-4">
           <div className="flex w-full justify-between gap-1.5">
             <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">

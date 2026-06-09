@@ -5,6 +5,7 @@ import { SendEmailInputDto } from '../../global-dtos/mailgun.dto'
 export interface MailerSendEmailParams {
   data: SendEmailInputDto
   emailFrom?: string
+  replyTo?: string
   subject?: string
   attachments?: { filename: string; content: Buffer | Readable }[]
 }

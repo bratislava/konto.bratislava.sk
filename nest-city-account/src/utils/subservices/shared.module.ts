@@ -6,7 +6,6 @@ import ClientsModule from '../../clients/clients.module'
 import { PrismaModule } from '../../prisma/prisma.module'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { CognitoSubservice } from './cognito.subservice'
-import { TaxSubservice } from './tax.subservice'
 import { TurnstileSubservice } from './turnstile.subservice'
 import { UserIdentitySubservice } from './user-identity.subservice'
 
@@ -21,7 +20,7 @@ import { UserIdentitySubservice } from './user-identity.subservice'
  * - Do NOT import feature modules to avoid circular dependencies
  *
  * ## What can be provided:
- * - Subservices: Reusable business logic services (e.g., CognitoSubservice, TaxSubservice)
+ * - Subservices: Reusable business logic services (e.g., CognitoSubservice)
  * - Guards: Global guards like ThrowerErrorGuard
  * - Utilities: Cross-cutting concerns that don't belong to a specific feature
  *
@@ -37,19 +36,7 @@ import { UserIdentitySubservice } from './user-identity.subservice'
 @Global()
 @Module({
   imports: [PrismaModule, ClientsModule, ConfigModule], // Only leaf modules can be imported here.
-  providers: [
-    ThrowerErrorGuard,
-    TaxSubservice,
-    CognitoSubservice,
-    TurnstileSubservice,
-    UserIdentitySubservice,
-  ],
-  exports: [
-    ThrowerErrorGuard,
-    TaxSubservice,
-    CognitoSubservice,
-    TurnstileSubservice,
-    UserIdentitySubservice,
-  ],
+  providers: [ThrowerErrorGuard, CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
+  exports: [ThrowerErrorGuard, CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
 })
 export class SharedModule {}

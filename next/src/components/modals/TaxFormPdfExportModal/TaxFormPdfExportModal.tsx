@@ -1,11 +1,13 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { Trans, useTranslation } from 'next-i18next/pages'
 import { mergeProps } from 'react-aria/mergeProps'
+import { Heading } from 'react-aria-components/Heading'
 
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormRedirects } from '@/src/components/forms/useFormRedirects'
 import Icon from '@/src/components/icon-components/Icon'
 import { TaxFormPdfExportModalState } from '@/src/components/modals/TaxFormPdfExportModal/TaxFormPdfExportModalState'
+import Dialog from '@/src/components/simple-components/Dialog'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import Spinner from '@/src/components/simple-components/Spinner'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -22,7 +24,10 @@ const LoadingContent = () => {
     <div className="flex flex-col items-center gap-6">
       <Spinner size="lg" />
       <div className="flex flex-col gap-3 text-center">
-        <Typography variant="h3">{t('tax_form_pdf_export_modal.preparing')}</Typography>
+        {/* Accessible Dialog heading */}
+        <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
+          {t('tax_form_pdf_export_modal.preparing')}
+        </Heading>
         <Typography variant="p-default">
           {t('tax_form_pdf_export_modal.preparing_description')}
         </Typography>
@@ -77,7 +82,10 @@ const SuccessContent = () => {
       </div>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-1">
-          <Typography variant="h2">{t('tax_form_pdf_export_modal.heading')}</Typography>
+          {/* Accessible Dialog heading */}
+          <Heading slot="title" className="text-size-h2-r font-semibold lg:text-size-h2">
+            {t('tax_form_pdf_export_modal.heading')}
+          </Heading>
           <Typography variant="p-small">{t('tax_form_pdf_export_modal.subheading')}</Typography>
         </div>
         <div className="flex flex-col items-center gap-1">
@@ -176,22 +184,26 @@ const SuccessContent = () => {
  * Rough version of the modal, some code is copied from RegistrationModal. It will need complex modal refactor in forms
  * in the future.
  */
-const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) => (
-  <Modal
-    modalOverlayClassname="md:py-4"
-    modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
-    mobileFullScreen
-    {...mergeProps(props, {
-      onOpenChange: (isOpen) => {
-        if (!isOpen && state?.type === 'loading') {
-          state.onClose()
-        }
-      },
-    } as ModalProps)}
-  >
-    {state?.type === 'loading' && <LoadingContent />}
-    {state?.type === 'success' && <SuccessContent />}
-  </Modal>
-)
+const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) => {
+  return (
+    <Modal
+      modalOverlayClassname="md:py-4"
+      modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
+      mobileFullScreen
+      {...mergeProps(props, {
+        onOpenChange: (isOpen) => {
+          if (!isOpen && state?.type === 'loading') {
+            state.onClose()
+          }
+        },
+      } as ModalProps)}
+    >
+      <Dialog>
+        {state?.type === 'loading' && <LoadingContent />}
+        {state?.type === 'success' && <SuccessContent />}
+      </Dialog>
+    </Modal>
+  )
+}
 
 export default TaxFormPdfExportModal

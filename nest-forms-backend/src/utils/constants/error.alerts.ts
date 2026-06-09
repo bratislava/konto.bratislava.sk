@@ -1,5 +1,6 @@
 import { FormError } from '@prisma/client'
 
+import { CityAccountErrorsEnum } from '../../auth/errors/city-account.errors.enum'
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
 import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
 import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
@@ -27,10 +28,10 @@ export default [
   FilesErrorsEnum.FILE_BY_SCANNERID_NOT_FOUND_ERROR,
   FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
   NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-  NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
   NasesErrorsEnum.SEND_TO_NASES_ERROR,
   NasesErrorsEnum.SEND_TO_GINIS_ERROR,
   NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
+  NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
   FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
   FormsErrorsEnum.FORM_ARCHIVED,
   FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
@@ -38,7 +39,6 @@ export default [
   FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
   FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
   FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
-  NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
   ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
   ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
   ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
@@ -53,5 +53,6 @@ export default [
   SharepointErrorsEnum.GENERAL_ERROR,
   FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
   GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+  CityAccountErrorsEnum.GET_USER_ERROR,
   ...Object.values(StatusErrorsEnum),
 ] as string[]

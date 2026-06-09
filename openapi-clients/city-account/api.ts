@@ -3600,7 +3600,7 @@ export class PAASMPAApi extends BaseAPI {
 export const TowingApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
+     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. The upstream call is authenticated with an internal API key. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
      * @summary Public lookup of an active towing / relocation by license plate
      * @param {string} ecv
      * @param {TowingSearchRequestDto} towingSearchRequestDto
@@ -3663,7 +3663,7 @@ export const TowingApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = TowingApiAxiosParamCreator(configuration)
   return {
     /**
-     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
+     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. The upstream call is authenticated with an internal API key. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
      * @summary Public lookup of an active towing / relocation by license plate
      * @param {string} ecv
      * @param {TowingSearchRequestDto} towingSearchRequestDto
@@ -3710,7 +3710,7 @@ export const TowingApiFactory = function (
   const localVarFp = TowingApiFp(configuration)
   return {
     /**
-     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
+     * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. The upstream call is authenticated with an internal API key. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
      * @summary Public lookup of an active towing / relocation by license plate
      * @param {string} ecv
      * @param {TowingSearchRequestDto} towingSearchRequestDto
@@ -3734,7 +3734,7 @@ export const TowingApiFactory = function (
  */
 export class TowingApi extends BaseAPI {
   /**
-   * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
+   * Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. The upstream call is authenticated with an internal API key. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.
    * @summary Public lookup of an active towing / relocation by license plate
    * @param {string} ecv
    * @param {TowingSearchRequestDto} towingSearchRequestDto

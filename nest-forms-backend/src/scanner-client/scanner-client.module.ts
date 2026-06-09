@@ -6,7 +6,7 @@ import ScannerClientService from './scanner-client.service'
 
 @Module({
   imports: [ConfigModule],
-  providers: [ScannerClientService, ThrowerErrorGuard],
+  providers: [ScannerClientService],
   exports: [ScannerClientService],
 })
 export default class ScannerClientModule {

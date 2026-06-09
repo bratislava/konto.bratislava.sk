@@ -5,9 +5,9 @@ import nodemailer from 'nodemailer'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
-} from '../../global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
+} from '../utils/global-enums/mailgun.errors.enum'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
 import { MAILGUN_CONFIG } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'

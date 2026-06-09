@@ -19,13 +19,13 @@ import RabbitmqClientModule from './rabbitmq-client/rabbitmq-client.module'
 import SignerModule from './signer/signer.module'
 import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
-import ThrowerErrorGuard from './utils/guards/thrower-error.guard'
-import SharepointSubservice from './utils/subservices/sharepoint.subservice'
+import { SharedModule } from './utils/subservices/shared.module'
 import WebhookModule from './webhook/webhook.module'
 
 @Module({
   imports: [
     AppSharedModule,
+    SharedModule,
     AppV2Module,
     AuthModule,
     AuthV2Module,
@@ -45,6 +45,6 @@ import WebhookModule from './webhook/webhook.module'
     WebhookModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SharepointSubservice, ThrowerErrorGuard],
+  providers: [AppService],
 })
 export default class AppModule {}

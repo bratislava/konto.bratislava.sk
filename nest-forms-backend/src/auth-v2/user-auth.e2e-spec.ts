@@ -29,6 +29,7 @@ class TestUserResponse {
   user: User
 }
 
+// eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided -- test-only controller used directly in the e2e test module setup
 @Controller('test-auth-e2e')
 @ApiTags('test-auth-e2e')
 class TestController {

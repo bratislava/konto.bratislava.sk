@@ -10,18 +10,16 @@ import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
+import { MailerModule } from '../mailer/mailer.module'
 import NasesModule from '../nases/nases.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
-import MailgunService from '../utils/global-services/mailer/mailgun.service'
-import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import GinisController from './ginis.controller'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
+import SharepointService from './subservices/sharepoint.service'
 
 @Module({
   imports: [
@@ -40,16 +38,14 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     FormsV2Module,
     AuthV2Module,
     NasesModule,
+    MailerModule,
   ],
   providers: [
     GinisService,
     GinisHelper,
-    ThrowerErrorGuard,
     GinisAPIService,
-    MailgunService,
-    MailgunHelper,
-    MinioClientSubservice,
     GinisTasksSubservice,
+    SharepointService,
   ],
   exports: [GinisService, GinisHelper],
   controllers: [GinisController],

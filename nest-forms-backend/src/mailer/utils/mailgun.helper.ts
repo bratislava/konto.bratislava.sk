@@ -8,12 +8,12 @@ import { Interfaces, TemplateQuery } from 'mailgun.js/definitions'
 import {
   SendEmailInputDto,
   SendEmailVariablesDto,
-} from '../../../global-dtos/mailgun.dto'
+} from '../../utils/global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
-} from '../../../global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../../guards/thrower-error.guard'
+} from '../../utils/global-enums/mailgun.errors.enum'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { MAILGUN_CONFIG, MailgunConfigVariableType } from '../mailgun.constants'
 
 @Injectable()

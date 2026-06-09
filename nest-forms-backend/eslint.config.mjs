@@ -17,7 +17,6 @@ export default [
   {
     rules: {
       // TODO: fix https://github.com/bratislava/private-konto.bratislava.sk/issues/1320
-      '@darraghor/nestjs-typed/injectable-should-be-provided': 'warn', // 14 occurrences
       '@typescript-eslint/no-unnecessary-condition': 'warn', // 8 occurrences
       'no-await-in-loop': 'warn', // 7 occurrences
       'no-console': 'warn', // 9 occurrences

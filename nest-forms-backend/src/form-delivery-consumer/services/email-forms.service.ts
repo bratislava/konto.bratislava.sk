@@ -28,12 +28,12 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { Mailer } from '../../mailer/mailer.interface'
+import MailgunService from '../../mailer/mailgun.service'
+import OloMailerService from '../../mailer/olo-mailer.service'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import { Mailer } from '../../utils/global-services/mailer/mailer.interface'
-import MailgunService from '../../utils/global-services/mailer/mailgun.service'
-import OloMailerService from '../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'

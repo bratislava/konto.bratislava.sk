@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
-import ThrowerErrorGuard from '../../../../guards/thrower-error.guard'
+import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { MAILGUN_CONFIG } from '../../mailgun.constants'
 import MailgunHelper from '../mailgun.helper'
 import { testEmailDefinitions } from './utils/emailDefinitions'

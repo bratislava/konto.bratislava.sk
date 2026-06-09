@@ -15,26 +15,26 @@ import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
-import prismaMock from '../../../../test/singleton'
-import BaConfigService from '../../../config/ba-config.service'
-import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
-import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
-import PrismaService from '../../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import SharepointSubservice from '../sharepoint.subservice'
+import prismaMock from '../../../test/singleton'
+import BaConfigService from '../../config/ba-config.service'
+import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
+import { FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
+import PrismaService from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import SharepointService from './sharepoint.service'
 
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
 }))
-describe('SharepointSubservice', () => {
-  let service: SharepointSubservice
+describe('SharepointService', () => {
+  let service: SharepointService
 
   beforeEach(async () => {
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        SharepointSubservice,
+        SharepointService,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -58,7 +58,7 @@ describe('SharepointSubservice', () => {
       ],
     }).compile()
 
-    service = module.get<SharepointSubservice>(SharepointSubservice)
+    service = module.get<SharepointService>(SharepointService)
   })
 
   afterEach(() => {

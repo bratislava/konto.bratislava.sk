@@ -33,6 +33,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
+import MailgunService from '../mailer/mailgun.service'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
@@ -48,7 +49,6 @@ import {
   ErrorsEnum,
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
-import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'

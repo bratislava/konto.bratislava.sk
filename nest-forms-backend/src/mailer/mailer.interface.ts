@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { SendEmailInputDto } from '../../global-dtos/mailgun.dto'
+import { SendEmailInputDto } from '../utils/global-dtos/mailgun.dto'
 
 export interface MailerAttachment {
   filename: string

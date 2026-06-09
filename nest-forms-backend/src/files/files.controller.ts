@@ -19,7 +19,6 @@ import {
   ApiConsumes,
   ApiOkResponse,
   ApiOperation,
-  ApiPayloadTooLargeResponse,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
@@ -119,9 +118,6 @@ export default class FilesController {
     required: false,
     description:
       'Slot the file belongs to. Determines the applicable per-slot file size limit.',
-  })
-  @ApiPayloadTooLargeResponse({
-    description: 'File exceeds the applicable per-file size limit.',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({

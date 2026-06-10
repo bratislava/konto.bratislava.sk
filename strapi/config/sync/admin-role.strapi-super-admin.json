@@ -113,12 +113,11 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
-      "documentId": "ca72ri00xvnmcfi7tzdtd9sg",
+      "documentId": "vnunkaoyadr8aa25h3hsc11d",
       "locale": null
     },
     {
@@ -154,12 +153,11 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
-      "documentId": "orukdxw8jajuo6gekutcprp0",
+      "documentId": "jtajmmqxsa2j1dvan2wuz64t",
       "locale": null
     },
     {
@@ -177,12 +175,11 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
-      "documentId": "vuwgp39u391fyswwirt9qn53",
+      "documentId": "pjdn9p5p51wzkms2uin2z923",
       "locale": null
     },
     {
@@ -780,6 +777,60 @@
       },
       "conditions": [],
       "documentId": "zzs83yyndgzcvh4gxafq8k7f",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.access",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "dde3skxytbcpmow8i6e12yre",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.create",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "rdoi3gg404ae5lx8n50t48pu",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.delete",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "pa0jhy78ugih5fqiup014qzx",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.read",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "rnrqzn05ffx75utsgjd97iqe",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.regenerate",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "dg70ss8bqqx1mjspwo69i3t4",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "zxr7rufb5ocek84qeme0uovh",
       "locale": null
     },
     {

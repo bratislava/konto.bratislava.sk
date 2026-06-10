@@ -2,18 +2,6 @@ fragment RichtextSection on ComponentSectionsRichtext {
   content
 }
 
-fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
-  __typename
-
-  ... on ComponentSectionsRichtext {
-    ...RichtextSection
-  }
-
-  ... on ComponentSectionsStepper {
-    ...StepperSection
-  }
-}
-
 fragment ChecklistItems on ComponentBlocksChecklistItem {
   title
   content
@@ -32,5 +20,17 @@ fragment StepperSection on ComponentSectionsStepper {
   description
   checklists {
     ...Checklists
+  }
+}
+
+fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
+  __typename
+
+  ... on ComponentSectionsRichtext {
+    ...RichtextSection
+  }
+
+  ... on ComponentSectionsStepper {
+    ...StepperSection
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { isAxiosError } from 'axios'
 import _ from 'lodash'
@@ -10,7 +10,10 @@ import {
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
-import { VerificationErrorsResponseEnum } from '../user-verification/verification.errors.enum'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -103,9 +106,12 @@ export class NasesService {
    * @param familyName - Family name; same conventions as `givenName`.
    * @returns The identity record (`UpvsNaturalPerson | UpvsCorporateBody`). On
    *   a successful FO lookup this is `UpvsNaturalPerson` with the UPVS `uri`.
-   * @throws `UnprocessableEntityException` with code `VERIFY_EID_ERROR` for any
-   *   upstream failure — including "identity not found" (400) and outages (5xx).
-   *   Callers cannot distinguish transient infra errors from absent identities.
+   * @throws HTTP 429 (code `TOO_MANY_REQUESTS_ERROR`) when UPVS rate-limits us, so
+   *   callers can detect throttling by status and back off.
+   * @throws HTTP 422 with code `VERIFY_EID_ERROR` when UPVS rejects the lookup (400,
+   *   i.e. "identity not found").
+   * @throws the `fromAxiosError` defaults (BadGateway / ServiceUnavailable) for
+   *   other upstream failures such as outages or credential errors.
    */
   async lookupIdentityFO(
     personalIdentificationNumber: string,
@@ -124,12 +130,33 @@ export class NasesService {
         return response.data
       })
       .catch((error: unknown) => {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          undefined,
-          error
-        )
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
+            error
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          statusOverrides: {
+            // Rate limit must keep its 429 status — the urgent queue detects it by
+            // status and backs off for the rest of the tick.
+            [HttpStatus.TOO_MANY_REQUESTS]: {
+              status: HttpStatus.TOO_MANY_REQUESTS,
+              errorEnum: ErrorsEnum.TOO_MANY_REQUESTS_ERROR,
+              message: ErrorsResponseEnum.TOO_MANY_REQUESTS_ERROR,
+            },
+            // UPVS answers 400 when the identity is not found — that's a data
+            // problem, not a gateway one.
+            [HttpStatus.BAD_REQUEST]: {
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
+              message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+            },
+          },
+        })
       })
     return result
   }

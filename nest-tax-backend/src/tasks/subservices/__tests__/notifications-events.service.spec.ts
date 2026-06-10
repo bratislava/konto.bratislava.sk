@@ -858,9 +858,9 @@ describe('NotificationsEventsSubservice', () => {
         .spyOn(service['prismaService'].taxPayment, 'findMany')
         .mockResolvedValue([])
 
-      const getUserDataAdminBatchOptionalSpy = jest.spyOn(
+      const getUserDataAdminBatchSpy = jest.spyOn(
         service['cityAccountSubservice'],
-        'getUserDataAdminBatchOptional',
+        'getUserDataAdminBatch',
       )
       const trackPaymentInBloomreachSpy = jest.spyOn(
         service['paymentService'],
@@ -869,7 +869,7 @@ describe('NotificationsEventsSubservice', () => {
 
       await service.resendBloomreachEvents()
 
-      expect(getUserDataAdminBatchOptionalSpy).not.toHaveBeenCalled()
+      expect(getUserDataAdminBatchSpy).not.toHaveBeenCalled()
       expect(trackPaymentInBloomreachSpy).not.toHaveBeenCalled()
     })
 
@@ -915,7 +915,7 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(
           service['cityAccountSubservice'],
-          'getUserDataAdminBatchOptional',
+          'getUserDataAdminBatch',
         )
         .mockResolvedValue(mockUserData)
 
@@ -965,7 +965,7 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(
           service['cityAccountSubservice'],
-          'getUserDataAdminBatchOptional',
+          'getUserDataAdminBatch',
         )
         .mockResolvedValue({})
 
@@ -1012,7 +1012,7 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(
           service['cityAccountSubservice'],
-          'getUserDataAdminBatchOptional',
+          'getUserDataAdminBatch',
         )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
@@ -1072,7 +1072,7 @@ describe('NotificationsEventsSubservice', () => {
       jest
         .spyOn(
           service['cityAccountSubservice'],
-          'getUserDataAdminBatchOptional',
+          'getUserDataAdminBatch',
         )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({

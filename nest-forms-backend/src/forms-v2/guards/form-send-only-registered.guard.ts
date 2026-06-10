@@ -7,7 +7,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
-import FormRegistrationStatusRepository from '../../nases/utils-services/form-registration-status.repository'
+import FormRegistrationStatusRepository from '../../nases/repositories/form-registration-status.repository'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 

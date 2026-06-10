@@ -1,10 +1,15 @@
-import Towing, { TowingSectionProps } from "@/src/components/common/Towing/Towing"
+import { TowingSectionFragment } from "@/src/clients/graphql-strapi/api"
+import Towing from "@/src/components/common/Towing/Towing"
 import SectionContainer from "@/src/components/layouts/SectionContainer"
 
-const TowingSection = ({ title, description }: TowingSectionProps) => {
+type TowingSectionProps = {
+  section: TowingSectionFragment
+}
+
+const TowingSection = ({ section }: TowingSectionProps) => {
   return (
     <SectionContainer>
-      <Towing title={title} description={description} />
+      <Towing title={section.Title ?? ''} description={section.description ?? ''} />
     </SectionContainer>
   )
 }

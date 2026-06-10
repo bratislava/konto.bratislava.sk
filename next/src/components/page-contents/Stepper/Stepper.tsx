@@ -14,6 +14,11 @@ type Props = {
   section: StepperSectionFragment
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=15560-17717&m=dev
+ * TODO: Add correct component link
+ */
+
 export const Stepper = ({ section }: Props) => {
   const { title, description, checklists } = section
 

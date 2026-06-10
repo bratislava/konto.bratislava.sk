@@ -1,3 +1,0 @@
-schema: ./strapi/schema.graphql
-documents:
-  - ./next/src/clients/graphql-strapi/queries/**/*.{gql,graphql}

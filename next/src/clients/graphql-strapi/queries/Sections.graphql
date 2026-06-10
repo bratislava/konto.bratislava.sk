@@ -2,10 +2,19 @@ fragment RichtextSection on ComponentSectionsRichtext {
   content
 }
 
+fragment TowingSection on ComponentSectionsTowing {
+  Title
+  description
+}
+
 fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   __typename
 
   ... on ComponentSectionsRichtext {
     ...RichtextSection
+  }
+
+  ... on ComponentSectionsTowing {
+    ...TowingSection
   }
 }

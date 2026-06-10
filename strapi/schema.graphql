@@ -224,6 +224,26 @@ input ComponentSectionsRichtextInput {
   id: ID
 }
 
+type ComponentSectionsTowing {
+  Title: String
+  description: String
+  id: ID!
+}
+
+input ComponentSectionsTowingFiltersInput {
+  Title: StringFilterInput
+  and: [ComponentSectionsTowingFiltersInput]
+  description: StringFilterInput
+  not: ComponentSectionsTowingFiltersInput
+  or: [ComponentSectionsTowingFiltersInput]
+}
+
+input ComponentSectionsTowingInput {
+  Title: String
+  description: String
+  id: ID
+}
+
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -472,7 +492,7 @@ input FormInput {
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
+union FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | ComponentSectionsTowing | Error
 
 scalar FormLandingPageSectionsDynamicZoneInput
 
@@ -521,7 +541,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsRichtext | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsRichtext | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!

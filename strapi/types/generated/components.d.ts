@@ -36,7 +36,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<['sections.richtext']>
+    sections: Schema.Attribute.DynamicZone<['sections.richtext', 'sections.towing']>
     text: Schema.Attribute.RichText
   }
 }
@@ -112,6 +112,17 @@ export interface SectionsRichtext extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsTowing extends Struct.ComponentSchema {
+  collectionName: 'components_sections_towings'
+  info: {
+    displayName: 'Od\u0165ahy'
+  }
+  attributes: {
+    description: Schema.Attribute.Text
+    Title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -124,6 +135,7 @@ declare module '@strapi/strapi' {
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert
       'sections.richtext': SectionsRichtext
+      'sections.towing': SectionsTowing
     }
   }
 }

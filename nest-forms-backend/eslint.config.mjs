@@ -1,19 +1,9 @@
 import { createNestConfig } from '@bratislava/eslint-config-nest'
 
-import customRulesPlugin from './eslint-custom-rules/index.js'
-
 export default [
   ...createNestConfig({
     tsconfigRootDir: import.meta.dirname,
   }),
-  {
-    plugins: {
-      'custom-rules': customRulesPlugin,
-    },
-    rules: {
-      'custom-rules/thrower-error-guard-enum': 'warn',
-    },
-  },
   {
     rules: {
       // TODO: fix https://github.com/bratislava/private-konto.bratislava.sk/issues/1320

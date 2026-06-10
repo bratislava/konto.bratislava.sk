@@ -22,7 +22,7 @@ import FormsService from '../../forms/forms.service'
 import GinisService from '../../ginis/ginis.service'
 import PrismaService from '../../prisma/prisma.service'
 import RabbitmqClientService from '../../rabbitmq-client/rabbitmq-client.service'
-import { RABBIT_MQ } from '../../utils/constants'
+import { RABBIT_FORM_DELIVERY } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import MailgunService from '../../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
@@ -63,9 +63,9 @@ export default class FormDeliveryConsumerService {
   }
 
   @RabbitRPC({
-    exchange: RABBIT_MQ.EXCHANGE,
-    routingKey: RABBIT_MQ.ROUTING_KEY,
-    queue: RABBIT_MQ.QUEUE,
+    exchange: RABBIT_FORM_DELIVERY.EXCHANGE,
+    routingKey: RABBIT_FORM_DELIVERY.ROUTING_KEY,
+    queue: RABBIT_FORM_DELIVERY.QUEUE,
     errorHandler: (channel, msg, error) => {
       const logger = new LineLoggerSubservice('FormDeliveryConsumerService')
       const throwerErrorGuard = new ThrowerErrorGuard()

@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common'
 import { Replies } from 'amqplib'
 
 import { RabbitPayloadDto } from '../form-delivery-consumer/dtos/form-delivery-consumer.dto'
-import { GinisCheckNasesPayloadDto } from '../ginis/dtos/ginis.response.dto'
-import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
+import { GinisCheckDeliveryPayloadDto } from '../ginis/dtos/ginis.response.dto'
+import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
@@ -17,11 +17,11 @@ export default class RabbitmqClientService {
 
   public async publish(message: RabbitPayloadDto): Promise<Replies.Empty> {
     this.logger.debug(
-      `Publishing rabbit message to: ${RABBIT_MQ.EXCHANGE} with routing key: ${RABBIT_MQ.ROUTING_KEY}`,
+      `Publishing rabbit message to: ${RABBIT_FORM_DELIVERY.EXCHANGE} with routing key: ${RABBIT_FORM_DELIVERY.ROUTING_KEY}`,
     )
     return this.amqpConnection.publish(
-      RABBIT_MQ.EXCHANGE,
-      RABBIT_MQ.ROUTING_KEY,
+      RABBIT_FORM_DELIVERY.EXCHANGE,
+      RABBIT_FORM_DELIVERY.ROUTING_KEY,
       message,
       {
         contentType: 'application/json',
@@ -38,8 +38,8 @@ export default class RabbitmqClientService {
       content: message,
     })
     return this.amqpConnection.publish(
-      RABBIT_MQ.EXCHANGE,
-      RABBIT_MQ.QUEUE,
+      RABBIT_FORM_DELIVERY.EXCHANGE,
+      RABBIT_FORM_DELIVERY.QUEUE,
       message,
       {
         headers: {
@@ -51,14 +51,14 @@ export default class RabbitmqClientService {
   }
 
   public async publishToGinis(
-    message: GinisCheckNasesPayloadDto,
+    message: GinisCheckDeliveryPayloadDto,
   ): Promise<Replies.Empty> {
     this.logger.debug(
-      `Publishing send to ginis message to: ${RABBIT_MQ.EXCHANGE} with routing key: ${RABBIT_NASES.ROUTING_KEY}`,
+      `Publishing send to ginis message to: ${RABBIT_FORM_DELIVERY.EXCHANGE} with routing key: ${RABBIT_GINIS.ROUTING_KEY}`,
     )
     return this.amqpConnection.publish(
-      RABBIT_MQ.EXCHANGE,
-      RABBIT_NASES.ROUTING_KEY,
+      RABBIT_FORM_DELIVERY.EXCHANGE,
+      RABBIT_GINIS.ROUTING_KEY,
       message,
       {
         headers: {

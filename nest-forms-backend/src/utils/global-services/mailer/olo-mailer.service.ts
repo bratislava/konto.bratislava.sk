@@ -47,7 +47,7 @@ export default class OloMailerService implements Mailer {
    * @param attachments Optional array of attachments to be sent with the email.
    */
   async sendEmail(params: MailerSendEmailParams): Promise<void> {
-    const { data, emailFrom, attachments, subject } = params
+    const { data, emailFrom, replyTo, attachments, subject } = params
     try {
       const mailBody = await this.mailgunHelper.getFilledTemplate(
         MAILGUN_CONFIG[data.template].template,
@@ -56,6 +56,7 @@ export default class OloMailerService implements Mailer {
       await this.oloTransporter.sendMail({
         from: `OLO <${emailFrom}>`,
         to: data.to,
+        replyTo,
         subject: subject ?? MAILGUN_CONFIG[data.template].subject,
         html: mailBody,
         attachments,

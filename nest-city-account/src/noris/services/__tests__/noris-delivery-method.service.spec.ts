@@ -2,13 +2,18 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 
-import { RequestUpdateNorisDeliveryMethodsData } from '../../../admin/dtos/requests.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { DeliveryMethod, IsInCityAccount } from '../../types/noris.enums'
-import { NorisDeliveryMethodsUpdateResult } from '../../types/noris.types'
-import { NorisConnectionSubservice } from '../noris-connection.subservice'
-import { NorisDeliveryMethodSubservice } from '../noris-delivery-method.subservice'
-import { NorisValidatorSubservice } from '../noris-validator.subservice'
+import { NorisConnectionService } from '../noris-connection.service'
+import {
+  NorisDeliveryMethodService,
+  UpdateNorisDeliveryMethodsData,
+} from '../noris-delivery-method.service'
+import { NorisValidatorService } from '../noris-validator.service'
+
+interface NorisDeliveryMethodsUpdateResult {
+  cislo_subjektu: number
+}
 
 const mockQuery = jest.fn()
 const mockInput = jest.fn()
@@ -24,10 +29,10 @@ jest.mock('mssql', () => ({
   DateTime: jest.fn(),
 }))
 
-describe('NorisDeliveryMethodSubservice', () => {
-  let service: NorisDeliveryMethodSubservice
-  let connectionService: NorisConnectionSubservice
-  let norisValidatorSubservice: NorisValidatorSubservice
+describe('NorisDeliveryMethodService', () => {
+  let service: NorisDeliveryMethodService
+  let connectionService: NorisConnectionService
+  let norisValidatorService: NorisValidatorService
 
   beforeEach(async () => {
     jest.clearAllMocks()
@@ -36,40 +41,30 @@ describe('NorisDeliveryMethodSubservice', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        NorisDeliveryMethodSubservice,
+        NorisDeliveryMethodService,
         {
-          provide: NorisConnectionSubservice,
-          useValue: createMock<NorisConnectionSubservice>(),
+          provide: NorisConnectionService,
+          useValue: createMock<NorisConnectionService>(),
         },
         ThrowerErrorGuard,
         {
-          provide: NorisValidatorSubservice,
-          useValue: createMock<NorisValidatorSubservice>(),
+          provide: NorisValidatorService,
+          useValue: createMock<NorisValidatorService>(),
         },
       ],
     }).compile()
 
-    service = module.get<NorisDeliveryMethodSubservice>(
-      NorisDeliveryMethodSubservice,
-    )
-    connectionService = module.get<NorisConnectionSubservice>(
-      NorisConnectionSubservice,
-    )
-    norisValidatorSubservice = module.get<NorisValidatorSubservice>(
-      NorisValidatorSubservice,
-    )
+    service = module.get<NorisDeliveryMethodService>(NorisDeliveryMethodService)
+    connectionService = module.get<NorisConnectionService>(NorisConnectionService)
+    norisValidatorService = module.get<NorisValidatorService>(NorisValidatorService)
 
     jest
-      .spyOn(norisValidatorSubservice, 'validateNorisData')
-      .mockImplementation((schema, data) =>
-        data.map((item) => schema.parse(item)),
-      )
+      .spyOn(norisValidatorService, 'validateNorisData')
+      .mockImplementation((schema, data) => (data as unknown[]).map((item) => schema.parse(item)))
 
-    jest
-      .spyOn(connectionService, 'withConnection')
-      .mockImplementation(async (fn) => {
-        return fn(createMock<mssql.ConnectionPool>())
-      })
+    jest.spyOn(connectionService, 'withConnection').mockImplementation(async (fn) => {
+      return fn(createMock<mssql.ConnectionPool>())
+    })
   })
 
   it('should be defined', () => {
@@ -83,7 +78,6 @@ describe('NorisDeliveryMethodSubservice', () => {
       } as const
 
       const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-
       const mockBirthNumbersResult = [{ ico: '010366/4554' }]
 
       mockQuery
@@ -92,19 +86,17 @@ describe('NorisDeliveryMethodSubservice', () => {
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
-      expect(result).toEqual({
-        birthNumbers: ['010366/4554'],
-      })
+      expect(result).toEqual({ birthNumbers: ['010366/4554'] })
       expect(connectionService.withConnection).toHaveBeenCalled()
       expect(mockRequest.input).toHaveBeenCalledWith(
         'dkba_stav',
         expect.anything(),
-        IsInCityAccount.YES,
+        IsInCityAccount.YES
       )
       expect(mockRequest.input).toHaveBeenCalledWith(
         'dkba_sposob_dorucovania',
         expect.anything(),
-        DeliveryMethod.EDESK,
+        DeliveryMethod.EDESK
       )
     })
 
@@ -113,94 +105,68 @@ describe('NorisDeliveryMethodSubservice', () => {
         '010366/4554': { deliveryMethod: DeliveryMethod.POSTAL },
       } as const
 
-      const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-
-      const mockBirthNumbersResult = [{ ico: '010366/4554' }]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+        .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }] })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
-      expect(result).toEqual({
-        birthNumbers: ['010366/4554'],
-      })
+      expect(result).toEqual({ birthNumbers: ['010366/4554'] })
       expect(mockRequest.input).toHaveBeenCalledWith(
         'dkba_sposob_dorucovania',
         expect.anything(),
-        DeliveryMethod.EDESK, // POSTAL is mapped to EDESK in Noris
+        DeliveryMethod.EDESK // POSTAL is mapped to EDESK in Noris
       )
     })
 
     it('should successfully update delivery methods for CITY_ACCOUNT with date', async () => {
       const mockData = {
-        '010366/4554': {
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: '2024-01-01',
-        },
+        '010366/4554': { deliveryMethod: DeliveryMethod.CITY_ACCOUNT, date: '2024-01-01' },
       } as const
 
-      const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-
-      const mockBirthNumbersResult = [{ ico: '010366/4554' }]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+        .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }] })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
-      expect(result).toEqual({
-        birthNumbers: ['010366/4554'],
-      })
+      expect(result).toEqual({ birthNumbers: ['010366/4554'] })
       expect(mockRequest.input).toHaveBeenCalledWith(
         'dkba_datum_suhlasu',
         expect.anything(),
-        expect.any(Date),
+        expect.any(Date)
       )
       expect(mockRequest.input).toHaveBeenCalledWith(
         'dkba_sposob_dorucovania',
         expect.anything(),
-        DeliveryMethod.CITY_ACCOUNT,
+        DeliveryMethod.CITY_ACCOUNT
       )
     })
 
     it('should throw error when CITY_ACCOUNT delivery method is missing date', async () => {
       const invalidCityAccountData = {
         '010366/4554': { deliveryMethod: DeliveryMethod.CITY_ACCOUNT },
-      } as unknown as RequestUpdateNorisDeliveryMethodsData
+      } as unknown as UpdateNorisDeliveryMethodsData
 
-      await expect(
-        service.updateDeliveryMethods({ data: invalidCityAccountData }),
-      ).rejects.toThrow('Date must be provided')
+      await expect(service.updateDeliveryMethods({ data: invalidCityAccountData })).rejects.toThrow(
+        'Date must be provided'
+      )
     })
 
     it('should handle multiple birth numbers with different delivery methods', async () => {
       const mockData = {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
         '010366/554': { deliveryMethod: DeliveryMethod.POSTAL },
-        '017766/2244': {
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: '2024-01-01',
-        },
+        '017766/2244': { deliveryMethod: DeliveryMethod.CITY_ACCOUNT, date: '2024-01-01' },
       } as const
 
-      const mockUpdateResult1 = [{ cislo_subjektu: 12_345 }]
-      const mockUpdateResult2 = [{ cislo_subjektu: 12_346 }]
-      const mockUpdateResult3 = [{ cislo_subjektu: 12_347 }]
-
-      const mockBirthNumbersResult = [
-        { ico: '010366/4554' },
-        { ico: '010366/554' },
-        { ico: '017766/2244' },
-      ]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
-        .mockResolvedValueOnce({ recordset: mockUpdateResult2 })
-        .mockResolvedValueOnce({ recordset: mockUpdateResult3 })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_346 }] })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_347 }] })
+        .mockResolvedValueOnce({
+          recordset: [{ ico: '010366/4554' }, { ico: '010366/554' }, { ico: '017766/2244' }],
+        })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
@@ -215,33 +181,24 @@ describe('NorisDeliveryMethodSubservice', () => {
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
-      expect(result).toEqual({
-        birthNumbers: [],
-      })
+      expect(result).toEqual({ birthNumbers: [] })
       expect(connectionService.withConnection).not.toHaveBeenCalled()
     })
 
     it('should filter out invalid delivery methods', async () => {
       const mockData = {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
-        '010366/554': {
-          deliveryMethod: 'INVALID_METHOD' as DeliveryMethod,
-        },
-      } as unknown as RequestUpdateNorisDeliveryMethodsData
-
-      const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-      const mockBirthNumbersResult = [{ ico: '010366/4554' }]
+        '010366/554': { deliveryMethod: 'INVALID_METHOD' as DeliveryMethod },
+      } as unknown as UpdateNorisDeliveryMethodsData
 
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+        .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }] })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
       expect(result.birthNumbers).toEqual(['010366/4554'])
-      expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('uda_21_organizacia_mag'),
-      )
+      expect(mockQuery).toHaveBeenCalledWith(expect.stringContaining('uda_21_organizacia_mag'))
     })
 
     it('should handle connection errors and throw appropriate exception', async () => {
@@ -249,16 +206,11 @@ describe('NorisDeliveryMethodSubservice', () => {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
       } as const
 
-      const connectionError = new Error('Database connection failed')
       jest
         .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async () => {
-          return Promise.reject(connectionError)
-        })
+        .mockRejectedValue(new Error('Database connection failed'))
 
-      await expect(
-        service.updateDeliveryMethods({ data: mockData }),
-      ).rejects.toThrow()
+      await expect(service.updateDeliveryMethods({ data: mockData })).rejects.toThrow()
     })
 
     it('should handle empty update results', async () => {
@@ -266,27 +218,18 @@ describe('NorisDeliveryMethodSubservice', () => {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
       } as const
 
-      // First query returns empty (no subjects updated)
-      // Second query should not be called because getBirthNumbersWithUpdatedDeliveryMethods
-      // returns early when data is empty
       mockQuery.mockResolvedValueOnce({ recordset: [] })
 
       let callCount = 0
-      jest
-        .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => {
-          callCount += 1
-          return fn({} as mssql.ConnectionPool)
-        })
+      jest.spyOn(connectionService, 'withConnection').mockImplementation(async (fn) => {
+        callCount++
+        return fn({} as mssql.ConnectionPool)
+      })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
-      expect(result).toEqual({
-        birthNumbers: [],
-      })
-      // Only one withConnection call should happen (for the update)
-      // The second one (for getting birth numbers) should not happen because data is empty
-      expect(callCount).toBe(1)
+      expect(result).toEqual({ birthNumbers: [] })
+      expect(callCount).toBe(1) // Only update, no birth-number lookup needed
     })
 
     it('should handle errors when getting birth numbers for updated subjects', async () => {
@@ -294,21 +237,15 @@ describe('NorisDeliveryMethodSubservice', () => {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
       } as const
 
-      const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
         .mockRejectedValueOnce(new Error('Query failed'))
 
       jest
         .spyOn(connectionService, 'withConnection')
-        .mockImplementation(async (fn) => {
-          return fn({} as mssql.ConnectionPool)
-        })
+        .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
 
-      await expect(
-        service.updateDeliveryMethods({ data: mockData }),
-      ).rejects.toThrow()
+      await expect(service.updateDeliveryMethods({ data: mockData })).rejects.toThrow()
     })
 
     it('should add slash to birth numbers correctly', async () => {
@@ -316,21 +253,17 @@ describe('NorisDeliveryMethodSubservice', () => {
         '0103664554': { deliveryMethod: DeliveryMethod.EDESK }, // Without slash
       } as const
 
-      const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-      const mockBirthNumbersResult = [{ ico: '010366/4554' }]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+        .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }] })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
       expect(result.birthNumbers).toEqual(['010366/4554'])
-      // Verify that the input was called with birth number containing slash
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birthnumber0',
         expect.anything(),
-        '010366/4554',
+        '010366/4554'
       )
     })
 
@@ -340,20 +273,11 @@ describe('NorisDeliveryMethodSubservice', () => {
         '010366/4555': { deliveryMethod: DeliveryMethod.EDESK },
       } as const
 
-      // Both birth numbers are updated in a single query
-      const mockUpdateResult = [
-        { cislo_subjektu: 12_345 },
-        { cislo_subjektu: 12_346 },
-      ]
-
-      const mockBirthNumbersResult = [
-        { ico: '010366/4554' },
-        { ico: '010366/4555' },
-      ]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({
+          recordset: [{ cislo_subjektu: 12_345 }, { cislo_subjektu: 12_346 }],
+        })
+        .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }, { ico: '010366/4555' }] })
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
@@ -361,73 +285,50 @@ describe('NorisDeliveryMethodSubservice', () => {
       expect(result.birthNumbers).toContain('010366/4554')
       expect(result.birthNumbers).toContain('010366/4555')
 
-      // it should group the birth numbers into a single query
-      const numberOfUpdateCalls = mockQuery.mock.calls.filter(
-        (call: string[]) => call[0].includes('uda_21_organizacia_mag'),
+      const numberOfUpdateCalls = (mockQuery.mock.calls as string[][]).filter((call) =>
+        call[0].includes('uda_21_organizacia_mag')
       ).length
       expect(numberOfUpdateCalls).toBe(1)
-      expect(mockInput).toHaveBeenCalledWith(
-        'birthnumber0',
-        expect.anything(),
-        '010366/4554',
-      )
-      expect(mockInput).toHaveBeenCalledWith(
-        'birthnumber1',
-        expect.anything(),
-        '010366/4555',
-      )
+      expect(mockInput).toHaveBeenCalledWith('birthnumber0', expect.anything(), '010366/4554')
+      expect(mockInput).toHaveBeenCalledWith('birthnumber1', expect.anything(), '010366/4555')
     })
 
     it('should group all delivery methods into single query, other than CITY_ACCOUNT', async () => {
       const mockData = {
         '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
         '010366/4555': { deliveryMethod: DeliveryMethod.EDESK },
-        '010366/4556': {
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: '2024-01-01',
-        },
+        '010366/4556': { deliveryMethod: DeliveryMethod.CITY_ACCOUNT, date: '2024-01-01' },
         '010366/4557': { deliveryMethod: DeliveryMethod.POSTAL },
         '010366/4558': { deliveryMethod: DeliveryMethod.POSTAL },
       } as const
 
-      const mockUpdateResult1 = [
-        { cislo_subjektu: 12_345 },
-        { cislo_subjektu: 12_346 },
-      ]
-      const mockUpdateResult2 = [{ cislo_subjektu: 12_347 }]
-      const mockUpdateResult3 = [
-        { cislo_subjektu: 12_348 },
-        { cislo_subjektu: 12_349 },
-      ]
-      const mockBirthNumbersResult = [
-        { ico: '010366/4554' },
-        { ico: '010366/4555' },
-        { ico: '010366/4556' },
-        { ico: '010366/4557' },
-        { ico: '010366/4558' },
-      ]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
-        .mockResolvedValueOnce({ recordset: mockUpdateResult2 })
-        .mockResolvedValueOnce({ recordset: mockUpdateResult3 })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({
+          recordset: [{ cislo_subjektu: 12_345 }, { cislo_subjektu: 12_346 }],
+        })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_347 }] })
+        .mockResolvedValueOnce({
+          recordset: [{ cislo_subjektu: 12_348 }, { cislo_subjektu: 12_349 }],
+        })
+        .mockResolvedValueOnce({
+          recordset: [
+            { ico: '010366/4554' },
+            { ico: '010366/4555' },
+            { ico: '010366/4556' },
+            { ico: '010366/4557' },
+            { ico: '010366/4558' },
+          ],
+        })
 
+       
       const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this private method was tested in its own test suite, no need to test its implementation here
         service as any,
-        'executeDeliveryMethodUpdate',
+        'executeDeliveryMethodUpdate'
       )
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 
       expect(result.birthNumbers).toHaveLength(5)
-      expect(result.birthNumbers).toContain('010366/4554')
-      expect(result.birthNumbers).toContain('010366/4555')
-      expect(result.birthNumbers).toContain('010366/4556')
-      expect(result.birthNumbers).toContain('010366/4557')
-      expect(result.birthNumbers).toContain('010366/4558')
-
       expect(executeDeliveryMethodUpdateSpy).toHaveBeenCalledTimes(3)
       expect(executeDeliveryMethodUpdateSpy).toHaveBeenCalledWith(
         expect.anything(),
@@ -436,7 +337,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           inCityAccount: IsInCityAccount.YES,
           deliveryMethod: DeliveryMethod.EDESK,
           date: null,
-        }),
+        })
       )
       expect(executeDeliveryMethodUpdateSpy).toHaveBeenCalledWith(
         expect.anything(),
@@ -445,7 +346,7 @@ describe('NorisDeliveryMethodSubservice', () => {
           inCityAccount: IsInCityAccount.YES,
           deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
           date: '2024-01-01',
-        }),
+        })
       )
       expect(executeDeliveryMethodUpdateSpy).toHaveBeenCalledWith(
         expect.anything(),
@@ -454,58 +355,48 @@ describe('NorisDeliveryMethodSubservice', () => {
           inCityAccount: IsInCityAccount.YES,
           deliveryMethod: DeliveryMethod.POSTAL,
           date: null,
-        }),
+        })
       )
     })
   })
 
   describe('removeDeliveryMethodsFromNoris', () => {
     it('should successfully remove delivery methods from Noris', async () => {
-      const birthNumber = '010366/4554'
-
-      const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-      const mockBirthNumbersResult = [{ ico: '010366/4554' }]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+        .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }] })
 
-      await service.removeDeliveryMethodsFromNoris(birthNumber)
+      await service.removeDeliveryMethodsFromNoris('010366/4554')
 
       expect(connectionService.withConnection).toHaveBeenCalled()
       expect(mockRequest.input).toHaveBeenCalledWith(
         'dkba_stav',
         expect.anything(),
-        IsInCityAccount.NO,
+        IsInCityAccount.NO
       )
       expect(mockRequest.input).toHaveBeenCalledWith(
         'dkba_sposob_dorucovania',
         expect.anything(),
-        null,
+        null
       )
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birthnumber0',
         expect.anything(),
-        '010366/4554',
+        '010366/4554'
       )
     })
 
     it('should add slash to birth number when removing delivery methods', async () => {
-      const birthNumber = '0103664554' // Without slash
-
-      const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
-      const mockBirthNumbersResult = [{ ico: '010366/4554' }]
-
       mockQuery
-        .mockResolvedValueOnce({ recordset: mockUpdateResult })
-        .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+        .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+        .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }] })
 
-      await service.removeDeliveryMethodsFromNoris(birthNumber)
+      await service.removeDeliveryMethodsFromNoris('0103664554') // Without slash
 
       expect(mockRequest.input).toHaveBeenCalledWith(
         'birthnumber0',
         expect.anything(),
-        '010366/4554', // Should have slash added
+        '010366/4554'
       )
     })
   })
@@ -522,29 +413,20 @@ describe('NorisDeliveryMethodSubservice', () => {
           },
         ]
 
-        const mockUpdateResult1 = [
-          { cislo_subjektu: 12_345 },
-          { cislo_subjektu: 12_346 },
-        ]
-        const mockBirthNumbersResult = [
-          { ico: '010366/4554' },
-          { ico: '010366/4555' },
-        ]
-
         mockQuery
-          .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
-          .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+          .mockResolvedValueOnce({
+            recordset: [{ cislo_subjektu: 12_345 }, { cislo_subjektu: 12_346 }],
+          })
+          .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }, { ico: '010366/4555' }] })
 
         const withConnectionSpy = jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
-          })
+          .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
 
         const result = await service['updateDeliveryMethodsInNoris'](mockData)
 
         expect(result).toEqual(['010366/4554', '010366/4555'])
-        expect(withConnectionSpy).toHaveBeenCalledTimes(2) // One for update, one for getting birth numbers
+        expect(withConnectionSpy).toHaveBeenCalledTimes(2) // update + birth-number lookup
       })
 
       it('should handle connection errors during update', async () => {
@@ -557,16 +439,13 @@ describe('NorisDeliveryMethodSubservice', () => {
           },
         ]
 
-        const connectionError = new Error('Database connection failed')
         jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async () => {
-            return Promise.reject(connectionError)
-          })
+          .mockRejectedValue(new Error('Database connection failed'))
 
-        await expect(
-          service['updateDeliveryMethodsInNoris'](mockData),
-        ).rejects.toThrow('Database connection failed')
+        await expect(service['updateDeliveryMethodsInNoris'](mockData)).rejects.toThrow(
+          'Database connection failed'
+        )
       })
 
       it('should handle multiple update items', async () => {
@@ -585,34 +464,24 @@ describe('NorisDeliveryMethodSubservice', () => {
           },
         ]
 
-        const mockUpdateResult1 = [{ cislo_subjektu: 12_345 }]
-        const mockUpdateResult2 = [{ cislo_subjektu: 12_346 }]
-        const mockBirthNumbersResult = [
-          { ico: '010366/4554' },
-          { ico: '010366/4555' },
-        ]
-
         mockQuery
-          .mockResolvedValueOnce({ recordset: mockUpdateResult1 })
-          .mockResolvedValueOnce({ recordset: mockUpdateResult2 })
-          .mockResolvedValueOnce({ recordset: mockBirthNumbersResult })
+          .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
+          .mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_346 }] })
+          .mockResolvedValueOnce({ recordset: [{ ico: '010366/4554' }, { ico: '010366/4555' }] })
 
         jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
-          })
+          .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
 
         const result = await service['updateDeliveryMethodsInNoris'](mockData)
 
         expect(result).toEqual(['010366/4554', '010366/4555'])
-        expect(mockRequest.query).toHaveBeenCalledTimes(3) // 2 updates + 1 birth numbers query
+        expect(mockRequest.query).toHaveBeenCalledTimes(3) // 2 updates + 1 birth-number lookup
       })
     })
 
     describe('executeDeliveryMethodUpdate', () => {
       it('should execute delivery method update with correct parameters', async () => {
-        const connection = {} as mssql.ConnectionPool
         const dataItem = {
           birthNumbers: ['010366/4554', '010366/4555'],
           inCityAccount: IsInCityAccount.YES,
@@ -620,50 +489,44 @@ describe('NorisDeliveryMethodSubservice', () => {
           date: null,
         }
 
-        const mockUpdateResult = [
-          { cislo_subjektu: 12_345 },
-          { cislo_subjektu: 12_346 },
-        ]
-
         mockQuery.mockResolvedValueOnce({
-          recordset: mockUpdateResult,
+          recordset: [{ cislo_subjektu: 12_345 }, { cislo_subjektu: 12_346 }],
         })
 
         const result = await service['executeDeliveryMethodUpdate'](
-          connection,
-          dataItem,
+          {} as mssql.ConnectionPool,
+          dataItem
         )
 
-        expect(result).toEqual(mockUpdateResult)
+        expect(result).toEqual([{ cislo_subjektu: 12_345 }, { cislo_subjektu: 12_346 }])
         expect(mockRequest.input).toHaveBeenCalledWith(
           'dkba_stav',
           expect.anything(),
-          IsInCityAccount.YES,
+          IsInCityAccount.YES
         )
         expect(mockRequest.input).toHaveBeenCalledWith(
           'dkba_datum_suhlasu',
           expect.anything(),
-          null,
+          null
         )
         expect(mockRequest.input).toHaveBeenCalledWith(
           'dkba_sposob_dorucovania',
           expect.anything(),
-          DeliveryMethod.EDESK,
+          DeliveryMethod.EDESK
         )
         expect(mockRequest.input).toHaveBeenCalledWith(
           'birthnumber0',
           expect.anything(),
-          '010366/4554',
+          '010366/4554'
         )
         expect(mockRequest.input).toHaveBeenCalledWith(
           'birthnumber1',
           expect.anything(),
-          '010366/4555',
+          '010366/4555'
         )
       })
 
       it('should handle date parameter correctly', async () => {
-        const connection = {} as mssql.ConnectionPool
         const dataItem = {
           birthNumbers: ['010366/4554'],
           inCityAccount: IsInCityAccount.YES,
@@ -671,23 +534,18 @@ describe('NorisDeliveryMethodSubservice', () => {
           date: '2024-01-15',
         }
 
-        const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
+        mockQuery.mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
 
-        mockQuery.mockResolvedValueOnce({
-          recordset: mockUpdateResult,
-        })
-
-        await service['executeDeliveryMethodUpdate'](connection, dataItem)
+        await service['executeDeliveryMethodUpdate']({} as mssql.ConnectionPool, dataItem)
 
         expect(mockRequest.input).toHaveBeenCalledWith(
           'dkba_datum_suhlasu',
           expect.anything(),
-          new Date('2024-01-15'),
+          new Date('2024-01-15')
         )
       })
 
       it('should map POSTAL to EDESK correctly', async () => {
-        const connection = {} as mssql.ConnectionPool
         const dataItem = {
           birthNumbers: ['010366/4554'],
           inCityAccount: IsInCityAccount.YES,
@@ -695,46 +553,34 @@ describe('NorisDeliveryMethodSubservice', () => {
           date: null,
         }
 
-        const mockUpdateResult = [{ cislo_subjektu: 12_345 }]
+        mockQuery.mockResolvedValueOnce({ recordset: [{ cislo_subjektu: 12_345 }] })
 
-        mockQuery.mockResolvedValueOnce({
-          recordset: mockUpdateResult,
-        })
-
-        await service['executeDeliveryMethodUpdate'](connection, dataItem)
+        await service['executeDeliveryMethodUpdate']({} as mssql.ConnectionPool, dataItem)
 
         expect(mockRequest.input).toHaveBeenCalledWith(
           'dkba_sposob_dorucovania',
           expect.anything(),
-          DeliveryMethod.EDESK, // POSTAL is mapped to EDESK
+          DeliveryMethod.EDESK // POSTAL is mapped to EDESK
         )
       })
     })
 
     describe('getBirthNumbersWithUpdatedDeliveryMethods', () => {
       it('should return birth numbers for updated subjects', async () => {
-        const mockData = [
+        const mockData: NorisDeliveryMethodsUpdateResult[] = [
           { cislo_subjektu: 12_345 },
           { cislo_subjektu: 12_346 },
         ]
 
-        const mockBirthNumbersResult = [
-          { ico: '010366/4554' },
-          { ico: '010366/4555' },
-        ]
-
         mockQuery.mockResolvedValueOnce({
-          recordset: mockBirthNumbersResult,
+          recordset: [{ ico: '010366/4554' }, { ico: '010366/4555' }],
         })
 
         jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
-          })
+          .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
 
-        const result =
-          await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
+        const result = await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
 
         expect(result).toEqual(['010366/4554', '010366/4555'])
         expect(mockRequest.input).toHaveBeenCalledWith('subject0', 12_345)
@@ -742,49 +588,34 @@ describe('NorisDeliveryMethodSubservice', () => {
       })
 
       it('should return empty array when no subjects provided', async () => {
-        const mockData: NorisDeliveryMethodsUpdateResult[] = []
-
-        const result =
-          await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
+        const result = await service['getBirthNumbersWithUpdatedDeliveryMethods']([])
 
         expect(result).toEqual([])
         expect(connectionService.withConnection).not.toHaveBeenCalled()
       })
 
       it('should handle connection errors', async () => {
-        const mockData = [{ cislo_subjektu: 12_345 }]
-
-        const connectionError = new Error('Database connection failed')
         jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async () => {
-            return Promise.reject(connectionError)
-          })
+          .mockRejectedValue(new Error('Database connection failed'))
 
         await expect(
-          service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData),
+          service['getBirthNumbersWithUpdatedDeliveryMethods']([{ cislo_subjektu: 12_345 }])
         ).rejects.toThrow('Database connection failed')
       })
 
       it('should trim birth numbers from ico field', async () => {
-        const mockData = [{ cislo_subjektu: 12_345 }]
-
-        const mockBirthNumbersResult = [{ ico: '  010366/4554  ' }] // With spaces
-
-        mockQuery.mockResolvedValueOnce({
-          recordset: mockBirthNumbersResult,
-        })
+        mockQuery.mockResolvedValueOnce({ recordset: [{ ico: '  010366/4554  ' }] })
 
         jest
           .spyOn(connectionService, 'withConnection')
-          .mockImplementation(async (fn) => {
-            return fn({} as mssql.ConnectionPool)
-          })
+          .mockImplementation(async (fn) => fn({} as mssql.ConnectionPool))
 
-        const result =
-          await service['getBirthNumbersWithUpdatedDeliveryMethods'](mockData)
+        const result = await service['getBirthNumbersWithUpdatedDeliveryMethods']([
+          { cislo_subjektu: 12_345 },
+        ])
 
-        expect(result).toEqual(['010366/4554']) // Should be trimmed
+        expect(result).toEqual(['010366/4554'])
       })
     })
   })

@@ -41,14 +41,14 @@ import NasesContactsService, {
   isUpvsNaturalPerson,
 } from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
-import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
+import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
-import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
+import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService, {
   GinContactParams,
@@ -309,9 +309,9 @@ export default class GinisService {
   }
 
   @RabbitRPC({
-    exchange: RABBIT_MQ.EXCHANGE,
-    routingKey: RABBIT_NASES.ROUTING_KEY,
-    queue: RABBIT_NASES.QUEUE,
+    exchange: RABBIT_FORM_DELIVERY.EXCHANGE,
+    routingKey: RABBIT_GINIS.ROUTING_KEY,
+    queue: RABBIT_GINIS.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       const logger = new LineLoggerSubservice('Rabbit')
       logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
@@ -320,7 +320,7 @@ export default class GinisService {
   })
   // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(
-    data: GinisCheckNasesPayloadDto,
+    data: GinisCheckDeliveryPayloadDto,
   ): Promise<Nack> {
     this.logger.debug(`Consuming message for formId: ${data.formId}`)
 

@@ -95,7 +95,7 @@ const useGetContext = () => {
 
   const { mutate: sendFormMutate, isPending: sendFormIsPending } = useMutation({
     mutationFn: () =>
-      formsClient.nasesControllerSendAndUpdateForm(
+      formsClient.formSenderControllerSendAndUpdateForm(
         formId,
         {
           formDataJson: formData,
@@ -123,7 +123,7 @@ const useGetContext = () => {
   const { mutate: saveConceptAndSendEidMutate, isPending: saveConceptAndSendEidIsPending } =
     useMutation({
       mutationFn: () =>
-        formsClient.nasesControllerUpdateForm(
+        formsClient.formsControllerUpdateForm(
           formId,
           {
             formDataJson: formData,
@@ -151,7 +151,7 @@ const useGetContext = () => {
     { fromRepeatModal?: boolean }
   >({
     mutationFn: () =>
-      formsClient.nasesControllerSendAndUpdateFormEid(
+      formsClient.formSenderControllerSendAndUpdateFormEid(
         formId,
         {
           formDataJson: formData,

@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 
 import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
@@ -12,6 +11,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import prismaMock from '../../test/singleton'
 import {
   createCityAccountUserApiResponseMock,
+  createEmptyCityAccountUserApiResponseMock,
   createSlovenskoSkIdentitiesApiResponseMock,
 } from '../__tests__/factories/apiResponse.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
@@ -42,9 +42,6 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
 }))
 jest.mock('./subservices/ginis.helper')
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
-jest.mock('node:crypto', () => ({
-  randomUUID: jest.fn(),
-}))
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
   extractFormSubjectTechnical: jest.fn(),
@@ -74,9 +71,6 @@ describe('GinisService', () => {
       NODE_ENV: 'development',
       JEST_WORKER_ID: JEST_WORKER_ID ?? '1',
     }
-
-    const randomMocked = randomUUID as jest.MockedFunction<typeof randomUUID>
-    randomMocked.mockReturnValue('mock-mock-mock-mock-mock')
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -1234,7 +1228,7 @@ describe('GinisService', () => {
           service['clientsService'].cityAccountApi,
           'userIntegrationControllerGetContactAndIdInfoByExternalId',
         )
-        .mockResolvedValue(createCityAccountUserApiResponseMock())
+        .mockResolvedValue(createEmptyCityAccountUserApiResponseMock())
 
       await expect(
         service.createDocument(form, formDefinitionBase),

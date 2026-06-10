@@ -30,6 +30,10 @@ export const createCityAccountUserApiResponseMock = (
     },
   })
 
+export const createEmptyCityAccountUserApiResponseMock =
+  (): CityAccountUserApiResponse =>
+    createMock<CityAccountUserApiResponse>({ data: undefined })
+
 export const createSlovenskoSkIdentitiesApiResponseMock = (
   data: ApiIamIdentitiesIdGet200Response[] = [],
 ): SlovenskoSkIdentitiesApiResponse =>

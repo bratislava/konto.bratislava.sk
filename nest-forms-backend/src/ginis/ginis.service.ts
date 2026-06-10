@@ -663,6 +663,13 @@ export default class GinisService {
           console: `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
         })
       })
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive guard; typed as non-null but real API responses can omit the body
+    if (!contactInfo) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.userExternalId}. Form id: ${form.id}`,
+      )
+    }
     params.email = contactInfo.email
 
     // Map Cognito account type to Ginis contact type and set appropriate fields

@@ -130,11 +130,7 @@ export default class NasesSenderService {
         })
       } catch (error) {
         this.logger.error(
-<<<<<<< HEAD
           `ERROR - Printing form to attachment to Nases and Noris error for form id ${form.id}`,
-=======
-          `Printing form to attachment to Nases and Noris error for form id ${form.id}`,
->>>>>>> dd2f8efbf (finalize the rest of eslint errors)
           error,
         )
       }
@@ -163,11 +159,7 @@ export default class NasesSenderService {
         })
       } catch (error) {
         this.logger.error(
-<<<<<<< HEAD
           `ERROR - Printing summary to attachment to Nases and Noris error for form id ${form.id}`,
-=======
-          `Printing summary to attachment to Nases and Noris error for form id ${form.id}`,
->>>>>>> dd2f8efbf (finalize the rest of eslint errors)
           error,
         )
       }
@@ -376,7 +368,6 @@ export default class NasesSenderService {
           },
         )
 
-<<<<<<< HEAD
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(
@@ -392,8 +383,6 @@ export default class NasesSenderService {
         }
       }
 
-=======
->>>>>>> dd2f8efbf (finalize the rest of eslint errors)
       if (response.data.receive_result !== 0) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(
@@ -416,7 +405,6 @@ export default class NasesSenderService {
         this.logger.error(this.throwerErrorGuard.fromAxiosError(error, {}))
         return { status: error.response.status, data: error.response.data }
       }
-<<<<<<< HEAD
 
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
@@ -424,11 +412,6 @@ export default class NasesSenderService {
           NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
           { formId: data.id, message },
         ),
-=======
-      // TODO temp SEND_TO_NASES_ERROR log, remove
-      this.logger.log(
-        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, message: ${message}`,
->>>>>>> dd2f8efbf (finalize the rest of eslint errors)
       )
 
       return {

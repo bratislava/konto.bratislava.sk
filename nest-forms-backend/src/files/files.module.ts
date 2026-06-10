@@ -1,23 +1,24 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
+import { FileUploadInterceptor } from './file-upload.interceptor'
 import FilesController from './files.controller'
 import FilesHelper from './files.helper'
 import FilesService from './files.service'
 
 @Module({
   imports: [
-    FormsModule,
+    forwardRef(() => FormsModule),
     ScannerClientModule,
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
   ],
-  providers: [FilesService, FilesHelper],
+  providers: [FilesService, FilesHelper, FileUploadInterceptor],
   exports: [FilesService, FilesHelper],
   controllers: [FilesController],
 })

@@ -663,33 +663,25 @@ export default class GinisService {
           console: `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
         })
       })
-    if (!contactInfo) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-        `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.userExternalId}. Form id: ${form.id}`,
-      )
-    }
-
     params.email = contactInfo.email
 
     // Map Cognito account type to Ginis contact type and set appropriate fields
-    if (contactInfo.accountType === CognitoUserAccountTypesEnum.Fo) {
-      // Physical entity (UserContactAndIdInfoDto)
-      params.type = GinContactType.PHYSICAL_ENTITY
-      params.firstName = contactInfo.firstName
-      params.lastName = contactInfo.lastName
-      params.birthNumber = contactInfo.birthNumber
-    } else if (
-      contactInfo.accountType === CognitoUserAccountTypesEnum.Po ||
-      contactInfo.accountType === CognitoUserAccountTypesEnum.FoP
-    ) {
-      // Legal entity or self-employed entity (LegalPersonContactAndIdInfoDto)
-      params.type =
-        contactInfo.accountType === CognitoUserAccountTypesEnum.Po
-          ? GinContactType.LEGAL_ENTITY
-          : GinContactType.SELF_EMPLOYED_ENTITY
-      params.name = contactInfo.name
-      params.ico = contactInfo.ico
+    switch (contactInfo.accountType) {
+      case CognitoUserAccountTypesEnum.Fo:
+        params.type = GinContactType.PHYSICAL_ENTITY
+        params.firstName = contactInfo.firstName
+        params.lastName = contactInfo.lastName
+        params.birthNumber = contactInfo.birthNumber
+        break
+      case CognitoUserAccountTypesEnum.Po:
+      case CognitoUserAccountTypesEnum.FoP:
+        params.type =
+          contactInfo.accountType === CognitoUserAccountTypesEnum.Po
+            ? GinContactType.LEGAL_ENTITY
+            : GinContactType.SELF_EMPLOYED_ENTITY
+        params.name = contactInfo.name
+        params.ico = contactInfo.ico
+        break
     }
 
     return params

@@ -60,6 +60,7 @@ export class LineLoggerSubservice implements LoggerService {
     const colorStart = this.color ? colorCode : ''
     const colorEnd = this.color ? ANSI_RESET : ''
 
+    // eslint-disable-next-line no-console -- this is the logging utility itself; console.log is the intentional output mechanism
     console.log(
       [
         colorStart,

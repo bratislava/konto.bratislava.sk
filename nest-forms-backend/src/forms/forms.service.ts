@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
@@ -40,7 +40,6 @@ export default class FormsService {
   constructor(
     private readonly prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
-    @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {}
@@ -188,6 +187,7 @@ export default class FormsService {
 
     return this.updateForm(id, {
       ...getUserFormFields(user),
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO; spreading into update payload is safe
       ...requestData,
     })
   }
@@ -200,6 +200,7 @@ export default class FormsService {
   ): Promise<UpdateFormResponseDto> {
     return this.updateFormWithUser(
       id,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- UpdateFormRequestDto is a plain data DTO; spreading into object literal is safe
       { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },
       user,
     )

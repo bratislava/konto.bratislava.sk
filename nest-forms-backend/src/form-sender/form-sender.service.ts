@@ -476,6 +476,7 @@ export class FormSenderService {
     await this.formsService.updateForm(data.formId, {
       state: FormState.DELIVERED_NASES,
       error: FormError.NONE,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO with no prototype methods; spreading into Prisma update payload is safe
       ...additionalFormUpdates,
     })
 

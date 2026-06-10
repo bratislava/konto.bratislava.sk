@@ -65,7 +65,7 @@ export function separateLogFromResponseObj<T extends object>(
  */
 export function objToLogfmt(obj: object): string {
   const separatedValues = separateLogFromResponseObj(obj)
-  const objAll = {
+  const objAll: Record<string, unknown> = {
     ...separatedValues.responseLog,
     ...separatedValues.responseMessage,
   }

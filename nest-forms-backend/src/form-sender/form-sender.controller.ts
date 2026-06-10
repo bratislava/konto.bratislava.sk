@@ -32,13 +32,16 @@ import { FormSenderService } from './form-sender.service'
 @ApiBearerAuth()
 @Controller('form-sender')
 export default class FormSenderController {
+  private readonly logger: LineLoggerSubservice
+
   constructor(
     private readonly formsService: FormsService,
     private readonly formSenderService: FormSenderService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly logger: LineLoggerSubservice,
     private readonly nasesContactsService: NasesContactsService,
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(FormSenderController.name)
+  }
 
   @ApiOperation({
     summary: '',

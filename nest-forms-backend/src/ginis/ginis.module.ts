@@ -8,6 +8,7 @@ import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
+import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
 import { MailerModule } from '../mailer/mailer.module'
@@ -25,6 +26,7 @@ import SharepointService from './subservices/sharepoint.service'
   imports: [
     ApiJwtTokensModule,
     FormsModule,
+    FormValidatorRegistryModule,
     FilesModule,
     ConvertModule,
     RabbitmqClientModule,

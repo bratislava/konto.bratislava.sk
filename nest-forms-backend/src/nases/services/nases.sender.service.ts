@@ -38,9 +38,7 @@ import { NasesAttachmentXmlObject } from '../types/xml.types'
 
 @Injectable()
 export default class NasesSenderService {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(
-    NasesSenderService.name,
-  )
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly convertService: ConvertService,
@@ -50,7 +48,9 @@ export default class NasesSenderService {
     private taxService: TaxService,
     private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(NasesSenderService.name)
+  }
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
@@ -86,28 +86,30 @@ export default class NasesSenderService {
       },
     })
 
-    for (const file of files) {
-      const mimeType = mime.lookup(file.fileName) || 'application/pdf'
-      const fileStream = await this.minioClientSubservice.loadFileStream(
-        this.baConfigService.minio.buckets.safe,
-        `${file.pospId}/${form.id}/${file.minioFileName}`,
-      )
-
-      const fileBuffer = await this.stream2buffer(fileStream)
-      const fileBase64 = fileBuffer.toString('base64')
-      result.push({
-        $: {
-          Id: file.id,
-          IsSigned: 'false',
-          Name: file.fileName,
-          Description: 'ATTACHMENT',
-          Class: 'ATTACHMENT',
-          MimeType: mimeType,
-          Encoding: 'Base64',
-        },
-        _: fileBase64,
-      })
-    }
+    const fileAttachments = await Promise.all(
+      files.map(async (file) => {
+        const mimeType = mime.lookup(file.fileName) || 'application/pdf'
+        const fileStream = await this.minioClientSubservice.loadFileStream(
+          this.baConfigService.minio.buckets.safe,
+          `${file.pospId}/${form.id}/${file.minioFileName}`,
+        )
+        const fileBuffer = await this.stream2buffer(fileStream)
+        const fileBase64 = fileBuffer.toString('base64')
+        return {
+          $: {
+            Id: file.id,
+            IsSigned: 'false',
+            Name: file.fileName,
+            Description: 'ATTACHMENT',
+            Class: 'ATTACHMENT',
+            MimeType: mimeType,
+            Encoding: 'Base64',
+          },
+          _: fileBase64,
+        }
+      }),
+    )
+    result.push(...fileAttachments)
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       try {
         const formPdfBase64 = await this.taxService.getFilledInPdfBase64(
@@ -128,7 +130,11 @@ export default class NasesSenderService {
         })
       } catch (error) {
         this.logger.error(
+<<<<<<< HEAD
           `ERROR - Printing form to attachment to Nases and Noris error for form id ${form.id}`,
+=======
+          `Printing form to attachment to Nases and Noris error for form id ${form.id}`,
+>>>>>>> dd2f8efbf (finalize the rest of eslint errors)
           error,
         )
       }
@@ -157,7 +163,11 @@ export default class NasesSenderService {
         })
       } catch (error) {
         this.logger.error(
+<<<<<<< HEAD
           `ERROR - Printing summary to attachment to Nases and Noris error for form id ${form.id}`,
+=======
+          `Printing summary to attachment to Nases and Noris error for form id ${form.id}`,
+>>>>>>> dd2f8efbf (finalize the rest of eslint errors)
           error,
         )
       }
@@ -366,6 +376,7 @@ export default class NasesSenderService {
           },
         )
 
+<<<<<<< HEAD
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(
@@ -381,6 +392,8 @@ export default class NasesSenderService {
         }
       }
 
+=======
+>>>>>>> dd2f8efbf (finalize the rest of eslint errors)
       if (response.data.receive_result !== 0) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(
@@ -403,6 +416,7 @@ export default class NasesSenderService {
         this.logger.error(this.throwerErrorGuard.fromAxiosError(error, {}))
         return { status: error.response.status, data: error.response.data }
       }
+<<<<<<< HEAD
 
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
@@ -410,6 +424,11 @@ export default class NasesSenderService {
           NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
           { formId: data.id, message },
         ),
+=======
+      // TODO temp SEND_TO_NASES_ERROR log, remove
+      this.logger.log(
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, message: ${message}`,
+>>>>>>> dd2f8efbf (finalize the rest of eslint errors)
       )
 
       return {

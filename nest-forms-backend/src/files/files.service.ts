@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
@@ -44,6 +44,7 @@ export default class FilesService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly minioClientSubervice: MinioClientSubservice,
+    @Inject(forwardRef(() => FormsService))
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -193,9 +194,9 @@ export default class FilesService {
 
   async uploadFile(
     formId: string,
-    bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
     slotId: string | null,
+    bufferedFile?: BufferedFileDto,
   ): Promise<PostFileResponseDto> {
     const fileName = data.filename
     const fileId = data.id
@@ -261,6 +262,7 @@ export default class FilesService {
       this.filesHelper.getBucketUid(),
     )
     let file: Files
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- upload() type is non-nullable but the else branch throws on unexpected falsy; keeping the guard
     if (uploadedFile) {
       this.logger.log(
         `File ${minioFileName} was successfully uploaded to Minio.`,

@@ -1896,10 +1896,10 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * You can upload file to form.
+     * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} [slotId]
+     * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -2104,10 +2104,10 @@ export const FilesApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * You can upload file to form.
+     * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} [slotId]
+     * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -2220,10 +2220,10 @@ export const FilesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * You can upload file to form.
+     * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} [slotId]
+     * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -2312,10 +2312,10 @@ export class FilesApi extends BaseAPI {
   }
 
   /**
-   * You can upload file to form.
+   * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
    * @summary Upload file to form
    * @param {string} formId
-   * @param {string} [slotId]
+   * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
    * @param {File} [file]
    * @param {string} [filename]
    * @param {string} [id]

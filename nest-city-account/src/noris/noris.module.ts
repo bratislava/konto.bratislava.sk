@@ -1,10 +1,19 @@
 import { Module } from '@nestjs/common'
 
-import { NorisService } from './noris.service'
-import { NorisValidatorSubservice } from './subservices/noris-validator.subservice'
+import { PrismaModule } from '../prisma/prisma.module'
+import { NorisConnectionService } from './services/noris-connection.service'
+import { NorisDeliveryMethodService } from './services/noris-delivery-method.service'
+import { NorisEdeskService } from './services/noris-edesk.service'
+import { NorisValidatorService } from './services/noris-validator.service'
 
 @Module({
-  providers: [NorisService, NorisValidatorSubservice],
-  exports: [NorisService],
+  imports: [PrismaModule],
+  providers: [
+    NorisConnectionService,
+    NorisValidatorService,
+    NorisEdeskService,
+    NorisDeliveryMethodService,
+  ],
+  exports: [NorisEdeskService, NorisDeliveryMethodService],
 })
 export class NorisModule {}

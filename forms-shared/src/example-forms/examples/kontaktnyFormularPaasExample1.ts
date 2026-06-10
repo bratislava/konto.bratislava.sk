@@ -9,9 +9,10 @@ const exampleForm: ExampleForm = {
       sprava:
         'Dostal som upozornenie o nesprávnom parkovaní, no v čase parkovania som mal platnú parkovaciu kartu. Žiadam o preverenie.',
       prilohy: ['b1feb5ae-da31-4619-a735-c3389dc9e17b'],
-      menoPriezviskoObchodneMeno: 'Ján Kováč',
-      sposobKontaktovania: 'email',
-      email: 'jan.kovac@priklad.sk',
+      kontaktneUdaje: {
+        menoPriezviskoObchodneMeno: 'Ján Kováč',
+        email: 'jan.kovac@priklad.sk',
+      },
     },
   },
   serverFiles: [

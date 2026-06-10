@@ -67,12 +67,6 @@ export interface ApiCepAddTimestampPost200Response {
    */
   timestamped_data?: Base64
 }
-export interface ApiCepAddTimestampPostRequest {
-  /**
-   * Base64 kódovaná štruktúra jednoduchého podpisu XAdES, zloženého podpisu XAdES, CAdES, PAdES alebo ASIC obálky.
-   */
-  content: string
-}
 export interface ApiCepSignPost200Response {
   /**
    * Identifikátor požiadavky.
@@ -308,12 +302,6 @@ export const ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum = {
 export type ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum =
   (typeof ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum)[keyof typeof ApiCepSignaturesInfoPost200ResponseSignaturesInnerFormatEnum]
 
-export interface ApiCepSignaturesInfoPostRequest {
-  /**
-   * Obsah objektu zakódovaný podľa Base64. Môže ísť o objekt XADES_ZEP-DataEnvelope, XADES_ZEP-DataSignatures, ZEPfZIP, PAdES alebo ASIC.
-   */
-  content: string
-}
 export interface ApiCepVerifyPost200Response {
   /**
    * Kód výsledku overenia.
@@ -443,8 +431,8 @@ export interface ApiIamIdentitiesSearchPostRequestAddress {
    */
   type: ApiIamIdentitiesSearchPostRequestAddressTypeEnum
   country?: ApiIamIdentitiesSearchPostRequestAddressCountry
-  district?: ApiIamIdentitiesSearchPostRequestAddressDistrict
-  municipality?: ApiIamIdentitiesSearchPostRequestAddressMunicipality
+  district?: ApiIamIdentitiesSearchPostRequestAddressCountry
+  municipality?: ApiIamIdentitiesSearchPostRequestAddressCountry
   /**
    * Ulica.
    */
@@ -471,20 +459,6 @@ export type ApiIamIdentitiesSearchPostRequestAddressTypeEnum =
  * Krajina podľa číselníka ŠÚSR 0086
  */
 export interface ApiIamIdentitiesSearchPostRequestAddressCountry {
-  id?: string
-  name?: string
-}
-/**
- * Okres podľa číselníka ŠÚSR 0024.
- */
-export interface ApiIamIdentitiesSearchPostRequestAddressDistrict {
-  id?: string
-  name?: string
-}
-/**
- * Obec podľa číselníka ŠÚSR 0025.
- */
-export interface ApiIamIdentitiesSearchPostRequestAddressMunicipality {
   id?: string
   name?: string
 }
@@ -5424,19 +5398,19 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
     /**
      * Rozšíri digitálny podpis z EPES na T formu pridaním kvalifikovanej časovej pečiatky.
      * @summary Pridá kvalifikovanú časovú pečiatku.
-     * @param {ApiCepAddTimestampPostRequest} apiCepAddTimestampPostRequest
+     * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     apiCepAddTimestampPost: async (
-      apiCepAddTimestampPostRequest: ApiCepAddTimestampPostRequest,
+      apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'apiCepAddTimestampPostRequest' is not null or undefined
+      // verify required parameter 'apiCepVerifyPostRequest' is not null or undefined
       assertParamExists(
         'apiCepAddTimestampPost',
-        'apiCepAddTimestampPostRequest',
-        apiCepAddTimestampPostRequest,
+        'apiCepVerifyPostRequest',
+        apiCepVerifyPostRequest,
       )
       const localVarPath = `/api/cep/add_timestamp`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5465,7 +5439,7 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        apiCepAddTimestampPostRequest,
+        apiCepVerifyPostRequest,
         localVarRequestOptions,
         configuration,
       )
@@ -5578,19 +5552,19 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
     /**
      * Vráti informácie o type a forme podpisov podpísaného dokumentu.  Neoveruje platnosť podpisov, ani časových pečiatok, tak isto neoveruje legislatívnu formu podpisu.
      * @summary Vráti informácie o type a forme podpisov.
-     * @param {ApiCepSignaturesInfoPostRequest} apiCepSignaturesInfoPostRequest
+     * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     apiCepSignaturesInfoPost: async (
-      apiCepSignaturesInfoPostRequest: ApiCepSignaturesInfoPostRequest,
+      apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'apiCepSignaturesInfoPostRequest' is not null or undefined
+      // verify required parameter 'apiCepVerifyPostRequest' is not null or undefined
       assertParamExists(
         'apiCepSignaturesInfoPost',
-        'apiCepSignaturesInfoPostRequest',
-        apiCepSignaturesInfoPostRequest,
+        'apiCepVerifyPostRequest',
+        apiCepVerifyPostRequest,
       )
       const localVarPath = `/api/cep/signatures_info`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5619,7 +5593,7 @@ export const PodpisovanieApiAxiosParamCreator = function (configuration?: Config
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        apiCepSignaturesInfoPostRequest,
+        apiCepVerifyPostRequest,
         localVarRequestOptions,
         configuration,
       )
@@ -5691,18 +5665,18 @@ export const PodpisovanieApiFp = function (configuration?: Configuration) {
     /**
      * Rozšíri digitálny podpis z EPES na T formu pridaním kvalifikovanej časovej pečiatky.
      * @summary Pridá kvalifikovanú časovú pečiatku.
-     * @param {ApiCepAddTimestampPostRequest} apiCepAddTimestampPostRequest
+     * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async apiCepAddTimestampPost(
-      apiCepAddTimestampPostRequest: ApiCepAddTimestampPostRequest,
+      apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiCepAddTimestampPost200Response>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiCepAddTimestampPost(
-        apiCepAddTimestampPostRequest,
+        apiCepVerifyPostRequest,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -5776,12 +5750,12 @@ export const PodpisovanieApiFp = function (configuration?: Configuration) {
     /**
      * Vráti informácie o type a forme podpisov podpísaného dokumentu.  Neoveruje platnosť podpisov, ani časových pečiatok, tak isto neoveruje legislatívnu formu podpisu.
      * @summary Vráti informácie o type a forme podpisov.
-     * @param {ApiCepSignaturesInfoPostRequest} apiCepSignaturesInfoPostRequest
+     * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async apiCepSignaturesInfoPost(
-      apiCepSignaturesInfoPostRequest: ApiCepSignaturesInfoPostRequest,
+      apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (
@@ -5790,7 +5764,7 @@ export const PodpisovanieApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<ApiCepSignaturesInfoPost200Response>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.apiCepSignaturesInfoPost(
-        apiCepSignaturesInfoPostRequest,
+        apiCepVerifyPostRequest,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -5850,16 +5824,16 @@ export const PodpisovanieApiFactory = function (
     /**
      * Rozšíri digitálny podpis z EPES na T formu pridaním kvalifikovanej časovej pečiatky.
      * @summary Pridá kvalifikovanú časovú pečiatku.
-     * @param {ApiCepAddTimestampPostRequest} apiCepAddTimestampPostRequest
+     * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     apiCepAddTimestampPost(
-      apiCepAddTimestampPostRequest: ApiCepAddTimestampPostRequest,
+      apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ApiCepAddTimestampPost200Response> {
       return localVarFp
-        .apiCepAddTimestampPost(apiCepAddTimestampPostRequest, options)
+        .apiCepAddTimestampPost(apiCepVerifyPostRequest, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5895,16 +5869,16 @@ export const PodpisovanieApiFactory = function (
     /**
      * Vráti informácie o type a forme podpisov podpísaného dokumentu.  Neoveruje platnosť podpisov, ani časových pečiatok, tak isto neoveruje legislatívnu formu podpisu.
      * @summary Vráti informácie o type a forme podpisov.
-     * @param {ApiCepSignaturesInfoPostRequest} apiCepSignaturesInfoPostRequest
+     * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     apiCepSignaturesInfoPost(
-      apiCepSignaturesInfoPostRequest: ApiCepSignaturesInfoPostRequest,
+      apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ApiCepSignaturesInfoPost200Response> {
       return localVarFp
-        .apiCepSignaturesInfoPost(apiCepSignaturesInfoPostRequest, options)
+        .apiCepSignaturesInfoPost(apiCepVerifyPostRequest, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5932,16 +5906,16 @@ export class PodpisovanieApi extends BaseAPI {
   /**
    * Rozšíri digitálny podpis z EPES na T formu pridaním kvalifikovanej časovej pečiatky.
    * @summary Pridá kvalifikovanú časovú pečiatku.
-   * @param {ApiCepAddTimestampPostRequest} apiCepAddTimestampPostRequest
+   * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public apiCepAddTimestampPost(
-    apiCepAddTimestampPostRequest: ApiCepAddTimestampPostRequest,
+    apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
     options?: RawAxiosRequestConfig,
   ) {
     return PodpisovanieApiFp(this.configuration)
-      .apiCepAddTimestampPost(apiCepAddTimestampPostRequest, options)
+      .apiCepAddTimestampPost(apiCepVerifyPostRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -5980,16 +5954,16 @@ export class PodpisovanieApi extends BaseAPI {
   /**
    * Vráti informácie o type a forme podpisov podpísaného dokumentu.  Neoveruje platnosť podpisov, ani časových pečiatok, tak isto neoveruje legislatívnu formu podpisu.
    * @summary Vráti informácie o type a forme podpisov.
-   * @param {ApiCepSignaturesInfoPostRequest} apiCepSignaturesInfoPostRequest
+   * @param {ApiCepVerifyPostRequest} apiCepVerifyPostRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public apiCepSignaturesInfoPost(
-    apiCepSignaturesInfoPostRequest: ApiCepSignaturesInfoPostRequest,
+    apiCepVerifyPostRequest: ApiCepVerifyPostRequest,
     options?: RawAxiosRequestConfig,
   ) {
     return PodpisovanieApiFp(this.configuration)
-      .apiCepSignaturesInfoPost(apiCepSignaturesInfoPostRequest, options)
+      .apiCepSignaturesInfoPost(apiCepVerifyPostRequest, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

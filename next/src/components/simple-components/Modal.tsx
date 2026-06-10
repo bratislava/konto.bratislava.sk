@@ -1,19 +1,18 @@
-import { Button } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next/pages'
 import React, { PropsWithChildren } from 'react'
 import { mergeProps } from 'react-aria/mergeProps'
-import { Dialog } from 'react-aria-components/Dialog'
-import { Modal as AriaModal, ModalOverlay, ModalOverlayProps } from 'react-aria-components/Modal'
+import {
+  Modal as RACModal,
+  ModalOverlay as RACModalOverlay,
+  ModalOverlayProps,
+} from 'react-aria-components/Modal'
 
 import { useIframeResizerChildContext } from '@/src/components/forms/IframeResizerChild'
-import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
   modalOverlayClassname?: string
   mobileFullScreen?: boolean
-  noCloseButton?: boolean
   dataCy?: string
 } & PropsWithChildren
 
@@ -55,32 +54,37 @@ const ModalInIframeResizerWrapper = ({ children }: PropsWithChildren) => {
   )
 }
 
+/**
+ * A modal is an overlay element which blocks interaction with elements outside it.
+ *
+ * Docs: https://react-spectrum.adobe.com/react-aria/Modal.html
+ *
+ * This component only provides the overlay. It must be combined with a `Dialog` to create a fully
+ * accessible modal dialog. Overlay props such as `isDismissable`, `isOpen` and `onOpenChange`
+ * belong on the `ModalOverlay`, never on the inner `Modal`.
+ */
 const Modal = ({
   children,
   modalClassname,
   modalOverlayClassname,
   mobileFullScreen,
-  noCloseButton,
   dataCy,
   ...rest
 }: ModalProps) => {
-  const { t } = useTranslation('account')
-
   // Makes `{ isDismissable: true }` default.
-  const modalProps = mergeProps({ isDismissable: true }, rest)
+  const modalOverlayProps = mergeProps({ isDismissable: true }, rest)
 
   return (
-    <ModalOverlay
+    <RACModalOverlay
       className={cn(
         'fixed top-0 left-0 z-50 flex h-(--visual-viewport-height) w-screen items-center justify-center bg-gray-800/40 pt-(--modal-offset-x)',
         modalOverlayClassname,
       )}
-      {...modalProps}
+      {...modalOverlayProps}
     >
       <ModalInIframeResizerWrapper>
-        <AriaModal
+        <RACModal
           data-cy={dataCy}
-          {...modalProps}
           className={cn(
             'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
             mobileFullScreen
@@ -89,26 +93,10 @@ const Modal = ({
             modalClassname,
           )}
         >
-          <Dialog className="outline-0">
-            {({ close }) => (
-              <>
-                {noCloseButton ? null : (
-                  <Button
-                    variant="icon-wrapped-negative-margin"
-                    icon={<Icon name="close" className="size-6" />}
-                    aria-label={t('Modal.aria.close')}
-                    onPress={close}
-                    data-cy="close-modal"
-                    className="absolute top-3 right-3 md:top-4 md:right-4"
-                  />
-                )}
-                {children}
-              </>
-            )}
-          </Dialog>
-        </AriaModal>
+          {children}
+        </RACModal>
       </ModalInIframeResizerWrapper>
-    </ModalOverlay>
+    </RACModalOverlay>
   )
 }
 

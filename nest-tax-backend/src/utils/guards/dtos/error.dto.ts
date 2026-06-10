@@ -93,16 +93,22 @@ export enum ErrorsEnum {
   UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
   UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
   BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
+  BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
+  BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
+  SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
   FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
 }
 
 export enum ErrorsResponseEnum {
-  NOT_FOUND_ERROR = 'Not found',
-  DATABASE_ERROR = 'Error to write or update or read from/to database',
-  INTERNAL_SERVER_ERROR = 'Unexpected error',
-  UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
-  UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
-  BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
+  NOT_FOUND_ERROR = 'Resource not found.',
+  DATABASE_ERROR = 'There was database error.',
+  INTERNAL_SERVER_ERROR = 'Internal server error.',
+  UNAUTHORIZED_ERROR = 'Unauthorized.',
+  UNPROCESSABLE_ENTITY_ERROR = 'Unprocessable entity.',
+  BAD_REQUEST_ERROR = 'Bad request.',
+  BAD_GATEWAY_ERROR = 'Bad gateway.',
+  BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
+  SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
   FORBIDDEN_ERROR = 'Forbidden',
 }
 

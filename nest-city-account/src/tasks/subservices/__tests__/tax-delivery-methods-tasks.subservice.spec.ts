@@ -1,16 +1,14 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum, Prisma, User } from '@prisma/client'
-import { AxiosResponse } from 'axios'
-import { UpdateDeliveryMethodsInNorisResponseDto } from 'openapi-clients/tax'
 
 import prismaMock from '../../../../test/singleton'
 import { MailgunService } from '../../../mailgun/mailgun.service'
+import { NorisDeliveryMethodService } from '../../../noris/services/noris-delivery-method.service'
+import { DeliveryMethod } from '../../../noris/types/noris.enums'
 import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { TaxSubservice } from '../../../utils/subservices/tax.subservice'
-import { DeliveryMethodNoris } from '../../../utils/types/tax.types'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
 type UserWithRelations = Prisma.UserGetPayload<{
@@ -51,7 +49,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       providers: [
         TaxDeliveryMethodsTasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
-        { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
+        { provide: NorisDeliveryMethodService, useValue: createMock<NorisDeliveryMethodService>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         {
@@ -75,15 +73,13 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(0)
   })
 
-  describe('updateDeliveryMethodsInNoris', () => {
+  describe('updateDeliveryMethods', () => {
     it('should call the endpoint with the correct data, and update only users who are really updated in Noris', async () => {
-      const adminApiUpdateSpy = jest
-        .spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
+      const updateDeliveryMethodsSpy = jest
+        .spyOn(service['norisDeliveryMethodService'], 'updateDeliveryMethods')
         .mockResolvedValue({
-          data: {
-            birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
-          },
-        } as AxiosResponse<UpdateDeliveryMethodsInNorisResponseDto>)
+          birthNumbers: ['123456/2020', '123456/4848', '123456/4649', '123456/4521'],
+        })
       const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
 
       prismaMock.user.updateMany.mockResolvedValue({ count: 1 })
@@ -148,34 +144,34 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.updateDeliveryMethodsInNoris()
 
       expect(internalErrorSpy).not.toHaveBeenCalled()
-      expect(adminApiUpdateSpy).toHaveBeenCalledTimes(1)
-      expect(adminApiUpdateSpy).toHaveBeenCalledWith({
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledTimes(1)
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledWith({
         data: {
           '1234562020': {
-            deliveryMethod: DeliveryMethodNoris.EDESK,
+            deliveryMethod: DeliveryMethod.EDESK,
           },
           '1234564848': {
-            deliveryMethod: DeliveryMethodNoris.POSTAL,
+            deliveryMethod: DeliveryMethod.POSTAL,
           },
           '1234561234': {
-            deliveryMethod: DeliveryMethodNoris.CITY_ACCOUNT,
+            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
             date: '2023-08-03',
           },
           '1234569999': {
-            deliveryMethod: DeliveryMethodNoris.POSTAL,
+            deliveryMethod: DeliveryMethod.POSTAL,
           },
           '1234567777': {
-            deliveryMethod: DeliveryMethodNoris.EDESK,
+            deliveryMethod: DeliveryMethod.EDESK,
           },
           '1234564646': {
-            deliveryMethod: DeliveryMethodNoris.POSTAL,
+            deliveryMethod: DeliveryMethod.POSTAL,
           },
           '1234564649': {
-            deliveryMethod: DeliveryMethodNoris.CITY_ACCOUNT,
+            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
             date: '2020-01-03',
           },
           '1234564521': {
-            deliveryMethod: DeliveryMethodNoris.POSTAL,
+            deliveryMethod: DeliveryMethod.POSTAL,
           },
         },
       })
@@ -193,22 +189,24 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should not call the endpoint if there are no users', async () => {
-      const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
+      const updateDeliveryMethodsSpy = jest.spyOn(
+        service['norisDeliveryMethodService'],
+        'updateDeliveryMethods'
+      )
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
 
       prismaMock.user.findMany.mockResolvedValue([])
 
       await service.updateDeliveryMethodsInNoris()
 
-      expect(adminApiUpdateSpy).not.toHaveBeenCalled()
+      expect(updateDeliveryMethodsSpy).not.toHaveBeenCalled()
       expect(prismaUserUpdateSpy).not.toHaveBeenCalled()
     })
 
     it('should skip deactivated users detected during the lock re-check and not call Noris for them', async () => {
-      const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
-      const removeDeliveryMethodSpy = jest.spyOn(
-        service['taxSubservice'],
-        'removeDeliveryMethodFromNoris'
+      const updateDeliveryMethodsSpy = jest.spyOn(
+        service['norisDeliveryMethodService'],
+        'updateDeliveryMethods'
       )
       const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
       const prismaUserUpdateSpy = jest
@@ -231,9 +229,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       expect(internalErrorSpy).not.toHaveBeenCalled()
       // The user was filtered out by the re-check, so Noris should not be called at all.
-      expect(adminApiUpdateSpy).not.toHaveBeenCalled()
-      // No re-remove needed — locking guarantees correctness without it.
-      expect(removeDeliveryMethodSpy).not.toHaveBeenCalled()
+      expect(updateDeliveryMethodsSpy).not.toHaveBeenCalled()
       // lastTaxDeliveryMethodsUpdateTry is still stamped for the batch.
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -244,11 +240,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should call Noris only with users still active after the re-check when some are deactivated mid-flight', async () => {
-      const adminApiUpdateSpy = jest
-        .spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
-        .mockResolvedValue({
-          data: { birthNumbers: ['123456/2020'] },
-        } as AxiosResponse<UpdateDeliveryMethodsInNorisResponseDto>)
+      const updateDeliveryMethodsSpy = jest
+        .spyOn(service['norisDeliveryMethodService'], 'updateDeliveryMethods')
+        .mockResolvedValue({ birthNumbers: ['123456/2020'] })
       const prismaUserUpdateSpy = jest
         .spyOn(prismaMock.user, 'updateMany')
         .mockResolvedValue({ count: 1 })
@@ -273,11 +267,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.updateDeliveryMethodsInNoris()
 
       // Noris is called with only the still-active user's data.
-      expect(adminApiUpdateSpy).toHaveBeenCalledTimes(1)
-      expect(adminApiUpdateSpy).toHaveBeenCalledWith({
-        data: {
-          '1234562020': { deliveryMethod: DeliveryMethodNoris.EDESK },
-        },
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledTimes(1)
+      expect(updateDeliveryMethodsSpy).toHaveBeenCalledWith({
+        data: { '1234562020': { deliveryMethod: DeliveryMethod.EDESK } },
       })
 
       // lastTaxDeliveryMethodsUpdateTry is stamped for the entire batch, including the deactivated user.

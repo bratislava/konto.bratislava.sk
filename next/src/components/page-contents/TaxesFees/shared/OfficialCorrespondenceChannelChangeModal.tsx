@@ -1,6 +1,9 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { GDPRCategoryEnum, GDPRTypeEnum } from 'openapi-clients/city-account'
+import {
+  SetDeliveryMethodPreferenceDtoDeliveryMethodEnum,
+  UserOfficialCorrespondenceChannelEnum,
+} from 'openapi-clients/city-account'
 import { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components/Heading'
 import { Controller } from 'react-hook-form'
@@ -9,12 +12,13 @@ import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
 import Markdown from '@/src/components/formatting/Markdown'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
+import Dialog from '@/src/components/simple-components/Dialog'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
-import { useUserSubscription } from '@/src/frontend/hooks/useUser'
+import { useDeliveryMethod } from '@/src/frontend/hooks/useUser'
 import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
@@ -195,38 +199,52 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20612-3394&m=dev
  */
-
+// TODO Rewrite the radio group to actual values instead of true/false?
 const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
-  const { isSubscribed, changeSubscription, subType } = useUserSubscription({
-    category: GDPRCategoryEnum.Taxes,
-    type: GDPRTypeEnum.FormalCommunication,
-  })
   const { t } = useTranslation('account')
 
   const { showToast } = useToast()
 
-  const { hasChangedDeliveryMethodAfterDeadline } = useOfficialCorrespondenceChannel()
+  const { deliveryMethod, hasChangedDeliveryMethodAfterDeadline } = useUserDataDeliveryMethod()
+  const { changeDeliveryMethod } = useDeliveryMethod()
 
   const strapiTax = useStrapiTax()
   const { accountCommunicationConsentText } = strapiTax
 
+  // EDESK users should not be able to change the delivery method. Modal shouls never be available to them, we return null in case.
+  if (deliveryMethod === UserOfficialCorrespondenceChannelEnum.Edesk) {
+    return null
+  }
+
+  const isSubscribedDefaultValue = isDefined(deliveryMethod)
+    ? {
+        [UserOfficialCorrespondenceChannelEnum.Email]: true,
+        [UserOfficialCorrespondenceChannelEnum.Postal]: false,
+      }[deliveryMethod]
+    : undefined
+
   const handleSubmit = async ({ data }: { data: FormData }) => {
-    return changeSubscription(data.isSubscribed, {
-      onSuccess: () => {
-        onOpenChange?.(false)
-        showToast({
-          message: t('taxes.delivery_method_change_modal.success_snackbar_message'),
-          variant: 'success',
-        })
+    return changeDeliveryMethod(
+      data.isSubscribed
+        ? SetDeliveryMethodPreferenceDtoDeliveryMethodEnum.CityAccount
+        : SetDeliveryMethodPreferenceDtoDeliveryMethodEnum.Postal,
+      {
+        onSuccess: () => {
+          onOpenChange?.(false)
+          showToast({
+            message: t('taxes.delivery_method_change_modal.success_snackbar_message'),
+            variant: 'success',
+          })
+        },
+        onError: (error) => {
+          logger.error(error)
+          showToast({
+            message: t('taxes.delivery_method_change_modal.error_snackbar_message'),
+            variant: 'error',
+          })
+        },
       },
-      onError: (error) => {
-        logger.error(error)
-        showToast({
-          message: t('taxes.delivery_method_change_modal.error_snackbar_message'),
-          variant: 'error',
-        })
-      },
-    })
+    )
   }
 
   return (
@@ -237,28 +255,33 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
       modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
       mobileFullScreen
     >
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <Heading slot="title" className="text-size-h3-r lg:text-size-h3">
-            {t('taxes.delivery_method_change_modal.title')}
-          </Heading>
-          <Markdown variant="small" content={t('taxes.delivery_method_change_modal.description')} />
-        </div>
-        {hasChangedDeliveryMethodAfterDeadline && (
-          <OfficialCorrespondenceChannelAlert
-            variant="change-effective-next-year"
-            strapiTax={strapiTax}
+      <Dialog>
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
+              {t('taxes.delivery_method_change_modal.title')}
+            </Heading>
+            <Markdown
+              variant="small"
+              content={t('taxes.delivery_method_change_modal.description')}
+            />
+          </div>
+          {hasChangedDeliveryMethodAfterDeadline && (
+            <OfficialCorrespondenceChannelAlert
+              variant="change-effective-next-year"
+              strapiTax={strapiTax}
+            />
+          )}
+          <Form
+            defaultValues={{
+              isSubscribed: isSubscribedDefaultValue,
+              scrolledToBottom: false,
+            }}
+            onSubmit={handleSubmit}
+            agreementContent={accountCommunicationConsentText}
           />
-        )}
-        <Form
-          defaultValues={{
-            isSubscribed: subType ? isSubscribed : undefined,
-            scrolledToBottom: false,
-          }}
-          onSubmit={handleSubmit}
-          agreementContent={accountCommunicationConsentText}
-        />
-      </div>
+        </div>
+      </Dialog>
     </Modal>
   )
 }

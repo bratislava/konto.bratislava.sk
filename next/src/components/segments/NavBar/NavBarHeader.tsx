@@ -1,6 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next/pages'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'

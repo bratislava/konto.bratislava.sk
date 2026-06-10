@@ -18,7 +18,6 @@ type MenuDropdownBase = {
   items: MenuItemBase[]
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
-  buttonClassName?: string
   setIsOpen?: Dispatch<SetStateAction<boolean>>
 }
 
@@ -27,7 +26,6 @@ const MenuDropdown = ({
   items,
   itemVariant = 'form',
   buttonTrigger,
-  buttonClassName,
   setIsOpen,
 }: MenuDropdownBase) => {
   return (
@@ -37,7 +35,7 @@ const MenuDropdown = ({
         <DropdownMenu.Content
           loop
           align="end"
-          className={cn('z-50 rounded-lg bg-gray-0 py-2 shadow-md', buttonClassName)}
+          className="z-50 rounded-lg bg-gray-0 py-2 shadow-md"
           sideOffset={2}
         >
           {itemVariant === 'form' &&

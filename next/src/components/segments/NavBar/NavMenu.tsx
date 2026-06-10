@@ -1,8 +1,8 @@
 import { Typography } from '@bratislava/component-library'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import { useTranslation } from 'next-i18next/pages'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'

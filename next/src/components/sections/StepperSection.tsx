@@ -1,6 +1,6 @@
 import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
+import { Stepper } from '@/src/components/common/Stepper/Stepper'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import { Stepper } from '@/src/components/page-contents/Stepper/Stepper'
 
 type StepperProps = {
   section: StepperSectionFragment

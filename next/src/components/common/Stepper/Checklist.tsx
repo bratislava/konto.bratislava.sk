@@ -1,8 +1,8 @@
-import Markdown from '@/src/components/formatting/Markdown'
 import {
   ChecklistItem,
   ChecklistItemProps,
-} from '@/src/components/page-contents/Stepper/ChecklistItem'
+} from '@/src/components/common/Stepper/ChecklistItem'
+import Markdown from '@/src/components/formatting/Markdown'
 
 export type ChecklistProps = {
   description?: string | null

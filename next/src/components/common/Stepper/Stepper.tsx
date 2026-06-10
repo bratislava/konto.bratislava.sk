@@ -2,7 +2,7 @@ import { Typography } from '@bratislava/component-library'
 import { Fragment } from 'react'
 
 import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
-import { Checklist } from '@/src/components/page-contents/Stepper/Checklist'
+import { Checklist } from '@/src/components/common/Stepper/Checklist'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'

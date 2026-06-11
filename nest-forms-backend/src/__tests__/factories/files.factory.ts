@@ -1,4 +1,4 @@
-import { Files,FileStatus } from '@prisma/client'
+import { Files, FileStatus } from '@prisma/client'
 
 const DEFAULT_DATE = new Date('2024-01-01T00:00:00.000Z')
 

@@ -2,12 +2,14 @@ import { Nack } from '@golevelup/nestjs-rabbitmq'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
 
 import { createTestForm } from '../../../__tests__/factories/form.factory'
 import ConvertPdfService from '../../../convert-pdf/convert-pdf.service'
@@ -24,6 +26,7 @@ import FormDeliveryConsumerService from '../form-delivery-consumer.service'
 import WebhookService from '../webhook.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
+jest.mock('forms-shared/form-utils/formDataExtractors')
 
 describe('FormDeliveryConsumerService', () => {
   let service: FormDeliveryConsumerService
@@ -230,6 +233,9 @@ describe('FormDeliveryConsumerService', () => {
         mockFormDefinition,
       )
       jest.spyOn(ginisService, 'createDocument').mockResolvedValue()
+      ;(
+        formDataExtractors.extractFormSubjectPlain as jest.Mock
+      ).mockReturnValue('mock-subject')
 
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
@@ -238,7 +244,19 @@ describe('FormDeliveryConsumerService', () => {
         mockForm,
         mockFormDefinition,
       )
-      expect(service['mailgunService'].sendEmail).toHaveBeenCalled()
+      expect(service['mailgunService'].sendEmail).toHaveBeenCalledWith({
+        data: {
+          to: mockRabbitPayloadDto.userData.email,
+          template: MailgunTemplateEnum.GINIS_SENT,
+          data: {
+            formId: mockForm.id,
+            messageSubject: 'mock-subject',
+            firstName: mockRabbitPayloadDto.userData.firstName,
+            slug: mockForm.formDefinitionSlug,
+            formSentAt: mockForm.formSentAt,
+          },
+        },
+      })
     })
 
     it('should queue delayed form when send to Ginis fails and tries <= 2', async () => {
@@ -379,6 +397,9 @@ describe('FormDeliveryConsumerService', () => {
       jest
         .spyOn(ginisService, 'createDocument')
         .mockRejectedValue(new Error('Ginis error'))
+      ;(
+        formDataExtractors.extractFormSubjectPlain as jest.Mock
+      ).mockReturnValue('mock-subject')
 
       const result = await service['handleSlovenskoSkGenericForm'](
         mockForm,
@@ -387,7 +408,19 @@ describe('FormDeliveryConsumerService', () => {
       )
 
       expect(pdfServiceSpy).toHaveBeenCalled()
-      expect(service['mailgunService'].sendEmail).toHaveBeenCalled()
+      expect(service['mailgunService'].sendEmail).toHaveBeenCalledWith({
+        data: {
+          to: mockRabbitPayloadDto.userData.email,
+          template: MailgunTemplateEnum.GINIS_IN_PROGRESS,
+          data: {
+            formId: mockForm.id,
+            messageSubject: 'mock-subject',
+            firstName: mockRabbitPayloadDto.userData.firstName,
+            slug: mockForm.formDefinitionSlug,
+            formSentAt: mockForm.formSentAt,
+          },
+        },
+      })
 
       const expectedTries = mockRabbitPayloadDto.tries + 1
       expect(
@@ -495,6 +528,9 @@ describe('FormDeliveryConsumerService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         schema: {},
       } as FormDefinitionSlovenskoSkGeneric
+      ;(
+        formDataExtractors.extractFormSubjectPlain as jest.Mock
+      ).mockReturnValue('mock-subject')
 
       await service['handleSlovenskoSkGenericForm'](
         mockForm,
@@ -502,7 +538,19 @@ describe('FormDeliveryConsumerService', () => {
         mockFormDefinition,
       )
 
-      expect(service['mailgunService'].sendEmail).toHaveBeenCalled()
+      expect(service['mailgunService'].sendEmail).toHaveBeenCalledWith({
+        data: {
+          to: mockRabbitPayloadDto.userData.email,
+          template: MailgunTemplateEnum.GINIS_SENT,
+          data: {
+            formId: mockForm.id,
+            messageSubject: 'mock-subject',
+            firstName: mockRabbitPayloadDto.userData.firstName,
+            slug: mockForm.formDefinitionSlug,
+            formSentAt: mockForm.formSentAt,
+          },
+        },
+      })
     })
 
     it('should not send email if email is not provided', async () => {

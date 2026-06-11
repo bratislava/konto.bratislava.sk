@@ -1,4 +1,6 @@
 import { FormError, Forms, FormState, GinisState } from '@prisma/client'
+import { FormSummary } from 'forms-shared/summary/summary'
+import { SummaryJsonType } from 'forms-shared/summary-json/summaryJsonTypes'
 
 import { FormWithFiles } from '../../utils/types/prisma'
 
@@ -43,5 +45,19 @@ export const createTestFormWithFiles = (
 ): FormWithFiles => ({
   ...baseForm,
   files: [],
+  ...overrides,
+})
+
+export const createTestFormSummary = (
+  overrides?: Partial<FormSummary>,
+): FormSummary => ({
+  summaryJson: {
+    type: SummaryJsonType.Form,
+    id: 'test-form-summary-id',
+    title: 'Test Form Summary',
+    steps: [],
+  },
+  additionalInfo: null,
+  termsAndConditions: 'https://example.com/terms',
   ...overrides,
 })

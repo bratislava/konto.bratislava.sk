@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
-  FormDefinitionEmail,
   FormDefinitionSlovenskoSkGeneric,
   FormDefinitionSlovenskoSkTax,
   FormDefinitionType,
@@ -20,6 +19,7 @@ import {
   UserFixtureFactory,
 } from '../../test/fixtures/auth/user-fixture-factory'
 import { createTestForm } from '../__tests__/factories/form.factory'
+import { createTestFormDefinitionEmail } from '../__tests__/factories/formDefinition.factory'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -465,11 +465,11 @@ describe('FormSenderService', () => {
   })
 
   describe('updateAndSendForm', () => {
-    const mockForm = {
+    const mockForm = createTestForm({
       id: '1',
       formDefinitionSlug: 'test-slug',
       formDataJson: { test: 'data' },
-    } as unknown as Forms
+    })
 
     const mockFormDefinition = {
       slug: 'test-slug',
@@ -494,10 +494,7 @@ describe('FormSenderService', () => {
       },
     } as FormDefinitionSlovenskoSkGeneric
 
-    const mockFormDefinitionEmail = {
-      ...mockFormDefinition,
-      type: FormDefinitionType.Email,
-    } as unknown as FormDefinitionEmail
+    const mockFormDefinitionEmail = createTestFormDefinitionEmail()
 
     beforeEach(() => {
       jest
@@ -789,10 +786,10 @@ describe('FormSenderService', () => {
   })
 
   describe('getFormSummaryOrThrow', () => {
-    const mockForm = {
+    const mockForm = createTestForm({
       id: '1',
       formDataJson: { test: 'data' },
-    } as unknown as Forms
+    })
 
     const mockFormDefinition = {
       slug: 'test-slug',

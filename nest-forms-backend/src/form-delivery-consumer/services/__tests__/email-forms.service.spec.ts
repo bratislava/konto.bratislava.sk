@@ -12,10 +12,10 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
-import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
 
 import prismaMock from '../../../../test/singleton'
+import { createTestFormSummary } from '../../../__tests__/factories/form.factory'
 import {
   arrayContaining,
   objectContaining,
@@ -70,7 +70,7 @@ const mockForm = {
   recipientId: null,
   finishSubmission: null,
   formDefinitionSlug: 'test-form-email',
-  formSummary: { test: 'summary' } as unknown as FormSummary,
+  formSummary: createTestFormSummary(),
   files: [],
   archived: false,
   ginisState: 'CREATED',
@@ -187,13 +187,7 @@ describe('EmailFormsService', () => {
 
     jest.spyOn(configService, 'get').mockReturnValue('production')
 
-    service['logger'] = {
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      verbose: jest.fn(),
-    } as unknown as LineLoggerSubservice
+    service['logger'] = createMock<LineLoggerSubservice>()
 
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
     jest.spyOn(console, 'error').mockImplementation(jest.fn())

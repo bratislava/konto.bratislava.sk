@@ -19,7 +19,6 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { FormWithFiles } from '../../../utils/types/prisma'
 import { WebhookErrorsResponseEnum } from '../../errors/webhook.errors.enum'
 import WebhookService from '../webhook.service'
 
@@ -48,14 +47,7 @@ describe('WebhookService', () => {
     }).compile()
 
     service = module.get<WebhookService>(WebhookService)
-    const mockLogger = {
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      verbose: jest.fn(),
-    } as unknown as LineLoggerSubservice
-    service['logger'] = mockLogger
+    service['logger'] = createMock<LineLoggerSubservice>()
 
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
     jest.spyOn(console, 'error').mockImplementation(jest.fn())
@@ -75,12 +67,12 @@ describe('WebhookService', () => {
     const mockFormId = 'test-form-id'
 
     it('should process a valid webhook form successfully', async () => {
-      const mockForm = {
+      const mockForm = createTestFormWithFiles({
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: {},
         files: [],
-      } as unknown as FormWithFiles
+      })
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
@@ -103,6 +95,7 @@ describe('WebhookService', () => {
       })
       expect(axios.post).toHaveBeenCalledWith('https://example.com/webhook', {
         formId: 'test-form-id',
+        jsonVersion: '1.0',
         slug: 'test-slug',
         data: {},
         files: {},

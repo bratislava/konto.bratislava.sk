@@ -16,6 +16,7 @@ import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSha
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
 import prismaMock from '../../../test/singleton'
+import { createTestFormDefinitionSlovenskoSkGeneric } from '../../__tests__/factories/formDefinition.factory'
 import BaConfigService from '../../config/ba-config.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
@@ -327,32 +328,33 @@ describe('SharepointService', () => {
       } as Forms)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue({
-          sharepointData: {
-            databaseName: 'dbName',
-            columnMap: {},
-            oneToMany: {
-              otm1: {
-                databaseName: 'otmDb1',
-                originalTableId: 'otmOriginal1',
-                columnMap: { col1otm1: { type: 'title' } },
-              } as SharepointRelationData,
+        .mockReturnValue(
+          createTestFormDefinitionSlovenskoSkGeneric({
+            sharepointData: {
+              databaseName: 'dbName',
+              columnMap: {},
+              oneToMany: {
+                otm1: {
+                  databaseName: 'otmDb1',
+                  originalTableId: 'otmOriginal1',
+                  columnMap: { col1otm1: { type: 'title' } },
+                },
+              },
+              oneToOne: {
+                oto1: {
+                  databaseName: 'otoDb1',
+                  originalTableId: 'otoOriginal1',
+                  columnMap: { col1oto1: { type: 'title' } },
+                } as SharepointRelationData,
+                oto2: {
+                  databaseName: 'otoDb2',
+                  originalTableId: 'otoOriginal2',
+                  columnMap: { col1oto2: { type: 'title' } },
+                } as SharepointRelationData,
+              },
             },
-            oneToOne: [
-              {
-                databaseName: 'otoDb1',
-                originalTableId: 'otoOriginal1',
-                columnMap: { col1oto1: { type: 'title' } },
-              },
-              {
-                databaseName: 'otoDb2',
-                originalTableId: 'otoOriginal2',
-                columnMap: { col1oto2: { type: 'title' } },
-              },
-            ] as SharepointRelationData[],
-          },
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as unknown as FormDefinition)
+          }),
+        )
       service['postDataToSharepoint'] = jest.fn().mockResolvedValue({ id: 123 })
       service['handleOneToMany'] = jest
         .fn()

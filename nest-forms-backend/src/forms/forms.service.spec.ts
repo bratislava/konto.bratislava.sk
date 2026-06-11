@@ -142,7 +142,7 @@ describe('FormsService', () => {
           {
             id: '2',
           },
-        ] as unknown as Forms[],
+        ],
         currentPage: 2,
         pagination: 20,
         meta: {

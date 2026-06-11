@@ -1,4 +1,8 @@
-import { SslDetailDokumentuResponse } from '@bratislava/ginis-sdk'
+import {
+  SslDetailDokumentuResponse,
+  SslPrehledDokumentuPrehledDokumentuItem,
+  SslPrehledDokumentuResponse,
+} from '@bratislava/ginis-sdk'
 
 export const createMockGinisDocumentData = (
   overrides?: Partial<SslDetailDokumentuResponse>,
@@ -319,3 +323,42 @@ export const createMockGinisDocumentData = (
     ...overrides,
   }
 }
+
+const basePrehledDokumentuItem: SslPrehledDokumentuPrehledDokumentuItem = {
+  'Id-dokumentu': 'MAG0X03RZDEB',
+  'Id-spisu': 'MAG0X03RZDEB',
+  'Priznak-spisu': 'pisemnost',
+  'Priznak-cj': 'neni-cj',
+  'Id-funkce-vlastnika': 'MAG0SF00A19L',
+  'Stav-distribuce': 'neni-v-distribuci',
+  'Stav-dokumentu': 'podano',
+  'Id-agendy': '190',
+  'Id-typu-dokumentu': 'MAG00400AAMI',
+  'Priznak-doruceni': 'doruceny',
+  'Priznak-evidence-ssl': 'ssl-neevidovan',
+  'Priznak-fyz-existence': 'neexistuje',
+  'Priznak-el-obrazu': 'existuje',
+  'Misto-vzniku': 'Hlavné mesto SR Bratislava',
+  'Datum-podani': '2023-09-13',
+  'Datum-zmeny': '2023-09-13T11:01:04',
+  'Id-zmenu-provedl': 'MAG0SZ00KU7U',
+  'Id-osoby-vlastnika': 'MAG0SZ00KU7U',
+}
+
+export const createTestPrehledDokumentuItem = (
+  overrides?: Partial<SslPrehledDokumentuPrehledDokumentuItem>,
+): SslPrehledDokumentuPrehledDokumentuItem => ({
+  ...basePrehledDokumentuItem,
+  ...overrides,
+})
+
+export const createTestPrehledDokumentuResponse = (
+  items: SslPrehledDokumentuPrehledDokumentuItem[] = [],
+): SslPrehledDokumentuResponse => ({
+  'Prehled-dokumentu': items,
+  'Stav-prehledu': {
+    'Radek-od': '1',
+    'Radek-do': String(items.length),
+    'Radku-celkem': String(items.length),
+  },
+})

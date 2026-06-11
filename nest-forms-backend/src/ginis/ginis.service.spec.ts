@@ -14,6 +14,11 @@ import {
   createEmptyCityAccountUserApiResponseMock,
   createSlovenskoSkIdentitiesApiResponseMock,
 } from '../__tests__/factories/apiResponse.factory'
+import { createTestFile } from '../__tests__/factories/files.factory'
+import {
+  createTestForm,
+  createTestFormWithFiles,
+} from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
 import { objectContaining } from '../__tests__/jest-matchers'
@@ -279,21 +284,17 @@ describe('GinisService', () => {
         pospID: 'pospIdValue',
       })
 
-      prismaMock.forms.findUnique.mockResolvedValue({
-        ...formBase,
-        ginisState: GinisState.REGISTERED,
-        ginisDocumentId: 'ginis1',
-        files: [
-          {
-            ginisUploadedError: false,
-            ginisUploaded: false,
-          } as unknown as Files,
-          {
-            ginisUploadedError: false,
-            ginisUploaded: false,
-          } as unknown as Files,
-        ],
-      } as FormWithFiles)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithFiles({
+          ...formBase,
+          ginisState: GinisState.REGISTERED,
+          ginisDocumentId: 'ginis1',
+          files: [
+            createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
+            createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
+          ],
+        }),
+      )
       const uploadSpy = jest
         .spyOn(service, 'uploadAttachments')
         .mockResolvedValue()
@@ -309,21 +310,17 @@ describe('GinisService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
-      prismaMock.forms.findUnique.mockResolvedValue({
-        ...formBase,
-        ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
-        ginisDocumentId: 'ginis1',
-        files: [
-          {
-            ginisUploadedError: true,
-            ginisUploaded: false,
-          } as unknown as Files,
-          {
-            ginisUploadedError: false,
-            ginisUploaded: true,
-          } as unknown as Files,
-        ],
-      } as FormWithFiles)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithFiles({
+          ...formBase,
+          ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+          ginisDocumentId: 'ginis1',
+          files: [
+            createTestFile({ ginisUploadedError: true, ginisUploaded: false }),
+            createTestFile({ ginisUploadedError: false, ginisUploaded: true }),
+          ],
+        }),
+      )
       result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
@@ -334,21 +331,17 @@ describe('GinisService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
-      prismaMock.forms.findUnique.mockResolvedValue({
-        ...formBase,
-        ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
-        ginisDocumentId: 'ginis1',
-        files: [
-          {
-            ginisUploadedError: true,
-            ginisUploaded: false,
-          } as unknown as Files,
-          {
-            ginisUploadedError: true,
-            ginisUploaded: false,
-          } as unknown as Files,
-        ],
-      } as FormWithFiles)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithFiles({
+          ...formBase,
+          ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+          ginisDocumentId: 'ginis1',
+          files: [
+            createTestFile({ ginisUploadedError: true, ginisUploaded: false }),
+            createTestFile({ ginisUploadedError: true, ginisUploaded: false }),
+          ],
+        }),
+      )
       result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
@@ -382,20 +375,16 @@ describe('GinisService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
       })
-      prismaMock.forms.findUnique.mockResolvedValue({
-        ...formBase,
-        ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
-        files: [
-          {
-            ginisUploadedError: false,
-            ginisUploaded: false,
-          } as unknown as Files,
-          {
-            ginisUploadedError: false,
-            ginisUploaded: false,
-          } as unknown as Files,
-        ],
-      } as FormWithFiles)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithFiles({
+          ...formBase,
+          ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+          files: [
+            createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
+            createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
+          ],
+        }),
+      )
 
       result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).not.toHaveBeenCalled()
@@ -681,17 +670,17 @@ describe('GinisService', () => {
   })
 
   describe('uploadAttachments', () => {
-    const formMock = {
+    const formMock = createTestFormWithFiles({
       id: 'id1',
       ginisDocumentId: 'gid1',
       files: [
-        {
+        createTestFile({
           ginisUploaded: false,
           fileName: 'file1.pdf',
           minioFileName: 'minio-file1.pdf',
-        },
+        }),
       ],
-    } as unknown as FormWithFiles
+    })
 
     const mockStream = new Readable({
       read() {
@@ -813,12 +802,11 @@ describe('GinisService', () => {
   })
 
   describe('createDocument', () => {
-    const formBase = {
+    const formBase = createTestForm({
       id: 'formId1',
       formDataJson: { test: 'data' },
-      updatedAt: new Date(),
       ginisDocumentId: null,
-    } as unknown as Forms
+    })
 
     const formDefinitionBase = createTestFormDefinitionSlovenskoSkGeneric({
       ginisDocumentTypeId: 'docType1',

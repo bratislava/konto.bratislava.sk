@@ -1,12 +1,12 @@
 import { Readable } from 'node:stream'
 
-import {
-  GinNajdiEsuNajdiEsuItem,
-  SslPrehledDokumentuPrehledDokumentuItem,
-  SslPrehledDokumentuResponse,
-} from '@bratislava/ginis-sdk'
+import { GinNajdiEsuNajdiEsuItem } from '@bratislava/ginis-sdk'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import {
+  createTestPrehledDokumentuItem,
+  createTestPrehledDokumentuResponse,
+} from '../../__tests__/factories/ginisDocument.factory'
 import BaConfigService from '../../config/ba-config.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import GinisAPIService, {
@@ -173,17 +173,15 @@ describe('GinisAPIService', () => {
 
   describe('findDocumentId', () => {
     beforeEach(() => {
-      jest.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockResolvedValue({
-        'Prehled-dokumentu': [],
-      } as unknown as SslPrehledDokumentuResponse)
+      jest
+        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
+        .mockResolvedValue(createTestPrehledDokumentuResponse())
     })
 
     it('should use current date in field Datum-podani-do', async () => {
       const findSpy = jest
         .spyOn(service['ginis'].ssl, 'prehledDokumentu')
-        .mockResolvedValueOnce({
-          'Prehled-dokumentu': [],
-        } as unknown as SslPrehledDokumentuResponse)
+        .mockResolvedValueOnce(createTestPrehledDokumentuResponse())
       const currentDate = new Date().toISOString().slice(0, 10)
 
       await service.findDocumentId('formId')
@@ -223,16 +221,12 @@ describe('GinisAPIService', () => {
     it('should throw error if more than 1 document is found', async () => {
       jest
         .spyOn(service['ginis'].ssl, 'prehledDokumentu')
-        .mockResolvedValueOnce({
-          'Prehled-dokumentu': [
-            {
-              'Id-dokumentu': 'docId1',
-            } as unknown as SslPrehledDokumentuPrehledDokumentuItem,
-            {
-              'Id-dokumentu': 'docId2',
-            } as unknown as SslPrehledDokumentuPrehledDokumentuItem,
-          ],
-        } as unknown as SslPrehledDokumentuResponse)
+        .mockResolvedValueOnce(
+          createTestPrehledDokumentuResponse([
+            createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId1' }),
+            createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId2' }),
+          ]),
+        )
 
       await expect(service.findDocumentId('formId')).rejects.toThrow()
     })
@@ -240,13 +234,11 @@ describe('GinisAPIService', () => {
     it('should return document ID if exactly 1 is found', async () => {
       jest
         .spyOn(service['ginis'].ssl, 'prehledDokumentu')
-        .mockResolvedValueOnce({
-          'Prehled-dokumentu': [
-            {
-              'Id-dokumentu': 'docId1',
-            } as unknown as SslPrehledDokumentuPrehledDokumentuItem,
-          ],
-        } as unknown as SslPrehledDokumentuResponse)
+        .mockResolvedValueOnce(
+          createTestPrehledDokumentuResponse([
+            createTestPrehledDokumentuItem({ 'Id-dokumentu': 'docId1' }),
+          ]),
+        )
 
       const documentId = await service.findDocumentId('formId')
       expect(documentId).toBe('docId1')

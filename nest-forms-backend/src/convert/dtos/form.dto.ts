@@ -49,12 +49,10 @@ class SimplifiedClientFileInfoDto {
   id: string
 
   @IsObject()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  file: Record<string, any>
+  file: Record<string, unknown>
 
   @IsObject()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  status: Record<string, any>
+  status: Record<string, unknown>
 }
 
 export class ConvertToPdfRequestDto {

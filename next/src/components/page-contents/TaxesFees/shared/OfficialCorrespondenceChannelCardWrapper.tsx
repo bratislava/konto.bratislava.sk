@@ -4,7 +4,7 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -12,9 +12,9 @@ import { ROUTES } from '@/src/utils/routes'
 
 const OfficialCorrespondenceChannelCardWrapper = () => {
   const { t } = useTranslation('account')
-  const { channel, canUserChangeChannel } = useOfficialCorrespondenceChannel()
+  const { deliveryMethod, canUserChangeDeliveryMethod } = useUserDataDeliveryMethod()
 
-  if (!channel) {
+  if (!deliveryMethod) {
     return null
   }
 
@@ -23,7 +23,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
     [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
     [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
     [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
-  }[channel]
+  }[deliveryMethod]
 
   return (
     <div className="flex flex-col gap-4">
@@ -40,7 +40,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col">
             <Typography variant="p-large">{title}</Typography>
-            {canUserChangeChannel && (
+            {canUserChangeDeliveryMethod && (
               <div className="pt-3 pb-2 lg:px-0">
                 <Markdown
                   variant="small"

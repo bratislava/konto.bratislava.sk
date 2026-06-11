@@ -15,6 +15,10 @@ import {
 import ClientsService from '../../clients/clients.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import {
+  CityAccountErrorsEnum,
+  CityAccountErrorsResponseEnum,
+} from '../errors/city-account.errors.enum'
 
 /**
  * This is a temporary solution. It's not possible to distinguish between ResponseLegalPersonDataDto

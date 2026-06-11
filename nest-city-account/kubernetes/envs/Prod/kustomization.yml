@@ -5,6 +5,7 @@ resources:
   - ./secrets/oauth2-dpb.secret.yml
   - ./secrets/oauth2-paas-mpa.secret.yml
   - ./secrets/noris.secret.yml
+  - ./secrets/enforcement.secret.yml
 
 generatorOptions:
   disableNameSuffixHash: true

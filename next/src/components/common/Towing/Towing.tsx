@@ -22,14 +22,13 @@ const Towing = ({ title, description }: TowingSectionProps) => {
   const { t } = useTranslation('account')
 
   const [vehicle, setVehicle] = useState<{
-    licensePlate: string
-    dateOfTowing: string
-    timeOfTowing: string
-    towingLocation: string
-    towingReason: string
-    towingFine: string
+    loadingDate: string
+    loadingLocation: string
+    towReason: string
+    unloadingLocation: string
+    relocationReason: string
   } | null>(null)
-  const [licensePlate, setLicensePlate] = useState('bengoro')
+  const [licensePlate, setLicensePlate] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
@@ -50,8 +49,8 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           turnstileToken,
         },
       )
-
       setVariant('towing')
+      setVehicle(response.data)
     } catch (error) {
       if (error.response.status === 404) {
         setVariant('notFound')
@@ -86,7 +85,13 @@ const Towing = ({ title, description }: TowingSectionProps) => {
             onChange={setLicensePlate}
           />
 
-          <Button onPress={handleSubmit} variant="solid" fullWidthMobile className="mt-2 h-11">
+          <Button
+            onPress={handleSubmit}
+            variant="solid"
+            fullWidthMobile
+            className="mt-2 h-11 lg:h-[50px]"
+            isDisabled={licensePlate.length === 0 || !turnstileToken}
+          >
             <Icon name="search" />
             Vyhľadať
           </Button>
@@ -131,10 +136,16 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           </Typography>
         )}
 
-        {variant === 'towing' && (
+        {variant === 'towing' && vehicle && (
           <div className="flex flex-col gap-4">
             <Table
-              rows={Object.keys(vehicle).map((key) => ({ label: key, value: vehicle[key] }))}
+              rows={[
+                { label: 'Dátum odťahu', value: vehicle.loadingDate },
+                { label: 'Miesto odťahu', value: vehicle.loadingLocation },
+                { label: 'Dôvod odťahu', value: vehicle.towReason },
+                { label: 'Miesto preloženia', value: vehicle.unloadingLocation },
+                { label: 'Dôvod preloženia', value: vehicle.relocationReason },
+              ]}
               notification={
                 <Alert
                   message='Od 15.04.2023 za každý deň po 10. dni od odtiahnutia do areálu odťahovej služby je účtované "stojné" vo výške 5€ s DPH/deň.'

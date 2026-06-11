@@ -38,7 +38,7 @@ export class EdeskUriUpdateService {
   }
 
   async handleUriUpdateInternal(input: { uri: string; id: string }) {
-    const upvsResult = await this.nasesService.createMany([input])
+    const upvsResult = await this.nasesService.getIdentitiesByUris([input])
     if (
       upvsResult.success.length === 1 &&
       upvsResult.success[0].data.uri &&
@@ -71,7 +71,7 @@ export class EdeskUriUpdateService {
   }
 
   async handleUriUpdateExternal(uri: string) {
-    const upvsResult = await this.nasesService.createMany([{ uri }])
+    const upvsResult = await this.nasesService.getIdentitiesByUris([{ uri }])
     if (upvsResult.success.length === 1) {
       const successItem = upvsResult.success[0]
       await this.prismaService.externalEdeskCheck.update({

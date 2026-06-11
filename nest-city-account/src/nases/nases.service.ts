@@ -18,26 +18,26 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
-export type CreateManyParam = {
+export type GetUpvsIdentitiesByUrisParam = {
   physicalEntityId?: string
   uri: string
 }[]
 
-export interface UpvsIdentityByUriSuccessType {
+export interface GetUpvsIdentityByUriSuccessType {
   physicalEntityId: string | null
   inputUri: string
   data: ApiIamIdentitiesIdGet200Response
 }
 
-export interface CreateManyResultFailed {
+export interface GetUpvsIdentityByUriFailureType {
   physicalEntityId?: string
   inputUri: string
   possibleUriChange: boolean
 }
 
-export interface CreateManyResult {
-  success: UpvsIdentityByUriSuccessType[]
-  failed: CreateManyResultFailed[]
+export interface GetIdentitiesByUrisResult {
+  success: GetUpvsIdentityByUriSuccessType[]
+  failed: GetUpvsIdentityByUriFailureType[]
 }
 
 export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<
@@ -195,10 +195,12 @@ export class NasesService {
     return result
   }
 
-  async createMany(inputs: CreateManyParam): Promise<CreateManyResult> {
+  async getIdentitiesByUris(
+    inputs: GetUpvsIdentitiesByUrisParam
+  ): Promise<GetIdentitiesByUrisResult> {
     const uniqueInputs = _.uniqBy(inputs, 'uri')
     const inputsByUri = _.keyBy(uniqueInputs, 'uri') as Partial<
-      Record<string, CreateManyParam[number]>
+      Record<string, GetUpvsIdentitiesByUrisParam[number]>
     >
 
     if (uniqueInputs.length === 0 || uniqueInputs.length > 10) {
@@ -274,10 +276,10 @@ export class NasesService {
 
   private filterPossiblyChangedUris(
     unmatchedResults: ApiIamIdentitiesIdGet200ResponseWithUri[],
-    unmatchedInputs: CreateManyParam,
-    inputsByUri: Partial<Record<string, CreateManyParam[number]>>
+    unmatchedInputs: GetUpvsIdentitiesByUrisParam,
+    inputsByUri: Partial<Record<string, GetUpvsIdentitiesByUrisParam[number]>>
   ) {
-    let possibleUriChanges: CreateManyResultFailed[] = []
+    let possibleUriChanges: GetUpvsIdentityByUriFailureType[] = []
     if (unmatchedResults.length > 0 && unmatchedInputs.length > 0) {
       this.logger.warn({
         message: `Failed to find input for URIs: ${unmatchedResults.map((r) => r.uri).join(', ')}`,
@@ -294,12 +296,12 @@ export class NasesService {
 
   private matchDirectResults(
     resultsWithUri: ApiIamIdentitiesIdGet200ResponseWithUri[],
-    inputsByUri: Partial<Record<string, CreateManyParam[number]>>
+    inputsByUri: Partial<Record<string, GetUpvsIdentitiesByUrisParam[number]>>
   ) {
     const directMatches = resultsWithUri.filter((result) => !!inputsByUri[result.uri])
     const matchedUris = new Set(directMatches.map((result) => result.uri))
 
-    const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.flatMap((result) => {
+    const resultDataSuccess: GetUpvsIdentityByUriSuccessType[] = directMatches.flatMap((result) => {
       const input = inputsByUri[result.uri]
       if (!input) return []
       return [

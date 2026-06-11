@@ -34,7 +34,7 @@ describe('NasesService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('createMany', () => {
+  describe('getIdentitiesByUris', () => {
     it('should successfully match direct URI results', async () => {
       const inputs = [
         { uri: 'rc://sk/1234567890_doe_john', physicalEntityId: 'entity-1' },
@@ -54,7 +54,7 @@ describe('NasesService', () => {
         },
       ] as any)
 
-      const result = await service.createMany(inputs)
+      const result = await service.getIdentitiesByUris(inputs)
 
       expect(result.success).toHaveLength(2)
       expect(result.failed).toHaveLength(0)
@@ -82,7 +82,7 @@ describe('NasesService', () => {
         },
       ] as any)
 
-      const result = await service.createMany(inputs)
+      const result = await service.getIdentitiesByUris(inputs)
 
       expect(result.success).toHaveLength(1)
       expect(result.failed).toHaveLength(0)
@@ -113,7 +113,7 @@ describe('NasesService', () => {
         },
       ] as any)
 
-      const result = await service.createMany(inputs)
+      const result = await service.getIdentitiesByUris(inputs)
 
       expect(result.success).toHaveLength(0)
       expect(result.failed).toHaveLength(2)
@@ -143,7 +143,7 @@ describe('NasesService', () => {
         },
       ] as any)
 
-      const result = await service.createMany(inputs)
+      const result = await service.getIdentitiesByUris(inputs)
 
       expect(result.success).toHaveLength(0)
       expect(result.failed).toHaveLength(1)
@@ -173,7 +173,7 @@ describe('NasesService', () => {
         },
       ] as any)
 
-      const result = await service.createMany(inputs)
+      const result = await service.getIdentitiesByUris(inputs)
 
       // When there's exactly 1 unmatched result and 1 unmatched input, they get matched
       expect(result.success).toHaveLength(2)
@@ -186,11 +186,11 @@ describe('NasesService', () => {
     it('should throw error for invalid input size', async () => {
       const throwerSpy = jest.spyOn(throwerErrorGuard, 'BadRequestException')
 
-      await expect(service.createMany([])).rejects.toThrow()
+      await expect(service.getIdentitiesByUris([])).rejects.toThrow()
       expect(throwerSpy).toHaveBeenCalled()
 
       const tooManyInputs = Array.from({ length: 11 }, (_, i) => ({ uri: `uri-${i}` }))
-      await expect(service.createMany(tooManyInputs)).rejects.toThrow()
+      await expect(service.getIdentitiesByUris(tooManyInputs)).rejects.toThrow()
     })
 
     it('should deduplicate inputs by URI', async () => {
@@ -207,7 +207,7 @@ describe('NasesService', () => {
         },
       ] as any)
 
-      await service.createMany(inputs)
+      await service.getIdentitiesByUris(inputs)
 
       // Should only search for unique URI once
       expect(searchSpy).toHaveBeenCalledWith(['rc://sk/same_uri'])
@@ -223,7 +223,7 @@ describe('NasesService', () => {
         .spyOn(service as any, 'searchUpvsIdentitiesByUri')
         .mockRejectedValue(new Error('UPVS server is down'))
 
-      await expect(service.createMany(inputs)).rejects.toThrow()
+      await expect(service.getIdentitiesByUris(inputs)).rejects.toThrow()
       expect(searchSpy).toHaveBeenCalledTimes(1)
     })
   })

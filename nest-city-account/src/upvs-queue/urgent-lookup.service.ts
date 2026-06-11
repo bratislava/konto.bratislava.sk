@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
-import { NasesService, UpvsIdentityByUriSuccessType } from '../nases/nases.service'
+import { GetUpvsIdentityByUriSuccessType,NasesService } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { toLogfmt } from '../utils/logging'
@@ -10,13 +10,13 @@ import { selectUrgentEntities, UrgentEntityRow } from './upvs-queue.queries'
 
 /** Outcome of resolving a single urgent entity. */
 type UrgentResolution =
-  | { outcome: 'success'; success: UpvsIdentityByUriSuccessType }
+  | { outcome: 'success'; success: GetUpvsIdentityByUriSuccessType }
   | { outcome: 'failure'; entityId: string; reason: string; fields?: Record<string, unknown> }
   | { outcome: 'rateLimited' }
 
 /** Accumulated outcomes across one urgent run. */
 interface UrgentRunResult {
-  successes: UpvsIdentityByUriSuccessType[]
+  successes: GetUpvsIdentityByUriSuccessType[]
   failedIds: string[]
   failures: Record<string, unknown>[]
   rateLimited: boolean

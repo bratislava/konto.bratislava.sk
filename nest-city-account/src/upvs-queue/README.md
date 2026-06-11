@@ -28,10 +28,10 @@ so the _search_ tier only runs on ticks where no URI update is pending.
 | #  | Tier                      | Selector                                                                             | Items / tick                             | UPVS endpoint                   | Notes                                                      |
 |----|---------------------------|--------------------------------------------------------------------------------------|------------------------------------------|---------------------------------|------------------------------------------------------------|
 | 0  | **Urgent**                | `PhysicalEntity` with `birthNumber` set and `uri IS NULL` (join `User`)              | `URGENT_BATCH_SIZE = 50`, **sequential** | `lookupIdentityFO` (per person) | Runs first, always. Own budget. Stops the run on HTTP 429. |
-| 1  | **Internal URI fix**      | `PhysicalEntity` with `uriPossiblyOutdated = true` (past backoff)                    | 1, then early return                     | `createMany([1])`               | Re-resolves a possibly-changed URI.                        |
-| 2  | **External URI re-check** | `ExternalEdeskCheck` with `NEW_URI_CHECK_REQUIRED`                                   | 1, then early return                     | `createMany([1])`               | Re-resolves a possibly-changed external URI.               |
-| 3a | **High priority**         | `PhysicalEntity` with `uri` set, cache stale (`CACHE_TTL_HOURS = 144`), past backoff | ≤ `HIGH_PRIORITY_RESERVED_SLOTS = 5`     | `createMany` (batched search)   | Periodic eDesk-status refresh.                             |
-| 3b | **External**              | `ExternalEdeskCheck` with `PENDING` and `uri` set                                    | remainder of `BATCH_SIZE = 8`            | `createMany` (batched search)   | Shares the search batch with 3a.                           |
+| 1  | **Internal URI fix**      | `PhysicalEntity` with `uriPossiblyOutdated = true` (past backoff)                    | 1, then early return                     | `getIdentitiesByUris([1])`               | Re-resolves a possibly-changed URI.                        |
+| 2  | **External URI re-check** | `ExternalEdeskCheck` with `NEW_URI_CHECK_REQUIRED`                                   | 1, then early return                     | `getIdentitiesByUris([1])`               | Re-resolves a possibly-changed external URI.               |
+| 3a | **High priority**         | `PhysicalEntity` with `uri` set, cache stale (`CACHE_TTL_HOURS = 144`), past backoff | ≤ `HIGH_PRIORITY_RESERVED_SLOTS = 5`     | `getIdentitiesByUris` (batched search)   | Periodic eDesk-status refresh.                             |
+| 3b | **External**              | `ExternalEdeskCheck` with `PENDING` and `uri` set                                    | remainder of `BATCH_SIZE = 8`            | `getIdentitiesByUris` (batched search)   | Shares the search batch with 3a.                           |
 
 > Tiers 3a + 3b together form a single batched call of ≤ `BATCH_SIZE` (8) URIs, which is within the
 > UPVS search limit of 10. The **urgent** budget is fully independent of `BATCH_SIZE`.
@@ -67,7 +67,7 @@ flowchart TD
     PE -.->|" selected live by SQL<br/>no separate queue row "| SCHED
     EEC --> SCHED{{"processBatch<br/>every 30s"}}
     SCHED -->|" per-person, sequential "| LOOKUP[["UPVS lookupIdentityFO<br/>apiIamIdentitiesLookupGet"]]
-    SCHED -->|" batched URI search, max 10 "| SEARCH[["UPVS createMany<br/>apiIamIdentitiesSearchPost"]]
+    SCHED -->|" batched URI search, max 10 "| SEARCH[["UPVS getIdentitiesByUris<br/>apiIamIdentitiesSearchPost"]]
     LOOKUP --> SCHED
     SEARCH --> SCHED
     SCHED -->|writes uri + eDesk status| PE
@@ -164,7 +164,7 @@ flowchart TD
     HP --> EX["getExternalQueueItems<br/>(8 − highPriority)"]
     EX --> EMPTY{"any URIs to search?"}
     EMPTY -->|no| LOG
-    EMPTY -->|yes| CM["nasesService.createMany"]
+    EMPTY -->|yes| CM["nasesService.getIdentitiesByUris"]
     CM --> S["handleSuccessfulUpdates"]
     S --> F["handleFailureCases"]
     F --> LOG

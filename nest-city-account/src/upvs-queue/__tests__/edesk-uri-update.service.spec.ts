@@ -62,7 +62,7 @@ describe('EdeskUriUpdateService', () => {
 
   describe('handleUriUpdateInternal', () => {
     it('writes the resolved uri on success', async () => {
-      jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [
           { physicalEntityId: 'id-1', inputUri: 'rc://sk/old', data: { uri: 'rc://sk/new' } },
         ],
@@ -78,7 +78,7 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('bumps the fail counter and throws on failure', async () => {
-      jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: false }],
       } as any)
@@ -102,7 +102,7 @@ describe('EdeskUriUpdateService', () => {
 
   describe('handleUriUpdateExternal', () => {
     it('marks the row COMPLETED on success', async () => {
-      jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [
           {
             inputUri: 'rc://sk/ext',
@@ -121,7 +121,7 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('marks the row FAILED and bumps failCount when not resolved', async () => {
-      jest.spyOn(nasesService, 'createMany').mockResolvedValue({ success: [], failed: [] } as any)
+      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({ success: [], failed: [] } as any)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 

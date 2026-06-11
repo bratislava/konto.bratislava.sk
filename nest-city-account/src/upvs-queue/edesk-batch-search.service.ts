@@ -3,9 +3,9 @@ import { QueueItemStatusEnum } from '@prisma/client'
 import dayjs from 'dayjs'
 
 import {
-  CreateManyParam,
-  CreateManyResult,
+  GetIdentitiesByUrisResult,
   getUpvsDeathDate,
+  GetUpvsIdentitiesByUrisParam,
   NasesService,
 } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
@@ -33,7 +33,7 @@ export class EdeskBatchSearchService {
   /**
    * Run one batched URI-search tick: split the BATCH_SIZE budget between high-priority
    * internal entities and pending external items, resolve them all via a single
-   * `createMany` search, and persist the outcomes.
+   * `getIdentitiesByUris` search, and persist the outcomes.
    *
    * @returns counts the orchestrator folds into its batch report.
    */
@@ -47,13 +47,16 @@ export class EdeskBatchSearchService {
     remainingSlots -= highPriorityItems.length
     const externalItems = await this.getExternalQueueItems(remainingSlots)
 
-    const getIdentitiesByUrisInput: CreateManyParam = [...highPriorityItems, ...externalItems]
+    const getIdentitiesByUrisInput: GetUpvsIdentitiesByUrisParam = [
+      ...highPriorityItems,
+      ...externalItems,
+    ]
 
     if (getIdentitiesByUrisInput.length === 0) {
       return { highPriorityProcessed: 0, externalProcessed: 0 }
     }
 
-    const upvsResult = await this.nasesService.createMany(getIdentitiesByUrisInput)
+    const upvsResult = await this.nasesService.getIdentitiesByUris(getIdentitiesByUrisInput)
 
     const externalUris = new Set(externalItems.map((item) => item.uri))
     await this.handleSuccessfulUpdates(upvsResult, externalUris)
@@ -65,7 +68,10 @@ export class EdeskBatchSearchService {
     }
   }
 
-  private async handleSuccessfulUpdates(upvsResult: CreateManyResult, externalUris: Set<string>) {
+  private async handleSuccessfulUpdates(
+    upvsResult: GetIdentitiesByUrisResult,
+    externalUris: Set<string>
+  ) {
     // Success: separate urgent and high priority from external
     // Filters are not strict, because any potential overlap will not cause any issues
     const successInternal = upvsResult.success.filter((item) => !!item.physicalEntityId)
@@ -104,7 +110,10 @@ export class EdeskBatchSearchService {
     )
   }
 
-  private async handleFailureCases(upvsResult: CreateManyResult, externalUris: Set<string>) {
+  private async handleFailureCases(
+    upvsResult: GetIdentitiesByUrisResult,
+    externalUris: Set<string>
+  ) {
     const failedWithPossibleUriChange = upvsResult.failed.filter((item) => item.possibleUriChange)
     const failed = upvsResult.failed.filter((item) => !item.possibleUriChange)
 
@@ -160,7 +169,7 @@ export class EdeskBatchSearchService {
    * Get high priority queue items: PhysicalEntities with uri that need Edesk status update
    * Filters out entities with fresh cache and respects exponential backoff
    */
-  private async getHighPriorityQueueItems(limit: number): Promise<CreateManyParam> {
+  private async getHighPriorityQueueItems(limit: number): Promise<GetUpvsIdentitiesByUrisParam> {
     const lookBackDate = dayjs().subtract(this.CACHE_TTL_HOURS, 'hour').toDate()
     const entities = await selectHighPriorityEntities(this.prismaService, lookBackDate, limit)
 
@@ -172,7 +181,7 @@ export class EdeskBatchSearchService {
   /**
    * Get external queue items: External URIs that need processing
    */
-  private async getExternalQueueItems(limit: number): Promise<CreateManyParam> {
+  private async getExternalQueueItems(limit: number): Promise<GetUpvsIdentitiesByUrisParam> {
     const externalItems = await this.prismaService.externalEdeskCheck.findMany({
       where: {
         queueStatus: QueueItemStatusEnum.PENDING,

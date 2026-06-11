@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PhysicalEntity } from '@prisma/client'
 
-import { UpvsIdentityByUriSuccessType } from '../nases/nases.service'
+import { GetUpvsIdentityByUriSuccessType } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -74,7 +74,9 @@ export class PhysicalEntityService {
     return entity
   }
 
-  async updateSuccessfulActiveEdeskUpdateInDatabase(successArray: UpvsIdentityByUriSuccessType[]) {
+  async updateSuccessfulActiveEdeskUpdateInDatabase(
+    successArray: GetUpvsIdentityByUriSuccessType[]
+  ) {
     const upvsSuccessValueArray = successArray.map((item) => {
       return {
         id: item.physicalEntityId ?? undefined,

@@ -43,13 +43,13 @@ describe('EdeskBatchSearchService', () => {
 
     const result = await service.processBatchedSearch()
 
-    expect(nasesService.createMany).not.toHaveBeenCalled()
+    expect(nasesService.getIdentitiesByUris).not.toHaveBeenCalled()
     expect(result).toEqual({ highPriorityProcessed: 0, externalProcessed: 0 })
   })
 
   it('searches the combined batch and reports the counts', async () => {
     mockSelection([{ id: 'pe-1', uri: 'rc://sk/hp' }], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
       success: [
         {
           physicalEntityId: 'pe-1',
@@ -68,7 +68,7 @@ describe('EdeskBatchSearchService', () => {
 
     const result = await service.processBatchedSearch()
 
-    expect(nasesService.createMany).toHaveBeenCalledTimes(1)
+    expect(nasesService.getIdentitiesByUris).toHaveBeenCalledTimes(1)
     expect(physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase).toHaveBeenCalledWith([
       expect.objectContaining({ physicalEntityId: 'pe-1' }),
     ])
@@ -83,7 +83,7 @@ describe('EdeskBatchSearchService', () => {
 
   it('logs a death date when the resolved external identity carries one', async () => {
     mockSelection([], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
       success: [
         {
           physicalEntityId: null,
@@ -108,7 +108,7 @@ describe('EdeskBatchSearchService', () => {
 
   it('requeues possible URI changes and flags the entities outdated', async () => {
     mockSelection([], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
       success: [],
       failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: true }],
     } as any)
@@ -127,7 +127,7 @@ describe('EdeskBatchSearchService', () => {
 
   it('marks plain failures FAILED (external) and bumps the internal fail counter', async () => {
     mockSelection([{ id: 'pe-1', uri: 'rc://sk/hp' }], [{ uri: 'rc://sk/ext' }])
-    jest.spyOn(nasesService, 'createMany').mockResolvedValue({
+    jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
       success: [],
       failed: [
         { physicalEntityId: 'pe-1', inputUri: 'rc://sk/hp', possibleUriChange: false },

@@ -6,10 +6,20 @@ populations:
 - **Internal** users - `PhysicalEntity` rows linked to a `User`.
 - **External** records - `ExternalEdeskCheck` rows fed from the **Noris** tax backend.
 
-There is no single FIFO queue. Instead, every 30 seconds `processBatch()` selects work from
-several **prioritised tiers**, each backed by a different selector and a different UPVS endpoint,
-under a shared per-tick budget. This document describes those tiers, the item lifecycles, and the
-control flow.
+> [!IMPORTANT]
+> There is no single FIFO queue. Every 30 seconds `processBatch()` selects work from several
+> **prioritised tiers**, each backed by a different selector and a different UPVS endpoint, under
+> a shared per-tick budget.
+
+## Code map
+
+| File                                                               | Role                                                       |
+|:-------------------------------------------------------------------|:-----------------------------------------------------------|
+| [`upvs-queue.service.ts`](./upvs-queue.service.ts)                 | Facade + `processBatch()` orchestration, public queue API  |
+| [`urgent-lookup.service.ts`](./urgent-lookup.service.ts)           | Tier 0 - per-person identity lookup with rate-limit cutout |
+| [`edesk-uri-update.service.ts`](./edesk-uri-update.service.ts)     | Tiers 1-2 - single-item URI repair (internal + external)   |
+| [`edesk-batch-search.service.ts`](./edesk-batch-search.service.ts) | Tier 3 - batched URI search, success/failure persistence   |
+| [`upvs-queue.queries.ts`](./upvs-queue.queries.ts)                 | Raw SQL selectors + shared exponential-backoff fragment    |
 
 ## Cron entry points
 
@@ -23,16 +33,18 @@ control flow.
 
 Tiers are listed by precedence. **Urgent runs on every tick** with its own budget. After it, the
 two single-item _URI-update_ tiers **short-circuit the batch** (they handle one item and return),
-so the _search_ tier only runs on ticks where no URI update is pending.
+so the _search_ tier only runs on ticks where no URI update is pending. The colour dots match the
+diagram palette below: 🔴 urgent, 🟡 URI fix, 🟢 batched search.
 
-| #  | Tier                      | Selector                                                                             | Items / tick                             | UPVS endpoint                   | Notes                                                      |
-|----|---------------------------|--------------------------------------------------------------------------------------|------------------------------------------|---------------------------------|------------------------------------------------------------|
-| 0  | **Urgent**                | `PhysicalEntity` with `birthNumber` set and `uri IS NULL` (join `User`)              | `URGENT_BATCH_SIZE = 50`, **sequential** | `lookupIdentityFO` (per person) | Runs first, always. Own budget. Stops the run on HTTP 429. |
-| 1  | **Internal URI fix**      | `PhysicalEntity` with `uriPossiblyOutdated = true` (past backoff)                    | 1, then early return                     | `getIdentitiesByUris([1])`               | Re-resolves a possibly-changed URI.                        |
-| 2  | **External URI re-check** | `ExternalEdeskCheck` with `NEW_URI_CHECK_REQUIRED`                                   | 1, then early return                     | `getIdentitiesByUris([1])`               | Re-resolves a possibly-changed external URI.               |
-| 3a | **High priority**         | `PhysicalEntity` with `uri` set, cache stale (`CACHE_TTL_HOURS = 144`), past backoff | ≤ `HIGH_PRIORITY_RESERVED_SLOTS = 5`     | `getIdentitiesByUris` (batched search)   | Periodic eDesk-status refresh.                             |
-| 3b | **External**              | `ExternalEdeskCheck` with `PENDING` and `uri` set                                    | remainder of `BATCH_SIZE = 8`            | `getIdentitiesByUris` (batched search)   | Shares the search batch with 3a.                           |
+| #     | Tier                      | Selector                                                                             | Items / tick                             | UPVS endpoint                          | Notes                                                      |
+|:------|:--------------------------|:-------------------------------------------------------------------------------------|:-----------------------------------------|:---------------------------------------|:-----------------------------------------------------------|
+| 🔴 0  | **Urgent**                | `PhysicalEntity` with `birthNumber` set and `uri IS NULL` (join `User`)              | `URGENT_BATCH_SIZE = 50`, **sequential** | `lookupIdentityFO` (per person)        | Runs first, always. Own budget. Stops the run on HTTP 429. |
+| 🟡 1  | **Internal URI fix**      | `PhysicalEntity` with `uriPossiblyOutdated = true` (past backoff)                    | 1, then early return                     | `getIdentitiesByUris([1])`             | Re-resolves a possibly-changed URI.                        |
+| 🟡 2  | **External URI re-check** | `ExternalEdeskCheck` with `NEW_URI_CHECK_REQUIRED`                                   | 1, then early return                     | `getIdentitiesByUris([1])`             | Re-resolves a possibly-changed external URI.               |
+| 🟢 3a | **High priority**         | `PhysicalEntity` with `uri` set, cache stale (`CACHE_TTL_HOURS = 144`), past backoff | ≤ `HIGH_PRIORITY_RESERVED_SLOTS = 5`     | `getIdentitiesByUris` (batched search) | Periodic eDesk-status refresh.                             |
+| 🟢 3b | **External**              | `ExternalEdeskCheck` with `PENDING` and `uri` set                                    | remainder of `BATCH_SIZE = 8`            | `getIdentitiesByUris` (batched search) | Shares the search batch with 3a.                           |
 
+> [!NOTE]
 > Tiers 3a + 3b together form a single batched call of ≤ `BATCH_SIZE` (8) URIs, which is within the
 > UPVS search limit of 10. The **urgent** budget is fully independent of `BATCH_SIZE`.
 

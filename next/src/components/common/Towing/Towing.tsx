@@ -58,6 +58,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
       } else {
         logger.error('Error fetching towing:', error)
         setErrorMessage('Vyskytla sa chyba pri vyhľadávaní odťahu vozidla')
+        setVariant(null)
       }
     }
 
@@ -75,6 +76,21 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           <br />
           Napríklad: BA123AB
         </Typography>
+
+        <div className="flex flex-col gap-2 md:flex-row md:gap-6">
+          <TextField
+            label=""
+            displayOptionalLabel={false}
+            errorMessage={errorMessage}
+            className="h-12"
+            onChange={setLicensePlate}
+          />
+
+          <Button onPress={handleSubmit} variant="solid" fullWidthMobile className="mt-2 h-11">
+            <Icon name="search" />
+            Vyhľadať
+          </Button>
+        </div>
 
         <Turnstile
           theme="light"
@@ -109,26 +125,14 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           </Typography>
         )}
 
-        <div className="flex flex-col gap-2 md:flex-row md:gap-6">
-          <TextField
-            label=""
-            displayOptionalLabel={false}
-            errorMessage={errorMessage}
-            className="h-12"
-            onChange={setLicensePlate}
-          />
+        {variant && (
+          <Typography variant="h3">
+            Informácia o odťahu vozidla s evidenčným číslom {licensePlate}
+          </Typography>
+        )}
 
-          <Button onPress={handleSubmit} variant="solid" fullWidthMobile className="mt-2 h-11">
-            <Icon name="search" />
-            Vyhľadať
-          </Button>
-        </div>
         {variant === 'towing' && (
           <div className="flex flex-col gap-4">
-            <Typography variant="h3">
-              Informácia o odťahu vozidla s evidenčným číslom {vehicle.licensePlate}
-            </Typography>
-
             <Table
               rows={Object.keys(vehicle).map((key) => ({ label: key, value: vehicle[key] }))}
               notification={
@@ -141,6 +145,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
             />
           </div>
         )}
+
         {variant === 'notFound' && (
           <div className="flex flex-col items-center gap-6 rounded-xl border p-12">
             <Icon name="tow-car" />

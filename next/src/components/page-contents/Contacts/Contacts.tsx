@@ -15,7 +15,7 @@ const mapSection = (
 ) => array?.filter(isDefined).map((contact) => ({ type, ...contact })) ?? []
 
 /**
- * Figma: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%3A-Component-library?type=design&node-id=8988-24516&t=ZrNmOvM307DSHwAu-0
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19108-18946&t=FLpcUKRZYGHHHCjm-4
  */
 
 const Contacts = ({ section }: ContactsProps) => {
@@ -52,11 +52,11 @@ const Contacts = ({ section }: ContactsProps) => {
 
       <div className="flex flex-col gap-6 lg:gap-8">
         {contacts.map((contact, index) => (
-          <ContactCtaCard key={`contact-${index}`} contact={contact} />
+          <ContactCtaCard key={index} contact={contact} />
         ))}
         {personContacts?.filter(isDefined).map((person, index) => (
           <ContactCtaCard
-            key={`person-contact-${index}`}
+            key={index}
             contact={{
               type: 'Person',
               ...person,

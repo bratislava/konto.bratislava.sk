@@ -22,12 +22,20 @@ const Towing = ({ title, description }: TowingSectionProps) => {
   const { t } = useTranslation('account')
 
   const [vehicle, setVehicle] = useState<{
+    licensePlate: string
     loadingDate: string
     loadingLocation: string
     towReason: string
     unloadingLocation: string
     relocationReason: string
-  } | null>(null)
+  }>({
+    licensePlate: '',
+    loadingDate: '',
+    loadingLocation: '',
+    towReason: '',
+    unloadingLocation: '',
+    relocationReason: '',
+  })
   const [licensePlate, setLicensePlate] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
@@ -49,10 +57,10 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           turnstileToken,
         },
       )
-      setVariant('towing')
-      setVehicle(response.data)
+      setVehicle({ licensePlate, ...response.data })
+      setVariant(vehicle.unloadingLocation.length > 0 ? 'relay' : 'towing')
     } catch (error) {
-      if (error.response.status === 404) {
+      if (error?.response?.status === 404) {
         setVariant('notFound')
       } else {
         logger.error('Error fetching towing:', error)
@@ -82,7 +90,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
             displayOptionalLabel={false}
             errorMessage={errorMessage}
             className="h-12"
-            onChange={setLicensePlate}
+            onChange={(value) => setLicensePlate(value.trim().toUpperCase())}
           />
 
           <Button
@@ -132,26 +140,37 @@ const Towing = ({ title, description }: TowingSectionProps) => {
 
         {variant && (
           <Typography variant="h3">
-            Informácia o odťahu vozidla s evidenčným číslom {licensePlate}
+            Informácia o {variant === 'towing' ? 'odťahu' : 'preložení'} vozidla s evidenčným číslom{' '}
+            {vehicle?.licensePlate}
           </Typography>
         )}
 
-        {variant === 'towing' && vehicle && (
+        {(variant === 'towing' || variant === 'relay') && vehicle && (
           <div className="flex flex-col gap-4">
             <Table
               rows={[
-                { label: 'Dátum odťahu', value: vehicle.loadingDate },
+                { label: 'EČV vozidla', value: vehicle.licensePlate },
+                { label: 'Dátum odťahu', value: `\`${vehicle.loadingDate}\`` },
                 { label: 'Miesto odťahu', value: vehicle.loadingLocation },
-                { label: 'Dôvod odťahu', value: vehicle.towReason },
-                { label: 'Miesto preloženia', value: vehicle.unloadingLocation },
-                { label: 'Dôvod preloženia', value: vehicle.relocationReason },
+                ...(vehicle.towReason ? [{ label: 'Dôvod odťahu', value: vehicle.towReason }] : []),
+                ...(vehicle.unloadingLocation
+                  ? [{ label: 'Miesto preloženia', value: vehicle.unloadingLocation }]
+                  : []),
+                ...(vehicle.relocationReason
+                  ? [{ label: 'Dôvod preloženia', value: vehicle.relocationReason }]
+                  : []),
+                ...(variant === 'towing'
+                  ? [{ label: 'Poplatok za odťah', value: '179.00€ + pokuta' }]
+                  : []),
               ]}
               notification={
-                <Alert
-                  message='Od 15.04.2023 za každý deň po 10. dni od odtiahnutia do areálu odťahovej služby je účtované "stojné" vo výške 5€ s DPH/deň.'
-                  type="info"
-                  fullWidth
-                />
+                variant === 'towing' && (
+                  <Alert
+                    message='Od 15.04.2023 za každý deň po 10. dni od odtiahnutia do areálu odťahovej služby je účtované "stojné" vo výške 5€ s DPH/deň.'
+                    type="info"
+                    fullWidth
+                  />
+                )
               }
             />
           </div>

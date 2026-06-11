@@ -1,6 +1,7 @@
-import { Button } from "@bratislava/component-library"
+import { Button, Typography } from '@bratislava/component-library'
 
-import InputField from "@/src/components/widget-components/InputField/InputField"
+import TextField from '@/src/components/fields/TextField'
+import Icon from '@/src/components/icon-components/Icon'
 
 export type TowingSectionProps = {
   title: string
@@ -13,15 +14,28 @@ const Towing = ({ title, description }: TowingSectionProps) => {
   }
 
   return (
-    <>
-      <h2>{title}</h2>
-      {description && <p>{description}</p>}
-      <div>
-        <p>Zadajte platné evidenčné číslo vozidla bez medzier. Napríklad: BA123AB</p>
-        <InputField name="vehicle-registration" label="Evidenčné číslo vozidla" />
-        <Button onPress={handleSubmit} variant='solid'>Vyhľadať</Button>
+    <div className="flex flex-col gap-4">
+      {title && <Typography variant="h2">{title}</Typography>}
+
+      {description && <Typography variant="p-default">{description}</Typography>}
+
+      <div className="flex flex-col gap-4 rounded-xl border px-5 py-6">
+        <div className="flex flex-col">
+          <Typography variant="p-default">
+            Zadajte platné evidenčné číslo vozidla bez medzier.
+            <br />
+            Napríklad: BA123AB
+          </Typography>
+
+          <TextField label="" displayOptionalLabel={false} />
+        </div>
+
+        <Button onPress={handleSubmit} variant="solid" fullWidth>
+          <Icon name="search" />
+          Vyhľadať
+        </Button>
       </div>
-    </>
+    </div>
   )
 }
 

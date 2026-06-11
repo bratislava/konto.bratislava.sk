@@ -1,6 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
-import { isAxiosError } from 'axios'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,

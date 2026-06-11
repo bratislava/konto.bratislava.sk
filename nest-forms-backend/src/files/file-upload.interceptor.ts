@@ -29,13 +29,14 @@ const MULTIPART_OVERHEAD_BYTES = 10_000
  * 1. Checks the Content-Length header — rejects obviously oversized requests before body parsing
  * 2. Configures multer with a dynamic fileSize limit — aborts the stream mid-upload if exceeded
  *
- * Both checks enforce per-file size limits (maxFileSize, per-field limits).
+ * Both checks enforce the per-file size limit, resolved as the min of the per-slot, per-form-definition,
+ * and global limits.
  *
  * Cumulative (maxTotalFileSize) limits are NOT checked here — they are enforced at form submission time in
  * NasesService.sendForm, because the set of active files is not final until the user submits.
  *
- * If the form or form definition is not found (invalid formId, missing slug), the interceptor throws an error.
- * When the feature toggle is disabled, the limit falls back to the global MAX_FILE_SIZE.
+ * When the feature toggle is disabled, the limit falls back to the global limit (fileLimits.maxSingleSizeGlobal).
+ * Otherwise the form is looked up to resolve the limit, and a missing form or form definition throws an error.
  */
 @Injectable()
 export class FileUploadInterceptor implements NestInterceptor {

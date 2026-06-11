@@ -32,7 +32,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
     let myApplicationDetailsData: GetFormResponseDto | null = null
     let myApplicationGinisData: GinisDocumentDetailResponseDto | null = null
     try {
-      const response = await formsClient.nasesControllerGetForm(id, {
+      const response = await formsClient.formsControllerGetForm(id, {
         authStrategy: 'authOnly',
         getSsrAuthSession: fetchAuthSession,
       })

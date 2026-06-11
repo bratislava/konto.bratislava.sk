@@ -45,14 +45,10 @@ export class OAuth2ValidationSubservice {
    */
   validateAuthorizationRequest(params: AuthorizationParams) {
     const client = this.validateClientId(params.clientId)
+    this.validateResponseType(params.responseType, client)
     this.validateRedirectUri(params.redirectUri, client)
     this.validateScope(params.scope, client)
-    const { codeChallenge, codeChallengeMethod } = this.validatePkceParameters(
-      params.codeChallenge,
-      params.codeChallengeMethod,
-      client.id
-    )
-    this.validateResponseType(params.responseType, client, codeChallenge, codeChallengeMethod)
+    this.validatePkceParameters(params.codeChallenge, params.codeChallengeMethod, client)
   }
 
   private validateClientId(clientId: unknown): OAuth2Client {
@@ -127,25 +123,45 @@ export class OAuth2ValidationSubservice {
   private validatePkceParameters(
     codeChallenge: unknown,
     codeChallengeMethod: unknown,
-    clientId: string
+    client: OAuth2Client
   ): { codeChallenge?: string; codeChallengeMethod?: string } {
+    const arePkceParamsValid =
+      typeof codeChallenge === 'string' &&
+      codeChallenge.length > 0 &&
+      typeof codeChallengeMethod === 'string' &&
+      codeChallengeMethod.length > 0
+
+    if (client.requiresPkce) {
+      if (arePkceParamsValid) {
+        return { codeChallenge, codeChallengeMethod }
+      }
+
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+        `Invalid request: PKCE is required for this client: code_challenge and code_challenge_method are required`,
+        undefined,
+        'PKCE required but not provided',
+        {
+          clientId: client.id,
+          hasCodeChallenge: !!codeChallenge,
+          hasCodeChallengeMethod: !!codeChallengeMethod,
+        }
+      )
+    }
+
     if (codeChallenge === undefined && codeChallengeMethod === undefined) {
+      // PKCE not required and not provided
       return { codeChallenge: undefined, codeChallengeMethod: undefined }
     }
 
-    if (
-      typeof codeChallenge !== 'string' ||
-      codeChallenge.length === 0 ||
-      typeof codeChallengeMethod !== 'string' ||
-      codeChallengeMethod.length === 0
-    ) {
+    if (!arePkceParamsValid) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         `Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE`,
         undefined,
         'PKCE parameters incomplete',
         {
-          clientId,
+          clientId: client.id,
           hasCodeChallenge: !!codeChallenge,
           hasCodeChallengeMethod: !!codeChallengeMethod,
         }
@@ -155,16 +171,11 @@ export class OAuth2ValidationSubservice {
     return { codeChallenge, codeChallengeMethod }
   }
 
-  private validateResponseType(
-    responseType: unknown,
-    client: OAuth2Client,
-    codeChallenge?: string,
-    codeChallengeMethod?: string
-  ): string {
+  private validateResponseType(responseType: unknown, client: OAuth2Client): string {
     if (!responseType || typeof responseType !== 'string') {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-        `Invalid request: response_type is required`,
+        `Invalid request: string response_type is required`,
         undefined,
         'Missing or invalid response_type in authorization request',
         {
@@ -175,43 +186,21 @@ export class OAuth2ValidationSubservice {
       )
     }
 
-    if (!['code', 'token'].includes(responseType)) {
+    if (responseType === 'token') {
+      // https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.2
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
-        `Unsupported response_type: ${responseType} - must be "code" or "token"`,
-        undefined,
-        'Unsupported response_type',
-        { clientId: client.id, responseType }
+        `Unsupported response_type: "token" - implicit grant not supported (use "code" instead)`
       )
     }
 
-    if (client.requiresPkce) {
-      if (!codeChallenge || !codeChallengeMethod) {
-        throw this.oAuth2ErrorThrower.authorizationException(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          `Invalid request: PKCE is required for this client: code_challenge and code_challenge_method are required`,
-          undefined,
-          'PKCE required but not provided',
-          {
-            clientId: client.id,
-            hasCodeChallenge: !!codeChallenge,
-            hasCodeChallengeMethod: !!codeChallengeMethod,
-          }
-        )
-      }
-
-      if (responseType !== 'code') {
-        throw this.oAuth2ErrorThrower.authorizationException(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          `Invalid request: response_type must be "code" when PKCE is required for this client`
-        )
-      }
-    }
-
-    if (responseType === 'token') {
+    if (responseType !== 'code') {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
-        `Unsupported response_type: "token" response_type is not supported - use "code" with PKCE instead`
+        `Unsupported response_type: ${responseType} - must be "code" (implicit grant - "token" - not supported)`,
+        undefined,
+        'Unsupported response_type',
+        { clientId: client.id, responseType }
       )
     }
 

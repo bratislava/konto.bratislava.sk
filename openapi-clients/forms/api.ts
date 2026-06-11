@@ -83,6 +83,16 @@ export interface EidUpdateSendFormRequestDto {
    */
   eidToken: string
 }
+export interface FormDeleteResponseDto {
+  /**
+   * True if the form was successfully archived.
+   */
+  archived: boolean
+  /**
+   * UUID of the archived form.
+   */
+  formId: string
+}
 export interface FormSignatureDto {
   /**
    * Base64 encoded signature
@@ -240,10 +250,6 @@ export interface GetFormResponseDto {
    */
   formDataJson: object | null
   /**
-   * Form subject
-   */
-  formSubject: string
-  /**
    * Form signature with metadata
    */
   formSignature?: FormSignatureDto | null
@@ -267,6 +273,10 @@ export interface GetFormResponseDto {
    * JSON version
    */
   jsonVersion: string
+  /**
+   * Form subject
+   */
+  formSubject: string
   requiresMigration: boolean
 }
 
@@ -510,8 +520,24 @@ export interface SendFormResponseDto {
   /**
    * Form state
    */
-  state: object
+  state: SendFormResponseDtoStateEnum
 }
+
+export const SendFormResponseDtoStateEnum = {
+  Error: 'ERROR',
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  DeliveredNases: 'DELIVERED_NASES',
+  DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
+  Processing: 'PROCESSING',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+} as const
+
+export type SendFormResponseDtoStateEnum =
+  (typeof SendFormResponseDtoStateEnum)[keyof typeof SendFormResponseDtoStateEnum]
+
 export interface ServiceRunningDto {
   /**
    * is service running?
@@ -666,6 +692,115 @@ export interface UpdateFormRequestDto {
    */
   formSignature?: FormSignatureDto | null
 }
+export interface UpdateFormResponseDto {
+  /**
+   * Change email, on which you can be contacted
+   */
+  email: string | null
+  /**
+   * Id of record
+   */
+  id: string
+  /**
+   * Create date of record
+   */
+  createdAt: string
+  /**
+   * Update date of record
+   */
+  updatedAt: string
+  /**
+   * Id of send form from other system, (probably ginis)
+   */
+  externalId: string | null
+  /**
+   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
+   */
+  userExternalId: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   */
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   */
+  actorUri: string | null
+  /**
+   * State of form
+   */
+  state: UpdateFormResponseDtoStateEnum
+  /**
+   * Specific error type
+   */
+  error: UpdateFormResponseDtoErrorEnum
+  /**
+   * Data from ginis saved in our db
+   */
+  formDataGinis: string | null
+  /**
+   * Ginis document id generated after registering the submission
+   */
+  ginisDocumentId: string | null
+  /**
+   * Data in JSON format
+   */
+  formDataJson: object | null
+  /**
+   * Form signature with metadata
+   */
+  formSignature?: FormSignatureDto | null
+  /**
+   * Technical NASES id of sender
+   */
+  senderId: string | null
+  /**
+   * Technical NASES id of recipient
+   */
+  recipientId: string | null
+  /**
+   * end of submition
+   */
+  finishSubmission: string | null
+  /**
+   * Slug of the form definition
+   */
+  formDefinitionSlug: string
+  /**
+   * JSON version
+   */
+  jsonVersion: string
+}
+
+export const UpdateFormResponseDtoStateEnum = {
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  DeliveredNases: 'DELIVERED_NASES',
+  DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
+  Processing: 'PROCESSING',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+  Error: 'ERROR',
+} as const
+
+export type UpdateFormResponseDtoStateEnum =
+  (typeof UpdateFormResponseDtoStateEnum)[keyof typeof UpdateFormResponseDtoStateEnum]
+export const UpdateFormResponseDtoErrorEnum = {
+  None: 'NONE',
+  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
+  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
+  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
+  InfectedFiles: 'INFECTED_FILES',
+  NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
+  SharepointSendError: 'SHAREPOINT_SEND_ERROR',
+  EmailSendError: 'EMAIL_SEND_ERROR',
+  WebhookSendError: 'WEBHOOK_SEND_ERROR',
+} as const
+
+export type UpdateFormResponseDtoErrorEnum =
+  (typeof UpdateFormResponseDtoErrorEnum)[keyof typeof UpdateFormResponseDtoErrorEnum]
+
 export interface ValidateFormRegistrationDto {
   /**
    * Form slug
@@ -1761,10 +1896,10 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * You can upload file to form.
+     * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} slotId
+     * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -1773,7 +1908,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
      */
     filesControllerUploadFile: async (
       formId: string,
-      slotId: string,
+      slotId?: string,
       file?: File,
       filename?: string,
       id?: string,
@@ -1781,8 +1916,6 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
     ): Promise<RequestArgs> => {
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('filesControllerUploadFile', 'formId', formId)
-      // verify required parameter 'slotId' is not null or undefined
-      assertParamExists('filesControllerUploadFile', 'slotId', slotId)
       const localVarPath = `/files/upload/{formId}`.replace(
         '{formId}',
         encodeURIComponent(String(formId)),
@@ -1971,10 +2104,10 @@ export const FilesApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * You can upload file to form.
+     * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} slotId
+     * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -1983,7 +2116,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
      */
     async filesControllerUploadFile(
       formId: string,
-      slotId: string,
+      slotId?: string,
       file?: File,
       filename?: string,
       id?: string,
@@ -2087,10 +2220,10 @@ export const FilesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * You can upload file to form.
+     * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
      * @summary Upload file to form
      * @param {string} formId
-     * @param {string} slotId
+     * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
      * @param {File} [file]
      * @param {string} [filename]
      * @param {string} [id]
@@ -2099,7 +2232,7 @@ export const FilesApiFactory = function (
      */
     filesControllerUploadFile(
       formId: string,
-      slotId: string,
+      slotId?: string,
       file?: File,
       filename?: string,
       id?: string,
@@ -2179,10 +2312,10 @@ export class FilesApi extends BaseAPI {
   }
 
   /**
-   * You can upload file to form.
+   * You can upload a file to a form.  Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, and global limits. Oversized uploads are rejected with 413.
    * @summary Upload file to form
    * @param {string} formId
-   * @param {string} slotId
+   * @param {string} [slotId] Slot the file belongs to. Determines the applicable per-slot file size limit.
    * @param {File} [file]
    * @param {string} [filename]
    * @param {string} [id]
@@ -2191,7 +2324,7 @@ export class FilesApi extends BaseAPI {
    */
   public filesControllerUploadFile(
     formId: string,
-    slotId: string,
+    slotId?: string,
     file?: File,
     filename?: string,
     id?: string,
@@ -2446,6 +2579,303 @@ export class FormMigrationsApi extends BaseAPI {
 }
 
 /**
+ * FormSenderApi - axios parameter creator
+ */
+export const FormSenderApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
+     * @param {string} formId
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formSenderControllerSendAndUpdateForm: async (
+      formId: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formSenderControllerSendAndUpdateForm', 'formId', formId)
+      // verify required parameter 'updateFormRequestDto' is not null or undefined
+      assertParamExists(
+        'formSenderControllerSendAndUpdateForm',
+        'updateFormRequestDto',
+        updateFormRequestDto,
+      )
+      const localVarPath = `/form-sender/send-and-update-form/{formId}`.replace(
+        '{formId}',
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
+     * @param {string} formId
+     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formSenderControllerSendAndUpdateFormEid: async (
+      formId: string,
+      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formSenderControllerSendAndUpdateFormEid', 'formId', formId)
+      // verify required parameter 'eidUpdateSendFormRequestDto' is not null or undefined
+      assertParamExists(
+        'formSenderControllerSendAndUpdateFormEid',
+        'eidUpdateSendFormRequestDto',
+        eidUpdateSendFormRequestDto,
+      )
+      const localVarPath = `/form-sender/eid/send-and-update-form/{formId}`.replace(
+        '{formId}',
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        eidUpdateSendFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * FormSenderApi - functional programming interface
+ */
+export const FormSenderApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = FormSenderApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
+     * @param {string} formId
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formSenderControllerSendAndUpdateForm(
+      formId: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.formSenderControllerSendAndUpdateForm(
+          formId,
+          updateFormRequestDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormSenderApi.formSenderControllerSendAndUpdateForm']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
+     * @param {string} formId
+     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formSenderControllerSendAndUpdateFormEid(
+      formId: string,
+      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.formSenderControllerSendAndUpdateFormEid(
+          formId,
+          eidUpdateSendFormRequestDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormSenderApi.formSenderControllerSendAndUpdateFormEid']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * FormSenderApi - factory interface
+ */
+export const FormSenderApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = FormSenderApiFp(configuration)
+  return {
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
+     * @param {string} formId
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formSenderControllerSendAndUpdateForm(
+      formId: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SendFormResponseDto> {
+      return localVarFp
+        .formSenderControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
+     * @param {string} formId
+     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formSenderControllerSendAndUpdateFormEid(
+      formId: string,
+      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SendFormResponseDto> {
+      return localVarFp
+        .formSenderControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * FormSenderApi - object-oriented interface
+ */
+export class FormSenderApi extends BaseAPI {
+  /**
+   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
+   * @param {string} formId
+   * @param {UpdateFormRequestDto} updateFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public formSenderControllerSendAndUpdateForm(
+    formId: string,
+    updateFormRequestDto: UpdateFormRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return FormSenderApiFp(this.configuration)
+      .formSenderControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
+   * @param {string} formId
+   * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public formSenderControllerSendAndUpdateFormEid(
+    formId: string,
+    eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return FormSenderApiFp(this.configuration)
+      .formSenderControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * FormsApi - axios parameter creator
  */
 export const FormsApiAxiosParamCreator = function (configuration?: Configuration) {
@@ -2500,6 +2930,230 @@ export const FormsApiAxiosParamCreator = function (configuration?: Configuration
         options: localVarRequestOptions,
       }
     },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary Archive form
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerDeleteForm: async (
+      formId: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formsControllerDeleteForm', 'formId', formId)
+      const localVarPath = `/forms/{formId}`.replace('{formId}', encodeURIComponent(String(formId)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Return form by ID for the logged user
+     * @summary Get form by ID
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerGetForm: async (
+      formId: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formsControllerGetForm', 'formId', formId)
+      const localVarPath = `/forms/{formId}`.replace('{formId}', encodeURIComponent(String(formId)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
+     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+     * @param {string} [formDefinitionSlug] Slug of the form definition
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerGetForms: async (
+      currentPage?: string,
+      pagination?: string,
+      states?: Array<FormState>,
+      userCanEdit?: boolean,
+      formDefinitionSlug?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/forms/forms`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (currentPage !== undefined) {
+        localVarQueryParameter['currentPage'] = currentPage
+      }
+
+      if (pagination !== undefined) {
+        localVarQueryParameter['pagination'] = pagination
+      }
+
+      if (states) {
+        localVarQueryParameter['states'] = states
+      }
+
+      if (userCanEdit !== undefined) {
+        localVarQueryParameter['userCanEdit'] = userCanEdit
+      }
+
+      if (formDefinitionSlug !== undefined) {
+        localVarQueryParameter['formDefinitionSlug'] = formDefinitionSlug
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Update form data and metadata
+     * @summary Update form
+     * @param {string} formId
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerUpdateForm: async (
+      formId: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formsControllerUpdateForm', 'formId', formId)
+      // verify required parameter 'updateFormRequestDto' is not null or undefined
+      assertParamExists('formsControllerUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
+      const localVarPath = `/forms/{formId}/update`.replace(
+        '{formId}',
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -2539,6 +3193,127 @@ export const FormsApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary Archive form
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formsControllerDeleteForm(
+      formId: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FormDeleteResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerDeleteForm(
+        formId,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormsApi.formsControllerDeleteForm']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Return form by ID for the logged user
+     * @summary Get form by ID
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formsControllerGetForm(
+      formId: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerGetForm(
+        formId,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormsApi.formsControllerGetForm']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
+     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+     * @param {string} [formDefinitionSlug] Slug of the form definition
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formsControllerGetForms(
+      currentPage?: string,
+      pagination?: string,
+      states?: Array<FormState>,
+      userCanEdit?: boolean,
+      formDefinitionSlug?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerGetForms(
+        currentPage,
+        pagination,
+        states,
+        userCanEdit,
+        formDefinitionSlug,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormsApi.formsControllerGetForms']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Update form data and metadata
+     * @summary Update form
+     * @param {string} formId
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formsControllerUpdateForm(
+      formId: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateFormResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerUpdateForm(
+        formId,
+        updateFormRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormsApi.formsControllerUpdateForm']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -2567,6 +3342,83 @@ export const FormsApiFactory = function (
         .formsControllerBumpJsonVersion(formId, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary Archive form
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerDeleteForm(
+      formId: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<FormDeleteResponseDto> {
+      return localVarFp
+        .formsControllerDeleteForm(formId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Return form by ID for the logged user
+     * @summary Get form by ID
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerGetForm(
+      formId: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetFormResponseDto> {
+      return localVarFp
+        .formsControllerGetForm(formId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
+     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+     * @param {string} [formDefinitionSlug] Slug of the form definition
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerGetForms(
+      currentPage?: string,
+      pagination?: string,
+      states?: Array<FormState>,
+      userCanEdit?: boolean,
+      formDefinitionSlug?: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetFormsResponseDto> {
+      return localVarFp
+        .formsControllerGetForms(
+          currentPage,
+          pagination,
+          states,
+          userCanEdit,
+          formDefinitionSlug,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Update form data and metadata
+     * @summary Update form
+     * @param {string} formId
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerUpdateForm(
+      formId: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UpdateFormResponseDto> {
+      return localVarFp
+        .formsControllerUpdateForm(formId, updateFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -2584,6 +3436,81 @@ export class FormsApi extends BaseAPI {
   public formsControllerBumpJsonVersion(formId: string, options?: RawAxiosRequestConfig) {
     return FormsApiFp(this.configuration)
       .formsControllerBumpJsonVersion(formId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Archive form (hide from user but keep in database)
+   * @summary Archive form
+   * @param {string} formId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public formsControllerDeleteForm(formId: string, options?: RawAxiosRequestConfig) {
+    return FormsApiFp(this.configuration)
+      .formsControllerDeleteForm(formId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Return form by ID for the logged user
+   * @summary Get form by ID
+   * @param {string} formId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public formsControllerGetForm(formId: string, options?: RawAxiosRequestConfig) {
+    return FormsApiFp(this.configuration)
+      .formsControllerGetForm(formId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get paginated forms
+   * @summary Get paginated forms
+   * @param {string} [currentPage] Page number
+   * @param {string} [pagination] Number of items per page
+   * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
+   * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+   * @param {string} [formDefinitionSlug] Slug of the form definition
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public formsControllerGetForms(
+    currentPage?: string,
+    pagination?: string,
+    states?: Array<FormState>,
+    userCanEdit?: boolean,
+    formDefinitionSlug?: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return FormsApiFp(this.configuration)
+      .formsControllerGetForms(
+        currentPage,
+        pagination,
+        states,
+        userCanEdit,
+        formDefinitionSlug,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Update form data and metadata
+   * @summary Update form
+   * @param {string} formId
+   * @param {UpdateFormRequestDto} updateFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public formsControllerUpdateForm(
+    formId: string,
+    updateFormRequestDto: UpdateFormRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return FormsApiFp(this.configuration)
+      .formsControllerUpdateForm(formId, updateFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -2977,796 +3904,6 @@ export class HealthcheckApi extends BaseAPI {
   public appControllerGetHello(options?: RawAxiosRequestConfig) {
     return HealthcheckApiFp(this.configuration)
       .appControllerGetHello(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * NasesApi - axios parameter creator
- */
-export const NasesApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * Archive form (hide from user but keep in database)
-     * @summary
-     * @param {string} formId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerDeleteForm: async (
-      formId: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'formId' is not null or undefined
-      assertParamExists('nasesControllerDeleteForm', 'formId', formId)
-      const localVarPath = `/nases/{formId}`.replace('{formId}', encodeURIComponent(String(formId)))
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication cognitoGuestIdentityId required
-      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Return form by ID and by logged user
-     * @summary
-     * @param {string} formId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetForm: async (
-      formId: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'formId' is not null or undefined
-      assertParamExists('nasesControllerGetForm', 'formId', formId)
-      const localVarPath = `/nases/form/{formId}`.replace(
-        '{formId}',
-        encodeURIComponent(String(formId)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication cognitoGuestIdentityId required
-      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Get paginated forms
-     * @summary Get paginated forms
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-     * @param {string} [formDefinitionSlug] Slug of the form definition
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetForms: async (
-      currentPage?: string,
-      pagination?: string,
-      states?: Array<FormState>,
-      userCanEdit?: boolean,
-      formDefinitionSlug?: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/nases/forms`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (currentPage !== undefined) {
-        localVarQueryParameter['currentPage'] = currentPage
-      }
-
-      if (pagination !== undefined) {
-        localVarQueryParameter['pagination'] = pagination
-      }
-
-      if (states) {
-        localVarQueryParameter['states'] = states
-      }
-
-      if (userCanEdit !== undefined) {
-        localVarQueryParameter['userCanEdit'] = userCanEdit
-      }
-
-      if (formDefinitionSlug !== undefined) {
-        localVarQueryParameter['formDefinitionSlug'] = formDefinitionSlug
-      }
-
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-     * @summary
-     * @param {string} formId
-     * @param {UpdateFormRequestDto} updateFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerSendAndUpdateForm: async (
-      formId: string,
-      updateFormRequestDto: UpdateFormRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'formId' is not null or undefined
-      assertParamExists('nasesControllerSendAndUpdateForm', 'formId', formId)
-      // verify required parameter 'updateFormRequestDto' is not null or undefined
-      assertParamExists(
-        'nasesControllerSendAndUpdateForm',
-        'updateFormRequestDto',
-        updateFormRequestDto,
-      )
-      const localVarPath = `/nases/send-and-update-form/{formId}`.replace(
-        '{formId}',
-        encodeURIComponent(String(formId)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication cognitoGuestIdentityId required
-      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        updateFormRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-     * @summary
-     * @param {string} formId
-     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerSendAndUpdateFormEid: async (
-      formId: string,
-      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'formId' is not null or undefined
-      assertParamExists('nasesControllerSendAndUpdateFormEid', 'formId', formId)
-      // verify required parameter 'eidUpdateSendFormRequestDto' is not null or undefined
-      assertParamExists(
-        'nasesControllerSendAndUpdateFormEid',
-        'eidUpdateSendFormRequestDto',
-        eidUpdateSendFormRequestDto,
-      )
-      const localVarPath = `/nases/eid/send-and-update-form/{formId}`.replace(
-        '{formId}',
-        encodeURIComponent(String(formId)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication cognitoGuestIdentityId required
-      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        eidUpdateSendFormRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Update form
-     * @summary
-     * @param {string} formId
-     * @param {UpdateFormRequestDto} updateFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerUpdateForm: async (
-      formId: string,
-      updateFormRequestDto: UpdateFormRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'formId' is not null or undefined
-      assertParamExists('nasesControllerUpdateForm', 'formId', formId)
-      // verify required parameter 'updateFormRequestDto' is not null or undefined
-      assertParamExists('nasesControllerUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
-      const localVarPath = `/nases/update-form/{formId}`.replace(
-        '{formId}',
-        encodeURIComponent(String(formId)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication cognitoGuestIdentityId required
-      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-      localVarHeaderParameter['Accept'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        updateFormRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * NasesApi - functional programming interface
- */
-export const NasesApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * Archive form (hide from user but keep in database)
-     * @summary
-     * @param {string} formId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerDeleteForm(
-      formId: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerDeleteForm(
-        formId,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerDeleteForm']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Return form by ID and by logged user
-     * @summary
-     * @param {string} formId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerGetForm(
-      formId: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForm(
-        formId,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerGetForm']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Get paginated forms
-     * @summary Get paginated forms
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-     * @param {string} [formDefinitionSlug] Slug of the form definition
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerGetForms(
-      currentPage?: string,
-      pagination?: string,
-      states?: Array<FormState>,
-      userCanEdit?: boolean,
-      formDefinitionSlug?: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
-        currentPage,
-        pagination,
-        states,
-        userCanEdit,
-        formDefinitionSlug,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerGetForms']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-     * @summary
-     * @param {string} formId
-     * @param {UpdateFormRequestDto} updateFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerSendAndUpdateForm(
-      formId: string,
-      updateFormRequestDto: UpdateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(
-        formId,
-        updateFormRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerSendAndUpdateForm']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-     * @summary
-     * @param {string} formId
-     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerSendAndUpdateFormEid(
-      formId: string,
-      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
-        formId,
-        eidUpdateSendFormRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerSendAndUpdateFormEid']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Update form
-     * @summary
-     * @param {string} formId
-     * @param {UpdateFormRequestDto} updateFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerUpdateForm(
-      formId: string,
-      updateFormRequestDto: UpdateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateForm(
-        formId,
-        updateFormRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerUpdateForm']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * NasesApi - factory interface
- */
-export const NasesApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = NasesApiFp(configuration)
-  return {
-    /**
-     * Archive form (hide from user but keep in database)
-     * @summary
-     * @param {string} formId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerDeleteForm(formId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-      return localVarFp
-        .nasesControllerDeleteForm(formId, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Return form by ID and by logged user
-     * @summary
-     * @param {string} formId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetForm(
-      formId: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
-      return localVarFp
-        .nasesControllerGetForm(formId, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Get paginated forms
-     * @summary Get paginated forms
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-     * @param {string} [formDefinitionSlug] Slug of the form definition
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetForms(
-      currentPage?: string,
-      pagination?: string,
-      states?: Array<FormState>,
-      userCanEdit?: boolean,
-      formDefinitionSlug?: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormsResponseDto> {
-      return localVarFp
-        .nasesControllerGetForms(
-          currentPage,
-          pagination,
-          states,
-          userCanEdit,
-          formDefinitionSlug,
-          options,
-        )
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-     * @summary
-     * @param {string} formId
-     * @param {UpdateFormRequestDto} updateFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerSendAndUpdateForm(
-      formId: string,
-      updateFormRequestDto: UpdateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<SendFormResponseDto> {
-      return localVarFp
-        .nasesControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-     * @summary
-     * @param {string} formId
-     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerSendAndUpdateFormEid(
-      formId: string,
-      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<SendFormResponseDto> {
-      return localVarFp
-        .nasesControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Update form
-     * @summary
-     * @param {string} formId
-     * @param {UpdateFormRequestDto} updateFormRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerUpdateForm(
-      formId: string,
-      updateFormRequestDto: UpdateFormRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
-      return localVarFp
-        .nasesControllerUpdateForm(formId, updateFormRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * NasesApi - object-oriented interface
- */
-export class NasesApi extends BaseAPI {
-  /**
-   * Archive form (hide from user but keep in database)
-   * @summary
-   * @param {string} formId
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public nasesControllerDeleteForm(formId: string, options?: RawAxiosRequestConfig) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerDeleteForm(formId, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Return form by ID and by logged user
-   * @summary
-   * @param {string} formId
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public nasesControllerGetForm(formId: string, options?: RawAxiosRequestConfig) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerGetForm(formId, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Get paginated forms
-   * @summary Get paginated forms
-   * @param {string} [currentPage] Page number
-   * @param {string} [pagination] Number of items per page
-   * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-   * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-   * @param {string} [formDefinitionSlug] Slug of the form definition
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public nasesControllerGetForms(
-    currentPage?: string,
-    pagination?: string,
-    states?: Array<FormState>,
-    userCanEdit?: boolean,
-    formDefinitionSlug?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerGetForms(
-        currentPage,
-        pagination,
-        states,
-        userCanEdit,
-        formDefinitionSlug,
-        options,
-      )
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-   * @summary
-   * @param {string} formId
-   * @param {UpdateFormRequestDto} updateFormRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public nasesControllerSendAndUpdateForm(
-    formId: string,
-    updateFormRequestDto: UpdateFormRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerSendAndUpdateForm(formId, updateFormRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-   * @summary
-   * @param {string} formId
-   * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public nasesControllerSendAndUpdateFormEid(
-    formId: string,
-    eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerSendAndUpdateFormEid(formId, eidUpdateSendFormRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Update form
-   * @summary
-   * @param {string} formId
-   * @param {UpdateFormRequestDto} updateFormRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   */
-  public nasesControllerUpdateForm(
-    formId: string,
-    updateFormRequestDto: UpdateFormRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerUpdateForm(formId, updateFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

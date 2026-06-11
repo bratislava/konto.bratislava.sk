@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { isAxiosError } from 'axios'
 import _ from 'lodash'
 import {
   ApiIamIdentitiesIdGet200Response,
@@ -9,11 +10,8 @@ import {
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
-import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../user-verification/verification.errors.enum'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { VerificationErrorsResponseEnum } from '../user-verification/verification.errors.enum'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
@@ -72,23 +70,24 @@ export class NasesService {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
 
-  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
-    // there is a bug in the container and function `apiUpvsIdentityGet` below, according to 'openapi-clients/slovensko-sk' types
-    // returns information about UpvsNaturalPerson,
-    // in reality it returns information about UpvsCorporateBody as well
-    // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, typing can be erased
+  async getUpvsIdentity(token: string) {
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data)
       .catch((error: unknown) => {
-        throw this.throwerErrorGuard.BadRequestException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          undefined,
-          error
-        )
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
+            error
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        })
       })
     return result
   }
@@ -111,12 +110,18 @@ export class NasesService {
         return response.data
       })
       .catch((error: unknown) => {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
-          error
-        )
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
+            error
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
+        })
       })
     return result
   }

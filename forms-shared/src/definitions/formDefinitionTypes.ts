@@ -100,6 +100,7 @@ export type FormDefinitionEmail = FormDefinitionBase & {
     fromAddress: { test: string; prod: string }
     newSubmissionTemplate: MailgunTemplateEnum
     userResponseTemplate: MailgunTemplateEnum
+    replyToAddress?: { test: string; prod: string }
     sendJsonDataAttachmentInTechnicalMail?: boolean
     extractEmail?: SchemalessFormDataExtractor<any>
     extractName?: SchemalessFormDataExtractor<any>

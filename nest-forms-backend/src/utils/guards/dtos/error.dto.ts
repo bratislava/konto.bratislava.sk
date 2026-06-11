@@ -1,8 +1,10 @@
+import { CityAccountErrorsEnum } from '../../../auth/errors/city-account.errors.enum'
 import { ConvertErrorsEnum } from '../../../convert/errors/convert.errors.enum'
 import { FilesErrorsEnum } from '../../../files/files.errors.enum'
 import { EmailFormsErrorsEnum } from '../../../form-delivery-consumer/errors/email-forms.errors.enum'
 import { FormDeliveryConsumerErrorsEnum } from '../../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
 import { WebhookErrorsEnum } from '../../../form-delivery-consumer/errors/webhook.errors.enum'
+import { FormSenderErrorsEnum } from '../../../form-sender/form-sender.errors.enum'
 import { FormsErrorsEnum } from '../../../forms/forms.errors.enum'
 import { GinisTaskErrorEnum } from '../../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../../nases/nases.errors.enum'
@@ -28,6 +30,8 @@ export type CustomErrorEnums =
   | ConvertErrorsEnum
   | SignerErrorsEnum
   | StatusErrorsEnum
+  | CityAccountErrorsEnum
+  | FormSenderErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

@@ -4,6 +4,7 @@ import { ConsentEnum, DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } fro
 
 import prismaMock from '../../test/singleton'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-method.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import {
@@ -13,7 +14,6 @@ import {
 } from '../utils/global-dtos/cognito.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
-import { TaxSubservice } from '../utils/subservices/tax.subservice'
 import { UserService } from './user.service'
 import { UserTierService } from './user-tier.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
@@ -64,8 +64,8 @@ describe('UserService', () => {
           useValue: createMock<CognitoSubservice>(),
         },
         {
-          provide: TaxSubservice,
-          useValue: createMock<TaxSubservice>(),
+          provide: NorisDeliveryMethodService,
+          useValue: createMock<NorisDeliveryMethodService>(),
         },
       ],
     }).compile()

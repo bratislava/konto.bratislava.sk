@@ -1,0 +1,72 @@
+name: Forms Shared Tests
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: false
+        default: './forms-shared'
+      image:
+        description: "Full image name including registry/repository for shared Docker cache."
+        type: string
+        required: true
+    secrets:
+      DOCKER_REGISTRY_USERNAME:
+        required: true
+      DOCKER_REGISTRY_PASSWORD:
+        required: true
+      HARBOR_REGISTRY_PASSWORD:
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+
+jobs:
+  test:
+    name: Forms Shared Tests
+    runs-on: bratislava
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.15"
+
+      - name: Prepare Docker build args
+        id: docker-build-args
+        shell: bash
+        run: |
+          node "${{ inputs.directory }}/scripts/printDockerBuildArgs.ts" "${{ inputs.directory }}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker build
+        id: docker
+        uses: ./.github/actions/setup-docker-build
+        with:
+          image: ${{ inputs.image }}
+          suffixes: |
+            test
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+      - name: Run tests
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ inputs.directory }}
+          target: ci-test
+          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).test.cache_from }}
+          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).test.cache_to }}
+          build-args: |
+            PLAYWRIGHT_VERSION=${{ steps.docker-build-args.outputs.PLAYWRIGHT_VERSION }}
+            SLOVENSKO_MEF_JSON_LAST_MODIFIED=${{ steps.docker-build-args.outputs.SLOVENSKO_MEF_JSON_LAST_MODIFIED }}

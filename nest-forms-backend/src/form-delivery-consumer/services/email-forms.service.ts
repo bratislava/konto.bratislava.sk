@@ -240,6 +240,9 @@ export default class EmailFormsService {
           },
         },
         emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
+        replyTo: formDefinition.email.replyToAddress
+          ? this.resolveAddress(formDefinition.email.replyToAddress)
+          : undefined,
         attachments,
       })
     } catch (error) {

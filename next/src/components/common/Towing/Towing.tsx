@@ -58,7 +58,6 @@ const Towing = ({ title, description }: TowingSectionProps) => {
         },
       )
       setVehicle({ licensePlate, ...response.data })
-      setVariant(vehicle.unloadingLocation.length > 0 ? 'relay' : 'towing')
     } catch (error) {
       if (error?.response?.status === 404) {
         setVariant('notFound')
@@ -68,9 +67,8 @@ const Towing = ({ title, description }: TowingSectionProps) => {
         setVariant(null)
       }
     }
-
+    setVariant(vehicle.unloadingLocation.length > 0 ? 'relay' : 'towing')
     incrementCaptchaKey()
-    console.log('turnstileToken', turnstileToken)
   }
 
   return (

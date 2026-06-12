@@ -2,16 +2,16 @@ fragment RichtextSection on ComponentSectionsRichtext {
   content
 }
 
-fragment ChecklistItems on ComponentBlocksChecklistItem {
+fragment ChecklistItem on ComponentBlocksChecklistItem {
   title
   content
 }
 
-fragment Checklists on ComponentBlocksChecklist {
+fragment Checklist on ComponentBlocksChecklist {
   title
   description
   checklistItems {
-    ...ChecklistItems
+    ...ChecklistItem
   }
 }
 
@@ -19,7 +19,7 @@ fragment StepperSection on ComponentSectionsStepper {
   title
   description
   checklists {
-    ...Checklists
+    ...Checklist
   }
 }
 

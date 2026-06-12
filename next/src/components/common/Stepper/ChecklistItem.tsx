@@ -10,15 +10,15 @@ export type ChecklistItemProps = {
 
 export const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
   return (
-    <div className="flex flex-row items-start gap-2">
-      <CheckInCircleIcon className="mt-0.5 size-6 shrink-0 text-black" />
+    <div className="flex flex-row items-start gap-4">
+      <CheckInCircleIcon className="mt-0.5 size-6 shrink-0 text-content-passive-secondary" />
 
-      <div className="flex flex-col gap-2">
-        <Typography variant="h4" className="font-bold">
+      <div className="flex flex-col gap-1">
+        <Typography variant="p-default" className="font-medium">
           {title}
         </Typography>
 
-        <Markdown variant="default" content={content} />
+        <Markdown variant="small" content={content} />
       </div>
     </div>
   )

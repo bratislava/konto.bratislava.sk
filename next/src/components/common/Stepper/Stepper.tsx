@@ -38,12 +38,12 @@ export const Stepper = ({ section }: Props) => {
 
       <DisclosureGroup className="rounded-lg border border-border-active-default bg-background-passive-base py-2">
         {checklists?.filter(isDefined).map((checklist, index) => (
-          <Fragment key={`fragment-checklist-${index}`}>
+          <Fragment key={index}>
             {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}
 
-            <Disclosure id={`disclosure-faq-${index}`}>
+            <Disclosure id={`disclosure-stepper-${index}`} defaultExpanded={index === 0}>
               <DisclosureHeader className="p-4 ring-inset lg:px-6">
-                <div className="flex flex-row gap-4">
+                <div className="flex flex-row gap-3 lg:gap-4">
                   <IndexIcon index={index} />
 
                   <Typography variant="h3">{checklist.title}</Typography>

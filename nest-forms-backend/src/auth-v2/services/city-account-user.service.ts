@@ -58,8 +58,8 @@ export class CityAccountUserService {
               'The provided authorization token is not allowed to get or create this user.',
           },
           [HttpStatus.NOT_FOUND]: {
-            status: HttpStatus.BAD_REQUEST,
-            errorEnum: ErrorsEnum.BAD_REQUEST_ERROR,
+            status: HttpStatus.NOT_FOUND,
+            errorEnum: ErrorsEnum.NOT_FOUND_ERROR,
             message:
               'User could not be retrieved or created from city account.',
           },

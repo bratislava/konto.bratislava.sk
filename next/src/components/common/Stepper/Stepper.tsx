@@ -19,19 +19,18 @@ type Props = {
  * TODO: Add correct component link
  */
 
+const IndexIcon = ({ index }: { index: number }) => {
+  return (
+    <div className="flex size-10 items-center justify-center rounded-full bg-black">
+      <Typography variant="p-small" as="span" className="font-bold text-white">
+        {index + 1}
+      </Typography>
+    </div>
+  )
+}
+
 export const Stepper = ({ section }: Props) => {
   const { title, description, checklists } = section
-
-  const NumberedOrderComponent = ({ order }: { order: number }) => {
-    return (
-      <div
-        className="flex items-center justify-center rounded-full bg-black font-bold text-white"
-        style={{ height: '40px', width: '40px', fontSize: '16px' }}
-      >
-        {order + 1}
-      </div>
-    )
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -47,7 +46,7 @@ export const Stepper = ({ section }: Props) => {
             <Disclosure id={`disclosure-faq-${index}`}>
               <DisclosureHeader className="p-4 ring-inset lg:px-6">
                 <div className="flex flex-row gap-4">
-                  <NumberedOrderComponent order={index} />
+                  <IndexIcon index={index} />
 
                   <Typography variant="h3">{checklist.title}</Typography>
                 </div>

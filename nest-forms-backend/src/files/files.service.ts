@@ -500,58 +500,55 @@ export default class FilesService {
   }
 
   async deleteFileMany(fileIds: string[]): Promise<void> {
-    let file: Files
-
-    for (const fileId of fileIds) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        file = await this.prisma.files.delete({
-          where: {
-            id: fileId,
-          },
-        })
-      } catch (error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.DATABASE_ERROR,
-          'Error while deleting file in the database.',
-          undefined,
-          error,
-        )
-      }
-
-      /* delete file form scanner if contains scannerId */
-      if (file.scannerId) {
-        const deleteScannerStatus =
-          // eslint-disable-next-line no-await-in-loop
-          await this.filesHelper.deleteFileFromScannerClient(file.scannerId)
-        if (deleteScannerStatus === undefined) {
+    await Promise.all(
+      fileIds.map(async (fileId) => {
+        let file: Files
+        try {
+          file = await this.prisma.files.delete({
+            where: {
+              id: fileId,
+            },
+          })
+        } catch (error) {
           throw this.throwerErrorGuard.InternalServerErrorException(
-            FilesErrorsEnum.FILE_DELETE_FROM_SCANNER_ERROR,
-            FilesErrorsResponseEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+            ErrorsEnum.DATABASE_ERROR,
+            'Error while deleting file in the database.',
+            undefined,
+            error,
           )
         }
-      }
 
-      const formInfo = this.filesHelper.fileDto2formInfo(file)
-      const filePath = this.filesHelper.getPath(formInfo)
-      const pathWithMinioFileName = filePath + file.minioFileName
-      const bucket = this.filesHelper.getBucketUid(file.status)
-      this.logger.debug(
-        `Deleting from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
-      )
-      // eslint-disable-next-line no-await-in-loop
-      const deleteStatus = await this.minioClientSubervice.deleteFile(
-        bucket,
-        pathWithMinioFileName,
-      )
-      if (!deleteStatus) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          FilesErrorsEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-          FilesErrorsResponseEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        if (file.scannerId) {
+          const deleteScannerStatus =
+            await this.filesHelper.deleteFileFromScannerClient(file.scannerId)
+          if (deleteScannerStatus === undefined) {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              FilesErrorsEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+              FilesErrorsResponseEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+            )
+          }
+        }
+
+        const formInfo = this.filesHelper.fileDto2formInfo(file)
+        const filePath = this.filesHelper.getPath(formInfo)
+        const pathWithMinioFileName = filePath + file.minioFileName
+        const bucket = this.filesHelper.getBucketUid(file.status)
+        this.logger.debug(
+          `Deleting from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
         )
-      }
-      this.logger.debug(`File ${fileIds.toString()} was successfully deleted.`)
-    }
+        const deleteStatus = await this.minioClientSubervice.deleteFile(
+          bucket,
+          pathWithMinioFileName,
+        )
+        if (!deleteStatus) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            FilesErrorsEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+            FilesErrorsResponseEnum.FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+          )
+        }
+        this.logger.debug(`File ${fileId} was successfully deleted.`)
+      }),
+    )
   }
 
   async getActiveFileSizes(

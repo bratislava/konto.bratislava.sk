@@ -233,7 +233,7 @@ export default class GinisService {
     for (const file of form.files) {
       const minioFilePath = `${pospID}/${form.id}/${file.minioFileName}`
 
-      // eslint-disable-next-line no-await-in-loop
+      // eslint-disable-next-line no-await-in-loop -- ginis can't handle parallel uploads; sequential is required to avoid race conditions on their side
       await this.uploadAttachmentToGinis(
         file,
         form.ginisDocumentId,

@@ -69,7 +69,7 @@ describe('GinisService', () => {
       MAILGUN_HOST: 'test',
       MAILGUN_EMAIL_FROM: 'test',
       RABBIT_MQ_USERNAME: 'test',
-      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- test environment dummy value, not a real credential
       RABBIT_MQ_PASSWORD: 'test',
       RABBIT_MQ_HOST: 'test',
       RABBIT_MQ_PORT: 'test',

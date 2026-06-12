@@ -236,7 +236,7 @@ export class UserFixtureFactory {
     let ico: string
     do {
       const randomNumber =
-        // eslint-disable-next-line sonarjs/pseudo-random
+        // eslint-disable-next-line sonarjs/pseudo-random -- test fixture generator; cryptographic randomness is unnecessary here
         Math.floor(Math.random() * 9_000_000_000) + 1_000_000_000
       ico = `ico://sk/${randomNumber}`
     } while (this.generatedIcos.has(ico))

@@ -287,7 +287,7 @@ export default class NasesSenderService {
     const template = {
       SKTalkMessage: {
         $: {
-          // eslint-disable-next-line sonarjs/no-clear-text-protocols
+          // eslint-disable-next-line sonarjs/no-clear-text-protocols -- XML namespace URIs are fixed identifiers defined by the SKTalk protocol; they are not network endpoints
           xmlns: 'http://gov.sk/SKTalkMessage',
           'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
           'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
@@ -305,7 +305,7 @@ export default class NasesSenderService {
         Body: {
           MessageContainer: {
             $: {
-              // eslint-disable-next-line sonarjs/no-clear-text-protocols
+              // eslint-disable-next-line sonarjs/no-clear-text-protocols -- XML namespace URI fixed by the SKTalk MessageContainer schema; not a network endpoint
               xmlns: 'http://schemas.gov.sk/core/MessageContainer/1.0',
             },
             MessageId: form.id,

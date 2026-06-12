@@ -25,7 +25,7 @@ export default class OloMailerService implements Mailer {
   ) {
     this.logger = new LineLoggerSubservice(OloMailerService.name)
 
-    // eslint-disable-next-line sonarjs/no-clear-text-protocols
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols -- 'smtp.office365.com' is an SMTP hostname, not an HTTP URL; STARTTLS on port 587 provides transport security
     this.oloTransporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,

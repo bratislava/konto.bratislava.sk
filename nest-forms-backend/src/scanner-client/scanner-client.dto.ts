@@ -82,12 +82,12 @@ export class GetScanFileDto {
   @IsEnum(FileStatus)
   status: FileStatus
 
-  // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @ApiPropertyOptional({
     description: 'other meta data',
     example: '{ "type": "TIE Fighter"}',
   })
   @IsOptional()
+  @Type(() => Object)
   meta?: Record<string, object>
 
   // api property for created at

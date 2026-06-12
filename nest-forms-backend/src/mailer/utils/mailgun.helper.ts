@@ -74,9 +74,6 @@ export default class MailgunHelper {
 
           case MailgunConfigVariableType.STRING:
             response[key as keyof SendEmailVariablesDto] = val.value
-              ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
-                val.value.toString()
-              : ''
 
             break
 

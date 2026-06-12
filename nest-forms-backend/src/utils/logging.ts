@@ -171,7 +171,7 @@ export function toLogfmt(input: unknown): string {
     return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- fallback for unexpected types; .toString() is the intentional last-resort string coercion
   return `message="${escapeForLogfmt(input.toString())}"`
 }
 

@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef -- jest is a global injected by the Jest test runner; not declared in this plain JS file
 const mockPublish = jest.fn().mockResolvedValue({})
 
 class AmqpConnection {

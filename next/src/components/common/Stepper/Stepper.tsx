@@ -3,6 +3,7 @@ import { Fragment } from 'react'
 
 import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
 import { Checklist } from '@/src/components/common/Stepper/Checklist'
+import SectionHeader from '@/src/components/layouts/SectionHeader'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
@@ -15,8 +16,7 @@ type Props = {
 }
 
 /**
- * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=15560-17717&m=dev
- * TODO: Add correct component link
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-14458&t=FB9MA6UJV5t84NVu-4
  */
 
 const IndexIcon = ({ index }: { index: number }) => {
@@ -34,9 +34,7 @@ export const Stepper = ({ section }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {title && <Typography variant="h2">{title}</Typography>}
-
-      {description && <Typography variant="p-default">{description}</Typography>}
+      <SectionHeader title={title} text={description} />
 
       <DisclosureGroup className="rounded-lg border border-border-active-default bg-background-passive-base py-2">
         {checklists?.filter(isDefined).map((checklist, index) => (

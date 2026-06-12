@@ -6,7 +6,7 @@ import Markdown from 'src/components/formatting/Markdown'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 
 type Props = {
-  rows: { label: string; value: string }[]
+  rows: { label: string; value: string; isMarkdown?: boolean }[]
   notification?: ReactNode
 }
 
@@ -22,7 +22,13 @@ const Table = ({ rows, notification }: Props) => {
                 {row.label}
               </Typography>
 
-              <Markdown content={row.value} className="flex-1 text-left" />
+              {row.isMarkdown ? (
+                <Markdown content={row.value} className="flex-1 text-left" variant="small" />
+              ) : (
+                <Typography variant="p-small" as="span" className="flex-1 text-left">
+                  {row.value}
+                </Typography>
+              )}
             </li>
           </Fragment>
         )

@@ -45,7 +45,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
 
   const handleSubmit = async () => {
     if (!turnstileToken) {
-      setErrorMessage('Vyplňte captcha')
+      setErrorMessage(t('auth.finish_captcha'))
 
       return
     }
@@ -63,7 +63,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
         setVariant('notFound')
       } else {
         logger.error('Error fetching towing:', error)
-        setErrorMessage('Vyskytla sa chyba pri vyhľadávaní odťahu vozidla')
+        setErrorMessage(t('towing.error'))
         setVariant(null)
       }
     }
@@ -76,11 +76,8 @@ const Towing = ({ title, description }: TowingSectionProps) => {
       {title && <Typography variant="h2">{title}</Typography>}
       {description && <Typography variant="p-default">{description}</Typography>}
       <div className="flex flex-col gap-4 rounded-xl border px-5 py-6">
-        <Typography variant="p-default">
-          Zadajte platné evidenčné číslo vozidla bez medzier.
-          <br />
-          Napríklad: BA123AB
-        </Typography>
+        <Typography variant="h3">{t('towing.licensePlate')}</Typography>
+        <Typography variant="p-default">{t('towing.typeInInstructions')}</Typography>
 
         <div className="flex flex-col gap-2 md:flex-row md:gap-6">
           <TextField
@@ -99,7 +96,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
             isDisabled={licensePlate.length === 0 || !turnstileToken}
           >
             <Icon name="search" />
-            Vyhľadať
+            {t('button.search')}
           </Button>
         </div>
 
@@ -138,7 +135,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
 
         {variant && (
           <Typography variant="h3">
-            Informácia o {variant === 'towing' ? 'odťahu' : 'preložení'} vozidla s evidenčným číslom{' '}
+            {t(`towing.informationTitle.${variant}`)}
             {vehicle?.licensePlate}
           </Typography>
         )}
@@ -147,24 +144,45 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           <div className="flex flex-col gap-4">
             <Table
               rows={[
-                { label: 'EČV vozidla', value: vehicle.licensePlate },
-                { label: 'Dátum odťahu', value: `\`${vehicle.loadingDate}\`` },
-                { label: 'Miesto odťahu', value: vehicle.loadingLocation },
-                ...(vehicle.towReason ? [{ label: 'Dôvod odťahu', value: vehicle.towReason }] : []),
+                { label: t('towing.informationTable.licensePlate'), value: vehicle.licensePlate },
+                { label: t('towing.informationTable.loadingDate'), value: vehicle.loadingDate },
+                {
+                  label: t('towing.informationTable.loadingLocation'),
+                  value: vehicle.loadingLocation,
+                },
+                ...(vehicle.towReason
+                  ? [{ label: t('towing.informationTable.towReason'), value: vehicle.towReason }]
+                  : []),
                 ...(vehicle.unloadingLocation
-                  ? [{ label: 'Miesto preloženia', value: vehicle.unloadingLocation }]
+                  ? [
+                      {
+                        label: t('towing.informationTable.unloadingLocation'),
+                        value: vehicle.unloadingLocation,
+                      },
+                    ]
                   : []),
                 ...(vehicle.relocationReason
-                  ? [{ label: 'Dôvod preloženia', value: vehicle.relocationReason }]
+                  ? [
+                      {
+                        label: t('towing.informationTable.relocationReason'),
+                        value: vehicle.relocationReason,
+                      },
+                    ]
                   : []),
                 ...(variant === 'towing'
-                  ? [{ label: 'Poplatok za odťah', value: '179.00€ + pokuta' }]
+                  ? [
+                      {
+                        label: t('towing.informationTable.payment'),
+                        value: `**${t('towing.informationTable.paymentValue')}**`,
+                        isMarkdown: true,
+                      },
+                    ]
                   : []),
               ]}
               notification={
                 variant === 'towing' && (
                   <Alert
-                    message='Od 15.04.2023 za každý deň po 10. dni od odtiahnutia do areálu odťahovej služby je účtované "stojné" vo výške 5€ s DPH/deň.'
+                    message={t('towing.informationTable.paymentNotification')}
                     type="info"
                     fullWidth
                   />
@@ -179,14 +197,10 @@ const Towing = ({ title, description }: TowingSectionProps) => {
             <Icon name="tow-car" />
 
             <Typography variant="p-large" className="text-center">
-              Vozidlo neevidujeme medzi odtiahnutými alebo preloženými vozidlami.{' '}
+              {t('towing.notFound.title')}
             </Typography>
 
-            <Markdown
-              content="Skontrolujte, či ste zadali správne evidenčné číslo a skúste vyhľadať znova. Ak
-              potrebujete pomoc, kontaktuje Infolinku PAAS na čísle 0800 222 888."
-              className="text-center"
-            ></Markdown>
+            <Markdown content={t('towing.notFound.content')} className="text-center"></Markdown>
           </div>
         )}
       </div>

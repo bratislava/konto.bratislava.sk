@@ -446,6 +446,7 @@
   "towing.informationTitle.relay": "Informácia o preložení vozidla s evidenčným číslom ",
   "towing.informationTable.licensePlate": "EČV vozidla",
   "towing.informationTable.loadingDate": "Dátum odťahu",
+  "towing.informationTable.loadingTime": "Čas odťahu",
   "towing.informationTable.loadingLocation": "Miesto odťahu",
   "towing.informationTable.towReason": "Dôvod odťahu",
   "towing.informationTable.unloadingLocation": "Miesto preloženia",

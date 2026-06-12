@@ -25,6 +25,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
   const [vehicle, setVehicle] = useState<{
     licensePlate: string
     loadingDate: string
+    loadingTime: string
     loadingLocation: string
     towReason: string
     unloadingLocation: string
@@ -32,6 +33,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
   }>({
     licensePlate: '',
     loadingDate: '',
+    loadingTime: '',
     loadingLocation: '',
     towReason: '',
     unloadingLocation: '',
@@ -58,7 +60,15 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           turnstileToken,
         },
       )
-      setVehicle({ licensePlate, ...response.data })
+      const loadingTime = response.data.loadingDate.split('T')
+      setVehicle({
+        licensePlate,
+        ...response.data,
+        loadingTime: loadingTime[1].slice(0, 5),
+        loadingDate: loadingTime[0],
+      })
+      setVariant(response.data.unloadingLocation.length > 0 ? 'relay' : 'towing')
+      setErrorMessage('')
     } catch (error) {
       if (error?.response?.status === 404) {
         setVariant('notFound')
@@ -68,7 +78,6 @@ const Towing = ({ title, description }: TowingSectionProps) => {
         setVariant(null)
       }
     }
-    setVariant(vehicle.unloadingLocation.length > 0 ? 'relay' : 'towing')
     incrementCaptchaKey()
   }
 
@@ -107,7 +116,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           theme="light"
           key={captchaKey}
           sitekey={environment.cloudflareTurnstileSiteKey}
-          className="self-center"
+          className="mt-5 self-center"
           onVerify={(token) => {
             setCaptchaWarning('hide')
             console.log('token', token)
@@ -143,12 +152,13 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           </Typography>
         )}
 
-        {(variant === 'towing' || variant === 'relay') && vehicle && (
+        {(variant === 'towing' || variant === 'relay') && (
           <div className="flex flex-col gap-4">
             <Table
               rows={[
                 { label: t('towing.informationTable.licensePlate'), value: vehicle.licensePlate },
                 { label: t('towing.informationTable.loadingDate'), value: vehicle.loadingDate },
+                { label: t('towing.informationTable.loadingTime'), value: vehicle.loadingTime },
                 {
                   label: t('towing.informationTable.loadingLocation'),
                   value: vehicle.loadingLocation,

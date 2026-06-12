@@ -1,5 +1,28 @@
 import type { Schema, Struct } from '@strapi/strapi'
 
+export interface BlocksChecklist extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklists'
+  info: {
+    displayName: 'Checklist'
+  }
+  attributes: {
+    checklistItems: Schema.Attribute.Component<'blocks.checklist-item', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface BlocksChecklistItem extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklist_items'
+  info: {
+    displayName: 'Checklist item'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 export interface BlocksCommonLink extends Struct.ComponentSchema {
   collectionName: 'components_blocks_common_links'
   info: {
@@ -76,7 +99,9 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<['sections.richtext', 'sections.contacts']>
+    sections: Schema.Attribute.DynamicZone<
+      ['sections.richtext', 'sections.contacts', 'sections.stepper']
+    >
     text: Schema.Attribute.RichText
   }
 }
@@ -175,9 +200,23 @@ export interface SectionsRichtext extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsStepper extends Struct.ComponentSchema {
+  collectionName: 'components_sections_steppers'
+  info: {
+    displayName: 'Stepper'
+  }
+  attributes: {
+    checklists: Schema.Attribute.Component<'blocks.checklist', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'blocks.checklist': BlocksChecklist
+      'blocks.checklist-item': BlocksChecklistItem
       'blocks.common-link': BlocksCommonLink
       'blocks.contact-card': BlocksContactCard
       'blocks.contact-directions-card': BlocksContactDirectionsCard
@@ -191,6 +230,7 @@ declare module '@strapi/strapi' {
       'general.alert': GeneralAlert
       'sections.contacts': SectionsContacts
       'sections.richtext': SectionsRichtext
+      'sections.stepper': SectionsStepper
     }
   }
 }

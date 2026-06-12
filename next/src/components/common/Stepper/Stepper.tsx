@@ -29,19 +29,20 @@ const IndexIcon = ({ index }: { index: number }) => {
   )
 }
 
-export const Stepper = ({ section }: Props) => {
-  const { title, description, checklists } = section
-
+export const Stepper = ({ section: { title, description, checklists } }: Props) => {
   return (
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={description} />
 
-      <DisclosureGroup className="rounded-lg border border-border-active-default bg-background-passive-base py-2">
+      <DisclosureGroup
+        defaultExpandedKeys={[0]}
+        className="rounded-lg border border-border-active-default bg-background-passive-base py-2"
+      >
         {checklists?.filter(isDefined).map((checklist, index) => (
           <Fragment key={index}>
             {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}
 
-            <Disclosure id={`disclosure-stepper-${index}`} defaultExpanded={index === 0}>
+            <Disclosure id={index}>
               <DisclosureHeader className="p-4 ring-inset lg:px-6">
                 <div className="flex flex-row gap-3 lg:gap-4">
                   <IndexIcon index={index} />

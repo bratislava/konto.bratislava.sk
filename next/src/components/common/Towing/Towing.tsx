@@ -1,5 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
-import axios from 'axios'
+import { useMutation } from '@tanstack/react-query'
+import axios, { isAxiosError } from 'axios'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import Turnstile from 'react-turnstile'
@@ -46,14 +47,13 @@ const Towing = ({ title, description }: TowingSectionProps) => {
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const [variant, setVariant] = useState<'relay' | 'towing' | 'notFound' | null>(null)
 
-  const handleSubmit = async () => {
-    if (!turnstileToken) {
-      setErrorMessage(t('auth.finish_captcha'))
+  const { mutateAsync: handleSubmit } = useMutation({
+    mutationFn: async () => {
+      if (!turnstileToken) {
+        setErrorMessage(t('auth.finish_captcha'))
 
-      return
-    }
-
-    try {
+        return
+      }
       const response = await axios.post(
         `https://nest-city-account.staging.bratislava.sk/towing/public/${licensePlate}`,
         {
@@ -62,33 +62,34 @@ const Towing = ({ title, description }: TowingSectionProps) => {
       )
       const loadingTime = response.data.loadingDate.split('T')
       setVehicle({
-        licensePlate,
         ...response.data,
-        loadingTime: loadingTime[1].slice(0, 5),
+        licensePlate,
         loadingDate: loadingTime[0],
+        loadingTime: loadingTime[1].slice(0, 5),
       })
       setVariant(response.data.unloadingLocation ? 'relay' : 'towing')
       setErrorMessage('')
-    } catch (error) {
-      if (error?.response?.status === 404) {
+    },
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.status === 404) {
         setVariant('notFound')
       } else {
         logger.error('Error fetching towing:', error)
         setErrorMessage(t('towing.error'))
         setVariant(null)
       }
-    }
-    incrementCaptchaKey()
-  }
+    },
+    onSettled: incrementCaptchaKey,
+  })
 
   return (
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={description} />
 
-      <div className="flex flex-col gap-4 rounded-xl border px-5 py-6">
-        <Typography variant="h3">{t('towing.licensePlate')}</Typography>
+      <div className="flex flex-col gap-2 rounded-lg border px-5 py-6">
+        <Typography variant="p-small-bold">{t('towing.licensePlate')}</Typography>
 
-        <Typography variant="p-default">{t('towing.typeInInstructions')}</Typography>
+        <Typography variant="p-small">{t('towing.typeInInstructions')}</Typography>
 
         <div className="flex flex-col gap-2 md:flex-row md:gap-6">
           <TextField

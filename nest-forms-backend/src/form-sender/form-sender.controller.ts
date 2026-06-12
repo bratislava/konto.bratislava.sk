@@ -16,8 +16,7 @@ import { UpdateFormRequestDto } from '../forms/dtos/requests.dto'
 import FormsService from '../forms/forms.service'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
 import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
-import { EidUpdateSendFormRequestDto } from '../nases/dtos/requests.dto'
-import NasesService from '../nases/nases.service'
+import NasesContactsService from '../nases/services/nases.contacts.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import {
   ErrorsEnum,
@@ -25,17 +24,20 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { EidUpdateSendFormRequestDto } from './dtos/requests.dto'
 import { SendFormResponseDto } from './dtos/responses.dto'
+import { FormSenderService } from './form-sender.service'
 
 @ApiTags('form-sender')
 @ApiBearerAuth()
 @Controller('form-sender')
 export default class FormSenderController {
   constructor(
-    private readonly nasesService: NasesService,
     private readonly formsService: FormsService,
+    private readonly formSenderService: FormSenderService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly logger: LineLoggerSubservice,
+    private readonly nasesContactsService: NasesContactsService,
   ) {}
 
   @ApiOperation({
@@ -57,9 +59,7 @@ export default class FormSenderController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    await this.formsService.updateFormWithUser(formId, data, user)
-
-    return this.nasesService.sendForm(formId, user)
+    return this.formSenderService.updateAndSendForm(formId, data, user)
   }
 
   @ApiOperation({
@@ -81,8 +81,8 @@ export default class FormSenderController {
     @Param('formId') formId: string,
     @GetUser() user: User,
   ): Promise<SendFormResponseDto> {
-    const jwtTest = this.nasesService.createUserJwtToken(data.eidToken)
-    if ((await this.nasesService.getUpvsIdentity(jwtTest)) === null) {
+    const jwtTest = this.formSenderService.createUserJwtToken(data.eidToken)
+    if ((await this.nasesContactsService.getUpvsIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
@@ -103,6 +103,11 @@ export default class FormSenderController {
 
     await this.formsService.updateFormEid(formId, nasesUser, updateData, user)
 
-    return this.nasesService.sendFormEid(formId, data.eidToken, nasesUser, user)
+    return this.formSenderService.sendFormEid(
+      formId,
+      data.eidToken,
+      nasesUser,
+      user,
+    )
   }
 }

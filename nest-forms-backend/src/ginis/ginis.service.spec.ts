@@ -141,6 +141,7 @@ describe('GinisService', () => {
     // The extraction methods are pure functions that don't need dependencies
     const realNasesContactsService = new NasesContactsService(
       module.get(ThrowerErrorGuard),
+      module.get(ClientsService),
     )
 
     // Use real implementations for extraction methods

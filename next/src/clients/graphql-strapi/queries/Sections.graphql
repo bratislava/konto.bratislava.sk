@@ -23,6 +23,64 @@ fragment StepperSection on ComponentSectionsStepper {
   }
 }
 
+fragment ContactCardBlock on ComponentBlocksContactCard {
+  overrideLabel
+  value
+}
+
+fragment ContactPersonCardBlock on ComponentBlocksContactPersonCard {
+  title
+  subtext
+  email
+  phone
+}
+
+fragment ContactDirectionsCardBlock on ComponentBlocksContactDirectionsCard {
+  overrideLabel
+  address
+  parkingInfo
+  publicTransportInfo
+  barrierFreeInfo
+  iframeUrl
+}
+
+fragment ContactsSection on ComponentSectionsContacts {
+  id
+  title
+  description
+  addressContacts {
+    ...ContactCardBlock
+  }
+  openingHoursContacts {
+    ...ContactCardBlock
+  }
+  emailContacts {
+    ...ContactCardBlock
+  }
+  phoneContacts {
+    ...ContactCardBlock
+  }
+  webContacts {
+    ...ContactCardBlock
+  }
+  postalAddressContacts {
+    ...ContactCardBlock
+  }
+  billingInfoContacts {
+    ...ContactCardBlock
+  }
+  bankConnectionContacts {
+    ...ContactCardBlock
+  }
+  personContacts {
+    ...ContactPersonCardBlock
+  }
+  directionsContact {
+    ...ContactDirectionsCardBlock
+  }
+  titleLevelContacts: titleLevel
+}
+
 fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   __typename
 
@@ -32,5 +90,9 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
 
   ... on ComponentSectionsStepper {
     ...StepperSection
+  }
+
+  ... on ComponentSectionsContacts {
+    ...ContactsSection
   }
 }

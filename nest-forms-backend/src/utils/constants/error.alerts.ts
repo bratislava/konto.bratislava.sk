@@ -3,6 +3,7 @@ import { FormError } from '@prisma/client'
 import { CityAccountErrorsEnum } from '../../auth/errors/city-account.errors.enum'
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
 import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
+import { FormSenderErrorsEnum } from '../../form-sender/form-sender.errors.enum'
 import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
 import { GinisTaskErrorEnum } from '../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
@@ -27,9 +28,9 @@ export default [
   FilesErrorsEnum.FILE_MINIO_CHECK_ERROR,
   FilesErrorsEnum.FILE_BY_SCANNERID_NOT_FOUND_ERROR,
   FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
-  NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
+  FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
   NasesErrorsEnum.SEND_TO_NASES_ERROR,
-  NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+  FormSenderErrorsEnum.SEND_TO_GINIS_ERROR,
   NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
   NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
   FormsErrorsEnum.FORM_NOT_FOUND_ERROR,

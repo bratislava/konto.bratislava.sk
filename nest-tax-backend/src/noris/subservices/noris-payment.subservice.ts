@@ -188,9 +188,11 @@ export class NorisPaymentSubservice {
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
 
-    // Get batch data from city account
+    // Get batch data from city account. Tracking-only: it just enriches the
+    // Bloomreach payment event, so a city account outage must not block payment
+    // ingestion.
     const userDataFromCityAccount =
-      await this.cityAccountSubservice.getUserDataAdminBatch(
+      await this.cityAccountSubservice.getUserDataAdminBatchOptional(
         Array.from(
           taxesDataByVsMap.values(),
           (taxData) => taxData.taxPayer.birthNumber,

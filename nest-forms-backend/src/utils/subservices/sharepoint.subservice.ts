@@ -300,6 +300,16 @@ export default class SharepointSubservice {
           >,
         ) => response.data.value,
       )
+      .catch((error: unknown) => {
+        if (isAxiosError(error)) {
+          throw this.throwerErrorGuard.fromAxiosError(error, {})
+        }
+
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+        )
+      })
 
     columns.forEach((col) => {
       const filtered = fields.find((field) => field.displayName === col)

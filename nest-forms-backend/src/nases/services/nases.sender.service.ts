@@ -30,9 +30,11 @@ import { NasesSendResponse } from '../dtos/responses.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
+  NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
 import { NasesAttachmentXmlObject } from '../types/xml.types'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class NasesSenderService {
@@ -44,6 +46,7 @@ export default class NasesSenderService {
     private taxService: TaxService,
     private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
@@ -121,7 +124,7 @@ export default class NasesSenderService {
           _: formPdfBase64,
         })
       } catch (error) {
-        console.error(
+        this.logger.error(
           `ERROR - Printing form to attachment to Nases and Noris error for form id ${form.id}`,
           error,
         )
@@ -150,7 +153,7 @@ export default class NasesSenderService {
           _: summaryPdfBase64,
         })
       } catch (error) {
-        console.error(
+        this.logger.error(
           `ERROR - Printing summary to attachment to Nases and Noris error for form id ${form.id}`,
           error,
         )
@@ -366,7 +369,7 @@ export default class NasesSenderService {
 
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
-        console.log(
+        this.logger.log(
           `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: EMPTY, message: ${message}`,
         )
 
@@ -381,7 +384,7 @@ export default class NasesSenderService {
 
       if (response.data.receive_result !== 0) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
-        console.log(
+        this.logger.log(
           `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${JSON.stringify(
             response.data,
           )}, message: ${message}`,
@@ -398,12 +401,18 @@ export default class NasesSenderService {
       return { status: 200, data: response.data }
     } catch (error) {
       if (isAxiosError(error) && error.response?.data) {
+        this.logger.error(this.throwerErrorGuard.fromAxiosError(error, {}))
         return { status: error.response.status, data: error.response.data }
       }
-      // TODO temp SEND_TO_NASES_ERROR log, remove
-      console.log(
-        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, message: ${message}`,
+
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.SEND_TO_NASES_ERROR,
+          NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+          { formId: data.id, message },
+        ),
       )
+
       return {
         status: 400,
         data: {

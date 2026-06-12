@@ -5,10 +5,14 @@ import {
 } from 'openapi-clients/slovensko-sk'
 
 import ClientsService from '../../clients/clients.service'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
+import {
+  ErrorsEnum,
+  ErrorsResponseEnum,
+} from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
+import { isAxiosError } from 'axios'
 
 interface NaturalPersonData {
   given_names?: string[]
@@ -54,13 +58,22 @@ export default class NasesContactsService {
       })
       .then((response) => response.data)
       .catch((error: unknown) => {
+        if (!isAxiosError(error)) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+              `Failed to get nases identity for uri: ${uri}`,
+              error,
+            ),
+          )
+          return null
+        }
+
         this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Failed to get nases identity, verify if this is because of invalid token or a server issue',
-            undefined,
-            error,
-          ),
+          this.throwerErrorGuard.fromAxiosError(error, {
+            console: `Failed to get nases identity for uri: ${uri}`,
+          }),
         )
         return null
       })

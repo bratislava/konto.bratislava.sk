@@ -9,6 +9,7 @@ import Table from '@/src/components/common/Table/Table'
 import TextField from '@/src/components/fields/TextField'
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
+import SectionHeader from '@/src/components/layouts/SectionHeader'
 import Alert from '@/src/components/simple-components/Alert'
 import { environment } from '@/src/environment'
 import logger from '@/src/frontend/utils/logger'
@@ -73,10 +74,11 @@ const Towing = ({ title, description }: TowingSectionProps) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {title && <Typography variant="h2">{title}</Typography>}
-      {description && <Typography variant="p-default">{description}</Typography>}
+      <SectionHeader title={title} text={description} />
+
       <div className="flex flex-col gap-4 rounded-xl border px-5 py-6">
         <Typography variant="h3">{t('towing.licensePlate')}</Typography>
+
         <Typography variant="p-default">{t('towing.typeInInstructions')}</Typography>
 
         <div className="flex flex-col gap-2 md:flex-row md:gap-6">
@@ -96,6 +98,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
             isDisabled={licensePlate.length === 0 || !turnstileToken}
           >
             <Icon name="search" />
+
             {t('button.search')}
           </Button>
         </div>
@@ -200,7 +203,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
               {t('towing.notFound.title')}
             </Typography>
 
-            <Markdown content={t('towing.notFound.content')} className="text-center"></Markdown>
+            <Markdown content={t('towing.notFound.content')} className="text-center" />
           </div>
         )}
       </div>

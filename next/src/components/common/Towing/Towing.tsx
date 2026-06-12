@@ -67,7 +67,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
         loadingTime: loadingTime[1].slice(0, 5),
         loadingDate: loadingTime[0],
       })
-      setVariant(response.data.unloadingLocation.length > 0 ? 'relay' : 'towing')
+      setVariant(response.data.unloadingLocation ? 'relay' : 'towing')
       setErrorMessage('')
     } catch (error) {
       if (error?.response?.status === 404) {

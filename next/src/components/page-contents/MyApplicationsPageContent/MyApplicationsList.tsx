@@ -32,7 +32,7 @@ export const getDraftApplications = async (
     SENDING: ['QUEUED', 'ERROR'] satisfies Array<GetFormResponseDtoStateEnum>,
     DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
   }[variant]
-  const response = await formsClient.nasesControllerGetForms(
+  const response = await formsClient.formsControllerGetForms(
     page?.toString(),
     PAGE_SIZE,
     variantToStates,

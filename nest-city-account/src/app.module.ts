@@ -18,7 +18,6 @@ import { UserModule } from './user/user.module'
 import { VerificationModule } from './user-verification/verification.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
 import { SharedModule } from './utils/subservices/shared.module'
-import { TaxSubservice } from './utils/subservices/tax.subservice'
 
 @Module({
   imports: [
@@ -41,7 +40,7 @@ import { TaxSubservice } from './utils/subservices/tax.subservice'
     TowingModule,
   ],
   controllers: [AppController],
-  providers: [TaxSubservice],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

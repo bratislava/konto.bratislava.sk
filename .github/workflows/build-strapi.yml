@@ -1,0 +1,65 @@
+name: Build Strapi
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: true
+      image:
+        description: "Full image name including registry/repository for Docker cache."
+        type: string
+        required: true
+      target_build:
+        description: "Docker target used for final image build."
+        type: string
+        required: false
+        default: prod
+    secrets:
+      DOCKER_REGISTRY_USERNAME:
+        required: true
+      DOCKER_REGISTRY_PASSWORD:
+        required: true
+      HARBOR_REGISTRY_PASSWORD:
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+
+jobs:
+  build:
+    name: Build Strapi
+    runs-on: bratislava
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Docker build
+        id: docker
+        uses: ./.github/actions/setup-docker-build
+        with:
+          image: ${{ inputs.image }}
+          suffixes: |
+            build
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+      - name: Build final image
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ inputs.directory }}
+          target: ${{ inputs.target_build }}
+          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_from }}
+          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_to }}

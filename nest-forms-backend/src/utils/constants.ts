@@ -1,12 +1,12 @@
 import { FormError } from '@prisma/client'
 
-export const RABBIT_MQ = {
+export const RABBIT_FORM_DELIVERY = {
   EXCHANGE: 'nest-forms-backend',
   ROUTING_KEY: 'send_form',
   QUEUE: 'send_form',
 }
 
-export const RABBIT_NASES = {
+export const RABBIT_GINIS = {
   ROUTING_KEY: 'nases_check_delivery',
   QUEUE: 'nases_check_delivery',
 }

@@ -6,7 +6,6 @@ import { PrismaModule } from '../prisma/prisma.module'
 import { QrCodeModule } from '../qrcode/qrcode.module'
 import { NorisService } from './noris.service'
 import { NorisConnectionSubservice } from './subservices/noris-connection.subservice'
-import { NorisDeliveryMethodSubservice } from './subservices/noris-delivery-method.subservice'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'
 import { NorisTaxCommunalWasteSubservice } from './subservices/noris-tax/noris-tax.communal-waste.subservice'
@@ -18,7 +17,6 @@ import { NorisValidatorSubservice } from './subservices/noris-validator.subservi
   providers: [
     NorisService,
     NorisConnectionSubservice,
-    NorisDeliveryMethodSubservice,
     NorisPaymentSubservice,
     NorisTaxSubservice,
     NorisTaxRealEstateSubservice,

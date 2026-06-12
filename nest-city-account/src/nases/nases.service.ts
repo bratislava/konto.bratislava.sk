@@ -70,11 +70,7 @@ export class NasesService {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
 
-  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
-    // there is a bug in the container and function `apiUpvsIdentityGet` below, according to 'openapi-clients/slovensko-sk' types
-    // returns information about UpvsNaturalPerson,
-    // in reality it returns information about UpvsCorporateBody as well
-    // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, typing can be erased
+  async getUpvsIdentity(token: string) {
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },

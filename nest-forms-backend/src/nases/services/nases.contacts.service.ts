@@ -4,11 +4,13 @@ import {
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import ClientsService from '../../clients/clients.service'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
 
-export interface NaturalPersonData {
+interface NaturalPersonData {
   given_names?: string[]
   family_names?: { value?: string; primary?: boolean }[]
   birth?: {
@@ -16,32 +18,12 @@ export interface NaturalPersonData {
   }
 }
 
-export interface CorporateBodyData {
+interface CorporateBodyData {
   name?: string
   /** IČO */
   cin?: string
   /** DIČ */
   tin?: string | null
-}
-
-export function isUpvsNaturalPerson(
-  contact: UpvsNaturalPerson | UpvsCorporateBody,
-): contact is UpvsNaturalPerson {
-  return (
-    contact.type === 'natural_person' &&
-    'natural_person' in contact &&
-    contact.natural_person !== undefined
-  )
-}
-
-export function isUpvsCorporateBody(
-  contact: UpvsNaturalPerson | UpvsCorporateBody,
-): contact is UpvsCorporateBody {
-  return (
-    contact.type === 'legal_entity' &&
-    'corporate_body' in contact &&
-    contact.corporate_body !== undefined
-  )
 }
 
 export interface NaturalPersonExtractedData {
@@ -58,8 +40,31 @@ export interface CorporateBodyExtractedData {
 export default class NasesContactsService {
   private readonly logger: LineLoggerSubservice
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
-    this.logger = new LineLoggerSubservice('NasesContactsService')
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly clientsService: ClientsService,
+  ) {
+    this.logger = new LineLoggerSubservice(NasesContactsService.name)
+  }
+
+  async getUpvsIdentity(token: string) {
+    const result = await this.clientsService.slovenskoSkApi
+      .apiUpvsIdentityGet({
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => response.data)
+      .catch((error: unknown) => {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Failed to get nases identity, verify if this is because of invalid token or a server issue',
+            undefined,
+            error,
+          ),
+        )
+        return null
+      })
+    return result
   }
 
   extractNaturalPersonData(

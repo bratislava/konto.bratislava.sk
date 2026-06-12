@@ -14,6 +14,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
+import Dialog from '@/src/components/simple-components/Dialog'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
@@ -254,28 +255,33 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
       modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
       mobileFullScreen
     >
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <Heading slot="title" className="text-size-h3-r lg:text-size-h3">
-            {t('taxes.delivery_method_change_modal.title')}
-          </Heading>
-          <Markdown variant="small" content={t('taxes.delivery_method_change_modal.description')} />
-        </div>
-        {hasChangedDeliveryMethodAfterDeadline && (
-          <OfficialCorrespondenceChannelAlert
-            variant="change-effective-next-year"
-            strapiTax={strapiTax}
+      <Dialog>
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
+              {t('taxes.delivery_method_change_modal.title')}
+            </Heading>
+            <Markdown
+              variant="small"
+              content={t('taxes.delivery_method_change_modal.description')}
+            />
+          </div>
+          {hasChangedDeliveryMethodAfterDeadline && (
+            <OfficialCorrespondenceChannelAlert
+              variant="change-effective-next-year"
+              strapiTax={strapiTax}
+            />
+          )}
+          <Form
+            defaultValues={{
+              isSubscribed: isSubscribedDefaultValue,
+              scrolledToBottom: false,
+            }}
+            onSubmit={handleSubmit}
+            agreementContent={accountCommunicationConsentText}
           />
-        )}
-        <Form
-          defaultValues={{
-            isSubscribed: isSubscribedDefaultValue,
-            scrolledToBottom: false,
-          }}
-          onSubmit={handleSubmit}
-          agreementContent={accountCommunicationConsentText}
-        />
-      </div>
+        </div>
+      </Dialog>
     </Modal>
   )
 }

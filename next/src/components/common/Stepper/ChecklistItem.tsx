@@ -14,9 +14,7 @@ export const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
       <Icon name="check-circle" className="size-6 shrink-0 text-content-passive-secondary" />
 
       <div className="flex flex-col gap-1">
-        <Typography variant="p-default" className="font-medium">
-          {title}
-        </Typography>
+        <Typography variant="p-default">{title}</Typography>
 
         <Markdown variant="small" content={content} />
       </div>

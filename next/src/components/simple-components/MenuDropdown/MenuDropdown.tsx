@@ -53,7 +53,7 @@ const MenuDropdown = ({
             items?.map((item, i) => (
               <HeaderMenuItem
                 key={i}
-                itemClassName={cn(item.itemClassName, 'rounded-sm menu-dropdown-focus-ring')}
+                itemClassName={cn('rounded-sm menu-dropdown-focus-ring', item.itemClassName)}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}

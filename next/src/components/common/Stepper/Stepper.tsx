@@ -18,17 +18,12 @@ type Props = {
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-14458&t=FB9MA6UJV5t84NVu-4
- *        https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=15560-17717&m=dev
  */
 
 const IndexIcon = ({ index }: { index: number }) => {
   return (
-    <div className="flex size-10 items-center justify-center rounded-full bg-background-passive-inverted-base">
-      <Typography
-        variant="p-small"
-        as="span"
-        className="font-bold text-content-passive-inverted-primary"
-      >
+    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-background-passive-inverted-base">
+      <Typography variant="p-small" as="span" className="text-content-passive-inverted-primary">
         {index + 1}
       </Typography>
     </div>

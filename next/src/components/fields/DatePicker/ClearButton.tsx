@@ -1,4 +1,4 @@
-aimport { Button } from '@bratislava/component-library'
+import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useContext } from 'react'
 import { DatePickerStateContext } from 'react-aria-components/DatePicker'

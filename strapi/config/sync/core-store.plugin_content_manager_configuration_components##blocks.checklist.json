@@ -22,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,7 +36,7 @@
       },
       "description": {
         "edit": {
-          "label": "description",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -50,11 +50,12 @@
       },
       "checklistItems": {
         "edit": {
-          "label": "checklistItems",
+          "label": "Položky v checkliste",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "checklistItems",
@@ -72,11 +73,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "checklistItems"
-      ],
       "edit": [
         [
           {
@@ -96,6 +92,11 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "checklistItems"
       ]
     },
     "uid": "blocks.checklist",

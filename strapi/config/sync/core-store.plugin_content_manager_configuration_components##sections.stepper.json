@@ -22,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,7 +36,7 @@
       },
       "description": {
         "edit": {
-          "label": "description",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -50,7 +50,7 @@
       },
       "checklists": {
         "edit": {
-          "label": "checklists",
+          "label": "Checklisty",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -72,11 +72,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "checklists"
-      ],
       "edit": [
         [
           {
@@ -96,7 +91,8 @@
             "size": 12
           }
         ]
-      ]
+      ],
+      "list": ["id", "title", "checklists"]
     },
     "uid": "sections.stepper",
     "isComponent": true

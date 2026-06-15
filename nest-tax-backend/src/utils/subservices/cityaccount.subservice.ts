@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common'
-import { AxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import ClientsService from '../../clients/clients.service'
@@ -37,22 +37,36 @@ export class CityAccountSubservice {
       }
       return null
     } catch (error) {
-      // Since we add all taxes from noris, not only for people in city account, we shall not log errors
-      // when the people do not exist in city account, or their birth number is in bad format for city account.
+      if (!isAxiosError(error)) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Failed to get user data from city account.',
+            undefined,
+            undefined,
+            error,
+          ),
+        )
+        return null
+      }
+
+      // The returned user data is only used for Bloomreach tracking. When city
+      // account has no record for this birth number (NOT_FOUND) or rejects its
+      // format (BAD_REQUEST), we simply skip tracking and return null.
+      const status = error.response?.status
       if (
-        (error as AxiosError).response?.status === HttpStatus.NOT_FOUND ||
-        (error as AxiosError).response?.status === HttpStatus.BAD_REQUEST
+        status === HttpStatus.NOT_FOUND ||
+        status === HttpStatus.BAD_REQUEST
       ) {
         return null
       }
+
+      // Any other downstream failure also only affects tracking, so log it
+      // (classified via fromAxiosError) without breaking callers.
       this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to get birthnumber:`,
-          undefined,
-          undefined,
-          error,
-        ),
+        this.throwerErrorGuard.fromAxiosError(error, {
+          message: 'Failed to get user data from city account.',
+        }),
       )
       return null
     }
@@ -64,23 +78,57 @@ export class CityAccountSubservice {
     const birthNumbersWithoutSlash = birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', ''),
     )
-    const userDataResult =
-      await this.clientsService.cityAccountApi.integrationControllerGetUserDataByBirthNumbersBatch(
-        { birthNumbers: birthNumbersWithoutSlash },
-        {
-          headers: {
-            apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+    try {
+      const userDataResult =
+        await this.clientsService.cityAccountApi.integrationControllerGetUserDataByBirthNumbersBatch(
+          { birthNumbers: birthNumbersWithoutSlash },
+          {
+            headers: {
+              apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+            },
           },
-        },
-      )
+        )
 
-    const result: Record<string, ResponseUserByBirthNumberDto> = {}
-    Object.keys(userDataResult.data.users).forEach((birthNumber) => {
-      const modifiedKey = addSlashToBirthNumber(birthNumber)
-      result[modifiedKey] = userDataResult.data.users[birthNumber]
-    })
+      const result: Record<string, ResponseUserByBirthNumberDto> = {}
+      Object.keys(userDataResult.data.users).forEach((birthNumber) => {
+        const modifiedKey = addSlashToBirthNumber(birthNumber)
+        result[modifiedKey] = userDataResult.data.users[birthNumber]
+      })
 
-    return result
+      return result
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get user data batch from city account.',
+          undefined,
+          undefined,
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        message: 'Failed to get user data batch from city account.',
+      })
+    }
+  }
+
+  /**
+   * Non-throwing variant of {@link getUserDataAdminBatch}: on any failure it
+   * logs the error and resolves to an empty map instead of propagating. A city
+   * account outage therefore degrades to missing data rather than a thrown
+   * error.
+   */
+  async getUserDataAdminBatchOptional(
+    birthNumbers: string[],
+  ): Promise<
+    Partial<Record<string, ResponseUserByBirthNumberDto> | undefined>
+  > {
+    try {
+      return await this.getUserDataAdminBatch(birthNumbers)
+    } catch (error) {
+      this.logger.error(error)
+      return undefined
+    }
   }
 
   async getNewUserBirtNumbersAdminBatch(
@@ -102,13 +150,18 @@ export class CityAccountSubservice {
       )
       return { birthNumbers, nextSince: new Date(requestResult.data.nextSince) }
     } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to get birth numbers for new verified user accounts.',
-        undefined,
-        undefined,
-        error,
-      )
+      if (!isAxiosError(error)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to get birth numbers for new verified user accounts.',
+          undefined,
+          undefined,
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.fromAxiosError(error, {
+        message: 'Failed to get birth numbers for new verified user accounts.',
+      })
     }
   }
 }

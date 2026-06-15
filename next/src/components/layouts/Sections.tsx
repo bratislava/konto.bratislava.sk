@@ -1,4 +1,5 @@
 import { FormLandingPageSectionsFragment } from '@/src/clients/graphql-strapi/api'
+import ContactsSection from '@/src/components/sections/ContactsSection'
 import RichtextSection from '@/src/components/sections/RichtextSection'
 
 /**
@@ -10,10 +11,12 @@ type SectionsProps = {
 }
 
 const SectionContent = ({ section }: { section: SectionsProps['sections'][number] }) => {
-  // eslint-disable-next-line sonarjs/no-small-switch
   switch (section.__typename) {
     case 'ComponentSectionsRichtext':
       return <RichtextSection section={section} />
+
+    case 'ComponentSectionsContacts':
+      return <ContactsSection section={section} />
 
     default:
       return null

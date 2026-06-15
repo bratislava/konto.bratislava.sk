@@ -225,7 +225,7 @@ describe('NotificationsEventsSubservice', () => {
           taxPayer: { birthNumber },
         }),
       ])
-      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({})
+      cityAccountSubservice.getUserDataAdminBatchOptional.mockResolvedValue({})
 
       await service['processInstallmentReminders'](
         INSTALLMENT_DUE_DATE_TYPE.NEXT,
@@ -252,7 +252,7 @@ describe('NotificationsEventsSubservice', () => {
           taxPayer: { birthNumber },
         }),
       ])
-      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+      cityAccountSubservice.getUserDataAdminBatchOptional.mockResolvedValue({
         [birthNumber]: createTestUserDataFromCityAccount({
           externalId: null,
         }),
@@ -284,7 +284,7 @@ describe('NotificationsEventsSubservice', () => {
           taxPayer: createTestTaxPayer({ birthNumber }),
         }),
       ])
-      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+      cityAccountSubservice.getUserDataAdminBatchOptional.mockResolvedValue({
         [birthNumber]: createTestUserDataFromCityAccount({
           externalId: 'ext-1',
         }),
@@ -351,7 +351,7 @@ describe('NotificationsEventsSubservice', () => {
           taxPayer: createTestTaxPayer({ birthNumber }),
         }),
       ])
-      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+      cityAccountSubservice.getUserDataAdminBatchOptional.mockResolvedValue({
         [birthNumber]: createTestUserDataFromCityAccount({
           externalId: 'ext-1',
         }),
@@ -428,7 +428,7 @@ describe('NotificationsEventsSubservice', () => {
           taxPayer: createTestTaxPayer({ birthNumber: birth2 }),
         }),
       ])
-      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+      cityAccountSubservice.getUserDataAdminBatchOptional.mockResolvedValue({
         [birth1]: createTestUserDataFromCityAccount({ externalId: 'ext-1' }),
         [birth2]: createTestUserDataFromCityAccount({ externalId: 'ext-2' }),
       })
@@ -486,7 +486,7 @@ describe('NotificationsEventsSubservice', () => {
       )
     })
 
-    it('calls getUserDataAdminBatch with all tax payer birth numbers', async () => {
+    it('calls getUserDataAdminBatchOptional with all tax payer birth numbers', async () => {
       const birth1 = '111111/1111'
       const birth2 = '222222/2222'
       prismaMock.$queryRaw.mockResolvedValue([
@@ -503,7 +503,7 @@ describe('NotificationsEventsSubservice', () => {
           taxPayer: createTestTaxPayer({ birthNumber: birth2 }),
         }),
       ])
-      cityAccountSubservice.getUserDataAdminBatch.mockResolvedValue({
+      cityAccountSubservice.getUserDataAdminBatchOptional.mockResolvedValue({
         [birth1]: createTestUserDataFromCityAccount({ externalId: 'ext-1' }),
       })
 
@@ -512,10 +512,9 @@ describe('NotificationsEventsSubservice', () => {
         year,
       )
 
-      expect(cityAccountSubservice.getUserDataAdminBatch).toHaveBeenCalledWith([
-        birth1,
-        birth2,
-      ])
+      expect(
+        cityAccountSubservice.getUserDataAdminBatchOptional,
+      ).toHaveBeenCalledWith([birth1, birth2])
     })
   })
 
@@ -596,7 +595,10 @@ describe('NotificationsEventsSubservice', () => {
         'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-123',
@@ -664,7 +666,10 @@ describe('NotificationsEventsSubservice', () => {
         'trackEventUnpaidTaxInstallmentReminder',
       )
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-1',
@@ -716,7 +721,10 @@ describe('NotificationsEventsSubservice', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatchOptional',
+        )
         .mockResolvedValue({
           [birthNumber]: createTestUserDataFromCityAccount({ externalId }),
         })
@@ -905,7 +913,10 @@ describe('NotificationsEventsSubservice', () => {
       }
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatch',
+        )
         .mockResolvedValue(mockUserData)
 
       const trackPaymentInBloomreachSpy = jest.spyOn(
@@ -952,7 +963,10 @@ describe('NotificationsEventsSubservice', () => {
         .mockResolvedValue(mockPayments)
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatch',
+        )
         .mockResolvedValue({})
 
       const trackPaymentInBloomreachSpy = jest
@@ -996,7 +1010,10 @@ describe('NotificationsEventsSubservice', () => {
         .mockResolvedValue(mockPayments)
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatch',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-1',
@@ -1053,7 +1070,10 @@ describe('NotificationsEventsSubservice', () => {
         .mockResolvedValue(mockPayments)
 
       jest
-        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .spyOn(
+          service['cityAccountSubservice'],
+          'getUserDataAdminBatch',
+        )
         .mockResolvedValue({
           '123456/7890': createTestUserDataFromCityAccount({
             externalId: 'external-id-1',

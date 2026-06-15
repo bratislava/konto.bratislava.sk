@@ -32,7 +32,7 @@ const IndexIcon = ({ index }: { index: number }) => {
 export const Stepper = ({ section: { title, description, checklists } }: Props) => {
   return (
     <div className="flex flex-col gap-4">
-      <SectionHeader title={title} text={description} />
+      <SectionHeader title={title} text={description} asRichtext />
 
       <DisclosureGroup
         defaultExpandedKeys={[0]}
@@ -51,7 +51,7 @@ export const Stepper = ({ section: { title, description, checklists } }: Props) 
                 </div>
               </DisclosureHeader>
 
-              <DisclosurePanel className="ml-14 px-4 lg:px-6">
+              <DisclosurePanel className="px-4 lg:ml-14 lg:px-6">
                 <Checklist
                   description={checklist.description}
                   checklistItems={checklist.checklistItems?.filter(isDefined)}

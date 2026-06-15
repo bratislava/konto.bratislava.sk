@@ -37,7 +37,7 @@ const StepperViewList = ({ onSkipToStep }: StepperViewListProps) => {
             <Button
               onPress={() => onSkipToStep(step.index)}
               data-cy={`stepper-step-${index + 1}`}
-              className="w-full"
+              className="w-full rounded-lg base-focus-ring"
               onHoverStart={isSummary ? precalculateSummary : undefined}
             >
               <StepperViewRow step={step} isCurrent={isCurrent} />

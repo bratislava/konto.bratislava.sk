@@ -62,6 +62,20 @@
           "sortable": false
         }
       },
+      "sections": {
+        "edit": {
+          "label": "Sekcie",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sections",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "documentId": {
         "edit": {},
         "list": {

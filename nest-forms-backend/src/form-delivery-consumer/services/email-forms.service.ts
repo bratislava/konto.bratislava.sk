@@ -338,6 +338,9 @@ export default class EmailFormsService {
         },
       },
       emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
+      replyTo: formDefinition.email.technicalEmailReplyToExtractedEmail
+        ? (extractEmailFormEmail(formDefinition, form.formDataJson) ?? undefined)
+        : undefined,
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(
             formId,

@@ -101,6 +101,11 @@ export type FormDefinitionEmail = FormDefinitionBase & {
     newSubmissionTemplate: MailgunTemplateEnum
     userResponseTemplate: MailgunTemplateEnum
     replyToAddress?: { test: string; prod: string }
+    /**
+     * When true, the technical (organization) email's reply-to is set to the user's email
+     * extracted via `extractEmail`, so admin replies go to the submitter instead of Konto.
+     */
+    technicalEmailReplyToExtractedEmail?: boolean
     sendJsonDataAttachmentInTechnicalMail?: boolean
     extractEmail?: SchemalessFormDataExtractor<any>
     extractName?: SchemalessFormDataExtractor<any>

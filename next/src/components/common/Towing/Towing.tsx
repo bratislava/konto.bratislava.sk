@@ -87,29 +87,24 @@ const Towing = ({ title, description }: TowingSectionProps) => {
       <SectionHeader title={title} text={description} />
 
       <div className="flex flex-col gap-2 rounded-lg border px-5 py-6">
-        <Typography variant="p-small-bold">{t('towing.licensePlate')}</Typography>
-
-        <Typography variant="p-small">{t('towing.typeInInstructions')}</Typography>
-
-        <div className="flex flex-col gap-2 md:flex-row md:gap-6">
+        <div className="flex flex-col items-end gap-2 md:flex-row md:gap-6">
           <TextField
-            label=""
+            label="t('towing.licensePlate')"
             displayOptionalLabel={false}
             errorMessage={errorMessage}
-            className="h-12"
             onChange={(value) => setLicensePlate(value.trim().toUpperCase())}
+            helptext={t('towing.typeInInstructions')}
           />
 
           <Button
-            onPress={handleSubmit}
+            onPress={() => handleSubmit()}
             variant="solid"
             fullWidthMobile
-            className="mt-2 h-11 lg:h-[50px]"
             isDisabled={licensePlate.length === 0 || !turnstileToken}
           >
-            <Icon name="search" />
+            <Icon name="search" className="size-6" />
 
-            {t('button.search')}
+            <Typography variant="p-small">{t('button.search')}</Typography>
           </Button>
         </div>
 
@@ -117,7 +112,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           theme="light"
           key={captchaKey}
           sitekey={environment.cloudflareTurnstileSiteKey}
-          className="mt-5 self-center"
+          className="self-center"
           onVerify={(token) => {
             setCaptchaWarning('hide')
             console.log('token', token)

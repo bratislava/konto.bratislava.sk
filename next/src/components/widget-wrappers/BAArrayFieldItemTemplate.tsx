@@ -9,6 +9,7 @@ import {
 import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
+import { useTranslation } from 'next-i18next/pages'
 
 import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
@@ -23,6 +24,7 @@ const BAArrayFieldItemTemplate = <
 >(
   props: ArrayFieldItemTemplateProps<T, S, F>,
 ) => {
+  const { t } = useTranslation('forms')
   const { children, buttonsProps, index, parentUiSchema } = props
   const { hasRemove } = buttonsProps
   const { parentId } = getObjectFieldInfo(buttonsProps.fieldPathId)
@@ -69,8 +71,8 @@ const BAArrayFieldItemTemplate = <
           <Button
             variant="icon-wrapped"
             icon={<Icon name="clear" />}
-            // TODO: Translation + improve message
-            aria-label="Vymazať"
+            // TODO: Improve message
+            aria-label={t('array_field_item.remove_aria_label')}
             onPress={onRemoveItemPatched}
             className="self-start"
           />

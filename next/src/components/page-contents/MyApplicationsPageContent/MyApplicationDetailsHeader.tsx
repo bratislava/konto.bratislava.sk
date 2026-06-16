@@ -61,12 +61,14 @@ const MyApplicationDetailsHeader = ({
     }
   }
 
+  // TODO: use MLink instead of regular Link component, check if it doesn't break in parent component
   return (
     <SectionContainer className="bg-gray-50">
       <div className="flex size-full flex-col justify-end gap-4 py-4 lg:gap-6 lg:py-8">
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
           <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
             <Icon name="chevron-left" className="size-5" />
+
             <Typography variant="p-tiny" className="font-medium underline underline-offset-2">
               {t('back_to_list')}
             </Typography>

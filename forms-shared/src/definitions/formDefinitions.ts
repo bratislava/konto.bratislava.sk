@@ -711,7 +711,7 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.Email,
-    slug: 'paas-kontaktny-formular-paas',
+    slug: 'paas-kontaktny-formular',
     title: 'Kontaktný formulár PAAS',
     jsonVersion: '1.0.1',
     schema: kontaktnyFormularPaas,

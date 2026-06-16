@@ -1,8 +1,9 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import React, { Dispatch, ReactNode, SetStateAction } from 'react'
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import FormMenuItem from '@/src/components/simple-components/MenuDropdown/FormMenuItem'
 import HeaderMenuItem from '@/src/components/simple-components/MenuDropdown/HeaderMenuItem'
+import cn from '@/src/utils/cn'
 
 export type MenuItemBase = {
   id?: number
@@ -17,7 +18,6 @@ type MenuDropdownBase = {
   items: MenuItemBase[]
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
-  buttonClassName?: string
   setIsOpen?: Dispatch<SetStateAction<boolean>>
 }
 
@@ -42,7 +42,7 @@ const MenuDropdown = ({
             items?.map((item, i) => (
               <FormMenuItem
                 key={i}
-                className={item.itemClassName}
+                className={cn(item.itemClassName, 'rounded-sm menu-dropdown-focus-ring')}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}
@@ -53,7 +53,7 @@ const MenuDropdown = ({
             items?.map((item, i) => (
               <HeaderMenuItem
                 key={i}
-                itemClassName={item.itemClassName}
+                itemClassName={cn('rounded-sm menu-dropdown-focus-ring', item.itemClassName)}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}

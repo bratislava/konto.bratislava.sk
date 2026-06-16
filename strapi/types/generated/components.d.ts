@@ -157,7 +157,7 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
 export interface BlocksQuestion extends Struct.ComponentSchema {
   collectionName: 'components_blocks_questions'
   info: {
-    displayName: 'question'
+    displayName: 'Question'
   }
   attributes: {
     content: Schema.Attribute.RichText & Schema.Attribute.Required

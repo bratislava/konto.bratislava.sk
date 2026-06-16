@@ -373,6 +373,27 @@ export type ComponentBlocksHelpItemInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentBlocksQuestion = {
+  __typename?: 'ComponentBlocksQuestion'
+  content: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksQuestionFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksQuestionInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentGeneralAlert = {
   __typename?: 'ComponentGeneralAlert'
   content: Scalars['String']['output']
@@ -503,6 +524,33 @@ export type ComponentSectionsContactsInput = {
   title?: InputMaybe<Scalars['String']['input']>
   titleLevel?: InputMaybe<Enum_Componentsectionscontacts_Titlelevel>
   webContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+}
+
+export type ComponentSectionsFaq = {
+  __typename?: 'ComponentSectionsFaq'
+  id: Scalars['ID']['output']
+  questions: Array<Maybe<ComponentBlocksQuestion>>
+  title: Scalars['String']['output']
+}
+
+export type ComponentSectionsFaqQuestionsArgs = {
+  filters?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsFaqFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
+  not?: InputMaybe<ComponentSectionsFaqFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
+  questions?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsFaqInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  questions?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionInput>>>
+  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentSectionsRichtext = {
@@ -889,8 +937,10 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
+  | ComponentBlocksQuestion
   | ComponentGeneralAlert
   | ComponentSectionsContacts
+  | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
   | Footer
@@ -3424,6 +3474,39 @@ export type RichtextSectionFragment = {
   content?: string | null
 }
 
+export type ChecklistItemFragment = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  title?: string | null
+  content?: string | null
+}
+
+export type ChecklistFragment = {
+  __typename?: 'ComponentBlocksChecklist'
+  title?: string | null
+  description?: string | null
+  checklistItems?: Array<{
+    __typename?: 'ComponentBlocksChecklistItem'
+    title?: string | null
+    content?: string | null
+  } | null> | null
+}
+
+export type StepperSectionFragment = {
+  __typename?: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
 export type ContactCardBlockFragment = {
   __typename?: 'ComponentBlocksContactCard'
   overrideLabel?: string | null
@@ -3605,39 +3688,6 @@ export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
   | FormLandingPageSections_Error_Fragment
 
-export type ChecklistItemsFragment = {
-  __typename?: 'ComponentBlocksChecklistItem'
-  title?: string | null
-  content?: string | null
-}
-
-export type ChecklistsFragment = {
-  __typename?: 'ComponentBlocksChecklist'
-  title?: string | null
-  description?: string | null
-  checklistItems?: Array<{
-    __typename?: 'ComponentBlocksChecklistItem'
-    title?: string | null
-    content?: string | null
-  } | null> | null
-}
-
-export type StepperSectionFragment = {
-  __typename?: 'ComponentSectionsStepper'
-  title?: string | null
-  description?: string | null
-  checklists?: Array<{
-    __typename?: 'ComponentBlocksChecklist'
-    title?: string | null
-    description?: string | null
-    checklistItems?: Array<{
-      __typename?: 'ComponentBlocksChecklistItem'
-      title?: string | null
-      content?: string | null
-    } | null> | null
-  } | null> | null
-}
-
 export type TaxFragment = {
   __typename?: 'Tax'
   documentId: string
@@ -3700,31 +3750,31 @@ export const RichtextSectionFragmentDoc = gql`
     content
   }
 `
-export const ChecklistItemsFragmentDoc = gql`
-  fragment ChecklistItems on ComponentBlocksChecklistItem {
+export const ChecklistItemFragmentDoc = gql`
+  fragment ChecklistItem on ComponentBlocksChecklistItem {
     title
     content
   }
 `
-export const ChecklistsFragmentDoc = gql`
-  fragment Checklists on ComponentBlocksChecklist {
+export const ChecklistFragmentDoc = gql`
+  fragment Checklist on ComponentBlocksChecklist {
     title
     description
     checklistItems {
-      ...ChecklistItems
+      ...ChecklistItem
     }
   }
-  ${ChecklistItemsFragmentDoc}
+  ${ChecklistItemFragmentDoc}
 `
 export const StepperSectionFragmentDoc = gql`
   fragment StepperSection on ComponentSectionsStepper {
     title
     description
     checklists {
-      ...Checklists
+      ...Checklist
     }
   }
-  ${ChecklistsFragmentDoc}
+  ${ChecklistFragmentDoc}
 `
 export const ContactCardBlockFragmentDoc = gql`
   fragment ContactCardBlock on ComponentBlocksContactCard {

@@ -57,7 +57,6 @@ const createMockTaxPayer = (
 
   return {
     id: 1,
-    uuid: '550e8400-e29b-41d4-a716-446655440000',
     createdAt: baseDate,
     updatedAt: baseDate,
     birthNumber: '123456/789',
@@ -67,7 +66,6 @@ const createMockTaxPayer = (
           id: 1,
           createdAt: baseDate,
           updatedAt: baseDate,
-          externalId: 'ext-admin-1',
           name: 'Test Tax Administrator',
           phoneNumber: '+421123456789',
           email: 'admin@test.sk',
@@ -77,7 +75,6 @@ const createMockTaxPayer = (
         taxType: TaxType.DZN,
       },
     ],
-    externalId: 'ext-taxpayer-1',
     name: 'John Doe',
     permanentResidenceStreet: 'Test Street',
     permanentResidenceZip: '12345',
@@ -1065,7 +1062,7 @@ describe('TaxService', () => {
       createTestTaxAdministratorEntry({
         taxType: TaxType.KO,
         taxAdministratorId: 2,
-        taxAdministrator: { id: 2, externalId: adminExternalId },
+        taxAdministrator: { id: 2 },
       })
 
     it('should return tax detail from implementation', async () => {
@@ -1114,7 +1111,6 @@ describe('TaxService', () => {
             permanentResidenceStreet: 'Test Street KO',
             permanentResidenceZip: '54321',
             permanentResidenceCity: 'Test City KO',
-            externalId: 'ext-ko-1',
             taxAdministrators: [koAdmin],
           },
         }),
@@ -1172,7 +1168,6 @@ describe('TaxService', () => {
           taxDetails: koTaxDetailsEmpty,
           taxPayer: {
             name: 'Test User KO Installments',
-            externalId: 'ext-ko-2',
             taxAdministrators: [testKoTaxAdministrator('ext-admin-ko-2')],
           },
         }),
@@ -1240,7 +1235,6 @@ describe('TaxService', () => {
           taxDetails: koTaxDetailsEmpty,
           taxPayer: {
             name: 'Test User KO Payments',
-            externalId: 'ext-ko-3',
             taxAdministrators: [testKoTaxAdministrator('ext-admin-ko-3')],
           },
         }),
@@ -1286,7 +1280,6 @@ describe('TaxService', () => {
           taxDetails: koTaxDetailsEmpty,
           taxPayer: {
             name: 'Test User KO Order 2',
-            externalId: 'ext-ko-4',
             taxAdministrators: [testKoTaxAdministrator('ext-admin-ko-4')],
           },
         }),
@@ -1473,7 +1466,6 @@ describe('TaxService', () => {
     describe('fetchTaxData', () => {
       const mockTaxData = createTestTax({
         id: 1,
-        uuid: 'tax-uuid',
         year: 2023,
         amount: 1000,
         variableSymbol: 'VS123',
@@ -1499,7 +1491,7 @@ describe('TaxService', () => {
             createTestTaxAdministratorEntry({
               taxType: TaxType.DZN,
               taxAdministratorId: 1,
-              taxAdministrator: { id: 1, externalId: 'ext-admin-1' },
+              taxAdministrator: { id: 1 },
             }),
           ],
         }),
@@ -1596,14 +1588,14 @@ describe('TaxService', () => {
         )
       })
 
-      it('should work with uuid as tax payer identifier', async () => {
+      it('should work with birthNumber as tax payer identifier', async () => {
         prismaMock.taxPayer.findUnique.mockResolvedValue(
           createTestTaxPayer({ id: 1 }),
         )
         prismaMock.tax.findUnique.mockResolvedValue(mockTaxData)
 
         const result = await service['fetchTaxData'](
-          { uuid: 'taxpayer-uuid' },
+          { birthNumber: '123456/789' },
           { taxPayments: true },
           2023,
           TaxType.KO,
@@ -1611,15 +1603,15 @@ describe('TaxService', () => {
         )
 
         expect(prismaMock.taxPayer.findUnique).toHaveBeenCalledWith({
-          where: { uuid: 'taxpayer-uuid' },
+          where: { birthNumber: '123456/789' },
           select: { id: true },
         })
         expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
           where: {
-            taxPayerId_year_type_order: {
-              year: 2023,
+            taxPayerId_type_year_order: {
               taxPayerId: 1,
               type: TaxType.KO,
+              year: 2023,
               order: 1,
             },
           },

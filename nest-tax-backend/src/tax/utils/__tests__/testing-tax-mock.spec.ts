@@ -28,7 +28,6 @@ describe('testing-tax-mock', () => {
       name: 'Test Tax Administrator',
       email: 'taxadmin@test.sk',
       phoneNumber: '+421900123456',
-      externalId: '42',
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     }
@@ -92,9 +91,7 @@ describe('testing-tax-mock', () => {
       )
 
       expect(result.vyb_email).toBe(mockTaxAdministrator.email)
-      expect(result.cislo_poradace).toBe(
-        Number(mockTaxAdministrator.externalId),
-      )
+      expect(result.cislo_poradace).toBe(mockTaxAdministrator.id)
       expect(result.vyb_id).toBe(mockTaxAdministrator.id)
       expect(result.vyb_nazov).toBe(mockTaxAdministrator.name)
       expect(result.vyb_telefon_prace).toBe(mockTaxAdministrator.phoneNumber)
@@ -287,9 +284,7 @@ describe('testing-tax-mock', () => {
       )
 
       expect(result.vyb_email).toBe(mockTaxAdministrator.email)
-      expect(result.cislo_poradace).toBe(
-        Number(mockTaxAdministrator.externalId),
-      )
+      expect(result.cislo_poradace).toBe(mockTaxAdministrator.id)
       expect(result.vyb_id).toBe(mockTaxAdministrator.id)
       expect(result.vyb_nazov).toBe(mockTaxAdministrator.name)
       expect(result.vyb_telefon_prace).toBe(mockTaxAdministrator.phoneNumber)

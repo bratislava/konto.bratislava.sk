@@ -491,14 +491,6 @@ export class ResponseTaxPayerReducedDto {
   @IsString()
   @IsOptional()
   permanentResidenceCity: string | null
-
-  @ApiProperty({
-    description: 'Id of tax payer from Noris',
-    default: '12345',
-  })
-  @IsString()
-  @IsOptional()
-  externalId: string | null
 }
 
 export class ResponseTaxSummaryDetailBaseDto {

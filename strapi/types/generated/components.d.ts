@@ -154,6 +154,17 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksQuestion extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_questions'
+  info: {
+    displayName: 'question'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 export interface GeneralAlert extends Struct.ComponentSchema {
   collectionName: 'components_general_alerts'
   info: {
@@ -187,6 +198,24 @@ export interface SectionsContacts extends Struct.ComponentSchema {
     title: Schema.Attribute.String
     titleLevel: Schema.Attribute.Enumeration<['h2', 'h3']> & Schema.Attribute.DefaultTo<'h2'>
     webContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+  }
+}
+
+export interface SectionsFaq extends Struct.ComponentSchema {
+  collectionName: 'components_sections_faqs'
+  info: {
+    displayName: 'FAQ'
+  }
+  attributes: {
+    questions: Schema.Attribute.Component<'blocks.question', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1
+        },
+        number
+      >
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
@@ -227,8 +256,10 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
       'sections.contacts': SectionsContacts
+      'sections.faq': SectionsFaq
       'sections.richtext': SectionsRichtext
       'sections.stepper': SectionsStepper
     }

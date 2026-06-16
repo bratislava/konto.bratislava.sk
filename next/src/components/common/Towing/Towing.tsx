@@ -198,7 +198,9 @@ const Towing = ({ title, description }: TowingSectionProps) => {
               notification={
                 variant === 'towing' && (
                   <Alert
-                    message={t('towing.informationTable.paymentNotification')}
+                    message={
+                      <Markdown content={t('towing.informationTable.paymentNotification')} />
+                    }
                     type="info"
                     fullWidth
                   />

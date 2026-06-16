@@ -229,10 +229,10 @@ export class TaxService {
       include: T
     }>({
       where: {
-        taxPayerId_year_type_order: {
-          year,
+        taxPayerId_type_year_order: {
           taxPayerId: taxPayer.id,
           type,
+          year,
           order,
         },
       },
@@ -343,7 +343,6 @@ export class TaxService {
       permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,
       permanentResidenceZip: tax.taxPayer.permanentResidenceZip,
       permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
-      externalId: tax.taxPayer.externalId,
     }
     const paidStatus = getExistingTaxStatus(
       detailWithoutQrCode.overallAmount,

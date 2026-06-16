@@ -67,7 +67,6 @@ export const createTestTax = (overrides?: TestTaxOverrides): TestTax => {
 
   const base: TestTax = {
     id: 1,
-    uuid: '00000000-0000-4000-8000-000000000001',
     createdAt: DEFAULT_DATE,
     updatedAt: DEFAULT_DATE,
     taxPayerId: 1,

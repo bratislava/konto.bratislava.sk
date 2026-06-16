@@ -17,11 +17,9 @@ datasource db {
 
 model TaxPayer {
   id                       Int      @id @default(autoincrement())
-  uuid                     String   @default(uuid()) @db.Uuid
   createdAt                DateTime @default(now())
   updatedAt                DateTime @default(now()) @updatedAt
   birthNumber              String // with slash
-  externalId               String?
   name                     String?
   permanentResidenceStreet String?
   permanentResidenceZip    String?
@@ -35,7 +33,6 @@ model TaxPayer {
   taxImportAttempts TaxImportAttempt[]
 
   @@unique([birthNumber])
-  @@unique([uuid])
   @@index([lastUpdatedAtDZN])
   @@index([lastUpdatedAtKO])
   @@index([updatedAt, id])
@@ -43,7 +40,6 @@ model TaxPayer {
 
 model Tax {
   id                              Int                  @id @default(autoincrement())
-  uuid                            String               @default(uuid()) @db.Uuid
   createdAt                       DateTime             @default(now())
   updatedAt                       DateTime             @default(now()) @updatedAt
   year                            Int
@@ -66,10 +62,9 @@ model Tax {
   isCancelled                     Boolean              @default(false)
   paymentMethodIsInkaso           Boolean              @default(false) // Whether the payment method of the tax is inkaso (direct debit, collected by the tax administrator)
 
-  @@unique([uuid])
-  @@unique([taxPayerId, year, type, order])
   @@unique([variableSymbol])
-  @@index([year, lastCheckedPayments])
+  @@unique([taxPayerId, type, year, order])
+  @@index([lastCheckedPayments])
 }
 
 model TaxPayment {
@@ -86,6 +81,7 @@ model TaxPayment {
 
   @@unique([orderId])
   @@index([status])
+  @@index([taxId, status])
 }
 
 model TaxInstallment {
@@ -104,10 +100,9 @@ model TaxInstallment {
 }
 
 model TaxAdministrator {
-  id          Int                        @id @default(autoincrement())
+  id          Int                        @id
   createdAt   DateTime                   @default(now())
   updatedAt   DateTime                   @default(now()) @updatedAt
-  externalId  String
   name        String
   phoneNumber String
   email       String
@@ -123,6 +118,7 @@ model TaxPayerTaxAdministrator {
 
   @@id([taxPayerId, taxAdministratorId, taxType])
   @@unique([taxPayerId, taxType])
+  @@index([taxAdministratorId])
 }
 
 model CsvFile {
@@ -142,6 +138,8 @@ model Config {
   validSince DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
+
+  @@index([key])
 }
 
 model TaxImportAttempt {

@@ -1,5 +1,19 @@
 BEGIN;
 
+-- SPECIFIC constraints, out of prisma:
+
+ALTER TABLE "TaxPayment"
+    ADD CONSTRAINT "TaxPayment_amount_positive" CHECK (amount > 0);
+
+ALTER TABLE "TaxPayer"
+    ADD CONSTRAINT "TaxPayer_birthNumber_format" CHECK ("birthNumber" ~ '^\d{6}/\d{3,4}$');
+
+ALTER TABLE "TaxInstallment"
+    ADD CONSTRAINT "TaxInstallment_order_positive" CHECK ("order" >= 1);
+
+ALTER TABLE "Tax"
+    ADD CONSTRAINT "Tax_variableSymbol_numeric" CHECK ("variableSymbol" ~ '^\d+$');
+
 -- Config
 
     -- CreateIndex
@@ -17,16 +31,10 @@ BEGIN;
 
 -- TaxPayment
 
-    ALTER TABLE "TaxPayment"
-    ADD CONSTRAINT "TaxPayment_amount_positive" CHECK (amount > 0);
-
     -- CreateIndex
     CREATE INDEX "TaxPayment_taxId_status_idx" ON "TaxPayment"("taxId", "status");
 
 -- TaxPayer 
-
-    ALTER TABLE "TaxPayer"
-    ADD CONSTRAINT "TaxPayer_birthNumber_format" CHECK ("birthNumber" ~ '^\d{6}/\d{3,4}$');
 
     -- AlterTable
     ALTER TABLE "TaxPayer" DROP COLUMN "externalId";
@@ -56,13 +64,5 @@ BEGIN;
 
     -- CreateIndex
     CREATE UNIQUE INDEX "Tax_taxPayerId_type_year_order_key" ON "Tax"("taxPayerId", "type", "year", "order");
-
-    ALTER TABLE "Tax"
-    ADD CONSTRAINT "Tax_variableSymbol_numeric" CHECK ("variableSymbol" ~ '^\d+$');
-
--- TaxInstallment
-
-    ALTER TABLE "TaxInstallment"
-    ADD CONSTRAINT "TaxInstallment_order_positive" CHECK ("order" >= 1);
 
 COMMIT;

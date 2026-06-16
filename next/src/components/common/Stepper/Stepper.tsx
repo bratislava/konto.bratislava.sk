@@ -16,10 +16,6 @@ type Props = {
   section: StepperSectionFragment
 }
 
-/**
- * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-14458&t=FB9MA6UJV5t84NVu-4
- */
-
 const IndexIcon = ({ index }: { index: number }) => {
   return (
     <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-background-passive-inverted-base">
@@ -29,6 +25,10 @@ const IndexIcon = ({ index }: { index: number }) => {
     </div>
   )
 }
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-14458&t=FB9MA6UJV5t84NVu-4
+ */
 
 export const Stepper = ({ section: { title, description, checklists } }: Props) => {
   return (

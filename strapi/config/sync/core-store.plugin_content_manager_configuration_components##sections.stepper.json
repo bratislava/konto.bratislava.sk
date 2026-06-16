@@ -50,7 +50,7 @@
       },
       "checklists": {
         "edit": {
-          "label": "Checklisty",
+          "label": "Kroky",
           "description": "",
           "placeholder": "",
           "visible": true,

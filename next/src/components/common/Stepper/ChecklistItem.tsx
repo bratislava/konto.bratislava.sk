@@ -10,14 +10,14 @@ export type ChecklistItemProps = {
 
 export const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
   return (
-    <div className="flex flex-row items-start gap-4">
+    <li className="flex flex-row items-start gap-4">
       <Icon name="check-circle" className="size-6 shrink-0 text-content-passive-secondary" />
 
       <div className="flex flex-col gap-1">
-        <Typography variant="p-default">{title}</Typography>
+        <Typography variant="p-small">{title}</Typography>
 
         <Markdown variant="small" content={content} />
       </div>
-    </div>
+    </li>
   )
 }

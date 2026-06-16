@@ -60,21 +60,32 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           turnstileToken,
         },
       )
-      const loadingTime = response.data.loadingDate.split('T')
+      const loadingDate = response.data.loadingDate.split('T')[0].split('-').reverse().join('.')
+      const loadingTime = response.data.loadingDate.split('T')[1].slice(0, 5)
       setVehicle({
         ...response.data,
         licensePlate,
-        loadingDate: loadingTime[0],
-        loadingTime: loadingTime[1].slice(0, 5),
+        loadingDate,
+        loadingTime,
       })
       setVariant(response.data.unloadingLocation ? 'relay' : 'towing')
       setErrorMessage('')
     },
     onError: (error) => {
       if (isAxiosError(error) && error.response?.status === 404) {
+        setVehicle({
+          licensePlate,
+          loadingDate: '',
+          loadingTime: '',
+          loadingLocation: '',
+          towReason: '',
+          unloadingLocation: '',
+          relocationReason: '',
+        })
         setVariant('notFound')
+        setErrorMessage('')
       } else {
-        logger.error('Error fetching towing:', error)
+        logger.error('Error fetching towing:', error.response?.data.message)
         setErrorMessage(t('towing.error'))
         setVariant(null)
       }
@@ -86,27 +97,25 @@ const Towing = ({ title, description }: TowingSectionProps) => {
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={description} />
 
-      <div className="flex flex-col gap-2 rounded-lg border px-5 py-6">
-        <div className="flex flex-col items-end gap-2 md:flex-row md:gap-6">
-          <TextField
-            label="t('towing.licensePlate')"
-            displayOptionalLabel={false}
-            errorMessage={errorMessage}
-            onChange={(value) => setLicensePlate(value.trim().toUpperCase())}
-            helptext={t('towing.typeInInstructions')}
-          />
+      <div className="flex flex-col gap-4 rounded-lg border px-5 py-6">
+        <TextField
+          label={t('towing.licensePlate')}
+          displayOptionalLabel={false}
+          errorMessage={errorMessage}
+          onChange={(value) => setLicensePlate(value.trim().toUpperCase())}
+          helptext={t('towing.typeInInstructions')}
+        />
 
-          <Button
-            onPress={() => handleSubmit()}
-            variant="solid"
-            fullWidthMobile
-            isDisabled={licensePlate.length === 0 || !turnstileToken}
-          >
-            <Icon name="search" className="size-6" />
+        <Button
+          onPress={() => handleSubmit()}
+          variant="solid"
+          fullWidth
+          isDisabled={licensePlate.length === 0 || !turnstileToken}
+        >
+          <Icon name="search" className="size-6" />
 
-            <Typography variant="p-small">{t('button.search')}</Typography>
-          </Button>
-        </div>
+          <Typography variant="p-small">{t('button.search')}</Typography>
+        </Button>
 
         <Turnstile
           theme="light"
@@ -115,7 +124,6 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           className="self-center"
           onVerify={(token) => {
             setCaptchaWarning('hide')
-            console.log('token', token)
             setTurnstileToken(token)
           }}
           onError={(error) => {
@@ -143,8 +151,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
 
         {variant && (
           <Typography variant="h3">
-            {t(`towing.informationTitle.${variant}`)}
-            {vehicle?.licensePlate}
+            {t(`towing.informationTitle.${variant}`, { ecv: vehicle?.licensePlate })}
           </Typography>
         )}
 

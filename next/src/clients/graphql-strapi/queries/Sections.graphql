@@ -2,6 +2,27 @@ fragment RichtextSection on ComponentSectionsRichtext {
   content
 }
 
+fragment ChecklistItem on ComponentBlocksChecklistItem {
+  title
+  content
+}
+
+fragment Checklist on ComponentBlocksChecklist {
+  title
+  description
+  checklistItems {
+    ...ChecklistItem
+  }
+}
+
+fragment StepperSection on ComponentSectionsStepper {
+  title
+  description
+  checklists {
+    ...Checklist
+  }
+}
+
 fragment ContactCardBlock on ComponentBlocksContactCard {
   overrideLabel
   value
@@ -65,6 +86,10 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
 
   ... on ComponentSectionsRichtext {
     ...RichtextSection
+  }
+
+  ... on ComponentSectionsStepper {
+    ...StepperSection
   }
 
   ... on ComponentSectionsContacts {

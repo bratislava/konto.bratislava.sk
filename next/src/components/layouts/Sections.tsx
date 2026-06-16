@@ -11,11 +11,8 @@ type SectionsProps = {
 }
 
 const SectionContent = ({ section }: { section: SectionsProps['sections'][number] }) => {
-
-  console.log('SectionContent', section.__typename)
   switch (section.__typename) {
     case 'ComponentSectionsRichtext':
-      console.log('RichtextSection', section.__typename)
       return <RichtextSection section={section} />
 
     case 'ComponentSectionsTowing':

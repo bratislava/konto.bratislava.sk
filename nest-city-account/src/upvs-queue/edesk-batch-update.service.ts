@@ -15,8 +15,8 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { selectHighPriorityEntities } from './upvs-queue.queries'
 
 @Injectable()
-export class EdeskBatchSearchService {
-  private readonly logger = new LineLoggerSubservice(EdeskBatchSearchService.name)
+export class EdeskBatchUpdateService {
+  private readonly logger = new LineLoggerSubservice(EdeskBatchUpdateService.name)
 
   private readonly CACHE_TTL_HOURS = 144 // Configurable cache TTL
 

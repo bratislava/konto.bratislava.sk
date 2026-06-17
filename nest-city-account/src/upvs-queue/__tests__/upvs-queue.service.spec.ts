@@ -4,7 +4,7 @@ import { QueueItemStatusEnum } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import { PrismaService } from '../../prisma/prisma.service'
-import { EdeskBatchSearchService } from '../edesk-batch-search.service'
+import { EdeskBatchUpdateService } from '../edesk-batch-update.service'
 import { EdeskUriUpdateService } from '../edesk-uri-update.service'
 import { UpvsQueueService } from '../upvs-queue.service'
 import { UrgentLookupService } from '../urgent-lookup.service'
@@ -13,7 +13,7 @@ describe('UpvsQueueService', () => {
   let service: UpvsQueueService
   let urgentLookupService: UrgentLookupService
   let edeskUriUpdateService: EdeskUriUpdateService
-  let edeskBatchSearchService: EdeskBatchSearchService
+  let edeskBatchUpdateService: EdeskBatchUpdateService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,14 +22,14 @@ describe('UpvsQueueService', () => {
         { provide: PrismaService, useValue: prismaMock },
         { provide: UrgentLookupService, useValue: createMock<UrgentLookupService>() },
         { provide: EdeskUriUpdateService, useValue: createMock<EdeskUriUpdateService>() },
-        { provide: EdeskBatchSearchService, useValue: createMock<EdeskBatchSearchService>() },
+        { provide: EdeskBatchUpdateService, useValue: createMock<EdeskBatchUpdateService>() },
       ],
     }).compile()
 
     service = module.get(UpvsQueueService)
     urgentLookupService = module.get(UrgentLookupService)
     edeskUriUpdateService = module.get(EdeskUriUpdateService)
-    edeskBatchSearchService = module.get(EdeskBatchSearchService)
+    edeskBatchUpdateService = module.get(EdeskBatchUpdateService)
 
     // Quiet, no-work defaults; individual tests override what they exercise.
     jest
@@ -38,7 +38,7 @@ describe('UpvsQueueService', () => {
     jest.spyOn(edeskUriUpdateService, 'getUriToUpdateInternal').mockResolvedValue(null)
     jest.spyOn(edeskUriUpdateService, 'getUriToUpdateExternal').mockResolvedValue(null)
     jest
-      .spyOn(edeskBatchSearchService, 'processBatchedSearch')
+      .spyOn(edeskBatchUpdateService, 'processBatchedSearch')
       .mockResolvedValue({ highPriorityProcessed: 0, externalProcessed: 0 })
   })
 
@@ -98,7 +98,7 @@ describe('UpvsQueueService', () => {
       expect(urgentLookupService.processUrgentItems).toHaveBeenCalledTimes(1)
       expect(edeskUriUpdateService.getUriToUpdateInternal).toHaveBeenCalledTimes(1)
       expect(edeskUriUpdateService.getUriToUpdateExternal).toHaveBeenCalledTimes(1)
-      expect(edeskBatchSearchService.processBatchedSearch).toHaveBeenCalledTimes(1)
+      expect(edeskBatchUpdateService.processBatchedSearch).toHaveBeenCalledTimes(1)
     })
 
     it('short-circuits the whole tick when urgent is rate-limited', async () => {
@@ -110,7 +110,7 @@ describe('UpvsQueueService', () => {
 
       expect(edeskUriUpdateService.getUriToUpdateInternal).not.toHaveBeenCalled()
       expect(edeskUriUpdateService.getUriToUpdateExternal).not.toHaveBeenCalled()
-      expect(edeskBatchSearchService.processBatchedSearch).not.toHaveBeenCalled()
+      expect(edeskBatchUpdateService.processBatchedSearch).not.toHaveBeenCalled()
     })
 
     it('repairs one internal URI and skips the batched search', async () => {
@@ -125,7 +125,7 @@ describe('UpvsQueueService', () => {
         id: 'id-1',
       })
       expect(edeskUriUpdateService.getUriToUpdateExternal).not.toHaveBeenCalled()
-      expect(edeskBatchSearchService.processBatchedSearch).not.toHaveBeenCalled()
+      expect(edeskBatchUpdateService.processBatchedSearch).not.toHaveBeenCalled()
     })
 
     it('repairs one external URI (when no internal is due) and skips the batched search', async () => {
@@ -136,7 +136,7 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       expect(edeskUriUpdateService.handleUriUpdateExternal).toHaveBeenCalledWith('rc://sk/ext')
-      expect(edeskBatchSearchService.processBatchedSearch).not.toHaveBeenCalled()
+      expect(edeskBatchUpdateService.processBatchedSearch).not.toHaveBeenCalled()
     })
 
     it('reports the combined counts from the tiers', async () => {
@@ -144,7 +144,7 @@ describe('UpvsQueueService', () => {
         .spyOn(urgentLookupService, 'processUrgentItems')
         .mockResolvedValue({ attempted: 2, rateLimited: false, failures: [] })
       jest
-        .spyOn(edeskBatchSearchService, 'processBatchedSearch')
+        .spyOn(edeskBatchUpdateService, 'processBatchedSearch')
         .mockResolvedValue({ highPriorityProcessed: 3, externalProcessed: 1 })
       const logSpy = jest.spyOn((service as any).logger, 'log').mockImplementation(() => {})
 

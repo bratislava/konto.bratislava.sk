@@ -6,24 +6,24 @@ import prismaMock from '../../../test/singleton'
 import { NasesService } from '../../nases/nases.service'
 import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import { EdeskBatchSearchService } from '../edesk-batch-search.service'
+import { EdeskBatchUpdateService } from '../edesk-batch-update.service'
 
-describe('EdeskBatchSearchService', () => {
-  let service: EdeskBatchSearchService
+describe('EdeskBatchUpdateService', () => {
+  let service: EdeskBatchUpdateService
   let physicalEntityService: PhysicalEntityService
   let nasesService: NasesService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        EdeskBatchSearchService,
+        EdeskBatchUpdateService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
         { provide: NasesService, useValue: createMock<NasesService>() },
       ],
     }).compile()
 
-    service = module.get(EdeskBatchSearchService)
+    service = module.get(EdeskBatchUpdateService)
     physicalEntityService = module.get(PhysicalEntityService)
     nasesService = module.get(NasesService)
   })

@@ -4,7 +4,7 @@ import { QueueItemStatusEnum } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { EdeskBatchSearchService } from './edesk-batch-search.service'
+import { EdeskBatchUpdateService } from './edesk-batch-update.service'
 import { EdeskUriUpdateService } from './edesk-uri-update.service'
 import { UrgentLookupService } from './urgent-lookup.service'
 
@@ -19,7 +19,7 @@ export class UpvsQueueService {
     private readonly prismaService: PrismaService,
     private readonly urgentLookupService: UrgentLookupService,
     private readonly edeskUriUpdateService: EdeskUriUpdateService,
-    private readonly edeskBatchSearchService: EdeskBatchSearchService
+    private readonly edeskBatchUpdateService: EdeskBatchUpdateService
   ) {}
 
   async addExternalItemsToQueue(
@@ -109,7 +109,7 @@ export class UpvsQueueService {
       }
 
       try {
-        const search = await this.edeskBatchSearchService.processBatchedSearch()
+        const search = await this.edeskBatchUpdateService.processBatchedSearch()
         result.highPriorityProcessed = search.highPriorityProcessed
         result.externalProcessed = search.externalProcessed
         result.totalProcessed =

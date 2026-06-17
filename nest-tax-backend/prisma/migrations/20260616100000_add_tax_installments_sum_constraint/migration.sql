@@ -32,8 +32,13 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION trg_fn_check_installments_sum()
 RETURNS TRIGGER AS $$
 BEGIN
-  PERFORM check_tax_installments_sum(COALESCE(NEW."taxId", OLD."taxId"));
-  RETURN NULL;
+    IF NEW."taxId" != OLD."taxId" AND NEW."taxId" IS NOT NULL AND OLD."taxId" IS NOT NULL THEN
+        PERFORM check_tax_installments_sum(NEW."taxId");
+        PERFORM check_tax_installments_sum(OLD."taxId");
+    ELSE
+        PERFORM check_tax_installments_sum(COALESCE(NEW."taxId", OLD."taxId"));
+    END IF;
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 

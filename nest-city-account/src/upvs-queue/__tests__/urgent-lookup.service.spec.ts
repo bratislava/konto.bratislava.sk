@@ -64,7 +64,12 @@ describe('UrgentLookupService', () => {
 
     const result = await service.processUrgentItems()
 
-    expect(nasesService.lookupIdentityFO).toHaveBeenCalledWith('1234567890', 'John', 'Doe')
+    expect(nasesService.lookupIdentityFO).toHaveBeenCalledWith(
+      '1234567890',
+      'John',
+      'Doe',
+      'urgent-1'
+    )
     expect(physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase).toHaveBeenCalledWith([
       expect.objectContaining({ physicalEntityId: 'urgent-1', inputUri: 'rc://sk/resolved' }),
     ])

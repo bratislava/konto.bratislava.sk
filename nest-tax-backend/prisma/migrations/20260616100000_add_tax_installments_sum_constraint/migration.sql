@@ -12,8 +12,8 @@ BEGIN
   WHERE id = p_tax_id
   FOR NO KEY UPDATE;
 
-  IF v_tax_amount IS NULL THEN
-    RAISE EXCEPTION 'Tax with id % does not exist', p_tax_id;
+  IF NOT FOUND THEN
+    RETURN; -- Tax is being deleted in the same transaction, skip check
   END IF;
 
   SELECT COALESCE(SUM(amount), 0) INTO v_installments_sum

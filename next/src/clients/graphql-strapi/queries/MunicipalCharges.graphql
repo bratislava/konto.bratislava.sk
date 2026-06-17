@@ -1,0 +1,25 @@
+fragment MunicipalCharge on MunicipalCharge {
+  documentId
+  title
+  slug
+  feedbackLink
+}
+
+fragment MunicipalChargeConfig on MunicipalChargeConfig {
+  documentId
+  officialCorrespondenceChannel {
+    consentText
+    channelChangePendingAlert {
+      title
+      content
+    }
+  }
+  municipalChargeIdentifier {
+    dzn {
+      ...MunicipalCharge
+    }
+    ko {
+      ...MunicipalCharge
+    }
+  }
+}

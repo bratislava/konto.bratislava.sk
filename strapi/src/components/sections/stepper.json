@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_sections_steppers",
+  "info": {
+    "displayName": "Stepper"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "checklists": {
+      "type": "component",
+      "component": "blocks.checklist",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

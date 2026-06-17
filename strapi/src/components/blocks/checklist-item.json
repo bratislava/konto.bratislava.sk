@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_checklist_items",
+  "info": {
+    "displayName": "Checklist item"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    }
+  },
+  "config": {}
+}

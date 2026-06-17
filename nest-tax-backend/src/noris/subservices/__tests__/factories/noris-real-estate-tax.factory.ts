@@ -7,6 +7,7 @@ export const createTestNorisRealEstateTax = (
   cislo_subjektu: 139_431_111,
   cislo_konania: '1/25/019623-36/21/925188',
   variabilny_symbol: '3125019623',
+  subjekt_refer: '0925188',
   subjekt_nazev: 'Ján Novák',
   rok: 2025,
   ulica_tb_cislo: 'Hlavná ulica 20',

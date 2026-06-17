@@ -20,6 +20,7 @@ export const convertCurrencyToInt = (value: string): number => {
 export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   return {
     birthNumber: data.ICO_RC,
+    externalId: data.subjekt_refer,
     name: data.subjekt_nazev,
     permanentResidenceStreet: data.ulica_tb_cislo,
     permanentResidenceZip: data.psc_ref_tb,

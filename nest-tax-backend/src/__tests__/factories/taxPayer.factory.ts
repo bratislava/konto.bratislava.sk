@@ -15,6 +15,7 @@ export const createTestTaxPayer = (
   createdAt: DEFAULT_DATE,
   updatedAt: DEFAULT_DATE,
   birthNumber: '1234567890',
+  externalId: '1234567890',
   name: 'John Doe',
   permanentResidenceStreet: '1234567890',
   permanentResidenceZip: '1234567890',

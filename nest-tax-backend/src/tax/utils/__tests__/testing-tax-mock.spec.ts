@@ -195,6 +195,7 @@ describe('testing-tax-mock', () => {
         )
 
         expect(result.cislo_subjektu).toBe(123_456)
+        expect(result.subjekt_refer).toBe('123456789')
       })
 
       it('should set datum_realizacie to current date', () => {
@@ -442,6 +443,7 @@ describe('testing-tax-mock', () => {
         )
 
         expect(result.cislo_subjektu).toBe(123_456)
+        expect(result.subjekt_refer).toBe('123456789')
       })
 
       it('should set datum_realizacie to current date', () => {

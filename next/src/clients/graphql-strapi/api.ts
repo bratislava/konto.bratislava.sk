@@ -530,7 +530,7 @@ export type ComponentSectionsFaq = {
   __typename?: 'ComponentSectionsFaq'
   id: Scalars['ID']['output']
   questions: Array<Maybe<ComponentBlocksQuestion>>
-  title: Scalars['String']['output']
+  title?: Maybe<Scalars['String']['output']>
 }
 
 export type ComponentSectionsFaqQuestionsArgs = {
@@ -863,6 +863,7 @@ export type FormInput = {
 
 export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsContacts
+  | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
   | Error
@@ -2930,6 +2931,15 @@ export type FormLandingPageFragment = {
           iframeUrl?: string | null
         } | null
       }
+    | {
+        __typename: 'ComponentSectionsFaq'
+        title?: string | null
+        questions: Array<{
+          __typename?: 'ComponentBlocksQuestion'
+          title: string
+          content: string
+        } | null>
+      }
     | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
     | {
         __typename: 'ComponentSectionsStepper'
@@ -3041,6 +3051,15 @@ export type FormWithLandingPageFragment = {
             barrierFreeInfo?: string | null
             iframeUrl?: string | null
           } | null
+        }
+      | {
+          __typename: 'ComponentSectionsFaq'
+          title?: string | null
+          questions: Array<{
+            __typename?: 'ComponentBlocksQuestion'
+            title: string
+            content: string
+          } | null>
         }
       | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
       | {
@@ -3169,6 +3188,15 @@ export type FormWithLandingPageBySlugQuery = {
               barrierFreeInfo?: string | null
               iframeUrl?: string | null
             } | null
+          }
+        | {
+            __typename: 'ComponentSectionsFaq'
+            title?: string | null
+            questions: Array<{
+              __typename?: 'ComponentBlocksQuestion'
+              title: string
+              content: string
+            } | null>
           }
         | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
         | {
@@ -3595,6 +3623,22 @@ export type ContactsSectionFragment = {
   } | null
 }
 
+export type QuestionFragment = {
+  __typename?: 'ComponentBlocksQuestion'
+  title: string
+  content: string
+}
+
+export type FaqSectionFragment = {
+  __typename?: 'ComponentSectionsFaq'
+  title?: string | null
+  questions: Array<{
+    __typename?: 'ComponentBlocksQuestion'
+    title: string
+    content: string
+  } | null>
+}
+
 type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   __typename: 'ComponentSectionsContacts'
   id: string
@@ -3659,6 +3703,16 @@ type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   } | null
 }
 
+type FormLandingPageSections_ComponentSectionsFaq_Fragment = {
+  __typename: 'ComponentSectionsFaq'
+  title?: string | null
+  questions: Array<{
+    __typename?: 'ComponentBlocksQuestion'
+    title: string
+    content: string
+  } | null>
+}
+
 type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
   __typename: 'ComponentSectionsRichtext'
   content?: string | null
@@ -3684,6 +3738,7 @@ type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsContacts_Fragment
+  | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
   | FormLandingPageSections_Error_Fragment
@@ -3841,6 +3896,21 @@ export const ContactsSectionFragmentDoc = gql`
   ${ContactPersonCardBlockFragmentDoc}
   ${ContactDirectionsCardBlockFragmentDoc}
 `
+export const QuestionFragmentDoc = gql`
+  fragment Question on ComponentBlocksQuestion {
+    title
+    content
+  }
+`
+export const FaqSectionFragmentDoc = gql`
+  fragment FaqSection on ComponentSectionsFaq {
+    title
+    questions {
+      ...Question
+    }
+  }
+  ${QuestionFragmentDoc}
+`
 export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
@@ -3853,10 +3923,14 @@ export const FormLandingPageSectionsFragmentDoc = gql`
     ... on ComponentSectionsContacts {
       ...ContactsSection
     }
+    ... on ComponentSectionsFaq {
+      ...FaqSection
+    }
   }
   ${RichtextSectionFragmentDoc}
   ${StepperSectionFragmentDoc}
   ${ContactsSectionFragmentDoc}
+  ${FaqSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {

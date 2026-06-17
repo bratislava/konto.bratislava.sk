@@ -81,6 +81,18 @@ fragment ContactsSection on ComponentSectionsContacts {
   titleLevelContacts: titleLevel
 }
 
+fragment Question on ComponentBlocksQuestion {
+  title
+  content
+}
+
+fragment FaqSection on ComponentSectionsFaq {
+  title
+  questions {
+    ...Question
+  }
+}
+
 fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   __typename
 
@@ -94,5 +106,9 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
 
   ... on ComponentSectionsContacts {
     ...ContactsSection
+  }
+
+  ... on ComponentSectionsFaq {
+    ...FaqSection
   }
 }

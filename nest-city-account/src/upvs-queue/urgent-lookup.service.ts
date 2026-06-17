@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
-import { GetUpvsIdentityByUriSuccessType,NasesService } from '../nases/nases.service'
+import { GetUpvsIdentityByUriSuccessType, NasesService } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { toLogfmt } from '../utils/logging'
@@ -61,7 +61,7 @@ export class UrgentLookupService {
     }
 
     const run = await this.resolveUrgentEntities(entities)
-    await this.persistUrgentResults(run)
+    await this.saveUrgentResults(run)
 
     const attempted = run.successes.length + run.failedIds.length
     if (run.rateLimited) {

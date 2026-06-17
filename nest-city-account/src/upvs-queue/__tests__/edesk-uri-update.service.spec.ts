@@ -121,7 +121,9 @@ describe('EdeskUriUpdateService', () => {
     })
 
     it('marks the row FAILED and bumps failCount when not resolved', async () => {
-      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({ success: [], failed: [] } as any)
+      jest
+        .spyOn(nasesService, 'getIdentitiesByUris')
+        .mockResolvedValue({ success: [], failed: [] } as any)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 

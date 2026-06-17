@@ -16,8 +16,8 @@
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": false,
-          "sortable": false
+          "searchable": true,
+          "sortable": true
         }
       },
       "title": {
@@ -212,12 +212,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "addressContacts",
-        "openingHoursContacts"
-      ],
+      "list": ["id", "title", "addressContacts", "openingHoursContacts"],
       "edit": [
         [
           {

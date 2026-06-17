@@ -1,0 +1,23 @@
+import { FaqSectionFragment } from '@/src/clients/graphql-strapi/api'
+import SectionContainer from '@/src/components/layouts/SectionContainer'
+import { isDefined } from '@/src/frontend/utils/general'
+import SectionHeader from '@/src/components/layouts/SectionHeader'
+import FaqsGroup from '@/src/components/segments/FaqsGroup/FaqsGroup'
+
+type FaqsSectionProps = {
+  section: FaqSectionFragment
+}
+
+const Faqsection = ({ section }: FaqsSectionProps) => {
+  return (
+    <SectionContainer>
+      <div className="flex flex-col gap-6">
+        <SectionHeader title={section.title} titleLevel="h2" />
+
+        <FaqsGroup faqs={section.questions.filter(isDefined)} />
+      </div>
+    </SectionContainer>
+  )
+}
+
+export default Faqsection

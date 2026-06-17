@@ -14,7 +14,7 @@ const LinkRowCard = ({ title, link, isLastItem = false }: LinkRowCardProps) => {
   const { t } = useTranslation('account')
 
   return (
-    <a href={link} target="_blank" rel="noopener noreferrer">
+    <a href={link} rel="noreferrer" aria-label={title}>
       <li className="px-6">
         <div
           className={cn(

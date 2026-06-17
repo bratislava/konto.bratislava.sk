@@ -51,6 +51,7 @@ export const createTestingRealEstateTaxMock = (
     cislo_konania: randomBytes(4).toString('hex'),
 
     // mock values for testing
+    subjekt_refer: '123456789',
     dan_pozemky: '0',
     dan_stavby_SPOLU: '0',
     ulica_tb_cislo: 'test ulica cislo',
@@ -173,6 +174,7 @@ export const createTestingCommunalWasteTaxMock = (
     cislo_konania: randomBytes(4).toString('hex'),
 
     // additional required fields from base schema (mock values)
+    subjekt_refer: '123456789',
     ulica_tb_cislo: 'test ulica cislo',
     psc_ref_tb: 'test psc',
     obec_nazev_tb: 'test obec',

@@ -39,9 +39,6 @@ ALTER TABLE "Tax"
 
 -- TaxPayer 
 
-    -- AlterTable
-    ALTER TABLE "TaxPayer" DROP COLUMN "externalId";
-
     -- DropIndex
     DROP INDEX "public"."TaxPayer_uuid_key";
 

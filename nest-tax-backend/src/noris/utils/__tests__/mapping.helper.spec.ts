@@ -46,6 +46,7 @@ describe('convertCurrencyToInt', () => {
 describe('mapNorisToTaxPayerData', () => {
   const mockNorisData: NorisRealEstateTax = {
     ICO_RC: '1234567890',
+    subjekt_refer: 'EXT123',
     subjekt_nazev: 'Test Subject',
     ulica_tb_cislo: 'Test Street 1',
     psc_ref_tb: '12345',
@@ -57,6 +58,7 @@ describe('mapNorisToTaxPayerData', () => {
 
     expect(result).toEqual({
       birthNumber: '1234567890',
+      externalId: 'EXT123',
       name: 'Test Subject',
       permanentResidenceStreet: 'Test Street 1',
       permanentResidenceZip: '12345',

@@ -75,6 +75,7 @@ const createMockTaxPayer = (
         taxType: TaxType.DZN,
       },
     ],
+    externalId: 'ext-taxpayer-1',
     name: 'John Doe',
     permanentResidenceStreet: 'Test Street',
     permanentResidenceZip: '12345',
@@ -1111,6 +1112,7 @@ describe('TaxService', () => {
             permanentResidenceStreet: 'Test Street KO',
             permanentResidenceZip: '54321',
             permanentResidenceCity: 'Test City KO',
+            externalId: 'ext-ko-1',
             taxAdministrators: [koAdmin],
           },
         }),
@@ -1168,6 +1170,7 @@ describe('TaxService', () => {
           taxDetails: koTaxDetailsEmpty,
           taxPayer: {
             name: 'Test User KO Installments',
+            externalId: 'ext-ko-2',
             taxAdministrators: [testKoTaxAdministrator('ext-admin-ko-2')],
           },
         }),
@@ -1235,6 +1238,7 @@ describe('TaxService', () => {
           taxDetails: koTaxDetailsEmpty,
           taxPayer: {
             name: 'Test User KO Payments',
+            externalId: 'ext-ko-3',
             taxAdministrators: [testKoTaxAdministrator('ext-admin-ko-3')],
           },
         }),
@@ -1280,6 +1284,7 @@ describe('TaxService', () => {
           taxDetails: koTaxDetailsEmpty,
           taxPayer: {
             name: 'Test User KO Order 2',
+            externalId: 'ext-ko-4',
             taxAdministrators: [testKoTaxAdministrator('ext-admin-ko-4')],
           },
         }),

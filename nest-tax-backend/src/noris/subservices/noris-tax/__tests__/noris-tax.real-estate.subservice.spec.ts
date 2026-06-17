@@ -57,6 +57,7 @@ describe('NorisTaxRealEstateSubservice', () => {
       cislo_subjektu: 123,
       cislo_konania: 'KON123',
       variabilny_symbol: 'VS123',
+      subjekt_refer: 'REF123',
       subjekt_nazev: 'Test Subject',
       rok: 2023,
       ulica_tb_cislo: 'Test Street 1',

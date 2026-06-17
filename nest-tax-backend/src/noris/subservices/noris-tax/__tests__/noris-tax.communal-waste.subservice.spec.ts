@@ -526,6 +526,7 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         expect(result[0]).toHaveProperty('rok')
         expect(result[0]).toHaveProperty('dan_spolu')
         expect(result[0]).toHaveProperty('uhrazeno')
+        expect(result[0]).toHaveProperty('subjekt_refer')
         expect(result[0]).toHaveProperty('subjekt_nazev')
         expect(result[0]).toHaveProperty('datum_realizacie')
         expect(result[0]).toHaveProperty('vyb_nazov')

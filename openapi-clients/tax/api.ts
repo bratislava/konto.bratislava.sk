@@ -734,6 +734,10 @@ export interface ResponseTaxPayerReducedDto {
    * City of permanent residence with number
    */
   permanentResidenceCity: string | null
+  /**
+   * Id of tax payer from Noris
+   */
+  externalId: string | null
 }
 /**
  * Tax availability status

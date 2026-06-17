@@ -343,6 +343,7 @@ export class TaxService {
       permanentResidenceStreet: tax.taxPayer.permanentResidenceStreet,
       permanentResidenceZip: tax.taxPayer.permanentResidenceZip,
       permanentResidenceCity: tax.taxPayer.permanentResidenceCity,
+      externalId: tax.taxPayer.externalId,
     }
     const paidStatus = getExistingTaxStatus(
       detailWithoutQrCode.overallAmount,

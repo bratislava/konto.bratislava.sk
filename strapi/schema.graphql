@@ -694,7 +694,7 @@ input FormInput {
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsRichtext | ComponentSectionsTowing | Error
+union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
 
 scalar FormLandingPageSectionsDynamicZoneInput
 

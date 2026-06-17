@@ -191,6 +191,21 @@ model PhysicalEntity {
   activeEdeskUpdatedAt       DateTime?
   activeEdeskUpdateFailedAt  DateTime?
   activeEdeskUpdateFailCount Int       @default(0)
+
+  identityLookupRejection IdentityLookupRejection?
+}
+
+model IdentityLookupRejection {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  physicalEntity   PhysicalEntity @relation(fields: [physicalEntityId], references: [id])
+  physicalEntityId String         @unique @db.Uuid
+
+  // Fault details from the slovensko-sk container; empty string when UPVS omitted them.
+  faultCode   String
+  faultReason String
 }
 
 model ExternalEdeskCheck {

@@ -5,7 +5,6 @@ export const createTestNorisCommunalWasteTaxGrouped = (
   overrides?: Partial<NorisCommunalWasteTaxGrouped>,
 ): NorisCommunalWasteTaxGrouped => ({
   type: TaxType.KO,
-  cislo_poradace: 13_020,
   stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   cislo_konania: '4/25/030151-36/78/219197',
@@ -15,7 +14,6 @@ export const createTestNorisCommunalWasteTaxGrouped = (
   rok: 2025,
   dan_spolu: '448,66',
   uhrazeno: 448.66,
-  subjekt_refer: '0219197',
   subjekt_nazev: 'Ing. Ján Testovací',
   datum_realizacie: new Date('2025-02-13T00:00:00.000Z'),
   vyb_nazov: 'Ing. Mária Príkladná',

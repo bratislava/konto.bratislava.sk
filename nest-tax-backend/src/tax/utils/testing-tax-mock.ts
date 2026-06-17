@@ -44,14 +44,12 @@ export const createTestingRealEstateTaxMock = (
     datum_posledni_platby: norisData.alreadyPaid > 0 ? new Date() : null,
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,
-    cislo_poradace: taxAdministrator.id,
     vyb_id: taxAdministrator.id,
     vyb_nazov: taxAdministrator.name,
     vyb_telefon_prace: taxAdministrator.phoneNumber,
     cislo_konania: randomBytes(4).toString('hex'),
 
     // mock values for testing
-    subjekt_refer: '123456789',
     dan_pozemky: '0',
     dan_stavby_SPOLU: '0',
     ulica_tb_cislo: 'test ulica cislo',
@@ -166,7 +164,6 @@ export const createTestingCommunalWasteTaxMock = (
 
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,
-    cislo_poradace: taxAdministrator.id,
     vyb_id: taxAdministrator.id,
     vyb_nazov: taxAdministrator.name,
     vyb_telefon_prace: taxAdministrator.phoneNumber,
@@ -175,7 +172,6 @@ export const createTestingCommunalWasteTaxMock = (
     cislo_konania: randomBytes(4).toString('hex'),
 
     // additional required fields from base schema (mock values)
-    subjekt_refer: '123456789',
     ulica_tb_cislo: 'test ulica cislo',
     psc_ref_tb: 'test psc',
     obec_nazev_tb: 'test obec',

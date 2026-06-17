@@ -20,7 +20,6 @@ export const convertCurrencyToInt = (value: string): number => {
 export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
   return {
     birthNumber: data.ICO_RC,
-    externalId: data.subjekt_refer,
     name: data.subjekt_nazev,
     permanentResidenceStreet: data.ulica_tb_cislo,
     permanentResidenceZip: data.psc_ref_tb,
@@ -30,7 +29,6 @@ export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
 
 interface NorisTaxAdministratorData {
   email: string
-  externalId: string
   id: number
   name: string
   phoneNumber: string
@@ -42,7 +40,6 @@ export const mapNorisToTaxAdministratorData = (
   return data.vyb_id && data.vyb_telefon_prace && data.vyb_email
     ? {
         email: data.vyb_email,
-        externalId: data.cislo_poradace.toString(),
         id: data.vyb_id,
         name: data.vyb_nazov,
         phoneNumber: data.vyb_telefon_prace,

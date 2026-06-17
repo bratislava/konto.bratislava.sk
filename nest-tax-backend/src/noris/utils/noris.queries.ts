@@ -6,7 +6,6 @@
 export const queryPayersFromNoris = `
 WITH NorisRows AS (
     SELECT
-        subjekt_doklad.cislo_poradace,
         lcs.dane21_doklad.stav_dokladu as stav_dokladu,
         lcs.dane21_doklad.cislo_subjektu,
         subjekt_doklad.reference_subjektu cislo_konania , 
@@ -17,7 +16,6 @@ WITH NorisRows AS (
             else 0 end
         ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
         (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby,
-        subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
         lcs.dane21_priznanie.rok, 
         a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, org_cudz.adr_tp_sup_cislo, org_cudz.adr_tp_or_cislo), '') as ulica_tb_cislo, 
@@ -136,11 +134,6 @@ WITH NorisRows AS (
         lcs.subjekty subjekt_doklad  
         ON 
             lcs.dane21_doklad.cislo_subjektu=subjekt_doklad.cislo_subjektu  
-
-    LEFT OUTER JOIN 
-        lcs.subjekty subjekt_doklad_sub  
-        ON 
-            lcs.dane21_doklad.subjekt=subjekt_doklad_sub.cislo_subjektu  
 
     LEFT OUTER JOIN 
         lcs.subjekty subjekty_d  
@@ -486,7 +479,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
  */
 export const getCommunalWasteTaxesFromNoris = `
     SELECT 
-        subjekt_doklad.cislo_poradace,
         doklad.stav_dokladu as stav_dokladu,
         doklad.cislo_subjektu,
         subjekt_doklad.reference_subjektu cislo_konania,
@@ -499,7 +491,6 @@ export const getCommunalWasteTaxesFromNoris = `
             else 0 end
         ) + ISNULL(overpayment_sum.overpayment_total, 0) uhrazeno,
         (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby,
-        subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
         doklad.datum_realizacie datum_realizacie,
         lcs.fn21_meno_osoby_org(pop_conf.vybavuje, null) vyb_nazov,
@@ -618,11 +609,6 @@ export const getCommunalWasteTaxesFromNoris = `
         lcs.organizace org_cudz  
         ON
             doklad.subjekt=org_cudz.cislo_subjektu  
-
-    JOIN 
-        lcs.subjekty subjekt_doklad_sub  
-        ON 
-            doklad.subjekt=subjekt_doklad_sub.cislo_subjektu
 
     JOIN 
         lcs.dane_21_sum_pko_popl_celkom dsum  

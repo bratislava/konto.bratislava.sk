@@ -2,7 +2,6 @@ import { NorisCommunalWasteTax } from '../../../types/noris.types'
 
 // Test data 1: Complete data with all fields populated - multiple containers for one person
 export const testCommunalWasteTax1: NorisCommunalWasteTax = {
-  cislo_poradace: 13_020,
   stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   cislo_konania: '4/25/030151-36/78/219197',
@@ -12,7 +11,6 @@ export const testCommunalWasteTax1: NorisCommunalWasteTax = {
   dan_spolu: '448,66',
   uhrazeno: 448.66,
   datum_posledni_platby: new Date(),
-  subjekt_refer: '0219197',
   subjekt_nazev: 'Ing. Ján Testovací',
   datum_realizacie: new Date('2025-02-13T00:00:00.000Z'),
   vyb_nazov: 'Ing. Mária Príkladná',
@@ -44,7 +42,6 @@ export const testCommunalWasteTax1: NorisCommunalWasteTax = {
 }
 
 export const testCommunalWasteTax2: NorisCommunalWasteTax = {
-  cislo_poradace: 13_020,
   stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   cislo_konania: '4/25/030151-36/78/219197',
@@ -54,7 +51,6 @@ export const testCommunalWasteTax2: NorisCommunalWasteTax = {
   dan_spolu: '448,66',
   uhrazeno: 448.66,
   datum_posledni_platby: new Date(),
-  subjekt_refer: '0219197',
   subjekt_nazev: 'Ing. Ján Testovací',
   datum_realizacie: new Date('2025-02-13T00:00:00.000Z'),
   vyb_nazov: 'Ing. Mária Príkladná',
@@ -86,7 +82,6 @@ export const testCommunalWasteTax2: NorisCommunalWasteTax = {
 }
 
 export const testCommunalWasteTax3: NorisCommunalWasteTax = {
-  cislo_poradace: 13_020,
   stav_dokladu: 'Z',
   cislo_subjektu: 138_546_822,
   cislo_konania: '4/25/030150-36/78/219197',
@@ -96,7 +91,6 @@ export const testCommunalWasteTax3: NorisCommunalWasteTax = {
   dan_spolu: '448,66',
   uhrazeno: 448.66,
   datum_posledni_platby: new Date(),
-  subjekt_refer: '0219197',
   subjekt_nazev: 'Ing. Ján Testovací',
   datum_realizacie: new Date('2025-02-13T00:00:00.000Z'),
   vyb_nazov: 'Ing. Mária Príkladná',
@@ -128,7 +122,6 @@ export const testCommunalWasteTax3: NorisCommunalWasteTax = {
 }
 
 export const testCommunalWasteTax4: NorisCommunalWasteTax = {
-  cislo_poradace: 13_020,
   stav_dokladu: 'Z',
   cislo_subjektu: 138_546_824,
   cislo_konania: '4/25/030152-36/78/219197',
@@ -138,7 +131,6 @@ export const testCommunalWasteTax4: NorisCommunalWasteTax = {
   dan_spolu: '224,33',
   uhrazeno: 224.33,
   datum_posledni_platby: new Date(),
-  subjekt_refer: '0219197',
   subjekt_nazev: 'Ing. Ján Testovací',
   datum_realizacie: new Date('2025-02-13T00:00:00.000Z'),
   vyb_nazov: 'Ing. Mária Príkladná',
@@ -171,7 +163,6 @@ export const testCommunalWasteTax4: NorisCommunalWasteTax = {
 
 // Test data 5: Minimal data with some null values
 export const testCommunalWasteTax5: NorisCommunalWasteTax = {
-  cislo_poradace: 98_765,
   stav_dokladu: 'Z',
   cislo_subjektu: 234_567_890,
   cislo_konania: null,
@@ -181,7 +172,6 @@ export const testCommunalWasteTax5: NorisCommunalWasteTax = {
   dan_spolu: '300,00',
   uhrazeno: 300,
   datum_posledni_platby: new Date(),
-  subjekt_refer: null,
   subjekt_nazev: null,
   datum_realizacie: new Date(),
   vyb_nazov: 'Mgr. Peter Príkladný',
@@ -214,7 +204,6 @@ export const testCommunalWasteTax5: NorisCommunalWasteTax = {
 
 // Test data 6: Different container type and payment structure
 export const testCommunalWasteTax6: NorisCommunalWasteTax = {
-  cislo_poradace: 54_321,
   stav_dokladu: 'Z',
   cislo_subjektu: 345_678_901,
   cislo_konania: '5/26/028734-45/22/836299',
@@ -224,7 +213,6 @@ export const testCommunalWasteTax6: NorisCommunalWasteTax = {
   dan_spolu: '150,50',
   uhrazeno: 150.5,
   datum_posledni_platby: new Date(),
-  subjekt_refer: '0836299',
   subjekt_nazev: 'Anna Testovacia',
   datum_realizacie: new Date('2025-03-15T00:00:00.000Z'),
   vyb_nazov: 'JUDr. Jozef Príkladný',

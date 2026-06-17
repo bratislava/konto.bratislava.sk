@@ -4,16 +4,21 @@ import { PrismaService } from '../prisma/prisma.service'
 
 export type PhysicalEntityWithUri = Omit<PhysicalEntity, 'uri'> & { uri: string }
 
-export interface UrgentEntityRow { entityId: string; birthNumber: string; externalId: string }
+export interface UrgentEntityRow {
+  entityId: string
+  birthNumber: string
+  externalId: string
+}
 
-/** SQL `NOW()` — DB-side clock, used as the backoff comparison reference. */
 const NOW = Prisma.sql`NOW()`
 
 /**
- * Exponential-backoff eligibility for a `PhysicalEntity`: it has never failed, or its
- * backoff window (`2^min(failCount, 7)` hours after the last failure) has elapsed
- * relative to `reference`. Shared by all UPVS queue selectors so the retry rule lives
- * in one place.
+ * Whether a `PhysicalEntity` is clear to retry under exponential backoff.
+ *
+ * True when:
+ *  - it has no recorded failure, or
+ *  - its backoff window has elapsed: `2^min(failCount, 7)` hours past the last
+ *    failure, measured against `reference`.
  */
 const retryEligible = (reference: Prisma.Sql) => Prisma.sql`(
   "activeEdeskUpdateFailCount" = 0
@@ -22,8 +27,9 @@ const retryEligible = (reference: Prisma.Sql) => Prisma.sql`(
 )`
 
 /**
- * Urgent items: `PhysicalEntity` with a verified `birthNumber` but no `uri` yet,
- * joined to its `User` for the Cognito `externalId`. Backoff relative to `NOW()`.
+ * Returns urgent items: `PhysicalEntity` rows with a verified `birthNumber` but
+ * no `uri`, joined to their `User` for the Cognito `externalId`. Excludes
+ * IAM-rejected entities and those still in backoff (relative to `NOW()`).
  */
 export async function selectUrgentEntities(
   prismaService: PrismaService,

@@ -159,8 +159,10 @@ export class UrgentLookupService {
     }
   }
 
-  /** Persist the run: write resolved URIs and bump the fail counter for failures. */
-  private async persistUrgentResults(run: UrgentRunResult): Promise<void> {
+  /**
+   * Write resolved URIs and bump the fail counter for failures.
+   */
+  private async saveUrgentResults(run: UrgentRunResult): Promise<void> {
     if (run.successes.length > 0) {
       await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(run.successes)
     }
@@ -169,11 +171,6 @@ export class UrgentLookupService {
     }
   }
 
-  /**
-   * Log the rate-limit alert. This is the only thing logged from here — it's an alert and
-   * it short-circuits the tick before `processBatch` can report. Plain per-entity failures
-   * are returned and folded into `processBatch`'s single batch report instead.
-   */
   private logRateLimited(run: UrgentRunResult, total: number, attempted: number): void {
     this.logger.error({
       event: 'upvs_lookup_rate_limited',

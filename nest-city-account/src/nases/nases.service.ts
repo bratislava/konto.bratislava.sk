@@ -50,10 +50,13 @@ export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<
 }
 
 /**
- * Identity returned by `lookupIdentityFO`. UPVS strips these fields from a technical-account
- * lookup (OBO-token subject isn't the looked-up identity), so they're dropped from the type:
- * top-level `addresses`/`phones`, and `natural_person`'s `birth`/`death`/`marital_status`/
- * `nationality`/`occupation`. Narrowed to a natural person, as an FO lookup always resolves to one.
+ * Identity returned by `lookupIdentityFO`.
+ *
+ * UPVS strips these fields from a technical-account lookup (OBO-token subject
+ * isn't the looked-up identity), so they're dropped from the type:
+ * - top-level `addresses`/`phones`,
+ * - `natural_person`'s `birth`/`death`/`marital_status`/`nationality`/`occupation`.
+ * Narrowed to a natural person, as an FO lookup always resolves to one.
  */
 export type LookupIdentityFOResult = Omit<
   UpvsNaturalPerson,

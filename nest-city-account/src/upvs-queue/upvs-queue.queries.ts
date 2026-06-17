@@ -38,6 +38,9 @@ export async function selectUrgentEntities(
       WHERE e."birthNumber" IS NOT NULL
         AND e."uri" IS NULL
         AND u."birthNumber" IS NOT NULL
+        AND NOT EXISTS (SELECT 1
+                        FROM "IdentityLookupRejection" r
+                        WHERE r."physicalEntityId" = e."id")
         AND ${retryEligible(NOW)}
       ORDER BY GREATEST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
       LIMIT ${limit}

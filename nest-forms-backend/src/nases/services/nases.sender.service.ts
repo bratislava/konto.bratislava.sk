@@ -25,6 +25,7 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesSendResponse } from '../dtos/responses.dto'
 import {
@@ -34,7 +35,6 @@ import {
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
 import { NasesAttachmentXmlObject } from '../types/xml.types'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class NasesSenderService {

@@ -190,7 +190,11 @@
       "actionParameters": {},
       "subject": "api::general.general",
       "properties": {
-        "fields": ["alerts.content", "alerts.dateFrom", "alerts.dateTo"]
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "pfsnnzdrpzioqpz48csgl1yt",
@@ -219,7 +223,11 @@
       "actionParameters": {},
       "subject": "api::general.general",
       "properties": {
-        "fields": ["alerts.content", "alerts.dateFrom", "alerts.dateTo"]
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "c5i33po47n3qzyw9eogpqgjj",
@@ -230,7 +238,11 @@
       "actionParameters": {},
       "subject": "api::general.general",
       "properties": {
-        "fields": ["alerts.content", "alerts.dateFrom", "alerts.dateTo"]
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "q6xbnctm89lpvdi2aeumchqb",
@@ -241,7 +253,11 @@
       "actionParameters": {},
       "subject": "api::help-page.help-page",
       "properties": {
-        "fields": ["categories.title", "categories.items.title", "categories.items.content"]
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
       },
       "conditions": [],
       "documentId": "td9eil737zc8so2s5i5qf6ds",
@@ -270,7 +286,11 @@
       "actionParameters": {},
       "subject": "api::help-page.help-page",
       "properties": {
-        "fields": ["categories.title", "categories.items.title", "categories.items.content"]
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
       },
       "conditions": [],
       "documentId": "b1iki72g39qi45esh2mt6fxg",
@@ -281,7 +301,11 @@
       "actionParameters": {},
       "subject": "api::help-page.help-page",
       "properties": {
-        "fields": ["categories.title", "categories.items.title", "categories.items.content"]
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
       },
       "conditions": [],
       "documentId": "wucz2296uzit1lc2bq0vldtq",
@@ -292,7 +316,15 @@
       "actionParameters": {},
       "subject": "api::homepage-announcement.homepage-announcement",
       "properties": {
-        "fields": ["title", "description", "buttonText", "href", "image", "dateFrom", "dateTo"]
+        "fields": [
+          "title",
+          "description",
+          "buttonText",
+          "href",
+          "image",
+          "dateFrom",
+          "dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "j0l5wqa3rc3m2zemg4l11arr",
@@ -321,7 +353,15 @@
       "actionParameters": {},
       "subject": "api::homepage-announcement.homepage-announcement",
       "properties": {
-        "fields": ["title", "description", "buttonText", "href", "image", "dateFrom", "dateTo"]
+        "fields": [
+          "title",
+          "description",
+          "buttonText",
+          "href",
+          "image",
+          "dateFrom",
+          "dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "e13qqiybmxr5ri9c853pmmmg",
@@ -332,7 +372,15 @@
       "actionParameters": {},
       "subject": "api::homepage-announcement.homepage-announcement",
       "properties": {
-        "fields": ["title", "description", "buttonText", "href", "image", "dateFrom", "dateTo"]
+        "fields": [
+          "title",
+          "description",
+          "buttonText",
+          "href",
+          "image",
+          "dateFrom",
+          "dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "hdui8rr7okreb3z62qts5wk5",
@@ -343,7 +391,12 @@
       "actionParameters": {},
       "subject": "api::homepage.homepage",
       "properties": {
-        "fields": ["announcements", "announcementsLegalPerson", "services", "servicesLegalPerson"]
+        "fields": [
+          "announcements",
+          "announcementsLegalPerson",
+          "services",
+          "servicesLegalPerson"
+        ]
       },
       "conditions": [],
       "documentId": "jyuqoppqmmf0d6nzebt82ree",
@@ -372,7 +425,12 @@
       "actionParameters": {},
       "subject": "api::homepage.homepage",
       "properties": {
-        "fields": ["announcements", "announcementsLegalPerson", "services", "servicesLegalPerson"]
+        "fields": [
+          "announcements",
+          "announcementsLegalPerson",
+          "services",
+          "servicesLegalPerson"
+        ]
       },
       "conditions": [],
       "documentId": "g0yv8sqsn48qg5if126nwm0x",
@@ -383,7 +441,12 @@
       "actionParameters": {},
       "subject": "api::homepage.homepage",
       "properties": {
-        "fields": ["announcements", "announcementsLegalPerson", "services", "servicesLegalPerson"]
+        "fields": [
+          "announcements",
+          "announcementsLegalPerson",
+          "services",
+          "servicesLegalPerson"
+        ]
       },
       "conditions": [],
       "documentId": "zw41j4wihvgdjmkwoo9v0qq9",
@@ -394,7 +457,10 @@
       "actionParameters": {},
       "subject": "api::municipal-service-category.municipal-service-category",
       "properties": {
-        "fields": ["title", "municipalServices"]
+        "fields": [
+          "title",
+          "municipalServices"
+        ]
       },
       "conditions": [],
       "documentId": "zylwaaytiva4iuwuokh84d46",
@@ -423,7 +489,10 @@
       "actionParameters": {},
       "subject": "api::municipal-service-category.municipal-service-category",
       "properties": {
-        "fields": ["title", "municipalServices"]
+        "fields": [
+          "title",
+          "municipalServices"
+        ]
       },
       "conditions": [],
       "documentId": "som20u7re7ygiac5rxy8srm1",
@@ -434,7 +503,10 @@
       "actionParameters": {},
       "subject": "api::municipal-service-category.municipal-service-category",
       "properties": {
-        "fields": ["title", "municipalServices"]
+        "fields": [
+          "title",
+          "municipalServices"
+        ]
       },
       "conditions": [],
       "documentId": "mdnluw1aek4gq1afps945rx4",
@@ -445,7 +517,10 @@
       "actionParameters": {},
       "subject": "api::municipal-service-tag.municipal-service-tag",
       "properties": {
-        "fields": ["title", "municipalServices"]
+        "fields": [
+          "title",
+          "municipalServices"
+        ]
       },
       "conditions": [],
       "documentId": "vz3as7nb2fhh5u6ggrhdhzhb",
@@ -474,7 +549,10 @@
       "actionParameters": {},
       "subject": "api::municipal-service-tag.municipal-service-tag",
       "properties": {
-        "fields": ["title", "municipalServices"]
+        "fields": [
+          "title",
+          "municipalServices"
+        ]
       },
       "conditions": [],
       "documentId": "u96ir6uzrhwawv1xhkgo23q4",
@@ -485,7 +563,10 @@
       "actionParameters": {},
       "subject": "api::municipal-service-tag.municipal-service-tag",
       "properties": {
-        "fields": ["title", "municipalServices"]
+        "fields": [
+          "title",
+          "municipalServices"
+        ]
       },
       "conditions": [],
       "documentId": "tm9e13l0rkhwrd7ts0zoao3m",
@@ -574,7 +655,10 @@
       "actionParameters": {},
       "subject": "api::municipal-services-page.municipal-services-page",
       "properties": {
-        "fields": ["services", "servicesLegalPerson"]
+        "fields": [
+          "services",
+          "servicesLegalPerson"
+        ]
       },
       "conditions": [],
       "documentId": "amlgtggu0sb9dx98ajpv7lyp",
@@ -603,7 +687,10 @@
       "actionParameters": {},
       "subject": "api::municipal-services-page.municipal-services-page",
       "properties": {
-        "fields": ["services", "servicesLegalPerson"]
+        "fields": [
+          "services",
+          "servicesLegalPerson"
+        ]
       },
       "conditions": [],
       "documentId": "mg53aq9k83poiclvfiged3a2",
@@ -614,7 +701,10 @@
       "actionParameters": {},
       "subject": "api::municipal-services-page.municipal-services-page",
       "properties": {
-        "fields": ["services", "servicesLegalPerson"]
+        "fields": [
+          "services",
+          "servicesLegalPerson"
+        ]
       },
       "conditions": [],
       "documentId": "djfdhrzq66tkgrmx8dm2pl5i",
@@ -690,6 +780,60 @@
       },
       "conditions": [],
       "documentId": "zzs83yyndgzcvh4gxafq8k7f",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.access",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "yb0zmlag9210twjwmo6f1hdl",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.create",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "kvgvf71gz1uss948n55ltb4r",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.delete",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "prkt2rgansk2bvc2a76do6v5",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.read",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "nne97co2dq4lvhrjiju2yflw",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.regenerate",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "wv5w46udclvsdws09oc1l8o1",
+      "locale": null
+    },
+    {
+      "action": "admin::admin-tokens.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": [],
+      "documentId": "wrvp3wlbdtrukbpj5lk6rx61",
       "locale": null
     },
     {

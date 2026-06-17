@@ -243,6 +243,7 @@
   "CookieConsentButton.missingScriptModal.close": "Rozumiem",
   "DatePicker.aria.openCalendar": "Otvoriť kalendár",
   "DatePicker.clear": "Vymazať",
+  "documents.link_row_card.go_to_document": "Prejsť na dokument",
   "errors.AliasExistsException": "E-mail {{email}} už používa iné Bratislavské konto. Ak si stále želáte zmeniť e-mail svojho konta, vráťte sa do svojho profilu kliknutím na šípku späť vedľa bratislavského loga a zopakujte proces zmeny e-mailu s inou e-mailovou adresou.",
   "errors.API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
   "errors.Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",

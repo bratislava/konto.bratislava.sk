@@ -14,12 +14,17 @@ type Props = {
 
 const Documents = ({ title, description, files }: Props) => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <SectionHeader title={title} text={description} />
 
       <ul className="flex flex-col rounded-lg border border-border-active-default py-2">
-        {files.map((file) => (
-          <LinkRowCard key={file.title} title={file.title} link={file.link} />
+        {files.map((file, index) => (
+          <LinkRowCard
+            key={file.title}
+            title={file.title}
+            link={file.link}
+            isLastItem={index === files.length - 1}
+          />
         ))}
       </ul>
     </div>

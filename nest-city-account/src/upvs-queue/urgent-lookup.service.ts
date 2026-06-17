@@ -127,7 +127,8 @@ export class UrgentLookupService {
       const identity = await this.nasesService.lookupIdentityFO(
         entity.birthNumber.replaceAll('/', ''),
         cognitoUser.given_name,
-        cognitoUser.family_name
+        cognitoUser.family_name,
+        entity.entityId
       )
 
       if (!identity.uri) {

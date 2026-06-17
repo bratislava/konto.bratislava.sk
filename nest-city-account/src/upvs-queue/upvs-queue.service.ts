@@ -109,7 +109,7 @@ export class UpvsQueueService {
       }
 
       try {
-        const search = await this.edeskBatchUpdateService.processBatchedSearch()
+        const search = await this.edeskBatchUpdateService.updateEdeskStatusBatch()
         result.highPriorityProcessed = search.highPriorityProcessed
         result.externalProcessed = search.externalProcessed
         result.totalProcessed =

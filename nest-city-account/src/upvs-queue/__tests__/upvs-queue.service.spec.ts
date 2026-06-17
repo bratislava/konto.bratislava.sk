@@ -38,7 +38,7 @@ describe('UpvsQueueService', () => {
     jest.spyOn(edeskUriUpdateService, 'getUriToUpdateInternal').mockResolvedValue(null)
     jest.spyOn(edeskUriUpdateService, 'getUriToUpdateExternal').mockResolvedValue(null)
     jest
-      .spyOn(edeskBatchUpdateService, 'processBatchedSearch')
+      .spyOn(edeskBatchUpdateService, 'updateEdeskStatusBatch')
       .mockResolvedValue({ highPriorityProcessed: 0, externalProcessed: 0 })
   })
 
@@ -98,7 +98,7 @@ describe('UpvsQueueService', () => {
       expect(urgentLookupService.processUrgentItems).toHaveBeenCalledTimes(1)
       expect(edeskUriUpdateService.getUriToUpdateInternal).toHaveBeenCalledTimes(1)
       expect(edeskUriUpdateService.getUriToUpdateExternal).toHaveBeenCalledTimes(1)
-      expect(edeskBatchUpdateService.processBatchedSearch).toHaveBeenCalledTimes(1)
+      expect(edeskBatchUpdateService.updateEdeskStatusBatch).toHaveBeenCalledTimes(1)
     })
 
     it('short-circuits the whole tick when urgent is rate-limited', async () => {
@@ -110,7 +110,7 @@ describe('UpvsQueueService', () => {
 
       expect(edeskUriUpdateService.getUriToUpdateInternal).not.toHaveBeenCalled()
       expect(edeskUriUpdateService.getUriToUpdateExternal).not.toHaveBeenCalled()
-      expect(edeskBatchUpdateService.processBatchedSearch).not.toHaveBeenCalled()
+      expect(edeskBatchUpdateService.updateEdeskStatusBatch).not.toHaveBeenCalled()
     })
 
     it('repairs one internal URI and skips the batched search', async () => {
@@ -125,7 +125,7 @@ describe('UpvsQueueService', () => {
         id: 'id-1',
       })
       expect(edeskUriUpdateService.getUriToUpdateExternal).not.toHaveBeenCalled()
-      expect(edeskBatchUpdateService.processBatchedSearch).not.toHaveBeenCalled()
+      expect(edeskBatchUpdateService.updateEdeskStatusBatch).not.toHaveBeenCalled()
     })
 
     it('repairs one external URI (when no internal is due) and skips the batched search', async () => {
@@ -136,7 +136,7 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       expect(edeskUriUpdateService.handleUriUpdateExternal).toHaveBeenCalledWith('rc://sk/ext')
-      expect(edeskBatchUpdateService.processBatchedSearch).not.toHaveBeenCalled()
+      expect(edeskBatchUpdateService.updateEdeskStatusBatch).not.toHaveBeenCalled()
     })
 
     it('reports the combined counts from the tiers', async () => {
@@ -144,7 +144,7 @@ describe('UpvsQueueService', () => {
         .spyOn(urgentLookupService, 'processUrgentItems')
         .mockResolvedValue({ attempted: 2, rateLimited: false, failures: [] })
       jest
-        .spyOn(edeskBatchUpdateService, 'processBatchedSearch')
+        .spyOn(edeskBatchUpdateService, 'updateEdeskStatusBatch')
         .mockResolvedValue({ highPriorityProcessed: 3, externalProcessed: 1 })
       const logSpy = jest.spyOn((service as any).logger, 'log').mockImplementation(() => {})
 

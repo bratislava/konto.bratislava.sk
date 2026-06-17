@@ -37,7 +37,7 @@ export class EdeskBatchUpdateService {
    *
    * @returns counts the orchestrator folds into its batch report.
    */
-  async processBatchedSearch(): Promise<{
+  async updateEdeskStatusBatch(): Promise<{
     highPriorityProcessed: number
     externalProcessed: number
   }> {

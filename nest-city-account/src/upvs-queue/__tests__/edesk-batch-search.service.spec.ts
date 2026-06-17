@@ -41,7 +41,7 @@ describe('EdeskBatchUpdateService', () => {
   it('does nothing and returns zero counts when there is no work', async () => {
     mockSelection([], [])
 
-    const result = await service.processBatchedSearch()
+    const result = await service.updateEdeskStatusBatch()
 
     expect(nasesService.getIdentitiesByUris).not.toHaveBeenCalled()
     expect(result).toEqual({ highPriorityProcessed: 0, externalProcessed: 0 })
@@ -66,7 +66,7 @@ describe('EdeskBatchUpdateService', () => {
     } as any)
     prismaMock.externalEdeskCheck.update.mockResolvedValue({ norisId: 1 } as any)
 
-    const result = await service.processBatchedSearch()
+    const result = await service.updateEdeskStatusBatch()
 
     expect(nasesService.getIdentitiesByUris).toHaveBeenCalledTimes(1)
     expect(physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase).toHaveBeenCalledWith([
@@ -101,7 +101,7 @@ describe('EdeskBatchUpdateService', () => {
     prismaMock.externalEdeskCheck.update.mockResolvedValue({ norisId: 42 } as any)
     const logSpy = jest.spyOn((service as any).logger, 'log').mockImplementation(() => {})
 
-    await service.processBatchedSearch()
+    await service.updateEdeskStatusBatch()
 
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('external_edesk_death_date'))
   })
@@ -113,7 +113,7 @@ describe('EdeskBatchUpdateService', () => {
       failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: true }],
     } as any)
 
-    await service.processBatchedSearch()
+    await service.updateEdeskStatusBatch()
 
     expect(prismaMock.externalEdeskCheck.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -135,7 +135,7 @@ describe('EdeskBatchUpdateService', () => {
       ],
     } as any)
 
-    await service.processBatchedSearch()
+    await service.updateEdeskStatusBatch()
 
     expect(physicalEntityService.updateFailedActiveEdeskUpdateInDatabase).toHaveBeenCalledWith([
       'pe-1',

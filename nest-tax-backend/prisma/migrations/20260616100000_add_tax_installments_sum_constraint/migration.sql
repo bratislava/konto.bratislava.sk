@@ -9,7 +9,12 @@ DECLARE
 BEGIN
   SELECT amount INTO v_tax_amount
   FROM "Tax"
-  WHERE id = p_tax_id;
+  WHERE id = p_tax_id
+  FOR NO KEY UPDATE;
+
+  IF v_tax_amount IS NULL THEN
+    RAISE EXCEPTION 'Tax with id % does not exist', p_tax_id;
+  END IF;
 
   SELECT COALESCE(SUM(amount), 0) INTO v_installments_sum
   FROM "TaxInstallment"
@@ -27,7 +32,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION trg_fn_check_installments_sum()
 RETURNS TRIGGER AS $$
 BEGIN
-  PERFORM check_tax_installments_sum(NEW."taxId");
+  PERFORM check_tax_installments_sum(COALESCE(NEW."taxId", OLD."taxId"));
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

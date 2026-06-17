@@ -5,6 +5,9 @@ export enum ErrorsEnum {
   UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
   UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
   BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
+  BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
+  BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
+  SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
 }
 
 export enum ErrorsResponseEnum {
@@ -14,4 +17,7 @@ export enum ErrorsResponseEnum {
   UNAUTHORIZED_ERROR = 'Unauthorized.',
   UNPROCESSABLE_ENTITY_ERROR = 'Unprocessable entity.',
   BAD_REQUEST_ERROR = 'Bad request.',
+  BAD_GATEWAY_ERROR = 'Bad gateway.',
+  BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
+  SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
 }

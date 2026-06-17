@@ -2,9 +2,9 @@ import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import React from 'react'
 
-import { CheckIcon } from '@/src/assets/ui-icons'
 import { FormStepperStep } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 interface StepperViewRowProps {
@@ -40,7 +40,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
         {isCurrent || !isSubmitted ? (
           step.displayIndex
         ) : (
-          <CheckIcon fill="white" className="size-6" />
+          <Icon name="check" fill="white" className="size-6" />
         )}
       </div>
       <Typography variant="p-tiny" as="span" className="text-left font-medium">

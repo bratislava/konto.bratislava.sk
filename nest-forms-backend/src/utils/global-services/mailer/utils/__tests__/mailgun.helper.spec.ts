@@ -113,7 +113,7 @@ describe('MailgunHelper', () => {
     it('should process PARAMETER type variables correctly', () => {
       const input: SendEmailInputDto = {
         to: 'user@example.com',
-        template: MailgunTemplateEnum.NASES_SENT,
+        template: MailgunTemplateEnum.GINIS_SENT,
         data: {
           formId: 'form-123',
           messageSubject: 'Test Application',

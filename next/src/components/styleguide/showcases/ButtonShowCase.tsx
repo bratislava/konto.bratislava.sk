@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '@bratislava/component-library'
 
-import { CalendarIcon, EditIcon, SearchIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 import { Stack } from '../Stack'
@@ -56,7 +56,7 @@ const StackableButton = ({
   return buttonExample.icon ? (
     <Button
       variant={variant}
-      icon={<SearchIcon />}
+      icon={<Icon name="search" />}
       aria-label="Search"
       size={buttonExample.size}
       isDisabled={buttonExample.isDisabled}
@@ -69,8 +69,8 @@ const StackableButton = ({
       isDisabled={buttonExample.isDisabled}
       isLoading={buttonExample.isLoading}
       loadingText={buttonExample.loadingText}
-      startIcon={buttonExample.startIcon ? <SearchIcon /> : undefined}
-      endIcon={buttonExample.endIcon ? <EditIcon /> : undefined}
+      startIcon={buttonExample.startIcon ? <Icon name="search" /> : undefined}
+      endIcon={buttonExample.endIcon ? <Icon name="edit" /> : undefined}
     >
       {buttonExample.children}
     </Button>
@@ -159,8 +159,13 @@ const ButtonShowCase = () => {
         <div key={variant}>
           <strong>variant=&quot;{variant}&quot;</strong>
           <Stack>
-            <Button variant={variant} icon={<CalendarIcon />} aria-label="Calendar" />
-            <Button variant={variant} icon={<CalendarIcon />} aria-label="Calendar" size="small" />
+            <Button variant={variant} icon={<Icon name="calendar" />} aria-label="Calendar" />
+            <Button
+              variant={variant}
+              icon={<Icon name="calendar" />}
+              aria-label="Calendar"
+              size="small"
+            />
           </Stack>
         </div>
       ))}

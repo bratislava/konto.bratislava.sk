@@ -80,22 +80,24 @@ export default schema(
       ),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUploadMultiple(
+      fileUploadMultiple<typeof ziadostOStanoviskoKProjektovejDokumentaciiFiles>(
         'technickaSprava',
         {
           title: 'Technická správa',
           required: true,
+          slotId: 'technickaSprava',
         },
         {
           type: 'dragAndDrop',
           helptext: 'Technická správa s popisom navrhovaného technického riešenia.',
         },
       ),
-      fileUploadMultiple(
+      fileUploadMultiple<typeof ziadostOStanoviskoKProjektovejDokumentaciiFiles>(
         'vyznaceneZaujmoveUzemie',
         {
           title: 'Snímka z katastrálnej mapy s vyznačeným záujmovým územím',
           required: true,
+          slotId: 'vyznaceneZaujmoveUzemie',
         },
         {
           type: 'dragAndDrop',
@@ -106,21 +108,23 @@ Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/katas
           helptextMarkdown: true,
         },
       ),
-      fileUploadMultiple(
+      fileUploadMultiple<typeof ziadostOStanoviskoKProjektovejDokumentaciiFiles>(
         'situacnyVykres',
         {
           title: 'Situačný výkres',
           required: true,
+          slotId: 'situacnyVykres',
         },
         {
           type: 'dragAndDrop',
         },
       ),
-      fileUploadMultiple(
+      fileUploadMultiple<typeof ziadostOStanoviskoKProjektovejDokumentaciiFiles>(
         'svetelnoTechnickyVypocet',
         {
           title: 'Svetelno-technický výpočet',
           required: false,
+          slotId: 'svetelnoTechnickyVypocet',
         },
         {
           type: 'dragAndDrop',
@@ -130,6 +134,23 @@ Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/katas
     ]),
   ],
 )
+
+export const ziadostOStanoviskoKProjektovejDokumentaciiFiles = {
+  slots: [
+    {
+      slotId: 'technickaSprava',
+    },
+    {
+      slotId: 'vyznaceneZaujmoveUzemie',
+    },
+    {
+      slotId: 'situacnyVykres',
+    },
+    {
+      slotId: 'svetelnoTechnickyVypocet',
+    },
+  ],
+} as const
 
 type ExtractFormData = {
   ziadatel: { email: string } & (

@@ -2,9 +2,9 @@ import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 
-import { MailIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
+import Markdown from '@/src/components/formatting/Markdown'
+import Icon from '@/src/components/icon-components/Icon'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -12,9 +12,9 @@ import { ROUTES } from '@/src/utils/routes'
 
 const OfficialCorrespondenceChannelCardWrapper = () => {
   const { t } = useTranslation('account')
-  const { channel, canUserChangeChannel } = useOfficialCorrespondenceChannel()
+  const { deliveryMethod, canUserChangeDeliveryMethod } = useUserDataDeliveryMethod()
 
-  if (!channel) {
+  if (!deliveryMethod) {
     return null
   }
 
@@ -23,7 +23,7 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
     [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
     [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
     [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
-  }[channel]
+  }[deliveryMethod]
 
   return (
     <div className="flex flex-col gap-4">
@@ -40,21 +40,19 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col">
             <Typography variant="p-large">{title}</Typography>
-            {canUserChangeChannel && (
+            {canUserChangeDeliveryMethod && (
               <div className="pt-3 pb-2 lg:px-0">
-                <AccountMarkdown
+                <Markdown
+                  variant="small"
                   content={`${t('taxes.communication_channel.info.youCanChangeChannelOnThisPage', {
                     url: ROUTES.TAXES_AND_FEES,
-                  })} <br /> ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
-                  // variant added to change text size on mobile devices,
-                  // not the best solution but this problem needs more complex solution across whole project
-                  variant="statusBar"
+                  })} \n ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
                 />
               </div>
             )}
           </div>
           <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
-            <MailIcon className="size-6" />
+            <Icon name="mail" className="size-6" />
           </div>
         </div>
       </div>

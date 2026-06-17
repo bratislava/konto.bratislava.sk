@@ -99,11 +99,12 @@ export default schema(
         },
       ),
       conditionalFields(createCondition([[['stavebnikZiadatelom'], { const: false }]]), [
-        fileUpload(
+        fileUpload<typeof stanoviskoKInvesticnemuZameruFiles>(
           'splnomocnenie',
           {
             title: 'Splnomocnenie na zastupovanie',
             required: true,
+            slotId: 'splnomocnenie',
           },
           {
             type: 'button',
@@ -193,11 +194,12 @@ export default schema(
       ]),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUploadMultiple(
+      fileUploadMultiple<typeof stanoviskoKInvesticnemuZameruFiles>(
         'architektonickaStudia',
         {
           title: 'Architektonická štúdia',
           required: true,
+          slotId: 'architektonickaStudia',
         },
         {
           type: 'dragAndDrop',
@@ -220,6 +222,17 @@ export default schema(
     ]),
   ],
 )
+
+export const stanoviskoKInvesticnemuZameruFiles = {
+  slots: [
+    {
+      slotId: 'architektonickaStudia',
+    },
+    {
+      slotId: 'splnomocnenie',
+    },
+  ],
+} as const
 
 type ExtractTechnicalSubjectFormData = {
   stavba: {

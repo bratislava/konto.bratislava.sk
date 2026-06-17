@@ -2,8 +2,6 @@ resources:
   - deployment.yml
   - service-app.yml
   - ingress.yml
-  - service-database.yml
-  - stateful-set.yml
 configurations:
   - configuration.yml
 

@@ -277,7 +277,7 @@ export const getZevoSchema = (type: ZevoType) => [
               },
               {
                 helptext:
-                  'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
+                  'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.10 VOP.',
                 checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
                 variant: 'boxed',
               },
@@ -1003,11 +1003,12 @@ export const getZevoSchema = (type: ZevoType) => [
           },
           {},
         ),
-        fileUploadMultiple(
+        fileUploadMultiple<typeof energetickeZhodnotenieOdpaduVZevoFiles>(
           'fotoOdpadu',
           {
             title: 'Foto odpadu',
             required: false,
+            slotId: 'fotoOdpadu',
           },
           {
             type: 'dragAndDrop',
@@ -1115,6 +1116,14 @@ export const getZevoSchema = (type: ZevoType) => [
     ),
   ]),
 ]
+
+export const energetickeZhodnotenieOdpaduVZevoFiles = {
+  slots: [
+    {
+      slotId: 'fotoOdpadu',
+    },
+  ],
+} as const
 
 type ExtractFormData = {
   ziadatel: {

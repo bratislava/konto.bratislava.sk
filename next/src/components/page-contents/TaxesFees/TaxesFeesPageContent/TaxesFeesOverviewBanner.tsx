@@ -38,8 +38,8 @@ const TaxesFeesOverviewBanner = ({ variant, taxType }: Props) => {
   }[taxType]
 
   const content = {
-    'looking-for': `<h4>${titleLookingFor}</h4>${textLookingFor}`,
-    'no-results': `<h4>${titleNoResults}</h4>${textNoResults}`,
+    'looking-for': `#### ${titleLookingFor} \n ${textLookingFor}`,
+    'no-results': `#### ${titleNoResults} \n ${textNoResults}`,
   }[variant]
 
   return <AnnouncementBlock announcementContent={content} imageSrc={ImageMestskeKontoSituacia} />

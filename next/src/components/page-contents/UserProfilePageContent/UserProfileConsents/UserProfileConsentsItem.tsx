@@ -1,6 +1,6 @@
 import { Typography } from '@bratislava/component-library'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import Toggle from '@/src/components/simple-components/Toggle'
 
 type Consent = {
@@ -26,7 +26,7 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
         <Typography variant="h5" as="h3">
           {consent.title}
         </Typography>
-        <AccountMarkdown variant="sm" content={consent.text} className="gap-1" />
+        <Markdown variant="small" content={consent.text} />
       </div>
       <Toggle
         id={consent.id}

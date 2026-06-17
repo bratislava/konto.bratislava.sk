@@ -30,7 +30,7 @@ interface MailgunConfig {
 }
 
 export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
-  NASES_SENT: {
+  GINIS_SENT: {
     template: '2023-application-status-sent',
     subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
     variables: {
@@ -76,7 +76,7 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
       },
     },
   },
-  NASES_GINIS_IN_PROGRESS: {
+  GINIS_IN_PROGRESS: {
     template: '2023-application-status-in-progress',
     subject: 'Bratislavské konto: Na odoslaní Vašej žiadosti pracujeme',
     variables: {
@@ -270,6 +270,28 @@ export const MAILGUN_CONFIG: Record<string, MailgunConfig> = {
   BRATISLAVA_SENT_SUCCESS: {
     template: '2026-bratislava-form-success',
     subject: 'Bratislavské konto: Vaša žiadosť bola odoslaná',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      feHost: {
+        type: MailgunConfigVariableType.STRING,
+        value: process.env.FRONTEND_URL || 'https://konto.bratislava.sk',
+      },
+      firstName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{firstName}}',
+      },
+      formSentAt: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{formSentAt}}',
+      },
+    },
+  },
+  PAAS_CONTACT_FORM_SENT_SUCCESS: {
+    template: '2026-city-account-paas-contact-form-success',
+    subject: 'PAAS: Vaša požiadavka bola odoslaná',
     variables: {
       applicationName: {
         type: MailgunConfigVariableType.PARAMETER,

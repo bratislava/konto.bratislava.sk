@@ -118,7 +118,7 @@ export const createTestingRealEstateTaxMock = (
 
     // additional required fields
     cislo_subjektu: 123_456,
-    akt_datum: new Date().toISOString().split('T')[0],
+    datum_realizacie: new Date(),
     dan_stavby: '600,50',
     dan_stavby_viac: '300,25',
     dan_byty: norisData.taxTotal,
@@ -181,7 +181,7 @@ export const createTestingCommunalWasteTaxMock = (
     psc_ref_tb: 'test psc',
     obec_nazev_tb: 'test obec',
     cislo_subjektu: 123_456,
-    akt_datum: new Date().toISOString().split('T')[0],
+    datum_realizacie: new Date(),
 
     // splátky (installments) data
     SPL1: norisData.taxTotal,

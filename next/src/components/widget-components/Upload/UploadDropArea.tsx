@@ -6,7 +6,7 @@ import { Button as ReactAriaButton } from 'react-aria-components/Button'
 import { DropZone, DropZoneRenderProps } from 'react-aria-components/DropZone'
 import { FileTrigger } from 'react-aria-components/FileTrigger'
 
-import { UploadIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import PrettyBytes from '@/src/components/simple-components/PrettyBytes'
 import {
   getDisplayMaxFileSize,
@@ -102,12 +102,12 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
           >
             <ReactAriaButton
               ref={ref}
-              className="flex size-full flex-col items-center justify-evenly p-6 text-center"
+              className="flex size-full flex-col items-center justify-evenly rounded-lg p-6 text-center base-focus-ring"
               isDisabled={isDisabled}
             >
               <div className="flex justify-center">
                 <div className="flex size-12 items-center justify-center rounded-full bg-gray-100">
-                  <UploadIcon />
+                  <Icon name="upload" />
                 </div>
               </div>
 

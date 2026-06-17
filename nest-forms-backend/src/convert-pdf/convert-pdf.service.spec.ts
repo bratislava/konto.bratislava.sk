@@ -53,6 +53,7 @@ describe('ConvertPdfService', () => {
     ginisUploadedError: false,
     createdAt: new Date(),
     updatedAt: new Date(),
+    slotId: 'fake-slot',
   } as const
 
   beforeAll(() => {

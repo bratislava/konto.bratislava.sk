@@ -1,4 +1,4 @@
-name: Validate and build resources with bratiska-cli
+name: Pull Request
 on:
   pull_request:
     branches:
@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  pull-requests: write
   contents: read
 
 jobs:
@@ -23,17 +22,12 @@ jobs:
     needs: [ dependabot-approval ]
     name: Validate Repository
     uses: ./.github/workflows/validate-repository.yml
-    permissions:
-      contents: read
 
-  validate-and-build:
+  build:
     if: always() && needs.validate-repository.result == 'success'
     needs: [ dependabot-approval, validate-repository ]
-    uses: ./.github/workflows/validate-and-build.yml
+    uses: ./.github/workflows/build.yml
     secrets:
       DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-    permissions:
-      pull-requests: write
-      contents: read

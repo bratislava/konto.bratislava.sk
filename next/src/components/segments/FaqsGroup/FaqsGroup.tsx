@@ -1,7 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 import { Fragment } from 'react'
 
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
 import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
 import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
@@ -38,7 +38,7 @@ const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
               </Typography>
             </DisclosureHeader>
             <DisclosurePanel className="px-4 lg:px-6">
-              <AccountMarkdown content={faq.content} />
+              <Markdown variant="accordion" content={faq.content} />
             </DisclosurePanel>
           </Disclosure>
         </Fragment>

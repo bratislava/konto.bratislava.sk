@@ -2,8 +2,8 @@ import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ResponseTaxAdministratorDto, TaxType } from 'openapi-clients/tax'
 
-import { ClockIcon, MailIcon, PhoneIcon } from '@/src/assets/ui-icons'
 import { StrapiTaxAdministrator } from '@/src/backend/utils/strapi-tax-administrator'
+import Icon from '@/src/components/icon-components/Icon'
 import MLink from '@/src/components/simple-components/MLink'
 import { EXTERNAL_LINKS } from '@/src/utils/routes'
 
@@ -43,6 +43,11 @@ const TaxesFeesAdministratorCardWrapper = ({
     return null
   }
 
+  // TODO Temporarily hidden until we fetch the administator correctly 
+  if (taxType !== TaxType.Dzn && !beTaxAdministrator ) {
+    return null
+  }
+
   const cardTitle = {
     [TaxType.Dzn]: t('account_section_payment.your_tax_administrator.tax'),
     [TaxType.Ko]: t('account_section_payment.your_tax_administrator.fee'),
@@ -65,21 +70,21 @@ const TaxesFeesAdministratorCardWrapper = ({
           </Typography>
           <div className="flex flex-col flex-wrap gap-x-4 gap-y-2 self-stretch break-all lg:flex-row lg:items-center">
             <span className="flex items-center gap-x-2">
-              <PhoneIcon className="size-5 shrink-0" />
+              <Icon name="phone-call" className="size-5 shrink-0" />
               <MLink href={`tel:${taxAdministrator.phone}`} variant="underlined-medium">
                 {taxAdministrator.phone}
               </MLink>
             </span>
 
             <span className="flex items-center gap-x-2">
-              <MailIcon className="size-5 shrink-0" />
+              <Icon name="mail" className="size-5 shrink-0" />
               <MLink href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
                 {taxAdministrator.email}
               </MLink>
             </span>
 
             <span className="flex items-center gap-x-2">
-              <ClockIcon className="size-5 shrink-0" />
+              <Icon name="clock" className="size-5 shrink-0" />
               <MLink href={workingHoursLinkHref} variant="underlined-medium" target="_blank">
                 {t('taxes.tax_administrator_card.working_hours')}
               </MLink>
@@ -87,7 +92,7 @@ const TaxesFeesAdministratorCardWrapper = ({
           </div>
         </div>
         <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
-          <PhoneIcon className="size-6" />
+          <Icon name="phone-call" className="size-6" />
         </div>
       </div>
     </div>

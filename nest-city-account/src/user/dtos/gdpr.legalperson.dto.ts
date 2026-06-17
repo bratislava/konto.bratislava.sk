@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger'
 import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, LegalPerson } from '@prisma/client'
 import { IsEnum } from 'class-validator'
 
+import { ResponseConsentDto } from './gdpr.user.dto'
+
 export class ResponseGdprLegalPersonDataDto {
   @ApiProperty({
     description: 'Type of Gdpr category',
@@ -51,11 +53,10 @@ export class ResponseLegalPersonDataSimpleDto {
   updatedAt!: Date
 
   @ApiProperty({
-    description:
-      'Id from cognito, it is not required. We can have also only subscribed user, who are not city account users',
+    description: 'Id from cognito',
     default: 'e51754f2-3367-43f6-b9bc-b5c6131b041a',
   })
-  externalId: string | null
+  externalId: string
 
   @ApiProperty({
     description: 'Ico of company, which this user represents',
@@ -78,7 +79,20 @@ export class ResponseLegalPersonDataSimpleDto {
 
 export class ResponseLegalPersonDataDto extends ResponseLegalPersonDataSimpleDto {
   @ApiProperty({
-    description: 'Subscription Data in array',
+    description: 'Current consent state for the legal person, one entry per consent type.',
+    type: [ResponseConsentDto],
+    default: [
+      { consentType: 'MARKETING', isGranted: true },
+      { consentType: 'GENERAL', isGranted: true },
+    ],
+  })
+  consents!: ResponseConsentDto[]
+
+  // TODO remove once the frontend stops reading `gdprData` and reads `consents` instead.
+  /** @deprecated Use `consents` instead. */
+  @ApiProperty({
+    description: 'DEPRECATED. Use `consents`. Same data re-shaped into the legacy GDPR triple.',
+    deprecated: true,
     default: [
       {
         category: 'CITY',
@@ -109,7 +123,20 @@ export class ResponsePublicLegalPersonUnsubscribeDto {
   message!: string
 
   @ApiProperty({
-    description: 'Subscription Data in array',
+    description: 'Current consent state for the legal person, one entry per consent type.',
+    type: [ResponseConsentDto],
+    default: [
+      { consentType: 'MARKETING', isGranted: false },
+      { consentType: 'GENERAL', isGranted: false },
+    ],
+  })
+  consents!: ResponseConsentDto[]
+
+  // TODO remove once the frontend stops reading `gdprData` and reads `consents` instead.
+  /** @deprecated Use `consents` instead. */
+  @ApiProperty({
+    description: 'DEPRECATED. Use `consents`. Same data re-shaped into the legacy GDPR triple.',
+    deprecated: true,
     default: [
       {
         category: 'CITY',

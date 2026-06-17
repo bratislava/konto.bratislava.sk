@@ -69,7 +69,7 @@ export class BloomreachPayloadBuilder {
 
     const correspondenceChannel =
       accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
-        ? await this.userIdentitySubservice.getOfficialCorrespondenceChannel({
+        ? await this.userIdentitySubservice.getActiveDeliveryMethod({
             externalId,
           })
         : null

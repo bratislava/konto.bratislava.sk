@@ -2,7 +2,7 @@ import { Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 import slugify from 'slugify'
 
-import { LinkVariantIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import MLink from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
 
@@ -37,7 +37,7 @@ export const Wrapper = ({ title, children, direction = 'row', noBorder }: Wrappe
           <MLink href={`#${mySlugify(title)}`} className="group">
             {title}
             <span className="invisible pl-2 group-hover:visible">
-              <LinkVariantIcon className="inline" />
+              <Icon name="link-variant" className="inline" />
             </span>
           </MLink>
         </Typography>

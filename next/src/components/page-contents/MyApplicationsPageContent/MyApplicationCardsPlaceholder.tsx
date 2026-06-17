@@ -2,7 +2,7 @@ import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import Icon from '@/src/assets/images/mestske-konto-situacia-2-1.svg'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 
 const MyApplicationCardsPlaceholder = () => {
@@ -18,7 +18,10 @@ const MyApplicationCardsPlaceholder = () => {
           <Typography variant="h4" as="p" className="font-semibold">
             {t('account_section_applications.placeholder.title')}
           </Typography>
-          <AccountMarkdown content={t('account_section_applications.placeholder.subtitle')} />
+          <Markdown
+            variant="default"
+            content={t('account_section_applications.placeholder.subtitle')}
+          />
         </div>
       </div>
     </SectionContainer>

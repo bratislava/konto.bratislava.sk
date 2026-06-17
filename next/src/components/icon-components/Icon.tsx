@@ -1,0 +1,107 @@
+import * as Icons from '@/src/assets/ui-icons'
+import cn from '@/src/utils/cn'
+
+export const iconNameMap = {
+  accessibility: 'AccessibilityIcon',
+  add: 'AddIcon',
+  'apple-pay': 'ApplePayIcon',
+
+  'arrow-down': 'ArrowDownIcon',
+  'arrow-down-small': 'ArrowDownSmallIcon',
+  'arrow-left': 'ArrowLeftIcon',
+  'arrow-right': 'ArrowRightIcon',
+  'arrow-up': 'ArrowUpIcon',
+  attachment: 'AttachmentIcon',
+  bin: 'BinIcon',
+  bus: 'BusIcon',
+  calendar: 'CalendarIcon',
+  camera: 'PhotoIcon',
+  check: 'CheckIcon',
+  'check-circle': 'CheckInCircleIcon',
+  'chevron-down': 'ChevronDownIcon',
+  'chevron-down-small': 'ChevronDownSmallIcon',
+  'chevron-left': 'ChevronLeftIcon',
+  'chevron-right': 'ChevronRightIcon',
+  'chevron-up': 'ChevronUpIcon',
+  'chevron-up-small': 'ChevronUpSmallIcon',
+  'city-account': 'CityAccountIcon',
+  'city-services': 'ServicesIcon',
+  clear: 'RemoveIcon',
+  clock: 'ClockIcon',
+  close: 'CrossIcon',
+  'close-circle': 'CrossInCircleIcon',
+  copy: 'CopyIcon',
+  directions: 'DirectionsIcon',
+  document: 'DocumentIcon',
+  download: 'DownloadIcon',
+  edit: 'EditIcon',
+  euro: 'EuroIcon',
+  error: 'ErrorIcon',
+  export: 'ExportIcon',
+  eye: 'EyeIcon',
+  'eye-hide': 'EyeHideIcon',
+  filter: 'FilterIcon',
+  folder: 'FolderOpenIcon',
+  'google-pay': 'GooglePayIcon',
+  help: 'HelpIcon',
+  home: 'HomeIcon',
+  hourglass: 'SandGlassIcon',
+  'id-card': 'CardsAndIdsIcon',
+  import: 'ImportIcon',
+  'import-export': 'ConnectionIcon',
+  info: 'InfoIcon',
+  book: 'BookIcon',
+  'link-variant': 'LinkVariantIcon',
+  'live-chat': 'LiveChatIcon',
+  lock: 'LockIcon',
+  logout: 'LogoutIcon',
+  mail: 'MailIcon',
+  map: 'MapIcon',
+  'menu-hamburger': 'HamburgerIcon',
+  'menu-kebab': 'EllipsisIcon',
+  'menu-meatballs': 'EllipsisVerticalIcon',
+  minus: 'MinusIcon',
+  'new-tab': 'NewTabIcon',
+  'open-in-new': 'OpenInNewIcon',
+  parking: 'ParkingIcon',
+  payment: 'PaymentIcon',
+  pdf: 'PdfIcon',
+  phone: 'PhoneIcon',
+  'phone-call': 'PhoneCallIcon',
+  pin: 'PinIcon',
+  'qr-code': 'QrCodeIcon',
+  referents: 'ReferentsIcon',
+  retry: 'RepeatIcon',
+  save: 'SaveIcon',
+  scan: 'ScanIcon',
+  search: 'SearchIcon',
+  send: 'SendIcon',
+  settings: 'SettingsIcon',
+  speaker: 'SpeakerIcon',
+  submission: 'MySubmissionsIcon',
+  upload: 'UploadIcon',
+  user: 'ProfileIcon',
+  warning: 'AlertIcon',
+  web: 'WebIcon',
+} satisfies Record<string, keyof typeof Icons>
+
+export type IconName = keyof typeof iconNameMap
+
+type IconType = React.FunctionComponent<React.SVGProps<SVGSVGElement>>
+
+export type IconProps = {
+  name: IconName
+  className?: string
+} & React.SVGProps<SVGSVGElement>
+
+{
+  /* TODO: check old icons in icon-components folder and remove */
+}
+
+const Icon = ({ name, className, ...otherProps }: IconProps) => {
+  const IconComponent: IconType = Icons[iconNameMap[name]]
+
+  return <IconComponent {...otherProps} aria-hidden className={cn('shrink-0', className)} />
+}
+
+export default Icon

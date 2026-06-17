@@ -1,9 +1,9 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { DiscIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormMenuItems } from '@/src/components/forms/useFormMenuItems'
+import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
@@ -40,7 +40,7 @@ const FormHeader = () => {
             <Button
               size="small"
               variant="outline"
-              startIcon={<DiscIcon />}
+              startIcon={<Icon name="save" />}
               onPress={() => saveConcept()}
               data-cy="save-concept-desktop"
             >
@@ -52,7 +52,7 @@ const FormHeader = () => {
               <Button
                 variant="outline"
                 size="small"
-                icon={<EllipsisVerticalIcon />}
+                icon={<Icon name="menu-kebab" />}
                 aria-label={t('form_header.additional_fom_action_menu_aria_label')}
               />
             }

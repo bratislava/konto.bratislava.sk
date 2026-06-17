@@ -2,9 +2,9 @@ import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 
-import { ChevronRightIcon } from '@/src/assets/ui-icons'
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { formatDate } from '@/src/components/formatting/FormatDate'
+import Icon from '@/src/components/icon-components/Icon'
 import MLink from '@/src/components/simple-components/MLink'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
@@ -111,7 +111,7 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
         <div className="h-full w-16">
           {isActiveLink && (
             <div className="flex size-full items-center justify-center">
-              <ChevronRightIcon />
+              <Icon name="chevron-right" />
             </div>
           )}
         </div>
@@ -150,7 +150,7 @@ const TaxesFeesOverviewRow = ({ taxData }: TaxesFeesOverviewRowProps) => {
         </div>
         {isActiveLink && (
           <span className="flex size-5 items-center justify-center">
-            <ChevronRightIcon />
+            <Icon name="chevron-right" />
           </span>
         )}
       </div>

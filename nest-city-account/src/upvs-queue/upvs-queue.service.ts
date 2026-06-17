@@ -4,7 +4,12 @@ import dayjs from 'dayjs'
 
 import { parseName } from '../magproxy/dtos/uri'
 import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
-import { CreateManyParam, CreateManyResult, NasesService } from '../nases/nases.service'
+import {
+  CreateManyParam,
+  CreateManyResult,
+  getUpvsDeathDate,
+  NasesService,
+} from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -149,6 +154,7 @@ export class UpvsQueueService {
             upvsStatus: item.data.status ?? null,
             edeskStatus: item.data.upvs?.edesk_status ?? null,
             edeskNumber: item.data.upvs?.edesk_number ?? null,
+            edeskDeathDate: getUpvsDeathDate(item.data),
             processedAt: new Date(),
             newUri: item.inputUri !== item.data.uri ? item.data.uri : undefined,
           },

@@ -1,5 +1,5 @@
 import { Typography } from '@bratislava/component-library'
-import { Trans, useTranslation } from 'next-i18next/pages'
+import { useTranslation } from 'next-i18next/pages'
 import {
   InstallmentPaidStatusEnum,
   ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
@@ -50,19 +50,9 @@ const TaxFeePaymentMethods = () => {
       <div className="flex w-full flex-col rounded-lg border border-gray-200">
         <TaxFeePaymentMethodsItem
           title={
-            taxData.paidStatus === TaxStatusEnum.PartiallyPaid ? (
-              <Trans
-                ns="account"
-                i18nKey="tax_detail_section.tax_payment_rest"
-                components={{ strong: <strong className="font-semibold" /> }}
-              />
-            ) : (
-              <Trans
-                ns="account"
-                i18nKey="tax_detail_section.tax_payment_full"
-                components={{ strong: <strong className="font-semibold" /> }}
-              />
-            )
+            taxData.paidStatus === TaxStatusEnum.PartiallyPaid
+              ? t('tax_detail_section.tax_payment_rest')
+              : t('tax_detail_section.tax_payment_full')
           }
           subtitle={oneTimePaymentSubtitle}
           amount={overallBalance}
@@ -77,13 +67,7 @@ const TaxFeePaymentMethods = () => {
         {installmentPayment.isPossible &&
           installmentPayment.activeInstallment?.remainingAmount !== undefined && (
             <TaxFeePaymentMethodsItem
-              title={
-                <Trans
-                  ns="account"
-                  i18nKey="tax_detail_section.tax_payment_installment"
-                  components={{ strong: <strong className="font-semibold" /> }}
-                />
-              }
+              title={t('tax_detail_section.tax_payment_installment')}
               subtitle={
                 installmentPayment.activeInstallment?.dueDate
                   ? t('tax_detail_section.tax_payment_installment_subtitle', {

@@ -25,3 +25,14 @@ export const priznanieKDaniZNehnutelnostiExtractTechnicalSubject: SchemalessForm
     type: 'schemaless',
     extractFn: () => 'Podávanie daňového priznania k dani z nehnuteľností',
   }
+
+export const priznanieKDaniZNehnutelnostiFiles = {
+  slots: [
+    {
+      slotId: 'splnomocnenie',
+    },
+    {
+      slotId: 'znaleckyPosudok',
+    },
+  ],
+} as const

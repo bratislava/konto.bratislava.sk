@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { DisclosureStateContext as RACDisclosureStateContext } from 'react-aria-components/Disclosure'
 import { Heading as RACHeading } from 'react-aria-components/Heading'
 
-import { ChevronDownIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 interface DisclosureHeaderProps {
@@ -23,7 +23,7 @@ const DisclosureHeader = ({ children, ...props }: DisclosureHeaderProps) => {
       <Button slot="trigger" variant="unstyled" className={cn('w-full text-left', props.className)}>
         <div className="flex w-full justify-between">
           <div className="flex flex-col gap-2">{children}</div>
-          <ChevronDownIcon
+          <Icon
             name="chevron-down"
             aria-hidden
             className={cn('shrink-0 self-center transition-transform duration-200 ease-in-out', {

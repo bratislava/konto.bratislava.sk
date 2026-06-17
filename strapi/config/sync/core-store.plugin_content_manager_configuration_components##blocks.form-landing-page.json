@@ -62,6 +62,20 @@
           "sortable": false
         }
       },
+      "sections": {
+        "edit": {
+          "label": "Sekcie",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sections",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "documentId": {
         "edit": {},
         "list": {
@@ -72,6 +86,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "linkCtas",
+        "formCta",
+        "documentId"
+      ],
       "edit": [
         [
           {
@@ -90,13 +110,13 @@
             "name": "formCta",
             "size": 12
           }
+        ],
+        [
+          {
+            "name": "sections",
+            "size": 12
+          }
         ]
-      ],
-      "list": [
-        "id",
-        "linkCtas",
-        "formCta",
-        "documentId"
       ]
     },
     "uid": "blocks.form-landing-page",

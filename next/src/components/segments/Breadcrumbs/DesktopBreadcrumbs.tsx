@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next/pages'
 
-import { ChevronRightIcon, HomeIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import type { BreadcrumbsProps } from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
 import MLink from '@/src/components/simple-components/MLink'
 
@@ -21,7 +21,7 @@ const DesktopBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
           className="shrink-0"
           aria-label={t('Breadcrumbs.homepage')}
         >
-          <HomeIcon className="size-5 shrink-0" />
+          <Icon name="home" className="size-5 shrink-0" />
         </MLink>
       </li>
       {breadcrumbs.map((breadcrumb, index) => {
@@ -30,7 +30,7 @@ const DesktopBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
         return (
           // eslint-disable-next-line react/no-array-index-key
           <li className="flex gap-1 text-size-p-tiny font-medium" key={index}>
-            <ChevronRightIcon className="size-5 shrink-0" aria-hidden />
+            <Icon name="chevron-right" className="size-5 shrink-0" aria-hidden />
             {breadcrumb.path && !isLast ? (
               <MLink href={breadcrumb.path} variant="underlined">
                 {breadcrumb.title}

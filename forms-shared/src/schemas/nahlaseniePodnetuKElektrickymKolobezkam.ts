@@ -81,11 +81,12 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         helptext: 'Nachádza sa v strede riadidiel pod QR kódom.',
       },
     ),
-    fileUploadMultiple(
+    fileUploadMultiple<typeof nahlaseniePodnetuKElektrickymKolobezkamFiles>(
       'fotografia',
       {
         title: 'Fotografia podnetu',
         required: true,
+        slotId: 'fotografia',
       },
       {
         type: 'dragAndDrop',
@@ -95,6 +96,16 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
     ),
   ]),
 ])
+
+export const nahlaseniePodnetuKElektrickymKolobezkamFiles = {
+  maxFileSize: undefined,
+  maxTotalFileSize: undefined,
+  slots: [
+    {
+      slotId: 'fotografia',
+    },
+  ],
+} as const
 
 type ExtractProviderFormData = {
   podnet: {

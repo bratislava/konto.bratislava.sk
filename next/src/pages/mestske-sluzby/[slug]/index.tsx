@@ -8,9 +8,9 @@ import { makeClientLandingPageFormDefinition } from '@/src/components/forms/clie
 import FormCreatedSplitPage, {
   FormCreatedSplitPageProps,
 } from '@/src/components/forms/FormCreatedSplitPage'
-import { FormWithLandingPageRequiredFragment } from '@/src/components/forms/FormLandingPage'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
+import { FormWithLandingPageRequiredFragment } from '@/src/components/page-contents/FormLandingPageContent/FormLandingPageContent'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import {
   EMBEDDED_FORM_QUERY_PARAM,

@@ -2,7 +2,7 @@ import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
 
-import { ExportIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import TaxFeeAccordions from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeAccordions'
 import TaxFeePaymentSummary from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentSummary'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
@@ -38,7 +38,11 @@ const TaxFeeDetails = () => {
         <Typography variant="h5" as="p" className="font-semibold">
           {taxFeeAccordionsHeader}
         </Typography>
-        <Button variant="link" endIcon={<ExportIcon />} {...taxFeeAccordionsHeaderLinkProps} />
+        <Button
+          variant="link"
+          endIcon={<Icon name="export" />}
+          {...taxFeeAccordionsHeaderLinkProps}
+        />
       </div>
       <TaxFeeAccordions />
       <TaxFeePaymentSummary />

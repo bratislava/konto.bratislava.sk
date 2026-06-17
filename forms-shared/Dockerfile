@@ -4,6 +4,12 @@ FROM node:24.15-slim AS base
 
 WORKDIR /app
 
+# Required only for ARM builds so native Node modules can compile during npm ci.
+RUN apt-get update && apt-get install -y \
+    python3 \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 FROM base AS test-base
 # Install Java and other dependencies
 RUN apt-get update && apt-get install -y \
@@ -64,6 +70,10 @@ CMD [ "npm", "run", "test:ci" ]
 
 FROM test-base AS test-update
 CMD [ "npm", "run", "test:ci:update" ]
+
+# CI runs tests inside `docker build` so the target can be cached.
+FROM test-base AS ci-test
+RUN npm run test:ci
 
 FROM base AS prod-build
 

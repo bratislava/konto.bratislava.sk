@@ -1,11 +1,11 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { PropsWithChildren, useMemo } from 'react'
 
-import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@/src/assets/ui-icons'
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
 import { useFormSignerLoader } from '@/src/components/forms/signer/useFormSignerLoader'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import Icon from '@/src/components/icon-components/Icon'
 import Alert from '@/src/components/simple-components/Alert'
 import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
@@ -33,19 +33,19 @@ const SummaryFormSignature = () => {
             <Button
               variant="icon-wrapped-negative-margin"
               size="small"
-              icon={<EllipsisVerticalIcon />}
+              icon={<Icon name="menu-kebab" />}
               aria-label="Menu"
             />
           }
           items={[
             {
               title: 'Podpísať znova',
-              icon: <EditIcon className="size-6" />,
+              icon: <Icon name="edit" className="size-6" />,
               onPress: () => sign(),
             },
             {
               title: 'Odstrániť podpis',
-              icon: <BinIcon className="size-6" />,
+              icon: <Icon name="bin" className="size-6" />,
               onPress: () => remove(),
               itemClassName: 'text-negative-700',
             },

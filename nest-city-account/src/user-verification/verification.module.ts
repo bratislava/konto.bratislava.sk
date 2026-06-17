@@ -1,7 +1,7 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
+import ApiJwtTokensModule from 'src/api-jwt-tokens/api-jwt-tokens.module'
 import { MagproxyModule } from 'src/magproxy/magproxy.module'
-import TokenSubservice from 'src/user-verification/utils/subservice/token.subservice'
 
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { MailgunModule } from '../mailgun/mailgun.module'
@@ -37,13 +37,9 @@ import { VerificationService } from './verification.service'
     BloomreachModule,
     MailgunModule,
     UserModule,
+    ApiJwtTokensModule,
   ],
-  providers: [
-    VerificationService,
-    VerificationDataSubservice,
-    VerificationSubservice,
-    TokenSubservice,
-  ],
+  providers: [VerificationService, VerificationDataSubservice, VerificationSubservice],
   exports: [VerificationService],
   controllers: [VerificationController],
 })

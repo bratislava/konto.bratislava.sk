@@ -1,6 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, User } from '@prisma/client'
-import { IsEmail, IsEnum } from 'class-validator'
+import { ConsentEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, User } from '@prisma/client'
+import { IsBoolean, IsEmail, IsEnum } from 'class-validator'
+
+export class ResponseConsentDto {
+  @ApiProperty({
+    description: 'Type of consent',
+    enum: ConsentEnum,
+    enumName: 'ConsentEnum',
+  })
+  @IsEnum(ConsentEnum)
+  consentType!: ConsentEnum
+
+  @ApiProperty({
+    description: 'Whether the consent is currently granted',
+    example: true,
+  })
+  @IsBoolean()
+  isGranted!: boolean
+}
 
 export class RequestGdprDataDto {
   gdprData!: GdprDataDto[]
@@ -113,7 +130,20 @@ export class ResponseUserDataBasicDto {
 
 export class ResponseUserDataDto extends ResponseUserDataBasicDto {
   @ApiProperty({
-    description: 'Subscription Data in array',
+    description: 'Current consent state for the user, one entry per consent type.',
+    type: [ResponseConsentDto],
+    default: [
+      { consentType: 'MARKETING', isGranted: true },
+      { consentType: 'GENERAL', isGranted: true },
+    ],
+  })
+  consents!: ResponseConsentDto[]
+
+  // TODO remove once the frontend stops reading `gdprData` and reads `consents` instead.
+  /** @deprecated Use `consents` instead. Derived from current consent state. */
+  @ApiProperty({
+    description: 'DEPRECATED. Use `consents`.',
+    deprecated: true,
     default: [
       {
         category: 'CITY',
@@ -173,7 +203,20 @@ export class ResponsePublicUnsubscribeDto {
   message!: string
 
   @ApiProperty({
-    description: 'Subscription Data in array',
+    description: 'Current consent state for the user, one entry per consent type.',
+    type: [ResponseConsentDto],
+    default: [
+      { consentType: 'MARKETING', isGranted: false },
+      { consentType: 'GENERAL', isGranted: false },
+    ],
+  })
+  consents!: ResponseConsentDto[]
+
+  // TODO remove once the frontend stops reading `gdprData` and reads `consents` instead.
+  /** @deprecated Use `consents` instead. Derived from current consent state. */
+  @ApiProperty({
+    description: 'DEPRECATED. Use `consents`.',
+    deprecated: true,
     default: [
       {
         category: 'CITY',

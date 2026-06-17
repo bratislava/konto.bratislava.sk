@@ -14,7 +14,6 @@ import { useTranslation } from 'next-i18next/pages'
 import { useMemo } from 'react'
 import { useIsSSR } from 'react-aria/SSRProvider'
 
-import { AlertIcon, ChevronDownIcon } from '@/src/assets/ui-icons'
 import SummaryFile from '@/src/components/forms/steps/Summary/SummaryFile'
 import SummaryRow from '@/src/components/forms/steps/Summary/SummaryRow'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
@@ -22,6 +21,7 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
+import Icon from '@/src/components/icon-components/Icon'
 
 const FormComponent = ({ children }: SummaryFormComponentProps) => (
   <div className="flex flex-col gap-8">{children}</div>
@@ -77,7 +77,7 @@ const InvalidValueComponent = () => {
     <span>
       <div className="flex items-center gap-3 text-error">
         <div className="shrink-0">
-          <AlertIcon />
+          <Icon name="warning" />
         </div>
         {t('summary.invalid_value')}
       </div>
@@ -123,7 +123,7 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
             )}
           </div>
           <span className="shrink-0" aria-hidden>
-            <ChevronDownIcon className="transition-transform group-open:rotate-180" />
+            <Icon name="chevron-down" className="transition-transform group-open:rotate-180" />
           </span>
         </summary>
         <div className="p-6 pt-0">{children}</div>

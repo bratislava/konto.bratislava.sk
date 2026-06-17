@@ -16,8 +16,6 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { DeliveryMethod } from '../../noris/types/noris.enums'
-
 /**
  * Options for processing Noris tax data.
  *
@@ -173,60 +171,6 @@ export class DateRangeDto {
   toDate?: Date
 }
 
-export type RequestUpdateNorisDeliveryMethodsData = Record<
-  string,
-  | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
-  | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
->
-
-export class RequestUpdateNorisDeliveryMethodsDto {
-  @ApiProperty({
-    description:
-      'The new delivery methods for the birth numbers. For city account notification, date must be provided.',
-    example: {
-      '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
-      '010366/554': { deliveryMethod: DeliveryMethod.EDESK },
-      '017766/2244': { deliveryMethod: DeliveryMethod.POSTAL },
-      '022176/2244': {
-        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-        date: '2024-01-01',
-      },
-    },
-    type: 'object',
-    additionalProperties: {
-      oneOf: [
-        {
-          type: 'object',
-          properties: {
-            deliveryMethod: {
-              type: 'string',
-              enum: [DeliveryMethod.CITY_ACCOUNT],
-            },
-            date: {
-              type: 'string',
-              format: 'date',
-            },
-          },
-          required: ['deliveryMethod', 'date'],
-        },
-        {
-          type: 'object',
-          properties: {
-            deliveryMethod: {
-              type: 'string',
-              enum: [DeliveryMethod.EDESK, DeliveryMethod.POSTAL],
-            },
-          },
-          required: ['deliveryMethod'],
-        },
-      ],
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  data: RequestUpdateNorisDeliveryMethodsData
-}
-
 export class RequestAdminCreateTestingTaxNorisData {
   @ApiProperty({
     description: 'Variable symbol of the tax',
@@ -234,15 +178,6 @@ export class RequestAdminCreateTestingTaxNorisData {
   })
   @IsString()
   variableSymbol: string
-
-  @ApiProperty({
-    description: 'Delivery method for the tax',
-    enum: DeliveryMethod,
-    nullable: true,
-  })
-  @IsEnum(DeliveryMethod)
-  @IsOptional()
-  deliveryMethod: DeliveryMethod | null
 
   @ApiProperty({
     description: 'Birth number in format with slash',

@@ -2,7 +2,7 @@ import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { FC, useState } from 'react'
 
-import { CrossIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 interface TagProps {
@@ -63,7 +63,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
       {removable && (
         // TODO implement correct variant and larger clickable area
         <Button
-          icon={<CrossIcon className={iconClassStyles} />}
+          icon={<Icon name="close" className={iconClassStyles} />}
           onPress={onRemove}
           aria-label={t('Tag.remove_button.aria')}
           className="shrink-0"

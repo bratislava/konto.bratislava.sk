@@ -1,6 +1,9 @@
 import { FormError } from '@prisma/client'
 
+import { CityAccountErrorsEnum } from '../../auth/errors/city-account.errors.enum'
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
+import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
+import { FormSenderErrorsEnum } from '../../form-sender/form-sender.errors.enum'
 import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
 import { GinisTaskErrorEnum } from '../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
@@ -25,25 +28,24 @@ export default [
   FilesErrorsEnum.FILE_MINIO_CHECK_ERROR,
   FilesErrorsEnum.FILE_BY_SCANNERID_NOT_FOUND_ERROR,
   FilesErrorsEnum.FILE_SCANNING_SERVICE_ERROR,
-  NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-  NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+  FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
   NasesErrorsEnum.SEND_TO_NASES_ERROR,
-  NasesErrorsEnum.SEND_TO_GINIS_ERROR,
+  FormSenderErrorsEnum.SEND_TO_GINIS_ERROR,
   NasesErrorsEnum.IDENTITY_SEARCH_DATA_INCONSISTENT,
-  NasesErrorsEnum.FORM_NOT_FOUND,
-  NasesErrorsEnum.FORM_ARCHIVED,
-  NasesErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-  NasesErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-  NasesErrorsEnum.MAX_TRIES_REACHED,
-  NasesErrorsEnum.SENDING_EMAIL_FAILED,
-  NasesErrorsEnum.DATABASE_ERROR,
-  NasesErrorsEnum.WEBHOOK_ERROR,
   NasesErrorsEnum.FORM_DEFINITION_NOT_IN_SLOVENSKO_SK,
+  FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+  FormsErrorsEnum.FORM_ARCHIVED,
+  FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+  FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+  FormDeliveryConsumerErrorsEnum.MAX_TRIES_REACHED,
+  FormDeliveryConsumerErrorsEnum.SENDING_EMAIL_FAILED,
+  FormDeliveryConsumerErrorsEnum.WEBHOOK_ERROR,
   ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
   ScannerClientErrorsEnum.FILE_HAS_WRONG_PARAMETERS,
   ScannerClientErrorsEnum.FILE_IN_SCANNER_NOT_FOUND,
   ErrorsEnum.DATABASE_ERROR,
   ErrorsEnum.INTERNAL_SERVER_ERROR,
+  ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
   FormError.UNABLE_TO_SCAN_FILES,
   FormError.GINIS_SEND_ERROR,
   FormError.NASES_SEND_ERROR,
@@ -52,5 +54,6 @@ export default [
   SharepointErrorsEnum.GENERAL_ERROR,
   FormsErrorsEnum.FORM_NOT_REGISTERED_IN_SLOVENSKO_SK,
   GinisTaskErrorEnum.GET_DOCUMENT_DETAIL_ERROR,
+  CityAccountErrorsEnum.GET_USER_ERROR,
   ...Object.values(StatusErrorsEnum),
 ] as string[]

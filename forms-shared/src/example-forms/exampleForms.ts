@@ -65,10 +65,7 @@ export const exampleForms: Record<string, ExampleForm[]> = {
   'ziadost-o-slobodny-pristup-k-informaciam': [ziadostOSlobodnyPristupKInformaciamExample],
   'ziadost-o-uzemnoplanovaciu-informaciu': [ziadostOUzemnoplanovaciuInformaciuExample],
   'nahlasenie-podnetu-k-elektrickym-kolobezkam': [nahlaseniePodnetuKElektrickymKolobezkamExample],
-  'paas-kontaktny-formular-paas': [
-    kontaktnyFormularPaasExample1,
-    kontaktnyFormularPaasExample2,
-  ],
+  'paas-kontaktny-formular': [kontaktnyFormularPaasExample1, kontaktnyFormularPaasExample2],
 }
 
 export const exampleDevForms: Record<string, ExampleForm[]> = {}

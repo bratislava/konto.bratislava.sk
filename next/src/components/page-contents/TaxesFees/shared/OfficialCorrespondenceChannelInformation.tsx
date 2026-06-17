@@ -3,11 +3,11 @@ import { useTranslation } from 'next-i18next/pages'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
-import { MailIcon, SettingsIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
-import { useOfficialCorrespondenceChannel } from '@/src/components/page-contents/TaxesFees/useOfficialCorrespondenceChannel'
 import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4
@@ -17,12 +17,12 @@ const OfficialCorrespondenceChannelInformation = () => {
   const { t } = useTranslation('account')
 
   const strapiTax = useStrapiTax()
-  const { channel, canUserChangeChannel, hasChangedDeliveryMethodAfterDeadline } =
-    useOfficialCorrespondenceChannel()
+  const { deliveryMethod, canUserChangeDeliveryMethod, hasChangedDeliveryMethodAfterDeadline } =
+    useUserDataDeliveryMethod()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  if (!channel) {
+  if (!deliveryMethod) {
     return null
   }
 
@@ -30,7 +30,7 @@ const OfficialCorrespondenceChannelInformation = () => {
     [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
     [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
     [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
-  }[channel]
+  }[deliveryMethod]
 
   return (
     <>
@@ -42,19 +42,19 @@ const OfficialCorrespondenceChannelInformation = () => {
         <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="rounded-lg bg-gray-100 p-3 max-lg:hidden">
-              <MailIcon className="size-6" />
+              <Icon name="mail" className="size-6" />
             </div>
             <Typography variant="p-large" className="font-semibold">
               {channelLabel}
             </Typography>
           </div>
-          {canUserChangeChannel && (
+          {canUserChangeDeliveryMethod && (
             <>
               {/* Desktop */}
               <Button
                 onPress={() => setIsModalOpen(true)}
                 variant="link"
-                startIcon={<SettingsIcon />}
+                startIcon={<Icon name="settings" />}
                 className="max-lg:hidden"
               >
                 {t('taxes.communication_channel.change_button')}
@@ -63,7 +63,7 @@ const OfficialCorrespondenceChannelInformation = () => {
               <Button
                 onPress={() => setIsModalOpen(true)}
                 variant="icon-wrapped"
-                icon={<SettingsIcon />}
+                icon={<Icon name="settings" />}
                 className="self-start lg:hidden"
                 aria-label={t('taxes.communication_channel.change_button.aria')}
               />

@@ -93,7 +93,7 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
 
   private addMssqlErrorDetailsToErrorMessage(
     errorMessage: string,
-    error: any,
+    error: unknown,
   ): string {
     if (error instanceof MSSQLError) {
       const mssqlErrorDetails = {
@@ -106,7 +106,7 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
     return errorMessage
   }
 
-  private getNorisUrgentError(errorMessage: string, error: any) {
+  private getNorisUrgentError(errorMessage: string, error: unknown) {
     return this.throwerErrorGuard.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,
       this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
@@ -117,7 +117,7 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
   }
 
   private async handleDatabaseError(
-    error: any,
+    error: unknown,
     errorMessage: string,
   ): Promise<never> {
     // https://www.npmjs.com/package/mssql#errors

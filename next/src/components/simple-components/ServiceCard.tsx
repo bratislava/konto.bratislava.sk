@@ -1,7 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
-import { ArrowRightIcon, ExportIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import { LinkAnalyticsProps } from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
 
@@ -33,10 +33,8 @@ const ServiceCard = ({
   analyticsProps,
 }: ServiceCardBase) => {
   const style = cn(
-    'group relative flex w-full flex-col items-start gap-5 rounded-lg border border-solid border-gray-200 bg-gray-0 p-4',
+    'group relative flex w-full flex-col items-start gap-5 rounded-lg border border-solid border-gray-200 bg-gray-0 p-4 wrapper-focus-ring!',
     className,
-    { 'cursor-pointer': buttonText },
-    { 'cursor-default': !buttonText },
   )
 
   return (
@@ -84,9 +82,9 @@ const ServiceCard = ({
           {buttonText && (
             <span className="flex size-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
               {href?.includes('http') ? (
-                <ExportIcon className="size-5" />
+                <Icon name="export" className="size-5" />
               ) : (
-                <ArrowRightIcon className="size-5" />
+                <Icon name="arrow-right" className="size-5" />
               )}
             </span>
           )}

@@ -1,10 +1,13 @@
+import { CityAccountErrorsEnum } from '../../../auth/errors/city-account.errors.enum'
 import { ConvertErrorsEnum } from '../../../convert/errors/convert.errors.enum'
 import { FilesErrorsEnum } from '../../../files/files.errors.enum'
+import { EmailFormsErrorsEnum } from '../../../form-delivery-consumer/errors/email-forms.errors.enum'
+import { FormDeliveryConsumerErrorsEnum } from '../../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
+import { WebhookErrorsEnum } from '../../../form-delivery-consumer/errors/webhook.errors.enum'
+import { FormSenderErrorsEnum } from '../../../form-sender/form-sender.errors.enum'
 import { FormsErrorsEnum } from '../../../forms/forms.errors.enum'
 import { GinisTaskErrorEnum } from '../../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../../nases/nases.errors.enum'
-import { EmailFormsErrorsEnum } from '../../../nases-consumer/subservices/dtos/email-forms.errors.enum'
-import { WebhookErrorsEnum } from '../../../nases-consumer/subservices/dtos/webhook.errors.enum'
 import { ScannerClientErrorsEnum } from '../../../scanner-client/scanner-client.errors.enum'
 import { SignerErrorsEnum } from '../../../signer/signer.errors.enum'
 import { StatusErrorsEnum } from '../../../status/errors/status.errors.enum'
@@ -15,6 +18,7 @@ import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.e
 export type CustomErrorEnums =
   | ErrorsEnum
   | FormsErrorsEnum
+  | FormDeliveryConsumerErrorsEnum
   | GinisTaskErrorEnum
   | NasesErrorsEnum
   | MailgunErrorsEnum
@@ -26,6 +30,8 @@ export type CustomErrorEnums =
   | ConvertErrorsEnum
   | SignerErrorsEnum
   | StatusErrorsEnum
+  | CityAccountErrorsEnum
+  | FormSenderErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

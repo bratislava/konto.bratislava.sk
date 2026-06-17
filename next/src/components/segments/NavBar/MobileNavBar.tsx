@@ -3,7 +3,7 @@ import FocusTrap from 'focus-trap-react'
 import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
 
-import { CrossIcon, HamburgerIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import HamburgerMenu from '@/src/components/segments/HambergerMenu/HamburgerMenu'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
 import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
@@ -42,7 +42,7 @@ export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props
                     className="-mr-4 p-4"
                     aria-label={t('MobileNavBar.close')}
                     data-cy="mobile-account-button"
-                    icon={<CrossIcon />}
+                    icon={<Icon name="close" />}
                   />
                 ) : (
                   <Button
@@ -52,7 +52,7 @@ export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props
                     className="-mr-4 p-4"
                     aria-label={t('MobileNavBar.open')}
                     data-cy="mobile-account-button"
-                    icon={<HamburgerIcon />}
+                    icon={<Icon name="menu-hamburger" />}
                   />
                 )}
               </div>

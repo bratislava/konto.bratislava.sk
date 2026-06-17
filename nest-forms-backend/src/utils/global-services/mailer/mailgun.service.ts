@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { FormError } from '@prisma/client'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
-import { IMailgunClient } from 'mailgun.js/Interfaces'
+import { Interfaces } from 'mailgun.js/definitions'
 
 import PrismaService from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
@@ -15,7 +15,7 @@ import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
 export default class MailgunService implements Mailer {
-  mailgunClient: IMailgunClient
+  mailgunClient: Interfaces.IMailgunClient
 
   logger: LineLoggerSubservice
 
@@ -54,7 +54,7 @@ export default class MailgunService implements Mailer {
   }
 
   async sendEmail(params: MailerSendEmailParams): Promise<void> {
-    const { data, emailFrom, attachments, subject } = params
+    const { data, emailFrom, replyTo, attachments, subject } = params
     const mailgunAttachments = attachments?.map((attachment) => ({
       data: attachment.content,
       filename: attachment.filename,
@@ -86,6 +86,7 @@ export default class MailgunService implements Mailer {
           to: data.to,
           subject: subject ?? MAILGUN_CONFIG[data.template].subject,
           attachment: mailgunAttachments,
+          ...(replyTo ? { 'h:Reply-To': replyTo } : {}),
           ...emailContent,
         },
       )

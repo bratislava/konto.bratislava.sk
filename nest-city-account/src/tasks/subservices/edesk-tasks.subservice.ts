@@ -3,7 +3,7 @@ import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
 
-import { NorisService } from '../../noris/noris.service'
+import { NorisEdeskService } from '../../noris/services/noris-edesk.service'
 import { EdeskStatus } from '../../noris/types/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
 import { UpvsQueueService } from '../../upvs-queue/upvs-queue.service'
@@ -22,7 +22,7 @@ export class EdeskTasksSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly upvsQueueService: UpvsQueueService,
-    private readonly norisService: NorisService,
+    private readonly norisEdeskService: NorisEdeskService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(EdeskTasksSubservice.name)
@@ -96,7 +96,7 @@ export class EdeskTasksSubservice {
   }
 
   async retrieveNewRecordsFromNorisToUpdate() {
-    const norisRecords = await this.norisService.getExternalEdeskChecks(
+    const norisRecords = await this.norisEdeskService.getExternalEdeskChecks(
       PHYSICAL_PERSONS_RETRIEVE_BATCH_SIZE,
       LEGAL_PERSONS_RETRIEVE_BATCH_SIZE
     )
@@ -159,6 +159,7 @@ export class EdeskTasksSubservice {
       edeskStatus: EdeskStatus
       edeskNumber: string | null
       uri: string | null
+      deathDate: string | null
     }[] = []
     for (const item of completedItems) {
       try {
@@ -166,6 +167,7 @@ export class EdeskTasksSubservice {
         completedNorisUpdates.push({
           idNoris: item.norisId,
           lastCheck: item.processedAt,
+          deathDate: item.edeskDeathDate,
           ...edeskData,
         })
       } catch (error) {
@@ -187,9 +189,13 @@ export class EdeskTasksSubservice {
       edeskStatus: EdeskStatus.NONEXISTENT,
       edeskNumber: null,
       uri: null,
+      deathDate: null,
     }))
 
-    await this.norisService.updateEdeskChecks([...completedNorisUpdates, ...failedNorisUpdates])
+    await this.norisEdeskService.updateEdeskChecks([
+      ...completedNorisUpdates,
+      ...failedNorisUpdates,
+    ])
 
     await this.prismaService.externalEdeskCheck.deleteMany({
       where: {

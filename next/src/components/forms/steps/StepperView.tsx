@@ -2,14 +2,14 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import { Dialog, Heading } from 'react-aria-components/Dialog'
-import { Modal, ModalOverlay } from 'react-aria-components/Modal'
+import { Modal as RACModal, ModalOverlay as RACModalOverlay } from 'react-aria-components/Modal'
 
-import { ChevronDownIcon, CrossIcon } from '@/src/assets/ui-icons'
 import StepperViewList from '@/src/components/forms/steps/StepperViewList'
 import StepperViewRow from '@/src/components/forms/steps/StepperViewRow'
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { FormStepIndex } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 type StepperModalProps = {
@@ -22,24 +22,24 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
   const { t } = useTranslation('forms')
 
   return (
-    <ModalOverlay
+    <RACModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
       className="fixed top-0 left-0 z-50 h-(--visual-viewport-height) w-screen bg-white outline-0 entering:animate-stepper-slide exiting:animate-stepper-slide-reverse"
       isDismissable
     >
-      <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
+      <RACModal className="h-full outline-0">
         <Dialog className="flex h-full flex-col outline-0">
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
-                <Heading slot="title" className="grow text-size-h6-r lg:text-size-h6">
+                <Heading slot="title" className="grow text-size-h6-r font-semibold lg:text-size-h6">
                   {t('StepperView.all_steps')}
                 </Heading>
                 {/* TODO Unify modal close button with other modals */}
                 <Button
                   variant="icon-wrapped-negative-margin"
-                  icon={<CrossIcon />}
+                  icon={<Icon name="close" />}
                   onPress={close}
                   aria-label={t('StepperView.aria.close')}
                 />
@@ -50,8 +50,8 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
             </>
           )}
         </Dialog>
-      </Modal>
-    </ModalOverlay>
+      </RACModal>
+    </RACModalOverlay>
   )
 }
 
@@ -92,7 +92,7 @@ const StepperView = ({ className }: { className?: string }) => {
           onPress={handleOnClickDropdownIcon}
         >
           <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
-          <ChevronDownIcon className={cn({ 'rotate-180': !isOpen })} />
+          <Icon name="chevron-down" className={cn({ 'rotate-180': !isOpen })} />
         </Button>
 
         <StepperModal

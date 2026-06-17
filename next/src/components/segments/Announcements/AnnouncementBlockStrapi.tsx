@@ -1,7 +1,7 @@
 import { ButtonAnchorProps } from '@bratislava/component-library'
 
-import { ArrowRightIcon } from '@/src/assets/ui-icons'
 import { HomepageAnnouncementEntityFragment } from '@/src/clients/graphql-strapi/api'
+import Icon from '@/src/components/icon-components/Icon'
 import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 
 type AnnouncementBlockStrapiProps = {
@@ -19,7 +19,7 @@ const AnnouncementBlockStrapi = ({ announcement, reversed }: AnnouncementBlockSt
       children: buttonText,
       href,
       variant: 'solid',
-      endIcon: <ArrowRightIcon className="size-6" />,
+      endIcon: <Icon name="arrow-right" className="size-6" />,
     },
   ]
 

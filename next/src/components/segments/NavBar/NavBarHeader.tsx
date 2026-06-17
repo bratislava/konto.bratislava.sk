@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 
-import { ChevronDownSmallIcon } from '@/src/assets/ui-icons'
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
+import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
@@ -69,12 +69,13 @@ export const NavBarHeader = ({ menuItems }: Props) => {
                 <Button
                   variant="unstyled"
                   data-cy="account-button"
-                  className="flex items-center gap-4 font-semibold text-font/75"
+                  className="flex items-center gap-4 rounded-lg font-semibold text-font/75"
                 >
                   <UserAvatar userAttributes={userAttributes} />
                   <div className="flex items-center gap-1 font-light lg:font-semibold">
                     {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
-                    <ChevronDownSmallIcon
+                    <Icon
+                      name="chevron-down-small"
                       className={cn('hidden size-5 mix-blend-normal lg:flex', {
                         '-rotate-180': isMenuOpen,
                       })}

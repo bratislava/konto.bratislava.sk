@@ -1,20 +1,17 @@
-import * as crypto from 'node:crypto'
-
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { isAxiosError } from 'axios'
 import _ from 'lodash'
 import {
   ApiIamIdentitiesIdGet200Response,
   UpvsCorporateBody,
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
-import { v1 as uuidv1 } from 'uuid'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
-import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../user-verification/verification.errors.enum'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { VerificationErrorsResponseEnum } from '../user-verification/verification.errors.enum'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
@@ -47,61 +44,59 @@ export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<
   uri: string
 }
 
+export function isUpvsNaturalPerson(
+  contact: UpvsNaturalPerson | UpvsCorporateBody
+): contact is UpvsNaturalPerson {
+  return contact.type === 'natural_person'
+}
+
+export function getUpvsDeathDate(contact: UpvsNaturalPerson | UpvsCorporateBody): string | null {
+  if (!isUpvsNaturalPerson(contact)) {
+    return null
+  }
+  return contact.natural_person?.death?.date ?? null
+}
+
 @Injectable()
 export class NasesService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
-    private clientsService: ClientsService
+    private clientsService: ClientsService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
+    private readonly configService: ConfigService
   ) {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
 
-  async getUpvsIdentity(token: string): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
-    // there is a bug in the container and function `apiUpvsIdentityGet` below, according to 'openapi-clients/slovensko-sk' types
-    // returns information about UpvsNaturalPerson,
-    // in reality it returns information about UpvsCorporateBody as well
-    // after https://github.com/slovensko-digital/slovensko-sk-api/pull/115 is merged, typing can be erased
+  async getUpvsIdentity(token: string) {
     const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data)
       .catch((error: unknown) => {
-        throw this.throwerErrorGuard.BadRequestException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          undefined,
-          error
-        )
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
+            error
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        })
       })
     return result
   }
 
-  // copied from nest-forms-backend
-  private createTechnicalAccountJwtToken(): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
-    const header = {
-      alg: 'RS256',
-    }
-    const jti = uuidv1()
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
-    const payload = {
-      sub: process.env.SUB_NASES_TECHNICAL_ACCOUNT,
-      exp,
-      jti,
-      obo: null,
-    }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString('base64url')
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString('base64url')
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const signature = crypto.sign('sha256', buffer, { key: privateKey }).toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${signature}`
-  }
-
   private async searchUpvsIdentitiesByUri(uris: string[]) {
-    const jwt = this.createTechnicalAccountJwtToken()
+    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
+      this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+    )
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesSearchPost(
         {
@@ -115,12 +110,18 @@ export class NasesService {
         return response.data
       })
       .catch((error: unknown) => {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.VERIFY_EID_ERROR,
-          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
-          error
-        )
+        if (!isAxiosError(error)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+            'Error is not an instance of AxiosError',
+            error
+          )
+        }
+        throw this.throwerErrorGuard.fromAxiosError(error, {
+          message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: `Internal reason: ${VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE}. Uris: ${JSON.stringify(uris)}`,
+        })
       })
     return result
   }

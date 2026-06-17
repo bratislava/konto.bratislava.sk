@@ -195,6 +195,7 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
+    slotId: string | null,
   ): Promise<PostFileResponseDto> {
     const fileName = data.filename
     const fileId = data.id
@@ -205,13 +206,6 @@ export default class FilesService {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.NO_FILE_UPLOAD_DATA_ERROR,
         FilesErrorsResponseEnum.NO_FILE_UPLOAD_DATA_ERROR,
-      )
-    }
-
-    if (bufferedFile.size > this.configService.get('MAX_FILE_SIZE')) {
-      throw this.throwerErrorGuard.BadRequestException(
-        FilesErrorsEnum.FILE_SIZE_EXCEEDED_ERROR,
-        `${FilesErrorsResponseEnum.FILE_SIZE_EXCEEDED_ERROR} Received file size: ${bufferedFile.size}`,
       )
     }
 
@@ -242,6 +236,7 @@ export default class FilesService {
         FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
       )
     }
+
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {
       throw this.throwerErrorGuard.NotAcceptableException(
@@ -278,6 +273,7 @@ export default class FilesService {
         fileSize,
         formId,
         pospIdOrSlug,
+        slotId,
       )
     } else {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -554,5 +550,11 @@ export default class FilesService {
       }
       this.logger.debug(`File ${fileIds.toString()} was successfully deleted.`)
     }
+  }
+
+  async getActiveFileSizes(
+    formId: string,
+  ): Promise<{ id: string; slotId: string | null; fileSize: number }[]> {
+    return this.filesHelper.getActiveFileSizes(formId)
   }
 }

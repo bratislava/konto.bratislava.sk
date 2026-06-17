@@ -145,6 +145,7 @@ export const useGetContext = () => {
         formId,
         file: firstQueuedFile.file,
         id: firstQueuedFile.id,
+        slotId: firstQueuedFile.slotId,
         abortController,
         onSuccess: () => {
           updateFileStatus({ type: FileStatusType.WaitingForScan })
@@ -174,8 +175,8 @@ export const useGetContext = () => {
     scheduleUploadIfNeeded()
   }
 
-  const uploadFiles = (files: File[], constraints: FormFileUploadConstraints) => {
-    const newFiles = getFileInfoForNewFiles(files, constraints)
+  const uploadFiles = (files: File[], slotId: string, constraints: FormFileUploadConstraints) => {
+    const newFiles = getFileInfoForNewFiles(files, slotId, constraints)
 
     updateClientFiles([...getClientFiles(), ...newFiles])
 
@@ -221,7 +222,7 @@ export const useGetContext = () => {
       return null
     }
 
-    const newFiles = getFileInfoForNewFiles([fileToRetry.file], constraints)
+    const newFiles = getFileInfoForNewFiles([fileToRetry.file], fileToRetry.slotId, constraints)
     updateClientFiles([...getClientFiles().filter((file) => file.id !== id), ...newFiles])
 
     return newFiles[0].id

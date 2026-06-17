@@ -4,11 +4,8 @@ import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
 } from '../../../prisma/json-types'
-import {
-  AreaTypesEnum,
-  DeliveryMethod,
-  DeliveryMethodNoris,
-} from '../../types/noris.enums'
+import { createTestNorisCommunalWasteTaxGrouped } from '../../subservices/__tests__/factories/noris-communal-waste-tax-grouped.factory'
+import { AreaTypesEnum } from '../../types/noris.enums'
 import {
   NorisBaseTax,
   NorisCommunalWasteTaxGrouped,
@@ -16,7 +13,6 @@ import {
 } from '../../types/noris.types'
 import {
   convertCurrencyToInt,
-  mapDeliveryMethodToNoris,
   mapNorisToCommunalWasteDatabaseDetail,
   mapNorisToDatabaseBaseTax,
   mapNorisToRealEstateDatabaseDetail,
@@ -382,7 +378,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
   const baseMockData: NorisBaseTax = {
     dan_spolu: '150,50',
     variabilny_symbol: '2024000123',
-    akt_datum: '2024-01-15',
+    datum_realizacie: new Date('2024-01-15'),
     datum_platnosti: new Date('2024-02-01'),
     cislo_konania: 'KON-2024-001',
     stav_dokladu: 'Z',
@@ -397,7 +393,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
       year: 2024,
       taxPayerId: 42,
       variableSymbol: '2024000123',
-      dateCreateTax: '2024-01-15',
+      dateCreateTax: new Date('2024-01-15'),
       dateTaxRuling: new Date('2024-02-01'),
       taxId: 'KON-2024-001',
       isCancelled: false,
@@ -460,12 +456,6 @@ describe('mapNorisToDatabaseBaseTax', () => {
     expect(result2.taxPayerId).toBe(999)
   })
 
-  it('should handle null dateCreateTax (akt_datum)', () => {
-    const data = { ...baseMockData, akt_datum: null } as NorisBaseTax
-    const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
-    expect(result.dateCreateTax).toBeNull()
-  })
-
   it('should handle null dateTaxRuling (datum_platnosti)', () => {
     const data = { ...baseMockData, datum_platnosti: null } as NorisBaseTax
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
@@ -485,36 +475,6 @@ describe('mapNorisToDatabaseBaseTax', () => {
     } as NorisBaseTax
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
     expect(result.variableSymbol).toBe('VS-12345')
-  })
-})
-
-describe('mapDeliveryMethodToNoris', () => {
-  it('should map CITY_ACCOUNT to CITY_ACCOUNT', () => {
-    expect(mapDeliveryMethodToNoris(DeliveryMethod.CITY_ACCOUNT)).toBe(
-      DeliveryMethodNoris.CITY_ACCOUNT,
-    )
-  })
-
-  it('should map EDESK to EDESK', () => {
-    expect(mapDeliveryMethodToNoris(DeliveryMethod.EDESK)).toBe(
-      DeliveryMethodNoris.EDESK,
-    )
-  })
-
-  it('should map POSTAL to EDESK', () => {
-    expect(mapDeliveryMethodToNoris(DeliveryMethod.POSTAL)).toBe(
-      DeliveryMethodNoris.EDESK,
-    )
-  })
-
-  it('should return null for null input', () => {
-    expect(mapDeliveryMethodToNoris(null)).toBeNull()
-  })
-
-  it('should throw an error for unknown delivery method', () => {
-    expect(() => mapDeliveryMethodToNoris('UNKNOWN' as any)).toThrow(
-      'Unknown delivery method: UNKNOWN',
-    )
   })
 })
 
@@ -974,7 +934,7 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
   })
 
   it('should handle empty containers array', () => {
-    const mockData = {
+    const mockData = createTestNorisCommunalWasteTaxGrouped({
       addresses: [
         {
           addressDetail: {
@@ -984,7 +944,7 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
           containers: [],
         },
       ],
-    } as unknown as NorisCommunalWasteTaxGrouped
+    })
 
     const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
 
@@ -993,9 +953,9 @@ describe('mapNorisToCommunalWasteDatabaseDetail', () => {
   })
 
   it('should handle empty addresses array', () => {
-    const mockData = {
+    const mockData = createTestNorisCommunalWasteTaxGrouped({
       addresses: [],
-    } as unknown as NorisCommunalWasteTaxGrouped
+    })
 
     const result = mapNorisToCommunalWasteDatabaseDetail(mockData)
 

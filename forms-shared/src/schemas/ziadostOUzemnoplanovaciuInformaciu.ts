@@ -15,6 +15,7 @@ import {
   esbsKatastralneUzemiaCiselnik,
   katastralneUzemiaCodeAbbreviationMap,
 } from '../tax-form/mapping/shared/esbsCiselniky'
+import { FormFiles } from '../definitions/formDefinitionTypes'
 
 const addressFields = (title: string) => [
   input(
@@ -295,11 +296,12 @@ export default schema(
     ),
 
     step('prilohy', { title: 'Prílohy' }, [
-      fileUploadMultiple(
+      fileUploadMultiple<typeof ziadostOUzemnoplanovaciuInformaciuFiles>(
         'zakresZaujmovychParciel',
         {
           title: 'Zákres záujmových parciel do kópie katastrálnej mapy',
           required: true,
+          slotId: 'zakresZaujmovychParciel',
         },
         {
           type: 'dragAndDrop',
@@ -313,6 +315,16 @@ Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/katas
     ]),
   ],
 )
+
+export const ziadostOUzemnoplanovaciuInformaciuFiles = {
+  maxFileSize: undefined,
+  maxTotalFileSize: undefined,
+  slots: [
+    {
+      slotId: 'zakresZaujmovychParciel',
+    },
+  ],
+} as const
 
 type ExtractTechnicalSubjectFormData = {
   detailAUcel: {

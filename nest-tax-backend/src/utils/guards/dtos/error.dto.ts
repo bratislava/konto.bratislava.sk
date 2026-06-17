@@ -48,20 +48,14 @@ export class ResponseErrorDto {
   errorName: CustomErrorEnums
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-extraneous-class */
-export class ErrorSymbols {
-  static readonly alert: unique symbol = Symbol('alert')
-
-  static readonly console: unique symbol = Symbol('console')
-
-  static readonly errorType: unique symbol = Symbol('errorType')
-
-  static readonly stack: unique symbol = Symbol('stack')
-
-  static readonly errorCause = Symbol('errorCause')
-
-  static readonly causedByMessage = Symbol('causedByMessage')
-}
+export const ErrorSymbols = {
+  alert: Symbol('alert'),
+  console: Symbol('console'),
+  errorType: Symbol('errorType'),
+  stack: Symbol('stack'),
+  errorCause: Symbol('errorCause'),
+  causedByMessage: Symbol('causedByMessage'),
+} as const
 
 export const errorTypeKeys: Record<string, string> = {
   alert: `$Symbol-alert`,
@@ -99,16 +93,22 @@ export enum ErrorsEnum {
   UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
   UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
   BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
+  BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
+  BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
+  SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
   FORBIDDEN_ERROR = 'FORBIDDEN_ERROR',
 }
 
 export enum ErrorsResponseEnum {
-  NOT_FOUND_ERROR = 'Not found',
-  DATABASE_ERROR = 'Error to write or update or read from/to database',
-  INTERNAL_SERVER_ERROR = 'Unexpected error',
-  UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
-  UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
-  BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
+  NOT_FOUND_ERROR = 'Resource not found.',
+  DATABASE_ERROR = 'There was database error.',
+  INTERNAL_SERVER_ERROR = 'Internal server error.',
+  UNAUTHORIZED_ERROR = 'Unauthorized.',
+  UNPROCESSABLE_ENTITY_ERROR = 'Unprocessable entity.',
+  BAD_REQUEST_ERROR = 'Bad request.',
+  BAD_GATEWAY_ERROR = 'Bad gateway.',
+  BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
+  SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
   FORBIDDEN_ERROR = 'Forbidden',
 }
 

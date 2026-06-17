@@ -9,7 +9,7 @@ import { Dialog } from 'react-aria-components/Dialog'
 import { Popover } from 'react-aria-components/Popover'
 import { useDatePickerState } from 'react-stately/useDatePickerState'
 
-import { CalendarIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 
 import Calendar from './Calendar/Calendar'
@@ -107,7 +107,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             variant="icon-wrapped-negative-margin"
             {...buttonPropsFixed}
             isDisabled={rest.isDisabled}
-            icon={<CalendarIcon />}
+            icon={<Icon name="calendar" />}
             // TODO investigate why t can return undefined
             aria-label={t('DatePicker.aria.openCalendar') ?? 'Open calendar'}
           />

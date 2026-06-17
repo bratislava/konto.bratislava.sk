@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, FormError, Forms, Prisma } from '@prisma/client'
+import { Files, FileStatus, FormError, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
@@ -150,28 +150,20 @@ export default class FilesHelper {
     fileSize: number,
     formId: string,
     pospIdOrSlug: string,
+    slotId: string | null,
   ): Promise<Files> {
-    // if file does not exist in the database, save it
-    const createData: Prisma.FilesCreateArgs = {
-      data: {
-        minioFileName,
-        fileSize,
-        fileName,
-        formId,
-        pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
-      },
-    }
-
-    // if desired fileId is provided, use it
-    if (fileId) {
-      createData.data = {
-        id: fileId,
-        ...createData.data,
-      }
-    }
-
     try {
-      return await this.prisma.files.create(createData)
+      return await this.prisma.files.create({
+        data: {
+          id: fileId,
+          minioFileName,
+          fileSize,
+          fileName,
+          formId,
+          pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
+          slotId,
+        },
+      })
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
@@ -406,6 +398,18 @@ export default class FilesHelper {
         : formDefinition.slug,
       formId: form.id,
     }
+  }
+
+  async getActiveFileSizes(
+    formId: string,
+  ): Promise<{ id: string; slotId: string | null; fileSize: number }[]> {
+    return this.prisma.files.findMany({
+      where: {
+        formId,
+        status: FileStatus.SAFE,
+      },
+      select: { id: true, slotId: true, fileSize: true },
+    })
   }
 
   fileDto2formInfo(files: BasicFileDto): FormInfo {

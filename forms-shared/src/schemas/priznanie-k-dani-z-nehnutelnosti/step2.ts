@@ -5,6 +5,7 @@ import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { priznanieKDaniZNehnutelnostiFiles } from '../priznanieKDaniZNehnutelnosti'
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
   radioGroup(
@@ -33,10 +34,10 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
         title: 'Údaje o oprávnenej osobe na podanie priznania',
       },
       [
-        fileUploadMultiple(
+        fileUploadMultiple<typeof priznanieKDaniZNehnutelnostiFiles>(
           'splnomocnenie',
           // TODO: Reconsider required when tax form will be sent online.
-          { title: 'Nahrajte splnomocnenie' },
+          { title: 'Nahrajte splnomocnenie', slotId: 'splnomocnenie' },
           {
             type: 'dragAndDrop',
             helptextFooter:

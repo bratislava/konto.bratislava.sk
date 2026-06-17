@@ -2,16 +2,8 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
-import {
-  HelpIcon,
-  HomeIcon,
-  LogoutIcon,
-  MySubmissionsIcon,
-  PaymentIcon,
-  ProfileIcon,
-  ServicesIcon,
-} from '@/src/assets/ui-icons'
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
+import Icon from '@/src/components/icon-components/Icon'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -53,25 +45,25 @@ export const useMenu = () => {
     {
       id: 0,
       title: t('account_section_intro.navigation'),
-      icon: <HomeIcon className="size-6" />,
+      icon: <Icon name="home" className="size-6" />,
       url: '/',
     },
     {
       id: 1,
       title: t('account_section_services.navigation'),
-      icon: <ServicesIcon className="size-6" />,
+      icon: <Icon name="city-services" className="size-6" />,
       url: ROUTES.MUNICIPAL_SERVICES,
     },
     {
       id: 2,
       title: t('account_section_applications.navigation'),
-      icon: <MySubmissionsIcon className="size-6" />,
+      icon: <Icon name="submission" className="size-6" />,
       url: ROUTES.MY_APPLICATIONS,
     },
     {
       id: 3,
       title: t('account_section_payment.title'),
-      icon: <PaymentIcon className="size-6" />,
+      icon: <Icon name="payment" className="size-6" />,
       url: ROUTES.TAXES_AND_FEES,
       hidden: isLegalEntity,
     },
@@ -83,19 +75,19 @@ export const useMenu = () => {
         {
           id: 0,
           title: t('menu_links.profile'),
-          icon: <ProfileIcon className="size-5" />,
+          icon: <Icon name="user" className="size-5" />,
           url: ROUTES.USER_PROFILE,
         },
         {
           id: 1,
           title: t('menu_links.help'),
-          icon: <HelpIcon className="size-5" />,
+          icon: <Icon name="help" className="size-5" />,
           url: ROUTES.HELP,
         },
         {
           id: 2,
           title: t('menu_links.logout'),
-          icon: <LogoutIcon className="size-5 text-negative-700" />,
+          icon: <Icon name="logout" className="size-5 text-negative-700" />,
           onPress: () => signOut(),
           itemClassName: 'bg-negative-50',
         },
@@ -104,13 +96,13 @@ export const useMenu = () => {
         {
           id: 0,
           title: t('menu_links.login'),
-          icon: <ProfileIcon className="size-5" />,
+          icon: <Icon name="user" className="size-5" />,
           onPress: login,
         },
         {
           id: 1,
           title: t('menu_links.register'),
-          icon: <ProfileIcon className="size-5" />,
+          icon: <Icon name="user" className="size-5" />,
           onPress: register,
         },
       ]

@@ -1,25 +1,25 @@
 import { DeliveryMethodEnum } from '@prisma/client'
 import { z } from 'zod'
 
-import { DeliveryMethodNoris } from './types/tax.types'
+import { DeliveryMethod } from '../noris/types/noris.enums'
 
 const DELIVERY_METHOD_MAPPING = {
-  [DeliveryMethodEnum.CITY_ACCOUNT]: DeliveryMethodNoris.CITY_ACCOUNT,
-  [DeliveryMethodEnum.EDESK]: DeliveryMethodNoris.EDESK,
-  [DeliveryMethodEnum.POSTAL]: DeliveryMethodNoris.POSTAL,
-} as const satisfies Record<DeliveryMethodEnum, DeliveryMethodNoris>
+  [DeliveryMethodEnum.CITY_ACCOUNT]: DeliveryMethod.CITY_ACCOUNT,
+  [DeliveryMethodEnum.EDESK]: DeliveryMethod.EDESK,
+  [DeliveryMethodEnum.POSTAL]: DeliveryMethod.POSTAL,
+} as const satisfies Record<DeliveryMethodEnum, DeliveryMethod>
 
 const REVERSE_DELIVERY_METHOD_MAPPING = Object.fromEntries(
   Object.entries(DELIVERY_METHOD_MAPPING).map(([k, v]) => [v, k])
-) as Partial<Record<DeliveryMethodNoris, DeliveryMethodEnum>>
+) as Partial<Record<DeliveryMethod, DeliveryMethodEnum>>
 
 export const DeliveryMethodCodec = z.codec(
   z.enum(DeliveryMethodEnum).nullable().optional(),
-  z.enum(DeliveryMethodNoris),
+  z.enum(DeliveryMethod),
   {
-    decode: (value: DeliveryMethodEnum | null | undefined): DeliveryMethodNoris =>
-      value ? DELIVERY_METHOD_MAPPING[value] : DeliveryMethodNoris.POSTAL,
-    encode: (value: DeliveryMethodNoris): DeliveryMethodEnum | null =>
+    decode: (value: DeliveryMethodEnum | null | undefined): DeliveryMethod =>
+      value ? DELIVERY_METHOD_MAPPING[value] : DeliveryMethod.POSTAL,
+    encode: (value: DeliveryMethod): DeliveryMethodEnum | null =>
       REVERSE_DELIVERY_METHOD_MAPPING[value] || null,
   }
 )

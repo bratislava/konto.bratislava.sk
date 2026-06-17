@@ -10,14 +10,14 @@ import cn from '@/src/utils/cn'
 import { LabelSize } from './types'
 
 const labelSizeStyles = {
-  default: 'text-size-p-small-r lg:text-size-p-small',
-  h3: 'text-size-h3-r lg:text-size-h3',
-  h4: 'text-size-h4-r lg:text-size-h4',
-  h5: 'text-size-h5-r lg:text-size-h5',
+  default: '*:text-size-p-small-r lg:*:text-size-p-small',
+  h3: '*:text-size-h3-r lg:*:text-size-h3',
+  h4: '*:text-size-h4-r lg:*:text-size-h4',
+  h5: '*:text-size-h5-r lg:*:text-size-h5',
 }
 
 type FieldWrapperProps = {
-  label: string
+  label?: string
   isRequired?: boolean
   displayOptionalLabel?: boolean
   labelSize?: LabelSize
@@ -26,6 +26,10 @@ type FieldWrapperProps = {
   errorMessage?: string
   children: ReactNode
 }
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16670-31120
+ */
 
 const FieldWrapper = ({
   label,
@@ -48,12 +52,22 @@ const FieldWrapper = ({
     <>
       {/* TODO There is gap-2 in Figma design, but we agreed gap-1 looks better. Keeping gap-1 until the discussion is resolved. */}
       <div className="flex flex-col gap-1">
-        <RACLabel className={cn('flex text-content-passive-primary', labelSizeStyles[labelSize])}>
-          <Typography as="span" className="font-semibold">
-            {label}
-          </Typography>
+        <RACLabel className={cn('flex items-baseline text-content-passive-primary')}>
+          {label ? (
+            <Typography
+              as="span"
+              variant={labelSize === 'default' ? 'h6' : labelSize}
+              className="font-semibold"
+            >
+              {label}
+            </Typography>
+          ) : null}
           {showAsterisk ? (
-            <Typography as="span" className="ml-0.5 font-semibold text-content-error-default">
+            <Typography
+              as="span"
+              variant={labelSize === 'default' ? 'h6' : labelSize}
+              className="ml-0.5 font-semibold text-content-error-default"
+            >
               *
             </Typography>
           ) : null}
@@ -88,7 +102,7 @@ const FieldWrapper = ({
         </RACText>
       ) : null}
       <RACFieldError
-        className="text-size-p-small-r text-error lg:text-size-p-small"
+        className="text-size-p-small-r text-content-error-default lg:text-size-p-small"
         data-cy="error-message"
       >
         {errorMessage}

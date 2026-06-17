@@ -103,6 +103,7 @@ export type InputUiOptions = {
 
 export type NumberUiOptions = Omit<InputUiOptions, 'inputType'> & {
   formatOptions?: Intl.NumberFormatOptions
+  unit?: string
 }
 
 export type RadioGroupUiOptions = {
@@ -121,6 +122,7 @@ export type TextAreaUiOptions = { placeholder?: string } & WidgetUiOptions
 export type TimePickerUiOptions = WidgetUiOptions
 
 export type FileUploadUiOptions = {
+  slotId: string
   sizeLimit?: number
   accept?: string
   type?: 'button' | 'dragAndDrop'

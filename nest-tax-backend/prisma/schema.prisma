@@ -54,7 +54,7 @@ model Tax {
   order                           Int? // Will not be null because of set_tax_order() trigger
   variableSymbol                  String
   taxId                           String?
-  dateCreateTax                   String?
+  dateCreateTax                   DateTime
   dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"
   taxPayments                     TaxPayment[]
   taxInstallments                 TaxInstallment[]

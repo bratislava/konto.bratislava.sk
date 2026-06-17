@@ -19,8 +19,19 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
+  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  Date: { input: any; output: any }
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: { input: any; output: any }
+  FormLandingPageSectionsDynamicZoneInput: { input: any; output: any }
+  /** A string used to identify an i18n locale */
+  I18NLocaleCode: { input: any; output: any }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any }
+  /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
+  Long: { input: any; output: any }
+  /** A time string with format HH:mm:ss.SSS */
+  Time: { input: any; output: any }
 }
 
 export type BooleanFilterInput = {
@@ -48,6 +59,57 @@ export type BooleanFilterInput = {
   startsWith?: InputMaybe<Scalars['Boolean']['input']>
 }
 
+export type ComponentBlocksChecklist = {
+  __typename?: 'ComponentBlocksChecklist'
+  checklistItems?: Maybe<Array<Maybe<ComponentBlocksChecklistItem>>>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksChecklistChecklistItemsArgs = {
+  filters?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentBlocksChecklistFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistFiltersInput>>>
+  checklistItems?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksChecklistInput = {
+  checklistItems?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksChecklistItem = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  content?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksChecklistItemFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksChecklistItemInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksCommonLink = {
   __typename?: 'ComponentBlocksCommonLink'
   id: Scalars['ID']['output']
@@ -70,6 +132,87 @@ export type ComponentBlocksCommonLinkInput = {
   label?: InputMaybe<Scalars['String']['input']>
   municipalService?: InputMaybe<Scalars['ID']['input']>
   url?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksContactCard = {
+  __typename?: 'ComponentBlocksContactCard'
+  id: Scalars['ID']['output']
+  overrideLabel?: Maybe<Scalars['String']['output']>
+  value: Scalars['String']['output']
+}
+
+export type ComponentBlocksContactCardFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardFiltersInput>>>
+  not?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardFiltersInput>>>
+  overrideLabel?: InputMaybe<StringFilterInput>
+  value?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksContactCardInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  overrideLabel?: InputMaybe<Scalars['String']['input']>
+  value?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksContactDirectionsCard = {
+  __typename?: 'ComponentBlocksContactDirectionsCard'
+  address: Scalars['String']['output']
+  barrierFreeInfo?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  iframeUrl?: Maybe<Scalars['String']['output']>
+  overrideLabel?: Maybe<Scalars['String']['output']>
+  parkingInfo?: Maybe<Scalars['String']['output']>
+  publicTransportInfo?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksContactDirectionsCardFiltersInput = {
+  address?: InputMaybe<StringFilterInput>
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>>>
+  barrierFreeInfo?: InputMaybe<StringFilterInput>
+  iframeUrl?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>>>
+  overrideLabel?: InputMaybe<StringFilterInput>
+  parkingInfo?: InputMaybe<StringFilterInput>
+  publicTransportInfo?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksContactDirectionsCardInput = {
+  address?: InputMaybe<Scalars['String']['input']>
+  barrierFreeInfo?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  iframeUrl?: InputMaybe<Scalars['String']['input']>
+  overrideLabel?: InputMaybe<Scalars['String']['input']>
+  parkingInfo?: InputMaybe<Scalars['String']['input']>
+  publicTransportInfo?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksContactPersonCard = {
+  __typename?: 'ComponentBlocksContactPersonCard'
+  email?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  phone?: Maybe<Scalars['String']['output']>
+  subtext?: Maybe<Scalars['String']['output']>
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksContactPersonCardFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksContactPersonCardFiltersInput>>>
+  email?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksContactPersonCardFiltersInput>>>
+  phone?: InputMaybe<StringFilterInput>
+  subtext?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksContactPersonCardInput = {
+  email?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  phone?: InputMaybe<Scalars['String']['input']>
+  subtext?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentBlocksFooterColumn = {
@@ -104,6 +247,7 @@ export type ComponentBlocksFormLandingPage = {
   formCta: ComponentBlocksFormLandingPageFormCta
   id: Scalars['ID']['output']
   linkCtas?: Maybe<Array<Maybe<ComponentBlocksFormLandingPageLinkCta>>>
+  sections?: Maybe<Array<Maybe<FormLandingPageSectionsDynamicZone>>>
   text?: Maybe<Scalars['String']['output']>
 }
 
@@ -150,6 +294,7 @@ export type ComponentBlocksFormLandingPageInput = {
   formCta?: InputMaybe<ComponentBlocksFormLandingPageFormCtaInput>
   id?: InputMaybe<Scalars['ID']['input']>
   linkCtas?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageLinkCtaInput>>>
+  sections?: InputMaybe<Array<Scalars['FormLandingPageSectionsDynamicZoneInput']['input']>>
   text?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -252,6 +397,187 @@ export type ComponentGeneralAlertInput = {
   id?: InputMaybe<Scalars['ID']['input']>
 }
 
+export type ComponentSectionsContacts = {
+  __typename?: 'ComponentSectionsContacts'
+  addressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  bankConnectionContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  billingInfoContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  description?: Maybe<Scalars['String']['output']>
+  directionsContact?: Maybe<ComponentBlocksContactDirectionsCard>
+  emailContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  id: Scalars['ID']['output']
+  openingHoursContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  personContacts?: Maybe<Array<Maybe<ComponentBlocksContactPersonCard>>>
+  phoneContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  postalAddressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+  title?: Maybe<Scalars['String']['output']>
+  titleLevel?: Maybe<Enum_Componentsectionscontacts_Titlelevel>
+  webContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
+}
+
+export type ComponentSectionsContactsAddressContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsBankConnectionContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsBillingInfoContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsEmailContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsOpeningHoursContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsPersonContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsPhoneContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsPostalAddressContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsWebContactsArgs = {
+  filters?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsContactsFiltersInput = {
+  addressContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsFiltersInput>>>
+  bankConnectionContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  billingInfoContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  directionsContact?: InputMaybe<ComponentBlocksContactDirectionsCardFiltersInput>
+  emailContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  not?: InputMaybe<ComponentSectionsContactsFiltersInput>
+  openingHoursContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsContactsFiltersInput>>>
+  personContacts?: InputMaybe<ComponentBlocksContactPersonCardFiltersInput>
+  phoneContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  postalAddressContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+  title?: InputMaybe<StringFilterInput>
+  titleLevel?: InputMaybe<StringFilterInput>
+  webContacts?: InputMaybe<ComponentBlocksContactCardFiltersInput>
+}
+
+export type ComponentSectionsContactsInput = {
+  addressContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  bankConnectionContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  billingInfoContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  directionsContact?: InputMaybe<ComponentBlocksContactDirectionsCardInput>
+  emailContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  id?: InputMaybe<Scalars['ID']['input']>
+  openingHoursContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  personContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactPersonCardInput>>>
+  phoneContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  postalAddressContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+  title?: InputMaybe<Scalars['String']['input']>
+  titleLevel?: InputMaybe<Enum_Componentsectionscontacts_Titlelevel>
+  webContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+}
+
+export type ComponentSectionsRichtext = {
+  __typename?: 'ComponentSectionsRichtext'
+  content?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+}
+
+export type ComponentSectionsRichtextFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsRichtextFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentSectionsRichtextFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsRichtextFiltersInput>>>
+}
+
+export type ComponentSectionsRichtextInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type ComponentSectionsStepper = {
+  __typename?: 'ComponentSectionsStepper'
+  checklists?: Maybe<Array<Maybe<ComponentBlocksChecklist>>>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsStepperChecklistsArgs = {
+  filters?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsStepperFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsStepperFiltersInput>>>
+  checklists?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentSectionsStepperFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsStepperFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsStepperInput = {
+  checklists?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type DateFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  contains?: InputMaybe<Scalars['Date']['input']>
+  containsi?: InputMaybe<Scalars['Date']['input']>
+  endsWith?: InputMaybe<Scalars['Date']['input']>
+  eq?: InputMaybe<Scalars['Date']['input']>
+  eqi?: InputMaybe<Scalars['Date']['input']>
+  gt?: InputMaybe<Scalars['Date']['input']>
+  gte?: InputMaybe<Scalars['Date']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  lt?: InputMaybe<Scalars['Date']['input']>
+  lte?: InputMaybe<Scalars['Date']['input']>
+  ne?: InputMaybe<Scalars['Date']['input']>
+  nei?: InputMaybe<Scalars['Date']['input']>
+  not?: InputMaybe<DateFilterInput>
+  notContains?: InputMaybe<Scalars['Date']['input']>
+  notContainsi?: InputMaybe<Scalars['Date']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
+  startsWith?: InputMaybe<Scalars['Date']['input']>
+}
+
 export type DateTimeFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>
   between?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>
@@ -280,6 +606,11 @@ export type DateTimeFilterInput = {
 export type DeleteMutationResponse = {
   __typename?: 'DeleteMutationResponse'
   documentId: Scalars['ID']['output']
+}
+
+export enum Enum_Componentsectionscontacts_Titlelevel {
+  H2 = 'h2',
+  H3 = 'h3',
 }
 
 export enum Enum_Municipalservice_Color {
@@ -322,6 +653,12 @@ export enum Enum_Municipalservice_Icon {
   Transport = 'transport',
   Waste = 'waste',
   Zoo = 'zoo',
+}
+
+export type Error = {
+  __typename?: 'Error'
+  code: Scalars['String']['output']
+  message?: Maybe<Scalars['String']['output']>
 }
 
 export type FileInfoInput = {
@@ -377,6 +714,40 @@ export type FooterColumnsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type FooterEntity = {
+  __typename?: 'FooterEntity'
+  attributes?: Maybe<Footer>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type FooterEntityResponse = {
+  __typename?: 'FooterEntityResponse'
+  data?: Maybe<Footer>
+}
+
+export type FooterEntityResponseCollection = {
+  __typename?: 'FooterEntityResponseCollection'
+  nodes: Array<Footer>
+  pageInfo: Pagination
+}
+
+export type FooterFiltersInput = {
+  accessibilityPageLink?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<FooterFiltersInput>>>
+  columns?: InputMaybe<ComponentBlocksFooterColumnFiltersInput>
+  contactText?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  facebookUrl?: InputMaybe<StringFilterInput>
+  instagramUrl?: InputMaybe<StringFilterInput>
+  linkedinUrl?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<FooterFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<FooterFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  tiktokUrl?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+  youtubeUrl?: InputMaybe<StringFilterInput>
+}
+
 export type FooterInput = {
   accessibilityPageLink?: InputMaybe<ComponentBlocksCommonLinkInput>
   columns?: InputMaybe<Array<InputMaybe<ComponentBlocksFooterColumnInput>>>
@@ -389,6 +760,11 @@ export type FooterInput = {
   youtubeUrl?: InputMaybe<Scalars['String']['input']>
 }
 
+export type FooterRelationResponseCollection = {
+  __typename?: 'FooterRelationResponseCollection'
+  nodes: Array<Footer>
+}
+
 export type Form = {
   __typename?: 'Form'
   createdAt?: Maybe<Scalars['DateTime']['output']>
@@ -398,6 +774,17 @@ export type Form = {
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   slug: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type FormEntity = {
+  __typename?: 'FormEntity'
+  attributes?: Maybe<Form>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type FormEntityResponse = {
+  __typename?: 'FormEntityResponse'
+  data?: Maybe<Form>
 }
 
 export type FormEntityResponseCollection = {
@@ -426,6 +813,17 @@ export type FormInput = {
   slug?: InputMaybe<Scalars['String']['input']>
 }
 
+export type FormLandingPageSectionsDynamicZone =
+  | ComponentSectionsContacts
+  | ComponentSectionsRichtext
+  | ComponentSectionsStepper
+  | Error
+
+export type FormRelationResponseCollection = {
+  __typename?: 'FormRelationResponseCollection'
+  nodes: Array<Form>
+}
+
 export type General = {
   __typename?: 'General'
   alerts?: Maybe<Array<Maybe<ComponentGeneralAlert>>>
@@ -441,13 +839,50 @@ export type GeneralAlertsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type GeneralEntity = {
+  __typename?: 'GeneralEntity'
+  attributes?: Maybe<General>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type GeneralEntityResponse = {
+  __typename?: 'GeneralEntityResponse'
+  data?: Maybe<General>
+}
+
+export type GeneralEntityResponseCollection = {
+  __typename?: 'GeneralEntityResponseCollection'
+  nodes: Array<General>
+  pageInfo: Pagination
+}
+
+export type GeneralFiltersInput = {
+  alerts?: InputMaybe<ComponentGeneralAlertFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<GeneralFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<GeneralFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<GeneralFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type GeneralInput = {
   alerts?: InputMaybe<Array<InputMaybe<ComponentGeneralAlertInput>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
 }
 
+export type GeneralRelationResponseCollection = {
+  __typename?: 'GeneralRelationResponseCollection'
+  nodes: Array<General>
+}
+
 export type GenericMorph =
+  | ComponentBlocksChecklist
+  | ComponentBlocksChecklistItem
   | ComponentBlocksCommonLink
+  | ComponentBlocksContactCard
+  | ComponentBlocksContactDirectionsCard
+  | ComponentBlocksContactPersonCard
   | ComponentBlocksFooterColumn
   | ComponentBlocksFormLandingPage
   | ComponentBlocksFormLandingPageFormCta
@@ -455,6 +890,9 @@ export type GenericMorph =
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
+  | ComponentSectionsContacts
+  | ComponentSectionsRichtext
+  | ComponentSectionsStepper
   | Footer
   | Form
   | General
@@ -489,9 +927,41 @@ export type HelpPageCategoriesArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type HelpPageEntity = {
+  __typename?: 'HelpPageEntity'
+  attributes?: Maybe<HelpPage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HelpPageEntityResponse = {
+  __typename?: 'HelpPageEntityResponse'
+  data?: Maybe<HelpPage>
+}
+
+export type HelpPageEntityResponseCollection = {
+  __typename?: 'HelpPageEntityResponseCollection'
+  nodes: Array<HelpPage>
+  pageInfo: Pagination
+}
+
+export type HelpPageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<HelpPageFiltersInput>>>
+  categories?: InputMaybe<ComponentBlocksHelpCategoryFiltersInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<HelpPageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<HelpPageFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type HelpPageInput = {
   categories?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpCategoryInput>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type HelpPageRelationResponseCollection = {
+  __typename?: 'HelpPageRelationResponseCollection'
+  nodes: Array<HelpPage>
 }
 
 export type Homepage = {
@@ -573,6 +1043,17 @@ export type HomepageAnnouncement = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type HomepageAnnouncementEntity = {
+  __typename?: 'HomepageAnnouncementEntity'
+  attributes?: Maybe<HomepageAnnouncement>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HomepageAnnouncementEntityResponse = {
+  __typename?: 'HomepageAnnouncementEntityResponse'
+  data?: Maybe<HomepageAnnouncement>
+}
+
 export type HomepageAnnouncementEntityResponseCollection = {
   __typename?: 'HomepageAnnouncementEntityResponseCollection'
   nodes: Array<HomepageAnnouncement>
@@ -611,12 +1092,47 @@ export type HomepageAnnouncementRelationResponseCollection = {
   nodes: Array<HomepageAnnouncement>
 }
 
+export type HomepageEntity = {
+  __typename?: 'HomepageEntity'
+  attributes?: Maybe<Homepage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HomepageEntityResponse = {
+  __typename?: 'HomepageEntityResponse'
+  data?: Maybe<Homepage>
+}
+
+export type HomepageEntityResponseCollection = {
+  __typename?: 'HomepageEntityResponseCollection'
+  nodes: Array<Homepage>
+  pageInfo: Pagination
+}
+
+export type HomepageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<HomepageFiltersInput>>>
+  announcements?: InputMaybe<HomepageAnnouncementFiltersInput>
+  announcementsLegalPerson?: InputMaybe<HomepageAnnouncementFiltersInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<HomepageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<HomepageFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  services?: InputMaybe<MunicipalServiceFiltersInput>
+  servicesLegalPerson?: InputMaybe<MunicipalServiceFiltersInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type HomepageInput = {
   announcements?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   announcementsLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   services?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   servicesLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+}
+
+export type HomepageRelationResponseCollection = {
+  __typename?: 'HomepageRelationResponseCollection'
+  nodes: Array<Homepage>
 }
 
 export type I18NLocale = {
@@ -627,6 +1143,17 @@ export type I18NLocale = {
   name?: Maybe<Scalars['String']['output']>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type I18NLocaleEntity = {
+  __typename?: 'I18NLocaleEntity'
+  attributes?: Maybe<I18NLocale>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type I18NLocaleEntityResponse = {
+  __typename?: 'I18NLocaleEntityResponse'
+  data?: Maybe<I18NLocale>
 }
 
 export type I18NLocaleEntityResponseCollection = {
@@ -645,6 +1172,17 @@ export type I18NLocaleFiltersInput = {
   or?: InputMaybe<Array<InputMaybe<I18NLocaleFiltersInput>>>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type I18NLocaleInput = {
+  code?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type I18NLocaleRelationResponseCollection = {
+  __typename?: 'I18NLocaleRelationResponseCollection'
+  nodes: Array<I18NLocale>
 }
 
 export type IdFilterInput = {
@@ -722,6 +1260,31 @@ export type JsonFilterInput = {
   startsWith?: InputMaybe<Scalars['JSON']['input']>
 }
 
+export type LongFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  contains?: InputMaybe<Scalars['Long']['input']>
+  containsi?: InputMaybe<Scalars['Long']['input']>
+  endsWith?: InputMaybe<Scalars['Long']['input']>
+  eq?: InputMaybe<Scalars['Long']['input']>
+  eqi?: InputMaybe<Scalars['Long']['input']>
+  gt?: InputMaybe<Scalars['Long']['input']>
+  gte?: InputMaybe<Scalars['Long']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  lt?: InputMaybe<Scalars['Long']['input']>
+  lte?: InputMaybe<Scalars['Long']['input']>
+  ne?: InputMaybe<Scalars['Long']['input']>
+  nei?: InputMaybe<Scalars['Long']['input']>
+  not?: InputMaybe<LongFilterInput>
+  notContains?: InputMaybe<Scalars['Long']['input']>
+  notContainsi?: InputMaybe<Scalars['Long']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Long']['input']>>>
+  startsWith?: InputMaybe<Scalars['Long']['input']>
+}
+
 export type MunicipalService = {
   __typename?: 'MunicipalService'
   buttonText: Scalars['String']['output']
@@ -787,6 +1350,17 @@ export type MunicipalServiceCategoryMunicipalServices_ConnectionArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type MunicipalServiceCategoryEntity = {
+  __typename?: 'MunicipalServiceCategoryEntity'
+  attributes?: Maybe<MunicipalServiceCategory>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceCategoryEntityResponse = {
+  __typename?: 'MunicipalServiceCategoryEntityResponse'
+  data?: Maybe<MunicipalServiceCategory>
+}
+
 export type MunicipalServiceCategoryEntityResponseCollection = {
   __typename?: 'MunicipalServiceCategoryEntityResponseCollection'
   nodes: Array<MunicipalServiceCategory>
@@ -814,6 +1388,17 @@ export type MunicipalServiceCategoryInput = {
 export type MunicipalServiceCategoryRelationResponseCollection = {
   __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
   nodes: Array<MunicipalServiceCategory>
+}
+
+export type MunicipalServiceEntity = {
+  __typename?: 'MunicipalServiceEntity'
+  attributes?: Maybe<MunicipalService>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceEntityResponse = {
+  __typename?: 'MunicipalServiceEntityResponse'
+  data?: Maybe<MunicipalService>
 }
 
 export type MunicipalServiceEntityResponseCollection = {
@@ -878,6 +1463,17 @@ export type MunicipalServiceTagMunicipalServices_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServiceTagEntity = {
+  __typename?: 'MunicipalServiceTagEntity'
+  attributes?: Maybe<MunicipalServiceTag>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceTagEntityResponse = {
+  __typename?: 'MunicipalServiceTagEntityResponse'
+  data?: Maybe<MunicipalServiceTag>
 }
 
 export type MunicipalServiceTagEntityResponseCollection = {
@@ -945,10 +1541,43 @@ export type MunicipalServicesPageServices_ConnectionArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type MunicipalServicesPageEntity = {
+  __typename?: 'MunicipalServicesPageEntity'
+  attributes?: Maybe<MunicipalServicesPage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServicesPageEntityResponse = {
+  __typename?: 'MunicipalServicesPageEntityResponse'
+  data?: Maybe<MunicipalServicesPage>
+}
+
+export type MunicipalServicesPageEntityResponseCollection = {
+  __typename?: 'MunicipalServicesPageEntityResponseCollection'
+  nodes: Array<MunicipalServicesPage>
+  pageInfo: Pagination
+}
+
+export type MunicipalServicesPageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalServicesPageFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<MunicipalServicesPageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalServicesPageFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  services?: InputMaybe<MunicipalServiceFiltersInput>
+  servicesLegalPerson?: InputMaybe<MunicipalServiceFiltersInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type MunicipalServicesPageInput = {
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   services?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   servicesLegalPerson?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+}
+
+export type MunicipalServicesPageRelationResponseCollection = {
+  __typename?: 'MunicipalServicesPageRelationResponseCollection'
+  nodes: Array<MunicipalServicesPage>
 }
 
 export type Mutation = {
@@ -1282,178 +1911,274 @@ export type QueryFooterArgs = {
 
 export type QueryFormArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryFormsArgs = {
   filters?: InputMaybe<FormFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryForms_ConnectionArgs = {
   filters?: InputMaybe<FormFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryGeneralArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryHelpPageArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryHomepageArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageAnnouncementArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageAnnouncementsArgs = {
   filters?: InputMaybe<HomepageAnnouncementFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageAnnouncements_ConnectionArgs = {
   filters?: InputMaybe<HomepageAnnouncementFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryI18NLocaleArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryI18NLocales_ConnectionArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceCategoriesArgs = {
   filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceCategories_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceCategoryArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceTagArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceTagsArgs = {
   filters?: InputMaybe<MunicipalServiceTagFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceTags_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceTagFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServicesArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryMunicipalServicesPageArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServices_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowStageArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowStagesArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowStages_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowsArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflows_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryTaxArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUploadFileArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUploadFilesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUploadFiles_ConnectionArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsRoleArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsRolesArgs = {
   filters?: InputMaybe<UsersPermissionsRoleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsRoles_ConnectionArgs = {
   filters?: InputMaybe<UsersPermissionsRoleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsUserArgs = {
   documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsUsersArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryUsersPermissionsUsers_ConnectionArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type ResponseCollectionMeta = {
+  __typename?: 'ResponseCollectionMeta'
+  pagination: Pagination
 }
 
 export type ReviewWorkflowsWorkflow = {
@@ -1479,6 +2204,17 @@ export type ReviewWorkflowsWorkflowStages_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ReviewWorkflowsWorkflowEntity = {
+  __typename?: 'ReviewWorkflowsWorkflowEntity'
+  attributes?: Maybe<ReviewWorkflowsWorkflow>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type ReviewWorkflowsWorkflowEntityResponse = {
+  __typename?: 'ReviewWorkflowsWorkflowEntityResponse'
+  data?: Maybe<ReviewWorkflowsWorkflow>
 }
 
 export type ReviewWorkflowsWorkflowEntityResponseCollection = {
@@ -1509,6 +2245,11 @@ export type ReviewWorkflowsWorkflowInput = {
   stages?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
 }
 
+export type ReviewWorkflowsWorkflowRelationResponseCollection = {
+  __typename?: 'ReviewWorkflowsWorkflowRelationResponseCollection'
+  nodes: Array<ReviewWorkflowsWorkflow>
+}
+
 export type ReviewWorkflowsWorkflowStage = {
   __typename?: 'ReviewWorkflowsWorkflowStage'
   color?: Maybe<Scalars['String']['output']>
@@ -1518,6 +2259,17 @@ export type ReviewWorkflowsWorkflowStage = {
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   workflow?: Maybe<ReviewWorkflowsWorkflow>
+}
+
+export type ReviewWorkflowsWorkflowStageEntity = {
+  __typename?: 'ReviewWorkflowsWorkflowStageEntity'
+  attributes?: Maybe<ReviewWorkflowsWorkflowStage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type ReviewWorkflowsWorkflowStageEntityResponse = {
+  __typename?: 'ReviewWorkflowsWorkflowStageEntityResponse'
+  data?: Maybe<ReviewWorkflowsWorkflowStage>
 }
 
 export type ReviewWorkflowsWorkflowStageEntityResponseCollection = {
@@ -1590,6 +2342,38 @@ export type Tax = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type TaxEntity = {
+  __typename?: 'TaxEntity'
+  attributes?: Maybe<Tax>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type TaxEntityResponse = {
+  __typename?: 'TaxEntityResponse'
+  data?: Maybe<Tax>
+}
+
+export type TaxEntityResponseCollection = {
+  __typename?: 'TaxEntityResponseCollection'
+  nodes: Array<Tax>
+  pageInfo: Pagination
+}
+
+export type TaxFiltersInput = {
+  accountCommunicationConsentText?: InputMaybe<StringFilterInput>
+  and?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
+  channelChangeEffectiveNextYearText?: InputMaybe<StringFilterInput>
+  channelChangeEffectiveNextYearTitle?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  feedbackLinkDzn?: InputMaybe<StringFilterInput>
+  feedbackLinkKo?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<TaxFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
+  paymentAlertText?: InputMaybe<StringFilterInput>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
 export type TaxInput = {
   accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
   channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
@@ -1598,6 +2382,36 @@ export type TaxInput = {
   feedbackLinkKo?: InputMaybe<Scalars['String']['input']>
   paymentAlertText?: InputMaybe<Scalars['String']['input']>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type TaxRelationResponseCollection = {
+  __typename?: 'TaxRelationResponseCollection'
+  nodes: Array<Tax>
+}
+
+export type TimeFilterInput = {
+  and?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  between?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  contains?: InputMaybe<Scalars['Time']['input']>
+  containsi?: InputMaybe<Scalars['Time']['input']>
+  endsWith?: InputMaybe<Scalars['Time']['input']>
+  eq?: InputMaybe<Scalars['Time']['input']>
+  eqi?: InputMaybe<Scalars['Time']['input']>
+  gt?: InputMaybe<Scalars['Time']['input']>
+  gte?: InputMaybe<Scalars['Time']['input']>
+  in?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  lt?: InputMaybe<Scalars['Time']['input']>
+  lte?: InputMaybe<Scalars['Time']['input']>
+  ne?: InputMaybe<Scalars['Time']['input']>
+  nei?: InputMaybe<Scalars['Time']['input']>
+  not?: InputMaybe<TimeFilterInput>
+  notContains?: InputMaybe<Scalars['Time']['input']>
+  notContainsi?: InputMaybe<Scalars['Time']['input']>
+  notIn?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  notNull?: InputMaybe<Scalars['Boolean']['input']>
+  null?: InputMaybe<Scalars['Boolean']['input']>
+  or?: InputMaybe<Array<InputMaybe<Scalars['Time']['input']>>>
+  startsWith?: InputMaybe<Scalars['Time']['input']>
 }
 
 export type UploadFile = {
@@ -1622,6 +2436,17 @@ export type UploadFile = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   url: Scalars['String']['output']
   width?: Maybe<Scalars['Int']['output']>
+}
+
+export type UploadFileEntity = {
+  __typename?: 'UploadFileEntity'
+  attributes?: Maybe<UploadFile>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type UploadFileEntityResponse = {
+  __typename?: 'UploadFileEntityResponse'
+  data?: Maybe<UploadFile>
 }
 
 export type UploadFileEntityResponseCollection = {
@@ -1653,6 +2478,30 @@ export type UploadFileFiltersInput = {
   updatedAt?: InputMaybe<DateTimeFilterInput>
   url?: InputMaybe<StringFilterInput>
   width?: InputMaybe<IntFilterInput>
+}
+
+export type UploadFileInput = {
+  alternativeText?: InputMaybe<Scalars['String']['input']>
+  caption?: InputMaybe<Scalars['String']['input']>
+  ext?: InputMaybe<Scalars['String']['input']>
+  focalPoint?: InputMaybe<Scalars['JSON']['input']>
+  formats?: InputMaybe<Scalars['JSON']['input']>
+  hash?: InputMaybe<Scalars['String']['input']>
+  height?: InputMaybe<Scalars['Int']['input']>
+  mime?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+  previewUrl?: InputMaybe<Scalars['String']['input']>
+  provider?: InputMaybe<Scalars['String']['input']>
+  provider_metadata?: InputMaybe<Scalars['JSON']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  size?: InputMaybe<Scalars['Float']['input']>
+  url?: InputMaybe<Scalars['String']['input']>
+  width?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type UploadFileRelationResponseCollection = {
+  __typename?: 'UploadFileRelationResponseCollection'
+  nodes: Array<UploadFile>
 }
 
 export type UsersPermissionsCreateRolePayload = {
@@ -1711,6 +2560,23 @@ export type UsersPermissionsPermission = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type UsersPermissionsPermissionEntity = {
+  __typename?: 'UsersPermissionsPermissionEntity'
+  attributes?: Maybe<UsersPermissionsPermission>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type UsersPermissionsPermissionEntityResponse = {
+  __typename?: 'UsersPermissionsPermissionEntityResponse'
+  data?: Maybe<UsersPermissionsPermission>
+}
+
+export type UsersPermissionsPermissionEntityResponseCollection = {
+  __typename?: 'UsersPermissionsPermissionEntityResponseCollection'
+  nodes: Array<UsersPermissionsPermission>
+  pageInfo: Pagination
+}
+
 export type UsersPermissionsPermissionFiltersInput = {
   action?: InputMaybe<StringFilterInput>
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsPermissionFiltersInput>>>
@@ -1721,6 +2587,12 @@ export type UsersPermissionsPermissionFiltersInput = {
   publishedAt?: InputMaybe<DateTimeFilterInput>
   role?: InputMaybe<UsersPermissionsRoleFiltersInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type UsersPermissionsPermissionInput = {
+  action?: InputMaybe<Scalars['String']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  role?: InputMaybe<Scalars['ID']['input']>
 }
 
 export type UsersPermissionsPermissionRelationResponseCollection = {
@@ -1773,6 +2645,17 @@ export type UsersPermissionsRoleUsers_ConnectionArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
+export type UsersPermissionsRoleEntity = {
+  __typename?: 'UsersPermissionsRoleEntity'
+  attributes?: Maybe<UsersPermissionsRole>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type UsersPermissionsRoleEntityResponse = {
+  __typename?: 'UsersPermissionsRoleEntityResponse'
+  data?: Maybe<UsersPermissionsRole>
+}
+
 export type UsersPermissionsRoleEntityResponseCollection = {
   __typename?: 'UsersPermissionsRoleEntityResponseCollection'
   nodes: Array<UsersPermissionsRole>
@@ -1803,6 +2686,11 @@ export type UsersPermissionsRoleInput = {
   users?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
 }
 
+export type UsersPermissionsRoleRelationResponseCollection = {
+  __typename?: 'UsersPermissionsRoleRelationResponseCollection'
+  nodes: Array<UsersPermissionsRole>
+}
+
 export type UsersPermissionsUpdateRolePayload = {
   __typename?: 'UsersPermissionsUpdateRolePayload'
   ok: Scalars['Boolean']['output']
@@ -1820,6 +2708,12 @@ export type UsersPermissionsUser = {
   role?: Maybe<UsersPermissionsRole>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   username: Scalars['String']['output']
+}
+
+export type UsersPermissionsUserEntity = {
+  __typename?: 'UsersPermissionsUserEntity'
+  attributes?: Maybe<UsersPermissionsUser>
+  id?: Maybe<Scalars['ID']['output']>
 }
 
 export type UsersPermissionsUserEntityResponse = {
@@ -1922,6 +2816,89 @@ export type FormLandingPageFragment = {
     text?: string | null
     buttonLabel: string
   }
+  sections?: Array<
+    | {
+        __typename: 'ComponentSectionsContacts'
+        id: string
+        title?: string | null
+        description?: string | null
+        titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+        addressContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        openingHoursContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        emailContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        phoneContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        webContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        postalAddressContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        billingInfoContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        bankConnectionContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        personContacts?: Array<{
+          __typename?: 'ComponentBlocksContactPersonCard'
+          title: string
+          subtext?: string | null
+          email?: string | null
+          phone?: string | null
+        } | null> | null
+        directionsContact?: {
+          __typename?: 'ComponentBlocksContactDirectionsCard'
+          overrideLabel?: string | null
+          address: string
+          parkingInfo?: string | null
+          publicTransportInfo?: string | null
+          barrierFreeInfo?: string | null
+          iframeUrl?: string | null
+        } | null
+      }
+    | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+    | {
+        __typename: 'ComponentSectionsStepper'
+        title?: string | null
+        description?: string | null
+        checklists?: Array<{
+          __typename?: 'ComponentBlocksChecklist'
+          title?: string | null
+          description?: string | null
+          checklistItems?: Array<{
+            __typename?: 'ComponentBlocksChecklistItem'
+            title?: string | null
+            content?: string | null
+          } | null> | null
+        } | null> | null
+      }
+    | { __typename: 'Error' }
+    | null
+  > | null
 }
 
 export type FormBaseFragment = {
@@ -1951,6 +2928,89 @@ export type FormWithLandingPageFragment = {
       text?: string | null
       buttonLabel: string
     }
+    sections?: Array<
+      | {
+          __typename: 'ComponentSectionsContacts'
+          id: string
+          title?: string | null
+          description?: string | null
+          titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+          addressContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          openingHoursContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          emailContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          phoneContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          webContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          postalAddressContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          billingInfoContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          bankConnectionContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          personContacts?: Array<{
+            __typename?: 'ComponentBlocksContactPersonCard'
+            title: string
+            subtext?: string | null
+            email?: string | null
+            phone?: string | null
+          } | null> | null
+          directionsContact?: {
+            __typename?: 'ComponentBlocksContactDirectionsCard'
+            overrideLabel?: string | null
+            address: string
+            parkingInfo?: string | null
+            publicTransportInfo?: string | null
+            barrierFreeInfo?: string | null
+            iframeUrl?: string | null
+          } | null
+        }
+      | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+      | {
+          __typename: 'ComponentSectionsStepper'
+          title?: string | null
+          description?: string | null
+          checklists?: Array<{
+            __typename?: 'ComponentBlocksChecklist'
+            title?: string | null
+            description?: string | null
+            checklistItems?: Array<{
+              __typename?: 'ComponentBlocksChecklistItem'
+              title?: string | null
+              content?: string | null
+            } | null> | null
+          } | null> | null
+        }
+      | { __typename: 'Error' }
+      | null
+    > | null
   } | null
 }
 
@@ -1996,6 +3056,89 @@ export type FormWithLandingPageBySlugQuery = {
         text?: string | null
         buttonLabel: string
       }
+      sections?: Array<
+        | {
+            __typename: 'ComponentSectionsContacts'
+            id: string
+            title?: string | null
+            description?: string | null
+            titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+            addressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            openingHoursContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            emailContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            phoneContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            webContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            postalAddressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            billingInfoContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            bankConnectionContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            personContacts?: Array<{
+              __typename?: 'ComponentBlocksContactPersonCard'
+              title: string
+              subtext?: string | null
+              email?: string | null
+              phone?: string | null
+            } | null> | null
+            directionsContact?: {
+              __typename?: 'ComponentBlocksContactDirectionsCard'
+              overrideLabel?: string | null
+              address: string
+              parkingInfo?: string | null
+              publicTransportInfo?: string | null
+              barrierFreeInfo?: string | null
+              iframeUrl?: string | null
+            } | null
+          }
+        | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+        | {
+            __typename: 'ComponentSectionsStepper'
+            title?: string | null
+            description?: string | null
+            checklists?: Array<{
+              __typename?: 'ComponentBlocksChecklist'
+              title?: string | null
+              description?: string | null
+              checklistItems?: Array<{
+                __typename?: 'ComponentBlocksChecklistItem'
+                title?: string | null
+                content?: string | null
+              } | null> | null
+            } | null> | null
+          }
+        | { __typename: 'Error' }
+        | null
+      > | null
     } | null
   } | null>
 }
@@ -2276,6 +3419,225 @@ export type MunicipalServicesPageQuery = {
   } | null
 }
 
+export type RichtextSectionFragment = {
+  __typename?: 'ComponentSectionsRichtext'
+  content?: string | null
+}
+
+export type ContactCardBlockFragment = {
+  __typename?: 'ComponentBlocksContactCard'
+  overrideLabel?: string | null
+  value: string
+}
+
+export type ContactPersonCardBlockFragment = {
+  __typename?: 'ComponentBlocksContactPersonCard'
+  title: string
+  subtext?: string | null
+  email?: string | null
+  phone?: string | null
+}
+
+export type ContactDirectionsCardBlockFragment = {
+  __typename?: 'ComponentBlocksContactDirectionsCard'
+  overrideLabel?: string | null
+  address: string
+  parkingInfo?: string | null
+  publicTransportInfo?: string | null
+  barrierFreeInfo?: string | null
+  iframeUrl?: string | null
+}
+
+export type ContactsSectionFragment = {
+  __typename?: 'ComponentSectionsContacts'
+  id: string
+  title?: string | null
+  description?: string | null
+  titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+  addressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  openingHoursContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  emailContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  phoneContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  webContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  postalAddressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  billingInfoContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  bankConnectionContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  personContacts?: Array<{
+    __typename?: 'ComponentBlocksContactPersonCard'
+    title: string
+    subtext?: string | null
+    email?: string | null
+    phone?: string | null
+  } | null> | null
+  directionsContact?: {
+    __typename?: 'ComponentBlocksContactDirectionsCard'
+    overrideLabel?: string | null
+    address: string
+    parkingInfo?: string | null
+    publicTransportInfo?: string | null
+    barrierFreeInfo?: string | null
+    iframeUrl?: string | null
+  } | null
+}
+
+type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
+  __typename: 'ComponentSectionsContacts'
+  id: string
+  title?: string | null
+  description?: string | null
+  titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+  addressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  openingHoursContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  emailContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  phoneContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  webContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  postalAddressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  billingInfoContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  bankConnectionContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  personContacts?: Array<{
+    __typename?: 'ComponentBlocksContactPersonCard'
+    title: string
+    subtext?: string | null
+    email?: string | null
+    phone?: string | null
+  } | null> | null
+  directionsContact?: {
+    __typename?: 'ComponentBlocksContactDirectionsCard'
+    overrideLabel?: string | null
+    address: string
+    parkingInfo?: string | null
+    publicTransportInfo?: string | null
+    barrierFreeInfo?: string | null
+    iframeUrl?: string | null
+  } | null
+}
+
+type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
+  __typename: 'ComponentSectionsRichtext'
+  content?: string | null
+}
+
+type FormLandingPageSections_ComponentSectionsStepper_Fragment = {
+  __typename: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
+type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
+
+export type FormLandingPageSectionsFragment =
+  | FormLandingPageSections_ComponentSectionsContacts_Fragment
+  | FormLandingPageSections_ComponentSectionsRichtext_Fragment
+  | FormLandingPageSections_ComponentSectionsStepper_Fragment
+  | FormLandingPageSections_Error_Fragment
+
+export type ChecklistItemsFragment = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  title?: string | null
+  content?: string | null
+}
+
+export type ChecklistsFragment = {
+  __typename?: 'ComponentBlocksChecklist'
+  title?: string | null
+  description?: string | null
+  checklistItems?: Array<{
+    __typename?: 'ComponentBlocksChecklistItem'
+    title?: string | null
+    content?: string | null
+  } | null> | null
+}
+
+export type StepperSectionFragment = {
+  __typename?: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
 export type TaxFragment = {
   __typename?: 'Tax'
   documentId: string
@@ -2333,6 +3695,119 @@ export const FormLandingPageFormCtaFragmentDoc = gql`
     buttonLabel
   }
 `
+export const RichtextSectionFragmentDoc = gql`
+  fragment RichtextSection on ComponentSectionsRichtext {
+    content
+  }
+`
+export const ChecklistItemsFragmentDoc = gql`
+  fragment ChecklistItems on ComponentBlocksChecklistItem {
+    title
+    content
+  }
+`
+export const ChecklistsFragmentDoc = gql`
+  fragment Checklists on ComponentBlocksChecklist {
+    title
+    description
+    checklistItems {
+      ...ChecklistItems
+    }
+  }
+  ${ChecklistItemsFragmentDoc}
+`
+export const StepperSectionFragmentDoc = gql`
+  fragment StepperSection on ComponentSectionsStepper {
+    title
+    description
+    checklists {
+      ...Checklists
+    }
+  }
+  ${ChecklistsFragmentDoc}
+`
+export const ContactCardBlockFragmentDoc = gql`
+  fragment ContactCardBlock on ComponentBlocksContactCard {
+    overrideLabel
+    value
+  }
+`
+export const ContactPersonCardBlockFragmentDoc = gql`
+  fragment ContactPersonCardBlock on ComponentBlocksContactPersonCard {
+    title
+    subtext
+    email
+    phone
+  }
+`
+export const ContactDirectionsCardBlockFragmentDoc = gql`
+  fragment ContactDirectionsCardBlock on ComponentBlocksContactDirectionsCard {
+    overrideLabel
+    address
+    parkingInfo
+    publicTransportInfo
+    barrierFreeInfo
+    iframeUrl
+  }
+`
+export const ContactsSectionFragmentDoc = gql`
+  fragment ContactsSection on ComponentSectionsContacts {
+    id
+    title
+    description
+    addressContacts {
+      ...ContactCardBlock
+    }
+    openingHoursContacts {
+      ...ContactCardBlock
+    }
+    emailContacts {
+      ...ContactCardBlock
+    }
+    phoneContacts {
+      ...ContactCardBlock
+    }
+    webContacts {
+      ...ContactCardBlock
+    }
+    postalAddressContacts {
+      ...ContactCardBlock
+    }
+    billingInfoContacts {
+      ...ContactCardBlock
+    }
+    bankConnectionContacts {
+      ...ContactCardBlock
+    }
+    personContacts {
+      ...ContactPersonCardBlock
+    }
+    directionsContact {
+      ...ContactDirectionsCardBlock
+    }
+    titleLevelContacts: titleLevel
+  }
+  ${ContactCardBlockFragmentDoc}
+  ${ContactPersonCardBlockFragmentDoc}
+  ${ContactDirectionsCardBlockFragmentDoc}
+`
+export const FormLandingPageSectionsFragmentDoc = gql`
+  fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
+    __typename
+    ... on ComponentSectionsRichtext {
+      ...RichtextSection
+    }
+    ... on ComponentSectionsStepper {
+      ...StepperSection
+    }
+    ... on ComponentSectionsContacts {
+      ...ContactsSection
+    }
+  }
+  ${RichtextSectionFragmentDoc}
+  ${StepperSectionFragmentDoc}
+  ${ContactsSectionFragmentDoc}
+`
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {
     text
@@ -2342,9 +3817,13 @@ export const FormLandingPageFragmentDoc = gql`
     formCta {
       ...FormLandingPageFormCta
     }
+    sections {
+      ...FormLandingPageSections
+    }
   }
   ${FormLandingPageLinkCtaFragmentDoc}
   ${FormLandingPageFormCtaFragmentDoc}
+  ${FormLandingPageSectionsFragmentDoc}
 `
 export const FormWithLandingPageFragmentDoc = gql`
   fragment FormWithLandingPage on Form {

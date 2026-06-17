@@ -121,3 +121,6 @@ dist
 .AppleDB
 .AppleDesktop
 .idea
+
+# Volta
+.volta

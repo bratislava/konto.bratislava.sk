@@ -2,7 +2,7 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
-import { ArrowLeftIcon, ArrowRightIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 import usePagination from './usePagination'
@@ -73,11 +73,11 @@ const Pagination = ({ currentPage, totalCount, onPageChange = () => {} }: Pagina
                 let icon: ReactNode
                 let ariaLabel = ''
                 if (type === 'previous') {
-                  icon = <ArrowLeftIcon />
+                  icon = <Icon name="arrow-left" />
                   ariaLabel = t('Pagination.aria.goToPreviousPage')
                 }
                 if (type === 'next') {
-                  icon = <ArrowRightIcon />
+                  icon = <Icon name="arrow-right" />
                   ariaLabel = t('Pagination.aria.goToNextPage')
                 }
 

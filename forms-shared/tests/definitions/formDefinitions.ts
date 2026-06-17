@@ -6,6 +6,7 @@ import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { describe, test, expect } from 'vitest'
 import { isValidVersion } from '../../src/versioning/version-compare'
+import { collectSchemaFileSlots } from '../../src/form-files/collectSchemaFileSlots'
 
 describe('Form definitions', () => {
   formDefinitions.forEach((formDefinition) => {
@@ -46,6 +47,22 @@ describe('Form definitions', () => {
           expect(examples.length).toBeGreaterThan(0)
         })
       }
+
+      test('every ui:slot in schema is declared in files.slots', () => {
+        const schemaSlots = collectSchemaFileSlots(formDefinition.schema)
+        if (schemaSlots.length === 0) {
+          return
+        }
+
+        expect(
+          formDefinition.files,
+          'schema has file fields with ui:slot but form definition has no files config',
+        ).toBeDefined()
+
+        const declaredSlots = new Set(formDefinition.files!.slots.map((slot) => slot.slotId))
+        const undeclared = schemaSlots.filter((slotId) => !declaredSlots.has(slotId))
+        expect(undeclared, `schema references slots not declared in files.slots`).toEqual([])
+      })
     })
   })
 })

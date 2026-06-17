@@ -1,10 +1,10 @@
 import { Button, ButtonButtonProps } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
-import { ChevronLeftIcon } from '@/src/assets/ui-icons'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormSend } from '@/src/components/forms/useFormSend'
 import { useFormState } from '@/src/components/forms/useFormState'
+import Icon from '@/src/components/icon-components/Icon'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 
 const SummaryFormControls = () => {
@@ -60,7 +60,7 @@ const SummaryFormControls = () => {
           className="hidden md:inline-flex"
           variant="plain"
           onPress={goToPreviousStep}
-          startIcon={<ChevronLeftIcon className="size-6" />}
+          startIcon={<Icon name="chevron-left" className="size-6" />}
         >
           {t('form_controls.back')}
         </Button>

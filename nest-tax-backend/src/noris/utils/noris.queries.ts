@@ -23,8 +23,8 @@ WITH NorisRows AS (
         a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, org_cudz.adr_tp_sup_cislo, org_cudz.adr_tp_or_cislo), '') as ulica_tb_cislo, 
         a_tb.psc_refer as psc_ref_tb,
         a_tb.obec_nazev obec_nazev_tb, 
-        CONVERT(char(10), lcs.dane21_doklad.datum_realizacie, 104) akt_datum, 
-        lcs.fn21_meno_osoby_org(lcs.dane21_doklad.vybavuje, null) vyb_nazov, 
+        lcs.dane21_doklad.datum_realizacie datum_realizacie, 
+        lcs.fn21_meno_osoby_org(dp_conf.vybavuje, null) vyb_nazov, 
         z_vybav.telefon_prace vyb_telefon_prace, 
         z_vybav.e_mail vyb_email, 
         dp_conf.vybavuje vyb_id,
@@ -440,11 +440,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
       (case
           when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
           else 0 end
-      ) uhrazeno_sum_saldo,
-      sum(dane21_doklad_overpayment.suma_mena) as uhrazeno_overpayment, -- TODO use just uhrazeno, these two are only for debugging
-      (case
-          when isnull(dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno
-          else 0 end
       ) + sum(dane21_doklad_overpayment.suma_mena) as uhrazeno,
       (SELECT MAX(v) FROM (VALUES(MAX(view_doklad_saldo.datum_posledni_platby)), (MAX(dane21_doklad_overpayment.datum_realizacie))) AS maxDate(v)) AS datum_posledni_platby
   FROM lcs.dane21_doklad as dane21_doklad
@@ -484,27 +479,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
       AND MAX(dane21_doklad_overpayment.datum_realizacie) IS NOT NULL
 `
 
-export const setDeliveryMethodsForUser = `
-    UPDATE org_mag
-    SET
-        org_mag.dkba_stav = @dkba_stav,
-        org_mag.dkba_datum_suhlasu = @dkba_datum_suhlasu,
-        org_mag.dkba_sposob_dorucovania = @dkba_sposob_dorucovania
-    OUTPUT
-        inserted.cislo_subjektu
-    FROM lcs.uda_21_organizacia_mag org_mag
-    INNER JOIN lcs.organizace org
-        ON org_mag.cislo_subjektu = org.cislo_subjektu
-    WHERE TRIM(org.ico) IN (@birth_numbers)
-`
-
-export const getBirthNumbersForSubjects = `
-    -- birth numbers are stored in column 'ico'
-    SELECT ico
-    FROM lcs.organizace
-    WHERE cislo_subjektu IN (@subjects)
-`
-
 /**
  * @remarks
  * ⚠️ **Warning:** This returns a record for each communal waste container.
@@ -527,8 +501,8 @@ export const getCommunalWasteTaxesFromNoris = `
         (SELECT MAX(v) FROM (VALUES(view_doklad_saldo.datum_posledni_platby), (overpayment_sum.datum_realizacie)) AS maxDate(v)) AS datum_posledni_platby,
         subjekt_doklad_sub.reference_subjektu subjekt_refer,
         ltrim(case when poplatok.podnikatel='N' then isnull(poplatok.titul+' ', '')+isnull(poplatok.meno+' ', '') +isnull(poplatok.priezvisko, '') +(case when poplatok.titul_za is null then '' else isnull(', '+poplatok.titul_za, '') end )         else  poplatok.obchodny_nazov end  ) subjekt_nazev, 
-        CONVERT(char(10), doklad.datum_realizacie, 104) akt_datum,
-        lcs.fn21_meno_osoby_org(doklad.vybavuje, null) vyb_nazov,
+        doklad.datum_realizacie datum_realizacie,
+        lcs.fn21_meno_osoby_org(pop_conf.vybavuje, null) vyb_nazov,
 
         poplatok.forma_uhrady AS forma_uhrady,
 

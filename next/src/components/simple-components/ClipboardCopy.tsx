@@ -2,7 +2,7 @@ import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { useCopyToClipboard } from 'usehooks-ts'
 
-import { CopyIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import logger from '@/src/frontend/utils/logger'
 
@@ -25,7 +25,7 @@ const ClipboardCopy = ({ copyText }: { copyText: string }) => {
 
   return (
     <Button onPress={handleCopy} variant="unstyled">
-      <CopyIcon />
+      <Icon name="copy" />
       <span className="sr-only">{t('ClipboardCopy.aria.copyToClipboard')}</span>
     </Button>
   )

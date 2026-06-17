@@ -7,7 +7,6 @@ import {
   RealEstateTaxDetail,
   RealEstateTaxPropertyType,
 } from '../../prisma/json-types'
-import { DeliveryMethod, DeliveryMethodNoris } from '../types/noris.enums'
 import {
   NorisBaseTax,
   NorisCommunalWasteTaxGrouped,
@@ -56,7 +55,7 @@ export interface DatabaseBaseTaxData {
   year: number
   taxPayerId: number
   variableSymbol: string
-  dateCreateTax: string | null
+  dateCreateTax: Date
   dateTaxRuling: Date | null
   taxId: string | null
   isCancelled: boolean
@@ -120,24 +119,6 @@ export const mapNorisToTaxInstallmentsData = (
   }))
 }
 
-export const mapDeliveryMethodToNoris = (
-  deliveryMethod: DeliveryMethod | null,
-): DeliveryMethodNoris | null => {
-  if (deliveryMethod === null) return null
-
-  const mapping: Partial<Record<DeliveryMethod, DeliveryMethodNoris>> = {
-    [DeliveryMethod.EDESK]: DeliveryMethodNoris.EDESK,
-    [DeliveryMethod.CITY_ACCOUNT]: DeliveryMethodNoris.CITY_ACCOUNT,
-    [DeliveryMethod.POSTAL]: DeliveryMethodNoris.EDESK, // Postal is saved in Noris as EDESK ('E')
-  }
-
-  const norisMethod = mapping[deliveryMethod]
-  if (!norisMethod) {
-    throw new Error(`Unknown delivery method: ${deliveryMethod}`)
-  }
-  return norisMethod
-}
-
 export const mapNorisToDatabaseBaseTax = (
   data: NorisBaseTax,
   year: number,
@@ -148,7 +129,7 @@ export const mapNorisToDatabaseBaseTax = (
     year,
     taxPayerId,
     variableSymbol: data.variabilny_symbol,
-    dateCreateTax: data.akt_datum,
+    dateCreateTax: data.datum_realizacie,
     dateTaxRuling: data.datum_platnosti,
     taxId: data.cislo_konania,
     isCancelled: data.stav_dokladu === 'S',

@@ -9,7 +9,7 @@ import {
   YoutubeIcon,
 } from '@/src/assets/icons-social-media'
 import { FooterColumnBlockFragment, FooterFragment } from '@/src/clients/graphql-strapi/api'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
 import MLink from '@/src/components/simple-components/MLink'
 import { isDefined } from '@/src/frontend/utils/general'
 import { getLinkProps } from '@/src/utils/getLinkProps'
@@ -57,7 +57,7 @@ export const FooterSocialLinks = ({
 export const FooterContacts = ({ contactText }: FooterFragment) => {
   return (
     <div className="flex flex-col gap-x-6 gap-y-3">
-      <AccountMarkdown variant="sm" content={contactText ?? ''} />
+      <Markdown variant="small" content={contactText} />
     </div>
   )
 }

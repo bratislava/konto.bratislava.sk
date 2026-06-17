@@ -10,19 +10,19 @@ import {
 
 import AdminGuard from '../auth/guards/admin.guard'
 import { ValidateFormRegistrationsResultDto } from '../nases/dtos/responses.dto'
-import NasesCronSubservice from '../nases/utils-services/nases.cron.subservice'
-import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
+import NasesCronService from '../nases/services/nases.cron.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import AdminService from './admin.service'
 
 @ApiTags('ADMIN')
 @Controller('admin')
 @ApiSecurity('apiKey')
 export default class AdminController {
   constructor(
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nasesCronSubservice: NasesCronSubservice,
+    private readonly nasesCronService: NasesCronService,
   ) {}
 
   // Endpoints only for testing
@@ -38,7 +38,7 @@ export default class AdminController {
   @UseGuards(AdminGuard)
   @Get('technical-jwt')
   getTechnicalJwt(): string {
-    return this.nasesUtilsService.createTechnicalAccountJwtToken()
+    return this.adminService.createTechnicalAccountJwtToken()
   }
 
   @ApiOperation({
@@ -52,7 +52,7 @@ export default class AdminController {
   @UseGuards(AdminGuard)
   @Get('administration-jwt')
   getAdministrationJwt(): string {
-    return this.nasesUtilsService.createAdministrationJwtToken()
+    return this.adminService.createAdministrationJwtToken()
   }
 
   @ApiOperation({
@@ -72,7 +72,7 @@ export default class AdminController {
         'Authorization not provided',
       )
     }
-    return this.nasesUtilsService.createUserJwtToken(head.authorization)
+    return this.adminService.createUserJwtToken(head.authorization)
   }
 
   @ApiOperation({
@@ -87,6 +87,6 @@ export default class AdminController {
   @UseGuards(AdminGuard)
   @Get('check-form-registrations-in-nases')
   async checkFormsRegistrationsInNases(): Promise<ValidateFormRegistrationsResultDto> {
-    return this.nasesCronSubservice.validateFormRegistrations()
+    return this.nasesCronService.validateFormRegistrations()
   }
 }

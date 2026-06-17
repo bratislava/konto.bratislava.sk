@@ -17,6 +17,7 @@ export default [
   VerificationErrorsEnum.INVALID_CAPTCHA,
   ErrorsEnum.DATABASE_ERROR,
   ErrorsEnum.INTERNAL_SERVER_ERROR,
+  ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
   SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
   VerificationErrorsEnum.DATABASE_ERROR,
   SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,

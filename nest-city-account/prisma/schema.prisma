@@ -30,9 +30,14 @@ enum DeliveryMethodEnum {
 }
 
 // Edesk is stored in PhysicalEntity and we do not want to duplicate it in User
-enum DeliveryMethodUserEnum {
+enum DeliveryMethodUserPreferenceEnum {
   CITY_ACCOUNT
   POSTAL
+}
+
+enum ConsentEnum {
+  MARKETING
+  GENERAL
 }
 
 enum GDPRTypeEnum {
@@ -79,34 +84,66 @@ enum BloomreachOutboxStatus {
 }
 
 model User {
-  id                                   String                         @id @default(uuid()) @db.Uuid
-  createdAt                            DateTime                       @default(now())
-  updatedAt                            DateTime                       @updatedAt
+  id                                   String                            @id @default(uuid()) @db.Uuid
+  createdAt                            DateTime                          @default(now())
+  updatedAt                            DateTime                          @updatedAt
   registeredAt                         DateTime?
-  externalId                           String                         @unique
-  email                                String?                        @unique
-  ifo                                  String?                        @unique
-  birthNumber                          String?                        @unique
+  externalId                           String                            @unique
+  email                                String?                           @unique
+  ifo                                  String?                           @unique
+  birthNumber                          String?                           @unique
   lastVerificationIdentityCard         DateTime?
-  oldMagproxyDatabase                  Int                            @default(0)
-  requeuedInVerification               Int                            @default(0)
+  oldMagproxyDatabase                  Int                               @default(0)
+  requeuedInVerification               Int                               @default(0)
   birthnumberAlreadyExistsLast         String?
-  birthnumberAlreadyExistsCounter      Int                            @default(0)
+  birthnumberAlreadyExistsCounter      Int                               @default(0)
   userAttribute                        String?
   userGdprData                         UserGdprData[]
   physicalEntity                       PhysicalEntity?
   lastTaxDeliveryMethodsUpdateYear     Int?
-  taxDeliveryMethod                    DeliveryMethodUserEnum? // User's current delivery method preference for tax documents
+  taxDeliveryMethod                    DeliveryMethodUserPreferenceEnum? // User's current delivery method preference for tax documents
   taxDeliveryMethodAtLockDate          DeliveryMethodEnum? // Delivery method locked at tax season start (February 1st) - used for actual delivery
-  taxDeliveryMethodCityAccountDate     DateTime? // Date when CITY_ACCOUNT delivery method was selected by user
   taxDeliveryMethodCityAccountLockDate DateTime? // Date when CITY_ACCOUNT delivery method was selected by user before lock date
   // This is used to store the last time we tried to update the delivery methods in Noris for this user.
-  lastTaxDeliveryMethodsUpdateTry      DateTime                       @default(now())
+  lastTaxDeliveryMethodsUpdateTry      DateTime                          @default(now())
   cognitoTier                          CognitoUserAttributesTierEnum?
   userIdCardVerify                     UserIdCardVerify[]
   userLoginClients                     UserLoginClient[]
-  isDeceased                           Boolean                        @default(false)
+  isDeceased                           Boolean                           @default(false)
   markedDeceasedAt                     DateTime?
+  deliveryMethodUserHistory            DeliveryMethodPreferenceHistory[]
+  userConsents                         UserConsents[]
+  userConsentsHistory                  UserConsentsHistory[]
+}
+
+/**
+ * Current consent state per (user, consentType).
+ * App writes here; trigger maintains UserConsentsHistory.
+ */
+model UserConsents {
+  id          String      @id @default(uuid()) @db.Uuid
+  createdAt   DateTime    @default(now())
+  userId      String      @db.Uuid
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType ConsentEnum
+  isGranted   Boolean
+
+  @@unique([userId, consentType])
+}
+
+/**
+ * Append-only audit log of UserConsents changes.
+ * Immutability enforced by trigger.
+ */
+model UserConsentsHistory {
+  id          String      @id @default(uuid()) @db.Uuid
+  createdAt   DateTime    @default(now())
+  userId      String      @db.Uuid
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType ConsentEnum
+  isGranted   Boolean
+
+  @@index([userId])
 }
 
 // In this table we store for one month the data used by a user to verify their account by ID card.
@@ -165,9 +202,10 @@ model ExternalEdeskCheck {
   newUri      String?
   queueStatus QueueItemStatusEnum @default(PENDING)
 
-  upvsStatus  String?
-  edeskStatus String?
-  edeskNumber String?
+  upvsStatus     String?
+  edeskStatus    String?
+  edeskNumber    String?
+  edeskDeathDate String?
 
   norisId Int @unique
 
@@ -195,8 +233,56 @@ model LegalPerson {
   cognitoTier                        CognitoUserAttributesTierEnum?
   legalPersonIcoIdCardVerify         LegalPersonIcoIdCardVerify[]
   legalPersonLoginClients            LegalPersonLoginClient[]
+  legalPersonConsents                LegalPersonConsents[]
+  legalPersonConsentsHistory         LegalPersonConsentsHistory[]
 
   @@unique([ico, birthNumber])
+}
+
+/**
+ * Current consent state per (legalPerson, consentType).
+ * App writes here; trigger maintains LegalPersonConsentsHistory.
+ */
+model LegalPersonConsents {
+  id            String      @id @default(uuid()) @db.Uuid
+  createdAt     DateTime    @default(now())
+  legalPersonId String      @db.Uuid
+  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id], onDelete: Cascade)
+  consentType   ConsentEnum
+  isGranted     Boolean
+
+  @@unique([legalPersonId, consentType])
+}
+
+/**
+ * Append-only audit log of LegalPersonConsents changes.
+ * Immutability enforced by trigger.
+ */
+model LegalPersonConsentsHistory {
+  id            String      @id @default(uuid()) @db.Uuid
+  createdAt     DateTime    @default(now())
+  legalPersonId String      @db.Uuid
+  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id], onDelete: Cascade)
+  consentType   ConsentEnum
+  isGranted     Boolean
+
+  @@index([legalPersonId])
+}
+
+/**
+ * Table containing all the historical changes to user delivery method preference.
+ * **This table is managed by database** and any edits from the app user will
+ * result in an error
+ */
+model DeliveryMethodPreferenceHistory {
+  id        String                           @id @default(uuid()) @db.Uuid
+  createdAt DateTime                         @default(now())
+  userId    String                           @db.Uuid
+  user      User                             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  method    DeliveryMethodUserPreferenceEnum
+
+  @@unique([userId, createdAt])
+  @@index([userId])
 }
 
 model UserGdprData {

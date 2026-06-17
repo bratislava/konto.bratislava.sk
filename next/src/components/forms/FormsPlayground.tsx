@@ -12,7 +12,6 @@ import { useQueryState } from 'nuqs'
 import React, { ContextType, createRef, useEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-import { DownloadIcon, UploadIcon } from '@/src/assets/ui-icons'
 import { ClientPlaygroundFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import ThemedForm from '@/src/components/forms/ThemedForm'
 import { FormDataContext } from '@/src/components/forms/useFormData'
@@ -22,6 +21,7 @@ import {
   FormValidatorRegistryProvider,
   useFormValidatorRegistry,
 } from '@/src/components/forms/useFormValidatorRegistry'
+import Icon from '@/src/components/icon-components/Icon'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import SelectField, {
   SelectOption,
@@ -342,10 +342,14 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           />
 
           <div className="mt-4 flex gap-2">
-            <Button onPress={exportJson} variant="solid" startIcon={<DownloadIcon />}>
+            <Button onPress={exportJson} variant="solid" startIcon={<Icon name="download" />}>
               {t('menu_list.download_json')}
             </Button>
-            <Button onPress={triggerImportJson} variant="outline" startIcon={<UploadIcon />}>
+            <Button
+              onPress={triggerImportJson}
+              variant="outline"
+              startIcon={<Icon name="upload" />}
+            >
               {t('menu_list.upload_json')}
             </Button>
             <input

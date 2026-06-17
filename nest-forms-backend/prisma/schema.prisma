@@ -122,6 +122,8 @@ model Files {
   fileName           String
   // size of file
   fileSize           Int
+  // file upload slot identifier
+  slotId             String?
   // status of the scanner file
   status             FileStatus @default(UPLOADED)
   // if the forms where notified about status change
@@ -136,6 +138,7 @@ model Files {
   updatedAt DateTime @updatedAt
 
   @@index([pospId, formId, status])
+  @@index([formId, slotId, status])
 }
 
 enum FileStatus {

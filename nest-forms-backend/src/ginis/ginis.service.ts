@@ -24,6 +24,7 @@ import {
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
+import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
@@ -35,19 +36,20 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases/nases.errors.enum'
-import NasesUtilsService, {
+import NasesContactsService from '../nases/services/nases.contacts.service'
+import {
   isUpvsCorporateBody,
   isUpvsNaturalPerson,
-} from '../nases/utils-services/tokens.nases.service'
+} from '../nases/utils/nases.identity.utils'
 import PrismaService from '../prisma/prisma.service'
-import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
+import { RABBIT_FORM_DELIVERY, RABBIT_GINIS } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
-import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
+import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService, {
   GinContactParams,
@@ -70,7 +72,8 @@ export default class GinisService {
     private mailgunService: MailgunService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private prismaService: PrismaService,
-    private readonly nasesUtilsService: NasesUtilsService,
+    private readonly apiJwtTokensService: ApiJwtTokensService,
+    private readonly nasesContactsService: NasesContactsService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
     this.logger = new LineLoggerSubservice('GinisService')
@@ -307,9 +310,9 @@ export default class GinisService {
   }
 
   @RabbitRPC({
-    exchange: RABBIT_MQ.EXCHANGE,
-    routingKey: RABBIT_NASES.ROUTING_KEY,
-    queue: RABBIT_NASES.QUEUE,
+    exchange: RABBIT_FORM_DELIVERY.EXCHANGE,
+    routingKey: RABBIT_GINIS.ROUTING_KEY,
+    queue: RABBIT_GINIS.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       const logger = new LineLoggerSubservice('Rabbit')
       logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
@@ -318,7 +321,7 @@ export default class GinisService {
   })
   // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(
-    data: GinisCheckNasesPayloadDto,
+    data: GinisCheckDeliveryPayloadDto,
   ): Promise<Nack> {
     this.logger.debug(`Consuming message for formId: ${data.formId}`)
 
@@ -518,7 +521,10 @@ export default class GinisService {
   private async fetchContactByUri(
     uri: string,
   ): Promise<UpvsNaturalPerson | UpvsCorporateBody> {
-    const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
+    const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
+      this.baConfigService.slovenskoSk.subNasesTechnicalAccount,
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
+    )
     const response =
       await this.clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost(
         {
@@ -569,7 +575,7 @@ export default class GinisService {
     if (isUpvsNaturalPerson(contact)) {
       params.type = GinContactType.PHYSICAL_ENTITY
       const extractedData =
-        this.nasesUtilsService.extractNaturalPersonData(contact)
+        this.nasesContactsService.extractNaturalPersonData(contact)
       if (extractedData.firstNames.length > 0) {
         params.firstName = extractedData.firstNames.join(' ')
       }
@@ -582,7 +588,7 @@ export default class GinisService {
     if (isUpvsCorporateBody(contact)) {
       params.type = GinContactType.LEGAL_ENTITY
       const extractedData =
-        this.nasesUtilsService.extractCorporateBodyData(contact)
+        this.nasesContactsService.extractCorporateBodyData(contact)
       if (extractedData.name) {
         params.name = extractedData.name
       }

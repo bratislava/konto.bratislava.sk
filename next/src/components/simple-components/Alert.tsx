@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 import React, { ReactNode } from 'react'
 
-import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 type AlertButtonBase = {
@@ -79,10 +79,10 @@ const Alert = ({
   const { t } = useTranslation('account')
 
   const icons = {
-    error: <ErrorIcon className="size-6" />,
-    success: <CheckInCircleIcon className="size-6" />,
-    info: <InfoIcon className="size-6" />,
-    warning: <AlertIcon className="size-6" />,
+    error: <Icon name="error" className="size-6" />,
+    success: <Icon name="check-circle" className="size-6" />,
+    info: <Icon name="info" className="size-6" />,
+    warning: <Icon name="warning" className="size-6" />,
   }
 
   const alertContainer = cn(
@@ -120,7 +120,7 @@ const Alert = ({
         {close && (
           <Button
             variant="icon-wrapped-negative-margin"
-            icon={<CrossIcon className="size-6" />}
+            icon={<Icon name="close" className="size-6" />}
             onPress={close}
             aria-label={t('Alert.aria.close')}
           />

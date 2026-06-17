@@ -80,11 +80,12 @@ export default schema(
       ]),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUploadMultiple(
+      fileUploadMultiple<typeof objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaFiles>(
         'informativnyZakresSieti',
         {
           title: 'Informatívny zákres sietí vydaný Technickými sieťami Bratislava, a.s.',
           required: true,
+          slotId: 'informativnyZakresSieti',
         },
         {
           type: 'dragAndDrop',
@@ -97,6 +98,14 @@ export default schema(
     ]),
   ],
 )
+
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaFiles = {
+  slots: [
+    {
+      slotId: 'informativnyZakresSieti',
+    },
+  ],
+} as const
 
 type ExtractFormData = {
   objednavatel: { email: string } & (

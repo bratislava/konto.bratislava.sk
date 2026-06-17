@@ -6,7 +6,7 @@ describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
 
   beforeEach(() => {
-    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(() => {})
+    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(jest.fn())
   })
 
   afterEach(() => {

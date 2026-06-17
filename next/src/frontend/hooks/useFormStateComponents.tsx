@@ -3,14 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 import { useMemo } from 'react'
 
-import {
-  CheckIcon,
-  CrossIcon,
-  ErrorIcon,
-  ScanningIcon,
-  SendIcon,
-  TwoPeopleIcon,
-} from '@/src/assets/ui-icons'
+import Icon from '@/src/components/icon-components/Icon'
 import logger from '@/src/frontend/utils/logger'
 
 export type UseFormStateComponentsParams = {
@@ -37,10 +30,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         [GetFormResponseDtoErrorEnum.RabbitmqMaxTries]: {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -60,10 +53,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         [GetFormResponseDtoErrorEnum.UnableToScanFiles]: {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -73,10 +66,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         [GetFormResponseDtoErrorEnum.InfectedFiles]: {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -86,10 +79,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         [GetFormResponseDtoErrorEnum.NasesSendError]: {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -99,10 +92,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         [GetFormResponseDtoErrorEnum.GinisSendError]: {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -117,10 +110,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
         logger.error(`Unknown error ${error} for state ${state}`)
 
         return {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -146,10 +139,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         QUEUED: {
-          icon: <ScanningIcon className="size-6" />,
+          icon: <Icon name="scan" className="size-6" />,
           iconRound: (
             <div className="rounded-full bg-gray-100 p-1.5">
-              <ScanningIcon className="size-5" />
+              <Icon name="scan" className="size-5" />
             </div>
           ),
           text: (
@@ -159,10 +152,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         DELIVERED_NASES: {
-          icon: <SendIcon className="size-6 text-warning-700" />,
+          icon: <Icon name="send" className="size-6 text-warning-700" />,
           iconRound: (
             <div className="rounded-full bg-warning-100 p-1.5">
-              <SendIcon className="size-5 text-warning-700" />
+              <Icon name="send" className="size-5 text-warning-700" />
             </div>
           ),
           text: (
@@ -172,10 +165,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         DELIVERED_GINIS: {
-          icon: <SendIcon className="size-6 text-warning-700" />,
+          icon: <Icon name="send" className="size-6 text-warning-700" />,
           iconRound: (
             <div className="rounded-full bg-warning-100 p-1.5">
-              <SendIcon className="size-5 text-warning-700" />
+              <Icon name="send" className="size-5 text-warning-700" />
             </div>
           ),
           text: (
@@ -185,10 +178,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         PROCESSING: {
-          icon: <TwoPeopleIcon className="size-6 text-warning-700" />,
+          icon: <Icon name="referents" className="size-6 text-warning-700" />,
           iconRound: (
             <div className="rounded-full bg-warning-100 p-1.5">
-              <TwoPeopleIcon className="size-5 text-warning-700" />
+              <Icon name="referents" className="size-5 text-warning-700" />
             </div>
           ),
           text: (
@@ -198,10 +191,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         FINISHED: {
-          icon: <CheckIcon className="size-6 text-success-700" />,
+          icon: <Icon name="check" className="size-6 text-success-700" />,
           iconRound: (
             <div className="rounded-full bg-success-100 p-1.5">
-              <CheckIcon className="size-5 text-success-700" />
+              <Icon name="check" className="size-5 text-success-700" />
             </div>
           ),
           text: (
@@ -211,10 +204,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         REJECTED: {
-          icon: <CrossIcon className="size-6 text-error" />,
+          icon: <Icon name="close" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -224,10 +217,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
         },
         ERROR: {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (
@@ -238,10 +231,10 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
         },
         // TODO verify this / update messaging as needed - added as is to fix ts error
         ERROR_USER_CAN_REPAIR: {
-          icon: <ErrorIcon className="size-6 text-error" />,
+          icon: <Icon name="error" className="size-6 text-error" />,
           iconRound: (
             <div className="rounded-full bg-negative-100 p-1.5">
-              <CrossIcon className="size-5 text-error" />
+              <Icon name="close" className="size-5 text-error" />
             </div>
           ),
           text: (

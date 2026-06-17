@@ -5,13 +5,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
 import {
   ApiBasicAuth,
   ApiBearerAuth,
@@ -19,6 +19,7 @@ import {
   ApiConsumes,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
 import contentDisposition from 'content-disposition'
@@ -35,6 +36,7 @@ import {
   FormAccessGuard,
 } from '../forms-v2/guards/form-access.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { FileUploadInterceptor } from './file-upload.interceptor'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
@@ -103,10 +105,19 @@ export default class FilesController {
 
   @ApiOperation({
     summary: 'Upload file to form',
-    description: 'You can upload file to form. ',
+    description:
+      'You can upload a file to a form.\n\n' +
+      'Subject to a per-file size limit, resolved as the min of the per-slot, per-form-definition, ' +
+      'and global limits. Oversized uploads are rejected with 413.',
   })
   @ApiOkResponse({
     type: PostFileResponseDto,
+  })
+  @ApiQuery({
+    name: 'slotId',
+    required: false,
+    description:
+      'Slot the file belongs to. Determines the applicable per-slot file size limit.',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -131,13 +142,14 @@ export default class FilesController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
   @Post('upload/:formId')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileUploadInterceptor)
   async uploadFile(
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
+    @Query('slotId') slotId?: string,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(formId, file, body)
+    return this.filesService.uploadFile(formId, file, body, slotId ?? null)
   }
 
   @ApiOperation({

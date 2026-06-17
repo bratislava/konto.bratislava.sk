@@ -1,8 +1,8 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 
-import { ArrowRightIcon, CheckIcon, ClockIcon, InfoIcon, LogoutIcon } from '@/src/assets/ui-icons'
-import AccountMarkdown from '@/src/components/formatting/AccountMarkdown'
+import Markdown from '@/src/components/formatting/Markdown'
+import Icon from '@/src/components/icon-components/Icon'
 import Spinner from '@/src/components/simple-components/Spinner'
 import cn from '@/src/utils/cn'
 
@@ -44,15 +44,15 @@ const AccountSuccessAlert = ({
         })}
       >
         {variant === 'info' ? (
-          <InfoIcon className="size-6 shrink-0 lg:size-8" />
+          <Icon name="info" className="size-6 shrink-0 lg:size-8" />
         ) : variant === 'logout' ? (
-          <LogoutIcon className="size-6 shrink-0 lg:size-8" />
+          <Icon name="logout" className="size-6 shrink-0 lg:size-8" />
         ) : variant === 'pending' ? (
-          <ClockIcon className="size-6 shrink-0 lg:size-8" />
+          <Icon name="clock" className="size-6 shrink-0 lg:size-8" />
         ) : variant === 'loading' ? (
           <Spinner size="md" />
         ) : (
-          <CheckIcon className="size-6 shrink-0 lg:size-8" />
+          <Icon name="check" className="size-6 shrink-0 lg:size-8" />
         )}
       </div>
 
@@ -60,9 +60,7 @@ const AccountSuccessAlert = ({
         <Typography variant="h3" as="h1" className="text-center">
           {title}
         </Typography>
-        {description && (
-          <AccountMarkdown className="text-center" content={description} variant="sm" />
-        )}
+        {description && <Markdown variant="small" content={description} className="text-center" />}
       </div>
 
       {children}
@@ -84,7 +82,7 @@ const AccountSuccessAlert = ({
             variant="plain"
             onPress={onCancel}
             fullWidth
-            endIcon={<ArrowRightIcon className="size-6" />}
+            endIcon={<Icon name="arrow-right" className="size-6" />}
             isLoading={cancelIsLoading}
             data-cy="back-button"
           >

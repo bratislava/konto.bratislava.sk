@@ -1,0 +1,256 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Typography } from '@bratislava/component-library'
+import slugify from '@sindresorhus/slugify'
+import Image from 'next/image'
+import { ComponentType, ReactElement } from 'react'
+import _ReactMarkdown, { defaultUrlTransform, ExtraProps, Options } from 'react-markdown'
+import remarkDirective from 'remark-directive'
+import remarkDirectiveRehype from 'remark-directive-rehype'
+import remarkGfm from 'remark-gfm'
+import supersub from 'remark-supersub'
+import remarkUnwrapImages from 'remark-unwrap-images'
+
+import MLink from '@/src/components/simple-components/MLink'
+import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
+import cn from '@/src/utils/cn'
+
+export type MarkdownProps = {
+  content: string | null | undefined
+  variant?: 'default' | 'small' | 'large' | 'accordion'
+  className?: string
+}
+
+type GenericReactMarkdownComponent = ComponentType<
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & ExtraProps
+>
+
+type CustomComponents = Record<'tooltip', GenericReactMarkdownComponent>
+
+const ReactMarkdown = _ReactMarkdown as (
+  options: Readonly<Options & { components: CustomComponents }>,
+) => ReactElement
+
+/**
+ * See documentation: https://github.com/remarkjs/react-markdown#appendix-b-components
+ *
+ * @param className
+ * @param content
+ * @param variant
+ * @constructor
+ *
+ * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/formatting/Markdown/Markdown.tsx
+ *
+ * This is the closest design we have is in OLO Figma:
+ * https://www.figma.com/design/2qF09hDT9QNcpdztVMNAY4/OLO-Web?node-id=39-2452&p=f&t=aHLvMYm9cct0bnP3-0
+ */
+
+const Markdown = ({ content, variant = 'default', className }: MarkdownProps) => {
+  return (
+    <div
+      className={cn(
+        'markdown',
+        {
+          'text-size-p-large-r lg:text-size-p-large': variant === 'large',
+          'text-size-p-default-r lg:text-size-p-default':
+            variant === 'default' || variant === 'accordion',
+          'text-size-p-small-r lg:text-size-p-small': variant === 'small',
+        },
+        className,
+      )}
+    >
+      <ReactMarkdown
+        urlTransform={
+          // Fixes non-functioning phone links - more at https://github.com/orgs/remarkjs/discussions/1329
+          (url) => (url.startsWith('tel:') ? url : defaultUrlTransform(url))
+        }
+        remarkPlugins={[
+          remarkUnwrapImages,
+          [
+            remarkGfm,
+            // singleTilde is disabled to enable subscript: https://stackoverflow.com/a/78076200
+            { singleTilde: false },
+          ],
+          supersub,
+          remarkDirective,
+          remarkDirectiveRehype,
+        ]}
+        components={{
+          /**
+           * STANDARD COMPONENTS
+           * a, blockquote, br, code, em, h1, h2, h3, h4, h5, h6, hr, img, li, ol, p, pre, strong, and ul
+           *
+           * - We don't want to use h1 in markdown, so it returns standard <p> tag
+           * - Accordion uses h3 as its own heading, so we want to display all the headings in markdown smaller or equal to h4.
+           */
+          h1: 'p',
+          h2: ({ children, node, ...props }) => (
+            <Typography
+              as="h2"
+              variant={variant === 'accordion' ? 'h4' : 'h2'}
+              id={typeof children === 'string' ? slugify(children) : undefined}
+              {...props}
+            >
+              {children}
+            </Typography>
+          ),
+          h3: ({ children, node, ...props }) => (
+            <Typography as="h3" variant={variant === 'accordion' ? 'h5' : 'h3'} {...props}>
+              {children}
+            </Typography>
+          ),
+          h4: ({ children, node, ...props }) => (
+            <Typography as="h4" variant={variant === 'accordion' ? 'h6' : 'h4'} {...props}>
+              {children}
+            </Typography>
+          ),
+          h5: ({ children, node, ...props }) => (
+            <Typography variant="h5" {...props}>
+              {children}
+            </Typography>
+          ),
+          h6: ({ children, node, ...props }) => (
+            <Typography variant="h6" {...props}>
+              {children}
+            </Typography>
+          ),
+          p: ({ children, node, ...props }) => {
+            const variantMap = {
+              default: 'p-default',
+              small: 'p-small',
+              large: 'p-large',
+              accordion: 'p-default',
+            } as const
+
+            return (
+              <Typography variant={variantMap[variant]} {...props}>
+                {children}
+              </Typography>
+            )
+          },
+          strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
+          a: ({ node, href, title, children, ...props }) => {
+            const isExternal = href?.startsWith('http')
+
+            return (
+              <MLink
+                variant="underlined-medium"
+                href={href ?? '#'}
+                target={isExternal ? '_blank' : undefined}
+                {...props}
+              >
+                {!!children && children}
+                {/* add nbsp and arrow to indicate external link */}
+                {/* \u{0000FE0E} is Unicode variation selector that prevents symbols to be rendered as emojis on iOS
+               https://stackoverflow.com/questions/8335724/unicode-characters-being-drawn-differently-in-ios5 */}
+                {isExternal && `${String.fromCodePoint(160)}↗\u{0000FE0E}`}
+              </MLink>
+            )
+          },
+          img: ({ node, src, alt, title, ...props }) => {
+            // this is a new feature behind a flag in React 19.1, this is to conform with the possible, if very unlikely, new type
+            if (src instanceof Blob) {
+              throw new Error(
+                'Passed a Blob object into img src in Markdown. Blobs in src are not yet supported by Next.js Image component.',
+              )
+            }
+
+            return (
+              // Based on OLO: https://github.com/bratislava/olo.sk/blob/master/next/src/components/formatting/Markdown.tsx#L179
+              // TODO Note from OLO: This can still produce a hydration error, because the remark-unwrap-images only works when image is the only child of the paragraph
+              <figure className="flex flex-col items-center gap-4">
+                <Image
+                  {...props}
+                  src={src ?? ''}
+                  width="0"
+                  height="0"
+                  sizes="100vw"
+                  alt={alt ?? ''}
+                  className="h-auto w-full overflow-hidden rounded-xl"
+                />
+                {title ? (
+                  <figcaption
+                    aria-hidden={title === alt}
+                    className="text-center text-size-p-small text-content-passive-tertiary"
+                  >
+                    {title}
+                  </figcaption>
+                ) : null}
+              </figure>
+            )
+          },
+          blockquote: ({ node, ...props }) => (
+            <blockquote
+              className="my-4 border-l-4 border-content-passive-secondary py-2 pl-8"
+              {...props}
+            />
+          ),
+          ol: ({ children, node, ...props }) => (
+            <ol className="list-decimal pl-8 marker:text-content-passive-secondary" {...props}>
+              {children}
+            </ol>
+          ),
+          ul: ({ children, node, ...props }) => (
+            <ul className="list-disc pl-8 marker:text-content-passive-secondary" {...props}>
+              {children}
+            </ul>
+          ),
+          li: ({ children, node, ...props }) => <li {...props}>{children}</li>,
+
+          /**
+           * REMARK-GFM COMPONENTS
+           * del, input, table, tbody, td, th, thead, and tr
+           *
+           * - TODO tables need revisit - align, spacing, etc.
+           */
+          table: ({ children, node, ...props }) => (
+            <div
+              className="overflow-x-auto rounded-lg border bg-background-passive-base"
+              {...props}
+            >
+              <table className="w-full table-auto">{children}</table>
+            </div>
+          ),
+          thead: ({ children, node, ...props }) => <thead {...props}>{children}</thead>,
+          tbody: ({ children, node, ...props }) => (
+            <tbody {...props} className="border-t">
+              {children}
+            </tbody>
+          ),
+          tr: ({ children, node, ...props }) => (
+            <tr className={cn('h-14 not-first:border-t')} {...props}>
+              {children}
+            </tr>
+          ),
+          td: ({ children, node, ...props }) => (
+            <td className="px-5 py-1 not-first:border-l" {...props}>
+              {children}
+            </td>
+          ),
+          th: ({ children, node, ...props }) => (
+            <th
+              className="bg-background-passive-primary px-5 py-1 font-bold not-first:border-l"
+              {...props}
+            >
+              {children}
+            </th>
+          ),
+
+          /**
+           * CUSTOM COMPONENTS
+           *
+           * - extend the CustomComponents type if you want to add more custom components
+           * - TODO Consider unifying with FormMarkdown and including 'form-image-preview', 'tax-year', 'tax-year-next'
+           */
+          tooltip: ({ children }) =>
+            children && typeof children === 'string' ? (
+              <BATooltip placement="top right">{children}</BATooltip>
+            ) : null,
+        }}
+      >
+        {content ?? ''}
+      </ReactMarkdown>
+    </div>
+  )
+}
+
+export default Markdown

@@ -66,13 +66,13 @@ export const stavbyBase = (step: StepEnum) => [
         placeholder: 'Napr. 7986/1',
         helptextFooter: {
           [StepEnum.DanZPozemkov]:
-            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/3_pozemok_cislo_parcely_d88349308a.png"}',
+            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://city-account-strapi.s3.bratislava.sk/upload/3_pozemok_cislo_parcely_c226f3335e.png"}',
           [StepEnum.DanZoStaviebJedencel]:
-            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}',
+            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://city-account-strapi.s3.bratislava.sk/upload/4_stavba_cislo_parcely_434882ea2f.png"}',
           [StepEnum.DanZoStaviebViacereUcely]:
-            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}',
+            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://city-account-strapi.s3.bratislava.sk/upload/5_stavba_cislo_parcely_490ea2bf14.png"}',
           [StepEnum.DanZBytovANebytovychPriestorov]:
-            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://general-strapi.s3.bratislava.sk/upload/6_byt_cislo_parcely_a7124f13a3.png"}',
+            'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://city-account-strapi.s3.bratislava.sk/upload/6_byt_cislo_parcely_9402697765.png"}',
         }[step],
         helptextFooterMarkdown: true,
       },

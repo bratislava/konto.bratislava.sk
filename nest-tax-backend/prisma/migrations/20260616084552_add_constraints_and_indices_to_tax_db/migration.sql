@@ -14,6 +14,9 @@ ALTER TABLE "TaxInstallment"
 ALTER TABLE "Tax"
     ADD CONSTRAINT "Tax_variableSymbol_numeric" CHECK ("variableSymbol" ~ '^\d+$');
 
+ALTER TABLE "Tax"
+    ADD CONSTRAINT "Tax_variableSymbol_max_length" CHECK (length("variableSymbol") <= 10);
+
 -- Config
 
     -- CreateIndex

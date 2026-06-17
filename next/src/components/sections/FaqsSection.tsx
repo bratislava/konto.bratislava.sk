@@ -1,8 +1,8 @@
 import { FaqSectionFragment } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import { isDefined } from '@/src/frontend/utils/general'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import FaqsGroup from '@/src/components/segments/FaqsGroup/FaqsGroup'
+import { isDefined } from '@/src/frontend/utils/general'
 
 type FaqsSectionProps = {
   section: FaqSectionFragment

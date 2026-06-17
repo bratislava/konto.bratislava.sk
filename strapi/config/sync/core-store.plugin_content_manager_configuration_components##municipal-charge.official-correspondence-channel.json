@@ -1,0 +1,87 @@
+{
+  "key": "plugin_content_manager_configuration_components::municipal-charge.official-correspondence-channel",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "relationOpenMode": "modal",
+      "mainField": "documentId",
+      "defaultSortBy": "documentId",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "consentText": {
+        "edit": {
+          "label": "Súhlas",
+          "description": "Zobrazí sa pri výbere spôsobu informovania nad tlačidlom, ktorým používateľ potvrdzuje súhlas.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "consentText",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "channelChangePendingAlert": {
+        "edit": {
+          "label": "Alert pri zmene spôsobu informovania po termíne",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "channelChangePendingAlert",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "edit": [
+        [
+          {
+            "name": "consentText",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "channelChangePendingAlert",
+            "size": 12
+          }
+        ]
+      ],
+      "list": [
+        "id",
+        "channelChangePendingAlert"
+      ]
+    },
+    "uid": "municipal-charge.official-correspondence-channel",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

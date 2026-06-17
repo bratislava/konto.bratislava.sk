@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_municipal_charge_channel_change_pending_alerts",
+  "info": {
+    "displayName": "channelChangePendingAlert"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    }
+  },
+  "config": {}
+}

@@ -568,6 +568,67 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
   }
 }
 
+export interface ApiMunicipalChargeConfigMunicipalChargeConfig extends Struct.SingleTypeSchema {
+  collectionName: 'municipal_charge_configs'
+  info: {
+    displayName: 'Dane a poplatky (nov\u00E9)'
+    pluralName: 'municipal-charge-configs'
+    singularName: 'municipal-charge-config'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::municipal-charge-config.municipal-charge-config'
+    > &
+      Schema.Attribute.Private
+    municipalChargeIdentifier: Schema.Attribute.Component<
+      'municipal-charge.municipal-charge-identifier',
+      false
+    >
+    officialCorrespondenceChannel: Schema.Attribute.Component<
+      'municipal-charge.official-correspondence-channel',
+      false
+    >
+    publishedAt: Schema.Attribute.DateTime
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+  }
+}
+
+export interface ApiMunicipalChargeMunicipalCharge extends Struct.CollectionTypeSchema {
+  collectionName: 'municipal_charges'
+  info: {
+    displayName: 'Dane a poplatky'
+    pluralName: 'municipal-charges'
+    singularName: 'municipal-charge'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    feedbackLink: Schema.Attribute.String
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::municipal-charge.municipal-charge'
+    > &
+      Schema.Attribute.Private
+    publishedAt: Schema.Attribute.DateTime
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+  }
+}
+
 export interface ApiMunicipalServiceCategoryMunicipalServiceCategory
   extends Struct.CollectionTypeSchema {
   collectionName: 'municipal_service_categories'
@@ -749,7 +810,7 @@ export interface ApiTaxTax extends Struct.SingleTypeSchema {
   collectionName: 'taxes'
   info: {
     description: ''
-    displayName: 'Dane a poplatky'
+    displayName: 'Dane a poplatky (star\u00E9)'
     pluralName: 'taxes'
     singularName: 'tax'
   }
@@ -1208,6 +1269,8 @@ declare module '@strapi/strapi' {
       'api::help-page.help-page': ApiHelpPageHelpPage
       'api::homepage-announcement.homepage-announcement': ApiHomepageAnnouncementHomepageAnnouncement
       'api::homepage.homepage': ApiHomepageHomepage
+      'api::municipal-charge-config.municipal-charge-config': ApiMunicipalChargeConfigMunicipalChargeConfig
+      'api::municipal-charge.municipal-charge': ApiMunicipalChargeMunicipalCharge
       'api::municipal-service-category.municipal-service-category': ApiMunicipalServiceCategoryMunicipalServiceCategory
       'api::municipal-service-tag.municipal-service-tag': ApiMunicipalServiceTagMunicipalServiceTag
       'api::municipal-service.municipal-service': ApiMunicipalServiceMunicipalService

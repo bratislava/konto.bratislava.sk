@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_municipal_charge_official_correspondence_channels",
+  "info": {
+    "displayName": "officialCorrespondenceChannel"
+  },
+  "options": {},
+  "attributes": {
+    "consentText": {
+      "type": "richtext"
+    },
+    "channelChangePendingAlert": {
+      "type": "component",
+      "component": "municipal-charge.channel-change-pending-alert",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

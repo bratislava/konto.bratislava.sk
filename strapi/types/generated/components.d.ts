@@ -142,6 +142,42 @@ export interface GeneralAlert extends Struct.ComponentSchema {
   }
 }
 
+export interface MunicipalChargeChannelChangePendingAlert extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_channel_change_pending_alerts'
+  info: {
+    displayName: 'channelChangePendingAlert'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface MunicipalChargeMunicipalChargeIdentifier extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_municipal_charge_identifiers'
+  info: {
+    displayName: 'municipalChargeIdentifier'
+  }
+  attributes: {
+    dzn: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+    ko: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+  }
+}
+
+export interface MunicipalChargeOfficialCorrespondenceChannel extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_official_correspondence_channels'
+  info: {
+    displayName: 'officialCorrespondenceChannel'
+  }
+  attributes: {
+    channelChangePendingAlert: Schema.Attribute.Component<
+      'municipal-charge.channel-change-pending-alert',
+      false
+    >
+    consentText: Schema.Attribute.RichText
+  }
+}
+
 export interface SectionsContacts extends Struct.ComponentSchema {
   collectionName: 'components_sections_contacts'
   info: {
@@ -189,6 +225,9 @@ declare module '@strapi/strapi' {
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert
+      'municipal-charge.channel-change-pending-alert': MunicipalChargeChannelChangePendingAlert
+      'municipal-charge.municipal-charge-identifier': MunicipalChargeMunicipalChargeIdentifier
+      'municipal-charge.official-correspondence-channel': MunicipalChargeOfficialCorrespondenceChannel
       'sections.contacts': SectionsContacts
       'sections.richtext': SectionsRichtext
     }

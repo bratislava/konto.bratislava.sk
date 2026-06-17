@@ -78,6 +78,17 @@ export interface BlocksContactPersonCard extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksFile extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_files'
+  info: {
+    displayName: 'File'
+  }
+  attributes: {
+    link: Schema.Attribute.String
+    title: Schema.Attribute.String
+  }
+}
+
 export interface BlocksFooterColumn extends Struct.ComponentSchema {
   collectionName: 'components_blocks_footer_columns'
   info: {
@@ -100,7 +111,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
-      ['sections.richtext', 'sections.contacts', 'sections.stepper']
+      ['sections.richtext', 'sections.contacts', 'sections.stepper', 'sections.documents']
     >
     text: Schema.Attribute.RichText
   }
@@ -190,6 +201,18 @@ export interface SectionsContacts extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsDocuments extends Struct.ComponentSchema {
+  collectionName: 'components_sections_documents'
+  info: {
+    displayName: 'Documents'
+  }
+  attributes: {
+    description: Schema.Attribute.RichText
+    files: Schema.Attribute.Component<'blocks.file', true>
+    title: Schema.Attribute.String
+  }
+}
+
 export interface SectionsRichtext extends Struct.ComponentSchema {
   collectionName: 'components_sections_richtexts'
   info: {
@@ -221,6 +244,7 @@ declare module '@strapi/strapi' {
       'blocks.contact-card': BlocksContactCard
       'blocks.contact-directions-card': BlocksContactDirectionsCard
       'blocks.contact-person-card': BlocksContactPersonCard
+      'blocks.file': BlocksFile
       'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
@@ -229,6 +253,7 @@ declare module '@strapi/strapi' {
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert
       'sections.contacts': SectionsContacts
+      'sections.documents': SectionsDocuments
       'sections.richtext': SectionsRichtext
       'sections.stepper': SectionsStepper
     }

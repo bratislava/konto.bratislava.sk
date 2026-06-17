@@ -81,6 +81,19 @@ fragment ContactsSection on ComponentSectionsContacts {
   titleLevelContacts: titleLevel
 }
 
+fragment FileBlock on ComponentBlocksFile {
+  title
+  link
+}
+
+fragment DocumentsSection on ComponentSectionsDocuments {
+  title
+  description
+  files {
+    ...FileBlock
+  }
+}
+
 fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   __typename
 
@@ -94,5 +107,9 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
 
   ... on ComponentSectionsContacts {
     ...ContactsSection
+  }
+
+  ... on ComponentSectionsDocuments {
+    ...DocumentsSection
   }
 }

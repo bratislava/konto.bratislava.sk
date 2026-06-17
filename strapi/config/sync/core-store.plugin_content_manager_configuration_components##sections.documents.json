@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.checklist",
+  "key": "plugin_content_manager_configuration_components::sections.documents",
   "value": {
     "settings": {
       "bulkable": true,
@@ -48,16 +48,16 @@
           "sortable": false
         }
       },
-      "checklistItems": {
+      "files": {
         "edit": {
-          "label": "Položky v checkliste",
+          "label": "Súbory",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "checklistItems",
+          "label": "files",
           "searchable": false,
           "sortable": false
         }
@@ -75,7 +75,7 @@
       "list": [
         "id",
         "title",
-        "checklistItems"
+        "files"
       ],
       "edit": [
         [
@@ -92,13 +92,13 @@
         ],
         [
           {
-            "name": "checklistItems",
+            "name": "files",
             "size": 12
           }
         ]
       ]
     },
-    "uid": "blocks.checklist",
+    "uid": "sections.documents",
     "isComponent": true
   },
   "type": "object",

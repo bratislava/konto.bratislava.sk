@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_files",
+  "info": {
+    "displayName": "File"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

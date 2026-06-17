@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_sections_documents",
+  "info": {
+    "displayName": "Documents"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "files": {
+      "type": "component",
+      "component": "blocks.file",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

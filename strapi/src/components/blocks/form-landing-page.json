@@ -23,7 +23,12 @@
     },
     "sections": {
       "type": "dynamiczone",
-      "components": ["sections.richtext", "sections.contacts", "sections.stepper"]
+      "components": [
+        "sections.richtext",
+        "sections.contacts",
+        "sections.stepper",
+        "sections.documents"
+      ]
     }
   }
 }

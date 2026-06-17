@@ -171,6 +171,26 @@ input ComponentBlocksContactPersonCardInput {
   title: String
 }
 
+type ComponentBlocksFile {
+  id: ID!
+  link: String
+  title: String
+}
+
+input ComponentBlocksFileFiltersInput {
+  and: [ComponentBlocksFileFiltersInput]
+  link: StringFilterInput
+  not: ComponentBlocksFileFiltersInput
+  or: [ComponentBlocksFileFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksFileInput {
+  id: ID
+  link: String
+  title: String
+}
+
 type ComponentBlocksFooterColumn {
   id: ID!
   links(filters: ComponentBlocksCommonLinkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksCommonLink]
@@ -379,6 +399,29 @@ input ComponentSectionsContactsInput {
   title: String
   titleLevel: ENUM_COMPONENTSECTIONSCONTACTS_TITLELEVEL
   webContacts: [ComponentBlocksContactCardInput]
+}
+
+type ComponentSectionsDocuments {
+  description: String
+  files(filters: ComponentBlocksFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFile]
+  id: ID!
+  title: String
+}
+
+input ComponentSectionsDocumentsFiltersInput {
+  and: [ComponentSectionsDocumentsFiltersInput]
+  description: StringFilterInput
+  files: ComponentBlocksFileFiltersInput
+  not: ComponentSectionsDocumentsFiltersInput
+  or: [ComponentSectionsDocumentsFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentSectionsDocumentsInput {
+  description: String
+  files: [ComponentBlocksFileInput]
+  id: ID
+  title: String
 }
 
 type ComponentSectionsRichtext {
@@ -674,7 +717,7 @@ input FormInput {
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsRichtext | ComponentSectionsStepper | Error
+union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsRichtext | ComponentSectionsStepper | Error
 
 scalar FormLandingPageSectionsDynamicZoneInput
 
@@ -723,7 +766,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsContacts | ComponentSectionsRichtext | ComponentSectionsStepper | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksFile | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsRichtext | ComponentSectionsStepper | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!

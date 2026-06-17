@@ -1,15 +1,22 @@
 import { createMock } from '@golevelup/ts-jest'
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { AxiosError } from 'axios'
 
+import prismaMock from '../../test/singleton'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
+import { PrismaService } from '../prisma/prisma.service'
+import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NasesService } from './nases.service'
 
 describe('NasesService', () => {
   let service: NasesService
   let throwerErrorGuard: ThrowerErrorGuard
+  let clientsService: ClientsService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,11 +26,13 @@ describe('NasesService', () => {
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: ApiJwtTokensService, useValue: createMock<ApiJwtTokensService>() },
         { provide: ConfigService, useValue: createMock<ConfigService>() },
+        { provide: PrismaService, useValue: prismaMock },
       ],
     }).compile()
 
     service = module.get<NasesService>(NasesService)
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    clientsService = module.get<ClientsService>(ClientsService)
   })
 
   afterEach(() => {
@@ -225,6 +234,128 @@ describe('NasesService', () => {
 
       await expect(service.getIdentitiesByUris(inputs)).rejects.toThrow()
       expect(searchSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('lookupIdentityFO', () => {
+    const apiIamIdentitiesLookupGetSpy = () =>
+      jest.spyOn(clientsService.slovenskoSkApi, 'apiIamIdentitiesLookupGet')
+
+    const axiosErrorWithStatus = (status: number, data: object = {}, headers: object = {}) =>
+      new AxiosError('Request failed', String(status), undefined, undefined, {
+        status,
+        statusText: '',
+        headers,
+        config: {},
+        data,
+      } as never)
+
+    const thrownBy = async (): Promise<unknown> =>
+      service.lookupIdentityFO('1234567890', 'John', 'Doe', 'entity-1').catch((e: unknown) => e)
+
+    // One table for the whole error mapping documented on lookupIdentityFO.
+    // Notes per row:
+    // - 429 must keep its status: the urgent queue detects throttling by it.
+    // - the 400 bodies mirror render_bad_request in slovensko-digital/slovensko-sk-api;
+    //   a `fault` is attached exactly when the error came from UPVS IAM.
+    // - a no-fault 400 means our own request building failed container validation -
+    //   an internal bug, hence the alerting 500.
+    it.each([
+      {
+        upstreamCase: '429 (rate limit)',
+        rejection: axiosErrorWithStatus(429),
+        status: HttpStatus.TOO_MANY_REQUESTS,
+        errorName: ErrorsEnum.TOO_MANY_REQUESTS_ERROR,
+      },
+      {
+        upstreamCase: '400 with fault (UPVS IAM rejection)',
+        rejection: axiosErrorWithStatus(400, {
+          message: 'Invalid query',
+          fault: { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' },
+        }),
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errorName: VerificationErrorsEnum.IDENTITY_LOOKUP_REJECTED,
+      },
+      {
+        upstreamCase: '400 without fault (parameter validation)',
+        rejection: axiosErrorWithStatus(400, { message: 'Invalid query' }),
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorName: ErrorsEnum.INTERNAL_SERVER_ERROR,
+      },
+      {
+        upstreamCase: '503 with Retry-After',
+        rejection: axiosErrorWithStatus(503, {}, { 'retry-after': '60' }),
+        status: HttpStatus.SERVICE_UNAVAILABLE,
+        errorName: ErrorsEnum.SERVICE_UNAVAILABLE_ERROR,
+      },
+      {
+        upstreamCase: '503 without Retry-After',
+        rejection: axiosErrorWithStatus(503),
+        status: HttpStatus.BAD_GATEWAY,
+        errorName: ErrorsEnum.BAD_GATEWAY_ERROR,
+      },
+      {
+        upstreamCase: '401 (broken credentials)',
+        rejection: axiosErrorWithStatus(401),
+        status: HttpStatus.BAD_GATEWAY,
+        errorName: ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
+      },
+      {
+        upstreamCase: 'network error with no response',
+        rejection: new AxiosError('Network Error'),
+        status: HttpStatus.BAD_GATEWAY,
+        errorName: ErrorsEnum.BAD_GATEWAY_ERROR,
+      },
+      {
+        upstreamCase: 'non-axios error',
+        rejection: new Error('boom'),
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorName: ErrorsEnum.INTERNAL_SERVER_ERROR,
+      },
+    ])('maps $upstreamCase to $status $errorName', async ({ rejection, status, errorName }) => {
+      apiIamIdentitiesLookupGetSpy().mockRejectedValue(rejection)
+
+      const error = await thrownBy()
+
+      expect(error).toBeInstanceOf(HttpException)
+      expect((error as HttpException).getStatus()).toBe(status)
+      expect((error as HttpException).getResponse()).toMatchObject({ errorName })
+    })
+
+    // Rejections are persisted right here in the service - the row's existence
+    // excludes the entity from further urgent lookups.
+    it('persists the rejection with its fault when UPVS IAM rejects the lookup', async () => {
+      apiIamIdentitiesLookupGetSpy().mockRejectedValue(
+        axiosErrorWithStatus(400, {
+          message: 'Invalid query',
+          fault: { code: '00074421', reason: 'Nastala chyba: IDENTITY_ID_FAULT' },
+        })
+      )
+
+      await thrownBy()
+
+      expect(prismaMock.identityLookupRejection.upsert).toHaveBeenCalledWith({
+        where: { physicalEntityId: 'entity-1' },
+        create: {
+          physicalEntityId: 'entity-1',
+          faultCode: '00074421',
+          faultReason: 'Nastala chyba: IDENTITY_ID_FAULT',
+        },
+        update: {
+          faultCode: '00074421',
+          faultReason: 'Nastala chyba: IDENTITY_ID_FAULT',
+        },
+      })
+    })
+
+    it('does not persist a rejection for non-fault failures', async () => {
+      apiIamIdentitiesLookupGetSpy().mockRejectedValue(
+        axiosErrorWithStatus(400, { message: 'Invalid query' })
+      )
+
+      await thrownBy()
+
+      expect(prismaMock.identityLookupRejection.upsert).not.toHaveBeenCalled()
     })
   })
 })

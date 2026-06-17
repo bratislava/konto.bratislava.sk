@@ -1525,7 +1525,7 @@ describe('TaxService', () => {
         })
         expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
           where: {
-            taxPayerId_year_type_order: {
+            taxPayerId_type_year_order: {
               year: 2023,
               taxPayerId: 1,
               type: TaxType.DZN,

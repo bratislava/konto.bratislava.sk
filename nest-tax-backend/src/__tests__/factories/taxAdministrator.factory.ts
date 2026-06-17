@@ -27,7 +27,6 @@ export const createTestTaxAdministratorEntry = (
       id: 1,
       createdAt: DEFAULT_DATE,
       updatedAt: DEFAULT_DATE,
-      externalId: 'ext-admin-1',
       name: 'Test Tax Administrator',
       phoneNumber: '+421123456789',
       email: 'admin@test.sk',

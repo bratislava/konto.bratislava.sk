@@ -2,11 +2,9 @@ import { NorisRealEstateTax } from '../../../types/noris.types'
 
 export const testRealEstateTax1: NorisRealEstateTax = {
   stav_dokladu: 'Z',
-  cislo_poradace: 12_561,
   cislo_subjektu: 139_431_111,
   cislo_konania: '1/25/019623-36/21/925188',
   variabilny_symbol: '3125019623',
-  subjekt_refer: '0925188',
   subjekt_nazev: 'Ján Novák',
   rok: 2025,
   ulica_tb_cislo: 'Hlavná ulica 20',
@@ -89,11 +87,9 @@ export const testRealEstateTax1: NorisRealEstateTax = {
 
 export const testRealEstateTax2: NorisRealEstateTax = {
   stav_dokladu: 'Z',
-  cislo_poradace: 98_765,
   cislo_subjektu: 234_567_890,
   cislo_konania: null,
   variabilny_symbol: '9876543210',
-  subjekt_refer: null,
   subjekt_nazev: null,
   rok: 2024,
   ulica_tb_cislo: null,
@@ -176,11 +172,9 @@ export const testRealEstateTax2: NorisRealEstateTax = {
 
 export const testRealEstateTax3: NorisRealEstateTax = {
   stav_dokladu: 'Z',
-  cislo_poradace: 54_321,
   cislo_subjektu: 345_678_901,
   cislo_konania: '2/26/028734-45/22/836299',
   variabilny_symbol: '4567890123',
-  subjekt_refer: '0836299',
   subjekt_nazev: 'Anna Krátka',
   rok: 2025,
   ulica_tb_cislo: 'Druhá ulica 15',

@@ -46,7 +46,6 @@ describe('convertCurrencyToInt', () => {
 describe('mapNorisToTaxPayerData', () => {
   const mockNorisData: NorisRealEstateTax = {
     ICO_RC: '1234567890',
-    subjekt_refer: 'EXT123',
     subjekt_nazev: 'Test Subject',
     ulica_tb_cislo: 'Test Street 1',
     psc_ref_tb: '12345',
@@ -58,7 +57,6 @@ describe('mapNorisToTaxPayerData', () => {
 
     expect(result).toEqual({
       birthNumber: '1234567890',
-      externalId: 'EXT123',
       name: 'Test Subject',
       permanentResidenceStreet: 'Test Street 1',
       permanentResidenceZip: '12345',
@@ -70,7 +68,6 @@ describe('mapNorisToTaxPayerData', () => {
 describe('mapNorisToTaxAdministratorData', () => {
   const mockNorisData: NorisRealEstateTax = {
     vyb_email: 'admin@test.com',
-    cislo_poradace: 123,
     vyb_id: 456,
     vyb_nazov: 'Test Admin',
     vyb_telefon_prace: '123456789',
@@ -81,17 +78,10 @@ describe('mapNorisToTaxAdministratorData', () => {
 
     expect(result).toEqual({
       email: 'admin@test.com',
-      externalId: '123',
       id: 456,
       name: 'Test Admin',
       phoneNumber: '123456789',
     })
-  })
-
-  it('should convert cislo_poradace to string for externalId', () => {
-    const result = mapNorisToTaxAdministratorData(mockNorisData)
-    expect(typeof result?.externalId).toBe('string')
-    expect(result?.externalId).toBe('123')
   })
 
   it('should return undefined if vyb_id is not present', () => {

@@ -92,7 +92,6 @@ describe('testing-tax-mock', () => {
       )
 
       expect(result.vyb_email).toBe(mockTaxAdministrator.email)
-      expect(result.cislo_poradace).toBe(mockTaxAdministrator.id)
       expect(result.vyb_id).toBe(mockTaxAdministrator.id)
       expect(result.vyb_nazov).toBe(mockTaxAdministrator.name)
       expect(result.vyb_telefon_prace).toBe(mockTaxAdministrator.phoneNumber)
@@ -197,7 +196,6 @@ describe('testing-tax-mock', () => {
         )
 
         expect(result.cislo_subjektu).toBe(123_456)
-        expect(result.subjekt_refer).toBe('123456789')
       })
 
       it('should set datum_realizacie to current date', () => {
@@ -285,7 +283,6 @@ describe('testing-tax-mock', () => {
       )
 
       expect(result.vyb_email).toBe(mockTaxAdministrator.email)
-      expect(result.cislo_poradace).toBe(mockTaxAdministrator.id)
       expect(result.vyb_id).toBe(mockTaxAdministrator.id)
       expect(result.vyb_nazov).toBe(mockTaxAdministrator.name)
       expect(result.vyb_telefon_prace).toBe(mockTaxAdministrator.phoneNumber)
@@ -446,7 +443,6 @@ describe('testing-tax-mock', () => {
         )
 
         expect(result.cislo_subjektu).toBe(123_456)
-        expect(result.subjekt_refer).toBe('123456789')
       })
 
       it('should set datum_realizacie to current date', () => {

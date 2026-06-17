@@ -38,6 +38,10 @@ import { NasesAttachmentXmlObject } from '../types/xml.types'
 
 @Injectable()
 export default class NasesSenderService {
+  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(
+    NasesSenderService.name,
+  )
+
   constructor(
     private readonly convertService: ConvertService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -46,7 +50,6 @@ export default class NasesSenderService {
     private taxService: TaxService,
     private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
-    private readonly logger: LineLoggerSubservice,
   ) {}
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {

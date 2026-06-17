@@ -1,15 +1,17 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { isAxiosError } from 'axios'
+import { AxiosError, isAxiosError } from 'axios'
 import _ from 'lodash'
 import {
   ApiIamIdentitiesIdGet200Response,
   UpvsCorporateBody,
   UpvsNaturalPerson,
+  UpvsNaturalPersonAllOfNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
+import { PrismaService } from '../prisma/prisma.service'
 import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
@@ -47,6 +49,22 @@ export type ApiIamIdentitiesIdGet200ResponseWithUri = Omit<
   uri: string
 }
 
+/**
+ * Identity returned by `lookupIdentityFO`. UPVS strips these fields from a technical-account
+ * lookup (OBO-token subject isn't the looked-up identity), so they're dropped from the type:
+ * top-level `addresses`/`phones`, and `natural_person`'s `birth`/`death`/`marital_status`/
+ * `nationality`/`occupation`. Narrowed to a natural person, as an FO lookup always resolves to one.
+ */
+export type LookupIdentityFOResult = Omit<
+  UpvsNaturalPerson,
+  'addresses' | 'phones' | 'natural_person'
+> & {
+  natural_person?: Omit<
+    UpvsNaturalPersonAllOfNaturalPerson,
+    'birth' | 'death' | 'marital_status' | 'nationality' | 'occupation'
+  >
+}
+
 export function isUpvsNaturalPerson(
   contact: UpvsNaturalPerson | UpvsCorporateBody
 ): contact is UpvsNaturalPerson {
@@ -60,6 +78,31 @@ export function getUpvsDeathDate(contact: UpvsNaturalPerson | UpvsCorporateBody)
   return contact.natural_person?.death?.date ?? null
 }
 
+/**
+ * The `fault` object the slovensko-sk container attaches to a 400 body when the error
+ * originated in UPVS.
+ */
+interface UpvsIamFault {
+  code?: string
+  reason?: string
+}
+
+/**
+ * Extract the UPVS IAM fault from a slovensko-sk container 400 response.
+ */
+function getUpvsIamFault(error: AxiosError): UpvsIamFault | undefined {
+  if (error.response?.status !== HttpStatus.BAD_REQUEST) return undefined
+
+  const fault = (error.response.data as Record<string, unknown> | null)?.fault
+  if (typeof fault !== 'object' || fault === null) return undefined
+
+  const { code, reason } = fault as Record<string, unknown>
+  return {
+    code: typeof code === 'string' ? code : undefined,
+    reason: typeof reason === 'string' ? reason : undefined,
+  }
+}
+
 @Injectable()
 export class NasesService {
   private readonly logger: LineLoggerSubservice
@@ -68,7 +111,8 @@ export class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly prismaService: PrismaService
   ) {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
@@ -101,23 +145,37 @@ export class NasesService {
    *  - given names
    *  - family names.
    *
+   * When UPVS IAM rejects the lookup, the rejection (with its fault) is persisted as an
+   * `IdentityLookupRejection` row for the entity, which excludes it from further urgent
+   * lookups (delete the row to retry).
+   *
    * @param personalIdentificationNumber - 10-digit birth number without slash.
-   * @param givenName - Given name as stored in Cognito.
-   * @param familyName - Family name; same conventions as `givenName`.
-   * @returns The identity record (`UpvsNaturalPerson | UpvsCorporateBody`). On
-   *   a successful FO lookup this is `UpvsNaturalPerson` with the UPVS `uri`.
-   * @throws HTTP 429 (code `TOO_MANY_REQUESTS_ERROR`) when UPVS rate-limits us, so
-   *   callers can detect throttling by status and back off.
-   * @throws HTTP 422 with code `VERIFY_EID_ERROR` when UPVS rejects the lookup (400,
-   *   i.e. "identity not found").
-   * @throws the `fromAxiosError` defaults (BadGateway / ServiceUnavailable) for
-   *   other upstream failures such as outages or credential errors.
+   * @param givenName - Given names as stored in Cognito.
+   * @param familyName - Family names as stored in Cognito.
+   * @param physicalEntityId - Entity the lookup is for; used to persist a rejection.
+   * @returns The natural person's identity record with the UPVS `uri`. Fields UPVS strips
+   * from a technical-account lookup (birth, death, marital status, nationality, occupation,
+   * addresses, phones) are absent - see `LookupIdentityFOResult`.
+   * @throws HttpException - status depends on the upstream failure:
+   *   - 422 (code `IDENTITY_LOOKUP_REJECTED`) when UPVS IAM itself rejects the
+   *     lookup
+   *   - 429 (code `TOO_MANY_REQUESTS_ERROR`) when UPVS rate-limits us.
+   *   - 500 (code `INTERNAL_SERVER_ERROR`, alerts) when the container rejects
+   *     our parameters before reaching UPVS (upstream 400 without `fault` - we
+   *     always send all three, so this means our request building broke), or
+   *     when the thrown error is not an AxiosError.
+   *   - 502 (code `BAD_GATEWAY_AUTH_ERROR`, alerts) when our credentials are
+   *     broken.
+   *   - 503 (code `SERVICE_UNAVAILABLE_ERROR`) when upstream answers 503 with a
+   *     `Retry-After` header.
+   *   - 502 (code `BAD_GATEWAY_ERROR`) for any other upstream failure
    */
   async lookupIdentityFO(
     personalIdentificationNumber: string,
     givenName: string,
-    familyName: string
-  ): Promise<ApiIamIdentitiesIdGet200Response> {
+    familyName: string,
+    physicalEntityId: string
+  ): Promise<LookupIdentityFOResult> {
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
       this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
       this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
@@ -127,9 +185,10 @@ export class NasesService {
         headers: { Authorization: `Bearer ${jwt}`, 'Content-Type': 'application/json' },
       })
       .then((response) => {
-        return response.data
+        // FO criteria resolve to a natural person with omitted fields - see LookupIdentityFOResult.
+        return response.data as LookupIdentityFOResult
       })
-      .catch((error: unknown) => {
+      .catch(async (error: unknown) => {
         if (!isAxiosError(error)) {
           throw this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -138,27 +197,56 @@ export class NasesService {
             error
           )
         }
+        const iamFault = getUpvsIamFault(error)
+        let consoleMessage: string | undefined
+        if (iamFault) {
+          consoleMessage = `UPVS IAM fault: code=${iamFault.code ?? 'unknown'} reason=${iamFault.reason ?? 'unknown'}`
+          await this.markLatestIdentityLookupRejected(physicalEntityId, iamFault)
+        } else if (error.response?.status === HttpStatus.BAD_REQUEST) {
+          consoleMessage = 'Identity lookup parameters failed slovensko-sk container validation.'
+        }
         throw this.throwerErrorGuard.fromAxiosError(error, {
           message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          console: consoleMessage,
           statusOverrides: {
-            // Rate limit must keep its 429 status — the urgent queue detects it by
-            // status and backs off for the rest of the tick.
+            // Rate limit must keep its 429 status
             [HttpStatus.TOO_MANY_REQUESTS]: {
               status: HttpStatus.TOO_MANY_REQUESTS,
               errorEnum: ErrorsEnum.TOO_MANY_REQUESTS_ERROR,
               message: ErrorsResponseEnum.TOO_MANY_REQUESTS_ERROR,
             },
-            // UPVS answers 400 when the identity is not found — that's a data
-            // problem, not a gateway one.
-            [HttpStatus.BAD_REQUEST]: {
-              status: HttpStatus.UNPROCESSABLE_ENTITY,
-              errorEnum: VerificationErrorsEnum.VERIFY_EID_ERROR,
-              message: VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-            },
+            // 400 with a `fault` in the body = UPVS IAM itself rejected the query
+            [HttpStatus.BAD_REQUEST]: iamFault
+              ? {
+                  status: HttpStatus.UNPROCESSABLE_ENTITY,
+                  errorEnum: VerificationErrorsEnum.IDENTITY_LOOKUP_REJECTED,
+                  message: VerificationErrorsResponseEnum.IDENTITY_LOOKUP_REJECTED,
+                }
+              : {
+                  status: HttpStatus.INTERNAL_SERVER_ERROR,
+                  errorEnum: ErrorsEnum.INTERNAL_SERVER_ERROR,
+                  message: ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+                },
           },
         })
       })
     return result
+  }
+
+  private async markLatestIdentityLookupRejected(
+    physicalEntityId: string,
+    fault: UpvsIamFault
+  ): Promise<void> {
+    const faultColumns = { faultCode: fault.code ?? '', faultReason: fault.reason ?? '' }
+    try {
+      await this.prismaService.identityLookupRejection.upsert({
+        where: { physicalEntityId },
+        create: { physicalEntityId, ...faultColumns },
+        update: faultColumns,
+      })
+    } catch (persistenceError) {
+      this.logger.error('Failed to persist identity lookup rejection', persistenceError)
+    }
   }
 
   private async searchUpvsIdentitiesByUri(uris: string[]) {

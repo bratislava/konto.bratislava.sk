@@ -78,14 +78,14 @@ export interface BlocksContactPersonCard extends Struct.ComponentSchema {
   }
 }
 
-export interface BlocksFile extends Struct.ComponentSchema {
-  collectionName: 'components_blocks_files'
+export interface BlocksExternalDocument extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_external_documents'
   info: {
-    displayName: 'File'
+    displayName: 'Externé dokumenty'
   }
   attributes: {
-    link: Schema.Attribute.String
     title: Schema.Attribute.String
+    url: Schema.Attribute.String
   }
 }
 
@@ -204,11 +204,11 @@ export interface SectionsContacts extends Struct.ComponentSchema {
 export interface SectionsDocuments extends Struct.ComponentSchema {
   collectionName: 'components_sections_documents'
   info: {
-    displayName: 'Documents'
+    displayName: 'Dokumenty'
   }
   attributes: {
     description: Schema.Attribute.RichText
-    files: Schema.Attribute.Component<'blocks.file', true>
+    externalDocuments: Schema.Attribute.Component<'blocks.external-document', true>
     title: Schema.Attribute.String
   }
 }
@@ -244,7 +244,7 @@ declare module '@strapi/strapi' {
       'blocks.contact-card': BlocksContactCard
       'blocks.contact-directions-card': BlocksContactDirectionsCard
       'blocks.contact-person-card': BlocksContactPersonCard
-      'blocks.file': BlocksFile
+      'blocks.external-document': BlocksExternalDocument
       'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta

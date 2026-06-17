@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.file",
+  "key": "plugin_content_manager_configuration_components::blocks.external-document",
   "value": {
     "settings": {
       "bulkable": true,
@@ -34,16 +34,16 @@
           "sortable": true
         }
       },
-      "link": {
+      "url": {
         "edit": {
-          "label": "URL adresa",
+          "label": "URL",
           "description": "Súbory nahrávame na bratislava.sk strapi a do tohoto komponentu patria už len linky na súbory v bratislave.sk kde sa dajú aj stiahnuť.",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "link",
+          "label": "url",
           "searchable": true,
           "sortable": true
         }
@@ -65,7 +65,7 @@
             "size": 6
           },
           {
-            "name": "link",
+            "name": "url",
             "size": 6
           }
         ]
@@ -73,10 +73,10 @@
       "list": [
         "id",
         "title",
-        "link"
+        "url"
       ]
     },
-    "uid": "blocks.file",
+    "uid": "blocks.external-document",
     "isComponent": true
   },
   "type": "object",

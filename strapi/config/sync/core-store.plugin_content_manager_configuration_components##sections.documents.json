@@ -48,16 +48,17 @@
           "sortable": false
         }
       },
-      "files": {
+      "externalDocuments": {
         "edit": {
-          "label": "Súbory",
+          "label": "Externé Dokumenty",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
-          "label": "files",
+          "label": "externalDocuments",
           "searchable": false,
           "sortable": false
         }
@@ -72,7 +73,6 @@
       }
     },
     "layouts": {
-      "list": ["id", "title", "files"],
       "edit": [
         [
           {
@@ -88,11 +88,12 @@
         ],
         [
           {
-            "name": "files",
+            "name": "externalDocuments",
             "size": 12
           }
         ]
-      ]
+      ],
+      "list": ["id", "title", "externalDocuments"]
     },
     "uid": "sections.documents",
     "isComponent": true

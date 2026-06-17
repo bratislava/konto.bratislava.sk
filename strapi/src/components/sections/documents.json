@@ -11,9 +11,9 @@
     "description": {
       "type": "richtext"
     },
-    "files": {
+    "externalDocuments": {
       "type": "component",
-      "component": "blocks.file",
+      "component": "blocks.external-document",
       "repeatable": true
     }
   },

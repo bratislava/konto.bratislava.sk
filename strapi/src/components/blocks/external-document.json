@@ -1,14 +1,14 @@
 {
-  "collectionName": "components_blocks_files",
+  "collectionName": "components_blocks_external_documents",
   "info": {
-    "displayName": "File"
+    "displayName": "externalDocument"
   },
   "options": {},
   "attributes": {
     "title": {
       "type": "string"
     },
-    "link": {
+    "url": {
       "type": "string"
     }
   },

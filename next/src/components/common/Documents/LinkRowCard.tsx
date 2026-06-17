@@ -14,8 +14,8 @@ const LinkRowCard = ({ title, link, isLastItem = false }: LinkRowCardProps) => {
   const { t } = useTranslation('account')
 
   return (
-    <a href={link} rel="noreferrer" aria-label={title}>
-      <li className="px-6">
+    <li>
+      <a href={link} rel="noreferrer" aria-label={title} className="px-6">
         <div
           className={cn(
             'flex flex-row items-center justify-between gap-4 border-b border-gray-200 py-4',
@@ -43,8 +43,8 @@ const LinkRowCard = ({ title, link, isLastItem = false }: LinkRowCardProps) => {
             <Icon name="arrow-right" />
           </div>
         </div>
-      </li>
-    </a>
+      </a>
+    </li>
   )
 }
 

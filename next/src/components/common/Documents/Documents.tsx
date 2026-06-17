@@ -2,14 +2,14 @@ import LinkRowCard from '@/src/components/common/Documents/LinkRowCard'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 
 type FileProps = {
-  title: string
-  link: string
+  title?: string | null
+  link?: string | null
 }
 
 type Props = {
   title: string
   description: string
-  files: FileProps[]
+  files: (FileProps | null)[]
 }
 
 const Documents = ({ title, description, files }: Props) => {
@@ -20,9 +20,9 @@ const Documents = ({ title, description, files }: Props) => {
       <ul className="flex flex-col rounded-lg border border-border-active-default py-2">
         {files.map((file, index) => (
           <LinkRowCard
-            key={file.title}
-            title={file.title}
-            link={file.link}
+            key={file?.title}
+            title={file?.title ?? ''}
+            link={file?.link ?? ''}
             isLastItem={index === files.length - 1}
           />
         ))}

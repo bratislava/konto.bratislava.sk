@@ -91,6 +91,16 @@ export class TasksService {
   }
 
   /**
+   * Daily digest of identity lookups rejected by UPVS IAM in the last month.
+   * Runs daily at 9:02 AM.
+   */
+  @Cron('2 09 * * *', { timeZone: bratislavaTimezone })
+  @HandleErrors('CronError')
+  async alertIdentityLookupRejections(): Promise<void> {
+    return this.edeskTasksSubservice.alertIdentityLookupRejections()
+  }
+
+  /**
    * Cleans up expired OAuth2 authorization codes older than 5 minutes.
    * Removes access, ID, and refresh tokens from expired records.
    * Runs every 5 minutes, ensuring codes are at most 10 minutes old.

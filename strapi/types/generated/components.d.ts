@@ -174,7 +174,7 @@ export interface MunicipalChargeOfficialCorrespondenceChannel extends Struct.Com
       'municipal-charge.channel-change-pending-alert',
       false
     >
-    consentText: Schema.Attribute.RichText
+    consentText: Schema.Attribute.RichText & Schema.Attribute.Required
   }
 }
 

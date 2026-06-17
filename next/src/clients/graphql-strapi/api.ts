@@ -391,7 +391,7 @@ export type ComponentMunicipalChargeMunicipalChargeIdentifierInput = {
 export type ComponentMunicipalChargeOfficialCorrespondenceChannel = {
   __typename?: 'ComponentMunicipalChargeOfficialCorrespondenceChannel'
   channelChangePendingAlert?: Maybe<ComponentMunicipalChargeChannelChangePendingAlert>
-  consentText?: Maybe<Scalars['String']['output']>
+  consentText: Scalars['String']['output']
   id: Scalars['ID']['output']
 }
 
@@ -1288,7 +1288,7 @@ export type MunicipalChargeConfig = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   documentId: Scalars['ID']['output']
   municipalChargeIdentifier?: Maybe<ComponentMunicipalChargeMunicipalChargeIdentifier>
-  officialCorrespondenceChannel?: Maybe<ComponentMunicipalChargeOfficialCorrespondenceChannel>
+  officialCorrespondenceChannel: ComponentMunicipalChargeOfficialCorrespondenceChannel
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
@@ -3448,15 +3448,15 @@ export type MunicipalChargeFragment = {
 export type MunicipalChargeConfigFragment = {
   __typename?: 'MunicipalChargeConfig'
   documentId: string
-  officialCorrespondenceChannel?: {
+  officialCorrespondenceChannel: {
     __typename?: 'ComponentMunicipalChargeOfficialCorrespondenceChannel'
-    consentText?: string | null
+    consentText: string
     channelChangePendingAlert?: {
       __typename?: 'ComponentMunicipalChargeChannelChangePendingAlert'
       title?: string | null
       content?: string | null
     } | null
-  } | null
+  }
   municipalChargeIdentifier?: {
     __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
     dzn?: {

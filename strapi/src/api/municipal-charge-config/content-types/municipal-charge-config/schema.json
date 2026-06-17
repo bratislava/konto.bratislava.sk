@@ -14,7 +14,8 @@
     "officialCorrespondenceChannel": {
       "type": "component",
       "component": "municipal-charge.official-correspondence-channel",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "municipalChargeIdentifier": {
       "type": "component",

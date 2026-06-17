@@ -6,7 +6,8 @@
   "options": {},
   "attributes": {
     "consentText": {
-      "type": "richtext"
+      "type": "richtext",
+      "required": true
     },
     "channelChangePendingAlert": {
       "type": "component",

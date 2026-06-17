@@ -594,7 +594,8 @@ export interface ApiMunicipalChargeConfigMunicipalChargeConfig extends Struct.Si
     officialCorrespondenceChannel: Schema.Attribute.Component<
       'municipal-charge.official-correspondence-channel',
       false
-    >
+    > &
+      Schema.Attribute.Required
     publishedAt: Schema.Attribute.DateTime
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private

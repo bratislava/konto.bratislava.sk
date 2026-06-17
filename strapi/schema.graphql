@@ -327,7 +327,7 @@ input ComponentMunicipalChargeMunicipalChargeIdentifierInput {
 
 type ComponentMunicipalChargeOfficialCorrespondenceChannel {
   channelChangePendingAlert: ComponentMunicipalChargeChannelChangePendingAlert
-  consentText: String
+  consentText: String!
   id: ID!
 }
 
@@ -1045,7 +1045,7 @@ type MunicipalChargeConfig {
   createdAt: DateTime
   documentId: ID!
   municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifier
-  officialCorrespondenceChannel: ComponentMunicipalChargeOfficialCorrespondenceChannel
+  officialCorrespondenceChannel: ComponentMunicipalChargeOfficialCorrespondenceChannel!
   publishedAt: DateTime
   updatedAt: DateTime
 }

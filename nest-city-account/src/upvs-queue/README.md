@@ -7,9 +7,7 @@ populations:
 - **External** records - `ExternalEdeskCheck` rows fed from the **Noris** tax backend.
 
 > [!IMPORTANT]
-> There is no single FIFO queue. Every 30 seconds `processBatch()` selects work from several
-> **prioritised tiers**, each backed by a different selector and a different UPVS endpoint, under
-> a shared per-tick budget.
+> There is no single FIFO queue. Every 30 seconds `processBatch()` selects work from several **prioritised tiers**, each backed by a different selector and a different UPVS endpoint, under a shared per-tick budget.
 
 ## Code map
 
@@ -31,22 +29,18 @@ populations:
 
 ## The tiers
 
-Tiers are listed by precedence. **Urgent runs on every tick** with its own budget. After it, the
-two single-item _URI-update_ tiers **short-circuit the batch** (they handle one item and return),
-so the _search_ tier only runs on ticks where no URI update is pending. The colour dots match the
-diagram palette below: 🔴 urgent, 🟡 URI fix, 🟢 batched search.
+Tiers run by precedence. **Urgent runs every tick** on its own budget; the two single-item _URI-update_ tiers then **short-circuit the batch**, so the _search_ tier only runs when no URI update is pending. Palette: 🔴 urgent, 🟡 URI fix, 🟢 batched search.
 
-| #     | Tier                      | Selector                                                                             | Items / tick                             | UPVS endpoint                          | Notes                                                      |
-|:------|:--------------------------|:-------------------------------------------------------------------------------------|:-----------------------------------------|:---------------------------------------|:-----------------------------------------------------------|
-| 🔴 0  | **Urgent**                | `PhysicalEntity` with `birthNumber` set and `uri IS NULL` (join `User`)              | `URGENT_BATCH_SIZE = 50`, **sequential** | `lookupIdentityFO` (per person)        | Runs first, always. Own budget. Stops the run on HTTP 429. |
-| 🟡 1  | **Internal URI fix**      | `PhysicalEntity` with `uriPossiblyOutdated = true` (past backoff)                    | 1, then early return                     | `getIdentitiesByUris([1])`             | Re-resolves a possibly-changed URI.                        |
-| 🟡 2  | **External URI re-check** | `ExternalEdeskCheck` with `NEW_URI_CHECK_REQUIRED`                                   | 1, then early return                     | `getIdentitiesByUris([1])`             | Re-resolves a possibly-changed external URI.               |
-| 🟢 3a | **High priority**         | `PhysicalEntity` with `uri` set, cache stale (`CACHE_TTL_HOURS = 144`), past backoff | ≤ `HIGH_PRIORITY_RESERVED_SLOTS = 5`     | `getIdentitiesByUris` (batched search) | Periodic eDesk-status refresh.                             |
-| 🟢 3b | **External**              | `ExternalEdeskCheck` with `PENDING` and `uri` set                                    | remainder of `BATCH_SIZE = 8`            | `getIdentitiesByUris` (batched search) | Shares the search batch with 3a.                           |
+| #     | Tier                      | Selector                                                                             | Items / tick                             | UPVS endpoint                          | Notes                                                                                          |
+|:------|:--------------------------|:-------------------------------------------------------------------------------------|:-----------------------------------------|:---------------------------------------|:-----------------------------------------------------------------------------------------------|
+| 🔴 0  | **Urgent**                | `PhysicalEntity` with `birthNumber` set and `uri IS NULL` (join `User`)              | `URGENT_BATCH_SIZE = 50`, **sequential** | `lookupIdentityFO` (per person)        | Runs first, always. Own budget. Stops the run on HTTP 429. IAM-rejected entities are excluded. |
+| 🟡 1  | **Internal URI fix**      | `PhysicalEntity` with `uriPossiblyOutdated = true` (past backoff)                    | 1, then early return                     | `getIdentitiesByUris([1])`             | Re-resolves a possibly-changed URI.                                                            |
+| 🟡 2  | **External URI re-check** | `ExternalEdeskCheck` with `NEW_URI_CHECK_REQUIRED`                                   | 1, then early return                     | `getIdentitiesByUris([1])`             | Re-resolves a possibly-changed external URI.                                                   |
+| 🟢 3a | **High priority**         | `PhysicalEntity` with `uri` set, cache stale (`CACHE_TTL_HOURS = 144`), past backoff | ≤ `HIGH_PRIORITY_RESERVED_SLOTS = 5`     | `getIdentitiesByUris` (batched search) | Periodic eDesk-status refresh.                                                                 |
+| 🟢 3b | **External**              | `ExternalEdeskCheck` with `PENDING` and `uri` set                                    | remainder of `BATCH_SIZE = 8`            | `getIdentitiesByUris` (batched search) | Shares the search batch with 3a.                                                               |
 
 > [!NOTE]
-> Tiers 3a + 3b together form a single batched call of ≤ `BATCH_SIZE` (8) URIs, which is within the
-> UPVS search limit of 10. The **urgent** budget is fully independent of `BATCH_SIZE`.
+> Tiers 3a + 3b share one batched call of ≤ `BATCH_SIZE` URIs (within the UPVS limit of 10); the urgent budget is independent of it.
 
 ## System data flow
 
@@ -138,61 +132,7 @@ flowchart TD
     class T3 search;
 ```
 
-## `processBatch` control flow
-
-```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#292e42',
-      'primaryTextColor': '#c0caf5',
-      'primaryBorderColor': '#7aa2f7',
-      'lineColor': '#7dcfff',
-      'secondaryColor': '#24283b',
-      'tertiaryColor': '#1a1b26',
-      'background': '#1a1b26',
-      'mainBkg': '#292e42',
-      'nodeBorder': '#414868',
-      'clusterBkg': '#24283b',
-      'clusterBorder': '#414868',
-      'titleColor': '#7dcfff',
-      'edgeLabelBackground': '#1a1b26'
-    }
-  }
-}%%
-flowchart TD
-    A(["cron, every 30s"]) --> G{"isProcessingBatch?"}
-    G -->|yes| SKIP["log skip, return<br/>(reentrancy guard)"]
-    G -->|no| LOCK["isProcessingBatch = true"]
-    LOCK --> U["processUrgentItems(50)<br/>sequential lookup"]
-    U --> RL{"urgent rate-limited?<br/>(HTTP 429)"}
-    RL -->|yes| RLR["skip remaining tiers<br/>return, retry next tick"]
-    RL -->|no| Q1{"getUriToUpdateInternal<br/>found?"}
-    Q1 -->|yes| H1["handleUriUpdateInternal<br/>resolve 1 URI"] --> LOG["log report"]
-    Q1 -->|no| Q2{"getUriToUpdateExternal<br/>found?"}
-    Q2 -->|yes| H2["handleUriUpdateExternal<br/>resolve 1 URI"] --> LOG
-    Q2 -->|no| HP["getHighPriorityQueueItems(≤5)"]
-    HP --> EX["getExternalQueueItems<br/>(8 − highPriority)"]
-    EX --> EMPTY{"any URIs to search?"}
-    EMPTY -->|no| LOG
-    EMPTY -->|yes| CM["nasesService.getIdentitiesByUris"]
-    CM --> S["handleSuccessfulUpdates"]
-    S --> F["handleFailureCases"]
-    F --> LOG
-    LOG --> UNLOCK["finally: isProcessingBatch = false"]
-    RLR --> UNLOCK
-    SKIP --> ENDN(["end"])
-    UNLOCK --> ENDN
-    classDef guard fill:#3b2e2e,stroke:#f7768e,color:#c0caf5;
-    class G,SKIP,LOCK,UNLOCK,RL,RLR guard;
-```
-
 ## `processUrgentItems` - sequential lookup with rate-limit handling
-
-Urgent items use the per-person lookup endpoint. They are processed **one at a time** (not in
-parallel), so the load on the endpoint is steady. An HTTP 429 from the endpoint stops the whole
-run; the remaining entities are retried next tick.
 
 ```mermaid
 %%{
@@ -294,18 +234,26 @@ stateDiagram-v2
     }
   }
 }%%
-stateDiagram-v2
-    [*] --> NoUri:birthNumber verified, uri NULL
-    NoUri --> HasUri:Tier 0 lookupIdentityFO returns uri
-    NoUri --> NoUri:lookup fails, failCount++ (backoff)
-    HasUri --> HasUri:Tier 3a refresh after 144h<br/>(eDesk status updated)
-    HasUri --> Outdated:search reports possible URI change<br/>(uriPossiblyOutdated = true)
-    Outdated --> HasUri:Tier 1 resolves new uri
-    Outdated --> Outdated:re-resolve fails, failCount++ (backoff)
-    note right of NoUri
-        failCount ≥ 7 triggers the
-        daily alertFailingEdeskUpdate cron
-    end note
+flowchart TD
+    START((start))
+    NOURI(["NoUri"])
+    REJECTED(["Rejected"])
+    OUTDATED(["Outdated"])
+    HASURI(["HasUri"])
+    NOTE1["failCount ≥ 7 triggers the<br/>daily alertFailingEdeskUpdate cron"]:::note
+    NOTE2["triggers daily alertIdentityLookupRejections cron<br/>alerts rejections from the last month"]:::note
+    START -->|" birthNumber verified, uri NULL "| NOURI
+    NOURI -->|" lookup fails<br/>failCount++ (backoff) "| NOURI
+    NOURI -->|" Tier 0 lookupIdentityFO returns uri "| HASURI
+    NOURI -->|" UPVS IAM rejects the lookup<br/>(IdentityLookupRejection row) "| REJECTED
+    REJECTED -->|" manual retry<br/>delete the rejection row "| NOURI
+    HASURI -->|" Tier 3a refresh after 144h<br/>(eDesk status updated) "| HASURI
+    HASURI -->|" search reports possible URI change<br/>(uriPossiblyOutdated = true) "| OUTDATED
+    OUTDATED -->|" Tier 1 resolves new uri "| HASURI
+    OUTDATED -->|" re-resolve fails, failCount++ (backoff) "| OUTDATED
+    REJECTED -.- NOTE2
+    NOURI -.- NOTE1
+    classDef note fill:#3a3320,stroke:#e0af68,color:#c0caf5;
 ```
 
 ## Tunables
@@ -319,13 +267,8 @@ stateDiagram-v2
 
 ## Backoff & resilience
 
-- **Exponential backoff**: failed internal lookups bump `activeEdeskUpdateFailCount`; the selectors
-  exclude an entity until `activeEdeskUpdateFailedAt + 2^min(failCount, 7) hours` has passed.
-- **Reentrancy guard**: `isProcessingBatch` prevents a slow tick (urgent can take a while) from
-  overlapping the next 30s cron fire.
-- **Rate-limit cutout**: an HTTP 429 from the lookup endpoint is re-raised with its status kept
-  (`fromAxiosError` status override), logged with an alert, and stops the urgent run for that
-  tick. The caller also skips the remaining tiers for that tick so we don't keep hitting an
-  endpoint that's already throttling us.
-- **Isolation**: per-entity failures are recorded and aggregated into a single error log line; one
-  bad entity never blocks the rest of the batch.
+- **Exponential backoff**: Tailed internal lookups bump `activeEdeskUpdateFailCount`. The selectors exclude an entity until `activeEdeskUpdateFailedAt + 2^min(failCount, 7) hours` has passed.
+- **Reentrancy guard**: `isProcessingBatch` prevents a slow tick (urgent can take a while) from overlapping the next 30s cron fire.
+- **Rate-limit cutout**: An HTTP 429 from the lookup endpoint is re-raised with its status kept (`fromAxiosError` status override), logged with an alert, and stops the urgent run for that tick. The caller also skips the remaining tiers for that tick so we don't keep hitting an endpoint that's already throttling us.
+- **Isolation**: Per-entity lookup failures are recorded and aggregated into a single error log line, so one bad entity doesn't block the rest of the batch — the exception is a rate limit (HTTP 429), which stops the tier for the tick (see above).
+- **IAM rejections**: when UPVS IAM rejects a lookup, `NasesService` persists an `IdentityLookupRejection` row (fault code/reason included). The urgent selector skips marked entities. Delete the row to retry one. A daily cron digests the last month's rejections as an alert.

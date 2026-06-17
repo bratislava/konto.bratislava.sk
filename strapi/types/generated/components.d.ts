@@ -215,7 +215,7 @@ export interface SectionsFaq extends Struct.ComponentSchema {
         },
         number
       >
-    title: Schema.Attribute.String & Schema.Attribute.Required
+    title: Schema.Attribute.String
   }
 }
 

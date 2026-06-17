@@ -6,8 +6,7 @@
   "options": {},
   "attributes": {
     "title": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "questions": {
       "type": "component",

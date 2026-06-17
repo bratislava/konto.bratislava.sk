@@ -63,18 +63,18 @@ export default class NasesContactsService {
             this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,
               ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-              `Failed to get nases identity for uri: ${uri}`,
+              `Failed to get nases identity`,
               error,
             ),
           )
-          return null
+        } else {
+          this.logger.error(
+            this.throwerErrorGuard.fromAxiosError(error, {
+              console: `Failed to get nases identity`,
+            }),
+          )
         }
 
-        this.logger.error(
-          this.throwerErrorGuard.fromAxiosError(error, {
-            console: `Failed to get nases identity for uri: ${uri}`,
-          }),
-        )
         return null
       })
     return result

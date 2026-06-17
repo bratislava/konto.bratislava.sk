@@ -24,7 +24,7 @@ const PasswordField = (props: PasswordFieldProps, ref: Ref<HTMLInputElement>) =>
           onChange={(selected) => setIsHidden(!selected)}
           // eslint-disable-next-line react/destructuring-assignment
           isDisabled={props.isDisabled}
-          className="flex items-center justify-center p-3"
+          className="flex items-center justify-center rounded-lg p-3 base-focus-ring"
         >
           {isHidden ? <Icon name="eye-hide" /> : <Icon name="eye" />}
         </RACToggleButton>

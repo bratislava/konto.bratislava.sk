@@ -59,6 +59,57 @@ export type BooleanFilterInput = {
   startsWith?: InputMaybe<Scalars['Boolean']['input']>
 }
 
+export type ComponentBlocksChecklist = {
+  __typename?: 'ComponentBlocksChecklist'
+  checklistItems?: Maybe<Array<Maybe<ComponentBlocksChecklistItem>>>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksChecklistChecklistItemsArgs = {
+  filters?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentBlocksChecklistFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistFiltersInput>>>
+  checklistItems?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksChecklistInput = {
+  checklistItems?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksChecklistItem = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  content?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksChecklistItemFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksChecklistItemFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistItemFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksChecklistItemInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksCommonLink = {
   __typename?: 'ComponentBlocksCommonLink'
   id: Scalars['ID']['output']
@@ -539,6 +590,36 @@ export type ComponentSectionsRichtextInput = {
   id?: InputMaybe<Scalars['ID']['input']>
 }
 
+export type ComponentSectionsStepper = {
+  __typename?: 'ComponentSectionsStepper'
+  checklists?: Maybe<Array<Maybe<ComponentBlocksChecklist>>>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsStepperChecklistsArgs = {
+  filters?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsStepperFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsStepperFiltersInput>>>
+  checklists?: InputMaybe<ComponentBlocksChecklistFiltersInput>
+  description?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentSectionsStepperFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsStepperFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsStepperInput = {
+  checklists?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistInput>>>
+  description?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type DateFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
   between?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
@@ -802,6 +883,7 @@ export type FormInput = {
 export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsContacts
   | ComponentSectionsRichtext
+  | ComponentSectionsStepper
   | Error
 
 export type FormRelationResponseCollection = {
@@ -862,6 +944,8 @@ export type GeneralRelationResponseCollection = {
 }
 
 export type GenericMorph =
+  | ComponentBlocksChecklist
+  | ComponentBlocksChecklistItem
   | ComponentBlocksCommonLink
   | ComponentBlocksContactCard
   | ComponentBlocksContactDirectionsCard
@@ -878,6 +962,7 @@ export type GenericMorph =
   | ComponentMunicipalChargeOfficialCorrespondenceChannel
   | ComponentSectionsContacts
   | ComponentSectionsRichtext
+  | ComponentSectionsStepper
   | Footer
   | Form
   | General
@@ -3026,6 +3111,21 @@ export type FormLandingPageFragment = {
         } | null
       }
     | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+    | {
+        __typename: 'ComponentSectionsStepper'
+        title?: string | null
+        description?: string | null
+        checklists?: Array<{
+          __typename?: 'ComponentBlocksChecklist'
+          title?: string | null
+          description?: string | null
+          checklistItems?: Array<{
+            __typename?: 'ComponentBlocksChecklistItem'
+            title?: string | null
+            content?: string | null
+          } | null> | null
+        } | null> | null
+      }
     | { __typename: 'Error' }
     | null
   > | null
@@ -3123,6 +3223,21 @@ export type FormWithLandingPageFragment = {
           } | null
         }
       | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+      | {
+          __typename: 'ComponentSectionsStepper'
+          title?: string | null
+          description?: string | null
+          checklists?: Array<{
+            __typename?: 'ComponentBlocksChecklist'
+            title?: string | null
+            description?: string | null
+            checklistItems?: Array<{
+              __typename?: 'ComponentBlocksChecklistItem'
+              title?: string | null
+              content?: string | null
+            } | null> | null
+          } | null> | null
+        }
       | { __typename: 'Error' }
       | null
     > | null
@@ -3236,6 +3351,21 @@ export type FormWithLandingPageBySlugQuery = {
             } | null
           }
         | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+        | {
+            __typename: 'ComponentSectionsStepper'
+            title?: string | null
+            description?: string | null
+            checklists?: Array<{
+              __typename?: 'ComponentBlocksChecklist'
+              title?: string | null
+              description?: string | null
+              checklistItems?: Array<{
+                __typename?: 'ComponentBlocksChecklistItem'
+                title?: string | null
+                content?: string | null
+              } | null> | null
+            } | null> | null
+          }
         | { __typename: 'Error' }
         | null
       > | null
@@ -3563,6 +3693,39 @@ export type RichtextSectionFragment = {
   content?: string | null
 }
 
+export type ChecklistItemFragment = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  title?: string | null
+  content?: string | null
+}
+
+export type ChecklistFragment = {
+  __typename?: 'ComponentBlocksChecklist'
+  title?: string | null
+  description?: string | null
+  checklistItems?: Array<{
+    __typename?: 'ComponentBlocksChecklistItem'
+    title?: string | null
+    content?: string | null
+  } | null> | null
+}
+
+export type StepperSectionFragment = {
+  __typename?: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
 export type ContactCardBlockFragment = {
   __typename?: 'ComponentBlocksContactCard'
   overrideLabel?: string | null
@@ -3720,11 +3883,28 @@ type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
   content?: string | null
 }
 
+type FormLandingPageSections_ComponentSectionsStepper_Fragment = {
+  __typename: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
 type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsContacts_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
+  | FormLandingPageSections_ComponentSectionsStepper_Fragment
   | FormLandingPageSections_Error_Fragment
 
 export type TaxFragment = {
@@ -3788,6 +3968,32 @@ export const RichtextSectionFragmentDoc = gql`
   fragment RichtextSection on ComponentSectionsRichtext {
     content
   }
+`
+export const ChecklistItemFragmentDoc = gql`
+  fragment ChecklistItem on ComponentBlocksChecklistItem {
+    title
+    content
+  }
+`
+export const ChecklistFragmentDoc = gql`
+  fragment Checklist on ComponentBlocksChecklist {
+    title
+    description
+    checklistItems {
+      ...ChecklistItem
+    }
+  }
+  ${ChecklistItemFragmentDoc}
+`
+export const StepperSectionFragmentDoc = gql`
+  fragment StepperSection on ComponentSectionsStepper {
+    title
+    description
+    checklists {
+      ...Checklist
+    }
+  }
+  ${ChecklistFragmentDoc}
 `
 export const ContactCardBlockFragmentDoc = gql`
   fragment ContactCardBlock on ComponentBlocksContactCard {
@@ -3860,11 +4066,15 @@ export const FormLandingPageSectionsFragmentDoc = gql`
     ... on ComponentSectionsRichtext {
       ...RichtextSection
     }
+    ... on ComponentSectionsStepper {
+      ...StepperSection
+    }
     ... on ComponentSectionsContacts {
       ...ContactsSection
     }
   }
   ${RichtextSectionFragmentDoc}
+  ${StepperSectionFragmentDoc}
   ${ContactsSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`

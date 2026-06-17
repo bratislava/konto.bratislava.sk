@@ -27,6 +27,49 @@ input BooleanFilterInput {
   startsWith: Boolean
 }
 
+type ComponentBlocksChecklist {
+  checklistItems(filters: ComponentBlocksChecklistItemFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksChecklistItem]
+  description: String
+  id: ID!
+  title: String
+}
+
+input ComponentBlocksChecklistFiltersInput {
+  and: [ComponentBlocksChecklistFiltersInput]
+  checklistItems: ComponentBlocksChecklistItemFiltersInput
+  description: StringFilterInput
+  not: ComponentBlocksChecklistFiltersInput
+  or: [ComponentBlocksChecklistFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksChecklistInput {
+  checklistItems: [ComponentBlocksChecklistItemInput]
+  description: String
+  id: ID
+  title: String
+}
+
+type ComponentBlocksChecklistItem {
+  content: String
+  id: ID!
+  title: String
+}
+
+input ComponentBlocksChecklistItemFiltersInput {
+  and: [ComponentBlocksChecklistItemFiltersInput]
+  content: StringFilterInput
+  not: ComponentBlocksChecklistItemFiltersInput
+  or: [ComponentBlocksChecklistItemFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksChecklistItemInput {
+  content: String
+  id: ID
+  title: String
+}
+
 type ComponentBlocksCommonLink {
   id: ID!
   label: String
@@ -415,6 +458,29 @@ input ComponentSectionsRichtextInput {
   id: ID
 }
 
+type ComponentSectionsStepper {
+  checklists(filters: ComponentBlocksChecklistFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksChecklist]
+  description: String
+  id: ID!
+  title: String
+}
+
+input ComponentSectionsStepperFiltersInput {
+  and: [ComponentSectionsStepperFiltersInput]
+  checklists: ComponentBlocksChecklistFiltersInput
+  description: StringFilterInput
+  not: ComponentSectionsStepperFiltersInput
+  or: [ComponentSectionsStepperFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentSectionsStepperInput {
+  checklists: [ComponentBlocksChecklistInput]
+  description: String
+  id: ID
+  title: String
+}
+
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -668,7 +734,7 @@ input FormInput {
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsRichtext | Error
+union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsRichtext | ComponentSectionsStepper | Error
 
 scalar FormLandingPageSectionsDynamicZoneInput
 
@@ -717,7 +783,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentMunicipalChargeChannelChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentMunicipalChargeOfficialCorrespondenceChannel | ComponentSectionsContacts | ComponentSectionsRichtext | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentMunicipalChargeChannelChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentMunicipalChargeOfficialCorrespondenceChannel | ComponentSectionsContacts | ComponentSectionsRichtext | ComponentSectionsStepper | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!

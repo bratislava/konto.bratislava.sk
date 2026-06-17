@@ -96,7 +96,28 @@ export default class WebhookService {
       data: formData,
       files: fileIdInfoMap,
     }
-    await axios.post(formDefinition.webhookUrl, webhookDto)
+    try {
+      await axios.post(formDefinition.webhookUrl, webhookDto)
+    } catch (error) {
+      if (isAxiosError(error)) {
+        this.logger.error(
+          this.throwerErrorGuard.fromAxiosError(error, {
+            console: { formId },
+          }),
+        )
+        return
+      }
+
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Sending webhook for form failed`,
+          { formId },
+          error,
+        ),
+      )
+      return
+    }
 
     try {
       await this.prismaService.forms.update({
@@ -108,15 +129,6 @@ export default class WebhookService {
         },
       })
     } catch (error) {
-      if (isAxiosError(error)) {
-        this.logger.error(
-          this.throwerErrorGuard.fromAxiosError(error, {
-            console: { formId },
-          }),
-        )
-        return
-      }
-
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

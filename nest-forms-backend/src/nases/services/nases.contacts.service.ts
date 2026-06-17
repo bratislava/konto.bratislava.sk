@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { isAxiosError } from 'axios'
 import {
   UpvsCorporateBody,
   UpvsNaturalPerson,
@@ -12,7 +13,6 @@ import {
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
-import { isAxiosError } from 'axios'
 
 interface NaturalPersonData {
   given_names?: string[]

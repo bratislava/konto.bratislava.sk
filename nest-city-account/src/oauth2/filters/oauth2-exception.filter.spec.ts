@@ -15,6 +15,20 @@ describe('OAuth2ExceptionFilter', () => {
   let mockRequest: any
   let mockArgumentsHost: ArgumentsHost
 
+  /**
+   * Everything the filter sent to the client, captured by the recording
+   * response mock below. Tests read this plain object instead of digging
+   * through jest `mock.calls`. `JSON.stringify(sentResponse)` is exactly the
+   * complete client-visible output (status, headers, redirect, json body),
+   * which is what the "no internal data leaks" tests assert against.
+   */
+  let sentResponse: {
+    status?: number
+    redirect?: { status: number; url: string }
+    json?: unknown
+    headers: Record<string, unknown>
+  }
+
   const authorizePath = '/oauth2/authorize'
   beforeEach(async () => {
     jest.clearAllMocks()
@@ -29,14 +43,32 @@ describe('OAuth2ExceptionFilter', () => {
     filter = module.get<OAuth2ExceptionFilter>(OAuth2ExceptionFilter)
     oauth2ClientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
-    // Mock response object
+    // Recording response mock — still jest.fn()s (so toHaveBeenCalledWith
+    // assertions work), but each call also captures its output into
+    // sentResponse for direct value assertions
+    sentResponse = { headers: {} }
     mockResponse = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn().mockReturnThis(),
-      redirect: jest.fn().mockReturnThis(),
-      header: jest.fn().mockReturnThis(),
-      setHeader: jest.fn().mockReturnThis(),
-    }
+      status: jest.fn((code: number) => {
+        sentResponse.status = code
+        return mockResponse
+      }),
+      json: jest.fn((body: unknown) => {
+        sentResponse.json = body
+        return mockResponse
+      }),
+      redirect: jest.fn((status: number, url: string) => {
+        sentResponse.redirect = { status, url }
+        return mockResponse
+      }),
+      header: jest.fn((name: string, value: string) => {
+        sentResponse.headers[name] = value
+        return mockResponse
+      }),
+      setHeader: jest.fn((name: string, value: string) => {
+        sentResponse.headers[name] = value
+        return mockResponse
+      }),
+    } as unknown as Partial<Response>
 
     // Mock request object
     mockRequest = {

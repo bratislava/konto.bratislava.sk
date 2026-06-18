@@ -441,10 +441,17 @@ describe('OAuth2ExceptionFilter', () => {
 
     it('should not include state parameter in token error responses', () => {
       // RFC 6749 Section 5.2: Token endpoint error responses do not include state parameter
+
+      // A state is deliberately present in both the request and the exception
+      // body — the filter must strip it from the token error response.
+      mockRequest.body = { grant_type: 'authorization_code', state: 'should-not-leak' }
+      mockRequest.query = { state: 'should-not-leak' }
+
       const exception = new HttpException(
         {
           error: OAuth2TokenErrorCode.INVALID_REQUEST,
           error_description: 'Missing required parameter',
+          state: 'should-not-leak',
         },
         HttpStatus.BAD_REQUEST
       )
@@ -456,6 +463,8 @@ describe('OAuth2ExceptionFilter', () => {
           state: expect.anything(),
         })
       )
+      // The state value must not appear in any response channel at all
+      expect(JSON.stringify(sentResponse)).not.toContain('should-not-leak')
     })
 
     it('should handle unsupported_grant_type error', () => {

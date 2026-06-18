@@ -999,6 +999,10 @@ describe('OAuth2ExceptionFilter', () => {
         HttpStatus.SEE_OTHER,
         expect.stringContaining('state=test-state')
       )
+      expect(mockResponse.redirect).toHaveBeenCalledWith(
+        HttpStatus.SEE_OTHER,
+        expect.stringContaining('https://example.com/callback')
+      )
     })
 
     it('should return undefined redirect_uri when client_id is missing', () => {

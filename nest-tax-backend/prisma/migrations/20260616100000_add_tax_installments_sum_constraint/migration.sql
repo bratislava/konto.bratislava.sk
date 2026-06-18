@@ -6,14 +6,19 @@ RETURNS VOID AS $$
 DECLARE
   v_tax_amount       INT;
   v_installments_sum INT;
+  v_is_cancelled     BOOLEAN;
 BEGIN
-  SELECT amount INTO v_tax_amount
+  SELECT amount, "isCancelled" INTO v_tax_amount, v_is_cancelled
   FROM "Tax"
   WHERE id = p_tax_id
   FOR NO KEY UPDATE;
 
   IF NOT FOUND THEN
     RETURN; -- Tax is being deleted in the same transaction, skip check
+  END IF;
+
+  IF v_is_cancelled THEN
+    RETURN; -- Cancelled taxes may have mismatched installment sums, skip check
   END IF;
 
   SELECT COALESCE(SUM(amount), 0) INTO v_installments_sum

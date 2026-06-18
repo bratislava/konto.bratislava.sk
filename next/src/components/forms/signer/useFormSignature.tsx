@@ -100,10 +100,8 @@ const useGetContext = () => {
       signData(formDataRequest, response.data)
     },
     onError: (error) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (isAxiosError(error) && error.response?.data?.errorName === 'BAD_REQUEST_ERROR') {
         showToast({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           message: t('form_signature.error.validation_error', {
             message: error.response?.data?.message,
           }),

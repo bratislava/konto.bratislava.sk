@@ -1,5 +1,13 @@
+import { ConsentEnum } from '@prisma/client'
+
 import { UserOfficialCorrespondenceChannelEnum } from '../user/dtos/gdpr.user.dto'
 import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
+
+/** A single consent state Bloomreach consent events are built from. */
+export interface Consent {
+  consentType: ConsentEnum
+  isGranted: boolean
+}
 
 // ─── Bloomreach Batch API types ─────────────────────────────────────────────
 
@@ -33,7 +41,7 @@ export interface BloomreachCustomerCommandData {
 
 export interface BloomreachConsentEventProperties {
   action: BloomreachConsentActionEnum
-  category: BloomreachConsentCategoryEnum | string
+  category: string
   valid_until: string
 }
 
@@ -81,10 +89,4 @@ export enum BloomreachEventNameEnum {
 export enum BloomreachConsentActionEnum {
   ACCEPT = 'accept',
   REJECT = 'reject',
-}
-
-export enum BloomreachConsentCategoryEnum {
-  ESBS_MARKETING = 'ESBS-MARKETING',
-  TAX_COMMUNICATION = 'TAX-COMMUNICATION',
-  OTHER = 'Other',
 }

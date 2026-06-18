@@ -1038,6 +1038,7 @@ export type HomepageAnnouncement = {
   documentId: Scalars['ID']['output']
   href: Scalars['String']['output']
   image: UploadFile
+  primaryButton?: Maybe<ComponentBlocksCommonLink>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   title: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -1071,6 +1072,7 @@ export type HomepageAnnouncementFiltersInput = {
   href?: InputMaybe<StringFilterInput>
   not?: InputMaybe<HomepageAnnouncementFiltersInput>
   or?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
+  primaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   title?: InputMaybe<StringFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
@@ -1083,6 +1085,7 @@ export type HomepageAnnouncementInput = {
   description?: InputMaybe<Scalars['String']['input']>
   href?: InputMaybe<Scalars['String']['input']>
   image?: InputMaybe<Scalars['ID']['input']>
+  primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   title?: InputMaybe<Scalars['String']['input']>
 }
@@ -3309,6 +3312,12 @@ export type HomepageQuery = {
       href: string
       dateFrom?: any | null
       dateTo?: any | null
+      primaryButton?: {
+        __typename?: 'ComponentBlocksCommonLink'
+        label?: string | null
+        url?: string | null
+        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
     announcementsLegalPerson: Array<{
@@ -3320,6 +3329,12 @@ export type HomepageQuery = {
       href: string
       dateFrom?: any | null
       dateTo?: any | null
+      primaryButton?: {
+        __typename?: 'ComponentBlocksCommonLink'
+        label?: string | null
+        url?: string | null
+        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
   } | null
@@ -3334,6 +3349,12 @@ export type HomepageAnnouncementEntityFragment = {
   href: string
   dateFrom?: any | null
   dateTo?: any | null
+  primaryButton?: {
+    __typename?: 'ComponentBlocksCommonLink'
+    label?: string | null
+    url?: string | null
+    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  } | null
   image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
 }
 
@@ -3422,6 +3443,39 @@ export type MunicipalServicesPageQuery = {
 export type RichtextSectionFragment = {
   __typename?: 'ComponentSectionsRichtext'
   content?: string | null
+}
+
+export type ChecklistItemFragment = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  title?: string | null
+  content?: string | null
+}
+
+export type ChecklistFragment = {
+  __typename?: 'ComponentBlocksChecklist'
+  title?: string | null
+  description?: string | null
+  checklistItems?: Array<{
+    __typename?: 'ComponentBlocksChecklistItem'
+    title?: string | null
+    content?: string | null
+  } | null> | null
+}
+
+export type StepperSectionFragment = {
+  __typename?: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
 }
 
 export type ContactCardBlockFragment = {
@@ -3605,39 +3659,6 @@ export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
   | FormLandingPageSections_Error_Fragment
 
-export type ChecklistItemsFragment = {
-  __typename?: 'ComponentBlocksChecklistItem'
-  title?: string | null
-  content?: string | null
-}
-
-export type ChecklistsFragment = {
-  __typename?: 'ComponentBlocksChecklist'
-  title?: string | null
-  description?: string | null
-  checklistItems?: Array<{
-    __typename?: 'ComponentBlocksChecklistItem'
-    title?: string | null
-    content?: string | null
-  } | null> | null
-}
-
-export type StepperSectionFragment = {
-  __typename?: 'ComponentSectionsStepper'
-  title?: string | null
-  description?: string | null
-  checklists?: Array<{
-    __typename?: 'ComponentBlocksChecklist'
-    title?: string | null
-    description?: string | null
-    checklistItems?: Array<{
-      __typename?: 'ComponentBlocksChecklistItem'
-      title?: string | null
-      content?: string | null
-    } | null> | null
-  } | null> | null
-}
-
 export type TaxFragment = {
   __typename?: 'Tax'
   documentId: string
@@ -3700,31 +3721,31 @@ export const RichtextSectionFragmentDoc = gql`
     content
   }
 `
-export const ChecklistItemsFragmentDoc = gql`
-  fragment ChecklistItems on ComponentBlocksChecklistItem {
+export const ChecklistItemFragmentDoc = gql`
+  fragment ChecklistItem on ComponentBlocksChecklistItem {
     title
     content
   }
 `
-export const ChecklistsFragmentDoc = gql`
-  fragment Checklists on ComponentBlocksChecklist {
+export const ChecklistFragmentDoc = gql`
+  fragment Checklist on ComponentBlocksChecklist {
     title
     description
     checklistItems {
-      ...ChecklistItems
+      ...ChecklistItem
     }
   }
-  ${ChecklistItemsFragmentDoc}
+  ${ChecklistItemFragmentDoc}
 `
 export const StepperSectionFragmentDoc = gql`
   fragment StepperSection on ComponentSectionsStepper {
     title
     description
     checklists {
-      ...Checklists
+      ...Checklist
     }
   }
-  ${ChecklistsFragmentDoc}
+  ${ChecklistFragmentDoc}
 `
 export const ContactCardBlockFragmentDoc = gql`
   fragment ContactCardBlock on ComponentBlocksContactCard {
@@ -3902,6 +3923,9 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
     documentId
     title
     description
+    primaryButton {
+      ...CommonLink
+    }
     buttonText
     href
     dateFrom
@@ -3911,6 +3935,7 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
       alternativeText
     }
   }
+  ${CommonLinkFragmentDoc}
 `
 export const MunicipalServiceTagEntityFragmentDoc = gql`
   fragment MunicipalServiceTagEntity on MunicipalServiceTag {

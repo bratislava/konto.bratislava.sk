@@ -763,10 +763,14 @@ describe('OAuth2ExceptionFilter', () => {
 
       filter.catch(exception, mockArgumentsHost)
 
-      const redirectUrl = (mockResponse.redirect as jest.Mock).mock.calls[0][1]
+      const redirectUrl = sentResponse.redirect?.url ?? ''
       expect(redirectUrl).toContain('error=invalid_request')
-      // URL encoding should handle special characters
-      expect(redirectUrl).toMatch(/error_description=[^&]+/)
+      expect(redirectUrl).toContain(
+        'error_description=The+request+contains+special+characters%3A+%26%3D%3F'
+      )
+      expect(new URL(redirectUrl).searchParams.get('error_description')).toBe(
+        'The request contains special characters: &=?'
+      )
     })
 
     it('should preserve existing query parameters in redirect_uri', () => {

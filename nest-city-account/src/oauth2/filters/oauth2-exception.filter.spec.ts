@@ -1346,11 +1346,18 @@ describe('OAuth2ExceptionFilter', () => {
         })
       )
 
-      // Redirect should NOT contain metadata
-      const redirectUrl = (mockResponse.redirect as jest.Mock).mock.calls[0][1]
-      expect(redirectUrl).not.toContain('dbHost')
-      expect(redirectUrl).not.toContain('connectionCount')
+      // No response channel (redirect, json, headers) may contain metadata
+      // keys, values, or the console message
+      const responseOutput = JSON.stringify(sentResponse)
+      expect(responseOutput).not.toContain('dbHost')
+      expect(responseOutput).not.toContain('connectionCount')
+      expect(responseOutput).not.toContain('db.example.com')
+      expect(responseOutput).not.toContain('diagnostic')
+      expect(responseOutput).not.toContain('exhausted')
+
+      const redirectUrl = sentResponse.redirect?.url
       expect(redirectUrl).toContain('error=server_error')
+      expect(redirectUrl).toContain('error_description=Public+error+message')
     })
 
     it('should log request details including IP, user agent, and body', () => {

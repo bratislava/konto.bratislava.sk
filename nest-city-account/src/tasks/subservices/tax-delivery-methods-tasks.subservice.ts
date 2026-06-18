@@ -108,7 +108,7 @@ export class TaxDeliveryMethodsTasksSubservice {
           DeliveryMethodErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
           DeliveryMethodErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
           undefined,
-          user,
+          user
         )
       }
 

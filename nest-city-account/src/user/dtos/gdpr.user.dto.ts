@@ -18,6 +18,7 @@ export class ResponseConsentDto {
   @IsBoolean()
   isGranted!: boolean
 }
+
 export enum UserAttributeEnum {
   TAX2023 = 'TAX2023',
   TAX2024 = 'TAX2024',

@@ -264,33 +264,16 @@ export class UserDataSubservice {
   // ===========================================================================
   // 3. Lookups (read by id / externalId)
   // ===========================================================================
-  async getUserById(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id,
-        ...ACTIVE_USER_FILTER,
-      },
-    })
-    return user
-  }
-
   async getUserByExternalId(externalId: string) {
-    const user = await this.prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: { externalId, ...ACTIVE_USER_FILTER },
     })
-    return user
-  }
-
-  async getLegalPersonById(id: string) {
-    const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id } })
-    return legalPerson
   }
 
   async getLegalPersonByExternalId(externalId: string) {
-    const legalPerson = await this.prisma.legalPerson.findUnique({
+    return await this.prisma.legalPerson.findUnique({
       where: { externalId },
     })
-    return legalPerson
   }
 
   // ===========================================================================

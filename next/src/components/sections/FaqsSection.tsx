@@ -8,7 +8,7 @@ type FaqsSectionProps = {
   section: FaqSectionFragment
 }
 
-const Faqsection = ({ section }: FaqsSectionProps) => {
+const FaqsSection = ({ section }: FaqsSectionProps) => {
   return (
     <SectionContainer>
       <div className="flex flex-col gap-6">
@@ -20,4 +20,4 @@ const Faqsection = ({ section }: FaqsSectionProps) => {
   )
 }
 
-export default Faqsection
+export default FaqsSection

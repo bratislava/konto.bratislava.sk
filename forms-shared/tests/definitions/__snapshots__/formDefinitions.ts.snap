@@ -41198,7 +41198,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
 }
 `;
 
-exports[`Form definitions > paas-kontaktny-formular-paas > default form state should match snapshot 1`] = `
+exports[`Form definitions > paas-kontaktny-formular > default form state should match snapshot 1`] = `
 {
   "udaje": {
     "kontaktneUdaje": {},
@@ -41207,7 +41207,7 @@ exports[`Form definitions > paas-kontaktny-formular-paas > default form state sh
 }
 `;
 
-exports[`Form definitions > paas-kontaktny-formular-paas > schema matches snapshot 1`] = `
+exports[`Form definitions > paas-kontaktny-formular > schema matches snapshot 1`] = `
 {
   "allOf": [
     {

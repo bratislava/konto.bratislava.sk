@@ -1,4 +1,5 @@
 import { Typography } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
 import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import { PropsWithChildren, useRef } from 'react'
 
@@ -21,20 +22,19 @@ type TableDataProps = {
   data: TableDataType
 }
 
-const tableHeaderData = {
-  containerVolume: 'Objem nádoby',
-  containerCount: 'Počet nádob',
-  numberOfDisposals: 'Počet odvozov',
-  unitRate: 'Sadzba',
-  fee: 'Poplatok',
-  containerType: null,
-} satisfies Record<keyof TableHeaderDataType, string | null>
-
 const TableHeader = () => {
-  const headerData = Object.values(tableHeaderData)
-    .filter(isDefined)
-    // TODO why wrapped in span?
-    .map((headerItem) => <span>{headerItem}</span>)
+  const { t } = useTranslation('account')
+
+  const tableHeaderData = {
+    containerVolume: t('tax_detail_section.ko_table.container_volume'),
+    containerCount: t('tax_detail_section.ko_table.container_count'),
+    numberOfDisposals: t('tax_detail_section.ko_table.number_of_disposals'),
+    unitRate: t('tax_detail_section.ko_table.unit_rate'),
+    fee: t('tax_detail_section.ko_table.fee'),
+    containerType: null,
+  } satisfies Record<keyof TableHeaderDataType, string | null>
+
+  const headerData = Object.values(tableHeaderData).filter(isDefined)
 
   return (
     <thead className="self-stretch bg-gray-50">

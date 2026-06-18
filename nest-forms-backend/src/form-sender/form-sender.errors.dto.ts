@@ -1,6 +1,9 @@
 import { VerifyFormSignatureErrorType } from 'forms-shared/signer/signature'
 
-import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
+import {
+  NasesErrorsEnum,
+  NasesErrorsResponseEnum,
+} from '../nases/nases.errors.enum'
 
 export const verifyFormSignatureErrorMapping: Record<
   VerifyFormSignatureErrorType,

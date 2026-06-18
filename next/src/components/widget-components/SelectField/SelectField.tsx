@@ -196,7 +196,7 @@ const SelectField = <
             className="w-full"
             classNames={{
               control: ({ isFocused, isDisabled }) =>
-                cn('rounded-lg border bg-white hover:cursor-pointer', {
+                cn('rounded-lg border bg-white wrapper-focus-ring hover:cursor-pointer', {
                   'border-negative-700': isError,
                   'border-gray-300': isDisabled && !isError,
                   'border-gray-900': isFocused && !isDisabled,

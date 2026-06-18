@@ -1,5 +1,28 @@
 import type { Schema, Struct } from '@strapi/strapi'
 
+export interface BlocksChecklist extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklists'
+  info: {
+    displayName: 'Checklist'
+  }
+  attributes: {
+    checklistItems: Schema.Attribute.Component<'blocks.checklist-item', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface BlocksChecklistItem extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklist_items'
+  info: {
+    displayName: 'Checklist item'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 export interface BlocksCommonLink extends Struct.ComponentSchema {
   collectionName: 'components_blocks_common_links'
   info: {
@@ -12,6 +35,46 @@ export interface BlocksCommonLink extends Struct.ComponentSchema {
       'api::municipal-service.municipal-service'
     >
     url: Schema.Attribute.String
+  }
+}
+
+export interface BlocksContactCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_contact_cards'
+  info: {
+    description: ''
+    displayName: 'Contact card'
+  }
+  attributes: {
+    overrideLabel: Schema.Attribute.String
+    value: Schema.Attribute.Text & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksContactDirectionsCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_contact_directions_cards'
+  info: {
+    displayName: 'Contact directions card'
+  }
+  attributes: {
+    address: Schema.Attribute.String & Schema.Attribute.Required
+    barrierFreeInfo: Schema.Attribute.Text
+    iframeUrl: Schema.Attribute.Text
+    overrideLabel: Schema.Attribute.String
+    parkingInfo: Schema.Attribute.Text
+    publicTransportInfo: Schema.Attribute.Text
+  }
+}
+
+export interface BlocksContactPersonCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_contact_person_cards'
+  info: {
+    displayName: 'Contact person card'
+  }
+  attributes: {
+    email: Schema.Attribute.Email
+    phone: Schema.Attribute.String
+    subtext: Schema.Attribute.String
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
@@ -36,7 +99,9 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<['sections.richtext']>
+    sections: Schema.Attribute.DynamicZone<
+      ['sections.richtext', 'sections.contacts', 'sections.stepper']
+    >
     text: Schema.Attribute.RichText
   }
 }
@@ -102,6 +167,29 @@ export interface GeneralAlert extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsContacts extends Struct.ComponentSchema {
+  collectionName: 'components_sections_contacts'
+  info: {
+    description: ''
+    displayName: 'Kontakty'
+  }
+  attributes: {
+    addressContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    bankConnectionContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    billingInfoContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    description: Schema.Attribute.RichText
+    directionsContact: Schema.Attribute.Component<'blocks.contact-directions-card', false>
+    emailContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    openingHoursContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    personContacts: Schema.Attribute.Component<'blocks.contact-person-card', true>
+    phoneContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    postalAddressContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    title: Schema.Attribute.String
+    titleLevel: Schema.Attribute.Enumeration<['h2', 'h3']> & Schema.Attribute.DefaultTo<'h2'>
+    webContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+  }
+}
+
 export interface SectionsRichtext extends Struct.ComponentSchema {
   collectionName: 'components_sections_richtexts'
   info: {
@@ -112,10 +200,27 @@ export interface SectionsRichtext extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsStepper extends Struct.ComponentSchema {
+  collectionName: 'components_sections_steppers'
+  info: {
+    displayName: 'Stepper'
+  }
+  attributes: {
+    checklists: Schema.Attribute.Component<'blocks.checklist', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'blocks.checklist': BlocksChecklist
+      'blocks.checklist-item': BlocksChecklistItem
       'blocks.common-link': BlocksCommonLink
+      'blocks.contact-card': BlocksContactCard
+      'blocks.contact-directions-card': BlocksContactDirectionsCard
+      'blocks.contact-person-card': BlocksContactPersonCard
       'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
@@ -123,7 +228,9 @@ declare module '@strapi/strapi' {
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'general.alert': GeneralAlert
+      'sections.contacts': SectionsContacts
       'sections.richtext': SectionsRichtext
+      'sections.stepper': SectionsStepper
     }
   }
 }

@@ -120,7 +120,7 @@ const MyApplicationsPageContent = ({
           <Typography variant="h1" className="pt-4">
             {title}
           </Typography>
-          <TabList className="scrollbar-hide flex gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
+          <TabList className="scrollbar-hide flex gap-4 overflow-auto p-2 pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
             {headerNavigationList.map((item) => {
               const count = totalCounts[item.tag].data
               const countText = count == null ? '' : ` (${count})`
@@ -132,7 +132,7 @@ const MyApplicationsPageContent = ({
                   id={item.tag}
                   data-before-text={text}
                   className={cn(
-                    'cursor-pointer p-4 text-center text-size-p-large lg:px-0 lg:text-size-p-large',
+                    'cursor-pointer rounded-sm p-4 text-center text-size-p-large base-focus-ring lg:px-0 lg:text-size-p-large',
                     'hover:border-gray-700 hover:font-semibold',
                     'selected:border-b-2 selected:border-gray-700 selected:font-semibold',
                     // Hover without layout shift based on: https://stackoverflow.com/a/20249560

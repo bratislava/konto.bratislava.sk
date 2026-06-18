@@ -1,5 +1,7 @@
 import { FormLandingPageSectionsFragment } from '@/src/clients/graphql-strapi/api'
+import ContactsSection from '@/src/components/sections/ContactsSection'
 import RichtextSection from '@/src/components/sections/RichtextSection'
+import { StepperSection } from '@/src/components/sections/StepperSection'
 
 /**
  * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/be7785e45d5e61c9b2a23177b9dcfb8af109ebc6/next/src/components/layouts/Sections.tsx
@@ -10,10 +12,15 @@ type SectionsProps = {
 }
 
 const SectionContent = ({ section }: { section: SectionsProps['sections'][number] }) => {
-  // eslint-disable-next-line sonarjs/no-small-switch
   switch (section.__typename) {
     case 'ComponentSectionsRichtext':
       return <RichtextSection section={section} />
+
+    case 'ComponentSectionsStepper':
+      return <StepperSection section={section} />
+
+    case 'ComponentSectionsContacts':
+      return <ContactsSection section={section} />
 
     default:
       return null

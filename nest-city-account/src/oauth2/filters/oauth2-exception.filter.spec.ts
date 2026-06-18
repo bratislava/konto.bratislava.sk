@@ -1178,6 +1178,14 @@ describe('OAuth2ExceptionFilter', () => {
     })
 
     it('should not warn when error response has no state', () => {
+      // RFC 6749 Section 4.1.2.1 requires the state in the error response *sent
+      // to the client* when it was present in the request — and the filter
+      // guarantees that by always overwriting errorResponse.state with the
+      // original request state (see handleAuthorizationError). Internal
+      // exceptions are therefore not expected to carry a state at all; the
+      // mismatch warning exists only for exceptions that explicitly carry a
+      // *conflicting* state, which signals a bug in our error construction.
+      // An absent state is the normal case, not a mismatch — so no warning.
       const mockClient = createMock<OAuth2Client>({
         isRedirectUriAllowed: jest.fn().mockReturnValue(true),
       })
@@ -1207,6 +1215,13 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(loggerWarnSpy).not.toHaveBeenCalled()
+
+      // RFC 6749 Section 4.1.2.1: the redirect must still carry the original
+      // request state even though the exception itself had none
+      expect(mockResponse.redirect).toHaveBeenCalledWith(
+        HttpStatus.SEE_OTHER,
+        expect.stringContaining('state=original-state')
+      )
     })
   })
 

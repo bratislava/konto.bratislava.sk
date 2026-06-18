@@ -310,6 +310,16 @@ describe('OAuth2ExceptionFilter', () => {
         HttpStatus.SEE_OTHER,
         expect.stringContaining('error=server_error')
       )
+      expect(mockResponse.redirect).toHaveBeenCalledWith(
+        HttpStatus.SEE_OTHER,
+        expect.stringContaining('error_description=Internal+server+error')
+      )
+
+      // Internal metadata (consoleMessage, metadata) must never leak to the
+      // client through any response channel
+      const responseOutput = JSON.stringify(sentResponse)
+      expect(responseOutput).not.toContain('Database')
+      expect(responseOutput).not.toContain('DB_001')
     })
 
     it('should use redirect_uri from authorizationRequestData when available', () => {

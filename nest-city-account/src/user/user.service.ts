@@ -5,7 +5,6 @@ import {
   ConsentEnum,
   DeliveryMethodEnum,
   DeliveryMethodUserPreferenceEnum,
-  GDPRSubTypeEnum,
   LoginClientEnum,
   User,
 } from '@prisma/client'
@@ -37,12 +36,7 @@ import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
-import {
-  GdprDataDto,
-  ResponsePublicUnsubscribeDto,
-  ResponseUserDataBasicDto,
-  ResponseUserDataDto,
-} from './dtos/gdpr.user.dto'
+import { ResponseUserDataBasicDto, ResponseUserDataDto } from './dtos/gdpr.user.dto'
 import {
   LegalPersonContactAndIdInfoResponseDto,
   UserContactAndIdInfoResponseDto,
@@ -116,7 +110,6 @@ export class UserService {
       officialCorrespondenceChannel,
       showEmailCommunicationBanner,
       consents,
-      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       hasChangedDeliveryMethodAfterDeadline: await this.hasChangedDeliveryMethodAfterDeadline(
         user.id
       ),
@@ -136,7 +129,6 @@ export class UserService {
     return {
       ...user,
       consents,
-      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
     }
   }
 
@@ -179,121 +171,10 @@ export class UserService {
       ...user,
       officialCorrespondenceChannel: null,
       consents,
-      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
       showEmailCommunicationBanner: false, // TODO add this for legal persons
       hasChangedDeliveryMethodAfterDeadline: false,
     }
   }
-
-  /**
-   * Apply a subscribe / unsubscribe request expressed in legacy GDPR shape to
-   * a physical user.
-   *
-   * @deprecated Backs the deprecated `/subscribe` and `/unsubscribe` endpoints
-   * only. New code should call `updateGdprConsent` (or the consent setters
-   * directly) with the new consent shape. Slated for deletion together with
-   * those endpoints.
-   */
-  async subUnsubUser(
-    cognitoUserData: CognitoGetUserData,
-    gdprSubType: GDPRSubTypeEnum,
-    gdprData: GdprDataDto[]
-  ): Promise<ResponseUserDataDto> {
-    const user = await this.userDataSubservice.upsertUser(cognitoUserData)
-    await this.userDataSubservice.changeUserGdprData(
-      user.id,
-      gdprData.map((elem) => ({ ...elem, subType: gdprSubType }))
-    )
-
-    return await this.convertUserToResponseUserData(user)
-  }
-
-  /**
-   * Apply a subscribe / unsubscribe request expressed in legacy GDPR shape to
-   * a legal person.
-   *
-   * @deprecated Backs the deprecated `/subscribe` and `/unsubscribe` endpoints
-   * only. New code should call `updateGdprConsent` (or the consent setters
-   * directly) with the new consent shape. Slated for deletion together with
-   * those endpoints.
-   */
-  async subUnsubLegalPerson(
-    cognitoUserData: CognitoGetUserData,
-    gdprSubType: GDPRSubTypeEnum,
-    gdprData: GdprDataDto[]
-  ): Promise<ResponseLegalPersonDataDto> {
-    const user = await this.userDataSubservice.upsertLegalPerson(cognitoUserData)
-    await this.userDataSubservice.changeLegalPersonGdprData(
-      user.id,
-      gdprData.map((elem) => ({
-        ...elem,
-        subType: gdprSubType,
-      }))
-    )
-    const consents = await this.userDataSubservice.getLegalPersonConsents(user.id)
-    return {
-      ...user,
-      consents,
-      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
-    }
-  }
-
-  /**
-   * Public-unsubscribe handler keyed by internal user id.
-   *
-   * @deprecated Backs the deprecated `/public/unsubscribe/:id` endpoint and is
-   * also reused internally by `unsubscribePublicUserByExternalId`. New code
-   * should call the consent setters directly with the new shape. Slated for
-   * deletion together with the public unsubscribe endpoints.
-   */
-  async unsubscribePublicUser(
-    id: string,
-    gdprData: GdprDataDto[]
-  ): Promise<ResponsePublicUnsubscribeDto> {
-    await this.userDataSubservice.changeUserGdprData(
-      id,
-      gdprData.map((elem) => ({ ...elem, subType: GDPRSubTypeEnum.unsubscribe }))
-    )
-    const consents = await this.userDataSubservice.getUserConsents(id)
-    const user = await this.userDataSubservice.getUserById(id)
-    if (!user) {
-      throw this.throwerErrorGuard.NotFoundException(
-        UserErrorsEnum.USER_NOT_FOUND,
-        UserErrorsResponseEnum.USER_NOT_FOUND
-      )
-    }
-
-    return {
-      id,
-      message: 'user was unsubscribed',
-      consents,
-      gdprData: consents.map((c) => this.userDataSubservice.consentToGdprShape(c)),
-      userData: user,
-    }
-  }
-
-  /**
-   * Public-unsubscribe handler keyed by Cognito external id.
-   *
-   * @deprecated Backs the deprecated `/public/unsubscribe/external-id/:id`
-   * endpoint only. New code should call the consent setters directly with
-   * the new shape. Slated for deletion together with that endpoint.
-   */
-  async unsubscribePublicUserByExternalId(
-    externalId: string,
-    gdprData: GdprDataDto[]
-  ): Promise<ResponsePublicUnsubscribeDto> {
-    const user = await this.userDataSubservice.getUserByExternalId(externalId)
-    if (user) {
-      const data = await this.unsubscribePublicUser(user.id, gdprData)
-      return data
-    }
-    throw this.throwerErrorGuard.NotFoundException(
-      UserErrorsEnum.USER_NOT_FOUND,
-      UserErrorsResponseEnum.USER_NOT_FOUND
-    )
-  }
-
   async changeUserEmail(id: string, newEmail: string): Promise<ResponseUserDataBasicDto> {
     try {
       const user = await this.prisma.user.update({

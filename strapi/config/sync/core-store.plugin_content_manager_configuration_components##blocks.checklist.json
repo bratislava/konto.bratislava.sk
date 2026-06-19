@@ -54,8 +54,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "checklistItems",
@@ -73,6 +72,11 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "checklistItems"
+      ],
       "edit": [
         [
           {
@@ -92,8 +96,7 @@
             "size": 12
           }
         ]
-      ],
-      "list": ["id", "title", "checklistItems"]
+      ]
     },
     "uid": "blocks.checklist",
     "isComponent": true

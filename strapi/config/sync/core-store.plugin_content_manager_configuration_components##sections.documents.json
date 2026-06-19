@@ -34,18 +34,18 @@
           "sortable": true
         }
       },
-      "description": {
+      "text": {
         "edit": {
-          "label": "Text",
+          "label": "text",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "description",
-          "searchable": false,
-          "sortable": false
+          "label": "text",
+          "searchable": true,
+          "sortable": true
         }
       },
       "externalDocuments": {
@@ -54,8 +54,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "externalDocuments",
@@ -73,6 +72,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "externalDocuments",
+        "text"
+      ],
       "edit": [
         [
           {
@@ -82,18 +87,17 @@
         ],
         [
           {
-            "name": "description",
+            "name": "externalDocuments",
             "size": 12
           }
         ],
         [
           {
-            "name": "externalDocuments",
-            "size": 12
+            "name": "text",
+            "size": 6
           }
         ]
-      ],
-      "list": ["id", "title", "externalDocuments"]
+      ]
     },
     "uid": "sections.documents",
     "isComponent": true

@@ -111,7 +111,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
-      ['sections.richtext', 'sections.contacts', 'sections.stepper', 'sections.documents']
+      ['sections.richtext', 'sections.documents', 'sections.contacts', 'sections.stepper']
     >
     text: Schema.Attribute.RichText
   }
@@ -207,8 +207,8 @@ export interface SectionsDocuments extends Struct.ComponentSchema {
     displayName: 'Dokumenty'
   }
   attributes: {
-    description: Schema.Attribute.RichText
     externalDocuments: Schema.Attribute.Component<'blocks.external-document', true>
+    text: Schema.Attribute.Text
     title: Schema.Attribute.String
   }
 }

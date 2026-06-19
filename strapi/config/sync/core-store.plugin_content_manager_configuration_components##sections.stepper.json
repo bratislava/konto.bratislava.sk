@@ -16,8 +16,8 @@
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": true,
-          "sortable": true
+          "searchable": false,
+          "sortable": false
         }
       },
       "title": {
@@ -72,7 +72,11 @@
       }
     },
     "layouts": {
-      "list": ["id", "title", "checklists"],
+      "list": [
+        "id",
+        "title",
+        "checklists"
+      ],
       "edit": [
         [
           {

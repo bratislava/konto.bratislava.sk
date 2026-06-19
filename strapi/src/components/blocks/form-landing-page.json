@@ -25,9 +25,9 @@
       "type": "dynamiczone",
       "components": [
         "sections.richtext",
+        "sections.documents",
         "sections.contacts",
-        "sections.stepper",
-        "sections.documents"
+        "sections.stepper"
       ]
     }
   }

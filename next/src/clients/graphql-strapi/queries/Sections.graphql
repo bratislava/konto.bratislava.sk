@@ -81,16 +81,16 @@ fragment ContactsSection on ComponentSectionsContacts {
   titleLevelContacts: titleLevel
 }
 
-fragment FileBlock on ComponentBlocksFile {
+fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
   title
-  link
+  url
 }
 
 fragment DocumentsSection on ComponentSectionsDocuments {
   title
-  description
-  files {
-    ...FileBlock
+  text
+  externalDocuments {
+    ...ExternalDocumentBlock
   }
 }
 

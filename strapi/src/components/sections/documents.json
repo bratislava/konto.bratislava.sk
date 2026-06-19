@@ -8,8 +8,8 @@
     "title": {
       "type": "string"
     },
-    "description": {
-      "type": "richtext"
+    "text": {
+      "type": "text"
     },
     "externalDocuments": {
       "type": "component",

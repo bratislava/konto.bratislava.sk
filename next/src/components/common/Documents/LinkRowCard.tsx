@@ -6,16 +6,16 @@ import cn from '@/src/utils/cn'
 
 type LinkRowCardProps = {
   title: string
-  link: string
+  url: string
   isLastItem?: boolean
 }
 
-const LinkRowCard = ({ title, link, isLastItem = false }: LinkRowCardProps) => {
+const LinkRowCard = ({ title, url, isLastItem = false }: LinkRowCardProps) => {
   const { t } = useTranslation('account')
 
   return (
     <li>
-      <a href={link} rel="noreferrer" aria-label={title} className="px-6">
+      <a href={url} rel="noreferrer" aria-label={title} className="px-6">
         <div
           className={cn(
             'flex flex-row items-center justify-between gap-4 border-b border-gray-200 py-4',
@@ -31,7 +31,7 @@ const LinkRowCard = ({ title, link, isLastItem = false }: LinkRowCardProps) => {
             <div className="flex flex-col gap-1">
               <Typography variant="h6">{title}</Typography>
 
-              <Typography variant="p-small">{link}</Typography>
+              <Typography variant="p-small">{url}</Typography>
             </div>
           </div>
 

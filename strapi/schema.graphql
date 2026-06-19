@@ -402,25 +402,25 @@ input ComponentSectionsContactsInput {
 }
 
 type ComponentSectionsDocuments {
-  description: String
   externalDocuments(filters: ComponentBlocksExternalDocumentFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksExternalDocument]
   id: ID!
+  text: String
   title: String
 }
 
 input ComponentSectionsDocumentsFiltersInput {
   and: [ComponentSectionsDocumentsFiltersInput]
-  description: StringFilterInput
   externalDocuments: ComponentBlocksExternalDocumentFiltersInput
   not: ComponentSectionsDocumentsFiltersInput
   or: [ComponentSectionsDocumentsFiltersInput]
+  text: StringFilterInput
   title: StringFilterInput
 }
 
 input ComponentSectionsDocumentsInput {
-  description: String
   externalDocuments: [ComponentBlocksExternalDocumentInput]
   id: ID
+  text: String
   title: String
 }
 

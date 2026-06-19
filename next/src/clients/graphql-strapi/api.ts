@@ -555,23 +555,23 @@ export type ComponentSectionsStepperInput = {
 
 export type ComponentSectionsTowing = {
   __typename?: 'ComponentSectionsTowing'
-  Title?: Maybe<Scalars['String']['output']>
-  description?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
+  text?: Maybe<Scalars['String']['output']>
+  title?: Maybe<Scalars['String']['output']>
 }
 
 export type ComponentSectionsTowingFiltersInput = {
-  Title?: InputMaybe<StringFilterInput>
   and?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
-  description?: InputMaybe<StringFilterInput>
   not?: InputMaybe<ComponentSectionsTowingFiltersInput>
   or?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
 }
 
 export type ComponentSectionsTowingInput = {
-  Title?: InputMaybe<Scalars['String']['input']>
-  description?: InputMaybe<Scalars['String']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
+  text?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type DateFilterInput = {
@@ -2919,7 +2919,7 @@ export type FormLandingPageFragment = {
           } | null> | null
         } | null> | null
       }
-    | { __typename: 'ComponentSectionsTowing'; Title?: string | null; description?: string | null }
+    | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
     | { __typename: 'Error' }
     | null
   > | null
@@ -3032,11 +3032,7 @@ export type FormWithLandingPageFragment = {
             } | null> | null
           } | null> | null
         }
-      | {
-          __typename: 'ComponentSectionsTowing'
-          Title?: string | null
-          description?: string | null
-        }
+      | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
       | { __typename: 'Error' }
       | null
     > | null
@@ -3165,11 +3161,7 @@ export type FormWithLandingPageBySlugQuery = {
               } | null> | null
             } | null> | null
           }
-        | {
-            __typename: 'ComponentSectionsTowing'
-            Title?: string | null
-            description?: string | null
-          }
+        | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
         | { __typename: 'Error' }
         | null
       > | null
@@ -3458,6 +3450,39 @@ export type RichtextSectionFragment = {
   content?: string | null
 }
 
+export type ChecklistItemFragment = {
+  __typename?: 'ComponentBlocksChecklistItem'
+  title?: string | null
+  content?: string | null
+}
+
+export type ChecklistFragment = {
+  __typename?: 'ComponentBlocksChecklist'
+  title?: string | null
+  description?: string | null
+  checklistItems?: Array<{
+    __typename?: 'ComponentBlocksChecklistItem'
+    title?: string | null
+    content?: string | null
+  } | null> | null
+}
+
+export type StepperSectionFragment = {
+  __typename?: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
 export type ContactCardBlockFragment = {
   __typename?: 'ComponentBlocksContactCard'
   overrideLabel?: string | null
@@ -3546,6 +3571,12 @@ export type ContactsSectionFragment = {
   } | null
 }
 
+export type TowingSectionFragment = {
+  __typename?: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
 type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   __typename: 'ComponentSectionsContacts'
   id: string
@@ -3610,12 +3641,6 @@ type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   } | null
 }
 
-export type TowingSectionFragment = {
-  __typename?: 'ComponentSectionsTowing'
-  Title?: string | null
-  description?: string | null
-}
-
 type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
   __typename: 'ComponentSectionsRichtext'
   content?: string | null
@@ -3639,8 +3664,8 @@ type FormLandingPageSections_ComponentSectionsStepper_Fragment = {
 
 type FormLandingPageSections_ComponentSectionsTowing_Fragment = {
   __typename: 'ComponentSectionsTowing'
-  Title?: string | null
-  description?: string | null
+  title?: string | null
+  text?: string | null
 }
 
 type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
@@ -3651,39 +3676,6 @@ export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
   | FormLandingPageSections_ComponentSectionsTowing_Fragment
   | FormLandingPageSections_Error_Fragment
-
-export type ChecklistItemsFragment = {
-  __typename?: 'ComponentBlocksChecklistItem'
-  title?: string | null
-  content?: string | null
-}
-
-export type ChecklistsFragment = {
-  __typename?: 'ComponentBlocksChecklist'
-  title?: string | null
-  description?: string | null
-  checklistItems?: Array<{
-    __typename?: 'ComponentBlocksChecklistItem'
-    title?: string | null
-    content?: string | null
-  } | null> | null
-}
-
-export type StepperSectionFragment = {
-  __typename?: 'ComponentSectionsStepper'
-  title?: string | null
-  description?: string | null
-  checklists?: Array<{
-    __typename?: 'ComponentBlocksChecklist'
-    title?: string | null
-    description?: string | null
-    checklistItems?: Array<{
-      __typename?: 'ComponentBlocksChecklistItem'
-      title?: string | null
-      content?: string | null
-    } | null> | null
-  } | null> | null
-}
 
 export type TaxFragment = {
   __typename?: 'Tax'
@@ -3747,31 +3739,31 @@ export const RichtextSectionFragmentDoc = gql`
     content
   }
 `
-export const ChecklistItemsFragmentDoc = gql`
-  fragment ChecklistItems on ComponentBlocksChecklistItem {
+export const ChecklistItemFragmentDoc = gql`
+  fragment ChecklistItem on ComponentBlocksChecklistItem {
     title
     content
   }
 `
-export const ChecklistsFragmentDoc = gql`
-  fragment Checklists on ComponentBlocksChecklist {
+export const ChecklistFragmentDoc = gql`
+  fragment Checklist on ComponentBlocksChecklist {
     title
     description
     checklistItems {
-      ...ChecklistItems
+      ...ChecklistItem
     }
   }
-  ${ChecklistItemsFragmentDoc}
+  ${ChecklistItemFragmentDoc}
 `
 export const StepperSectionFragmentDoc = gql`
   fragment StepperSection on ComponentSectionsStepper {
     title
     description
     checklists {
-      ...Checklists
+      ...Checklist
     }
   }
-  ${ChecklistsFragmentDoc}
+  ${ChecklistFragmentDoc}
 `
 export const ContactCardBlockFragmentDoc = gql`
   fragment ContactCardBlock on ComponentBlocksContactCard {
@@ -3840,8 +3832,8 @@ export const ContactsSectionFragmentDoc = gql`
 `
 export const TowingSectionFragmentDoc = gql`
   fragment TowingSection on ComponentSectionsTowing {
-    Title
-    description
+    title
+    text
   }
 `
 export const FormLandingPageSectionsFragmentDoc = gql`

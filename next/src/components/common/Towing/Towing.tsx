@@ -15,11 +15,11 @@ import { environment } from '@/src/environment'
 import logger from '@/src/frontend/utils/logger'
 
 export type TowingSectionProps = {
-  title: string
-  description: string
+  title?: string | null
+  text?: string | null
 }
 
-const Towing = ({ title, description }: TowingSectionProps) => {
+const Towing = ({ title, text }: TowingSectionProps) => {
   const { t } = useTranslation('account')
   const [licensePlate, setLicensePlate] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -64,7 +64,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <SectionHeader title={title} text={description} />
+      <SectionHeader title={title} text={text} />
 
       <div className="flex flex-col gap-4 rounded-lg border px-5 py-6">
         <TextField

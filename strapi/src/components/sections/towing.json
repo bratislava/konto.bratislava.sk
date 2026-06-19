@@ -5,10 +5,10 @@
   },
   "options": {},
   "attributes": {
-    "Title": {
+    "title": {
       "type": "string"
     },
-    "description": {
+    "text": {
       "type": "text"
     }
   },

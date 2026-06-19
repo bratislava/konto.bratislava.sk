@@ -82,8 +82,8 @@ fragment ContactsSection on ComponentSectionsContacts {
 }
 
 fragment TowingSection on ComponentSectionsTowing {
-  Title
-  description
+  title
+  text
 }
 
 fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {

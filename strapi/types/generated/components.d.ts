@@ -218,8 +218,8 @@ export interface SectionsTowing extends Struct.ComponentSchema {
     displayName: 'Od\u0165ahy'
   }
   attributes: {
-    description: Schema.Attribute.Text
-    Title: Schema.Attribute.String
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
   }
 }
 

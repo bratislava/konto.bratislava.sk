@@ -422,23 +422,23 @@ input ComponentSectionsStepperInput {
 }
 
 type ComponentSectionsTowing {
-  Title: String
-  description: String
   id: ID!
+  text: String
+  title: String
 }
 
 input ComponentSectionsTowingFiltersInput {
-  Title: StringFilterInput
   and: [ComponentSectionsTowingFiltersInput]
-  description: StringFilterInput
   not: ComponentSectionsTowingFiltersInput
   or: [ComponentSectionsTowingFiltersInput]
+  text: StringFilterInput
+  title: StringFilterInput
 }
 
 input ComponentSectionsTowingInput {
-  Title: String
-  description: String
   id: ID
+  text: String
+  title: String
 }
 
 """

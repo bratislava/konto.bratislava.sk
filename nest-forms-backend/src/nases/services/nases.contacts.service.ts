@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common'
+import { isAxiosError } from 'axios'
 import {
   UpvsCorporateBody,
   UpvsNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
 import ClientsService from '../../clients/clients.service'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
+import {
+  ErrorsEnum,
+  ErrorsResponseEnum,
+} from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from '../nases.errors.enum'
@@ -54,14 +58,23 @@ export default class NasesContactsService {
       })
       .then((response) => response.data)
       .catch((error: unknown) => {
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Failed to get nases identity, verify if this is because of invalid token or a server issue',
-            undefined,
-            error,
-          ),
-        )
+        if (!isAxiosError(error)) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+              `Failed to get nases identity`,
+              error,
+            ),
+          )
+        } else {
+          this.logger.error(
+            this.throwerErrorGuard.fromAxiosError(error, {
+              console: `Failed to get nases identity`,
+            }),
+          )
+        }
+
         return null
       })
     return result

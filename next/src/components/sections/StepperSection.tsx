@@ -6,10 +6,12 @@ type StepperProps = {
   section: StepperSectionFragment
 }
 
-export const StepperSection = ({ section }: StepperProps) => {
+const StepperSection = ({ section }: StepperProps) => {
   return (
     <SectionContainer>
       <Stepper section={section} />
     </SectionContainer>
   )
 }
+
+export default StepperSection

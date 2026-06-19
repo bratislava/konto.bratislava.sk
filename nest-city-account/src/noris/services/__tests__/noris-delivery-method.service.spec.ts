@@ -320,7 +320,6 @@ describe('NorisDeliveryMethodService', () => {
           ],
         })
 
-       
       const executeDeliveryMethodUpdateSpy = jest.spyOn(
         service as any,
         'executeDeliveryMethodUpdate'

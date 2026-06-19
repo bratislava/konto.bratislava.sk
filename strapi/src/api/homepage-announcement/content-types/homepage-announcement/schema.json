@@ -27,13 +27,16 @@
       "type": "string",
       "required": true
     },
+    "primaryButton": {
+      "type": "component",
+      "component": "blocks.common-link",
+      "repeatable": false
+    },
     "image": {
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "dateFrom": {
       "type": "datetime"

@@ -38,8 +38,25 @@ export class AuthRequestIdGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<RequestWithAuthorizationData>()
 
-    // Support both POST (body.authRequestId) and GET (query.authRequestId)
-    const authRequestId = request.body?.authRequestId || request.query.authRequestId
+    // The transport is tied to the HTTP method: POST reads authRequestId from the
+    // body, GET reads it from the query. The guard is bound per-route, so only these
+    // declared methods can reach it; any other method is a routing/configuration bug,
+    // not a client error, so fail with an internal server error.
+    let authRequestId: unknown
+    if (request.method === 'POST') {
+      authRequestId = request.body?.authRequestId
+    } else if (request.method === 'GET') {
+      authRequestId = request.query.authRequestId
+    } else {
+      throw this.oAuth2ErrorThrower.authorizationException(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error',
+        undefined,
+        'AuthRequestIdGuard reached with unexpected HTTP method',
+        { method: request.method },
+        1
+      )
+    }
     if (!authRequestId || typeof authRequestId !== 'string') {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,

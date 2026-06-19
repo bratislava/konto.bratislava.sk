@@ -1,4 +1,5 @@
 import { Button, Typography } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
 import { PropsWithChildren, useMemo } from 'react'
 
 import { useFormSignature } from '@/src/components/forms/signer/useFormSignature'
@@ -11,10 +12,11 @@ import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDr
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 
 /**
- * TODO: Texts and translations + MenuDropdown position fix
+ * TODO: MenuDropdown position fix
  */
 
 const SummaryFormSignature = () => {
+  const { t } = useTranslation('forms')
   const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
   const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()
@@ -34,17 +36,17 @@ const SummaryFormSignature = () => {
               variant="icon-wrapped-negative-margin"
               size="small"
               icon={<Icon name="menu-kebab" />}
-              aria-label="Menu"
+              aria-label={t('form_signature.menu_aria_label')}
             />
           }
           items={[
             {
-              title: 'Podpísať znova',
+              title: t('form_signature.menu.sign_again'),
               icon: <Icon name="edit" className="size-6" />,
               onPress: () => sign(),
             },
             {
-              title: 'Odstrániť podpis',
+              title: t('form_signature.menu.remove'),
               icon: <Icon name="bin" className="size-6" />,
               onPress: () => remove(),
               itemClassName: 'text-negative-700',
@@ -58,20 +60,17 @@ const SummaryFormSignature = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3">
-        <Typography variant="h3">Podpis dokumentu</Typography>
-        <Typography variant="p-small">
-          Podpíšte dokument pred odoslaním pomocou svojho občianskeho preukazu s čipom (eID) a vašim
-          zaručeným elektronickým podpisom (KEP).
-        </Typography>
+        <Typography variant="h3">{t('form_signature.title')}</Typography>
+        <Typography variant="p-small">{t('form_signature.description')}</Typography>
       </div>
       {isNotSupported && (
         <Alert
           type="error"
           message={
             <>
-              Platforma, na ktorej sa nachádzate nie je podporovaná. Pozrite si{' '}
+              {t('form_signature.not_supported_platform.message')}{' '}
               <Button href="https://www.slovensko.sk/sk/na-stiahnutie" variant="link">
-                zoznam podporovaných aplikácií.
+                {t('form_signature.not_supported_platform.link_text')}
               </Button>
             </>
           }
@@ -83,9 +82,9 @@ const SummaryFormSignature = () => {
           type="error"
           message={
             <>
-              Podpisovač sa nepodarilo načítať.{' '}
+              {t('form_signature.loader_error')}{' '}
               <Button variant="link" onPress={() => retry()}>
-                Skúsiť znova
+                {t('form_signature.retry')}
               </Button>
             </>
           }
@@ -95,7 +94,7 @@ const SummaryFormSignature = () => {
       {signature &&
         (validSignature ? (
           <Alert
-            message={<AlertContent>Dokument bol úspešne podpísaný.</AlertContent>}
+            message={<AlertContent>{t('form_signature.success')}</AlertContent>}
             type="success"
             className="min-w-full"
           />
@@ -103,14 +102,14 @@ const SummaryFormSignature = () => {
           <Alert
             message={
               <AlertContent>
-                Podpis v dokumente nie je aktuálny.{' '}
+                {t('form_signature.outdated')}{' '}
                 <Button
                   variant="link"
                   isLoading={isLoading}
                   isDisabled={signerButtonDisabled}
                   onPress={() => sign()}
                 >
-                  Podpísať znova
+                  {t('form_signature.sign_again')}
                 </Button>
               </AlertContent>
             }
@@ -125,7 +124,7 @@ const SummaryFormSignature = () => {
           isDisabled={signerButtonDisabled}
           onPress={() => sign()}
         >
-          Podpísať dokument
+          {t('form_signature.sign_document')}
         </Button>
       )}
     </div>

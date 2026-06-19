@@ -15,14 +15,14 @@ import logger from '@/src/frontend/utils/logger'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
-type ItemLinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref' | 'href'> & {
+type NavMenuLinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref' | 'href'> & {
   menuItem: MenuItemBase
   isSelected?: boolean
   onClick: () => void
 }
 
-const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
-  ({ menuItem, isSelected, ...rest }, forwardedRef) => {
+const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
+  ({ menuItem, isSelected, onClick, ...rest }, forwardedRef) => {
     return menuItem.url ? (
       <Link
         href={menuItem.url}
@@ -30,6 +30,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
         ref={forwardedRef}
         // without ...rest, you can't navigate using arrow keys
         {...rest}
+        onClick={onClick}
         className={cn(
           'flex cursor-pointer items-center gap-3 rounded-lg border-b border-transparent p-4 text-size-p-small-r font-semibold base-focus-ring transition-all hover:bg-gray-100 lg:text-size-p-small',
           {
@@ -56,7 +57,7 @@ export const MobileNavMenu = () => {
   const { height } = useWindowSize()
   const heightWithoutHeader = `calc(${height}px - 14*4px)`
 
-  const { menuValue, setMenuValue, isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
+  const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
   const { menuSections, menuItems } = useMenu()
 
   const closeMenu = () => setMobileMenuOpen(false)
@@ -80,16 +81,12 @@ export const MobileNavMenu = () => {
       )}
       style={{ height: heightWithoutHeader }}
     >
-      <NavigationMenu.Root
-        value={menuValue}
-        onValueChange={setMenuValue}
-        aria-label={t('NavMenu.aria.navMenuLabel')}
-      >
+      <NavigationMenu.Root aria-label={t('NavMenu.aria.navMenuLabel')}>
         <NavigationMenu.List className="flex flex-col">
           {menuSections.map((sectionItem) => (
             <NavigationMenu.Item key={sectionItem.id}>
               <NavigationMenu.Link asChild>
-                <ItemLink
+                <NavMenuLink
                   menuItem={sectionItem}
                   isSelected={router.route.endsWith(sectionItem.url)}
                   onClick={closeMenu}
@@ -119,7 +116,7 @@ export const MobileNavMenu = () => {
                   </Button>
                 ) : menuItem.url ? (
                   <NavigationMenu.Link asChild>
-                    <ItemLink
+                    <NavMenuLink
                       menuItem={menuItem}
                       isSelected={router.route.endsWith(menuItem.url)}
                       onClick={closeMenu}

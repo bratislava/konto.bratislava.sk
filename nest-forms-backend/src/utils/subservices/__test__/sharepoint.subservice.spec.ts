@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import Bull from 'bull'
 import {
   FormDefinition,
@@ -82,15 +82,15 @@ describe('SharepointSubservice', () => {
   })
 
   describe('getAccessToken', () => {
-    it('should throw BadRequest exception if there was some error', async () => {
-      jest.spyOn(axios, 'post').mockRejectedValue(new Error('some error'))
+    it('should throw BadGateway exception if the request fails', async () => {
+      jest.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
       try {
         await service['getAccessToken']()
         expect(true).toBeFalsy()
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException)
         expect((error as HttpException).getStatus()).toBe(
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_GATEWAY,
         )
       }
     })
@@ -123,8 +123,8 @@ describe('SharepointSubservice', () => {
       )
     })
 
-    it('should throw BadRequest exception if there was some error', async () => {
-      jest.spyOn(axios, 'post').mockRejectedValue(new Error('some error'))
+    it('should throw BadGateway exception if the request fails', async () => {
+      jest.spyOn(axios, 'post').mockRejectedValue(new AxiosError('some error'))
       try {
         await service['postDataToSharepoint'](
           'dbNameValue',
@@ -135,7 +135,7 @@ describe('SharepointSubservice', () => {
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException)
         expect((error as HttpException).getStatus()).toBe(
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_GATEWAY,
         )
       }
     })

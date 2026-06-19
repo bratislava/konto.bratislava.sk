@@ -1,7 +1,10 @@
+import { Fragment } from 'react/jsx-runtime'
+
 import { DocumentsSectionFragment } from '@/src/clients/graphql-strapi/api'
 import LinkRowCard from '@/src/components/common/Documents/LinkRowCard'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
+import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type DocumentsSectionProps = {
@@ -20,12 +23,20 @@ const DocumentsSection = ({
 
         <ul className="flex flex-col rounded-lg border border-border-active-default py-2">
           {filteredExternalDocuments.map((externalDocument, index) => (
-            <LinkRowCard
-              key={externalDocument?.title}
-              title={externalDocument?.title}
-              url={externalDocument.url}
-              isLastItem={index === filteredExternalDocuments.length - 1}
-            />
+            <Fragment key={index}>
+              {index > 0 && (
+                <HorizontalDivider
+                  asListItem
+                  className="mx-6 border-b border-border-active-default"
+                />
+              )}
+
+              <LinkRowCard
+                key={externalDocument?.title}
+                title={externalDocument?.title}
+                url={externalDocument.url}
+              />
+            </Fragment>
           ))}
         </ul>
       </div>

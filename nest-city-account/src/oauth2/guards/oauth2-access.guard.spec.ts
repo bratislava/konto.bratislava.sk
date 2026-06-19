@@ -87,17 +87,17 @@ describe('OAuth2AccessGuard', () => {
       await expect(guard.canActivate(context)).rejects.toThrow('Client name not specified')
     })
 
-    it('should throw Unauthorized when client configuration not found for name', async () => {
-      jest.spyOn(clientSubservice, 'findClientByName').mockReturnValue(undefined)
-      const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
-      await expect(guard.canActivate(context)).rejects.toThrow('Client configuration not found')
-    })
-
     it('should throw Unauthorized when @ClientName() decorator returns empty string (falsy)', async () => {
       // CUSTOM PROXY DETAIL: Empty string clientName is treated as missing
       jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue('')
       const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
       await expect(guard.canActivate(context)).rejects.toThrow('Client name not specified')
+    })
+
+    it('should throw Unauthorized when client configuration not found for name', async () => {
+      jest.spyOn(clientSubservice, 'findClientByName').mockReturnValue(undefined)
+      const context = createMockContext({ headers: { authorization: 'Bearer enc-token' } })
+      await expect(guard.canActivate(context)).rejects.toThrow('Client configuration not found')
     })
   })
 

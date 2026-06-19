@@ -9,7 +9,6 @@ import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuConte
 import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import Brand from '@/src/components/simple-components/Brand'
 import cn from '@/src/utils/cn'
-import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   mobileNavbarRef: RefObject<HTMLDivElement | null>
@@ -25,7 +24,7 @@ export const MobileNavBar = ({ mobileNavbarRef, className }: Props) => {
       <FocusTrap active={isMobileMenuOpen}>
         <div className="fixed top-0 z-30 flex h-14 w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
           <div className="flex w-full justify-between">
-            <Brand url={ROUTES.HOME} className="grow" />
+            <Brand className="grow" variant="header" />
             {isMobileMenuOpen ? (
               <Button
                 onPress={() => {

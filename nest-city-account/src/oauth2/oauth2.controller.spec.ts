@@ -247,7 +247,9 @@ describe('OAuth2Controller', () => {
       expect(body.client_secret).toBe('guard-secret')
     })
 
-    it('should not overwrite body credentials when guard credentials are absent', async () => {
+    it('should not overwrite body credentials when guard credentials are incomplete (clientId without secret)', async () => {
+      // Guard credentials are only applied when BOTH tokenClientId and
+      // oauth2ClientSecret are present; a partial pair must leave the body as is
       jest
         .spyOn(oauth2Service, 'token')
         .mockResolvedValue({ access_token: 'at', token_type: 'Bearer', expires_in: 3600 })

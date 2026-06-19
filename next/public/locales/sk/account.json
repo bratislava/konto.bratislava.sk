@@ -319,6 +319,7 @@
   "phone_number_modal.title": "Doplnenie telefónneho čísla",
   "RadioGroup.resetChoice": "Vymazať výber",
   "SelectField.noOptions": "Žiadne možnosti",
+  "SkipToContentButton.skipNavigation": "Preskočiť navigáciu",
   "sso_page.sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. [Späť domov](/).",
   "StatusBar.aria.close": "Zavrieť upozornenie",
   "Tag.remove_button.aria": "Odstrániť",

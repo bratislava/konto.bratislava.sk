@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import SkipToContentButton from '@/src/components/segments/NavBar/SkipToContentButton'
 import useMenu from '@/src/components/segments/NavBar/useMenu'
 import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
@@ -46,6 +47,7 @@ export const NavBarHeader = () => {
     <SectionContainer>
       {/* TODO Figma says 64px */}
       <div className="flex h-[57px] items-center gap-x-6">
+        <SkipToContentButton />
         <Brand className="grow" variant="header" />
         <IdentityVerificationStatus />
         <nav className="flex gap-x-8 font-semibold text-font/75">

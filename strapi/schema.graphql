@@ -174,7 +174,7 @@ input ComponentBlocksContactPersonCardInput {
 type ComponentBlocksExternalDocument {
   id: ID!
   title: String
-  url: String
+  url: String!
 }
 
 input ComponentBlocksExternalDocumentFiltersInput {

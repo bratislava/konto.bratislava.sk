@@ -219,7 +219,7 @@ export type ComponentBlocksExternalDocument = {
   __typename?: 'ComponentBlocksExternalDocument'
   id: Scalars['ID']['output']
   title?: Maybe<Scalars['String']['output']>
-  url?: Maybe<Scalars['String']['output']>
+  url: Scalars['String']['output']
 }
 
 export type ComponentBlocksExternalDocumentFiltersInput = {
@@ -2941,7 +2941,7 @@ export type FormLandingPageFragment = {
         externalDocuments?: Array<{
           __typename?: 'ComponentBlocksExternalDocument'
           title?: string | null
-          url?: string | null
+          url: string
         } | null> | null
       }
     | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
@@ -3063,7 +3063,7 @@ export type FormWithLandingPageFragment = {
           externalDocuments?: Array<{
             __typename?: 'ComponentBlocksExternalDocument'
             title?: string | null
-            url?: string | null
+            url: string
           } | null> | null
         }
       | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
@@ -3201,7 +3201,7 @@ export type FormWithLandingPageBySlugQuery = {
             externalDocuments?: Array<{
               __typename?: 'ComponentBlocksExternalDocument'
               title?: string | null
-              url?: string | null
+              url: string
             } | null> | null
           }
         | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
@@ -3632,7 +3632,7 @@ export type ContactsSectionFragment = {
 export type ExternalDocumentBlockFragment = {
   __typename?: 'ComponentBlocksExternalDocument'
   title?: string | null
-  url?: string | null
+  url: string
 }
 
 export type DocumentsSectionFragment = {
@@ -3642,7 +3642,7 @@ export type DocumentsSectionFragment = {
   externalDocuments?: Array<{
     __typename?: 'ComponentBlocksExternalDocument'
     title?: string | null
-    url?: string | null
+    url: string
   } | null> | null
 }
 
@@ -3717,7 +3717,7 @@ type FormLandingPageSections_ComponentSectionsDocuments_Fragment = {
   externalDocuments?: Array<{
     __typename?: 'ComponentBlocksExternalDocument'
     title?: string | null
-    url?: string | null
+    url: string
   } | null> | null
 }
 

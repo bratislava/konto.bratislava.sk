@@ -85,7 +85,7 @@ export interface BlocksExternalDocument extends Struct.ComponentSchema {
   }
   attributes: {
     title: Schema.Attribute.String
-    url: Schema.Attribute.String
+    url: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 

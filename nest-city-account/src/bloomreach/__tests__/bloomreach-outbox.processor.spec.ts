@@ -9,7 +9,6 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
-  BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
 import { BloomreachOutboxProcessor } from '../bloomreach-outbox.processor'
@@ -268,7 +267,7 @@ describe('BloomreachOutboxProcessor', () => {
           event_type: BloomreachEventNameEnum.CONSENT,
           properties: {
             action: BloomreachConsentActionEnum.ACCEPT,
-            category: BloomreachConsentCategoryEnum.ESBS_MARKETING,
+            category: 'ESBS-MARKETING',
             valid_until: 'unlimited',
           },
         },
@@ -282,7 +281,7 @@ describe('BloomreachOutboxProcessor', () => {
           event_type: BloomreachEventNameEnum.CONSENT,
           properties: {
             action: BloomreachConsentActionEnum.REJECT,
-            category: BloomreachConsentCategoryEnum.ESBS_MARKETING,
+            category: 'ESBS-MARKETING',
             valid_until: 'unlimited',
           },
         },

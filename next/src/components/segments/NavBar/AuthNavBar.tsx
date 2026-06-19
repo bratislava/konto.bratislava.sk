@@ -1,4 +1,4 @@
-import { Button, Typography } from '@bratislava/component-library'
+import { Button } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
@@ -10,7 +10,6 @@ import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import Brand from '@/src/components/simple-components/Brand'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import cn from '@/src/utils/cn'
-import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   backButtonHidden?: boolean
@@ -49,11 +48,7 @@ export const AuthNavBar = ({
   desktopNavbarRef,
   mobileNavbarRef,
 }: Props) => {
-  const { t } = useTranslation('account')
-
   const { isOAuthLogin } = useAmplifyClientOAuthContext()
-
-  const brandLinkHref = isOAuthLogin ? undefined : ROUTES.HOME
 
   return (
     <div data-cy="navbar" className="contents">
@@ -74,20 +69,7 @@ export const AuthNavBar = ({
           <div className="flex h-[57px] w-full items-center justify-between">
             <div className="flex">
               {!backButtonHidden && <BackButton />}
-              <Brand
-                className="group"
-                url={brandLinkHref}
-                title={
-                  <Typography
-                    variant="p-small"
-                    className={cn('text-content-active-primary-default', {
-                      'group-hover:text-content-active-primary-hover': brandLinkHref,
-                    })}
-                  >
-                    {t('NavBar.logoTitle')}
-                  </Typography>
-                }
-              />
+              <Brand unlinked={isOAuthLogin} variant="header" />
             </div>
             <OAuthLogo />
           </div>
@@ -102,19 +84,7 @@ export const AuthNavBar = ({
         <div className="flex h-16 w-full items-center justify-between border-b px-4">
           <div className="flex">
             {!backButtonHidden && <BackButton />}
-            <Brand
-              url={brandLinkHref}
-              title={
-                <Typography
-                  variant="p-small"
-                  className={cn('text-content-passive-primary', {
-                    'group-hover:text-content-active-primary-hover': brandLinkHref,
-                  })}
-                >
-                  <span className="font-semibold">Bratislava</span>
-                </Typography>
-              }
-            />
+            <Brand unlinked={isOAuthLogin} variant="header" />
           </div>
           <OAuthLogo />
         </div>

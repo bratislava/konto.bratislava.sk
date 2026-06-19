@@ -1,4 +1,4 @@
-import { Button, Typography } from '@bratislava/component-library'
+import { Button } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
@@ -46,18 +46,7 @@ export const NavBarHeader = () => {
     <SectionContainer>
       {/* TODO Figma says 64px */}
       <div className="flex h-[57px] items-center gap-x-6">
-        <Brand
-          className="group grow"
-          url={ROUTES.HOME}
-          title={
-            <Typography
-              variant="p-small"
-              className="text-content-active-primary-default group-hover:text-content-active-primary-hover"
-            >
-              {t('NavBar.logoTitle')}
-            </Typography>
-          }
-        />
+        <Brand className="grow" variant="header" />
         <IdentityVerificationStatus />
         <nav className="flex gap-x-8 font-semibold text-font/75">
           {isSignedIn ? (

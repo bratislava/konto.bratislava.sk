@@ -525,6 +525,7 @@ export interface ApiHomepageAnnouncementHomepageAnnouncement extends Struct.Coll
       'api::homepage-announcement.homepage-announcement'
     > &
       Schema.Attribute.Private
+    primaryButton: Schema.Attribute.Component<'blocks.common-link', false>
     publishedAt: Schema.Attribute.DateTime
     title: Schema.Attribute.String & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime

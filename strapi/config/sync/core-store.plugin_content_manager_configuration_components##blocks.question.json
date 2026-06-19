@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.checklist",
+  "key": "plugin_content_manager_configuration_components::blocks.question",
   "value": {
     "settings": {
       "bulkable": true,
@@ -16,13 +16,13 @@
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": false,
-          "sortable": false
+          "searchable": true,
+          "sortable": true
         }
       },
       "title": {
         "edit": {
-          "label": "Nadpis",
+          "label": "Otázka",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -34,30 +34,16 @@
           "sortable": true
         }
       },
-      "description": {
+      "content": {
         "edit": {
-          "label": "Text",
+          "label": "Odpoveď",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "description",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "checklistItems": {
-        "edit": {
-          "label": "Položky v checkliste",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "checklistItems",
+          "label": "content",
           "searchable": false,
           "sortable": false
         }
@@ -72,11 +58,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "checklistItems"
-      ],
       "edit": [
         [
           {
@@ -86,19 +67,17 @@
         ],
         [
           {
-            "name": "description",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "checklistItems",
+            "name": "content",
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title"
       ]
     },
-    "uid": "blocks.checklist",
+    "uid": "blocks.question",
     "isComponent": true
   },
   "type": "object",

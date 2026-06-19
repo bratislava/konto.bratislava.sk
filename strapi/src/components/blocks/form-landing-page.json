@@ -25,9 +25,10 @@
       "type": "dynamiczone",
       "components": [
         "sections.richtext",
+        "sections.faq",
         "sections.contacts",
-        "sections.stepper",
-        "sections.towing"
+        "sections.towing",
+        "sections.stepper"
       ]
     }
   }

@@ -1,12 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import {
-  CognitoUserAttributesTierEnum,
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
-} from '@prisma/client'
+import { CognitoUserAttributesTierEnum, ConsentEnum } from '@prisma/client'
 
-import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
@@ -16,11 +10,10 @@ import { UserIdentitySubservice } from '../utils/subservices/user-identity.subse
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
-  BloomreachConsentCategoryEnum,
-  BloomreachConsentEventProperties,
   BloomreachCustomerCommand,
   BloomreachEventCommand,
   BloomreachEventNameEnum,
+  Consent,
 } from './bloomreach.types'
 import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 
@@ -122,49 +115,26 @@ export class BloomreachPayloadBuilder {
     }
   }
 
-  buildConsentEventCommands(
-    gdprData: GdprDataSubscriptionDto[],
-    externalId: string
-  ): BloomreachEventCommand[] {
-    return gdprData.map((elem) => {
-      const consentData = this.createBloomreachConsentCategory(
-        elem.category,
-        elem.type,
-        elem.subType
-      )
-
-      return {
-        commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
-        commandData: {
-          customer_ids: {
-            city_account_id: externalId,
-          },
-          properties: { ...consentData },
-          event_type: BloomreachEventNameEnum.CONSENT,
-        },
-      }
-    })
+  private static consentCategory(consentType: ConsentEnum): string {
+    return `ESBS-${consentType}`
   }
 
-  private createBloomreachConsentCategory(
-    category: GDPRCategoryEnum,
-    type: GDPRTypeEnum,
-    subType: GDPRSubTypeEnum
-  ): BloomreachConsentEventProperties {
-    const result: BloomreachConsentEventProperties = {
-      action: BloomreachConsentActionEnum.ACCEPT,
-      category: `${category}-${type}`,
-      valid_until: 'unlimited',
-    }
-    if (subType === GDPRSubTypeEnum.unsubscribe) {
-      result.action = BloomreachConsentActionEnum.REJECT
-    }
-    if (category === GDPRCategoryEnum.ESBS && type === GDPRTypeEnum.MARKETING) {
-      result.category = BloomreachConsentCategoryEnum.ESBS_MARKETING
-    }
-    if (category === GDPRCategoryEnum.TAXES && type === GDPRTypeEnum.FORMAL_COMMUNICATION) {
-      result.category = BloomreachConsentCategoryEnum.TAX_COMMUNICATION
-    }
-    return result
+  buildConsentEventCommands(consents: Consent[], externalId: string): BloomreachEventCommand[] {
+    return consents.map((consent) => ({
+      commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+      commandData: {
+        customer_ids: {
+          city_account_id: externalId,
+        },
+        properties: {
+          action: consent.isGranted
+            ? BloomreachConsentActionEnum.ACCEPT
+            : BloomreachConsentActionEnum.REJECT,
+          category: BloomreachPayloadBuilder.consentCategory(consent.consentType),
+          valid_until: 'unlimited',
+        },
+        event_type: BloomreachEventNameEnum.CONSENT,
+      },
+    }))
   }
 }

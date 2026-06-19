@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import {
-  BloomreachOutboxStatus,
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
-} from '@prisma/client'
+import { BloomreachOutboxStatus, ConsentEnum } from '@prisma/client'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { GdprDataSubscriptionDto } from '../user/dtos/gdpr.user.dto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
@@ -16,6 +10,7 @@ import {
   BloomreachCommandNameEnum,
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
+  Consent,
 } from './bloomreach.types'
 import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
 import { mergeCustomerCommandData } from './utils/merge-commands.utils'
@@ -55,8 +50,11 @@ export class BloomreachOutboxService {
     }
   }
 
-  async trackEventConsents(
-    gdprData: GdprDataSubscriptionDto[],
+  /**
+   * Track a set of consent records ({@link Consent}) for a customer as Bloomreach consent events.
+   */
+  async trackConsents(
+    consents: Consent[],
     externalId: string | null,
     userId?: string,
     isLegalPerson?: boolean
@@ -72,7 +70,7 @@ export class BloomreachOutboxService {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `No externalId for ${userType}, skipping trackEventConsents`,
+          `No externalId for ${userType}, skipping trackConsents`,
           toLogfmt({ userId, userType })
         )
       )
@@ -80,7 +78,7 @@ export class BloomreachOutboxService {
     }
 
     try {
-      const commands = this.payloadBuilder.buildConsentEventCommands(gdprData, externalId)
+      const commands = this.payloadBuilder.buildConsentEventCommands(consents, externalId)
 
       await Promise.all(
         commands.map(async ({ commandData }) =>
@@ -94,7 +92,7 @@ export class BloomreachOutboxService {
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Failed to queue consent events',
-          toLogfmt({ externalId, userType, eventCount: gdprData.length }),
+          toLogfmt({ externalId, userType, eventCount: consents.length }),
           error
         )
       )
@@ -107,23 +105,10 @@ export class BloomreachOutboxService {
     }
 
     try {
-      await this.trackEventConsents(
+      await this.trackConsents(
         [
-          {
-            type: GDPRTypeEnum.MARKETING,
-            category: GDPRCategoryEnum.ESBS,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          },
-          {
-            type: GDPRTypeEnum.GENERAL,
-            category: GDPRCategoryEnum.ESBS,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          },
-          {
-            type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-            category: GDPRCategoryEnum.TAXES,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          },
+          { consentType: ConsentEnum.MARKETING, isGranted: false },
+          { consentType: ConsentEnum.GENERAL, isGranted: false },
         ],
         externalId
       )

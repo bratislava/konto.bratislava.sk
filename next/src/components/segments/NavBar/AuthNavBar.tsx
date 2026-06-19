@@ -6,8 +6,8 @@ import { RefObject } from 'react'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
+import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import Brand from '@/src/components/simple-components/Brand'
-import { StatusBar } from '@/src/components/simple-components/StatusBar'
 import { useAmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
@@ -59,7 +59,7 @@ export const AuthNavBar = ({
     <div data-cy="navbar" className="contents">
       {/* Desktop */}
       <div className="hidden lg:block">
-        <StatusBar />
+        <AlertBanner />
       </div>
       <div
         id="desktop-navbar"
@@ -120,7 +120,7 @@ export const AuthNavBar = ({
         </div>
       </div>
       <div className="lg:hidden">
-        <StatusBar />
+        <AlertBanner />
       </div>
     </div>
   )

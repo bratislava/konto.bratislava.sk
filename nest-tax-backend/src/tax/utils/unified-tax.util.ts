@@ -810,7 +810,8 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   const activeInstallmentInfo = installmentPayment.installments.find(
     (installment) =>
       installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
-      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
+      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID ||
+      installment.status === InstallmentPaidStatusEnum.AFTER_DUE_DATE,
   )
 
   if (!activeInstallmentInfo) {
@@ -821,10 +822,15 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   }
   // Create description based on the installment status
   // data that goes to payment gateway should not contain diacritics
-  const description =
-    activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID
-      ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
-      : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+  const isPartialPayment =
+    activeInstallmentInfo.status === InstallmentPaidStatusEnum.PARTIALLY_PAID ||
+    (activeInstallmentInfo.status ===
+      InstallmentPaidStatusEnum.AFTER_DUE_DATE &&
+      activeInstallmentInfo.remainingAmount <
+        activeInstallmentInfo.totalInstallmentAmount)
+  const description = isPartialPayment
+    ? `Platba zostatku ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
+    : `Platba ${activeInstallmentInfo.installmentNumber}. splatky za dane pre BA s id dane ${taxId}`
 
   return {
     amount: activeInstallmentInfo.remainingAmount,

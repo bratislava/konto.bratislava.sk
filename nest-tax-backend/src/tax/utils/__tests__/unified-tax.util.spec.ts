@@ -2089,6 +2089,46 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
       ),
     )
   })
+
+  it('should generate payment for first installment when its due date has passed and it is not yet paid', () => {
+    // dateOfValidity 2025-01-01 + 15 days = 2025-01-16; today 2025-01-20 is after that
+    // - installment 1 becomes AFTER_DUE_DATE; the generator must still charge installment 1
+    const options = {
+      ...baseOptionsRealEstate,
+      today: new Date('2025-01-20'),
+      taxPayments: [],
+    }
+
+    const output = getTaxDetailPureForInstallmentGenerator(options)
+
+    expect(output).toEqual({
+      amount: 2201,
+      taxId: 123,
+      description: 'Platba 1. splatky za dane pre BA s id dane 123',
+      taxType: TaxType.DZN,
+    })
+  })
+
+  it('should generate payment for remaining 1 cent of first installment when its due date has passed and it was partially paid', () => {
+    // Reproduces the exact user-reported scenario:
+    // installment 1 = 2201, paid = 2200 (1 cent short), due date already passed
+    // - installment 1 is AFTER_DUE_DATE with remainingAmount = 1
+    // - generator must charge 1 cent with "zostatku" description, not skip to installment 2
+    const options = {
+      ...baseOptionsRealEstate,
+      today: new Date('2025-01-20'),
+      taxPayments: [{ amount: 2200, status: PaymentStatus.SUCCESS }],
+    }
+
+    const output = getTaxDetailPureForInstallmentGenerator(options)
+
+    expect(output).toEqual({
+      amount: 1,
+      taxId: 123,
+      description: 'Platba zostatku 1. splatky za dane pre BA s id dane 123',
+      taxType: TaxType.DZN,
+    })
+  })
 })
 
 describe('getTaxDetailPureForOneTimeGenerator', () => {

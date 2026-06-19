@@ -830,6 +830,7 @@ type HomepageAnnouncement {
   documentId: ID!
   href: String!
   image: UploadFile!
+  primaryButton: ComponentBlocksCommonLink
   publishedAt: DateTime
   title: String!
   updatedAt: DateTime
@@ -860,6 +861,7 @@ input HomepageAnnouncementFiltersInput {
   href: StringFilterInput
   not: HomepageAnnouncementFiltersInput
   or: [HomepageAnnouncementFiltersInput]
+  primaryButton: ComponentBlocksCommonLinkFiltersInput
   publishedAt: DateTimeFilterInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
@@ -872,6 +874,7 @@ input HomepageAnnouncementInput {
   description: String
   href: String
   image: ID
+  primaryButton: ComponentBlocksCommonLinkInput
   publishedAt: DateTime
   title: String
 }

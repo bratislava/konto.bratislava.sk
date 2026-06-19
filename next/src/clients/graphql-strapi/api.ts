@@ -1089,6 +1089,7 @@ export type HomepageAnnouncement = {
   documentId: Scalars['ID']['output']
   href: Scalars['String']['output']
   image: UploadFile
+  primaryButton?: Maybe<ComponentBlocksCommonLink>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   title: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -1122,6 +1123,7 @@ export type HomepageAnnouncementFiltersInput = {
   href?: InputMaybe<StringFilterInput>
   not?: InputMaybe<HomepageAnnouncementFiltersInput>
   or?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
+  primaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   title?: InputMaybe<StringFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
@@ -1134,6 +1136,7 @@ export type HomepageAnnouncementInput = {
   description?: InputMaybe<Scalars['String']['input']>
   href?: InputMaybe<Scalars['String']['input']>
   image?: InputMaybe<Scalars['ID']['input']>
+  primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   title?: InputMaybe<Scalars['String']['input']>
 }
@@ -3387,6 +3390,12 @@ export type HomepageQuery = {
       href: string
       dateFrom?: any | null
       dateTo?: any | null
+      primaryButton?: {
+        __typename?: 'ComponentBlocksCommonLink'
+        label?: string | null
+        url?: string | null
+        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
     announcementsLegalPerson: Array<{
@@ -3398,6 +3407,12 @@ export type HomepageQuery = {
       href: string
       dateFrom?: any | null
       dateTo?: any | null
+      primaryButton?: {
+        __typename?: 'ComponentBlocksCommonLink'
+        label?: string | null
+        url?: string | null
+        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
   } | null
@@ -3412,6 +3427,12 @@ export type HomepageAnnouncementEntityFragment = {
   href: string
   dateFrom?: any | null
   dateTo?: any | null
+  primaryButton?: {
+    __typename?: 'ComponentBlocksCommonLink'
+    label?: string | null
+    url?: string | null
+    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  } | null
   image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
 }
 
@@ -4026,6 +4047,9 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
     documentId
     title
     description
+    primaryButton {
+      ...CommonLink
+    }
     buttonText
     href
     dateFrom
@@ -4035,6 +4059,7 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
       alternativeText
     }
   }
+  ${CommonLinkFragmentDoc}
 `
 export const MunicipalServiceTagEntityFragmentDoc = gql`
   fragment MunicipalServiceTagEntity on MunicipalServiceTag {

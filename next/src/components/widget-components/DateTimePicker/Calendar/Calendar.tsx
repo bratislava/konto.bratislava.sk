@@ -1,5 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { createCalendar } from '@internationalized/date'
+import { useTranslation } from 'next-i18next/pages'
 import { useRef } from 'react'
 import { useLocale } from 'react-aria/I18nProvider'
 import { useCalendar } from 'react-aria/useCalendar'
@@ -15,6 +16,7 @@ type CalendarBase = {
 }
 
 const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
+  const { t } = useTranslation('account')
   const { locale } = useLocale()
   const state = useCalendarState({
     ...rest,
@@ -38,8 +40,6 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
     target: undefined,
   }
 
-  // FIXME Translations
-  // TODO Translations
   return (
     <div
       {...calendarProps}
@@ -51,7 +51,7 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
           {...prevButtonPropsFixed}
           variant="icon-wrapped-negative-margin"
           icon={<Icon name="chevron-left" />}
-          aria-label="Left"
+          aria-label={t('DatePicker.aria.previousMonth')}
         />
         <Typography variant="p-small" as="span" className="font-semibold">
           {title.charAt(0).toUpperCase() + title.slice(1)}
@@ -60,16 +60,16 @@ const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
           {...nextButtonPropsFixed}
           variant="icon-wrapped-negative-margin"
           icon={<Icon name="chevron-right" />}
-          aria-label="Right"
+          aria-label={t('DatePicker.aria.nextMonth')}
         />
       </div>
       <CalendarGrid state={state} />
       <div className="flex items-stretch justify-between border-t border-gray-700 px-4 py-3">
         <Button onPress={onReset} variant="plain" size="small">
-          Resetovať
+          {t('DatePicker.reset')}
         </Button>
         <Button onPress={onConfirm} variant="solid" size="small">
-          Potvrdiť
+          {t('DatePicker.confirm')}
         </Button>
       </div>
     </div>

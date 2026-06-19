@@ -16,8 +16,8 @@
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": true,
-          "sortable": true
+          "searchable": false,
+          "sortable": false
         }
       },
       "title": {
@@ -72,6 +72,11 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "checklists"
+      ],
       "edit": [
         [
           {
@@ -91,8 +96,7 @@
             "size": 12
           }
         ]
-      ],
-      "list": ["id", "title", "checklists"]
+      ]
     },
     "uid": "sections.stepper",
     "isComponent": true

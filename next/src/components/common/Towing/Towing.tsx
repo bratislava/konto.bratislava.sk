@@ -43,8 +43,6 @@ const Towing = ({ title, text }: TowingSectionProps) => {
       const response = await axios.get(
         `https://nest-enforcement-backend.bratislava.sk/api/public/tow/${licensePlate}`,
       )
-      console.log('response', response)
-      console.log('response.data', response.data)
 
       return response.data
     },

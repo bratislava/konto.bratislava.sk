@@ -2113,7 +2113,7 @@ describe('getTaxDetailPureForInstallmentGenerator', () => {
     // Reproduces the exact user-reported scenario:
     // installment 1 = 2201, paid = 2200 (1 cent short), due date already passed
     // - installment 1 is AFTER_DUE_DATE with remainingAmount = 1
-    // - generator must charge 1 cent with "zostatku" description, not skip to installment 2
+    // - generator must charge 1 cent with "platba zostatku" description, not skip to installment 2
     const options = {
       ...baseOptionsRealEstate,
       today: new Date('2025-01-20'),

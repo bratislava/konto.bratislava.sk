@@ -6,6 +6,7 @@ import { useState } from 'react'
 import Turnstile from 'react-turnstile'
 import { useCounter } from 'usehooks-ts'
 
+import TowingIcon from '@/src/assets/icons/transport-and-maps/towing.svg'
 import TowingTable from '@/src/components/common/Towing/TowingTable'
 import TextField from '@/src/components/fields/TextField'
 import Markdown from '@/src/components/formatting/Markdown'
@@ -29,7 +30,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
 
   const {
     mutateAsync: handleSubmit,
-    data: response,
+    data,
     isSuccess,
     isPending,
     error,
@@ -121,10 +122,12 @@ const Towing = ({ title, text }: TowingSectionProps) => {
             <Spinner />
           </div>
         ) : isSuccess ? (
-          <TowingTable vehicle={response} initialLicensePlate={licensePlate} />
+          <TowingTable vehicle={data} initialLicensePlate={licensePlate} />
         ) : isAxiosError(error) && error.response?.status === 404 ? (
           <div className="flex flex-col items-center gap-6 rounded-xl border p-12">
-            <Icon name="tow-car" />
+            <div className="size-12 shrink-0 lg:size-16">
+              <TowingIcon />
+            </div>
 
             <Typography variant="p-large" className="text-center">
               {t('towing.notFound.title')}

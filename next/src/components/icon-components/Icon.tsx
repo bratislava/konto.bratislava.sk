@@ -79,7 +79,6 @@ export const iconNameMap = {
   settings: 'SettingsIcon',
   speaker: 'SpeakerIcon',
   submission: 'MySubmissionsIcon',
-  'tow-car': 'TowCarIcon',
   upload: 'UploadIcon',
   user: 'ProfileIcon',
   warning: 'AlertIcon',

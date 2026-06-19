@@ -1,6 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { TowingSearchResponseDto } from 'openapi-clients/city-account'
+import { useState } from 'react'
 
 import Table from '@/src/components/common/Table/Table'
 import Markdown from '@/src/components/formatting/Markdown'
@@ -8,10 +9,11 @@ import Alert from '@/src/components/simple-components/Alert'
 
 type Props = {
   vehicle: TowingSearchResponseDto
-  licensePlate: string
+  initialLicensePlate: string
 }
 
-const TowingTable = ({ vehicle, licensePlate }: Props) => {
+const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
+  const [licensePlate] = useState(initialLicensePlate) // I don't want it to rerender once the component is mounted
   const { t } = useTranslation('account')
   const variant = vehicle.unloadingLocation ? 'relay' : 'towing'
 

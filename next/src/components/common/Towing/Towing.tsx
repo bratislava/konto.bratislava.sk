@@ -1,4 +1,4 @@
-import { Button, Typography } from '@bratislava/component-library'
+import { Button, Spinner, Typography } from '@bratislava/component-library'
 import { useMutation } from '@tanstack/react-query'
 import axios, { isAxiosError } from 'axios'
 import { useTranslation } from 'next-i18next/pages'
@@ -6,12 +6,11 @@ import { useState } from 'react'
 import Turnstile from 'react-turnstile'
 import { useCounter } from 'usehooks-ts'
 
-import Table from '@/src/components/common/Table/Table'
+import TowingTable from '@/src/components/common/Towing/TowingTable'
 import TextField from '@/src/components/fields/TextField'
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
-import Alert from '@/src/components/simple-components/Alert'
 import { environment } from '@/src/environment'
 import logger from '@/src/frontend/utils/logger'
 
@@ -22,75 +21,45 @@ export type TowingSectionProps = {
 
 const Towing = ({ title, description }: TowingSectionProps) => {
   const { t } = useTranslation('account')
-
-  const [vehicle, setVehicle] = useState<{
-    licensePlate: string
-    loadingDate: string
-    loadingTime: string
-    loadingLocation: string
-    towReason: string
-    unloadingLocation: string
-    relocationReason: string
-  }>({
-    licensePlate: '',
-    loadingDate: '',
-    loadingTime: '',
-    loadingLocation: '',
-    towReason: '',
-    unloadingLocation: '',
-    relocationReason: '',
-  })
   const [licensePlate, setLicensePlate] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
-  const [variant, setVariant] = useState<'relay' | 'towing' | 'notFound' | null>(null)
 
-  const { mutateAsync: handleSubmit } = useMutation({
+  const {
+    mutateAsync: handleSubmit,
+    data: response,
+    isSuccess,
+    isPending,
+    error,
+  } = useMutation({
     mutationFn: async () => {
       if (!turnstileToken) {
         setErrorMessage(t('auth.finish_captcha'))
-
-        return
+        throw new Error('Turnstile token is required')
       }
-      const response = await axios.post(
-        `https://nest-city-account.staging.bratislava.sk/towing/public/${licensePlate}`,
-        {
-          turnstileToken,
-        },
+
+      const response = await axios.get(
+        `https://nest-enforcement-backend.bratislava.sk/api/public/tow/${licensePlate}`,
       )
-      const loadingDate = response.data.loadingDate.split('T')[0].split('-').reverse().join('.')
-      const loadingTime = response.data.loadingDate.split('T')[1].slice(0, 5)
-      setVehicle({
-        ...response.data,
-        licensePlate,
-        loadingDate,
-        loadingTime,
-      })
-      setVariant(response.data.unloadingLocation ? 'relay' : 'towing')
+      console.log('response', response)
+      console.log('response.data', response.data)
+
+      return response.data
+    },
+    onSuccess: () => {
       setErrorMessage('')
     },
     onError: (error) => {
-      if (isAxiosError(error) && error.response?.status === 404) {
-        setVehicle({
-          licensePlate,
-          loadingDate: '',
-          loadingTime: '',
-          loadingLocation: '',
-          towReason: '',
-          unloadingLocation: '',
-          relocationReason: '',
-        })
-        setVariant('notFound')
-        setErrorMessage('')
-      } else {
+      if (!isAxiosError(error) || error.response?.status !== 404) {
         logger.error('Error fetching towing:', error.response?.data.message)
         setErrorMessage(t('towing.error'))
-        setVariant(null)
       }
     },
-    onSettled: incrementCaptchaKey,
+    onSettled: () => {
+      incrementCaptchaKey()
+    },
   })
 
   return (
@@ -149,68 +118,13 @@ const Towing = ({ title, description }: TowingSectionProps) => {
           </Typography>
         )}
 
-        {variant && (
-          <Typography variant="h3">
-            {t(`towing.informationTitle.${variant}`, { ecv: vehicle?.licensePlate })}
-          </Typography>
-        )}
-
-        {(variant === 'towing' || variant === 'relay') && (
-          <div className="flex flex-col gap-4">
-            <Table
-              rows={[
-                { label: t('towing.informationTable.licensePlate'), value: vehicle.licensePlate },
-                { label: t('towing.informationTable.loadingDate'), value: vehicle.loadingDate },
-                { label: t('towing.informationTable.loadingTime'), value: vehicle.loadingTime },
-                {
-                  label: t('towing.informationTable.loadingLocation'),
-                  value: vehicle.loadingLocation,
-                },
-                ...(vehicle.towReason
-                  ? [{ label: t('towing.informationTable.towReason'), value: vehicle.towReason }]
-                  : []),
-                ...(vehicle.unloadingLocation
-                  ? [
-                      {
-                        label: t('towing.informationTable.unloadingLocation'),
-                        value: vehicle.unloadingLocation,
-                      },
-                    ]
-                  : []),
-                ...(vehicle.relocationReason
-                  ? [
-                      {
-                        label: t('towing.informationTable.relocationReason'),
-                        value: vehicle.relocationReason,
-                      },
-                    ]
-                  : []),
-                ...(variant === 'towing'
-                  ? [
-                      {
-                        label: t('towing.informationTable.payment'),
-                        value: `**${t('towing.informationTable.paymentValue')}**`,
-                        isMarkdown: true,
-                      },
-                    ]
-                  : []),
-              ]}
-              notification={
-                variant === 'towing' && (
-                  <Alert
-                    message={
-                      <Markdown content={t('towing.informationTable.paymentNotification')} />
-                    }
-                    type="info"
-                    fullWidth
-                  />
-                )
-              }
-            />
+        {isPending ? (
+          <div className="flex justify-center">
+            <Spinner />
           </div>
-        )}
-
-        {variant === 'notFound' && (
+        ) : isSuccess ? (
+          <TowingTable vehicle={response} initialLicensePlate={licensePlate} />
+        ) : isAxiosError(error) && error.response?.status === 404 ? (
           <div className="flex flex-col items-center gap-6 rounded-xl border p-12">
             <Icon name="tow-car" />
 
@@ -220,7 +134,7 @@ const Towing = ({ title, description }: TowingSectionProps) => {
 
             <Markdown content={t('towing.notFound.content')} className="text-center" />
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )

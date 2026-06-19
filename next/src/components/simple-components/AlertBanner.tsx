@@ -40,7 +40,7 @@ const fetchAlert = async () => {
   }
 }
 
-export const StatusBar = () => {
+export const AlertBanner = () => {
   const { t } = useTranslation('account')
 
   const { data: alertData } = useQuery({

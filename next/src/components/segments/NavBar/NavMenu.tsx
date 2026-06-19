@@ -6,20 +6,18 @@ import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
-import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
+import useMenu, { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
 import cn from '@/src/utils/cn'
-
-type Props = {
-  menuSections: MenuSectionBase[]
-}
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
  */
 
-export const NavMenu = ({ menuSections }: Props) => {
+export const NavMenu = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
+
+  const { menuSections } = useMenu()
 
   const { menuValue, setMenuValue } = useNavMenuContext()
 

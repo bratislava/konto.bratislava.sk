@@ -4,74 +4,59 @@ import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
-import HamburgerMenu from '@/src/components/segments/HambergerMenu/HamburgerMenu'
+import MobileNavMenu from '@/src/components/segments/NavBar/MobileNavMenu'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
-import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
+import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import Brand from '@/src/components/simple-components/Brand'
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
-import { StatusBar } from '@/src/components/simple-components/StatusBar'
+import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
-  menuSections?: MenuSectionBase[]
-  menuItems: MenuItemBase[]
   mobileNavbarRef: RefObject<HTMLDivElement | null>
+  className?: string
 }
 
-export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props) => {
+export const MobileNavBar = ({ mobileNavbarRef, className }: Props) => {
   const { t } = useTranslation('account')
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
   return (
-    <>
-      <div
-        id="mobile-navbar"
-        className="sticky top-0 left-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
-        ref={mobileNavbarRef}
-      >
-        <div className="w-full">
-          <FocusTrap active={isMobileMenuOpen}>
-            <div className="flex h-16 w-full items-center border-b px-4 py-5">
-              <div className="flex w-full justify-between">
-                <Brand url={ROUTES.HOME} className="grow" />
-                {isMobileMenuOpen ? (
-                  <Button
-                    onPress={() => {
-                      setMobileMenuOpen(false)
-                    }}
-                    className="-mr-4 p-4"
-                    aria-label={t('MobileNavBar.close')}
-                    data-cy="mobile-account-button"
-                    icon={<Icon name="close" />}
-                  />
-                ) : (
-                  <Button
-                    onPress={() => {
-                      setMobileMenuOpen(true)
-                    }}
-                    className="-mr-4 p-4"
-                    aria-label={t('MobileNavBar.open')}
-                    data-cy="mobile-account-button"
-                    icon={<Icon name="menu-hamburger" />}
-                  />
-                )}
-              </div>
+    <div id="mobile-navbar" className={className} ref={mobileNavbarRef}>
+      <FocusTrap active={isMobileMenuOpen}>
+        <div className="fixed top-0 z-30 flex h-14 w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
+          <div className="flex w-full justify-between">
+            <Brand url={ROUTES.HOME} className="grow" />
+            {isMobileMenuOpen ? (
+              <Button
+                onPress={() => {
+                  setMobileMenuOpen(false)
+                }}
+                className="-mr-4 p-4 ring-inset"
+                aria-label={t('MobileNavBar.close')}
+                data-cy="mobile-account-button"
+                icon={<Icon name="close" />}
+              />
+            ) : (
+              <Button
+                onPress={() => {
+                  setMobileMenuOpen(true)
+                }}
+                className="-mr-4 p-4 ring-inset"
+                aria-label={t('MobileNavBar.open')}
+                data-cy="mobile-account-button"
+                icon={<Icon name="menu-hamburger" />}
+              />
+            )}
+          </div>
 
-              {isMobileMenuOpen && (
-                <HamburgerMenu
-                  menuSections={menuSections}
-                  menuItems={menuItems}
-                  closeMenu={() => setMobileMenuOpen(false)}
-                />
-              )}
-            </div>
-          </FocusTrap>
+          {isMobileMenuOpen && <MobileNavMenu />}
         </div>
-      </div>
-      <div className="lg:hidden">
-        <StatusBar />
-      </div>
-    </>
+      </FocusTrap>
+      {/* Empty div under header */}
+      <div className={cn('h-14', className)} />
+
+      <AlertBanner />
+    </div>
   )
 }
 

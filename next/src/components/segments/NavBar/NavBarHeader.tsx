@@ -6,28 +6,25 @@ import { useState } from 'react'
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import useMenu from '@/src/components/segments/NavBar/useMenu'
 import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
-import MenuDropdown, {
-  MenuItemBase,
-} from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
-type Props = {
-  menuItems: MenuItemBase[]
-}
-
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
  */
 
-export const NavBarHeader = ({ menuItems }: Props) => {
+export const NavBarHeader = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
+
+  const { menuItems } = useMenu()
 
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
@@ -47,6 +44,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
 
   return (
     <SectionContainer>
+      {/* TODO Figma says 64px */}
       <div className="flex h-[57px] items-center gap-x-6">
         <Brand
           className="group grow"
@@ -91,7 +89,7 @@ export const NavBarHeader = ({ menuItems }: Props) => {
               <Button variant="plain" size="small" onPress={login} data-cy="login-button">
                 {t('menu_links.login')}
               </Button>
-              <Button variant="solid" onPress={register} size="small" data-cy="register-button">
+              <Button variant="solid" size="small" onPress={register} data-cy="register-button">
                 {t('menu_links.register')}
               </Button>
             </div>

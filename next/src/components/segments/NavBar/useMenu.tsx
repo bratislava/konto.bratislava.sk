@@ -8,7 +8,6 @@ import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/Me
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { useSignOut } from '@/src/frontend/utils/amplifyClient'
-import { isDefined } from '@/src/frontend/utils/general'
 import { ROUTES } from '@/src/utils/routes'
 
 export type MenuSectionBase = {
@@ -67,7 +66,7 @@ export const useMenu = () => {
       url: ROUTES.TAXES_AND_FEES,
       hidden: isLegalEntity,
     },
-  ].filter((section) => isDefined(section) && !section.hidden)
+  ].filter((section) => !section.hidden)
 
   // TODO consider using this in desktop menu
   const menuItems: MenuItemBase[] = isSignedIn

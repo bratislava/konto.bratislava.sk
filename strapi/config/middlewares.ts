@@ -1,7 +1,7 @@
 import { env } from '@strapi/utils'
 
 export default [
-  'strapi::logger',
+  'global::logger',
   'strapi::errors',
   {
     name: 'strapi::security',

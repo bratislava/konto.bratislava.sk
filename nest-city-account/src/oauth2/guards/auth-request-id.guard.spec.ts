@@ -132,16 +132,49 @@ describe('AuthRequestIdGuard', () => {
       expect(oauth2Service.loadAuthorizationRequest).toHaveBeenCalledWith(validAuthRequestId)
     })
 
-    // FIXME is this a desired behaviour?
-    it('should prefer body over query when authRequestId is present in both', async () => {
+    // The transport is tied to the HTTP method: POST reads authRequestId only from the
+    // body and GET reads it only from the query. An authRequestId in the wrong
+    // transport for the method is ignored, so the request is rejected as missing.
+    it('should read body authRequestId and ignore query on POST', async () => {
       const bodyId = '11111111-1111-1111-1111-111111111111'
       const queryId = '22222222-2222-2222-2222-222222222222'
       const context = createMockContext({
         body: { authRequestId: bodyId },
         query: { authRequestId: queryId },
+        method: 'POST',
       })
       await guard.canActivate(context)
       expect(oauth2Service.loadAuthorizationRequest).toHaveBeenCalledWith(bodyId)
+    })
+
+    it('should read query authRequestId and ignore body on GET', async () => {
+      const bodyId = '11111111-1111-1111-1111-111111111111'
+      const queryId = '22222222-2222-2222-2222-222222222222'
+      const context = createMockContext({
+        body: { authRequestId: bodyId },
+        query: { authRequestId: queryId },
+        method: 'GET',
+      })
+      await guard.canActivate(context)
+      expect(oauth2Service.loadAuthorizationRequest).toHaveBeenCalledWith(queryId)
+    })
+
+    it('should reject POST when authRequestId is only in the query', async () => {
+      const context = createMockContext({
+        query: { authRequestId: validAuthRequestId },
+        method: 'POST',
+      })
+      await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
+      expect(oauth2Service.loadAuthorizationRequest).not.toHaveBeenCalled()
+    })
+
+    it('should reject GET when authRequestId is only in the body', async () => {
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'GET',
+      })
+      await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
+      expect(oauth2Service.loadAuthorizationRequest).not.toHaveBeenCalled()
     })
   })
 

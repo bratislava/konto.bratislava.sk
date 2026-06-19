@@ -1,15 +1,15 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::api::homepage-announcement.homepage-announcement",
+  "key": "plugin_content_manager_configuration_content_types::api::municipal-charge.municipal-charge",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
+      "relationOpenMode": "modal",
       "mainField": "title",
       "defaultSortBy": "title",
-      "defaultSortOrder": "ASC",
-      "relationOpenMode": "modal"
+      "defaultSortOrder": "ASC"
     },
     "metadatas": {
       "id": {
@@ -22,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "Nadpis",
+          "label": "Názov",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -34,100 +34,30 @@
           "sortable": true
         }
       },
-      "description": {
+      "slug": {
         "edit": {
-          "label": "Text",
+          "label": "Slug",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "description",
+          "label": "slug",
           "searchable": true,
           "sortable": true
         }
       },
-      "buttonText": {
+      "feedbackLink": {
         "edit": {
-          "label": "(deprecated - použi Primárny odkaz) Text tlačidla",
-          "description": "",
+          "label": "Feedback link",
+          "description": "Zobrazí sa po úspešne dokončenej platbe",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "buttonText",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "href": {
-        "edit": {
-          "label": "(deprecated - použi Primárny odkaz) Odkaz",
-          "description": "Mal by začínať lomítkom, napr. /mestske-sluzby/...",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "href",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "primaryButton": {
-        "edit": {
-          "label": "Button (primary)",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "primaryButton",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "image": {
-        "edit": {
-          "label": "Obrázok",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "image",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "dateFrom": {
-        "edit": {
-          "label": "Zobrazovať od",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "dateFrom",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "dateTo": {
-        "edit": {
-          "label": "Zobrazovať do",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "dateTo",
+          "label": "feedbackLink",
           "searchable": true,
           "sortable": true
         }
@@ -200,58 +130,32 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "description",
-        "buttonText"
-      ],
       "edit": [
         [
           {
             "name": "title",
-            "size": 12
+            "size": 6
           },
           {
-            "name": "description",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "primaryButton",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "buttonText",
-            "size": 8
-          },
-          {
-            "name": "href",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "image",
+            "name": "slug",
             "size": 6
           }
         ],
         [
           {
-            "name": "dateFrom",
-            "size": 6
-          },
-          {
-            "name": "dateTo",
+            "name": "feedbackLink",
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "slug",
+        "feedbackLink"
       ]
     },
-    "uid": "api::homepage-announcement.homepage-announcement"
+    "uid": "api::municipal-charge.municipal-charge"
   },
   "type": "object",
   "environment": null,

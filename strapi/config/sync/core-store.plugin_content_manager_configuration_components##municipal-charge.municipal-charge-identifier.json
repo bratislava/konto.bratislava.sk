@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.question",
+  "key": "plugin_content_manager_configuration_components::municipal-charge.municipal-charge-identifier",
   "value": {
     "settings": {
       "bulkable": true,
@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "relationOpenMode": "modal",
-      "mainField": "title",
-      "defaultSortBy": "title",
+      "mainField": "documentId",
+      "defaultSortBy": "documentId",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -20,32 +20,34 @@
           "sortable": false
         }
       },
-      "title": {
+      "dzn": {
         "edit": {
-          "label": "Otázka",
-          "description": "",
+          "label": "dzn (Daň z nehnuteľností)",
+          "description": null,
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
-          "label": "title",
+          "label": "dzn",
           "searchable": true,
           "sortable": true
         }
       },
-      "content": {
+      "ko": {
         "edit": {
-          "label": "Odpoveď",
-          "description": "",
+          "label": "ko (Poplatok za komunálny odpad)",
+          "description": null,
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
-          "label": "content",
-          "searchable": false,
-          "sortable": false
+          "label": "ko",
+          "searchable": true,
+          "sortable": true
         }
       },
       "documentId": {
@@ -58,26 +60,25 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title"
-      ],
       "edit": [
         [
           {
-            "name": "title",
+            "name": "dzn",
+            "size": 6
+          },
+          {
+            "name": "ko",
             "size": 6
           }
-        ],
-        [
-          {
-            "name": "content",
-            "size": 12
-          }
         ]
+      ],
+      "list": [
+        "id",
+        "dzn",
+        "ko"
       ]
     },
-    "uid": "blocks.question",
+    "uid": "municipal-charge.municipal-charge-identifier",
     "isComponent": true
   },
   "type": "object",

@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.question",
+  "key": "plugin_content_manager_configuration_components::municipal-charge.delivery-method-change-pending-alert",
   "value": {
     "settings": {
       "bulkable": true,
@@ -22,8 +22,8 @@
       },
       "title": {
         "edit": {
-          "label": "Otázka",
-          "description": "",
+          "label": "Nadpis",
+          "description": "Spôsob informovania sa vždy nárazovo aktualizuje v interných systémoch. Od termínu 1. 2. sa už zmena spôsobu informovania neprejaví až do nasledujúcej aktualizácie. Používateľom nechávame možnosť zakliknúť si preferenciu, ale týmto alertom ich upozorňujeme, že sa prejaví až neskôr.",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -36,7 +36,7 @@
       },
       "content": {
         "edit": {
-          "label": "Odpoveď",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -58,15 +58,11 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title"
-      ],
       "edit": [
         [
           {
             "name": "title",
-            "size": 6
+            "size": 12
           }
         ],
         [
@@ -75,9 +71,13 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title"
       ]
     },
-    "uid": "blocks.question",
+    "uid": "municipal-charge.delivery-method-change-pending-alert",
     "isComponent": true
   },
   "type": "object",

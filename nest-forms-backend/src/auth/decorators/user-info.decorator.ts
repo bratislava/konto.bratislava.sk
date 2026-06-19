@@ -55,7 +55,7 @@ export class UserInfoPipe implements PipeTransform {
 
     try {
       const response =
-        await this.clientsService.cityAccountApi.userControllerGetOrCreateUser({
+        await this.clientsService.cityAccountApi.userControllerUpsertUser({
           headers: {
             Authorization: value,
           },

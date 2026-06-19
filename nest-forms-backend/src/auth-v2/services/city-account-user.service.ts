@@ -14,7 +14,7 @@ export class CityAccountUserService {
 
   async getUser(bearerToken: string): Promise<CityAccountUser> {
     const response =
-      await this.clientsService.cityAccountApi.userControllerGetOrCreateUser({
+      await this.clientsService.cityAccountApi.userControllerUpsertUser({
         headers: {
           Authorization: `Bearer ${bearerToken}`,
         },

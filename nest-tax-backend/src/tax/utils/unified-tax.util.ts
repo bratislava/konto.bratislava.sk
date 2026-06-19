@@ -389,6 +389,16 @@ const calculateInstallmentStatus = (
 export const parseInstallmentDueDate = (dueDate: Date): Dayjs =>
   dayjs.tz(dueDate, bratislavaTimeZone)
 
+const findActiveInstallment = (
+  installments: ResponseInstallmentItemDto[],
+): ResponseInstallmentItemDto | undefined =>
+  installments.find(
+    (installment) =>
+      installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
+      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID ||
+      installment.status === InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+  )
+
 const calculateInstallmentPaymentDetails = (options: {
   overallAmount: number
   overallPaid: number
@@ -499,12 +509,7 @@ const calculateInstallmentPaymentDetails = (options: {
       totalInstallmentAmount: installmentAmounts[index].total,
     }))
 
-  const active = installmentDetails.find(
-    (installment) =>
-      installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
-      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID ||
-      installment.status === InstallmentPaidStatusEnum.AFTER_DUE_DATE,
-  )
+  const active = findActiveInstallment(installmentDetails)
 
   // All valid reasons for no active payment should have been caught before
   //  the ` calculateInstallmentAmounts ` call
@@ -807,11 +812,8 @@ export const getTaxDetailPureForInstallmentGenerator = (options: {
   }
 
   // Find the active installment details
-  const activeInstallmentInfo = installmentPayment.installments.find(
-    (installment) =>
-      installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
-      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID ||
-      installment.status === InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+  const activeInstallmentInfo = findActiveInstallment(
+    installmentPayment.installments,
   )
 
   if (!activeInstallmentInfo) {

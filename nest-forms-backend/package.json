@@ -102,7 +102,7 @@
     "jest": "30.4.2",
     "jest-mock-extended": "4.0.1",
     "minio": "8.0.7",
-    "nock": "14.0.11",
+    "nock": "14.0.15",
     "prettier": "3.8.1",
     "prisma": "6.15.0",
     "prisma-json-types-generator": "3.6.1",

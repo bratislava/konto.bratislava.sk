@@ -75,7 +75,7 @@
     "xml2js": "0.6.2"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "0.12.0",
+    "@bratislava/eslint-config-nest": "0.16.0",
     "@golevelup/ts-jest": "3.0.0",
     "@nestjs/cli": "11.0.23",
     "@nestjs/schematics": "11.1.0",
@@ -98,7 +98,7 @@
     "@types/supertest": "7.2.0",
     "@types/xml2js": "0.4.14",
     "cross-env": "10.1.0",
-    "eslint": "9.39.4",
+    "eslint": "10.5.0",
     "jest": "30.4.2",
     "jest-mock-extended": "4.0.1",
     "minio": "8.0.7",

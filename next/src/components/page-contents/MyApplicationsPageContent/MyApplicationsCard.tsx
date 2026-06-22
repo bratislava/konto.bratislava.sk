@@ -209,7 +209,7 @@ const MyApplicationsCard = ({
                 {isLoading ? <Skeleton width="75%" /> : subject}
               </Typography>
               {(createdAt || isLoading) && (
-                <Typography variant="p-tiny" as="div">
+                <Typography variant="p-small" as="div">
                   {isLoading ? (
                     <Skeleton width="50%" />
                   ) : (
@@ -311,7 +311,7 @@ const MyApplicationsCard = ({
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <Typography variant="p-tiny" as="span" className="flex items-center">
+                  <Typography variant="p-small" as="span" className="flex items-center">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (

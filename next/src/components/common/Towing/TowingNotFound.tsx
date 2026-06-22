@@ -1,12 +1,15 @@
 import { Typography } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
 
-import { TowingIcon } from '@/src/assets/icons/transport-and-maps/towing.svg'
+import TowingIcon from '@/src/assets/icons/transport-and-maps/towing.svg'
 import Markdown from '@/src/components/formatting/Markdown'
 
 const TowingNotFound = () => {
+  const { t } = useTranslation('account')
+
   return (
-    <div className="flex flex-col items-center gap-6 rounded-xl border p-12">
-      <div className="size-12 shrink-0 lg:size-16">
+    <div className="flex flex-col items-center gap-6 rounded-md border p-12">
+      <div className="mt-2 size-12 shrink-0 lg:size-16">
         <TowingIcon />
       </div>
 

@@ -1,12 +1,13 @@
 import { Button, Spinner, Typography } from '@bratislava/component-library'
 import { useMutation } from '@tanstack/react-query'
-import axios, { isAxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 import Turnstile from 'react-turnstile'
 import { useCounter } from 'usehooks-ts'
 
-import TowingIcon from '@/src/assets/icons/transport-and-maps/towing.svg'
+import { cityAccountClient } from '@/src/clients/city-account'
+import TowingNotFound from '@/src/components/common/Towing/TowingNotFound'
 import TowingTable from '@/src/components/common/Towing/TowingTable'
 import TextField from '@/src/components/fields/TextField'
 import Markdown from '@/src/components/formatting/Markdown'
@@ -41,9 +42,9 @@ const Towing = ({ title, text }: TowingSectionProps) => {
         throw new Error('Turnstile token is required')
       }
 
-      const response = await axios.get(
-        `https://nest-enforcement-backend.bratislava.sk/api/public/tow/${licensePlate}`,
-      )
+      const response = await cityAccountClient.towingControllerGetPublicTowingByEcv(licensePlate, {
+        turnstileToken,
+      })
 
       return response.data
     },
@@ -79,10 +80,9 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           variant="solid"
           fullWidth
           isDisabled={licensePlate.length === 0 || !turnstileToken}
+          startIcon={<Icon name="search" />}
         >
-          <Icon name="search" className="size-6" />
-
-          <Typography variant="p-small">{t('button.search')}</Typography>
+          {t('button.search')}
         </Button>
 
         <Turnstile

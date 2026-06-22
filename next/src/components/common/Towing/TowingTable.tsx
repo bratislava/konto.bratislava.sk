@@ -19,13 +19,13 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
   const variant = vehicle.unloadingLocation ? 'relay' : 'towing'
 
   const titleTranslationMap = {
-    relay: 'towing.informationTitle.relay',
-    towing: 'towing.informationTitle.towing',
+    relay: t('towing.informationTitle.relay', { licensePlate }),
+    towing: t('towing.informationTitle.towing', { licensePlate }),
   }
 
   return (
     <>
-      <Typography variant="h3">{t(titleTranslationMap[variant], { licensePlate })}</Typography>
+      <Typography variant="h3">{titleTranslationMap[variant]}</Typography>
 
       <div className="flex flex-col gap-4">
         <Table

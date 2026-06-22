@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.checklist",
+  "key": "plugin_content_manager_configuration_components::sections.faq",
   "value": {
     "settings": {
       "bulkable": true,
@@ -16,8 +16,8 @@
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": false,
-          "sortable": false
+          "searchable": true,
+          "sortable": true
         }
       },
       "title": {
@@ -34,30 +34,17 @@
           "sortable": true
         }
       },
-      "description": {
+      "questions": {
         "edit": {
-          "label": "Text",
+          "label": "Otázky",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
-          "label": "description",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "checklistItems": {
-        "edit": {
-          "label": "Položky v checkliste",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "checklistItems",
+          "label": "questions",
           "searchable": false,
           "sortable": false
         }
@@ -72,11 +59,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "checklistItems"
-      ],
       "edit": [
         [
           {
@@ -86,19 +68,18 @@
         ],
         [
           {
-            "name": "description",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "checklistItems",
+            "name": "questions",
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "questions"
       ]
     },
-    "uid": "blocks.checklist",
+    "uid": "sections.faq",
     "isComponent": true
   },
   "type": "object",

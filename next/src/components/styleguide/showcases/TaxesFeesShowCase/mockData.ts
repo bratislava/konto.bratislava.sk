@@ -43,7 +43,6 @@ const MOCK_BASE_USER = {
   email: 'test@example.com',
   birthNumber: null,
   hasChangedDeliveryMethodAfterDeadline: true,
-  gdprData: [],
   consents: [],
 }
 

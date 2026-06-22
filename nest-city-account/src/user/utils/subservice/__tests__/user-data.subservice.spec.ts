@@ -1,12 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  ConsentEnum,
-  DeliveryMethodUserPreferenceEnum,
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
-} from '@prisma/client'
+import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachOutboxService } from '../../../../bloomreach/bloomreach-outbox.service'
@@ -59,7 +53,7 @@ describe('UserDataSubservice', () => {
 
       expect(prismaMock.$transaction).not.toHaveBeenCalled()
       expect(prismaMock.userConsents.upsert).not.toHaveBeenCalled()
-      expect(bloomreach.trackEventConsents).not.toHaveBeenCalled()
+      expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
 
     it('should upsert each consent and forward them to Bloomreach', async () => {
@@ -87,19 +81,8 @@ describe('UserDataSubservice', () => {
         create: { userId: 'user-id', consentType: ConsentEnum.GENERAL, isGranted: false },
       })
 
-      expect(bloomreach.trackEventConsents).toHaveBeenCalledWith(
-        [
-          {
-            category: GDPRCategoryEnum.ESBS,
-            type: GDPRTypeEnum.MARKETING,
-            subType: GDPRSubTypeEnum.subscribe,
-          },
-          {
-            category: GDPRCategoryEnum.ESBS,
-            type: GDPRTypeEnum.GENERAL,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          },
-        ],
+      expect(bloomreach.trackConsents).toHaveBeenCalledWith(
+        consents,
         'external-id',
         'user-id',
         false
@@ -115,7 +98,7 @@ describe('UserDataSubservice', () => {
         ])
       ).rejects.toThrow('db down')
 
-      expect(bloomreach.trackEventConsents).not.toHaveBeenCalled()
+      expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
   })
 
@@ -125,7 +108,7 @@ describe('UserDataSubservice', () => {
 
       expect(prismaMock.$transaction).not.toHaveBeenCalled()
       expect(prismaMock.legalPersonConsents.upsert).not.toHaveBeenCalled()
-      expect(bloomreach.trackEventConsents).not.toHaveBeenCalled()
+      expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
 
     it('should upsert each consent and forward them to Bloomreach as legal person', async () => {
@@ -167,19 +150,8 @@ describe('UserDataSubservice', () => {
         },
       })
 
-      expect(bloomreach.trackEventConsents).toHaveBeenCalledWith(
-        [
-          {
-            category: GDPRCategoryEnum.ESBS,
-            type: GDPRTypeEnum.MARKETING,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          },
-          {
-            category: GDPRCategoryEnum.ESBS,
-            type: GDPRTypeEnum.GENERAL,
-            subType: GDPRSubTypeEnum.subscribe,
-          },
-        ],
+      expect(bloomreach.trackConsents).toHaveBeenCalledWith(
+        consents,
         'external-id',
         'legal-person-id',
         true
@@ -195,37 +167,23 @@ describe('UserDataSubservice', () => {
         ])
       ).rejects.toThrow('db down')
 
-      expect(bloomreach.trackEventConsents).not.toHaveBeenCalled()
+      expect(bloomreach.trackConsents).not.toHaveBeenCalled()
     })
   })
 
   describe('setDeliveryMethodPreference', () => {
-    it.each([
-      [DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT, GDPRSubTypeEnum.subscribe],
-      [DeliveryMethodUserPreferenceEnum.POSTAL, GDPRSubTypeEnum.unsubscribe],
-    ])(
-      'should update the user and emit a tax-delivery event for %s as %s',
-      async (deliveryMethod, expectedSubType) => {
-        await service.setDeliveryMethodPreference('cognito-sub-id', deliveryMethod)
+    it('should update the user and track the customer in Bloomreach', async () => {
+      await service.setDeliveryMethodPreference(
+        'cognito-sub-id',
+        DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT
+      )
 
-        expect(prismaMock.user.update).toHaveBeenCalledWith({
-          where: { externalId: 'cognito-sub-id' },
-          data: { taxDeliveryMethod: deliveryMethod },
-        })
-        expect(bloomreach.trackEventConsents).toHaveBeenCalledWith(
-          [
-            {
-              category: GDPRCategoryEnum.TAXES,
-              type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-              subType: expectedSubType,
-            },
-          ],
-          'cognito-sub-id',
-          undefined,
-          false
-        )
-      }
-    )
+      expect(prismaMock.user.update).toHaveBeenCalledWith({
+        where: { externalId: 'cognito-sub-id' },
+        data: { taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT },
+      })
+      expect(bloomreach.trackCustomer).toHaveBeenCalledWith('cognito-sub-id')
+    })
 
     it('should not call Bloomreach if the prisma update throws', async () => {
       ;(prismaMock.user.update as jest.Mock).mockRejectedValueOnce(new Error('db down'))
@@ -237,7 +195,7 @@ describe('UserDataSubservice', () => {
         )
       ).rejects.toThrow('db down')
 
-      expect(bloomreach.trackEventConsents).not.toHaveBeenCalled()
+      expect(bloomreach.trackCustomer).not.toHaveBeenCalled()
     })
   })
 })

@@ -4,7 +4,7 @@ import { v1 as uuidv1 } from 'uuid'
 
 const defaultOptions: jwt.SignOptions = {
   algorithm: 'RS256',
-  expiresIn: '5m', // 5 minutes
+  expiresIn: '4m', // 5 minutes
 }
 
 /**
@@ -14,7 +14,7 @@ const defaultOptions: jwt.SignOptions = {
 @Injectable()
 export default class ApiJwtTokensService {
   /**
-   * Default options: RS256, 5-minute expiry.
+   * Default options: RS256, 4-minute expiry.
    * Header override (alg: RS256, cty: JWT) is always applied on top.
    * Pass `options` to override any of the defaults further.
    */
@@ -40,7 +40,7 @@ export default class ApiJwtTokensService {
   }
 
   /**
-   * Default options: RS256, 5-minute expiry.
+   * Default options: RS256, 4-minute expiry.
    * Pass `options` to override any of the defaults.
    */
   createTechnicalAccountJwtToken(

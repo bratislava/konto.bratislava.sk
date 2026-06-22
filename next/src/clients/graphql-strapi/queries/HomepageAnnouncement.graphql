@@ -2,6 +2,9 @@ fragment HomepageAnnouncementEntity on HomepageAnnouncement {
   documentId
   title
   description
+  primaryButton {
+    ...CommonLink
+  }
   buttonText
   href
   dateFrom

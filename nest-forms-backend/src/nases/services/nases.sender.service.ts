@@ -368,6 +368,7 @@ export default class NasesSenderService {
           },
         )
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive guard; typed as non-null but real API responses can omit the body
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(

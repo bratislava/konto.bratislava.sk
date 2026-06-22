@@ -58,53 +58,62 @@ export const NavBarHeader = ({ variant, hasBackButton = false }: Props) => {
   return (
     <SectionContainer>
       {/* TODO Figma says 64px */}
-      <div className="flex h-[57px] items-center gap-x-6">
+      <div className="flex h-[57px] items-center justify-between gap-x-6">
         <SkipToContentButton />
-        {hasBackButton && <BackButton />}
-        <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
-        {variant === 'auth' ? (
-          <OAuthLogo />
-        ) : (
-          <>
-            <IdentityVerificationStatus />
-            <nav className="flex gap-x-8">
-              {isSignedIn ? (
-                <DropdownMenu
-                  setIsOpen={setIsMenuOpen}
-                  items={signedInActionsMenuItems}
-                  itemVariant="header"
-                  buttonTrigger={
-                    <Button
-                      variant="unstyled"
-                      data-cy="account-button"
-                      className="flex items-center gap-4 rounded-lg font-semibold text-content-active-primary-default hover:text-content-active-primary-hover"
-                    >
-                      <UserAvatar userAttributes={userAttributes} />
-                      <div className="flex items-center gap-1">
-                        {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
-                        <Icon
-                          name="chevron-down-small"
-                          className={cn('size-5 mix-blend-normal', {
-                            '-rotate-180': isMenuOpen,
-                          })}
-                        />
-                      </div>
+        <div className="flex">
+          {hasBackButton && <BackButton />}
+          <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
+        </div>
+        <div className="flex gap-6">
+          {variant === 'auth' ? (
+            <OAuthLogo />
+          ) : (
+            <>
+              <IdentityVerificationStatus />
+              <nav className="flex gap-x-8">
+                {isSignedIn ? (
+                  <DropdownMenu
+                    setIsOpen={setIsMenuOpen}
+                    items={signedInActionsMenuItems}
+                    itemVariant="header"
+                    buttonTrigger={
+                      <Button
+                        variant="unstyled"
+                        data-cy="account-button"
+                        className="flex items-center gap-4 rounded-lg font-semibold text-content-active-primary-default hover:text-content-active-primary-hover"
+                      >
+                        <UserAvatar userAttributes={userAttributes} />
+                        <div className="flex items-center gap-1">
+                          {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
+                          <Icon
+                            name="chevron-down-small"
+                            className={cn('size-5 mix-blend-normal', {
+                              '-rotate-180': isMenuOpen,
+                            })}
+                          />
+                        </div>
+                      </Button>
+                    }
+                  />
+                ) : (
+                  <div className="flex items-center gap-6">
+                    <Button variant="plain" size="small" onPress={login} data-cy="login-button">
+                      {t('menu_links.login')}
                     </Button>
-                  }
-                />
-              ) : (
-                <div className="flex items-center gap-6">
-                  <Button variant="plain" size="small" onPress={login} data-cy="login-button">
-                    {t('menu_links.login')}
-                  </Button>
-                  <Button variant="solid" size="small" onPress={register} data-cy="register-button">
-                    {t('menu_links.register')}
-                  </Button>
-                </div>
-              )}
-            </nav>
-          </>
-        )}
+                    <Button
+                      variant="solid"
+                      size="small"
+                      onPress={register}
+                      data-cy="register-button"
+                    >
+                      {t('menu_links.register')}
+                    </Button>
+                  </div>
+                )}
+              </nav>
+            </>
+          )}
+        </div>
       </div>
     </SectionContainer>
   )

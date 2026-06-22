@@ -16,7 +16,6 @@ const BackButton = () => {
         icon={<Icon name="arrow-left" />}
         aria-label={t('BackButton.aria')}
         onPress={() => router.back()}
-        className="max-lg:mx-1"
       />
       <div className="mx-6 h-6 border-r max-lg:hidden" aria-hidden />
     </>

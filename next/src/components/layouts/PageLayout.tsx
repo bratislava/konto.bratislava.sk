@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { useNavbarHeight } from '@/src/components/layouts/useNavbarHeight'
 import Footer from '@/src/components/segments/Footer/Footer'
-import AuthNavBar from '@/src/components/segments/NavBar/AuthNavBar'
 import NavBar from '@/src/components/segments/NavBar/NavBar'
 import cn from '@/src/utils/cn'
 
@@ -28,23 +27,13 @@ const PageLayout = ({ variant = 'default', className, children, hideBackButton }
 
   return (
     <div className={cn('flex min-h-dvh flex-col', className)}>
-      <header
-        // 'contents' class in header enables sticky elements inside it to work
-        className="relative z-30 contents"
-      >
-        {variant === 'auth' ? (
-          <AuthNavBar
-            backButtonHidden={hideBackButton}
-            desktopNavbarRef={desktopNavbarRef}
-            mobileNavbarRef={mobileNavbarRef}
-          />
-        ) : (
-          <NavBar
-            backButtonHidden={hideBackButton}
-            desktopNavbarRef={desktopNavbarRef}
-            mobileNavbarRef={mobileNavbarRef}
-          />
-        )}
+      <header className="relative">
+        <NavBar
+          variant={variant}
+          backButtonHidden={hideBackButton}
+          desktopNavbarRef={desktopNavbarRef}
+          mobileNavbarRef={mobileNavbarRef}
+        />
       </header>
       <main
         style={{

@@ -1,7 +1,7 @@
 import { Button } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import Icon from '@/src/components/icon-components/Icon'
@@ -14,6 +14,7 @@ import Brand from '@/src/components/simple-components/Brand'
 import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
 import UserAvatar from '@/src/components/simple-components/UserAvatar'
+import { AmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
@@ -37,6 +38,10 @@ export const NavBarHeader = ({ variant, backButtonHidden }: Props) => {
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
 
+  // Auth-variant pages are wrapped in AmplifyClientOAuthProvider; default pages are not, so read the
+  // context optionally and treat its absence as a non-OAuth login.
+  const isOAuthLogin = useContext(AmplifyClientOAuthContext)?.isOAuthLogin ?? false
+
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   // we need to keep the work in progress of the open form if navigating away form it
@@ -56,7 +61,7 @@ export const NavBarHeader = ({ variant, backButtonHidden }: Props) => {
       <div className="flex h-[57px] items-center gap-x-6">
         <SkipToContentButton />
         {!backButtonHidden && <BackButton />}
-        <Brand className="grow" variant="header" />
+        <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
         {variant === 'auth' ? (
           <OAuthLogo />
         ) : (

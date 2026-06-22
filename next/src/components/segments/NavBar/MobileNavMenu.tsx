@@ -7,7 +7,7 @@ import { ComponentProps, forwardRef } from 'react'
 import { useEventListener, useScrollLock, useWindowSize } from 'usehooks-ts'
 
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
-import useMenu from '@/src/components/segments/NavBar/useMenu'
+import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
 import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
@@ -61,7 +61,7 @@ export const MobileNavMenu = () => {
   const { isSignedIn } = useSsrAuth()
 
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
-  const { mainMenuItems, signedInActionsMenuItems, notSignedInActionsMenuItems } = useMenu()
+  const { mainMenuItems, signedInActionsMenuItems, notSignedInActionsMenuItems } = useNavMenu()
 
   const closeMenu = () => setMobileMenuOpen(false)
 

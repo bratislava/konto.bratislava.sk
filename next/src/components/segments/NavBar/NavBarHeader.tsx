@@ -7,7 +7,7 @@ import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedir
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SkipToContentButton from '@/src/components/segments/NavBar/SkipToContentButton'
-import useMenu from '@/src/components/segments/NavBar/useMenu'
+import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
 import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
 import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
@@ -25,7 +25,7 @@ export const NavBarHeader = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const { signedInActionsMenuItems } = useMenu()
+  const { signedInActionsMenuItems } = useNavMenu()
 
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()

@@ -4,13 +4,13 @@ import { ReactNode } from 'react'
 
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import Icon from '@/src/components/icon-components/Icon'
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { useSignOut } from '@/src/frontend/utils/amplifyClient'
 import { ROUTES } from '@/src/utils/routes'
 
-export type MenuSectionBase = {
+export type MainMenuItemProps = {
   id: number
   title: string
   icon: ReactNode
@@ -40,7 +40,7 @@ export const useMenu = () => {
         await router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
       }
 
-  const mainMenuItems: (MenuSectionBase & { hidden?: boolean })[] = [
+  const mainMenuItems: (MainMenuItemProps & { hidden?: boolean })[] = [
     {
       id: 0,
       title: t('account_section_intro.navigation'),
@@ -68,7 +68,7 @@ export const useMenu = () => {
     },
   ].filter((section) => !section.isHidden)
 
-  const signedInActionsMenuItems: MenuItemBase[] = [
+  const signedInActionsMenuItems: DropdownMenuItemProps[] = [
     {
       id: 0,
       title: t('menu_links.profile'),
@@ -90,7 +90,7 @@ export const useMenu = () => {
     },
   ]
 
-  const notSignedInActionsMenuItems: MenuItemBase[] = [
+  const notSignedInActionsMenuItems: DropdownMenuItemProps[] = [
     {
       id: 0,
       title: t('menu_links.login'),

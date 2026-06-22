@@ -5,7 +5,7 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormMenuItems } from '@/src/components/forms/useFormMenuItems'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 
 const FormHeader = () => {
@@ -47,7 +47,7 @@ const FormHeader = () => {
               {t('menu_list.save_concept')}
             </Button>
           )}
-          <MenuDropdown
+          <DropdownMenu
             buttonTrigger={
               <Button
                 variant="outline"

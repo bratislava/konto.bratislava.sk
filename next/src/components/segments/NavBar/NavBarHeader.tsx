@@ -10,8 +10,8 @@ import SkipToContentButton from '@/src/components/segments/NavBar/SkipToContentB
 import useMenu from '@/src/components/segments/NavBar/useMenu'
 import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
+import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
-import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
@@ -52,7 +52,7 @@ export const NavBarHeader = () => {
         <IdentityVerificationStatus />
         <nav className="flex gap-x-8 font-semibold text-font/75">
           {isSignedIn ? (
-            <MenuDropdown
+            <DropdownMenu
               setIsOpen={setIsMenuOpen}
               items={signedInActionsMenuItems}
               itemVariant="header"

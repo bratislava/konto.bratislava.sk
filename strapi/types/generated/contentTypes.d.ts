@@ -446,6 +446,10 @@ export interface ApiFormForm extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::form.form'> &
       Schema.Attribute.Private
     moreInformationUrl: Schema.Attribute.String
+    municipalService: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::municipal-service.municipal-service'
+    >
     publishedAt: Schema.Attribute.DateTime
     slug: Schema.Attribute.UID & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime
@@ -665,6 +669,7 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
     description: Schema.Attribute.Text & Schema.Attribute.Required
+    form: Schema.Attribute.Relation<'oneToOne', 'api::form.form'>
     href: Schema.Attribute.String & Schema.Attribute.Required
     icon: Schema.Attribute.Enumeration<
       [
@@ -705,6 +710,7 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
     > &
       Schema.Attribute.Private
     publishedAt: Schema.Attribute.DateTime
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
     tags: Schema.Attribute.Relation<
       'manyToMany',
       'api::municipal-service-tag.municipal-service-tag'

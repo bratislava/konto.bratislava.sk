@@ -93,6 +93,19 @@ fragment FaqSection on ComponentSectionsFaq {
   }
 }
 
+fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
+  title
+  url
+}
+
+fragment DocumentsSection on ComponentSectionsDocuments {
+  title
+  text
+  externalDocuments {
+    ...ExternalDocumentBlock
+  }
+}
+
 fragment TowingSection on ComponentSectionsTowing {
   title
   text
@@ -115,6 +128,10 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
 
   ... on ComponentSectionsFaq {
     ...FaqSection
+  }
+
+  ... on ComponentSectionsDocuments {
+    ...DocumentsSection
   }
 
   ... on ComponentSectionsTowing {

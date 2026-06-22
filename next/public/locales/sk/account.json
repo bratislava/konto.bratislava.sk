@@ -269,6 +269,7 @@
   "errors.UsernameExistsException": " E-mail {{email}} sa už používa. Na každý e-mail je v Bratislavskom konte možné vytvoriť len jeden účet. V prípade nejasností nás kontaktujte na [info@bratislava.sk](mailto:info@bratislava.sk).",
   "errors.UserNotConfirmedException": "E-mail nie je verifikovaný.",
   "errors.UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
+  "ExternalDocumentRowCard.go_to_document": "Prejsť na dokument",
   "FieldHeader.optional": "(Nepovinné)",
   "Footer.text": "© {{currentYear}} Hlavné mesto Slovenskej Republiky Bratislava",
   "IdentityVerificationAlert.verification_in_process.message": "Overenie totožnosti voči štátnym registrom stále prebieha. O výsledku overenia vás budeme informovať e-mailom.",

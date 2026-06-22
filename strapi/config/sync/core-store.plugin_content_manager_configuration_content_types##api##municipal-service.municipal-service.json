@@ -34,6 +34,20 @@
           "sortable": true
         }
       },
+      "slug": {
+        "edit": {
+          "label": "Slug",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "slug",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "description": {
         "edit": {
           "label": "Text kartičky",
@@ -134,6 +148,21 @@
           "sortable": false
         }
       },
+      "form": {
+        "edit": {
+          "label": "Formulár",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "moreInformationUrl"
+        },
+        "list": {
+          "label": "form",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -209,6 +238,10 @@
             "size": 12
           },
           {
+            "name": "slug",
+            "size": 12
+          },
+          {
             "name": "description",
             "size": 12
           }
@@ -227,10 +260,6 @@
           {
             "name": "categories",
             "size": 6
-          },
-          {
-            "name": "tags",
-            "size": 6
           }
         ],
         [
@@ -239,12 +268,27 @@
             "size": 6
           },
           {
+            "name": "tags",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "form",
+            "size": 6
+          },
+          {
             "name": "icon",
             "size": 6
           }
         ]
       ],
-      "list": ["id", "title", "description", "buttonText"]
+      "list": [
+        "id",
+        "title",
+        "description",
+        "buttonText"
+      ]
     },
     "uid": "api::municipal-service.municipal-service"
   },

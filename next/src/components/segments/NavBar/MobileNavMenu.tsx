@@ -8,22 +8,22 @@ import { useEventListener, useScrollLock, useWindowSize } from 'usehooks-ts'
 
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
 import useMenu from '@/src/components/segments/NavBar/useMenu'
+import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import logger from '@/src/frontend/utils/logger'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
 type NavMenuLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref' | 'href'> & {
-  menuItem: MenuItemBase
-  isSelected?: boolean
+  menuItem: DropdownMenuItemProps
+  isActive?: boolean
   onClick: () => void
 }
 
 const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
-  ({ menuItem, isSelected, onClick, ...rest }, forwardedRef) => {
+  ({ menuItem, isActive, onClick, ...rest }, forwardedRef) => {
     return menuItem.url ? (
       <NextLink
         href={menuItem.url}
@@ -35,7 +35,7 @@ const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
         className={cn(
           'flex cursor-pointer items-center gap-3 rounded-lg border-b border-transparent p-4 text-size-p-small-r font-semibold base-focus-ring transition-all hover:bg-gray-100 lg:text-size-p-small',
           {
-            'bg-gray-100': isSelected,
+            'bg-gray-100': isActive,
           },
         )}
         data-cy={`${menuItem.url.replaceAll('/', '')}-menu-item`}
@@ -91,7 +91,7 @@ export const MobileNavMenu = () => {
               <NavigationMenu.Link asChild>
                 <NavMenuLink
                   menuItem={sectionItem}
-                  isSelected={router.route.endsWith(sectionItem.url)}
+                  isActive={router.route.endsWith(sectionItem.url)}
                   onClick={closeMenu}
                 />
               </NavigationMenu.Link>
@@ -121,7 +121,7 @@ export const MobileNavMenu = () => {
                   <NavigationMenu.Link asChild>
                     <NavMenuLink
                       menuItem={menuItem}
-                      isSelected={router.route.endsWith(menuItem.url)}
+                      isActive={router.route.endsWith(menuItem.url)}
                       onClick={closeMenu}
                     />
                   </NavigationMenu.Link>

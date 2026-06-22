@@ -2,9 +2,9 @@ import { Typography } from '@bratislava/component-library'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import Link from 'next/link'
 
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 
-const HeaderMenuItem = ({ title, icon, url, onPress }: MenuItemBase) => {
+const HeaderMenuItem = ({ title, icon, url, onPress }: DropdownMenuItemProps) => {
   return url ? (
     <Link
       className="flex items-center gap-3"

@@ -10,9 +10,9 @@ import FormatDate from '@/src/components/formatting/FormatDate'
 import Icon from '@/src/components/icon-components/Icon'
 import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuModal'
-import MenuDropdown, {
-  MenuItemBase,
-} from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import DropdownMenu, {
+  DropdownMenuItemProps,
+} from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
@@ -146,7 +146,7 @@ const MyApplicationsCard = ({
     }
   }
 
-  const conceptMenuContent: MenuItemBase[] = canDownloadPdf
+  const conceptMenuContent: DropdownMenuItemProps[] = canDownloadPdf
     ? [
         {
           title: t('account_section_applications.concept_menu_list.download_xml'),
@@ -271,7 +271,7 @@ const MyApplicationsCard = ({
                             'account_section_applications.navigation_concept_card.view_button_text',
                           )}
                     </Button>
-                    <MenuDropdown
+                    <DropdownMenu
                       buttonTrigger={
                         <Button
                           variant="outline"

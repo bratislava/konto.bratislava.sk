@@ -1,11 +1,11 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import FormMenuItem from '@/src/components/simple-components/MenuDropdown/FormMenuItem'
-import HeaderMenuItem from '@/src/components/simple-components/MenuDropdown/HeaderMenuItem'
+import FormMenuItem from '@/src/components/simple-components/DropdownMenu/FormMenuItem'
+import HeaderMenuItem from '@/src/components/simple-components/DropdownMenu/HeaderMenuItem'
 import cn from '@/src/utils/cn'
 
-export type MenuItemBase = {
+export type DropdownMenuItemProps = {
   id?: number
   title: string
   icon?: ReactNode
@@ -14,25 +14,25 @@ export type MenuItemBase = {
   itemClassName?: string
 }
 
-type MenuDropdownBase = {
-  items: MenuItemBase[]
+type DropdownMenuProps = {
+  items: DropdownMenuItemProps[]
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
   setIsOpen?: Dispatch<SetStateAction<boolean>>
 }
 
 // TODO use controlled state for setIsOpen
-const MenuDropdown = ({
+const DropdownMenu = ({
   items,
   itemVariant = 'form',
   buttonTrigger,
   setIsOpen,
-}: MenuDropdownBase) => {
+}: DropdownMenuProps) => {
   return (
-    <DropdownMenu.Root onOpenChange={() => setIsOpen && setIsOpen((prev) => !prev)}>
-      <DropdownMenu.Trigger asChild>{buttonTrigger}</DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
+    <RadixDropdownMenu.Root onOpenChange={() => setIsOpen && setIsOpen((prev) => !prev)}>
+      <RadixDropdownMenu.Trigger asChild>{buttonTrigger}</RadixDropdownMenu.Trigger>
+      <RadixDropdownMenu.Portal>
+        <RadixDropdownMenu.Content
           loop
           align="end"
           className="z-50 rounded-lg bg-gray-0 py-2 shadow-md"
@@ -60,10 +60,10 @@ const MenuDropdown = ({
                 onPress={item.onPress}
               />
             ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+        </RadixDropdownMenu.Content>
+      </RadixDropdownMenu.Portal>
+    </RadixDropdownMenu.Root>
   )
 }
 
-export default MenuDropdown
+export default DropdownMenu

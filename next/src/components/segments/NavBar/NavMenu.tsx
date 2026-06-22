@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import useMenu, { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
+import useMenu, { MainMenuItemProps } from '@/src/components/segments/NavBar/useMenu'
 import cn from '@/src/utils/cn'
 
 /**
@@ -18,8 +18,10 @@ export const NavMenu = () => {
 
   const { mainMenuItems } = useMenu()
 
-  const isActive = (sectionItem: MenuSectionBase) =>
-    sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
+  const isActive = (mainMenuItem: MainMenuItemProps) =>
+    mainMenuItem.url === '/'
+      ? router.pathname === '/'
+      : router.pathname.startsWith(mainMenuItem.url)
 
   return (
     <SectionContainer>
@@ -44,9 +46,10 @@ export const NavMenu = () => {
                   <NextLink href={sectionItem.url}>
                     <div
                       className={cn(
-                        'flex size-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
+                        'flex size-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-content-error-hover hover:text-content-error-hover',
                         {
-                          'border-main-700 text-main-700': isActive(sectionItem),
+                          'border-content-error-default text-content-error-default':
+                            isActive(sectionItem),
                           'border-transparent': !isActive(sectionItem),
                         },
                       )}

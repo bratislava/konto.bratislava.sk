@@ -1,10 +1,10 @@
 import { Button, Typography } from '@bratislava/component-library'
 import Link from 'next/link'
 
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import cn from '@/src/utils/cn'
 
-interface BottomSheetMenuRowProps extends MenuItemBase {
+interface BottomSheetMenuRowProps extends DropdownMenuItemProps {
   onLinkClick: () => void
 }
 

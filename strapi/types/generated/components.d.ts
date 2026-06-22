@@ -78,6 +78,17 @@ export interface BlocksContactPersonCard extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksExternalDocument extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_external_documents'
+  info: {
+    displayName: 'External Document'
+  }
+  attributes: {
+    title: Schema.Attribute.String
+    url: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 export interface BlocksFooterColumn extends Struct.ComponentSchema {
   collectionName: 'components_blocks_footer_columns'
   info: {
@@ -100,7 +111,13 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
-      ['sections.richtext', 'sections.faq', 'sections.contacts', 'sections.stepper']
+      [
+        'sections.richtext',
+        'sections.documents',
+        'sections.faq',
+        'sections.contacts',
+        'sections.stepper',
+      ]
     >
     text: Schema.Attribute.RichText
   }
@@ -237,6 +254,18 @@ export interface SectionsContacts extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsDocuments extends Struct.ComponentSchema {
+  collectionName: 'components_sections_documents'
+  info: {
+    displayName: 'Dokumenty'
+  }
+  attributes: {
+    externalDocuments: Schema.Attribute.Component<'blocks.external-document', true>
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
+  }
+}
+
 export interface SectionsFaq extends Struct.ComponentSchema {
   collectionName: 'components_sections_faqs'
   info: {
@@ -286,6 +315,7 @@ declare module '@strapi/strapi' {
       'blocks.contact-card': BlocksContactCard
       'blocks.contact-directions-card': BlocksContactDirectionsCard
       'blocks.contact-person-card': BlocksContactPersonCard
+      'blocks.external-document': BlocksExternalDocument
       'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
@@ -298,6 +328,7 @@ declare module '@strapi/strapi' {
       'municipal-charge.delivery-method-change-pending-alert': MunicipalChargeDeliveryMethodChangePendingAlert
       'municipal-charge.municipal-charge-identifier': MunicipalChargeMunicipalChargeIdentifier
       'sections.contacts': SectionsContacts
+      'sections.documents': SectionsDocuments
       'sections.faq': SectionsFaq
       'sections.richtext': SectionsRichtext
       'sections.stepper': SectionsStepper

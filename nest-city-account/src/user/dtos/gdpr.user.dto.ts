@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { ConsentEnum, GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum, User } from '@prisma/client'
+import { ConsentEnum } from '@prisma/client'
 import { IsBoolean, IsEmail, IsEnum } from 'class-validator'
 
 export class ResponseConsentDto {
@@ -19,44 +19,9 @@ export class ResponseConsentDto {
   isGranted!: boolean
 }
 
-export class RequestGdprDataDto {
-  gdprData!: GdprDataDto[]
-}
-
 export enum UserAttributeEnum {
   TAX2023 = 'TAX2023',
   TAX2024 = 'TAX2024',
-}
-
-export class GdprDataDto {
-  @ApiProperty({
-    description: 'Type of Gdpr subscription',
-    default: 'marketing',
-    enum: GDPRTypeEnum,
-    enumName: 'GDPRTypeEnum',
-  })
-  @IsEnum(GDPRTypeEnum)
-  type!: GDPRTypeEnum
-
-  @ApiProperty({
-    description: 'Type of Gdpr category',
-    default: 'library',
-    enum: GDPRCategoryEnum,
-    enumName: 'GDPRCategoryEnum',
-  })
-  @IsEnum(GDPRCategoryEnum)
-  category!: GDPRCategoryEnum
-}
-
-export class GdprDataSubscriptionDto extends GdprDataDto {
-  @ApiProperty({
-    description: 'Type of subType - unsubscribe or subscribe',
-    default: 'unsubscribe',
-    enum: GDPRSubTypeEnum,
-    enumName: 'GDPRSubTypeEnum',
-  })
-  @IsEnum(GDPRSubTypeEnum)
-  subType!: GDPRSubTypeEnum
 }
 
 export enum UserOfficialCorrespondenceChannelEnum {
@@ -138,107 +103,7 @@ export class ResponseUserDataDto extends ResponseUserDataBasicDto {
     ],
   })
   consents!: ResponseConsentDto[]
-
-  // TODO remove once the frontend stops reading `gdprData` and reads `consents` instead.
-  /** @deprecated Use `consents` instead. Derived from current consent state. */
-  @ApiProperty({
-    description: 'DEPRECATED. Use `consents`.',
-    deprecated: true,
-    default: [
-      {
-        category: 'CITY',
-        type: 'ANALYTICS',
-        subType: 'unsubscribe',
-      },
-      {
-        category: 'CITY',
-        type: 'DATAPROCESSING',
-        subType: 'unsubscribe',
-      },
-    ],
-  })
-  gdprData!: ResponseGdprUserDataDto[]
 }
-
-export class ResponseGdprUserDataDto {
-  @ApiProperty({
-    description: 'Type of Gdpr category',
-    default: 'library',
-    enum: GDPRCategoryEnum,
-    enumName: 'GDPRCategoryEnum',
-  })
-  @IsEnum(GDPRCategoryEnum)
-  category!: GDPRCategoryEnum
-
-  @ApiProperty({
-    description: 'Type of Gdpr subscription',
-    default: 'marketing',
-    enum: GDPRTypeEnum,
-    enumName: 'GDPRTypeEnum',
-  })
-  @IsEnum(GDPRTypeEnum)
-  type!: GDPRTypeEnum
-
-  @ApiProperty({
-    description: 'Type of subType - unsubscribe or subscribe',
-    default: 'unsubscribe',
-    enum: GDPRSubTypeEnum,
-    enumName: 'GDPRSubTypeEnum',
-  })
-  @IsEnum(GDPRSubTypeEnum)
-  subType!: GDPRSubTypeEnum
-}
-
-export class ResponsePublicUnsubscribeDto {
-  @ApiProperty({
-    description: 'Local ID of user',
-    default: '133e0473-44da-407a-b24f-12da343e808d',
-  })
-  id!: string
-
-  @ApiProperty({
-    description: 'Message about unsubscribe',
-    default: 'user was unsubscribed',
-  })
-  message!: string
-
-  @ApiProperty({
-    description: 'Current consent state for the user, one entry per consent type.',
-    type: [ResponseConsentDto],
-    default: [
-      { consentType: 'MARKETING', isGranted: false },
-      { consentType: 'GENERAL', isGranted: false },
-    ],
-  })
-  consents!: ResponseConsentDto[]
-
-  // TODO remove once the frontend stops reading `gdprData` and reads `consents` instead.
-  /** @deprecated Use `consents` instead. Derived from current consent state. */
-  @ApiProperty({
-    description: 'DEPRECATED. Use `consents`.',
-    deprecated: true,
-    default: [
-      {
-        category: 'CITY',
-        type: 'ANALYTICS',
-        subType: 'unsubscribe',
-      },
-      {
-        category: 'CITY',
-        type: 'DATAPROCESSING',
-        subType: 'unsubscribe',
-      },
-    ],
-  })
-  gdprData!: ResponseGdprUserDataDto[]
-
-  @ApiProperty({
-    description: 'Message about unsubscribe',
-    default: 'user',
-  })
-  userData!: User
-}
-
 export class ChangeEmailRequestDto {
   @ApiProperty({
     description: 'New email for a user',

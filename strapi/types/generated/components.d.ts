@@ -195,6 +195,42 @@ export interface GeneralAlert extends Struct.ComponentSchema {
   }
 }
 
+export interface MunicipalChargeDeliveryMethod extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_delivery_methods'
+  info: {
+    displayName: 'deliveryMethod'
+  }
+  attributes: {
+    consentText: Schema.Attribute.RichText & Schema.Attribute.Required
+    deliveryMethodChangePendingAlert: Schema.Attribute.Component<
+      'municipal-charge.delivery-method-change-pending-alert',
+      false
+    >
+  }
+}
+
+export interface MunicipalChargeDeliveryMethodChangePendingAlert extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_delivery_method_change_pending_alerts'
+  info: {
+    displayName: 'deliveryMethodChangePendingAlert'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface MunicipalChargeMunicipalChargeIdentifier extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_municipal_charge_identifiers'
+  info: {
+    displayName: 'municipalChargeIdentifier'
+  }
+  attributes: {
+    dzn: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+    ko: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+  }
+}
+
 export interface SectionsContacts extends Struct.ComponentSchema {
   collectionName: 'components_sections_contacts'
   info: {
@@ -288,6 +324,9 @@ declare module '@strapi/strapi' {
       'blocks.help-item': BlocksHelpItem
       'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
+      'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod
+      'municipal-charge.delivery-method-change-pending-alert': MunicipalChargeDeliveryMethodChangePendingAlert
+      'municipal-charge.municipal-charge-identifier': MunicipalChargeMunicipalChargeIdentifier
       'sections.contacts': SectionsContacts
       'sections.documents': SectionsDocuments
       'sections.faq': SectionsFaq

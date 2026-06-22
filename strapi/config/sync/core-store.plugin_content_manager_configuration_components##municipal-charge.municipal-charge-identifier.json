@@ -1,0 +1,87 @@
+{
+  "key": "plugin_content_manager_configuration_components::municipal-charge.municipal-charge-identifier",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "relationOpenMode": "modal",
+      "mainField": "documentId",
+      "defaultSortBy": "documentId",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "dzn": {
+        "edit": {
+          "label": "dzn (Daň z nehnuteľností)",
+          "description": null,
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "dzn",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "ko": {
+        "edit": {
+          "label": "ko (Poplatok za komunálny odpad)",
+          "description": null,
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "ko",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "edit": [
+        [
+          {
+            "name": "dzn",
+            "size": 6
+          },
+          {
+            "name": "ko",
+            "size": 6
+          }
+        ]
+      ],
+      "list": [
+        "id",
+        "dzn",
+        "ko"
+      ]
+    },
+    "uid": "municipal-charge.municipal-charge-identifier",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

@@ -16,11 +16,16 @@ import cn from '@/src/utils/cn'
 type Props = {
   mobileNavbarRef: RefObject<HTMLDivElement | null>
   variant?: 'default' | 'auth'
-  backButtonHidden?: boolean
+  hasBackButton?: boolean
   className?: string
 }
 
-export const MobileNavBar = ({ mobileNavbarRef, variant, backButtonHidden, className }: Props) => {
+export const MobileNavBar = ({
+  mobileNavbarRef,
+  variant,
+  hasBackButton = false,
+  className,
+}: Props) => {
   const { t } = useTranslation('account')
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
@@ -33,7 +38,7 @@ export const MobileNavBar = ({ mobileNavbarRef, variant, backButtonHidden, class
       <FocusTrap active={isMobileMenuOpen}>
         <div className="fixed top-0 z-30 flex h-14 w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
           <div className="flex w-full justify-between">
-            {!backButtonHidden && <BackButton />}
+            {hasBackButton && <BackButton />}
             <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
             {variant === 'auth' ? (
               <OAuthLogo />

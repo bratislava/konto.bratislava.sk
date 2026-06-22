@@ -17,7 +17,7 @@ export type MainMenuItemProps = {
   url: string
 }
 
-export const useMenu = () => {
+export const useNavMenu = () => {
   const { t } = useTranslation('account')
 
   const { isLegalEntity } = useSsrAuth()
@@ -111,5 +111,3 @@ export const useMenu = () => {
     notSignedInActionsMenuItems,
   }
 }
-
-export default useMenu

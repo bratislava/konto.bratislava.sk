@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import useMenu, { MainMenuItemProps } from '@/src/components/segments/NavBar/useMenu'
+import { MainMenuItemProps, useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
 import cn from '@/src/utils/cn'
 
 /**
@@ -16,7 +16,7 @@ export const NavMenu = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const { mainMenuItems } = useMenu()
+  const { mainMenuItems } = useNavMenu()
 
   const isActive = (mainMenuItem: MainMenuItemProps) =>
     mainMenuItem.url === '/'

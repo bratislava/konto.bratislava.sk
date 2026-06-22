@@ -5,11 +5,11 @@ import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationAlert from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/IdentityVerificationAlert'
 import UserProfileDetailsEdit from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/UserProfileDetailsEdit'
-import UserProfileDetailsPhoto from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/UserProfileDetailsPhoto'
 import UserProfileDetailsView from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/UserProfileDetailsView'
 import { useUserProfileDetails } from '@/src/components/page-contents/UserProfilePageContent/UserProfileDetails/useUserProfileDetails'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
+import UserAvatar from '@/src/components/simple-components/UserAvatar'
 
 const UserProfileDetails = () => {
   const { t } = useTranslation('account')
@@ -66,7 +66,7 @@ const UserProfileDetails = () => {
         </div>
         <HorizontalDivider />
         <div className="flex flex-col gap-8 px-4 py-6 lg:flex-row lg:gap-16 lg:px-6">
-          <UserProfileDetailsPhoto userAttributes={userAttributes ?? {}} />
+          <UserAvatar userAttributes={userAttributes} variant="userDetails" />
           {isEditing ? (
             <UserProfileDetailsEdit
               formId={formId}

@@ -121,7 +121,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
         ) : isSuccess ? (
           <TowingTable vehicle={data} initialLicensePlate={licensePlate} />
         ) : isAxiosError(error) && error.response?.status === 404 ? (
-          <TowingNotFound />
+          <TowingNotFound initialLicensePlate={licensePlate} />
         ) : null}
       </div>
     </div>

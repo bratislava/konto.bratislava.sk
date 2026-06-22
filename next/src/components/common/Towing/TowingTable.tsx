@@ -4,6 +4,7 @@ import { TowingSearchResponseDto } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
 import Table from '@/src/components/common/Table/Table'
+import { formatDate } from '@/src/components/formatting/FormatDate'
 import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 
@@ -13,25 +14,31 @@ type Props = {
 }
 
 const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
-  const [licensePlate] = useState(initialLicensePlate) // I don't want it to rerender once the component is mounted
+  const [licensePlate] = useState(initialLicensePlate) // TODO: Remove this once the license plate is part of the response
   const { t } = useTranslation('account')
   const variant = vehicle.unloadingLocation ? 'relay' : 'towing'
 
-  const loadingDate = vehicle.loadingDate.split('T')[0].split('-').reverse().join('.')
-  const loadingTime = vehicle.loadingDate.split('T')[1].slice(0, 5)
+  const titleTranslationMap = {
+    relay: 'towing.informationTitle.relay',
+    towing: 'towing.informationTitle.towing',
+  }
 
   return (
     <>
-      <Typography variant="h3">
-        {t(`towing.informationTitle.${variant}`, { ecv: licensePlate })}
-      </Typography>
+      <Typography variant="h3">{t(titleTranslationMap[variant], { licensePlate })}</Typography>
 
       <div className="flex flex-col gap-4">
         <Table
           rows={[
             { label: t('towing.informationTable.licensePlate'), value: licensePlate },
-            { label: t('towing.informationTable.loadingDate'), value: loadingDate },
-            { label: t('towing.informationTable.loadingTime'), value: loadingTime },
+            {
+              label: t('towing.informationTable.loadingDate'),
+              value: formatDate(vehicle.loadingDate, 'sk', 'short'),
+            },
+            {
+              label: t('towing.informationTable.loadingTime'),
+              value: formatDate(vehicle.loadingDate, 'sk', 'time'),
+            },
             {
               label: t('towing.informationTable.loadingLocation'),
               value: vehicle.loadingLocation,

@@ -73,6 +73,7 @@ const useHeadings = () => {
           subtree: true, // Watch the entire subtree of the root element
         })
       }
+      updateHeadings()
 
       // Cleanup the event listener on unmount
       return () => {

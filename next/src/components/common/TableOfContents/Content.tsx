@@ -71,7 +71,7 @@ const Content = ({ headings, headerOffset }: Props) => {
   }
 
   return (
-    <div key="table-of-contents" className="flex flex-col lg:px-6 lg:py-2">
+    <div key="table-of-contents" className="flex flex-col px-6 py-2">
       {headings.map((heading) => {
         return heading.level === 2 ? (
           <Button

@@ -100,7 +100,8 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
         )}
       >
         {/* Screen: Mobile */}
-        <div className="lg:hidden">
+        <div className="md:hidden">
+          <p>Mobile Table of Contents</p>
           <MobileTableOfContents />
         </div>
         <div
@@ -140,7 +141,8 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
         </div>
         {/* TODO Sidebar goes here */}
         {/* Screen: Desktop */}
-        <div className="grow basis-72 max-lg:hidden">
+        <div className="grow basis-72 max-md:hidden">
+          <p>Desktop Table of Contents</p>
           <DesktopTableOfContents />
         </div>
       </div>

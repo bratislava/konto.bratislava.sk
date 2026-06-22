@@ -81,7 +81,7 @@ export interface BlocksContactPersonCard extends Struct.ComponentSchema {
 export interface BlocksExternalDocument extends Struct.ComponentSchema {
   collectionName: 'components_blocks_external_documents'
   info: {
-    displayName: 'externalDocument'
+    displayName: 'External Document'
   }
   attributes: {
     title: Schema.Attribute.String

@@ -17,7 +17,7 @@ const ExternalDocumentRowCard = ({ title, url, ariaLabel }: Props) => {
   const { t } = useTranslation('account')
 
   return (
-    <li className="relative flex flex-row items-center justify-between gap-4 px-6 py-4 wrapper-focus-ring">
+    <li className="relative flex flex-row items-center justify-between gap-4 rounded-md px-6 py-4 wrapper-focus-ring">
       <div className="flex flex-row items-start gap-2 lg:items-center lg:gap-4">
         <Icon
           name="attachment"
@@ -38,7 +38,7 @@ const ExternalDocumentRowCard = ({ title, url, ariaLabel }: Props) => {
         href={url}
         stretched
         aria-label={ariaLabel ?? `${t('ExternalDocumentRowCard.go_to_document')}: ${title}`}
-        className="whitespace-nowrap max-lg:hidden"
+        className="whitespace-nowrap focus-visible:ring-0 max-lg:hidden"
       >
         {t('ExternalDocumentRowCard.go_to_document')}
       </Button>

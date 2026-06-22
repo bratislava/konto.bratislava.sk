@@ -10,12 +10,18 @@ type Props = {
   desktopNavbarRef: RefObject<HTMLDivElement | null>
   mobileNavbarRef: RefObject<HTMLDivElement | null>
   backButtonHidden?: boolean
+  variant?: 'default' | 'auth'
 }
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
  */
-const NavBar = ({ desktopNavbarRef, mobileNavbarRef, backButtonHidden }: Props) => {
+const NavBar = ({
+  desktopNavbarRef,
+  mobileNavbarRef,
+  backButtonHidden,
+  variant = 'default',
+}: Props) => {
   const alertRef = useRef<HTMLDivElement>(null)
   const { height } = useResizeObserver({ ref: alertRef as React.RefObject<HTMLElement> })
 
@@ -25,13 +31,14 @@ const NavBar = ({ desktopNavbarRef, mobileNavbarRef, backButtonHidden }: Props) 
         <AlertBanner />
         <div className="relative w-full">
           <NavBarHeader backButtonHidden={backButtonHidden} />
-          <NavMenu />
+          {variant === 'default' ? <NavMenu /> : null}
         </div>
       </div>
       <div style={{ height }} aria-hidden className="hidden lg:block" />
 
       <MobileNavBar
         mobileNavbarRef={mobileNavbarRef}
+        variant={variant}
         backButtonHidden={backButtonHidden}
         className="lg:hidden"
       />

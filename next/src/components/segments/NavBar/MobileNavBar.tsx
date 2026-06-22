@@ -7,17 +7,19 @@ import Icon from '@/src/components/icon-components/Icon'
 import BackButton from '@/src/components/segments/NavBar/BackButton'
 import MobileNavMenu from '@/src/components/segments/NavBar/MobileNavMenu'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
+import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import Brand from '@/src/components/simple-components/Brand'
 import cn from '@/src/utils/cn'
 
 type Props = {
   mobileNavbarRef: RefObject<HTMLDivElement | null>
+  variant?: 'default' | 'auth'
   backButtonHidden?: boolean
   className?: string
 }
 
-export const MobileNavBar = ({ mobileNavbarRef, backButtonHidden, className }: Props) => {
+export const MobileNavBar = ({ mobileNavbarRef, variant, backButtonHidden, className }: Props) => {
   const { t } = useTranslation('account')
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
@@ -28,7 +30,9 @@ export const MobileNavBar = ({ mobileNavbarRef, backButtonHidden, className }: P
           <div className="flex w-full justify-between">
             {!backButtonHidden && <BackButton />}
             <Brand className="grow" variant="header" />
-            {isMobileMenuOpen ? (
+            {variant === 'auth' ? (
+              <OAuthLogo />
+            ) : isMobileMenuOpen ? (
               <Button
                 onPress={() => {
                   setMobileMenuOpen(false)

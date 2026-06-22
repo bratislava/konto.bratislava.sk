@@ -117,9 +117,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
         )}
 
         {isPending ? (
-          <div className="flex justify-center">
-            <Spinner />
-          </div>
+          <Spinner className="self-center" />
         ) : isSuccess ? (
           <TowingTable vehicle={data} initialLicensePlate={licensePlate} />
         ) : isAxiosError(error) && error.response?.status === 404 ? (

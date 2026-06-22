@@ -547,33 +547,6 @@ export type ComponentSectionsContactsInput = {
   webContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
 }
 
-export type ComponentSectionsFaq = {
-  __typename?: 'ComponentSectionsFaq'
-  id: Scalars['ID']['output']
-  questions: Array<Maybe<ComponentBlocksQuestion>>
-  title?: Maybe<Scalars['String']['output']>
-}
-
-export type ComponentSectionsFaqQuestionsArgs = {
-  filters?: InputMaybe<ComponentBlocksQuestionFiltersInput>
-  pagination?: InputMaybe<PaginationArg>
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
-export type ComponentSectionsFaqFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
-  not?: InputMaybe<ComponentSectionsFaqFiltersInput>
-  or?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
-  questions?: InputMaybe<ComponentBlocksQuestionFiltersInput>
-  title?: InputMaybe<StringFilterInput>
-}
-
-export type ComponentSectionsFaqInput = {
-  id?: InputMaybe<Scalars['ID']['input']>
-  questions?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionInput>>>
-  title?: InputMaybe<Scalars['String']['input']>
-}
-
 export type ComponentSectionsDocuments = {
   __typename?: 'ComponentSectionsDocuments'
   externalDocuments?: Maybe<Array<Maybe<ComponentBlocksExternalDocument>>>
@@ -601,6 +574,33 @@ export type ComponentSectionsDocumentsInput = {
   externalDocuments?: InputMaybe<Array<InputMaybe<ComponentBlocksExternalDocumentInput>>>
   id?: InputMaybe<Scalars['ID']['input']>
   text?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentSectionsFaq = {
+  __typename?: 'ComponentSectionsFaq'
+  id: Scalars['ID']['output']
+  questions: Array<Maybe<ComponentBlocksQuestion>>
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsFaqQuestionsArgs = {
+  filters?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsFaqFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
+  not?: InputMaybe<ComponentSectionsFaqFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
+  questions?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsFaqInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  questions?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionInput>>>
   title?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -914,8 +914,8 @@ export type FormInput = {
 
 export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsContacts
-  | ComponentSectionsFaq
   | ComponentSectionsDocuments
+  | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
   | Error
@@ -994,8 +994,8 @@ export type GenericMorph =
   | ComponentBlocksQuestion
   | ComponentGeneralAlert
   | ComponentSectionsContacts
-  | ComponentSectionsFaq
   | ComponentSectionsDocuments
+  | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
   | Footer
@@ -2989,15 +2989,6 @@ export type FormLandingPageFragment = {
         } | null
       }
     | {
-        __typename: 'ComponentSectionsFaq'
-        title?: string | null
-        questions: Array<{
-          __typename?: 'ComponentBlocksQuestion'
-          title: string
-          content: string
-        } | null>
-      }
-    | {
         __typename: 'ComponentSectionsDocuments'
         title?: string | null
         text?: string | null
@@ -3006,6 +2997,15 @@ export type FormLandingPageFragment = {
           title?: string | null
           url: string
         } | null> | null
+      }
+    | {
+        __typename: 'ComponentSectionsFaq'
+        title?: string | null
+        questions: Array<{
+          __typename?: 'ComponentBlocksQuestion'
+          title: string
+          content: string
+        } | null>
       }
     | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
     | {
@@ -3120,15 +3120,6 @@ export type FormWithLandingPageFragment = {
           } | null
         }
       | {
-          __typename: 'ComponentSectionsFaq'
-          title?: string | null
-          questions: Array<{
-            __typename?: 'ComponentBlocksQuestion'
-            title: string
-            content: string
-          } | null>
-        }
-      | {
           __typename: 'ComponentSectionsDocuments'
           title?: string | null
           text?: string | null
@@ -3137,6 +3128,15 @@ export type FormWithLandingPageFragment = {
             title?: string | null
             url: string
           } | null> | null
+        }
+      | {
+          __typename: 'ComponentSectionsFaq'
+          title?: string | null
+          questions: Array<{
+            __typename?: 'ComponentBlocksQuestion'
+            title: string
+            content: string
+          } | null>
         }
       | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
       | {
@@ -3267,15 +3267,6 @@ export type FormWithLandingPageBySlugQuery = {
             } | null
           }
         | {
-            __typename: 'ComponentSectionsFaq'
-            title?: string | null
-            questions: Array<{
-              __typename?: 'ComponentBlocksQuestion'
-              title: string
-              content: string
-            } | null>
-          }
-        | {
             __typename: 'ComponentSectionsDocuments'
             title?: string | null
             text?: string | null
@@ -3284,6 +3275,15 @@ export type FormWithLandingPageBySlugQuery = {
               title?: string | null
               url: string
             } | null> | null
+          }
+        | {
+            __typename: 'ComponentSectionsFaq'
+            title?: string | null
+            questions: Array<{
+              __typename?: 'ComponentBlocksQuestion'
+              title: string
+              content: string
+            } | null>
           }
         | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
         | {
@@ -3825,16 +3825,6 @@ type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   } | null
 }
 
-type FormLandingPageSections_ComponentSectionsFaq_Fragment = {
-  __typename: 'ComponentSectionsFaq'
-  title?: string | null
-  questions: Array<{
-    __typename?: 'ComponentBlocksQuestion'
-    title: string
-    content: string
-  } | null>
-}
-
 type FormLandingPageSections_ComponentSectionsDocuments_Fragment = {
   __typename: 'ComponentSectionsDocuments'
   title?: string | null
@@ -3844,6 +3834,16 @@ type FormLandingPageSections_ComponentSectionsDocuments_Fragment = {
     title?: string | null
     url: string
   } | null> | null
+}
+
+type FormLandingPageSections_ComponentSectionsFaq_Fragment = {
+  __typename: 'ComponentSectionsFaq'
+  title?: string | null
+  questions: Array<{
+    __typename?: 'ComponentBlocksQuestion'
+    title: string
+    content: string
+  } | null>
 }
 
 type FormLandingPageSections_ComponentSectionsRichtext_Fragment = {
@@ -3871,8 +3871,8 @@ type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsContacts_Fragment
-  | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsDocuments_Fragment
+  | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
   | FormLandingPageSections_Error_Fragment

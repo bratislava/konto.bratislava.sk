@@ -29,6 +29,9 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
 fragment FormBase on Form {
   slug
   moreInformationUrl
+  municipalService {
+    ...MunicipalServiceSlugEntity
+  }
 }
 
 fragment FormWithLandingPage on Form {

@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.question",
+  "key": "plugin_content_manager_configuration_components::blocks.external-document",
   "value": {
     "settings": {
       "bulkable": true,
@@ -22,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "Otázka",
+          "label": "Názov",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -34,18 +34,18 @@
           "sortable": true
         }
       },
-      "content": {
+      "url": {
         "edit": {
-          "label": "Odpoveď",
-          "description": "",
+          "label": "URL",
+          "description": "Súbory nahrávame na bratislava.sk strapi a do tohoto komponentu patria už len linky na súbory v bratislave.sk kde sa dajú aj stiahnuť.",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "content",
-          "searchable": false,
-          "sortable": false
+          "label": "url",
+          "searchable": true,
+          "sortable": true
         }
       },
       "documentId": {
@@ -58,26 +58,25 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title"
-      ],
       "edit": [
         [
           {
             "name": "title",
             "size": 6
-          }
-        ],
-        [
+          },
           {
-            "name": "content",
-            "size": 12
+            "name": "url",
+            "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "url"
       ]
     },
-    "uid": "blocks.question",
+    "uid": "blocks.external-document",
     "isComponent": true
   },
   "type": "object",

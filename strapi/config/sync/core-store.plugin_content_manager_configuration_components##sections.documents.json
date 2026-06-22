@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.question",
+  "key": "plugin_content_manager_configuration_components::sections.documents",
   "value": {
     "settings": {
       "bulkable": true,
@@ -22,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "Otázka",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -34,16 +34,30 @@
           "sortable": true
         }
       },
-      "content": {
+      "text": {
         "edit": {
-          "label": "Odpoveď",
+          "label": "text",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "content",
+          "label": "text",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "externalDocuments": {
+        "edit": {
+          "label": "Externé Dokumenty",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "externalDocuments",
           "searchable": false,
           "sortable": false
         }
@@ -60,7 +74,9 @@
     "layouts": {
       "list": [
         "id",
-        "title"
+        "title",
+        "externalDocuments",
+        "text"
       ],
       "edit": [
         [
@@ -71,13 +87,19 @@
         ],
         [
           {
-            "name": "content",
+            "name": "externalDocuments",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "text",
+            "size": 6
           }
         ]
       ]
     },
-    "uid": "blocks.question",
+    "uid": "sections.documents",
     "isComponent": true
   },
   "type": "object",

@@ -10,7 +10,6 @@ import { cityAccountClient } from '@/src/clients/city-account'
 import TowingNotFound from '@/src/components/common/Towing/TowingNotFound'
 import TowingTable from '@/src/components/common/Towing/TowingTable'
 import TextField from '@/src/components/fields/TextField'
-import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import { environment } from '@/src/environment'
@@ -66,7 +65,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={text} />
 
-      <div className="flex flex-col gap-4 rounded-lg border px-5 py-6">
+      <div className="flex flex-col justify-center gap-4 rounded-lg border px-5 py-6">
         <TextField
           label={t('towing.licensePlate')}
           displayOptionalLabel={false}
@@ -124,17 +123,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
         ) : isSuccess ? (
           <TowingTable vehicle={data} initialLicensePlate={licensePlate} />
         ) : isAxiosError(error) && error.response?.status === 404 ? (
-          <div className="flex flex-col items-center gap-6 rounded-xl border p-12">
-            <div className="size-12 shrink-0 lg:size-16">
-              <TowingIcon />
-            </div>
-
-            <Typography variant="p-large" className="text-center">
-              {t('towing.notFound.title')}
-            </Typography>
-
-            <Markdown content={t('towing.notFound.content')} className="text-center" />
-          </div>
+          <TowingNotFound />
         ) : null}
       </div>
     </div>

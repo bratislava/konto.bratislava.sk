@@ -82,7 +82,7 @@ describe('FormsService', () => {
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
       prismaMock.forms.count.mockResolvedValue(63)
-      prismaMock.forms.groupBy.mockResolvedValue([])
+      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
       Object.defineProperty(prismaMock.forms, 'fields', {
         value: { createdAt: 'createdAtMock' },
       })
@@ -209,7 +209,7 @@ describe('FormsService', () => {
 
   describe('getFormsCount', () => {
     it('should return all 0 if there is no record in database', async () => {
-      prismaMock.forms.groupBy.mockResolvedValue([])
+      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
       const result = await service.getFormsCount({})
       Object.values(FormState).forEach((state) => {
         expect(result[state]).toBe(0)

@@ -15,7 +15,6 @@ declare module 'react' {
 type Props = {
   children: ReactNode
   variant?: 'default' | 'auth'
-  hideNavMenu?: boolean
   hideBackButton?: boolean
   className?: string
 }
@@ -24,13 +23,7 @@ type Props = {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21361&m=dev
  */
 
-const PageLayout = ({
-  variant = 'default',
-  className,
-  children,
-  hideNavMenu,
-  hideBackButton,
-}: Props) => {
+const PageLayout = ({ variant = 'default', className, children, hideBackButton }: Props) => {
   const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
   return (
@@ -47,7 +40,6 @@ const PageLayout = ({
           />
         ) : (
           <NavBar
-            hideNavMenu={hideNavMenu}
             backButtonHidden={hideBackButton}
             desktopNavbarRef={desktopNavbarRef}
             mobileNavbarRef={mobileNavbarRef}

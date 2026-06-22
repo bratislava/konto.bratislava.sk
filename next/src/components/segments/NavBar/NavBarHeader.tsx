@@ -25,7 +25,7 @@ export const NavBarHeader = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const { menuItems } = useMenu()
+  const { signedInActionsMenuItems } = useMenu()
 
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
@@ -54,6 +54,8 @@ export const NavBarHeader = () => {
           {isSignedIn ? (
             <MenuDropdown
               setIsOpen={setIsMenuOpen}
+              items={signedInActionsMenuItems}
+              itemVariant="header"
               buttonTrigger={
                 <Button
                   variant="unstyled"
@@ -72,8 +74,6 @@ export const NavBarHeader = () => {
                   </div>
                 </Button>
               }
-              itemVariant="header"
-              items={menuItems}
             />
           ) : (
             <div className="flex items-center gap-6">

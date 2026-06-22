@@ -20,7 +20,7 @@ export type MenuSectionBase = {
 export const useMenu = () => {
   const { t } = useTranslation('account')
 
-  const { isSignedIn, isLegalEntity } = useSsrAuth()
+  const { isLegalEntity } = useSsrAuth()
   const { signOut } = useSignOut()
 
   // we need to keep the work in progress of the open form if navigating away form it
@@ -40,7 +40,7 @@ export const useMenu = () => {
         await router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
       }
 
-  const menuSections: (MenuSectionBase & { hidden?: boolean })[] = [
+  const mainMenuItems: (MenuSectionBase & { hidden?: boolean })[] = [
     {
       id: 0,
       title: t('account_section_intro.navigation'),
@@ -64,49 +64,52 @@ export const useMenu = () => {
       title: t('account_section_payment.title'),
       icon: <Icon name="payment" className="size-6" />,
       url: ROUTES.TAXES_AND_FEES,
-      hidden: isLegalEntity,
+      isHidden: isLegalEntity,
     },
-  ].filter((section) => !section.hidden)
+  ].filter((section) => !section.isHidden)
 
-  // TODO consider using this in desktop menu
-  const menuItems: MenuItemBase[] = isSignedIn
-    ? [
-        {
-          id: 0,
-          title: t('menu_links.profile'),
-          icon: <Icon name="user" className="size-5" />,
-          url: ROUTES.USER_PROFILE,
-        },
-        {
-          id: 1,
-          title: t('menu_links.help'),
-          icon: <Icon name="help" className="size-5" />,
-          url: ROUTES.HELP,
-        },
-        {
-          id: 2,
-          title: t('menu_links.logout'),
-          icon: <Icon name="logout" className="size-5 text-negative-700" />,
-          onPress: () => signOut(),
-          itemClassName: 'bg-negative-50',
-        },
-      ]
-    : [
-        {
-          id: 0,
-          title: t('menu_links.login'),
-          icon: <Icon name="user" className="size-5" />,
-          onPress: login,
-        },
-        {
-          id: 1,
-          title: t('menu_links.register'),
-          icon: <Icon name="user" className="size-5" />,
-          onPress: register,
-        },
-      ]
+  const signedInActionsMenuItems: MenuItemBase[] = [
+    {
+      id: 0,
+      title: t('menu_links.profile'),
+      icon: <Icon name="user" className="size-5" />,
+      url: ROUTES.USER_PROFILE,
+    },
+    {
+      id: 1,
+      title: t('menu_links.help'),
+      icon: <Icon name="help" className="size-5" />,
+      url: ROUTES.HELP,
+    },
+    {
+      id: 2,
+      title: t('menu_links.logout'),
+      icon: <Icon name="logout" className="size-5 text-content-error-default" />,
+      onPress: () => signOut(),
+      itemClassName: 'bg-negative-50',
+    },
+  ]
 
-  return { menuSections, menuItems }
+  const notSignedInActionsMenuItems: MenuItemBase[] = [
+    {
+      id: 0,
+      title: t('menu_links.login'),
+      icon: <Icon name="user" className="size-5" />,
+      onPress: login,
+    },
+    {
+      id: 1,
+      title: t('menu_links.register'),
+      icon: <Icon name="user" className="size-5" />,
+      onPress: register,
+    },
+  ]
+
+  return {
+    mainMenuItems,
+    signedInActionsMenuItems,
+    notSignedInActionsMenuItems,
+  }
 }
 
 export default useMenu

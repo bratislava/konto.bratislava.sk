@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import BackButton from '@/src/components/segments/NavBar/BackButton'
 import SkipToContentButton from '@/src/components/segments/NavBar/SkipToContentButton'
 import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
 import Brand from '@/src/components/simple-components/Brand'
@@ -21,7 +22,11 @@ import { ROUTES } from '@/src/utils/routes'
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
  */
 
-export const NavBarHeader = () => {
+type Props = {
+  backButtonHidden?: boolean
+}
+
+export const NavBarHeader = ({ backButtonHidden }: Props) => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -48,6 +53,7 @@ export const NavBarHeader = () => {
       {/* TODO Figma says 64px */}
       <div className="flex h-[57px] items-center gap-x-6">
         <SkipToContentButton />
+        {!backButtonHidden && <BackButton />}
         <Brand className="grow" variant="header" />
         <IdentityVerificationStatus />
         <nav className="flex gap-x-8">

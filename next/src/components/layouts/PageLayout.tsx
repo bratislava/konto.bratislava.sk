@@ -48,6 +48,7 @@ const PageLayout = ({
         ) : (
           <NavBar
             hideNavMenu={hideNavMenu}
+            backButtonHidden={hideBackButton}
             desktopNavbarRef={desktopNavbarRef}
             mobileNavbarRef={mobileNavbarRef}
           />

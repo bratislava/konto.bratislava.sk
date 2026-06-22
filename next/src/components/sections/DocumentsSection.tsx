@@ -1,7 +1,7 @@
 import { Fragment } from 'react/jsx-runtime'
 
 import { DocumentsSectionFragment } from '@/src/clients/graphql-strapi/api'
-import LinkRowCard from '@/src/components/common/Documents/LinkRowCard'
+import ExternalDocumentRowCard from '@/src/components/common/Documents/ExternalDocumentRowCard'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
@@ -31,7 +31,7 @@ const DocumentsSection = ({
                 />
               )}
 
-              <LinkRowCard
+              <ExternalDocumentRowCard
                 key={externalDocument?.title}
                 title={externalDocument?.title}
                 url={externalDocument.url}

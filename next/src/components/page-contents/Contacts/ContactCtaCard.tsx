@@ -201,7 +201,7 @@ const ContactCtaCard = ({ className, contact }: ContactCtaCardProps) => {
   return (
     <div className={cn('relative flex max-w-180 items-start gap-4', className)}>
       <div className="flex shrink-0 items-center justify-center rounded-full text-content-passive-secondary">
-        <IconFromData className="size-6 lg:size-8" />
+        <IconFromData className="size-6" />
       </div>
       <div
         // margin and padding added to show full focus ring

@@ -215,6 +215,27 @@ export type ComponentBlocksContactPersonCardInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentBlocksExternalDocument = {
+  __typename?: 'ComponentBlocksExternalDocument'
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+  url: Scalars['String']['output']
+}
+
+export type ComponentBlocksExternalDocumentFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksExternalDocumentFiltersInput>>>
+  not?: InputMaybe<ComponentBlocksExternalDocumentFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksExternalDocumentFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+  url?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksExternalDocumentInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+  url?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksFooterColumn = {
   __typename?: 'ComponentBlocksFooterColumn'
   id: Scalars['ID']['output']
@@ -524,6 +545,36 @@ export type ComponentSectionsContactsInput = {
   title?: InputMaybe<Scalars['String']['input']>
   titleLevel?: InputMaybe<Enum_Componentsectionscontacts_Titlelevel>
   webContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+}
+
+export type ComponentSectionsDocuments = {
+  __typename?: 'ComponentSectionsDocuments'
+  externalDocuments?: Maybe<Array<Maybe<ComponentBlocksExternalDocument>>>
+  id: Scalars['ID']['output']
+  text?: Maybe<Scalars['String']['output']>
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsDocumentsExternalDocumentsArgs = {
+  filters?: InputMaybe<ComponentBlocksExternalDocumentFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsDocumentsFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsDocumentsFiltersInput>>>
+  externalDocuments?: InputMaybe<ComponentBlocksExternalDocumentFiltersInput>
+  not?: InputMaybe<ComponentSectionsDocumentsFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsDocumentsFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsDocumentsInput = {
+  externalDocuments?: InputMaybe<Array<InputMaybe<ComponentBlocksExternalDocumentInput>>>
+  id?: InputMaybe<Scalars['ID']['input']>
+  text?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentSectionsFaq = {
@@ -866,6 +917,7 @@ export type FormInput = {
 
 export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsContacts
+  | ComponentSectionsDocuments
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
@@ -935,6 +987,7 @@ export type GenericMorph =
   | ComponentBlocksContactCard
   | ComponentBlocksContactDirectionsCard
   | ComponentBlocksContactPersonCard
+  | ComponentBlocksExternalDocument
   | ComponentBlocksFooterColumn
   | ComponentBlocksFormLandingPage
   | ComponentBlocksFormLandingPageFormCta
@@ -944,6 +997,7 @@ export type GenericMorph =
   | ComponentBlocksQuestion
   | ComponentGeneralAlert
   | ComponentSectionsContacts
+  | ComponentSectionsDocuments
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
@@ -2944,6 +2998,16 @@ export type FormLandingPageFragment = {
         } | null
       }
     | {
+        __typename: 'ComponentSectionsDocuments'
+        title?: string | null
+        text?: string | null
+        externalDocuments?: Array<{
+          __typename?: 'ComponentBlocksExternalDocument'
+          title?: string | null
+          url: string
+        } | null> | null
+      }
+    | {
         __typename: 'ComponentSectionsFaq'
         title?: string | null
         questions: Array<{
@@ -3069,6 +3133,16 @@ export type FormWithLandingPageFragment = {
             barrierFreeInfo?: string | null
             iframeUrl?: string | null
           } | null
+        }
+      | {
+          __typename: 'ComponentSectionsDocuments'
+          title?: string | null
+          text?: string | null
+          externalDocuments?: Array<{
+            __typename?: 'ComponentBlocksExternalDocument'
+            title?: string | null
+            url: string
+          } | null> | null
         }
       | {
           __typename: 'ComponentSectionsFaq'
@@ -3218,6 +3292,16 @@ export type FormWithLandingPageBySlugQuery = {
               barrierFreeInfo?: string | null
               iframeUrl?: string | null
             } | null
+          }
+        | {
+            __typename: 'ComponentSectionsDocuments'
+            title?: string | null
+            text?: string | null
+            externalDocuments?: Array<{
+              __typename?: 'ComponentBlocksExternalDocument'
+              title?: string | null
+              url: string
+            } | null> | null
           }
         | {
             __typename: 'ComponentSectionsFaq'
@@ -3706,6 +3790,23 @@ export type FaqSectionFragment = {
   } | null>
 }
 
+export type ExternalDocumentBlockFragment = {
+  __typename?: 'ComponentBlocksExternalDocument'
+  title?: string | null
+  url: string
+}
+
+export type DocumentsSectionFragment = {
+  __typename?: 'ComponentSectionsDocuments'
+  title?: string | null
+  text?: string | null
+  externalDocuments?: Array<{
+    __typename?: 'ComponentBlocksExternalDocument'
+    title?: string | null
+    url: string
+  } | null> | null
+}
+
 type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   __typename: 'ComponentSectionsContacts'
   id: string
@@ -3770,6 +3871,17 @@ type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   } | null
 }
 
+type FormLandingPageSections_ComponentSectionsDocuments_Fragment = {
+  __typename: 'ComponentSectionsDocuments'
+  title?: string | null
+  text?: string | null
+  externalDocuments?: Array<{
+    __typename?: 'ComponentBlocksExternalDocument'
+    title?: string | null
+    url: string
+  } | null> | null
+}
+
 type FormLandingPageSections_ComponentSectionsFaq_Fragment = {
   __typename: 'ComponentSectionsFaq'
   title?: string | null
@@ -3805,6 +3917,7 @@ type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsContacts_Fragment
+  | FormLandingPageSections_ComponentSectionsDocuments_Fragment
   | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
@@ -3989,6 +4102,22 @@ export const FaqSectionFragmentDoc = gql`
   }
   ${QuestionFragmentDoc}
 `
+export const ExternalDocumentBlockFragmentDoc = gql`
+  fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
+    title
+    url
+  }
+`
+export const DocumentsSectionFragmentDoc = gql`
+  fragment DocumentsSection on ComponentSectionsDocuments {
+    title
+    text
+    externalDocuments {
+      ...ExternalDocumentBlock
+    }
+  }
+  ${ExternalDocumentBlockFragmentDoc}
+`
 export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
@@ -4004,11 +4133,15 @@ export const FormLandingPageSectionsFragmentDoc = gql`
     ... on ComponentSectionsFaq {
       ...FaqSection
     }
+    ... on ComponentSectionsDocuments {
+      ...DocumentsSection
+    }
   }
   ${RichtextSectionFragmentDoc}
   ${StepperSectionFragmentDoc}
   ${ContactsSectionFragmentDoc}
   ${FaqSectionFragmentDoc}
+  ${DocumentsSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {

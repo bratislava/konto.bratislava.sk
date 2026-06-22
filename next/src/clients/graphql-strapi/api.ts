@@ -394,6 +394,27 @@ export type ComponentBlocksHelpItemInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentBlocksQuestion = {
+  __typename?: 'ComponentBlocksQuestion'
+  content: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksQuestionFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksQuestionInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentGeneralAlert = {
   __typename?: 'ComponentGeneralAlert'
   content: Scalars['String']['output']
@@ -524,6 +545,33 @@ export type ComponentSectionsContactsInput = {
   title?: InputMaybe<Scalars['String']['input']>
   titleLevel?: InputMaybe<Enum_Componentsectionscontacts_Titlelevel>
   webContacts?: InputMaybe<Array<InputMaybe<ComponentBlocksContactCardInput>>>
+}
+
+export type ComponentSectionsFaq = {
+  __typename?: 'ComponentSectionsFaq'
+  id: Scalars['ID']['output']
+  questions: Array<Maybe<ComponentBlocksQuestion>>
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsFaqQuestionsArgs = {
+  filters?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentSectionsFaqFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
+  not?: InputMaybe<ComponentSectionsFaqFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsFaqFiltersInput>>>
+  questions?: InputMaybe<ComponentBlocksQuestionFiltersInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsFaqInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  questions?: InputMaybe<Array<InputMaybe<ComponentBlocksQuestionInput>>>
+  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentSectionsDocuments = {
@@ -866,6 +914,7 @@ export type FormInput = {
 
 export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsContacts
+  | ComponentSectionsFaq
   | ComponentSectionsDocuments
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
@@ -942,8 +991,10 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
+  | ComponentBlocksQuestion
   | ComponentGeneralAlert
   | ComponentSectionsContacts
+  | ComponentSectionsFaq
   | ComponentSectionsDocuments
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
@@ -1092,6 +1143,7 @@ export type HomepageAnnouncement = {
   documentId: Scalars['ID']['output']
   href: Scalars['String']['output']
   image: UploadFile
+  primaryButton?: Maybe<ComponentBlocksCommonLink>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   title: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -1125,6 +1177,7 @@ export type HomepageAnnouncementFiltersInput = {
   href?: InputMaybe<StringFilterInput>
   not?: InputMaybe<HomepageAnnouncementFiltersInput>
   or?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
+  primaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   title?: InputMaybe<StringFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
@@ -1137,6 +1190,7 @@ export type HomepageAnnouncementInput = {
   description?: InputMaybe<Scalars['String']['input']>
   href?: InputMaybe<Scalars['String']['input']>
   image?: InputMaybe<Scalars['ID']['input']>
+  primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   title?: InputMaybe<Scalars['String']['input']>
 }
@@ -2935,6 +2989,15 @@ export type FormLandingPageFragment = {
         } | null
       }
     | {
+        __typename: 'ComponentSectionsFaq'
+        title?: string | null
+        questions: Array<{
+          __typename?: 'ComponentBlocksQuestion'
+          title: string
+          content: string
+        } | null>
+      }
+    | {
         __typename: 'ComponentSectionsDocuments'
         title?: string | null
         text?: string | null
@@ -3055,6 +3118,15 @@ export type FormWithLandingPageFragment = {
             barrierFreeInfo?: string | null
             iframeUrl?: string | null
           } | null
+        }
+      | {
+          __typename: 'ComponentSectionsFaq'
+          title?: string | null
+          questions: Array<{
+            __typename?: 'ComponentBlocksQuestion'
+            title: string
+            content: string
+          } | null>
         }
       | {
           __typename: 'ComponentSectionsDocuments'
@@ -3193,6 +3265,15 @@ export type FormWithLandingPageBySlugQuery = {
               barrierFreeInfo?: string | null
               iframeUrl?: string | null
             } | null
+          }
+        | {
+            __typename: 'ComponentSectionsFaq'
+            title?: string | null
+            questions: Array<{
+              __typename?: 'ComponentBlocksQuestion'
+              title: string
+              content: string
+            } | null>
           }
         | {
             __typename: 'ComponentSectionsDocuments'
@@ -3393,6 +3474,12 @@ export type HomepageQuery = {
       href: string
       dateFrom?: any | null
       dateTo?: any | null
+      primaryButton?: {
+        __typename?: 'ComponentBlocksCommonLink'
+        label?: string | null
+        url?: string | null
+        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
     announcementsLegalPerson: Array<{
@@ -3404,6 +3491,12 @@ export type HomepageQuery = {
       href: string
       dateFrom?: any | null
       dateTo?: any | null
+      primaryButton?: {
+        __typename?: 'ComponentBlocksCommonLink'
+        label?: string | null
+        url?: string | null
+        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
   } | null
@@ -3418,6 +3511,12 @@ export type HomepageAnnouncementEntityFragment = {
   href: string
   dateFrom?: any | null
   dateTo?: any | null
+  primaryButton?: {
+    __typename?: 'ComponentBlocksCommonLink'
+    label?: string | null
+    url?: string | null
+    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  } | null
   image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
 }
 
@@ -3629,6 +3728,22 @@ export type ContactsSectionFragment = {
   } | null
 }
 
+export type QuestionFragment = {
+  __typename?: 'ComponentBlocksQuestion'
+  title: string
+  content: string
+}
+
+export type FaqSectionFragment = {
+  __typename?: 'ComponentSectionsFaq'
+  title?: string | null
+  questions: Array<{
+    __typename?: 'ComponentBlocksQuestion'
+    title: string
+    content: string
+  } | null>
+}
+
 export type ExternalDocumentBlockFragment = {
   __typename?: 'ComponentBlocksExternalDocument'
   title?: string | null
@@ -3710,6 +3825,16 @@ type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   } | null
 }
 
+type FormLandingPageSections_ComponentSectionsFaq_Fragment = {
+  __typename: 'ComponentSectionsFaq'
+  title?: string | null
+  questions: Array<{
+    __typename?: 'ComponentBlocksQuestion'
+    title: string
+    content: string
+  } | null>
+}
+
 type FormLandingPageSections_ComponentSectionsDocuments_Fragment = {
   __typename: 'ComponentSectionsDocuments'
   title?: string | null
@@ -3746,6 +3871,7 @@ type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsContacts_Fragment
+  | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsDocuments_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
@@ -3904,6 +4030,21 @@ export const ContactsSectionFragmentDoc = gql`
   ${ContactPersonCardBlockFragmentDoc}
   ${ContactDirectionsCardBlockFragmentDoc}
 `
+export const QuestionFragmentDoc = gql`
+  fragment Question on ComponentBlocksQuestion {
+    title
+    content
+  }
+`
+export const FaqSectionFragmentDoc = gql`
+  fragment FaqSection on ComponentSectionsFaq {
+    title
+    questions {
+      ...Question
+    }
+  }
+  ${QuestionFragmentDoc}
+`
 export const ExternalDocumentBlockFragmentDoc = gql`
   fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
     title
@@ -3932,6 +4073,9 @@ export const FormLandingPageSectionsFragmentDoc = gql`
     ... on ComponentSectionsContacts {
       ...ContactsSection
     }
+    ... on ComponentSectionsFaq {
+      ...FaqSection
+    }
     ... on ComponentSectionsDocuments {
       ...DocumentsSection
     }
@@ -3939,6 +4083,7 @@ export const FormLandingPageSectionsFragmentDoc = gql`
   ${RichtextSectionFragmentDoc}
   ${StepperSectionFragmentDoc}
   ${ContactsSectionFragmentDoc}
+  ${FaqSectionFragmentDoc}
   ${DocumentsSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
@@ -4035,6 +4180,9 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
     documentId
     title
     description
+    primaryButton {
+      ...CommonLink
+    }
     buttonText
     href
     dateFrom
@@ -4044,6 +4192,7 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
       alternativeText
     }
   }
+  ${CommonLinkFragmentDoc}
 `
 export const MunicipalServiceTagEntityFragmentDoc = gql`
   fragment MunicipalServiceTagEntity on MunicipalServiceTag {

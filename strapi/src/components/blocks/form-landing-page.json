@@ -26,6 +26,7 @@
       "components": [
         "sections.richtext",
         "sections.documents",
+        "sections.faq",
         "sections.contacts",
         "sections.stepper"
       ]

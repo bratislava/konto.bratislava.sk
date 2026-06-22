@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
@@ -96,7 +96,28 @@ export default class WebhookService {
       data: formData,
       files: fileIdInfoMap,
     }
-    await axios.post(formDefinition.webhookUrl, webhookDto)
+    try {
+      await axios.post(formDefinition.webhookUrl, webhookDto)
+    } catch (error) {
+      if (isAxiosError(error)) {
+        this.logger.error(
+          this.throwerErrorGuard.fromAxiosError(error, {
+            console: { formId },
+          }),
+        )
+        return
+      }
+
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Sending webhook for form failed`,
+          { formId },
+          error,
+        ),
+      )
+      return
+    }
 
     try {
       await this.prismaService.forms.update({

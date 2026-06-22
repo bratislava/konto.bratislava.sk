@@ -81,6 +81,18 @@ fragment ContactsSection on ComponentSectionsContacts {
   titleLevelContacts: titleLevel
 }
 
+fragment Question on ComponentBlocksQuestion {
+  title
+  content
+}
+
+fragment FaqSection on ComponentSectionsFaq {
+  title
+  questions {
+    ...Question
+  }
+}
+
 fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
   title
   url
@@ -107,6 +119,10 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
 
   ... on ComponentSectionsContacts {
     ...ContactsSection
+  }
+
+  ... on ComponentSectionsFaq {
+    ...FaqSection
   }
 
   ... on ComponentSectionsDocuments {

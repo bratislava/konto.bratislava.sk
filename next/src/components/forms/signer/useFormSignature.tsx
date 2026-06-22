@@ -7,6 +7,7 @@ import {
   verifyFormSignature,
 } from 'forms-shared/signer/signature'
 import isEqual from 'lodash/isEqual'
+import { useTranslation } from 'next-i18next/pages'
 import { SignerDataResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
@@ -22,6 +23,7 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 
 const useGetContext = () => {
+  const { t } = useTranslation('forms')
   const { showToast } = useToast()
   const { setSignerIsDeploying } = useFormModals()
   const { formDefinition, formId, isSigned, initialSignature } = useFormContext()
@@ -34,17 +36,16 @@ const useGetContext = () => {
     onError: (error) => {
       if (error === SignerErrorType.NotInstalled) {
         showToast({
-          message:
-            'Na podpísanie je potrebné nainštalovať podpisovaciu aplikáciu pre kvalifikovaný elektronický podpis.',
+          message: t('form_signature.error.not_installed'),
           variant: 'error',
         })
       } else if (error === SignerErrorType.LaunchFailed) {
         showToast({
-          message: 'Podpisovacia aplikácia sa nepodarila načítať, skúste to znova.',
+          message: t('form_signature.error.launch_failed'),
           variant: 'error',
         })
       } else {
-        showToast({ message: 'Podpisovanie zlyhalo. Skúste to znova.', variant: 'error' })
+        showToast({ message: t('form_signature.error.generic'), variant: 'error' })
       }
     },
   })
@@ -67,7 +68,7 @@ const useGetContext = () => {
     // It is possible to edit the data while the signer is open.
     if (!isEqual(formDataRequest, formDataRef.current)) {
       showToast({
-        message: 'Údaje, ktoré ste upravili, je potrebné znova podpísať.',
+        message: t('form_signature.error.data_changed'),
         variant: 'error',
       })
       handleSignatureChange(null)
@@ -99,16 +100,17 @@ const useGetContext = () => {
       signData(formDataRequest, response.data)
     },
     onError: (error) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (isAxiosError(error) && error.response?.data?.errorName === 'BAD_REQUEST_ERROR') {
         showToast({
-          message: `Nastala chyba pri validácii: \n\n${error.response?.data?.message}`,
+          message: t('form_signature.error.validation_error', {
+            message: error.response?.data?.message,
+          }),
           variant: 'error',
         })
 
         return
       }
-      showToast({ message: 'Podpisovanie zlyhalo. Skúste to znova.', variant: 'error' })
+      showToast({ message: t('form_signature.error.generic'), variant: 'error' })
     },
   })
 

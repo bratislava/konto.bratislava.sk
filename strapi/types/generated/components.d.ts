@@ -111,7 +111,13 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
-      ['sections.richtext', 'sections.documents', 'sections.contacts', 'sections.stepper']
+      [
+        'sections.richtext',
+        'sections.documents',
+        'sections.faq',
+        'sections.contacts',
+        'sections.stepper',
+      ]
     >
     text: Schema.Attribute.RichText
   }
@@ -158,6 +164,17 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   collectionName: 'components_blocks_help_items'
   info: {
     displayName: 'Help item'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksQuestion extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_questions'
+  info: {
+    displayName: 'Question'
   }
   attributes: {
     content: Schema.Attribute.RichText & Schema.Attribute.Required
@@ -213,6 +230,24 @@ export interface SectionsDocuments extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsFaq extends Struct.ComponentSchema {
+  collectionName: 'components_sections_faqs'
+  info: {
+    displayName: 'FAQ'
+  }
+  attributes: {
+    questions: Schema.Attribute.Component<'blocks.question', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1
+        },
+        number
+      >
+    title: Schema.Attribute.String
+  }
+}
+
 export interface SectionsRichtext extends Struct.ComponentSchema {
   collectionName: 'components_sections_richtexts'
   info: {
@@ -251,9 +286,11 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
       'sections.contacts': SectionsContacts
       'sections.documents': SectionsDocuments
+      'sections.faq': SectionsFaq
       'sections.richtext': SectionsRichtext
       'sections.stepper': SectionsStepper
     }

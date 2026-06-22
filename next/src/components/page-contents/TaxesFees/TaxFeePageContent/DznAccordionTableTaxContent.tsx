@@ -12,20 +12,6 @@ import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import cn from '@/src/utils/cn'
 import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
 
-const tableHeaderData = {
-  subject: <span>Predmet dane</span>,
-  area: <span>Výmera</span>,
-  baseMetric: <span>Základ dane</span>,
-  baseMonetary: <span>Základ dane</span>,
-  total: <span>Daň</span>,
-}
-
-const matchHeader = {
-  GROUND: [tableHeaderData.area, tableHeaderData.baseMonetary, tableHeaderData.total],
-  CONSTRUCTION: [tableHeaderData.baseMetric, tableHeaderData.total],
-  APARTMENT: [tableHeaderData.baseMetric, tableHeaderData.total],
-}
-
 type DznAccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
@@ -37,17 +23,27 @@ type DznAccordionTableTaxContentProps = {
 }
 
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
-  // TODO types can be better if validated as they come from API
+  const { t } = useTranslation('account')
+
+  const matchHeader: Record<string, string[]> = {
+    GROUND: [
+      t('tax_detail_section.dzn_table.area'),
+      t('tax_detail_section.dzn_table.base_monetary'),
+      t('tax_detail_section.dzn_table.total'),
+    ],
+    CONSTRUCTION: [
+      t('tax_detail_section.dzn_table.base_metric'),
+      t('tax_detail_section.dzn_table.total'),
+    ],
+    APARTMENT: [
+      t('tax_detail_section.dzn_table.base_metric'),
+      t('tax_detail_section.dzn_table.total'),
+    ],
+  }
+
   const headerData = [
-    <span>Predmet dane</span>,
-    ...(Object.keys(matchHeader).includes(dataType)
-      ? (matchHeader[dataType] as
-          | typeof matchHeader.GROUND
-          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-          | typeof matchHeader.CONSTRUCTION
-          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-          | typeof matchHeader.APARTMENT)
-      : matchHeader.APARTMENT),
+    t('tax_detail_section.dzn_table.subject'),
+    ...(matchHeader[dataType] ?? matchHeader.APARTMENT),
   ]
 
   return (

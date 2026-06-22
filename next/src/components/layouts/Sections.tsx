@@ -1,8 +1,9 @@
 import { FormLandingPageSectionsFragment } from '@/src/clients/graphql-strapi/api'
 import ContactsSection from '@/src/components/sections/ContactsSection'
 import DocumentsSection from '@/src/components/sections/DocumentsSection'
+import FaqsSection from '@/src/components/sections/FaqsSection'
 import RichtextSection from '@/src/components/sections/RichtextSection'
-import { StepperSection } from '@/src/components/sections/StepperSection'
+import StepperSection from '@/src/components/sections/StepperSection'
 
 /**
  * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/be7785e45d5e61c9b2a23177b9dcfb8af109ebc6/next/src/components/layouts/Sections.tsx
@@ -25,6 +26,8 @@ const SectionContent = ({ section }: { section: SectionsProps['sections'][number
 
     case 'ComponentSectionsDocuments':
       return <DocumentsSection section={section} />
+    case 'ComponentSectionsFaq':
+      return <FaqsSection section={section} />
     default:
       return null
   }

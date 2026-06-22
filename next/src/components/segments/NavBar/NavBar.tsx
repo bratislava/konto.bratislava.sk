@@ -9,8 +9,8 @@ import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 type Props = {
   desktopNavbarRef: RefObject<HTMLDivElement | null>
   mobileNavbarRef: RefObject<HTMLDivElement | null>
-  backButtonHidden?: boolean
   variant?: 'default' | 'auth'
+  hasBackButton?: boolean
 }
 
 /**
@@ -19,7 +19,7 @@ type Props = {
 const NavBar = ({
   desktopNavbarRef,
   mobileNavbarRef,
-  backButtonHidden,
+  hasBackButton = false,
   variant = 'default',
 }: Props) => {
   const alertRef = useRef<HTMLDivElement>(null)
@@ -30,7 +30,7 @@ const NavBar = ({
       <div className="hidden w-full bg-background-passive-base lg:block" ref={desktopNavbarRef}>
         <AlertBanner />
         <div className="relative w-full">
-          <NavBarHeader backButtonHidden={backButtonHidden} />
+          <NavBarHeader hasBackButton={hasBackButton} />
           {variant === 'default' ? <NavMenu /> : null}
         </div>
       </div>
@@ -39,7 +39,7 @@ const NavBar = ({
       <MobileNavBar
         mobileNavbarRef={mobileNavbarRef}
         variant={variant}
-        backButtonHidden={backButtonHidden}
+        hasBackButton={hasBackButton}
         className="lg:hidden"
       />
     </>

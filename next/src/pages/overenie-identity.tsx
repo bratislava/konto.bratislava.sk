@@ -126,7 +126,7 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth" hideBackButton>
+        <PageLayout variant="auth">
           <AccountContainer ref={accountContainerRef}>
             {(tierStatus.isIdentityVerificationNotYetAttempted ||
               tierStatus.isNotVerifiedIdentityCard) && (

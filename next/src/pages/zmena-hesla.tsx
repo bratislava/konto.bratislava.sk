@@ -92,7 +92,7 @@ const PasswordChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
       <GeneralContextProvider general={general}>
         <PageLayout
           variant="auth"
-          hideBackButton={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+          hasBackButton={passwordChangeStatus !== PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
         >
           <AccountContainer ref={accountContainerRef}>
             {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (

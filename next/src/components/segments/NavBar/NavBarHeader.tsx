@@ -26,10 +26,10 @@ import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   variant?: 'default' | 'auth'
-  backButtonHidden?: boolean
+  hasBackButton?: boolean
 }
 
-export const NavBarHeader = ({ variant, backButtonHidden }: Props) => {
+export const NavBarHeader = ({ variant, hasBackButton = false }: Props) => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -60,7 +60,7 @@ export const NavBarHeader = ({ variant, backButtonHidden }: Props) => {
       {/* TODO Figma says 64px */}
       <div className="flex h-[57px] items-center gap-x-6">
         <SkipToContentButton />
-        {!backButtonHidden && <BackButton />}
+        {hasBackButton && <BackButton />}
         <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
         {variant === 'auth' ? (
           <OAuthLogo />

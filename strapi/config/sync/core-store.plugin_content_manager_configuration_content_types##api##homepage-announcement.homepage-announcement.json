@@ -82,8 +82,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "label"
+          "editable": true
         },
         "list": {
           "label": "primaryButton",
@@ -201,6 +200,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "description",
+        "buttonText"
+      ],
       "edit": [
         [
           {
@@ -244,8 +249,7 @@
             "size": 6
           }
         ]
-      ],
-      "list": ["id", "title", "description", "buttonText"]
+      ]
     },
     "uid": "api::homepage-announcement.homepage-announcement"
   },

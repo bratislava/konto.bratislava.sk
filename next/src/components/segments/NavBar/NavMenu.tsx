@@ -16,7 +16,7 @@ export const NavMenu = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const { menuSections } = useMenu()
+  const { mainMenuItems } = useMenu()
 
   const isActive = (sectionItem: MenuSectionBase) =>
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
@@ -35,7 +35,7 @@ export const NavMenu = () => {
           className="grid size-full"
         >
           <NavigationMenu.List className="flex size-full items-center">
-            {menuSections.map((sectionItem) => (
+            {mainMenuItems.map((sectionItem) => (
               <NavigationMenu.Item
                 key={sectionItem.id}
                 className="size-full rounded-sm wrapper-focus-ring ring-inset"

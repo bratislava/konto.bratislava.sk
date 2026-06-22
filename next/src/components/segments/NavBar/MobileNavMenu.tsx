@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { ComponentProps, forwardRef } from 'react'
@@ -11,11 +11,12 @@ import useMenu from '@/src/components/segments/NavBar/useMenu'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
 import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import logger from '@/src/frontend/utils/logger'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
-type NavMenuLinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref' | 'href'> & {
+type NavMenuLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref' | 'href'> & {
   menuItem: MenuItemBase
   isSelected?: boolean
   onClick: () => void
@@ -24,7 +25,7 @@ type NavMenuLinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref' | 'h
 const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
   ({ menuItem, isSelected, onClick, ...rest }, forwardedRef) => {
     return menuItem.url ? (
-      <Link
+      <NextLink
         href={menuItem.url}
         // without forwardedRef, you can't navigate using arrow keys
         ref={forwardedRef}
@@ -42,7 +43,7 @@ const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
         <div aria-hidden>{menuItem.icon}</div>
         <span>{menuItem.title}</span>
         {menuItem.url === ROUTES.USER_PROFILE && <IdentityVerificationStatus />}
-      </Link>
+      </NextLink>
     ) : null
   },
 )
@@ -57,8 +58,10 @@ export const MobileNavMenu = () => {
   const { height } = useWindowSize()
   const heightWithoutHeader = `calc(${height}px - 14*4px)`
 
+  const { isSignedIn } = useSsrAuth()
+
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
-  const { menuSections, menuItems } = useMenu()
+  const { mainMenuItems, signedInActionsMenuItems, notSignedInActionsMenuItems } = useMenu()
 
   const closeMenu = () => setMobileMenuOpen(false)
 
@@ -83,7 +86,7 @@ export const MobileNavMenu = () => {
     >
       <NavigationMenu.Root aria-label={t('NavMenu.aria.navMenuLabel')}>
         <NavigationMenu.List className="flex flex-col">
-          {menuSections.map((sectionItem) => (
+          {mainMenuItems.map((sectionItem) => (
             <NavigationMenu.Item key={sectionItem.id}>
               <NavigationMenu.Link asChild>
                 <NavMenuLink
@@ -97,7 +100,7 @@ export const MobileNavMenu = () => {
 
           <HorizontalDivider asListItem className="my-4" />
 
-          {menuItems.map((menuItem) => {
+          {(isSignedIn ? signedInActionsMenuItems : notSignedInActionsMenuItems).map((menuItem) => {
             return (
               <NavigationMenu.Item key={menuItem.id}>
                 {menuItem.onPress ? (

@@ -39,10 +39,10 @@ const MenuDropdown = ({
           sideOffset={2}
         >
           {itemVariant === 'form' &&
-            items?.map((item, i) => (
+            items.map((item, index) => (
               <FormMenuItem
-                key={i}
-                className={cn(item.itemClassName, 'rounded-sm menu-dropdown-focus-ring')}
+                key={index}
+                className={cn('rounded-sm menu-dropdown-focus-ring', item.itemClassName)}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}
@@ -50,9 +50,9 @@ const MenuDropdown = ({
               />
             ))}
           {itemVariant === 'header' &&
-            items?.map((item, i) => (
+            items.map((item, index) => (
               <HeaderMenuItem
-                key={i}
+                key={index}
                 itemClassName={cn('rounded-sm menu-dropdown-focus-ring', item.itemClassName)}
                 icon={item.icon}
                 title={item.title}

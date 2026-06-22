@@ -21,21 +21,12 @@ const DocumentsSection = ({
       <div className="flex flex-col gap-6">
         <SectionHeader title={title} text={text} />
 
-        <ul className="flex flex-col rounded-lg border border-border-active-default py-2">
+        <ul className="flex flex-col rounded-lg border border-border-active-default bg-background-passive-base py-2">
           {filteredExternalDocuments.map((externalDocument, index) => (
             <Fragment key={index}>
-              {index > 0 && (
-                <HorizontalDivider
-                  asListItem
-                  className="mx-6 border-b border-border-active-default"
-                />
-              )}
+              {index > 0 && <HorizontalDivider asListItem className="mx-6" />}
 
-              <ExternalDocumentRowCard
-                key={externalDocument?.title}
-                title={externalDocument?.title}
-                url={externalDocument.url}
-              />
+              <ExternalDocumentRowCard title={externalDocument?.title} url={externalDocument.url} />
             </Fragment>
           ))}
         </ul>

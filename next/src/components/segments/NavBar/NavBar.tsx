@@ -27,7 +27,11 @@ const NavBar = ({
 
   return (
     <>
-      <div className="hidden w-full bg-background-passive-base lg:block" ref={desktopNavbarRef}>
+      <div
+        id="desktop-navbar"
+        className="hidden w-full bg-background-passive-base lg:block"
+        ref={desktopNavbarRef}
+      >
         <AlertBanner />
         <div className="relative w-full">
           <NavBarHeader hasBackButton={hasBackButton} />

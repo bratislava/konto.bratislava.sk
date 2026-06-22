@@ -38,8 +38,10 @@ export const MobileNavBar = ({
       <FocusTrap active={isMobileMenuOpen}>
         <div className="fixed top-0 z-30 flex h-14 w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
           <div className="flex w-full justify-between">
-            {hasBackButton && <BackButton />}
-            <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
+            <div className="flex gap-3">
+              {hasBackButton && <BackButton />}
+              <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
+            </div>
             {variant === 'auth' ? (
               <OAuthLogo />
             ) : isMobileMenuOpen ? (

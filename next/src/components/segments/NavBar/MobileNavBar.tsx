@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { RefObject } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
+import BackButton from '@/src/components/segments/NavBar/BackButton'
 import MobileNavMenu from '@/src/components/segments/NavBar/MobileNavMenu'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
 import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
@@ -12,10 +13,11 @@ import cn from '@/src/utils/cn'
 
 type Props = {
   mobileNavbarRef: RefObject<HTMLDivElement | null>
+  backButtonHidden?: boolean
   className?: string
 }
 
-export const MobileNavBar = ({ mobileNavbarRef, className }: Props) => {
+export const MobileNavBar = ({ mobileNavbarRef, backButtonHidden, className }: Props) => {
   const { t } = useTranslation('account')
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
@@ -24,6 +26,7 @@ export const MobileNavBar = ({ mobileNavbarRef, className }: Props) => {
       <FocusTrap active={isMobileMenuOpen}>
         <div className="fixed top-0 z-30 flex h-14 w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
           <div className="flex w-full justify-between">
+            {!backButtonHidden && <BackButton />}
             <Brand className="grow" variant="header" />
             {isMobileMenuOpen ? (
               <Button

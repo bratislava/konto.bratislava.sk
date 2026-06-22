@@ -8,10 +8,10 @@ import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SkipToContentButton from '@/src/components/segments/NavBar/SkipToContentButton'
 import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
-import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
 import Brand from '@/src/components/simple-components/Brand'
 import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
+import UserAvatar from '@/src/components/simple-components/UserAvatar'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
@@ -50,7 +50,7 @@ export const NavBarHeader = () => {
         <SkipToContentButton />
         <Brand className="grow" variant="header" />
         <IdentityVerificationStatus />
-        <nav className="flex gap-x-8 font-semibold text-font/75">
+        <nav className="flex gap-x-8">
           {isSignedIn ? (
             <DropdownMenu
               setIsOpen={setIsMenuOpen}
@@ -60,14 +60,14 @@ export const NavBarHeader = () => {
                 <Button
                   variant="unstyled"
                   data-cy="account-button"
-                  className="flex items-center gap-4 rounded-lg font-semibold text-font/75"
+                  className="flex items-center gap-4 rounded-lg font-semibold text-content-active-primary-default hover:text-content-active-primary-hover"
                 >
                   <UserAvatar userAttributes={userAttributes} />
-                  <div className="flex items-center gap-1 font-light lg:font-semibold">
+                  <div className="flex items-center gap-1">
                     {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
                     <Icon
                       name="chevron-down-small"
-                      className={cn('hidden size-5 mix-blend-normal lg:flex', {
+                      className={cn('size-5 mix-blend-normal', {
                         '-rotate-180': isMenuOpen,
                       })}
                     />

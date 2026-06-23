@@ -245,7 +245,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/cvdmirror
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   deploy-clamav:
     name: clamav
@@ -256,7 +256,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/clamav
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   deploy-nest-clamav-scanner:
     name: nest-clamav-scanner
@@ -267,7 +267,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_clamav_scanner
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
@@ -278,7 +278,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_forms_backend
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   deploy-nest-tax-backend:
     name: nest-tax-backend
@@ -289,7 +289,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_tax_backend
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   deploy-nest-city-account:
     name: nest-city-account
@@ -300,7 +300,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_city_account
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   deploy-strapi:
     name: Strapi
@@ -311,7 +311,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/strapi
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   deploy-next:
     name: after Backends deploy Next
@@ -331,7 +331,7 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/next
-      dispatch_ref: mpinter/konto-deploy-dev
+      dispatch_ref: mpinter/konto-deploy-dev-databases
 
   check-openapi-clients:
     name: Check OpenAPI clients for changes

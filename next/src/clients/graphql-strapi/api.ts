@@ -266,7 +266,7 @@ export type ComponentBlocksFooterColumnInput = {
 
 export type ComponentBlocksFormLandingPage = {
   __typename?: 'ComponentBlocksFormLandingPage'
-  formCta: ComponentBlocksFormLandingPageFormCta
+  formCta?: Maybe<ComponentBlocksFormLandingPageFormCta>
   id: Scalars['ID']['output']
   linkCtas?: Maybe<Array<Maybe<ComponentBlocksFormLandingPageLinkCta>>>
   sections?: Maybe<Array<Maybe<FormLandingPageSectionsDynamicZone>>>
@@ -3192,12 +3192,12 @@ export type FormLandingPageFragment = {
     buttonLabel: string
     url: string
   } | null> | null
-  formCta: {
+  formCta?: {
     __typename: 'ComponentBlocksFormLandingPageFormCta'
     title: string
     text?: string | null
     buttonLabel: string
-  }
+  } | null
   sections?: Array<
     | {
         __typename: 'ComponentSectionsContacts'
@@ -3330,12 +3330,12 @@ export type FormWithLandingPageFragment = {
       buttonLabel: string
       url: string
     } | null> | null
-    formCta: {
+    formCta?: {
       __typename: 'ComponentBlocksFormLandingPageFormCta'
       title: string
       text?: string | null
       buttonLabel: string
-    }
+    } | null
     sections?: Array<
       | {
           __typename: 'ComponentSectionsContacts'
@@ -3490,12 +3490,12 @@ export type FormWithLandingPageBySlugQuery = {
         buttonLabel: string
         url: string
       } | null> | null
-      formCta: {
+      formCta?: {
         __typename: 'ComponentBlocksFormLandingPageFormCta'
         title: string
         text?: string | null
         buttonLabel: string
-      }
+      } | null
       sections?: Array<
         | {
             __typename: 'ComponentSectionsContacts'

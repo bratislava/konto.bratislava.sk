@@ -56,7 +56,7 @@ const FormLandingPageCard = (props: FormLandingPageCardProps) => {
         >
           {props.title}
         </Typography>
-        {props.text && <Typography variant="p-tiny">{props.text}</Typography>}
+        {props.text && <Typography variant="p-small">{props.text}</Typography>}
       </div>
       <div className="flex shrink-0 items-center md:w-[150px] md:justify-center">
         <FormLandingPageButton {...props} />

@@ -24,6 +24,10 @@ import Calendar from './Calendar'
 
 export interface DatePickerProps extends RACDatePickerProps<DateValue>, FieldBaseProps {}
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16717-11073
+ */
+
 const DatePicker = (
   {
     label,

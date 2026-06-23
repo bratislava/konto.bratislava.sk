@@ -45,6 +45,10 @@ const Toast = ({ className, ...props }: ToastProps<AppToastContent>) => {
   )
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-13136
+ */
+
 const AppToastRegion = () => {
   const { t } = useTranslation('account')
 
@@ -67,7 +71,7 @@ const AppToastRegion = () => {
           <ToastContent className="flex min-w-0 flex-1 items-center">
             <Text
               slot="title"
-              className="flex-1 px-4 py-3.5 text-left text-size-p-tiny-r font-normal lg:text-size-p-tiny"
+              className="flex-1 px-4 py-3.5 text-left text-size-p-small-r font-normal lg:text-size-p-small"
             >
               {toast.content.message}
             </Text>

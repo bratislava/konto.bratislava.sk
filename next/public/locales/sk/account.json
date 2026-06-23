@@ -275,6 +275,7 @@
   "IdentityVerificationAlert.verification_in_process.title": "Čaká na overenie",
   "IdentityVerificationAlert.verification_needed.message": "Vaša totožnosť zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
   "IdentityVerificationAlert.verification_needed.title": "Neoverený používateľ",
+  "IdentityVerificationStatus.verification_status_in_queue": "Čaká na overenie",
   "IdentityVerificationStatus.verification_status_required": "Neoverený používateľ",
   "IdentityVerificationStatus.verification_status_required_alert": "Vaša totožnosť zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
   "IdentityVerificationStatus.verification_status_success": "Overený používateľ",

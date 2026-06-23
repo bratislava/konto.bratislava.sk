@@ -10,6 +10,10 @@ interface MyApplicationHistoryProps {
   historyData: GinisDocumentDetailResponseDto['documentHistory'] | undefined
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
+ */
+
 const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
   const { t } = useTranslation('account')
 
@@ -30,7 +34,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
           <div key={i} className="flex flex-row flex-wrap gap-2 border-b py-4 md:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
-                <Typography variant="p-tiny" as="span" className="font-semibold">
+                <Typography variant="p-small" as="span" className="font-semibold">
                   {t('account_section_applications.details.application_history.edit_date')}
                 </Typography>
                 <Typography variant="p-small" as="span">
@@ -38,7 +42,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                 </Typography>
               </div>
               <div className="flex w-full flex-col">
-                <Typography variant="p-tiny" as="span" className="font-semibold">
+                <Typography variant="p-small" as="span" className="font-semibold">
                   {t('account_section_applications.details.application_history.description')}
                 </Typography>
                 <Typography variant="p-small" as="span">

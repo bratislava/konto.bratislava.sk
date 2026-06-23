@@ -268,7 +268,7 @@ flowchart TD
 ## Backoff & resilience
 
 - **Exponential backoff**: Tailed internal lookups bump `activeEdeskUpdateFailCount`. The selectors exclude an entity until `activeEdeskUpdateFailedAt + 2^min(failCount, 7) hours` has passed.
-- **Reentrancy guard**: `isProcessingBatch` prevents a slow tick (urgent can take a while) from overlapping the next 30s cron fire.
+- **Reentrancy guard**: the `@Cron` `waitForCompletion: true` option prevents a slow tick (urgent can take a while) from overlapping the next 30s cron fire. The scheduler holds the next run until the current one resolves.
 - **Rate-limit cutout**: An HTTP 429 from the lookup endpoint is re-raised with its status kept (`fromAxiosError` status override), logged with an alert, and stops the urgent run for that tick. The caller also skips the remaining tiers for that tick so we don't keep hitting an endpoint that's already throttling us.
-- **Isolation**: Per-entity lookup failures are recorded and aggregated into a single error log line, so one bad entity doesn't block the rest of the batch — the exception is a rate limit (HTTP 429), which stops the tier for the tick (see above).
+- **Isolation**: Per-entity lookup failures are recorded and aggregated into a single error log line, so one bad entity doesn't block the rest of the batch. The exception is a rate limit (HTTP 429), which stops the tier for the tick (see above).
 - **IAM rejections**: when UPVS IAM rejects a lookup, `NasesService` persists an `IdentityLookupRejection` row (fault code/reason included). The urgent selector skips marked entities. Delete the row to retry one. A daily cron digests the last month's rejections as an alert.

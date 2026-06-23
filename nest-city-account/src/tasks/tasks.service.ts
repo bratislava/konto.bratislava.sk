@@ -57,9 +57,9 @@ export class TasksService {
   }
 
   /**
-   * Updates eDesk active status from UPVS for physical entities.
-   * Uses exponential backoff for retry logic on failures.
-   * Processes up to 5 entities every 30 seconds.
+   * Processes one batch of UPVS queue work every 30 seconds, across prioritised tiers
+   * (urgent lookups, outdated-URI updates, then the eDesk status batch). `waitForCompletion`
+   * keeps ticks from overlapping. See the upvs-queue README for the full flow.
    */
   @Cron(CronExpression.EVERY_30_SECONDS, {
     timeZone: bratislavaTimezone,

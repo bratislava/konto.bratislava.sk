@@ -152,7 +152,7 @@ export class NasesService {
    * `IdentityLookupRejection` row for the entity, which excludes it from further urgent
    * lookups (delete the row to retry).
    *
-   * @param personalIdentificationNumber - 10-digit birth number without slash.
+   * @param personalIdentificationNumber - 9 or 10 digit birth number without slash.
    * @param givenName - Given names as stored in Cognito.
    * @param familyName - Family names as stored in Cognito.
    * @param physicalEntityId - Entity the lookup is for; used to persist a rejection.

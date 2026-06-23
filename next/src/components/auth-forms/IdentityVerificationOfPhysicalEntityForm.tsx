@@ -217,7 +217,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
               className="mb-2 self-center"
             />
             {captchaWarning === 'show' && (
-              <Typography variant="p-tiny" className="italic">
+              <Typography variant="p-small" className="italic">
                 {t('auth.captcha_warning')}
               </Typography>
             )}

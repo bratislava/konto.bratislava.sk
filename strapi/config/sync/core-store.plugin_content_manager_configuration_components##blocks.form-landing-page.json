@@ -40,8 +40,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "linkCtas",
@@ -55,8 +54,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "formCta",
@@ -88,6 +86,7 @@
       }
     },
     "layouts": {
+      "list": ["id", "linkCtas", "formCta", "documentId"],
       "edit": [
         [
           {
@@ -113,12 +112,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "linkCtas",
-        "formCta",
-        "documentId"
       ]
     },
     "uid": "blocks.form-landing-page",

@@ -46,6 +46,21 @@
       "locale": null
     },
     {
+      "action": "api::municipal-charge-config.municipal-charge-config.find",
+      "documentId": "i25pjswxet37gb5xnzi1w6f2",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-charge.municipal-charge.find",
+      "documentId": "nh2vwntmafb4wq6gk1k54alg",
+      "locale": null
+    },
+    {
+      "action": "api::municipal-charge.municipal-charge.findOne",
+      "documentId": "y7vvxt3ovrpwpj6gpn7lxrxf",
+      "locale": null
+    },
+    {
       "action": "api::municipal-service-category.municipal-service-category.find",
       "documentId": "ehhc0stxkrwsou4nrdwk5z0k",
       "locale": null

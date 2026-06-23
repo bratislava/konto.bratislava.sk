@@ -218,6 +218,15 @@ export class OAuth2ClientSubservice {
       // Default to true if not specified
       const requiresPkce = process.env[`OAUTH2_${name}_REQUIRES_PKCE`] !== 'false'
 
+      if (!clientSecret && !requiresPkce) {
+        this.logger.error(
+          // https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.1
+          `Invalid configuration for client name: ${name} - public clients MUST use PKCE`,
+          { alert: 1 }
+        )
+        continue
+      }
+
       const client = new OAuth2Client({
         id: clientId,
         secret: clientSecret,

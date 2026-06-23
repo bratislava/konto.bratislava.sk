@@ -27,6 +27,49 @@ input BooleanFilterInput {
   startsWith: Boolean
 }
 
+type ComponentBlocksChecklist {
+  checklistItems(filters: ComponentBlocksChecklistItemFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksChecklistItem]
+  description: String
+  id: ID!
+  title: String
+}
+
+input ComponentBlocksChecklistFiltersInput {
+  and: [ComponentBlocksChecklistFiltersInput]
+  checklistItems: ComponentBlocksChecklistItemFiltersInput
+  description: StringFilterInput
+  not: ComponentBlocksChecklistFiltersInput
+  or: [ComponentBlocksChecklistFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksChecklistInput {
+  checklistItems: [ComponentBlocksChecklistItemInput]
+  description: String
+  id: ID
+  title: String
+}
+
+type ComponentBlocksChecklistItem {
+  content: String
+  id: ID!
+  title: String
+}
+
+input ComponentBlocksChecklistItemFiltersInput {
+  and: [ComponentBlocksChecklistItemFiltersInput]
+  content: StringFilterInput
+  not: ComponentBlocksChecklistItemFiltersInput
+  or: [ComponentBlocksChecklistItemFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksChecklistItemInput {
+  content: String
+  id: ID
+  title: String
+}
+
 type ComponentBlocksCommonLink {
   id: ID!
   label: String
@@ -47,6 +90,104 @@ input ComponentBlocksCommonLinkInput {
   id: ID
   label: String
   municipalService: ID
+  url: String
+}
+
+type ComponentBlocksContactCard {
+  id: ID!
+  overrideLabel: String
+  value: String!
+}
+
+input ComponentBlocksContactCardFiltersInput {
+  and: [ComponentBlocksContactCardFiltersInput]
+  not: ComponentBlocksContactCardFiltersInput
+  or: [ComponentBlocksContactCardFiltersInput]
+  overrideLabel: StringFilterInput
+  value: StringFilterInput
+}
+
+input ComponentBlocksContactCardInput {
+  id: ID
+  overrideLabel: String
+  value: String
+}
+
+type ComponentBlocksContactDirectionsCard {
+  address: String!
+  barrierFreeInfo: String
+  id: ID!
+  iframeUrl: String
+  overrideLabel: String
+  parkingInfo: String
+  publicTransportInfo: String
+}
+
+input ComponentBlocksContactDirectionsCardFiltersInput {
+  address: StringFilterInput
+  and: [ComponentBlocksContactDirectionsCardFiltersInput]
+  barrierFreeInfo: StringFilterInput
+  iframeUrl: StringFilterInput
+  not: ComponentBlocksContactDirectionsCardFiltersInput
+  or: [ComponentBlocksContactDirectionsCardFiltersInput]
+  overrideLabel: StringFilterInput
+  parkingInfo: StringFilterInput
+  publicTransportInfo: StringFilterInput
+}
+
+input ComponentBlocksContactDirectionsCardInput {
+  address: String
+  barrierFreeInfo: String
+  id: ID
+  iframeUrl: String
+  overrideLabel: String
+  parkingInfo: String
+  publicTransportInfo: String
+}
+
+type ComponentBlocksContactPersonCard {
+  email: String
+  id: ID!
+  phone: String
+  subtext: String
+  title: String!
+}
+
+input ComponentBlocksContactPersonCardFiltersInput {
+  and: [ComponentBlocksContactPersonCardFiltersInput]
+  email: StringFilterInput
+  not: ComponentBlocksContactPersonCardFiltersInput
+  or: [ComponentBlocksContactPersonCardFiltersInput]
+  phone: StringFilterInput
+  subtext: StringFilterInput
+  title: StringFilterInput
+}
+
+input ComponentBlocksContactPersonCardInput {
+  email: String
+  id: ID
+  phone: String
+  subtext: String
+  title: String
+}
+
+type ComponentBlocksExternalDocument {
+  id: ID!
+  title: String
+  url: String!
+}
+
+input ComponentBlocksExternalDocumentFiltersInput {
+  and: [ComponentBlocksExternalDocumentFiltersInput]
+  not: ComponentBlocksExternalDocumentFiltersInput
+  or: [ComponentBlocksExternalDocumentFiltersInput]
+  title: StringFilterInput
+  url: StringFilterInput
+}
+
+input ComponentBlocksExternalDocumentInput {
+  id: ID
+  title: String
   url: String
 }
 
@@ -184,6 +325,26 @@ input ComponentBlocksHelpItemInput {
   title: String
 }
 
+type ComponentBlocksQuestion {
+  content: String!
+  id: ID!
+  title: String!
+}
+
+input ComponentBlocksQuestionFiltersInput {
+  and: [ComponentBlocksQuestionFiltersInput]
+  content: StringFilterInput
+  not: ComponentBlocksQuestionFiltersInput
+  or: [ComponentBlocksQuestionFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksQuestionInput {
+  content: String
+  id: ID
+  title: String
+}
+
 type ComponentGeneralAlert {
   content: String!
   dateFrom: DateTime
@@ -207,6 +368,162 @@ input ComponentGeneralAlertInput {
   id: ID
 }
 
+type ComponentMunicipalChargeDeliveryMethod {
+  consentText: String!
+  deliveryMethodChangePendingAlert: ComponentMunicipalChargeDeliveryMethodChangePendingAlert
+  id: ID!
+}
+
+type ComponentMunicipalChargeDeliveryMethodChangePendingAlert {
+  content: String
+  id: ID!
+  title: String
+}
+
+input ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput {
+  and: [ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput]
+  content: StringFilterInput
+  not: ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput
+  or: [ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentMunicipalChargeDeliveryMethodChangePendingAlertInput {
+  content: String
+  id: ID
+  title: String
+}
+
+input ComponentMunicipalChargeDeliveryMethodFiltersInput {
+  and: [ComponentMunicipalChargeDeliveryMethodFiltersInput]
+  consentText: StringFilterInput
+  deliveryMethodChangePendingAlert: ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput
+  not: ComponentMunicipalChargeDeliveryMethodFiltersInput
+  or: [ComponentMunicipalChargeDeliveryMethodFiltersInput]
+}
+
+input ComponentMunicipalChargeDeliveryMethodInput {
+  consentText: String
+  deliveryMethodChangePendingAlert: ComponentMunicipalChargeDeliveryMethodChangePendingAlertInput
+  id: ID
+}
+
+type ComponentMunicipalChargeMunicipalChargeIdentifier {
+  dzn: MunicipalCharge
+  id: ID!
+  ko: MunicipalCharge
+}
+
+input ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput {
+  and: [ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput]
+  dzn: MunicipalChargeFiltersInput
+  ko: MunicipalChargeFiltersInput
+  not: ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput
+  or: [ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput]
+}
+
+input ComponentMunicipalChargeMunicipalChargeIdentifierInput {
+  dzn: ID
+  id: ID
+  ko: ID
+}
+
+type ComponentSectionsContacts {
+  addressContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  bankConnectionContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  billingInfoContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  description: String
+  directionsContact: ComponentBlocksContactDirectionsCard
+  emailContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  id: ID!
+  openingHoursContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  personContacts(filters: ComponentBlocksContactPersonCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactPersonCard]
+  phoneContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  postalAddressContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+  title: String
+  titleLevel: ENUM_COMPONENTSECTIONSCONTACTS_TITLELEVEL
+  webContacts(filters: ComponentBlocksContactCardFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksContactCard]
+}
+
+input ComponentSectionsContactsFiltersInput {
+  addressContacts: ComponentBlocksContactCardFiltersInput
+  and: [ComponentSectionsContactsFiltersInput]
+  bankConnectionContacts: ComponentBlocksContactCardFiltersInput
+  billingInfoContacts: ComponentBlocksContactCardFiltersInput
+  description: StringFilterInput
+  directionsContact: ComponentBlocksContactDirectionsCardFiltersInput
+  emailContacts: ComponentBlocksContactCardFiltersInput
+  not: ComponentSectionsContactsFiltersInput
+  openingHoursContacts: ComponentBlocksContactCardFiltersInput
+  or: [ComponentSectionsContactsFiltersInput]
+  personContacts: ComponentBlocksContactPersonCardFiltersInput
+  phoneContacts: ComponentBlocksContactCardFiltersInput
+  postalAddressContacts: ComponentBlocksContactCardFiltersInput
+  title: StringFilterInput
+  titleLevel: StringFilterInput
+  webContacts: ComponentBlocksContactCardFiltersInput
+}
+
+input ComponentSectionsContactsInput {
+  addressContacts: [ComponentBlocksContactCardInput]
+  bankConnectionContacts: [ComponentBlocksContactCardInput]
+  billingInfoContacts: [ComponentBlocksContactCardInput]
+  description: String
+  directionsContact: ComponentBlocksContactDirectionsCardInput
+  emailContacts: [ComponentBlocksContactCardInput]
+  id: ID
+  openingHoursContacts: [ComponentBlocksContactCardInput]
+  personContacts: [ComponentBlocksContactPersonCardInput]
+  phoneContacts: [ComponentBlocksContactCardInput]
+  postalAddressContacts: [ComponentBlocksContactCardInput]
+  title: String
+  titleLevel: ENUM_COMPONENTSECTIONSCONTACTS_TITLELEVEL
+  webContacts: [ComponentBlocksContactCardInput]
+}
+
+type ComponentSectionsDocuments {
+  externalDocuments(filters: ComponentBlocksExternalDocumentFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksExternalDocument]
+  id: ID!
+  text: String
+  title: String
+}
+
+input ComponentSectionsDocumentsFiltersInput {
+  and: [ComponentSectionsDocumentsFiltersInput]
+  externalDocuments: ComponentBlocksExternalDocumentFiltersInput
+  not: ComponentSectionsDocumentsFiltersInput
+  or: [ComponentSectionsDocumentsFiltersInput]
+  text: StringFilterInput
+  title: StringFilterInput
+}
+
+input ComponentSectionsDocumentsInput {
+  externalDocuments: [ComponentBlocksExternalDocumentInput]
+  id: ID
+  text: String
+  title: String
+}
+
+type ComponentSectionsFaq {
+  id: ID!
+  questions(filters: ComponentBlocksQuestionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksQuestion]!
+  title: String
+}
+
+input ComponentSectionsFaqFiltersInput {
+  and: [ComponentSectionsFaqFiltersInput]
+  not: ComponentSectionsFaqFiltersInput
+  or: [ComponentSectionsFaqFiltersInput]
+  questions: ComponentBlocksQuestionFiltersInput
+  title: StringFilterInput
+}
+
+input ComponentSectionsFaqInput {
+  id: ID
+  questions: [ComponentBlocksQuestionInput]
+  title: String
+}
+
 type ComponentSectionsRichtext {
   content: String
   id: ID!
@@ -222,6 +539,49 @@ input ComponentSectionsRichtextFiltersInput {
 input ComponentSectionsRichtextInput {
   content: String
   id: ID
+}
+
+type ComponentSectionsStepper {
+  checklists(filters: ComponentBlocksChecklistFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksChecklist]
+  description: String
+  id: ID!
+  title: String
+}
+
+input ComponentSectionsStepperFiltersInput {
+  and: [ComponentSectionsStepperFiltersInput]
+  checklists: ComponentBlocksChecklistFiltersInput
+  description: StringFilterInput
+  not: ComponentSectionsStepperFiltersInput
+  or: [ComponentSectionsStepperFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentSectionsStepperInput {
+  checklists: [ComponentBlocksChecklistInput]
+  description: String
+  id: ID
+  title: String
+}
+
+type ComponentSectionsTowing {
+  id: ID!
+  text: String
+  title: String
+}
+
+input ComponentSectionsTowingFiltersInput {
+  and: [ComponentSectionsTowingFiltersInput]
+  not: ComponentSectionsTowingFiltersInput
+  or: [ComponentSectionsTowingFiltersInput]
+  text: StringFilterInput
+  title: StringFilterInput
+}
+
+input ComponentSectionsTowingInput {
+  id: ID
+  text: String
+  title: String
 }
 
 """
@@ -286,6 +646,11 @@ input DateTimeFilterInput {
 
 type DeleteMutationResponse {
   documentId: ID!
+}
+
+enum ENUM_COMPONENTSECTIONSCONTACTS_TITLELEVEL {
+  h2
+  h3
 }
 
 enum ENUM_MUNICIPALSERVICE_COLOR {
@@ -433,6 +798,7 @@ type Form {
   documentId: ID!
   landingPage: ComponentBlocksFormLandingPage
   moreInformationUrl: String
+  municipalService: MunicipalService
   publishedAt: DateTime
   slug: String!
   updatedAt: DateTime
@@ -458,6 +824,7 @@ input FormFiltersInput {
   documentId: IDFilterInput
   landingPage: ComponentBlocksFormLandingPageFiltersInput
   moreInformationUrl: StringFilterInput
+  municipalService: MunicipalServiceFiltersInput
   not: FormFiltersInput
   or: [FormFiltersInput]
   publishedAt: DateTimeFilterInput
@@ -468,11 +835,12 @@ input FormFiltersInput {
 input FormInput {
   landingPage: ComponentBlocksFormLandingPageInput
   moreInformationUrl: String
+  municipalService: ID
   publishedAt: DateTime
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsRichtext | Error
+union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
 
 scalar FormLandingPageSectionsDynamicZoneInput
 
@@ -521,7 +889,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksCommonLink | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ComponentSectionsRichtext | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -588,6 +956,7 @@ type HomepageAnnouncement {
   documentId: ID!
   href: String!
   image: UploadFile!
+  primaryButton: ComponentBlocksCommonLink
   publishedAt: DateTime
   title: String!
   updatedAt: DateTime
@@ -618,6 +987,7 @@ input HomepageAnnouncementFiltersInput {
   href: StringFilterInput
   not: HomepageAnnouncementFiltersInput
   or: [HomepageAnnouncementFiltersInput]
+  primaryButton: ComponentBlocksCommonLinkFiltersInput
   publishedAt: DateTimeFilterInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
@@ -630,6 +1000,7 @@ input HomepageAnnouncementInput {
   description: String
   href: String
   image: ID
+  primaryButton: ComponentBlocksCommonLinkInput
   publishedAt: DateTime
   title: String
 }
@@ -835,6 +1206,98 @@ input LongFilterInput {
   startsWith: Long
 }
 
+type MunicipalCharge {
+  createdAt: DateTime
+  documentId: ID!
+  feedbackLink: String
+  publishedAt: DateTime
+  slug: String!
+  title: String!
+  updatedAt: DateTime
+}
+
+type MunicipalChargeConfig {
+  createdAt: DateTime
+  deliveryMethod: ComponentMunicipalChargeDeliveryMethod
+  documentId: ID!
+  municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifier
+  publishedAt: DateTime
+  updatedAt: DateTime
+}
+
+type MunicipalChargeConfigEntity {
+  attributes: MunicipalChargeConfig
+  id: ID
+}
+
+type MunicipalChargeConfigEntityResponse {
+  data: MunicipalChargeConfig
+}
+
+type MunicipalChargeConfigEntityResponseCollection {
+  nodes: [MunicipalChargeConfig!]!
+  pageInfo: Pagination!
+}
+
+input MunicipalChargeConfigFiltersInput {
+  and: [MunicipalChargeConfigFiltersInput]
+  createdAt: DateTimeFilterInput
+  deliveryMethod: ComponentMunicipalChargeDeliveryMethodFiltersInput
+  municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput
+  not: MunicipalChargeConfigFiltersInput
+  or: [MunicipalChargeConfigFiltersInput]
+  publishedAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input MunicipalChargeConfigInput {
+  deliveryMethod: ComponentMunicipalChargeDeliveryMethodInput
+  municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifierInput
+  publishedAt: DateTime
+}
+
+type MunicipalChargeConfigRelationResponseCollection {
+  nodes: [MunicipalChargeConfig!]!
+}
+
+type MunicipalChargeEntity {
+  attributes: MunicipalCharge
+  id: ID
+}
+
+type MunicipalChargeEntityResponse {
+  data: MunicipalCharge
+}
+
+type MunicipalChargeEntityResponseCollection {
+  nodes: [MunicipalCharge!]!
+  pageInfo: Pagination!
+}
+
+input MunicipalChargeFiltersInput {
+  and: [MunicipalChargeFiltersInput]
+  createdAt: DateTimeFilterInput
+  documentId: IDFilterInput
+  feedbackLink: StringFilterInput
+  not: MunicipalChargeFiltersInput
+  or: [MunicipalChargeFiltersInput]
+  publishedAt: DateTimeFilterInput
+  slug: StringFilterInput
+  title: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input MunicipalChargeInput {
+  feedbackLink: String
+  publishedAt: DateTime
+  slug: String
+  title: String
+}
+
+type MunicipalChargeRelationResponseCollection {
+  nodes: [MunicipalCharge!]!
+}
+
 type MunicipalService {
   buttonText: String!
   categories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceCategory]!
@@ -843,9 +1306,12 @@ type MunicipalService {
   createdAt: DateTime
   description: String!
   documentId: ID!
+  form: Form
   href: String!
   icon: ENUM_MUNICIPALSERVICE_ICON!
   publishedAt: DateTime
+  sections: [MunicipalServiceSectionsDynamicZone]
+  slug: String!
   tags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceTag]!
   tags_connection(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagRelationResponseCollection
   title: String!
@@ -920,11 +1386,13 @@ input MunicipalServiceFiltersInput {
   createdAt: DateTimeFilterInput
   description: StringFilterInput
   documentId: IDFilterInput
+  form: FormFiltersInput
   href: StringFilterInput
   icon: StringFilterInput
   not: MunicipalServiceFiltersInput
   or: [MunicipalServiceFiltersInput]
   publishedAt: DateTimeFilterInput
+  slug: StringFilterInput
   tags: MunicipalServiceTagFiltersInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
@@ -935,9 +1403,12 @@ input MunicipalServiceInput {
   categories: [ID]
   color: ENUM_MUNICIPALSERVICE_COLOR
   description: String
+  form: ID
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
   publishedAt: DateTime
+  sections: [MunicipalServiceSectionsDynamicZoneInput!]
+  slug: String
   tags: [ID]
   title: String
 }
@@ -945,6 +1416,10 @@ input MunicipalServiceInput {
 type MunicipalServiceRelationResponseCollection {
   nodes: [MunicipalService!]!
 }
+
+union MunicipalServiceSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
+
+scalar MunicipalServiceSectionsDynamicZoneInput
 
 type MunicipalServiceTag {
   createdAt: DateTime
@@ -1043,6 +1518,7 @@ type Mutation {
   changePassword(currentPassword: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
   createForm(data: FormInput!, status: PublicationStatus = PUBLISHED): Form
   createHomepageAnnouncement(data: HomepageAnnouncementInput!, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
+  createMunicipalCharge(data: MunicipalChargeInput!, status: PublicationStatus = PUBLISHED): MunicipalCharge
   createMunicipalService(data: MunicipalServiceInput!, status: PublicationStatus = PUBLISHED): MunicipalService
   createMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
   createMunicipalServiceTag(data: MunicipalServiceTagInput!, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
@@ -1060,6 +1536,8 @@ type Mutation {
   deleteHelpPage: DeleteMutationResponse
   deleteHomepage: DeleteMutationResponse
   deleteHomepageAnnouncement(documentId: ID!): DeleteMutationResponse
+  deleteMunicipalCharge(documentId: ID!): DeleteMutationResponse
+  deleteMunicipalChargeConfig: DeleteMutationResponse
   deleteMunicipalService(documentId: ID!): DeleteMutationResponse
   deleteMunicipalServiceCategory(documentId: ID!): DeleteMutationResponse
   deleteMunicipalServiceTag(documentId: ID!): DeleteMutationResponse
@@ -1095,6 +1573,8 @@ type Mutation {
   updateHelpPage(data: HelpPageInput!, status: PublicationStatus = PUBLISHED): HelpPage
   updateHomepage(data: HomepageInput!, status: PublicationStatus = PUBLISHED): Homepage
   updateHomepageAnnouncement(data: HomepageAnnouncementInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
+  updateMunicipalCharge(data: MunicipalChargeInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): MunicipalCharge
+  updateMunicipalChargeConfig(data: MunicipalChargeConfigInput!, status: PublicationStatus = PUBLISHED): MunicipalChargeConfig
   updateMunicipalService(data: MunicipalServiceInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): MunicipalService
   updateMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
   updateMunicipalServiceTag(data: MunicipalServiceTagInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
@@ -1132,45 +1612,49 @@ enum PublicationStatus {
 
 type Query {
   footer(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Footer
-  form(documentId: ID!): Form
-  forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [Form]!
-  forms_connection(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection
-  general: General
-  helpPage: HelpPage
-  homepage: Homepage
-  homepageAnnouncement(documentId: ID!): HomepageAnnouncement
-  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [HomepageAnnouncement]!
-  homepageAnnouncements_connection(filters: HomepageAnnouncementFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageAnnouncementEntityResponseCollection
-  i18NLocale(documentId: ID!): I18NLocale
-  i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [I18NLocale]!
-  i18NLocales_connection(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
+  form(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Form
+  forms(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [Form]!
+  forms_connection(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): FormEntityResponseCollection
+  general(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): General
+  helpPage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): HelpPage
+  homepage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Homepage
+  homepageAnnouncement(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
+  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [HomepageAnnouncement]!
+  homepageAnnouncements_connection(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): HomepageAnnouncementEntityResponseCollection
+  i18NLocale(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): I18NLocale
+  i18NLocales(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [I18NLocale]!
+  i18NLocales_connection(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe
-  municipalService(documentId: ID!): MunicipalService
-  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceCategory]!
-  municipalServiceCategories_connection(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
-  municipalServiceCategory(documentId: ID!): MunicipalServiceCategory
-  municipalServiceTag(documentId: ID!): MunicipalServiceTag
-  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceTag]!
-  municipalServiceTags_connection(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagEntityResponseCollection
-  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
-  municipalServicesPage: MunicipalServicesPage
-  municipalServices_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceEntityResponseCollection
-  reviewWorkflowsWorkflow(documentId: ID!): ReviewWorkflowsWorkflow
-  reviewWorkflowsWorkflowStage(documentId: ID!): ReviewWorkflowsWorkflowStage
-  reviewWorkflowsWorkflowStages(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ReviewWorkflowsWorkflowStage]!
-  reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ReviewWorkflowsWorkflowStageEntityResponseCollection
-  reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ReviewWorkflowsWorkflow]!
-  reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ReviewWorkflowsWorkflowEntityResponseCollection
-  tax: Tax
-  uploadFile(documentId: ID!): UploadFile
-  uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UploadFile]!
-  uploadFiles_connection(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection
-  usersPermissionsRole(documentId: ID!): UsersPermissionsRole
-  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsRole]!
-  usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsRoleEntityResponseCollection
-  usersPermissionsUser(documentId: ID!): UsersPermissionsUser
-  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [UsersPermissionsUser]!
-  usersPermissionsUsers_connection(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsUserEntityResponseCollection
+  municipalCharge(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalCharge
+  municipalChargeConfig(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalChargeConfig
+  municipalCharges(filters: MunicipalChargeFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalCharge]!
+  municipalCharges_connection(filters: MunicipalChargeFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalChargeEntityResponseCollection
+  municipalService(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalService
+  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceCategory]!
+  municipalServiceCategories_connection(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceCategoryEntityResponseCollection
+  municipalServiceCategory(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
+  municipalServiceTag(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
+  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceTag]!
+  municipalServiceTags_connection(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceTagEntityResponseCollection
+  municipalServices(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalService]!
+  municipalServicesPage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServicesPage
+  municipalServices_connection(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceEntityResponseCollection
+  reviewWorkflowsWorkflow(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflow
+  reviewWorkflowsWorkflowStage(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStage
+  reviewWorkflowsWorkflowStages(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflowStage]!
+  reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStageEntityResponseCollection
+  reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflow]!
+  reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowEntityResponseCollection
+  tax(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Tax
+  uploadFile(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UploadFile
+  uploadFiles(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UploadFile]!
+  uploadFiles_connection(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UploadFileEntityResponseCollection
+  usersPermissionsRole(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UsersPermissionsRole
+  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsRole]!
+  usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsRoleEntityResponseCollection
+  usersPermissionsUser(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UsersPermissionsUser
+  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsUser]!
+  usersPermissionsUsers_connection(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsUserEntityResponseCollection
 }
 
 type ResponseCollectionMeta {

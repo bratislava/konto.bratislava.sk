@@ -1,5 +1,28 @@
 import type { Schema, Struct } from '@strapi/strapi'
 
+export interface BlocksChecklist extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklists'
+  info: {
+    displayName: 'Checklist'
+  }
+  attributes: {
+    checklistItems: Schema.Attribute.Component<'blocks.checklist-item', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface BlocksChecklistItem extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_checklist_items'
+  info: {
+    displayName: 'Checklist item'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 export interface BlocksCommonLink extends Struct.ComponentSchema {
   collectionName: 'components_blocks_common_links'
   info: {
@@ -12,6 +35,57 @@ export interface BlocksCommonLink extends Struct.ComponentSchema {
       'api::municipal-service.municipal-service'
     >
     url: Schema.Attribute.String
+  }
+}
+
+export interface BlocksContactCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_contact_cards'
+  info: {
+    description: ''
+    displayName: 'Contact card'
+  }
+  attributes: {
+    overrideLabel: Schema.Attribute.String
+    value: Schema.Attribute.Text & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksContactDirectionsCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_contact_directions_cards'
+  info: {
+    displayName: 'Contact directions card'
+  }
+  attributes: {
+    address: Schema.Attribute.String & Schema.Attribute.Required
+    barrierFreeInfo: Schema.Attribute.Text
+    iframeUrl: Schema.Attribute.Text
+    overrideLabel: Schema.Attribute.String
+    parkingInfo: Schema.Attribute.Text
+    publicTransportInfo: Schema.Attribute.Text
+  }
+}
+
+export interface BlocksContactPersonCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_contact_person_cards'
+  info: {
+    displayName: 'Contact person card'
+  }
+  attributes: {
+    email: Schema.Attribute.Email
+    phone: Schema.Attribute.String
+    subtext: Schema.Attribute.String
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksExternalDocument extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_external_documents'
+  info: {
+    displayName: 'External Document'
+  }
+  attributes: {
+    title: Schema.Attribute.String
+    url: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
@@ -36,7 +110,16 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
       Schema.Attribute.Required
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<['sections.richtext']>
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'sections.richtext',
+        'sections.documents',
+        'sections.faq',
+        'sections.contacts',
+        'sections.towing',
+        'sections.stepper',
+      ]
+    >
     text: Schema.Attribute.RichText
   }
 }
@@ -89,6 +172,17 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksQuestion extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_questions'
+  info: {
+    displayName: 'Question'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 export interface GeneralAlert extends Struct.ComponentSchema {
   collectionName: 'components_general_alerts'
   info: {
@@ -102,6 +196,95 @@ export interface GeneralAlert extends Struct.ComponentSchema {
   }
 }
 
+export interface MunicipalChargeDeliveryMethod extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_delivery_methods'
+  info: {
+    displayName: 'deliveryMethod'
+  }
+  attributes: {
+    consentText: Schema.Attribute.RichText & Schema.Attribute.Required
+    deliveryMethodChangePendingAlert: Schema.Attribute.Component<
+      'municipal-charge.delivery-method-change-pending-alert',
+      false
+    >
+  }
+}
+
+export interface MunicipalChargeDeliveryMethodChangePendingAlert extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_delivery_method_change_pending_alerts'
+  info: {
+    displayName: 'deliveryMethodChangePendingAlert'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface MunicipalChargeMunicipalChargeIdentifier extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_municipal_charge_identifiers'
+  info: {
+    displayName: 'municipalChargeIdentifier'
+  }
+  attributes: {
+    dzn: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+    ko: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+  }
+}
+
+export interface SectionsContacts extends Struct.ComponentSchema {
+  collectionName: 'components_sections_contacts'
+  info: {
+    description: ''
+    displayName: 'Kontakty'
+  }
+  attributes: {
+    addressContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    bankConnectionContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    billingInfoContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    description: Schema.Attribute.RichText
+    directionsContact: Schema.Attribute.Component<'blocks.contact-directions-card', false>
+    emailContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    openingHoursContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    personContacts: Schema.Attribute.Component<'blocks.contact-person-card', true>
+    phoneContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    postalAddressContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+    title: Schema.Attribute.String
+    titleLevel: Schema.Attribute.Enumeration<['h2', 'h3']> & Schema.Attribute.DefaultTo<'h2'>
+    webContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+  }
+}
+
+export interface SectionsDocuments extends Struct.ComponentSchema {
+  collectionName: 'components_sections_documents'
+  info: {
+    displayName: 'Dokumenty'
+  }
+  attributes: {
+    externalDocuments: Schema.Attribute.Component<'blocks.external-document', true>
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
+  }
+}
+
+export interface SectionsFaq extends Struct.ComponentSchema {
+  collectionName: 'components_sections_faqs'
+  info: {
+    displayName: 'FAQ'
+  }
+  attributes: {
+    questions: Schema.Attribute.Component<'blocks.question', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1
+        },
+        number
+      >
+    title: Schema.Attribute.String
+  }
+}
+
 export interface SectionsRichtext extends Struct.ComponentSchema {
   collectionName: 'components_sections_richtexts'
   info: {
@@ -112,18 +295,56 @@ export interface SectionsRichtext extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsStepper extends Struct.ComponentSchema {
+  collectionName: 'components_sections_steppers'
+  info: {
+    displayName: 'Stepper'
+  }
+  attributes: {
+    checklists: Schema.Attribute.Component<'blocks.checklist', true>
+    description: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface SectionsTowing extends Struct.ComponentSchema {
+  collectionName: 'components_sections_towings'
+  info: {
+    displayName: 'Od\u0165ahy'
+  }
+  attributes: {
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'blocks.checklist': BlocksChecklist
+      'blocks.checklist-item': BlocksChecklistItem
       'blocks.common-link': BlocksCommonLink
+      'blocks.contact-card': BlocksContactCard
+      'blocks.contact-directions-card': BlocksContactDirectionsCard
+      'blocks.contact-person-card': BlocksContactPersonCard
+      'blocks.external-document': BlocksExternalDocument
       'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
+      'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod
+      'municipal-charge.delivery-method-change-pending-alert': MunicipalChargeDeliveryMethodChangePendingAlert
+      'municipal-charge.municipal-charge-identifier': MunicipalChargeMunicipalChargeIdentifier
+      'sections.contacts': SectionsContacts
+      'sections.documents': SectionsDocuments
+      'sections.faq': SectionsFaq
       'sections.richtext': SectionsRichtext
+      'sections.stepper': SectionsStepper
+      'sections.towing': SectionsTowing
     }
   }
 }

@@ -2,7 +2,6 @@ import { forwardRef, useState } from 'react'
 
 import { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
 import InputField from '@/src/components/widget-components/InputField/InputField'
-import PasswordEyeButton from '@/src/components/widget-components/PasswordField/PasswordEyeButton'
 
 type Props = FieldWrapperProps & {
   value?: string
@@ -14,7 +13,7 @@ type Props = FieldWrapperProps & {
 
 const PasswordField = forwardRef<HTMLInputElement, Props>(
   ({ value = '', autoComplete, onChange, placeholder, className, ...rest }, ref) => {
-    const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+    const [isPasswordHidden] = useState(true)
 
     return (
       <InputField
@@ -26,14 +25,6 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         onChange={onChange}
         ref={ref}
         autoComplete={autoComplete}
-        endIcon={
-          <PasswordEyeButton
-            isPasswordHidden={isPasswordHidden}
-            onToggle={setIsPasswordHidden}
-            isDisabled={rest.isDisabled}
-            className="absolute inset-y-1/2 right-1 aspect-square h-full -translate-y-2/4"
-          />
-        }
         {...rest}
       />
     )

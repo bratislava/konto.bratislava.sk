@@ -18,6 +18,8 @@ const PaymentSchedule = () => {
 
   const { taxData } = useTaxFee()
 
+  // TODO: Use Table component
+
   return (
     <ul className="flex w-full flex-col rounded-lg border border-gray-200 px-4 lg:px-6">
       {taxData.installmentPayment.installments?.map((installment, index) => {

@@ -25,6 +25,10 @@ interface UploadDropAreaProps {
   onUpload?: (files: File[]) => void
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16743-7965
+ */
+
 const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
   (
     {
@@ -102,7 +106,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
           >
             <ReactAriaButton
               ref={ref}
-              className="flex size-full flex-col items-center justify-evenly p-6 text-center"
+              className="flex size-full flex-col items-center justify-evenly rounded-lg p-6 text-center base-focus-ring"
               isDisabled={isDisabled}
             >
               <div className="flex justify-center">

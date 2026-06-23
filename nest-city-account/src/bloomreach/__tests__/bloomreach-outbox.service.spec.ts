@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { GDPRCategoryEnum, GDPRSubTypeEnum, GDPRTypeEnum } from '@prisma/client'
+import { ConsentEnum } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -8,7 +8,6 @@ import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
-  BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
 import { BloomreachOutboxService } from '../bloomreach-outbox.service'
@@ -129,25 +128,19 @@ describe('BloomreachOutboxService', () => {
     })
   })
 
-  describe('trackEventConsents', () => {
-    const gdprData = [
-      {
-        type: GDPRTypeEnum.MARKETING,
-        category: GDPRCategoryEnum.ESBS,
-        subType: GDPRSubTypeEnum.subscribe,
-      },
-    ]
+  describe('trackConsents', () => {
+    const consents = [{ consentType: ConsentEnum.MARKETING, isGranted: true }]
 
     it('should skip when integration is not active', async () => {
       process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
 
-      await service.trackEventConsents(gdprData, externalId)
+      await service.trackConsents(consents, externalId)
 
       expect(payloadBuilder.buildConsentEventCommands).not.toHaveBeenCalled()
     })
 
     it('should skip when externalId is null', async () => {
-      await service.trackEventConsents(gdprData, null)
+      await service.trackConsents(consents, null)
 
       expect(payloadBuilder.buildConsentEventCommands).not.toHaveBeenCalled()
     })
@@ -156,7 +149,7 @@ describe('BloomreachOutboxService', () => {
       payloadBuilder.buildConsentEventCommands.mockReturnValue([])
       prismaMock.bloomreachOutbox.createMany.mockRejectedValue(new Error('DB error'))
 
-      await expect(service.trackEventConsents(gdprData, externalId)).resolves.toBeUndefined()
+      await expect(service.trackConsents(consents, externalId)).resolves.toBeUndefined()
     })
 
     it('should override a pending action value for the same event_type and category', async () => {
@@ -165,7 +158,7 @@ describe('BloomreachOutboxService', () => {
         event_type: BloomreachEventNameEnum.CONSENT,
         properties: {
           action: BloomreachConsentActionEnum.ACCEPT,
-          category: BloomreachConsentCategoryEnum.ESBS_MARKETING,
+          category: 'ESBS-MARKETING',
           valid_until: 'unlimited',
         },
       }
@@ -175,7 +168,7 @@ describe('BloomreachOutboxService', () => {
         event_type: BloomreachEventNameEnum.CONSENT,
         properties: {
           action: BloomreachConsentActionEnum.REJECT,
-          category: BloomreachConsentCategoryEnum.ESBS_MARKETING,
+          category: 'ESBS-MARKETING',
           valid_until: 'unlimited',
         },
       }
@@ -192,14 +185,8 @@ describe('BloomreachOutboxService', () => {
         },
       ])
 
-      await service.trackEventConsents(
-        [
-          {
-            type: GDPRTypeEnum.MARKETING,
-            category: GDPRCategoryEnum.ESBS,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          },
-        ],
+      await service.trackConsents(
+        [{ consentType: ConsentEnum.MARKETING, isGranted: false }],
         externalId
       )
 
@@ -230,16 +217,10 @@ describe('BloomreachOutboxService', () => {
       await service.anonymizeCustomer(externalId)
 
       expect(payloadBuilder.buildConsentEventCommands).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
-            type: GDPRTypeEnum.MARKETING,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          }),
-          expect.objectContaining({
-            type: GDPRTypeEnum.GENERAL,
-            subType: GDPRSubTypeEnum.unsubscribe,
-          }),
-        ]),
+        [
+          { consentType: ConsentEnum.MARKETING, isGranted: false },
+          { consentType: ConsentEnum.GENERAL, isGranted: false },
+        ],
         externalId
       )
       expect(payloadBuilder.buildAnonymizeCommand).toHaveBeenCalledWith(externalId)

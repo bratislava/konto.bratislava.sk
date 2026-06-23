@@ -16,6 +16,11 @@
       "type": "string",
       "required": true
     },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
     "description": {
       "type": "text",
       "required": true
@@ -88,6 +93,23 @@
       "relation": "manyToMany",
       "target": "api::municipal-service-category.municipal-service-category",
       "inversedBy": "municipalServices"
+    },
+    "form": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::form.form",
+      "mappedBy": "municipalService"
+    },
+    "sections": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.richtext",
+        "sections.documents",
+        "sections.faq",
+        "sections.contacts",
+        "sections.stepper",
+        "sections.towing"
+      ]
     }
   }
 }

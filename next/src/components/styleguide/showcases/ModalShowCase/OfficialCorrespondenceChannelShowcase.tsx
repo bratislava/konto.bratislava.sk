@@ -3,9 +3,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
   UserOfficialCorrespondenceChannelEnum,
 } from 'openapi-clients/city-account'
 import { useState } from 'react'
@@ -46,20 +43,13 @@ const MOCK_USER_NOT_SUBSCRIBED = {
   ...BASE_USER_DATA,
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum.Postal,
   hasChangedDeliveryMethodAfterDeadline: false,
-  gdprData: [],
+  consents: [],
 }
 
 const MOCK_USER_SUBSCRIBED = {
   ...BASE_USER_DATA,
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum.Email,
   hasChangedDeliveryMethodAfterDeadline: false,
-  gdprData: [
-    {
-      category: GDPRCategoryEnum.Taxes,
-      type: GDPRTypeEnum.FormalCommunication,
-      subType: GDPRSubTypeEnum.Subscribe,
-    },
-  ],
 }
 
 const MOCK_USER_CHANGED_AFTER_DEADLINE = {

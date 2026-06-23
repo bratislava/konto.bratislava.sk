@@ -50,7 +50,7 @@
       },
       "buttonText": {
         "edit": {
-          "label": "Text tlačidla",
+          "label": "(deprecated - použi Primárny odkaz) Text tlačidla",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -64,7 +64,7 @@
       },
       "href": {
         "edit": {
-          "label": "Odkaz",
+          "label": "(deprecated - použi Primárny odkaz) Odkaz",
           "description": "Mal by začínať lomítkom, napr. /mestske-sluzby/...",
           "placeholder": "",
           "visible": true,
@@ -74,6 +74,20 @@
           "label": "href",
           "searchable": true,
           "sortable": true
+        }
+      },
+      "primaryButton": {
+        "edit": {
+          "label": "Button (primary)",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "primaryButton",
+          "searchable": false,
+          "sortable": false
         }
       },
       "image": {
@@ -186,6 +200,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "description",
+        "buttonText"
+      ],
       "edit": [
         [
           {
@@ -194,6 +214,12 @@
           },
           {
             "name": "description",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "primaryButton",
             "size": 12
           }
         ],
@@ -223,12 +249,6 @@
             "size": 6
           }
         ]
-      ],
-      "list": [
-        "id",
-        "title",
-        "description",
-        "buttonText"
       ]
     },
     "uid": "api::homepage-announcement.homepage-announcement"

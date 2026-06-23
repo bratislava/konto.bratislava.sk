@@ -8,9 +8,14 @@ fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
   title
 }
 
-fragment MunicipalServiceCardEntity on MunicipalService {
+fragment MunicipalServiceSlugEntity on MunicipalService {
   documentId
   title
+  slug
+}
+
+fragment MunicipalServiceCardEntity on MunicipalService {
+  ...MunicipalServiceSlugEntity
   description
   buttonText
   href
@@ -25,5 +30,8 @@ fragment MunicipalServiceEntity on MunicipalService {
   ...MunicipalServiceCardEntity
   categories {
     ...MunicipalServiceCategoryEntity
+  }
+  sections {
+    ...MunicipalServiceSections
   }
 }

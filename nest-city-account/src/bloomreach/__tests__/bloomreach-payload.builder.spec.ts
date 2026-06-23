@@ -1,11 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  CognitoUserAttributesTierEnum,
-  GDPRCategoryEnum,
-  GDPRSubTypeEnum,
-  GDPRTypeEnum,
-} from '@prisma/client'
+import { CognitoUserAttributesTierEnum, ConsentEnum } from '@prisma/client'
 
 import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
 import {
@@ -17,7 +12,6 @@ import { UserIdentitySubservice } from '../../utils/subservices/user-identity.su
 import {
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
-  BloomreachConsentCategoryEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
 import { BloomreachContactDatabaseService } from '../bloomreach-contact-database.service'
@@ -185,91 +179,39 @@ describe('BloomreachPayloadBuilder', () => {
   })
 
   describe('buildConsentEventCommands', () => {
-    it('should build accept consent event for marketing subscribe', () => {
-      const gdprData = [
-        {
-          type: GDPRTypeEnum.MARKETING,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-      ]
-
-      const result = builder.buildConsentEventCommands(gdprData, externalId)
+    it('should build a consent event command from a consent record', () => {
+      const result = builder.buildConsentEventCommands(
+        [{ consentType: ConsentEnum.MARKETING, isGranted: true }],
+        externalId
+      )
 
       expect(result).toHaveLength(1)
       expect(result[0].commandName).toBe(BloomreachCommandNameEnum.CUSTOMERS_EVENTS)
       expect(result[0].commandData.customer_ids.city_account_id).toBe(externalId)
       expect(result[0].commandData.event_type).toBe(BloomreachEventNameEnum.CONSENT)
       expect(result[0].commandData.properties.action).toBe(BloomreachConsentActionEnum.ACCEPT)
-      expect(result[0].commandData.properties.category).toBe(
-        BloomreachConsentCategoryEnum.ESBS_MARKETING
-      )
+      expect(result[0].commandData.properties.category).toBe('ESBS-MARKETING')
       expect(result[0].commandData.properties.valid_until).toBe('unlimited')
     })
 
-    it('should build reject consent event for unsubscribe', () => {
-      const gdprData = [
-        {
-          type: GDPRTypeEnum.MARKETING,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.unsubscribe,
-        },
-      ]
-
-      const result = builder.buildConsentEventCommands(gdprData, externalId)
-
-      expect(result[0].commandData.properties.action).toBe(BloomreachConsentActionEnum.REJECT)
-    })
-
-    it('should map TAXES/FORMAL_COMMUNICATION to TAX_COMMUNICATION category', () => {
-      const gdprData = [
-        {
-          type: GDPRTypeEnum.FORMAL_COMMUNICATION,
-          category: GDPRCategoryEnum.TAXES,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-      ]
-
-      const result = builder.buildConsentEventCommands(gdprData, externalId)
-
-      expect(result[0].commandData.properties.category).toBe(
-        BloomreachConsentCategoryEnum.TAX_COMMUNICATION
+    it('should map each consent type and grant state to category and action', () => {
+      const result = builder.buildConsentEventCommands(
+        [
+          { consentType: ConsentEnum.MARKETING, isGranted: true },
+          { consentType: ConsentEnum.GENERAL, isGranted: false },
+        ],
+        externalId
       )
-    })
-
-    it('should use concatenated category-type for unmapped combinations', () => {
-      const gdprData = [
-        {
-          type: GDPRTypeEnum.GENERAL,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-      ]
-
-      const result = builder.buildConsentEventCommands(gdprData, externalId)
-
-      expect(result[0].commandData.properties.category).toBe('ESBS-GENERAL')
-    })
-
-    it('should build multiple commands for multiple GDPR entries', () => {
-      const gdprData = [
-        {
-          type: GDPRTypeEnum.MARKETING,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.subscribe,
-        },
-        {
-          type: GDPRTypeEnum.GENERAL,
-          category: GDPRCategoryEnum.ESBS,
-          subType: GDPRSubTypeEnum.unsubscribe,
-        },
-      ]
-
-      const result = builder.buildConsentEventCommands(gdprData, externalId)
 
       expect(result).toHaveLength(2)
-      expect(result[0].commandData.properties.action).toBe(BloomreachConsentActionEnum.ACCEPT)
-      expect(result[1].commandData.properties.action).toBe(BloomreachConsentActionEnum.REJECT)
+      expect(result[0].commandData.properties).toMatchObject({
+        category: 'ESBS-MARKETING',
+        action: BloomreachConsentActionEnum.ACCEPT,
+      })
+      expect(result[1].commandData.properties).toMatchObject({
+        category: 'ESBS-GENERAL',
+        action: BloomreachConsentActionEnum.REJECT,
+      })
     })
   })
 })

@@ -35,7 +35,7 @@ const HelpPageContent = ({ helpPage }: Props) => {
       </div>
       <SectionContainer className="bg-background-passive-primary py-6 lg:py-18">
         <Banner
-          title="Nenašli ste odpoveď na vašu otázku?"
+          title={t('account_section_help.banner_title')}
           content={t('account_section_help.banner_content')}
           buttonText={t('account_section_help.banner_button_text')}
           href="mailto:info@bratislava.sk"

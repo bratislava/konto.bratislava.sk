@@ -448,7 +448,12 @@
 @utility wrapper-focus-ring {
   @apply ring-border-active-primary-default ring-offset-3 outline-none;
   @apply focus-within:[&:has(:focus-visible)]:ring-3 focus-within:[&:has(:focus-visible)]:transition-shadow;
-  @apply **:focus-visible:ring-0 **:focus-visible:ring-offset-0 **:focus-visible:outline-none;
+  @apply **:focus-visible:ring-0! **:focus-visible:ring-offset-0! **:focus-visible:outline-none!;
+}
+
+@utility menu-dropdown-focus-ring {
+  @apply ring-border-active-primary-default ring-offset-3 outline-none;
+  @apply data-[highlighted]:ring-3 data-[highlighted]:ring-border-active-primary-default;
 }
 
 @utility negative-x-spacing {

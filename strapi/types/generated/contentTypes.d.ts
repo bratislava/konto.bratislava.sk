@@ -26,6 +26,8 @@ export interface AdminApiToken extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         minLength: 1
       }>
+    adminPermissions: Schema.Attribute.Relation<'oneToMany', 'admin::permission'>
+    adminUserOwner: Schema.Attribute.Relation<'manyToOne', 'admin::user'>
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
     description: Schema.Attribute.String &
@@ -38,6 +40,9 @@ export interface AdminApiToken extends Struct.CollectionTypeSchema {
         minLength: 1
       }>
     expiresAt: Schema.Attribute.DateTime
+    kind: Schema.Attribute.Enumeration<['content-api', 'admin']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'content-api'>
     lastUsedAt: Schema.Attribute.DateTime
     lifespan: Schema.Attribute.BigInteger
     locale: Schema.Attribute.String & Schema.Attribute.Private
@@ -52,7 +57,6 @@ export interface AdminApiToken extends Struct.CollectionTypeSchema {
     permissions: Schema.Attribute.Relation<'oneToMany', 'admin::api-token-permission'>
     publishedAt: Schema.Attribute.DateTime
     type: Schema.Attribute.Enumeration<['read-only', 'full-access', 'custom']> &
-      Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'read-only'>
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
@@ -124,6 +128,7 @@ export interface AdminPermission extends Struct.CollectionTypeSchema {
         minLength: 1
       }>
     actionParameters: Schema.Attribute.JSON & Schema.Attribute.DefaultTo<{}>
+    apiToken: Schema.Attribute.Relation<'manyToOne', 'admin::api-token'>
     conditions: Schema.Attribute.JSON & Schema.Attribute.DefaultTo<[]>
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
@@ -346,6 +351,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
     }
   }
   attributes: {
+    apiTokens: Schema.Attribute.Relation<'oneToMany', 'admin::api-token'> & Schema.Attribute.Private
     blocked: Schema.Attribute.Boolean & Schema.Attribute.Private & Schema.Attribute.DefaultTo<false>
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
@@ -440,6 +446,10 @@ export interface ApiFormForm extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::form.form'> &
       Schema.Attribute.Private
     moreInformationUrl: Schema.Attribute.String
+    municipalService: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::municipal-service.municipal-service'
+    >
     publishedAt: Schema.Attribute.DateTime
     slug: Schema.Attribute.UID & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime
@@ -519,6 +529,7 @@ export interface ApiHomepageAnnouncementHomepageAnnouncement extends Struct.Coll
       'api::homepage-announcement.homepage-announcement'
     > &
       Schema.Attribute.Private
+    primaryButton: Schema.Attribute.Component<'blocks.common-link', false>
     publishedAt: Schema.Attribute.DateTime
     title: Schema.Attribute.String & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime
@@ -557,6 +568,64 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
       'oneToMany',
       'api::municipal-service.municipal-service'
     >
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+  }
+}
+
+export interface ApiMunicipalChargeConfigMunicipalChargeConfig extends Struct.SingleTypeSchema {
+  collectionName: 'municipal_charge_configs'
+  info: {
+    displayName: 'Dane a poplatky (nov\u00E9)'
+    pluralName: 'municipal-charge-configs'
+    singularName: 'municipal-charge-config'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    deliveryMethod: Schema.Attribute.Component<'municipal-charge.delivery-method', false>
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::municipal-charge-config.municipal-charge-config'
+    > &
+      Schema.Attribute.Private
+    municipalChargeIdentifier: Schema.Attribute.Component<
+      'municipal-charge.municipal-charge-identifier',
+      false
+    >
+    publishedAt: Schema.Attribute.DateTime
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+  }
+}
+
+export interface ApiMunicipalChargeMunicipalCharge extends Struct.CollectionTypeSchema {
+  collectionName: 'municipal_charges'
+  info: {
+    displayName: 'Dane a poplatky'
+    pluralName: 'municipal-charges'
+    singularName: 'municipal-charge'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    feedbackLink: Schema.Attribute.String
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::municipal-charge.municipal-charge'
+    > &
+      Schema.Attribute.Private
+    publishedAt: Schema.Attribute.DateTime
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
+    title: Schema.Attribute.String & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
   }
@@ -658,6 +727,7 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
     description: Schema.Attribute.Text & Schema.Attribute.Required
+    form: Schema.Attribute.Relation<'oneToOne', 'api::form.form'>
     href: Schema.Attribute.String & Schema.Attribute.Required
     icon: Schema.Attribute.Enumeration<
       [
@@ -698,6 +768,17 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
     > &
       Schema.Attribute.Private
     publishedAt: Schema.Attribute.DateTime
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'sections.richtext',
+        'sections.documents',
+        'sections.faq',
+        'sections.contacts',
+        'sections.stepper',
+        'sections.towing',
+      ]
+    >
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
     tags: Schema.Attribute.Relation<
       'manyToMany',
       'api::municipal-service-tag.municipal-service-tag'
@@ -743,7 +824,7 @@ export interface ApiTaxTax extends Struct.SingleTypeSchema {
   collectionName: 'taxes'
   info: {
     description: ''
-    displayName: 'Dane a poplatky'
+    displayName: 'Dane a poplatky (star\u00E9)'
     pluralName: 'taxes'
     singularName: 'tax'
   }
@@ -1202,6 +1283,8 @@ declare module '@strapi/strapi' {
       'api::help-page.help-page': ApiHelpPageHelpPage
       'api::homepage-announcement.homepage-announcement': ApiHomepageAnnouncementHomepageAnnouncement
       'api::homepage.homepage': ApiHomepageHomepage
+      'api::municipal-charge-config.municipal-charge-config': ApiMunicipalChargeConfigMunicipalChargeConfig
+      'api::municipal-charge.municipal-charge': ApiMunicipalChargeMunicipalCharge
       'api::municipal-service-category.municipal-service-category': ApiMunicipalServiceCategoryMunicipalServiceCategory
       'api::municipal-service-tag.municipal-service-tag': ApiMunicipalServiceTagMunicipalServiceTag
       'api::municipal-service.municipal-service': ApiMunicipalServiceMunicipalService

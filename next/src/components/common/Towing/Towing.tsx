@@ -69,6 +69,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
       <SectionHeader title={title} text={text} />
 
       <div className="flex flex-col justify-center gap-4 rounded-lg border px-5 py-6">
+        {/* TODO: Wrap this in useForm hook */}
         <TextField
           label={t('towing.licensePlate')}
           displayOptionalLabel={false}
@@ -84,7 +85,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           isDisabled={licensePlate.length === 0 || !turnstileToken || isPending}
           startIcon={<Icon name="search" />}
         >
-          {t('button.search')}
+          {t('towing.searchButton')}
         </Button>
 
         <Turnstile

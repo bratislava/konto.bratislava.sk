@@ -10,6 +10,10 @@ type Props = {
   notification?: ReactNode
 }
 
+/**
+ * Inspired by PaymentSchedule: https://github.com/bratislava/konto.bratislava.sk/blob/master/next/src/components/simple-components/PaymentSchedule.tsx
+ */
+
 const Table = ({ rows, notification }: Props) => {
   return (
     <ul className="flex w-full flex-col rounded-lg border border-gray-200 px-5 pt-2 pb-6 lg:px-6">

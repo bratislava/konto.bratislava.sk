@@ -5,8 +5,7 @@ import { useTranslation } from 'next-i18next/pages'
 
 import { formsClient } from '@/src/clients/forms'
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
-import DesktopTableOfContents from '@/src/components/common/TableOfContents/DesktopTableOfContents'
-import MobileTableOfContents from '@/src/components/common/TableOfContents/MobileTableOfContents'
+import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
 import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -96,14 +95,9 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       <div
         key={formDefinition.slug} // Helps to re-render table of contents on page change
         className={cn(
-          'mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse px-4 py-8 lg:px-8 lg:py-12',
+          'mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse gap-8 px-4 py-8 lg:px-8 lg:py-12',
         )}
       >
-        {/* Screen: Mobile */}
-        <div className="md:hidden">
-          <p>Mobile Table of Contents</p>
-          <MobileTableOfContents />
-        </div>
         <div
           className={cn(
             'w-full max-w-200',
@@ -139,12 +133,9 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             </div>
           </SectionContainer>
         </div>
-        {/* TODO Sidebar goes here */}
-        {/* Screen: Desktop */}
-        <div className="grow basis-72 max-md:hidden">
-          <p>Desktop Table of Contents</p>
-          <DesktopTableOfContents />
-        </div>
+        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
+          <TableOfContents />
+        </aside>
       </div>
     </>
   )

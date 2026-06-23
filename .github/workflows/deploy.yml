@@ -6,9 +6,9 @@ name: Monorepo deploy pipelines
 on:
   push:
     tags:
-      - "dev**"
-      - "staging**"
-      - "prod**"
+      - 'dev**'
+      - 'staging**'
+      - 'prod**'
     branches:
       - master
 
@@ -164,7 +164,7 @@ jobs:
       directory: nest-clamav-scanner/
       image: harbor.bratislava.sk/standalone/nest-clamav-scanner
       cluster: ${{ needs.resolve.outputs.cluster }}
-      skip_tests: true
+      skip_tests: false
       target_validate: prebuild
       target_unit_test: test
       target_lint: lint
@@ -180,7 +180,7 @@ jobs:
       directory: nest-forms-backend/
       image: harbor.bratislava.sk/standalone/nest-forms-backend
       cluster: ${{ needs.resolve.outputs.cluster }}
-      skip_tests: true
+      skip_tests: false
       target_validate: prebuild
       target_unit_test: test
       target_lint: lint
@@ -197,7 +197,7 @@ jobs:
       directory: nest-tax-backend/
       image: harbor.bratislava.sk/standalone/nest-tax-backend
       cluster: ${{ needs.resolve.outputs.cluster }}
-      skip_tests: true
+      skip_tests: false
       target_validate: prebuild
       target_unit_test: test
       target_lint: lint
@@ -213,7 +213,7 @@ jobs:
       directory: nest-city-account/
       image: harbor.bratislava.sk/standalone/nest-city-account
       cluster: ${{ needs.resolve.outputs.cluster }}
-      skip_tests: true
+      skip_tests: false
       target_validate: prebuild
       target_unit_test: test
       target_lint: lint

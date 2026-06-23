@@ -768,6 +768,16 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
     > &
       Schema.Attribute.Private
     publishedAt: Schema.Attribute.DateTime
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'sections.richtext',
+        'sections.documents',
+        'sections.faq',
+        'sections.contacts',
+        'sections.stepper',
+        'sections.towing',
+      ]
+    >
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
     tags: Schema.Attribute.Relation<
       'manyToMany',

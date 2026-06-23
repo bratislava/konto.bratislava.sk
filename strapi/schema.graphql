@@ -1310,6 +1310,7 @@ type MunicipalService {
   href: String!
   icon: ENUM_MUNICIPALSERVICE_ICON!
   publishedAt: DateTime
+  sections: [MunicipalServiceSectionsDynamicZone]
   slug: String!
   tags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceTag]!
   tags_connection(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagRelationResponseCollection
@@ -1406,6 +1407,7 @@ input MunicipalServiceInput {
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
   publishedAt: DateTime
+  sections: [MunicipalServiceSectionsDynamicZoneInput!]
   slug: String
   tags: [ID]
   title: String
@@ -1414,6 +1416,10 @@ input MunicipalServiceInput {
 type MunicipalServiceRelationResponseCollection {
   nodes: [MunicipalService!]!
 }
+
+union MunicipalServiceSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
+
+scalar MunicipalServiceSectionsDynamicZoneInput
 
 type MunicipalServiceTag {
   createdAt: DateTime

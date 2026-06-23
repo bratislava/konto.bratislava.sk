@@ -61,7 +61,10 @@ export class TasksService {
    * Uses exponential backoff for retry logic on failures.
    * Processes up to 5 entities every 30 seconds.
    */
-  @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: bratislavaTimezone })
+  @Cron(CronExpression.EVERY_30_SECONDS, {
+    timeZone: bratislavaTimezone,
+    waitForCompletion: true,
+  })
   @HandleErrors('CronError')
   async updateEdesk(): Promise<void> {
     return this.edeskTasksSubservice.updateEdesk()

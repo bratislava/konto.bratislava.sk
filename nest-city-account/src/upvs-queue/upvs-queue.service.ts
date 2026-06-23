@@ -12,9 +12,6 @@ import { UrgentLookupService } from './urgent-lookup.service'
 export class UpvsQueueService {
   private readonly logger = new LineLoggerSubservice(UpvsQueueService.name)
 
-  // Reentrancy guard: don't start a new run while the previous one is still going.
-  private isProcessingBatch = false
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly urgentLookupService: UrgentLookupService,
@@ -54,12 +51,6 @@ export class UpvsQueueService {
    * its own service and assembles a single report. See the README for the full flow.
    */
   async processBatch(): Promise<void> {
-    if (this.isProcessingBatch) {
-      this.logger.log('processBatch skipped: previous run still in progress')
-      return
-    }
-    this.isProcessingBatch = true
-
     const result = {
       message: 'Upvs queue report.',
       urgentProcessed: 0,
@@ -69,59 +60,55 @@ export class UpvsQueueService {
       errors: [] as string[],
     }
 
+    // Urgent items run first, every tick, on their own budget (see README).
     try {
-      // Urgent items run first, every tick, on their own budget (see README).
-      try {
-        const urgentResult = await this.urgentLookupService.processUrgentItems()
-        result.urgentProcessed = urgentResult.attempted
-        if (urgentResult.rateLimited) {
-          // Rate-limited: already logged in the urgent service. Skip the rest of the tick
-          // rather than hammer UPVS; retry next tick.
-          return
-        }
-        if (urgentResult.failures.length > 0) {
-          result.errors.push(toLogfmt({ urgentFailures: urgentResult.failures }))
-        }
-      } catch (error) {
-        this.logger.error('Error processing urgent items', error)
-        result.errors.push('\n\n'.concat(toLogfmt(error)))
-      }
-
-      // If there is at least one URI in database flagged as outdated, we need to update it.
-      const uriToUpdateInternal = await this.edeskUriUpdateService.getUriToUpdateInternal()
-      if (uriToUpdateInternal && uriToUpdateInternal.uri && uriToUpdateInternal.id) {
-        await this.edeskUriUpdateService.handleUriUpdateInternal({
-          id: uriToUpdateInternal.id,
-          uri: uriToUpdateInternal.uri,
-        })
-        result.highPriorityProcessed = 1
-        result.totalProcessed = result.urgentProcessed + 1
-        this.logger.log(result)
+      const urgentResult = await this.urgentLookupService.processUrgentItems()
+      result.urgentProcessed = urgentResult.attempted
+      if (urgentResult.rateLimited) {
+        // Rate-limited: already logged in the urgent service. Skip the rest of the tick
+        // rather than hammer UPVS; retry next tick.
         return
       }
-      const uriToUpdateExternal = await this.edeskUriUpdateService.getUriToUpdateExternal()
-      if (uriToUpdateExternal && uriToUpdateExternal.uri) {
-        await this.edeskUriUpdateService.handleUriUpdateExternal(uriToUpdateExternal.uri)
-        result.externalProcessed = 1
-        result.totalProcessed = result.urgentProcessed + 1
-        this.logger.log(result)
-        return
+      if (urgentResult.failures.length > 0) {
+        result.errors.push(toLogfmt({ urgentFailures: urgentResult.failures }))
       }
-
-      try {
-        const search = await this.edeskBatchUpdateService.updateEdeskStatusBatch()
-        result.highPriorityProcessed = search.highPriorityProcessed
-        result.externalProcessed = search.externalProcessed
-        result.totalProcessed =
-          result.urgentProcessed + search.highPriorityProcessed + search.externalProcessed
-      } catch (error) {
-        this.logger.error('Error processing batch', error)
-        result.errors.push('\n\n'.concat(toLogfmt(error)))
-      }
-
-      this.logger.log(result)
-    } finally {
-      this.isProcessingBatch = false
+    } catch (error) {
+      this.logger.error('Error processing urgent items', error)
+      result.errors.push('\n\n'.concat(toLogfmt(error)))
     }
+
+    // If there is at least one URI in database flagged as outdated, we need to update it.
+    const uriToUpdateInternal = await this.edeskUriUpdateService.getUriToUpdateInternal()
+    if (uriToUpdateInternal && uriToUpdateInternal.uri && uriToUpdateInternal.id) {
+      await this.edeskUriUpdateService.handleUriUpdateInternal({
+        id: uriToUpdateInternal.id,
+        uri: uriToUpdateInternal.uri,
+      })
+      result.highPriorityProcessed = 1
+      result.totalProcessed = result.urgentProcessed + 1
+      this.logger.log(result)
+      return
+    }
+    const uriToUpdateExternal = await this.edeskUriUpdateService.getUriToUpdateExternal()
+    if (uriToUpdateExternal && uriToUpdateExternal.uri) {
+      await this.edeskUriUpdateService.handleUriUpdateExternal(uriToUpdateExternal.uri)
+      result.externalProcessed = 1
+      result.totalProcessed = result.urgentProcessed + 1
+      this.logger.log(result)
+      return
+    }
+
+    try {
+      const search = await this.edeskBatchUpdateService.updateEdeskStatusBatch()
+      result.highPriorityProcessed = search.highPriorityProcessed
+      result.externalProcessed = search.externalProcessed
+      result.totalProcessed =
+        result.urgentProcessed + search.highPriorityProcessed + search.externalProcessed
+    } catch (error) {
+      this.logger.error('Error processing batch', error)
+      result.errors.push('\n\n'.concat(toLogfmt(error)))
+    }
+
+    this.logger.log(result)
   }
 }

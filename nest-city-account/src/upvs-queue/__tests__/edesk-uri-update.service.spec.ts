@@ -142,10 +142,38 @@ describe('EdeskUriUpdateService', () => {
       })
     })
 
-    it('marks the row FAILED and bumps failCount when not resolved', async () => {
+    it('marks the row FAILED and bumps failCount when nothing is resolved', async () => {
       jest
         .spyOn(nasesService, 'getIdentitiesByUris')
         .mockResolvedValue({ success: [], failed: [] } as any)
+
+      await service.handleUriUpdateExternal('rc://sk/ext')
+
+      expect(prismaMock.externalEdeskCheck.update).toHaveBeenCalledWith({
+        where: { uri: 'rc://sk/ext' },
+        data: { queueStatus: QueueItemStatusEnum.FAILED, failCount: { increment: 1 } },
+      })
+    })
+
+    it('marks the row FAILED when the result is in failed without a possible URI change', async () => {
+      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+        success: [],
+        failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: false }],
+      } as any)
+
+      await service.handleUriUpdateExternal('rc://sk/ext')
+
+      expect(prismaMock.externalEdeskCheck.update).toHaveBeenCalledWith({
+        where: { uri: 'rc://sk/ext' },
+        data: { queueStatus: QueueItemStatusEnum.FAILED, failCount: { increment: 1 } },
+      })
+    })
+
+    it('marks the row FAILED when the result is in failed with a possible URI change', async () => {
+      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+        success: [],
+        failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: true }],
+      } as any)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 

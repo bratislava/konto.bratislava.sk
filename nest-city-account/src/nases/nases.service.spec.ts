@@ -9,7 +9,7 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NasesService } from './nases.service'
 
@@ -266,6 +266,7 @@ describe('NasesService', () => {
         rejection: axiosErrorWithStatus(429),
         status: HttpStatus.TOO_MANY_REQUESTS,
         errorName: ErrorsEnum.TOO_MANY_REQUESTS_ERROR,
+        persistsRejection: false,
       },
       {
         upstreamCase: '400 with fault (UPVS IAM rejection)',
@@ -275,52 +276,77 @@ describe('NasesService', () => {
         }),
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errorName: VerificationErrorsEnum.IDENTITY_LOOKUP_REJECTED,
+        persistsRejection: true,
       },
       {
         upstreamCase: '400 without fault (parameter validation)',
         rejection: axiosErrorWithStatus(400, { message: 'Invalid query' }),
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorName: ErrorsEnum.INTERNAL_SERVER_ERROR,
+        persistsRejection: false,
       },
       {
         upstreamCase: '503 with Retry-After',
         rejection: axiosErrorWithStatus(503, {}, { 'retry-after': '60' }),
         status: HttpStatus.SERVICE_UNAVAILABLE,
         errorName: ErrorsEnum.SERVICE_UNAVAILABLE_ERROR,
+        persistsRejection: false,
       },
       {
         upstreamCase: '503 without Retry-After',
         rejection: axiosErrorWithStatus(503),
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorsEnum.BAD_GATEWAY_ERROR,
+        persistsRejection: false,
       },
       {
         upstreamCase: '401 (broken credentials)',
         rejection: axiosErrorWithStatus(401),
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorsEnum.BAD_GATEWAY_AUTH_ERROR,
+        persistsRejection: false,
       },
       {
         upstreamCase: 'network error with no response',
         rejection: new AxiosError('Network Error'),
         status: HttpStatus.BAD_GATEWAY,
         errorName: ErrorsEnum.BAD_GATEWAY_ERROR,
+        persistsRejection: false,
       },
       {
         upstreamCase: 'non-axios error',
         rejection: new Error('boom'),
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         errorName: ErrorsEnum.INTERNAL_SERVER_ERROR,
+        persistsRejection: false,
       },
-    ])('maps $upstreamCase to $status $errorName', async ({ rejection, status, errorName }) => {
-      apiIamIdentitiesLookupGetSpy().mockRejectedValue(rejection)
+    ])(
+      'maps $upstreamCase to $status $errorName',
+      async ({
+        rejection,
+        status,
+        errorName,
+        persistsRejection,
+      }: {
+        rejection: Error
+        status: HttpStatus
+        errorName: CustomErrorEnums
+        persistsRejection: boolean
+      }) => {
+        apiIamIdentitiesLookupGetSpy().mockRejectedValue(rejection)
 
-      const error = await thrownBy()
+        const error = await thrownBy()
 
-      expect(error).toBeInstanceOf(HttpException)
-      expect((error as HttpException).getStatus()).toBe(status)
-      expect((error as HttpException).getResponse()).toMatchObject({ errorName })
-    })
+        expect(error).toBeInstanceOf(HttpException)
+        expect((error as HttpException).getStatus()).toBe(status)
+        expect((error as HttpException).getResponse()).toMatchObject({ errorName })
+        if (persistsRejection) {
+          expect(prismaMock.identityLookupRejection.upsert).toHaveBeenCalled()
+        } else {
+          expect(prismaMock.identityLookupRejection.upsert).not.toHaveBeenCalled()
+        }
+      }
+    )
 
     // Rejections are persisted right here in the service - the row's existence
     // excludes the entity from further urgent lookups.

@@ -719,6 +719,27 @@ export type ComponentSectionsStepperInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentSectionsTowing = {
+  __typename?: 'ComponentSectionsTowing'
+  id: Scalars['ID']['output']
+  text?: Maybe<Scalars['String']['output']>
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsTowingFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
+  not?: InputMaybe<ComponentSectionsTowingFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsTowingInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  text?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type DateFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
   between?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
@@ -988,6 +1009,7 @@ export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
+  | ComponentSectionsTowing
   | Error
 
 export type FormRelationResponseCollection = {
@@ -1071,6 +1093,7 @@ export type GenericMorph =
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
+  | ComponentSectionsTowing
   | Footer
   | Form
   | General
@@ -3262,6 +3285,7 @@ export type FormLandingPageFragment = {
           } | null> | null
         } | null> | null
       }
+    | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
     | { __typename: 'Error' }
     | null
   > | null
@@ -3399,6 +3423,7 @@ export type FormWithLandingPageFragment = {
             } | null> | null
           } | null> | null
         }
+      | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
       | { __typename: 'Error' }
       | null
     > | null
@@ -3558,6 +3583,7 @@ export type FormWithLandingPageBySlugQuery = {
               } | null> | null
             } | null> | null
           }
+        | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
         | { __typename: 'Error' }
         | null
       > | null
@@ -4105,6 +4131,12 @@ export type DocumentsSectionFragment = {
   } | null> | null
 }
 
+export type TowingSectionFragment = {
+  __typename?: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
 type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   __typename: 'ComponentSectionsContacts'
   id: string
@@ -4211,6 +4243,12 @@ type FormLandingPageSections_ComponentSectionsStepper_Fragment = {
   } | null> | null
 }
 
+type FormLandingPageSections_ComponentSectionsTowing_Fragment = {
+  __typename: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
 type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
@@ -4219,6 +4257,7 @@ export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
+  | FormLandingPageSections_ComponentSectionsTowing_Fragment
   | FormLandingPageSections_Error_Fragment
 
 export type TaxFragment = {
@@ -4416,6 +4455,12 @@ export const DocumentsSectionFragmentDoc = gql`
   }
   ${ExternalDocumentBlockFragmentDoc}
 `
+export const TowingSectionFragmentDoc = gql`
+  fragment TowingSection on ComponentSectionsTowing {
+    title
+    text
+  }
+`
 export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
@@ -4434,12 +4479,16 @@ export const FormLandingPageSectionsFragmentDoc = gql`
     ... on ComponentSectionsDocuments {
       ...DocumentsSection
     }
+    ... on ComponentSectionsTowing {
+      ...TowingSection
+    }
   }
   ${RichtextSectionFragmentDoc}
   ${StepperSectionFragmentDoc}
   ${ContactsSectionFragmentDoc}
   ${FaqSectionFragmentDoc}
   ${DocumentsSectionFragmentDoc}
+  ${TowingSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {

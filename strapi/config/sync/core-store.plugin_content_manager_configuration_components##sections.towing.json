@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::sections.richtext",
+  "key": "plugin_content_manager_configuration_components::sections.towing",
   "value": {
     "settings": {
       "bulkable": true,
@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "relationOpenMode": "modal",
-      "mainField": "documentId",
-      "defaultSortBy": "documentId",
+      "mainField": "title",
+      "defaultSortBy": "title",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -20,18 +20,32 @@
           "sortable": false
         }
       },
-      "content": {
+      "title": {
         "edit": {
-          "label": "content",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "content",
-          "searchable": false,
-          "sortable": false
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "text": {
+        "edit": {
+          "label": "Text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "text",
+          "searchable": true,
+          "sortable": true
         }
       },
       "documentId": {
@@ -44,17 +58,25 @@
       }
     },
     "layouts": {
-      "list": ["id"],
       "edit": [
         [
           {
-            "name": "content",
-            "size": 12
+            "name": "title",
+            "size": 6
+          },
+          {
+            "name": "text",
+            "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "text"
       ]
     },
-    "uid": "sections.richtext",
+    "uid": "sections.towing",
     "isComponent": true
   },
   "type": "object",

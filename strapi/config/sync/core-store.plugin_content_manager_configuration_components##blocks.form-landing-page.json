@@ -86,12 +86,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "linkCtas",
-        "formCta",
-        "documentId"
-      ],
+      "list": ["id", "linkCtas", "formCta", "documentId"],
       "edit": [
         [
           {

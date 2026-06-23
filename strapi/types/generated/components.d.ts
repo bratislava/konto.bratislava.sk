@@ -116,6 +116,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
         'sections.documents',
         'sections.faq',
         'sections.contacts',
+        'sections.towing',
         'sections.stepper',
       ]
     >
@@ -306,6 +307,17 @@ export interface SectionsStepper extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsTowing extends Struct.ComponentSchema {
+  collectionName: 'components_sections_towings'
+  info: {
+    displayName: 'Od\u0165ahy'
+  }
+  attributes: {
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -332,6 +344,7 @@ declare module '@strapi/strapi' {
       'sections.faq': SectionsFaq
       'sections.richtext': SectionsRichtext
       'sections.stepper': SectionsStepper
+      'sections.towing': SectionsTowing
     }
   }
 }

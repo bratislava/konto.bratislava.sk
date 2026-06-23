@@ -243,12 +243,44 @@ jobs:
       forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
       openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
 
+  # ---- Gate: every deploy waits here until all builds succeed ----
+  # Nothing deploys until every in-scope build (and the forms-shared test) has
+  # finished and none failed. Out-of-scope jobs report `skipped` (not `failure`),
+  # so they don't block — that's the "skipped on purpose" carve-out.
+
+  builds-complete:
+    name: All builds complete
+    needs:
+      [
+        build-forms-shared,
+        test-forms-shared,
+        build-openapi-clients,
+        build-strapi,
+        build-cvdmirror,
+        build-clamav,
+        build-nest-clamav-scanner,
+        build-nest-forms-backend,
+        build-nest-tax-backend,
+        build-nest-city-account,
+        build-next,
+      ]
+    if: ${{ !cancelled() }}
+    runs-on: bratislava
+    steps:
+      - name: Verify every in-scope build succeeded
+        run: |
+          if ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}; then
+            echo "::error::A build job failed or was cancelled — aborting all deploys."
+            exit 1
+          fi
+          echo "All in-scope builds succeeded (skipped builds are intentional); proceeding to deploy."
+
   # ---- Trigger infrastructure deploys ----
   # Ordering: cvdmirror -> clamav -> nest-clamav-scanner; all backends -> next.
 
   deploy-cvdmirror:
     name: cvdmirror
-    needs: [resolve, build-cvdmirror]
+    needs: [resolve, build-cvdmirror, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.cvdmirror == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -259,7 +291,7 @@ jobs:
 
   deploy-clamav:
     name: clamav
-    needs: [resolve, build-clamav, deploy-cvdmirror]
+    needs: [resolve, build-clamav, deploy-cvdmirror, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.clamav == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -270,7 +302,7 @@ jobs:
 
   deploy-nest-clamav-scanner:
     name: nest-clamav-scanner
-    needs: [resolve, build-nest-clamav-scanner, deploy-clamav]
+    needs: [resolve, build-nest-clamav-scanner, deploy-clamav, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-clamav-scanner == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -281,7 +313,7 @@ jobs:
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [resolve, build-nest-forms-backend, test-forms-shared]
+    needs: [resolve, build-nest-forms-backend, test-forms-shared, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -292,7 +324,7 @@ jobs:
 
   deploy-nest-tax-backend:
     name: nest-tax-backend
-    needs: [resolve, build-nest-tax-backend]
+    needs: [resolve, build-nest-tax-backend, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-tax-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -303,7 +335,7 @@ jobs:
 
   deploy-nest-city-account:
     name: nest-city-account
-    needs: [resolve, build-nest-city-account]
+    needs: [resolve, build-nest-city-account, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-city-account == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -314,7 +346,7 @@ jobs:
 
   deploy-strapi:
     name: Strapi
-    needs: [resolve, build-strapi]
+    needs: [resolve, build-strapi, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.strapi == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -330,6 +362,7 @@ jobs:
         resolve,
         build-next,
         test-forms-shared,
+        builds-complete,
         deploy-strapi,
         deploy-nest-forms-backend,
         deploy-nest-clamav-scanner,

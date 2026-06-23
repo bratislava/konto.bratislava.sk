@@ -22,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,7 +36,7 @@
       },
       "text": {
         "edit": {
-          "label": "text",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -58,7 +58,6 @@
       }
     },
     "layouts": {
-      "list": ["id", "title", "text"],
       "edit": [
         [
           {
@@ -70,6 +69,11 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "text"
       ]
     },
     "uid": "sections.towing",

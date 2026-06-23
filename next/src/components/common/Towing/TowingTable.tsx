@@ -66,7 +66,7 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
               ? [
                   {
                     label: t('towing.informationTable.payment'),
-                    value: `**${t('towing.informationTable.paymentValue')}**`,
+                    value: t('towing.informationTable.paymentValue'),
                     isMarkdown: true,
                   },
                 ]

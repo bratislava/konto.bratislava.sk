@@ -476,7 +476,7 @@
   "towing.informationTable.unloadingLocation": "Miesto preloženia",
   "towing.informationTable.relocationReason": "Dôvod preloženia",
   "towing.informationTable.payment": "Poplatok za odťah",
-  "towing.informationTable.paymentValue": "179.00€ + pokuta",
+  "towing.informationTable.paymentValue": "**179.00€ + pokuta**",
   "towing.informationTable.paymentNotification": "Od **15.04.2023** za každý deň **po 10. dni od odtiahnutia** do areálu odťahovej služby je účtované \"stojné\" vo výške **5€ s DPH/deň**.",
   "towing.notFound.title": "Vozidlo neevidujeme medzi odtiahnutými alebo preloženými vozidlami.",
   "towing.notFound.content": "Skontrolujte, či ste zadali správne evidenčné číslo a skúste vyhľadať znova. Ak potrebujete pomoc, kontaktuje Infolinku PAAS na čísle 0800 222 888.",

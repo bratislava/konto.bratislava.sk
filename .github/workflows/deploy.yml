@@ -388,7 +388,7 @@ jobs:
         deploy-nest-city-account,
       ]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.cluster == 'staging' }}
-    runs-on: ubuntu-latest
+    runs-on: bratislava
     steps:
       - uses: actions/checkout@v4
 

@@ -52,7 +52,10 @@ const Towing = ({ title, text }: TowingSectionProps) => {
     },
     onError: (error) => {
       if (!isAxiosError(error) || error.response?.status !== 404) {
-        logger.error('Error fetching towing:', error.response?.data.message)
+        logger.error(
+          'Error fetching towing:',
+          isAxiosError(error) ? error.response?.data.message : error.message,
+        )
         setErrorMessage(t('towing.error'))
       }
     },
@@ -78,7 +81,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           onPress={() => handleSubmit()}
           variant="solid"
           fullWidth
-          isDisabled={licensePlate.length === 0 || !turnstileToken}
+          isDisabled={licensePlate.length === 0 || !turnstileToken || isPending}
           startIcon={<Icon name="search" />}
         >
           {t('button.search')}

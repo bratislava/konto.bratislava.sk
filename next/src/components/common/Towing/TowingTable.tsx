@@ -73,13 +73,13 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
               : []),
           ]}
           notification={
-            variant === 'towing' && (
+            variant === 'towing' ? (
               <Alert
                 message={<Markdown content={t('towing.informationTable.paymentNotification')} />}
                 type="info"
                 fullWidth
               />
-            )
+            ) : undefined
           }
         />
       </div>

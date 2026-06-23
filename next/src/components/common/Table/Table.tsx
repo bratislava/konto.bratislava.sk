@@ -1,8 +1,8 @@
 import { Typography } from '@bratislava/component-library'
 import { ReactNode } from 'react'
 import { Fragment } from 'react/jsx-runtime'
-import Markdown from 'src/components/formatting/Markdown'
 
+import Markdown from '@/src/components/formatting/Markdown'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 
 const Table = ({ rows, notification }: Props) => {
   return (
-    <ul className="flex w-full flex-col rounded-lg border border-gray-200 px-5 py-2 lg:px-6">
+    <ul className="flex w-full flex-col rounded-lg border border-gray-200 px-5 pt-2 pb-6 lg:px-6">
       {rows.map((row, index) => {
         return (
           <Fragment key={index}>
@@ -34,7 +34,7 @@ const Table = ({ rows, notification }: Props) => {
         )
       })}
 
-      {notification && <div className="pb-4">{notification}</div>}
+      {notification}
     </ul>
   )
 }

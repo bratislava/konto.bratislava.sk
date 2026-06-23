@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
-import { GetUpvsIdentityByUriSuccessType, NasesService } from '../nases/nases.service'
+import { LookupIdentityFOResult, NasesService } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { toLogfmt } from '../utils/logging'
@@ -8,15 +8,21 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { selectUrgentEntities, UrgentEntityRow } from './upvs-queue.queries'
 
+/** A resolved urgent identity paired with the entity it was resolved for. */
+interface UrgentSuccess {
+  entityId: string
+  identity: LookupIdentityFOResult
+}
+
 /** Outcome of resolving a single urgent entity. */
 type UrgentResolution =
-  | { outcome: 'success'; success: GetUpvsIdentityByUriSuccessType }
+  | { outcome: 'success'; success: UrgentSuccess }
   | { outcome: 'failure'; entityId: string; reason: string; fields?: Record<string, unknown> }
   | { outcome: 'rateLimited' }
 
 /** Accumulated outcomes across one urgent run. */
 interface UrgentRunResult {
-  successes: GetUpvsIdentityByUriSuccessType[]
+  successes: UrgentSuccess[]
   failedIds: string[]
   failures: Record<string, unknown>[]
   rateLimited: boolean
@@ -141,7 +147,7 @@ export class UrgentLookupService {
 
       return {
         outcome: 'success',
-        success: { physicalEntityId: entity.entityId, inputUri: identity.uri, data: identity },
+        success: { entityId: entity.entityId, identity },
       }
     } catch (error) {
       if (
@@ -164,7 +170,13 @@ export class UrgentLookupService {
    */
   private async saveUrgentResults(run: UrgentRunResult): Promise<void> {
     if (run.successes.length > 0) {
-      await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(run.successes)
+      await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(
+        run.successes.map(({ entityId, identity }) => ({
+          physicalEntityId: entityId,
+          uri: identity.uri,
+          edeskStatus: identity.upvs?.edesk_status,
+        }))
+      )
     }
     if (run.failedIds.length > 0) {
       await this.physicalEntityService.updateFailedActiveEdeskUpdateInDatabase(run.failedIds)

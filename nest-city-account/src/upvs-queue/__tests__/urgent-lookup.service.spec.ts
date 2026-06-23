@@ -71,7 +71,7 @@ describe('UrgentLookupService', () => {
       'urgent-1'
     )
     expect(physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase).toHaveBeenCalledWith([
-      expect.objectContaining({ physicalEntityId: 'urgent-1', inputUri: 'rc://sk/resolved' }),
+      { physicalEntityId: 'urgent-1', uri: 'rc://sk/resolved', edeskStatus: undefined },
     ])
     expect(result).toEqual({ attempted: 1, rateLimited: false, failures: [] })
   })

@@ -78,7 +78,13 @@ export class EdeskBatchUpdateService {
     const successExternal = upvsResult.success.filter((item) => externalUris.has(item.inputUri))
 
     // handle success
-    await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(successInternal)
+    await this.physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase(
+      successInternal.map((item) => ({
+        physicalEntityId: item.physicalEntityId ?? undefined,
+        uri: item.inputUri,
+        edeskStatus: item.data.upvs?.edesk_status,
+      }))
+    )
 
     // handle success external
     await Promise.all(

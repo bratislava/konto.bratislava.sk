@@ -22,8 +22,8 @@
       },
       "label": {
         "edit": {
-          "label": "label",
-          "description": "",
+          "label": "Text odkazu",
+          "description": "Ak je toto pole prázdne, text odkazu bude zodpovedať názvu zadanej entity (page, article...) alebo zadanej URL (z poľa url). Zo zvyšných polí treba vyplniť vždy iba jedno. Ak sa vyplní viacero, odkaz bude smerovať na prvé vyplnené pole a ostatné sa odignorujú.",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -36,7 +36,7 @@
       },
       "municipalService": {
         "edit": {
-          "label": "municipalService",
+          "label": "Mestská služba",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -51,8 +51,8 @@
       },
       "url": {
         "edit": {
-          "label": "url",
-          "description": "",
+          "label": "Url",
+          "description": "Interné adresy v rámci stránky konta (doménu vynechávame - napr. \"/zmena-hesla\") alebo externé adresy (treba vypĺňať s \"https://\" alebo \"http://\")",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -73,17 +73,11 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "label",
-        "municipalService",
-        "url"
-      ],
       "edit": [
         [
           {
             "name": "label",
-            "size": 6
+            "size": 12
           },
           {
             "name": "municipalService",
@@ -96,6 +90,12 @@
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "label",
+        "municipalService",
+        "url"
       ]
     },
     "uid": "blocks.common-link",

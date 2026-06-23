@@ -35,21 +35,26 @@ export async function selectUrgentEntities(
   prismaService: PrismaService,
   limit: number
 ): Promise<UrgentEntityRow[]> {
-  return prismaService.$queryRaw`
-      SELECT e."id"          AS "entityId",
-             u."birthNumber" AS "birthNumber",
-             u."externalId"  AS "externalId"
-      FROM "PhysicalEntity" e
-               JOIN "User" u ON e."userId" = u."id"
-      WHERE e."birthNumber" IS NOT NULL
-        AND e."uri" IS NULL
-        AND u."birthNumber" IS NOT NULL
-        AND NOT EXISTS (SELECT 1
-                        FROM "IdentityLookupRejection" r
-                        WHERE r."physicalEntityId" = e."id")
-        AND ${retryEligible(NOW)}
-      ORDER BY GREATEST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
-      LIMIT ${limit}
+  return prismaService.$queryRaw`SELECT e."id"       AS "entityId",
+    u."birthNumber" AS "birthNumber",
+    u."externalId"  AS "externalId"
+FROM
+    "PhysicalEntity" e
+    JOIN "User" u ON e."userId" = u."id"
+WHERE
+    e."birthNumber" IS NOT NULL
+    AND e."uri" IS NULL
+    AND u."birthNumber" IS NOT NULL
+    AND NOT EXISTS
+        (SELECT 1
+         FROM
+             "IdentityLookupRejection" r
+         WHERE
+             r."physicalEntityId" = e."id")
+    AND \${retryEligible(NOW)}
+ORDER BY
+    GREATEST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
+LIMIT \${limit}
   `
 }
 

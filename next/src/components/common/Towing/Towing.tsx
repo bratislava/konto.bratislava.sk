@@ -99,8 +99,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           onError={(error) => {
             logger.error('Turnstile error:', error)
             setCaptchaWarning('show')
-
-            return setTurnstileToken(null)
+            setTurnstileToken(null)
           }}
           onTimeout={() => {
             logger.error('Turnstile timeout')

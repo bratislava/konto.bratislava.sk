@@ -22,7 +22,6 @@ const SectionContent = ({ section }: { section: SectionsProps['sections'][number
       return <StepperSection section={section} />
     case 'ComponentSectionsContacts':
       return <ContactsSection section={section} />
-
     case 'ComponentSectionsDocuments':
       return <DocumentsSection section={section} />
     case 'ComponentSectionsTowing':

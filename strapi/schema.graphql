@@ -212,7 +212,7 @@ input ComponentBlocksFooterColumnInput {
 }
 
 type ComponentBlocksFormLandingPage {
-  formCta: ComponentBlocksFormLandingPageFormCta!
+  formCta: ComponentBlocksFormLandingPageFormCta
   id: ID!
   linkCtas(filters: ComponentBlocksFormLandingPageLinkCtaFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFormLandingPageLinkCta]
   sections: [FormLandingPageSectionsDynamicZone]

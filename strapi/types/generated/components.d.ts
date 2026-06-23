@@ -107,8 +107,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     displayName: 'Form landing page'
   }
   attributes: {
-    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
-      Schema.Attribute.Required
+    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false>
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
       [

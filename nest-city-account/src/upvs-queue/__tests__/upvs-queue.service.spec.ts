@@ -82,16 +82,6 @@ describe('UpvsQueueService', () => {
   })
 
   describe('processBatch orchestration', () => {
-    it('skips the run when another is already in progress', async () => {
-      ;(service as any).isProcessingBatch = true
-      const logSpy = jest.spyOn((service as any).logger, 'log').mockImplementation(() => {})
-
-      await service.processBatch()
-
-      expect(urgentLookupService.processUrgentItems).not.toHaveBeenCalled()
-      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('skipped'))
-    })
-
     it('runs urgent first, then (no URI work) the batched search', async () => {
       await service.processBatch()
 

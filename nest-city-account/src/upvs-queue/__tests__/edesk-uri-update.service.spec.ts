@@ -77,7 +77,7 @@ describe('EdeskUriUpdateService', () => {
       })
     })
 
-    it('bumps the fail counter and throws on failure', async () => {
+    it('bumps the fail counter and clears uriPossiblyOutdated on a confirmed failure', async () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: false }],
@@ -94,6 +94,28 @@ describe('EdeskUriUpdateService', () => {
         where: { id: 'id-1' },
         data: expect.objectContaining({
           uriPossiblyOutdated: false,
+          activeEdeskUpdateFailCount: { increment: 1 },
+        }),
+      })
+    })
+
+    it('keeps uriPossiblyOutdated when the failure is a possible URI change', async () => {
+      jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
+        success: [],
+        failed: [{ inputUri: 'rc://sk/old', possibleUriChange: true }],
+      } as any)
+      jest
+        .spyOn(throwerErrorGuard, 'InternalServerErrorException')
+        .mockReturnValue(new Error('failed to update') as any)
+
+      await expect(
+        service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
+      ).rejects.toThrow('failed to update')
+
+      expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
+        where: { id: 'id-1' },
+        data: expect.objectContaining({
+          uriPossiblyOutdated: true,
           activeEdeskUpdateFailCount: { increment: 1 },
         }),
       })

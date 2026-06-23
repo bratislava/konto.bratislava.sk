@@ -99,6 +99,17 @@
       "relation": "oneToOne",
       "target": "api::form.form",
       "mappedBy": "municipalService"
+    },
+    "sections": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.richtext",
+        "sections.documents",
+        "sections.faq",
+        "sections.contacts",
+        "sections.stepper",
+        "sections.towing"
+      ]
     }
   }
 }

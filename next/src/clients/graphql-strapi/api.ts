@@ -439,6 +439,73 @@ export type ComponentGeneralAlertInput = {
   id?: InputMaybe<Scalars['ID']['input']>
 }
 
+export type ComponentMunicipalChargeDeliveryMethod = {
+  __typename?: 'ComponentMunicipalChargeDeliveryMethod'
+  consentText: Scalars['String']['output']
+  deliveryMethodChangePendingAlert?: Maybe<ComponentMunicipalChargeDeliveryMethodChangePendingAlert>
+  id: Scalars['ID']['output']
+}
+
+export type ComponentMunicipalChargeDeliveryMethodChangePendingAlert = {
+  __typename?: 'ComponentMunicipalChargeDeliveryMethodChangePendingAlert'
+  content?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput = {
+  and?: InputMaybe<
+    Array<InputMaybe<ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput>>
+  >
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput>
+  or?: InputMaybe<
+    Array<InputMaybe<ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput>>
+  >
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentMunicipalChargeDeliveryMethodChangePendingAlertInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentMunicipalChargeDeliveryMethodFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargeDeliveryMethodFiltersInput>>>
+  consentText?: InputMaybe<StringFilterInput>
+  deliveryMethodChangePendingAlert?: InputMaybe<ComponentMunicipalChargeDeliveryMethodChangePendingAlertFiltersInput>
+  not?: InputMaybe<ComponentMunicipalChargeDeliveryMethodFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargeDeliveryMethodFiltersInput>>>
+}
+
+export type ComponentMunicipalChargeDeliveryMethodInput = {
+  consentText?: InputMaybe<Scalars['String']['input']>
+  deliveryMethodChangePendingAlert?: InputMaybe<ComponentMunicipalChargeDeliveryMethodChangePendingAlertInput>
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type ComponentMunicipalChargeMunicipalChargeIdentifier = {
+  __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
+  dzn?: Maybe<MunicipalCharge>
+  id: Scalars['ID']['output']
+  ko?: Maybe<MunicipalCharge>
+}
+
+export type ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput>>>
+  dzn?: InputMaybe<MunicipalChargeFiltersInput>
+  ko?: InputMaybe<MunicipalChargeFiltersInput>
+  not?: InputMaybe<ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput>>>
+}
+
+export type ComponentMunicipalChargeMunicipalChargeIdentifierInput = {
+  dzn?: InputMaybe<Scalars['ID']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  ko?: InputMaybe<Scalars['ID']['input']>
+}
+
 export type ComponentSectionsContacts = {
   __typename?: 'ComponentSectionsContacts'
   addressContacts?: Maybe<Array<Maybe<ComponentBlocksContactCard>>>
@@ -649,6 +716,27 @@ export type ComponentSectionsStepperInput = {
   checklists?: InputMaybe<Array<InputMaybe<ComponentBlocksChecklistInput>>>
   description?: InputMaybe<Scalars['String']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentSectionsTowing = {
+  __typename?: 'ComponentSectionsTowing'
+  id: Scalars['ID']['output']
+  text?: Maybe<Scalars['String']['output']>
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsTowingFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
+  not?: InputMaybe<ComponentSectionsTowingFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsTowingInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  text?: InputMaybe<Scalars['String']['input']>
   title?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -921,6 +1009,7 @@ export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
+  | ComponentSectionsTowing
   | Error
 
 export type FormRelationResponseCollection = {
@@ -996,11 +1085,15 @@ export type GenericMorph =
   | ComponentBlocksHelpItem
   | ComponentBlocksQuestion
   | ComponentGeneralAlert
+  | ComponentMunicipalChargeDeliveryMethod
+  | ComponentMunicipalChargeDeliveryMethodChangePendingAlert
+  | ComponentMunicipalChargeMunicipalChargeIdentifier
   | ComponentSectionsContacts
   | ComponentSectionsDocuments
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
+  | ComponentSectionsTowing
   | Footer
   | Form
   | General
@@ -1008,6 +1101,8 @@ export type GenericMorph =
   | Homepage
   | HomepageAnnouncement
   | I18NLocale
+  | MunicipalCharge
+  | MunicipalChargeConfig
   | MunicipalService
   | MunicipalServiceCategory
   | MunicipalServiceTag
@@ -1396,6 +1491,108 @@ export type LongFilterInput = {
   startsWith?: InputMaybe<Scalars['Long']['input']>
 }
 
+export type MunicipalCharge = {
+  __typename?: 'MunicipalCharge'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  documentId: Scalars['ID']['output']
+  feedbackLink?: Maybe<Scalars['String']['output']>
+  publishedAt?: Maybe<Scalars['DateTime']['output']>
+  slug: Scalars['String']['output']
+  title: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalChargeConfig = {
+  __typename?: 'MunicipalChargeConfig'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  deliveryMethod?: Maybe<ComponentMunicipalChargeDeliveryMethod>
+  documentId: Scalars['ID']['output']
+  municipalChargeIdentifier?: Maybe<ComponentMunicipalChargeMunicipalChargeIdentifier>
+  publishedAt?: Maybe<Scalars['DateTime']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalChargeConfigEntity = {
+  __typename?: 'MunicipalChargeConfigEntity'
+  attributes?: Maybe<MunicipalChargeConfig>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalChargeConfigEntityResponse = {
+  __typename?: 'MunicipalChargeConfigEntityResponse'
+  data?: Maybe<MunicipalChargeConfig>
+}
+
+export type MunicipalChargeConfigEntityResponseCollection = {
+  __typename?: 'MunicipalChargeConfigEntityResponseCollection'
+  nodes: Array<MunicipalChargeConfig>
+  pageInfo: Pagination
+}
+
+export type MunicipalChargeConfigFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalChargeConfigFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  deliveryMethod?: InputMaybe<ComponentMunicipalChargeDeliveryMethodFiltersInput>
+  municipalChargeIdentifier?: InputMaybe<ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput>
+  not?: InputMaybe<MunicipalChargeConfigFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalChargeConfigFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type MunicipalChargeConfigInput = {
+  deliveryMethod?: InputMaybe<ComponentMunicipalChargeDeliveryMethodInput>
+  municipalChargeIdentifier?: InputMaybe<ComponentMunicipalChargeMunicipalChargeIdentifierInput>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export type MunicipalChargeConfigRelationResponseCollection = {
+  __typename?: 'MunicipalChargeConfigRelationResponseCollection'
+  nodes: Array<MunicipalChargeConfig>
+}
+
+export type MunicipalChargeEntity = {
+  __typename?: 'MunicipalChargeEntity'
+  attributes?: Maybe<MunicipalCharge>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalChargeEntityResponse = {
+  __typename?: 'MunicipalChargeEntityResponse'
+  data?: Maybe<MunicipalCharge>
+}
+
+export type MunicipalChargeEntityResponseCollection = {
+  __typename?: 'MunicipalChargeEntityResponseCollection'
+  nodes: Array<MunicipalCharge>
+  pageInfo: Pagination
+}
+
+export type MunicipalChargeFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalChargeFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  documentId?: InputMaybe<IdFilterInput>
+  feedbackLink?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<MunicipalChargeFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalChargeFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  slug?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type MunicipalChargeInput = {
+  feedbackLink?: InputMaybe<Scalars['String']['input']>
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  slug?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MunicipalChargeRelationResponseCollection = {
+  __typename?: 'MunicipalChargeRelationResponseCollection'
+  nodes: Array<MunicipalCharge>
+}
+
 export type MunicipalService = {
   __typename?: 'MunicipalService'
   buttonText: Scalars['String']['output']
@@ -1703,6 +1900,7 @@ export type Mutation = {
   changePassword?: Maybe<UsersPermissionsLoginPayload>
   createForm?: Maybe<Form>
   createHomepageAnnouncement?: Maybe<HomepageAnnouncement>
+  createMunicipalCharge?: Maybe<MunicipalCharge>
   createMunicipalService?: Maybe<MunicipalService>
   createMunicipalServiceCategory?: Maybe<MunicipalServiceCategory>
   createMunicipalServiceTag?: Maybe<MunicipalServiceTag>
@@ -1718,6 +1916,8 @@ export type Mutation = {
   deleteHelpPage?: Maybe<DeleteMutationResponse>
   deleteHomepage?: Maybe<DeleteMutationResponse>
   deleteHomepageAnnouncement?: Maybe<DeleteMutationResponse>
+  deleteMunicipalCharge?: Maybe<DeleteMutationResponse>
+  deleteMunicipalChargeConfig?: Maybe<DeleteMutationResponse>
   deleteMunicipalService?: Maybe<DeleteMutationResponse>
   deleteMunicipalServiceCategory?: Maybe<DeleteMutationResponse>
   deleteMunicipalServiceTag?: Maybe<DeleteMutationResponse>
@@ -1745,6 +1945,8 @@ export type Mutation = {
   updateHelpPage?: Maybe<HelpPage>
   updateHomepage?: Maybe<Homepage>
   updateHomepageAnnouncement?: Maybe<HomepageAnnouncement>
+  updateMunicipalCharge?: Maybe<MunicipalCharge>
+  updateMunicipalChargeConfig?: Maybe<MunicipalChargeConfig>
   updateMunicipalService?: Maybe<MunicipalService>
   updateMunicipalServiceCategory?: Maybe<MunicipalServiceCategory>
   updateMunicipalServiceTag?: Maybe<MunicipalServiceTag>
@@ -1772,6 +1974,11 @@ export type MutationCreateFormArgs = {
 
 export type MutationCreateHomepageAnnouncementArgs = {
   data: HomepageAnnouncementInput
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type MutationCreateMunicipalChargeArgs = {
+  data: MunicipalChargeInput
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -1813,6 +2020,10 @@ export type MutationDeleteFormArgs = {
 }
 
 export type MutationDeleteHomepageAnnouncementArgs = {
+  documentId: Scalars['ID']['input']
+}
+
+export type MutationDeleteMunicipalChargeArgs = {
   documentId: Scalars['ID']['input']
 }
 
@@ -1899,6 +2110,17 @@ export type MutationUpdateHomepageArgs = {
 export type MutationUpdateHomepageAnnouncementArgs = {
   data: HomepageAnnouncementInput
   documentId: Scalars['ID']['input']
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type MutationUpdateMunicipalChargeArgs = {
+  data: MunicipalChargeInput
+  documentId: Scalars['ID']['input']
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type MutationUpdateMunicipalChargeConfigArgs = {
+  data: MunicipalChargeConfigInput
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -1993,6 +2215,10 @@ export type Query = {
   i18NLocales: Array<Maybe<I18NLocale>>
   i18NLocales_connection?: Maybe<I18NLocaleEntityResponseCollection>
   me?: Maybe<UsersPermissionsMe>
+  municipalCharge?: Maybe<MunicipalCharge>
+  municipalChargeConfig?: Maybe<MunicipalChargeConfig>
+  municipalCharges: Array<Maybe<MunicipalCharge>>
+  municipalCharges_connection?: Maybe<MunicipalChargeEntityResponseCollection>
   municipalService?: Maybe<MunicipalService>
   municipalServiceCategories: Array<Maybe<MunicipalServiceCategory>>
   municipalServiceCategories_connection?: Maybe<MunicipalServiceCategoryEntityResponseCollection>
@@ -2101,6 +2327,33 @@ export type QueryI18NLocalesArgs = {
 
 export type QueryI18NLocales_ConnectionArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryMunicipalChargeArgs = {
+  documentId: Scalars['ID']['input']
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryMunicipalChargeConfigArgs = {
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryMunicipalChargesArgs = {
+  filters?: InputMaybe<MunicipalChargeFiltersInput>
+  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  status?: InputMaybe<PublicationStatus>
+}
+
+export type QueryMunicipalCharges_ConnectionArgs = {
+  filters?: InputMaybe<MunicipalChargeFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
@@ -3032,6 +3285,7 @@ export type FormLandingPageFragment = {
           } | null> | null
         } | null> | null
       }
+    | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
     | { __typename: 'Error' }
     | null
   > | null
@@ -3169,6 +3423,7 @@ export type FormWithLandingPageFragment = {
             } | null> | null
           } | null> | null
         }
+      | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
       | { __typename: 'Error' }
       | null
     > | null
@@ -3328,6 +3583,7 @@ export type FormWithLandingPageBySlugQuery = {
               } | null> | null
             } | null> | null
           }
+        | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
         | { __typename: 'Error' }
         | null
       > | null
@@ -3553,6 +3809,74 @@ export type HomepageAnnouncementEntityFragment = {
     municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
   } | null
   image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
+}
+
+export type MunicipalChargeFragment = {
+  __typename?: 'MunicipalCharge'
+  documentId: string
+  title: string
+  slug: string
+}
+
+export type MunicipalChargeConfigFragment = {
+  __typename?: 'MunicipalChargeConfig'
+  deliveryMethod?: {
+    __typename?: 'ComponentMunicipalChargeDeliveryMethod'
+    consentText: string
+    deliveryMethodChangePendingAlert?: {
+      __typename?: 'ComponentMunicipalChargeDeliveryMethodChangePendingAlert'
+      title?: string | null
+      content?: string | null
+    } | null
+  } | null
+  municipalChargeIdentifier?: {
+    __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
+    dzn?: { __typename?: 'MunicipalCharge'; documentId: string; title: string; slug: string } | null
+    ko?: { __typename?: 'MunicipalCharge'; documentId: string; title: string; slug: string } | null
+  } | null
+}
+
+export type DeliveryMethodFragment = {
+  __typename?: 'ComponentMunicipalChargeDeliveryMethod'
+  consentText: string
+  deliveryMethodChangePendingAlert?: {
+    __typename?: 'ComponentMunicipalChargeDeliveryMethodChangePendingAlert'
+    title?: string | null
+    content?: string | null
+  } | null
+}
+
+export type MunicipalChargeConfigQueryVariables = Exact<{ [key: string]: never }>
+
+export type MunicipalChargeConfigQuery = {
+  __typename?: 'Query'
+  municipalChargeConfig?: {
+    __typename?: 'MunicipalChargeConfig'
+    deliveryMethod?: {
+      __typename?: 'ComponentMunicipalChargeDeliveryMethod'
+      consentText: string
+      deliveryMethodChangePendingAlert?: {
+        __typename?: 'ComponentMunicipalChargeDeliveryMethodChangePendingAlert'
+        title?: string | null
+        content?: string | null
+      } | null
+    } | null
+    municipalChargeIdentifier?: {
+      __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
+      dzn?: {
+        __typename?: 'MunicipalCharge'
+        documentId: string
+        title: string
+        slug: string
+      } | null
+      ko?: {
+        __typename?: 'MunicipalCharge'
+        documentId: string
+        title: string
+        slug: string
+      } | null
+    } | null
+  } | null
 }
 
 export type MunicipalServiceTagEntityFragment = {
@@ -3807,6 +4131,12 @@ export type DocumentsSectionFragment = {
   } | null> | null
 }
 
+export type TowingSectionFragment = {
+  __typename?: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
 type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   __typename: 'ComponentSectionsContacts'
   id: string
@@ -3913,6 +4243,12 @@ type FormLandingPageSections_ComponentSectionsStepper_Fragment = {
   } | null> | null
 }
 
+type FormLandingPageSections_ComponentSectionsTowing_Fragment = {
+  __typename: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
 type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
@@ -3921,6 +4257,7 @@ export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
+  | FormLandingPageSections_ComponentSectionsTowing_Fragment
   | FormLandingPageSections_Error_Fragment
 
 export type TaxFragment = {
@@ -4118,6 +4455,12 @@ export const DocumentsSectionFragmentDoc = gql`
   }
   ${ExternalDocumentBlockFragmentDoc}
 `
+export const TowingSectionFragmentDoc = gql`
+  fragment TowingSection on ComponentSectionsTowing {
+    title
+    text
+  }
+`
 export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
@@ -4136,12 +4479,16 @@ export const FormLandingPageSectionsFragmentDoc = gql`
     ... on ComponentSectionsDocuments {
       ...DocumentsSection
     }
+    ... on ComponentSectionsTowing {
+      ...TowingSection
+    }
   }
   ${RichtextSectionFragmentDoc}
   ${StepperSectionFragmentDoc}
   ${ContactsSectionFragmentDoc}
   ${FaqSectionFragmentDoc}
   ${DocumentsSectionFragmentDoc}
+  ${TowingSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {
@@ -4250,6 +4597,39 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
     }
   }
   ${CommonLinkFragmentDoc}
+`
+export const DeliveryMethodFragmentDoc = gql`
+  fragment DeliveryMethod on ComponentMunicipalChargeDeliveryMethod {
+    consentText
+    deliveryMethodChangePendingAlert {
+      title
+      content
+    }
+  }
+`
+export const MunicipalChargeFragmentDoc = gql`
+  fragment MunicipalCharge on MunicipalCharge {
+    documentId
+    title
+    slug
+  }
+`
+export const MunicipalChargeConfigFragmentDoc = gql`
+  fragment MunicipalChargeConfig on MunicipalChargeConfig {
+    deliveryMethod {
+      ...DeliveryMethod
+    }
+    municipalChargeIdentifier {
+      dzn {
+        ...MunicipalCharge
+      }
+      ko {
+        ...MunicipalCharge
+      }
+    }
+  }
+  ${DeliveryMethodFragmentDoc}
+  ${MunicipalChargeFragmentDoc}
 `
 export const MunicipalServiceTagEntityFragmentDoc = gql`
   fragment MunicipalServiceTagEntity on MunicipalServiceTag {
@@ -4361,6 +4741,14 @@ export const HomepageDocument = gql`
   }
   ${MunicipalServiceCardEntityFragmentDoc}
   ${HomepageAnnouncementEntityFragmentDoc}
+`
+export const MunicipalChargeConfigDocument = gql`
+  query MunicipalChargeConfig {
+    municipalChargeConfig {
+      ...MunicipalChargeConfig
+    }
+  }
+  ${MunicipalChargeConfigFragmentDoc}
 `
 export const MunicipalServicesPageDocument = gql`
   query MunicipalServicesPage {
@@ -4500,6 +4888,24 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             signal,
           }),
         'Homepage',
+        'query',
+        variables,
+      )
+    },
+    MunicipalChargeConfig(
+      variables?: MunicipalChargeConfigQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<MunicipalChargeConfigQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MunicipalChargeConfigQuery>({
+            document: MunicipalChargeConfigDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'MunicipalChargeConfig',
         'query',
         variables,
       )

@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::api::footer.footer",
+  "key": "plugin_content_manager_configuration_content_types::api::municipal-charge.municipal-charge",
   "value": {
     "settings": {
       "bulkable": true,
@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "relationOpenMode": "modal",
-      "mainField": "id",
-      "defaultSortBy": "facebookUrl",
+      "mainField": "title",
+      "defaultSortBy": "title",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -20,118 +20,46 @@
           "sortable": true
         }
       },
-      "contactText": {
+      "title": {
         "edit": {
-          "label": "Text",
+          "label": "Názov",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "contactText",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "facebookUrl": {
-        "edit": {
-          "label": "Facebook Url",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "facebookUrl",
+          "label": "title",
           "searchable": true,
           "sortable": true
         }
       },
-      "instagramUrl": {
+      "slug": {
         "edit": {
-          "label": "Instagram Url",
+          "label": "Slug",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "instagramUrl",
+          "label": "slug",
           "searchable": true,
           "sortable": true
         }
       },
-      "youtubeUrl": {
+      "feedbackLink": {
         "edit": {
-          "label": "YouTube Url",
-          "description": "",
+          "label": "Feedback link",
+          "description": "Zobrazí sa po úspešne dokončenej platbe",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "youtubeUrl",
+          "label": "feedbackLink",
           "searchable": true,
           "sortable": true
-        }
-      },
-      "linkedinUrl": {
-        "edit": {
-          "label": "LinkedIn Url",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "linkedinUrl",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "tiktokUrl": {
-        "edit": {
-          "label": "TikTok Url",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "tiktokUrl",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "columns": {
-        "edit": {
-          "label": "Stĺpce s odkazmi",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "title"
-        },
-        "list": {
-          "label": "columns",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "accessibilityPageLink": {
-        "edit": {
-          "label": "Vyhlásenie o prístupnosti (link)",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "label"
-        },
-        "list": {
-          "label": "accessibilityPageLink",
-          "searchable": false,
-          "sortable": false
         }
       },
       "createdAt": {
@@ -205,57 +133,29 @@
       "edit": [
         [
           {
-            "name": "contactText",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "facebookUrl",
+            "name": "title",
             "size": 6
           },
           {
-            "name": "instagramUrl",
+            "name": "slug",
             "size": 6
           }
         ],
         [
           {
-            "name": "youtubeUrl",
+            "name": "feedbackLink",
             "size": 6
-          },
-          {
-            "name": "linkedinUrl",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "tiktokUrl",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "columns",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "accessibilityPageLink",
-            "size": 12
           }
         ]
       ],
       "list": [
         "id",
-        "facebookUrl",
-        "instagramUrl",
-        "youtubeUrl"
+        "title",
+        "slug",
+        "feedbackLink"
       ]
     },
-    "uid": "api::footer.footer"
+    "uid": "api::municipal-charge.municipal-charge"
   },
   "type": "object",
   "environment": null,

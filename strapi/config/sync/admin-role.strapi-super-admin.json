@@ -428,6 +428,138 @@
     {
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
+      "subject": "api::municipal-charge-config.municipal-charge-config",
+      "properties": {
+        "fields": [
+          "deliveryMethod.consentText",
+          "deliveryMethod.deliveryMethodChangePendingAlert.title",
+          "deliveryMethod.deliveryMethodChangePendingAlert.content",
+          "municipalChargeIdentifier.dzn",
+          "municipalChargeIdentifier.ko"
+        ]
+      },
+      "conditions": [],
+      "documentId": "k3uo43zch4s6f4sk875fzow7",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::municipal-charge-config.municipal-charge-config",
+      "properties": {},
+      "conditions": [],
+      "documentId": "v6t8eh6u93ypphdmrs3srblf",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::municipal-charge-config.municipal-charge-config",
+      "properties": {},
+      "conditions": [],
+      "documentId": "mxbizyi3cvb8sxj01ye4zfdq",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::municipal-charge-config.municipal-charge-config",
+      "properties": {
+        "fields": [
+          "deliveryMethod.consentText",
+          "deliveryMethod.deliveryMethodChangePendingAlert.title",
+          "deliveryMethod.deliveryMethodChangePendingAlert.content",
+          "municipalChargeIdentifier.dzn",
+          "municipalChargeIdentifier.ko"
+        ]
+      },
+      "conditions": [],
+      "documentId": "doh1a4ft1gvcrbb5u9ergl7z",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::municipal-charge-config.municipal-charge-config",
+      "properties": {
+        "fields": [
+          "deliveryMethod.consentText",
+          "deliveryMethod.deliveryMethodChangePendingAlert.title",
+          "deliveryMethod.deliveryMethodChangePendingAlert.content",
+          "municipalChargeIdentifier.dzn",
+          "municipalChargeIdentifier.ko"
+        ]
+      },
+      "conditions": [],
+      "documentId": "sk8jimxnt33yn9x4rwfdmydr",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::municipal-charge.municipal-charge",
+      "properties": {
+        "fields": [
+          "title",
+          "slug",
+          "feedbackLink"
+        ]
+      },
+      "conditions": [],
+      "documentId": "w4cuns9lwr0f0b2cpnc0vxq5",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::municipal-charge.municipal-charge",
+      "properties": {},
+      "conditions": [],
+      "documentId": "ny08z1vy8c6g9lg297t169e9",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::municipal-charge.municipal-charge",
+      "properties": {},
+      "conditions": [],
+      "documentId": "h52378cwisqzkzfc24ctt9cs",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::municipal-charge.municipal-charge",
+      "properties": {
+        "fields": [
+          "title",
+          "slug",
+          "feedbackLink"
+        ]
+      },
+      "conditions": [],
+      "documentId": "q3uqnadsjgsc3qezq2t0um11",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::municipal-charge.municipal-charge",
+      "properties": {
+        "fields": [
+          "title",
+          "slug",
+          "feedbackLink"
+        ]
+      },
+      "conditions": [],
+      "documentId": "s6bibc8xv6gbit2nc7rpx7ry",
+      "locale": null
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
       "subject": "api::municipal-service-category.municipal-service-category",
       "properties": {
         "fields": ["title", "municipalServices"]
@@ -740,7 +872,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "vc9xvkmpb0ykxtqr1fylezj7",
+      "documentId": "qg2l1myobovnt3mk9lyka8ll",
       "locale": null
     },
     {
@@ -749,7 +881,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "bxip79tsab6xsjolx7h0dfsu",
+      "documentId": "gyc8ul37t4ldccisivfjj3sz",
       "locale": null
     },
     {
@@ -758,7 +890,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "ih1yxu8qqvd4rop38faq87n5",
+      "documentId": "e15wjcn8gesk3yop3qapiuc3",
       "locale": null
     },
     {
@@ -767,7 +899,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "hf89nfpxhm2ryobfwznrpzz3",
+      "documentId": "hcrd32z9t9ki8xps037cpv6h",
       "locale": null
     },
     {
@@ -776,7 +908,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "v96h7zecszbs5g746f8yt6ih",
+      "documentId": "qk8atvoo1ek9itu5k1rq4zc9",
       "locale": null
     },
     {
@@ -785,7 +917,7 @@
       "subject": null,
       "properties": {},
       "conditions": [],
-      "documentId": "ttcjkusx1m9rzeyhglz3miiu",
+      "documentId": "uy5v7tmsyfetvtg0vym0faek",
       "locale": null
     },
     {

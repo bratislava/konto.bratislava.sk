@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.footer-column",
+  "key": "plugin_content_manager_configuration_components::municipal-charge.delivery-method",
   "value": {
     "settings": {
       "bulkable": true,
@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "relationOpenMode": "modal",
-      "mainField": "title",
-      "defaultSortBy": "title",
+      "mainField": "documentId",
+      "defaultSortBy": "documentId",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -20,31 +20,30 @@
           "sortable": false
         }
       },
-      "title": {
+      "consentText": {
         "edit": {
-          "label": "Nadpis",
+          "label": "Súhlas",
+          "description": "Zobrazí sa pri výbere spôsobu informovania. Používateľ potvrdzuje súhlas stlačením tlačidla, ktorým zároveň potvrdzuje výber spôsobu informovania. ",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "consentText",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "deliveryMethodChangePendingAlert": {
+        "edit": {
+          "label": "Alert pri zmene spôsobu informovania po termíne",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "title",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "links": {
-        "edit": {
-          "label": "Odkaz",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "label"
-        },
-        "list": {
-          "label": "links",
+          "label": "deliveryMethodChangePendingAlert",
           "searchable": false,
           "sortable": false
         }
@@ -59,27 +58,26 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "deliveryMethodChangePendingAlert"
+      ],
       "edit": [
         [
           {
-            "name": "title",
-            "size": 6
+            "name": "consentText",
+            "size": 12
           }
         ],
         [
           {
-            "name": "links",
+            "name": "deliveryMethodChangePendingAlert",
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "title",
-        "links"
       ]
     },
-    "uid": "blocks.footer-column",
+    "uid": "municipal-charge.delivery-method",
     "isComponent": true
   },
   "type": "object",

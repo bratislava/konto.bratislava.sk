@@ -28,6 +28,7 @@
         "sections.documents",
         "sections.faq",
         "sections.contacts",
+        "sections.towing",
         "sections.stepper"
       ]
     }

@@ -105,6 +105,16 @@ jobs:
       push: true
       target: prod
 
+  test-forms-shared:
+    name: Test forms-shared
+    needs: [resolve, build-forms-shared]
+    if: ${{ !failure() && !cancelled() && (needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true') }}
+    uses: ./.github/workflows/test-forms-shared.yml
+    secrets: inherit
+    with:
+      directory: forms-shared/
+      image: harbor.bratislava.sk/standalone/forms-shared
+
   build-openapi-clients:
     name: Build and push specific openapi-clients image
     needs: resolve
@@ -271,7 +281,7 @@ jobs:
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [resolve, build-nest-forms-backend]
+    needs: [resolve, build-nest-forms-backend, test-forms-shared]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -319,6 +329,7 @@ jobs:
       [
         resolve,
         build-next,
+        test-forms-shared,
         deploy-strapi,
         deploy-nest-forms-backend,
         deploy-nest-clamav-scanner,

@@ -94,9 +94,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       {/* Sections & Sidebar */}
       <div
         key={formDefinition.slug} // Helps to re-render table of contents on page change
-        className={cn(
-          'mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse gap-8 px-4 py-8 lg:px-8 lg:py-12',
-        )}
+        className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse gap-8 px-4 py-8 lg:px-8 lg:py-12"
       >
         <div
           className={cn(
@@ -123,6 +121,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
               {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
                 <FormLandingPageCard key={linkCta.id} {...linkCta} />
               ))}
+
               <FormLandingPageCard
                 {...strapiForm.landingPage.formCta}
                 isLoading={isPending}
@@ -133,6 +132,8 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             </div>
           </SectionContainer>
         </div>
+        {/* TODO Sidebar goes here */}
+
         <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
           <TableOfContents />
         </aside>

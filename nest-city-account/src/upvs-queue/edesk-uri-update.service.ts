@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { QueueItemStatusEnum } from '@prisma/client'
 
-import { NasesService } from '../nases/nases.service'
+import { getUpvsDeathDate, NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -81,6 +81,7 @@ export class EdeskUriUpdateService {
           upvsStatus: successItem.data.status ?? null,
           edeskStatus: successItem.data.upvs?.edesk_status ?? null,
           edeskNumber: successItem.data.upvs?.edesk_number ?? null,
+          edeskDeathDate: getUpvsDeathDate(successItem.data),
           processedAt: new Date(),
         },
       })

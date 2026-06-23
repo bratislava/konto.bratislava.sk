@@ -123,12 +123,17 @@ describe('EdeskUriUpdateService', () => {
   })
 
   describe('handleUriUpdateExternal', () => {
-    it('marks the row COMPLETED on success', async () => {
+    it('marks the row COMPLETED and persists the death date on success', async () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [
           {
             inputUri: 'rc://sk/ext',
-            data: { status: 'activated', upvs: { edesk_status: 'active', edesk_number: '1' } },
+            data: {
+              status: 'activated',
+              upvs: { edesk_status: 'active', edesk_number: '1' },
+              type: 'natural_person',
+              natural_person: { death: { date: '2026-06-15' } },
+            },
           },
         ],
         failed: [],
@@ -138,7 +143,10 @@ describe('EdeskUriUpdateService', () => {
 
       expect(prismaMock.externalEdeskCheck.update).toHaveBeenCalledWith({
         where: { uri: 'rc://sk/ext' },
-        data: expect.objectContaining({ queueStatus: QueueItemStatusEnum.COMPLETED }),
+        data: expect.objectContaining({
+          queueStatus: QueueItemStatusEnum.COMPLETED,
+          edeskDeathDate: '2026-06-15',
+        }),
       })
     })
 

@@ -249,7 +249,7 @@
         [
           {
             "name": "buttonText",
-            "size": 8
+            "size": 12
           },
           {
             "name": "href",
@@ -258,13 +258,13 @@
         ],
         [
           {
-            "name": "categories",
-            "size": 6
+            "name": "form",
+            "size": 12
           }
         ],
         [
           {
-            "name": "color",
+            "name": "categories",
             "size": 6
           },
           {
@@ -274,7 +274,7 @@
         ],
         [
           {
-            "name": "form",
+            "name": "color",
             "size": 6
           },
           {

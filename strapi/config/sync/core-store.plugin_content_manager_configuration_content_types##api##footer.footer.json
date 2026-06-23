@@ -7,7 +7,7 @@
       "searchable": true,
       "pageSize": 10,
       "relationOpenMode": "modal",
-      "mainField": "facebookUrl",
+      "mainField": "id",
       "defaultSortBy": "facebookUrl",
       "defaultSortOrder": "ASC"
     },
@@ -22,7 +22,7 @@
       },
       "contactText": {
         "edit": {
-          "label": "contactText",
+          "label": "Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,7 +36,7 @@
       },
       "facebookUrl": {
         "edit": {
-          "label": "facebookUrl",
+          "label": "Facebook Url",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -50,7 +50,7 @@
       },
       "instagramUrl": {
         "edit": {
-          "label": "instagramUrl",
+          "label": "Instagram Url",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -64,7 +64,7 @@
       },
       "youtubeUrl": {
         "edit": {
-          "label": "youtubeUrl",
+          "label": "YouTube Url",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -78,7 +78,7 @@
       },
       "linkedinUrl": {
         "edit": {
-          "label": "linkedinUrl",
+          "label": "LinkedIn Url",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -92,7 +92,7 @@
       },
       "tiktokUrl": {
         "edit": {
-          "label": "tiktokUrl",
+          "label": "TikTok Url",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -106,11 +106,12 @@
       },
       "columns": {
         "edit": {
-          "label": "columns",
+          "label": "Stĺpce s odkazmi",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "columns",
@@ -120,11 +121,12 @@
       },
       "accessibilityPageLink": {
         "edit": {
-          "label": "accessibilityPageLink",
+          "label": "Vyhlásenie o prístupnosti (link)",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "label"
         },
         "list": {
           "label": "accessibilityPageLink",
@@ -200,12 +202,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "facebookUrl",
-        "instagramUrl",
-        "youtubeUrl"
-      ],
       "edit": [
         [
           {
@@ -251,6 +247,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "facebookUrl",
+        "instagramUrl",
+        "youtubeUrl"
       ]
     },
     "uid": "api::footer.footer"

@@ -204,8 +204,8 @@ model IdentityLookupRejection {
   physicalEntityId String         @unique @db.Uuid
 
   // Fault details from the slovensko-sk container; empty string when UPVS omitted them.
-  faultCode   String
-  faultReason String
+  faultCode   String?
+  faultReason String?
 }
 
 model ExternalEdeskCheck {

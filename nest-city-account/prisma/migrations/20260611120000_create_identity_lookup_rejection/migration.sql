@@ -5,8 +5,8 @@ CREATE TABLE "IdentityLookupRejection"
     "createdAt"        TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt"        TIMESTAMP(3) NOT NULL,
     "physicalEntityId" uuid         NOT NULL,
-    "faultCode"        TEXT         NOT NULL,
-    "faultReason"      TEXT         NOT NULL,
+    "faultCode"        TEXT,
+    "faultReason"      TEXT,
 
     CONSTRAINT "IdentityLookupRejection_pkey" PRIMARY KEY ("id")
 );

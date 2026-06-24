@@ -16,6 +16,12 @@
       "type": "uid",
       "required": true
     },
+    "municipalService": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::municipal-service.municipal-service",
+      "inversedBy": "form"
+    },
     "moreInformationUrl": {
       "type": "string"
     },
@@ -24,12 +30,6 @@
       "component": "blocks.form-landing-page",
       "repeatable": false,
       "required": false
-    },
-    "municipalService": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::municipal-service.municipal-service",
-      "inversedBy": "form"
     }
   }
 }

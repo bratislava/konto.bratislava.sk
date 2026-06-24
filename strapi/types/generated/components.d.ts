@@ -107,8 +107,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     displayName: 'Form landing page'
   }
   attributes: {
-    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
-      Schema.Attribute.Required
+    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false>
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
       [
@@ -169,6 +168,17 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   attributes: {
     content: Schema.Attribute.RichText & Schema.Attribute.Required
     title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksMunicipalServiceLink extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_municipal_service_links'
+  info: {
+    displayName: 'municipalServiceLink'
+  }
+  attributes: {
+    label: Schema.Attribute.String
+    url: Schema.Attribute.String
   }
 }
 
@@ -334,6 +344,7 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.municipal-service-link': BlocksMunicipalServiceLink
       'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
       'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod

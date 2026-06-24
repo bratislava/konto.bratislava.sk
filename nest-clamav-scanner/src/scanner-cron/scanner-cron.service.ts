@@ -154,6 +154,7 @@ export class ScannerCronService {
     for (const fileBatch of filesBatches) {
       this.logger.debug(`Scanning ${j}. batch of ${fileBatch.length} files.`)
 
+      // eslint-disable-next-line no-await-in-loop
       globalThis.formsRunning = await this.formsClientService.isRunning()
 
       const promiseQueue = []
@@ -164,6 +165,7 @@ export class ScannerCronService {
       //wait for all promises to be resolved
       let results: FileStatus[]
       try {
+        // eslint-disable-next-line no-await-in-loop
         results = await Promise.all(promiseQueue)
         this.logger.log(
           `Batch scan finished with results: ${results.join(', ')}`,
@@ -431,6 +433,7 @@ export class ScannerCronService {
       this.logger.log(
         `Changing state of ${file.fileUid} from ${file.status} to SCAN NOT SUCCESSFUL.`,
       )
+      // eslint-disable-next-line no-await-in-loop
       await this.updateScanStatusWithNotify(
         file,
         FileStatus.SCAN_NOT_SUCCESSFUL,
@@ -528,6 +531,7 @@ export class ScannerCronService {
     //notify forms backend about the status of the files
     for (const file of unnotifiedFiles) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         await this.updateScanStatusWithNotify(file, file.status)
       } catch {
         this.logger.error(

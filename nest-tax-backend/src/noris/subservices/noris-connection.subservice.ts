@@ -140,8 +140,8 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
         CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
         undefined,
-        error instanceof Error ? undefined : (error as string),
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
 

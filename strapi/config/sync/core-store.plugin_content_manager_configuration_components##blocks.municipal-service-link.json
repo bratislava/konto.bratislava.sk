@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::sections.towing",
+  "key": "plugin_content_manager_configuration_components::blocks.municipal-service-link",
   "value": {
     "settings": {
       "bulkable": true,
@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "relationOpenMode": "modal",
-      "mainField": "title",
-      "defaultSortBy": "title",
+      "mainField": "label",
+      "defaultSortBy": "label",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -20,30 +20,30 @@
           "sortable": false
         }
       },
-      "title": {
+      "label": {
         "edit": {
-          "label": "title",
+          "label": "Text odkazu",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "title",
+          "label": "label",
           "searchable": true,
           "sortable": true
         }
       },
-      "text": {
+      "url": {
         "edit": {
-          "label": "text",
+          "label": "Url",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "text",
+          "label": "url",
           "searchable": true,
           "sortable": true
         }
@@ -58,25 +58,25 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "text"
-      ],
       "edit": [
         [
           {
-            "name": "title",
+            "name": "label",
             "size": 6
           },
           {
-            "name": "text",
+            "name": "url",
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "label",
+        "url"
       ]
     },
-    "uid": "sections.towing",
+    "uid": "blocks.municipal-service-link",
     "isComponent": true
   },
   "type": "object",

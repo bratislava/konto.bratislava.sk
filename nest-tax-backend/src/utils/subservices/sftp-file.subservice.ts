@@ -67,8 +67,9 @@ export default class SftpFileSubservice {
     return sftpFiles
       .filter((file) => {
         const fileDateMatches = file.name.split('_').pop()?.slice(0, 6)
-        if (!fileDateMatches || Number.isNaN(Number(fileDateMatches)))
+        if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) {
           return false
+        }
         const fileDate = dayjs(`20${fileDateMatches}`).tz('Europe/Bratislava')
         return fileDate.add(1, 'day').isAfter(from, 'day')
       })

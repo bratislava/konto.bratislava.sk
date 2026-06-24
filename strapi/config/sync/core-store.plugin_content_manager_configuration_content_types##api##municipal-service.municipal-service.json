@@ -22,8 +22,8 @@
       },
       "title": {
         "edit": {
-          "label": "Nadpis kartičky",
-          "description": "Mal by sa zhodovať s názvom služby.",
+          "label": "Názov",
+          "description": null,
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -50,7 +50,7 @@
       },
       "description": {
         "edit": {
-          "label": "Text kartičky",
+          "label": "Kartička - text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -64,7 +64,7 @@
       },
       "buttonText": {
         "edit": {
-          "label": "Text tlačidla",
+          "label": "Kartička - text odkazu",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -76,10 +76,39 @@
           "sortable": true
         }
       },
+      "form": {
+        "edit": {
+          "label": "Formulár",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "moreInformationUrl"
+        },
+        "list": {
+          "label": "form",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "formButtonLabel": {
+        "edit": {
+          "label": "Formulár - text CTA buttonu",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "formButtonLabel",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "href": {
         "edit": {
-          "label": "Odkaz na službu",
-          "description": "Mal by začínať lomítkom, napr. /mestske-sluzby/...",
+          "label": "Externý odkaz",
+          "description": "Vyplní sa v prípade, že služba smeruje na externú URL mimo konta.",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -105,34 +134,6 @@
           "sortable": false
         }
       },
-      "icon": {
-        "edit": {
-          "label": "Piktogram",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "icon",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "color": {
-        "edit": {
-          "label": "Farba",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "color",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "categories": {
         "edit": {
           "label": "Kategória",
@@ -148,19 +149,47 @@
           "sortable": false
         }
       },
-      "form": {
+      "icon": {
         "edit": {
-          "label": "Formulár",
+          "label": "Kartička - piktogram",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "icon",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "color": {
+        "edit": {
+          "label": "Kartička - farba",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "color",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "links": {
+        "edit": {
+          "label": "Odkazy v sidebare",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "moreInformationUrl"
+          "mainField": "label"
         },
         "list": {
-          "label": "form",
-          "searchable": true,
-          "sortable": true
+          "label": "links",
+          "searchable": false,
+          "sortable": false
         }
       },
       "sections": {
@@ -250,21 +279,15 @@
           {
             "name": "title",
             "size": 12
-          },
-          {
-            "name": "slug",
-            "size": 12
-          },
-          {
-            "name": "description",
-            "size": 12
           }
         ],
         [
           {
-            "name": "buttonText",
+            "name": "slug",
             "size": 12
-          },
+          }
+        ],
+        [
           {
             "name": "href",
             "size": 12
@@ -273,7 +296,11 @@
         [
           {
             "name": "form",
-            "size": 12
+            "size": 6
+          },
+          {
+            "name": "formButtonLabel",
+            "size": 6
           }
         ],
         [
@@ -288,12 +315,28 @@
         ],
         [
           {
-            "name": "color",
+            "name": "description",
             "size": 6
           },
           {
+            "name": "buttonText",
+            "size": 6
+          }
+        ],
+        [
+          {
             "name": "icon",
             "size": 6
+          },
+          {
+            "name": "color",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "links",
+            "size": 12
           }
         ],
         [
@@ -303,12 +346,7 @@
           }
         ]
       ],
-      "list": [
-        "id",
-        "title",
-        "description",
-        "buttonText"
-      ]
+      "list": ["id", "title", "description", "buttonText"]
     },
     "uid": "api::municipal-service.municipal-service"
   },

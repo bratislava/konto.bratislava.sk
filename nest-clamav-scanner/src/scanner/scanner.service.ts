@@ -172,6 +172,7 @@ export class ScannerService {
       //check naming convention of fileUid
       let result: ScanFileResponseDto
       try {
+        // eslint-disable-next-line no-await-in-loop
         result = await this.scanFile(bucketFile)
       } catch (error) {
         if (!(error instanceof Error)) {

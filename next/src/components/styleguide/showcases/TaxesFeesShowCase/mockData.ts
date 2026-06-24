@@ -2,9 +2,9 @@ import { QueryClient } from '@tanstack/react-query'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import {
   InstallmentPaidStatusEnum,
-  ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
-  ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum,
-  ResponseOneTimePaymentDetailsDtoTypeEnum,
+  InstallmentPaymentReasonNotPossibleEnum,
+  OneTimePaymentReasonNotPossibleEnum,
+  OneTimePaymentTypeEnum,
   TaxAvailabilityStatus,
   TaxControllerV2GetTaxDetailByYearV2200Response,
   TaxStatusEnum,
@@ -147,16 +147,16 @@ export const createMockTaxDetail = (
   const oneTimePayment = isPaid
     ? {
         isPossible: false,
-        reasonNotPossible: ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum.AlreadyPaid,
+        reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.AlreadyPaid,
       }
     : isCancelled
       ? {
           isPossible: false,
-          reasonNotPossible: ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum.TaxIsCancelled,
+          reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.TaxIsCancelled,
         }
       : {
           isPossible: true,
-          type: ResponseOneTimePaymentDetailsDtoTypeEnum.RemainingAmountPayment,
+          type: OneTimePaymentTypeEnum.RemainingAmountPayment,
           amount: balance,
           dueDate: '2024-05-31',
           qrCode: '',
@@ -168,8 +168,8 @@ export const createMockTaxDetail = (
       ? {
           isPossible: false,
           reasonNotPossible: isPaid
-            ? ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.AlreadyPaid
-            : ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.TaxIsCancelled,
+            ? InstallmentPaymentReasonNotPossibleEnum.AlreadyPaid
+            : InstallmentPaymentReasonNotPossibleEnum.TaxIsCancelled,
         }
       : {
           isPossible: true,

@@ -94,10 +94,14 @@ interface UpvsIamFault {
  * Extract the UPVS IAM fault from a slovensko-sk container 400 response.
  */
 function getUpvsIamFault(error: AxiosError): UpvsIamFault | undefined {
-  if (error.response?.status !== HttpStatus.BAD_REQUEST) return undefined
+  if (error.response?.status !== HttpStatus.BAD_REQUEST) {
+    return undefined
+  }
 
   const fault = (error.response.data as Record<string, unknown> | null)?.fault
-  if (typeof fault !== 'object' || fault === null) return undefined
+  if (typeof fault !== 'object' || fault === null) {
+    return undefined
+  }
 
   const { code, reason } = fault as Record<string, unknown>
   return {
@@ -394,7 +398,9 @@ export class NasesService {
 
     const resultDataSuccess: GetUpvsIdentityByUriSuccessType[] = directMatches.flatMap((result) => {
       const input = inputsByUri[result.uri]
-      if (!input) return []
+      if (!input) {
+        return []
+      }
       return [
         {
           inputUri: input.uri,

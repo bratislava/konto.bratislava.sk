@@ -27,7 +27,7 @@ export const createTestTaxPayment = (
       ...baseTax.taxPayer,
       ...taxOverrides?.taxPayer,
     },
-  } as TaxWithTaxPayer
+  }
 
   return {
     id: 1,

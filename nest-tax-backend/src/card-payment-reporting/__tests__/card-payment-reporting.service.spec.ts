@@ -269,7 +269,9 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
     beforeEach(() => {
       mockConfigService.getOrThrow.mockImplementation((key: string) => {
         const value = envValues[key]
-        if (!value) throw new Error(`Missing config key: ${key}`)
+        if (!value) {
+          throw new Error(`Missing config key: ${key}`)
+        }
         return value
       })
     })

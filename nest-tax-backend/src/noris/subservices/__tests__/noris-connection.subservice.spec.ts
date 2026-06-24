@@ -39,7 +39,7 @@ describe('NorisConnectionSubservice', () => {
       MSSQL_HOST: 'localhost',
       MSSQL_DB: 'testdb',
       MSSQL_USERNAME: 'user',
-      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+
       MSSQL_PASSWORD: 'pass',
     }
 
@@ -49,7 +49,7 @@ describe('NorisConnectionSubservice', () => {
           MSSQL_HOST: 'localhost',
           MSSQL_DB: 'testdb',
           MSSQL_USERNAME: 'user',
-          // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+
           MSSQL_PASSWORD: 'pass',
         }
         if (key in map) {

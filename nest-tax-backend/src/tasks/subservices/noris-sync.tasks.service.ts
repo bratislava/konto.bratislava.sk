@@ -91,7 +91,9 @@ export default class NorisSyncTasksService {
       )
     }
 
-    if (variableSymbolsDb.length === 0) return
+    if (variableSymbolsDb.length === 0) {
+      return
+    }
 
     const data = {
       variableSymbols: variableSymbolsDb.map(

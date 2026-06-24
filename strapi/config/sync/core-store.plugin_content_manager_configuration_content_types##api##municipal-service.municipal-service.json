@@ -163,6 +163,20 @@
           "sortable": true
         }
       },
+      "sections": {
+        "edit": {
+          "label": "Sekcie",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sections",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -280,6 +294,12 @@
           {
             "name": "icon",
             "size": 6
+          }
+        ],
+        [
+          {
+            "name": "sections",
+            "size": 12
           }
         ]
       ],

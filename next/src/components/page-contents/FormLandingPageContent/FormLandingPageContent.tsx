@@ -121,14 +121,15 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
               {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
                 <FormLandingPageCard key={linkCta.id} {...linkCta} />
               ))}
-
-              <FormLandingPageCard
-                {...strapiForm.landingPage.formCta}
-                isLoading={isPending}
-                onPress={() => {
-                  mutate()
-                }}
-              />
+              {isDefined(strapiForm.landingPage.formCta) ? (
+                <FormLandingPageCard
+                  {...strapiForm.landingPage.formCta}
+                  isLoading={isPending}
+                  onPress={() => {
+                    mutate()
+                  }}
+                />
+              ) : null}
             </div>
           </SectionContainer>
         </div>

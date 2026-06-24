@@ -138,3 +138,32 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     ...TowingSection
   }
 }
+
+fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
+  __typename
+
+  ... on ComponentSectionsRichtext {
+    ...RichtextSection
+  }
+
+  ... on ComponentSectionsStepper {
+    ...StepperSection
+  }
+
+  ... on ComponentSectionsContacts {
+    ...ContactsSection
+  }
+
+  ... on ComponentSectionsFaq {
+    ...FaqSection
+  }
+
+  ... on ComponentSectionsDocuments {
+    ...DocumentsSection
+  }
+
+  ... on ComponentSectionsTowing {
+    ...TowingSection
+  }
+}
+

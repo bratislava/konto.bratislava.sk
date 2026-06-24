@@ -31,4 +31,7 @@ fragment MunicipalServiceEntity on MunicipalService {
   categories {
     ...MunicipalServiceCategoryEntity
   }
+  sections {
+    ...MunicipalServiceSections
+  }
 }

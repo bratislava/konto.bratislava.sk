@@ -326,7 +326,9 @@ export class NorisPaymentSubservice {
 
   private isHistoricalPayment(norisPayment: NorisTaxPayment): boolean {
     const { datum_posledni_platby } = norisPayment
-    if (!datum_posledni_platby) return false
+    if (!datum_posledni_platby) {
+      return false
+    }
     return dayjs(datum_posledni_platby).isBefore(dayjs().subtract(180, 'day'))
   }
 

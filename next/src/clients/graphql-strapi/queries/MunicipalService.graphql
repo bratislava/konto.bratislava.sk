@@ -8,6 +8,7 @@ fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
   title
 }
 
+# Used to determine whether the service redirects to a landing page or to an external URL
 fragment MunicipalServiceRedirect on MunicipalService {
   slug
   href

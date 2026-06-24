@@ -2,7 +2,6 @@ fragment CommonLink on ComponentBlocksCommonLink {
   label
   municipalService {
     title
-    slug
     ...MunicipalServiceRedirect
   }
   url

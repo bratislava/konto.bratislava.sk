@@ -5413,7 +5413,6 @@ export const CommonLinkFragmentDoc = gql`
     label
     municipalService {
       title
-      slug
       ...MunicipalServiceRedirect
     }
     url

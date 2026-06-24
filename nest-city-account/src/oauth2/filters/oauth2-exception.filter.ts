@@ -431,8 +431,8 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
    */
   private mapStatusToAuthorizationError(status: number): OAuth2AuthorizationErrorCode {
     // Only map specific status codes; all others go to default (SERVER_ERROR). Disable exhaustiveness so we don't have to list every HttpStatus.
-    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- intentional: unmapped status codes are handled by default case
-    switch (status as HttpStatus) {
+
+    switch (status) {
       case HttpStatus.BAD_REQUEST:
       case HttpStatus.NOT_FOUND:
         return OAuth2AuthorizationErrorCode.INVALID_REQUEST
@@ -454,8 +454,8 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
    */
   private mapStatusToTokenError(status: number): OAuth2TokenErrorCode {
     // Only map specific status codes; all others go to default (INVALID_REQUEST). Disable exhaustiveness so we don't have to list every HttpStatus.
-    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- intentional: unmapped status codes are handled by default case
-    switch (status as HttpStatus) {
+
+    switch (status) {
       case HttpStatus.BAD_REQUEST:
         return OAuth2TokenErrorCode.INVALID_REQUEST
       case HttpStatus.UNAUTHORIZED:

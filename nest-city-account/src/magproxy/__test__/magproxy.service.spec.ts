@@ -54,9 +54,7 @@ describe('MagproxyService', () => {
 
       const mockRfoResponseListOneItemsInvalid = mockRfoResponseListOneItems as any
       mockRfoResponseListOneItemsInvalid[0].rodnePriezviskaOsoby[0].meno = 1222 // Invalid data - name as number
-      const response = service['validateRfoDataFormat'](
-        mockRfoResponseListOneItemsInvalid as unknown as ResponseRfoPersonDto[]
-      )
+      const response = service['validateRfoDataFormat'](mockRfoResponseListOneItemsInvalid)
 
       expect(errorLogSpy).toHaveBeenCalled()
       expect(response).toEqual(mockRfoResponseListOneItemsInvalid)

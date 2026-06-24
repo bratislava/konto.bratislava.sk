@@ -232,7 +232,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
 
       prismaMock.$queryRaw.mockResolvedValue([oldEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
       await processor.processOutbox()
@@ -288,7 +288,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
 
       prismaMock.$queryRaw.mockResolvedValue([oldEventEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
       await processor.processOutbox()
@@ -351,7 +351,7 @@ describe('BloomreachOutboxProcessor', () => {
         },
       })
       prismaMock.bloomreachOutbox.findMany.mockResolvedValue([staleEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEntry)
       prismaMock.$queryRaw.mockResolvedValue([])
 
       await processor.processOutbox()

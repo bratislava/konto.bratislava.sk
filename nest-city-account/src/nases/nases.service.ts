@@ -232,7 +232,9 @@ export class NasesService {
 
     const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.flatMap((result) => {
       const input = inputsByUri[result.uri]
-      if (!input) return []
+      if (!input) {
+        return []
+      }
       return [
         {
           inputUri: input.uri,

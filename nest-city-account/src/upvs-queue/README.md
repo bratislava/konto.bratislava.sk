@@ -16,7 +16,7 @@ populations:
 | [`upvs-queue.service.ts`](./upvs-queue.service.ts)                 | Facade + `processBatch()` orchestration, public queue API  |
 | [`urgent-lookup.service.ts`](./urgent-lookup.service.ts)           | Tier 0 - per-person identity lookup with rate-limit cutout |
 | [`edesk-uri-update.service.ts`](./edesk-uri-update.service.ts)     | Tiers 1-2 - single-item URI repair (internal + external)   |
-| [`edesk-batch-search.service.ts`](edesk-batch-update.service.ts) | Tier 3 - batched URI search, success/failure persistence   |
+| [`edesk-batch-update.service.ts`](./edesk-batch-update.service.ts) | Tier 3 - batched URI search, success/failure persistence   |
 | [`upvs-queue.queries.ts`](./upvs-queue.queries.ts)                 | Raw SQL selectors + shared exponential-backoff fragment    |
 
 ## Cron entry points

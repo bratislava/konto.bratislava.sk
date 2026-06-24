@@ -40,7 +40,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "label"
         },
         "list": {
           "label": "links",
@@ -58,11 +59,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "links"
-      ],
       "edit": [
         [
           {
@@ -76,6 +72,11 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "links"
       ]
     },
     "uid": "blocks.footer-column",

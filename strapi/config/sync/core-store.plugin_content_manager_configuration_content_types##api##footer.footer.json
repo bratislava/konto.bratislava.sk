@@ -110,7 +110,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "columns",
@@ -124,7 +125,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "label"
         },
         "list": {
           "label": "accessibilityPageLink",
@@ -200,12 +202,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "facebookUrl",
-        "instagramUrl",
-        "youtubeUrl"
-      ],
       "edit": [
         [
           {
@@ -251,6 +247,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "facebookUrl",
+        "instagramUrl",
+        "youtubeUrl"
       ]
     },
     "uid": "api::footer.footer"

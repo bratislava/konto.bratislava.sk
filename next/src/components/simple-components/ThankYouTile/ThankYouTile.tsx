@@ -58,7 +58,7 @@ const ThankYouTile = ({
       </div>
       <div
         className={cn('flex w-full flex-col items-center gap-4', {
-          'px-0 sm:flex-row': !feedbackTitle,
+          'px-0 lg:flex-row': !feedbackTitle,
         })}
       >
         {variant === 'success' ? (

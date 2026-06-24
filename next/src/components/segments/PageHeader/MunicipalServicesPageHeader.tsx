@@ -29,7 +29,7 @@ const MunicipalServicesPageHeader = ({
         </Typography>
         <SelectFieldNew
           label=""
-          className="max-w-none pr-4 sm:max-w-[400px]"
+          className="max-w-none pr-4 lg:max-w-[400px]"
           value={selectorValue}
           onChange={(value) => {
             if (!value) return

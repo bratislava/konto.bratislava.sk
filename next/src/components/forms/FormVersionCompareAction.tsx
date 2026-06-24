@@ -108,7 +108,7 @@ const FormVersionCompareAction = () => {
             />
           </div>
 
-          <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
+          <div className="flex w-full flex-col items-center gap-4 lg:flex-row">
             {isSignedIn ? (
               <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS} hasLinkIcon={false}>
                 {t('form_version_compare_action.button_back')}

@@ -143,7 +143,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           <div className="flex flex-col">
             <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
               <Typography variant="h4">{t('registration_modal.body_title')}</Typography>
-              <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
+              <ul className="mt-6 flex flex-col gap-2 lg:gap-4">
                 {}
                 {bodyList.map((item, index) => (
                   <li key={index} className="flex items-center gap-4">

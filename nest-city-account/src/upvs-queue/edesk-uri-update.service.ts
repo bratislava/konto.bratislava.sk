@@ -83,6 +83,7 @@ export class EdeskUriUpdateService {
           edeskNumber: successItem.data.upvs?.edesk_number ?? null,
           edeskDeathDate: getUpvsDeathDate(successItem.data),
           processedAt: new Date(),
+          newUri: successItem.inputUri === successItem.data.uri ? undefined : successItem.data.uri,
         },
       })
     } else {

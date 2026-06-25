@@ -134,7 +134,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           </SectionContainer>
         </div>
         
-        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0 lg:sticky">
+        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
           <TableOfContents />
         </aside>
       </div>

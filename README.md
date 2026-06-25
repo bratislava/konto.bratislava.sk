@@ -38,7 +38,8 @@ Each sub-project contains a README which should get you up and running. More doc
 
 Deploy all services by creating a tag in format: `<environment><version>`
 
-> Note: Backend services deploy first, followed by frontend.
+> [!NOTE]
+> Backend services deploy first, followed by frontend.
 
 - Examples: `dev1.0.0`, `staging1.0.0`, `prod1.0.0`
 
@@ -48,9 +49,20 @@ Deploy specific service by creating a tag in format: `<environment>-<service-nam
 
 - Examples: `dev-next1.0.0`, `staging-nest-forms-backend1.0.0`
 
+> [!NOTE]
+> Pushing to `master` deploys the whole project to staging.
+
+### How deploys work
+
+Build and deploy share one reusable workflow per service type (`build-nest.yml`, `build-next.yml`, `build-single-image.yml`). On a PR these run in build-only mode; in `deploy.yml` they run in deploy mode (`cluster` set), which builds the service image (if an image for the current commit does not already exist in Harbor) and tags it as `<cluster>-<short-sha>`. In deploy mode the nest builds also skip the validation/test images (`skip_tests`). Once a service image is built, a matching `deploy-*` job in `deploy.yml` calls the shared `trigger-infra-deploy.yml` workflow, which dispatches `deploy.yml` in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration); that applies the Terragrunt module for the service (under `clusters/<cluster>/applications/konto.bratislava.sk/<service>`) on the target cluster.
+
+Backend images are environment-agnostic, so a single per-commit build is reused across clusters. The Next.js frontend bakes its environment into the build, so it is rebuilt (with a separate Docker cache and an `-<env>` tag suffix) for every cluster.
+
+The build and deploy plumbing (Buildx setup, registry logins, Docker tag/cache metadata, image reuse checks, and the infrastructure deploy trigger) comes from shared actions in [bratislava/github-actions](https://github.com/bratislava/github-actions).
+
 ### Validation and build pipelines
 
-By creating a PR, GitHub actions will run validation pipelines and build pipelines with `bratiska-cli`.
+By creating a PR, GitHub actions will run validation pipelines and Dockerized build, lint and test pipelines.
 
 ## Acknowledgments
 

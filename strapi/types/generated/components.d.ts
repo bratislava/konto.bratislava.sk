@@ -171,6 +171,17 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksMunicipalServiceLink extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_municipal_service_links'
+  info: {
+    displayName: 'municipalServiceLink'
+  }
+  attributes: {
+    label: Schema.Attribute.String
+    url: Schema.Attribute.String
+  }
+}
+
 export interface BlocksQuestion extends Struct.ComponentSchema {
   collectionName: 'components_blocks_questions'
   info: {
@@ -333,6 +344,7 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.municipal-service-link': BlocksMunicipalServiceLink
       'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
       'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod

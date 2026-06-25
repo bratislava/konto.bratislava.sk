@@ -87,6 +87,7 @@ describe('ConvertPdfService', () => {
             scannerBackend: {
               url: 'http://localhost:3001',
               username: 'user1',
+              // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- test password for scanner backend
               password: 'pass',
             },
           },

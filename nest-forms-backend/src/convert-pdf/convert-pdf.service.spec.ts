@@ -56,14 +56,6 @@ describe('ConvertPdfService', () => {
     slotId: 'fake-slot',
   } as const
 
-  beforeAll(() => {
-    process.env = {
-      ...process.env,
-      MIMETYPE_WHITELIST: 'a b c',
-      MINIO_SAFE_BUCKET: 'calmav-clean-bucket',
-    }
-  })
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [

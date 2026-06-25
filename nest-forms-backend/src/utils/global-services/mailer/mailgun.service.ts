@@ -25,16 +25,6 @@ export default class MailgunService implements Mailer {
     private readonly mailgunHelper: MailgunHelper,
     private readonly prismaService: PrismaService,
   ) {
-    if (
-      !process.env.MAILGUN_API_KEY ||
-      !process.env.MAILGUN_HOST ||
-      !process.env.MAILGUN_EMAIL_FROM ||
-      !process.env.MAILGUN_DOMAIN
-    ) {
-      throw new Error(
-        'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
-      )
-    }
     this.logger = new LineLoggerSubservice(MailgunService.name)
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({

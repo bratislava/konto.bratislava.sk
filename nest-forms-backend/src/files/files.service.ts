@@ -130,7 +130,7 @@ export default class FilesService {
     }
 
     return files.map((file) => ({
-      minioPath: `${process.env.MINIO_SAFE_BUCKET ?? ''}/${
+      minioPath: `${this.baConfigService.minio.buckets.safe}/${
         file.pospId
       }/${formId}/${file.minioFileName}`,
       id: file.id,

@@ -38,14 +38,6 @@ describe('MailgunHelper', () => {
   let throwerErrorGuard: ThrowerErrorGuard
 
   beforeEach(async () => {
-    // Set environment variables needed for constructor
-    process.env.MAILGUN_API_KEY = 'test-api-key'
-    process.env.MAILGUN_HOST = 'test-host'
-    process.env.MAILGUN_EMAIL_FROM = 'test@example.com'
-    process.env.MAILGUN_DOMAIN = 'test-domain'
-
-    process.env.FRONTEND_URL = 'https://konto.test.sk'
-
     const moduleRef = await Test.createTestingModule({
       providers: [
         MailgunHelper,
@@ -80,23 +72,9 @@ describe('MailgunHelper', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
-    delete process.env.MAILGUN_API_KEY
-    delete process.env.MAILGUN_HOST
-    delete process.env.MAILGUN_EMAIL_FROM
-    delete process.env.MAILGUN_DOMAIN
-    delete process.env.FRONTEND_URL
   })
 
   describe('constructor', () => {
-    it('should throw error if environment variables are missing', () => {
-      delete process.env.MAILGUN_API_KEY
-      expect(
-        () => new MailgunHelper(throwerErrorGuard, baConfigService),
-      ).toThrow(
-        'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
-      )
-    })
-
     it('should initialize mailgunClient correctly', () => {
       expect(mailgunHelper.mailgunClient).toBeDefined()
     })

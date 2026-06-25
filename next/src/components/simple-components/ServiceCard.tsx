@@ -11,7 +11,7 @@ type ServiceCardBase = {
   buttonText: string
   className?: string
   icon: ReactNode
-  href: string
+  href: string | null | undefined
   tags?: string[]
   tagStyle?: string
   analyticsProps?: LinkAnalyticsProps
@@ -72,7 +72,7 @@ const ServiceCard = ({
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
           <Button
-            href={href}
+            href={href ?? '#'}
             variant="link"
             hasLinkIcon={false}
             stretched

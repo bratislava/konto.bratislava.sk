@@ -15,19 +15,7 @@ describe('Mailgun Emails', () => {
       providers: [
         MailgunHelper,
         ThrowerErrorGuard,
-        {
-          provide: BaConfigService,
-          useValue: {
-            mailgun: {
-              apiKey: 'test-api-key',
-              host: 'test-host',
-              emailFrom: 'test@example.com',
-              domain: 'test-domain',
-            },
-            frontend: { url: 'https://konto.bratislava.sk' },
-            olo: { frontendUrl: 'https://olo.sk' },
-          },
-        },
+        BaConfigService,
       ],
     }).compile()
 

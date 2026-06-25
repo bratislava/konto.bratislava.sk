@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import nodemailer from 'nodemailer'
 
+import BaConfigService from '../../../config/ba-config.service'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
@@ -19,7 +19,7 @@ export default class OloMailerService implements Mailer {
   logger: LineLoggerSubservice
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly mailgunHelper: MailgunHelper,
   ) {
@@ -31,8 +31,8 @@ export default class OloMailerService implements Mailer {
       port: 587,
       secure: false, // Use TLS
       auth: {
-        user: this.configService.getOrThrow<string>('OLO_SMTP_USERNAME'),
-        pass: this.configService.getOrThrow<string>('OLO_SMTP_PASSWORD'),
+        user: this.baConfigService.olo.smtp.username,
+        pass: this.baConfigService.olo.smtp.password,
       },
       tls: {
         ciphers: 'SSLv3',

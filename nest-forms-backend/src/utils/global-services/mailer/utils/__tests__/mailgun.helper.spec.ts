@@ -1,8 +1,8 @@
-import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
 
+import BaConfigService from '../../../../../config/ba-config.service'
 import { SendEmailInputDto } from '../../../../global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
@@ -34,7 +34,7 @@ jest.mock('mailgun.js', () =>
 
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
-  let configService: ConfigService
+  let baConfigService: BaConfigService
   let throwerErrorGuard: ThrowerErrorGuard
 
   beforeEach(async () => {
@@ -50,21 +50,14 @@ describe('MailgunHelper', () => {
       providers: [
         MailgunHelper,
         {
-          provide: ConfigService,
+          provide: BaConfigService,
           useValue: {
-            getOrThrow: jest.fn((key: string) => {
-              const values = {
-                MAILGUN_API_KEY: 'test-api-key',
-                MAILGUN_HOST: 'test-host',
-                MAILGUN_EMAIL_FROM: 'test@example.com',
-                MAILGUN_DOMAIN: 'test-domain',
-                FRONTEND_URL: 'https://konto.test.sk',
-              }
-              if (!values[key as keyof typeof values]) {
-                throw new Error(`Missing env: ${key}`)
-              }
-              return values[key as keyof typeof values]
-            }),
+            mailgun: {
+              apiKey: 'test-api-key',
+              host: 'test-host',
+              emailFrom: 'test@example.com',
+              domain: 'test-domain',
+            },
           },
         },
         {
@@ -81,7 +74,7 @@ describe('MailgunHelper', () => {
     }).compile()
 
     mailgunHelper = moduleRef.get<MailgunHelper>(MailgunHelper)
-    configService = moduleRef.get<ConfigService>(ConfigService)
+    baConfigService = moduleRef.get<BaConfigService>(BaConfigService)
     throwerErrorGuard = moduleRef.get<ThrowerErrorGuard>(ThrowerErrorGuard)
   })
 
@@ -97,7 +90,9 @@ describe('MailgunHelper', () => {
   describe('constructor', () => {
     it('should throw error if environment variables are missing', () => {
       delete process.env.MAILGUN_API_KEY
-      expect(() => new MailgunHelper(throwerErrorGuard, configService)).toThrow(
+      expect(
+        () => new MailgunHelper(throwerErrorGuard, baConfigService),
+      ).toThrow(
         'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
       )
     })

@@ -1,5 +1,4 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 import {
@@ -9,6 +8,7 @@ import {
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
+import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
@@ -80,7 +80,25 @@ describe('ConvertPdfService', () => {
         ConvertPdfService,
         { provide: ConvertService, useValue: { generatePdf } },
         FilesHelper,
-        ConfigService,
+        {
+          provide: BaConfigService,
+          useValue: {
+            files: { mimeTypeWhitelist: 'a b c' },
+            minio: {
+              buckets: {
+                safe: 'calmav-clean-bucket',
+                infected: 'infected-bucket',
+                unscanned: 'unscanned-bucket',
+              },
+            },
+            tokens: { jwtSecret: 'test-secret' },
+            scannerBackend: {
+              url: 'http://localhost:3001',
+              username: 'user1',
+              password: 'pass',
+            },
+          },
+        },
         ScannerClientService,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },

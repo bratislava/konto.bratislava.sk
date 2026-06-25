@@ -1,5 +1,4 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
@@ -16,6 +15,8 @@ import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
 
 import prismaMock from '../../../../test/singleton'
+import BaConfigService from '../../../config/ba-config.service'
+import { ClusterEnv } from '../../../config/environment-variables'
 import ConvertService from '../../../convert/convert.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
@@ -136,13 +137,20 @@ const mockFormDefinitionWithSendOloEmail = {
   },
 }
 
+const mockBaConfigService = {
+  environment: { clusterEnv: ClusterEnv.Production },
+  tokens: { jwtSecret: 'test-secret' },
+  self: { url: 'http://localhost:3000' },
+}
+
 describe('EmailFormsService', () => {
   let service: EmailFormsService
   let mailgunService: jest.Mocked<MailgunService>
   let oloMailerService: jest.Mocked<OloMailerService>
-  let configService: jest.Mocked<ConfigService>
 
   beforeEach(async () => {
+    mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EmailFormsService,
@@ -159,8 +167,8 @@ describe('EmailFormsService', () => {
           useValue: createMock<OloMailerService>(),
         },
         {
-          provide: ConfigService,
-          useValue: createMock<ConfigService>(),
+          provide: BaConfigService,
+          useValue: mockBaConfigService,
         },
         {
           provide: ConvertService,
@@ -177,9 +185,6 @@ describe('EmailFormsService', () => {
     service = module.get<EmailFormsService>(EmailFormsService)
     mailgunService = module.get(MailgunService)
     oloMailerService = module.get(OloMailerService)
-    configService = module.get(ConfigService)
-
-    jest.spyOn(configService, 'get').mockReturnValue('production')
 
     service['logger'] = {
       error: jest.fn(),
@@ -613,7 +618,7 @@ describe('EmailFormsService', () => {
     })
 
     it('should take email based on CLUSTER_ENV', async () => {
-      configService.get.mockReturnValue('production')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
 
       await service.sendEmailForm(formId, null, null)
 
@@ -628,7 +633,7 @@ describe('EmailFormsService', () => {
     })
 
     it('should take email based on CLUSTER_ENV and different emailFrom', async () => {
-      configService.get.mockReturnValue('staging')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Staging }
       prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
 
       await service.sendEmailForm(mockFormWithOloDefinition.id, null, null)
@@ -643,7 +648,7 @@ describe('EmailFormsService', () => {
     })
 
     it('should send both emails with parsed emailFrom', async () => {
-      configService.get.mockReturnValue('production')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
       prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
 
       await service.sendEmailForm(
@@ -729,82 +734,77 @@ describe('EmailFormsService', () => {
 
   describe('resolveAddress', () => {
     it('should return prod address when CLUSTER_ENV is production', () => {
-      jest.spyOn(configService, 'get').mockReturnValue('production')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
       const addressObject = {
         test: 'test@example.com',
         prod: 'prod@example.com',
       }
       const result = service['resolveAddress'](addressObject)
       expect(result).toBe(addressObject.prod)
-      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
 
     it('should return test address when CLUSTER_ENV is staging', () => {
-      configService.get.mockReturnValue('staging')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Staging }
       const addressObject = {
         test: 'test@example.com',
         prod: 'prod@example.com',
       }
       const result = service['resolveAddress'](addressObject)
       expect(result).toBe(addressObject.test)
-      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
 
     it('should return test address when CLUSTER_ENV is development', () => {
-      configService.get.mockReturnValue('development')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Dev }
       const addressObject = {
         test: 'test@example.com',
         prod: 'prod@example.com',
       }
       const result = service['resolveAddress'](addressObject)
       expect(result).toBe(addressObject.test)
-      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
 
     it('should return test address when CLUSTER_ENV is undefined', () => {
-      configService.get.mockReturnValue(undefined)
+      mockBaConfigService.environment = {
+        clusterEnv: undefined as unknown as ClusterEnv,
+      }
       const addressObject = {
         test: 'test@example.com',
         prod: 'prod@example.com',
       }
       const result = service['resolveAddress'](addressObject)
       expect(result).toBe(addressObject.test)
-      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
   })
 
   describe('resolveMultipleAddresses', () => {
     it('should return empty string when address list is empty', () => {
-      configService.get.mockReturnValue(undefined)
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Dev }
       const addressObject = {
         test: [] as string[],
         prod: [] as string[],
       }
       const result = service['resolveMultipleAddresses'](addressObject)
       expect(result).toBe('')
-      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
 
     it('should join non-empty production addresses with comma separator', () => {
-      configService.get.mockReturnValue('production')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
       const addressObject = {
         test: ['test-1@example.com', 'test-2@example.com'],
         prod: ['prod-1@example.com', 'prod-2@example.com'],
       }
       const result = service['resolveMultipleAddresses'](addressObject)
       expect(result).toBe('prod-1@example.com, prod-2@example.com')
-      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
 
     it('should return single address unchanged when only one recipient exists', () => {
-      configService.get.mockReturnValue('production')
+      mockBaConfigService.environment = { clusterEnv: ClusterEnv.Production }
       const addressObject = {
         test: ['test-single@example.com'],
         prod: ['prod-single@example.com'],
       }
       const result = service['resolveMultipleAddresses'](addressObject)
       expect(result).toBe('prod-single@example.com')
-      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
   })
 })

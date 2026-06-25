@@ -1,11 +1,11 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Files, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../../test/singleton'
+import BaConfigService from '../../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -27,7 +27,19 @@ describe('FilesHelper', () => {
       providers: [
         FilesHelper,
         { provide: PrismaService, useValue: prismaMock },
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            files: { mimeTypeWhitelist: 'image/jpeg image/png' },
+            minio: {
+              buckets: {
+                safe: 'safe-bucket',
+                infected: 'infected-bucket',
+                unscanned: 'unscanned-bucket',
+              },
+            },
+          },
+        },
         {
           provide: MinioClientSubservice,
           useValue: createMock<MinioClientSubservice>(),

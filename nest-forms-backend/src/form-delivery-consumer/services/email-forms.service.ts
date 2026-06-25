@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
@@ -22,6 +21,8 @@ import {
   renderSummaryEmail,
 } from 'forms-shared/summary-email/renderSummaryEmail'
 
+import BaConfigService from '../../config/ba-config.service'
+import { ClusterEnv } from '../../config/environment-variables'
 import ConvertService from '../../convert/convert.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
@@ -51,7 +52,7 @@ export default class EmailFormsService {
     private prismaService: PrismaService,
     private mailgunService: MailgunService,
     private oloMailerService: OloMailerService,
-    private configService: ConfigService,
+    private baConfigService: BaConfigService,
     private convertService: ConvertService,
     private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
@@ -66,7 +67,7 @@ export default class EmailFormsService {
    */
   private resolveAddress(address: { test: string; prod: string }): string {
     const isProd =
-      this.configService.get<string>('CLUSTER_ENV') === 'production'
+      this.baConfigService.environment.clusterEnv === ClusterEnv.Production
     return isProd ? address.prod : address.test
   }
 
@@ -75,7 +76,7 @@ export default class EmailFormsService {
     prod: string[]
   }): string {
     const isProd =
-      this.configService.get<string>('CLUSTER_ENV') === 'production'
+      this.baConfigService.environment.clusterEnv === ClusterEnv.Production
     return isProd ? address.prod.join(', ') : address.test.join(', ')
   }
 
@@ -298,8 +299,8 @@ export default class EmailFormsService {
       `Sending email of form ${formId} to ${resolvedRecipientAddresses}.`,
     )
 
-    const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
-    const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
+    const jwtSecret = this.baConfigService.tokens.jwtSecret
+    const selfUrl = this.baConfigService.self.url
 
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
     let technicalSubject: string | undefined

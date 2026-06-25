@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError } from '@prisma/client'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { Interfaces } from 'mailgun.js/definitions'
 
+import BaConfigService from '../../../config/ba-config.service'
 import PrismaService from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
@@ -20,7 +20,7 @@ export default class MailgunService implements Mailer {
   logger: LineLoggerSubservice
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly mailgunHelper: MailgunHelper,
     private readonly prismaService: PrismaService,
@@ -39,8 +39,8 @@ export default class MailgunService implements Mailer {
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
       username: 'api',
-      key: this.configService.get('MAILGUN_API_KEY') || '',
-      url: this.configService.get('MAILGUN_HOST'),
+      key: this.baConfigService.mailgun.apiKey,
+      url: this.baConfigService.mailgun.host,
     })
   }
 
@@ -78,11 +78,9 @@ export default class MailgunService implements Mailer {
           }
 
       const mailgunResponse = await this.mailgunClient.messages.create(
-        this.configService.getOrThrow<string>('MAILGUN_DOMAIN'),
+        this.baConfigService.mailgun.domain,
         {
-          from:
-            emailFrom ||
-            this.configService.getOrThrow<string>('MAILGUN_EMAIL_FROM'),
+          from: emailFrom || this.baConfigService.mailgun.emailFrom,
           to: data.to,
           subject: subject ?? MAILGUN_CONFIG[data.template].subject,
           attachment: mailgunAttachments,

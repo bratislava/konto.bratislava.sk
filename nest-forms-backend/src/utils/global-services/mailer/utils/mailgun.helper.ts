@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import FormData from 'form-data'
 import Handlebars from 'handlebars'
 import Mailgun from 'mailgun.js'
 import { Interfaces, TemplateQuery } from 'mailgun.js/definitions'
 
+import BaConfigService from '../../../../config/ba-config.service'
 import {
   SendEmailInputDto,
   SendEmailVariablesDto,
@@ -22,24 +22,13 @@ export default class MailgunHelper {
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
   ) {
-    if (
-      !process.env.MAILGUN_API_KEY ||
-      !process.env.MAILGUN_HOST ||
-      !process.env.MAILGUN_EMAIL_FROM ||
-      !process.env.MAILGUN_DOMAIN
-    ) {
-      throw new Error(
-        'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
-      )
-    }
-
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
       username: 'api',
-      key: this.configService.getOrThrow('MAILGUN_API_KEY'),
-      url: this.configService.getOrThrow('MAILGUN_HOST'),
+      key: this.baConfigService.mailgun.apiKey,
+      url: this.baConfigService.mailgun.host,
     })
   }
 
@@ -103,7 +92,7 @@ export default class MailgunHelper {
     variables: SendEmailVariablesDto,
   ): Promise<string> {
     const response = await this.mailgunClient.domains.domainTemplates.get(
-      this.configService.getOrThrow('MAILGUN_DOMAIN'),
+      this.baConfigService.mailgun.domain,
       templateName,
       { active: 'yes' } as TemplateQuery, // There is an error when importing mailgun.js/Enums, thus this is needed
     )

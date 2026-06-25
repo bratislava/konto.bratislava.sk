@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -12,6 +11,7 @@ import {
   infectedScanStatuses,
   isValidScanStatus,
 } from '../common/utils/helpers'
+import BaConfigService from '../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -51,15 +51,14 @@ export default class FilesHelper {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private minioClientSubervice: MinioClientSubservice,
     private scannerClientService: ScannerClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList =
-      this.configService.getOrThrow<string>(`MIMETYPE_WHITELIST`)
-    this.supportedMimeTypes = mimeTypeList.split(' ')
+    this.supportedMimeTypes =
+      this.baConfigService.files.mimeTypeWhitelist.split(' ')
   }
 
   /**
@@ -374,13 +373,13 @@ export default class FilesHelper {
   // optional status
   getBucketUid(status?: string): string {
     if (status === 'SAFE') {
-      return this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET')
+      return this.baConfigService.minio.buckets.safe
     }
     if (status === 'INFECTED') {
-      return this.configService.getOrThrow<string>('MINIO_INFECTED_BUCKET')
+      return this.baConfigService.minio.buckets.infected
     }
 
-    return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
+    return this.baConfigService.minio.buckets.unscanned
   }
 
   forms2formInfo(form: Forms): FormInfo {

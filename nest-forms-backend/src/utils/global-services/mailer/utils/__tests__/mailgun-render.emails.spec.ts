@@ -1,6 +1,6 @@
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import BaConfigService from '../../../../../config/ba-config.service'
 import ThrowerErrorGuard from '../../../../guards/thrower-error.guard'
 import { MAILGUN_CONFIG } from '../../mailgun.constants'
 import MailgunHelper from '../mailgun.helper'
@@ -11,7 +11,21 @@ describe('Mailgun Emails', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [MailgunHelper, ThrowerErrorGuard, ConfigService],
+      providers: [
+        MailgunHelper,
+        ThrowerErrorGuard,
+        {
+          provide: BaConfigService,
+          useValue: {
+            mailgun: {
+              apiKey: 'test-api-key',
+              host: 'test-host',
+              emailFrom: 'test@example.com',
+              domain: 'test-domain',
+            },
+          },
+        },
+      ],
     }).compile()
 
     mailgunHelper = module.get<MailgunHelper>(MailgunHelper)

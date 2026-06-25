@@ -1,7 +1,6 @@
 import { Readable } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
@@ -10,6 +9,7 @@ import {
   isValidScanStatus,
   processingScanStatuses,
 } from '../common/utils/helpers'
+import BaConfigService from '../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -42,7 +42,7 @@ export default class FilesService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly minioClientSubervice: MinioClientSubservice,
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
@@ -50,7 +50,7 @@ export default class FilesService {
     private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FilesService')
-    this.jwtSecret = this.configService.get('JWT_SECRET') ?? ''
+    this.jwtSecret = this.baConfigService.tokens.jwtSecret
   }
 
   async getFile(fileId: string): Promise<Files> {

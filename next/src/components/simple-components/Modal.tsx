@@ -86,7 +86,7 @@ const Modal = ({
         <RACModal
           data-cy={dataCy}
           className={cn(
-            'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
+            'relative overflow-auto bg-gray-0 px-4 outline-0 lg:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl lg:p-6',
             mobileFullScreen
               ? 'mx-0 h-full w-full max-w-none rounded-none p-4 pt-12'
               : 'mx-4 h-min max-h-full w-full rounded-xl pt-6 pb-4',

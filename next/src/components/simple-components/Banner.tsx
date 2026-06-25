@@ -37,7 +37,7 @@ const Banner = ({
         className,
       )}
     >
-      <div className="mb-6 flex size-full max-w-[488px] flex-col justify-center gap-6 rounded-l-3xl px-4 md:px-0 lg:mb-0 lg:w-1/2">
+      <div className="mb-6 flex size-full max-w-[488px] flex-col justify-center gap-6 rounded-l-3xl px-4 lg:px-0 lg:mb-0 lg:w-1/2">
         <div className="flex flex-col items-start gap-3">
           <Typography variant="h2">{title}</Typography>
           <Markdown

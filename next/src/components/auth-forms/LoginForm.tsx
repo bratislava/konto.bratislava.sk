@@ -57,7 +57,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col gap-4 md:gap-6"
+      className="flex flex-col gap-4 lg:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
       data-cy="login-container"
     >

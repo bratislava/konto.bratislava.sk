@@ -37,7 +37,7 @@ const ThankYouTile = ({
   }[variant]
 
   return (
-    <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:gap-8 md:rounded-2xl lg:px-12 lg:py-10 lg:max-w-[800px]">
+    <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:gap-8 lg:rounded-2xl lg:px-12 lg:py-10 lg:max-w-[800px]">
       <span
         className={cn(
           'flex size-14 min-w-14 items-center justify-center rounded-full lg:size-[88px] lg:min-w-[88px]',

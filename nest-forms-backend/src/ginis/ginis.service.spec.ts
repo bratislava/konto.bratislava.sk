@@ -21,7 +21,7 @@ import {
 } from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../__tests__/factories/formDefinition.factory'
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
-import { objectContaining } from '../__tests__/jest-matchers'
+import { expectObjectContaining } from '../__tests__/jest-matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -1073,8 +1073,8 @@ describe('GinisService', () => {
 
       expect(service['ginisApiService'].createDocument).not.toHaveBeenCalled()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        objectContaining({
-          data: objectContaining({
+        expectObjectContaining({
+          data: expectObjectContaining({
             ginisDocumentId: 'existingDocId',
           }),
         }),

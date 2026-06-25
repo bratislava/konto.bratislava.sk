@@ -7,11 +7,11 @@
  * satisfied without suppressing the lint rule at every call site.
  */
 
-export const objectContaining = <T extends object>(obj: T): T =>
+export const expectObjectContaining = <T extends object>(obj: T): T =>
   expect.objectContaining(obj) as T
 
-export const arrayContaining = <T>(arr: T[]): T[] =>
+export const expectArrayContaining = <T>(arr: T[]): T[] =>
   expect.arrayContaining(arr) as T[]
 
-export const stringContaining = (str: string): string =>
+export const expectStringContaining = (str: string): string =>
   expect.stringContaining(str) as string

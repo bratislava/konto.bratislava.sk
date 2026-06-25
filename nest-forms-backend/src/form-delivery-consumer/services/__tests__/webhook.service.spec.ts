@@ -13,7 +13,7 @@ import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestFormWithFiles } from '../../../__tests__/factories/form.factory'
-import { stringContaining } from '../../../__tests__/jest-matchers'
+import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
@@ -125,7 +125,7 @@ describe('WebhookService', () => {
       ).mockReturnValue(null)
       await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
         expect.objectContaining({
-          message: stringContaining(
+          message: expectStringContaining(
             FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
           ),
           status: HttpStatus.NOT_FOUND,
@@ -142,7 +142,9 @@ describe('WebhookService', () => {
       ).mockReturnValue({ type: 'NotWebhook' })
       await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
         expect.objectContaining({
-          message: stringContaining(WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM),
+          message: expectStringContaining(
+            WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
+          ),
           status: HttpStatus.UNPROCESSABLE_ENTITY,
         }) as Error,
       )

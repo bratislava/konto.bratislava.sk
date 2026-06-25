@@ -285,15 +285,17 @@ describe('GinisService', () => {
       })
 
       prismaMock.forms.findUnique.mockResolvedValue(
-        createTestFormWithFiles({
-          ...formBase,
-          ginisState: GinisState.REGISTERED,
-          ginisDocumentId: 'ginis1',
-          files: [
+        createTestFormWithFiles(
+          [
             createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
             createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
           ],
-        }),
+          {
+            ...formBase,
+            ginisState: GinisState.REGISTERED,
+            ginisDocumentId: 'ginis1',
+          },
+        ),
       )
       const uploadSpy = jest
         .spyOn(service, 'uploadAttachments')
@@ -311,15 +313,17 @@ describe('GinisService', () => {
         pospID: 'pospIdValue',
       })
       prismaMock.forms.findUnique.mockResolvedValue(
-        createTestFormWithFiles({
-          ...formBase,
-          ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
-          ginisDocumentId: 'ginis1',
-          files: [
+        createTestFormWithFiles(
+          [
             createTestFile({ ginisUploadedError: true, ginisUploaded: false }),
             createTestFile({ ginisUploadedError: false, ginisUploaded: true }),
           ],
-        }),
+          {
+            ...formBase,
+            ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+            ginisDocumentId: 'ginis1',
+          },
+        ),
       )
       result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).toHaveBeenCalled()
@@ -332,15 +336,17 @@ describe('GinisService', () => {
         pospID: 'pospIdValue',
       })
       prismaMock.forms.findUnique.mockResolvedValue(
-        createTestFormWithFiles({
-          ...formBase,
-          ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
-          ginisDocumentId: 'ginis1',
-          files: [
+        createTestFormWithFiles(
+          [
             createTestFile({ ginisUploadedError: true, ginisUploaded: false }),
             createTestFile({ ginisUploadedError: true, ginisUploaded: false }),
           ],
-        }),
+          {
+            ...formBase,
+            ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+            ginisDocumentId: 'ginis1',
+          },
+        ),
       )
       result = await service.onQueueConsumption(messageBase)
       expect(uploadSpy).toHaveBeenCalled()
@@ -376,14 +382,16 @@ describe('GinisService', () => {
         pospID: 'pospIdValue',
       })
       prismaMock.forms.findUnique.mockResolvedValue(
-        createTestFormWithFiles({
-          ...formBase,
-          ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
-          files: [
+        createTestFormWithFiles(
+          [
             createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
             createTestFile({ ginisUploadedError: false, ginisUploaded: false }),
           ],
-        }),
+          {
+            ...formBase,
+            ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+          },
+        ),
       )
 
       result = await service.onQueueConsumption(messageBase)
@@ -670,17 +678,19 @@ describe('GinisService', () => {
   })
 
   describe('uploadAttachments', () => {
-    const formMock = createTestFormWithFiles({
-      id: 'id1',
-      ginisDocumentId: 'gid1',
-      files: [
+    const formMock = createTestFormWithFiles(
+      [
         createTestFile({
           ginisUploaded: false,
           fileName: 'file1.pdf',
           minioFileName: 'minio-file1.pdf',
         }),
       ],
-    })
+      {
+        id: 'id1',
+        ginisDocumentId: 'gid1',
+      },
+    )
 
     const mockStream = new Readable({
       read() {

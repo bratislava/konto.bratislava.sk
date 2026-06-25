@@ -41,6 +41,15 @@ export const createTestForm = (overrides?: Partial<Forms>): Forms => ({
 })
 
 export const createTestFormWithFiles = (
+  files: FormWithFiles['files'],
+  overrides?: Partial<FormWithFiles>,
+): FormWithFiles => ({
+  ...baseForm,
+  files,
+  ...overrides,
+})
+
+export const createTestFormWithEmptyFiles = (
   overrides?: Partial<FormWithFiles>,
 ): FormWithFiles => ({
   ...baseForm,

@@ -12,7 +12,7 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
-import { createTestFormWithFiles } from '../../../__tests__/factories/form.factory'
+import { createTestFormWithEmptyFiles } from '../../../__tests__/factories/form.factory'
 import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
@@ -67,11 +67,10 @@ describe('WebhookService', () => {
     const mockFormId = 'test-form-id'
 
     it('should process a valid webhook form successfully', async () => {
-      const mockForm = createTestFormWithFiles({
+      const mockForm = createTestFormWithEmptyFiles({
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: {},
-        files: [],
       })
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
@@ -118,7 +117,7 @@ describe('WebhookService', () => {
 
     it('should throw NotFoundException when form definition is not found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(
-        createTestFormWithFiles({ formDefinitionSlug: 'test-slug' }),
+        createTestFormWithEmptyFiles({ formDefinitionSlug: 'test-slug' }),
       )
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
@@ -135,7 +134,7 @@ describe('WebhookService', () => {
 
     it('should throw UnprocessableEntityException when form is not a webhook form', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(
-        createTestFormWithFiles({ formDefinitionSlug: 'test-slug' }),
+        createTestFormWithEmptyFiles({ formDefinitionSlug: 'test-slug' }),
       )
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
@@ -151,7 +150,7 @@ describe('WebhookService', () => {
     })
 
     it('should throw UnprocessableEntityException when formDataJson is null', async () => {
-      const mockForm = createTestFormWithFiles({
+      const mockForm = createTestFormWithEmptyFiles({
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: null,

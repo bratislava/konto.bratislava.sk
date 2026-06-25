@@ -10,7 +10,7 @@ import { ErrorsEnum } from '../../global-enums/errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
-import { MAILGUN_CONFIG } from './mailgun.constants'
+import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
@@ -51,9 +51,10 @@ export default class MailgunService implements Mailer {
     }))
 
     try {
-      const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocally
-      const { template } = MAILGUN_CONFIG[data.template]
-      const variables = MailgunHelper.createEmailVariables(data)
+      const mailgunConfig = getMailgunConfig(this.baConfigService)
+      const renderLocally = !!mailgunConfig[data.template].renderLocally
+      const { template } = mailgunConfig[data.template]
+      const variables = this.mailgunHelper.createEmailVariables(data)
 
       const emailContent = renderLocally
         ? {
@@ -72,7 +73,7 @@ export default class MailgunService implements Mailer {
         {
           from: emailFrom || this.baConfigService.mailgun.emailFrom,
           to: data.to,
-          subject: subject ?? MAILGUN_CONFIG[data.template].subject,
+          subject: subject ?? mailgunConfig[data.template].subject,
           attachment: mailgunAttachments,
           ...(replyTo ? { 'h:Reply-To': replyTo } : {}),
           ...emailContent,

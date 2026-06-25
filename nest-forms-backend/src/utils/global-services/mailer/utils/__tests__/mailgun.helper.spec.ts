@@ -34,8 +34,6 @@ jest.mock('mailgun.js', () =>
 
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
-  let baConfigService: BaConfigService
-  let throwerErrorGuard: ThrowerErrorGuard
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -50,6 +48,8 @@ describe('MailgunHelper', () => {
               emailFrom: 'test@example.com',
               domain: 'test-domain',
             },
+            frontend: { url: 'https://konto.bratislava.sk' },
+            olo: { frontendUrl: 'https://olo.sk' },
           },
         },
         {
@@ -66,8 +66,6 @@ describe('MailgunHelper', () => {
     }).compile()
 
     mailgunHelper = moduleRef.get<MailgunHelper>(MailgunHelper)
-    baConfigService = moduleRef.get<BaConfigService>(BaConfigService)
-    throwerErrorGuard = moduleRef.get<ThrowerErrorGuard>(ThrowerErrorGuard)
   })
 
   afterEach(() => {
@@ -96,7 +94,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Test Application')
       expect(result.firstName).toBe('John')
@@ -115,7 +113,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.feedbackLink).toBe(
         'https://bravo.staffino.com/bratislava/id=WW1hkstR',
@@ -135,7 +133,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.feedbackLink).toBeUndefined()
     })
@@ -154,7 +152,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('OLO Test Application')
       expect(result.htmlData).toBe('<p>Form HTML data</p>')
@@ -173,7 +171,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Virus Detected')
       expect(result.firstName).toBe('Jane')

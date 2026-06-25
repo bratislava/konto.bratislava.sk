@@ -14,7 +14,10 @@ import {
   MailgunErrorsResponseEnum,
 } from '../../../global-enums/mailgun.errors.enum'
 import ThrowerErrorGuard from '../../../guards/thrower-error.guard'
-import { MAILGUN_CONFIG, MailgunConfigVariableType } from '../mailgun.constants'
+import {
+  getMailgunConfig,
+  MailgunConfigVariableType,
+} from '../mailgun.constants'
 
 @Injectable()
 export default class MailgunHelper {
@@ -32,9 +35,10 @@ export default class MailgunHelper {
     })
   }
 
-  static createEmailVariables(data: SendEmailInputDto): SendEmailVariablesDto {
+  createEmailVariables(data: SendEmailInputDto): SendEmailVariablesDto {
+    const mailgunConfig = getMailgunConfig(this.baConfigService)
     const response: SendEmailVariablesDto = {}
-    Object.entries(MAILGUN_CONFIG[data.template].variables).forEach(
+    Object.entries(mailgunConfig[data.template].variables).forEach(
       ([key, val]) => {
         switch (val.type) {
           case MailgunConfigVariableType.PARAMETER: {

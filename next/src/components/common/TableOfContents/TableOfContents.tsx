@@ -52,14 +52,13 @@ const TableOfContents = ({ scrollOffset = DEFAULT_SCROLL_OFFSET, className }: Pr
       <HorizontalDivider />
 
       {/* TODO setup correct responsive design for small screens - now it is just a guess  */}
-      <ul className="flex flex-col py-4">
-        {headings?.length
+      <ul className="flex flex-col py-2">
+        {headings.length
           ? headings.map((heading) => {
               return (
                 <li key={heading.id} className="py-2 lg:py-3">
                   <Button
                     variant="link"
-                    className="text-left"
                     onPress={() => {
                       handleItemPress(heading.id)
                     }}

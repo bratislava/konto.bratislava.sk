@@ -133,9 +133,8 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             </div>
           </SectionContainer>
         </div>
-        {/* TODO Sidebar goes here */}
-
-        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
+        
+        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0 lg:sticky">
           <TableOfContents />
         </aside>
       </div>

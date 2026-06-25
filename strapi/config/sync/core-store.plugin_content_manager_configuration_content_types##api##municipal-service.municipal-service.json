@@ -192,6 +192,20 @@
           "sortable": false
         }
       },
+      "sections": {
+        "edit": {
+          "label": "Sekcie",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sections",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -322,6 +336,12 @@
         [
           {
             "name": "links",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "sections",
             "size": 12
           }
         ]

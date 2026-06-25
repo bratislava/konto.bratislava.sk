@@ -92,6 +92,10 @@ interface UpvsIamFault {
 
 /**
  * Extract the UPVS IAM fault from a slovensko-sk container 400 response.
+ *
+ * The slovensko-sk container (Ruby on Rails) always returns HTTP 400 for UPVS IAM errors,
+ * regardless of the actual error semantics — e.g. "identity not found" is still a 400, not a
+ * 404. The real error meaning lives inside the `fault` object in the response body.
  */
 function getUpvsIamFault(error: AxiosError): UpvsIamFault | undefined {
   if (error.response?.status !== HttpStatus.BAD_REQUEST) {

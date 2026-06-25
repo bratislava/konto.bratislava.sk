@@ -108,7 +108,7 @@ export function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'self' https://*.staging.bratislava.sk https://*.dev.bratislava.sk https://kupaliska.bratislava.sk https://olo.sk;
-    frame-src 'self' https://consentcdn.cookiebot.eu https://challenges.cloudflare.com https://www.slovensko.sk;
+    frame-src 'self' https://consentcdn.cookiebot.eu https://challenges.cloudflare.com https://www.slovensko.sk https://www.google.com/maps/ https://maps.app.goo.gl;
     upgrade-insecure-requests;
     report-uri /api/csp-report;
     report-to ${CSP_REPORT_ENDPOINT_NAME};

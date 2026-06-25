@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
 import remarkUnwrapImages from 'remark-unwrap-images'
 
-import { ATTRIBUTE_TABLE_OF_CONTENTS } from '@/src/components/common/TableOfContents/useHeadings'
+import { TABLE_OF_CONTENTS_HEADING_ATTRIBUTE } from '@/src/components/common/TableOfContents/useHeadings'
 import MLink from '@/src/components/simple-components/MLink'
 import BATooltip from '@/src/components/simple-components/Tooltip/BATooltip'
 import cn from '@/src/utils/cn'
@@ -58,7 +58,7 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
         },
         className,
       )}
-      data-toc={ATTRIBUTE_TABLE_OF_CONTENTS}
+      {...TABLE_OF_CONTENTS_HEADING_ATTRIBUTE}
     >
       <ReactMarkdown
         urlTransform={

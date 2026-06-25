@@ -47,18 +47,18 @@ const FormLandingPageButton = (props: FormLandingPageCardProps) => {
 
 const FormLandingPageCard = (props: FormLandingPageCardProps) => {
   return (
-    <div className="flex flex-col gap-5 border-b border-gray-200 px-5 py-6 last:border-b-0 md:flex-row">
+    <div className="flex flex-col gap-5 border-b border-gray-200 px-5 py-6 last:border-b-0 lg:flex-row">
       <div className="flex grow flex-col justify-center gap-2">
         <Typography
           variant="h6"
           as="p"
-          className="flex flex-col items-start gap-1 font-semibold md:flex-row md:items-center lg:gap-3"
+          className="flex flex-col items-start gap-1 font-semibold lg:flex-row lg:items-center lg:gap-3"
         >
           {props.title}
         </Typography>
         {props.text && <Typography variant="p-small">{props.text}</Typography>}
       </div>
-      <div className="flex shrink-0 items-center md:w-[150px] md:justify-center">
+      <div className="flex shrink-0 items-center lg:w-[150px] lg:justify-center">
         <FormLandingPageButton {...props} />
       </div>
     </div>

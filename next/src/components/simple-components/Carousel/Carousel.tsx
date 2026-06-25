@@ -72,7 +72,7 @@ const Carousel = ({
       <ul
         className={cn(
           // if gap is changed, also change card width calculation
-          'scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-clip max-md:negative-x-spacing lg:gap-8',
+          'scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-clip max-lg:negative-x-spacing lg:gap-8',
           // show the whole focus ring
           '-my-2 py-2 lg:-mx-2 lg:px-2',
           { 'py-8 lg:py-8': hasVerticalPadding },
@@ -111,7 +111,7 @@ const Carousel = ({
       </ul>
 
       {noControls ? null : (
-        <div className={cn({ 'max-md:hidden': !showControlsOnMobile })}>
+        <div className={cn({ 'max-lg:hidden': !showControlsOnMobile })}>
           {controlsVariant === 'side' && (
             <>
               <Button

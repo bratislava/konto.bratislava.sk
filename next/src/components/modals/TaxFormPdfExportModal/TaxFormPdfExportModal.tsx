@@ -151,7 +151,7 @@ const SuccessContent = () => {
                 <Typography variant="h4">
                   {t('tax_form_pdf_export_modal.account_create')}
                 </Typography>
-                <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
+                <ul className="mt-6 flex flex-col gap-2 lg:gap-4">
                   {advantages.map((item, index) => (
                     <li key={index} className="flex items-center gap-4">
                       <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">

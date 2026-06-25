@@ -54,10 +54,10 @@ const SummaryFormControls = () => {
   ]
 
   return (
-    <div className="mt-4 flex flex-col gap-2 md:mt-10 md:flex-row md:flex-wrap md:gap-5">
-      <div className="hidden grow items-center md:flex">
+    <div className="mt-4 flex flex-col gap-2 lg:mt-10 lg:flex-row lg:flex-wrap lg:gap-5">
+      <div className="hidden grow items-center lg:flex">
         <Button
-          className="hidden md:inline-flex"
+          className="hidden lg:inline-flex"
           variant="plain"
           onPress={goToPreviousStep}
           startIcon={<Icon name="chevron-left" className="size-6" />}
@@ -65,7 +65,7 @@ const SummaryFormControls = () => {
           {t('form_controls.back')}
         </Button>
       </div>
-      <div className="flex flex-col gap-2 md:flex-row md:gap-5">
+      <div className="flex flex-col gap-2 lg:flex-row lg:gap-5">
         {buttons.map((button, index) => {
           if (!button) {
             return null
@@ -74,7 +74,7 @@ const SummaryFormControls = () => {
           return <Button key={index} {...button} fullWidthMobile />
         })}
 
-        <Button className="md:hidden" variant="outline" onPress={goToPreviousStep} fullWidthMobile>
+        <Button className="lg:hidden" variant="outline" onPress={goToPreviousStep} fullWidthMobile>
           {t('form_controls.back')}
         </Button>
       </div>

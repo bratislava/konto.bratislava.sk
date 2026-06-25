@@ -38,7 +38,8 @@ Each sub-project contains a README which should get you up and running. More doc
 
 Deploy all services by creating a tag in format: `<environment><version>`
 
-> Note: Backend services deploy first, followed by frontend.
+> [!NOTE]
+> Backend services deploy first, followed by frontend.
 
 - Examples: `dev1.0.0`, `staging1.0.0`, `prod1.0.0`
 
@@ -48,7 +49,8 @@ Deploy specific service by creating a tag in format: `<environment>-<service-nam
 
 - Examples: `dev-next1.0.0`, `staging-nest-forms-backend1.0.0`
 
-> Note: Pushing to `master` deploys the whole project to staging.
+> [!NOTE]
+> Pushing to `master` deploys the whole project to staging.
 
 ### How deploys work
 

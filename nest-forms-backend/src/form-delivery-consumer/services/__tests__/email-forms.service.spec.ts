@@ -19,6 +19,7 @@ import { createTestFormSummary } from '../../../__tests__/factories/form.factory
 import {
   expectArrayContaining,
   expectObjectContaining,
+  expectStringContaining,
 } from '../../../__tests__/jest-matchers'
 import ConvertService from '../../../convert/convert.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
@@ -440,9 +441,9 @@ describe('EmailFormsService', () => {
         service.sendEmailForm(formId, userEmail, userFirstName),
       ).rejects.toThrow(
         expectObjectContaining({
-          message: expect.stringContaining(
+          message: expectStringContaining(
             EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM,
-          ) as string,
+          ),
         }) as Error,
       )
     })

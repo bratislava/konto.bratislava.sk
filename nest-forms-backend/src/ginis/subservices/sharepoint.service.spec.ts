@@ -427,12 +427,10 @@ describe('SharepointService', () => {
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(mockFormDefinition)
 
-      await expect(service.postNewRecord('formId')).rejects.toThrow(
-        expect.objectContaining({
-          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }) as Error,
-      )
+      await expect(service.postNewRecord('formId')).rejects.toMatchObject({
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
 
       // Verify that no update was attempted
       expect(prismaMock.forms.update).not.toHaveBeenCalled()

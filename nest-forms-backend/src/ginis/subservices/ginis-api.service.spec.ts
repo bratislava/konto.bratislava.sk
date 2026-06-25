@@ -7,6 +7,7 @@ import {
   createTestPrehledDokumentuItem,
   createTestPrehledDokumentuResponse,
 } from '../../__tests__/factories/ginisDocument.factory'
+import { expectObjectContaining } from '../../__tests__/jest-matchers'
 import BaConfigService from '../../config/ba-config.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import GinisAPIService, {
@@ -380,7 +381,7 @@ describe('GinisAPIService', () => {
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Id-esu': 'contact-id-123',
           'Typ-esu': GinContactType.PHYSICAL_ENTITY,
           'E-mail': 'new@example.com',
@@ -413,7 +414,7 @@ describe('GinisAPIService', () => {
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Id-esu': 'contact-id-123',
           'Id-dat-schranky': 'new-uri',
         }),
@@ -474,7 +475,7 @@ describe('GinisAPIService', () => {
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Rodne-cislo': '0011223344',
         }),
       )
@@ -494,7 +495,7 @@ describe('GinisAPIService', () => {
       )
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Rodne-cislo': '0011223344',
         }),
       )
@@ -829,7 +830,7 @@ describe('GinisAPIService', () => {
       const result = await service.createContact(params)
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Uroven-pristupu': GinContactDatabase.CITY_ACCOUNT,
           'Typ-esu': GinContactType.PHYSICAL_ENTITY,
           'E-mail': 'test@example.com',
@@ -855,7 +856,7 @@ describe('GinisAPIService', () => {
       const result = await service.createContact(params)
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Uroven-pristupu': GinContactDatabase.CITY_ACCOUNT,
           'Typ-esu': GinContactType.LEGAL_ENTITY,
           'E-mail': 'test@example.com',
@@ -877,7 +878,7 @@ describe('GinisAPIService', () => {
       const result = await service.createContact(params)
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Uroven-pristupu': '5',
           'E-mail': 'test@example.com',
         }),
@@ -894,7 +895,7 @@ describe('GinisAPIService', () => {
       await service.createContact(params)
 
       expect(service['ginis'].gin.editEsu).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           'Rodne-cislo': '0011223344',
         }),
       )

@@ -232,7 +232,7 @@ describe('GinisService', () => {
       let result = await service.onQueueConsumption(messageBase)
 
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisState: GinisState.RUNNING_REGISTER,
           },
@@ -268,7 +268,7 @@ describe('GinisService', () => {
       })
       result = await service.onQueueConsumption(messageBase)
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisState: GinisState.RUNNING_REGISTER,
           },
@@ -366,7 +366,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisState: GinisState.ATTACHMENTS_UPLOADED,
             error: FormError.NONE,
@@ -418,7 +418,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisState: GinisState.ATTACHMENTS_UPLOADED,
             error: FormError.NONE,
@@ -508,7 +508,7 @@ describe('GinisService', () => {
       })
       expect(result.requeue).toBeFalsy() // all processed
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.PROCESSING,
             ginisState: GinisState.FINISHED,
@@ -531,7 +531,7 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeFalsy() // all processed
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.PROCESSING,
             ginisState: GinisState.FINISHED,
@@ -575,7 +575,7 @@ describe('GinisService', () => {
       })
       expect(result.requeue).toBeFalsy() // all processed
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.SENDING_TO_SHAREPOINT,
             ginisState: GinisState.FINISHED,
@@ -606,7 +606,7 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeFalsy() // all processed
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.SENDING_TO_SHAREPOINT,
             ginisState: GinisState.FINISHED,
@@ -639,7 +639,7 @@ describe('GinisService', () => {
 
       expect(result).toBeFalsy()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.ERROR,
             error: FormError.GINIS_SEND_ERROR,
@@ -665,7 +665,7 @@ describe('GinisService', () => {
 
       expect(result).toBeTruthy()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.DELIVERED_GINIS,
             ginisDocumentId: 'gid1',
@@ -716,7 +716,7 @@ describe('GinisService', () => {
     it('should update form to RUNNING_UPLOAD_ATTACHMENTS', async () => {
       await service.uploadAttachments(formMock, 'mockPospID')
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
           },
@@ -732,7 +732,7 @@ describe('GinisService', () => {
       const spy = jest.spyOn(prismaMock.files, 'update')
       await service.uploadAttachments(formMock, 'mockPospID')
       expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisUploadedError: true,
           },
@@ -744,7 +744,7 @@ describe('GinisService', () => {
       const spy = jest.spyOn(prismaMock.files, 'update')
       await service.uploadAttachments(formMock, 'mockPospID')
       expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisUploaded: true,
             ginisUploadedError: false,
@@ -770,7 +770,7 @@ describe('GinisService', () => {
     it('should update file to RUNNING_ASSIGN_SUBMISSION', async () => {
       await service.assignSubmission('docId', 'nodeId', 'functionId')
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisState: GinisState.RUNNING_ASSIGN_SUBMISSION,
           },
@@ -786,7 +786,7 @@ describe('GinisService', () => {
       await service.assignSubmission('docId', 'nodeId', 'functionId')
 
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.ERROR,
             error: FormError.GINIS_SEND_ERROR,
@@ -800,7 +800,7 @@ describe('GinisService', () => {
       await service.assignSubmission('docId', 'nodeId', 'functionId')
 
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             ginisState: GinisState.SUBMISSION_ASSIGNED,
             error: FormError.NONE,
@@ -903,7 +903,7 @@ describe('GinisService', () => {
       await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           type: GinContactType.PHYSICAL_ENTITY,
           email: 'test@example.com',
           firstName: 'John',
@@ -912,7 +912,7 @@ describe('GinisService', () => {
       )
       expect(service['ginisApiService'].createDocument).toHaveBeenCalled()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: {
             state: FormState.DELIVERED_GINIS,
             ginisDocumentId: 'newDocId',
@@ -952,7 +952,7 @@ describe('GinisService', () => {
       await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           type: GinContactType.PHYSICAL_ENTITY,
           uri: 'uri://test',
           email: 'test@example.com',
@@ -991,7 +991,7 @@ describe('GinisService', () => {
       await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           type: GinContactType.LEGAL_ENTITY,
           uri: 'uri://test',
           email: 'test@example.com',
@@ -1044,7 +1044,7 @@ describe('GinisService', () => {
       await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           type: GinContactType.PHYSICAL_ENTITY,
           email: 'external@example.com', // email from userExternalId should be kept
           firstName: 'John', // extracted from URI natural_person data
@@ -1257,7 +1257,7 @@ describe('GinisService', () => {
       await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           type: GinContactType.LEGAL_ENTITY,
           name: 'Company Name',
           ico: '87654321',
@@ -1289,7 +1289,7 @@ describe('GinisService', () => {
       await service.createDocument(form, formDefinitionBase)
 
       expect(service['ginisApiService'].upsertContact).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           type: GinContactType.SELF_EMPLOYED_ENTITY,
           name: 'Self Employed',
           ico: '11223344',

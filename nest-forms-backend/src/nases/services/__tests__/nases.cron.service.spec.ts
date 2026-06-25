@@ -11,6 +11,7 @@ import {
   createTestFormDefinitionSlovenskoSkTax,
   createTestFormDefinitionWebhook,
 } from '../../../__tests__/factories/formDefinition.factory'
+import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
@@ -279,7 +280,7 @@ describe('NasesCronService', () => {
       await service.validateFormRegistrations()
 
       expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
+        expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )
@@ -322,7 +323,7 @@ describe('NasesCronService', () => {
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
       expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
+        expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )

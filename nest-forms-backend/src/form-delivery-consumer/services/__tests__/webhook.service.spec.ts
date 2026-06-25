@@ -107,12 +107,10 @@ describe('WebhookService', () => {
 
     it('should throw NotFoundException when form is not found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-          status: HttpStatus.NOT_FOUND,
-        }) as Error,
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+        status: HttpStatus.NOT_FOUND,
+      })
     })
 
     it('should throw NotFoundException when form definition is not found', async () => {
@@ -122,14 +120,12 @@ describe('WebhookService', () => {
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(null)
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: expectStringContaining(
-            FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
-          ),
-          status: HttpStatus.NOT_FOUND,
-        }) as Error,
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: expectStringContaining(
+          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+        ),
+        status: HttpStatus.NOT_FOUND,
+      })
     })
 
     it('should throw UnprocessableEntityException when form is not a webhook form', async () => {
@@ -139,14 +135,12 @@ describe('WebhookService', () => {
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue({ type: 'NotWebhook' })
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: expectStringContaining(
-            WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
-          ),
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }) as Error,
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: expectStringContaining(
+          WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
+        ),
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
     })
 
     it('should throw UnprocessableEntityException when formDataJson is null', async () => {
@@ -167,12 +161,10 @@ describe('WebhookService', () => {
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(mockFormDefinition)
 
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }) as Error,
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
     })
   })
 })

@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
 
+import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
@@ -205,7 +206,7 @@ describe('MailgunHelper', () => {
       expect(result.applicationName).toBe('Virus Detected')
       expect(result.firstName).toBe('Jane')
       expect(result.slug).toEqual(
-        expect.stringContaining('/form-with-virus/form-with-virus-123'),
+        expectStringContaining('/form-with-virus/form-with-virus-123'),
       )
     })
   })

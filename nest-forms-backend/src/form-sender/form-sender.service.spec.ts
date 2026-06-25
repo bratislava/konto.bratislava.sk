@@ -20,6 +20,7 @@ import {
 } from '../../test/fixtures/auth/user-fixture-factory'
 import { createTestForm } from '../__tests__/factories/form.factory'
 import { createTestFormDefinitionEmail } from '../__tests__/factories/formDefinition.factory'
+import { expectObjectContaining } from '../__tests__/jest-matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -254,7 +255,7 @@ describe('FormSenderService', () => {
       expect(sendToNasesSpy).not.toHaveBeenCalled()
       expect(updateSpy).toHaveBeenLastCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DRAFT,
           error: FormError.NASES_SEND_ERROR,
         }),
@@ -297,7 +298,7 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).toHaveBeenCalled()
       expect(updateSpy).toHaveBeenLastCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DRAFT,
           error: FormError.NASES_SEND_ERROR,
         }),
@@ -343,7 +344,7 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).toHaveBeenCalled()
       expect(updateSpy).toHaveBeenCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
         }),
       )
@@ -393,13 +394,13 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).not.toHaveBeenCalled()
       expect(updateSpy).toHaveBeenCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
         }),
       )
 
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           id: '1',
           state: FormState.DELIVERED_NASES,
         }),
@@ -450,13 +451,13 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).not.toHaveBeenCalled()
       expect(updateSpy).toHaveBeenCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
         }),
       )
 
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           id: '1',
           state: FormState.DELIVERED_NASES,
         }),
@@ -955,14 +956,14 @@ describe('FormSenderService', () => {
 
       expect(updateFormSpy).toHaveBeenCalledWith(
         'formIdVal',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
           error: FormError.NONE,
         }),
       )
       expect(updateFormSpy).not.toHaveBeenCalledWith(
         'formIdVal',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DRAFT,
           error: FormError.NASES_SEND_ERROR,
         }),

@@ -120,10 +120,8 @@ export class VerificationSubservice {
     const stripDiacritics = (str: string): string =>
       str.normalize('NFD').replace(/\p{Diacritic}/gu, '')
 
-    const normalize = (str: string): string => stripDiacritics(str).trim().toLowerCase()
-
     const splitToPartsAndNormalize = (str: string): string[] =>
-      normalize(str)
+      str
         .split(/\s+/g) // handles multiple spaces + leading/trailing spaces after trim()
         .filter(Boolean)
 
@@ -137,12 +135,10 @@ export class VerificationSubservice {
     const rfoFirstNames = (rfoData.menaOsoby ?? [])
       .map((x) => x.meno)
       .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
-      .map(normalize)
 
     const rfoLastNames = (rfoData.priezviskaOsoby ?? [])
       .map((x) => x.meno)
       .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
-      .map(normalize)
 
     if (rfoFirstNames.length === 0 || rfoLastNames.length === 0) {
       return false

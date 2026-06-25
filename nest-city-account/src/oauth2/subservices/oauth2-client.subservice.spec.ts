@@ -71,7 +71,7 @@ describe('OAuth2Client', () => {
         id: 'x',
         name: 'X',
         requiresPkce: true,
-        allowedRedirectUris: ['https://x.com/cb'],
+        allowedRedirectUris: ['https://example.com/cb'],
       })
       expect(noScopeClient.areAllScopesAllowed('openid')).toBe(false)
     })
@@ -94,7 +94,7 @@ describe('OAuth2Client', () => {
         id: 'x',
         name: 'X',
         requiresPkce: true,
-        allowedRedirectUris: ['https://x.com/cb'],
+        allowedRedirectUris: ['https://example.com/cb'],
         allowedScopes: [],
       })
       expect(emptyArrayClient.areAllScopesAllowed('openid')).toBe(false)
@@ -131,7 +131,7 @@ describe('OAuth2Client', () => {
         id: 'x',
         name: 'X',
         requiresPkce: true,
-        allowedRedirectUris: ['https://x.com/cb'],
+        allowedRedirectUris: ['https://example.com/cb'],
       })
       expect(noGrantClient.isGrantTypeAllowed('authorization_code')).toBe(false)
     })
@@ -149,7 +149,7 @@ describe('OAuth2Client', () => {
         id: 'my-id',
         secret: 'my-secret',
         name: 'MY',
-        allowedRedirectUris: ['https://x.com/cb'],
+        allowedRedirectUris: ['https://example.com/cb'],
         allowedScopes: ['openid'],
         allowedGrantTypes: ['authorization_code'],
         requiresPkce: true,
@@ -157,7 +157,7 @@ describe('OAuth2Client', () => {
       expect(client.id).toBe('my-id')
       expect(client.secret).toBe('my-secret')
       expect(client.name).toBe('MY')
-      expect(client.allowedRedirectUris).toEqual(['https://x.com/cb'])
+      expect(client.allowedRedirectUris).toEqual(['https://example.com/cb'])
       expect(client.allowedScopes).toEqual(['openid'])
       expect(client.allowedGrantTypes).toEqual(['authorization_code'])
       expect(client.requiresPkce).toBe(true)
@@ -167,7 +167,7 @@ describe('OAuth2Client', () => {
       const client = new OAuth2Client({
         id: 'pub',
         name: 'PUB',
-        allowedRedirectUris: ['https://x.com/cb'],
+        allowedRedirectUris: ['https://example.com/cb'],
         requiresPkce: true,
       })
       expect(client.secret).toBeUndefined()
@@ -177,7 +177,7 @@ describe('OAuth2Client', () => {
       const client = new OAuth2Client({
         id: 'min',
         name: 'MIN',
-        allowedRedirectUris: ['https://x.com/cb'],
+        allowedRedirectUris: ['https://example.com/cb'],
         requiresPkce: false,
       })
       expect(client.allowedScopes).toBeUndefined()

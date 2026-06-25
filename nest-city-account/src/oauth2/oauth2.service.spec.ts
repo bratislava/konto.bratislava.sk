@@ -115,7 +115,7 @@ describe('OAuth2Service', () => {
       const result = await service.storeAuthorizationRequest({
         response_type: 'code',
         client_id: 'cid',
-        redirect_uri: 'https://x.com/cb',
+        redirect_uri: 'https://example.com/cb',
         scope: 'read',
         state: 'csrf',
         code_challenge: 'challenge',
@@ -125,9 +125,9 @@ describe('OAuth2Service', () => {
       expect(prisma.oAuth2Data.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           clientId: 'cid',
-          redirectUri: 'https://x.com/cb',
           responseType: 'code',
         }),
+          redirectUri: 'https://example.com/cb',
       })
     })
 
@@ -137,7 +137,7 @@ describe('OAuth2Service', () => {
       await service.storeAuthorizationRequest({
         response_type: 'code',
         client_id: 'cid',
-        redirect_uri: 'https://x.com/cb',
+        redirect_uri: 'https://example.com/cb',
       })
       expect(prisma.oAuth2Data.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
@@ -155,7 +155,7 @@ describe('OAuth2Service', () => {
         service.storeAuthorizationRequest({
           response_type: 'code',
           client_id: 'cid',
-          redirect_uri: 'https://x.com/cb',
+          redirect_uri: 'https://example.com/cb',
         })
       ).rejects.toThrow('DB connection failed')
     })
@@ -167,7 +167,7 @@ describe('OAuth2Service', () => {
     it('should build URL with authRequestId and isOAuth flag', () => {
       jest.spyOn(configService, 'get').mockReturnValue('https://login.example.com')
       const url = service.buildLoginRedirectUrl(
-        { response_type: 'code', client_id: 'cid', redirect_uri: 'https://x.com/cb' },
+        { response_type: 'code', client_id: 'cid', redirect_uri: 'https://example.com/cb' },
         'auth-req-123'
       )
       expect(url).toContain('authRequestId=auth-req-123')
@@ -180,7 +180,7 @@ describe('OAuth2Service', () => {
         {
           response_type: 'code',
           client_id: 'cid',
-          redirect_uri: 'https://x.com/cb',
+          redirect_uri: 'https://example.com/cb',
           scope: 'identity:verified',
         },
         'auth-req-123'
@@ -195,7 +195,7 @@ describe('OAuth2Service', () => {
         {
           response_type: 'code',
           client_id: 'cid',
-          redirect_uri: 'https://x.com/cb',
+          redirect_uri: 'https://example.com/cb',
           scope: 'read',
         },
         'auth-req-123'
@@ -207,7 +207,7 @@ describe('OAuth2Service', () => {
       jest.spyOn(configService, 'get').mockReturnValue(undefined)
       expect(() =>
         service.buildLoginRedirectUrl(
-          { response_type: 'code', client_id: 'cid', redirect_uri: 'https://x.com/cb' },
+          { response_type: 'code', client_id: 'cid', redirect_uri: 'https://example.com/cb' },
           'id'
         )
       ).toThrow(OAuth2Exception)
@@ -230,7 +230,7 @@ describe('OAuth2Service', () => {
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
-        redirect_uri: 'https://x.com/cb',
+        redirect_uri: 'https://example.com/cb',
         state: 'csrf',
       })
       expect(result.code).toBeDefined()
@@ -252,7 +252,7 @@ describe('OAuth2Service', () => {
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
-        redirect_uri: 'https://x.com/cb',
+        redirect_uri: 'https://example.com/cb',
       })
       expect(result.state).toBeUndefined()
     })
@@ -263,7 +263,7 @@ describe('OAuth2Service', () => {
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
-        redirect_uri: 'https://x.com/cb',
+        redirect_uri: 'https://example.com/cb',
         state: '',
       })
       expect(result.state).toBeUndefined()

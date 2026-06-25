@@ -157,10 +157,10 @@ export class AdminService {
 
     const tax = await this.prismaService.tax.findUnique({
       where: {
-        taxPayerId_year_type_order: {
+        taxPayerId_type_year_order: {
           taxPayerId: taxPayer.id,
-          year,
           type: taxType,
+          year,
           order,
         },
       },
@@ -174,10 +174,10 @@ export class AdminService {
 
     await this.prismaService.tax.delete({
       where: {
-        taxPayerId_year_type_order: {
+        taxPayerId_type_year_order: {
           taxPayerId: taxPayer.id,
-          year,
           type: taxType,
+          year,
           order,
         },
       },

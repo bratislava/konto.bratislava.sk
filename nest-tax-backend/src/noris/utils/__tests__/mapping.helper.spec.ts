@@ -70,7 +70,6 @@ describe('mapNorisToTaxPayerData', () => {
 describe('mapNorisToTaxAdministratorData', () => {
   const mockNorisData: NorisRealEstateTax = {
     vyb_email: 'admin@test.com',
-    cislo_poradace: 123,
     vyb_id: 456,
     vyb_nazov: 'Test Admin',
     vyb_telefon_prace: '123456789',
@@ -81,17 +80,10 @@ describe('mapNorisToTaxAdministratorData', () => {
 
     expect(result).toEqual({
       email: 'admin@test.com',
-      externalId: '123',
       id: 456,
       name: 'Test Admin',
       phoneNumber: '123456789',
     })
-  })
-
-  it('should convert cislo_poradace to string for externalId', () => {
-    const result = mapNorisToTaxAdministratorData(mockNorisData)
-    expect(typeof result?.externalId).toBe('string')
-    expect(result?.externalId).toBe('123')
   })
 
   it('should return undefined if vyb_id is not present', () => {

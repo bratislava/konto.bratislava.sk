@@ -385,7 +385,7 @@ describe('AdminService', () => {
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year_type_order: {
+          taxPayerId_type_year_order: {
             taxPayerId: mockTaxPayer.id,
             year: mockYear,
             type: mockTaxType,
@@ -396,7 +396,7 @@ describe('AdminService', () => {
 
       expect(prismaMock.tax.delete).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year_type_order: {
+          taxPayerId_type_year_order: {
             taxPayerId: mockTaxPayer.id,
             year: mockYear,
             type: mockTaxType,
@@ -478,7 +478,7 @@ describe('AdminService', () => {
 
       expect(prismaMock.tax.findUnique).toHaveBeenCalledWith({
         where: {
-          taxPayerId_year_type_order: {
+          taxPayerId_type_year_order: {
             taxPayerId: mockTaxPayer.id,
             year: mockYear,
             type: mockTaxType,
@@ -604,7 +604,7 @@ describe('AdminService', () => {
       })
 
       const expectedCompositeKey = {
-        taxPayerId_year_type_order: {
+        taxPayerId_type_year_order: {
           taxPayerId: mockTaxPayer.id,
           year: mockYear,
           type: mockTaxType,

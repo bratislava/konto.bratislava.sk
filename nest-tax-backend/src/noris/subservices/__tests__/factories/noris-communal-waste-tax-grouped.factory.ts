@@ -6,7 +6,6 @@ export const createTestNorisCommunalWasteTaxGrouped = (
   overrides?: Partial<NorisCommunalWasteTaxGrouped>,
 ): NorisCommunalWasteTaxGrouped => ({
   type: TaxType.KO,
-  cislo_poradace: 13_020,
   stav_dokladu: 'Z',
   cislo_subjektu: 138_546_823,
   cislo_konania: '4/25/030151-36/78/219197',

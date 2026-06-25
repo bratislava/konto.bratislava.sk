@@ -12,7 +12,6 @@ export const createTestTaxPayer = (
   include: { taxAdministrators: { include: { taxAdministrator: true } } }
 }> => ({
   id: 1,
-  uuid: '1234567890',
   createdAt: DEFAULT_DATE,
   updatedAt: DEFAULT_DATE,
   birthNumber: '1234567890',

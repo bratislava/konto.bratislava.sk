@@ -503,9 +503,6 @@ describe('NorisTaxCommunalWasteSubservice', () => {
 
         const result = service['groupCommunalWasteTaxRecords'](records)
 
-        expect(result[0].cislo_poradace).toBe(
-          testCommunalWasteTax1.cislo_poradace,
-        )
         expect(result[0].cislo_subjektu).toBe(
           testCommunalWasteTax1.cislo_subjektu,
         )
@@ -522,7 +519,6 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         const result = service['groupCommunalWasteTaxRecords'](records)
 
         // Check that base fields are present
-        expect(result[0]).toHaveProperty('cislo_poradace')
         expect(result[0]).toHaveProperty('cislo_subjektu')
         expect(result[0]).toHaveProperty('cislo_konania')
         expect(result[0]).toHaveProperty('datum_platnosti')

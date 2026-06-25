@@ -54,7 +54,6 @@ describe('NorisTaxRealEstateSubservice', () => {
   const mockNorisData: NorisRealEstateTax[] = [
     {
       stav_dokladu: 'Z',
-      cislo_poradace: 1,
       cislo_subjektu: 123,
       cislo_konania: 'KON123',
       variabilny_symbol: 'VS123',

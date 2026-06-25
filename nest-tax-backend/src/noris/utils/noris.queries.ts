@@ -6,7 +6,6 @@
 export const queryPayersFromNoris = `
 WITH NorisRows AS (
     SELECT
-        subjekt_doklad.cislo_poradace,
         lcs.dane21_doklad.stav_dokladu as stav_dokladu,
         lcs.dane21_doklad.cislo_subjektu,
         subjekt_doklad.reference_subjektu cislo_konania , 
@@ -486,7 +485,6 @@ export const queryOverpaymentsFromNorisByDateRange = `
  */
 export const getCommunalWasteTaxesFromNoris = `
     SELECT 
-        subjekt_doklad.cislo_poradace,
         doklad.stav_dokladu as stav_dokladu,
         doklad.cislo_subjektu,
         subjekt_doklad.reference_subjektu cislo_konania,

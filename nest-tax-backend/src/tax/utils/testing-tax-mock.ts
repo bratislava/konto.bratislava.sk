@@ -45,7 +45,6 @@ export const createTestingRealEstateTaxMock = (
     datum_posledni_platby: norisData.alreadyPaid > 0 ? new Date() : null,
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,
-    cislo_poradace: Number(taxAdministrator.externalId),
     vyb_id: taxAdministrator.id,
     vyb_nazov: taxAdministrator.name,
     vyb_telefon_prace: taxAdministrator.phoneNumber,
@@ -167,7 +166,6 @@ export const createTestingCommunalWasteTaxMock = (
 
     // existing tax administrator data to not overwrite
     vyb_email: taxAdministrator.email,
-    cislo_poradace: Number(taxAdministrator.externalId),
     vyb_id: taxAdministrator.id,
     vyb_nazov: taxAdministrator.name,
     vyb_telefon_prace: taxAdministrator.phoneNumber,

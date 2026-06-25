@@ -58,7 +58,6 @@ jobs:
       image: harbor.bratislava.sk/standalone/next
       forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
       openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
-      target_build: prod
       build_env: staging
     secrets:
       DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
@@ -67,11 +66,10 @@ jobs:
 
   build-strapi:
     name: Strapi Build
-    uses: ./.github/workflows/build-strapi.yml
+    uses: ./.github/workflows/build-single-image.yml
     with:
       directory: strapi/
       image: harbor.bratislava.sk/standalone/strapi
-      target_build: prod
     secrets:
       DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -87,7 +85,6 @@ jobs:
       forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
       openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
       target_validate: prebuild
-      target_build: build
       target_unit_test: test
       target_lint: lint
       target_e2e_test: test-e2e
@@ -105,7 +102,6 @@ jobs:
       image: harbor.bratislava.sk/standalone/nest-clamav-scanner
       openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
       target_validate: prebuild
-      target_build: build
       target_unit_test: test
       target_lint: lint
     secrets:
@@ -122,7 +118,6 @@ jobs:
       image: harbor.bratislava.sk/standalone/nest-tax-backend
       openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
       target_validate: prebuild
-      target_build: build
       target_unit_test: test
       target_lint: lint
     secrets:
@@ -139,7 +134,6 @@ jobs:
       image: harbor.bratislava.sk/standalone/nest-city-account
       openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
       target_validate: prebuild
-      target_build: build
       target_unit_test: test
       target_lint: lint
     secrets:

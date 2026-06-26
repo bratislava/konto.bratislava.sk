@@ -1,5 +1,4 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -24,7 +23,6 @@ import FormsService from './forms.service'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
-jest.mock('@nestjs/config')
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
 jest.mock('../utils/subservices/minio-client.subservice')
@@ -54,7 +52,6 @@ describe('FormsService', () => {
         MinioClientSubservice,
         ScannerClientService,
         ThrowerErrorGuard,
-        ConfigService,
         FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
         {

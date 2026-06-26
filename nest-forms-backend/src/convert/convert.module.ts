@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
@@ -33,7 +32,6 @@ import ConvertService from './convert.service'
     ThrowerErrorGuard,
     PrismaService,
     FormsService,
-    ConfigService,
     MinioClientSubservice,
   ],
   exports: [ConvertService],

@@ -175,4 +175,10 @@ export default class BaConfig {
       maxCumulativeSizeGlobal: this.validatedConfig.MAX_CUMULATIVE_FILE_SIZE,
     }
   }
+
+  get files() {
+    return {
+      mimeTypeWhitelist: this.validatedConfig.MIMETYPE_WHITELIST,
+    }
+  }
 }

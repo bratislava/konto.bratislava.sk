@@ -1,6 +1,5 @@
 import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { MinioModule } from 'nestjs-minio-client'
 
@@ -12,7 +11,6 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     BaConfigModule,
     MinioModule.registerAsync({
       isGlobal: true,

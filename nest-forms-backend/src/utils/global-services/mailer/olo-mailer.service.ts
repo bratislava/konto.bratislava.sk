@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import nodemailer from 'nodemailer'
 
+import BaConfigService from '../../../config/ba-config.service'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
@@ -9,7 +9,7 @@ import {
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
-import { MAILGUN_CONFIG } from './mailgun.constants'
+import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
@@ -19,7 +19,7 @@ export default class OloMailerService implements Mailer {
   logger: LineLoggerSubservice
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly mailgunHelper: MailgunHelper,
   ) {
@@ -31,8 +31,8 @@ export default class OloMailerService implements Mailer {
       port: 587,
       secure: false, // Use TLS
       auth: {
-        user: this.configService.getOrThrow<string>('OLO_SMTP_USERNAME'),
-        pass: this.configService.getOrThrow<string>('OLO_SMTP_PASSWORD'),
+        user: this.baConfigService.olo.smtp.username,
+        pass: this.baConfigService.olo.smtp.password,
       },
       tls: {
         ciphers: 'SSLv3',
@@ -49,15 +49,16 @@ export default class OloMailerService implements Mailer {
   async sendEmail(params: MailerSendEmailParams): Promise<void> {
     const { data, emailFrom, replyTo, attachments, subject } = params
     try {
+      const mailgunConfig = getMailgunConfig(this.baConfigService)
       const mailBody = await this.mailgunHelper.getFilledTemplate(
-        MAILGUN_CONFIG[data.template].template,
-        MailgunHelper.createEmailVariables(data),
+        mailgunConfig[data.template].template,
+        this.mailgunHelper.createEmailVariables(data),
       )
       await this.oloTransporter.sendMail({
         from: `OLO <${emailFrom}>`,
         to: data.to,
         replyTo,
-        subject: subject ?? MAILGUN_CONFIG[data.template].subject,
+        subject: subject ?? mailgunConfig[data.template].subject,
         html: mailBody,
         attachments,
       })

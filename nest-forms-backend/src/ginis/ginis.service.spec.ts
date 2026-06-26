@@ -53,24 +53,8 @@ jest.mock('forms-shared/slovensko-sk/xmlBuilder', () => ({
 describe('GinisService', () => {
   let service: GinisService
 
-  const { JEST_WORKER_ID } = process.env
-
   beforeEach(async () => {
     jest.resetAllMocks()
-
-    process.env = {
-      MAILGUN_API_KEY: 'test',
-      MAILGUN_DOMAIN: 'test',
-      MAILGUN_HOST: 'test',
-      MAILGUN_EMAIL_FROM: 'test',
-      RABBIT_MQ_USERNAME: 'test',
-      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
-      RABBIT_MQ_PASSWORD: 'test',
-      RABBIT_MQ_HOST: 'test',
-      RABBIT_MQ_PORT: 'test',
-      NODE_ENV: 'development',
-      JEST_WORKER_ID: JEST_WORKER_ID ?? '1',
-    }
 
     const randomMocked = randomUUID as jest.MockedFunction<typeof randomUUID>
     randomMocked.mockReturnValue('mock-mock-mock-mock-mock')
@@ -103,6 +87,9 @@ describe('GinisService', () => {
         {
           provide: BaConfigService,
           useValue: {
+            environment: {
+              nodeEnv: 'development',
+            },
             ginisApi: {
               username: '',
               password: '',

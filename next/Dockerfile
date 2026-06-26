@@ -35,6 +35,12 @@ ENV TURBO_TEAM=$TURBO_TEAM
 ARG TURBO_TOKEN
 ENV TURBO_TOKEN=$TURBO_TOKEN
 
+RUN --network=host set -eux; \
+    echo "TURBO_API=$TURBO_API"; \
+    wget -S -O - "$TURBO_API/management/health" || true; \
+    wget -S -O - "http://127.0.0.1:8585/management/health" || true; \
+    wget -S -O - "http://host.docker.internal:8585/management/health" || true
+
 RUN npx turbo build
 
 # ---

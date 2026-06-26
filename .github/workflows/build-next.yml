@@ -11,24 +11,10 @@ name: Build Next
 on:
   workflow_call:
     inputs:
-      directory:
-        description: "Base dir where whole app is located."
-        type: string
-        required: true
       image:
         description: "Full image name including registry/repository for Docker cache."
         type: string
         required: true
-      forms_shared_digest:
-        description: "Immutable forms-shared image digest used during Docker build."
-        type: string
-        required: false
-        default: ""
-      openapi_clients_digest:
-        description: "Immutable openapi-clients image digest used during Docker build."
-        type: string
-        required: false
-        default: ""
       build_env:
         description: "Environment suffix for .env.bratiska-cli-build.<env> (dev, staging, prod)."
         type: string
@@ -65,9 +51,6 @@ jobs:
       # flavor suffix that keeps each env's image and cache separate.
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
       ENV_SUFFIX: -${{ inputs.build_env }}
-    defaults:
-      run:
-        working-directory: ${{ inputs.directory }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -85,6 +68,7 @@ jobs:
           # Mimic bratiska-cli build_image behavior by promoting the
           # bratiska-cli build env file to .env.production.local
           # before docker build starts.
+          cd next
           case "${{ inputs.build_env }}" in
             dev|staging|prod)
               ;;
@@ -132,12 +116,9 @@ jobs:
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}
         uses: docker/build-push-action@v7
         with:
-          context: ${{ inputs.directory }}
+          file: ./next/Dockerfile
           target: prod
           push: ${{ inputs.cluster != '' }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: ${{ steps.meta.outputs.cache_from }}
           cache-to: ${{ steps.meta.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}

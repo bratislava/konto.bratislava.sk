@@ -137,6 +137,14 @@ jobs:
           docker run --rm --detach --name turbo-cache-server-proxy --network host alpine/socat \
             -d -d TCP-LISTEN:8586,fork,reuseaddr,bind=0.0.0.0 TCP:127.0.0.1:8585
 
+      - name: Resolve Docker bridge gateway
+        id: docker-bridge
+        shell: bash
+        run: |
+          set -euxo pipefail
+          gateway_ip="$(docker network inspect bridge --format '{{(index .IPAM.Config 0).Gateway}}')"
+          echo "ip=${gateway_ip}" >> "$GITHUB_OUTPUT"
+
       - name: Build image
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}
         uses: docker/build-push-action@v7
@@ -149,7 +157,7 @@ jobs:
           cache-to: ${{ steps.meta.outputs.cache_to }}
           network: host
           add-hosts: |
-            host.docker.internal=host-gateway
+            host.docker.internal=${{ steps.docker-bridge.outputs.ip }}
           build-args: |
             TURBO_API=http://host.docker.internal:8586
             TURBO_TEAM=city-account

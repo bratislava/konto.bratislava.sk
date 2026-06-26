@@ -140,3 +140,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: ${{ steps.meta.outputs.cache_from }}
           cache-to: ${{ steps.meta.outputs.cache_to }}
+          network: host
+          build-args: |
+            TURBO_API=http://127.0.0.1:8585
+            TURBO_TEAM=city-account
+            TURBO_TOKEN=local

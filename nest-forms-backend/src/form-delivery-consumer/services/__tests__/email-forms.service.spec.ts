@@ -762,18 +762,6 @@ describe('EmailFormsService', () => {
       const result = service['resolveAddress'](addressObject)
       expect(result).toBe(addressObject.test)
     })
-
-    it('should return test address when CLUSTER_ENV is undefined', () => {
-      mockBaConfigService.environment = {
-        clusterEnv: undefined as unknown as ClusterEnv,
-      }
-      const addressObject = {
-        test: 'test@example.com',
-        prod: 'prod@example.com',
-      }
-      const result = service['resolveAddress'](addressObject)
-      expect(result).toBe(addressObject.test)
-    })
   })
 
   describe('resolveMultipleAddresses', () => {

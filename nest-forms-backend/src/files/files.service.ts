@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
@@ -44,7 +44,6 @@ export default class FilesService {
     private readonly prisma: PrismaService,
     private readonly baConfigService: BaConfigService,
     private readonly minioClientSubervice: MinioClientSubservice,
-    @Inject(forwardRef(() => FormsService))
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -267,12 +266,10 @@ export default class FilesService {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
         FilesErrorsResponseEnum.FILE_ID_ALREADY_EXISTS_ERROR,
-      ) 
+      )
     }
 
-    this.logger.log(
-      `File ${minioFileName} was successfully uploaded to Minio.`,
-    )
+    this.logger.log(`File ${minioFileName} was successfully uploaded to Minio.`)
 
     const file = await this.filesHelper.saveFileToDatabase(
       fileId,

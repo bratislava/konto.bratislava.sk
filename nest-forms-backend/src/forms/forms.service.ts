@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
@@ -40,6 +40,7 @@ export default class FormsService {
   constructor(
     private readonly prisma: PrismaService,
     private throwerErrorGuard: ThrowerErrorGuard,
+    @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {}

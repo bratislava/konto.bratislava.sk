@@ -34,7 +34,7 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
-      TURBOREPO_SECRET_KEY:
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
         required: true
 
 permissions:
@@ -120,7 +120,7 @@ jobs:
           PORT: "8585"
           S3_BUCKET_NAME: "city-account-turborepo-cache"
           S3_ACCESS_KEY: "city-account-turborepo-cache"
-          S3_SECRET_KEY: ${{ secrets.TURBOREPO_SECRET_KEY }}
+          S3_SECRET_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
 
           # The missing MinIO details:
           S3_ENDPOINT: "https://s3.bratislava.sk"

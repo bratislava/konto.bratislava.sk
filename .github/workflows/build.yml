@@ -9,6 +9,8 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+        required: true
 
 jobs:
   build-forms-shared:
@@ -59,7 +61,7 @@ jobs:
       DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      TURBOREPO_SECRET_KEY: ${{ secrets.TURBOREPO_SECRET_KEY }}
+      TURBOREPO_CACHE_MINIO_SECRET_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
 
   build-strapi:
     name: Strapi Build

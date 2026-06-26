@@ -36,8 +36,6 @@ on:
         required: true
       TURBOREPO_SECRET_KEY:
         required: true
-      TURBOREPO_CACHE_MINIO_SECRET_KEY:
-        required: true
 
 permissions:
   contents: read

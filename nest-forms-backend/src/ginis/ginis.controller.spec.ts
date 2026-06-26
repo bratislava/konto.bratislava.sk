@@ -132,9 +132,9 @@ describe('GinisController', () => {
       }))
 
       const result = await controller.getGinisDocumentByFormId('123')
-      expect(result.id).toBe('MAG0X03RZDEB')
+      expect(result.id).toBe('MAG0X05D1111')
       expect(result.ownerName).toBe('Jack Brown')
-      expect(result.ownerEmail).toBe('') // email is not mandatory, not returned in mock
+      expect(result.ownerEmail).toBe('')
     })
 
     it('should sanitize ginis owner name', async () => {

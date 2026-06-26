@@ -130,6 +130,53 @@ jobs:
           # instead of bucket.domain.com
           S3_USE_PATH_STYLE: "true"
 
+      - name: Speedtest Turborepo S3 cache from runner
+        shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: city-account-turborepo-cache
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_EC2_METADATA_DISABLED: "true"
+          S3_ENDPOINT: https://s3.bratislava.sk
+          S3_BUCKET: city-account-turborepo-cache
+          SPEEDTEST_SIZE_MB: "4096"
+        run: |
+          set -euo pipefail
+
+          command -v aws
+          aws configure set default.s3.addressing_style path
+
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          file="$tmp/s3-speedtest-${SPEEDTEST_SIZE_MB}MiB.bin"
+          key="speedtest/github-actions/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${SPEEDTEST_SIZE_MB}MiB.bin"
+
+          echo "Creating ${SPEEDTEST_SIZE_MB}MiB test file"
+          dd if=/dev/zero of="$file" bs=1M count="$SPEEDTEST_SIZE_MB" status=progress
+
+          echo "Upload test: s3://${S3_BUCKET}/${key}"
+          start="$(date +%s)"
+          aws s3 cp "$file" "s3://${S3_BUCKET}/${key}" \
+            --endpoint-url "$S3_ENDPOINT"
+          end="$(date +%s)"
+          seconds=$((end - start))
+          [ "$seconds" -eq 0 ] && seconds=1
+          echo "Upload: $((SPEEDTEST_SIZE_MB / seconds)) MiB/s over ${seconds}s"
+
+          echo "Download test"
+          start="$(date +%s)"
+          aws s3 cp "s3://${S3_BUCKET}/${key}" "$tmp/download.bin" \
+            --endpoint-url "$S3_ENDPOINT"
+          end="$(date +%s)"
+          seconds=$((end - start))
+          [ "$seconds" -eq 0 ] && seconds=1
+          echo "Download: $((SPEEDTEST_SIZE_MB / seconds)) MiB/s over ${seconds}s"
+
+          echo "Cleaning up"
+          aws s3 rm "s3://${S3_BUCKET}/${key}" \
+            --endpoint-url "$S3_ENDPOINT"
+
       - name: Proxy Turborepo Cache Server for BuildKit
         shell: bash
         run: |

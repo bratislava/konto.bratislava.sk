@@ -46,7 +46,6 @@ const schema = {
 
 const Towing = ({ title, text }: TowingSectionProps) => {
   const { t } = useTranslation('account')
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
 
@@ -62,7 +61,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
 
   useTimeout(() => {
     if (!isBrowser() || captchaWarning === 'hide') return
-    setCaptchaWarning('show')s
+    setCaptchaWarning('show')
   }, 3000)
 
   const { mutateAsync, data, isSuccess, variables, error } = useMutation({
@@ -116,6 +115,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
         />
 
         <Button
+          type="submit"
           variant="solid"
           fullWidth
           isLoading={isSubmitting}
@@ -137,21 +137,21 @@ const Towing = ({ title, text }: TowingSectionProps) => {
                 className="self-center"
                 onVerify={(token) => {
                   setCaptchaWarning('hide')
-                  setTurnstileToken(token)
+                  onChange(token)
                 }}
                 onError={(error) => {
                   logger.error('Turnstile error:', error)
                   setCaptchaWarning('show')
-                  setTurnstileToken(null)
+                  onChange('')
                 }}
                 onTimeout={() => {
                   logger.error('Turnstile timeout')
                   setCaptchaWarning('show')
-                  setTurnstileToken(null)
+                  onChange('')
                 }}
                 onExpire={() => {
                   logger.warn('Turnstile expire - should refresh automatically')
-                  setTurnstileToken(null)
+                  onChange('')
                 }}
               />
 

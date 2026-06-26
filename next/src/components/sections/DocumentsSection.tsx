@@ -44,7 +44,7 @@ const DocumentsSection = ({
             <>
               {<HorizontalDivider asListItem className="mx-6" />}
 
-              <li className="flex items-center justify-center gap-2 py-3">
+              <li className="flex items-center justify-center py-3">
                 <Button
                   fullWidth
                   className="mx-6 py-2"
@@ -59,10 +59,7 @@ const DocumentsSection = ({
                         })}
                   </Typography>
 
-                  <Icon
-                    name={showAllDocuments ? 'chevron-up' : 'chevron-down'}
-                    className="size-6"
-                  />
+                  <Icon name={showAllDocuments ? 'chevron-up' : 'chevron-down'} />
                 </Button>
               </li>
             </>

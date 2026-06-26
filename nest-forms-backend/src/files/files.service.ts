@@ -261,28 +261,28 @@ export default class FilesService {
       pathWithMinioFileName,
       this.filesHelper.getBucketUid(),
     )
-    let file: Files
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- upload() type is non-nullable but the else branch throws on unexpected falsy; keeping the guard
-    if (uploadedFile) {
-      this.logger.log(
-        `File ${minioFileName} was successfully uploaded to Minio.`,
-      )
 
-      file = await this.filesHelper.saveFileToDatabase(
-        fileId,
-        minioFileName,
-        fileName,
-        fileSize,
-        formId,
-        pospIdOrSlug,
-        slotId,
-      )
-    } else {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- upload() type is non-nullable but the else branch throws on unexpected falsy; keeping the guard
+    if (!uploadedFile) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
         FilesErrorsResponseEnum.FILE_ID_ALREADY_EXISTS_ERROR,
-      )
+      ) 
     }
+
+    this.logger.log(
+      `File ${minioFileName} was successfully uploaded to Minio.`,
+    )
+
+    const file = await this.filesHelper.saveFileToDatabase(
+      fileId,
+      minioFileName,
+      fileName,
+      fileSize,
+      formId,
+      pospIdOrSlug,
+      slotId,
+    )
 
     const scannerResponse = await this.filesHelper.notifyScannerClient(
       minioFileName,

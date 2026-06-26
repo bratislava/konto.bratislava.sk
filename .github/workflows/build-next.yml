@@ -34,6 +34,10 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
+      TURBOREPO_SECRET_KEY:
+        required: true
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -111,6 +115,22 @@ jobs:
         with:
           existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
           new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
+
+      - name: Start Turborepo Cache Server
+        uses: brunojppb/turbo-cache-server@4.0.9
+        env:
+          PORT: "8585"
+          S3_BUCKET_NAME: "city-account-turborepo-cache"
+          S3_ACCESS_KEY: "city-account-turborepo-cache"
+          S3_SECRET_KEY: ${{ secrets.TURBOREPO_SECRET_KEY }}
+
+          # The missing MinIO details:
+          S3_ENDPOINT: "https://s3.bratislava.sk"
+          S3_REGION: "us-east-1" # Usually safe to leave as us-east-1 for MinIO
+
+          # CRITICAL FOR MINIO: Forces the server to use domain.com/bucket
+          # instead of bucket.domain.com
+          S3_USE_PATH_STYLE: "true"
 
       - name: Build image
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}

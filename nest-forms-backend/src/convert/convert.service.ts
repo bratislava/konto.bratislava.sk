@@ -1,7 +1,6 @@
 import { Readable } from 'node:stream'
 
 import { Injectable, StreamableFile } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Forms, FormState } from '@prisma/client'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
@@ -31,6 +30,7 @@ import {
 } from 'forms-shared/versioning/version-compare'
 import { chromium } from 'playwright'
 
+import BaConfigService from '../config/ba-config.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -68,12 +68,10 @@ export default class ConvertService {
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.logger = new LineLoggerSubservice('ConvertService')
-    this.versioningEnabled =
-      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
-      'true'
+    this.versioningEnabled = this.baConfigService.featureToggles.versioning
   }
 
   private async convertJsonToXmlObject(

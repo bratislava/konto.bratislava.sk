@@ -200,6 +200,12 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "facebookUrl",
+        "instagramUrl",
+        "youtubeUrl"
+      ],
       "edit": [
         [
           {
@@ -245,12 +251,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "facebookUrl",
-        "instagramUrl",
-        "youtubeUrl"
       ]
     },
     "uid": "api::footer.footer"

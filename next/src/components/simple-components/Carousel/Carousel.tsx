@@ -111,7 +111,7 @@ const Carousel = ({
       </ul>
 
       {noControls ? null : (
-        <div className={cn({ 'max-lg:hidden': !showControlsOnMobile })}>
+        <div className={cn({ 'max-md:hidden': !showControlsOnMobile })}>
           {controlsVariant === 'side' && (
             <>
               <Button

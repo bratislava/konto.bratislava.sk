@@ -54,7 +54,7 @@ const BAObjectFieldTemplate = ({
             )}
           </>
         )}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 lg:*:col-span-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4 md:*:col-span-4">
           {properties.map(({ content }) => content)}
         </div>
       </fieldset>

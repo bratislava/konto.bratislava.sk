@@ -13,10 +13,10 @@ const BAFieldTemplate = ({ classNames, ...rest }: FieldTemplateProps) => {
   // `[&]` is used to override specificity of the parent default `*:col-span-4`
   const colspanClassname = selfColumn
     ? {
-        '1/4': 'lg:[&]:col-span-1',
-        '2/4': 'lg:[&]:col-span-2',
-        '3/4': 'lg:[&]:col-span-3',
-        '4/4': 'lg:[&]:col-span-4',
+        '1/4': 'md:[&]:col-span-1',
+        '2/4': 'md:[&]:col-span-2',
+        '3/4': 'md:[&]:col-span-3',
+        '4/4': 'md:[&]:col-span-4',
       }[selfColumn]
     : undefined
 

@@ -137,6 +137,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
           AWS_DEFAULT_REGION: us-east-1
           AWS_EC2_METADATA_DISABLED: "true"
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
           S3_ENDPOINT: https://s3.bratislava.sk
           S3_BUCKET: city-account-turborepo-cache
           SPEEDTEST_SIZE_MB: "4096"

@@ -11,9 +11,6 @@ const bundleAnalyzer = withBundleAnalyzer({
 const nextConfig: NextConfig = {
   i18n: i18nextConfig.i18n,
   reactStrictMode: true,
-  // Without transpiling the packages there are two instances of React, and it causes to:
-  // https://react.dev/warnings/invalid-hook-call-warning
-  transpilePackages: ['forms-shared', '@rjsf/core'],
   images: {
     // After upgrading to Next.js 16, image loading from local IP addresses is blocked.
     // In our Kubernetes setup, S3 resolves to a local IP range (10.10.x.x),
@@ -34,16 +31,6 @@ const nextConfig: NextConfig = {
     ],
   },
   output: 'standalone',
-  // Workaround: Turbopack file tracer misses `module-sync` exports condition files (e.g. require.mjs)
-  // on Node.js >= 22.10. Will be fixed when Next.js bumps @vercel/nft to >= 0.30.0.
-  // https://github.com/vercel/next.js/issues/90567
-  outputFileTracingIncludes: {
-    '/**': [
-      './node_modules/**/require.mjs',
-      '../forms-shared/node_modules/**/require.mjs',
-      '../openapi-clients/node_modules/**/require.mjs',
-    ],
-  },
   turbopack: {
     // https://github.com/vercel/next.js/issues/73360
     root: path.join(__dirname, '..'),

@@ -1,76 +1,52 @@
-# check=skip=InvalidDefaultArgInFrom
-ARG FORMS_SHARED_DIGEST
-ARG OPENAPI_CLIENTS_DIGEST
-FROM harbor.bratislava.sk/standalone/forms-shared@${FORMS_SHARED_DIGEST} AS forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
-FROM node:24.15-alpine AS base
+ARG NODE_VERSION=24.15
+FROM node:${NODE_VERSION}-alpine AS base
 
-# used as app-base in prodution and development image
-FROM base AS app-base
-RUN apk add --no-cache tini
-RUN mkdir -p /home/node/app \
- && chown node:node /home/node/app
-USER node
-WORKDIR /home/node/app
+# This Dockerfile is copy-pasted into our main docs at /docs/handbook/deploying-with-docker.
+# Make sure you update both files!
+
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+# Set working directory
+WORKDIR /app
+
+# ---
+FROM base AS prepare
+RUN npm install -g turbo@^2
+COPY . .
+# Add lockfile and package.json's of isolated subworkspace
+RUN turbo prune city-account-next --docker
+
+# ---
+FROM base AS builder
+# First install the dependencies (as they change less often)
+COPY --from=prepare /app/out/json/ .
+RUN npm install
+# Build the project
+COPY --from=prepare /app/out/full/ .
+
+# Uncomment and use build args to enable remote caching
+# ARG TURBO_TEAM
+# ENV TURBO_TEAM=$TURBO_TEAM
+
+# ARG TURBO_TOKEN
+# ENV TURBO_TOKEN=$TURBO_TOKEN
+ENV TURBO_TELEMETRY_DISABLED=1
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
-EXPOSE 3000
-ARG GIT_COMMIT="undefined"
-ENV GIT_COMMIT=$GIT_COMMIT
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/next" \
-      org.opencontainers.image.licenses="EUPL-1.2"
-ENTRYPOINT [ "/sbin/tini", "--" ]
 
-# used for build-base for building only
-FROM base AS build-base
+RUN npx turbo build
 
-# Temporary workaround until this repository uses npm workspaces. Locally, shared
-# packages are symlinked through file: dependencies and their folders already
-# contain node_modules. In CI, the copied package folders would not have
-# node_modules, so we install each shared package explicitly to keep behavior
-# close to local development and expose missing runtime dependencies early.
-# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm
+# ---
+FROM node:${NODE_VERSION}-alpine AS runner
+# Don't run production as root for security reasons
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
 
-WORKDIR /forms-shared
-COPY --from=forms-shared / ./
-RUN npm ci
-
-WORKDIR /openapi-clients
-COPY --from=openapi-clients / ./
-RUN npm ci
-
-WORKDIR /build
-COPY ./package.json ./package-lock.json ./
-
-FROM build-base AS install-prod
-ENV NPM_CONFIG_CACHE=/build/.npm
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm \
- && npm ci --omit=dev
-
-FROM install-prod AS build
-COPY . ./
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm \
-    && npm ci --include=dev \
-    && npm run build
-
-FROM app-base AS dev
-ENV NODE_ENV=development
-COPY --chown=node:node --from=build /build/node_modules ./node_modules
-CMD [ "npm run", "develop" ]
-
-FROM app-base AS prod
-# Turbopack with `turbopack.root` set to parent produces nested standalone output:
-# .next/standalone/{build,forms-shared,openapi-clients}/ with server.js inside build/
-COPY --chown=node:node --from=build /build/.next/standalone ./
-COPY --chown=node:node .env.*.local ./build/
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/next/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/next/.next/static ./next/.next/static
 # https://github.com/i18next/next-i18next?tab=readme-ov-file#docker
-COPY --chown=node:node --from=build /build/next-i18next.config.js ./build/
-COPY --chown=node:node --from=build /build/public ./build/public
-COPY --chown=node:node --from=build /build/.next/static ./build/.next/static
-CMD [ "node", "build/server.js" ]
+COPY --from=builder --chown=nextjs:nodejs /app/next/next-i18next.config.js /next/
+COPY --from=builder --chown=nextjs:nodejs /app/next/public ./next/public
+
+CMD node next/server.js

@@ -1,5 +1,5 @@
 {
-  "name": "cypress",
+  "name": "city-account-cypress-tests",
   "scripts": {
     "lint": "eslint '**/*.ts'",
     "typecheck": "tsc",
@@ -37,5 +37,6 @@
   "volta": {
     "node": "24.15.0",
     "npm": "11.12.1"
-  }
+  },
+  "private": true
 }

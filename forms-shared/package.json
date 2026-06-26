@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "license": "EUPL-1.2",
   "scripts": {
+    "dev": "npm run build:watch",
     "generate-slovensko-sk": "ts-node scripts/generateSlovenskoSkContainer.ts",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:update": "vitest --update",
     "test:watch": "vitest watch",
@@ -30,7 +32,9 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["dist/*.d.ts"]
+      "*": [
+        "dist/*.d.ts"
+      ]
     }
   },
   "sideEffects": false,
@@ -38,7 +42,7 @@
     "deasync": "0.1.31"
   },
   "dependencies": {
-    "@internationalized/date": "3.12.1",
+    "@internationalized/date": "3.12.2",
     "@pdf-lib/fontkit": "1.1.1",
     "@react-email/components": "1.0.12",
     "adm-zip": "0.5.17",

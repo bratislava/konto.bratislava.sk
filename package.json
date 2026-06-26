@@ -1,0 +1,38 @@
+{
+  "name": "konto-bratislava-sk-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](https://konto.bratislava.sk).",
+  "scripts": {
+    "next:build": "turbo run build --filter=city-account-next",
+    "next:dev": "turbo run dev --filter=city-account-next",
+    "next:lint": "turbo run lint --filter=city-account-next",
+    "next:typecheck": "turbo run typecheck --filter=city-account-next"
+  },
+  "license": "EUPL-1.2",
+  "private": true,
+  "workspaces": [
+    "clamav",
+    "cvdmirror",
+    "forms-shared",
+    "nest-city-account",
+    "nest-clamav-scanner",
+    "nest-forms-backend",
+    "nest-tax-backend",
+    "openapi-clients",
+    "next",
+    "strapi",
+    "tests"
+  ],
+  "devDependencies": {
+    "turbo": "2.10.0"
+  },
+  "packageManager": "npm@11.12.1",
+  "engines": {
+    "node": ">=24.15.x",
+    "npm": ">=11.12.x"
+  },
+  "volta": {
+    "node": "24.15.0",
+    "npm": "11.17.0"
+  }
+}

@@ -22,7 +22,7 @@
       },
       "title": {
         "edit": {
-          "label": "title",
+          "label": "Nadpis",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,7 +36,7 @@
       },
       "links": {
         "edit": {
-          "label": "links",
+          "label": "Odkaz",
           "description": "",
           "placeholder": "",
           "visible": true,

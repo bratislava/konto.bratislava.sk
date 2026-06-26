@@ -18,8 +18,7 @@
     "formCta": {
       "type": "component",
       "component": "blocks.form-landing-page-form-cta",
-      "repeatable": false,
-      "required": true
+      "repeatable": false
     },
     "sections": {
       "type": "dynamiczone",
@@ -28,6 +27,7 @@
         "sections.documents",
         "sections.faq",
         "sections.contacts",
+        "sections.towing",
         "sections.stepper"
       ]
     }

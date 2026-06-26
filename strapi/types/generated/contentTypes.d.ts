@@ -728,7 +728,9 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
     description: Schema.Attribute.Text & Schema.Attribute.Required
     form: Schema.Attribute.Relation<'oneToOne', 'api::form.form'>
-    href: Schema.Attribute.String & Schema.Attribute.Required
+    formButtonLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Vyplni\u0165 formul\u00E1r'>
+    href: Schema.Attribute.String
     icon: Schema.Attribute.Enumeration<
       [
         'administration',
@@ -761,6 +763,7 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
       ]
     > &
       Schema.Attribute.Required
+    links: Schema.Attribute.Component<'blocks.municipal-service-link', true>
     locale: Schema.Attribute.String & Schema.Attribute.Private
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -768,6 +771,16 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
     > &
       Schema.Attribute.Private
     publishedAt: Schema.Attribute.DateTime
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'sections.richtext',
+        'sections.documents',
+        'sections.faq',
+        'sections.contacts',
+        'sections.stepper',
+        'sections.towing',
+      ]
+    >
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
     tags: Schema.Attribute.Relation<
       'manyToMany',

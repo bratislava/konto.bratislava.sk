@@ -52,17 +52,19 @@ jobs:
           ref: ${{ github.sha }}
 
       - name: Set up Docker build
-        id: docker
-        uses: ./.github/actions/setup-docker-build
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
         with:
-          image: ${{ inputs.image }}
-          suffixes: |
-            build
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           harbor_registry: ${{ env.REGISTRY }}
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+      - name: Docker metadata
+        id: meta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
 
       - name: Build and push
         id: build
@@ -72,8 +74,8 @@ jobs:
           target: ${{ inputs.target }}
           push: ${{ inputs.push }}
           tags: ${{ inputs.image }}:build-${{ github.sha }}
-          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_from }}
-          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_to }}
+          cache-from: ${{ steps.meta.outputs.cache_from }}
+          cache-to: ${{ steps.meta.outputs.cache_to }}
 
       - name: Print summary
         shell: bash

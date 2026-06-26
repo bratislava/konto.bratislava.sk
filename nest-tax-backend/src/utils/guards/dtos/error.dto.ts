@@ -40,6 +40,7 @@ export class ResponseErrorDto {
   })
   message: string
 
+  // eslint-disable-next-line @darraghor/nestjs-typed/api-enum-property-best-practices -- CustomErrorEnums is a union of multiple enums, not a single enum value, so it cannot be passed to `enum:`
   @ApiProperty({
     description: 'Name of the error',
     default: 'INTERNAL_SERVER_ERROR',

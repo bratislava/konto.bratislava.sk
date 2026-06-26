@@ -30,6 +30,7 @@ export type Scalars = {
   JSON: { input: any; output: any }
   /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
   Long: { input: any; output: any }
+  MunicipalServiceSectionsDynamicZoneInput: { input: any; output: any }
   /** A time string with format HH:mm:ss.SSS */
   Time: { input: any; output: any }
 }
@@ -265,7 +266,7 @@ export type ComponentBlocksFooterColumnInput = {
 
 export type ComponentBlocksFormLandingPage = {
   __typename?: 'ComponentBlocksFormLandingPage'
-  formCta: ComponentBlocksFormLandingPageFormCta
+  formCta?: Maybe<ComponentBlocksFormLandingPageFormCta>
   id: Scalars['ID']['output']
   linkCtas?: Maybe<Array<Maybe<ComponentBlocksFormLandingPageLinkCta>>>
   sections?: Maybe<Array<Maybe<FormLandingPageSectionsDynamicZone>>>
@@ -392,6 +393,27 @@ export type ComponentBlocksHelpItemInput = {
   content?: InputMaybe<Scalars['String']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
   title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksMunicipalServiceLink = {
+  __typename?: 'ComponentBlocksMunicipalServiceLink'
+  id: Scalars['ID']['output']
+  label?: Maybe<Scalars['String']['output']>
+  url?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksMunicipalServiceLinkFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceLinkFiltersInput>>>
+  label?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksMunicipalServiceLinkFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceLinkFiltersInput>>>
+  url?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksMunicipalServiceLinkInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  label?: InputMaybe<Scalars['String']['input']>
+  url?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentBlocksQuestion = {
@@ -719,6 +741,27 @@ export type ComponentSectionsStepperInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentSectionsTowing = {
+  __typename?: 'ComponentSectionsTowing'
+  id: Scalars['ID']['output']
+  text?: Maybe<Scalars['String']['output']>
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentSectionsTowingFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
+  not?: InputMaybe<ComponentSectionsTowingFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentSectionsTowingFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentSectionsTowingInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  text?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type DateFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
   between?: InputMaybe<Array<InputMaybe<Scalars['Date']['input']>>>
@@ -988,6 +1031,7 @@ export type FormLandingPageSectionsDynamicZone =
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
+  | ComponentSectionsTowing
   | Error
 
 export type FormRelationResponseCollection = {
@@ -1061,6 +1105,7 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
+  | ComponentBlocksMunicipalServiceLink
   | ComponentBlocksQuestion
   | ComponentGeneralAlert
   | ComponentMunicipalChargeDeliveryMethod
@@ -1071,6 +1116,7 @@ export type GenericMorph =
   | ComponentSectionsFaq
   | ComponentSectionsRichtext
   | ComponentSectionsStepper
+  | ComponentSectionsTowing
   | Footer
   | Form
   | General
@@ -1580,9 +1626,12 @@ export type MunicipalService = {
   description: Scalars['String']['output']
   documentId: Scalars['ID']['output']
   form?: Maybe<Form>
-  href: Scalars['String']['output']
+  formButtonLabel?: Maybe<Scalars['String']['output']>
+  href?: Maybe<Scalars['String']['output']>
   icon: Enum_Municipalservice_Icon
+  links?: Maybe<Array<Maybe<ComponentBlocksMunicipalServiceLink>>>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
+  sections?: Maybe<Array<Maybe<MunicipalServiceSectionsDynamicZone>>>
   slug: Scalars['String']['output']
   tags: Array<Maybe<MunicipalServiceTag>>
   tags_connection?: Maybe<MunicipalServiceTagRelationResponseCollection>
@@ -1598,6 +1647,12 @@ export type MunicipalServiceCategoriesArgs = {
 
 export type MunicipalServiceCategories_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServiceLinksArgs = {
+  filters?: InputMaybe<ComponentBlocksMunicipalServiceLinkFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
@@ -1703,8 +1758,10 @@ export type MunicipalServiceFiltersInput = {
   description?: InputMaybe<StringFilterInput>
   documentId?: InputMaybe<IdFilterInput>
   form?: InputMaybe<FormFiltersInput>
+  formButtonLabel?: InputMaybe<StringFilterInput>
   href?: InputMaybe<StringFilterInput>
   icon?: InputMaybe<StringFilterInput>
+  links?: InputMaybe<ComponentBlocksMunicipalServiceLinkFiltersInput>
   not?: InputMaybe<MunicipalServiceFiltersInput>
   or?: InputMaybe<Array<InputMaybe<MunicipalServiceFiltersInput>>>
   publishedAt?: InputMaybe<DateTimeFilterInput>
@@ -1720,9 +1777,12 @@ export type MunicipalServiceInput = {
   color?: InputMaybe<Enum_Municipalservice_Color>
   description?: InputMaybe<Scalars['String']['input']>
   form?: InputMaybe<Scalars['ID']['input']>
+  formButtonLabel?: InputMaybe<Scalars['String']['input']>
   href?: InputMaybe<Scalars['String']['input']>
   icon?: InputMaybe<Enum_Municipalservice_Icon>
+  links?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceLinkInput>>>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  sections?: InputMaybe<Array<Scalars['MunicipalServiceSectionsDynamicZoneInput']['input']>>
   slug?: InputMaybe<Scalars['String']['input']>
   tags?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   title?: InputMaybe<Scalars['String']['input']>
@@ -1732,6 +1792,15 @@ export type MunicipalServiceRelationResponseCollection = {
   __typename?: 'MunicipalServiceRelationResponseCollection'
   nodes: Array<MunicipalService>
 }
+
+export type MunicipalServiceSectionsDynamicZone =
+  | ComponentSectionsContacts
+  | ComponentSectionsDocuments
+  | ComponentSectionsFaq
+  | ComponentSectionsRichtext
+  | ComponentSectionsStepper
+  | ComponentSectionsTowing
+  | Error
 
 export type MunicipalServiceTag = {
   __typename?: 'MunicipalServiceTag'
@@ -3157,12 +3226,12 @@ export type FormLandingPageFragment = {
     buttonLabel: string
     url: string
   } | null> | null
-  formCta: {
+  formCta?: {
     __typename: 'ComponentBlocksFormLandingPageFormCta'
     title: string
     text?: string | null
     buttonLabel: string
-  }
+  } | null
   sections?: Array<
     | {
         __typename: 'ComponentSectionsContacts'
@@ -3262,6 +3331,7 @@ export type FormLandingPageFragment = {
           } | null> | null
         } | null> | null
       }
+    | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
     | { __typename: 'Error' }
     | null
   > | null
@@ -3294,12 +3364,12 @@ export type FormWithLandingPageFragment = {
       buttonLabel: string
       url: string
     } | null> | null
-    formCta: {
+    formCta?: {
       __typename: 'ComponentBlocksFormLandingPageFormCta'
       title: string
       text?: string | null
       buttonLabel: string
-    }
+    } | null
     sections?: Array<
       | {
           __typename: 'ComponentSectionsContacts'
@@ -3399,6 +3469,7 @@ export type FormWithLandingPageFragment = {
             } | null> | null
           } | null> | null
         }
+      | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
       | { __typename: 'Error' }
       | null
     > | null
@@ -3453,12 +3524,12 @@ export type FormWithLandingPageBySlugQuery = {
         buttonLabel: string
         url: string
       } | null> | null
-      formCta: {
+      formCta?: {
         __typename: 'ComponentBlocksFormLandingPageFormCta'
         title: string
         text?: string | null
         buttonLabel: string
-      }
+      } | null
       sections?: Array<
         | {
             __typename: 'ComponentSectionsContacts'
@@ -3558,6 +3629,7 @@ export type FormWithLandingPageBySlugQuery = {
               } | null> | null
             } | null> | null
           }
+        | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
         | { __typename: 'Error' }
         | null
       > | null
@@ -3575,7 +3647,23 @@ export type CommonLinkFragment = {
   __typename?: 'ComponentBlocksCommonLink'
   label?: string | null
   url?: string | null
-  municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+  municipalService?: {
+    __typename?: 'MunicipalService'
+    title: string
+    slug: string
+    href?: string | null
+    form?: { __typename?: 'Form'; documentId: string } | null
+    sections?: Array<
+      | { __typename: 'ComponentSectionsContacts' }
+      | { __typename: 'ComponentSectionsDocuments' }
+      | { __typename: 'ComponentSectionsFaq' }
+      | { __typename: 'ComponentSectionsRichtext' }
+      | { __typename: 'ComponentSectionsStepper' }
+      | { __typename: 'ComponentSectionsTowing' }
+      | { __typename: 'Error' }
+      | null
+    > | null
+  } | null
 }
 
 export type FooterColumnBlockFragment = {
@@ -3585,7 +3673,23 @@ export type FooterColumnBlockFragment = {
     __typename?: 'ComponentBlocksCommonLink'
     label?: string | null
     url?: string | null
-    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+    municipalService?: {
+      __typename?: 'MunicipalService'
+      title: string
+      slug: string
+      href?: string | null
+      form?: { __typename?: 'Form'; documentId: string } | null
+      sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
+        | { __typename: 'ComponentSectionsDocuments' }
+        | { __typename: 'ComponentSectionsFaq' }
+        | { __typename: 'ComponentSectionsRichtext' }
+        | { __typename: 'ComponentSectionsStepper' }
+        | { __typename: 'ComponentSectionsTowing' }
+        | { __typename: 'Error' }
+        | null
+      > | null
+    } | null
   } | null> | null
 }
 
@@ -3604,14 +3708,46 @@ export type FooterFragment = {
       __typename?: 'ComponentBlocksCommonLink'
       label?: string | null
       url?: string | null
-      municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      municipalService?: {
+        __typename?: 'MunicipalService'
+        title: string
+        slug: string
+        href?: string | null
+        form?: { __typename?: 'Form'; documentId: string } | null
+        sections?: Array<
+          | { __typename: 'ComponentSectionsContacts' }
+          | { __typename: 'ComponentSectionsDocuments' }
+          | { __typename: 'ComponentSectionsFaq' }
+          | { __typename: 'ComponentSectionsRichtext' }
+          | { __typename: 'ComponentSectionsStepper' }
+          | { __typename: 'ComponentSectionsTowing' }
+          | { __typename: 'Error' }
+          | null
+        > | null
+      } | null
     } | null> | null
   } | null> | null
   accessibilityPageLink?: {
     __typename?: 'ComponentBlocksCommonLink'
     label?: string | null
     url?: string | null
-    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+    municipalService?: {
+      __typename?: 'MunicipalService'
+      title: string
+      slug: string
+      href?: string | null
+      form?: { __typename?: 'Form'; documentId: string } | null
+      sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
+        | { __typename: 'ComponentSectionsDocuments' }
+        | { __typename: 'ComponentSectionsFaq' }
+        | { __typename: 'ComponentSectionsRichtext' }
+        | { __typename: 'ComponentSectionsStepper' }
+        | { __typename: 'ComponentSectionsTowing' }
+        | { __typename: 'Error' }
+        | null
+      > | null
+    } | null
   } | null
 }
 
@@ -3634,14 +3770,46 @@ export type GeneralQuery = {
         __typename?: 'ComponentBlocksCommonLink'
         label?: string | null
         url?: string | null
-        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+        municipalService?: {
+          __typename?: 'MunicipalService'
+          title: string
+          slug: string
+          href?: string | null
+          form?: { __typename?: 'Form'; documentId: string } | null
+          sections?: Array<
+            | { __typename: 'ComponentSectionsContacts' }
+            | { __typename: 'ComponentSectionsDocuments' }
+            | { __typename: 'ComponentSectionsFaq' }
+            | { __typename: 'ComponentSectionsRichtext' }
+            | { __typename: 'ComponentSectionsStepper' }
+            | { __typename: 'ComponentSectionsTowing' }
+            | { __typename: 'Error' }
+            | null
+          > | null
+        } | null
       } | null> | null
     } | null> | null
     accessibilityPageLink?: {
       __typename?: 'ComponentBlocksCommonLink'
       label?: string | null
       url?: string | null
-      municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+      municipalService?: {
+        __typename?: 'MunicipalService'
+        title: string
+        slug: string
+        href?: string | null
+        form?: { __typename?: 'Form'; documentId: string } | null
+        sections?: Array<
+          | { __typename: 'ComponentSectionsContacts' }
+          | { __typename: 'ComponentSectionsDocuments' }
+          | { __typename: 'ComponentSectionsFaq' }
+          | { __typename: 'ComponentSectionsRichtext' }
+          | { __typename: 'ComponentSectionsStepper' }
+          | { __typename: 'ComponentSectionsTowing' }
+          | { __typename: 'Error' }
+          | null
+        > | null
+      } | null
     } | null
   } | null
 }
@@ -3710,25 +3878,47 @@ export type HomepageQuery = {
       __typename?: 'MunicipalService'
       description: string
       buttonText: string
-      href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
       documentId: string
       title: string
       slug: string
+      href?: string | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      form?: { __typename?: 'Form'; documentId: string } | null
+      sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
+        | { __typename: 'ComponentSectionsDocuments' }
+        | { __typename: 'ComponentSectionsFaq' }
+        | { __typename: 'ComponentSectionsRichtext' }
+        | { __typename: 'ComponentSectionsStepper' }
+        | { __typename: 'ComponentSectionsTowing' }
+        | { __typename: 'Error' }
+        | null
+      > | null
     } | null>
     servicesLegalPerson: Array<{
       __typename?: 'MunicipalService'
       description: string
       buttonText: string
-      href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
       documentId: string
       title: string
       slug: string
+      href?: string | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+      form?: { __typename?: 'Form'; documentId: string } | null
+      sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
+        | { __typename: 'ComponentSectionsDocuments' }
+        | { __typename: 'ComponentSectionsFaq' }
+        | { __typename: 'ComponentSectionsRichtext' }
+        | { __typename: 'ComponentSectionsStepper' }
+        | { __typename: 'ComponentSectionsTowing' }
+        | { __typename: 'Error' }
+        | null
+      > | null
     } | null>
     announcements: Array<{
       __typename?: 'HomepageAnnouncement'
@@ -3743,7 +3933,23 @@ export type HomepageQuery = {
         __typename?: 'ComponentBlocksCommonLink'
         label?: string | null
         url?: string | null
-        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+        municipalService?: {
+          __typename?: 'MunicipalService'
+          title: string
+          slug: string
+          href?: string | null
+          form?: { __typename?: 'Form'; documentId: string } | null
+          sections?: Array<
+            | { __typename: 'ComponentSectionsContacts' }
+            | { __typename: 'ComponentSectionsDocuments' }
+            | { __typename: 'ComponentSectionsFaq' }
+            | { __typename: 'ComponentSectionsRichtext' }
+            | { __typename: 'ComponentSectionsStepper' }
+            | { __typename: 'ComponentSectionsTowing' }
+            | { __typename: 'Error' }
+            | null
+          > | null
+        } | null
       } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
@@ -3760,7 +3966,23 @@ export type HomepageQuery = {
         __typename?: 'ComponentBlocksCommonLink'
         label?: string | null
         url?: string | null
-        municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+        municipalService?: {
+          __typename?: 'MunicipalService'
+          title: string
+          slug: string
+          href?: string | null
+          form?: { __typename?: 'Form'; documentId: string } | null
+          sections?: Array<
+            | { __typename: 'ComponentSectionsContacts' }
+            | { __typename: 'ComponentSectionsDocuments' }
+            | { __typename: 'ComponentSectionsFaq' }
+            | { __typename: 'ComponentSectionsRichtext' }
+            | { __typename: 'ComponentSectionsStepper' }
+            | { __typename: 'ComponentSectionsTowing' }
+            | { __typename: 'Error' }
+            | null
+          > | null
+        } | null
       } | null
       image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
     } | null>
@@ -3780,7 +4002,23 @@ export type HomepageAnnouncementEntityFragment = {
     __typename?: 'ComponentBlocksCommonLink'
     label?: string | null
     url?: string | null
-    municipalService?: { __typename?: 'MunicipalService'; title: string; href: string } | null
+    municipalService?: {
+      __typename?: 'MunicipalService'
+      title: string
+      slug: string
+      href?: string | null
+      form?: { __typename?: 'Form'; documentId: string } | null
+      sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
+        | { __typename: 'ComponentSectionsDocuments' }
+        | { __typename: 'ComponentSectionsFaq' }
+        | { __typename: 'ComponentSectionsRichtext' }
+        | { __typename: 'ComponentSectionsStepper' }
+        | { __typename: 'ComponentSectionsTowing' }
+        | { __typename: 'Error' }
+        | null
+      > | null
+    } | null
   } | null
   image: { __typename?: 'UploadFile'; url: string; alternativeText?: string | null }
 }
@@ -3865,6 +4103,30 @@ export type MunicipalServiceCategoryEntityFragment = {
   title: string
 }
 
+export type MunicipalServiceRedirectFragment = {
+  __typename?: 'MunicipalService'
+  slug: string
+  href?: string | null
+  form?: { __typename?: 'Form'; documentId: string } | null
+  sections?: Array<
+    | { __typename: 'ComponentSectionsContacts' }
+    | { __typename: 'ComponentSectionsDocuments' }
+    | { __typename: 'ComponentSectionsFaq' }
+    | { __typename: 'ComponentSectionsRichtext' }
+    | { __typename: 'ComponentSectionsStepper' }
+    | { __typename: 'ComponentSectionsTowing' }
+    | { __typename: 'Error' }
+    | null
+  > | null
+}
+
+export type MunicipalServiceLinkFragment = {
+  __typename?: 'ComponentBlocksMunicipalServiceLink'
+  id: string
+  label?: string | null
+  url?: string | null
+}
+
 export type MunicipalServiceSlugEntityFragment = {
   __typename?: 'MunicipalService'
   documentId: string
@@ -3876,31 +4138,309 @@ export type MunicipalServiceCardEntityFragment = {
   __typename?: 'MunicipalService'
   description: string
   buttonText: string
-  href: string
   color: Enum_Municipalservice_Color
   icon: Enum_Municipalservice_Icon
   documentId: string
   title: string
   slug: string
+  href?: string | null
   tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+  form?: { __typename?: 'Form'; documentId: string } | null
+  sections?: Array<
+    | { __typename: 'ComponentSectionsContacts' }
+    | { __typename: 'ComponentSectionsDocuments' }
+    | { __typename: 'ComponentSectionsFaq' }
+    | { __typename: 'ComponentSectionsRichtext' }
+    | { __typename: 'ComponentSectionsStepper' }
+    | { __typename: 'ComponentSectionsTowing' }
+    | { __typename: 'Error' }
+    | null
+  > | null
 }
 
 export type MunicipalServiceEntityFragment = {
   __typename?: 'MunicipalService'
   description: string
   buttonText: string
-  href: string
   color: Enum_Municipalservice_Color
   icon: Enum_Municipalservice_Icon
   documentId: string
   title: string
   slug: string
+  href?: string | null
+  form?: {
+    __typename?: 'Form'
+    documentId: string
+    slug: string
+    moreInformationUrl?: string | null
+    municipalService?: {
+      __typename?: 'MunicipalService'
+      documentId: string
+      title: string
+      slug: string
+    } | null
+  } | null
   categories: Array<{
     __typename?: 'MunicipalServiceCategory'
     documentId: string
     title: string
   } | null>
+  links?: Array<{
+    __typename?: 'ComponentBlocksMunicipalServiceLink'
+    id: string
+    label?: string | null
+    url?: string | null
+  } | null> | null
+  sections?: Array<
+    | {
+        __typename: 'ComponentSectionsContacts'
+        id: string
+        title?: string | null
+        description?: string | null
+        titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+        addressContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        openingHoursContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        emailContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        phoneContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        webContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        postalAddressContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        billingInfoContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        bankConnectionContacts?: Array<{
+          __typename?: 'ComponentBlocksContactCard'
+          overrideLabel?: string | null
+          value: string
+        } | null> | null
+        personContacts?: Array<{
+          __typename?: 'ComponentBlocksContactPersonCard'
+          title: string
+          subtext?: string | null
+          email?: string | null
+          phone?: string | null
+        } | null> | null
+        directionsContact?: {
+          __typename?: 'ComponentBlocksContactDirectionsCard'
+          overrideLabel?: string | null
+          address: string
+          parkingInfo?: string | null
+          publicTransportInfo?: string | null
+          barrierFreeInfo?: string | null
+          iframeUrl?: string | null
+        } | null
+      }
+    | {
+        __typename: 'ComponentSectionsDocuments'
+        title?: string | null
+        text?: string | null
+        externalDocuments?: Array<{
+          __typename?: 'ComponentBlocksExternalDocument'
+          title?: string | null
+          url: string
+        } | null> | null
+      }
+    | {
+        __typename: 'ComponentSectionsFaq'
+        title?: string | null
+        questions: Array<{
+          __typename?: 'ComponentBlocksQuestion'
+          title: string
+          content: string
+        } | null>
+      }
+    | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+    | {
+        __typename: 'ComponentSectionsStepper'
+        title?: string | null
+        description?: string | null
+        checklists?: Array<{
+          __typename?: 'ComponentBlocksChecklist'
+          title?: string | null
+          description?: string | null
+          checklistItems?: Array<{
+            __typename?: 'ComponentBlocksChecklistItem'
+            title?: string | null
+            content?: string | null
+          } | null> | null
+        } | null> | null
+      }
+    | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
+    | { __typename: 'Error' }
+    | null
+  > | null
   tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+}
+
+export type MunicipalServiceBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input']
+}>
+
+export type MunicipalServiceBySlugQuery = {
+  __typename?: 'Query'
+  municipalServices: Array<{
+    __typename?: 'MunicipalService'
+    description: string
+    buttonText: string
+    color: Enum_Municipalservice_Color
+    icon: Enum_Municipalservice_Icon
+    documentId: string
+    title: string
+    slug: string
+    href?: string | null
+    form?: {
+      __typename?: 'Form'
+      documentId: string
+      slug: string
+      moreInformationUrl?: string | null
+      municipalService?: {
+        __typename?: 'MunicipalService'
+        documentId: string
+        title: string
+        slug: string
+      } | null
+    } | null
+    categories: Array<{
+      __typename?: 'MunicipalServiceCategory'
+      documentId: string
+      title: string
+    } | null>
+    links?: Array<{
+      __typename?: 'ComponentBlocksMunicipalServiceLink'
+      id: string
+      label?: string | null
+      url?: string | null
+    } | null> | null
+    sections?: Array<
+      | {
+          __typename: 'ComponentSectionsContacts'
+          id: string
+          title?: string | null
+          description?: string | null
+          titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+          addressContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          openingHoursContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          emailContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          phoneContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          webContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          postalAddressContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          billingInfoContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          bankConnectionContacts?: Array<{
+            __typename?: 'ComponentBlocksContactCard'
+            overrideLabel?: string | null
+            value: string
+          } | null> | null
+          personContacts?: Array<{
+            __typename?: 'ComponentBlocksContactPersonCard'
+            title: string
+            subtext?: string | null
+            email?: string | null
+            phone?: string | null
+          } | null> | null
+          directionsContact?: {
+            __typename?: 'ComponentBlocksContactDirectionsCard'
+            overrideLabel?: string | null
+            address: string
+            parkingInfo?: string | null
+            publicTransportInfo?: string | null
+            barrierFreeInfo?: string | null
+            iframeUrl?: string | null
+          } | null
+        }
+      | {
+          __typename: 'ComponentSectionsDocuments'
+          title?: string | null
+          text?: string | null
+          externalDocuments?: Array<{
+            __typename?: 'ComponentBlocksExternalDocument'
+            title?: string | null
+            url: string
+          } | null> | null
+        }
+      | {
+          __typename: 'ComponentSectionsFaq'
+          title?: string | null
+          questions: Array<{
+            __typename?: 'ComponentBlocksQuestion'
+            title: string
+            content: string
+          } | null>
+        }
+      | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+      | {
+          __typename: 'ComponentSectionsStepper'
+          title?: string | null
+          description?: string | null
+          checklists?: Array<{
+            __typename?: 'ComponentBlocksChecklist'
+            title?: string | null
+            description?: string | null
+            checklistItems?: Array<{
+              __typename?: 'ComponentBlocksChecklistItem'
+              title?: string | null
+              content?: string | null
+            } | null> | null
+          } | null> | null
+        }
+      | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
+      | { __typename: 'Error' }
+      | null
+    > | null
+    tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
+  } | null>
 }
 
 export type MunicipalServicesPageQueryVariables = Exact<{ [key: string]: never }>
@@ -3913,34 +4453,276 @@ export type MunicipalServicesPageQuery = {
       __typename?: 'MunicipalService'
       description: string
       buttonText: string
-      href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
       documentId: string
       title: string
       slug: string
+      href?: string | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        slug: string
+        moreInformationUrl?: string | null
+        municipalService?: {
+          __typename?: 'MunicipalService'
+          documentId: string
+          title: string
+          slug: string
+        } | null
+      } | null
       categories: Array<{
         __typename?: 'MunicipalServiceCategory'
         documentId: string
         title: string
       } | null>
+      links?: Array<{
+        __typename?: 'ComponentBlocksMunicipalServiceLink'
+        id: string
+        label?: string | null
+        url?: string | null
+      } | null> | null
+      sections?: Array<
+        | {
+            __typename: 'ComponentSectionsContacts'
+            id: string
+            title?: string | null
+            description?: string | null
+            titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+            addressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            openingHoursContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            emailContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            phoneContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            webContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            postalAddressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            billingInfoContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            bankConnectionContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            personContacts?: Array<{
+              __typename?: 'ComponentBlocksContactPersonCard'
+              title: string
+              subtext?: string | null
+              email?: string | null
+              phone?: string | null
+            } | null> | null
+            directionsContact?: {
+              __typename?: 'ComponentBlocksContactDirectionsCard'
+              overrideLabel?: string | null
+              address: string
+              parkingInfo?: string | null
+              publicTransportInfo?: string | null
+              barrierFreeInfo?: string | null
+              iframeUrl?: string | null
+            } | null
+          }
+        | {
+            __typename: 'ComponentSectionsDocuments'
+            title?: string | null
+            text?: string | null
+            externalDocuments?: Array<{
+              __typename?: 'ComponentBlocksExternalDocument'
+              title?: string | null
+              url: string
+            } | null> | null
+          }
+        | {
+            __typename: 'ComponentSectionsFaq'
+            title?: string | null
+            questions: Array<{
+              __typename?: 'ComponentBlocksQuestion'
+              title: string
+              content: string
+            } | null>
+          }
+        | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+        | {
+            __typename: 'ComponentSectionsStepper'
+            title?: string | null
+            description?: string | null
+            checklists?: Array<{
+              __typename?: 'ComponentBlocksChecklist'
+              title?: string | null
+              description?: string | null
+              checklistItems?: Array<{
+                __typename?: 'ComponentBlocksChecklistItem'
+                title?: string | null
+                content?: string | null
+              } | null> | null
+            } | null> | null
+          }
+        | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
+        | { __typename: 'Error' }
+        | null
+      > | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
     } | null>
     servicesLegalPerson: Array<{
       __typename?: 'MunicipalService'
       description: string
       buttonText: string
-      href: string
       color: Enum_Municipalservice_Color
       icon: Enum_Municipalservice_Icon
       documentId: string
       title: string
       slug: string
+      href?: string | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        slug: string
+        moreInformationUrl?: string | null
+        municipalService?: {
+          __typename?: 'MunicipalService'
+          documentId: string
+          title: string
+          slug: string
+        } | null
+      } | null
       categories: Array<{
         __typename?: 'MunicipalServiceCategory'
         documentId: string
         title: string
       } | null>
+      links?: Array<{
+        __typename?: 'ComponentBlocksMunicipalServiceLink'
+        id: string
+        label?: string | null
+        url?: string | null
+      } | null> | null
+      sections?: Array<
+        | {
+            __typename: 'ComponentSectionsContacts'
+            id: string
+            title?: string | null
+            description?: string | null
+            titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+            addressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            openingHoursContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            emailContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            phoneContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            webContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            postalAddressContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            billingInfoContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            bankConnectionContacts?: Array<{
+              __typename?: 'ComponentBlocksContactCard'
+              overrideLabel?: string | null
+              value: string
+            } | null> | null
+            personContacts?: Array<{
+              __typename?: 'ComponentBlocksContactPersonCard'
+              title: string
+              subtext?: string | null
+              email?: string | null
+              phone?: string | null
+            } | null> | null
+            directionsContact?: {
+              __typename?: 'ComponentBlocksContactDirectionsCard'
+              overrideLabel?: string | null
+              address: string
+              parkingInfo?: string | null
+              publicTransportInfo?: string | null
+              barrierFreeInfo?: string | null
+              iframeUrl?: string | null
+            } | null
+          }
+        | {
+            __typename: 'ComponentSectionsDocuments'
+            title?: string | null
+            text?: string | null
+            externalDocuments?: Array<{
+              __typename?: 'ComponentBlocksExternalDocument'
+              title?: string | null
+              url: string
+            } | null> | null
+          }
+        | {
+            __typename: 'ComponentSectionsFaq'
+            title?: string | null
+            questions: Array<{
+              __typename?: 'ComponentBlocksQuestion'
+              title: string
+              content: string
+            } | null>
+          }
+        | { __typename: 'ComponentSectionsRichtext'; content?: string | null }
+        | {
+            __typename: 'ComponentSectionsStepper'
+            title?: string | null
+            description?: string | null
+            checklists?: Array<{
+              __typename?: 'ComponentBlocksChecklist'
+              title?: string | null
+              description?: string | null
+              checklistItems?: Array<{
+                __typename?: 'ComponentBlocksChecklistItem'
+                title?: string | null
+                content?: string | null
+              } | null> | null
+            } | null> | null
+          }
+        | { __typename: 'ComponentSectionsTowing'; title?: string | null; text?: string | null }
+        | { __typename: 'Error' }
+        | null
+      > | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
     } | null>
   } | null
@@ -4105,6 +4887,12 @@ export type DocumentsSectionFragment = {
   } | null> | null
 }
 
+export type TowingSectionFragment = {
+  __typename?: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
 type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
   __typename: 'ComponentSectionsContacts'
   id: string
@@ -4211,6 +4999,12 @@ type FormLandingPageSections_ComponentSectionsStepper_Fragment = {
   } | null> | null
 }
 
+type FormLandingPageSections_ComponentSectionsTowing_Fragment = {
+  __typename: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
 type FormLandingPageSections_Error_Fragment = { __typename: 'Error' }
 
 export type FormLandingPageSectionsFragment =
@@ -4219,7 +5013,131 @@ export type FormLandingPageSectionsFragment =
   | FormLandingPageSections_ComponentSectionsFaq_Fragment
   | FormLandingPageSections_ComponentSectionsRichtext_Fragment
   | FormLandingPageSections_ComponentSectionsStepper_Fragment
+  | FormLandingPageSections_ComponentSectionsTowing_Fragment
   | FormLandingPageSections_Error_Fragment
+
+type MunicipalServiceSections_ComponentSectionsContacts_Fragment = {
+  __typename: 'ComponentSectionsContacts'
+  id: string
+  title?: string | null
+  description?: string | null
+  titleLevelContacts?: Enum_Componentsectionscontacts_Titlelevel | null
+  addressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  openingHoursContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  emailContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  phoneContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  webContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  postalAddressContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  billingInfoContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  bankConnectionContacts?: Array<{
+    __typename?: 'ComponentBlocksContactCard'
+    overrideLabel?: string | null
+    value: string
+  } | null> | null
+  personContacts?: Array<{
+    __typename?: 'ComponentBlocksContactPersonCard'
+    title: string
+    subtext?: string | null
+    email?: string | null
+    phone?: string | null
+  } | null> | null
+  directionsContact?: {
+    __typename?: 'ComponentBlocksContactDirectionsCard'
+    overrideLabel?: string | null
+    address: string
+    parkingInfo?: string | null
+    publicTransportInfo?: string | null
+    barrierFreeInfo?: string | null
+    iframeUrl?: string | null
+  } | null
+}
+
+type MunicipalServiceSections_ComponentSectionsDocuments_Fragment = {
+  __typename: 'ComponentSectionsDocuments'
+  title?: string | null
+  text?: string | null
+  externalDocuments?: Array<{
+    __typename?: 'ComponentBlocksExternalDocument'
+    title?: string | null
+    url: string
+  } | null> | null
+}
+
+type MunicipalServiceSections_ComponentSectionsFaq_Fragment = {
+  __typename: 'ComponentSectionsFaq'
+  title?: string | null
+  questions: Array<{
+    __typename?: 'ComponentBlocksQuestion'
+    title: string
+    content: string
+  } | null>
+}
+
+type MunicipalServiceSections_ComponentSectionsRichtext_Fragment = {
+  __typename: 'ComponentSectionsRichtext'
+  content?: string | null
+}
+
+type MunicipalServiceSections_ComponentSectionsStepper_Fragment = {
+  __typename: 'ComponentSectionsStepper'
+  title?: string | null
+  description?: string | null
+  checklists?: Array<{
+    __typename?: 'ComponentBlocksChecklist'
+    title?: string | null
+    description?: string | null
+    checklistItems?: Array<{
+      __typename?: 'ComponentBlocksChecklistItem'
+      title?: string | null
+      content?: string | null
+    } | null> | null
+  } | null> | null
+}
+
+type MunicipalServiceSections_ComponentSectionsTowing_Fragment = {
+  __typename: 'ComponentSectionsTowing'
+  title?: string | null
+  text?: string | null
+}
+
+type MunicipalServiceSections_Error_Fragment = { __typename: 'Error' }
+
+export type MunicipalServiceSectionsFragment =
+  | MunicipalServiceSections_ComponentSectionsContacts_Fragment
+  | MunicipalServiceSections_ComponentSectionsDocuments_Fragment
+  | MunicipalServiceSections_ComponentSectionsFaq_Fragment
+  | MunicipalServiceSections_ComponentSectionsRichtext_Fragment
+  | MunicipalServiceSections_ComponentSectionsStepper_Fragment
+  | MunicipalServiceSections_ComponentSectionsTowing_Fragment
+  | MunicipalServiceSections_Error_Fragment
 
 export type TaxFragment = {
   __typename?: 'Tax'
@@ -4416,6 +5334,12 @@ export const DocumentsSectionFragmentDoc = gql`
   }
   ${ExternalDocumentBlockFragmentDoc}
 `
+export const TowingSectionFragmentDoc = gql`
+  fragment TowingSection on ComponentSectionsTowing {
+    title
+    text
+  }
+`
 export const FormLandingPageSectionsFragmentDoc = gql`
   fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
     __typename
@@ -4434,12 +5358,16 @@ export const FormLandingPageSectionsFragmentDoc = gql`
     ... on ComponentSectionsDocuments {
       ...DocumentsSection
     }
+    ... on ComponentSectionsTowing {
+      ...TowingSection
+    }
   }
   ${RichtextSectionFragmentDoc}
   ${StepperSectionFragmentDoc}
   ${ContactsSectionFragmentDoc}
   ${FaqSectionFragmentDoc}
   ${DocumentsSectionFragmentDoc}
+  ${TowingSectionFragmentDoc}
 `
 export const FormLandingPageFragmentDoc = gql`
   fragment FormLandingPage on ComponentBlocksFormLandingPage {
@@ -4468,15 +5396,28 @@ export const FormWithLandingPageFragmentDoc = gql`
   ${FormBaseFragmentDoc}
   ${FormLandingPageFragmentDoc}
 `
+export const MunicipalServiceRedirectFragmentDoc = gql`
+  fragment MunicipalServiceRedirect on MunicipalService {
+    slug
+    href
+    form {
+      documentId
+    }
+    sections {
+      __typename
+    }
+  }
+`
 export const CommonLinkFragmentDoc = gql`
   fragment CommonLink on ComponentBlocksCommonLink {
     label
     municipalService {
       title
-      href
+      ...MunicipalServiceRedirect
     }
     url
   }
+  ${MunicipalServiceRedirectFragmentDoc}
 `
 export const FooterColumnBlockFragmentDoc = gql`
   fragment FooterColumnBlock on ComponentBlocksFooterColumn {
@@ -4593,14 +5534,15 @@ export const MunicipalServiceCardEntityFragmentDoc = gql`
     ...MunicipalServiceSlugEntity
     description
     buttonText
-    href
     color
     icon
+    ...MunicipalServiceRedirect
     tags {
       ...MunicipalServiceTagEntity
     }
   }
   ${MunicipalServiceSlugEntityFragmentDoc}
+  ${MunicipalServiceRedirectFragmentDoc}
   ${MunicipalServiceTagEntityFragmentDoc}
 `
 export const MunicipalServiceCategoryEntityFragmentDoc = gql`
@@ -4609,15 +5551,63 @@ export const MunicipalServiceCategoryEntityFragmentDoc = gql`
     title
   }
 `
+export const MunicipalServiceLinkFragmentDoc = gql`
+  fragment MunicipalServiceLink on ComponentBlocksMunicipalServiceLink {
+    id
+    label
+    url
+  }
+`
+export const MunicipalServiceSectionsFragmentDoc = gql`
+  fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
+    __typename
+    ... on ComponentSectionsRichtext {
+      ...RichtextSection
+    }
+    ... on ComponentSectionsStepper {
+      ...StepperSection
+    }
+    ... on ComponentSectionsContacts {
+      ...ContactsSection
+    }
+    ... on ComponentSectionsFaq {
+      ...FaqSection
+    }
+    ... on ComponentSectionsDocuments {
+      ...DocumentsSection
+    }
+    ... on ComponentSectionsTowing {
+      ...TowingSection
+    }
+  }
+  ${RichtextSectionFragmentDoc}
+  ${StepperSectionFragmentDoc}
+  ${ContactsSectionFragmentDoc}
+  ${FaqSectionFragmentDoc}
+  ${DocumentsSectionFragmentDoc}
+  ${TowingSectionFragmentDoc}
+`
 export const MunicipalServiceEntityFragmentDoc = gql`
   fragment MunicipalServiceEntity on MunicipalService {
     ...MunicipalServiceCardEntity
+    form {
+      ...FormBase
+    }
     categories {
       ...MunicipalServiceCategoryEntity
     }
+    links {
+      ...MunicipalServiceLink
+    }
+    sections {
+      ...MunicipalServiceSections
+    }
   }
   ${MunicipalServiceCardEntityFragmentDoc}
+  ${FormBaseFragmentDoc}
   ${MunicipalServiceCategoryEntityFragmentDoc}
+  ${MunicipalServiceLinkFragmentDoc}
+  ${MunicipalServiceSectionsFragmentDoc}
 `
 export const TaxFragmentDoc = gql`
   fragment Tax on Tax {
@@ -4700,6 +5690,14 @@ export const MunicipalChargeConfigDocument = gql`
     }
   }
   ${MunicipalChargeConfigFragmentDoc}
+`
+export const MunicipalServiceBySlugDocument = gql`
+  query MunicipalServiceBySlug($slug: String!) {
+    municipalServices(filters: { slug: { eq: $slug } }) {
+      ...MunicipalServiceEntity
+    }
+  }
+  ${MunicipalServiceEntityFragmentDoc}
 `
 export const MunicipalServicesPageDocument = gql`
   query MunicipalServicesPage {
@@ -4857,6 +5855,24 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             signal,
           }),
         'MunicipalChargeConfig',
+        'query',
+        variables,
+      )
+    },
+    MunicipalServiceBySlug(
+      variables: MunicipalServiceBySlugQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<MunicipalServiceBySlugQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MunicipalServiceBySlugQuery>({
+            document: MunicipalServiceBySlugDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'MunicipalServiceBySlug',
         'query',
         variables,
       )

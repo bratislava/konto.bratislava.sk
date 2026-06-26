@@ -111,6 +111,10 @@ const schema = {
   required: ['account_type', 'email', 'password', 'turnstileToken'],
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=814-60380&p=f
+ */
+
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const { t } = useTranslation('account')
 
@@ -326,7 +330,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             />
 
             {captchaWarning === 'show' && (
-              <Typography variant="p-tiny" className="italic">
+              <Typography variant="p-small" className="italic">
                 {t('auth.captcha_warning')}
               </Typography>
             )}

@@ -106,6 +106,11 @@ fragment DocumentsSection on ComponentSectionsDocuments {
   }
 }
 
+fragment TowingSection on ComponentSectionsTowing {
+  title
+  text
+}
+
 fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   __typename
 
@@ -128,4 +133,37 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   ... on ComponentSectionsDocuments {
     ...DocumentsSection
   }
+
+  ... on ComponentSectionsTowing {
+    ...TowingSection
+  }
 }
+
+fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
+  __typename
+
+  ... on ComponentSectionsRichtext {
+    ...RichtextSection
+  }
+
+  ... on ComponentSectionsStepper {
+    ...StepperSection
+  }
+
+  ... on ComponentSectionsContacts {
+    ...ContactsSection
+  }
+
+  ... on ComponentSectionsFaq {
+    ...FaqSection
+  }
+
+  ... on ComponentSectionsDocuments {
+    ...DocumentsSection
+  }
+
+  ... on ComponentSectionsTowing {
+    ...TowingSection
+  }
+}
+

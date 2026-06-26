@@ -212,7 +212,7 @@ input ComponentBlocksFooterColumnInput {
 }
 
 type ComponentBlocksFormLandingPage {
-  formCta: ComponentBlocksFormLandingPageFormCta!
+  formCta: ComponentBlocksFormLandingPageFormCta
   id: ID!
   linkCtas(filters: ComponentBlocksFormLandingPageLinkCtaFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFormLandingPageLinkCta]
   sections: [FormLandingPageSectionsDynamicZone]
@@ -323,6 +323,26 @@ input ComponentBlocksHelpItemInput {
   content: String
   id: ID
   title: String
+}
+
+type ComponentBlocksMunicipalServiceLink {
+  id: ID!
+  label: String
+  url: String
+}
+
+input ComponentBlocksMunicipalServiceLinkFiltersInput {
+  and: [ComponentBlocksMunicipalServiceLinkFiltersInput]
+  label: StringFilterInput
+  not: ComponentBlocksMunicipalServiceLinkFiltersInput
+  or: [ComponentBlocksMunicipalServiceLinkFiltersInput]
+  url: StringFilterInput
+}
+
+input ComponentBlocksMunicipalServiceLinkInput {
+  id: ID
+  label: String
+  url: String
 }
 
 type ComponentBlocksQuestion {
@@ -561,6 +581,26 @@ input ComponentSectionsStepperInput {
   checklists: [ComponentBlocksChecklistInput]
   description: String
   id: ID
+  title: String
+}
+
+type ComponentSectionsTowing {
+  id: ID!
+  text: String
+  title: String
+}
+
+input ComponentSectionsTowingFiltersInput {
+  and: [ComponentSectionsTowingFiltersInput]
+  not: ComponentSectionsTowingFiltersInput
+  or: [ComponentSectionsTowingFiltersInput]
+  text: StringFilterInput
+  title: StringFilterInput
+}
+
+input ComponentSectionsTowingInput {
+  id: ID
+  text: String
   title: String
 }
 
@@ -820,7 +860,7 @@ input FormInput {
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | Error
+union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
 
 scalar FormLandingPageSectionsDynamicZoneInput
 
@@ -869,7 +909,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -1287,9 +1327,12 @@ type MunicipalService {
   description: String!
   documentId: ID!
   form: Form
-  href: String!
+  formButtonLabel: String
+  href: String
   icon: ENUM_MUNICIPALSERVICE_ICON!
+  links(filters: ComponentBlocksMunicipalServiceLinkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksMunicipalServiceLink]
   publishedAt: DateTime
+  sections: [MunicipalServiceSectionsDynamicZone]
   slug: String!
   tags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceTag]!
   tags_connection(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagRelationResponseCollection
@@ -1366,8 +1409,10 @@ input MunicipalServiceFiltersInput {
   description: StringFilterInput
   documentId: IDFilterInput
   form: FormFiltersInput
+  formButtonLabel: StringFilterInput
   href: StringFilterInput
   icon: StringFilterInput
+  links: ComponentBlocksMunicipalServiceLinkFiltersInput
   not: MunicipalServiceFiltersInput
   or: [MunicipalServiceFiltersInput]
   publishedAt: DateTimeFilterInput
@@ -1383,9 +1428,12 @@ input MunicipalServiceInput {
   color: ENUM_MUNICIPALSERVICE_COLOR
   description: String
   form: ID
+  formButtonLabel: String
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
+  links: [ComponentBlocksMunicipalServiceLinkInput]
   publishedAt: DateTime
+  sections: [MunicipalServiceSectionsDynamicZoneInput!]
   slug: String
   tags: [ID]
   title: String
@@ -1394,6 +1442,10 @@ input MunicipalServiceInput {
 type MunicipalServiceRelationResponseCollection {
   nodes: [MunicipalService!]!
 }
+
+union MunicipalServiceSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
+
+scalar MunicipalServiceSectionsDynamicZoneInput
 
 type MunicipalServiceTag {
   createdAt: DateTime

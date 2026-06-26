@@ -107,8 +107,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     displayName: 'Form landing page'
   }
   attributes: {
-    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
-      Schema.Attribute.Required
+    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false>
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
       [
@@ -116,6 +115,7 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
         'sections.documents',
         'sections.faq',
         'sections.contacts',
+        'sections.towing',
         'sections.stepper',
       ]
     >
@@ -168,6 +168,17 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   attributes: {
     content: Schema.Attribute.RichText & Schema.Attribute.Required
     title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksMunicipalServiceLink extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_municipal_service_links'
+  info: {
+    displayName: 'municipalServiceLink'
+  }
+  attributes: {
+    label: Schema.Attribute.String
+    url: Schema.Attribute.String
   }
 }
 
@@ -306,6 +317,17 @@ export interface SectionsStepper extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsTowing extends Struct.ComponentSchema {
+  collectionName: 'components_sections_towings'
+  info: {
+    displayName: 'Od\u0165ahy'
+  }
+  attributes: {
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -322,6 +344,7 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.municipal-service-link': BlocksMunicipalServiceLink
       'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
       'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod
@@ -332,6 +355,7 @@ declare module '@strapi/strapi' {
       'sections.faq': SectionsFaq
       'sections.richtext': SectionsRichtext
       'sections.stepper': SectionsStepper
+      'sections.towing': SectionsTowing
     }
   }
 }

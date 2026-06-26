@@ -122,7 +122,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           loadingText={t('towing.searching')}
           startIcon={<Icon name="search" />}
         >
-          {t('button.search')}
+          {t('towing.searchButton')}
         </Button>
 
         <Controller

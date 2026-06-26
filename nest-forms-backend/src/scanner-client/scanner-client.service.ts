@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Files } from '@prisma/client'
 import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
 
+import BaConfigService from '../config/ba-config.service'
 import { ServiceRunningDto } from '../status/dtos/status.dto'
 import {
   ErrorsEnum,
@@ -21,7 +21,7 @@ export default class ScannerClientService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('ScannerClientService')
@@ -30,7 +30,7 @@ export default class ScannerClientService {
   // create function which will check health status of forms client with axios and using forms client url NEST_FORMS_BACKEND
   public async isRunning(): Promise<boolean> {
     try {
-      const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/health`
+      const url = `${this.baConfigService.scannerBackend.url}/health`
       const response: AxiosResponse<ServiceRunningDto> = await axios.get(url, {
         timeout: 5000,
       })
@@ -64,15 +64,13 @@ export default class ScannerClientService {
     filesList: Files,
   ): Promise<PostScanFileResponseDto[] | undefined> {
     try {
-      const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/files`
+      const url = `${this.baConfigService.scannerBackend.url}/api/scan/files`
       const response: AxiosResponse<PostScanFileResponseDto[]> =
         await axios.post(url, filesList, {
           timeout: 10_000,
           auth: {
-            username:
-              this.configService.get('NEST_CLAMAV_SCANNER_USERNAME') ?? '',
-            password:
-              this.configService.get('NEST_CLAMAV_SCANNER_PASSWORD') ?? '',
+            username: this.baConfigService.scannerBackend.username,
+            password: this.baConfigService.scannerBackend.password,
           },
         })
       this.logger.debug(
@@ -100,7 +98,7 @@ export default class ScannerClientService {
     bucketUid: string,
     userUid: string | null | undefined,
   ): Promise<PostScanFileResponseDto | undefined> {
-    const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/file`
+    const url = `${this.baConfigService.scannerBackend.url}/api/scan/file`
     // scanner needs fileUid key
     const postData = {
       fileUid: minioFileName,
@@ -114,10 +112,8 @@ export default class ScannerClientService {
         {
           timeout: 10_000,
           auth: {
-            username:
-              this.configService.get('NEST_CLAMAV_SCANNER_USERNAME') ?? '',
-            password:
-              this.configService.get('NEST_CLAMAV_SCANNER_PASSWORD') ?? '',
+            username: this.baConfigService.scannerBackend.username,
+            password: this.baConfigService.scannerBackend.password,
           },
         },
       )
@@ -141,15 +137,13 @@ export default class ScannerClientService {
   public async getScanFile(
     scannerId: string,
   ): Promise<GetScanFileDto | undefined> {
-    const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/file/${scannerId}`
+    const url = `${this.baConfigService.scannerBackend.url}/api/scan/file/${scannerId}`
     try {
       const response: AxiosResponse<GetScanFileDto> = await axios.get(url, {
         timeout: 10_000,
         auth: {
-          username:
-            this.configService.get('NEST_CLAMAV_SCANNER_USERNAME') ?? '',
-          password:
-            this.configService.get('NEST_CLAMAV_SCANNER_PASSWORD') ?? '',
+          username: this.baConfigService.scannerBackend.username,
+          password: this.baConfigService.scannerBackend.password,
         },
       })
 
@@ -170,15 +164,13 @@ export default class ScannerClientService {
   public async deleteFile(
     scannerId: string,
   ): Promise<GetScanFileDto | undefined> {
-    const url = `${this.configService.get<string>('NEST_CLAMAV_SCANNER')}/api/scan/file/${scannerId}`
+    const url = `${this.baConfigService.scannerBackend.url}/api/scan/file/${scannerId}`
     try {
       const response: AxiosResponse<GetScanFileDto> = await axios.delete(url, {
         timeout: 10_000,
         auth: {
-          username:
-            this.configService.get('NEST_CLAMAV_SCANNER_USERNAME') ?? '',
-          password:
-            this.configService.get('NEST_CLAMAV_SCANNER_PASSWORD') ?? '',
+          username: this.baConfigService.scannerBackend.username,
+          password: this.baConfigService.scannerBackend.password,
         },
       })
 

@@ -1,433 +1,394 @@
+# TODO: deploys will fail until a terragrunt deployment module is prepared
+# in bratislava/infrastructure-deployment-configuration under
+# clusters/<cluster>/applications/konto.bratislava.sk/<service> for each
+# service on each target cluster
 name: Monorepo deploy pipelines
 on:
   push:
     tags:
-      - "dev**"
-      - "staging**"
-      - "prod**"
+      - 'dev**'
+      - 'staging**'
+      - 'prod**'
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
+  resolve:
+    name: Resolve Environment and Services
+    runs-on: bratislava
+    outputs:
+      cluster: ${{ steps.resolve.outputs.cluster }}
+      next-build-env: ${{ steps.resolve.outputs.next-build-env }}
+      next: ${{ steps.resolve.outputs.next }}
+      strapi: ${{ steps.resolve.outputs.strapi }}
+      nest-forms-backend: ${{ steps.resolve.outputs.nest-forms-backend }}
+      nest-clamav-scanner: ${{ steps.resolve.outputs.nest-clamav-scanner }}
+      nest-tax-backend: ${{ steps.resolve.outputs.nest-tax-backend }}
+      nest-city-account: ${{ steps.resolve.outputs.nest-city-account }}
+      clamav: ${{ steps.resolve.outputs.clamav }}
+      cvdmirror: ${{ steps.resolve.outputs.cvdmirror }}
+    steps:
+      - name: Map ref to environment and services
+        id: resolve
+        run: |
+          REF="${{ github.ref }}"
+
+          if [[ "$REF" == "refs/heads/master" ]]; then
+            CLUSTER="staging"
+            ONLY="all"
+          elif [[ "$REF" == refs/tags/* ]]; then
+            TAG="${REF#refs/tags/}"
+            case "$TAG" in
+              dev*)     CLUSTER="development"; REST="${TAG#dev}" ;;
+              staging*) CLUSTER="staging";     REST="${TAG#staging}" ;;
+              prod*)    CLUSTER="production";  REST="${TAG#prod}" ;;
+              *)
+                echo "::error::Unable to determine environment from tag: $TAG"
+                exit 1
+                ;;
+            esac
+
+            # A bare environment tag (e.g. dev123) deploys the whole project,
+            # a service-suffixed tag (e.g. dev-nest-tax-backend123) deploys
+            # only that service.
+            case "$REST" in
+              -next*)                ONLY="next" ;;
+              -strapi*)              ONLY="strapi" ;;
+              -nest-forms-backend*)  ONLY="nest-forms-backend" ;;
+              -nest-clamav-scanner*) ONLY="nest-clamav-scanner" ;;
+              -nest-tax-backend*)    ONLY="nest-tax-backend" ;;
+              -nest-city-account*)   ONLY="nest-city-account" ;;
+              -clamav*)              ONLY="clamav" ;;
+              -cvdmirror*)           ONLY="cvdmirror" ;;
+              *)                     ONLY="all" ;;
+            esac
+          else
+            echo "::error::Unable to determine environment from ref: $REF"
+            exit 1
+          fi
+
+          case "$CLUSTER" in
+            development) NEXT_BUILD_ENV="dev" ;;
+            staging)     NEXT_BUILD_ENV="staging" ;;
+            production)  NEXT_BUILD_ENV="prod" ;;
+          esac
+
+          echo "cluster=$CLUSTER" >> $GITHUB_OUTPUT
+          echo "next-build-env=$NEXT_BUILD_ENV" >> $GITHUB_OUTPUT
+
+          echo "## Pipeline info :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo ":arrow_right: Ref: **$REF**" >> $GITHUB_STEP_SUMMARY
+          echo ":arrow_right: Cluster: **$CLUSTER**" >> $GITHUB_STEP_SUMMARY
+          echo "### We are going to deploy :ship:" >> $GITHUB_STEP_SUMMARY
+
+          for SVC in next strapi nest-forms-backend nest-clamav-scanner nest-tax-backend nest-city-account clamav cvdmirror; do
+            if [[ "$ONLY" == "all" || "$ONLY" == "$SVC" ]]; then
+              echo "$SVC=true" >> $GITHUB_OUTPUT
+              echo ":soon: **$SVC**" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "$SVC=false" >> $GITHUB_OUTPUT
+            fi
+          done
+
   build-forms-shared:
     name: Build and push specific forms-shared image
+    needs: resolve
+    if: needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true'
     uses: ./.github/workflows/build-shared-package.yml
+    secrets: inherit
     with:
       directory: forms-shared/
       image: harbor.bratislava.sk/standalone/forms-shared
       push: true
       target: prod
-    secrets:
-      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  test-forms-shared:
+    name: Test forms-shared
+    needs: [resolve, build-forms-shared]
+    if: ${{ !failure() && !cancelled() && (needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true') }}
+    uses: ./.github/workflows/test-forms-shared.yml
+    secrets: inherit
+    with:
+      directory: forms-shared/
+      image: harbor.bratislava.sk/standalone/forms-shared
 
   build-openapi-clients:
     name: Build and push specific openapi-clients image
+    needs: resolve
+    if: needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true' || needs.resolve.outputs.nest-clamav-scanner == 'true' || needs.resolve.outputs.nest-tax-backend == 'true' || needs.resolve.outputs.nest-city-account == 'true'
     uses: ./.github/workflows/build-shared-package.yml
+    secrets: inherit
     with:
       directory: openapi-clients/
       image: harbor.bratislava.sk/standalone/openapi-clients
       push: true
       target: prod
-    secrets:
-      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-  conditions:
-    name: Check for cluster conditions
-    uses: ./.github/workflows/cluster-deploy-conditions-konto.yml
+  # ---- Build & push per-cluster service images ----
+  # Each build job builds the deployable image, pushes it, and re-tags it for
+  # the cluster. The matching deploy-* job below then triggers the infra deploy.
 
-  deploy-dev:
-    name: after dev Backends deploy Next
+  build-strapi:
+    name: Build Strapi
+    needs: resolve
+    if: needs.resolve.outputs.strapi == 'true'
+    uses: ./.github/workflows/build-single-image.yml
+    secrets: inherit
+    with:
+      directory: strapi/
+      image: harbor.bratislava.sk/standalone/strapi
+      cluster: ${{ needs.resolve.outputs.cluster }}
+
+  build-cvdmirror:
+    name: Build cvdmirror
+    needs: resolve
+    if: needs.resolve.outputs.cvdmirror == 'true'
+    uses: ./.github/workflows/build-single-image.yml
+    secrets: inherit
+    with:
+      directory: cvdmirror/
+      image: harbor.bratislava.sk/standalone/cvdmirror
+      cluster: ${{ needs.resolve.outputs.cluster }}
+
+  build-clamav:
+    name: Build clamav
+    needs: resolve
+    if: needs.resolve.outputs.clamav == 'true'
+    uses: ./.github/workflows/build-single-image.yml
+    secrets: inherit
+    with:
+      directory: clamav/
+      image: harbor.bratislava.sk/standalone/clamav
+      cluster: ${{ needs.resolve.outputs.cluster }}
+
+  build-nest-clamav-scanner:
+    name: Build nest-clamav-scanner
+    needs: [resolve, build-openapi-clients]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-clamav-scanner == 'true' }}
+    uses: ./.github/workflows/build-nest.yml
+    secrets: inherit
+    with:
+      directory: nest-clamav-scanner/
+      image: harbor.bratislava.sk/standalone/nest-clamav-scanner
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      skip_tests: false
+      target_validate: prebuild
+      target_unit_test: test
+      target_lint: lint
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+
+  build-nest-forms-backend:
+    name: Build nest-forms-backend
+    needs: [resolve, build-forms-shared, build-openapi-clients]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
+    uses: ./.github/workflows/build-nest.yml
+    secrets: inherit
+    with:
+      directory: nest-forms-backend/
+      image: harbor.bratislava.sk/standalone/nest-forms-backend
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      skip_tests: false
+      target_validate: prebuild
+      target_unit_test: test
+      target_lint: lint
+      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+
+  build-nest-tax-backend:
+    name: Build nest-tax-backend
+    needs: [resolve, build-openapi-clients]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-tax-backend == 'true' }}
+    uses: ./.github/workflows/build-nest.yml
+    secrets: inherit
+    with:
+      directory: nest-tax-backend/
+      image: harbor.bratislava.sk/standalone/nest-tax-backend
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      skip_tests: false
+      target_validate: prebuild
+      target_unit_test: test
+      target_lint: lint
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+
+  build-nest-city-account:
+    name: Build nest-city-account
+    needs: [resolve, build-openapi-clients]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-city-account == 'true' }}
+    uses: ./.github/workflows/build-nest.yml
+    secrets: inherit
+    with:
+      directory: nest-city-account/
+      image: harbor.bratislava.sk/standalone/nest-city-account
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      skip_tests: false
+      target_validate: prebuild
+      target_unit_test: test
+      target_lint: lint
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+
+  build-next:
+    name: Build Next
+    needs: [resolve, build-forms-shared, build-openapi-clients]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.next == 'true' }}
+    uses: ./.github/workflows/build-next.yml
+    secrets: inherit
+    with:
+      directory: next/
+      image: harbor.bratislava.sk/standalone/next
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      build_env: ${{ needs.resolve.outputs.next-build-env }}
+      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
+      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+
+  # ---- Gate: every deploy waits here until all builds succeed ----
+  # Nothing deploys until every in-scope build (and the forms-shared test) has
+  # finished and none failed. Out-of-scope jobs report `skipped` (not `failure`),
+  # so they don't block — that's the "skipped on purpose" carve-out.
+
+  builds-complete:
+    name: All builds complete
     needs:
       [
         build-forms-shared,
+        test-forms-shared,
         build-openapi-clients,
-        conditions,
-        deploy-dev-strapi,
-        deploy-dev-nest-forms-backend,
-        deploy-dev-nest-clamav-scanner,
-        deploy-dev-nest-tax-backend,
-        deploy-dev-nest-city-account,
+        build-strapi,
+        build-cvdmirror,
+        build-clamav,
+        build-nest-clamav-scanner,
+        build-nest-forms-backend,
+        build-nest-tax-backend,
+        build-nest-city-account,
+        build-next,
       ]
-    if: needs.conditions.outputs.dev == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
-    with:
-      directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: development
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+    if: ${{ !cancelled() }}
+    runs-on: bratislava
+    steps:
+      - name: Verify every in-scope build succeeded
+        run: |
+          if ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}; then
+            echo "::error::A build job failed or was cancelled — aborting all deploys."
+            exit 1
+          fi
+          echo "All in-scope builds succeeded (skipped builds are intentional); proceeding to deploy."
 
-  deploy-dev-next:
-    name: dev Next
-    needs: [ build-forms-shared, build-openapi-clients, conditions ]
-    if: needs.conditions.outputs.dev-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
-    with:
-      directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: development
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+  # ---- Trigger infrastructure deploys ----
+  # Ordering: cvdmirror -> clamav -> nest-clamav-scanner; all backends -> next.
 
-  deploy-dev-strapi:
-    name: dev Strapi
-    needs: conditions
-    if: needs.conditions.outputs.dev-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+  deploy-cvdmirror:
+    name: cvdmirror
+    needs: [resolve, build-cvdmirror, builds-complete]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.cvdmirror == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: strapi/
-      cluster: development
-      skip_deployment_check: "--no_image_repo_check"
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/cvdmirror
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
-  deploy-dev-nest-forms-backend:
-    name: dev nest-forms-backend
-    needs: [ build-forms-shared, build-openapi-clients, conditions ]
-    if: needs.conditions.outputs.dev-nest-forms-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+  deploy-clamav:
+    name: clamav
+    needs: [resolve, build-clamav, deploy-cvdmirror, builds-complete]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.clamav == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: development
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/clamav
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
-  deploy-dev-cvdmirror:
-    name: dev cvdmirror
-    needs: conditions
-    if: needs.conditions.outputs.dev-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+  deploy-nest-clamav-scanner:
+    name: nest-clamav-scanner
+    needs: [resolve, build-nest-clamav-scanner, deploy-clamav, builds-complete]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-clamav-scanner == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: cvdmirror/
-      cluster: development
-      skip_deployment_check: "--no_image_repo_check"
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/nest_clamav_scanner
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
-  deploy-dev-clamav:
-    name: dev clamav
-    needs: deploy-dev-cvdmirror
-    if: needs.conditions.outputs.dev-clamav == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+  deploy-nest-forms-backend:
+    name: nest-forms-backend
+    needs: [resolve, build-nest-forms-backend, test-forms-shared, builds-complete]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: clamav/
-      cluster: development
-      url: https://dev.tkgis.bratislava.sk:6443
-      skip_deployment_check: "--no_image_repo_check"
-      debug: --debug
-      version: alpha
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/nest_forms_backend
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
-  deploy-dev-nest-clamav-scanner:
-    name: dev nest-clamav-scanner
-    needs: [ deploy-dev-clamav, build-openapi-clients ]
-    if: needs.conditions.outputs.dev-nest-clamav-scanner == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+  deploy-nest-tax-backend:
+    name: nest-tax-backend
+    needs: [resolve, build-nest-tax-backend, builds-complete]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-tax-backend == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: nest-clamav-scanner/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: development
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/nest_tax_backend
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
-  deploy-dev-nest-tax-backend:
-    name: dev nest-tax-backend
-    needs: [ conditions, build-openapi-clients ]
-    if: needs.conditions.outputs.dev-nest-tax-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+  deploy-nest-city-account:
+    name: nest-city-account
+    needs: [resolve, build-nest-city-account, builds-complete]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-city-account == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: nest-tax-backend/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: development
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/nest_city_account
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
-  deploy-dev-nest-city-account:
-    name: dev nest-city-account
-    needs: [ conditions, build-openapi-clients ]
-    if: needs.conditions.outputs.dev-nest-city-account == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+  deploy-strapi:
+    name: Strapi
+    needs: [resolve, build-strapi, builds-complete]
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.strapi == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: nest-city-account/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: development
-      url: https://dev.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/strapi
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
-  deploy-staging:
-    name: after staging Backends deploy Next
+  deploy-next:
+    name: after Backends deploy Next
     needs:
       [
-        build-forms-shared,
-        build-openapi-clients,
-        conditions,
-        deploy-staging-strapi,
-        deploy-staging-nest-forms-backend,
-        deploy-staging-nest-clamav-scanner,
-        deploy-staging-nest-tax-backend,
-        deploy-staging-nest-city-account,
+        resolve,
+        build-next,
+        test-forms-shared,
+        builds-complete,
+        deploy-strapi,
+        deploy-nest-forms-backend,
+        deploy-nest-clamav-scanner,
+        deploy-nest-tax-backend,
+        deploy-nest-city-account,
       ]
-    if: needs.conditions.outputs.staging == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.next == 'true' }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
     with:
-      directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      flag: --staging
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-next:
-    name: staging Next
-    needs: [ build-forms-shared, build-openapi-clients, conditions ]
-    if: needs.conditions.outputs.staging-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      flag: --staging
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-strapi:
-    name: staging Strapi
-    needs: conditions
-    if: needs.conditions.outputs.staging-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: strapi/
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      flag: --staging
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-nest-forms-backend:
-    name: staging nest-forms-backend
-    needs: [ build-forms-shared, build-openapi-clients, conditions ]
-    if: needs.conditions.outputs.staging-nest-forms-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      flag: --staging
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-cvdmirror:
-    name: staging cvdmirror
-    needs: conditions
-    if: needs.conditions.outputs.staging-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: cvdmirror/
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      skip_deployment_check: "--no_image_repo_check"
-      debug: --debug
-      version: alpha
-      flag: --staging
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-clamav:
-    name: staging clamav
-    needs: deploy-staging-cvdmirror
-    if: needs.conditions.outputs.staging-clamav == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: clamav/
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      skip_deployment_check: "--no_image_repo_check"
-      debug: --debug
-      version: alpha
-      flag: --staging
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-nest-clamav-scanner:
-    name: staging nest-clamav-scanner
-    needs: [ deploy-staging-clamav, build-openapi-clients ]
-    if: needs.conditions.outputs.staging-nest-clamav-scanner == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-clamav-scanner/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      flag: --staging
-      fetch-depth: 1
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-nest-tax-backend:
-    name: staging nest-tax-backend
-    needs: [ conditions, build-openapi-clients ]
-    if: needs.conditions.outputs.staging-nest-tax-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-tax-backend/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      flag: --staging
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-staging-nest-city-account:
-    name: staging nest-city-account
-    needs: [ conditions, build-openapi-clients ]
-    if: needs.conditions.outputs.staging-nest-city-account == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-city-account/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: staging
-      url: https://stage.tkgis.bratislava.sk:6443
-      debug: --debug
-      version: alpha
-      flag: --staging
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/next
+      dispatch_ref: mpinter/konto-deploy-dev-databases-v1
 
   check-openapi-clients:
     name: Check OpenAPI clients for changes
     needs:
       [
-        deploy-staging-nest-forms-backend,
-        deploy-staging-nest-clamav-scanner,
-        deploy-staging-nest-tax-backend,
-        deploy-staging-nest-city-account,
+        resolve,
+        deploy-nest-forms-backend,
+        deploy-nest-clamav-scanner,
+        deploy-nest-tax-backend,
+        deploy-nest-city-account,
       ]
-    runs-on: ubuntu-latest
+    if: ${{ !failure() && !cancelled() && needs.resolve.outputs.cluster == 'staging' }}
+    runs-on: bratislava
     steps:
       - uses: actions/checkout@v4
 
@@ -435,197 +396,3 @@ jobs:
         working-directory: openapi-clients
         run: docker run --rm $(docker build -q -f Dockerfile.check .)
         continue-on-error: true
-
-  deploy-prod:
-    name: after prod Backends deploy Next
-    needs:
-      [
-        build-forms-shared,
-        build-openapi-clients,
-        conditions,
-        deploy-prod-strapi,
-        deploy-prod-nest-forms-backend,
-        deploy-prod-nest-clamav-scanner,
-        deploy-prod-nest-tax-backend,
-        deploy-prod-nest-city-account,
-      ]
-    if: needs.conditions.outputs.prod == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      flag: --production
-      fetch-depth: 1
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-next:
-    name: prod Next
-    needs: [ build-forms-shared, build-openapi-clients, conditions ]
-    if: needs.conditions.outputs.prod-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      flag: --production
-      fetch-depth: 1
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-strapi:
-    name: prod Strapi
-    needs: conditions
-    if: needs.conditions.outputs.prod-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: strapi/
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      skip_deployment_check: "--no_image_repo_check"
-      flag: --production
-      fetch-depth: 1
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-nest-forms-backend:
-    name: prod nest-forms-backend
-    needs: [ build-forms-shared, build-openapi-clients, conditions ]
-    if: needs.conditions.outputs.prod-nest-forms-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_DIGEST=${{ needs.build-forms-shared.outputs.image_digest }}" --build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      flag: --production
-      fetch-depth: 1
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-cvdmirror:
-    name: prod cvdmirror
-    needs: conditions
-    if: needs.conditions.outputs.prod-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: cvdmirror/
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      skip_deployment_check: "--no_image_repo_check"
-      flag: --production
-      fetch-depth: 1
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-clamav:
-    name: prod clamav
-    needs: deploy-prod-cvdmirror
-    if: needs.conditions.outputs.prod-clamav == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: clamav/
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      skip_deployment_check: "--no_image_repo_check"
-      flag: --production
-      fetch-depth: 1
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-nest-clamav-scanner:
-    name: prod nest-clamav-scanner
-    needs: [ deploy-prod-clamav, build-openapi-clients ]
-    if: needs.conditions.outputs.prod-nest-clamav-scanner == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-clamav-scanner/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      flag: --production
-      fetch-depth: 1
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-nest-tax-backend:
-    name: prod nest-tax-backend
-    needs: [ conditions, build-openapi-clients ]
-    if: needs.conditions.outputs.prod-nest-tax-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-tax-backend/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      flag: --production
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-nest-city-account:
-    name: prod nest-city-account
-    needs: [ conditions, build-openapi-clients ]
-    if: needs.conditions.outputs.prod-nest-city-account == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: nest-city-account/
-      build_arg: '--build_arg="OPENAPI_CLIENTS_DIGEST=${{ needs.build-openapi-clients.outputs.image_digest }}"'
-      skip_deployment_check: "--no_image_repo_check"
-      cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      flag: --production
-      debug: --debug
-      version: alpha
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}

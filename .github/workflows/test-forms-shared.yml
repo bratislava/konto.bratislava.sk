@@ -48,25 +48,28 @@ jobs:
           node "${{ inputs.directory }}/scripts/printDockerBuildArgs.ts" "${{ inputs.directory }}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker build
-        id: docker
-        uses: ./.github/actions/setup-docker-build
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
         with:
-          image: ${{ inputs.image }}
-          suffixes: |
-            test
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           harbor_registry: ${{ env.REGISTRY }}
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
+      - name: Docker metadata
+        id: meta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          suffix: -test
+
       - name: Run tests
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
           target: ci-test
-          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).test.cache_from }}
-          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).test.cache_to }}
+          cache-from: ${{ steps.meta.outputs.cache_from }}
+          cache-to: ${{ steps.meta.outputs.cache_to }}
           build-args: |
             PLAYWRIGHT_VERSION=${{ steps.docker-build-args.outputs.PLAYWRIGHT_VERSION }}
             SLOVENSKO_MEF_JSON_LAST_MODIFIED=${{ steps.docker-build-args.outputs.SLOVENSKO_MEF_JSON_LAST_MODIFIED }}

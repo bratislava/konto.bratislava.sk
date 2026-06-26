@@ -13,7 +13,7 @@ type Props = FieldWrapperProps & {
 
 const PasswordField = forwardRef<HTMLInputElement, Props>(
   ({ value = '', autoComplete, onChange, placeholder, className, ...rest }, ref) => {
-    const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+    const [isPasswordHidden] = useState(true)
 
     return (
       <InputField

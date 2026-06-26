@@ -1,8 +1,8 @@
-import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
 
+import BaConfigService from '../../../../config/ba-config.service'
 import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
 import {
@@ -35,37 +35,22 @@ jest.mock('mailgun.js', () =>
 
 describe('MailgunHelper', () => {
   let mailgunHelper: MailgunHelper
-  let configService: ConfigService
-  let throwerErrorGuard: ThrowerErrorGuard
 
   beforeEach(async () => {
-    // Set environment variables needed for constructor
-    process.env.MAILGUN_API_KEY = 'test-api-key'
-    process.env.MAILGUN_HOST = 'test-host'
-    process.env.MAILGUN_EMAIL_FROM = 'test@example.com'
-    process.env.MAILGUN_DOMAIN = 'test-domain'
-
-    process.env.FRONTEND_URL = 'https://konto.test.sk'
-
     const moduleRef = await Test.createTestingModule({
       providers: [
         MailgunHelper,
         {
-          provide: ConfigService,
+          provide: BaConfigService,
           useValue: {
-            getOrThrow: jest.fn((key: string) => {
-              const values = {
-                MAILGUN_API_KEY: 'test-api-key',
-                MAILGUN_HOST: 'test-host',
-                MAILGUN_EMAIL_FROM: 'test@example.com',
-                MAILGUN_DOMAIN: 'test-domain',
-                FRONTEND_URL: 'https://konto.test.sk',
-              }
-              if (!values[key as keyof typeof values]) {
-                throw new Error(`Missing env: ${key}`)
-              }
-              return values[key as keyof typeof values]
-            }),
+            mailgun: {
+              apiKey: 'test-api-key',
+              host: 'test-host',
+              emailFrom: 'test@example.com',
+              domain: 'test-domain',
+            },
+            frontend: { url: 'https://konto.bratislava.sk' },
+            olo: { frontendUrl: 'https://olo.sk' },
           },
         },
         {
@@ -82,27 +67,13 @@ describe('MailgunHelper', () => {
     }).compile()
 
     mailgunHelper = moduleRef.get<MailgunHelper>(MailgunHelper)
-    configService = moduleRef.get<ConfigService>(ConfigService)
-    throwerErrorGuard = moduleRef.get<ThrowerErrorGuard>(ThrowerErrorGuard)
   })
 
   afterEach(() => {
     jest.clearAllMocks()
-    delete process.env.MAILGUN_API_KEY
-    delete process.env.MAILGUN_HOST
-    delete process.env.MAILGUN_EMAIL_FROM
-    delete process.env.MAILGUN_DOMAIN
-    delete process.env.FRONTEND_URL
   })
 
   describe('constructor', () => {
-    it('should throw error if environment variables are missing', () => {
-      delete process.env.MAILGUN_API_KEY
-      expect(() => new MailgunHelper(throwerErrorGuard, configService)).toThrow(
-        'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
-      )
-    })
-
     it('should initialize mailgunClient correctly', () => {
       expect(mailgunHelper.mailgunClient).toBeDefined()
     })
@@ -124,7 +95,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Test Application')
       expect(result.firstName).toBe('John')
@@ -143,7 +114,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.feedbackLink).toBe(
         'https://bravo.staffino.com/bratislava/id=WW1hkstR',
@@ -163,7 +134,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.feedbackLink).toBeUndefined()
     })
@@ -182,7 +153,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('OLO Test Application')
       expect(result.htmlData).toBe('<p>Form HTML data</p>')
@@ -201,7 +172,7 @@ describe('MailgunHelper', () => {
         },
       }
 
-      const result = MailgunHelper.createEmailVariables(input)
+      const result = mailgunHelper.createEmailVariables(input)
 
       expect(result.applicationName).toBe('Virus Detected')
       expect(result.firstName).toBe('Jane')

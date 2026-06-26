@@ -18,6 +18,7 @@ import InputFieldShowCase from '@/src/components/styleguide/showcases/InputField
 import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShowCase'
 import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase/ModalsShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
+import MyApplicationsShowCase from '@/src/components/styleguide/showcases/MyApplicationsShowCase/MyApplicationsShowCase'
 import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
 import PasswordFieldShowCase from '@/src/components/styleguide/showcases/PasswordFieldShowCase'
 import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
@@ -85,6 +86,11 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     component: <FormVersionCompareActionShowCase />,
   },
   { id: 'taxes-fees', label: 'Taxes & Fees Pages', component: <TaxesFeesShowCase /> },
+  {
+    id: 'my-applications',
+    label: 'My Applications Pages',
+    component: <MyApplicationsShowCase />,
+  },
 ]
 
 const StyleGuidePageContent = () => {

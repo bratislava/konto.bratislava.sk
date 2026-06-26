@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormState } from '@prisma/client'
 import axios from 'axios'
@@ -12,6 +11,7 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
+import BaConfigService from '../../../config/ba-config.service'
 import { createTestFormWithEmptyFiles } from '../../../__tests__/factories/form.factory'
 import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
@@ -38,7 +38,10 @@ describe('WebhookService', () => {
           useValue: prismaMock,
         },
         ThrowerErrorGuard,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: BaConfigService,
+          useValue: createMock<BaConfigService>(),
+        },
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),

@@ -1,0 +1,86 @@
+{
+  "key": "plugin_content_manager_configuration_components::municipal-charge.delivery-method-change-pending-alert",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "relationOpenMode": "modal",
+      "mainField": "title",
+      "defaultSortBy": "title",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "title": {
+        "edit": {
+          "label": "Nadpis",
+          "description": "Spôsob informovania sa vždy nárazovo aktualizuje v interných systémoch. Od termínu 1. 2. sa už zmena spôsobu informovania neprejaví až do nasledujúcej aktualizácie. Používateľom nechávame možnosť zakliknúť si preferenciu, ale týmto alertom ich upozorňujeme, že sa prejaví až neskôr.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "title",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "content": {
+        "edit": {
+          "label": "Text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "content",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "edit": [
+        [
+          {
+            "name": "title",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "content",
+            "size": 12
+          }
+        ]
+      ],
+      "list": [
+        "id",
+        "title"
+      ]
+    },
+    "uid": "municipal-charge.delivery-method-change-pending-alert",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

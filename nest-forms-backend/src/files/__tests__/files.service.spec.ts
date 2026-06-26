@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Files } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
+import BaConfigService from '../../config/ba-config.service'
 import FormsService from '../../forms/forms.service'
 import { FormAccessService } from '../../forms-v2/services/form-access.service'
 import PrismaService from '../../prisma/prisma.service'
@@ -22,7 +22,10 @@ describe('FilesService', () => {
       providers: [
         FilesService,
         { provide: PrismaService, useValue: prismaMock },
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: BaConfigService,
+          useValue: { tokens: { jwtSecret: 'test-secret' } },
+        },
         {
           provide: MinioClientSubservice,
           useValue: createMock<MinioClientSubservice>(),

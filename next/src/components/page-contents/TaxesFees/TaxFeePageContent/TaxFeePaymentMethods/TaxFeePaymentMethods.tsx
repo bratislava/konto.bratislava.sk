@@ -2,7 +2,7 @@ import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import {
   InstallmentPaidStatusEnum,
-  ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum,
+  InstallmentPaymentReasonNotPossibleEnum,
   TaxStatusEnum,
   TaxType,
 } from 'openapi-clients/tax'
@@ -83,7 +83,7 @@ const TaxFeePaymentMethods = () => {
           )}
         {!installmentPayment.isPossible &&
           installmentPayment.reasonNotPossible ===
-            ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.BelowThreshold &&
+            InstallmentPaymentReasonNotPossibleEnum.BelowThreshold &&
           taxData.type === TaxType.Dzn && (
             <div className="p-4 lg:p-6 lg:pt-0">
               <Alert
@@ -95,7 +95,7 @@ const TaxFeePaymentMethods = () => {
           )}
         {!installmentPayment.isPossible &&
           installmentPayment.reasonNotPossible ===
-            ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum.AfterDueDate && (
+            InstallmentPaymentReasonNotPossibleEnum.AfterDueDate && (
             <div className="p-4 lg:p-6 lg:pt-0">
               <Alert
                 type="warning"

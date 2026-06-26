@@ -84,7 +84,7 @@ export default class GinisService {
 
     if (
       !['production', 'development', 'staging'].includes(
-        process.env.NODE_ENV ?? '',
+        this.baConfigService.environment.nodeEnv,
       ) &&
       process.env.JEST_WORKER_ID === undefined
     ) {

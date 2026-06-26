@@ -18,12 +18,18 @@
     "formCta": {
       "type": "component",
       "component": "blocks.form-landing-page-form-cta",
-      "repeatable": false,
-      "required": true
+      "repeatable": false
     },
     "sections": {
       "type": "dynamiczone",
-      "components": ["sections.richtext", "sections.faq", "sections.contacts", "sections.stepper"]
+      "components": [
+        "sections.richtext",
+        "sections.documents",
+        "sections.faq",
+        "sections.contacts",
+        "sections.towing",
+        "sections.stepper"
+      ]
     }
   }
 }

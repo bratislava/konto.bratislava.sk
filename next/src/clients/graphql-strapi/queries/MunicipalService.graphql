@@ -8,14 +8,37 @@ fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {
   title
 }
 
-fragment MunicipalServiceCardEntity on MunicipalService {
+# Used to determine whether the service redirects to a landing page or to an external URL
+fragment MunicipalServiceRedirect on MunicipalService {
+  slug
+  href
+  form {
+    documentId
+  }
+  sections {
+    __typename
+  }
+}
+
+fragment MunicipalServiceLink on ComponentBlocksMunicipalServiceLink {
+  id
+  label
+  url
+}
+
+fragment MunicipalServiceSlugEntity on MunicipalService {
   documentId
   title
+  slug
+}
+
+fragment MunicipalServiceCardEntity on MunicipalService {
+  ...MunicipalServiceSlugEntity
   description
   buttonText
-  href
   color
   icon
+  ...MunicipalServiceRedirect
   tags {
     ...MunicipalServiceTagEntity
   }
@@ -23,7 +46,22 @@ fragment MunicipalServiceCardEntity on MunicipalService {
 
 fragment MunicipalServiceEntity on MunicipalService {
   ...MunicipalServiceCardEntity
+  form {
+    ...FormBase
+  }
   categories {
     ...MunicipalServiceCategoryEntity
+  }
+  links {
+    ...MunicipalServiceLink
+  }
+  sections {
+    ...MunicipalServiceSections
+  }
+}
+
+query MunicipalServiceBySlug($slug: String!) {
+  municipalServices(filters: { slug: { eq: $slug } }) {
+    ...MunicipalServiceEntity
   }
 }

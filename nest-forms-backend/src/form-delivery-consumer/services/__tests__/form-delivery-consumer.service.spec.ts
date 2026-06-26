@@ -36,13 +36,6 @@ describe('FormDeliveryConsumerService', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
 
-    process.env = {
-      MAILGUN_API_KEY: 'test',
-      MAILGUN_DOMAIN: 'test',
-      MAILGUN_HOST: 'test',
-      MAILGUN_EMAIL_FROM: 'test',
-    }
-
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
       providers: [

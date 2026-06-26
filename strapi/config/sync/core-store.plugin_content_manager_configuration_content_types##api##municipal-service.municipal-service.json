@@ -22,8 +22,8 @@
       },
       "title": {
         "edit": {
-          "label": "Nadpis kartičky",
-          "description": "Mal by sa zhodovať s názvom služby.",
+          "label": "Názov",
+          "description": null,
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -34,9 +34,23 @@
           "sortable": true
         }
       },
+      "slug": {
+        "edit": {
+          "label": "Slug",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "slug",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "description": {
         "edit": {
-          "label": "Text kartičky",
+          "label": "Kartička - text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -50,7 +64,7 @@
       },
       "buttonText": {
         "edit": {
-          "label": "Text tlačidla",
+          "label": "Kartička - text odkazu",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -62,10 +76,39 @@
           "sortable": true
         }
       },
+      "form": {
+        "edit": {
+          "label": "Formulár",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "moreInformationUrl"
+        },
+        "list": {
+          "label": "form",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "formButtonLabel": {
+        "edit": {
+          "label": "Formulár - text CTA buttonu",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "formButtonLabel",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "href": {
         "edit": {
-          "label": "Odkaz na službu",
-          "description": "Mal by začínať lomítkom, napr. /mestske-sluzby/...",
+          "label": "Externý odkaz",
+          "description": "Vyplní sa v prípade, že služba smeruje na externú URL mimo konta.",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -91,9 +134,24 @@
           "sortable": false
         }
       },
+      "categories": {
+        "edit": {
+          "label": "Kategória",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "categories",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "icon": {
         "edit": {
-          "label": "Piktogram",
+          "label": "Kartička - piktogram",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -107,7 +165,7 @@
       },
       "color": {
         "edit": {
-          "label": "Farba",
+          "label": "Kartička - farba",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -119,17 +177,31 @@
           "sortable": true
         }
       },
-      "categories": {
+      "links": {
         "edit": {
-          "label": "Kategória",
+          "label": "Odkazy v sidebare",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "title"
+          "mainField": "label"
         },
         "list": {
-          "label": "categories",
+          "label": "links",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "sections": {
+        "edit": {
+          "label": "Sekcie",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sections",
           "searchable": false,
           "sortable": false
         }
@@ -207,20 +279,28 @@
           {
             "name": "title",
             "size": 12
-          },
+          }
+        ],
+        [
           {
-            "name": "description",
+            "name": "slug",
             "size": 12
           }
         ],
         [
           {
-            "name": "buttonText",
-            "size": 8
-          },
-          {
             "name": "href",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "form",
+            "size": 6
+          },
+          {
+            "name": "formButtonLabel",
+            "size": 6
           }
         ],
         [
@@ -235,12 +315,34 @@
         ],
         [
           {
-            "name": "color",
+            "name": "description",
             "size": 6
           },
           {
+            "name": "buttonText",
+            "size": 6
+          }
+        ],
+        [
+          {
             "name": "icon",
             "size": 6
+          },
+          {
+            "name": "color",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "links",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "sections",
+            "size": 12
           }
         ]
       ],

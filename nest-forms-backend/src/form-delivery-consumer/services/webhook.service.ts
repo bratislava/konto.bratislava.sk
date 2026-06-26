@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
 import axios, { isAxiosError } from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
+import BaConfigService from '../../config/ba-config.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -31,7 +31,7 @@ export default class WebhookService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {}
 
@@ -68,8 +68,8 @@ export default class WebhookService {
     }
 
     // prepare file urls into the resulting json
-    const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
-    const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
+    const jwtSecret = this.baConfigService.tokens.jwtSecret
+    const selfUrl = this.baConfigService.self.url
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
     if (form.formDataJson == null) {

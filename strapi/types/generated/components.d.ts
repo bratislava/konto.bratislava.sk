@@ -78,6 +78,17 @@ export interface BlocksContactPersonCard extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksExternalDocument extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_external_documents'
+  info: {
+    displayName: 'External Document'
+  }
+  attributes: {
+    title: Schema.Attribute.String
+    url: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 export interface BlocksFooterColumn extends Struct.ComponentSchema {
   collectionName: 'components_blocks_footer_columns'
   info: {
@@ -96,11 +107,17 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
     displayName: 'Form landing page'
   }
   attributes: {
-    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false> &
-      Schema.Attribute.Required
+    formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false>
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
     sections: Schema.Attribute.DynamicZone<
-      ['sections.richtext', 'sections.faq', 'sections.contacts', 'sections.stepper']
+      [
+        'sections.richtext',
+        'sections.documents',
+        'sections.faq',
+        'sections.contacts',
+        'sections.towing',
+        'sections.stepper',
+      ]
     >
     text: Schema.Attribute.RichText
   }
@@ -154,6 +171,17 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksMunicipalServiceLink extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_municipal_service_links'
+  info: {
+    displayName: 'municipalServiceLink'
+  }
+  attributes: {
+    label: Schema.Attribute.String
+    url: Schema.Attribute.String
+  }
+}
+
 export interface BlocksQuestion extends Struct.ComponentSchema {
   collectionName: 'components_blocks_questions'
   info: {
@@ -178,6 +206,42 @@ export interface GeneralAlert extends Struct.ComponentSchema {
   }
 }
 
+export interface MunicipalChargeDeliveryMethod extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_delivery_methods'
+  info: {
+    displayName: 'deliveryMethod'
+  }
+  attributes: {
+    consentText: Schema.Attribute.RichText & Schema.Attribute.Required
+    deliveryMethodChangePendingAlert: Schema.Attribute.Component<
+      'municipal-charge.delivery-method-change-pending-alert',
+      false
+    >
+  }
+}
+
+export interface MunicipalChargeDeliveryMethodChangePendingAlert extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_delivery_method_change_pending_alerts'
+  info: {
+    displayName: 'deliveryMethodChangePendingAlert'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
+export interface MunicipalChargeMunicipalChargeIdentifier extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_municipal_charge_identifiers'
+  info: {
+    displayName: 'municipalChargeIdentifier'
+  }
+  attributes: {
+    dzn: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+    ko: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+  }
+}
+
 export interface SectionsContacts extends Struct.ComponentSchema {
   collectionName: 'components_sections_contacts'
   info: {
@@ -198,6 +262,18 @@ export interface SectionsContacts extends Struct.ComponentSchema {
     title: Schema.Attribute.String
     titleLevel: Schema.Attribute.Enumeration<['h2', 'h3']> & Schema.Attribute.DefaultTo<'h2'>
     webContacts: Schema.Attribute.Component<'blocks.contact-card', true>
+  }
+}
+
+export interface SectionsDocuments extends Struct.ComponentSchema {
+  collectionName: 'components_sections_documents'
+  info: {
+    displayName: 'Dokumenty'
+  }
+  attributes: {
+    externalDocuments: Schema.Attribute.Component<'blocks.external-document', true>
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
   }
 }
 
@@ -241,6 +317,17 @@ export interface SectionsStepper extends Struct.ComponentSchema {
   }
 }
 
+export interface SectionsTowing extends Struct.ComponentSchema {
+  collectionName: 'components_sections_towings'
+  info: {
+    displayName: 'Od\u0165ahy'
+  }
+  attributes: {
+    text: Schema.Attribute.Text
+    title: Schema.Attribute.String
+  }
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -250,18 +337,25 @@ declare module '@strapi/strapi' {
       'blocks.contact-card': BlocksContactCard
       'blocks.contact-directions-card': BlocksContactDirectionsCard
       'blocks.contact-person-card': BlocksContactPersonCard
+      'blocks.external-document': BlocksExternalDocument
       'blocks.footer-column': BlocksFooterColumn
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.municipal-service-link': BlocksMunicipalServiceLink
       'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert
+      'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod
+      'municipal-charge.delivery-method-change-pending-alert': MunicipalChargeDeliveryMethodChangePendingAlert
+      'municipal-charge.municipal-charge-identifier': MunicipalChargeMunicipalChargeIdentifier
       'sections.contacts': SectionsContacts
+      'sections.documents': SectionsDocuments
       'sections.faq': SectionsFaq
       'sections.richtext': SectionsRichtext
       'sections.stepper': SectionsStepper
+      'sections.towing': SectionsTowing
     }
   }
 }

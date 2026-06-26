@@ -18,6 +18,10 @@ type MyApplicationDetailsHeaderBase = {
   ginisData?: GinisDocumentDetailResponseDto | null
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
+ */
+
 const MyApplicationDetailsHeader = ({
   formDefinitionTitle,
   data,
@@ -40,7 +44,7 @@ const MyApplicationDetailsHeader = ({
   const state = data?.state
   const error = data?.error
 
-  const { icon, text } = useFormStateComponents({ error, state })
+  const { icon: iconComponent, text: textComponent } = useFormStateComponents({ error, state })
 
   const exportPdf = async () => {
     showToast({ message: t('forms:info_messages.pdf_export'), variant: 'info' })
@@ -99,12 +103,12 @@ const MyApplicationDetailsHeader = ({
                   <FormatDate>{createdAt || ''}</FormatDate>
                 </Typography>
               </div>
-              <span className="hidden size-1.5 rounded-full bg-gray-700 lg:block" />
+              <div aria-hidden className="size-1.5 rounded-full bg-gray-700 max-lg:hidden" />
               <div className="flex items-center gap-1">
-                {icon}
-                {text}
+                {iconComponent}
+                {textComponent}
               </div>
-              <span className="hidden size-1.5 rounded-full bg-gray-700 lg:block" />
+              <div aria-hidden className="size-1.5 rounded-full bg-gray-700 max-lg:hidden" />
               <div className="flex items-center gap-1">
                 <Typography variant="p-small">
                   {t('account_section_applications.last_change')}

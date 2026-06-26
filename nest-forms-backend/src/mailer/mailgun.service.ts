@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError } from '@prisma/client'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { Interfaces } from 'mailgun.js/definitions'
 
+import BaConfigService from '../config/ba-config.service'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
-import { MAILGUN_CONFIG } from './mailgun.constants'
+import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
@@ -20,27 +20,17 @@ export default class MailgunService implements Mailer {
   logger: LineLoggerSubservice
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly mailgunHelper: MailgunHelper,
     private readonly prismaService: PrismaService,
   ) {
-    if (
-      !process.env.MAILGUN_API_KEY ||
-      !process.env.MAILGUN_HOST ||
-      !process.env.MAILGUN_EMAIL_FROM ||
-      !process.env.MAILGUN_DOMAIN
-    ) {
-      throw new Error(
-        'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
-      )
-    }
     this.logger = new LineLoggerSubservice(MailgunService.name)
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
       username: 'api',
-      key: this.configService.get('MAILGUN_API_KEY') || '',
-      url: this.configService.get('MAILGUN_HOST'),
+      key: this.baConfigService.mailgun.apiKey,
+      url: this.baConfigService.mailgun.host,
     })
   }
 
@@ -61,9 +51,10 @@ export default class MailgunService implements Mailer {
     }))
 
     try {
-      const renderLocally = !!MAILGUN_CONFIG[data.template].renderLocally
-      const { template } = MAILGUN_CONFIG[data.template]
-      const variables = MailgunHelper.createEmailVariables(data)
+      const mailgunConfig = getMailgunConfig(this.baConfigService)
+      const renderLocally = !!mailgunConfig[data.template].renderLocally
+      const { template } = mailgunConfig[data.template]
+      const variables = this.mailgunHelper.createEmailVariables(data)
 
       const emailContent = renderLocally
         ? {
@@ -78,13 +69,11 @@ export default class MailgunService implements Mailer {
           }
 
       const mailgunResponse = await this.mailgunClient.messages.create(
-        this.configService.getOrThrow<string>('MAILGUN_DOMAIN'),
+        this.baConfigService.mailgun.domain,
         {
-          from:
-            emailFrom ||
-            this.configService.getOrThrow<string>('MAILGUN_EMAIL_FROM'),
+          from: emailFrom || this.baConfigService.mailgun.emailFrom,
           to: data.to,
-          subject: subject ?? MAILGUN_CONFIG[data.template].subject,
+          subject: subject ?? mailgunConfig[data.template].subject,
           attachment: mailgunAttachments,
           ...(replyTo ? { 'h:Reply-To': replyTo } : {}),
           ...emailContent,

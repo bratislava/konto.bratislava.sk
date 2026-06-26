@@ -16,6 +16,11 @@
       "type": "string",
       "required": true
     },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
     "description": {
       "type": "text",
       "required": true
@@ -24,14 +29,30 @@
       "type": "string",
       "required": true
     },
+    "form": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::form.form",
+      "mappedBy": "municipalService"
+    },
+    "formButtonLabel": {
+      "type": "string",
+      "default": "Vyplniť formulár"
+    },
     "href": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "tags": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::municipal-service-tag.municipal-service-tag",
+      "inversedBy": "municipalServices"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::municipal-service-category.municipal-service-category",
       "inversedBy": "municipalServices"
     },
     "icon": {
@@ -83,11 +104,21 @@
         "tsb"
       ]
     },
-    "categories": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::municipal-service-category.municipal-service-category",
-      "inversedBy": "municipalServices"
+    "links": {
+      "type": "component",
+      "component": "blocks.municipal-service-link",
+      "repeatable": true
+    },
+    "sections": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.richtext",
+        "sections.documents",
+        "sections.faq",
+        "sections.contacts",
+        "sections.stepper",
+        "sections.towing"
+      ]
     }
   }
 }

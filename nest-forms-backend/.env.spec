@@ -101,3 +101,6 @@ FEATURE_TOGGLE_FILE_SIZE_LIMITS=false
 # Max file size
 MAX_FILE_SIZE=524288000
 MAX_CUMULATIVE_FILE_SIZE=524288000
+
+# File upload
+MIMETYPE_WHITELIST="application/pdf image/jpeg image/jpg image/png image/tiff image/bmp image/gif"

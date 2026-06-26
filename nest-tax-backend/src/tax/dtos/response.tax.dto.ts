@@ -270,6 +270,7 @@ export class ResponseOneTimePaymentDetailsDto {
   @ApiPropertyOptional({
     description: 'Type of payment',
     enum: OneTimePaymentTypeEnum,
+    enumName: 'OneTimePaymentTypeEnum',
     required: false,
   })
   @IsEnum(OneTimePaymentTypeEnum)
@@ -279,6 +280,7 @@ export class ResponseOneTimePaymentDetailsDto {
   @ApiPropertyOptional({
     description: 'Reason why payment is not possible',
     enum: OneTimePaymentReasonNotPossibleEnum,
+    enumName: 'OneTimePaymentReasonNotPossibleEnum',
     required: false,
   })
   @IsEnum(OneTimePaymentReasonNotPossibleEnum)
@@ -394,6 +396,7 @@ export class ResponseInstallmentPaymentDetailDto {
   @ApiPropertyOptional({
     description: 'Reason why installment is not possible',
     enum: InstallmentPaymentReasonNotPossibleEnum,
+    enumName: 'InstallmentPaymentReasonNotPossibleEnum',
     required: false,
   })
   @IsEnum(InstallmentPaymentReasonNotPossibleEnum)

@@ -117,7 +117,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           file: ./next/Dockerfile
-          target: prod
+          target: runner
           push: ${{ inputs.cluster != '' }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: ${{ steps.meta.outputs.cache_from }}

@@ -1,6 +1,9 @@
 ARG NODE_VERSION=24.15
 FROM node:${NODE_VERSION}-alpine AS base
 
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV NEXT_TELEMETRY_DISABLED=1
+
 # This Dockerfile is copy-pasted into our main docs at /docs/handbook/deploying-with-docker.
 # Make sure you update both files!
 
@@ -31,9 +34,6 @@ ENV TURBO_TEAM=$TURBO_TEAM
 
 ARG TURBO_TOKEN
 ENV TURBO_TOKEN=$TURBO_TOKEN
-
-ENV TURBO_TELEMETRY_DISABLED=1
-ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npx turbo build
 

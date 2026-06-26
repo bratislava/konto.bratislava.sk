@@ -130,6 +130,18 @@ jobs:
           # instead of bucket.domain.com
           S3_USE_PATH_STYLE: "true"
 
+      - name: Debug Turbo cache reachability
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -v http://127.0.0.1:8585/management/health
+
+          docker run --rm --network host curlimages/curl:8.11.1 \
+            -v http://127.0.0.1:8585/management/health || true
+
+          docker run --rm --add-host=host.docker.internal:host-gateway curlimages/curl:8.11.1 \
+            -v http://host.docker.internal:8585/management/health || true
+
       - name: Build image
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}
         uses: docker/build-push-action@v7

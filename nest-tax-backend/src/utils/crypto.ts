@@ -23,6 +23,7 @@ export const timingSafeStringEqual = (
 
     return timingSafeEqual(expectedBuffer, compareBuffer)
   } catch {
+    // timingSafeEqual throws if buffers have different lengths
     return false
   }
 }

@@ -90,6 +90,7 @@ export const timingSafeStringEqual = (
 
     return crypto.timingSafeEqual(expectedBuffer, compareBuffer)
   } catch {
+    // timingSafeEqual throws if buffers have different lengths
     return false
   }
 }

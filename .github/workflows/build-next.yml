@@ -162,3 +162,4 @@ jobs:
             TURBO_API=http://host.docker.internal:8586
             TURBO_TEAM=city-account
             TURBO_TOKEN=local
+            TURBO_VERBOSITY=2

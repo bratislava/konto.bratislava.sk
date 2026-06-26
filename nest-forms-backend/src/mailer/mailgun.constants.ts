@@ -1,6 +1,6 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 
-import BaConfigService from '../../../config/ba-config.service'
+import BaConfigService from '../config/ba-config.service'
 
 export enum MailgunConfigVariableType {
   PARAMETER = 'PARAMETER',

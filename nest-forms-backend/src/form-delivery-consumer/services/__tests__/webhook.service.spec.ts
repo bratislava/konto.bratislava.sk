@@ -11,9 +11,9 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
-import BaConfigService from '../../../config/ba-config.service'
 import { createTestFormWithEmptyFiles } from '../../../__tests__/factories/form.factory'
 import { expectStringContaining } from '../../../__tests__/jest-matchers'
+import BaConfigService from '../../../config/ba-config.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'

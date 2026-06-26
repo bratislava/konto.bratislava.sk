@@ -7,8 +7,8 @@ import {
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
-import BaConfigService from '../config/ba-config.service'
 import { createTestForm } from '../__tests__/factories/form.factory'
+import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'

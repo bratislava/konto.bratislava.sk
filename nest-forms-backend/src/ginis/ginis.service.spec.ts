@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto'
 import { Readable } from 'node:stream'
 
 import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
@@ -61,9 +60,6 @@ describe('GinisService', () => {
 
   beforeEach(async () => {
     jest.resetAllMocks()
-
-    const randomMocked = randomUUID as jest.MockedFunction<typeof randomUUID>
-    randomMocked.mockReturnValue('mock-mock-mock-mock-mock')
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

@@ -2,8 +2,8 @@ import { Test } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import Handlebars from 'handlebars'
 
-import BaConfigService from '../../../../config/ba-config.service'
 import { expectStringContaining } from '../../../__tests__/jest-matchers'
+import BaConfigService from '../../../config/ba-config.service'
 import { SendEmailInputDto } from '../../../utils/global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,

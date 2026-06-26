@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import nodemailer from 'nodemailer'
 
-import BaConfigService from '../../../config/ba-config.service'
+import BaConfigService from '../config/ba-config.service'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,

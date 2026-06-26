@@ -8,8 +8,8 @@ import {
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../../test/singleton'
-import BaConfigService from '../../config/ba-config.service'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../../__tests__/factories/formDefinition.factory'
+import BaConfigService from '../../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,

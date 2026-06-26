@@ -143,7 +143,19 @@ jobs:
         run: |
           set -euo pipefail
 
-          command -v aws
+          if ! command -v aws >/dev/null 2>&1; then
+            echo "AWS CLI not found on runner, installing it locally"
+            installer_tmp="$(mktemp -d)"
+            curl --fail --location --show-error \
+              "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+              --output "$installer_tmp/awscliv2.zip"
+            unzip -q "$installer_tmp/awscliv2.zip" -d "$installer_tmp"
+            mkdir -p "$RUNNER_TEMP/bin" "$RUNNER_TEMP/aws-cli"
+            "$installer_tmp/aws/install" --install-dir "$RUNNER_TEMP/aws-cli" --bin-dir "$RUNNER_TEMP/bin"
+            export PATH="$RUNNER_TEMP/bin:$PATH"
+          fi
+
+          aws --version
           aws configure set default.s3.addressing_style path
 
           tmp="$(mktemp -d)"

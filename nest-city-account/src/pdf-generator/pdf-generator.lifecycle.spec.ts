@@ -47,7 +47,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
   beforeEach(async () => {
     mockBrowsers = []
-    launchMock = jest.mocked(chromium.launch) as unknown as jest.Mock
+    launchMock = jest.mocked(chromium.launch)
     launchMock.mockReset()
     launchMock.mockImplementation(() => {
       const browser = buildMockBrowser()

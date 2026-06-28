@@ -179,7 +179,7 @@ export class VerificationService {
     try {
       switch (data.msg.type) {
         case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
-          const body = data.msg.data as RequestBodyVerifyIdentityCardDto
+          const body = data.msg.data
           verification = await this.verificationSubservice.verifyIdentityCard(data.msg.user, body)
           break
         }
@@ -545,8 +545,9 @@ export class VerificationService {
     if (user !== null) {
       result.isInDatabase = true
 
-      if (user.birthnumberAlreadyExistsLast)
+      if (user.birthnumberAlreadyExistsLast) {
         result.birthNumberAlreadyExists = user.birthnumberAlreadyExistsLast
+      }
       result.externalId = user.externalId
 
       if (user.externalId) {
@@ -588,8 +589,9 @@ export class VerificationService {
     if (legalPerson !== null) {
       result.isInDatabase = true
 
-      if (legalPerson.birthnumberIcoAlreadyExistsLast)
+      if (legalPerson.birthnumberIcoAlreadyExistsLast) {
         result.birthNumberIcoAlreadyExists = legalPerson.birthnumberIcoAlreadyExistsLast
+      }
       result.externalId = legalPerson.externalId
 
       if (legalPerson.externalId) {

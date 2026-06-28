@@ -23,15 +23,14 @@ jest.mock('../utils/constants/tax-deadline')
 const buildCognitoUserData = (
   accountType: CognitoUserAccountTypesEnum,
   overrides: Partial<CognitoGetUserData> = {}
-): CognitoGetUserData =>
-  ({
-    sub: 'sub-id',
-    idUser: 'sub-id',
-    email: 'test@example.com',
-    Enabled: true,
-    [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
-    ...overrides,
-  }) as CognitoGetUserData
+): CognitoGetUserData => ({
+  sub: 'sub-id',
+  idUser: 'sub-id',
+  email: 'test@example.com',
+  Enabled: true,
+  [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
+  ...overrides,
+})
 
 describe('UserService', () => {
   let service: UserService

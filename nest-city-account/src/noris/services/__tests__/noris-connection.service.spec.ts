@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { ConnectionPool } from 'mssql'
 import * as mssql from 'mssql'
+import { ConnectionPool } from 'mssql'
 
 import prismaMock from '../../../../test/singleton'
 import { PrismaService } from '../../../prisma/prisma.service'
@@ -37,7 +37,7 @@ describe('NorisConnectionService', () => {
     process.env.MSSQL_PORT = '1433'
     process.env.MSSQL_DB = 'testdb'
     process.env.MSSQL_USERNAME = 'user'
-    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+
     process.env.MSSQL_PASSWORD = 'pass'
 
     module = await Test.createTestingModule({
@@ -58,7 +58,7 @@ describe('NorisConnectionService', () => {
         MSSQL_PORT: '1433',
         MSSQL_DB: 'testdb',
         MSSQL_USERNAME: 'user',
-        // eslint-disable-next-line sonarjs/no-hardcoded-passwords
+
         MSSQL_PASSWORD: 'pass',
       }
       if (key in map) {

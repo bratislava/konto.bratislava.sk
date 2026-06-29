@@ -33,7 +33,7 @@ const Dialog = ({ children, className, noCloseButton, ...rest }: DialogProps) =>
               aria-label={t('Modal.aria.close')}
               onPress={renderProps.close}
               data-cy="close-modal"
-              className="absolute top-3 right-3 md:top-4 md:right-4"
+              className="absolute top-3 right-3 lg:top-4 lg:right-4"
             />
           )}
           {typeof children === 'function' ? children(renderProps) : children}

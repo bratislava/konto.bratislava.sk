@@ -64,7 +64,7 @@ const RadioGroup = (props: RadioGroupProps) => {
               className={cn({
                 'flex flex-col gap-3': orientation === 'vertical',
                 // Acts as vertical on xs
-                'flex flex-col gap-3 sm:flex-row sm:gap-4 md:gap-6': orientation === 'horizontal',
+                'flex flex-col gap-3 lg:flex-row lg:gap-6': orientation === 'horizontal',
               })}
             >
               {children}

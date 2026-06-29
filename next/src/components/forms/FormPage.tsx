@@ -32,7 +32,7 @@ const FormPageContent = ({ nonce }: { nonce?: string }) => {
         wrap={(children) => (
           <PageLayout
             className={cn({
-              'bg-gray-0 md:bg-gray-50': isFormOutdated || isFormSent,
+              'bg-gray-0 lg:bg-gray-50': isFormOutdated || isFormSent,
             })}
           >
             {children}

@@ -10,7 +10,7 @@ import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
-import { MinioStorageService } from '../minio-storage/minio-storage.service'
+import { MinioStorageModule } from '../minio-storage/minio-storage.module'
 import NasesModule from '../nases/nases.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
@@ -40,6 +40,7 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     FormsV2Module,
     AuthV2Module,
     NasesModule,
+    MinioStorageModule,
   ],
   providers: [
     GinisService,
@@ -48,7 +49,6 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     GinisAPIService,
     MailgunService,
     MailgunHelper,
-    MinioStorageService,
     GinisTasksSubservice,
   ],
   exports: [GinisService, GinisHelper],

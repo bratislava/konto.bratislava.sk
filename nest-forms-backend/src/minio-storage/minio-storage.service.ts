@@ -11,7 +11,6 @@ import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
-
 @Injectable()
 export class MinioStorageService {
   private readonly logger = new LineLoggerSubservice('MinioStorageService')
@@ -37,28 +36,20 @@ export class MinioStorageService {
   }
 
   // function which loads file stream from minio bucket
-  public async loadFileStream(
-    bucketName: string,
-    fileName: string,
-  ) {
+  public async loadFileStream(bucketName: string, fileName: string) {
     return this.minioClientService.client().getObject(bucketName, fileName)
   }
 
   // function which lists all files in minio bucket
-  public async listFiles(
-    bucketName: string,
-    path: string,
-  ) {
+  public async listFiles(bucketName: string, path: string) {
     this.logger.debug(`Listing files in bucket ${bucketName} in path ${path}`)
 
     try {
       let files: string[] = await new Promise((resolve, reject) => {
         const objectsListTemp: string[] = []
-        const stream = this.minioClientService.client().listObjectsV2(
-          bucketName,
-          path,
-          true /* recursive */,
-        )
+        const stream = this.minioClientService
+          .client()
+          .listObjectsV2(bucketName, path, true /* recursive */)
 
         stream.on('data', (obj) => {
           if (obj.name) objectsListTemp.push(obj.name)
@@ -83,18 +74,12 @@ export class MinioStorageService {
     }
   }
 
-  public async createFolder(
-    bucket: string,
-    path: string,
-  ) {
+  public async createFolder(bucket: string, path: string) {
     // create folder in minio bucket in desired path
     try {
-      return await this.minioClientService.client().putObject(
-        bucket,
-        path,
-        Buffer.from(''),
-        0,
-      )
+      return await this.minioClientService
+        .client()
+        .putObject(bucket, path, Buffer.from(''), 0)
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
@@ -134,12 +119,11 @@ export class MinioStorageService {
   }
 
   // function which checks if file exists in minio bucket
-  public async fileExists(
-    bucketName: string,
-    fileName: string,
-  ) {
+  public async fileExists(bucketName: string, fileName: string) {
     try {
-      return await this.minioClientService.client().statObject(bucketName, fileName)
+      return await this.minioClientService
+        .client()
+        .statObject(bucketName, fileName)
     } catch (error) {
       this.logger.error(
         `File: ${fileName} does not exist in bucket: ${bucketName}`,
@@ -155,11 +139,9 @@ export class MinioStorageService {
     bucketName: string,
   ) {
     try {
-      return await this.minioClientService.client().putObject(
-        bucketName,
-        pathWithMinioFileName,
-        file.buffer,
-      )
+      return await this.minioClientService
+        .client()
+        .putObject(bucketName, pathWithMinioFileName, file.buffer)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
@@ -172,17 +154,12 @@ export class MinioStorageService {
 
   // TODO refactor/consider removing whole subservice, this is a helper until then
   // satisfying types for the upload fn above was hard and not helping anything
-  public async putObject(
-    ...props: Parameters<Client['putObject']>
-  ) {
+  public async putObject(...props: Parameters<Client['putObject']>) {
     return this.minioClientService.client().putObject(...props)
   }
 
   // get stream of file from minio bucket
-  public async download(
-    bucketName: string,
-    fileName: string,
-  ) {
+  public async download(bucketName: string, fileName: string) {
     try {
       return await this.minioClientService
         .client()

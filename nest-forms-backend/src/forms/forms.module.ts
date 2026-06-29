@@ -6,13 +6,13 @@ import FilesModule from '../files/files.module'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
-import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaModule from '../prisma/prisma.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import FormsController from './forms.controller'
 import FormsService from './forms.service'
 import FormsTaskSubservice from './subservices/forms-task.subservice'
+import { MinioStorageModule } from '../minio-storage/minio-storage.module'
 
 @Module({
   imports: [
@@ -23,12 +23,12 @@ import FormsTaskSubservice from './subservices/forms-task.subservice'
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
+    MinioStorageModule,
   ],
   providers: [
     FormsService,
     FilesService,
     ThrowerErrorGuard,
-    MinioStorageService,
     FormsTaskSubservice,
   ],
   exports: [FormsService],

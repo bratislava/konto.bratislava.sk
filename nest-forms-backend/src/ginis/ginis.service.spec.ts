@@ -14,11 +14,11 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
@@ -68,7 +68,7 @@ describe('GinisService', () => {
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         { provide: ConvertService, useValue: createMock<ConvertService>() },
         {
-          provide: MinioClientSubservice,
+          provide: MinioStorageService,
           useValue: {
             download: jest.fn(),
           },
@@ -696,7 +696,7 @@ describe('GinisService', () => {
         .mockImplementation(async (fn) => fn())
 
       jest
-        .spyOn(service['minioClientSubservice'], 'download')
+        .spyOn(service['minioStorageService'], 'download')
         .mockResolvedValue(mockStream)
 
       jest

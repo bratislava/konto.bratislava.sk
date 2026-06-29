@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { MinioClientModule } from 'src/minio-client/minio-client.module'
+import { MinioStorageModule } from 'src/minio-storage/minio-storage.module'
 
 import { ClamavClientModule } from '../clamav-client/clamav-client.module'
 import { FormsClientModule } from '../forms-client/forms-client.module'
@@ -10,7 +10,7 @@ import { ScannerCronService } from './scanner-cron.service'
   providers: [ScannerCronService],
   imports: [
     ScannerModule,
-    MinioClientModule,
+    MinioStorageModule,
     ClamavClientModule,
     FormsClientModule,
   ],

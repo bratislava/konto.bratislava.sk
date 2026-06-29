@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config'
 import { FileStatus } from '@prisma/client'
 import { lookup } from 'mime-types'
 import { ClamavClientService } from 'src/clamav-client/clamav-client.service'
-import { MinioClientService } from 'src/minio-client/minio-client.service'
+import { MinioStorageService } from 'src/minio-storage/minio-storage.service'
 
 import { isBase64, isDefined, isValidUid } from '../common/utils/helpers'
 import { PrismaService } from '../prisma/prisma.service'
@@ -36,7 +36,7 @@ export class ScannerService {
 
   constructor(
     private readonly configService: ConfigService,
-    private minioClientService: MinioClientService,
+    private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
   ) {
     this.logger = new Logger('ScannerService')
@@ -82,7 +82,7 @@ export class ScannerService {
       let fileSize: number
       //check if file exists in minio
       try {
-        const fileInfo = await this.minioClientService.fileExists(
+        const fileInfo = await this.minioStorageService.fileExists(
           bucketUid,
           bucketFile.fileUid,
         )

@@ -4,10 +4,10 @@ import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaModule from '../prisma/prisma.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import FilesController from './files.controller'
 import FilesHelper from './files.helper'
 import FilesService from './files.service'
@@ -25,7 +25,7 @@ import FilesService from './files.service'
     FilesService,
     FilesHelper,
     ThrowerErrorGuard,
-    MinioClientSubservice,
+    MinioStorageService,
   ],
   exports: [FilesService, FilesHelper],
   controllers: [FilesController],

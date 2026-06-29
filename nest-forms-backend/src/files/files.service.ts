@@ -16,11 +16,11 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
@@ -43,7 +43,7 @@ export default class FilesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly baConfigService: BaConfigService,
-    private readonly minioClientSubervice: MinioClientSubservice,
+    private readonly minioStorageService: MinioStorageService,
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -255,7 +255,7 @@ export default class FilesService {
     const fileSize = bufferedFile.size
     const pathWithMinioFileName = filePath + minioFileName
 
-    const uploadedFile = await this.minioClientSubervice.upload(
+    const uploadedFile = await this.minioStorageService.upload(
       bufferedFile,
       pathWithMinioFileName,
       this.filesHelper.getBucketUid(),
@@ -359,7 +359,7 @@ export default class FilesService {
     )
 
     // download
-    return this.minioClientSubervice.download(bucket, pathWithMinioFileName)
+    return this.minioStorageService.download(bucket, pathWithMinioFileName)
   }
 
   async downloadToken(
@@ -538,7 +538,7 @@ export default class FilesService {
         `Deleting from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
       )
       // eslint-disable-next-line no-await-in-loop
-      const deleteStatus = await this.minioClientSubervice.deleteFile(
+      const deleteStatus = await this.minioStorageService.deleteFile(
         bucket,
         pathWithMinioFileName,
       )

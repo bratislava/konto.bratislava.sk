@@ -9,9 +9,9 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 
 /**
  * Creates a pdf file from filled-in form and uploads it to minio among SAFE form files.
@@ -22,7 +22,7 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 export default class ConvertPdfService {
   constructor(
     private readonly formsService: FormsService,
-    private readonly minioClientSubservice: MinioClientSubservice,
+    private readonly minioStorageService: MinioStorageService,
     private readonly convertService: ConvertService,
     private readonly filesHelper: FilesHelper,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -88,7 +88,7 @@ export default class ConvertPdfService {
       formDefinition,
     )
 
-    await this.minioClientSubservice
+    await this.minioStorageService
       .client()
       .putObject(this.filesHelper.getBucketUid('SAFE'), filePath, file)
 

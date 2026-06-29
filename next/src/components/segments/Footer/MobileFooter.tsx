@@ -39,7 +39,7 @@ const MobileFooter = () => {
     <SectionContainer>
       <HorizontalDivider />
       <footer className="flex flex-col gap-6 py-6">
-        <div className="flex justify-center py-2 md:justify-start">
+        <div className="flex justify-center py-2">
           <Brand
             className="group grow"
             url={ROUTES.HOME}

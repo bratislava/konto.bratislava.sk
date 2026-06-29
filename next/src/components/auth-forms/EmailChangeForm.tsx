@@ -58,7 +58,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col gap-4 md:gap-6"
+      className="flex flex-col gap-4 lg:gap-6"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
       data-cy="change-email-form"
     >

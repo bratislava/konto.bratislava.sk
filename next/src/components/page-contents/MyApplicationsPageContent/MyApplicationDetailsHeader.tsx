@@ -86,7 +86,7 @@ const MyApplicationDetailsHeader = ({
                 <Typography variant="h1">{subject}</Typography>
                 <Button
                   variant="solid"
-                  className="max-md:hidden"
+                  className="max-lg:hidden"
                   startIcon={<Icon name="download" />}
                   onPress={exportPdf}
                 >
@@ -121,7 +121,7 @@ const MyApplicationDetailsHeader = ({
             <Button
               variant="solid"
               fullWidth
-              className="md:hidden"
+              className="lg:hidden"
               startIcon={<Icon name="download" />}
               onPress={exportPdf}
             >

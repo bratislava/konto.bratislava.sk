@@ -248,7 +248,7 @@ export class NasesService {
     physicalEntityId: string,
     fault: UpvsIamFault
   ): Promise<void> {
-    const faultColumns = { faultCode: fault.code ?? '', faultReason: fault.reason ?? '' }
+    const faultColumns = { faultCode: fault.code, faultReason: fault.reason }
     try {
       await this.prismaService.identityLookupRejection.upsert({
         where: { physicalEntityId },

@@ -203,7 +203,7 @@ model IdentityLookupRejection {
   physicalEntity   PhysicalEntity @relation(fields: [physicalEntityId], references: [id])
   physicalEntityId String         @unique @db.Uuid
 
-  // Fault details from the slovensko-sk container; empty string when UPVS omitted them.
+  // Fault details from the slovensko-sk container.
   faultCode   String?
   faultReason String?
 }

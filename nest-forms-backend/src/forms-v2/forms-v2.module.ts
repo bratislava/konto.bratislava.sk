@@ -7,6 +7,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormMigrationsController } from './controllers/form-migrations.controller'
 import { FormsV2Controller } from './controllers/forms-v2.controller'
 import { FormAccessGuard } from './guards/form-access.guard'
+import { FormMustBeEnabledGuard } from './guards/form-must-be-enabled.guard'
 import { FormSendOnlyRegisteredGuard } from './guards/form-send-only-registered.guard'
 import { CreateFormService } from './services/create-form.service'
 import { FormAccessService } from './services/form-access.service'
@@ -23,7 +24,13 @@ import { FormMigrationsService } from './services/form-migrations.service'
     ThrowerErrorGuard,
     FormSendOnlyRegisteredGuard,
     FormRegistrationStatusRepository,
+    FormMustBeEnabledGuard,
   ],
-  exports: [FormAccessService, FormAccessGuard, FormSendOnlyRegisteredGuard],
+  exports: [
+    FormAccessService,
+    FormAccessGuard,
+    FormSendOnlyRegisteredGuard,
+    FormMustBeEnabledGuard,
+  ],
 })
 export class FormsV2Module {}

@@ -2,7 +2,7 @@ import { parseAsString, useQueryState } from 'nuqs'
 import { ReactElement } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
-import { StatusBar } from '@/src/components/simple-components/StatusBar'
+import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
 import AuthFormsShowCase from '@/src/components/styleguide/showcases/AuthFormsShowCase'
@@ -101,7 +101,7 @@ const StyleGuidePageContent = () => {
 
   return (
     <>
-      <StatusBar />
+      <AlertBanner />
 
       <StyleGuideWrapper>
         <Tabs

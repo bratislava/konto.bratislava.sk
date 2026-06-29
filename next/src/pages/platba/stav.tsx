@@ -34,7 +34,7 @@ export const getServerSideProps = amplifyGetServerSideProps(async () => {
 const AccountThankYouPage = ({ general, strapiTax }: AccountThankYouPageProps) => {
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout hideNavMenu className="md:bg-gray-50">
+      <PageLayout className="md:bg-gray-50">
         <StrapiTaxProvider strapiTax={strapiTax}>
           <PaymentResultPageContent />
         </StrapiTaxProvider>

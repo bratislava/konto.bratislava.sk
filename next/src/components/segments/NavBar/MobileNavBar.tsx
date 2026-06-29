@@ -1,77 +1,80 @@
 import { Button } from '@bratislava/component-library'
 import FocusTrap from 'focus-trap-react'
 import { useTranslation } from 'next-i18next/pages'
-import { RefObject } from 'react'
+import { RefObject, useContext } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
-import HamburgerMenu from '@/src/components/segments/HambergerMenu/HamburgerMenu'
+import BackButton from '@/src/components/segments/NavBar/BackButton'
+import MobileNavMenu from '@/src/components/segments/NavBar/MobileNavMenu'
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
-import { MenuSectionBase } from '@/src/components/segments/NavBar/useMenu'
+import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
+import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import Brand from '@/src/components/simple-components/Brand'
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
-import { StatusBar } from '@/src/components/simple-components/StatusBar'
-import { ROUTES } from '@/src/utils/routes'
+import { AmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
+import cn from '@/src/utils/cn'
 
 type Props = {
-  menuSections?: MenuSectionBase[]
-  menuItems: MenuItemBase[]
   mobileNavbarRef: RefObject<HTMLDivElement | null>
+  variant?: 'default' | 'auth'
+  hasBackButton?: boolean
+  className?: string
 }
 
-export const MobileNavBar = ({ menuSections, menuItems, mobileNavbarRef }: Props) => {
+export const MobileNavBar = ({
+  mobileNavbarRef,
+  variant,
+  hasBackButton = false,
+  className,
+}: Props) => {
   const { t } = useTranslation('account')
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
-  return (
-    <>
-      <div
-        id="mobile-navbar"
-        className="sticky top-0 left-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
-        ref={mobileNavbarRef}
-      >
-        <div className="w-full">
-          <FocusTrap active={isMobileMenuOpen}>
-            <div className="flex h-16 w-full items-center border-b px-4 py-5">
-              <div className="flex w-full justify-between">
-                <Brand url={ROUTES.HOME} className="grow" />
-                {isMobileMenuOpen ? (
-                  <Button
-                    onPress={() => {
-                      setMobileMenuOpen(false)
-                    }}
-                    className="-mr-4 p-4"
-                    aria-label={t('MobileNavBar.close')}
-                    data-cy="mobile-account-button"
-                    icon={<Icon name="close" />}
-                  />
-                ) : (
-                  <Button
-                    onPress={() => {
-                      setMobileMenuOpen(true)
-                    }}
-                    className="-mr-4 p-4"
-                    aria-label={t('MobileNavBar.open')}
-                    data-cy="mobile-account-button"
-                    icon={<Icon name="menu-hamburger" />}
-                  />
-                )}
-              </div>
+  // Auth-variant pages are wrapped in AmplifyClientOAuthProvider; default pages are not, so read the
+  // context optionally and treat its absence as a non-OAuth login.
+  const isOAuthLogin = useContext(AmplifyClientOAuthContext)?.isOAuthLogin ?? false
 
-              {isMobileMenuOpen && (
-                <HamburgerMenu
-                  menuSections={menuSections}
-                  menuItems={menuItems}
-                  closeMenu={() => setMobileMenuOpen(false)}
-                />
-              )}
+  return (
+    <div id="mobile-navbar" className={className} ref={mobileNavbarRef}>
+      <FocusTrap active={isMobileMenuOpen}>
+        <div className="fixed top-0 z-30 flex h-14 w-full items-center justify-between border-b bg-background-passive-base px-4 text-content-passive-primary">
+          <div className="flex w-full justify-between">
+            <div className="flex gap-3">
+              {hasBackButton && <BackButton />}
+              <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
             </div>
-          </FocusTrap>
+            {variant === 'auth' ? (
+              <OAuthLogo />
+            ) : isMobileMenuOpen ? (
+              <Button
+                onPress={() => {
+                  setMobileMenuOpen(false)
+                }}
+                className="-mr-4 p-4 ring-inset"
+                aria-label={t('MobileNavBar.close')}
+                data-cy="mobile-account-button"
+                icon={<Icon name="close" />}
+              />
+            ) : (
+              <Button
+                onPress={() => {
+                  setMobileMenuOpen(true)
+                }}
+                className="-mr-4 p-4 ring-inset"
+                aria-label={t('MobileNavBar.open')}
+                data-cy="mobile-account-button"
+                icon={<Icon name="menu-hamburger" />}
+              />
+            )}
+          </div>
+
+          {isMobileMenuOpen && <MobileNavMenu />}
         </div>
-      </div>
-      <div className="lg:hidden">
-        <StatusBar />
-      </div>
-    </>
+      </FocusTrap>
+      {/* Empty div under header */}
+      <div className={cn('h-14', className)} />
+
+      <AlertBanner />
+    </div>
   )
 }
 

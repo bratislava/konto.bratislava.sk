@@ -1,5 +1,4 @@
 import { Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next/pages'
 import { Fragment } from 'react'
 
 import EuFlagSvg from '@/src/assets/images/eu-flag.svg'
@@ -20,7 +19,6 @@ import DisclosureHeader from '@/src/components/simple-components/Disclosure/Disc
 import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { isDefined } from '@/src/frontend/utils/general'
-import { ROUTES } from '@/src/utils/routes'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-34027&t=kxvcsTyGotEVpcH2-4
@@ -28,7 +26,6 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const MobileFooter = () => {
-  const { t } = useTranslation('account')
   const { footer } = useGeneralContext()
 
   if (!footer) {
@@ -40,16 +37,7 @@ const MobileFooter = () => {
       <HorizontalDivider />
       <footer className="flex flex-col gap-6 py-6">
         <div className="flex justify-center py-2 md:justify-start">
-          <Brand
-            className="group grow"
-            url={ROUTES.HOME}
-            title={
-              <Typography variant="p-small" className="text-[#F23005]">
-                {t('NavBar.capitalCityOfSR')}
-                <span className="font-semibold"> Bratislava</span>
-              </Typography>
-            }
-          />
+          <Brand className="grow" variant="footer" />
         </div>
         <div className="flex flex-col gap-6">
           <FooterContacts {...footer} />

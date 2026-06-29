@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { useNavbarHeight } from '@/src/components/layouts/useNavbarHeight'
 import Footer from '@/src/components/segments/Footer/Footer'
-import AuthNavBar from '@/src/components/segments/NavBar/AuthNavBar'
 import NavBar from '@/src/components/segments/NavBar/NavBar'
 import cn from '@/src/utils/cn'
 
@@ -15,8 +14,7 @@ declare module 'react' {
 type Props = {
   children: ReactNode
   variant?: 'default' | 'auth'
-  hideNavMenu?: boolean
-  hideBackButton?: boolean
+  hasBackButton?: boolean
   className?: string
 }
 
@@ -28,30 +26,19 @@ const PageLayout = ({
   variant = 'default',
   className,
   children,
-  hideNavMenu,
-  hideBackButton,
+  hasBackButton = false,
 }: Props) => {
   const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
   return (
     <div className={cn('flex min-h-dvh flex-col', className)}>
-      <header
-        // 'contents' class in header enables sticky elements inside it to work
-        className="relative z-30 contents"
-      >
-        {variant === 'auth' ? (
-          <AuthNavBar
-            backButtonHidden={hideBackButton}
-            desktopNavbarRef={desktopNavbarRef}
-            mobileNavbarRef={mobileNavbarRef}
-          />
-        ) : (
-          <NavBar
-            hideNavMenu={hideNavMenu}
-            desktopNavbarRef={desktopNavbarRef}
-            mobileNavbarRef={mobileNavbarRef}
-          />
-        )}
+      <header className="relative">
+        <NavBar
+          variant={variant}
+          hasBackButton={hasBackButton}
+          desktopNavbarRef={desktopNavbarRef}
+          mobileNavbarRef={mobileNavbarRef}
+        />
       </header>
       <main
         style={{

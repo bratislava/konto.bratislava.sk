@@ -24,7 +24,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
       description={t('auth.identity_verification.fop_po_eid.pending.content')}
     />
   ) : verificationStatus === VerificationStatus.ERROR ? (
-    <div className="flex flex-col gap-4 md:gap-6">
+    <div className="flex flex-col gap-4 lg:gap-6">
       <div className="mx-auto size-14 rounded-full bg-negative-100 p-4">
         <div className="flex size-6 items-center justify-center">
           <Icon name="error" className="size-6 text-negative-700" />
@@ -44,7 +44,7 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
       </Button>
     </div>
   ) : (
-    <div className="flex flex-col gap-4 md:gap-6">
+    <div className="flex flex-col gap-4 lg:gap-6">
       <Typography variant="h3" as="h1">
         {t('auth.identity_verification.fop_po_eid.init.title')}
       </Typography>

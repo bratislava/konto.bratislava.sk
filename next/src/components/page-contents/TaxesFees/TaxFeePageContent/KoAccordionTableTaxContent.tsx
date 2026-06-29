@@ -91,7 +91,7 @@ const Table = ({ data }: TableDataProps) => {
         )}
         ref={tableWrapperRef}
       >
-        <table className="w-max table-auto sm:w-full">
+        <table className="w-max table-auto lg:w-full">
           <TableHeader />
           <TableRows data={data} />
         </table>

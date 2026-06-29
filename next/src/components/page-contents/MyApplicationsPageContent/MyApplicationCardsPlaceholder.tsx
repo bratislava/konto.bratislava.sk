@@ -12,9 +12,9 @@ const MyApplicationCardsPlaceholder = () => {
     <SectionContainer>
       <div className="-mx-4 mt-0 flex flex-col justify-around rounded-lg border-0 border-gray-200 pt-0 lg:-mx-8 lg:flex-row lg:border">
         <div className="flex justify-center">
-          <Icon className="h-[145px] w-[146px] sm:h-[296px] sm:w-[298px]" />
+          <Icon className="h-[145px] w-[146px] lg:h-[296px] lg:w-[298px]" />
         </div>
-        <div className="mt-5 flex max-w-none flex-col justify-center gap-3 md:mt-0 lg:max-w-[500px]">
+        <div className="mt-5 flex max-w-none flex-col justify-center gap-3 lg:mt-0 lg:max-w-[500px]">
           <Typography variant="h4" as="p" className="font-semibold">
             {t('account_section_applications.placeholder.title')}
           </Typography>

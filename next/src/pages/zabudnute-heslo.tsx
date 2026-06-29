@@ -122,7 +122,7 @@ const ForgottenPasswordPage = ({ general, clientInfo }: AuthPageCommonProps) => 
           variant="auth"
           hideBackButton={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
         >
-          <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 md:gap-10">
+          <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
             {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
               <NewPasswordForm
                 onSubmit={(verificationCode, newPassword) =>

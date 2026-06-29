@@ -34,7 +34,7 @@ const mockAsyncOperation = async () => {
 }
 
 const stackClassname = cn(
-  'w-full items-stretch self-center rounded-none bg-background-passive-base sm:p-8 lg:w-200',
+  'w-full items-stretch self-center rounded-none bg-background-passive-base lg:p-8 lg:w-200',
 )
 
 const AuthFormsContent = () => {

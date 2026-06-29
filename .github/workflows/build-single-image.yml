@@ -1,13 +1,12 @@
-name: Build Next
+name: Build Single Image
+# Generic single-final-image build for services with one prod stage and no
+# test/validation stages (strapi, clamav, cvdmirror).
+#
 # Two modes, selected by the `cluster` input:
 #   - CI (cluster == ''): build the final image, do not push.
 #   - Deploy (cluster != ''): reuse an existing commit image or build+push it
 #     and re-tag it for the cluster. The infrastructure deploy is triggered
 #     separately by the caller (deploy.yml).
-#
-# Next.js bakes the environment into the build, so the image, tags and Docker
-# cache are environment-specific (the `-<build_env>` flavor suffix) and cannot
-# be reused across clusters.
 on:
   workflow_call:
     inputs:
@@ -16,21 +15,7 @@ on:
         type: string
         required: true
       image:
-        description: "Full image name including registry/repository for Docker cache."
-        type: string
-        required: true
-      forms_shared_digest:
-        description: "Immutable forms-shared image digest used during Docker build."
-        type: string
-        required: false
-        default: ""
-      openapi_clients_digest:
-        description: "Immutable openapi-clients image digest used during Docker build."
-        type: string
-        required: false
-        default: ""
-      build_env:
-        description: "Environment suffix for .env.bratiska-cli-build.<env> (dev, staging, prod)."
+        description: "Full image name including registry/repository."
         type: string
         required: true
       cluster:
@@ -58,13 +43,12 @@ env:
 
 jobs:
   build:
-    name: Build Next
+    name: Build
     runs-on: bratislava
     env:
-      # Per-cluster deploy tag prefix (empty in CI) and the per-environment
-      # flavor suffix that keeps each env's image and cache separate.
+      # In deploy mode, the cluster-prefixed sha tag is the per-cluster deploy
+      # tag. Empty in CI so docker-metadata emits only the plain commit tag.
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
-      ENV_SUFFIX: -${{ inputs.build_env }}
     defaults:
       run:
         working-directory: ${{ inputs.directory }}
@@ -78,28 +62,6 @@ jobs:
       - name: Resolve short SHA
         id: sha
         run: echo "short_sha=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
-
-      - name: Prepare Next.js build env
-        shell: bash
-        run: |
-          # Mimic bratiska-cli build_image behavior by promoting the
-          # bratiska-cli build env file to .env.production.local
-          # before docker build starts.
-          case "${{ inputs.build_env }}" in
-            dev|staging|prod)
-              ;;
-            *)
-              echo "::error::Unsupported build_env '${{ inputs.build_env }}'. Allowed values: dev, staging, prod."
-              exit 1
-              ;;
-          esac
-
-          source_env_file=".env.bratiska-cli-build.${{ inputs.build_env }}"
-          if [[ ! -f "$source_env_file" ]]; then
-            echo "::error file=$source_env_file::Missing $source_env_file in $PWD"
-            exit 1
-          fi
-          cp "$source_env_file" .env.production.local
 
       - name: Set up Docker build
         uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
@@ -116,17 +78,16 @@ jobs:
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
-          suffix: ${{ env.ENV_SUFFIX }}
 
-      # Deploy mode only: reuse the per-env commit image across clusters. If it
-      # already exists, re-tag it for this cluster and skip the build below.
+      # Deploy mode only: reuse the commit image across clusters. If it already
+      # exists, re-tag it for this cluster and skip the build below.
       - name: Check for existing image
         if: ${{ inputs.cluster != '' }}
         id: existing
         uses: bratislava/github-actions/.github/actions/check-existing-image@beta
         with:
-          existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
-          new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
+          existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}
+          new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}
 
       - name: Build image
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}
@@ -138,6 +99,3 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: ${{ steps.meta.outputs.cache_from }}
           cache-to: ${{ steps.meta.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}

@@ -1,6 +1,7 @@
 import { Button, Typography } from '@bratislava/component-library'
 import slugify from '@sindresorhus/slugify'
 
+import { TABLE_OF_CONTENTS_HEADING_ATTRIBUTE } from '@/src/components/common/TableOfContents/useHeadings'
 import Markdown from '@/src/components/formatting/Markdown'
 import cn from '@/src/utils/cn'
 import { SectionTitleLevel } from '@/src/utils/getCardTitleLevel'
@@ -14,6 +15,7 @@ type Props = {
   asRichtext?: boolean
   isFullWidth?: boolean
   isCentered?: boolean
+  excludeFromTableOfContents?: boolean
   showMoreLink?: CommonLinkProps | null
   className?: string
 }
@@ -31,6 +33,7 @@ const SectionHeader = ({
   asRichtext = false,
   isFullWidth = false,
   isCentered = false,
+  excludeFromTableOfContents = false,
   showMoreLink,
   className,
 }: Props) => {
@@ -48,6 +51,7 @@ const SectionHeader = ({
         },
         className,
       )}
+      {...(excludeFromTableOfContents ? undefined : TABLE_OF_CONTENTS_HEADING_ATTRIBUTE)}
     >
       {title || text ? (
         <div

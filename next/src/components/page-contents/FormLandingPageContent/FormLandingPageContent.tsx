@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next/pages'
 
 import { formsClient } from '@/src/clients/forms'
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
+import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
 import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -26,6 +27,8 @@ export type FormWithLandingPageRequiredFragment = Omit<
 > & {
   landingPage: NonNullable<FormWithLandingPageFragment['landingPage']>
 }
+
+export const PAGE_CONTENT_ID = 'page-content'
 
 export type FormLandingPageProps = {
   formDefinition: ClientLandingPageFormDefinition
@@ -91,9 +94,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       {/* Sections & Sidebar */}
       <div
         key={formDefinition.slug} // Helps to re-render table of contents on page change
-        className={cn(
-          'mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse px-4 py-8 lg:px-8 lg:py-12',
-        )}
+        className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse gap-8 px-4 py-8 lg:px-8 lg:py-12"
       >
         <div
           className={cn(
@@ -104,6 +105,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             '**:data-section-container-inner:px-0',
             '**:data-section-container-inner:lg:px-0',
           )}
+          id={PAGE_CONTENT_ID}
         >
           {/* TODO - For now we keep the original richtext - remove this after migration to new richtext section */}
           {strapiForm.landingPage.text ? (
@@ -131,7 +133,10 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             </div>
           </SectionContainer>
         </div>
-        {/* TODO Sidebar goes here */}
+        
+        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
+          <TableOfContents />
+        </aside>
       </div>
     </>
   )

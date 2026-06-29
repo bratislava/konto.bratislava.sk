@@ -195,6 +195,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisNodeId: 'MAG0SS00A381',
       ginisFunctionId: 'MAG0SF00AG9O',
     },
+    isDisabled: true,
     files: predzahradkyFiles,
   },
   {

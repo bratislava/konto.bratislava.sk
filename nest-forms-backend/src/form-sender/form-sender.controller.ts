@@ -15,6 +15,7 @@ import { User, UserType } from '../auth-v2/types/user'
 import { UpdateFormRequestDto } from '../forms/dtos/requests.dto'
 import FormsService from '../forms/forms.service'
 import { FormAccessGuard } from '../forms-v2/guards/form-access.guard'
+import { FormMustBeEnabledGuard } from '../forms-v2/guards/form-must-be-enabled.guard'
 import { FormSendOnlyRegisteredGuard } from '../forms-v2/guards/form-send-only-registered.guard'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
@@ -52,7 +53,12 @@ export default class FormSenderController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard, FormSendOnlyRegisteredGuard)
+  @UseGuards(
+    UserAuthGuard,
+    FormAccessGuard,
+    FormSendOnlyRegisteredGuard,
+    FormMustBeEnabledGuard,
+  )
   @Post('send-and-update-form/:formId')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
@@ -74,7 +80,12 @@ export default class FormSenderController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard, FormSendOnlyRegisteredGuard)
+  @UseGuards(
+    UserAuthGuard,
+    FormAccessGuard,
+    FormSendOnlyRegisteredGuard,
+    FormMustBeEnabledGuard,
+  )
   @Post('eid/send-and-update-form/:formId')
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,

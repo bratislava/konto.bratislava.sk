@@ -114,17 +114,6 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           )}
         />
 
-        <Button
-          type="submit"
-          variant="solid"
-          fullWidth
-          isLoading={isSubmitting}
-          loadingText={t('towing.searching')}
-          startIcon={<Icon name="search" />}
-        >
-          {t('towing.searchButton')}
-        </Button>
-
         <Controller
           name="turnstileToken"
           control={control}
@@ -142,27 +131,39 @@ const Towing = ({ title, text }: TowingSectionProps) => {
                 onError={(error) => {
                   logger.error('Turnstile error:', error)
                   setCaptchaWarning('show')
-                  onChange('')
+
+                  return onChange(null)
                 }}
                 onTimeout={() => {
                   logger.error('Turnstile timeout')
                   setCaptchaWarning('show')
-                  onChange('')
+                  onChange(null)
                 }}
                 onExpire={() => {
                   logger.warn('Turnstile expire - should refresh automatically')
-                  onChange('')
+                  onChange(null)
                 }}
               />
 
               {captchaWarning === 'show' && (
-                <Typography variant="p-tiny" className="italic">
+                <Typography variant="p-small" className="italic">
                   {t('auth.captcha_warning')}
                 </Typography>
               )}
             </>
           )}
         />
+
+        <Button
+          type="submit"
+          variant="solid"
+          fullWidth
+          isLoading={isSubmitting}
+          loadingText={t('towing.searching')}
+          startIcon={<Icon name="search" />}
+        >
+          {t('towing.searchButton')}
+        </Button>
 
         {isSuccess ? (
           <TowingTable vehicle={data} initialLicensePlate={variables.licensePlate} />

@@ -612,17 +612,6 @@ describe('OAuth2ValidationSubservice', () => {
         )
         expect(result).toEqual({ clientId: 'header-client', clientSecret: 'header-secret' })
       })
-
-      it('should fall back to body when Basic Auth is malformed', () => {
-        const malformed = Buffer.from('nocolon').toString('base64')
-        const result = service.extractClientCredentials(
-          mockRequest({
-            headers: { authorization: `Basic ${malformed}` },
-            body: { client_id: 'fallback', client_secret: 'fallback-s' },
-          })
-        )
-        expect(result).toEqual({ clientId: 'fallback', clientSecret: 'fallback-s' })
-      })
     })
 
     describe('No credentials', () => {

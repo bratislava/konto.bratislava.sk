@@ -99,7 +99,18 @@ describe('OAuth2Client', () => {
       })
       expect(noScopeClient.areAllScopesAllowed('openid')).toBe(false)
     })
-    
+
+    it('should return true for empty scope string even when no allowedScopes configured', () => {
+      // No scope requested is always valid, regardless of what the client is allowed to request.
+      const noScopeClient = new OAuth2Client({
+        id: 'x',
+        name: 'X',
+        requiresPkce: true,
+        allowedRedirectUris: ['https://example.com/cb'],
+      })
+      expect(noScopeClient.areAllScopesAllowed('')).toBe(true)
+    })
+
     it('should handle space-delimited scope strings correctly', () => {
       expect(client.areAllScopesAllowed('openid profile email')).toBe(true)
       expect(client.areAllScopesAllowed('openid unknown email')).toBe(false)

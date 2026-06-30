@@ -10,7 +10,7 @@ interface StyleGuideWrapperProps {
 const StyleGuideWrapper = ({ children }: StyleGuideWrapperProps) => {
   return (
     <main>
-      <SectionContainer className="min-h-[calc(100vh+1px)] bg-[#E5E5E5] pb-64 md:pt-12">
+      <SectionContainer className="min-h-[calc(100vh+1px)] bg-[#E5E5E5] pb-64 lg:pt-12">
         <Typography variant="h1" className="mb-10 text-center underline">
           Style Guide
         </Typography>

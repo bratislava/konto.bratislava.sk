@@ -1,4 +1,4 @@
-import React, { forwardRef, PropsWithChildren } from 'react'
+import { forwardRef, PropsWithChildren } from 'react'
 
 import cn from '@/src/utils/cn'
 
@@ -15,7 +15,7 @@ export const AccountContainer = forwardRef<
     ref={ref}
     data-cy={dataCyPrefix ? `${dataCyPrefix}-container` : null}
     className={cn(
-      'mx-auto w-full max-w-[696px] bg-gray-0 px-4 py-6 md:rounded-lg md:px-12 md:py-10',
+      'mx-auto w-full max-w-[696px] bg-gray-0 px-4 py-6 lg:rounded-lg lg:px-12 lg:py-10',
       className,
     )}
   >

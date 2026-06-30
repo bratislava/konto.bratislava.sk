@@ -48,7 +48,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
 
   return (
     <form
-      className="flex flex-col gap-4 md:gap-6"
+      className="flex flex-col gap-4 lg:gap-6"
       data-cy="forgotten-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastEmail(data.email)

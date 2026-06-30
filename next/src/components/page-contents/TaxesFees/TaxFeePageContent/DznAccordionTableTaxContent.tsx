@@ -1,9 +1,9 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import {
-  ResponseApartmentTaxDetailDto,
-  ResponseConstructionTaxDetailDto,
-  ResponseGroundTaxDetailDto,
+    ResponseApartmentTaxDetailDto,
+    ResponseConstructionTaxDetailDto,
+    ResponseGroundTaxDetailDto,
 } from 'openapi-clients/tax'
 import { useRef } from 'react'
 
@@ -158,7 +158,7 @@ const Table = ({
         )}
         ref={tableWrapperRef}
       >
-        <table className="w-max table-auto sm:w-full">
+        <table className="w-max table-auto lg:w-full">
           <TableHeaderRow dataType={dataType} />
           <TableData dataType={dataType} data={data} />
         </table>

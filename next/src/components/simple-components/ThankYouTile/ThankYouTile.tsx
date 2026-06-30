@@ -29,7 +29,7 @@ const ThankYouTile = ({
   firstButtonLink,
   secondButtonLink,
 }: ThankYouTileProps) => {
-  const iconClassname = 'flex size-8 items-center justify-center md:size-10'
+  const iconClassname = 'flex size-8 items-center justify-center lg:size-10'
   const iconByVariant = {
     success: <Icon name="check" className={cn(iconClassname, 'text-content-success-default')} />,
     error: <Icon name="close" className={cn(iconClassname, 'text-content-error-default')} />,
@@ -37,10 +37,10 @@ const ThankYouTile = ({
   }[variant]
 
   return (
-    <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-8 md:rounded-2xl md:px-12 md:py-10 lg:max-w-[800px]">
+    <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:gap-8 lg:rounded-2xl lg:px-12 lg:py-10 lg:max-w-[800px]">
       <span
         className={cn(
-          'flex size-14 min-w-14 items-center justify-center rounded-full md:size-[88px] md:min-w-[88px]',
+          'flex size-14 min-w-14 items-center justify-center rounded-full lg:size-[88px] lg:min-w-[88px]',
           {
             'bg-background-success-soft-default': variant === 'success',
             'bg-background-error-soft-default': variant === 'error',
@@ -50,7 +50,7 @@ const ThankYouTile = ({
       >
         {iconByVariant}
       </span>
-      <div className="flex flex-col items-center gap-8 md:gap-3">
+      <div className="flex flex-col items-center gap-8 lg:gap-3">
         <Typography variant="h3" as="h2" className="text-center">
           {title}
         </Typography>
@@ -58,7 +58,7 @@ const ThankYouTile = ({
       </div>
       <div
         className={cn('flex w-full flex-col items-center gap-4', {
-          'px-0 sm:flex-row': !feedbackTitle,
+          'px-0 lg:flex-row': !feedbackTitle,
         })}
       >
         {variant === 'success' ? (

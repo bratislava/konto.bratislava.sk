@@ -324,6 +324,7 @@
   "SelectField.noOptions": "Žiadne možnosti",
   "sso_page.sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. [Späť domov](/).",
   "StatusBar.aria.close": "Zavrieť upozornenie",
+  "TableOfContents.title": "Obsah stránky",
   "Tag.remove_button.aria": "Odstrániť",
   "tax_detail_section.dzn_table.area": "Výmera",
   "tax_detail_section.dzn_table.base_metric": "Základ dane",

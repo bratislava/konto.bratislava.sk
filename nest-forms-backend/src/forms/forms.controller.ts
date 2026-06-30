@@ -35,7 +35,7 @@ import FormDeleteResponseDto, {
   UpdateFormResponseDto,
 } from './dtos/responses.dto'
 import FormsService from './forms.service'
-import { FormMustBeEnabledGuard } from './guards/form-must-be-enabled.guard'
+import { FormDefinitionMustBeEnabledGuard } from './guards/form-definition-must-be-enabled.guard'
 
 @ApiTags('forms')
 @ApiBearerAuth()
@@ -54,7 +54,7 @@ export default class FormsController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard, FormMustBeEnabledGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
   @Post(':formId/bump-version')
   async bumpJsonVersion(
     @Param('formId') formId: string,
@@ -99,7 +99,7 @@ export default class FormsController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @FormAccessAllowMigrations()
   @AllowCompletedDisabledForms(true)
-  @UseGuards(UserAuthGuard, FormAccessGuard, FormMustBeEnabledGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
   @Get(':formId')
   async getForm(
     @Param('formId') formId: string,
@@ -147,7 +147,7 @@ export default class FormsController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard, FormMustBeEnabledGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
   @Post(':formId/update')
   async updateForm(
     @Body() data: UpdateFormRequestDto,

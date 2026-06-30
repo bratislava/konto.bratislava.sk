@@ -12,7 +12,7 @@ import ScannerClientModule from '../scanner-client/scanner-client.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import FormsController from './forms.controller'
 import FormsService from './forms.service'
-import { FormMustBeEnabledGuard } from './guards/form-must-be-enabled.guard'
+import { FormDefinitionMustBeEnabledGuard } from './guards/form-definition-must-be-enabled.guard'
 import FormsTaskSubservice from './subservices/forms-task.subservice'
 
 @Module({
@@ -31,7 +31,7 @@ import FormsTaskSubservice from './subservices/forms-task.subservice'
     FilesService,
     ThrowerErrorGuard,
     FormsTaskSubservice,
-    FormMustBeEnabledGuard,
+    FormDefinitionMustBeEnabledGuard,
   ],
   exports: [FormsService],
   controllers: [FormsController],

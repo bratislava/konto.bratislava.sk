@@ -391,5 +391,112 @@ describe('NasesCronService', () => {
       expect(result['error']).toHaveLength(2)
       expect(setStatusSpy).not.toHaveBeenCalled()
     })
+
+    it('should put a published but disabled form into published-but-disabled, not valid', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      formDefinitionsModule.formDefinitions = [
+        ...originalFormDefinitions,
+        disabledForm,
+      ]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Publikovaný' },
+      })
+
+      const result = await service.validateFormRegistrations()
+
+      expect(result['published-but-disabled']).toHaveLength(1)
+      expect(result['published-but-disabled'][0].slug).toBe('disabled-form')
+      expect(result.valid).toHaveLength(2)
+    })
+
+    it('should set registration status to true for a published-but-disabled form', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      formDefinitionsModule.formDefinitions = [disabledForm]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Publikovaný' },
+      })
+
+      const setStatusSpy = jest.spyOn(
+        service['formRegistrationStatusRepository'],
+        'setStatus',
+      )
+
+      await service.validateFormRegistrations()
+
+      expect(setStatusSpy).toHaveBeenCalledWith(disabledForm, true)
+    })
+
+    it('should trigger an error alert when there are published-but-disabled forms', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      formDefinitionsModule.formDefinitions = [disabledForm]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Publikovaný' },
+      })
+
+      const errorSpy = jest.spyOn(service['logger'], 'error')
+      const logSpy = jest.spyOn(service['logger'], 'log')
+
+      await service.validateFormRegistrations()
+
+      expect(errorSpy).toHaveBeenCalled()
+      expect(logSpy).not.toHaveBeenCalled()
+    })
+
+    it('should put a not-published disabled form into not-published, not published-but-disabled', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock(
+        'forms-shared/definitions/formDefinitions',
+      )
+      formDefinitionsModule.formDefinitions = [disabledForm]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Nepublikovaný' },
+      })
+
+      const result = await service.validateFormRegistrations()
+
+      expect(result['not-published']).toHaveLength(1)
+      expect(result['published-but-disabled']).toHaveLength(0)
+    })
   })
 })

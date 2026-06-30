@@ -829,6 +829,10 @@ export interface ValidateFormRegistrationsResultDto {
    */
   error: Array<ValidateFormRegistrationDto>
   /**
+   * Forms published in slovensko.sk but disabled in our system
+   */
+  'published-but-disabled': Array<ValidateFormRegistrationDto>
+  /**
    * Valid forms
    */
   valid: Array<ValidateFormRegistrationDto>

@@ -170,6 +170,18 @@ describe('OAuth2Client', () => {
       })
       expect(noGrantClient.isGrantTypeAllowed('authorization_code')).toBe(false)
     })
+
+    it('should return false for empty grant type when no allowedGrantTypes configured', () => {
+      // Contrast with scope validation: an empty scope is allowed, but an empty grant type is not —
+      // a grant type must always be explicitly allowed.
+      const noGrantClient = new OAuth2Client({
+        id: 'x',
+        name: 'X',
+        requiresPkce: true,
+        allowedRedirectUris: ['https://example.com/cb'],
+      })
+      expect(noGrantClient.isGrantTypeAllowed('')).toBe(false)
+    })
   })
 
   /**

@@ -576,20 +576,23 @@ describe('OAuth2Service', () => {
     })
 
     it('should validate S256 code_verifier by hashing with SHA-256 and base64url encoding', async () => {
-      // The known test vector: SHA256("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk") = E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+      // RFC 7636 Appendix B test vector:
+      //   SHA256("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk") base64url = E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+      const verifier = 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk'
+      const expectedChallenge = 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM' // = SHA256(verifier)
       jest.spyOn(validationSubservice, 'isValidSecret').mockReturnValue(true)
 
       await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
-        code_verifier: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
+        code_verifier: verifier,
       } as any)
 
-      // isValidSecret should be called with the stored challenge and the computed hash
+      // The stored challenge and the freshly computed hash are identical for the test vector.
       expect(validationSubservice.isValidSecret).toHaveBeenCalledWith(
-        'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
-        expect.any(String) // the SHA256 hash of the verifier
+        expectedChallenge,
+        expectedChallenge
       )
     })
 

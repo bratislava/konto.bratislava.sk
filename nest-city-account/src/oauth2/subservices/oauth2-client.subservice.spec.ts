@@ -341,10 +341,11 @@ describe('OAuth2ClientSubservice', () => {
     })
 
     it('should skip clients with missing CLIENT_ID', () => {
+      process.env.OAUTH2_CLIENT_LIST = 'NO_ID'
+      process.env.OAUTH2_NO_ID_ALLOWED_URIS = 'https://no-id.example.com/cb'
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
-      // PAAS_MPA has no CLIENT_ID (from enum, will be attempted)
       expect(service.findClientByName('DPB')).toBeDefined()
-      expect(service.findClientByName('PAAS_MPA')).toBeUndefined()
+      expect(service.findClientByName('NO_ID')).toBeUndefined()
     })
 
     it('should skip clients with missing ALLOWED_URIS', () => {

@@ -1,6 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 
 import { DocumentsSectionFragment } from '@/src/clients/graphql-strapi/api'
@@ -22,6 +22,7 @@ const DocumentsSection = ({
 }: DocumentsSectionProps) => {
   const { t } = useTranslation('account')
   const [showAllDocuments, setShowAllDocuments] = useState(false)
+  const listId = useId()
   const filteredExternalDocuments = externalDocuments?.filter(isDefined) ?? []
 
   return (
@@ -30,7 +31,7 @@ const DocumentsSection = ({
         <SectionHeader title={title} text={text} />
 
         <div className="flex flex-col rounded-lg border border-border-active-default bg-background-passive-base py-2">
-          <ul>
+          <ul id={listId}>
             {filteredExternalDocuments
               .slice(
                 0,
@@ -62,6 +63,8 @@ const DocumentsSection = ({
                     variant="plain"
                     onClick={() => setShowAllDocuments(!showAllDocuments)}
                     endIcon={<Icon name={showAllDocuments ? 'chevron-up' : 'chevron-down'} />}
+                    aria-expanded={showAllDocuments}
+                    aria-controls={listId}
                   >
                     {showAllDocuments
                       ? t('DocumentsSection.documents.showLess')

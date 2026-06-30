@@ -218,15 +218,19 @@ describe('OAuth2ClientSubservice', () => {
     }
   ) {
     process.env[`OAUTH2_${prefix}_CLIENT_ID`] = config.clientId
-    if (config.clientSecret !== undefined)
+    if (config.clientSecret !== undefined) {
       process.env[`OAUTH2_${prefix}_CLIENT_SECRET`] = config.clientSecret
+    }
     process.env[`OAUTH2_${prefix}_ALLOWED_URIS`] = config.allowedUris
-    if (config.allowedScopes !== undefined)
+    if (config.allowedScopes !== undefined) {
       process.env[`OAUTH2_${prefix}_ALLOWED_SCOPES`] = config.allowedScopes
-    if (config.allowedGrantTypes !== undefined)
+    }
+    if (config.allowedGrantTypes !== undefined) {
       process.env[`OAUTH2_${prefix}_ALLOWED_GRANT_TYPES`] = config.allowedGrantTypes
-    if (config.requiresPkce !== undefined)
+    }
+    if (config.requiresPkce !== undefined) {
       process.env[`OAUTH2_${prefix}_REQUIRES_PKCE`] = config.requiresPkce
+    }
   }
 
   beforeEach(async () => {

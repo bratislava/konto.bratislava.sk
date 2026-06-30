@@ -3,8 +3,11 @@ import {
   DisclosureGroupProps as RACDisclosureGroupProps,
 } from 'react-aria-components/DisclosureGroup'
 
+import cn from '@/src/utils/cn'
+
 interface DisclosureGroupProps extends RACDisclosureGroupProps {
   children: React.ReactNode
+  className?: string
 }
 
 /*
@@ -14,10 +17,18 @@ interface DisclosureGroupProps extends RACDisclosureGroupProps {
 const DisclosureGroup = ({
   children,
   allowsMultipleExpanded = true,
+  className,
   ...props
 }: DisclosureGroupProps) => {
   return (
-    <RACDisclosureGroup allowsMultipleExpanded={allowsMultipleExpanded} {...props}>
+    <RACDisclosureGroup
+      allowsMultipleExpanded={allowsMultipleExpanded}
+      className={cn(
+        'w-full rounded-lg border border-border-active-default bg-background-passive-base p-4',
+        className,
+      )}
+      {...props}
+    >
       {children}
     </RACDisclosureGroup>
   )

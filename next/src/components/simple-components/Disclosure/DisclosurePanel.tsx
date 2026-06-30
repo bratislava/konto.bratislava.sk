@@ -23,7 +23,7 @@ const DisclosurePanel = ({ children, ...props }: DisclosurePanelProps) => {
         props.className,
       )}
     >
-      <div className="pb-4">{children}</div>
+      <div className="py-4">{children}</div>
     </RACDisclosurePanel>
   )
 }

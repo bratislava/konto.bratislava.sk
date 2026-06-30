@@ -4,7 +4,10 @@ import { ResponseCommunalWasteTaxItemizedAddressDto } from 'openapi-clients/tax'
 import { PropsWithChildren, useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
-import AccordionV2 from '@/src/components/simple-components/AccordionV2'
+import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
+import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
+import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
+import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 import { useHorizontalScrollFade } from '@/src/utils/useHorizontalScrollFade'
@@ -106,21 +109,24 @@ const KoAccordionTableTaxContent = ({
   data,
 }: KoAccordionTableTaxContentProps) => {
   return (
-    <AccordionV2
-      title={
-        <div className="flex min-w-0 grow justify-between">
-          <Typography variant="h5">{title}</Typography>
-          <Typography variant="h5" as="span" className="font-semibold">
-            {secondTitle}
-          </Typography>
-        </div>
-      }
-      noTitleWrapper
-    >
-      <div className="flex size-full flex-col gap-6">
-        <Table data={data} />
-      </div>
-    </AccordionV2>
+    <DisclosureGroup className="py-2">
+      <Disclosure>
+        <DisclosureHeader className="px-4 py-2 ring-inset lg:px-6 lg:py-3">
+          <div className="flex w-full justify-between pr-4">
+            <Typography variant="h5">{title}</Typography>
+
+            <Typography variant="h5" as="span" className="font-semibold">
+              {secondTitle}
+            </Typography>
+          </div>
+        </DisclosureHeader>
+        <DisclosurePanel className="px-4 lg:px-6">
+          <div className="flex size-full flex-col gap-6">
+            <Table data={data} />
+          </div>
+        </DisclosurePanel>
+      </Disclosure>
+    </DisclosureGroup>
   )
 }
 

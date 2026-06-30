@@ -780,6 +780,25 @@ describe('OAuth2ValidationSubservice', () => {
         )
       })
 
+      it('should throw INVALID_CLIENT when secret required but provided as empty string', () => {
+        // Empty string is falsy for the `!clientSecret` check — treated as "not provided"
+        expect(() => {
+          service.validateTokenRequest({
+            clientId: 'test-client-id',
+            clientSecret: '',
+            grantType: 'authorization_code',
+            codeVerifier: 'v',
+          })
+        }).toThrow(OAuth2Exception)
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_CLIENT,
+          'Invalid client: client_secret is required',
+          undefined,
+          'Client secret required but not provided',
+          { clientId: 'test-client-id', grantType: 'authorization_code' }
+        )
+      })
+
       it('should throw INVALID_CLIENT when client_secret does not match', () => {
         expect(() => {
           service.validateTokenRequest({

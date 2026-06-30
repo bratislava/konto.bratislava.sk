@@ -19,7 +19,7 @@ interface RequestWithUser extends Request {
 }
 
 @Injectable()
-export class FormMustBeEnabledGuard implements CanActivate {
+export class FormDefinitionMustBeEnabledGuard implements CanActivate {
   constructor(
     private readonly formsService: FormsService,
     private readonly reflector: Reflector,

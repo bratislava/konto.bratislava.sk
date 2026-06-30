@@ -200,7 +200,7 @@ model IdentityLookupRejection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  physicalEntity   PhysicalEntity @relation(fields: [physicalEntityId], references: [id])
+  physicalEntity   PhysicalEntity @relation(fields: [physicalEntityId], references: [id], onDelete: Cascade)
   physicalEntityId String         @unique @db.Uuid
 
   // Fault details from the slovensko-sk container.

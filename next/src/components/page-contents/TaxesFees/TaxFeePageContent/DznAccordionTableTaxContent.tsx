@@ -177,7 +177,7 @@ const DznAccordionTableTaxContent = ({
   data,
 }: DznAccordionTableTaxContentProps) => {
   return (
-    <DisclosureGroup className="py-2">
+    <DisclosureGroup className="p-4py-2 w-full rounded-lg border border-border-active-default bg-background-passive-base">
       <Disclosure>
         <DisclosureHeader className="px-4 py-2 ring-inset lg:px-6 lg:py-3">
           <div className="flex w-full justify-between pr-4">
@@ -188,6 +188,7 @@ const DznAccordionTableTaxContent = ({
             </Typography>
           </div>
         </DisclosureHeader>
+
         <DisclosurePanel className="px-4 lg:px-6">
           <div className="flex size-full flex-col gap-6">
             <Table dataType={dataType} data={data} />

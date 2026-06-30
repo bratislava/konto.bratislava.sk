@@ -35,7 +35,10 @@ export const Stepper = ({ section: { title, description, checklists } }: Props) 
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={description} asRichtext />
 
-      <DisclosureGroup defaultExpandedKeys={['disclosure-0']}>
+      <DisclosureGroup
+        defaultExpandedKeys={['disclosure-0']}
+        className="rounded-lg border border-border-active-default bg-background-passive-base py-2"
+      >
         {checklists?.filter(isDefined).map((checklist, index) => (
           <Fragment key={index}>
             {index > 0 ? <HorizontalDivider className="mx-4 lg:mx-6" /> : null}

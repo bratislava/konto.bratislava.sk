@@ -109,7 +109,7 @@ const KoAccordionTableTaxContent = ({
   data,
 }: KoAccordionTableTaxContentProps) => {
   return (
-    <DisclosureGroup className="py-2">
+    <DisclosureGroup className="w-full rounded-lg border border-border-active-default bg-background-passive-base px-4 py-2">
       <Disclosure>
         <DisclosureHeader className="px-4 py-2 ring-inset lg:px-6 lg:py-3">
           <div className="flex w-full justify-between pr-4">
@@ -120,6 +120,7 @@ const KoAccordionTableTaxContent = ({
             </Typography>
           </div>
         </DisclosureHeader>
+
         <DisclosurePanel className="px-4 lg:px-6">
           <div className="flex size-full flex-col gap-6">
             <Table data={data} />

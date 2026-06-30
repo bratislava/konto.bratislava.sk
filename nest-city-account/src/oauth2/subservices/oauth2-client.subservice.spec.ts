@@ -75,7 +75,7 @@ describe('OAuth2Client', () => {
       })
       expect(noScopeClient.areAllScopesAllowed('openid')).toBe(false)
     })
-
+    
     it('should handle space-delimited scope strings correctly', () => {
       expect(client.areAllScopesAllowed('openid profile email')).toBe(true)
       expect(client.areAllScopesAllowed('openid unknown email')).toBe(false)
@@ -305,12 +305,56 @@ describe('OAuth2ClientSubservice', () => {
     })
 
     it('should set requiresPkce to false only when explicitly "false"', () => {
+      // A client that does not require PKCE must be confidential (have a secret), otherwise it is
+      // rejected as an invalid public-client configuration.
+      setClientEnv('PAAS_MPA', {
+        clientId: 'paas-id',
+        clientSecret: 'paas-secret',
+        allowedUris: 'https://paas.com/cb',
+        requiresPkce: 'false',
+      })
+      expect(service.findClientById('paas-id')!.requiresPkce).toBe(false)
+    })
+
+    it('should skip public clients (no secret) that do not require PKCE', () => {
+      // RFC 9700 Section 2.1.1: public clients MUST use PKCE — a public client with PKCE disabled
+      // is an invalid configuration and must not be loaded.
       setClientEnv('PAAS_MPA', {
         clientId: 'paas-id',
         allowedUris: 'https://paas.com/cb',
         requiresPkce: 'false',
       })
-      expect(service.findClientById('paas-id')!.requiresPkce).toBe(false)
+      expect(service.findClientById('paas-id')).toBeUndefined()
+    })
+
+    it('should load a public client (no secret) when it requires PKCE', () => {
+      setClientEnv('PAAS_MPA', {
+        clientId: 'paas-id',
+        allowedUris: 'https://paas.com/cb',
+        requiresPkce: 'true',
+      })
+      const client = service.findClientById('paas-id')
+      expect(client).toBeDefined()
+      expect(client!.secret).toBeUndefined()
+      expect(client!.requiresPkce).toBe(true)
+    })
+
+    it('should load a confidential client (with secret) whether or not it requires PKCE', () => {
+      process.env.OAUTH2_CLIENT_LIST = 'CONF_PKCE,CONF_NO_PKCE'
+      setClientEnv('CONF_PKCE', {
+        clientId: 'conf-pkce-id',
+        clientSecret: 'secret',
+        allowedUris: 'https://conf.example.com/cb',
+        requiresPkce: 'true',
+      })
+      setClientEnv('CONF_NO_PKCE', {
+        clientId: 'conf-no-pkce-id',
+        clientSecret: 'secret',
+        allowedUris: 'https://conf.example.com/cb',
+        requiresPkce: 'false',
+      })
+      expect(service.findClientById('conf-pkce-id')!.requiresPkce).toBe(true)
+      expect(service.findClientById('conf-no-pkce-id')!.requiresPkce).toBe(false)
     })
 
     it('should default requiresPkce to true when REQUIRES_PKCE is empty string', () => {

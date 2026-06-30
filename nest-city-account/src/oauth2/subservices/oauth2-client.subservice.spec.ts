@@ -196,7 +196,15 @@ describe('OAuth2Client', () => {
  */
 describe('OAuth2ClientSubservice', () => {
   let service: OAuth2ClientSubservice
-  const ORIGINAL_ENV = process.env
+
+  // Tests only ever set OAUTH2_* variables.
+  function clearOAuth2Env() {
+    for (const key of Object.keys(process.env)) {
+      if (key.startsWith('OAUTH2_')) {
+        delete process.env[key]
+      }
+    }
+  }
 
   function setClientEnv(
     prefix: string,
@@ -222,12 +230,8 @@ describe('OAuth2ClientSubservice', () => {
   }
 
   beforeEach(async () => {
-    jest.resetModules()
-    process.env = { ...ORIGINAL_ENV }
-    // Clear enum client env vars so tests control full state
-    for (const key of Object.keys(process.env)) {
-      if (key.startsWith('OAUTH2_')) delete process.env[key]
-    }
+    // Clear all OAUTH2_* vars so each test controls the full client configuration state
+    clearOAuth2Env()
     const module: TestingModule = await Test.createTestingModule({
       providers: [OAuth2ClientSubservice],
     }).compile()
@@ -235,7 +239,7 @@ describe('OAuth2ClientSubservice', () => {
   })
 
   afterEach(() => {
-    process.env = ORIGINAL_ENV
+    clearOAuth2Env()
   })
 
   it('should be defined', () => {

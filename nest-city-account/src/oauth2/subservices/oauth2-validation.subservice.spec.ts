@@ -538,7 +538,7 @@ describe('OAuth2ValidationSubservice', () => {
         expect(result).toEqual({ clientId: 'my-client', clientSecret: 'secret:with:colons' })
       })
 
-      it('should fall through to body when Basic Auth has no colon', () => {
+      it('should fall back to body when Basic Auth has no colon', () => {
         const malformed = Buffer.from('nocolon').toString('base64')
         const result = service.extractClientCredentials(
           mockRequest({
@@ -549,7 +549,7 @@ describe('OAuth2ValidationSubservice', () => {
         expect(result).toEqual({ clientId: 'body-client', clientSecret: 'body-secret' })
       })
 
-      it('should fall through to body when Basic Auth has empty client_id (colon at position 0)', () => {
+      it('should fall back to body when Basic Auth has empty client_id (colon at position 0)', () => {
         const emptyId = Buffer.from(':secret').toString('base64')
         const result = service.extractClientCredentials(
           mockRequest({
@@ -560,7 +560,7 @@ describe('OAuth2ValidationSubservice', () => {
         expect(result).toEqual({ clientId: 'body-client', clientSecret: 'body-secret' })
       })
 
-      it('should fall through to body when base64 is invalid', () => {
+      it('should fall back to body when base64 is invalid', () => {
         const result = service.extractClientCredentials(
           mockRequest({
             headers: { authorization: 'Basic !!!invalid!!!' },

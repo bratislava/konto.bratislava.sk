@@ -34,6 +34,24 @@ describe('OAuth2Client', () => {
       expect(client.isRedirectUriAllowed('https://example.com/callback')).toBe(true)
       expect(client.isRedirectUriAllowed('https://example.com/alt-callback')).toBe(true)
     })
+
+    it('should reject a URI matching a wildcard in the registered URI (exact match only)', () => {
+      // RFC 6749 Section 3.1.2.3 requires exact matching — wildcards must NOT be expanded.
+      const wildcardClient = new OAuth2Client({
+        id: 'wildcard-id',
+        name: 'WILDCARD',
+        requiresPkce: true,
+        allowedRedirectUris: ['https://example.com/*'],
+      })
+      expect(wildcardClient.isRedirectUriAllowed('https://example.com/callback')).toBe(false)
+      // Only a verbatim match of the registered (wildcard) string is accepted.
+      expect(wildcardClient.isRedirectUriAllowed('https://example.com/*')).toBe(true)
+    })
+
+    it('should reject a provided URI that itself contains a wildcard', () => {
+      // A wildcard in the provided redirect_uri can never match a concrete registered URI.
+      expect(client.isRedirectUriAllowed('https://example.com/callbac*')).toBe(false)
+    })
   })
 
   /**

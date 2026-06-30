@@ -101,11 +101,15 @@ describe('OAuth2Service', () => {
       })
       expect(result).toBe('stored-id')
       expect(prisma.oAuth2Data.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
+        data: {
+          responseType: 'code',
           clientId: 'cid',
           redirectUri: 'https://example.com/cb',
-          responseType: 'code',
-        }),
+          scope: 'read',
+          state: 'csrf',
+          codeChallenge: 'challenge',
+          codeChallengeMethod: 'S256',
+        },
       })
     })
 

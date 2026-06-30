@@ -37,6 +37,7 @@ const FaqsGroup = ({ faqs, accordionTitleLevel = 'h2' }: FaqsGroupProps) => {
                 {faq.title}
               </Typography>
             </DisclosureHeader>
+
             <DisclosurePanel className="px-4 lg:px-6">
               <Markdown variant="accordion" content={faq.content} />
             </DisclosurePanel>

@@ -54,9 +54,10 @@ describe('TokenRequestValidationPipe', () => {
     it('should throw UNSUPPORTED_GRANT_TYPE when grant_type is missing', async () => {
       // RFC 6749 Section 4.1.3: grant_type is REQUIRED
       await expect(pipe.transform({}, metadata)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE)
-      expect(callArgs?.[1]).toContain('grant_type missing')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+        "Unsupported grant_type: (grant_type missing) - must be 'authorization_code' or 'refresh_token'"
+      )
     })
 
     it('should throw UNSUPPORTED_GRANT_TYPE for unknown grant_type', async () => {
@@ -64,20 +65,26 @@ describe('TokenRequestValidationPipe', () => {
       await expect(pipe.transform({ grant_type: 'client_credentials' }, metadata)).rejects.toThrow(
         OAuth2Exception
       )
-      const callArgs = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+        "Unsupported grant_type: client_credentials - must be 'authorization_code' or 'refresh_token'"
+      )
     })
 
     it('should throw UNSUPPORTED_GRANT_TYPE when value is not an object', async () => {
       await expect(pipe.transform('not-an-object', metadata)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+        "Unsupported grant_type: (grant_type missing) - must be 'authorization_code' or 'refresh_token'"
+      )
     })
 
     it('should throw UNSUPPORTED_GRANT_TYPE when value is null', async () => {
       await expect(pipe.transform(null, metadata)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+        "Unsupported grant_type: (grant_type missing) - must be 'authorization_code' or 'refresh_token'"
+      )
     })
   })
 
@@ -116,8 +123,10 @@ describe('TokenRequestValidationPipe', () => {
           metadata
         )
       ).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2TokenErrorCode.INVALID_REQUEST)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        expect.stringContaining('Invalid request:')
+      )
     })
 
     it('should throw INVALID_REQUEST when code_verifier has invalid format', async () => {
@@ -133,8 +142,10 @@ describe('TokenRequestValidationPipe', () => {
           metadata
         )
       ).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2TokenErrorCode.INVALID_REQUEST)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        expect.stringContaining('Invalid request:')
+      )
     })
   })
 
@@ -168,8 +179,10 @@ describe('TokenRequestValidationPipe', () => {
           metadata
         )
       ).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2TokenErrorCode.INVALID_REQUEST)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        expect.stringContaining('Invalid request:')
+      )
     })
   })
 

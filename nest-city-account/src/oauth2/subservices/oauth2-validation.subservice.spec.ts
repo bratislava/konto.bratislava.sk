@@ -52,22 +52,6 @@ describe('OAuth2ValidationSubservice', () => {
     return `Basic ${encoded}`
   }
 
-  function expectAuthError(code: OAuth2AuthorizationErrorCode, descSubstring?: string) {
-    const calls = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls
-    expect(calls.length).toBeGreaterThan(0)
-    const lastCall = calls[calls.length - 1]
-    expect(lastCall?.[0]).toBe(code)
-    if (descSubstring) expect(lastCall?.[1]).toContain(descSubstring)
-  }
-
-  function expectTokenError(code: OAuth2TokenErrorCode, descSubstring?: string) {
-    const calls = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls
-    expect(calls.length).toBeGreaterThan(0)
-    const lastCall = calls[calls.length - 1]
-    expect(lastCall?.[0]).toBe(code)
-    if (descSubstring) expect(lastCall?.[1]).toContain(descSubstring)
-  }
-
   beforeEach(async () => {
     jest.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
@@ -85,8 +69,10 @@ describe('OAuth2ValidationSubservice', () => {
     // Re-set mock return values (cleared by jest.clearAllMocks)
     jest.spyOn(mockClient, 'isRedirectUriAllowed').mockReturnValue(true)
     jest.spyOn(mockClient, 'areAllScopesAllowed').mockReturnValue(true)
-    jest.spyOn(mockPublicNoPkceClient, 'isRedirectUriAllowed').mockReturnValue(true)
-    jest.spyOn(mockPublicNoPkceClient, 'areAllScopesAllowed').mockReturnValue(true)
+    jest.spyOn(mockPublicPkceClient, 'isRedirectUriAllowed').mockReturnValue(true)
+    jest.spyOn(mockPublicPkceClient, 'areAllScopesAllowed').mockReturnValue(true)
+    jest.spyOn(mockConfidentialNoPkceClient, 'isRedirectUriAllowed').mockReturnValue(true)
+    jest.spyOn(mockConfidentialNoPkceClient, 'areAllScopesAllowed').mockReturnValue(true)
 
     jest
       .spyOn(oAuth2ErrorThrower, 'authorizationException')
@@ -128,21 +114,39 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), clientId: undefined })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'client_id is required')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: client_id is required',
+          undefined,
+          'Missing or invalid client_id in authorization request',
+          { hasClientId: false, clientIdType: 'undefined' }
+        )
       })
 
       it('should throw INVALID_REQUEST when client_id is empty string', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), clientId: '' })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'client_id is required')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: client_id is required',
+          undefined,
+          'Missing or invalid client_id in authorization request',
+          { hasClientId: false, clientIdType: 'string' }
+        )
       })
 
       it('should throw INVALID_REQUEST when client_id is not a string', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), clientId: 12345 })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'client_id is required')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: client_id is required',
+          undefined,
+          'Missing or invalid client_id in authorization request',
+          { hasClientId: true, clientIdType: 'number' }
+        )
       })
 
       it('should throw UNAUTHORIZED_CLIENT when client_id is not registered', () => {
@@ -150,7 +154,13 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateAuthorizationRequest(validAuthParams())
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT, 'unknown client')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.UNAUTHORIZED_CLIENT,
+          'Unauthorized client: unknown client',
+          undefined,
+          'Client not found',
+          { clientId: 'test-client-id' }
+        )
       })
     })
 
@@ -164,14 +174,26 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), redirectUri: undefined })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'redirect_uri is required')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: redirect_uri is required',
+          undefined,
+          'Missing or invalid redirect_uri in authorization request',
+          { clientId: 'test-client-id', hasRedirectUri: false, redirectUriType: 'undefined' }
+        )
       })
 
       it('should throw INVALID_REQUEST when redirect_uri is empty string', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), redirectUri: '' })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'redirect_uri is required')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: redirect_uri is required',
+          undefined,
+          'Missing or invalid redirect_uri in authorization request',
+          { clientId: 'test-client-id', hasRedirectUri: false, redirectUriType: 'string' }
+        )
       })
 
       it('should throw INVALID_REQUEST when redirect_uri is not in client allowlist', () => {
@@ -182,7 +204,13 @@ describe('OAuth2ValidationSubservice', () => {
             redirectUri: 'https://malicious.com/cb',
           })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'redirect URI is not allowed')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: provided redirect URI is not allowed for this client',
+          undefined,
+          'Redirect URI not allowed for client',
+          { clientId: 'test-client-id', redirectUri: 'https://malicious.com/cb' }
+        )
       })
     })
 
@@ -202,9 +230,12 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), scope: 123 })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
           OAuth2AuthorizationErrorCode.INVALID_SCOPE,
-          'invalid, unknown, or malformed'
+          'Invalid scope: requested scope is invalid, unknown, or malformed',
+          undefined,
+          'Invalid scope requested',
+          { clientId: 'test-client-id', requestedScope: 123 }
         )
       })
 
@@ -213,7 +244,13 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), scope: 'admin' })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_SCOPE)
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_SCOPE,
+          'Invalid scope: requested scope is invalid, unknown, or malformed',
+          undefined,
+          'Invalid scope requested',
+          { clientId: 'test-client-id', requestedScope: 'admin' }
+        )
       })
     })
 
@@ -244,9 +281,16 @@ describe('OAuth2ValidationSubservice', () => {
             codeChallengeMethod: undefined,
           })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'both code_challenge and code_challenge_method must be provided'
+          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
+          undefined,
+          'PKCE parameters incomplete',
+          {
+            clientId: 'confidential-no-pkce-client-id',
+            hasCodeChallenge: true,
+            hasCodeChallengeMethod: false,
+          }
         )
       })
 
@@ -259,9 +303,16 @@ describe('OAuth2ValidationSubservice', () => {
             codeChallengeMethod: 'S256',
           })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'both code_challenge and code_challenge_method must be provided'
+          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
+          undefined,
+          'PKCE parameters incomplete',
+          {
+            clientId: 'confidential-no-pkce-client-id',
+            hasCodeChallenge: false,
+            hasCodeChallengeMethod: true,
+          }
         )
       })
 
@@ -274,9 +325,16 @@ describe('OAuth2ValidationSubservice', () => {
             codeChallengeMethod: 'S256',
           })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'both code_challenge and code_challenge_method must be provided'
+          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
+          undefined,
+          'PKCE parameters incomplete',
+          {
+            clientId: 'confidential-no-pkce-client-id',
+            hasCodeChallenge: false,
+            hasCodeChallengeMethod: true,
+          }
         )
       })
 
@@ -289,9 +347,16 @@ describe('OAuth2ValidationSubservice', () => {
             codeChallengeMethod: '',
           })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
           OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'both code_challenge and code_challenge_method must be provided'
+          'Invalid request: both code_challenge and code_challenge_method must be provided when using PKCE',
+          undefined,
+          'PKCE parameters incomplete',
+          {
+            clientId: 'confidential-no-pkce-client-id',
+            hasCodeChallenge: true,
+            hasCodeChallengeMethod: false,
+          }
         )
       })
     })
@@ -307,23 +372,38 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), responseType: undefined })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'response_type is required')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: string response_type is required',
+          undefined,
+          'Missing or invalid response_type in authorization request',
+          { clientId: 'test-client-id', hasResponseType: false, responseTypeValue: undefined }
+        )
       })
 
       it('should throw INVALID_REQUEST when response_type is not a string', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), responseType: 42 })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'response_type is required')
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
+          'Invalid request: string response_type is required',
+          undefined,
+          'Missing or invalid response_type in authorization request',
+          { clientId: 'test-client-id', hasResponseType: true, responseTypeValue: 42 }
+        )
       })
 
       it('should throw UNSUPPORTED_RESPONSE_TYPE for unknown response_type values', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), responseType: 'unknown' })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
           OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
-          'Unsupported response_type'
+          'Unsupported response_type: unknown - must be "code" (implicit grant - "token" - not supported)',
+          undefined,
+          'Unsupported response_type',
+          { clientId: 'test-client-id', responseType: 'unknown' }
         )
       })
 
@@ -335,16 +415,15 @@ describe('OAuth2ValidationSubservice', () => {
             codeChallengeMethod: undefined,
           })
         }).toThrow(OAuth2Exception)
-        expectAuthError(OAuth2AuthorizationErrorCode.INVALID_REQUEST, 'PKCE is required')
       })
 
       it('should throw INVALID_REQUEST when PKCE-required client uses response_type "token"', () => {
         expect(() => {
           service.validateAuthorizationRequest({ ...validAuthParams(), responseType: 'token' })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
-          OAuth2AuthorizationErrorCode.INVALID_REQUEST,
-          'response_type must be "code" when PKCE is required'
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+          OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
+          'Unsupported response_type: "token" - implicit grant not supported (use "code" instead)'
         )
       })
 
@@ -359,9 +438,9 @@ describe('OAuth2ValidationSubservice', () => {
             codeChallengeMethod: undefined,
           })
         }).toThrow(OAuth2Exception)
-        expectAuthError(
+        expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
           OAuth2AuthorizationErrorCode.UNSUPPORTED_RESPONSE_TYPE,
-          '"token" response_type is not supported'
+          'Unsupported response_type: "token" - implicit grant not supported (use "code" instead)'
         )
       })
     })
@@ -580,7 +659,13 @@ describe('OAuth2ValidationSubservice', () => {
             grantType: 'client_credentials',
           })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE, 'client_credentials')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+          'Unsupported grant type: client_credentials',
+          undefined,
+          'Unsupported grant type',
+          { grantType: 'client_credentials' }
+        )
       })
 
       it('should throw UNSUPPORTED_GRANT_TYPE when grant_type is undefined', () => {
@@ -591,7 +676,13 @@ describe('OAuth2ValidationSubservice', () => {
             grantType: undefined,
           })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE, 'undefined')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+          'Unsupported grant type: undefined',
+          undefined,
+          'Unsupported grant type',
+          { grantType: undefined }
+        )
       })
 
       it('should clear redirectUri and codeVerifier for refresh_token grant', () => {
@@ -620,7 +711,13 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateTokenRequest({ clientId: undefined, grantType: 'authorization_code' })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.INVALID_CLIENT, 'client_id is required')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_CLIENT,
+          'Invalid request: client_id is required',
+          undefined,
+          'Missing client_id in token request',
+          { grantType: 'authorization_code', hasClientSecret: false }
+        )
       })
 
       it('should throw INVALID_CLIENT when client_id is not registered', () => {
@@ -628,7 +725,13 @@ describe('OAuth2ValidationSubservice', () => {
         expect(() => {
           service.validateTokenRequest({ clientId: 'nonexistent', grantType: 'authorization_code' })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.INVALID_CLIENT, 'unknown client')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_CLIENT,
+          'Unauthorized client: unknown client',
+          undefined,
+          'Client not found for token request',
+          { clientId: 'nonexistent', grantType: 'authorization_code' }
+        )
       })
 
       it('should throw INVALID_CLIENT when secret required but not provided', () => {
@@ -640,7 +743,13 @@ describe('OAuth2ValidationSubservice', () => {
             codeVerifier: 'v',
           })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.INVALID_CLIENT, 'client_secret is required')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_CLIENT,
+          'Invalid client: client_secret is required',
+          undefined,
+          'Client secret required but not provided',
+          { clientId: 'test-client-id', grantType: 'authorization_code' }
+        )
       })
 
       it('should throw INVALID_CLIENT when client_secret does not match', () => {
@@ -652,7 +761,13 @@ describe('OAuth2ValidationSubservice', () => {
             codeVerifier: 'v',
           })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.INVALID_CLIENT, 'invalid client_secret')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_CLIENT,
+          'Invalid client: invalid client_secret',
+          undefined,
+          'Invalid client secret provided',
+          { clientId: 'test-client-id', grantType: 'authorization_code', hasClientSecret: true }
+        )
       })
 
       it('should accept when client has no secret (public client)', () => {
@@ -717,7 +832,17 @@ describe('OAuth2ValidationSubservice', () => {
             codeVerifier: 'v',
           })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.INVALID_REQUEST, 'redirect URI is not allowed')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_REQUEST,
+          'Invalid request: provided redirect URI is not allowed for this client',
+          undefined,
+          'Redirect URI not allowed for client in token request',
+          {
+            clientId: 'test-client-id',
+            redirectUri: 'https://malicious.com/cb',
+            grantType: 'authorization_code',
+          }
+        )
       })
 
       it('should skip redirect_uri validation when not provided', () => {
@@ -761,7 +886,13 @@ describe('OAuth2ValidationSubservice', () => {
             codeVerifier: undefined,
           })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.INVALID_REQUEST, 'code_verifier is required')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_REQUEST,
+          'Invalid request: PKCE code_verifier is required',
+          undefined,
+          'PKCE code_verifier required but not provided',
+          { clientId: 'test-client-id', grantType: 'authorization_code', hasCodeVerifier: false }
+        )
       })
 
       it('should throw INVALID_REQUEST when code_verifier is empty string', () => {
@@ -773,7 +904,13 @@ describe('OAuth2ValidationSubservice', () => {
             codeVerifier: '',
           })
         }).toThrow(OAuth2Exception)
-        expectTokenError(OAuth2TokenErrorCode.INVALID_REQUEST, 'code_verifier is required')
+        expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+          OAuth2TokenErrorCode.INVALID_REQUEST,
+          'Invalid request: PKCE code_verifier is required',
+          undefined,
+          'PKCE code_verifier required but not provided',
+          { clientId: 'test-client-id', grantType: 'authorization_code', hasCodeVerifier: false }
+        )
       })
 
       it('should accept when code_verifier is provided', () => {

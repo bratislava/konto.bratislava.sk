@@ -77,7 +77,7 @@ describe('AuthRequestIdGuard', () => {
         AuthRequestIdGuard,
         { provide: OAuth2Service, useValue: createMock<OAuth2Service>() },
         { provide: OAuth2ValidationSubservice, useValue: createMock<OAuth2ValidationSubservice>() },
-        { provide: OAuth2ErrorThrower, useValue: createMock<OAuth2ErrorThrower>() },
+        OAuth2ErrorThrower,
       ],
     }).compile()
 
@@ -86,16 +86,7 @@ describe('AuthRequestIdGuard', () => {
     validationSubservice = module.get<OAuth2ValidationSubservice>(OAuth2ValidationSubservice)
     oAuth2ErrorThrower = module.get<OAuth2ErrorThrower>(OAuth2ErrorThrower)
 
-    jest
-      .spyOn(oAuth2ErrorThrower, 'authorizationException')
-      .mockImplementation(
-        (errorCode, errorDescription, errorUri, consoleMessage, logMetadata) =>
-          new OAuth2Exception(
-            { error: errorCode, error_description: errorDescription, error_uri: errorUri },
-            HttpStatus.BAD_REQUEST,
-            { consoleMessage, metadata: logMetadata }
-          )
-      )
+    jest.spyOn(oAuth2ErrorThrower, 'authorizationException')
   })
 
   it('should be defined', () => {
@@ -188,42 +179,91 @@ describe('AuthRequestIdGuard', () => {
     it('should throw SERVER_ERROR when authRequestId is missing from both body and query', async () => {
       const context = createMockContext({ body: {}, query: {} })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2AuthorizationErrorCode.SERVER_ERROR)
-      expect(callArgs?.[4]).toMatchObject({
-        hasBodyAuthRequestId: false,
-        hasQueryAuthRequestId: false,
-      })
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: missing authRequestId',
+        undefined,
+        'Missing or invalid authRequestId parameter',
+        {
+          hasBodyAuthRequestId: false,
+          hasQueryAuthRequestId: false,
+          authRequestIdType: 'undefined',
+          method: 'GET',
+        }
+      )
     })
 
     it('should throw SERVER_ERROR when authRequestId is not a string (defensive — DTO validation prevents this in practice)', async () => {
       // In practice, POST body is validated by StoreTokensRequestDto (@IsUUID)
       // before guard runs, and GET query params are always strings in Express.
       // This tests the defensive type of check.
-      const context = createMockContext({ body: { authRequestId: 12345 } })
+      const context = createMockContext({ body: { authRequestId: 12345 }, method: 'POST' })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2AuthorizationErrorCode.SERVER_ERROR)
-      expect(callArgs?.[4]).toMatchObject({ authRequestIdType: 'number' })
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: missing authRequestId',
+        undefined,
+        'Missing or invalid authRequestId parameter',
+        {
+          hasBodyAuthRequestId: true,
+          hasQueryAuthRequestId: false,
+          authRequestIdType: 'number',
+          method: 'POST',
+        }
+      )
     })
 
     it('should throw SERVER_ERROR when authRequestId is an empty string', async () => {
-      const context = createMockContext({ body: { authRequestId: '' } })
+      const context = createMockContext({ body: { authRequestId: '' }, method: 'POST' })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2AuthorizationErrorCode.SERVER_ERROR)
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: missing authRequestId',
+        undefined,
+        'Missing or invalid authRequestId parameter',
+        {
+          hasBodyAuthRequestId: false,
+          hasQueryAuthRequestId: false,
+          authRequestIdType: 'string',
+          method: 'POST',
+        }
+      )
     })
 
     it('should include diagnostic metadata in the error (method, body/query presence)', async () => {
       const context = createMockContext({ query: { authRequestId: 42 }, method: 'GET' })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[4]).toMatchObject({
-        hasBodyAuthRequestId: false,
-        hasQueryAuthRequestId: true,
-        authRequestIdType: 'number',
-        method: 'GET',
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: missing authRequestId',
+        undefined,
+        'Missing or invalid authRequestId parameter',
+        {
+          hasBodyAuthRequestId: false,
+          hasQueryAuthRequestId: true,
+          authRequestIdType: 'number',
+          method: 'GET',
+        }
+      )
+    })
+
+    // The guard is bound per-route to POST and GET handlers, so any other method
+    // reaching it is a routing/configuration bug rather than a client error.
+    it('should throw SERVER_ERROR (with alert) for an unsupported HTTP method', async () => {
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'DELETE',
       })
+      await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error',
+        undefined,
+        'AuthRequestIdGuard reached with unexpected HTTP method',
+        { method: 'DELETE' },
+        1
+      )
+      expect(oauth2Service.loadAuthorizationRequest).not.toHaveBeenCalled()
     })
   })
 
@@ -244,7 +284,10 @@ describe('AuthRequestIdGuard', () => {
   describe('canActivate - loading authorization request from database', () => {
     it('should load authorization request via oauth2Service.loadAuthorizationRequest()', async () => {
       jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(validAuthRequestData)
-      const context = createMockContext({ body: { authRequestId: validAuthRequestId } })
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'POST',
+      })
       await guard.canActivate(context)
       expect(oauth2Service.loadAuthorizationRequest).toHaveBeenCalledWith(validAuthRequestId)
       expect(oauth2Service.loadAuthorizationRequest).toHaveBeenCalledTimes(1)
@@ -253,12 +296,18 @@ describe('AuthRequestIdGuard', () => {
     it('should throw SERVER_ERROR when loadAuthorizationRequest() throws (database failure)', async () => {
       const dbError = new Error('Connection refused')
       jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockRejectedValue(dbError)
-      const context = createMockContext({ body: { authRequestId: validAuthRequestId } })
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'POST',
+      })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2AuthorizationErrorCode.SERVER_ERROR)
-      expect(callArgs?.[1]).toContain('failed to process authorization request')
-      expect(callArgs?.[4]).toMatchObject({ authRequestId: validAuthRequestId, error: dbError })
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: failed to process authorization request',
+        undefined,
+        'Failed to load authorization request',
+        { authRequestId: validAuthRequestId, error: dbError }
+      )
     })
 
     it('should throw SERVER_ERROR when authorization request is not found (null)', async () => {
@@ -268,9 +317,13 @@ describe('AuthRequestIdGuard', () => {
         method: 'POST',
       })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2AuthorizationErrorCode.SERVER_ERROR)
-      expect(callArgs?.[1]).toContain('not found or expired')
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: authorization request not found or expired',
+        undefined,
+        'Authorization request not found for authRequestId',
+        { authRequestId: validAuthRequestId, method: 'POST' }
+      )
     })
 
     it('should include authRequestId in error metadata for not-found errors', async () => {
@@ -280,8 +333,13 @@ describe('AuthRequestIdGuard', () => {
         method: 'GET',
       })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[4]).toMatchObject({ authRequestId: validAuthRequestId, method: 'GET' })
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: authorization request not found or expired',
+        undefined,
+        'Authorization request not found for authRequestId',
+        { authRequestId: validAuthRequestId, method: 'GET' }
+      )
     })
   })
 
@@ -305,7 +363,10 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should call validateAuthorizationRequest() with mapped parameters from loaded data', async () => {
-      const context = createMockContext({ body: { authRequestId: validAuthRequestId } })
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'POST',
+      })
       await guard.canActivate(context)
       expect(validationSubservice.validateAuthorizationRequest).toHaveBeenCalledWith({
         responseType: validAuthRequestData.response_type,
@@ -333,9 +394,13 @@ describe('AuthRequestIdGuard', () => {
         method: 'POST',
       })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2AuthorizationErrorCode.SERVER_ERROR)
-      expect(callArgs?.[1]).toContain('parameters are corrupted')
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: authorization request parameters are corrupted',
+        undefined,
+        'Invalid authorization request from authRequestId',
+        { authRequestId: validAuthRequestId, method: 'POST' }
+      )
     })
 
     it('should throw SERVER_ERROR (not the original validation error) to avoid leaking details', async () => {
@@ -352,16 +417,18 @@ describe('AuthRequestIdGuard', () => {
           HttpStatus.BAD_REQUEST
         )
       })
-      const context = createMockContext({ body: { authRequestId: validAuthRequestId } })
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'POST',
+      })
       await expect(guard.canActivate(context)).rejects.toThrow(OAuth2Exception)
-      const callArgs = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls[0]
-      expect(callArgs?.[0]).toBe(OAuth2AuthorizationErrorCode.SERVER_ERROR)
-      expect(oAuth2ErrorThrower.authorizationException).not.toHaveBeenCalledWith(
-        OAuth2AuthorizationErrorCode.INVALID_SCOPE,
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything()
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledTimes(1)
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: authorization request parameters are corrupted',
+        undefined,
+        'Invalid authorization request from authRequestId',
+        { authRequestId: validAuthRequestId, method: 'POST' }
       )
     })
   })
@@ -379,13 +446,19 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should attach authorizationRequestData to the request object', async () => {
-      const context = createMockContext({ body: { authRequestId: validAuthRequestId } })
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'POST',
+      })
       await guard.canActivate(context)
       expect(getRequest(context).authorizationRequestData).toBe(validAuthRequestData)
     })
 
     it('should return true when all validation passes', async () => {
-      const context = createMockContext({ body: { authRequestId: validAuthRequestId } })
+      const context = createMockContext({
+        body: { authRequestId: validAuthRequestId },
+        method: 'POST',
+      })
       const result = await guard.canActivate(context)
       expect(result).toBe(true)
     })

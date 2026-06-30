@@ -723,7 +723,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Should still return a valid OAuth2 error even with malformed input
       // The filter normalizes errors to ensure RFC compliance
-      const response = (mockResponse.json as jest.Mock).mock.calls[0][0]
+      const response = sentResponse.json as Record<string, unknown>
 
       expect(response).toMatchObject({
         error: expect.any(String),
@@ -797,7 +797,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       filter.catch(exception, mockArgumentsHost)
 
-      const redirectUrl = (mockResponse.redirect as jest.Mock).mock.calls[0][1]
+      const redirectUrl = sentResponse.redirect?.url
       expect(redirectUrl).toContain('existing=param')
       expect(redirectUrl).toContain('error=access_denied')
     })
@@ -1244,7 +1244,13 @@ describe('OAuth2ExceptionFilter', () => {
       mockRequest.path = '/oauth2/unknown-endpoint'
       mockRequest.method = 'POST'
 
-      const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+      // Capture the logged object instead of reading it back from mock.calls
+      let loggedObject: object | undefined
+      const loggerSpy = jest
+        .spyOn((filter as any).logger, 'error')
+        .mockImplementation((logObject) => {
+          loggedObject = logObject as object
+        })
 
       const exception = new HttpException('Unhandled endpoint', HttpStatus.NOT_FOUND)
 
@@ -1261,9 +1267,11 @@ describe('OAuth2ExceptionFilter', () => {
         })
       )
 
-      // Verify the alert field exists (even if undefined from metadata merge)
-      const logCall = loggerSpy.mock.calls[0][0]
-      expect(logCall).toHaveProperty('alert')
+      // Verify the alert field exists (even if undefined from metadata merge).
+      // `toHaveBeenCalledWith(objectContaining({ alert: undefined }))` cannot
+      // express this — jest equality treats an undefined value the same as an
+      // absent key — hence the captured object and toHaveProperty.
+      expect(loggedObject).toHaveProperty('alert')
     })
 
     it('should return string error as-is for unhandled endpoints', () => {

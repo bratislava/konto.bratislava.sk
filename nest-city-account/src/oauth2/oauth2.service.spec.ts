@@ -1,5 +1,4 @@
 import { createMock } from '@golevelup/ts-jest'
-import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -36,29 +35,26 @@ describe('OAuth2Service', () => {
   let validationSubservice: OAuth2ValidationSubservice
   let clientSubservice: OAuth2ClientSubservice
 
-  function expectTokenError(code: OAuth2TokenErrorCode, descSubstring?: string) {
-    const calls = jest.mocked(oAuth2ErrorThrower).tokenException.mock.calls
-    expect(calls.length).toBeGreaterThan(0)
-    const lastCall = calls[calls.length - 1]
-    expect(lastCall?.[0]).toBe(code)
-    if (descSubstring) expect(lastCall?.[1]).toContain(descSubstring)
-  }
-
-  function expectAuthError(code: OAuth2AuthorizationErrorCode, descSubstring?: string) {
-    const calls = jest.mocked(oAuth2ErrorThrower).authorizationException.mock.calls
-    expect(calls.length).toBeGreaterThan(0)
-    const lastCall = calls[calls.length - 1]
-    expect(lastCall?.[0]).toBe(code)
-    if (descSubstring) expect(lastCall?.[1]).toContain(descSubstring)
-  }
-
   beforeEach(async () => {
     jest.clearAllMocks()
+
+    // clearAllMocks only clears call data, not implementations — restore the module mocks'
+    // default behaviour so a `mockImplementation` override in one test cannot leak into the next.
+    ;(crypto.encryptData as jest.Mock).mockImplementation((data: string) => `enc:${data}`)
+    ;(crypto.decryptData as jest.Mock).mockImplementation((data: string) =>
+      data.replace('enc:', '')
+    )
+    ;(tokenSerialization.serializeTokenData as jest.Mock).mockImplementation(
+      (token: string, clientId: string) => JSON.stringify({ token, clientId })
+    )
+    ;(tokenSerialization.deserializeTokenData as jest.Mock).mockImplementation((data: string) =>
+      JSON.parse(data)
+    )
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OAuth2Service,
-        { provide: OAuth2ErrorThrower, useValue: createMock<OAuth2ErrorThrower>() },
+        OAuth2ErrorThrower,
         { provide: PrismaService, useValue: createMock<PrismaService>() },
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
         { provide: ConfigService, useValue: createMock<ConfigService>() },
@@ -75,26 +71,8 @@ describe('OAuth2Service', () => {
     validationSubservice = module.get<OAuth2ValidationSubservice>(OAuth2ValidationSubservice)
     clientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
-    jest
-      .spyOn(oAuth2ErrorThrower, 'authorizationException')
-      .mockImplementation(
-        (errorCode, errorDescription, errorUri, consoleMessage, logMetadata) =>
-          new OAuth2Exception(
-            { error: errorCode, error_description: errorDescription, error_uri: errorUri },
-            HttpStatus.BAD_REQUEST,
-            { consoleMessage, metadata: logMetadata }
-          )
-      )
-    jest
-      .spyOn(oAuth2ErrorThrower, 'tokenException')
-      .mockImplementation(
-        (errorCode, errorDescription, errorUri, consoleMessage, logMetadata) =>
-          new OAuth2Exception(
-            { error: errorCode, error_description: errorDescription, error_uri: errorUri },
-            HttpStatus.BAD_REQUEST,
-            { consoleMessage, metadata: logMetadata }
-          )
-      )
+    jest.spyOn(oAuth2ErrorThrower, 'authorizationException')
+    jest.spyOn(oAuth2ErrorThrower, 'tokenException')
   })
 
   it('should be defined', () => {
@@ -125,9 +103,9 @@ describe('OAuth2Service', () => {
       expect(prisma.oAuth2Data.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           clientId: 'cid',
+          redirectUri: 'https://example.com/cb',
           responseType: 'code',
         }),
-          redirectUri: 'https://example.com/cb',
       })
     })
 
@@ -211,7 +189,13 @@ describe('OAuth2Service', () => {
           'id'
         )
       ).toThrow(OAuth2Exception)
-      expectAuthError(OAuth2AuthorizationErrorCode.SERVER_ERROR, 'server misconfiguration')
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization redirect error: server misconfiguration',
+        undefined,
+        'OAUTH2_LOGIN_URL environment variable is not configured',
+        { clientId: 'cid', authRequestId: 'id' }
+      )
     })
   })
 
@@ -357,7 +341,13 @@ describe('OAuth2Service', () => {
           code_verifier: 'v',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'authorization code not found')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: authorization code not found',
+        undefined,
+        'Authorization code not found',
+        { hasCode: true }
+      )
     })
 
     it('should delete code immediately after finding it — single-use enforcement (RFC 6749 Section 4.1.2)', async () => {
@@ -380,7 +370,13 @@ describe('OAuth2Service', () => {
           code_verifier: 'v',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'already used or deleted')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: authorization code already used or deleted',
+        undefined,
+        'Authorization code already used or deleted',
+        { error: expect.any(Error), authRequestId: 'auth-req-id', clientId: 'test-client' }
+      )
     })
 
     it('should throw INVALID_GRANT when authorization code has expired — 5 minute TTL (RFC 6749 Section 4.1.2)', async () => {
@@ -397,7 +393,18 @@ describe('OAuth2Service', () => {
           code_verifier: 'v',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'expired')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: authorization code expired',
+        undefined,
+        'Authorization code expired',
+        {
+          authRequestId: 'auth-req-id',
+          clientId: 'test-client',
+          codeAgeMs: expect.any(Number),
+          maxAgeMs: 5 * 60 * 1000,
+        }
+      )
     })
 
     it('should accept authorization code within 5 minute window', async () => {
@@ -424,7 +431,18 @@ describe('OAuth2Service', () => {
           code_verifier: 'v',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_REQUEST, 'redirect_uri mismatch')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: redirect_uri mismatch',
+        undefined,
+        'Redirect URI mismatch',
+        {
+          authRequestId: 'auth-req-id',
+          clientId: 'test-client',
+          storedRedirectUri: 'https://example.com/callback',
+          requestedRedirectUri: 'https://different.com/callback',
+        }
+      )
     })
 
     it('should throw INVALID_GRANT when tokens are not stored for the authorization code', async () => {
@@ -443,7 +461,19 @@ describe('OAuth2Service', () => {
           code_verifier: 'v',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'tokens not available')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: tokens not available for this authorization code',
+        undefined,
+        'Tokens not available for authorization code',
+        {
+          authRequestId: 'auth-req-id',
+          clientId: 'test-client',
+          hasAccessToken: false,
+          hasRefreshToken: false,
+          hasExpiresAt: false,
+        }
+      )
     })
 
     it('should include scope in token response when scope was stored', async () => {
@@ -482,7 +512,13 @@ describe('OAuth2Service', () => {
           code_verifier: 'v',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'missing creation timestamp')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: authorization code missing creation timestamp',
+        undefined,
+        'Authorization code missing creation timestamp',
+        { authRequestId: 'auth-req-id', clientId: 'test-client' }
+      )
     })
 
     it('should clamp negative expires_in to 0 via Math.max (token already expired)', async () => {
@@ -564,7 +600,13 @@ describe('OAuth2Service', () => {
           code_verifier: 'wrong-verifier-that-does-not-match-challenge-xx',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_REQUEST, 'invalid code_verifier')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: invalid code_verifier',
+        undefined,
+        'PKCE code_verifier validation failed',
+        { codeChallengeMethod: 'S256', hasCodeVerifier: true, hasCodeChallenge: true }
+      )
     })
 
     it('should validate plain code_verifier by direct comparison', async () => {
@@ -601,7 +643,13 @@ describe('OAuth2Service', () => {
           code_verifier: 'some-verifier-value-that-is-long-enough-chars',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_REQUEST, 'invalid code_challenge_method')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: invalid code_challenge_method',
+        undefined,
+        'Invalid code_challenge_method',
+        { codeChallengeMethod: 'SHA1', validMethods: ['S256', 'plain'] }
+      )
     })
 
     it('should skip PKCE validation when no code_challenge was stored', async () => {
@@ -640,7 +688,12 @@ describe('OAuth2Service', () => {
           refresh_token: 'enc-token',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_REQUEST, 'client_id required')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: client_id required',
+        undefined,
+        'Missing client_id in refresh token request'
+      )
     })
 
     it('should throw INVALID_GRANT when refresh token decryption fails', async () => {
@@ -654,7 +707,13 @@ describe('OAuth2Service', () => {
           client_id: 'cid',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'invalid refresh token')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: invalid refresh token',
+        undefined,
+        'Failed to decrypt refresh token',
+        { error: expect.any(Error), clientId: 'cid' }
+      )
     })
 
     it('should throw INVALID_GRANT when refresh token clientId does not match request client_id', async () => {
@@ -672,7 +731,13 @@ describe('OAuth2Service', () => {
           client_id: 'my-client',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'invalid refresh token')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: invalid refresh token',
+        undefined,
+        'Refresh token client_id mismatch',
+        { clientId: 'my-client', refreshTokenClientId: 'other-client' }
+      )
     })
 
     it('should call Cognito to refresh tokens with the decrypted refresh token', async () => {
@@ -708,7 +773,13 @@ describe('OAuth2Service', () => {
           client_id: 'cid',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'unable to refresh')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: unable to refresh access token',
+        undefined,
+        'Failed to refresh tokens via Cognito',
+        { error: expect.any(Error), clientId: 'cid' }
+      )
     })
 
     it('should return encrypted access token with Bearer type and expires_in', async () => {
@@ -750,7 +821,13 @@ describe('OAuth2Service', () => {
           client_id: 'cid',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'unable to refresh')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: unable to refresh access token',
+        undefined,
+        'No access token returned from Cognito refresh',
+        { clientId: 'cid', hasRefreshToken: true }
+      )
     })
 
     it('should throw INVALID_GRANT when encryption fails after successful refresh', async () => {
@@ -774,7 +851,13 @@ describe('OAuth2Service', () => {
           client_id: 'cid',
         } as any)
       ).rejects.toThrow(OAuth2Exception)
-      expectTokenError(OAuth2TokenErrorCode.INVALID_GRANT, 'unable to process access token')
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_GRANT,
+        'Invalid grant: unable to process access token after refresh',
+        undefined,
+        'Failed to encrypt access token after refresh',
+        { error: expect.any(Error), clientId: 'cid' }
+      )
     })
   })
 
@@ -791,7 +874,10 @@ describe('OAuth2Service', () => {
     it('should throw SERVER_ERROR when client is not found', () => {
       jest.spyOn(clientSubservice, 'findClientById').mockReturnValue(undefined)
       expect(() => service.getClientInfo('nonexistent')).toThrow(OAuth2Exception)
-      expectAuthError(OAuth2AuthorizationErrorCode.SERVER_ERROR, 'nonexistent')
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Client info could not be retrieved for client_id: nonexistent'
+      )
     })
   })
 
@@ -805,7 +891,12 @@ describe('OAuth2Service', () => {
       await expect(service.token({ grant_type: 'client_credentials' } as any)).rejects.toThrow(
         OAuth2Exception
       )
-      expectTokenError(OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
+        'Unsupported grant type',
+        undefined,
+        'Unsupported grant type. Should have been handled by the guard.'
+      )
     })
   })
 })

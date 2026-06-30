@@ -20,12 +20,12 @@ import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { AuthUser, User, UserType } from '../auth-v2/types/user'
+import { AllowCompletedDisabledForms } from '../forms-v2/decorators/allow-completed-disabled-forms.decorator'
 import {
   FormAccessAllowMigrations,
   FormAccessGuard,
   GetFormAccessType,
 } from '../forms-v2/guards/form-access.guard'
-import { FormMustBeEnabledGuard } from '../forms-v2/guards/form-must-be-enabled.guard'
 import { FormAccessType } from '../forms-v2/services/form-access.service'
 import { GetFormsRequestDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import FormDeleteResponseDto, {
@@ -35,6 +35,7 @@ import FormDeleteResponseDto, {
   UpdateFormResponseDto,
 } from './dtos/responses.dto'
 import FormsService from './forms.service'
+import { FormMustBeEnabledGuard } from './guards/form-must-be-enabled.guard'
 
 @ApiTags('forms')
 @ApiBearerAuth()
@@ -97,7 +98,8 @@ export default class FormsController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @FormAccessAllowMigrations()
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @AllowCompletedDisabledForms(true)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormMustBeEnabledGuard)
   @Get(':formId')
   async getForm(
     @Param('formId') formId: string,

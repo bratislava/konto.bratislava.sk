@@ -121,6 +121,10 @@ export type FormDefinitionEmail = FormDefinitionBase & {
   )
 }
 
+export type FormDefinitionEmailWithExtractEmail = FormDefinitionEmail & {
+  email: { extractEmail: SchemalessFormDataExtractor<any> }
+}
+
 export type FormDefinition =
   | FormDefinitionSlovenskoSkGeneric
   | FormDefinitionSlovenskoSkTax
@@ -150,3 +154,12 @@ export const isEmailFormDefinition = (
 export const isWebhookFormDefinition = (
   formDefinition: FormDefinition,
 ): formDefinition is FormDefinitionWebhook => formDefinition.type === FormDefinitionType.Webhook
+
+/**
+ * When `technicalEmailReplyToExtractedEmail` is `true`, the type guarantees `extractEmail` is set,
+ * so the narrowed definition can be passed where a defined `extractEmail` is required.
+ */
+export const isFormDefinitionWithReplyToAndExtractEmail = (
+  formDefinition: FormDefinitionEmail,
+): formDefinition is FormDefinitionEmailWithExtractEmail =>
+  formDefinition.email.technicalEmailReplyToExtractedEmail === true

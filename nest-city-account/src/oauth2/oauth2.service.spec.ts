@@ -143,6 +143,156 @@ describe('OAuth2Service', () => {
     })
   })
 
+  // ─── storeTokensForAuthRequest ──────────────────────────────────────────
+
+  /**
+   * CUSTOM PROXY DETAIL: Called by POST /continue. We never receive an access
+   * token directly - only the refresh token. We refresh it through Cognito to
+   * obtain a fresh access token, then serialize (binding each token to the
+   * client id) and encrypt all tokens before persisting them on the
+   * authorization request row, since tokens must not be stored raw.
+   */
+  describe('storeTokensForAuthRequest', () => {
+    beforeEach(() => {
+      jest.spyOn(configService, 'getOrThrow').mockReturnValue('cognito-client-id')
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue({ id: 'auth-req-id' } as any)
+      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue({} as any)
+    })
+
+    it('should refresh via Cognito, then serialize+encrypt all tokens bound to the client id and persist them', async () => {
+      jest
+        .spyOn(cognitoSubservice, 'refreshTokens')
+        .mockResolvedValue({ accessToken: 'fresh-at', idToken: 'fresh-id' })
+
+      await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
+
+      // The (only) refresh token is exchanged at Cognito for a fresh access token
+      expect(cognitoSubservice.refreshTokens).toHaveBeenCalledWith(
+        'refresh-tok',
+        'cognito-client-id'
+      )
+
+      // Each token is serialized with the client id (sender-constraining) before encryption
+      expect(tokenSerialization.serializeTokenData).toHaveBeenCalledWith('fresh-at', 'cid')
+      expect(tokenSerialization.serializeTokenData).toHaveBeenCalledWith('fresh-id', 'cid')
+      expect(tokenSerialization.serializeTokenData).toHaveBeenCalledWith('refresh-tok', 'cid')
+
+      expect(prisma.oAuth2Data.update).toHaveBeenCalledWith({
+        where: { id: 'auth-req-id' },
+        data: expect.objectContaining({
+          accessTokenEnc: `enc:${JSON.stringify({ token: 'fresh-at', clientId: 'cid' })}`,
+          idTokenEnc: `enc:${JSON.stringify({ token: 'fresh-id', clientId: 'cid' })}`,
+          refreshTokenEnc: `enc:${JSON.stringify({ token: 'refresh-tok', clientId: 'cid' })}`,
+          accessTokenExpiresAt: expect.any(Date),
+        }),
+      })
+    })
+
+    it('should store idTokenEnc as null when Cognito returns no id token', async () => {
+      jest
+        .spyOn(cognitoSubservice, 'refreshTokens')
+        .mockResolvedValue({ accessToken: 'fresh-at', idToken: undefined })
+
+      await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
+
+      expect(tokenSerialization.serializeTokenData).not.toHaveBeenCalledWith(undefined, 'cid')
+      expect(prisma.oAuth2Data.update).toHaveBeenCalledWith({
+        where: { id: 'auth-req-id' },
+        data: expect.objectContaining({ idTokenEnc: null }),
+      })
+    })
+
+    it('should default access token expiry to one hour when the JWT has no exp claim', async () => {
+      // 'fresh-at' is not a decodable JWT, so extractJwtExpiration returns undefined and we fall back
+      jest
+        .spyOn(cognitoSubservice, 'refreshTokens')
+        .mockResolvedValue({ accessToken: 'fresh-at', idToken: undefined })
+      let storedExpiry: Date | undefined
+      jest.spyOn(prisma.oAuth2Data, 'update').mockImplementation((arg: any) => {
+        storedExpiry = arg.data.accessTokenExpiresAt
+        return {} as any
+      })
+
+      const before = Date.now()
+      await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
+
+      expect(storedExpiry?.getTime()).toBeGreaterThanOrEqual(before + 60 * 60 * 1000)
+      expect(storedExpiry?.getTime()).toBeLessThanOrEqual(Date.now() + 60 * 60 * 1000)
+    })
+
+    it('should throw SERVER_ERROR when the authorization request does not exist', async () => {
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(null)
+
+      await expect(
+        service.storeTokensForAuthRequest('missing-id', 'cid', 'refresh-tok')
+      ).rejects.toThrow(OAuth2Exception)
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: unknown authorization request',
+        undefined,
+        'Unknown authorization request ID',
+        { authRequestId: 'missing-id' }
+      )
+      expect(cognitoSubservice.refreshTokens).not.toHaveBeenCalled()
+      expect(prisma.oAuth2Data.update).not.toHaveBeenCalled()
+    })
+
+    it('should throw SERVER_ERROR when the Cognito refresh call fails', async () => {
+      jest.spyOn(cognitoSubservice, 'refreshTokens').mockRejectedValue(new Error('Cognito down'))
+
+      await expect(
+        service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
+      ).rejects.toThrow(OAuth2Exception)
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: failed to process tokens',
+        undefined,
+        'Failed to refresh tokens via Cognito',
+        { error: expect.any(Error), authRequestId: 'auth-req-id' }
+      )
+      expect(prisma.oAuth2Data.update).not.toHaveBeenCalled()
+    })
+
+    it('should throw SERVER_ERROR when Cognito returns no access token', async () => {
+      jest
+        .spyOn(cognitoSubservice, 'refreshTokens')
+        .mockResolvedValue({ accessToken: undefined, idToken: undefined })
+
+      await expect(
+        service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
+      ).rejects.toThrow(OAuth2Exception)
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: failed to process tokens',
+        undefined,
+        'No access token returned from Cognito refresh',
+        { authRequestId: 'auth-req-id', hasRefreshToken: true }
+      )
+      expect(prisma.oAuth2Data.update).not.toHaveBeenCalled()
+    })
+
+    it('should throw SERVER_ERROR when token encryption fails', async () => {
+      jest
+        .spyOn(cognitoSubservice, 'refreshTokens')
+        .mockResolvedValue({ accessToken: 'fresh-at', idToken: undefined })
+      ;(crypto.encryptData as jest.Mock).mockImplementation(() => {
+        throw new Error('CRYPTO_SECRET_KEY missing')
+      })
+
+      await expect(
+        service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
+      ).rejects.toThrow(OAuth2Exception)
+      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
+        OAuth2AuthorizationErrorCode.SERVER_ERROR,
+        'Authorization server error: failed to process tokens',
+        undefined,
+        'Failed to encrypt tokens',
+        { error: expect.any(Error), authRequestId: 'auth-req-id' }
+      )
+      expect(prisma.oAuth2Data.update).not.toHaveBeenCalled()
+    })
+  })
+
   // ─── buildLoginRedirectUrl ──────────────────────────────────────────────
 
   describe('buildLoginRedirectUrl', () => {

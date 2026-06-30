@@ -5,6 +5,7 @@ import { Fragment } from 'react/jsx-runtime'
 
 import { DocumentsSectionFragment } from '@/src/clients/graphql-strapi/api'
 import ExternalDocumentRowCard from '@/src/components/common/Documents/ExternalDocumentRowCard'
+import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
@@ -17,7 +18,7 @@ type DocumentsSectionProps = {
 const AMOUNT_OF_DOCUMENTS_TO_SHOW = 5
 
 const DocumentsSection = ({
-  section: { title, text, externalDocuments },
+  section: { allowCollapsingDocuments, title, text, externalDocuments },
 }: DocumentsSectionProps) => {
   const { t } = useTranslation('account')
   const [showAllDocuments, setShowAllDocuments] = useState(false)
@@ -28,45 +29,50 @@ const DocumentsSection = ({
       <div className="flex flex-col gap-6">
         <SectionHeader title={title} text={text} />
 
-        <ul className="flex flex-col rounded-lg border border-border-active-default bg-background-passive-base py-2">
-          {filteredExternalDocuments
-            .slice(
-              0,
-              showAllDocuments ? filteredExternalDocuments.length : AMOUNT_OF_DOCUMENTS_TO_SHOW,
-            )
-            .map((externalDocument, index) => (
-              <Fragment key={index}>
-                {index > 0 && <HorizontalDivider asListItem className="mx-6" />}
+        <div className="flex flex-col rounded-lg border border-border-active-default bg-background-passive-base py-2">
+          <ul>
+            {filteredExternalDocuments
+              .slice(
+                0,
+                showAllDocuments || !allowCollapsingDocuments
+                  ? filteredExternalDocuments.length
+                  : AMOUNT_OF_DOCUMENTS_TO_SHOW,
+              )
+              .map((externalDocument, index) => (
+                <Fragment key={index}>
+                  {index > 0 && <HorizontalDivider asListItem className="mx-6" />}
 
-                <ExternalDocumentRowCard
-                  title={externalDocument.title}
-                  url={externalDocument.url}
-                />
-              </Fragment>
-            ))}
-        </ul>
+                  <ExternalDocumentRowCard
+                    title={externalDocument.title}
+                    url={externalDocument.url}
+                  />
+                </Fragment>
+              ))}
+          </ul>
 
-        {filteredExternalDocuments.length > AMOUNT_OF_DOCUMENTS_TO_SHOW && (
-          <>
-            <HorizontalDivider asListItem className="mx-6" />
+          {allowCollapsingDocuments &&
+            filteredExternalDocuments.length > AMOUNT_OF_DOCUMENTS_TO_SHOW && (
+              <>
+                <HorizontalDivider className="mx-6" />
 
-            <div className="flex items-center justify-center py-3">
-              <Button
-                fullWidth
-                className="mx-6 py-2"
-                variant="plain"
-                onClick={() => setShowAllDocuments(!showAllDocuments)}
-                endIcon={showAllDocuments ? 'chevron-up' : 'chevron-down'}
-              >
-                {showAllDocuments
-                  ? t('DocumentsSection.documents.showLess')
-                  : t('DocumentsSection.documents.showMore', {
-                      count: filteredExternalDocuments.length,
-                    })}
-              </Button>
-            </div>
-          </>
-        )}
+                <div className="flex items-center justify-center py-3">
+                  <Button
+                    fullWidth
+                    className="mx-6 py-2"
+                    variant="plain"
+                    onClick={() => setShowAllDocuments(!showAllDocuments)}
+                    endIcon={<Icon name={showAllDocuments ? 'chevron-up' : 'chevron-down'} />}
+                  >
+                    {showAllDocuments
+                      ? t('DocumentsSection.documents.showLess')
+                      : t('DocumentsSection.documents.showMore', {
+                          count: filteredExternalDocuments.length,
+                        })}
+                  </Button>
+                </div>
+              </>
+            )}
+        </div>
       </div>
     </SectionContainer>
   )

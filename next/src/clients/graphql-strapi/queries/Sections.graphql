@@ -99,6 +99,7 @@ fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
 }
 
 fragment DocumentsSection on ComponentSectionsDocuments {
+  allowCollapsingDocuments
   title
   text
   externalDocuments {
@@ -166,4 +167,3 @@ fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
     ...TowingSection
   }
 }
-

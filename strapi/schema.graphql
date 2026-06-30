@@ -502,6 +502,7 @@ input ComponentSectionsContactsInput {
 }
 
 type ComponentSectionsDocuments {
+  allowCollapsingDocuments: Boolean
   externalDocuments(filters: ComponentBlocksExternalDocumentFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksExternalDocument]
   id: ID!
   text: String
@@ -509,6 +510,7 @@ type ComponentSectionsDocuments {
 }
 
 input ComponentSectionsDocumentsFiltersInput {
+  allowCollapsingDocuments: BooleanFilterInput
   and: [ComponentSectionsDocumentsFiltersInput]
   externalDocuments: ComponentBlocksExternalDocumentFiltersInput
   not: ComponentSectionsDocumentsFiltersInput
@@ -518,6 +520,7 @@ input ComponentSectionsDocumentsFiltersInput {
 }
 
 input ComponentSectionsDocumentsInput {
+  allowCollapsingDocuments: Boolean
   externalDocuments: [ComponentBlocksExternalDocumentInput]
   id: ID
   text: String

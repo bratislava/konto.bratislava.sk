@@ -65,7 +65,7 @@ describe('OAuth2Client', () => {
       name: 'TEST',
       requiresPkce: true,
       allowedRedirectUris: ['https://example.com/cb'],
-      allowedScopes: ['openid', 'profile', 'email'],
+      allowedScopes: ['openid', 'profile', 'email', 'identity:verified'],
     })
 
     it('should return true when all requested scopes are allowed', () => {
@@ -74,6 +74,12 @@ describe('OAuth2Client', () => {
 
     it('should return true for a single allowed scope', () => {
       expect(client.areAllScopesAllowed('email')).toBe(true)
+    })
+
+    it('should return true for an allowed scope containing a colon (identity:verified)', () => {
+      // The colon is part of the scope token, not a delimiter — scopes are space-delimited only.
+      expect(client.areAllScopesAllowed('identity:verified')).toBe(true)
+      expect(client.areAllScopesAllowed('openid identity:verified')).toBe(true)
     })
 
     it('should return false when any scope is not allowed', () => {

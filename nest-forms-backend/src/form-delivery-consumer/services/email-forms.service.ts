@@ -6,6 +6,7 @@ import type { GenericObjectType } from '@rjsf/utils' with {
 import {
   FormDefinitionEmail,
   FormDefinitionType,
+  isFormDefinitionWithReplyToAndExtractEmail,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
@@ -339,6 +340,9 @@ export default class EmailFormsService {
         },
       },
       emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
+      replyTo: isFormDefinitionWithReplyToAndExtractEmail(formDefinition)
+        ? extractEmailFormEmail(formDefinition, form.formDataJson)
+        : undefined,
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(
             formId,

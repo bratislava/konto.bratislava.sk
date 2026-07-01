@@ -35,7 +35,7 @@
     "@aws-sdk/client-cognito-identity-provider": "3.1075.0",
     "@aws-sdk/client-sts": "3.1075.0",
     "@bratislava/ginis-sdk": "2.2.0",
-    "@golevelup/nestjs-rabbitmq": "7.1.2",
+    "@golevelup/nestjs-rabbitmq": "9.0.2",
     "@nestjs/bull": "11.0.4",
     "@nestjs/common": "11.1.27",
     "@nestjs/config": "4.0.4",

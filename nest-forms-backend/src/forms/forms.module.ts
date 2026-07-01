@@ -33,7 +33,7 @@ import FormsTaskSubservice from './subservices/forms-task.subservice'
     FormsTaskSubservice,
     FormDefinitionMustBeEnabledGuard,
   ],
-  exports: [FormsService],
+  exports: [FormsService, FormDefinitionMustBeEnabledGuard],
   controllers: [FormsController],
 })
 export default class FormsModule {}

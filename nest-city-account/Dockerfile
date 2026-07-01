@@ -48,7 +48,7 @@ RUN npm ci --include=dev
 FROM build-base AS prebuild
 WORKDIR /build
 COPY . ./
-RUN npx prisma generate
+RUN npm run db:generate
 
 FROM prebuild AS build
 RUN npm run build \
@@ -81,4 +81,4 @@ ENV GIT_COMMIT=$GIT_COMMIT
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
       org.opencontainers.image.source="https://github.com/bratislava/nest-city-account" \
       org.opencontainers.image.licenses="EUPL-1.2"
-CMD [ "npm", "run", "start:migrate:prod" ]
+CMD [ "sh", "-c", "npm run db:migrate:deploy && npm run start:prod" ]

@@ -16,6 +16,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import { Files, FileStatus, FormError, Forms } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import PostScanFileResponseDto, {
   GetScanFileDto,
@@ -27,7 +28,6 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 
@@ -52,7 +52,7 @@ export default class FilesHelper {
   constructor(
     private readonly prisma: PrismaService,
     private readonly baConfigService: BaConfigService,
-    private minioClientSubervice: MinioClientSubservice,
+    private minioStorageService: MinioStorageService,
     private scannerClientService: ScannerClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
@@ -352,7 +352,7 @@ export default class FilesHelper {
     const filepath = `${this.getPath(formInfo)}${minioFileName}`
     try {
       this.logger.debug(`Checking if file exists in minio: ${filepath}`)
-      return await this.minioClientSubervice.fileExists(
+      return await this.minioStorageService.fileExists(
         this.getBucketUid(),
         filepath,
       )

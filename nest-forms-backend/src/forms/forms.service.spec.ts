@@ -13,10 +13,10 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { FormError, Forms, FormState } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { GetFormsRequestDto } from './dtos/requests.dto'
 import FormsService from './forms.service'
 
@@ -25,7 +25,7 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
 }))
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
-jest.mock('../utils/subservices/minio-client.subservice')
+jest.mock('../minio-storage/minio-storage.service')
 jest.mock('../scanner-client/scanner-client.service')
 jest.mock('forms-shared/form-utils/omitExtraData', () => ({
   baOmitExtraData: jest.fn(),
@@ -49,7 +49,7 @@ describe('FormsService', () => {
         FormsService,
         FilesService,
         FilesHelper,
-        MinioClientSubservice,
+        MinioStorageService,
         ScannerClientService,
         ThrowerErrorGuard,
         FormValidatorRegistryService,

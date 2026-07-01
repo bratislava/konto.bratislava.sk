@@ -4,10 +4,10 @@ import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import ClientsModule from '../clients/clients.module'
 import BaConfigModule from '../config/ba-config.module'
 import ConvertModule from '../convert/convert.module'
+import { MinioStorageModule } from '../minio-storage/minio-storage.module'
 import PrismaModule from '../prisma/prisma.module'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import FormRegistrationStatusRepository from './repositories/form-registration-status.repository'
 import NasesContactsService from './services/nases.contacts.service'
 import NasesCronService from './services/nases.cron.service'
@@ -21,10 +21,10 @@ import NasesSenderService from './services/nases.sender.service'
     ConvertModule,
     PrismaModule,
     TaxModule,
+    MinioStorageModule,
   ],
   providers: [
     FormRegistrationStatusRepository,
-    MinioClientSubservice,
     NasesSenderService,
     ThrowerErrorGuard,
     NasesCronService,

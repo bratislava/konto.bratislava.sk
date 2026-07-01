@@ -15,11 +15,11 @@ import FormValidatorRegistryService from '../form-validator-registry/form-valida
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { Forms } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertPdfService from './convert-pdf.service'
 
 jest.mock('../files/files.service')
@@ -66,7 +66,7 @@ describe('ConvertPdfService', () => {
         FormsService,
         FilesService,
         {
-          provide: MinioClientSubservice,
+          provide: MinioStorageService,
           useValue: { client: () => ({ putObject }) },
         },
         ConvertPdfService,

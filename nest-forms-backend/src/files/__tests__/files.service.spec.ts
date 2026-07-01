@@ -6,9 +6,9 @@ import BaConfigService from '../../config/ba-config.service'
 import FormsService from '../../forms/forms.service'
 import { FormAccessService } from '../../forms-v2/services/form-access.service'
 import { Files } from '../../generated/prisma/client'
+import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import FilesHelper from '../files.helper'
 import FilesService from '../files.service'
 
@@ -27,8 +27,8 @@ describe('FilesService', () => {
           useValue: { tokens: { jwtSecret: 'test-secret' } },
         },
         {
-          provide: MinioClientSubservice,
-          useValue: createMock<MinioClientSubservice>(),
+          provide: MinioStorageService,
+          useValue: createMock<MinioStorageService>(),
         },
         { provide: FormsService, useValue: createMock<FormsService>() },
         { provide: FilesHelper, useValue: createMock<FilesHelper>() },

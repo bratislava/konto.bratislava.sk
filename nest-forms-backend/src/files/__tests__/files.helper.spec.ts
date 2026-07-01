@@ -10,10 +10,10 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import { Files, Forms } from '../../generated/prisma/client'
+import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import ScannerClientService from '../../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import FilesHelper from '../files.helper'
 
 jest.mock('forms-shared/definitions/formDefinitionTypes')
@@ -41,8 +41,8 @@ describe('FilesHelper', () => {
           },
         },
         {
-          provide: MinioClientSubservice,
-          useValue: createMock<MinioClientSubservice>(),
+          provide: MinioStorageService,
+          useValue: createMock<MinioStorageService>(),
         },
         {
           provide: ScannerClientService,

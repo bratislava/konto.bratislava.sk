@@ -70,7 +70,7 @@
     "passport-http-bearer": "1.0.1",
     "passport-jwt": "4.0.1",
     "pg": "8.22.0",
-    "piscina": "5.1.4",
+    "piscina": "5.2.0",
     "playwright": "1.59.1",
     "prisma": "7.8.0",
     "reflect-metadata": "0.2.2",

@@ -11,24 +11,10 @@ name: Build Next
 on:
   workflow_call:
     inputs:
-      directory:
-        description: "Base dir where whole app is located."
-        type: string
-        required: true
       image:
         description: "Full image name including registry/repository for Docker cache."
         type: string
         required: true
-      forms_shared_digest:
-        description: "Immutable forms-shared image digest used during Docker build."
-        type: string
-        required: false
-        default: ""
-      openapi_clients_digest:
-        description: "Immutable openapi-clients image digest used during Docker build."
-        type: string
-        required: false
-        default: ""
       build_env:
         description: "Environment suffix for .env.bratiska-cli-build.<env> (dev, staging, prod)."
         type: string
@@ -48,6 +34,8 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -65,9 +53,6 @@ jobs:
       # flavor suffix that keeps each env's image and cache separate.
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
       ENV_SUFFIX: -${{ inputs.build_env }}
-    defaults:
-      run:
-        working-directory: ${{ inputs.directory }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -85,6 +70,7 @@ jobs:
           # Mimic bratiska-cli build_image behavior by promoting the
           # bratiska-cli build env file to .env.production.local
           # before docker build starts.
+          cd next
           case "${{ inputs.build_env }}" in
             dev|staging|prod)
               ;;
@@ -128,16 +114,113 @@ jobs:
           existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
           new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
 
+      - name: Start Turborepo Cache Server
+        uses: brunojppb/turbo-cache-server@4.0.9
+        env:
+          PORT: "8585"
+          S3_BUCKET_NAME: "city-account-turborepo-cache"
+          S3_ACCESS_KEY: "city-account-turborepo-cache"
+          S3_SECRET_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+          # The missing MinIO details:
+          S3_ENDPOINT: "https://s3.bratislava.sk"
+          S3_REGION: "us-east-1" # Usually safe to leave as us-east-1 for MinIO
+
+          # CRITICAL FOR MINIO: Forces the server to use domain.com/bucket
+          # instead of bucket.domain.com
+          S3_USE_PATH_STYLE: "true"
+
+      - name: Speedtest Turborepo S3 cache from runner
+        shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: city-account-turborepo-cache
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_EC2_METADATA_DISABLED: "true"
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          S3_ENDPOINT: https://s3.bratislava.sk
+          S3_BUCKET: city-account-turborepo-cache
+          SPEEDTEST_SIZE_MB: "4096"
+        run: |
+          set -euo pipefail
+
+          if ! command -v aws >/dev/null 2>&1; then
+            echo "AWS CLI not found on runner, installing it locally"
+            installer_tmp="$(mktemp -d)"
+            curl --fail --location --show-error \
+              "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+              --output "$installer_tmp/awscliv2.zip"
+            unzip -q "$installer_tmp/awscliv2.zip" -d "$installer_tmp"
+            mkdir -p "$RUNNER_TEMP/bin" "$RUNNER_TEMP/aws-cli"
+            "$installer_tmp/aws/install" --install-dir "$RUNNER_TEMP/aws-cli" --bin-dir "$RUNNER_TEMP/bin"
+            export PATH="$RUNNER_TEMP/bin:$PATH"
+          fi
+
+          aws --version
+          aws configure set default.s3.addressing_style path
+
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          file="$tmp/s3-speedtest-${SPEEDTEST_SIZE_MB}MiB.bin"
+          key="speedtest/github-actions/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${SPEEDTEST_SIZE_MB}MiB.bin"
+
+          echo "Creating ${SPEEDTEST_SIZE_MB}MiB test file"
+          dd if=/dev/zero of="$file" bs=1M count="$SPEEDTEST_SIZE_MB" status=progress
+
+          echo "Upload test: s3://${S3_BUCKET}/${key}"
+          start="$(date +%s)"
+          aws s3 cp "$file" "s3://${S3_BUCKET}/${key}" \
+            --endpoint-url "$S3_ENDPOINT"
+          end="$(date +%s)"
+          seconds=$((end - start))
+          [ "$seconds" -eq 0 ] && seconds=1
+          echo "Upload: $((SPEEDTEST_SIZE_MB / seconds)) MiB/s over ${seconds}s"
+
+          echo "Download test"
+          start="$(date +%s)"
+          aws s3 cp "s3://${S3_BUCKET}/${key}" "$tmp/download.bin" \
+            --endpoint-url "$S3_ENDPOINT"
+          end="$(date +%s)"
+          seconds=$((end - start))
+          [ "$seconds" -eq 0 ] && seconds=1
+          echo "Download: $((SPEEDTEST_SIZE_MB / seconds)) MiB/s over ${seconds}s"
+
+          echo "Cleaning up"
+          aws s3 rm "s3://${S3_BUCKET}/${key}" \
+            --endpoint-url "$S3_ENDPOINT"
+
+      - name: Proxy Turborepo Cache Server for BuildKit
+        shell: bash
+        run: |
+          set -euxo pipefail
+          docker run --rm --detach --name turbo-cache-server-proxy --network host alpine/socat \
+            -d -d TCP-LISTEN:8586,fork,reuseaddr,bind=0.0.0.0 TCP:127.0.0.1:8585
+
+      - name: Resolve Docker bridge gateway
+        id: docker-bridge
+        shell: bash
+        run: |
+          set -euxo pipefail
+          gateway_ip="$(docker network inspect bridge --format '{{(index .IPAM.Config 0).Gateway}}')"
+          echo "ip=${gateway_ip}" >> "$GITHUB_OUTPUT"
+
       - name: Build image
         if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}
         uses: docker/build-push-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: prod
+          file: ./next/Dockerfile
+          target: runner
           push: ${{ inputs.cluster != '' }}
           tags: ${{ steps.meta.outputs.tags }}
-          cache-from: ${{ steps.meta.outputs.cache_from }}
+          # cache-from: ${{ steps.meta.outputs.cache_from }}
           cache-to: ${{ steps.meta.outputs.cache_to }}
+          network: host
+          add-hosts: |
+            host.docker.internal=${{ steps.docker-bridge.outputs.ip }}
           build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
+            TURBO_API=http://host.docker.internal:8586
+            TURBO_TEAM=city-account
+            TURBO_TOKEN=local
+            TURBO_VERBOSITY=2

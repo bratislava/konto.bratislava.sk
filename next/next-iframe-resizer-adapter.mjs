@@ -14,7 +14,8 @@ const adapter = {
 
   modifyConfig(config) {
     const appRootDir = getAppRootDir()
-    const packagePath = path.join(appRootDir, './node_modules/@iframe-resizer/child/package.json')
+    const iframeResizerChildPackageDir = path.join(appRootDir, '../node_modules/@iframe-resizer/child/')
+    const packagePath = path.join(iframeResizerChildPackageDir, 'package.json')
     const { version } = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
     if (!version) {
       throw new Error('Iframe resizer child package version not found')
@@ -23,7 +24,7 @@ const adapter = {
     // The path must contain the version so that the browser does not serve the old cached version when the package is updated.
     const publicPath = `/scripts/iframe-resizer-child-${version}.js`
 
-    const sourcePath = path.join(appRootDir, './node_modules/@iframe-resizer/child/index.umd.js')
+    const sourcePath = path.join(iframeResizerChildPackageDir, 'index.umd.js')
     if (!fs.existsSync(sourcePath)) {
       throw new Error('Iframe resizer child script not found')
     }

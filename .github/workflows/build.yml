@@ -9,6 +9,8 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+        required: true
 
 jobs:
   build-forms-shared:
@@ -51,18 +53,15 @@ jobs:
 
   build-next:
     name: Next Build
-    needs: [ build-forms-shared, build-openapi-clients ]
     uses: ./.github/workflows/build-next.yml
     with:
-      directory: next/
       image: harbor.bratislava.sk/standalone/next
-      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
-      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
       build_env: staging
     secrets:
       DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      TURBOREPO_CACHE_MINIO_SECRET_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
 
   build-strapi:
     name: Strapi Build

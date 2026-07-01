@@ -107,16 +107,18 @@ export type FormDefinitionEmail = FormDefinitionBase & {
   } & (
     | {
         /**
-         * When true, the technical (organization) email's reply-to is set to the user's email
-         * extracted via `extractEmail`, so admin replies go to the submitter instead of Konto.
-         * Requires `extractEmail` to be set.
+         * When extractEmail is provided, there is an option to enable reply-to header on technical
+         * email to be set to extracted email, so admin replies go to the submitter instead of Konto.
          */
-        technicalEmailReplyToExtractedEmail: true
         extractEmail: SchemalessFormDataExtractor<any>
+        technicalEmailReplyToExtractedEmail?: boolean
       }
     | {
-        technicalEmailReplyToExtractedEmail?: false
-        extractEmail?: SchemalessFormDataExtractor<any>
+        /**
+         * When extractEmail is not provided, technicalEmailReplyToExtractedEmail CANNOT be provided
+         */
+        extractEmail?: never
+        technicalEmailReplyToExtractedEmail?: never
       }
   )
 }

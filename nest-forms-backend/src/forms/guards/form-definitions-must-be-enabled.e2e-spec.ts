@@ -10,6 +10,7 @@ import {
 } from '../../../test/initialize-testing-app'
 import { AppV2Module } from '../../app-v2.module'
 import { AllowCompletedDisabledForms } from '../../forms-v2/decorators/allow-completed-disabled-forms.decorator'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import FormsService from '../forms.service'
 import { FormDefinitionMustBeEnabledGuard } from './form-definition-must-be-enabled.guard'
 
@@ -63,6 +64,7 @@ describe('FormDefinitionMustBeEnabledGuard e2e', () => {
           controllers: [TestFormMustBeEnabledController],
           providers: [
             FormDefinitionMustBeEnabledGuard,
+            ThrowerErrorGuard,
             { provide: FormsService, useValue: mockFormsService },
           ],
         }),

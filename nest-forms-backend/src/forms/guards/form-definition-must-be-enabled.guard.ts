@@ -1,17 +1,12 @@
-import {
-  BadRequestException,
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import { User } from '../../auth-v2/types/user'
 import { ALLOW_COMPLETED_DISABLED_FORMS_KEY } from '../../forms-v2/decorators/allow-completed-disabled-forms.decorator'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../forms.errors.enum'
 import FormsService from '../forms.service'
 
 interface RequestWithUser extends Request {
@@ -23,6 +18,7 @@ export class FormDefinitionMustBeEnabledGuard implements CanActivate {
   constructor(
     private readonly formsService: FormsService,
     private readonly reflector: Reflector,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -30,16 +26,19 @@ export class FormDefinitionMustBeEnabledGuard implements CanActivate {
     const { formId } = request.params
 
     if (!formId || typeof formId !== 'string') {
-      // TODO: Errors
-      throw new BadRequestException('formId path parameter is required')
+      throw this.throwerErrorGuard.BadRequestException(
+        FormsErrorsEnum.FORM_ID_ERROR,
+        FormsErrorsResponseEnum.FORM_ID_ERROR,
+      )
     }
 
     const form = await this.formsService.getForm(formId)
-
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      // TODO: Errors
-      throw new NotFoundException('form definition not found')
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
     }
 
     if (formDefinition.isDisabled) {
@@ -50,8 +49,10 @@ export class FormDefinitionMustBeEnabledGuard implements CanActivate {
         )
 
       if (!allowCompletedDisabledForms || this.formsService.isEditable(form)) {
-        // TODO: Errors
-        throw new ForbiddenException('form definition is disabled')
+        throw this.throwerErrorGuard.ForbiddenException(
+          FormsErrorsEnum.FORM_DEFINITION_DISABLED,
+          FormsErrorsResponseEnum.FORM_DEFINITION_DISABLED,
+        )
       }
     }
 

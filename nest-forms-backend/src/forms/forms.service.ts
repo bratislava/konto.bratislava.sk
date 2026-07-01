@@ -253,13 +253,13 @@ export default class FormsService {
 
     // Forms with an enabled form definition are returned regardless of their
     // state, while forms with a disabled form definition are only returned when
-    // they are in an editable state.
+    // they are NOT in an editable state (i.e. already submitted/completed).
     const { disabled: disabledSlugs } = getFormDefinitionsSlugs()
     const disabledFormDefinitionCondition: Prisma.FormsWhereInput = {
       NOT: {
         AND: [
           { formDefinitionSlug: { in: disabledSlugs } },
-          { NOT: { OR: editableStates } },
+          { OR: editableStates },
         ],
       },
     }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
-import { BasicGuard } from 'src/auth/guards/auth-basic.guard'
 import { MinioStorageModule } from 'src/minio-storage/minio-storage.module'
 
+import { BasicGuard } from '../auth/guards/auth-basic.guard'
 import { ClamavClientModule } from '../clamav-client/clamav-client.module'
 import { PrismaModule } from '../prisma/prisma.module'
 import { ScannerController } from './scanner.controller'

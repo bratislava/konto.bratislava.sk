@@ -1,5 +1,4 @@
-import { Prisma, UnpaidReminderSent } from '@prisma/client'
-
+import { Prisma, UnpaidReminderSent } from '../../generated/prisma/client'
 import { createTestTax } from './tax.factory'
 
 export const createTestTaxInstallment = (

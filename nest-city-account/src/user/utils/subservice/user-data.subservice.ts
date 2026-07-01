@@ -1,4 +1,8 @@
 import { Injectable } from '@nestjs/common'
+
+import { Consent } from '../../../bloomreach/bloomreach.types'
+import { BloomreachOutboxService } from '../../../bloomreach/bloomreach-outbox.service'
+import { DPBUserLoginStatistics } from '../../../dpb/dtos/user.dto'
 import {
   ConsentEnum,
   DeliveryMethodEnum,
@@ -7,11 +11,7 @@ import {
   LoginClientEnum,
   Prisma,
   User,
-} from '@prisma/client'
-
-import { Consent } from '../../../bloomreach/bloomreach.types'
-import { BloomreachOutboxService } from '../../../bloomreach/bloomreach-outbox.service'
-import { DPBUserLoginStatistics } from '../../../dpb/dtos/user.dto'
+} from '../../../generated/prisma/client'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'

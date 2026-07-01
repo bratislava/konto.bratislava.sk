@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { IsDefined, IsEnum, IsOptional, IsString } from 'class-validator'
 
+import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
 import { OAuth2ClientName } from '../../oauth2/subservices/oauth2-client.subservice'
 
 export enum CognitoUserAccountTypesEnum {
@@ -142,6 +142,7 @@ export class CognitoGetUserData extends CognitoGetUserAttributesData {
   @ApiPropertyOptional({
     description: 'Cognito confirmation statue',
     enum: CognitoUserStatusEnum,
+    enumName: 'CognitoUserStatusEnum',
     default: CognitoUserStatusEnum.CONFIRMED,
   })
   UserStatus?: CognitoUserStatusEnum

@@ -739,6 +739,7 @@ export const formDefinitions: FormDefinition[] = [
       },
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
       technicalEmailSubjectAppendId: true,
+      technicalEmailReplyToExtractedEmail: true,
     },
     termsAndConditions: generalTermsAndConditions,
   },

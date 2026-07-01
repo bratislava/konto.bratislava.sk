@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing'
-import { FormRegistrationStatus } from '@prisma/client'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 
 import prismaMock from '../../../../test/singleton'
+import { FormRegistrationStatus } from '../../../generated/prisma/client'
 import PrismaService from '../../../prisma/prisma.service'
 import FormRegistrationStatusRepository from '../form-registration-status.repository'
 

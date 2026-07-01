@@ -16,11 +16,11 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
-import { TaxType } from '@prisma/client'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from '../auth/guards/tiers.guard'
+import { TaxType } from '../generated/prisma/client'
 import { Tiers } from '../utils/decorators/tier.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import {

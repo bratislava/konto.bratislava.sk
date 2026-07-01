@@ -3,8 +3,8 @@ import crypto, { Sign, Verify } from 'node:crypto'
 import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
 
+import { TaxType } from '../../../generated/prisma/client'
 import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,

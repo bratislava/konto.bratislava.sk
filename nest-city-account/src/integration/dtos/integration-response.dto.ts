@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '@prisma/client'
 import { Type } from 'class-transformer'
 
+import { CognitoUserAttributesTierEnum, DeliveryMethodEnum } from '../../generated/prisma/client'
 import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
 import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
 

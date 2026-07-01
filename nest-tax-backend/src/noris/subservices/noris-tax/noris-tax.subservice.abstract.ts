@@ -1,4 +1,3 @@
-import { Prisma, Tax, TaxImportStatus, TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 import pLimit from 'p-limit'
@@ -6,6 +5,12 @@ import pLimit from 'p-limit'
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import {
+  Prisma,
+  Tax,
+  TaxImportStatus,
+  TaxType,
+} from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { QrCodeService } from '../../../qrcode/qrcode.service'
 import { getTaxDefinitionByType } from '../../../tax-definitions/getTaxDefinitionByType'

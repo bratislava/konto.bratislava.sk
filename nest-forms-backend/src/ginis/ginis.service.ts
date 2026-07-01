@@ -4,7 +4,6 @@ import { setTimeout } from 'node:timers/promises'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { isAxiosError } from 'axios'
 import { Queue } from 'bull'
@@ -34,6 +33,12 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
+import {
+  FormError,
+  Forms,
+  FormState,
+  GinisState,
+} from '../generated/prisma/client'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,

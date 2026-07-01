@@ -34,7 +34,7 @@ RUN npm ci --include=dev
 FROM build-base AS prebuild
 WORKDIR /build
 COPY . ./
-RUN npx prisma generate
+RUN npm run db:generate
 
 FROM prebuild AS build
 RUN npm run build \
@@ -60,6 +60,7 @@ COPY --chown=node:node --from=build /build/package.json /build/package-lock.json
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
 COPY --chown=node:node --from=build /build/dist ./dist
 COPY --chown=node:node --from=build /build/prisma ./prisma
+COPY --chown=node:node --from=build /build/prisma.config.ts ./prisma.config.ts
 COPY --chown=node:node nest-cli.json ./nest-cli.json
 EXPOSE 3000
 ARG GIT_COMMIT="undefined"
@@ -67,4 +68,4 @@ ENV GIT_COMMIT=$GIT_COMMIT
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
       org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-clamav-scanner" \
       org.opencontainers.image.licenses="EUPL-1.2"
-CMD [ "npm", "run", "start:migrate:prod" ]
+CMD [ "sh", "-c", "npm run db:migrate:deploy && npm run start:prod" ]

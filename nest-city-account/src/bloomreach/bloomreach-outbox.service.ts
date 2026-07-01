@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { BloomreachOutboxStatus, ConsentEnum } from '@prisma/client'
 
+import { BloomreachOutboxStatus, ConsentEnum } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'

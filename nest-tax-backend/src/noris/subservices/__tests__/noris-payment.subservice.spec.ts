@@ -1,12 +1,16 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import * as mssql from 'mssql'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestTax } from '../../../__tests__/factories/tax.factory'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import {
+  PaymentStatus,
+  Prisma,
+  TaxType,
+} from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import {
   ErrorsEnum,

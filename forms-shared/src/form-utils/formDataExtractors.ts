@@ -1,4 +1,8 @@
-import { FormDefinition, FormDefinitionEmail } from '../definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  FormDefinitionEmail,
+  FormDefinitionEmailWithExtractEmail,
+} from '../definitions/formDefinitionTypes'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }
@@ -29,10 +33,18 @@ export const extractFormSubjectTechnical = (
   return evaluateFormDataExtractor(extractTechnicalSubjectFn, formData)
 }
 
-export const extractEmailFormEmail = (
+export function extractEmailFormEmail(
+  formDefinition: FormDefinitionEmailWithExtractEmail,
+  formData: GenericObjectType,
+): string
+export function extractEmailFormEmail(
   formDefinition: FormDefinitionEmail,
   formData: GenericObjectType,
-) => {
+): string | undefined
+export function extractEmailFormEmail(
+  formDefinition: FormDefinitionEmail,
+  formData: GenericObjectType,
+) {
   const extractEmail = formDefinition.email.extractEmail
   if (!extractEmail) {
     return undefined

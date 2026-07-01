@@ -1,7 +1,7 @@
-import { DeliveryMethodEnum } from '@prisma/client'
 import { plainToInstance } from 'class-transformer'
 import { validate } from 'class-validator'
 
+import { DeliveryMethodEnum } from '../../../generated/prisma/client'
 import { DeliveryMethodActiveAndLockedDto, DeliveryMethodDto } from '../deliveryMethod.dto'
 
 describe('DeliveryMethodDto', () => {

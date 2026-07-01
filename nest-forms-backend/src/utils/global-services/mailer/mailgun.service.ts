@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { FormError } from '@prisma/client'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { Interfaces } from 'mailgun.js/definitions'
 
 import BaConfigService from '../../../config/ba-config.service'
+import { FormError } from '../../../generated/prisma/client'
 import PrismaService from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'

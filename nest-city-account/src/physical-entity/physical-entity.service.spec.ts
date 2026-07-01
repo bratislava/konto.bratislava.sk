@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PhysicalEntity } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
+import { PhysicalEntity } from '../generated/prisma/client'
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'

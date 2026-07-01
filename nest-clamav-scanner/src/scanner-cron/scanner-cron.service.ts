@@ -1,7 +1,6 @@
 import { Injectable, Logger, PreconditionFailedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron } from '@nestjs/schedule'
-import { Files, FileStatus } from '@prisma/client'
 import { Readable as ReadableStream } from 'stream'
 
 import { ClamavClientService } from '../clamav-client/clamav-client.service'
@@ -12,6 +11,7 @@ import {
   timeout,
 } from '../common/utils/helpers'
 import { FormsClientService } from '../forms-client/forms-client.service'
+import { Files, FileStatus } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { ScannerService } from '../scanner/scanner.service'
@@ -351,7 +351,10 @@ export class ScannerCronService {
           file.id,
           status,
         )
-        this.logger.debug(`Forms response for file id: ${file.id}`, response.data)
+        this.logger.debug(
+          `Forms response for file id: ${file.id}`,
+          response.data,
+        )
         responseStatus = response.status
       } catch {
         notifiedStatus = false

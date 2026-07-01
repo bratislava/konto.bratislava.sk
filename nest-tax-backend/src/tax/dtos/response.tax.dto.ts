@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -16,6 +15,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
+import { TaxType } from '../../generated/prisma/client'
 import { RealEstateTaxAreaType } from '../../prisma/json-types'
 
 export enum TaxDetailTypeEnum {

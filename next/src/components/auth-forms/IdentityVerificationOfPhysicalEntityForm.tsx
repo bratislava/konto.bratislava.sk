@@ -75,7 +75,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
   error,
   showSkipButton = true,
 }: Props) => {
-  const { t } = useTranslation('account')
+  const { t, i18n } = useTranslation('account')
   const { redirect } = useQueryParamRedirect()
 
   const { userAttributes } = useSsrAuth()
@@ -107,7 +107,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
 
   return (
     <form
-      className="flex flex-col gap-4 md:gap-6"
+      className="flex flex-col gap-4 lg:gap-6"
       onSubmit={handleSubmit((data: IdentityVerificationOfPhysicalEntityFormData) => {
         incrementCaptchaKey()
 
@@ -193,6 +193,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
           <>
             <Turnstile
               theme="light"
+              language={i18n.language}
               key={captchaKey}
               sitekey={environment.cloudflareTurnstileSiteKey}
               onVerify={(token) => {

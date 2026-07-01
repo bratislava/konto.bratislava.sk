@@ -1,7 +1,6 @@
-import { Forms } from '@prisma/client'
-
 import { isAuthUser, isGuestUser, User } from '../../auth-v2/types/user'
 import { getUserIco, userToFormOwnerType } from '../../auth-v2/utils/user-utils'
+import { Forms } from '../../generated/prisma/client'
 
 export const getUserFormFields = (
   user: User,

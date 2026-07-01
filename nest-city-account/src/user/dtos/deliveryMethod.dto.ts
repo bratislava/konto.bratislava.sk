@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { DeliveryMethodEnum } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsDate,
@@ -12,6 +11,8 @@ import {
   ValidationArguments,
   ValidationOptions,
 } from 'class-validator'
+
+import { DeliveryMethodEnum } from '../../generated/prisma/client'
 
 /**
  * Decorator that enforces a property to be required when the delivery method is set to CITY_ACCOUNT.

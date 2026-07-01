@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import formurlencoded from 'form-urlencoded'
+
+import { BloomreachService } from '../bloomreach/bloomreach.service'
 import {
   PaymentStatus,
   Prisma,
   TaxPayment,
   TaxPaymentSource,
   TaxType,
-} from '@prisma/client'
-import formurlencoded from 'form-urlencoded'
-
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+} from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { TaxService } from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'

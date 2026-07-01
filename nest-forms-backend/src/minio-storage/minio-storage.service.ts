@@ -52,7 +52,9 @@ export class MinioStorageService {
           .listObjectsV2(bucketName, path, true /* recursive */)
 
         stream.on('data', (obj) => {
-          if (obj.name) objectsListTemp.push(obj.name)
+          if (obj.name) {
+            objectsListTemp.push(obj.name)
+          }
         })
         stream.on('error', reject)
         stream.on('end', () => {

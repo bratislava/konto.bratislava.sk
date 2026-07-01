@@ -32,18 +32,18 @@ const BAArrayFieldItemTemplate = <
   const { variant, itemTitle } = parentUiOptions
 
   const boxStyle = cn({
-    'rounded-lg border border-zinc-300 bg-white p-4 md:px-6 md:pt-8 md:pb-6':
+    'rounded-lg border border-zinc-300 bg-white p-4 lg:px-6 lg:pt-8 lg:pb-6':
       variant === 'topLevel',
     'rounded-lg bg-gray-50': variant === 'nested',
   })
 
   const headingStyle = cn('flex items-center gap-8', {
     'mb-8': variant === 'topLevel',
-    'border-b border-gray-200 px-4 py-5 md:px-6': variant === 'nested',
+    'border-b border-gray-200 px-4 py-5 lg:px-6': variant === 'nested',
   })
 
   const contentStyle = cn({
-    'px-4 py-5 md:px-6': variant === 'nested',
+    'px-4 py-5 lg:px-6': variant === 'nested',
   })
 
   const title = getArrayItemTitle(itemTitle, index)

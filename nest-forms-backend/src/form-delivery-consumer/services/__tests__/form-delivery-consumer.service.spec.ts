@@ -1,7 +1,6 @@
 import { Nack } from '@golevelup/nestjs-rabbitmq'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, Forms, FormState } from '@prisma/client'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
@@ -12,6 +11,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 
 import ConvertPdfService from '../../../convert-pdf/convert-pdf.service'
 import FormsService from '../../../forms/forms.service'
+import { FormError, Forms, FormState } from '../../../generated/prisma/client'
 import GinisService from '../../../ginis/ginis.service'
 import PrismaService from '../../../prisma/prisma.service'
 import RabbitmqClientService from '../../../rabbitmq-client/rabbitmq-client.service'

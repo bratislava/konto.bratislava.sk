@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { TaxType } from '@prisma/client'
 import { parse } from 'csv-parse/sync'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { TaxType } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 import EmailSubservice from '../utils/subservices/email.subservice'

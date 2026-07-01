@@ -1,7 +1,6 @@
 import { Stream } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { Forms } from '@prisma/client'
 import { isAxiosError } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
@@ -21,6 +20,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { Forms } from '../../generated/prisma/client'
 import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'

@@ -4,11 +4,29 @@ import {
   Logger,
   OnModuleInit,
 } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+
+import { PrismaClient } from '../generated/prisma/client'
+import type * as Prisma from '../generated/prisma/internal/prismaNamespace'
+
+const prismaClientOptions = {
+  adapter: new PrismaPg({
+    connectionString: process.env.DATABASE_URL,
+  }),
+} satisfies Prisma.PrismaClientOptions
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit {
+export class PrismaService
+  extends PrismaClient<typeof prismaClientOptions>
+  implements OnModuleInit
+{
   private readonly logger: Logger
+
+  constructor() {
+    super(prismaClientOptions)
+
+    this.logger = new Logger(PrismaService.name)
+  }
 
   async onModuleInit() {
     await this.$connect()

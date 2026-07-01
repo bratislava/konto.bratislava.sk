@@ -6,6 +6,12 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 
+import {
+  createTestFormDefinitionSlovenskoSkGeneric,
+  createTestFormDefinitionSlovenskoSkTax,
+  createTestFormDefinitionWebhook,
+} from '../../../__tests__/factories/formDefinition.factory'
+import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
@@ -29,23 +35,20 @@ jest.mock('../../../utils/subservices/line-logger.subservice', () => ({
 
 jest.mock('forms-shared/definitions/formDefinitions', () => ({
   formDefinitions: [
-    {
-      type: FormDefinitionType.SlovenskoSkGeneric,
+    createTestFormDefinitionSlovenskoSkGeneric({
       pospID: 'test.form.definition.1',
       pospVersion: '1.0',
       slug: 'test-form-1',
-    },
-    {
-      type: FormDefinitionType.SlovenskoSkTax,
+    }),
+    createTestFormDefinitionSlovenskoSkTax({
       pospID: 'test.form.definition.2',
       pospVersion: '2.0',
       slug: 'test-form-2',
-    },
-    {
-      type: FormDefinitionType.Webhook,
+    }),
+    createTestFormDefinitionWebhook({
       slug: 'non-slovensko-form',
-    },
-  ] as unknown as FormDefinition[],
+    }),
+  ],
 }))
 
 describe('NasesCronService', () => {
@@ -116,7 +119,7 @@ describe('NasesCronService', () => {
   })
 
   describe('validateFormRegistrations', () => {
-    let originalFormDefinitions: any
+    let originalFormDefinitions: FormDefinition[]
 
     beforeEach(() => {
       apiJwtTokensService.createTechnicalAccountJwtToken.mockReturnValue(
@@ -124,17 +127,17 @@ describe('NasesCronService', () => {
       )
 
       // Store original mock for restoration
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       originalFormDefinitions = [...formDefinitionsModule.formDefinitions]
     })
 
     afterEach(() => {
       // Restore original mock after each test
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       formDefinitionsModule.formDefinitions = originalFormDefinitions
     })
 
@@ -277,7 +280,7 @@ describe('NasesCronService', () => {
       await service.validateFormRegistrations()
 
       expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
+        expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )
@@ -292,9 +295,9 @@ describe('NasesCronService', () => {
         skipProductionRegistrationCheck: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       const extendedMockFormDefinitions = [
         ...formDefinitionsModule.formDefinitions,
         testingForm,
@@ -320,7 +323,7 @@ describe('NasesCronService', () => {
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
       expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
+        expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )
@@ -335,9 +338,9 @@ describe('NasesCronService', () => {
         skipProductionRegistrationCheck: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       const extendedMockFormDefinitions = [
         ...formDefinitionsModule.formDefinitions,
         testingForm,

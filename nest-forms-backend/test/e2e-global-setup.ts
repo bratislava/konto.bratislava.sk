@@ -19,7 +19,7 @@ export default async function e2eGlobalSetup(): Promise<void> {
     e2eGlobalShared.postgresContainer = container
   }
 
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- npx is a dev tool resolved from PATH; the command is a fixed string with no user input
   execSync('npx prisma db push --skip-generate', {
     stdio: 'inherit',
     env: process.env,

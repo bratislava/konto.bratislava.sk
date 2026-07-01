@@ -5,11 +5,8 @@ import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
+import { MailerModule } from '../mailer/mailer.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
-import MailgunService from '../utils/global-services/mailer/mailgun.service'
-import OloMailerService from '../utils/global-services/mailer/olo-mailer.service'
-import MailgunHelper from '../utils/global-services/mailer/utils/mailgun.helper'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import EmailFormsService from './services/email-forms.service'
 import FormDeliveryConsumerService from './services/form-delivery-consumer.service'
 import WebhookService from './services/webhook.service'
@@ -22,16 +19,9 @@ import WebhookService from './services/webhook.service'
     ConvertModule,
     FormValidatorRegistryModule,
     ConvertPdfModule,
+    MailerModule,
   ],
-  providers: [
-    FormDeliveryConsumerService,
-    ThrowerErrorGuard,
-    MailgunHelper,
-    MailgunService,
-    OloMailerService,
-    EmailFormsService,
-    WebhookService,
-  ],
+  providers: [FormDeliveryConsumerService, EmailFormsService, WebhookService],
   exports: [FormDeliveryConsumerService],
 })
 export default class FormDeliveryConsumerModule {}

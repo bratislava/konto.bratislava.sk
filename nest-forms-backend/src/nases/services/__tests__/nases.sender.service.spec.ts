@@ -28,7 +28,7 @@ jest.mock('uuid', () => ({
 const createMockReadableStream = (content: string): Readable => {
   const readableStream = new Readable()
 
-  readableStream._read = () => {}
+  readableStream._read = jest.fn()
   readableStream.push(content)
   readableStream.push(null)
   return readableStream

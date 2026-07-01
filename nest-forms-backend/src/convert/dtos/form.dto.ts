@@ -1,5 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator'
+import { Type } from 'class-transformer'
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator'
+import { FileStatusType } from 'forms-shared/form-files/fileStatus'
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
@@ -41,20 +51,41 @@ export class XmlToJsonResponseDto {
   requiresVersionConfirmation: boolean
 }
 
+class ClientFileInfoFileDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string
+
+  @IsNumber()
+  size: number
+}
+
+class ClientFileInfoStatusDto {
+  @IsEnum(FileStatusType)
+  type: FileStatusType
+}
+
 /**
  * Simplified representation of `ClientFileInfo` from `forms-shared/src/form-files/fileStatus.ts`.
+ * Uses minimal typed shapes so that `ClientFileInfo` structurally extends this DTO,
+ * allowing a single `as ClientFileInfo[]` cast without `as unknown as`.
  */
 class SimplifiedClientFileInfoDto {
   @IsString()
+  @IsNotEmpty()
   id: string
 
-  @IsObject()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  file: Record<string, any>
+  @IsString()
+  @IsNotEmpty()
+  slotId: string
 
-  @IsObject()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  status: Record<string, any>
+  @ValidateNested()
+  @Type(() => ClientFileInfoFileDto)
+  file: ClientFileInfoFileDto
+
+  @ValidateNested()
+  @Type(() => ClientFileInfoStatusDto)
+  status: ClientFileInfoStatusDto
 }
 
 export class ConvertToPdfRequestDto {

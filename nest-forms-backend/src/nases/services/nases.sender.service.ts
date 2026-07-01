@@ -38,9 +38,7 @@ import { NasesAttachmentXmlObject } from '../types/xml.types'
 
 @Injectable()
 export default class NasesSenderService {
-  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(
-    NasesSenderService.name,
-  )
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly convertService: ConvertService,
@@ -50,13 +48,15 @@ export default class NasesSenderService {
     private taxService: TaxService,
     private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(NasesSenderService.name)
+  }
 
   private async stream2buffer(stream: Stream): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-      const _buf = new Array<any>()
+      const _buf: Buffer[] = []
 
-      stream.on('data', (chunk) => _buf.push(chunk))
+      stream.on('data', (chunk: Buffer) => _buf.push(chunk))
       stream.on('end', () => {
         resolve(Buffer.concat(_buf))
       })
@@ -86,28 +86,30 @@ export default class NasesSenderService {
       },
     })
 
-    for (const file of files) {
-      const mimeType = mime.lookup(file.fileName) || 'application/pdf'
-      const fileStream = await this.minioClientSubservice.loadFileStream(
-        this.baConfigService.minio.buckets.safe,
-        `${file.pospId}/${form.id}/${file.minioFileName}`,
-      )
-
-      const fileBuffer = await this.stream2buffer(fileStream)
-      const fileBase64 = fileBuffer.toString('base64')
-      result.push({
-        $: {
-          Id: file.id,
-          IsSigned: 'false',
-          Name: file.fileName,
-          Description: 'ATTACHMENT',
-          Class: 'ATTACHMENT',
-          MimeType: mimeType,
-          Encoding: 'Base64',
-        },
-        _: fileBase64,
-      })
-    }
+    const fileAttachments = await Promise.all(
+      files.map(async (file) => {
+        const mimeType = mime.lookup(file.fileName) || 'application/pdf'
+        const fileStream = await this.minioClientSubservice.loadFileStream(
+          this.baConfigService.minio.buckets.safe,
+          `${file.pospId}/${form.id}/${file.minioFileName}`,
+        )
+        const fileBuffer = await this.stream2buffer(fileStream)
+        const fileBase64 = fileBuffer.toString('base64')
+        return {
+          $: {
+            Id: file.id,
+            IsSigned: 'false',
+            Name: file.fileName,
+            Description: 'ATTACHMENT',
+            Class: 'ATTACHMENT',
+            MimeType: mimeType,
+            Encoding: 'Base64',
+          },
+          _: fileBase64,
+        }
+      }),
+    )
+    result.push(...fileAttachments)
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       try {
         const formPdfBase64 = await this.taxService.getFilledInPdfBase64(
@@ -285,7 +287,7 @@ export default class NasesSenderService {
     const template = {
       SKTalkMessage: {
         $: {
-          // eslint-disable-next-line sonarjs/no-clear-text-protocols
+          // eslint-disable-next-line sonarjs/no-clear-text-protocols -- XML namespace URIs are fixed identifiers defined by the SKTalk protocol; they are not network endpoints
           xmlns: 'http://gov.sk/SKTalkMessage',
           'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
           'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
@@ -303,7 +305,7 @@ export default class NasesSenderService {
         Body: {
           MessageContainer: {
             $: {
-              // eslint-disable-next-line sonarjs/no-clear-text-protocols
+              // eslint-disable-next-line sonarjs/no-clear-text-protocols -- XML namespace URI fixed by the SKTalk MessageContainer schema; not a network endpoint
               xmlns: 'http://schemas.gov.sk/core/MessageContainer/1.0',
             },
             MessageId: form.id,
@@ -331,12 +333,8 @@ export default class NasesSenderService {
 
     return `${
       NasesErrorsResponseEnum.SEND_TO_NASES_ERROR
-    } Code: ${code}, Text: ${
-      NasesErrorCodesEnum[codeString as keyof typeof NasesErrorCodesEnum]
-    } - ${
-      NasesErrorCodesResponseEnum[
-        codeString as keyof typeof NasesErrorCodesResponseEnum
-      ]
+    } Code: ${code}, Text: ${NasesErrorCodesEnum[codeString]} - ${
+      NasesErrorCodesResponseEnum[codeString]
     }`
   }
 
@@ -370,6 +368,7 @@ export default class NasesSenderService {
           },
         )
 
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive guard; typed as non-null but real API responses can omit the body
       if (!response.data) {
         // TODO temp SEND_TO_NASES_ERROR log, remove
         this.logger.log(

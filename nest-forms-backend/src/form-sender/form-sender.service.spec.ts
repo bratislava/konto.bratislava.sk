@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
-  FormDefinitionEmail,
   FormDefinitionSlovenskoSkGeneric,
   FormDefinitionSlovenskoSkTax,
   FormDefinitionType,
@@ -13,12 +12,15 @@ import {
   evaluateFormSendPolicy,
   FormSendPolicy,
 } from 'forms-shared/send-policy/sendPolicy'
-import { getFormSummary } from 'forms-shared/summary/summary'
+import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
 
 import {
   AuthFixtureUser,
   UserFixtureFactory,
 } from '../../test/fixtures/auth/user-fixture-factory'
+import { createTestForm } from '../__tests__/factories/form.factory'
+import { createTestFormDefinitionEmail } from '../__tests__/factories/formDefinition.factory'
+import { expectObjectContaining } from '../__tests__/jest-matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
@@ -253,7 +255,7 @@ describe('FormSenderService', () => {
       expect(sendToNasesSpy).not.toHaveBeenCalled()
       expect(updateSpy).toHaveBeenLastCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DRAFT,
           error: FormError.NASES_SEND_ERROR,
         }),
@@ -296,7 +298,7 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).toHaveBeenCalled()
       expect(updateSpy).toHaveBeenLastCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DRAFT,
           error: FormError.NASES_SEND_ERROR,
         }),
@@ -342,7 +344,7 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).toHaveBeenCalled()
       expect(updateSpy).toHaveBeenCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
         }),
       )
@@ -392,13 +394,13 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).not.toHaveBeenCalled()
       expect(updateSpy).toHaveBeenCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
         }),
       )
 
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           id: '1',
           state: FormState.DELIVERED_NASES,
         }),
@@ -449,13 +451,13 @@ describe('FormSenderService', () => {
       expect(service['logger'].error).not.toHaveBeenCalled()
       expect(updateSpy).toHaveBeenCalledWith(
         '1',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
         }),
       )
 
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           id: '1',
           state: FormState.DELIVERED_NASES,
         }),
@@ -464,11 +466,11 @@ describe('FormSenderService', () => {
   })
 
   describe('updateAndSendForm', () => {
-    const mockForm = {
+    const mockForm = createTestForm({
       id: '1',
       formDefinitionSlug: 'test-slug',
       formDataJson: { test: 'data' },
-    } as unknown as Forms
+    })
 
     const mockFormDefinition = {
       slug: 'test-slug',
@@ -493,15 +495,12 @@ describe('FormSenderService', () => {
       },
     } as FormDefinitionSlovenskoSkGeneric
 
-    const mockFormDefinitionEmail = {
-      ...mockFormDefinition,
-      type: FormDefinitionType.Email,
-    } as unknown as FormDefinitionEmail
+    const mockFormDefinitionEmail = createTestFormDefinitionEmail()
 
     beforeEach(() => {
       jest
         .spyOn(service['formsService'], 'updateFormWithUser')
-        .mockResolvedValue(undefined as any)
+        .mockResolvedValue(createTestForm())
       jest
         .spyOn(service['formsService'], 'checkFormBeforeSending')
         .mockResolvedValue(mockForm)
@@ -608,10 +607,8 @@ describe('FormSenderService', () => {
     })
 
     it('should include form summary in form update', async () => {
-      const mockSummary = { summary: 'test' }
-      jest
-        .spyOn(service as any, 'getFormSummaryOrThrow')
-        .mockReturnValue(mockSummary)
+      const mockSummary = createMock<FormSummary>({ additionalInfo: 'test' })
+      jest.spyOn(service, 'getFormSummaryOrThrow').mockReturnValue(mockSummary)
 
       await service.updateAndSendForm(
         '1',
@@ -622,17 +619,15 @@ describe('FormSenderService', () => {
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
         formSummary: mockSummary,
-        formSentAt: expect.any(Date),
+        formSentAt: expect.any(Date) as Date,
         jsonVersion: mockFormDefinition.jsonVersion,
       })
     })
 
     it('should throw error if form summary generation fails', async () => {
-      jest
-        .spyOn(service as any, 'getFormSummaryOrThrow')
-        .mockImplementation(() => {
-          throw new Error('Summary generation failed')
-        })
+      jest.spyOn(service, 'getFormSummaryOrThrow').mockImplementation(() => {
+        throw new Error('Summary generation failed')
+      })
 
       await expect(
         service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
@@ -792,10 +787,10 @@ describe('FormSenderService', () => {
   })
 
   describe('getFormSummaryOrThrow', () => {
-    const mockForm = {
+    const mockForm = createTestForm({
       id: '1',
       formDataJson: { test: 'data' },
-    } as unknown as Forms
+    })
 
     const mockFormDefinition = {
       slug: 'test-slug',
@@ -961,14 +956,14 @@ describe('FormSenderService', () => {
 
       expect(updateFormSpy).toHaveBeenCalledWith(
         'formIdVal',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DELIVERED_NASES,
           error: FormError.NONE,
         }),
       )
       expect(updateFormSpy).not.toHaveBeenCalledWith(
         'formIdVal',
-        expect.objectContaining({
+        expectObjectContaining({
           state: FormState.DRAFT,
           error: FormError.NASES_SEND_ERROR,
         }),

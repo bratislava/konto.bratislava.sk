@@ -47,6 +47,7 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     return super.canActivate(context)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- generic required to satisfy IAuthGuard.handleRequest<TUser> contract from @nestjs/passport
   handleRequest<TUser = User>(
     err: Error | null,
     user: unknown,

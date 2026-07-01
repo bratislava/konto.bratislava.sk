@@ -65,7 +65,7 @@ export function separateLogFromResponseObj<T extends object>(
  */
 export function objToLogfmt(obj: object): string {
   const separatedValues = separateLogFromResponseObj(obj)
-  const objAll = {
+  const objAll: Record<string, unknown> = {
     ...separatedValues.responseLog,
     ...separatedValues.responseMessage,
   }
@@ -80,7 +80,7 @@ export function objToLogfmt(obj: object): string {
           if (typeof formattedSubValue === 'string') {
             formattedSubValue = escapeForLogfmt(formattedSubValue)
           }
-          return `${subKey}="${formattedSubValue}"`
+          return `${subKey}="${String(formattedSubValue)}"`
         })
       }
 
@@ -93,7 +93,7 @@ export function objToLogfmt(obj: object): string {
         formattedValue = escapeForLogfmt(formattedValue)
       }
 
-      return `${key}="${formattedValue}"`
+      return [`${key}="${String(formattedValue)}"`]
     })
     .join(' ')
 }
@@ -171,7 +171,7 @@ export function toLogfmt(input: unknown): string {
     return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- fallback for unexpected types; .toString() is the intentional last-resort string coercion
   return `message="${escapeForLogfmt(input.toString())}"`
 }
 

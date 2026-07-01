@@ -25,17 +25,20 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../global-enums/errors.enum'
-import ThrowerErrorGuard from '../guards/thrower-error.guard'
+import {
+  ErrorsEnum,
+  ErrorsResponseEnum,
+} from '../../utils/global-enums/errors.enum'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
-} from './dtos/sharepoint.errors.enum'
-import { LineLoggerSubservice } from './line-logger.subservice'
+} from '../../utils/subservices/dtos/sharepoint.errors.enum'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 @Processor('sharepoint')
-export default class SharepointSubservice {
+export default class SharepointService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
@@ -44,7 +47,7 @@ export default class SharepointSubservice {
     private readonly baConfigService: BaConfigService,
     private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new LineLoggerSubservice('SharepointSubservice')
+    this.logger = new LineLoggerSubservice('SharepointService')
   }
 
   @Process()

@@ -1,6 +1,6 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 
-import BaConfigService from '../../../config/ba-config.service'
+import BaConfigService from '../config/ba-config.service'
 
 export enum MailgunConfigVariableType {
   PARAMETER = 'PARAMETER',
@@ -17,18 +17,19 @@ export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
     ]),
 )
 
+type MailgunConfigVariableByType =
+  | { type: MailgunConfigVariableType.STRING; value: string }
+  | {
+      type: Exclude<MailgunConfigVariableType, MailgunConfigVariableType.STRING>
+      value: unknown
+      selectorVariable?: string
+    }
+
 interface MailgunConfig {
   template: string
   subject: string
   renderLocally?: boolean
-  variables: Record<
-    string,
-    {
-      type: MailgunConfigVariableType
-      value: unknown
-      selectorVariable?: string
-    }
-  >
+  variables: Record<string, MailgunConfigVariableByType>
 }
 
 export function getMailgunConfig(

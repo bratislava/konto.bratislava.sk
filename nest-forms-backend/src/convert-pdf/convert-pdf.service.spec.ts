@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
@@ -8,6 +7,7 @@ import {
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
+import { createTestForm } from '../__tests__/factories/form.factory'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
@@ -105,10 +105,9 @@ describe('ConvertPdfService', () => {
     filesHelper = module.get<FilesHelper>(FilesHelper)
     convertService = module.get<ConvertService>(ConvertService)
 
-    prismaMock.forms.findUnique.mockResolvedValue({
-      id: formId,
-      formDataJson: testJsonData,
-    } as unknown as Forms)
+    prismaMock.forms.findUnique.mockResolvedValue(
+      createTestForm({ id: formId, formDataJson: testJsonData }),
+    )
 
     // mocks default of not finding an existing file when uploading
     prismaMock.files.findMany.mockResolvedValue([])

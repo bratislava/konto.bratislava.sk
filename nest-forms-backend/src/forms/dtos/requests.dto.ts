@@ -58,13 +58,13 @@ export class FormSignatureDto {
 }
 
 export class FormUpdateBodyDto {
-  // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @ApiPropertyOptional({
     description: 'Send JSON body of form',
     default: {},
     nullable: true,
   })
   @IsOptional()
+  @Type(() => Object)
   formDataJson?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({
@@ -193,12 +193,12 @@ export class FormUpdateBodyDto {
 }
 
 export class UpdateFormRequestDto {
-  // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @ApiPropertyOptional({
     description: 'Send JSON body of form',
     default: {},
   })
   @IsOptional()
+  @Type(() => Object)
   formDataJson?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({

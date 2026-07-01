@@ -1,6 +1,6 @@
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 
-import { SendEmailInputDto } from '../../../../../global-dtos/mailgun.dto'
+import { SendEmailInputDto } from '../../../../utils/global-dtos/mailgun.dto'
 
 export const testEmailDefinitions: Record<string, SendEmailInputDto> = {
   test1: {

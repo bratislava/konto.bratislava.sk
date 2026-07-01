@@ -4,29 +4,21 @@ import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
-import PrismaModule from '../prisma/prisma.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
+import { FileUploadInterceptor } from './file-upload.interceptor'
 import FilesController from './files.controller'
 import FilesHelper from './files.helper'
 import FilesService from './files.service'
 
 @Module({
   imports: [
-    PrismaModule,
     FormsModule,
     ScannerClientModule,
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
   ],
-  providers: [
-    FilesService,
-    FilesHelper,
-    ThrowerErrorGuard,
-    MinioClientSubservice,
-  ],
+  providers: [FilesService, FilesHelper, FileUploadInterceptor],
   exports: [FilesService, FilesHelper],
   controllers: [FilesController],
 })

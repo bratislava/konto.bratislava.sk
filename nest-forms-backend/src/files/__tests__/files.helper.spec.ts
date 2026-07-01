@@ -1,10 +1,14 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import { Files, Forms } from '@prisma/client'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../../test/singleton'
+import { createTestFormDefinitionSlovenskoSkGeneric } from '../../__tests__/factories/formDefinition.factory'
 import BaConfigService from '../../config/ba-config.service'
 import {
   FormsErrorsEnum,
@@ -64,7 +68,7 @@ describe('FilesHelper', () => {
 
   describe('forms2formInfo', () => {
     let mockForm: Forms
-    let mockFormDefinition: any
+    let mockFormDefinition: FormDefinition
 
     beforeEach(() => {
       mockForm = {
@@ -72,10 +76,10 @@ describe('FilesHelper', () => {
         formDefinitionSlug: 'test-slug',
       } as Forms
 
-      mockFormDefinition = {
+      mockFormDefinition = createTestFormDefinitionSlovenskoSkGeneric({
         slug: 'test-slug',
         pospID: 'test-posp-id',
-      }
+      })
 
       // Mock the getFormDefinitionBySlug function
       ;(getFormDefinitionBySlug as unknown as jest.Mock) = jest
@@ -128,7 +132,7 @@ describe('FilesHelper', () => {
 
   describe('areErrorFilesInForm', () => {
     beforeEach(() => {
-      jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+      jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
     })
 
     afterEach(() => {

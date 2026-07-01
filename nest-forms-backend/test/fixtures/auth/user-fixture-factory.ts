@@ -118,25 +118,22 @@ export class UserFixtureFactory {
         consents: [],
         hasChangedDeliveryMethodAfterDeadline: false,
       }
-      if (params.accountType === CognitoUserAccountTypesEnum.Fo) {
-        return {
-          ...base,
-          officialCorrespondenceChannel:
-            UserOfficialCorrespondenceChannelEnum.Postal,
-          showEmailCommunicationBanner: false,
-        }
-      }
 
-      if (
-        params.accountType === CognitoUserAccountTypesEnum.FoP ||
-        params.accountType === CognitoUserAccountTypesEnum.Po
-      ) {
-        return {
-          ...base,
-          ico: params.ico,
-        }
+      switch (params.accountType) {
+        case CognitoUserAccountTypesEnum.Fo:
+          return {
+            ...base,
+            officialCorrespondenceChannel:
+              UserOfficialCorrespondenceChannelEnum.Postal,
+            showEmailCommunicationBanner: false,
+          }
+        case CognitoUserAccountTypesEnum.FoP:
+        case CognitoUserAccountTypesEnum.Po:
+          return {
+            ...base,
+            ico: params.ico,
+          }
       }
-
       throw new Error('Invalid account type')
     }
 
@@ -147,37 +144,27 @@ export class UserFixtureFactory {
         'custom:tier': params.tier ?? CognitoUserAttributesTierEnum.New,
         email,
       }
-      if (params.accountType === CognitoUserAccountTypesEnum.Fo) {
-        const givenName = randFirstName()
-        const familyName = randLastName()
+      switch (params.accountType) {
+        case CognitoUserAccountTypesEnum.Fo:
+        case CognitoUserAccountTypesEnum.FoP: {
+          const givenName = randFirstName()
+          const familyName = randLastName()
 
-        return {
-          ...base,
-          given_name: givenName,
-          family_name: familyName,
+          return {
+            ...base,
+            given_name: givenName,
+            family_name: familyName,
+          }
+        }
+        case CognitoUserAccountTypesEnum.Po: {
+          const name = randCompanyName()
+
+          return {
+            ...base,
+            name,
+          }
         }
       }
-
-      if (params.accountType === CognitoUserAccountTypesEnum.FoP) {
-        const givenName = randFirstName()
-        const familyName = randLastName()
-
-        return {
-          ...base,
-          given_name: givenName,
-          family_name: familyName,
-        }
-      }
-
-      if (params.accountType === CognitoUserAccountTypesEnum.Po) {
-        const name = randCompanyName()
-
-        return {
-          ...base,
-          name,
-        }
-      }
-
       throw new Error('Invalid account type')
     }
 
@@ -249,7 +236,7 @@ export class UserFixtureFactory {
     let ico: string
     do {
       const randomNumber =
-        // eslint-disable-next-line sonarjs/pseudo-random
+        // eslint-disable-next-line sonarjs/pseudo-random -- test fixture generator; cryptographic randomness is unnecessary here
         Math.floor(Math.random() * 9_000_000_000) + 1_000_000_000
       ico = `ico://sk/${randomNumber}`
     } while (this.generatedIcos.has(ico))

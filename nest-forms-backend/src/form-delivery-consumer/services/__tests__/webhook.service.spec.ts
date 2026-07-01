@@ -11,13 +11,14 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
+import { createTestFormWithEmptyFiles } from '../../../__tests__/factories/form.factory'
+import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import BaConfigService from '../../../config/ba-config.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
-import { FormWithFiles } from '../../../utils/types/prisma'
 import { WebhookErrorsResponseEnum } from '../../errors/webhook.errors.enum'
 import WebhookService from '../webhook.service'
 
@@ -49,19 +50,12 @@ describe('WebhookService', () => {
     }).compile()
 
     service = module.get<WebhookService>(WebhookService)
-    const mockLogger = {
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      verbose: jest.fn(),
-    } as unknown as LineLoggerSubservice
-    service['logger'] = mockLogger
+    service['logger'] = createMock<LineLoggerSubservice>()
 
-    jest.spyOn(console, 'log').mockImplementation(() => {})
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    jest.spyOn(console, 'warn').mockImplementation(() => {})
-    jest.spyOn(console, 'info').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(jest.fn())
+    jest.spyOn(console, 'error').mockImplementation(jest.fn())
+    jest.spyOn(console, 'warn').mockImplementation(jest.fn())
+    jest.spyOn(console, 'info').mockImplementation(jest.fn())
   })
 
   afterEach(() => {
@@ -76,12 +70,11 @@ describe('WebhookService', () => {
     const mockFormId = 'test-form-id'
 
     it('should process a valid webhook form successfully', async () => {
-      const mockForm = {
+      const mockForm = createTestFormWithEmptyFiles({
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: {},
-        files: [],
-      } as unknown as FormWithFiles
+      })
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
@@ -104,6 +97,7 @@ describe('WebhookService', () => {
       })
       expect(axios.post).toHaveBeenCalledWith('https://example.com/webhook', {
         formId: 'test-form-id',
+        jsonVersion: '1.0',
         slug: 'test-slug',
         data: {},
         files: {},
@@ -116,57 +110,48 @@ describe('WebhookService', () => {
 
     it('should throw NotFoundException when form is not found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-          status: HttpStatus.NOT_FOUND,
-        }),
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+        status: HttpStatus.NOT_FOUND,
+      })
     })
 
     it('should throw NotFoundException when form definition is not found', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue({
-        formDefinitionSlug: 'test-slug',
-        files: [],
-      } as any)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithEmptyFiles({ formDefinitionSlug: 'test-slug' }),
+      )
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(null)
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: expect.stringContaining(
-            FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
-          ),
-          status: HttpStatus.NOT_FOUND,
-        }),
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: expectStringContaining(
+          FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+        ),
+        status: HttpStatus.NOT_FOUND,
+      })
     })
 
     it('should throw UnprocessableEntityException when form is not a webhook form', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue({
-        formDefinitionSlug: 'test-slug',
-        files: [],
-      } as any)
+      prismaMock.forms.findUnique.mockResolvedValue(
+        createTestFormWithEmptyFiles({ formDefinitionSlug: 'test-slug' }),
+      )
       ;(
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue({ type: 'NotWebhook' })
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: expect.stringContaining(
-            WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
-          ),
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: expectStringContaining(
+          WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
+        ),
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
     })
 
     it('should throw UnprocessableEntityException when formDataJson is null', async () => {
-      const mockForm = {
+      const mockForm = createTestFormWithEmptyFiles({
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
         formDataJson: null,
-        files: [],
-      } as unknown as FormWithFiles
+      })
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
@@ -179,12 +164,10 @@ describe('WebhookService', () => {
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(mockFormDefinition)
 
-      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
-        expect.objectContaining({
-          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-      )
+      await expect(service.sendWebhook(mockFormId)).rejects.toMatchObject({
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
     })
   })
 })

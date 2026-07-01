@@ -37,6 +37,7 @@ export class SignerDataResponseDto {
   @IsString()
   objectDescription!: string
 
+  // eslint-disable-next-line sonarjs/no-clear-text-protocols -- Swagger example only; Slovak government XML schema URIs use http:// by official specification as namespace identifiers, not network endpoints
   @ApiProperty({ example: 'http://schemas.gov.sk/form/Doc.GeneralAgenda/1.2' })
   @IsString()
   objectFormatIdentifier!: string
@@ -46,6 +47,7 @@ export class SignerDataResponseDto {
   xdcXMLData!: string
 
   @ApiProperty({
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols -- Swagger example only; Slovak government XML schema URIs use http:// by official specification as namespace identifiers, not network endpoints
     example: 'http://data.gov.sk/doc/eform/Doc.GeneralAgenda/1.2',
   })
   @IsString()
@@ -59,6 +61,7 @@ export class SignerDataResponseDto {
   @IsString()
   xdcUsedXSD!: string
 
+  // eslint-disable-next-line sonarjs/no-clear-text-protocols -- Swagger example only; Slovak government XML schema URIs use http:// by official specification as namespace identifiers, not network endpoints
   @ApiProperty({ example: 'http://schemas.gov.sk/form/Doc.GeneralAgenda/1.2' })
   @IsString()
   xsdReferenceURI!: string
@@ -68,6 +71,7 @@ export class SignerDataResponseDto {
   xdcUsedXSLT!: string
 
   @ApiProperty({
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols -- Swagger example only; Slovak government XML schema URIs use http:// by official specification as namespace identifiers, not network endpoints
     example: 'http://schemas.gov.sk/form/Doc.GeneralAgenda/1.2/form.xslt',
   })
   @IsString()
@@ -90,6 +94,7 @@ export class SignerDataResponseDto {
   xdcIncludeRefs!: boolean
 
   @ApiProperty({
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols -- Swagger example only; Slovak government XML schema URIs use http:// by official specification as namespace identifiers, not network endpoints
     example: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.1',
   })
   @IsString()

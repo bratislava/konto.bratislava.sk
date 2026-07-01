@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { ValidatorType } from '@rjsf/utils'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -139,7 +140,7 @@ export class FormSenderService {
 
     const validator = this.formValidatorRegistryService
       .getRegistry()
-      .getValidator(formDefinition.schema)
+      .getValidator(formDefinition.schema) as ValidatorType
     const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schema,
@@ -299,7 +300,7 @@ export class FormSenderService {
 
     const validator = this.formValidatorRegistryService
       .getRegistry()
-      .getValidator(formDefinition.schema)
+      .getValidator(formDefinition.schema) as ValidatorType
     const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schema,
@@ -475,6 +476,7 @@ export class FormSenderService {
     await this.formsService.updateForm(data.formId, {
       state: FormState.DELIVERED_NASES,
       error: FormError.NONE,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO with no prototype methods; spreading into Prisma update payload is safe
       ...additionalFormUpdates,
     })
 
@@ -486,7 +488,7 @@ export class FormSenderService {
     })
   }
 
-  private getFormSummaryOrThrow(
+  getFormSummaryOrThrow(
     form: Forms,
     formDefinition: FormDefinition,
   ): FormSummary {

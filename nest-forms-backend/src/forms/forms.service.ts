@@ -188,6 +188,7 @@ export default class FormsService {
 
     return this.updateForm(id, {
       ...getUserFormFields(user),
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO; spreading into update payload is safe
       ...requestData,
     })
   }
@@ -200,6 +201,7 @@ export default class FormsService {
   ): Promise<UpdateFormResponseDto> {
     return this.updateFormWithUser(
       id,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- UpdateFormRequestDto is a plain data DTO; spreading into object literal is safe
       { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },
       user,
     )

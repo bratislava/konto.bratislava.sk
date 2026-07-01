@@ -144,12 +144,12 @@ export default class FilesController {
   @Post('upload/:formId')
   @UseInterceptors(FileUploadInterceptor)
   async uploadFile(
-    @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
     @Query('slotId') slotId?: string,
+    @UploadedFile() file?: BufferedFileDto,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(formId, file, body, slotId ?? null)
+    return this.filesService.uploadFile(formId, body, slotId ?? null, file)
   }
 
   @ApiOperation({

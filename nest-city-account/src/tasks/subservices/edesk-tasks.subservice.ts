@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
+import dayjs from 'dayjs'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
 
@@ -48,6 +49,28 @@ export class EdeskTasksSubservice {
 
     this.logger.error('Entities that failed to update at least 7 times in a row: ', {
       entities: entitiesFailedToUpdate,
+      alert: 1,
+    })
+  }
+
+  async alertIdentityLookupRejections(): Promise<void> {
+    const since = dayjs().subtract(1, 'month').toDate()
+    const rejections = await this.prismaService.identityLookupRejection.findMany({
+      where: { updatedAt: { gte: since } },
+      select: {
+        physicalEntityId: true,
+        faultCode: true,
+        faultReason: true,
+        updatedAt: true,
+      },
+    })
+
+    if (rejections.length === 0) {
+      return
+    }
+
+    this.logger.error('Entities rejected by UPVS IAM in the last month: ', {
+      rejections,
       alert: 1,
     })
   }

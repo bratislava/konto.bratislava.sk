@@ -57,11 +57,14 @@ export class TasksService {
   }
 
   /**
-   * Updates eDesk active status from UPVS for physical entities.
-   * Uses exponential backoff for retry logic on failures.
-   * Processes up to 5 entities every 30 seconds.
+   * Processes one batch of UPVS queue work every 30 seconds, across prioritised tiers
+   * (urgent lookups, outdated-URI updates, then the eDesk status batch). `waitForCompletion`
+   * keeps ticks from overlapping. See the upvs-queue README for the full flow.
    */
-  @Cron(CronExpression.EVERY_30_SECONDS, { timeZone: bratislavaTimezone })
+  @Cron(CronExpression.EVERY_30_SECONDS, {
+    timeZone: bratislavaTimezone,
+    waitForCompletion: true,
+  })
   @HandleErrors('CronError')
   async updateEdesk(): Promise<void> {
     return this.edeskTasksSubservice.updateEdesk()
@@ -88,6 +91,16 @@ export class TasksService {
   @HandleErrors('CronError')
   async alertFailingEdeskUpdate(): Promise<void> {
     return this.edeskTasksSubservice.alertFailingEdeskUpdate()
+  }
+
+  /**
+   * Daily digest of identity lookups rejected by UPVS IAM in the last month.
+   * Runs daily at 9:02 AM.
+   */
+  @Cron('2 09 * * *', { timeZone: bratislavaTimezone })
+  @HandleErrors('CronError')
+  async alertIdentityLookupRejections(): Promise<void> {
+    return this.edeskTasksSubservice.alertIdentityLookupRejections()
   }
 
   /**

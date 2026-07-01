@@ -24,6 +24,7 @@ export enum ErrorsEnum {
   BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
   BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
   SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
+  TOO_MANY_REQUESTS_ERROR = 'TOO_MANY_REQUESTS_ERROR',
 }
 
 export enum ErrorsResponseEnum {
@@ -37,6 +38,7 @@ export enum ErrorsResponseEnum {
   BAD_GATEWAY_ERROR = 'Bad gateway.',
   BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
   SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
+  TOO_MANY_REQUESTS_ERROR = 'Too many requests',
 }
 
 export class ResponseInternalServerErrorDto {

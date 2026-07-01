@@ -66,7 +66,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     // Make $transaction execute its callback so the advisory-lock path is exercised in tests.
     ;(prismaMock.$transaction as jest.Mock).mockImplementation(async (fn: any) => {
-      if (typeof fn === 'function') return fn(prismaMock)
+      if (typeof fn === 'function') {
+        return fn(prismaMock)
+      }
       return Promise.all(fn)
     })
     // $executeRaw is used for pg_advisory_xact_lock — no-op in tests.

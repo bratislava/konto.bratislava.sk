@@ -11,6 +11,13 @@ import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
+// TS2883: inferred putObject/upload return types require MinIO's internal
+// UploadedObjectInfo path, so expose our own stable public shape instead.
+export interface MinioUploadedObjectInfo {
+  etag: string
+  versionId: string | null
+}
+
 @Injectable()
 export class MinioStorageService {
   private readonly logger = new LineLoggerSubservice('MinioStorageService')
@@ -64,7 +71,7 @@ export class MinioStorageService {
 
       if (Array.isArray(files)) {
         // remove folders from array
-         
+
         files = files.filter((file) => !file.endsWith('/'))
       }
       this.logger.debug(files)
@@ -79,9 +86,10 @@ export class MinioStorageService {
   public async createFolder(bucket: string, path: string) {
     // create folder in minio bucket in desired path
     try {
-      return await this.minioClientService
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      return (await this.minioClientService
         .client()
-        .putObject(bucket, path, Buffer.from(''), 0)
+        .putObject(bucket, path, Buffer.from(''), 0)) as MinioUploadedObjectInfo
     } catch (error) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
@@ -141,9 +149,14 @@ export class MinioStorageService {
     bucketName: string,
   ) {
     try {
-      return await this.minioClientService
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      return (await this.minioClientService
         .client()
-        .putObject(bucketName, pathWithMinioFileName, file.buffer)
+        .putObject(
+          bucketName,
+          pathWithMinioFileName,
+          file.buffer,
+        )) as MinioUploadedObjectInfo
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
@@ -157,7 +170,9 @@ export class MinioStorageService {
   // TODO refactor/consider removing whole subservice, this is a helper until then
   // satisfying types for the upload fn above was hard and not helping anything
   public async putObject(...props: Parameters<Client['putObject']>) {
-    return this.minioClientService.client().putObject(...props)
+    return this.minioClientService
+      .client()
+      .putObject(...props) as Promise<MinioUploadedObjectInfo>
   }
 
   // get stream of file from minio bucket

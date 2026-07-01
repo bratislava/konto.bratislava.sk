@@ -160,7 +160,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           variant="solid"
           fullWidth
           isLoading={isSubmitting}
-          loadingText={t('towing.searching')}
+          loadingText={t('common.searching')}
           startIcon={<Icon name="search" />}
         >
           {t('towing.searchButton')}

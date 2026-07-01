@@ -15,8 +15,8 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
-import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import { Files, FileStatus, FormError, Forms } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import PostScanFileResponseDto, {
   GetScanFileDto,

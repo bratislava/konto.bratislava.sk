@@ -64,7 +64,7 @@ export class MinioStorageService {
 
       if (Array.isArray(files)) {
         // remove folders from array
-        // eslint-disable-next-line sonarjs/null-dereference
+         
         files = files.filter((file) => !file.endsWith('/'))
       }
       this.logger.debug(files)

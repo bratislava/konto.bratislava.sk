@@ -32,13 +32,13 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
-import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import {
   FormError,
   Forms,
   FormState,
   GinisState,
 } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,

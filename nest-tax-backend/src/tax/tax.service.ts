@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { PaymentStatus, Prisma, TaxType } from '../generated/prisma/client'
 import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import { PrismaService } from '../prisma/prisma.service'
 import { QrCodeService } from '../qrcode/qrcode.service'

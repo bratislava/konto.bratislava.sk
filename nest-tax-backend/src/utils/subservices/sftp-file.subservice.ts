@@ -2,12 +2,12 @@ import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 
+import { TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'

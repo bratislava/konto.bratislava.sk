@@ -2,17 +2,17 @@ import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  PaymentStatus,
-  Prisma,
-  TaxPaymentSource,
-  TaxType,
-} from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import { createTestTaxPayment } from '../../__tests__/factories/taxPayment.factory'
 import { createTestUserDataFromCityAccount } from '../../__tests__/factories/userDataFromCityAccount.factory'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import {
+  PaymentStatus,
+  Prisma,
+  TaxPaymentSource,
+  TaxType,
+} from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { TaxService } from '../../tax/tax.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'

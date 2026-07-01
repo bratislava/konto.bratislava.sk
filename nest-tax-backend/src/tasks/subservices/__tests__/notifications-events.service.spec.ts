@@ -1,12 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  DeliveryMethodNamed,
-  PaymentStatus,
-  Prisma,
-  TaxType,
-  UnpaidReminderSent,
-} from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -18,6 +11,13 @@ import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factor
 import { createTestTaxPayment } from '../../../__tests__/factories/taxPayment.factory'
 import { createTestUserDataFromCityAccount } from '../../../__tests__/factories/userDataFromCityAccount.factory'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  Prisma,
+  TaxType,
+  UnpaidReminderSent,
+} from '../../../generated/prisma/client'
 import { PaymentService } from '../../../payment/payment.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'

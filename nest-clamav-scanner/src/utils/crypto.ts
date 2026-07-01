@@ -19,7 +19,9 @@ export const timingSafeStringEqual = (
     // Compare against a same-length dummy on length mismatch so both paths cost the same.
     const dummyBuffer = Buffer.alloc(expectedBuffer.length)
     const compareBuffer =
-      expectedBuffer.length === providedBuffer.length ? providedBuffer : dummyBuffer
+      expectedBuffer.length === providedBuffer.length
+        ? providedBuffer
+        : dummyBuffer
 
     return timingSafeEqual(expectedBuffer, compareBuffer)
   } catch {

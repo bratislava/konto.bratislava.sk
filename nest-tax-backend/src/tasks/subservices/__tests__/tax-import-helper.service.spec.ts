@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
 import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factory'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
+import { TaxType } from '../../../generated/prisma/client'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import DatabaseSubservice from '../../../utils/subservices/database.subservice'

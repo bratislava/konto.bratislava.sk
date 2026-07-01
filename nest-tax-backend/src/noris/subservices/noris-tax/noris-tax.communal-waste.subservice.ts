@@ -1,9 +1,9 @@
 import { HttpException, Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import { TaxType } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { QrCodeService } from '../../../qrcode/qrcode.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'

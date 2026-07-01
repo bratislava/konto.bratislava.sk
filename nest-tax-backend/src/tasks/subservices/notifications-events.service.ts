@@ -1,15 +1,15 @@
 import { HttpException, Injectable } from '@nestjs/common'
+import dayjs, { Dayjs } from 'dayjs'
+import pLimit from 'p-limit'
+
+import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
   Prisma,
   TaxType,
   UnpaidReminderSent,
-} from '@prisma/client'
-import dayjs, { Dayjs } from 'dayjs'
-import pLimit from 'p-limit'
-
-import { BloomreachService } from '../../bloomreach/bloomreach.service'
+} from '../../generated/prisma/client'
 import { PaymentService } from '../../payment/payment.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import {

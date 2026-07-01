@@ -1,12 +1,12 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
 import isArray from 'lodash/isArray'
 
 import prismaMock from '../../../test/singleton'
 import { createTestTax } from '../../__tests__/factories/tax.factory'
 import { createTestTaxPayer } from '../../__tests__/factories/taxPayer.factory'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { TaxType } from '../../generated/prisma/client'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'

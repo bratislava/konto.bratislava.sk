@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
 import dayjs from 'dayjs'
 import * as mssql from 'mssql'
@@ -12,6 +11,7 @@ import {
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { PaymentStatus, TaxPayment } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
   ErrorsEnum,

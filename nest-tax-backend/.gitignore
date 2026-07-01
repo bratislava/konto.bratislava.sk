@@ -73,3 +73,4 @@ kubernetes/envs/Staging/secrets/bloomreach.yml
 kubernetes/envs/Staging/secrets/noris.yml
 kubernetes/envs/Prod/secrets/noris.yml
 kubernetes/envs/Dev/secrets/noris.yml
+src/generated/prisma

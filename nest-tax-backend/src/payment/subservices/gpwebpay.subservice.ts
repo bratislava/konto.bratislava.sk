@@ -2,8 +2,8 @@ import crypto from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { TaxType } from '@prisma/client'
 
+import { TaxType } from '../../generated/prisma/client'
 import {
   CreateOrderData,
   PaymentResponseQueryToVerifyDto,

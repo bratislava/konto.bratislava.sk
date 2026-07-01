@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxType } from '@prisma/client'
 import { IsEnum, IsNumber, IsOptional } from 'class-validator'
+
+import { TaxType } from '../../generated/prisma/client'
 
 export enum PaymentRedirectStateEnum {
   FAILED_TO_VERIFY = 'failed-to-verify',

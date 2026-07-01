@@ -116,7 +116,7 @@ const schema = {
  */
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
-  const { t } = useTranslation('account')
+  const { t, i18n } = useTranslation('account')
 
   const { clientInfo } = useAmplifyClientOAuthContext()
 
@@ -305,6 +305,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           <>
             <Turnstile
               theme="light"
+              language={i18n.language}
               key={captchaKey}
               sitekey={environment.cloudflareTurnstileSiteKey}
               className="self-center"

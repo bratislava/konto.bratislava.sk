@@ -6,6 +6,7 @@ import BaConfigService from './ba-config.service'
 
 @Global()
 @Module({
+  // ConfigModule.forRoot() call is required, because it loads the environmental variables from .env file
   imports: [ConfigModule.forRoot()],
   providers: [
     {

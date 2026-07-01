@@ -42,3 +42,4 @@ eslint-report.json
 .env.test
 .env.local
 .scannerwork
+src/generated/prisma

@@ -74,6 +74,7 @@ COPY --chown=node:node --from=build /build/package.json /build/package-lock.json
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
 COPY --chown=node:node --from=build /build/dist ./dist
 COPY --chown=node:node --from=build /build/prisma ./prisma
+COPY --chown=node:node --from=build /build/prisma.config.ts ./prisma.config.ts
 COPY --chown=node:node nest-cli.json ./nest-cli.json
 EXPOSE 3000
 ARG GIT_COMMIT="undefined"

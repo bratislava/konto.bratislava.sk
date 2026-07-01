@@ -1,7 +1,6 @@
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 
 import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
@@ -11,6 +10,7 @@ import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-d
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { BloomreachPayloadBuilder } from '../bloomreach/bloomreach-payload.builder'
+import { CognitoUserAttributesTierEnum, LegalPerson, User } from '../generated/prisma/client'
 import { MailgunService } from '../mailgun/mailgun.service'
 import { NasesService } from '../nases/nases.service'
 import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
@@ -179,7 +179,7 @@ export class VerificationService {
     try {
       switch (data.msg.type) {
         case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
-          const body = data.msg.data as RequestBodyVerifyIdentityCardDto
+          const body = data.msg.data
           verification = await this.verificationSubservice.verifyIdentityCard(data.msg.user, body)
           break
         }
@@ -545,8 +545,9 @@ export class VerificationService {
     if (user !== null) {
       result.isInDatabase = true
 
-      if (user.birthnumberAlreadyExistsLast)
+      if (user.birthnumberAlreadyExistsLast) {
         result.birthNumberAlreadyExists = user.birthnumberAlreadyExistsLast
+      }
       result.externalId = user.externalId
 
       if (user.externalId) {
@@ -588,8 +589,9 @@ export class VerificationService {
     if (legalPerson !== null) {
       result.isInDatabase = true
 
-      if (legalPerson.birthnumberIcoAlreadyExistsLast)
+      if (legalPerson.birthnumberIcoAlreadyExistsLast) {
         result.birthNumberIcoAlreadyExists = legalPerson.birthnumberIcoAlreadyExistsLast
+      }
       result.externalId = legalPerson.externalId
 
       if (legalPerson.externalId) {

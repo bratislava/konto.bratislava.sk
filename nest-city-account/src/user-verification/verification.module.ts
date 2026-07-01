@@ -1,9 +1,9 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
-import ApiJwtTokensModule from 'src/api-jwt-tokens/api-jwt-tokens.module'
-import { MagproxyModule } from 'src/magproxy/magproxy.module'
 
+import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
+import { MagproxyModule } from '../magproxy/magproxy.module'
 import { MailgunModule } from '../mailgun/mailgun.module'
 import { NasesModule } from '../nases/nases.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'

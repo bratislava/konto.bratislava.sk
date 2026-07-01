@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import * as mssql from 'mssql'
 
+import { Prisma } from '../../generated/prisma/client'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'

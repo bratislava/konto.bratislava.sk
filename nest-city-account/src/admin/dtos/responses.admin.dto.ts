@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator'
 
+import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
 import { CognitoUserAccountTypesEnum } from '../../utils/global-dtos/cognito.dto'
 
 export class UserVerifyState {

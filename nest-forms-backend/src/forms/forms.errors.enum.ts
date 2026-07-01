@@ -1,4 +1,5 @@
 export enum FormsErrorsEnum {
+  FORM_ID_ERROR = 'FORM_ID_ERROR',
   FORM_NOT_FOUND_ERROR = 'FORM_NOT_FOUND_ERROR',
   FORM_OR_USER_NOT_FOUND_ERROR = 'FORM_OR_USER_ID_NOT_FOUND_ERROR',
   NO_FORM_XML_DATA_ERROR = 'NO_FORM_XML_DATA_ERROR',
@@ -17,6 +18,7 @@ export enum FormsErrorsEnum {
 }
 
 export enum FormsErrorsResponseEnum {
+  FORM_ID_ERROR = 'Form ID is missing or invalid.',
   FORM_NOT_FOUND_ERROR = 'Form with provided id was not found.',
   FORM_OR_USER_NOT_FOUND_ERROR = 'Form or user not found.',
   NO_FORM_XML_DATA_ERROR = 'Form has no formDataXml. Please fill the form first with form update endpoint.',

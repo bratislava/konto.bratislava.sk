@@ -45,7 +45,7 @@ const schema = {
 }
 
 const Towing = ({ title, text }: TowingSectionProps) => {
-  const { t } = useTranslation('account')
+  const { t, i18n } = useTranslation('account')
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
 
@@ -121,6 +121,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
             <>
               <Turnstile
                 theme="light"
+                language={i18n.language}
                 key={captchaKey}
                 sitekey={environment.cloudflareTurnstileSiteKey}
                 className="self-center"

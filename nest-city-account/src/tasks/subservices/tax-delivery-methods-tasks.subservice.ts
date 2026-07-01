@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 import pLimit from 'p-limit'
 import { z } from 'zod'
 
+import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '../../generated/prisma/client'
 import { MailgunService } from '../../mailgun/mailgun.service'
 import {
   NorisDeliveryMethodService,
@@ -149,7 +149,9 @@ export class TaxDeliveryMethodsTasksSubservice {
           Object.entries(data).filter(([bn]) => activeBirthNumbers.has(bn))
         )
 
-        if (Object.keys(activeData).length === 0) return null
+        if (Object.keys(activeData).length === 0) {
+          return null
+        }
 
         // call to Noris happens while the locks are still held.
         return this.norisDeliveryMethodService.updateDeliveryMethods({ data: activeData })
@@ -167,7 +169,9 @@ export class TaxDeliveryMethodsTasksSubservice {
       },
     })
 
-    if (!norisUpdateResponse) return
+    if (!norisUpdateResponse) {
+      return
+    }
 
     const updatedBirthNumbers = norisUpdateResponse.birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', '')

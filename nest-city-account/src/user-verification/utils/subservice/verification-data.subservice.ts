@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { LegalPerson, User } from '@prisma/client'
 
+import { LegalPerson, User } from '../../../generated/prisma/client'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import {
   CatchDatabaseError,

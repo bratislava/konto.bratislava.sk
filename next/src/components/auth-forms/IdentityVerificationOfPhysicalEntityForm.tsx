@@ -75,7 +75,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
   error,
   showSkipButton = true,
 }: Props) => {
-  const { t } = useTranslation('account')
+  const { t, i18n } = useTranslation('account')
   const { redirect } = useQueryParamRedirect()
 
   const { userAttributes } = useSsrAuth()
@@ -193,6 +193,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
           <>
             <Turnstile
               theme="light"
+              language={i18n.language}
               key={captchaKey}
               sitekey={environment.cloudflareTurnstileSiteKey}
               onVerify={(token) => {

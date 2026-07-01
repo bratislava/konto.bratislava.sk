@@ -36,12 +36,21 @@ export default class NasesCronService {
     this.logger = new LineLoggerSubservice('NasesCronService')
   }
 
+  private resolvePublishedResultKey(
+    isPublished: boolean,
+    isDisabled: boolean | undefined,
+  ): keyof ValidateFormRegistrationsResultDto {
+    if (!isPublished) return 'not-published'
+    return isDisabled ? 'published-but-disabled' : 'valid'
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @HandleErrors('CronError')
   async validateFormRegistrations(): Promise<ValidateFormRegistrationsResultDto> {
     const result: ValidateFormRegistrationsResultDto = {
       'not-found': [],
       'not-published': [],
+      'published-but-disabled': [],
       error: [],
       valid: [],
     }
@@ -105,10 +114,14 @@ export default class NasesCronService {
               },
             )
           // TODO open an issue in slovensko.sk to make the type of status response an enum
-          await (validated.data.status ===
-          FormRegistrationStatus.PUBLISHED.toString()
-            ? addToResult('valid', formDefinition, true)
-            : addToResult('not-published', formDefinition, false))
+          const isPublished =
+            validated.data.status ===
+            FormRegistrationStatus.PUBLISHED.toString()
+          const resultKey = this.resolvePublishedResultKey(
+            isPublished,
+            formDefinition.isDisabled,
+          )
+          await addToResult(resultKey, formDefinition, isPublished)
         } catch (error) {
           if (isAxiosError(error) && error.response?.status === 404) {
             await addToResult('not-found', formDefinition, false)
@@ -139,6 +152,7 @@ export default class NasesCronService {
     if (
       result['not-found'].length > 0 ||
       result['not-published'].length > 0 ||
+      result['published-but-disabled'].length > 0 ||
       result.error.length > 0
     ) {
       this.logger.error(

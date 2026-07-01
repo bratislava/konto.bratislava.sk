@@ -50,6 +50,10 @@ type FormDefinitionBase = {
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
   feedbackLink?: string
+  /**
+   * If true, only viewing of sent forms is allowed. Creating, updating and sending is disabled.
+   */
+  isDisabled?: boolean
 
   files?: FormFiles<string>
 }

@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { getFormDefinitionsSlugs } from 'forms-shared/definitions/getFormDefinitionsSlugs'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
 import {
@@ -22,6 +23,9 @@ import FormsService from './forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
+}))
+jest.mock('forms-shared/definitions/getFormDefinitionsSlugs', () => ({
+  getFormDefinitionsSlugs: jest.fn(),
 }))
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
@@ -75,6 +79,10 @@ describe('FormsService', () => {
           baUiSchema: {},
         },
       })
+      ;(getFormDefinitionsSlugs as jest.Mock).mockReturnValue({
+        enabled: ['enabled-slug'],
+        disabled: ['disabled-slug'],
+      })
       const spy = jest
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
@@ -114,7 +122,25 @@ describe('FormsService', () => {
             },
           },
           state: { in: [FormState.DRAFT, FormState.PROCESSING] },
-          AND: [{ userExternalId: authUser.sub }],
+          AND: [
+            { userExternalId: authUser.sub },
+            {
+              NOT: {
+                AND: [
+                  { formDefinitionSlug: { in: ['disabled-slug'] } },
+                  {
+                    OR: [
+                      { state: FormState.DRAFT },
+                      {
+                        state: FormState.ERROR,
+                        error: { in: [FormError.INFECTED_FILES] },
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
         },
         orderBy: [
           {

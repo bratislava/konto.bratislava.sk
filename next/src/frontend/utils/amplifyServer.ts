@@ -10,8 +10,10 @@ import { cityAccountClient, LoginClientEnum } from '@/src/clients/city-account'
 import { ssrAuthContextPropKey, SsrAuthContextType } from '@/src/components/logic/SsrAuthContext'
 import { baRunWithAmplifyServerContext } from '@/src/frontend/utils/amplifyServerRunner'
 import { AmplifyServerContextSpec } from '@/src/frontend/utils/amplifyTypes'
+import { errorToLogFields } from '@/src/frontend/utils/errors'
 import { fetchClientInfo } from '@/src/frontend/utils/fetchClientInfo'
 import { isDefined } from '@/src/frontend/utils/general'
+import logger from '@/src/frontend/utils/logger'
 import {
   authRequestIdQueryParam,
   getRedirectUrl,
@@ -87,6 +89,10 @@ export const amplifyGetServerSideProps = <
               } satisfies GlobalAppProps as unknown as Props,
             }
           }
+          logger.error(
+            { err: errorToLogFields(error), resolvedUrl: context.resolvedUrl },
+            '[amplifyGetServerSideProps] fetchAuthSession failed',
+          )
           throw error
         }
         const isSignedIn = Boolean(authSession.tokens)

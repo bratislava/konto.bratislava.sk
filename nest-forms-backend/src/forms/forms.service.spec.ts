@@ -129,15 +129,13 @@ describe('FormsService', () => {
                 AND: [
                   { formDefinitionSlug: { in: ['disabled-slug'] } },
                   {
-                    NOT: {
-                      OR: [
-                        { state: FormState.DRAFT },
-                        {
-                          state: FormState.ERROR,
-                          error: { in: [FormError.INFECTED_FILES] },
-                        },
-                      ],
-                    },
+                    OR: [
+                      { state: FormState.DRAFT },
+                      {
+                        state: FormState.ERROR,
+                        error: { in: [FormError.INFECTED_FILES] },
+                      },
+                    ],
                   },
                 ],
               },

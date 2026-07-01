@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Client, ClientOptions } from 'minio'
+import { Client } from 'minio'
 
 import BaConfigService from '../config/ba-config.service'
 
@@ -8,16 +8,14 @@ export class MinioClientService {
   private readonly minioClient: Client
 
   constructor(baConfigService: BaConfigService) {
-    const options: ClientOptions = {
+    this.minioClient = new Client({
       endPoint: baConfigService.minio.endpoint,
       port: baConfigService.minio.port,
       useSSL: baConfigService.minio.useSSL,
       accessKey: baConfigService.minio.accessKey,
       secretKey: baConfigService.minio.secretKey,
       pathStyle: baConfigService.minio.pathStyle,
-    }
-
-    this.minioClient = new Client(options)
+    })
   }
 
   public client(): Client {

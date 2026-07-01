@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   FormDefinitionEmail,
@@ -28,6 +27,7 @@ import FormValidatorRegistryService from '../form-validator-registry/form-valida
 import { FormUpdateBodyDto } from '../forms/dtos/requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import { FormError, Forms, FormState } from '../generated/prisma/client'
 import { NasesErrorsResponseEnum } from '../nases/nases.errors.enum'
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'

@@ -1,4 +1,4 @@
-import { Forms, Prisma } from '@prisma/client'
+import { Forms, Prisma } from '../../generated/prisma/client'
 
 export type FormWithFiles = Prisma.FormsGetPayload<{
   include: {

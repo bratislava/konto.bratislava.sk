@@ -69,7 +69,9 @@ export default class MinioClientSubservice {
         )
 
         stream.on('data', (obj) => {
-          if (obj.name) objectsListTemp.push(obj.name)
+          if (obj.name) {
+            objectsListTemp.push(obj.name)
+          }
         })
         stream.on('error', reject)
         stream.on('end', () => {

@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { Files, FileStatus, FormError, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
@@ -16,6 +15,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
+import { Files, FileStatus, FormError, Forms } from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
 import PostScanFileResponseDto, {
   GetScanFileDto,

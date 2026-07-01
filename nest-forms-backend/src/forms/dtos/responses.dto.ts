@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBoolean,
@@ -14,6 +13,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
+import { FormError, FormState } from '../../generated/prisma/client'
 import { JSON_FORM_EXAMPLE } from '../../utils/constants'
 import { FormSignatureDto } from './requests.dto'
 

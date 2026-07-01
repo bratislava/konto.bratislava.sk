@@ -1,7 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormState } from '@prisma/client'
 import axios from 'axios'
 import {
   FormDefinition,
@@ -14,6 +13,7 @@ import prismaMock from '../../../../test/singleton'
 import BaConfigService from '../../../config/ba-config.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
+import { FormState } from '../../../generated/prisma/client'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'

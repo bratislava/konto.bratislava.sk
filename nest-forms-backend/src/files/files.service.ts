@@ -1,7 +1,6 @@
 import { Readable } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
@@ -16,6 +15,13 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import {
+  Files,
+  FileStatus,
+  FormError,
+  FormState,
+  Prisma,
+} from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'

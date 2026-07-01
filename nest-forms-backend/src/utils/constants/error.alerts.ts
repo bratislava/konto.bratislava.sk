@@ -1,10 +1,9 @@
-import { FormError } from '@prisma/client'
-
 import { CityAccountErrorsEnum } from '../../auth/errors/city-account.errors.enum'
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
 import { FormDeliveryConsumerErrorsEnum } from '../../form-delivery-consumer/errors/form-delivery-consumer.errors.enum'
 import { FormSenderErrorsEnum } from '../../form-sender/form-sender.errors.enum'
 import { FormsErrorsEnum } from '../../forms/forms.errors.enum'
+import { FormError } from '../../generated/prisma/client'
 import { GinisTaskErrorEnum } from '../../ginis/errors/ginis-tasks.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../scanner-client/scanner-client.errors.enum'

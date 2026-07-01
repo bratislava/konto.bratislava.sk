@@ -305,7 +305,7 @@ describe('NasesContactsService', () => {
       const contact: UpvsCorporateBody = {
         type: 'legal_entity',
         uri: 'uri://test',
-      } as UpvsCorporateBody
+      }
 
       const result = service.extractCorporateBodyData(contact)
 
@@ -327,7 +327,7 @@ describe('NasesContactsService', () => {
             value: '87654321',
           },
         ],
-      } as UpvsCorporateBody
+      }
 
       const result = service.extractCorporateBodyData(contact)
 
@@ -347,7 +347,7 @@ describe('NasesContactsService', () => {
             value: '87654321',
           },
         ],
-      } as UpvsCorporateBody
+      }
 
       const loggerSpy = jest.spyOn(service['logger'], 'error')
 
@@ -371,7 +371,7 @@ describe('NasesContactsService', () => {
             value: 'some-value',
           },
         ],
-      } as UpvsCorporateBody
+      }
 
       const loggerSpy = jest.spyOn(service['logger'], 'error')
 

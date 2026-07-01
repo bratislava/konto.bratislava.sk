@@ -1,4 +1,4 @@
-import { FormError } from '@prisma/client'
+import { FormError } from '../generated/prisma/client'
 
 export const RABBIT_FORM_DELIVERY = {
   EXCHANGE: 'nest-forms-backend',

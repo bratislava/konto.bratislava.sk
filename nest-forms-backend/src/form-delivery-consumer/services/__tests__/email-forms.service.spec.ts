@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, Forms, FormState } from '@prisma/client'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionEmail,
@@ -20,6 +19,7 @@ import { ClusterEnv } from '../../../config/environment-variables'
 import ConvertService from '../../../convert/convert.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
+import { FormError, Forms, FormState } from '../../../generated/prisma/client'
 import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../../utils/global-services/mailer/olo-mailer.service'

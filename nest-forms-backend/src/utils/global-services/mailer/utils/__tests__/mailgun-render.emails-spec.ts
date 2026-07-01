@@ -12,11 +12,7 @@ describe('Mailgun Emails', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        MailgunHelper,
-        ThrowerErrorGuard,
-        BaConfigService,
-      ],
+      providers: [MailgunHelper, ThrowerErrorGuard, BaConfigService],
     }).compile()
 
     mailgunHelper = module.get<MailgunHelper>(MailgunHelper)

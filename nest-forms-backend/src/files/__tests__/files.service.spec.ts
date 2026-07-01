@@ -1,11 +1,11 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
-import { Files } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import BaConfigService from '../../config/ba-config.service'
 import FormsService from '../../forms/forms.service'
 import { FormAccessService } from '../../forms-v2/services/form-access.service'
+import { Files } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'

@@ -1,5 +1,4 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
@@ -10,6 +9,7 @@ import { getUserIco } from '../auth-v2/utils/user-utils'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
+import { Forms, FormState, Prisma } from '../generated/prisma/client'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
 import PrismaService from '../prisma/prisma.service'
 import {
@@ -118,7 +118,9 @@ export default class FormsService {
     })
 
     // This is needed because in findUnique only unique fields can be used in the where clause, so not 'archived'
-    if (form && form.archived) return null
+    if (form && form.archived) {
+      return null
+    }
 
     return form
   }

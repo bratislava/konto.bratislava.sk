@@ -1,5 +1,6 @@
-import { FileStatus } from '@prisma/client'
 import { isString } from 'class-validator'
+
+import { FileStatus } from '../../generated/prisma/client'
 
 export const processingScanStatuses = [
   FileStatus.UPLOADED,

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { FormState, Prisma } from '@prisma/client'
 
 import FilesService from '../../files/files.service'
+import { FormState, Prisma } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 

@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import * as jwt from 'jsonwebtoken'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { decryptData, encryptData,timingSafeStringEqual } from '../utils/crypto'
+import { decryptData, encryptData, timingSafeStringEqual } from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'

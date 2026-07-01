@@ -1,5 +1,4 @@
-import { TaxType } from '@prisma/client'
-
+import { TaxType } from '../../../../generated/prisma/client'
 import { NorisCommunalWasteTaxGrouped } from '../../../types/noris.types'
 
 export const createTestNorisCommunalWasteTaxGrouped = (

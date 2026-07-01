@@ -1,8 +1,7 @@
 import { randomBytes } from 'node:crypto'
 
-import { TaxAdministrator, TaxType } from '@prisma/client'
-
 import { RequestAdminCreateTestingTaxNorisData } from '../../../admin/dtos/requests.dto'
+import { TaxAdministrator, TaxType } from '../../../generated/prisma/client'
 import {
   createTestingCommunalWasteTaxMock,
   createTestingRealEstateTaxMock,

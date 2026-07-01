@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
 
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import { CognitoUserAttributesTierEnum } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { CognitoGetUserData, CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'

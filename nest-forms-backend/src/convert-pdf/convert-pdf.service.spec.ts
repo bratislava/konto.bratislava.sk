@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
@@ -15,6 +14,7 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import { Forms } from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
@@ -87,7 +87,6 @@ describe('ConvertPdfService', () => {
             scannerBackend: {
               url: 'http://localhost:3001',
               username: 'user1',
-              // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- test password for scanner backend
               password: 'pass',
             },
           },

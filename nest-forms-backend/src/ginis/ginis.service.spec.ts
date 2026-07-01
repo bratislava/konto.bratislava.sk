@@ -5,7 +5,6 @@ import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Files, FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -14,6 +13,13 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
+import {
+  Files,
+  FormError,
+  Forms,
+  FormState,
+  GinisState,
+} from '../generated/prisma/client'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'

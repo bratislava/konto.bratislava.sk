@@ -1,7 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Test } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 
 import {
   AuthFixtureUser,
@@ -18,6 +17,7 @@ import { AppV2Module } from '../app-v2.module'
 import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { UserType } from '../auth-v2/types/user'
+import { Forms } from '../generated/prisma/client'
 import {
   FormAccessAllowMigrations,
   FormAccessGuard,

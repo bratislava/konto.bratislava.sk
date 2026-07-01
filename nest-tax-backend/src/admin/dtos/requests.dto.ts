@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { TaxType } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsArray,
@@ -15,6 +14,8 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator'
+
+import { TaxType } from '../../generated/prisma/client'
 
 /**
  * Options for processing Noris tax data.

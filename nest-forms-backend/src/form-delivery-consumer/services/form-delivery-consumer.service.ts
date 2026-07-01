@@ -2,7 +2,6 @@ import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
-import { FormError, Forms, FormState } from '@prisma/client'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
@@ -19,6 +18,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import FormsService from '../../forms/forms.service'
+import { FormError, Forms, FormState } from '../../generated/prisma/client'
 import GinisService from '../../ginis/ginis.service'
 import PrismaService from '../../prisma/prisma.service'
 import RabbitmqClientService from '../../rabbitmq-client/rabbitmq-client.service'

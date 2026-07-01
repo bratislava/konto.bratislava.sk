@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { Forms } from '@prisma/client'
 
 import { isAuthUser, isGuestUser, User } from '../../auth-v2/types/user'
 import { getUserIco } from '../../auth-v2/utils/user-utils'
+import { Forms } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import { FormMigrationsService } from './form-migrations.service'
 

@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Prisma } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
+import { Prisma } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import {
   OVERPAYMENTS_LOOKBACK_DAYS,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Prisma, TaxType } from '@prisma/client'
 
+import { Prisma, TaxType } from '../../generated/prisma/client'
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
 import { NorisTaxPayment } from '../../noris/types/noris.types'

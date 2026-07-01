@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '../../generated/prisma/client'
 
 const DEFAULT_DATE = new Date('2024-01-01T00:00:00.000Z')
 

@@ -1,5 +1,4 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -35,6 +34,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import { FormError, Forms, FormState } from '../generated/prisma/client'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
@@ -556,7 +556,9 @@ export class FormSenderService {
     )
     const filesBySlot = new Map<string, { id: string; fileSize: number }[]>()
     for (const file of safeFiles) {
-      if (file.slotId === null) continue
+      if (file.slotId === null) {
+        continue
+      }
       const list = filesBySlot.get(file.slotId) ?? []
       list.push({ id: file.id, fileSize: file.fileSize })
       filesBySlot.set(file.slotId, list)
@@ -564,7 +566,9 @@ export class FormSenderService {
 
     for (const [slotId, slotFiles] of filesBySlot) {
       const slot = slotsById.get(slotId)
-      if (!slot) continue
+      if (!slot) {
+        continue
+      }
       this.enforceSingleSlotConstraints(slotId, slotFiles, slot)
     }
   }

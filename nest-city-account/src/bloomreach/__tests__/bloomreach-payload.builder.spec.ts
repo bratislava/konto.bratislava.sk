@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { CognitoUserAttributesTierEnum, ConsentEnum } from '@prisma/client'
 
+import { CognitoUserAttributesTierEnum, ConsentEnum } from '../../generated/prisma/client'
 import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
 import {
   CognitoUserAccountTypesEnum,

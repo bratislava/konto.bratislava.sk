@@ -33,7 +33,9 @@ const decrypt = (ciphertextAndNonce: Buffer, key: Buffer) => {
 }
 
 export const encryptData = (plaintext: string): string => {
-  if (!process.env.CRYPTO_SECRET_KEY) throw new Error('CRYPTO_SECRET_KEY not set')
+  if (!process.env.CRYPTO_SECRET_KEY) {
+    throw new Error('CRYPTO_SECRET_KEY not set')
+  }
   const salt = crypto.randomBytes(PBKDF2_SALT_SIZE)
   const key = crypto.pbkdf2Sync(
     Buffer.from(process.env.CRYPTO_SECRET_KEY, 'utf8'),
@@ -51,7 +53,9 @@ export const encryptData = (plaintext: string): string => {
 }
 
 export const decryptData = (encryptedText: string): string => {
-  if (!process.env.CRYPTO_SECRET_KEY) throw new Error('CRYPTO_SECRET_KEY not set')
+  if (!process.env.CRYPTO_SECRET_KEY) {
+    throw new Error('CRYPTO_SECRET_KEY not set')
+  }
   const ciphertextAndNonceAndSalt = Buffer.from(encryptedText, 'base64')
   const salt = ciphertextAndNonceAndSalt.subarray(0, PBKDF2_SALT_SIZE)
   const ciphertextAndNonce = ciphertextAndNonceAndSalt.subarray(PBKDF2_SALT_SIZE)

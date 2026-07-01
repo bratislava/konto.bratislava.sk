@@ -1,5 +1,8 @@
-import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
-
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  TaxType,
+} from '../../../generated/prisma/client'
 import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,

@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FileStatus } from '@prisma/client'
 import { Type } from 'class-transformer'
 import { IsDate, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+
+import { FileStatus } from '../generated/prisma/client'
 
 export default class PostScanFileResponseDto {
   @ApiProperty({

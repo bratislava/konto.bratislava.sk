@@ -1,28 +1,36 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
-import { Prisma, PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
+import { PrismaClient } from '../generated/prisma/client'
+import type * as Prisma from '../generated/prisma/internal/prismaNamespace'
 import { escapeForLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export const ACTIVE_USER_FILTER = { isDeceased: false }
 
+const prismaClientOptions = {
+  adapter: new PrismaPg({
+    connectionString: process.env.DATABASE_URL,
+  }),
+  log: [
+    { emit: 'event', level: 'query' },
+    { emit: 'event', level: 'info' },
+    { emit: 'event', level: 'warn' },
+    { emit: 'event', level: 'error' },
+  ],
+  errorFormat: 'colorless',
+} satisfies Prisma.PrismaClientOptions
+
 @Injectable()
 export class PrismaService
-  extends PrismaClient<Prisma.PrismaClientOptions, 'info' | 'warn' | 'error'>
+  extends PrismaClient<typeof prismaClientOptions>
   implements OnModuleInit
 {
   private readonly logger: LineLoggerSubservice
 
   constructor() {
-    super({
-      log: [
-        { emit: 'event', level: 'query' },
-        { emit: 'event', level: 'info' },
-        { emit: 'event', level: 'warn' },
-        { emit: 'event', level: 'error' },
-      ],
-      errorFormat: 'colorless',
-    })
+    super(prismaClientOptions)
+
     this.logger = new LineLoggerSubservice(PrismaService.name)
     this.$on('info', (e) => {
       this.logger.log(

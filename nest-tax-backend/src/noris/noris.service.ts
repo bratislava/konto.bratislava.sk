@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
 
 import {
   DateRangeDto,
@@ -8,6 +7,7 @@ import {
   RequestPostNorisPaymentDataLoadDto,
 } from '../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../admin/dtos/responses.dto'
+import { TaxType } from '../generated/prisma/client'
 import { ResponseCreatedAlreadyCreatedDto } from './dtos/response.dto'
 import { NorisPaymentSubservice } from './subservices/noris-payment.subservice'
 import { NorisTaxSubservice } from './subservices/noris-tax.subservice'

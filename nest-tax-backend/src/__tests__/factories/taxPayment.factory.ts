@@ -1,5 +1,4 @@
-import { PaymentStatus, TaxPaymentSource } from '@prisma/client'
-
+import { PaymentStatus, TaxPaymentSource } from '../../generated/prisma/client'
 import {
   TaxPaymentWithTaxAndTaxPayer,
   TaxWithTaxPayer,

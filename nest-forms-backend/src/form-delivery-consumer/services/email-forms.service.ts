@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState } from '@prisma/client'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }
@@ -30,6 +29,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { FormError, FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'

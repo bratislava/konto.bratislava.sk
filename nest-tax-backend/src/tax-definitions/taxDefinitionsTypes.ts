@@ -1,11 +1,10 @@
+import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
   TaxAdministrator,
   TaxType,
-} from '@prisma/client'
-
-import { RequestAdminCreateTestingTaxNorisData } from '../admin/dtos/requests.dto'
+} from '../generated/prisma/client'
 import {
   NorisCommunalWasteTaxGrouped,
   NorisRealEstateTax,

@@ -9,10 +9,13 @@
     "target": "es2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "strict": true,
     "incremental": true,
     "skipLibCheck": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "types": [
+      "node",
+      "jest"
+    ]
   }
 }

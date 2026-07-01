@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma, TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import _ from 'lodash'
 
+import { Prisma, TaxType } from '../../generated/prisma/client'
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
 import { PrismaService } from '../../prisma/prisma.service'

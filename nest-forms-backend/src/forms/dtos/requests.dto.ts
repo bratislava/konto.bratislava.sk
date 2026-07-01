@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBase64,
@@ -15,6 +14,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
+import { FormError, FormState } from '../../generated/prisma/client'
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../../utils/constants'
 import { ToBoolean } from '../../utils/decorators/request.decorator'
 

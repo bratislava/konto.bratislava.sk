@@ -1,8 +1,13 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum, Prisma, User } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
+import {
+  DeliveryMethodEnum,
+  DeliveryMethodUserPreferenceEnum,
+  Prisma,
+  User,
+} from '../../../generated/prisma/client'
 import { MailgunService } from '../../../mailgun/mailgun.service'
 import { NorisDeliveryMethodService } from '../../../noris/services/noris-delivery-method.service'
 import { DeliveryMethod } from '../../../noris/types/noris.enums'
@@ -66,7 +71,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
     // Make $transaction execute its callback so the advisory-lock path is exercised in tests.
     ;(prismaMock.$transaction as jest.Mock).mockImplementation(async (fn: any) => {
-      if (typeof fn === 'function') return fn(prismaMock)
+      if (typeof fn === 'function') {
+        return fn(prismaMock)
+      }
       return Promise.all(fn)
     })
     // $executeRaw is used for pg_advisory_xact_lock — no-op in tests.

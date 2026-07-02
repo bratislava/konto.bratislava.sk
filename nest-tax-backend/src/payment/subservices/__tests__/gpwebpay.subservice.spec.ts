@@ -1,9 +1,9 @@
 import crypto, { Sign, Verify } from 'node:crypto'
 
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import BaConfigService from '../../../config/ba-config.service'
 import { TaxType } from '../../../generated/prisma/client'
 import {
   CreateOrderData,
@@ -14,25 +14,21 @@ import { GpWebpaySubservice } from '../gpwebpay.subservice'
 describe('GpWebpaySubservice', () => {
   let service: GpWebpaySubservice
 
-  const mockConfigService = {
-    getOrThrow: jest.fn((key: string) => {
-      switch (key) {
-        case 'PAYGATE_SIGN_CERT':
-          return 'mock-cert'
-
-        case 'PAYGATE_KEY':
-          return 'mock-key'
-
-        case 'PAYGATE_MERCHANT_NUMBER':
-          return 'mock-merchant-number'
-
-        case 'PAYGATE_PASSPHRASE':
-          return 'mock-passphrase'
-
-        default:
-          throw new Error('Invalid key')
-      }
-    }),
+  const mockBaConfigService = {
+    paygate: {
+      [TaxType.DZN]: {
+        key: 'mock-key',
+        signCert: 'mock-cert',
+        merchantNumber: 'mock-merchant-number',
+        passphrase: 'mock-passphrase',
+      },
+      [TaxType.KO]: {
+        key: 'mock-key-ko',
+        signCert: 'mock-cert-ko',
+        merchantNumber: 'mock-merchant-number-ko',
+        passphrase: 'mock-passphrase-ko',
+      },
+    },
   }
 
   beforeEach(async () => {
@@ -40,8 +36,8 @@ describe('GpWebpaySubservice', () => {
       providers: [
         GpWebpaySubservice,
         {
-          provide: ConfigService,
-          useValue: mockConfigService,
+          provide: BaConfigService,
+          useValue: mockBaConfigService,
         },
       ],
     }).compile()

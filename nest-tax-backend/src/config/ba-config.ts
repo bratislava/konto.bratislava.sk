@@ -1,3 +1,4 @@
+import { TaxType } from '../generated/prisma/enums'
 import EnvironmentVariables from './environment-variables'
 
 export default class BaConfig {
@@ -48,9 +49,9 @@ export default class BaConfig {
 
   get smtp() {
     return {
-      smtpUsername: this.validatedConfig.AWS_SES_SMTP_USERNAME,
-      smtpPassword: this.validatedConfig.AWS_SES_SMTP_PASSWORD,
-      senderEmail: this.validatedConfig.AWS_SES_SENDER_EMAIL,
+      username: this.validatedConfig.AWS_SES_SMTP_USERNAME,
+      password: this.validatedConfig.AWS_SES_SMTP_PASSWORD,
+      email: this.validatedConfig.AWS_SES_SENDER_EMAIL,
     }
   }
 
@@ -85,13 +86,13 @@ export default class BaConfig {
       redirectUrl: this.validatedConfig.PAYGATE_REDIRECT_URL,
       afterPaymentRedirectFrontend:
         this.validatedConfig.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND,
-      dzn: {
+      [TaxType.DZN]: {
         key: this.validatedConfig.PAYGATE_KEY,
         signCert: this.validatedConfig.PAYGATE_SIGN_CERT,
         merchantNumber: this.validatedConfig.PAYGATE_MERCHANT_NUMBER,
         passphrase: this.validatedConfig.PAYGATE_PASSPHRASE,
       },
-      ko: {
+      [TaxType.KO]: {
         key: this.validatedConfig.PAYGATE_KEY_KO,
         signCert: this.validatedConfig.PAYGATE_SIGN_CERT_KO,
         merchantNumber: this.validatedConfig.PAYGATE_MERCHANT_NUMBER_KO,
@@ -109,13 +110,13 @@ export default class BaConfig {
         username: this.validatedConfig.REPORTING_SFTP_USER,
         privateKey: this.validatedConfig.REPORTING_SFTP_KEY,
       },
-      dzn: {
+      [TaxType.DZN]: {
         fileName: this.validatedConfig.REPORTING_FILE_NAME,
         accountId: this.validatedConfig.REPORTING_ACCOUNT_ID,
         bankId: this.validatedConfig.REPORTING_BANK_ID,
         sftpFilesPath: this.validatedConfig.REPORTING_SFTP_FILES_PATH,
       },
-      ko: {
+      [TaxType.KO]: {
         fileName: this.validatedConfig.REPORTING_PKO_FILE_NAME,
         accountId: this.validatedConfig.REPORTING_PKO_ACCOUNT_ID,
         bankId: this.validatedConfig.REPORTING_PKO_BANK_ID,

@@ -3,6 +3,7 @@ import { isAxiosError } from 'axios'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import ClientsService from '../../clients/clients.service'
+import BaConfigService from '../../config/ba-config.service'
 import { addSlashToBirthNumber } from '../functions/birthNumber'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
@@ -14,6 +15,7 @@ export class CityAccountSubservice {
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly clientsService: ClientsService,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.logger = new Logger('CityAccountSubservice')
   }
@@ -28,7 +30,7 @@ export class CityAccountSubservice {
           birthNumberWithoutSlash,
           {
             headers: {
-              apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+              apiKey: this.baConfigService.cityAccountBackend.adminApiKey,
             },
           },
         )
@@ -84,7 +86,7 @@ export class CityAccountSubservice {
           { birthNumbers: birthNumbersWithoutSlash },
           {
             headers: {
-              apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+              apiKey: this.baConfigService.cityAccountBackend.adminApiKey,
             },
           },
         )
@@ -141,7 +143,7 @@ export class CityAccountSubservice {
           { since: since.toISOString(), take },
           {
             headers: {
-              apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+              apiKey: this.baConfigService.cityAccountBackend.adminApiKey,
             },
           },
         )

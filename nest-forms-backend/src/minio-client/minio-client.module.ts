@@ -1,11 +1,11 @@
 import { Global, Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 
+import BaConfigModule from '../config/ba-config.module'
 import { MinioClientService } from './minio-client.service'
 
 @Global()
 @Module({
-  imports: [ConfigModule],
+  imports: [BaConfigModule],
   providers: [MinioClientService],
   exports: [MinioClientService],
 })

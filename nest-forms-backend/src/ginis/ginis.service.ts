@@ -38,6 +38,7 @@ import {
   FormState,
   GinisState,
 } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
@@ -56,7 +57,6 @@ import {
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
@@ -79,7 +79,7 @@ export default class GinisService {
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
     private mailgunService: MailgunService,
-    private readonly minioClientSubservice: MinioClientSubservice,
+    private readonly minioStorageService: MinioStorageService,
     private prismaService: PrismaService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly nasesContactsService: NasesContactsService,
@@ -187,7 +187,7 @@ export default class GinisService {
     try {
       // sometimes ginis times-out on the first try
       await this.ginisHelper.retryWithDelay(async () => {
-        const fileStream = await this.minioClientSubservice.download(
+        const fileStream = await this.minioStorageService.download(
           this.baConfigService.minio.buckets.safe,
           minioFilePath,
         )

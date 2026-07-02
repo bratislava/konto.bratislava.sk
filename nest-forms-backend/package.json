@@ -61,7 +61,6 @@
     "mailgun.js": "13.1.0",
     "mime-types": "3.0.2",
     "multer": "2.1.1",
-    "nestjs-minio-client": "2.2.0",
     "nodemailer": "8.0.7",
     "openapi-clients": "file:../openapi-clients",
     "passport-custom": "1.1.1",

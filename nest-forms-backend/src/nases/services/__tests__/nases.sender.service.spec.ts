@@ -10,15 +10,15 @@ import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
 import ConvertService from '../../../convert/convert.service'
 import { FileStatus } from '../../../generated/prisma/client'
+import { MinioStorageService } from '../../../minio-storage/minio-storage.service'
 import PrismaService from '../../../prisma/prisma.service'
 import TaxService from '../../../tax/tax.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../../../utils/subservices/minio-client.subservice'
 import { NasesErrorsResponseEnum } from '../../nases.errors.enum'
 import NasesSenderService from '../nases.sender.service'
 
 jest.mock('axios')
-jest.mock('../../../utils/subservices/minio-client.subservice')
+jest.mock('../../../minio-storage/minio-storage.service')
 jest.mock('../../../convert/convert.service')
 jest.mock('uuid', () => ({
   v4: jest.fn(),
@@ -45,7 +45,7 @@ describe('NasesSenderService', () => {
         ConvertService,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
-        MinioClientSubservice,
+        MinioStorageService,
         { provide: TaxService, useValue: createMock<TaxService>() },
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         {
@@ -142,7 +142,7 @@ describe('NasesSenderService', () => {
 
       prismaMock.files.findMany.mockResolvedValue(mockFiles)
 
-      service['minioClientSubservice'].loadFileStream = jest
+      service['minioStorageService'].loadFileStream = jest
         .fn()
         .mockImplementation((_: string, filename: string) =>
           createMockReadableStream(`test string for input: ${filename}`),

@@ -15,6 +15,10 @@
       "type": "component",
       "component": "blocks.external-document",
       "repeatable": true
+    },
+    "allowCollapsingDocuments": {
+      "type": "boolean",
+      "default": true
     }
   },
   "config": {}

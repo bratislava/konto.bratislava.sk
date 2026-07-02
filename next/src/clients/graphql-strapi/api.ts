@@ -638,6 +638,7 @@ export type ComponentSectionsContactsInput = {
 
 export type ComponentSectionsDocuments = {
   __typename?: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: Maybe<Scalars['Boolean']['output']>
   externalDocuments?: Maybe<Array<Maybe<ComponentBlocksExternalDocument>>>
   id: Scalars['ID']['output']
   text?: Maybe<Scalars['String']['output']>
@@ -651,6 +652,7 @@ export type ComponentSectionsDocumentsExternalDocumentsArgs = {
 }
 
 export type ComponentSectionsDocumentsFiltersInput = {
+  allowCollapsingDocuments?: InputMaybe<BooleanFilterInput>
   and?: InputMaybe<Array<InputMaybe<ComponentSectionsDocumentsFiltersInput>>>
   externalDocuments?: InputMaybe<ComponentBlocksExternalDocumentFiltersInput>
   not?: InputMaybe<ComponentSectionsDocumentsFiltersInput>
@@ -660,6 +662,7 @@ export type ComponentSectionsDocumentsFiltersInput = {
 }
 
 export type ComponentSectionsDocumentsInput = {
+  allowCollapsingDocuments?: InputMaybe<Scalars['Boolean']['input']>
   externalDocuments?: InputMaybe<Array<InputMaybe<ComponentBlocksExternalDocumentInput>>>
   id?: InputMaybe<Scalars['ID']['input']>
   text?: InputMaybe<Scalars['String']['input']>
@@ -3298,6 +3301,7 @@ export type FormLandingPageFragment = {
       }
     | {
         __typename: 'ComponentSectionsDocuments'
+        allowCollapsingDocuments?: boolean | null
         title?: string | null
         text?: string | null
         externalDocuments?: Array<{
@@ -3436,6 +3440,7 @@ export type FormWithLandingPageFragment = {
         }
       | {
           __typename: 'ComponentSectionsDocuments'
+          allowCollapsingDocuments?: boolean | null
           title?: string | null
           text?: string | null
           externalDocuments?: Array<{
@@ -3596,6 +3601,7 @@ export type FormWithLandingPageBySlugQuery = {
           }
         | {
             __typename: 'ComponentSectionsDocuments'
+            allowCollapsingDocuments?: boolean | null
             title?: string | null
             text?: string | null
             externalDocuments?: Array<{
@@ -4257,6 +4263,7 @@ export type MunicipalServiceEntityFragment = {
       }
     | {
         __typename: 'ComponentSectionsDocuments'
+        allowCollapsingDocuments?: boolean | null
         title?: string | null
         text?: string | null
         externalDocuments?: Array<{
@@ -4402,6 +4409,7 @@ export type MunicipalServiceBySlugQuery = {
         }
       | {
           __typename: 'ComponentSectionsDocuments'
+          allowCollapsingDocuments?: boolean | null
           title?: string | null
           text?: string | null
           externalDocuments?: Array<{
@@ -4548,6 +4556,7 @@ export type MunicipalServicesPageQuery = {
           }
         | {
             __typename: 'ComponentSectionsDocuments'
+            allowCollapsingDocuments?: boolean | null
             title?: string | null
             text?: string | null
             externalDocuments?: Array<{
@@ -4686,6 +4695,7 @@ export type MunicipalServicesPageQuery = {
           }
         | {
             __typename: 'ComponentSectionsDocuments'
+            allowCollapsingDocuments?: boolean | null
             title?: string | null
             text?: string | null
             externalDocuments?: Array<{
@@ -4878,6 +4888,7 @@ export type ExternalDocumentBlockFragment = {
 
 export type DocumentsSectionFragment = {
   __typename?: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: boolean | null
   title?: string | null
   text?: string | null
   externalDocuments?: Array<{
@@ -4959,6 +4970,7 @@ type FormLandingPageSections_ComponentSectionsContacts_Fragment = {
 
 type FormLandingPageSections_ComponentSectionsDocuments_Fragment = {
   __typename: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: boolean | null
   title?: string | null
   text?: string | null
   externalDocuments?: Array<{
@@ -5082,6 +5094,7 @@ type MunicipalServiceSections_ComponentSectionsContacts_Fragment = {
 
 type MunicipalServiceSections_ComponentSectionsDocuments_Fragment = {
   __typename: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: boolean | null
   title?: string | null
   text?: string | null
   externalDocuments?: Array<{
@@ -5326,6 +5339,7 @@ export const ExternalDocumentBlockFragmentDoc = gql`
 `
 export const DocumentsSectionFragmentDoc = gql`
   fragment DocumentsSection on ComponentSectionsDocuments {
+    allowCollapsingDocuments
     title
     text
     externalDocuments {

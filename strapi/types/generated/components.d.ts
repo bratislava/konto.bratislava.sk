@@ -271,6 +271,7 @@ export interface SectionsDocuments extends Struct.ComponentSchema {
     displayName: 'Dokumenty'
   }
   attributes: {
+    allowCollapsingDocuments: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>
     externalDocuments: Schema.Attribute.Component<'blocks.external-document', true>
     text: Schema.Attribute.Text
     title: Schema.Attribute.String

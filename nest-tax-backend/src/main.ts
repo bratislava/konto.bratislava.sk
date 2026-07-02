@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 
 import { AppModule } from './app.module'
+import BaConfigService from './config/ba-config.service'
 import {
   ErrorFilter,
   HttpExceptionFilter,
@@ -12,11 +13,11 @@ import {
 import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap() {
-  const port = process.env.PORT || 3000
   const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
     logger,
   })
+  const port = app.get(BaConfigService).self.port
   app.enableVersioning({
     type: VersioningType.URI,
   })

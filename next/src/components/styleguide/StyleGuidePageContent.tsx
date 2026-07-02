@@ -24,6 +24,7 @@ import PasswordFieldShowCase from '@/src/components/styleguide/showcases/Passwor
 import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
 import ProgressBarShowCase from '@/src/components/styleguide/showcases/ProgressBarShowCase'
 import RadioGroupShowCase from '@/src/components/styleguide/showcases/RadioGroupShowCase'
+import SearchFieldShowCase from '@/src/components/styleguide/showcases/SearchFieldShowCase'
 import SelectMultiNewShowCase from '@/src/components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCardShowCase'
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
@@ -53,6 +54,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'text-area-field', label: 'Text Area Field', component: <TextAreaFieldShowCase /> },
   { id: 'number-field', label: 'Number Field', component: <NumberFieldShowCase /> },
   { id: 'password-field', label: 'Password Field', component: <PasswordFieldShowCase /> },
+  { id: 'search-field', label: 'Search Field', component: <SearchFieldShowCase /> },
   { id: 'radio-group', label: 'Radio Group', component: <RadioGroupShowCase /> },
   { id: 'checkbox-group', label: 'Checkbox Group', component: <CheckboxGroupShowCase /> },
   { id: 'date-picker', label: 'Date Picker', component: <DatePickerShowCase /> },

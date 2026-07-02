@@ -62,10 +62,6 @@ describe('Create form', () => {
     formDefinitionSlug: 'zavazne-stanovisko-k-investicnej-cinnosti',
   }
 
-  const createFormRequestDisabled: CreateFormInput = {
-    formDefinitionSlug: 'predzahradky',
-  }
-
   it('should create form for authenticated users', async () => {
     const response = await testingApp.axiosClient.post<CreateFormOutput>(
       '/forms-v2/',
@@ -157,8 +153,10 @@ describe('Create form', () => {
   it('should throw error if form definition is disabled', async () => {
     const response = await testingApp.axiosClient.post<{ errorName: string }>(
       '/forms-v2/',
-      createFormRequestDisabled,
-      { headers: poAuthUser.headers },
+      {
+        formDefinitionSlug: 'predzahradky',
+      },
+      { headers: foAuthUser.headers },
     )
 
     expect(response.status).toBe(HttpStatus.FORBIDDEN)

@@ -8,6 +8,7 @@ import { createTestTax } from '../../../../__tests__/factories/tax.factory'
 import { createTestTaxAdministratorEntry } from '../../../../__tests__/factories/taxAdministrator.factory'
 import { createTestTaxPayer } from '../../../../__tests__/factories/taxPayer.factory'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
+import BaConfigService from '../../../../config/ba-config.service'
 import {
   TaxAdministrator,
   TaxPayer,
@@ -196,6 +197,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         {
           provide: DatabaseSubservice,
           useValue: createMock<DatabaseSubservice>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: { database: { concurrency: 10 } },
         },
       ],
     }).compile()

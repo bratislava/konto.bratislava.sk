@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import nodemailer from 'nodemailer'
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport'
 
+import BaConfigService from '../../config/ba-config.service'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
@@ -25,16 +25,16 @@ export default class EmailSubservice {
   private readonly transporter: nodemailer.Transporter<SentMessageInfo>
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.transporter = nodemailer.createTransport({
-      host: `email-smtp.${this.configService.getOrThrow<string>('COGNITO_REGION')}.amazonaws.com`,
+      host: `email-smtp.${this.baConfigService.cognito.region}.amazonaws.com`,
       port: 465,
       secure: true,
       auth: {
-        user: this.configService.getOrThrow<string>('AWS_SES_SMTP_USERNAME'),
-        pass: this.configService.getOrThrow<string>('AWS_SES_SMTP_PASSWORD'),
+        user: this.baConfigService.smtp.username,
+        pass: this.baConfigService.smtp.password,
       },
     })
   }
@@ -55,7 +55,7 @@ export default class EmailSubservice {
   ): Promise<void> {
     try {
       const emailOptions = {
-        from: this.configService.getOrThrow<string>('AWS_SES_SENDER_EMAIL'),
+        from: this.baConfigService.smtp.email,
         to: to.join(', '),
         subject,
         text: message,

@@ -84,6 +84,9 @@ export class OAuth2Service {
       where: { id: authRequestId },
     })
 
+    // A cron job (deleteOldOAuth2Data) handles expiry in tasks service after at
+    // most 2 months by deleting the whole entry.
+
     if (!storedRequest) {
       this.logger.debug('Authorization request not found', { authRequestId })
       return undefined

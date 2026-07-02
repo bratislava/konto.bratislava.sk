@@ -69,7 +69,12 @@ export function EnvString(required = true) {
 }
 
 export function EnvUrl(required = true) {
-  return applyDecorators(Expose(), IsUrl(), ...(required ? [IsNotEmpty()] : []))
+  return applyDecorators(
+    Expose(),
+    // require_tld: false so localhost URLs (used for local dev callback URLs) pass validation
+    IsUrl({ require_tld: false }),
+    ...(required ? [IsNotEmpty()] : []),
+  )
 }
 
 export function EnvEnum(enumType: object, required = true) {

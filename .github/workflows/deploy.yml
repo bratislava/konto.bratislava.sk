@@ -34,7 +34,7 @@ jobs:
       - name: Map ref to environment and services
         id: resolve
         run: |
-          REF="${{ github.ref }}"
+          REF="$GITHUB_REF"
 
           if [[ "$REF" == "refs/heads/master" ]]; then
             CLUSTER="staging"

@@ -759,20 +759,24 @@ describe('PaymentService', () => {
   describe('getRedirectUrl', () => {
     it('should append taxType to base URL without trailing slash', () => {
       baConfigService.paygate.redirectUrl =
-        'http://localhost:3000/payment/cardpay/response'
+        'http://payments.example.com:3000/payment/cardpay/response'
 
       const result = service['getRedirectUrl'](TaxType.DZN)
 
-      expect(result).toBe('http://localhost:3000/payment/cardpay/response/DZN')
+      expect(result).toBe(
+        'http://payments.example.com:3000/payment/cardpay/response/DZN',
+      )
     })
 
     it('should append taxType to base URL with trailing slash', () => {
       baConfigService.paygate.redirectUrl =
-        'http://localhost:3000/payment/cardpay/response/'
+        'http://payments.example.com:3000/payment/cardpay/response/'
 
       const result = service['getRedirectUrl'](TaxType.KO)
 
-      expect(result).toBe('http://localhost:3000/payment/cardpay/response/KO')
+      expect(result).toBe(
+        'http://payments.example.com:3000/payment/cardpay/response/KO',
+      )
     })
 
     it('should handle different TaxType values', () => {
@@ -806,11 +810,13 @@ describe('PaymentService', () => {
 
     it('should handle base URL with port number', () => {
       baConfigService.paygate.redirectUrl =
-        'http://localhost:8080/payment/response'
+        'http://payments.example.com:8080/payment/response'
 
       const result = service['getRedirectUrl'](TaxType.KO)
 
-      expect(result).toBe('http://localhost:8080/payment/response/KO')
+      expect(result).toBe(
+        'http://payments.example.com:8080/payment/response/KO',
+      )
     })
 
     it('should handle base URL ending with multiple slashes', () => {

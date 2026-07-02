@@ -6,6 +6,7 @@ import { CognitoAuthModule } from '@nestjs-cognito/auth'
 import { AdminModule } from './admin/admin.module'
 import { AppController } from './app.controller'
 import { CardPaymentReportingModule } from './card-payment-reporting/card-payment-reporting.module'
+import BaConfigService from './config/ba-config.service'
 import { PaymentModule } from './payment/payment.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
@@ -17,15 +18,18 @@ import { UtilsModule } from './utils-module/utils.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    CognitoAuthModule.register({
-      jwtVerifier: {
-        userPoolId: process.env.COGNITO_USER_POOL_ID ?? '',
-        clientId: process.env.COGNITO_CLIENT_ID,
-        tokenUse: 'access',
-      },
-      identityProvider: {
-        region: process.env.COGNITO_REGION,
-      },
+    CognitoAuthModule.registerAsync({
+      inject: [BaConfigService],
+      useFactory: (baConfigService: BaConfigService) => ({
+        jwtVerifier: {
+          userPoolId: baConfigService.cognito.userPoolId,
+          clientId: baConfigService.cognito.clientId,
+          tokenUse: 'access',
+        },
+        identityProvider: {
+          region: baConfigService.cognito.region,
+        },
+      }),
     }),
     PrismaModule,
     SharedModule,

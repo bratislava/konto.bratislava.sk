@@ -79,7 +79,12 @@ jobs:
 
       - name: Print summary
         shell: bash
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+          PUSH: ${{ inputs.push }}
         run: |
-          echo "### Build Complete" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Digest: \`${{ steps.build.outputs.digest }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Pushed: \`${{ inputs.push }}\`" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "### Build Complete"
+            echo "- Digest: \`$DIGEST\`"
+            echo "- Pushed: \`$PUSH\`"
+          } >> "$GITHUB_STEP_SUMMARY"

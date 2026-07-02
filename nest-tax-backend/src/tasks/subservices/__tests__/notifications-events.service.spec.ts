@@ -11,6 +11,7 @@ import { createTestTaxPayer } from '../../../__tests__/factories/taxPayer.factor
 import { createTestTaxPayment } from '../../../__tests__/factories/taxPayment.factory'
 import { createTestUserDataFromCityAccount } from '../../../__tests__/factories/userDataFromCityAccount.factory'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import BaConfigService from '../../../config/ba-config.service'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
@@ -127,6 +128,10 @@ describe('NotificationsEventsSubservice', () => {
         {
           provide: PaymentService,
           useValue: createMock<PaymentService>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: { database: { concurrency: 10 } },
         },
 
         ThrowerErrorGuard,

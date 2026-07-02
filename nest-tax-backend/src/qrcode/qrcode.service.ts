@@ -1,18 +1,15 @@
 import { randomUUID } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { DataModel, generate, PaymentOptions } from 'bysquare'
 import * as qrCode from 'qrcode'
 
+import BaConfigService from '../config/ba-config.service'
 import { QrCodeGeneratorDto } from './dtos/qrcode.dto'
 
 @Injectable()
 export class QrCodeService {
-  constructor(private readonly configService: ConfigService) {
-    // Check if the required environment variables are set
-    this.configService.getOrThrow<string>('PAYMENT_QR_BENEFICIARY_NAME')
-  }
+  constructor(private readonly baConfigService: BaConfigService) {}
 
   async createQrCode(qrCodeData: QrCodeGeneratorDto) {
     const model: DataModel = {
@@ -23,9 +20,7 @@ export class QrCodeService {
           amount: qrCodeData.amount / 100,
           bankAccounts: [{ iban: qrCodeData.iban }],
           beneficiary: {
-            name: this.configService.getOrThrow<string>(
-              'PAYMENT_QR_BENEFICIARY_NAME',
-            ),
+            name: this.baConfigService.qrCode.beneficiaryName,
           },
           currencyCode: 'EUR',
           variableSymbol: qrCodeData.variableSymbol,

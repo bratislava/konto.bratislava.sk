@@ -3,6 +3,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import pLimit from 'p-limit'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import BaConfigService from '../../config/ba-config.service'
 import {
   DeliveryMethodNamed,
   PaymentStatus,
@@ -38,6 +39,7 @@ export default class NotificationsEventsService {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly paymentService: PaymentService,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.logger = new LineLoggerSubservice(NotificationsEventsService.name)
   }
@@ -400,8 +402,7 @@ export default class NotificationsEventsService {
       return
     }
 
-    const concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
-    const concurrencyLimit = pLimit(concurrency)
+    const concurrencyLimit = pLimit(this.baConfigService.database.concurrency)
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(

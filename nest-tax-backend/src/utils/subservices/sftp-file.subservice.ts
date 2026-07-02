@@ -1,12 +1,12 @@
 import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 
+import BaConfigService from '../../config/ba-config.service'
 import { TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
@@ -19,19 +19,20 @@ dayjs.extend(timezone)
 export default class SftpFileSubservice {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
   async getNewFiles(sftpPath: string, taxType: TaxType, from?: Date) {
     const sftp = new SFTPClient()
+    const { sftp: sftpConfig } = this.baConfigService.cardPaymentReporting
 
     try {
       await sftp.connect({
-        host: this.configService.getOrThrow<string>('REPORTING_SFTP_HOST'),
-        port: this.configService.getOrThrow<number>('REPORTING_SFTP_PORT'),
-        username: this.configService.getOrThrow<string>('REPORTING_SFTP_USER'),
-        privateKey: this.configService.getOrThrow<string>('REPORTING_SFTP_KEY'),
+        host: sftpConfig.host,
+        port: sftpConfig.port,
+        username: sftpConfig.username,
+        privateKey: sftpConfig.privateKey,
       })
 
       const sftpFiles: FileInfo[] = await sftp.list(sftpPath)

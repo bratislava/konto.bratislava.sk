@@ -1,6 +1,7 @@
 import { Global, Module } from '@nestjs/common'
 
 import ClientsModule from '../../clients/clients.module'
+import BaConfigModule from '../../config/ba-config.module'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { CityAccountSubservice } from './cityaccount.subservice'
 import { CognitoSubservice } from './cognito.subservice'
@@ -32,7 +33,7 @@ import DatabaseSubservice from './database.subservice'
  */
 @Global()
 @Module({
-  imports: [ClientsModule], // Only leaf modules can be imported here.
+  imports: [ClientsModule, BaConfigModule], // Only leaf modules can be imported here.
   providers: [
     ThrowerErrorGuard,
     CityAccountSubservice,
@@ -44,6 +45,7 @@ import DatabaseSubservice from './database.subservice'
     CityAccountSubservice,
     CognitoSubservice,
     DatabaseSubservice,
+    BaConfigModule
   ],
 })
 export class SharedModule {}

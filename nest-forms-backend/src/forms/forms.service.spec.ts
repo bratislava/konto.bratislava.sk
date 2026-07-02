@@ -1,7 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { getFormDefinitionsSlugs } from 'forms-shared/definitions/getFormDefinitionsSlugs'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
 import {
@@ -24,8 +23,11 @@ import FormsService from './forms.service'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
-jest.mock('forms-shared/definitions/getFormDefinitionsSlugs', () => ({
-  getFormDefinitionsSlugs: jest.fn(),
+let mockFormDefinitions: { slug: string; isDisabled?: boolean }[] = []
+jest.mock('forms-shared/definitions/formDefinitions', () => ({
+  get formDefinitions() {
+    return mockFormDefinitions
+  },
 }))
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
@@ -47,6 +49,8 @@ describe('FormsService', () => {
   })
 
   beforeEach(async () => {
+    mockFormDefinitions = []
+
     const app = await Test.createTestingModule({
       imports: [],
       providers: [
@@ -79,10 +83,10 @@ describe('FormsService', () => {
           baUiSchema: {},
         },
       })
-      ;(getFormDefinitionsSlugs as jest.Mock).mockReturnValue({
-        enabled: ['enabled-slug'],
-        disabled: ['disabled-slug'],
-      })
+      mockFormDefinitions = [
+        { slug: 'enabled-slug' },
+        { slug: 'disabled-slug', isDisabled: true },
+      ]
       const spy = jest
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])

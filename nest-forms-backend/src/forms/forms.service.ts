@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { getFormDefinitionsSlugs } from 'forms-shared/definitions/getFormDefinitionsSlugs'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
@@ -256,7 +256,9 @@ export default class FormsService {
     // Forms with an enabled form definition are returned regardless of their
     // state, while forms with a disabled form definition are only returned when
     // they are NOT in an editable state (i.e. already submitted/completed).
-    const { disabled: disabledSlugs } = getFormDefinitionsSlugs()
+    const disabledSlugs = formDefinitions
+      .filter((formDefinition) => formDefinition.isDisabled)
+      .map((formDefinition) => formDefinition.slug)
     const disabledFormDefinitionCondition: Prisma.FormsWhereInput = {
       NOT: {
         AND: [

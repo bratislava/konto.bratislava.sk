@@ -14,6 +14,7 @@ export default defineConfig({
       // Translations in account forms (registration, login...) are thrown away during parsing. This is quick fix, how to keep them.
       'account:auth.fields.*_format',
       'account:auth.fields.*_required',
+      'account:towing.*_required',
       'account:IdentityVerificationStatus.verification_status_required_alert',
       // rjsf-errors keys are referenced dynamically (t(`format.${...}`), t(error.name)) so cannot be statically extracted.
       'rjsf-errors:*',

@@ -27,14 +27,14 @@ jobs:
 
   build-strapi:
     name: Strapi Build
-    uses: ./.github/workflows/build-single-image.yml
+    uses: ./.github/workflows/build-strapi.yml
     with:
-      directory: strapi/
       image: harbor.bratislava.sk/standalone/strapi
     secrets:
       DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      TURBOREPO_CACHE_MINIO_SECRET_KEY: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
 
   build-nest-forms-backend:
     name: Forms BE Build

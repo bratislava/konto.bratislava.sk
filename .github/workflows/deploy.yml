@@ -101,10 +101,9 @@ jobs:
     name: Build Strapi
     needs: resolve
     if: needs.resolve.outputs.strapi == 'true'
-    uses: ./.github/workflows/build-single-image.yml
+    uses: ./.github/workflows/build-strapi.yml
     secrets: inherit
     with:
-      directory: strapi/
       image: harbor.bratislava.sk/standalone/strapi
       cluster: ${{ needs.resolve.outputs.cluster }}
 

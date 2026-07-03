@@ -40,7 +40,9 @@ export default class NasesCronService {
     isPublished: boolean,
     isDisabled: boolean | undefined,
   ): keyof ValidateFormRegistrationsResultDto {
-    if (!isPublished) return 'not-published'
+    if (!isPublished) {
+      return 'not-published'
+    }
     return isDisabled ? 'published-but-disabled' : 'valid'
   }
 

@@ -127,3 +127,6 @@ dist
 
 # Turbopack
 .turbo
+
+# Turbo prune output
+out/

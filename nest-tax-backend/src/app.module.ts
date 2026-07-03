@@ -1,5 +1,4 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { CognitoAuthModule } from '@nestjs-cognito/auth'
 

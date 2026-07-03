@@ -17,10 +17,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger,
   })
-
   const baConfigService = app.get(BaConfigService)
-  const port = baConfigService.self.port
-
   app.enableVersioning({
     type: VersioningType.URI,
   })
@@ -45,7 +42,7 @@ async function bootstrap() {
       'https://inovacie.bratislava.sk',
       'inovacie@bratislava.sk',
     )
-    .addServer(`http://localhost:${port}/`)
+    .addServer(`http://localhost:${baConfigService.self.port}/`)
     .addServer('https://nest-tax-backend.dev.bratislava.sk/')
     .addServer('https://nest-tax-backend.staging.bratislava.sk/')
     .addServer('https://nest-tax-backend.bratislava.sk/')
@@ -63,7 +60,7 @@ async function bootstrap() {
     .getHttpAdapter()
     .get('/spec-json', (_req: Request, res: Response) => res.json(document))
 
-  await app.listen(port)
-  logger.log(`Nest is running on port: ${port}`)
+  await app.listen(baConfigService.self.port)
+  logger.log(`Nest is running on port: ${baConfigService.self.port}`)
 }
 void bootstrap()

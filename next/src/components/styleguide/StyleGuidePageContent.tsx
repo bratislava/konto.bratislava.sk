@@ -14,7 +14,6 @@ import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHead
 import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
 import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
-import InputFieldShowCase from '@/src/components/styleguide/showcases/InputFieldShowCase'
 import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShowCase'
 import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase/ModalsShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
@@ -32,8 +31,9 @@ import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRow
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
 import TaxesFeesShowCase from '@/src/components/styleguide/showcases/TaxesFeesShowCase/TaxesFeesShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
+import TextFieldShowCase from '@/src/components/styleguide/showcases/TextFieldShowCase'
 import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
-import TimePickerShowCase from '@/src/components/styleguide/showcases/TimePickerShowCase'
+import TimeFieldShowCase from '@/src/components/styleguide/showcases/TimeFieldShowCase'
 import ToastShowCase from '@/src/components/styleguide/showcases/ToastShowCase'
 import ToggleShowCase from '@/src/components/styleguide/showcases/ToggleShowCase'
 import TooltipShowCase from '@/src/components/styleguide/showcases/TooltipShowCase'
@@ -50,7 +50,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },
   { id: 'field-header', label: 'Field Header', component: <FieldHeaderShowCase /> },
   { id: 'spinner', label: 'Spinner', component: <SpinnerShowCase /> },
-  { id: 'input-field', label: 'Input Field / Text Field', component: <InputFieldShowCase /> },
+  { id: 'text-field', label: 'Text Field', component: <TextFieldShowCase /> },
   { id: 'text-area-field', label: 'Text Area Field', component: <TextAreaFieldShowCase /> },
   { id: 'number-field', label: 'Number Field', component: <NumberFieldShowCase /> },
   { id: 'password-field', label: 'Password Field', component: <PasswordFieldShowCase /> },
@@ -58,7 +58,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'radio-group', label: 'Radio Group', component: <RadioGroupShowCase /> },
   { id: 'checkbox-group', label: 'Checkbox Group', component: <CheckboxGroupShowCase /> },
   { id: 'date-picker', label: 'Date Picker', component: <DatePickerShowCase /> },
-  { id: 'time-picker', label: 'Time Picker', component: <TimePickerShowCase /> },
+  { id: 'time-field', label: 'Time Field', component: <TimeFieldShowCase /> },
   { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },
   { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },

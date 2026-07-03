@@ -93,40 +93,6 @@ jobs:
             fi
           done
 
-  build-forms-shared:
-    name: Build and push specific forms-shared image
-    needs: resolve
-    if: needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true'
-    uses: ./.github/workflows/build-shared-package.yml
-    secrets: inherit
-    with:
-      directory: forms-shared/
-      image: harbor.bratislava.sk/standalone/forms-shared
-      push: true
-      target: prod
-
-  test-forms-shared:
-    name: Test forms-shared
-    needs: [resolve, build-forms-shared]
-    if: ${{ !failure() && !cancelled() && (needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true') }}
-    uses: ./.github/workflows/test-forms-shared.yml
-    secrets: inherit
-    with:
-      directory: forms-shared/
-      image: harbor.bratislava.sk/standalone/forms-shared
-
-  build-openapi-clients:
-    name: Build and push specific openapi-clients image
-    needs: resolve
-    if: needs.resolve.outputs.next == 'true' || needs.resolve.outputs.nest-forms-backend == 'true' || needs.resolve.outputs.nest-clamav-scanner == 'true' || needs.resolve.outputs.nest-tax-backend == 'true' || needs.resolve.outputs.nest-city-account == 'true'
-    uses: ./.github/workflows/build-shared-package.yml
-    secrets: inherit
-    with:
-      directory: openapi-clients/
-      image: harbor.bratislava.sk/standalone/openapi-clients
-      push: true
-      target: prod
-
   # ---- Build & push per-cluster service images ----
   # Each build job builds the deployable image, pushes it, and re-tags it for
   # the cluster. The matching deploy-* job below then triggers the infra deploy.
@@ -166,7 +132,7 @@ jobs:
 
   build-nest-clamav-scanner:
     name: Build nest-clamav-scanner
-    needs: [resolve, build-openapi-clients]
+    needs: resolve
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-clamav-scanner == 'true' }}
     uses: ./.github/workflows/build-nest.yml
     secrets: inherit
@@ -175,14 +141,13 @@ jobs:
       image: harbor.bratislava.sk/standalone/nest-clamav-scanner
       cluster: ${{ needs.resolve.outputs.cluster }}
       skip_tests: false
-      target_validate: prebuild
+      target_validate: builder-deps
       target_unit_test: test
       target_lint: lint
-      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
 
   build-nest-forms-backend:
     name: Build nest-forms-backend
-    needs: [resolve, build-forms-shared, build-openapi-clients]
+    needs: resolve
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: ./.github/workflows/build-nest.yml
     secrets: inherit
@@ -191,15 +156,14 @@ jobs:
       image: harbor.bratislava.sk/standalone/nest-forms-backend
       cluster: ${{ needs.resolve.outputs.cluster }}
       skip_tests: false
-      target_validate: prebuild
+      target_validate: builder-deps
       target_unit_test: test
       target_lint: lint
-      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
-      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
+      target_e2e_test: test-e2e
 
   build-nest-tax-backend:
     name: Build nest-tax-backend
-    needs: [resolve, build-openapi-clients]
+    needs: resolve
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-tax-backend == 'true' }}
     uses: ./.github/workflows/build-nest.yml
     secrets: inherit
@@ -208,14 +172,13 @@ jobs:
       image: harbor.bratislava.sk/standalone/nest-tax-backend
       cluster: ${{ needs.resolve.outputs.cluster }}
       skip_tests: false
-      target_validate: prebuild
+      target_validate: builder-deps
       target_unit_test: test
       target_lint: lint
-      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
 
   build-nest-city-account:
     name: Build nest-city-account
-    needs: [resolve, build-openapi-clients]
+    needs: resolve
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-city-account == 'true' }}
     uses: ./.github/workflows/build-nest.yml
     secrets: inherit
@@ -224,37 +187,29 @@ jobs:
       image: harbor.bratislava.sk/standalone/nest-city-account
       cluster: ${{ needs.resolve.outputs.cluster }}
       skip_tests: false
-      target_validate: prebuild
+      target_validate: builder-deps
       target_unit_test: test
       target_lint: lint
-      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
 
   build-next:
     name: Build Next
-    needs: [resolve, build-forms-shared, build-openapi-clients]
+    needs: resolve
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.next == 'true' }}
     uses: ./.github/workflows/build-next.yml
     secrets: inherit
     with:
-      directory: next/
       image: harbor.bratislava.sk/standalone/next
       cluster: ${{ needs.resolve.outputs.cluster }}
       build_env: ${{ needs.resolve.outputs.next-build-env }}
-      forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
-      openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
 
   # ---- Gate: every deploy waits here until all builds succeed ----
-  # Nothing deploys until every in-scope build (and the forms-shared test) has
-  # finished and none failed. Out-of-scope jobs report `skipped` (not `failure`),
-  # so they don't block — that's the "skipped on purpose" carve-out.
+  # Nothing deploys until every in-scope build has finished and none failed.
+  # Out-of-scope jobs report `skipped` (not `failure`), so they don't block.
 
   builds-complete:
     name: All builds complete
     needs:
       [
-        build-forms-shared,
-        test-forms-shared,
-        build-openapi-clients,
         build-strapi,
         build-cvdmirror,
         build-clamav,
@@ -310,7 +265,7 @@ jobs:
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [resolve, build-nest-forms-backend, test-forms-shared, builds-complete]
+    needs: [resolve, build-nest-forms-backend, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -354,7 +309,6 @@ jobs:
       [
         resolve,
         build-next,
-        test-forms-shared,
         builds-complete,
         deploy-strapi,
         deploy-nest-forms-backend,

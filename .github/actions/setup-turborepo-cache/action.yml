@@ -1,0 +1,44 @@
+name: Set up Turborepo cache
+description: Starts the Turborepo cache server and exposes it to Docker BuildKit.
+
+inputs:
+  minio_secret_key:
+    description: MinIO secret key for the Turborepo cache bucket.
+    required: true
+
+outputs:
+  docker_bridge_ip:
+    description: Docker bridge gateway IP for host.docker.internal.
+    value: ${{ steps.docker-bridge.outputs.ip }}
+  turbo_api:
+    description: Turborepo cache API URL reachable from BuildKit.
+    value: http://host.docker.internal:8586
+
+runs:
+  using: composite
+  steps:
+    - name: Start Turborepo Cache Server
+      uses: brunojppb/turbo-cache-server@4.0.9
+      env:
+        PORT: "8585"
+        S3_BUCKET_NAME: city-account-turborepo-cache
+        S3_ACCESS_KEY: city-account-turborepo-cache
+        S3_SECRET_KEY: ${{ inputs.minio_secret_key }}
+        S3_ENDPOINT: https://s3.bratislava.sk
+        S3_REGION: us-east-1
+        S3_USE_PATH_STYLE: "true"
+
+    - name: Proxy Turborepo Cache Server for BuildKit
+      shell: bash
+      run: |
+        set -euxo pipefail
+        docker run --rm --detach --name turbo-cache-server-proxy --network host alpine/socat \
+          -d -d TCP-LISTEN:8586,fork,reuseaddr,bind=0.0.0.0 TCP:127.0.0.1:8585
+
+    - name: Resolve Docker bridge gateway
+      id: docker-bridge
+      shell: bash
+      run: |
+        set -euxo pipefail
+        gateway_ip="$(docker network inspect bridge --format '{{(index .IPAM.Config 0).Gateway}}')"
+        echo "ip=${gateway_ip}" >> "$GITHUB_OUTPUT"

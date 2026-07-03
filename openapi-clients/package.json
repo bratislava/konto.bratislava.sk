@@ -40,6 +40,7 @@
   },
   "sideEffects": false,
   "scripts": {
+    "dev": "npm run build:watch",
     "generate:forms": "tsx scripts/generateClient.ts forms",
     "generate:tax": "tsx scripts/generateClient.ts tax",
     "generate:city-account": "tsx scripts/generateClient.ts city-account",
@@ -55,6 +56,8 @@
     "generate:magproxy:local": "tsx scripts/generateClient.ts magproxy --local-url localhost:3000",
     "check-for-changes": "tsx scripts/checkForChanges.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
+    "build:watch": "tsc --project tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit --project tsconfig.build.json",
     "prettier": "prettier --write .",
     "generate-and-build": "npm run generate && npm run build"
   },

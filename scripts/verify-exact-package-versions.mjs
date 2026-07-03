@@ -29,6 +29,10 @@ function isExactVersion(value) {
     return false
   }
 
+  if (value === '*') {
+    return true
+  }
+
   if (allowedNonSemverPrefixes.some((prefix) => value.startsWith(prefix))) {
     return true
   }

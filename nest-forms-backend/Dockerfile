@@ -1,84 +1,101 @@
-# check=skip=InvalidDefaultArgInFrom
-ARG FORMS_SHARED_DIGEST
-ARG OPENAPI_CLIENTS_DIGEST
-FROM harbor.bratislava.sk/standalone/forms-shared@${FORMS_SHARED_DIGEST} AS forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
-FROM node:24.15 AS base
+ARG NODE_VERSION=24.15
+FROM node:${NODE_VERSION}-alpine AS base
 
-RUN npx playwright install-deps chromium
+ENV TURBO_TELEMETRY_DISABLED=1
 
-# build
-FROM base AS prebuild
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
 
-# Temporary workaround until this repository uses npm workspaces. Locally, shared
-# packages are symlinked through file: dependencies and their folders already
-# contain node_modules. In CI, the copied package folders would not have
-# node_modules, so we install each shared package explicitly to keep behavior
-# close to local development and expose missing runtime dependencies early.
-# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
-WORKDIR /root/forms-shared
-COPY --from=forms-shared / .
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
+WORKDIR /app
+
+FROM base AS prepare
+RUN npm install -g turbo@^2
+COPY . .
+RUN turbo prune nest-forms-backend --docker
+
+FROM base AS builder-deps
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+RUN apk add --no-cache \
+      ca-certificates \
+      chromium \
+      freetype \
+      harfbuzz \
+      libc6-compat \
+      nss \
+      openssl \
+      qpdf \
+      tini \
+      ttf-freefont
+
+COPY --from=prepare /app/out/json/ .
 RUN npm ci
 
-WORKDIR /root/openapi-clients
-COPY --from=openapi-clients / .
-RUN npm ci
+COPY --from=prepare /app/out/full/ .
 
-WORKDIR /root/nest-forms-backend
-COPY package*.json ./
+RUN npm run db:generate --prefix nest-forms-backend
+RUN npx turbo run build --filter=nest-forms-backend^...
+RUN npx turbo run test --filter=nest-forms-backend^...
+RUN npx turbo run lint --filter=nest-forms-backend^...
 
-RUN npm ci --include=dev
+FROM builder-deps AS builder
+RUN npx turbo run build --filter=nest-forms-backend
 
-COPY . ./
-RUN npm run db:generate
+FROM builder-deps AS test
+RUN npx turbo run test --filter=nest-forms-backend
 
-FROM prebuild AS test
-RUN npm run test
-
-FROM prebuild AS lint
-RUN npm run lint
-
-FROM prebuild AS test-e2e
+FROM builder-deps AS test-e2e
 ARG CI_E2E_DATABASE_URL
 ENV CI_E2E_DATABASE_URL=${CI_E2E_DATABASE_URL}
-RUN npm run test:e2e
+RUN npx turbo run test:e2e --filter=nest-forms-backend
 
-FROM prebuild AS build
-RUN npm run build
+FROM builder AS lint
+RUN npx turbo run lint --filter=nest-forms-backend
 
-# development
-FROM base AS dev
+FROM base AS prod-deps
+COPY --from=prepare /app/out/json/ .
+RUN npm ci --production
 
-WORKDIR /home/node/nest-forms-backend
-COPY package*.json ./
+FROM node:${NODE_VERSION}-alpine AS runner
+ENV NODE_ENV=production
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-RUN npm install
-COPY . ./
+RUN apk add --no-cache \
+      ca-certificates \
+      chromium \
+      freetype \
+      harfbuzz \
+      libc6-compat \
+      nss \
+      openssl \
+      qpdf \
+      tini \
+      ttf-freefont
 
-RUN npm run db:generate
-
-CMD [ "npm", "run", "start:debug" ]
-
-
-# production
-FROM base AS prod
+WORKDIR /app
+RUN chown -R node:node /app
 
 USER node
 
-COPY --chown=node:node --from=build /root/forms-shared /home/node/forms-shared
-COPY --chown=node:node --from=build /root/openapi-clients /home/node/openapi-clients
+COPY --from=prod-deps --chown=node:node /app ./
+COPY --from=builder --chown=node:node /app/nest-forms-backend/dist ./nest-forms-backend/dist
+COPY --from=builder --chown=node:node /app/nest-forms-backend/prisma ./nest-forms-backend/prisma
+COPY --from=builder --chown=node:node /app/nest-forms-backend/nest-cli.json ./nest-forms-backend/nest-cli.json
+COPY --from=builder --chown=node:node /app/nest-forms-backend/prisma.config.ts ./nest-forms-backend/prisma.config.ts
+COPY --from=builder --chown=node:node /app/forms-shared/dist ./forms-shared/dist
+COPY --from=builder --chown=node:node /app/openapi-clients/dist ./openapi-clients/dist
 
-WORKDIR /home/node/app
+WORKDIR /app/nest-forms-backend
 
-COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./
-COPY --chown=node:node --from=build /root/nest-forms-backend/node_modules ./node_modules
-# Playwright must be installed after node_modules are copied (installs the same version as in package.json)
-RUN npx playwright install chromium
-RUN npm prune --production
+EXPOSE 3000
 
-COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
-COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
-COPY --chown=node:node --from=build /root/nest-forms-backend/prisma.config.ts ./prisma.config.ts
-COPY --chown=node:node nest-cli.json ./nest-cli.json
-
-ENTRYPOINT npm run db:migrate:deploy && npm run start:prod
+ENTRYPOINT [ "/sbin/tini", "--" ]
+CMD [ "sh", "-c", "npm run db:migrate:deploy && npm run start:prod" ]

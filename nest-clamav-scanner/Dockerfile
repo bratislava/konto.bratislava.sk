@@ -1,71 +1,78 @@
-# check=skip=InvalidDefaultArgInFrom
-ARG OPENAPI_CLIENTS_DIGEST
-FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
-FROM node:24.15-alpine AS base
+ARG NODE_VERSION=24.15
+FROM node:${NODE_VERSION}-alpine AS base
 
+ENV TURBO_TELEMETRY_DISABLED=1
+
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
+
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
+WORKDIR /app
+
+FROM base AS prepare
+RUN npm install -g turbo@^2
+COPY . .
+RUN turbo prune nest-clamav-scanner --docker
+
+FROM base AS builder-deps
+RUN apk add --no-cache \
+      ca-certificates \
+      libc6-compat \
+      openssl \
+      tini
+
+COPY --from=prepare /app/out/json/ .
+RUN npm ci
+
+COPY --from=prepare /app/out/full/ .
+
+RUN npm run db:generate --prefix nest-clamav-scanner
+RUN npx turbo run build --filter=nest-clamav-scanner^...
+RUN npx turbo run test --filter=nest-clamav-scanner^...
+RUN npx turbo run lint --filter=nest-clamav-scanner^...
+
+FROM builder-deps AS builder
+RUN npx turbo run build --filter=nest-clamav-scanner
+
+FROM builder-deps AS test
+RUN npx turbo run test --filter=nest-clamav-scanner
+
+FROM builder AS lint
+RUN npx turbo run lint --filter=nest-clamav-scanner
+
+FROM base AS prod-deps
+COPY --from=prepare /app/out/json/ .
+RUN npm ci --production
+
+FROM node:${NODE_VERSION}-alpine AS runner
 ENV NODE_ENV=production
 
-FROM base AS app-base
-RUN apk update \
-      && apk add tini \
-      && rm -rf /var/cache/apk/* \
-      && mkdir -p /home/node/app \
-      && chown -R node:node /home/node/app
+RUN apk add --no-cache \
+      ca-certificates \
+      libc6-compat \
+      openssl \
+      tini
+
+WORKDIR /app
+RUN chown -R node:node /app
+
 USER node
-WORKDIR /home/node/app
-ENTRYPOINT [ "/sbin/tini", "--" ]
 
-FROM base AS build-base
+COPY --from=prod-deps --chown=node:node /app ./
+COPY --from=builder --chown=node:node /app/nest-clamav-scanner/dist ./nest-clamav-scanner/dist
+COPY --from=builder --chown=node:node /app/nest-clamav-scanner/prisma ./nest-clamav-scanner/prisma
+COPY --from=builder --chown=node:node /app/nest-clamav-scanner/nest-cli.json ./nest-clamav-scanner/nest-cli.json
+COPY --from=builder --chown=node:node /app/nest-clamav-scanner/prisma.config.ts ./nest-clamav-scanner/prisma.config.ts
+COPY --from=builder --chown=node:node /app/openapi-clients/dist ./openapi-clients/dist
 
-# Temporary workaround until this repository uses npm workspaces. Locally, shared
-# packages are symlinked through file: dependencies and their folders already
-# contain node_modules. In CI, the copied package folders would not have
-# node_modules, so we install each shared package explicitly to keep behavior
-# close to local development and expose missing runtime dependencies early.
-# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
-WORKDIR /openapi-clients
-COPY --from=openapi-clients / .
-RUN npm ci --include=dev
+WORKDIR /app/nest-clamav-scanner
 
-WORKDIR /build
-COPY package.json package-lock.json prisma ./
-RUN npm ci --include=dev
-
-FROM build-base AS prebuild
-WORKDIR /build
-COPY . ./
-RUN npm run db:generate
-
-FROM prebuild AS build
-RUN npm run build \
-  && npm prune --production
-
-FROM prebuild AS test
-RUN npm run test
-
-FROM prebuild AS lint
-RUN npm run lint
-
-FROM app-base AS dev
-ENV NODE_ENV=development
-# used **only** for development and local directory should be mounted
-CMD [ "npm", "run", "start:debug" ]
-
-# production
-FROM app-base AS prod
-COPY --chown=node:node --from=build /openapi-clients /home/node/openapi-clients
-
-WORKDIR /home/node/app
-COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
-COPY --chown=node:node --from=build /build/node_modules ./node_modules
-COPY --chown=node:node --from=build /build/dist ./dist
-COPY --chown=node:node --from=build /build/prisma ./prisma
-COPY --chown=node:node --from=build /build/prisma.config.ts ./prisma.config.ts
-COPY --chown=node:node nest-cli.json ./nest-cli.json
 EXPOSE 3000
-ARG GIT_COMMIT="undefined"
-ENV GIT_COMMIT=$GIT_COMMIT
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-clamav-scanner" \
-      org.opencontainers.image.licenses="EUPL-1.2"
+
+ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "sh", "-c", "npm run db:migrate:deploy && npm run start:prod" ]

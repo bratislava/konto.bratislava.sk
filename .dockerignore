@@ -1,0 +1,10 @@
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+**/.idea
+**/.volta
+**/.git
+**/*.log
+
+nest-city-account/src/generated/prisma

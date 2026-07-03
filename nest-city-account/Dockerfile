@@ -1,85 +1,95 @@
-# check=skip=InvalidDefaultArgInFrom
-ARG OPENAPI_CLIENTS_DIGEST
-FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
-FROM node:24.15-alpine AS base
+ARG NODE_VERSION=24.15
+FROM node:${NODE_VERSION}-alpine AS base
 
-# Install Chromium and dependencies via apk
-RUN apk add --no-cache \
-      chromium \
-      nss \
-      freetype \
-      harfbuzz \
-      ca-certificates \
-      ttf-freefont \
-      qpdf
+ENV TURBO_TELEMETRY_DISABLED=1
 
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
 
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
+WORKDIR /app
+
+FROM base AS prepare
+RUN npm install -g turbo@^2
+COPY . .
+RUN turbo prune nest-city-account --docker
+
+FROM base AS builder-deps
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
+RUN apk add --no-cache \
+      ca-certificates \
+      chromium \
+      freetype \
+      harfbuzz \
+      libc6-compat \
+      nss \
+      openssl \
+      qpdf \
+      tini \
+      ttf-freefont
+
+COPY --from=prepare /app/out/json/ .
+RUN npm ci
+
+COPY --from=prepare /app/out/full/ .
+
+RUN npm run db:generate --prefix nest-city-account
+RUN npx turbo run build --filter=nest-city-account^...
+RUN npx turbo run test --filter=nest-city-account^...
+RUN npx turbo run lint --filter=nest-city-account^...
+
+FROM builder-deps AS builder
+RUN npx turbo run build --filter=nest-city-account
+
+FROM builder-deps AS test
+RUN npx turbo run test --filter=nest-city-account
+
+FROM builder AS lint
+RUN npx turbo run lint --filter=nest-city-account
+
+FROM base AS prod-deps
+COPY --from=prepare /app/out/json/ .
+RUN npm ci  --production
+
+FROM node:${NODE_VERSION}-alpine AS runner
 ENV NODE_ENV=production
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-FROM base AS app-base
-RUN apk update \
- && apk add tini \
- && rm -rf /var/cache/apk/* \
- && mkdir -p /home/node/app \
- && chown -R node:node /home/node/app
+RUN apk add --no-cache \
+      ca-certificates \
+      chromium \
+      freetype \
+      harfbuzz \
+      libc6-compat \
+      nss \
+      openssl \
+      qpdf \
+      tini \
+      ttf-freefont
+
+WORKDIR /app
+RUN chown -R node:node /app
+
 USER node
-WORKDIR /home/node/app
-ENTRYPOINT [ "/sbin/tini", "--" ]
 
-FROM base AS build-base
+COPY --from=prod-deps --chown=node:node /app ./
+COPY --from=builder --chown=node:node /app/nest-city-account/dist ./nest-city-account/dist
+COPY --from=builder --chown=node:node /app/nest-city-account/prisma ./nest-city-account/prisma
+COPY --from=builder --chown=node:node /app/nest-city-account/nest-cli.json ./nest-city-account/nest-cli.json
+COPY --from=builder --chown=node:node /app/nest-city-account/prisma.config.ts ./nest-city-account/prisma.config.ts
+COPY --from=builder --chown=node:node /app/openapi-clients/dist ./openapi-clients/dist
 
-# Temporary workaround until this repository uses npm workspaces. Locally, shared
-# packages are symlinked through file: dependencies and their folders already
-# contain node_modules. In CI, the copied package folders would not have
-# node_modules, so we install each shared package explicitly to keep behavior
-# close to local development and expose missing runtime dependencies early.
-# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
-WORKDIR /openapi-clients
-COPY --from=openapi-clients / .
-RUN npm ci --include=dev
+WORKDIR /app/nest-city-account
 
-WORKDIR /build
-COPY package.json package-lock.json prisma ./
-RUN npm ci --include=dev
-
-FROM build-base AS prebuild
-WORKDIR /build
-COPY . ./
-RUN npm run db:generate
-
-FROM prebuild AS build
-RUN npm run build \
-  && npm prune --production
-
-FROM prebuild AS test
-RUN npm run test
-
-FROM prebuild AS lint
-RUN npm run lint
-
-FROM app-base AS dev
-ENV NODE_ENV=development
-# used **only** for development and local directory should be mounted
-CMD [ "npm", "run", "start:debug" ]
-
-# production
-FROM app-base AS prod
-COPY --chown=node:node --from=build /openapi-clients /home/node/openapi-clients
-
-WORKDIR /home/node/app
-COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
-COPY --chown=node:node --from=build /build/node_modules ./node_modules
-COPY --chown=node:node --from=build /build/dist ./dist
-COPY --chown=node:node --from=build /build/prisma ./prisma
-COPY --chown=node:node --from=build /build/prisma.config.ts ./prisma.config.ts
-COPY --chown=node:node nest-cli.json ./nest-cli.json
 EXPOSE 3000
-ARG GIT_COMMIT="undefined"
-ENV GIT_COMMIT=$GIT_COMMIT
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/nest-city-account" \
-      org.opencontainers.image.licenses="EUPL-1.2"
-CMD [ "sh", "-c", "npm run db:migrate:deploy && npm run start:prod" ]
+
+ENTRYPOINT [ "/sbin/tini", "--" ]
+CMD [ "npm", "run", "start:migrate:prod" ]

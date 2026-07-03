@@ -124,3 +124,6 @@ dist
 
 # Volta
 .volta
+
+# Turbopack
+.turbo

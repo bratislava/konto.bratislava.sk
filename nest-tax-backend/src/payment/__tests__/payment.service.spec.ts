@@ -1,12 +1,12 @@
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
 import { createTestTaxPayment } from '../../__tests__/factories/taxPayment.factory'
 import { createTestUserDataFromCityAccount } from '../../__tests__/factories/userDataFromCityAccount.factory'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import BaConfigService from '../../config/ba-config.service'
 import {
   PaymentStatus,
   Prisma,
@@ -23,17 +23,40 @@ import { PaymentRedirectStateEnum } from '../dtos/redirect.payent.dto'
 import { PaymentService } from '../payment.service'
 import { GpWebpaySubservice } from '../subservices/gpwebpay.subservice'
 
+const createMockBaConfigService = () => ({
+  paygate: {
+    currency: 'mock-value',
+    paymentRedirectUrl: 'mock-value',
+    redirectUrl: 'mock-value',
+    afterPaymentRedirectFrontend: 'https://frontend.url',
+    [TaxType.DZN]: {
+      key: 'mock-value',
+      signCert: 'mock-value',
+      merchantNumber: '12345',
+      passphrase: 'mock-value',
+    },
+    [TaxType.KO]: {
+      key: 'mock-value',
+      signCert: 'mock-value',
+      merchantNumber: '12345',
+      passphrase: 'mock-value',
+    },
+  },
+})
+
 describe('PaymentService', () => {
   let service: PaymentService
   let bloomreachService: BloomreachService
   let throwerErrorGuard: ThrowerErrorGuard
   let gpWebpaySubservice: GpWebpaySubservice
   let retryService: RetryService
-  let configService: ConfigService
+  let baConfigService: ReturnType<typeof createMockBaConfigService>
 
   beforeEach(async () => {
     jest.resetModules()
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
+
+    baConfigService = createMockBaConfigService()
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -48,8 +71,8 @@ describe('PaymentService', () => {
           useValue: createMock<ThrowerErrorGuard>(),
         },
         {
-          provide: ConfigService,
-          useValue: createMock<ConfigService>(),
+          provide: BaConfigService,
+          useValue: baConfigService,
         },
         GpWebpaySubservice,
         {
@@ -72,22 +95,6 @@ describe('PaymentService', () => {
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
     gpWebpaySubservice = module.get<GpWebpaySubservice>(GpWebpaySubservice)
     retryService = module.get<RetryService>(RetryService)
-    configService = module.get<ConfigService>(ConfigService)
-
-    jest
-      .spyOn(configService, 'getOrThrow')
-      .mockImplementation((key: string) => {
-        switch (key) {
-          case 'PAYGATE_MERCHANT_NUMBER':
-            return '12345'
-
-          case 'PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND':
-            return 'https://frontend.url'
-
-          default:
-            return 'mock-value'
-        }
-      })
   })
 
   afterEach(() => {
@@ -428,11 +435,6 @@ describe('PaymentService', () => {
       },
     })
 
-    beforeEach(() => {
-      process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND =
-        'https://frontend.url'
-    })
-
     it.each([
       {
         prCode: '14',
@@ -494,7 +496,7 @@ describe('PaymentService', () => {
 
       expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
-        `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`,
+        `${baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`,
       )
     })
 
@@ -515,7 +517,7 @@ describe('PaymentService', () => {
 
       expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
-        `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`,
+        `${baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`,
       )
     })
 
@@ -534,7 +536,7 @@ describe('PaymentService', () => {
 
       expect(trackSpy).not.toHaveBeenCalled()
       expect(result).toBe(
-        `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,
+        `${baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`,
       )
     })
 
@@ -756,44 +758,30 @@ describe('PaymentService', () => {
 
   describe('getRedirectUrl', () => {
     it('should append taxType to base URL without trailing slash', () => {
-      jest
-        .spyOn(configService, 'getOrThrow')
-        .mockImplementation((key: string) => {
-          if (key === 'PAYGATE_REDIRECT_URL') {
-            return 'http://localhost:3000/payment/cardpay/response'
-          }
-          return 'mock-value'
-        })
+      baConfigService.paygate.redirectUrl =
+        'http://payments.example.com:3000/payment/cardpay/response'
 
       const result = service['getRedirectUrl'](TaxType.DZN)
 
-      expect(result).toBe('http://localhost:3000/payment/cardpay/response/DZN')
+      expect(result).toBe(
+        'http://payments.example.com:3000/payment/cardpay/response/DZN',
+      )
     })
 
     it('should append taxType to base URL with trailing slash', () => {
-      jest
-        .spyOn(configService, 'getOrThrow')
-        .mockImplementation((key: string) => {
-          if (key === 'PAYGATE_REDIRECT_URL') {
-            return 'http://localhost:3000/payment/cardpay/response/'
-          }
-          return 'mock-value'
-        })
+      baConfigService.paygate.redirectUrl =
+        'http://payments.example.com:3000/payment/cardpay/response/'
 
       const result = service['getRedirectUrl'](TaxType.KO)
 
-      expect(result).toBe('http://localhost:3000/payment/cardpay/response/KO')
+      expect(result).toBe(
+        'http://payments.example.com:3000/payment/cardpay/response/KO',
+      )
     })
 
     it('should handle different TaxType values', () => {
-      jest
-        .spyOn(configService, 'getOrThrow')
-        .mockImplementation((key: string) => {
-          if (key === 'PAYGATE_REDIRECT_URL') {
-            return 'https://example.com/payment/response'
-          }
-          return 'mock-value'
-        })
+      baConfigService.paygate.redirectUrl =
+        'https://example.com/payment/response'
 
       const resultDZN = service['getRedirectUrl'](TaxType.DZN)
       const resultKO = service['getRedirectUrl'](TaxType.KO)
@@ -803,14 +791,8 @@ describe('PaymentService', () => {
     })
 
     it('should handle base URL with query parameters', () => {
-      jest
-        .spyOn(configService, 'getOrThrow')
-        .mockImplementation((key: string) => {
-          if (key === 'PAYGATE_REDIRECT_URL') {
-            return 'https://example.com/payment/response?param=value'
-          }
-          return 'mock-value'
-        })
+      baConfigService.paygate.redirectUrl =
+        'https://example.com/payment/response?param=value'
 
       const result = service['getRedirectUrl'](TaxType.DZN)
 
@@ -818,14 +800,8 @@ describe('PaymentService', () => {
     })
 
     it('should handle base URL with hash', () => {
-      jest
-        .spyOn(configService, 'getOrThrow')
-        .mockImplementation((key: string) => {
-          if (key === 'PAYGATE_REDIRECT_URL') {
-            return 'https://example.com/payment/response#section'
-          }
-          return 'mock-value'
-        })
+      baConfigService.paygate.redirectUrl =
+        'https://example.com/payment/response#section'
 
       const result = service['getRedirectUrl'](TaxType.DZN)
 
@@ -833,29 +809,19 @@ describe('PaymentService', () => {
     })
 
     it('should handle base URL with port number', () => {
-      jest
-        .spyOn(configService, 'getOrThrow')
-        .mockImplementation((key: string) => {
-          if (key === 'PAYGATE_REDIRECT_URL') {
-            return 'http://localhost:8080/payment/response'
-          }
-          return 'mock-value'
-        })
+      baConfigService.paygate.redirectUrl =
+        'http://payments.example.com:8080/payment/response'
 
       const result = service['getRedirectUrl'](TaxType.KO)
 
-      expect(result).toBe('http://localhost:8080/payment/response/KO')
+      expect(result).toBe(
+        'http://payments.example.com:8080/payment/response/KO',
+      )
     })
 
     it('should handle base URL ending with multiple slashes', () => {
-      jest
-        .spyOn(configService, 'getOrThrow')
-        .mockImplementation((key: string) => {
-          if (key === 'PAYGATE_REDIRECT_URL') {
-            return 'https://example.com/payment/response//'
-          }
-          return 'mock-value'
-        })
+      baConfigService.paygate.redirectUrl =
+        'https://example.com/payment/response//'
 
       const result = service['getRedirectUrl'](TaxType.DZN)
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 
+import BaConfigService from '../../config/ba-config.service'
 import { Prisma, TaxType } from '../../generated/prisma/client'
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
 import { NorisService } from '../../noris/noris.service'
@@ -26,7 +26,7 @@ export default class NorisSyncTasksService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly norisService: NorisService,
@@ -43,11 +43,7 @@ export default class NorisSyncTasksService {
 
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this function will overwrite the testing taxes payments which is not desired
-    if (
-      this.configService.getOrThrow<string>(
-        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
-      ) !== 'true'
-    ) {
+    if (!this.baConfigService.featureToggles.updateTaxesFromNoris) {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return
     }
@@ -150,11 +146,7 @@ export default class NorisSyncTasksService {
   async updateTaxesFromNoris() {
     // non-production environment is used for testing and we create taxes from endpoint `create-testing-tax`,
     // this process "updateTaxesFromNoris" will overwrite the testing taxes which is not desired
-    if (
-      this.configService.getOrThrow<string>(
-        'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
-      ) !== 'true'
-    ) {
+    if (!this.baConfigService.featureToggles.updateTaxesFromNoris) {
       this.logger.log(`TasksService: Updating taxes from Noris disabled.`)
       return
     }

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { parse } from 'csv-parse/sync'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import BaConfigService from '../config/ba-config.service'
 import { TaxType } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
@@ -16,28 +16,11 @@ dayjs.extend(timezone)
 
 interface ReportTypeConfig {
   taxType: TaxType
-  sftpPathEnvKey: string
-  fileNameEnvKey: string
-  accountIdEnvKey: string
-  bankIdEnvKey: string
+  sftpPath: string
+  fileName: string
+  accountId: string
+  bankId: string
 }
-
-const REPORT_TYPES: ReportTypeConfig[] = [
-  {
-    taxType: TaxType.DZN,
-    sftpPathEnvKey: 'REPORTING_SFTP_FILES_PATH',
-    fileNameEnvKey: 'REPORTING_FILE_NAME',
-    accountIdEnvKey: 'REPORTING_ACCOUNT_ID',
-    bankIdEnvKey: 'REPORTING_BANK_ID',
-  },
-  {
-    taxType: TaxType.KO,
-    sftpPathEnvKey: 'REPORTING_PKO_SFTP_FILES_PATH',
-    fileNameEnvKey: 'REPORTING_PKO_FILE_NAME',
-    accountIdEnvKey: 'REPORTING_PKO_ACCOUNT_ID',
-    bankIdEnvKey: 'REPORTING_PKO_BANK_ID',
-  },
-]
 
 export const csvColumnNames = [
   'transactionType',
@@ -74,11 +57,31 @@ export interface OutputFile {
 export class CardPaymentReportingService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly mailSubservice: EmailSubservice,
     private readonly sftpFileSubservice: SftpFileSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
   ) {}
+
+  private getReportTypes(): ReportTypeConfig[] {
+    const { [TaxType.DZN]: dzn, [TaxType.KO]: ko } = this.baConfigService.cardPaymentReporting
+    return [
+      {
+        taxType: TaxType.DZN,
+        sftpPath: dzn.sftpFilesPath,
+        fileName: dzn.fileName,
+        accountId: dzn.accountId,
+        bankId: dzn.bankId,
+      },
+      {
+        taxType: TaxType.KO,
+        sftpPath: ko.sftpFilesPath,
+        fileName: ko.fileName,
+        accountId: ko.accountId,
+        bankId: ko.bankId,
+      },
+    ]
+  }
 
   private generatePrice(price: number, fill: number): string {
     const adjustedFill = price >= 0 ? fill + 3 : fill + 2
@@ -156,7 +159,7 @@ export class CardPaymentReportingService {
       reportFileName,
       'Hlavné mesto Slovenskej republiky Bratislava',
       ' '.repeat(6),
-      this.configService.getOrThrow<string>('REPORTING_ICO'),
+      this.baConfigService.cardPaymentReporting.ico,
       ' '.repeat(22),
       '\n',
       '1',
@@ -293,18 +296,7 @@ export class CardPaymentReportingService {
     outputFiles: OutputFile[]
     sftpFileNames: { taxType: TaxType; name: string }[]
   }> {
-    const sftpPath = this.configService.getOrThrow<string>(
-      reportType.sftpPathEnvKey,
-    )
-    const reportFileName = this.configService.getOrThrow<string>(
-      reportType.fileNameEnvKey,
-    )
-    const accountId = this.configService.getOrThrow<string>(
-      reportType.accountIdEnvKey,
-    )
-    const bankId = this.configService.getOrThrow<string>(
-      reportType.bankIdEnvKey,
-    )
+    const { sftpPath, fileName: reportFileName, accountId, bankId } = reportType
     const sftpFiles = await this.sftpFileSubservice.getNewFiles(
       sftpPath,
       reportType.taxType,
@@ -434,7 +426,7 @@ export class CardPaymentReportingService {
 
   async generateAndSendPaymentReport(emailRecipients: string[], from?: Date) {
     const results = await Promise.all(
-      REPORT_TYPES.map(async (reportType) =>
+      this.getReportTypes().map(async (reportType) =>
         this.processAndSendReport(reportType, emailRecipients, from),
       ),
     )

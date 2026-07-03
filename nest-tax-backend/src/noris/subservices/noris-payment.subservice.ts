@@ -11,6 +11,7 @@ import {
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import BaConfigService from '../../config/ba-config.service'
 import { PaymentStatus, TaxPayment } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
@@ -36,9 +37,7 @@ import { NorisValidatorSubservice } from './noris-validator.subservice'
 export class NorisPaymentSubservice {
   private readonly logger: Logger = new Logger('NorisService')
 
-  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
-
-  private readonly concurrencyLimit = pLimit(this.concurrency)
+  private readonly concurrencyLimit: ReturnType<typeof pLimit>
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -47,7 +46,10 @@ export class NorisPaymentSubservice {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
-  ) {}
+    private readonly baConfigService: BaConfigService,
+  ) {
+    this.concurrencyLimit = pLimit(this.baConfigService.database.concurrency)
+  }
 
   async getPaymentDataFromNoris(
     data: RequestPostNorisPaymentDataLoadDto,

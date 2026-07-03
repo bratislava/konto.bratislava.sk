@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 
 import EmailSubservice from '../utils/subservices/email.subservice'
 import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
@@ -8,12 +7,7 @@ import { CardPaymentReportingService } from './card-payment-reporting.service'
 
 @Module({
   imports: [],
-  providers: [
-    ConfigService,
-    EmailSubservice,
-    SftpFileSubservice,
-    CardPaymentReportingService,
-  ],
+  providers: [EmailSubservice, SftpFileSubservice, CardPaymentReportingService],
   exports: [CardPaymentReportingService],
   controllers: [CardPaymentReportingController],
 })

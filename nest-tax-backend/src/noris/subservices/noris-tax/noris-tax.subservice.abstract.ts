@@ -5,6 +5,7 @@ import pLimit from 'p-limit'
 import { RequestPostNorisLoadDataOptionsDto } from '../../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../../admin/dtos/responses.dto'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import BaConfigService from '../../../config/ba-config.service'
 import {
   Prisma,
   Tax,
@@ -34,9 +35,7 @@ import {
 import { NorisPaymentSubservice } from '../noris-payment.subservice'
 
 export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
-  protected readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
-
-  protected readonly concurrencyLimit = pLimit(this.concurrency)
+  protected readonly concurrencyLimit: ReturnType<typeof pLimit>
 
   protected constructor(
     protected readonly qrCodeService: QrCodeService,
@@ -47,7 +46,10 @@ export abstract class AbstractNorisTaxSubservice<TTaxType extends TaxType> {
     protected readonly logger: LineLoggerSubservice,
     protected readonly cityAccountSubservice: CityAccountSubservice,
     protected readonly paymentSubservice: NorisPaymentSubservice,
-  ) {}
+    protected readonly baConfigService: BaConfigService,
+  ) {
+    this.concurrencyLimit = pLimit(this.baConfigService.database.concurrency)
+  }
 
   /**
    * Gets the tax definition for this tax type.

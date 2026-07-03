@@ -6,6 +6,7 @@ import * as mssql from 'mssql'
 import prismaMock from '../../../../test/singleton'
 import { createTestTax } from '../../../__tests__/factories/tax.factory'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import BaConfigService from '../../../config/ba-config.service'
 import {
   PaymentStatus,
   Prisma,
@@ -84,6 +85,10 @@ describe('NorisPaymentSubservice', () => {
         {
           provide: NorisValidatorSubservice,
           useValue: createMock<NorisValidatorSubservice>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: { database: { concurrency: 10 } },
         },
       ],
     }).compile()

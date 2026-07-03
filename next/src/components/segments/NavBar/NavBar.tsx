@@ -34,7 +34,7 @@ const NavBar = ({
       >
         <AlertBanner />
         <div className="relative w-full">
-          <NavBarHeader hasBackButton={hasBackButton} />
+          <NavBarHeader variant={variant} hasBackButton={hasBackButton} />
           {variant === 'default' ? <NavMenu /> : null}
         </div>
       </div>

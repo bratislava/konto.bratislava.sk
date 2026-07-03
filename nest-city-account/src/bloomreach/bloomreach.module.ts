@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import { PrismaModule } from '../prisma/prisma.module'
 import { bloomreachContactDatabaseProvider } from './bloomreach-contact-database.provider'
 import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
+import { BloomreachExportService } from './bloomreach-export.service'
 import { BloomreachOutboxProcessor } from './bloomreach-outbox.processor'
 import { BloomreachOutboxService } from './bloomreach-outbox.service'
 import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
@@ -13,6 +14,7 @@ import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
     BloomreachContactDatabaseService,
     bloomreachContactDatabaseProvider,
     BloomreachPayloadBuilder,
+    BloomreachExportService,
     BloomreachOutboxService,
     BloomreachOutboxProcessor,
   ],

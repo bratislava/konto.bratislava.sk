@@ -80,6 +80,38 @@ export interface BloomreachBatchResponse {
   end_time: number
 }
 
+// ─── Bloomreach Export API types ────────────────────────────────────────────
+
+/** IDs to look up a customer by — at least one is required. */
+export type BloomreachCustomerIdsQuery =
+  | { city_account_id: string; contact_id?: string }
+  | { city_account_id?: string; contact_id: string }
+
+/**
+ * Customer returned by the export-one endpoint. `ids` values can be a single
+ * value or an array (a merged customer keeps all values of an ID).
+ */
+export interface BloomreachExportedCustomer {
+  ids: Record<string, string | string[] | null | undefined>
+  properties: Record<string, unknown>
+}
+
+export interface BloomreachExportCustomerResponse {
+  success: boolean
+  value?: BloomreachExportedCustomer
+}
+
+export interface BloomreachExportedEvent {
+  type: string
+  timestamp: number
+  properties: Record<string, unknown>
+}
+
+export interface BloomreachExportEventsResponse {
+  success: boolean
+  data?: BloomreachExportedEvent[]
+}
+
 // ─── Bloomreach enums ───────────────────────────────────────────────────────
 
 export enum BloomreachEventNameEnum {

@@ -2,12 +2,6 @@
   "name": "konto-bratislava-sk-monorepo",
   "version": "1.0.0",
   "description": "Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](https://konto.bratislava.sk).",
-  "scripts": {
-    "next:build": "turbo run build --filter=city-account-next",
-    "next:dev": "turbo run dev --filter=city-account-next",
-    "next:lint": "turbo run lint --filter=city-account-next",
-    "next:typecheck": "turbo run typecheck --filter=city-account-next"
-  },
   "license": "EUPL-1.2",
   "private": true,
   "workspaces": [

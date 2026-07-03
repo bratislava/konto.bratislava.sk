@@ -1,55 +1,30 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": [
-    "CI",
-    "NODE_ENV"
-  ],
+  "globalEnv": ["CI", "NODE_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "!.next/dev/**",
-        "dist/**"
-      ]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true,
-      "with": [
-        "forms-shared#dev",
-        "openapi-clients#dev"
-      ]
-    },
-    "develop": {
-      "cache": false,
-      "persistent": true
-    },
-    "start": {
-      "cache": false,
-      "persistent": true
-    },
-    "lint": {
-      "outputs": [
-        "eslint-report.json"
-      ]
-    },
-    "typecheck": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": []
+      "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": [
-        "build"
-      ],
-      "outputs": [
-        "coverage/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "forms-shared#build": {
+      "outputs": ["dist/**"]
+    },
+    "openapi-clients#build": {
+      "outputs": ["dist/**"]
+    },
+    "nest-city-account#build": {
+      "outputs": ["dist/**"]
     },
     "nest-city-account#test": {
       "env": [
@@ -57,19 +32,20 @@
         "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"
       ]
     },
-    "test:ci": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "coverage/**"
-      ]
+    "nest-forms-backend#build": {
+      "outputs": ["dist/**"]
     },
-    "prettier:check": {
-      "outputs": []
+    "nest-tax-backend#build": {
+      "outputs": ["dist/**"]
     },
-    "generate": {
-      "cache": false
+    "nest-clamav-scanner#build": {
+      "outputs": ["dist/**"]
+    },
+    "city-account-next#build": {
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+    },
+    "city-account-strapi#build": {
+      "outputs": ["dist/**"]
     }
   }
 }

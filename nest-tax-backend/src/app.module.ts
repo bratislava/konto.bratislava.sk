@@ -18,7 +18,6 @@ import { UtilsModule } from './utils-module/utils.module'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     BaConfigModule,
     CognitoAuthModule.registerAsync({
       inject: [BaConfigService],

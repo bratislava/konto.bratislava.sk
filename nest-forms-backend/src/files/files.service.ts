@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
@@ -50,6 +50,7 @@ export default class FilesService {
     private readonly prisma: PrismaService,
     private readonly baConfigService: BaConfigService,
     private readonly minioStorageService: MinioStorageService,
+    @Inject(forwardRef(() => FormsService))
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,

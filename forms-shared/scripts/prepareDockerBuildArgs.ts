@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import * as path from 'path'
 
 const SLOVENSKO_MEF_JSON_URL = 'https://www.slovensko.sk/static/eForm/datasetexport/json/mef.json'
@@ -10,7 +10,9 @@ const SLOVENSKO_MEF_JSON_URL = 'https://www.slovensko.sk/static/eForm/datasetexp
  * the remote file changes.
  */
 export const prepareDockerBuildArgs = async (projectRoot: string) => {
-  const packageLockPath = path.join(projectRoot, 'package-lock.json')
+  const packageLockPath = existsSync(path.join(projectRoot, 'package-lock.json'))
+    ? path.join(projectRoot, 'package-lock.json')
+    : path.join(projectRoot, '..', 'package-lock.json')
   const packageLock = JSON.parse(readFileSync(packageLockPath, 'utf8'))
   const playwrightVersion = packageLock.packages?.['node_modules/playwright']?.version
 

@@ -20,7 +20,7 @@ export class QrCodeService {
           amount: qrCodeData.amount / 100,
           bankAccounts: [{ iban: qrCodeData.iban }],
           beneficiary: {
-            name: this.baConfigService.qrCode.beneficiaryName,
+            name: this.baConfigService.payment.beneficiaryName,
           },
           currencyCode: 'EUR',
           variableSymbol: qrCodeData.variableSymbol,

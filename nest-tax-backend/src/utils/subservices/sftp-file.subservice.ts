@@ -28,12 +28,7 @@ export default class SftpFileSubservice {
     const { sftp: sftpConfig } = this.baConfigService.cardPaymentReporting
 
     try {
-      await sftp.connect({
-        host: sftpConfig.host,
-        port: sftpConfig.port,
-        username: sftpConfig.username,
-        privateKey: sftpConfig.privateKey,
-      })
+      await sftp.connect(sftpConfig)
 
       const sftpFiles: FileInfo[] = await sftp.list(sftpPath)
 

@@ -17,7 +17,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger,
   })
-  const port = app.get(BaConfigService).self.port
+
+  const baConfigService = app.get(BaConfigService)
+  const port = baConfigService.self.port
+
   app.enableVersioning({
     type: VersioningType.URI,
   })

@@ -6,6 +6,7 @@ import { CognitoAuthModule } from '@nestjs-cognito/auth'
 import { AdminModule } from './admin/admin.module'
 import { AppController } from './app.controller'
 import { CardPaymentReportingModule } from './card-payment-reporting/card-payment-reporting.module'
+import BaConfigModule from './config/ba-config.module'
 import BaConfigService from './config/ba-config.service'
 import { PaymentModule } from './payment/payment.module'
 import { PrismaModule } from './prisma/prisma.module'
@@ -18,6 +19,7 @@ import { UtilsModule } from './utils-module/utils.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    BaConfigModule,
     CognitoAuthModule.registerAsync({
       inject: [BaConfigService],
       useFactory: (baConfigService: BaConfigService) => ({

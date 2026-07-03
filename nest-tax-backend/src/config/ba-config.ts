@@ -73,7 +73,7 @@ export default class BaConfig {
     }
   }
 
-  get qrCode() {
+  get payment() {
     return {
       beneficiaryName: this.validatedConfig.PAYMENT_QR_BENEFICIARY_NAME,
     }

@@ -478,6 +478,7 @@
   "towing.informationTitle.relay": "Informácia o preložení vozidla s evidenčným číslom {{licensePlate}}",
   "towing.informationTitle.towing": "Informácia o odťahu vozidla s evidenčným číslom {{licensePlate}}",
   "towing.licensePlate": "Evidenčné číslo vozidla",
+  "towing.licensePlate_required": "Evidenčné číslo vozidla je povinné",
   "towing.notFound.content": "Skontrolujte, či ste zadali správne evidenčné číslo a skúste vyhľadať znova. Ak potrebujete pomoc, kontaktuje Infolinku PAAS na čísle 0800 222 888.",
   "towing.notFound.title": "Vozidlo neevidujeme medzi odtiahnutými alebo preloženými vozidlami.",
   "towing.searchButton": "Vyhľadať",

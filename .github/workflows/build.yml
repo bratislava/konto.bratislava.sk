@@ -13,44 +13,6 @@ on:
         required: true
 
 jobs:
-  build-forms-shared:
-    name: Forms Shared Build
-    uses: ./.github/workflows/build-shared-package.yml
-    with:
-      directory: forms-shared/
-      image: harbor.bratislava.sk/standalone/forms-shared
-      push: true
-      target: prod
-    secrets:
-      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-
-  build-openapi-clients:
-    name: OpenAPI Clients Build
-    uses: ./.github/workflows/build-shared-package.yml
-    with:
-      directory: openapi-clients/
-      image: harbor.bratislava.sk/standalone/openapi-clients
-      push: true
-      target: prod
-    secrets:
-      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-
-  build-forms-shared-test:
-    name: Forms Shared Tests
-    needs: [ build-forms-shared ]
-    uses: ./.github/workflows/test-forms-shared.yml
-    with:
-      directory: forms-shared/
-      image: harbor.bratislava.sk/standalone/forms-shared
-    secrets:
-      DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-      HARBOR_REGISTRY_PASSWORD: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-
   build-next:
     name: Next Build
     uses: ./.github/workflows/build-next.yml

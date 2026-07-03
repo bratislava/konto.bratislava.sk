@@ -1,6 +1,18 @@
 # syntax=docker.io/docker/dockerfile:1.7-labs
-# Using newer syntax adds `COPY --exclude` support
-FROM node:24.15-slim AS base
+# Using newer syntax adds `COPY --exclude` support.
+ARG NODE_VERSION=24.15
+FROM node:${NODE_VERSION}-slim AS base
+
+ENV TURBO_TELEMETRY_DISABLED=1
+
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
+
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
 
 WORKDIR /app
 
@@ -10,8 +22,13 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
+FROM base AS prepare
+RUN npm install -g turbo@^2
+COPY . .
+RUN turbo prune forms-shared --docker
+
 FROM base AS test-base
-# Install Java and other dependencies
+# Install Java and other dependencies.
 RUN apt-get update && apt-get install -y \
     default-jre \
     wget \
@@ -20,7 +37,7 @@ RUN apt-get update && apt-get install -y \
     libxslt1.1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Apache FOP 1.1
+# Install Apache FOP 1.1.
 RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zip \
     && unzip fop-1.1-bin.zip \
     && mv fop-1.1 /opt/fop-1.1 \
@@ -29,14 +46,14 @@ RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zi
 ENV FOP_JAR=/opt/fop-1.1/build/fop.jar
 ENV FOP_LIB=/opt/fop-1.1/lib
 
-# Install Saxon
+# Install Saxon.
 RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip \
     && unzip SaxonHE12-5J.zip -d /opt/saxon \
     && rm SaxonHE12-5J.zip
 
 ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
 
-# Download and setup fop.zip from slovensko.sk
+# Download and setup fop.zip from slovensko.sk.
 RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
     && unzip fop.zip -d /opt/slovensko-fop \
     && rm fop.zip
@@ -51,19 +68,21 @@ ARG PLAYWRIGHT_VERSION
 RUN test -n "${PLAYWRIGHT_VERSION}" \
     && npx --yes "playwright@${PLAYWRIGHT_VERSION}" install chromium --with-deps
 
-# Install dependencies
-COPY package.json package-lock.json ./
-RUN npm ci --include=dev
-COPY . ./
+COPY --from=prepare /app/out/json/ .
+RUN npm ci
 
-# Download the Slovensko.sk metadata file
-# This file changes once a day, without providing the env variable it would get cached by Docker.
+COPY --from=prepare /app/out/full/ .
+
+# Download the Slovensko.sk metadata file.
+# This file changes once a day; without the env variable it would get cached by Docker.
 ARG SLOVENSKO_MEF_JSON_LAST_MODIFIED
 RUN mkdir -p /opt/slovensko-metadata \
     && test -n "${SLOVENSKO_MEF_JSON_LAST_MODIFIED}" \
     && echo "slovensko_mef_json_last_modified=${SLOVENSKO_MEF_JSON_LAST_MODIFIED}" \
     && wget -O /opt/slovensko-metadata/mef.json https://www.slovensko.sk/static/eForm/datasetexport/json/mef.json
 ENV SLOVENSKO_SK_METADATA_PATH=/opt/slovensko-metadata/mef.json
+
+WORKDIR /app/forms-shared
 
 FROM test-base AS test
 CMD [ "npm", "run", "test:ci" ]
@@ -74,17 +93,3 @@ CMD [ "npm", "run", "test:ci:update" ]
 # CI runs tests inside `docker build` so the target can be cached.
 FROM test-base AS ci-test
 RUN npm run test:ci
-
-FROM base AS prod-build
-
-COPY package.json package-lock.json ./
-RUN npm ci --include=dev
-# Test folders are excluded because they contain large image snapshots
-COPY --exclude=tests --exclude=test-utils . ./
-RUN npm run build
-
-FROM scratch AS prod
-
-COPY --from=prod-build /app/package.json ./package.json
-COPY --from=prod-build /app/package-lock.json ./package-lock.json
-COPY --from=prod-build /app/dist ./dist

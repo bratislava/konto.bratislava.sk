@@ -27,30 +27,33 @@ async function main() {
     process.exit(1)
   }
 
-  const projectRoot = getAppRootDir()
+  const appRoot = getAppRootDir()
+  const projectRoot =
+    path.basename(appRoot) === 'forms-shared' ? appRoot : path.join(appRoot, 'forms-shared')
+  const workspaceRoot = path.resolve(projectRoot, '..')
   const imageName = `forms-shared-docker-runner:${target}`
-  const dockerfileName = 'Dockerfile'
+  const dockerfileName = 'Dockerfile.test'
 
   console.log(`Starting Docker process for target: ${target}`)
 
   try {
     const buildArgs = await prepareDockerBuildArgs(projectRoot)
-    const buildCommand = `docker build -t ${imageName} --target ${target} --build-arg PLAYWRIGHT_VERSION="${buildArgs.PLAYWRIGHT_VERSION}" --build-arg SLOVENSKO_MEF_JSON_LAST_MODIFIED="${buildArgs.SLOVENSKO_MEF_JSON_LAST_MODIFIED}" -f "${path.join(projectRoot, dockerfileName)}" "${projectRoot}"`
+    const buildCommand = `docker build -t ${imageName} --target ${target} --build-arg PLAYWRIGHT_VERSION="${buildArgs.PLAYWRIGHT_VERSION}" --build-arg SLOVENSKO_MEF_JSON_LAST_MODIFIED="${buildArgs.SLOVENSKO_MEF_JSON_LAST_MODIFIED}" -f "${path.join(projectRoot, dockerfileName)}" "${workspaceRoot}"`
     console.log(`Executing build: ${buildCommand}`)
-    execSync(buildCommand, { stdio: 'inherit', cwd: projectRoot })
+    execSync(buildCommand, { stdio: 'inherit', cwd: workspaceRoot })
     console.log(`Docker image ${imageName} built successfully.`)
 
     let runCommand = 'docker run --rm'
 
     if (target === 'test-update') {
       console.log('Configuring volume mounts for snapshot updates...')
-      runCommand += ` -v "${projectRoot}:/app" -v /app/node_modules`
+      runCommand += ` -v "${projectRoot}:/app/forms-shared" -v /app/node_modules`
     }
 
     runCommand += ` ${imageName}`
 
     console.log(`Executing run: ${runCommand}`)
-    execSync(runCommand, { stdio: 'inherit', cwd: projectRoot })
+    execSync(runCommand, { stdio: 'inherit', cwd: workspaceRoot })
 
     console.log(`Docker target '${target}' completed successfully.`)
   } catch (error) {

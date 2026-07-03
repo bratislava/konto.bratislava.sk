@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       directory:
-        description: "Base dir where whole app is located."
+        description: "Package dir where forms-shared scripts and Dockerfile.test are located."
         type: string
         required: false
         default: './forms-shared'
@@ -17,6 +17,8 @@ on:
       DOCKER_REGISTRY_PASSWORD:
         required: true
       HARBOR_REGISTRY_PASSWORD:
+        required: true
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
         required: true
 
 permissions:
@@ -56,6 +58,12 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
       - name: Docker metadata
         id: meta
         uses: bratislava/github-actions/.github/actions/docker-metadata@beta
@@ -66,10 +74,18 @@ jobs:
       - name: Run tests
         uses: docker/build-push-action@v7
         with:
-          context: ${{ inputs.directory }}
+          context: .
+          file: ${{ inputs.directory }}/Dockerfile.test
           target: ci-test
           cache-from: ${{ steps.meta.outputs.cache_from }}
           cache-to: ${{ steps.meta.outputs.cache_to }}
+          network: host
+          add-hosts: |
+            host.docker.internal=${{ steps.turbo-cache.outputs.docker_bridge_ip }}
           build-args: |
+            TURBO_API=${{ steps.turbo-cache.outputs.turbo_api }}
+            TURBO_TEAM=city-account
+            TURBO_TOKEN=local
+            TURBO_VERBOSITY=2
             PLAYWRIGHT_VERSION=${{ steps.docker-build-args.outputs.PLAYWRIGHT_VERSION }}
             SLOVENSKO_MEF_JSON_LAST_MODIFIED=${{ steps.docker-build-args.outputs.SLOVENSKO_MEF_JSON_LAST_MODIFIED }}

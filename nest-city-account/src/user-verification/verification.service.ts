@@ -7,9 +7,10 @@ import { Channel, ConsumeMessage } from 'amqplib'
 import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
 import { OnlySuccessDto, UserVerifyState } from '../admin/dtos/responses.admin.dto'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
-import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-database.provider'
-import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { getBloomreachContactDatabase } from '../bloomreach/contact-database/bloomreach-contact-database.provider'
+import { BloomreachContactDatabaseService } from '../bloomreach/contact-database/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from '../bloomreach/bloomreach-outbox-writer.service'
 import { BloomreachPayloadBuilder } from '../bloomreach/bloomreach-payload.builder'
 import { MailgunService } from '../mailgun/mailgun.service'
 import { NasesService } from '../nases/nases.service'
@@ -160,9 +161,12 @@ export class VerificationService {
           userIdentitySubservice
         )
 
-        const bloomreachOutboxService = new BloomreachOutboxService(
+        const bloomreachOutboxWriter = new BloomreachOutboxWriterService(
           prismaService,
-          bloomreachPayloadBuilder,
+          bloomreachPayloadBuilder
+        )
+        const bloomreachOutboxService = new BloomreachOutboxService(
+          bloomreachOutboxWriter,
           throwerErrorGuard
         )
 

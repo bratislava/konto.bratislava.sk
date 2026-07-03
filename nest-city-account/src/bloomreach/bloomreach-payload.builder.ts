@@ -15,7 +15,7 @@ import {
   BloomreachEventNameEnum,
   Consent,
 } from './bloomreach.types'
-import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
+import { BloomreachContactDatabaseService } from './contact-database/bloomreach-contact-database.service'
 import { consentCategory } from './utils/consents.utils'
 
 /** Unix timestamp in seconds, the format Bloomreach expects. */

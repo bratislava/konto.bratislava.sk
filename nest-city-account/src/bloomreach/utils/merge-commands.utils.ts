@@ -7,5 +7,6 @@ export function mergeCustomerCommandData(
   return {
     customer_ids: { ...base.customer_ids, ...override.customer_ids },
     properties: { ...base.properties, ...override.properties },
+    update_timestamp: override.update_timestamp,
   }
 }

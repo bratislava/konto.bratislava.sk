@@ -18,6 +18,11 @@ import {
 import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 import { consentCategory } from './utils/consents.utils'
 
+/** Unix timestamp in seconds, the format Bloomreach expects. */
+function nowUnixSeconds(): number {
+  return Date.now() / 1000
+}
+
 @Injectable()
 export class BloomreachPayloadBuilder {
   constructor(
@@ -89,6 +94,7 @@ export class BloomreachPayloadBuilder {
             current_tax_correspondence_channel: correspondenceChannel,
           }),
         },
+        update_timestamp: nowUnixSeconds(),
       },
     }
   }
@@ -112,6 +118,7 @@ export class BloomreachPayloadBuilder {
           oauth_origin_client_name: '',
           current_tax_correspondence_channel: '',
         },
+        update_timestamp: nowUnixSeconds(),
       },
     }
   }
@@ -131,6 +138,7 @@ export class BloomreachPayloadBuilder {
           valid_until: 'unlimited',
         },
         event_type: BloomreachEventNameEnum.CONSENT,
+        timestamp: nowUnixSeconds(),
       },
     }))
   }

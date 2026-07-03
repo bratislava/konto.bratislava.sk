@@ -37,6 +37,7 @@ export interface BloomreachCustomerProperties {
 export interface BloomreachCustomerCommandData {
   customer_ids: BloomreachCustomerIds
   properties: BloomreachCustomerProperties
+  update_timestamp: number
 }
 
 export interface BloomreachConsentEventProperties {
@@ -49,6 +50,7 @@ export interface BloomreachEventCommandData {
   customer_ids: BloomreachCustomerIds
   properties: BloomreachConsentEventProperties
   event_type: BloomreachEventNameEnum
+  timestamp: number
 }
 
 export interface BloomreachCustomerCommand {

@@ -15,7 +15,7 @@ ENV TURBO_TOKEN=$TURBO_TOKEN
 WORKDIR /app
 
 FROM base AS prepare
-RUN npm install -g turbo@^2
+RUN npm install -g turbo@canary
 COPY . .
 RUN turbo prune city-account-strapi --docker
 

@@ -4,6 +4,7 @@ import { PrismaModule } from '../prisma/prisma.module'
 import { bloomreachContactDatabaseProvider } from './bloomreach-contact-database.provider'
 import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
 import { BloomreachExportService } from './bloomreach-export.service'
+import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
 import { BloomreachOutboxProcessor } from './bloomreach-outbox.processor'
 import { BloomreachOutboxService } from './bloomreach-outbox.service'
 import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
@@ -15,6 +16,7 @@ import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
     bloomreachContactDatabaseProvider,
     BloomreachPayloadBuilder,
     BloomreachExportService,
+    BloomreachMergeConsentService,
     BloomreachOutboxService,
     BloomreachOutboxProcessor,
   ],

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CognitoUserAttributesTierEnum, ConsentEnum } from '@prisma/client'
+import { CognitoUserAttributesTierEnum } from '@prisma/client'
 
 import {
   CognitoUserAccountTypesEnum,
@@ -16,6 +16,7 @@ import {
   Consent,
 } from './bloomreach.types'
 import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
+import { consentCategory } from './utils/consents.utils'
 
 @Injectable()
 export class BloomreachPayloadBuilder {
@@ -115,10 +116,6 @@ export class BloomreachPayloadBuilder {
     }
   }
 
-  private static consentCategory(consentType: ConsentEnum): string {
-    return `ESBS-${consentType}`
-  }
-
   buildConsentEventCommands(consents: Consent[], externalId: string): BloomreachEventCommand[] {
     return consents.map((consent) => ({
       commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
@@ -130,7 +127,7 @@ export class BloomreachPayloadBuilder {
           action: consent.isGranted
             ? BloomreachConsentActionEnum.ACCEPT
             : BloomreachConsentActionEnum.REJECT,
-          category: BloomreachPayloadBuilder.consentCategory(consent.consentType),
+          category: consentCategory(consent.consentType),
           valid_until: 'unlimited',
         },
         event_type: BloomreachEventNameEnum.CONSENT,

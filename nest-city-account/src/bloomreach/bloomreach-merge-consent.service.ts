@@ -10,7 +10,7 @@ import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachCommandNameEnum, BloomreachCustomerCommandData } from './bloomreach.types'
 import { BloomreachExportService } from './bloomreach-export.service'
-import { BloomreachOutboxService } from './bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
 import { extractLatestConsents } from './utils/consents.utils'
 
 /**
@@ -46,7 +46,7 @@ export class BloomreachMergeConsentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly exportService: BloomreachExportService,
-    private readonly outboxService: BloomreachOutboxService,
+    private readonly outboxWriter: BloomreachOutboxWriterService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(BloomreachMergeConsentService.name)
@@ -143,7 +143,7 @@ export class BloomreachMergeConsentService {
       return
     }
 
-    await this.outboxService.queueConsentEvents(consents, entry.externalId)
+    await this.outboxWriter.queueConsentEvents(consents, entry.externalId)
 
     this.logger.log(
       `Queued ${consents.length} consent events to survive merge with anonymized profile, ${toLogfmt(

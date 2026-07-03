@@ -7,6 +7,7 @@ import { BloomreachExportService } from './bloomreach-export.service'
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
 import { BloomreachOutboxProcessor } from './bloomreach-outbox.processor'
 import { BloomreachOutboxService } from './bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
 import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
 
 @Module({
@@ -17,6 +18,7 @@ import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
     BloomreachPayloadBuilder,
     BloomreachExportService,
     BloomreachMergeConsentService,
+    BloomreachOutboxWriterService,
     BloomreachOutboxService,
     BloomreachOutboxProcessor,
   ],

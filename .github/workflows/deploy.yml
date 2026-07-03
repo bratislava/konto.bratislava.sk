@@ -276,11 +276,23 @@ jobs:
           echo "All in-scope builds succeeded (skipped builds are intentional); proceeding to deploy."
 
   # ---- Trigger infrastructure deploys ----
-  # Ordering: cvdmirror -> clamav -> nest-clamav-scanner; all backends -> next.
+  # Ordering: shared secrets first; cvdmirror -> clamav -> nest-clamav-scanner;
+  # all backends -> next.
+
+  deploy-secrets:
+    name: Shared application secrets
+    needs: [resolve, builds-complete]
+    if: ${{ !failure() && !cancelled() }}
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
+    secrets: inherit
+    with:
+      cluster: ${{ needs.resolve.outputs.cluster }}
+      app: konto.bratislava.sk/secrets
+      dispatch_ref: mpinter/rollout-status
 
   deploy-cvdmirror:
     name: cvdmirror
-    needs: [resolve, build-cvdmirror, builds-complete]
+    needs: [resolve, build-cvdmirror, builds-complete, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.cvdmirror == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -313,7 +325,7 @@ jobs:
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [resolve, build-nest-forms-backend, test-forms-shared, builds-complete]
+    needs: [resolve, build-nest-forms-backend, test-forms-shared, builds-complete, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -324,7 +336,7 @@ jobs:
 
   deploy-nest-tax-backend:
     name: nest-tax-backend
-    needs: [resolve, build-nest-tax-backend, builds-complete]
+    needs: [resolve, build-nest-tax-backend, builds-complete, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-tax-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -335,7 +347,7 @@ jobs:
 
   deploy-nest-city-account:
     name: nest-city-account
-    needs: [resolve, build-nest-city-account, builds-complete]
+    needs: [resolve, build-nest-city-account, builds-complete, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-city-account == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
@@ -346,7 +358,7 @@ jobs:
 
   deploy-strapi:
     name: Strapi
-    needs: [resolve, build-strapi, builds-complete]
+    needs: [resolve, build-strapi, builds-complete, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.strapi == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit

@@ -14,6 +14,7 @@ import {
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
 } from './bloomreach.types'
+import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
 import { mergeCustomerCommandData } from './utils/merge-commands.utils'
 
 const BATCH_SIZE = 50
@@ -32,7 +33,8 @@ export class BloomreachOutboxProcessor {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly mergeConsentService: BloomreachMergeConsentService
   ) {
     this.logger = new LineLoggerSubservice(BloomreachOutboxProcessor.name)
   }
@@ -52,7 +54,7 @@ export class BloomreachOutboxProcessor {
     // Backoff: skip entries that were recently retried (updatedAt + attempts * base delay > now)
     const now = new Date()
     //language=postgresql
-    const entries = await this.prisma.$queryRaw<BloomreachOutbox[]>`
+    const claimedEntries = await this.prisma.$queryRaw<BloomreachOutbox[]>`
     WITH claimed AS
         (SELECT "id"
          FROM
@@ -76,6 +78,12 @@ export class BloomreachOutboxProcessor {
         b."id" = claimed."id"
     RETURNING b.*
     `
+
+    if (claimedEntries.length === 0) {
+      return
+    }
+
+    const entries = await this.runMergeConsentChecks(claimedEntries)
 
     if (entries.length === 0) {
       return
@@ -146,6 +154,24 @@ export class BloomreachOutboxProcessor {
 
       await this.revertEntries(entries, error instanceof Error ? error.message : String(error))
     }
+  }
+
+  private async runMergeConsentChecks(
+    claimedEntries: BloomreachOutbox[]
+  ): Promise<BloomreachOutbox[]> {
+    const checkResults = await Promise.all(
+      claimedEntries.map(async (entry) => ({
+        entry,
+        safeToSend: await this.mergeConsentService.ensureConsentsSurviveMerge(entry),
+      }))
+    )
+
+    const failedCheckEntries = checkResults.filter((r) => !r.safeToSend).map((r) => r.entry)
+    if (failedCheckEntries.length > 0) {
+      await this.revertEntries(failedCheckEntries, 'Bloomreach merge consent check failed')
+    }
+
+    return checkResults.filter((r) => r.safeToSend).map((r) => r.entry)
   }
 
   /**

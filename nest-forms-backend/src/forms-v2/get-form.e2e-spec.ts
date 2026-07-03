@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import { FormState } from '@prisma/client'
 
 import {
   AuthFixtureUser,
@@ -14,6 +13,7 @@ import {
 import { AppV2Module } from '../app-v2.module'
 import { GetFormResponseDto } from '../forms/dtos/responses.dto'
 import FormsModule from '../forms/forms.module'
+import { FormState } from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
 import { CreateFormOutput } from './outputs/create-form.output'
 

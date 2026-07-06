@@ -24,7 +24,6 @@ misc
 .cache/
 .next/
 # kustomize files
-kubernetes/
 # bratiska-cli manifest files
 manifest-*.y?ml
 # markdown files

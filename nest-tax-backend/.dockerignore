@@ -17,4 +17,3 @@ misc
 manifest-*.y?ml
 *.pem
 *.md
-kubernetes/

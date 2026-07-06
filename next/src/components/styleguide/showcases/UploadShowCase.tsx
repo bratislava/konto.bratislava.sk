@@ -3,11 +3,11 @@ import {
   FileStatusType,
   UploadClientErrorReasonType,
 } from 'forms-shared/form-files/fileStatus'
-import React, { ComponentProps, useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
-import CheckboxGroup from '@/src/components/widget-components/Checkbox/CheckboxGroup'
-import CheckboxGroupItem from '@/src/components/widget-components/Checkbox/CheckboxGroupItem'
+import Checkbox from '@/src/components/fields/Checkbox'
+import CheckboxGroup from '@/src/components/fields/CheckboxGroup'
 import Upload from '@/src/components/widget-components/Upload/Upload'
 import UploadFileCard from '@/src/components/widget-components/Upload/UploadFileCard'
 
@@ -217,7 +217,7 @@ const UploadShowCase = () => {
       </Stack>
       <Stack>
         <CheckboxGroup value={checkboxValue} onChange={setCheckboxValue} label="Is multiple?">
-          <CheckboxGroupItem value="multiple">Multiple</CheckboxGroupItem>
+          <Checkbox value="multiple">Multiple</Checkbox>
         </CheckboxGroup>
       </Stack>
       <Stack>

@@ -47,7 +47,7 @@ fragment MunicipalServiceCardEntity on MunicipalService {
 fragment MunicipalServiceEntity on MunicipalService {
   ...MunicipalServiceCardEntity
   form {
-    ...FormBase
+    ...FormWithLandingPage
   }
   categories {
     ...MunicipalServiceCategoryEntity

@@ -150,7 +150,8 @@ describe('Create form', () => {
     expect(form?.email).toBe(poAuthUser.user.cityAccountUser.email)
   })
 
-  it('should throw error if form definition is disabled', async () => {
+  // TODO: 'predzahradky' isDisabled was temporarily removed, re-enable this test once it is disabled again
+  it.skip('should throw error if form definition is disabled', async () => {
     const response = await testingApp.axiosClient.post<{ errorName: string }>(
       '/forms-v2/',
       {

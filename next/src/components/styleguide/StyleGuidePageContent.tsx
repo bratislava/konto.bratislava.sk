@@ -19,6 +19,7 @@ import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShow
 import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase/ModalsShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
 import MyApplicationsShowCase from '@/src/components/styleguide/showcases/MyApplicationsShowCase/MyApplicationsShowCase'
+import NavBarShowCase from '@/src/components/styleguide/showcases/NavBarShowCase'
 import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
 import PasswordFieldShowCase from '@/src/components/styleguide/showcases/PasswordFieldShowCase'
 import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
@@ -43,6 +44,7 @@ import StyleGuideWrapper from './StyleGuideWrapper'
 
 const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'button', label: 'Button', component: <ButtonShowCase /> },
+  { id: 'navbar', label: 'NavBar', component: <NavBarShowCase /> },
   { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
   { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },

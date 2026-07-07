@@ -215,7 +215,6 @@ type ComponentBlocksFormLandingPage {
   formCta: ComponentBlocksFormLandingPageFormCta
   id: ID!
   linkCtas(filters: ComponentBlocksFormLandingPageLinkCtaFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFormLandingPageLinkCta]
-  sections: [FormLandingPageSectionsDynamicZone]
   text: String
 }
 
@@ -255,7 +254,6 @@ input ComponentBlocksFormLandingPageInput {
   formCta: ComponentBlocksFormLandingPageFormCtaInput
   id: ID
   linkCtas: [ComponentBlocksFormLandingPageLinkCtaInput]
-  sections: [FormLandingPageSectionsDynamicZoneInput!]
   text: String
 }
 
@@ -859,10 +857,6 @@ input FormInput {
   publishedAt: DateTime
   slug: String
 }
-
-union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
-
-scalar FormLandingPageSectionsDynamicZoneInput
 
 type FormRelationResponseCollection {
   nodes: [Form!]!

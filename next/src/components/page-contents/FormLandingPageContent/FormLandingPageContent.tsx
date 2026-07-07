@@ -6,7 +6,6 @@ import TableOfContents from '@/src/components/common/TableOfContents/TableOfCont
 import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import Sections from '@/src/components/layouts/Sections'
 import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import MLink from '@/src/components/simple-components/MLink'
@@ -32,10 +31,9 @@ export type FormLandingPageProps = {
   strapiForm: FormWithLandingPageRequiredFragment
 }
 
+// TODO: Remove this page completely, after full migration to municipal service page
 const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) => {
   const { t } = useTranslation('forms')
-
-  const filteredSections = strapiForm.landingPage.sections?.filter(isDefined) ?? []
 
   return (
     <>
@@ -72,14 +70,11 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           )}
           id={PAGE_CONTENT_ID}
         >
-          {/* TODO - For now we keep the original richtext - remove this after migration to new richtext section */}
           {strapiForm.landingPage.text ? (
             <SectionContainer>
               <Markdown variant="small" content={strapiForm.landingPage.text} />
             </SectionContainer>
           ) : null}
-
-          <Sections sections={filteredSections} />
 
           <SectionContainer>
             <div className="flex flex-col rounded-xl border">

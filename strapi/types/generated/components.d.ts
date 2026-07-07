@@ -109,16 +109,6 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
   attributes: {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false>
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<
-      [
-        'sections.richtext',
-        'sections.documents',
-        'sections.faq',
-        'sections.contacts',
-        'sections.towing',
-        'sections.stepper',
-      ]
-    >
     text: Schema.Attribute.RichText
   }
 }

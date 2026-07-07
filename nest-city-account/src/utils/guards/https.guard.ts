@@ -1,15 +1,21 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 
+import BaConfigService from '../../config/ba-config.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { ErrorsEnum } from './dtos/error.dto'
 
 @Injectable()
 export class HttpsGuard implements CanActivate {
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {}
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly baConfigService: BaConfigService
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    if (process.env.REQUIRE_HTTPS === 'false') {
+    // Defaults to true (fail-safe) when REQUIRE_HTTPS is not set.
+    const requireHttps = this.baConfigService.security.requireHttps ?? true
+    if (!requireHttps) {
       return true
     }
 

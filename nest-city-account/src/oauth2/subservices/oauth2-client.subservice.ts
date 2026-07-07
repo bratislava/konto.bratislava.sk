@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
+import BaConfigService from '../../config/ba-config.service'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 /**
@@ -140,7 +141,7 @@ export class OAuth2ClientSubservice {
 
   private clients: OAuth2Client[] = []
 
-  constructor() {
+  constructor(private readonly baConfigService: BaConfigService) {
     this.logger = new LineLoggerSubservice(OAuth2ClientSubservice.name)
   }
 
@@ -168,7 +169,7 @@ export class OAuth2ClientSubservice {
     // Get well-known clients from enum
     const enumClientNames = Object.values(OAuth2ClientName)
     // Get clients from environment variable
-    const envClientNames = this.parseCommaSeparatedList(process.env.OAUTH2_CLIENT_LIST)
+    const envClientNames = this.parseCommaSeparatedList(this.baConfigService.oauth2.clientList)
 
     // Merge into a Set to avoid duplicates
     const clientNames = new Set<string>([...enumClientNames, ...envClientNames])
@@ -183,8 +184,8 @@ export class OAuth2ClientSubservice {
     const clients: OAuth2Client[] = []
 
     for (const name of clientNames) {
-      const clientId = process.env[`OAUTH2_${name}_CLIENT_ID`]
-      const clientSecret = process.env[`OAUTH2_${name}_CLIENT_SECRET`]
+      const clientId = this.baConfigService.getDynamic(`OAUTH2_${name}_CLIENT_ID`)
+      const clientSecret = this.baConfigService.getDynamic(`OAUTH2_${name}_CLIENT_SECRET`)
 
       if (!clientId) {
         this.logger.error(
@@ -196,7 +197,7 @@ export class OAuth2ClientSubservice {
 
       // Parse allowed redirect URIs (required - at least one must be configured)
       const allowedRedirectUris = this.parseCommaSeparatedList(
-        process.env[`OAUTH2_${name}_ALLOWED_URIS`]
+        this.baConfigService.getDynamic(`OAUTH2_${name}_ALLOWED_URIS`)
       )
       if (allowedRedirectUris.length === 0) {
         this.logger.error(
@@ -208,15 +209,16 @@ export class OAuth2ClientSubservice {
 
       // Parse optional comma-separated arrays (filter out empty values)
       const allowedScopes = this.parseCommaSeparatedList(
-        process.env[`OAUTH2_${name}_ALLOWED_SCOPES`]
+        this.baConfigService.getDynamic(`OAUTH2_${name}_ALLOWED_SCOPES`)
       )
 
       const allowedGrantTypes = this.parseCommaSeparatedList(
-        process.env[`OAUTH2_${name}_ALLOWED_GRANT_TYPES`]
+        this.baConfigService.getDynamic(`OAUTH2_${name}_ALLOWED_GRANT_TYPES`)
       )
 
       // Default to true if not specified
-      const requiresPkce = process.env[`OAUTH2_${name}_REQUIRES_PKCE`] !== 'false'
+      const requiresPkce =
+        this.baConfigService.getDynamic(`OAUTH2_${name}_REQUIRES_PKCE`) !== 'false'
 
       if (!clientSecret && !requiresPkce) {
         this.logger.error(

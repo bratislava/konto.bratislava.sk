@@ -1,9 +1,9 @@
 import { createHash, randomBytes } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import * as jwt from 'jsonwebtoken'
 
+import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { decryptData, encryptData, timingSafeStringEqual } from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -37,7 +37,7 @@ export class OAuth2Service {
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly validationSubservice: OAuth2ValidationSubservice,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {}
 
@@ -137,7 +137,7 @@ export class OAuth2Service {
     try {
       refreshed = await this.cognitoSubservice.refreshTokens(
         refreshToken,
-        this.configService.getOrThrow<string>('AWS_COGNITO_CLIENT_ID')
+        this.baConfigService.cognito.clientId
       )
     } catch (error) {
       throw this.oAuth2ErrorThrower.authorizationException(
@@ -212,7 +212,7 @@ export class OAuth2Service {
    * @returns Redirect URL to frontend with authRequestId and isOAuth flag
    */
   buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
-    const oAuth2LoginUrl = this.configService.get<string>('OAUTH2_LOGIN_URL')
+    const oAuth2LoginUrl = this.baConfigService.oauth2.loginUrl
     if (!oAuth2LoginUrl) {
       throw this.oAuth2ErrorThrower.authorizationException(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
@@ -568,7 +568,7 @@ export class OAuth2Service {
     try {
       refreshed = await this.cognitoSubservice.refreshTokens(
         refreshTokenData.token,
-        this.configService.getOrThrow<string>('AWS_COGNITO_CLIENT_ID')
+        this.baConfigService.cognito.clientId
       )
     } catch (error) {
       throw this.oAuth2ErrorThrower.tokenException(

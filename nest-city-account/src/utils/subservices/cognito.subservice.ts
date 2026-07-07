@@ -15,6 +15,7 @@ import {
 import { Injectable } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 
+import BaConfigService from '../../config/ba-config.service'
 import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
 import {
   SendToQueueErrorsEnum,
@@ -40,25 +41,21 @@ export class CognitoSubservice {
 
   private readonly config
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
-    if (
-      !process.env.AWS_COGNITO_ACCESS ||
-      !process.env.AWS_COGNITO_SECRET ||
-      !process.env.AWS_COGNITO_REGION ||
-      !process.env.AWS_COGNITO_USERPOOL_ID
-    ) {
-      throw new Error('CognitoSubservice ENV vars are not set ')
-    }
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    baConfigService: BaConfigService
+  ) {
+    const { region, accessKeyId, secretAccessKey, userPoolId } = baConfigService.cognito
     this.cognitoClient = new CognitoIdentityProviderClient({
-      region: process.env.AWS_COGNITO_REGION,
+      region,
       credentials: {
-        accessKeyId: process.env.AWS_COGNITO_ACCESS,
-        secretAccessKey: process.env.AWS_COGNITO_SECRET,
+        accessKeyId,
+        secretAccessKey,
       },
     })
 
     this.config = {
-      cognitoUserPoolId: process.env.AWS_COGNITO_USERPOOL_ID,
+      cognitoUserPoolId: userPoolId,
     }
   }
 

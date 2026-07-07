@@ -158,7 +158,8 @@ export class VerificationService {
         const bloomreachOutboxService = new BloomreachOutboxService(
           prismaService,
           bloomreachPayloadBuilder,
-          throwerErrorGuard
+          throwerErrorGuard,
+          getBaConfigInstance()
         )
 
         await bloomreachOutboxService.trackCustomer(data.msg.user.idUser)

@@ -142,8 +142,8 @@ export default class EnvironmentVariables {
   @EnvInt(1, 31)
   MUNICIPAL_TAX_LOCK_DAY: number
 
-  @EnvUrl()
-  OAUTH2_LOGIN_URL: string
+  @EnvUrl(false)
+  OAUTH2_LOGIN_URL?: string
 
   // TODO: validate that this is a comma-separated list of uppercase identifiers
   // (e.g. "DPB,PAAS_MPA") once we have a dedicated decorator for that pattern.

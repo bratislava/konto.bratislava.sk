@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
+import BaConfigService from '../config/ba-config.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PdfGeneratorService } from './pdf-generator.service'
 
@@ -8,7 +9,14 @@ describe('PdfGeneratorService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PdfGeneratorService, ThrowerErrorGuard],
+      providers: [
+        PdfGeneratorService,
+        ThrowerErrorGuard,
+        {
+          provide: BaConfigService,
+          useValue: { pdfGenerator: { chromiumExecutablePath: undefined } },
+        },
+      ],
     }).compile()
 
     service = module.get<PdfGeneratorService>(PdfGeneratorService)

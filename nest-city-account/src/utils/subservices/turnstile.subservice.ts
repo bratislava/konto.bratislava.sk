@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import Turnstile, { TurnstileResponse } from 'cf-turnstile'
 
+import BaConfigService from '../../config/ba-config.service'
 import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
@@ -14,13 +15,17 @@ export class TurnstileSubservice {
 
   private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(TurnstileSubservice.name)
 
-  constructor(private throwerErrorGuard: ThrowerErrorGuard) {
+  constructor(
+    private throwerErrorGuard: ThrowerErrorGuard,
+    baConfigService: BaConfigService
+  ) {
     // TODO temporarily uses dummy token which always passes
-    if (!process.env.TURNSTILE_SECRET) {
+    const { turnstileSecret } = baConfigService.security
+    if (!turnstileSecret) {
       this.logger.warn('TURNSTILE_SECRET not set! Using dummy token, captcha will always pass.')
       this.turnstile = Turnstile('1x0000000000000000000000000000000AA')
     } else {
-      this.turnstile = Turnstile(process.env.TURNSTILE_SECRET)
+      this.turnstile = Turnstile(turnstileSecret)
       this.logger.log('Successfully initialized Turnstile')
     }
   }

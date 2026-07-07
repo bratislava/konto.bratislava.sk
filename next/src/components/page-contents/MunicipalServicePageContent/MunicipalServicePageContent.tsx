@@ -3,8 +3,11 @@ import { Typography } from '@bratislava/component-library'
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
 import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
 import Markdown from '@/src/components/formatting/Markdown'
+import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
+import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
+import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
@@ -14,9 +17,13 @@ import cn from '@/src/utils/cn'
 
 export type MunicipalServicePageContentProps = {
   municipalService: MunicipalServiceEntityFragment
+  formDefinition?: ClientLandingPageFormDefinition
 }
 
-const MunicipalServicePageContent = ({ municipalService }: MunicipalServicePageContentProps) => {
+const MunicipalServicePageContent = ({
+  municipalService,
+  formDefinition,
+}: MunicipalServicePageContentProps) => {
   const { sections, form: strapiForm } = municipalService
 
   const filteredSections = sections?.filter(isDefined) ?? []
@@ -40,6 +47,7 @@ const MunicipalServicePageContent = ({ municipalService }: MunicipalServicePageC
       >
         <div
           className={cn(
+            'flex flex-col gap-12',
             'w-full max-w-200',
             '**:data-section-container-outer:not-first:pt-8',
             '**:data-section-container-outer:not-first:lg:pt-12',
@@ -52,9 +60,22 @@ const MunicipalServicePageContent = ({ municipalService }: MunicipalServicePageC
           {filteredSections.length ? (
             <Sections sections={filteredSections} />
           ) : strapiForm?.landingPage?.text ? (
-            <SectionContainer>
-              <Markdown content={strapiForm.landingPage.text} />
-            </SectionContainer>
+            <>
+              <SectionContainer>
+                <Markdown content={strapiForm.landingPage.text} />
+              </SectionContainer>
+              <div className="flex flex-col rounded-xl border empty:hidden">
+                {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
+                  <FormLandingPageCard key={linkCta.id} {...linkCta} />
+                ))}
+                {formDefinition && strapiForm.landingPage.formCta ? (
+                  <FormLandingPageCtaCard
+                    formCta={strapiForm.landingPage.formCta}
+                    formDefinition={formDefinition}
+                  />
+                ) : null}
+              </div>
+            </>
           ) : null}
         </div>
 

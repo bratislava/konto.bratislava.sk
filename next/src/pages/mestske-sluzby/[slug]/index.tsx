@@ -62,9 +62,6 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
 
     const { slug } = context.params
     const serverFormDefinition = getFormDefinitionBySlug(slug)
-    if (!serverFormDefinition) {
-      return { notFound: true }
-    }
 
     const [general, municipalService, strapiForm] = await Promise.all([
       strapiClient.General(),
@@ -72,16 +69,27 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
       fetchStrapiForm(slug),
     ])
 
+    // In Municipal Service landing page, form is not required.
     if (municipalService) {
       return {
         props: {
           general,
           type: 'municipalService',
           municipalService,
-          // formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition),
+          ...(serverFormDefinition
+            ? { formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition) }
+            : {}),
           ...(await slovakServerSideTranslations()),
         },
       }
+    }
+
+    // TODO Revisit after landing pages migration.
+    //  In this older implementation of Form lading page, formDefinition is required.
+    //  Keeping the old implementation for form landing page / redirect as is for now.
+
+    if (!serverFormDefinition) {
+      return { notFound: true }
     }
 
     if (formHasLandingPage(strapiForm)) {

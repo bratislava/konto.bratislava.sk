@@ -6,7 +6,7 @@ import cn from '@/src/utils/cn'
 
 /**
  * Figma - navBar: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
- * Figma - useDetails: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21166-5210&t=IZ8lRgxsaIokMNeg-4
+ * Figma - userDetails: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=21166-5210&t=IZ8lRgxsaIokMNeg-4
  */
 
 type Props = {

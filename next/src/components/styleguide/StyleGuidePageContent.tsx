@@ -44,8 +44,6 @@ import StyleGuideWrapper from './StyleGuideWrapper'
 
 const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'button', label: 'Button', component: <ButtonShowCase /> },
-  { id: 'navbar', label: 'NavBar', component: <NavBarShowCase /> },
-  { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
   { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },
   { id: 'tag', label: 'Tag', component: <TagShowCase /> },
@@ -95,6 +93,8 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     label: 'My Applications Pages',
     component: <MyApplicationsShowCase />,
   },
+  { id: 'navbar', label: 'NavBar', component: <NavBarShowCase /> },
+  { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
 ]
 
 const StyleGuidePageContent = () => {

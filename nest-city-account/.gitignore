@@ -49,8 +49,6 @@ postgres/
 pgdata/
 
 
-# bratiska-cli manifest files
-manifest-*.y?ml
 
 # local files
 docker-compose-postgres.yml

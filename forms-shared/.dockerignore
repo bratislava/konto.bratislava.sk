@@ -23,8 +23,5 @@ misc
 .tmp/
 .cache/
 .next/
-# kustomize files
-# bratiska-cli manifest files
-manifest-*.y?ml
 # markdown files
 **/*.md

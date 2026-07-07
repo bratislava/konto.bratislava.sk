@@ -67,11 +67,11 @@ export default class EnvironmentVariables {
   @EnvString()
   REDIS_PASSWORD: string
 
-  @EnvString()
-  REDIS_USER: string
+  @EnvString(false)
+  REDIS_USER?: string
 
-  @EnvPort()
-  REDIS_PORT: number
+  @EnvPort(false)
+  REDIS_PORT?: number
 
   @EnvString(false)
   TURNSTILE_SECRET?: string
@@ -168,6 +168,6 @@ export default class EnvironmentVariables {
   @EnvString(false)
   PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?: string
 
-  @EnvBoolean()
-  REQUIRE_HTTPS: boolean
+  @EnvBoolean(false)
+  REQUIRE_HTTPS?: boolean
 }

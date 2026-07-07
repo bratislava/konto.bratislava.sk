@@ -1,6 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
+import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
 import Markdown from '@/src/components/formatting/Markdown'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
@@ -34,7 +35,7 @@ const MunicipalServicePageContent = ({ municipalService }: MunicipalServicePageC
       <div
         key={municipalService.slug} // Helps to re-render table of contents on page change
         className={cn(
-          'mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse px-4 py-8 lg:px-8 lg:py-12',
+          'mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse gap-8 px-4 py-8 lg:px-8 lg:py-12',
         )}
       >
         <div
@@ -56,7 +57,10 @@ const MunicipalServicePageContent = ({ municipalService }: MunicipalServicePageC
             </SectionContainer>
           ) : null}
         </div>
-        {/* TODO Sidebar goes here */}
+
+        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
+          <TableOfContents />
+        </aside>
       </div>
     </>
   )

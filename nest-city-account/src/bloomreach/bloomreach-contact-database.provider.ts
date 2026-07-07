@@ -1,17 +1,19 @@
 import pgPromise, { IDatabase } from 'pg-promise'
 
+import getBaConfigInstance from '../config/ba-config.instance'
+
 const pgp = pgPromise()
 let bloomreachContactDatabase: IDatabase<unknown> | undefined
 
 export const getBloomreachContactDatabase = (): IDatabase<unknown> => {
   if (!bloomreachContactDatabase) {
-    const bloomreachContactDbPort = process.env.BLOOMREACH_CONTACT_DB_PORT
+    const { host, port, name, user, password } = getBaConfigInstance().bloomreachContactDatabase
     bloomreachContactDatabase = pgp({
-      host: process.env.BLOOMREACH_CONTACT_DB_HOST,
-      port: bloomreachContactDbPort ? Number(bloomreachContactDbPort) : undefined,
-      database: process.env.BLOOMREACH_CONTACT_DB_NAME,
-      user: process.env.BLOOMREACH_CONTACT_DB_USER,
-      password: process.env.BLOOMREACH_CONTACT_DB_PASSWORD,
+      host,
+      port,
+      database: name,
+      user,
+      password,
     })
   }
 

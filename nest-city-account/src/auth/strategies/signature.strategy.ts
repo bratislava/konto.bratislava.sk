@@ -1,11 +1,11 @@
 import { createPublicKey } from 'node:crypto'
 
 import { HttpException, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { createVerify } from 'crypto'
 import { Strategy as CustomStrategy } from 'passport-custom'
 
+import BaConfigService from '../../config/ba-config.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NonceService } from '../services/nonce.service'
@@ -36,9 +36,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
   private readonly maxClockSkew: number = 60 * 1000 // 1 minute
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nonceService: NonceService
+    private readonly nonceService: NonceService,
+    private readonly baConfigService: BaConfigService
   ) {
     super()
   }
@@ -62,7 +62,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    const publicKeyRaw = this.configService.get<string>(envVarName)
+    // The public key env var name is per-client and dynamic (see @SignaturePublicKey()),
+    // so it cannot be part of the statically validated EnvironmentVariables schema.
+    const publicKeyRaw = this.baConfigService.getDynamic(envVarName)
     if (!publicKeyRaw) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,

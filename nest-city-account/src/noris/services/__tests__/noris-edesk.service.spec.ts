@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 import { ConnectionPool } from 'mssql'
 
+import BaConfigService from '../../../config/ba-config.service'
 import { EdeskRecordSchema, EdeskStatus } from '../../types/noris.types'
 import { NorisConnectionService } from '../noris-connection.service'
 import { NorisEdeskService } from '../noris-edesk.service'
@@ -27,6 +28,10 @@ describe('NorisEdeskService', () => {
         {
           provide: NorisValidatorService,
           useValue: createMock<NorisValidatorService>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: { database: { concurrency: 10 } },
         },
       ],
     }).compile()

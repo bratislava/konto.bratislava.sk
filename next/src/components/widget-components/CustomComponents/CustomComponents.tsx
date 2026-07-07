@@ -1,17 +1,30 @@
-import { Button } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { CustomComponentType } from 'forms-shared/generator/uiOptionsTypes'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import FormCalculator from '@/src/components/segments/FormCalculator/FormCalculator'
-import AccordionV2 from '@/src/components/simple-components/AccordionV2'
 import Alert from '@/src/components/simple-components/Alert'
+import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
+import DisclosureGroup from '@/src/components/simple-components/Disclosure/DisclosureGroup'
+import DisclosureHeader from '@/src/components/simple-components/Disclosure/DisclosureHeader'
+import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
 
 const CustomComponent = ({ id, component }: { id: string; component: CustomComponentType }) => {
   if (component.type === 'accordion') {
     return (
-      <AccordionV2 title={component.props?.title}>
-        <Markdown variant="accordion" content={component.props?.content} />
-      </AccordionV2>
+      <DisclosureGroup className="rounded-lg border border-border-active-default bg-background-passive-base py-2">
+        <Disclosure id={`disclosure-${id}`}>
+          <DisclosureHeader className="p-4 ring-inset lg:px-6">
+            <Typography variant="h4" as="h3">
+              {component.props?.title}
+            </Typography>
+          </DisclosureHeader>
+
+          <DisclosurePanel className="px-4 lg:px-6">
+            <Markdown variant="accordion" content={component.props?.content} />
+          </DisclosurePanel>
+        </Disclosure>
+      </DisclosureGroup>
     )
   }
 

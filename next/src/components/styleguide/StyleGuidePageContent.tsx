@@ -3,13 +3,13 @@ import { ReactElement } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import { StatusBar } from '@/src/components/simple-components/StatusBar'
-import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
 import AuthFormsShowCase from '@/src/components/styleguide/showcases/AuthFormsShowCase'
 import BannerShowCase from '@/src/components/styleguide/showcases/BannerShowCase'
 import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
+import DisclosureShowCase from '@/src/components/styleguide/showcases/DisclosureShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
 import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
 import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
@@ -61,7 +61,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
   { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
-  { id: 'accordion', label: 'Accordion', component: <AccordionShowCase /> },
+  { id: 'disclosure', label: 'Disclosure', component: <DisclosureShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
   { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
   { id: 'banner', label: 'Banner', component: <BannerShowCase /> },

@@ -8,7 +8,7 @@ import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSumm
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Icon from '@/src/components/icon-components/Icon'
 import Alert from '@/src/components/simple-components/Alert'
-import MenuDropdown from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
 
 /**
@@ -30,7 +30,7 @@ const SummaryFormSignature = () => {
     <div className="flex w-full">
       <span className="grow">{children}</span>
       <div className="ml-2 shrink-0">
-        <MenuDropdown
+        <DropdownMenu
           buttonTrigger={
             <Button
               variant="icon-wrapped-negative-margin"

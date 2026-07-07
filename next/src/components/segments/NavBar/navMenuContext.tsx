@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   Dispatch,
   PropsWithChildren,
@@ -8,27 +8,20 @@ import React, {
 } from 'react'
 
 type NavMenuContextType = {
-  menuValue: string
-  setMenuValue: (value: string) => void
   isMobileMenuOpen: boolean
   setMobileMenuOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const NavMenuContext = createContext<NavMenuContextType>({
-  menuValue: '',
-  setMenuValue: () => {},
   isMobileMenuOpen: false,
   setMobileMenuOpen: () => {},
 })
 
 export const NavMenuContextProvider = ({ children }: PropsWithChildren<object>) => {
-  const [menuValue, setMenuValue] = useState<string>('')
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <NavMenuContext.Provider
-      value={{ menuValue, setMenuValue, isMobileMenuOpen, setMobileMenuOpen }}
-    >
+    <NavMenuContext.Provider value={{ isMobileMenuOpen, setMobileMenuOpen }}>
       {children}
     </NavMenuContext.Provider>
   )

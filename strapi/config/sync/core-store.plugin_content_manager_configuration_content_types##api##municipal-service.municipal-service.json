@@ -48,6 +48,34 @@
           "sortable": true
         }
       },
+      "pageHeaderText": {
+        "edit": {
+          "label": "Text v hlavičke",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "pageHeaderText",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "moreInformationUrl": {
+        "edit": {
+          "label": "Odkaz na viac informácií o službe",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "moreInformationUrl",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "description": {
         "edit": {
           "label": "Kartička - text",
@@ -107,7 +135,7 @@
       },
       "href": {
         "edit": {
-          "label": "Externý odkaz",
+          "label": "Kartička - externý odkaz",
           "description": "Vyplní sa v prípade, že služba smeruje na externú URL mimo konta.",
           "placeholder": "",
           "visible": true,
@@ -289,18 +317,14 @@
         ],
         [
           {
-            "name": "href",
+            "name": "pageHeaderText",
             "size": 12
           }
         ],
         [
           {
-            "name": "form",
-            "size": 6
-          },
-          {
-            "name": "formButtonLabel",
-            "size": 6
+            "name": "moreInformationUrl",
+            "size": 12
           }
         ],
         [
@@ -335,6 +359,22 @@
         ],
         [
           {
+            "name": "href",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "form",
+            "size": 6
+          },
+          {
+            "name": "formButtonLabel",
+            "size": 6
+          }
+        ],
+        [
+          {
             "name": "links",
             "size": 12
           }
@@ -346,13 +386,7 @@
           }
         ]
       ],
-      "list": [
-        "id",
-        "title",
-        "updatedAt",
-        "categories",
-        "form"
-      ]
+      "list": ["id", "title", "updatedAt", "categories", "form"]
     },
     "uid": "api::municipal-service.municipal-service"
   },

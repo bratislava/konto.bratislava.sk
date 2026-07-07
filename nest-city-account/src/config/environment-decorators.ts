@@ -15,6 +15,12 @@ import {
 function BooleanTransform() {
   return Transform(({ value }: { value: unknown }) => {
     if (typeof value === 'string') {
+      // An empty/whitespace-only string means "not set" - treat it as absent so
+      // IsOptional() skips validation instead of IsBoolean() rejecting it and
+      // failing the whole (atomically-validated) config.
+      if (value.trim() === '') {
+        return undefined
+      }
       const lower = value.toLowerCase()
       if (lower === 'true') {
         return true
@@ -29,7 +35,11 @@ function BooleanTransform() {
 
 function NumberTransform() {
   return Transform(({ value }: { value: unknown }) => {
-    if (typeof value === 'string' && value.trim() !== '') {
+    if (typeof value === 'string') {
+      // Same "empty means absent" rule as BooleanTransform above.
+      if (value.trim() === '') {
+        return undefined
+      }
       const num = Number(value)
       return Number.isNaN(num) ? value : num
     }

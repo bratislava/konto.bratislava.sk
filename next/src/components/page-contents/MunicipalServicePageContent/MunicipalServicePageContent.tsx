@@ -56,26 +56,28 @@ const MunicipalServicePageContent = ({
             '**:data-section-container-inner:lg:px-0',
           )}
         >
-          {/* TODO: Temporarily showing data from from, until sections are gradually migrated to municipal services. */}
+          {/* TODO: Temporarily showing landing page from form, until sections are gradually migrated to municipal services. */}
           {filteredSections.length ? (
             <Sections sections={filteredSections} />
           ) : strapiForm?.landingPage?.text ? (
-            <>
-              <SectionContainer>
-                <Markdown content={strapiForm.landingPage.text} />
-              </SectionContainer>
-              <div className="flex flex-col rounded-xl border empty:hidden">
-                {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
-                  <FormLandingPageCard key={linkCta.id} {...linkCta} />
-                ))}
-                {formDefinition && strapiForm.landingPage.formCta ? (
-                  <FormLandingPageCtaCard
-                    formCta={strapiForm.landingPage.formCta}
-                    formDefinition={formDefinition}
-                  />
-                ) : null}
-              </div>
-            </>
+            <SectionContainer>
+              <Markdown content={strapiForm.landingPage.text} />
+            </SectionContainer>
+          ) : null}
+
+          {/* TODO: Temporarily rendering CTA cards from from (links and form CTA), until implement in municipal services. */}
+          {strapiForm?.landingPage ? (
+            <div className="flex flex-col rounded-xl border empty:hidden">
+              {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
+                <FormLandingPageCard key={linkCta.id} {...linkCta} />
+              ))}
+              {formDefinition && strapiForm.landingPage.formCta ? (
+                <FormLandingPageCtaCard
+                  formCta={strapiForm.landingPage.formCta}
+                  formDefinition={formDefinition}
+                />
+              ) : null}
+            </div>
           ) : null}
         </div>
 

@@ -1,6 +1,7 @@
 import { Typography } from '@bratislava/component-library'
 
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
+import Markdown from '@/src/components/formatting/Markdown'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -15,7 +16,9 @@ export type MunicipalServicePageContentProps = {
 }
 
 const MunicipalServicePageContent = ({ municipalService }: MunicipalServicePageContentProps) => {
-  const filteredSections = municipalService.sections?.filter(isDefined) ?? []
+  const { sections, form: strapiForm } = municipalService
+
+  const filteredSections = sections?.filter(isDefined) ?? []
 
   return (
     <>
@@ -44,7 +47,14 @@ const MunicipalServicePageContent = ({ municipalService }: MunicipalServicePageC
             '**:data-section-container-inner:lg:px-0',
           )}
         >
-          <Sections sections={filteredSections} />
+          {/* TODO: Temporarily showing data from from, until sections are gradually migrated to municipal services. */}
+          {filteredSections.length ? (
+            <Sections sections={filteredSections} />
+          ) : strapiForm?.landingPage?.text ? (
+            <SectionContainer>
+              <Markdown content={strapiForm.landingPage.text} />
+            </SectionContainer>
+          ) : null}
         </div>
         {/* TODO Sidebar goes here */}
       </div>

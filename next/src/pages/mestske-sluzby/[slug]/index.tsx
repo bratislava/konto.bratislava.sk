@@ -3,7 +3,11 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 
 import { formsClient } from '@/src/clients/forms'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { FormWithLandingPageFragment, GeneralQuery } from '@/src/clients/graphql-strapi/api'
+import {
+  FormWithLandingPageFragment,
+  GeneralQuery,
+  MunicipalServiceEntityFragment,
+} from '@/src/clients/graphql-strapi/api'
 import { makeClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import FormCreatedSplitPage, {
   FormCreatedSplitPageProps,
@@ -38,6 +42,14 @@ export const formHasLandingPage = (
   return Boolean(form?.landingPage)
 }
 
+const fetchMunicipalService = async (
+  slug: string,
+): Promise<MunicipalServiceEntityFragment | null | undefined> => {
+  const result = await strapiClient.MunicipalServiceBySlug({ slug })
+
+  return result.municipalServices[0]
+}
+
 type Props = FormCreatedSplitPageProps & {
   general: GeneralQuery
 }
@@ -54,7 +66,24 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
       return { notFound: true }
     }
 
-    const [general, strapiForm] = await Promise.all([strapiClient.General(), fetchStrapiForm(slug)])
+    const [general, municipalService, strapiForm] = await Promise.all([
+      strapiClient.General(),
+      fetchMunicipalService(slug),
+      fetchStrapiForm(slug),
+    ])
+
+    if (municipalService) {
+      return {
+        props: {
+          general,
+          type: 'municipalService',
+          municipalService,
+          // formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition),
+          ...(await slovakServerSideTranslations()),
+        },
+      }
+    }
+
     if (formHasLandingPage(strapiForm)) {
       return {
         props: {

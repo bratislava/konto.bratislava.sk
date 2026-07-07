@@ -1,4 +1,5 @@
 import { Typography } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
 
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
 import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
@@ -8,6 +9,7 @@ import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
 import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
+import MLink from '@/src/components/simple-components/MLink'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
@@ -24,7 +26,8 @@ const MunicipalServicePageContent = ({
   municipalService,
   formDefinition,
 }: MunicipalServicePageContentProps) => {
-  const { sections, form: strapiForm } = municipalService
+  const { t } = useTranslation('forms')
+  const { sections, form: strapiForm, pageHeaderText, moreInformationUrl } = municipalService
 
   const filteredSections = sections?.filter(isDefined) ?? []
 
@@ -34,7 +37,12 @@ const MunicipalServicePageContent = ({
       <SectionContainer className="size-full bg-background-passive-primary py-6 lg:min-h-[120px] lg:py-12">
         <div className="flex flex-col gap-2 lg:gap-4">
           <Typography variant="h1">{municipalService.title}</Typography>
-          {/* TODO text and moreInfo link? */}
+          {pageHeaderText ? <Typography>{pageHeaderText}</Typography> : null}
+          {moreInformationUrl ? (
+            <MLink className="w-max" variant="underlined" href={moreInformationUrl} target="_blank">
+              {t('form_header.services_link')}
+            </MLink>
+          ) : null}
         </div>
       </SectionContainer>
 

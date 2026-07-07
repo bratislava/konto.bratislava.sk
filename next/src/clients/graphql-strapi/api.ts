@@ -1618,6 +1618,8 @@ export type MunicipalService = {
   href?: Maybe<Scalars['String']['output']>
   icon: Enum_Municipalservice_Icon
   links?: Maybe<Array<Maybe<ComponentBlocksMunicipalServiceLink>>>
+  moreInformationUrl?: Maybe<Scalars['String']['output']>
+  pageHeaderText?: Maybe<Scalars['String']['output']>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   sections?: Maybe<Array<Maybe<MunicipalServiceSectionsDynamicZone>>>
   slug: Scalars['String']['output']
@@ -1750,8 +1752,10 @@ export type MunicipalServiceFiltersInput = {
   href?: InputMaybe<StringFilterInput>
   icon?: InputMaybe<StringFilterInput>
   links?: InputMaybe<ComponentBlocksMunicipalServiceLinkFiltersInput>
+  moreInformationUrl?: InputMaybe<StringFilterInput>
   not?: InputMaybe<MunicipalServiceFiltersInput>
   or?: InputMaybe<Array<InputMaybe<MunicipalServiceFiltersInput>>>
+  pageHeaderText?: InputMaybe<StringFilterInput>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   slug?: InputMaybe<StringFilterInput>
   tags?: InputMaybe<MunicipalServiceTagFiltersInput>
@@ -1769,6 +1773,8 @@ export type MunicipalServiceInput = {
   href?: InputMaybe<Scalars['String']['input']>
   icon?: InputMaybe<Enum_Municipalservice_Icon>
   links?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceLinkInput>>>
+  moreInformationUrl?: InputMaybe<Scalars['String']['input']>
+  pageHeaderText?: InputMaybe<Scalars['String']['input']>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   sections?: InputMaybe<Array<Scalars['MunicipalServiceSectionsDynamicZoneInput']['input']>>
   slug?: InputMaybe<Scalars['String']['input']>
@@ -3815,6 +3821,8 @@ export type MunicipalServiceCardEntityFragment = {
 
 export type MunicipalServiceEntityFragment = {
   __typename?: 'MunicipalService'
+  pageHeaderText?: string | null
+  moreInformationUrl?: string | null
   description: string
   buttonText: string
   color: Enum_Municipalservice_Color
@@ -3972,6 +3980,8 @@ export type MunicipalServiceBySlugQuery = {
   __typename?: 'Query'
   municipalServices: Array<{
     __typename?: 'MunicipalService'
+    pageHeaderText?: string | null
+    moreInformationUrl?: string | null
     description: string
     buttonText: string
     color: Enum_Municipalservice_Color
@@ -4130,6 +4140,8 @@ export type MunicipalServicesPageQuery = {
     __typename?: 'MunicipalServicesPage'
     services: Array<{
       __typename?: 'MunicipalService'
+      pageHeaderText?: string | null
+      moreInformationUrl?: string | null
       description: string
       buttonText: string
       color: Enum_Municipalservice_Color
@@ -4280,6 +4292,8 @@ export type MunicipalServicesPageQuery = {
     } | null>
     servicesLegalPerson: Array<{
       __typename?: 'MunicipalService'
+      pageHeaderText?: string | null
+      moreInformationUrl?: string | null
       description: string
       buttonText: string
       color: Enum_Municipalservice_Color
@@ -5133,6 +5147,8 @@ export const MunicipalServiceSectionsFragmentDoc = gql`
 export const MunicipalServiceEntityFragmentDoc = gql`
   fragment MunicipalServiceEntity on MunicipalService {
     ...MunicipalServiceCardEntity
+    pageHeaderText
+    moreInformationUrl
     form {
       ...FormWithLandingPage
     }

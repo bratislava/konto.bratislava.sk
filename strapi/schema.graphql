@@ -1325,6 +1325,8 @@ type MunicipalService {
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON!
   links(filters: ComponentBlocksMunicipalServiceLinkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksMunicipalServiceLink]
+  moreInformationUrl: String
+  pageHeaderText: String
   publishedAt: DateTime
   sections: [MunicipalServiceSectionsDynamicZone]
   slug: String!
@@ -1407,8 +1409,10 @@ input MunicipalServiceFiltersInput {
   href: StringFilterInput
   icon: StringFilterInput
   links: ComponentBlocksMunicipalServiceLinkFiltersInput
+  moreInformationUrl: StringFilterInput
   not: MunicipalServiceFiltersInput
   or: [MunicipalServiceFiltersInput]
+  pageHeaderText: StringFilterInput
   publishedAt: DateTimeFilterInput
   slug: StringFilterInput
   tags: MunicipalServiceTagFiltersInput
@@ -1426,6 +1430,8 @@ input MunicipalServiceInput {
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
   links: [ComponentBlocksMunicipalServiceLinkInput]
+  moreInformationUrl: String
+  pageHeaderText: String
   publishedAt: DateTime
   sections: [MunicipalServiceSectionsDynamicZoneInput!]
   slug: String

@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "slug",
-      "defaultSortBy": "moreInformationUrl",
-      "defaultSortOrder": "ASC",
+      "defaultSortBy": "updatedAt",
+      "defaultSortOrder": "DESC",
       "relationOpenMode": "modal"
     },
     "metadatas": {
@@ -145,12 +145,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "slug",
-        "moreInformationUrl",
-        "landingPage"
-      ],
       "edit": [
         [
           {
@@ -172,6 +166,13 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "slug",
+        "updatedAt",
+        "moreInformationUrl",
+        "municipalService"
       ]
     },
     "uid": "api::form.form"

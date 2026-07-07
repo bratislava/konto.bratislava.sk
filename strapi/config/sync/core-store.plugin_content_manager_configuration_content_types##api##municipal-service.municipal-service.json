@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "title",
-      "defaultSortBy": "title",
-      "defaultSortOrder": "ASC",
+      "defaultSortBy": "updatedAt",
+      "defaultSortOrder": "DESC",
       "relationOpenMode": "modal"
     },
     "metadatas": {
@@ -83,7 +83,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "moreInformationUrl"
+          "mainField": "slug"
         },
         "list": {
           "label": "form",
@@ -346,7 +346,13 @@
           }
         ]
       ],
-      "list": ["id", "title", "description", "buttonText"]
+      "list": [
+        "id",
+        "title",
+        "updatedAt",
+        "categories",
+        "form"
+      ]
     },
     "uid": "api::municipal-service.municipal-service"
   },

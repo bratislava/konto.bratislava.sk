@@ -35,6 +35,7 @@ import {
 } from '@/src/clients/graphql-strapi/api'
 import ServiceCard from '@/src/components/simple-components/ServiceCard'
 import { isDefined } from '@/src/frontend/utils/general'
+import { ROUTES } from '@/src/utils/routes'
 
 const getIconComponent = (
   iconName: Enum_Municipalservice_Icon,
@@ -122,7 +123,7 @@ const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => (
     description={service.description}
     buttonText={service.buttonText}
     icon={getIconComponent(service.icon, service.color)}
-    href={service.href}
+    href={service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug)}
     tags={service.tags.map((tag) => tag?.title).filter(isDefined)}
     tagStyle={getTagStyle(service.color)}
     analyticsProps={{ id: `Mestské služby: ${service.title}` }}

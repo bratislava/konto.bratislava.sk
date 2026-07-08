@@ -23,6 +23,7 @@ export const ROUTES = {
   TAXES_AND_FEES_PAYMENT: ({ year, type, order }: TaxFeeRouteProps) =>
     `/dane-a-poplatky/${year}/${type}/${order}/platba`,
   MUNICIPAL_SERVICES: '/mestske-sluzby',
+  // TODO revisit after landing pages migration
   MUNICIPAL_SERVICES_FORM: (formSlug: string) => `/mestske-sluzby/${formSlug}`,
   MUNICIPAL_SERVICES_FORM_WITH_ID: (formSlug: string, formId: string) =>
     `/mestske-sluzby/${formSlug}/${formId}`,

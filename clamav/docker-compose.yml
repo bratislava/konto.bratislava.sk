@@ -7,7 +7,7 @@ services:
       - '3310:3310'
     environment:
       - CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
-    restart: always
+    restart: unless-stopped
     networks:
       - konto
 

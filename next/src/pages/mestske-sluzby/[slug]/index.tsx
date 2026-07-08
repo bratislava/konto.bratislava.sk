@@ -1,4 +1,5 @@
 import { isAxiosError } from 'axios'
+import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import { formsClient } from '@/src/clients/forms'
@@ -61,7 +62,6 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
     }
 
     const { slug } = context.params
-    const serverFormDefinition = getFormDefinitionBySlug(slug)
 
     const [general, municipalService, strapiForm] = await Promise.all([
       strapiClient.General(),
@@ -69,15 +69,26 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
       fetchStrapiForm(slug),
     ])
 
-    // In Municipal Service landing page, form is not required.
+    // In Municipal Service landing page, we fetch the form from linked relation, and it is not required.
     if (municipalService) {
+      let serverFormDefinitionFromMunicipalService: FormDefinition | null = null
+      if (municipalService.form?.slug) {
+        serverFormDefinitionFromMunicipalService = getFormDefinitionBySlug(
+          municipalService.form.slug,
+        )
+      }
+
       return {
         props: {
           general,
           type: 'municipalService',
           municipalService,
-          ...(serverFormDefinition
-            ? { formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition) }
+          ...(serverFormDefinitionFromMunicipalService
+            ? {
+                formDefinition: makeClientLandingPageFormDefinition(
+                  serverFormDefinitionFromMunicipalService,
+                ),
+              }
             : {}),
           ...(await slovakServerSideTranslations()),
         },
@@ -87,6 +98,8 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
     // TODO Revisit after landing pages migration.
     //  In this older implementation of Form lading page, formDefinition is required.
     //  Keeping the old implementation for form landing page / redirect as is for now.
+
+    const serverFormDefinition = getFormDefinitionBySlug(slug)
 
     if (!serverFormDefinition) {
       return { notFound: true }

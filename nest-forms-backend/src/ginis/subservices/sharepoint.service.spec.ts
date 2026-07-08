@@ -15,7 +15,6 @@ import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint
 
 import prismaMock from '../../../test/singleton'
 import { createTestFormDefinitionSlovenskoSkGeneric } from '../../__tests__/factories/formDefinition.factory'
-import { expectObjectContaining } from '../../__tests__/jest-matchers'
 import BaConfigService from '../../config/ba-config.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
@@ -427,12 +426,10 @@ describe('SharepointService', () => {
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue(mockFormDefinition)
 
-      await expect(service.postNewRecord('formId')).rejects.toThrow(
-        expectObjectContaining({
-          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-        }) as unknown as Error,
-      )
+      await expect(service.postNewRecord('formId')).rejects.toMatchObject({
+        message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
 
       // Verify that no update was attempted
       expect(prismaMock.forms.update).not.toHaveBeenCalled()

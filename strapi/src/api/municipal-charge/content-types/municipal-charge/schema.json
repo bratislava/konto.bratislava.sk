@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "municipal_charges",
+  "info": {
+    "singularName": "municipal-charge",
+    "pluralName": "municipal-charges",
+    "displayName": "Dane a poplatky"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "feedbackLink": {
+      "type": "string"
+    }
+  }
+}

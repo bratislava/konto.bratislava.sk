@@ -12,6 +12,7 @@
       "properties": {
         "fields": [
           "slug",
+          "municipalService",
           "moreInformationUrl",
           "landingPage.text",
           "landingPage.linkCtas.title",
@@ -20,12 +21,11 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
-      "documentId": "gp1z0o0646904l56eejcwjko",
+      "documentId": "odqcr1v9lz4zo1mzs7f1tjxs",
       "locale": null
     },
     {
@@ -35,6 +35,7 @@
       "properties": {
         "fields": [
           "slug",
+          "municipalService",
           "moreInformationUrl",
           "landingPage.text",
           "landingPage.linkCtas.title",
@@ -43,12 +44,11 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
-      "documentId": "xoao81x7k0tl8dzmusfic91y",
+      "documentId": "gknp3gbc9b92169spwm8rwb7",
       "locale": null
     },
     {
@@ -58,6 +58,7 @@
       "properties": {
         "fields": [
           "slug",
+          "municipalService",
           "moreInformationUrl",
           "landingPage.text",
           "landingPage.linkCtas.title",
@@ -66,12 +67,11 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
-      "documentId": "oje6gdquv5wvrvz0cyqlzga4",
+      "documentId": "e31y47k13zsqiw642gjmq7g9",
       "locale": null
     },
     {

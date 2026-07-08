@@ -1,10 +1,10 @@
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import BaConfigService from '../../config/ba-config.service'
+import { Prisma, TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import DatabaseSubservice from '../../utils/subservices/database.subservice'
@@ -50,7 +50,23 @@ const makePosRow = (overrides: Partial<Record<CsvColumns, string>> = {}) => {
 
 describe('CardPaymentReportingService', () => {
   let service: CardPaymentReportingService
-  let mockConfigService: { getOrThrow: jest.Mock }
+  let mockBaConfigService: {
+    cardPaymentReporting: {
+      ico?: string
+      [TaxType.DZN]: {
+        sftpFilesPath?: string
+        fileName?: string
+        accountId?: string
+        bankId?: string
+      }
+      [TaxType.KO]: {
+        sftpFilesPath?: string
+        fileName?: string
+        accountId?: string
+        bankId?: string
+      }
+    }
+  }
   let mockSftpFileSubservice: { getNewFiles: jest.Mock }
   let mockDatabaseSubservice: {
     getVariableSymbolsByOrderIds: jest.Mock
@@ -69,8 +85,11 @@ describe('CardPaymentReportingService', () => {
       config: { findMany: jest.fn() },
       csvFile: { createMany: jest.fn() },
     }
-    mockConfigService = {
-      getOrThrow: jest.fn(),
+    mockBaConfigService = {
+      cardPaymentReporting: {
+        [TaxType.DZN]: {},
+        [TaxType.KO]: {},
+      },
     }
     mockSftpFileSubservice = {
       getNewFiles: jest.fn().mockResolvedValue([]),
@@ -90,7 +109,7 @@ describe('CardPaymentReportingService', () => {
       providers: [
         CardPaymentReportingService,
         { provide: PrismaService, useValue: mockPrismaService },
-        { provide: ConfigService, useValue: mockConfigService },
+        { provide: BaConfigService, useValue: mockBaConfigService },
         {
           provide: ThrowerErrorGuard,
           useValue: { InternalServerErrorException: jest.fn() },
@@ -254,24 +273,22 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
   })
 
   describe('generateAndSendPaymentReport', () => {
-    const envValues: Record<string, string> = {
-      REPORTING_SFTP_FILES_PATH: '7322226495/oms/cz',
-      REPORTING_FILE_NAME: 'pbr24',
-      REPORTING_ACCOUNT_ID: '1234567890123456',
-      REPORTING_BANK_ID: '1100',
-      REPORTING_PKO_SFTP_FILES_PATH: '7322257895/oms/cz',
-      REPORTING_PKO_FILE_NAME: 'pbr26',
-      REPORTING_PKO_ACCOUNT_ID: '6543210987654321',
-      REPORTING_PKO_BANK_ID: '2200',
-      REPORTING_ICO: '00603481',
-    }
-
     beforeEach(() => {
-      mockConfigService.getOrThrow.mockImplementation((key: string) => {
-        const value = envValues[key]
-        if (!value) throw new Error(`Missing config key: ${key}`)
-        return value
-      })
+      mockBaConfigService.cardPaymentReporting = {
+        ico: '00603481',
+        [TaxType.DZN]: {
+          sftpFilesPath: '7322226495/oms/cz',
+          fileName: 'pbr24',
+          accountId: '1234567890123456',
+          bankId: '1100',
+        },
+        [TaxType.KO]: {
+          sftpFilesPath: '7322257895/oms/cz',
+          fileName: 'pbr26',
+          accountId: '6543210987654321',
+          bankId: '2200',
+        },
+      }
     })
 
     it('should process files from both DzN and PKO SFTP paths', async () => {

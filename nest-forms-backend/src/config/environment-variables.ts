@@ -229,4 +229,7 @@ export default class EnvironmentVariables {
 
   @EnvInt(0)
   MAX_CUMULATIVE_FILE_SIZE: number
+
+  @EnvString()
+  MIMETYPE_WHITELIST: string
 }

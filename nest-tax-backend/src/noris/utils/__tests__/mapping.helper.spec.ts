@@ -1,5 +1,4 @@
-import { TaxType } from '@prisma/client'
-
+import { TaxType } from '../../../generated/prisma/client'
 import {
   RealEstateTaxAreaType,
   RealEstateTaxPropertyType,
@@ -402,19 +401,19 @@ describe('mapNorisToDatabaseBaseTax', () => {
   })
 
   it('should convert dan_spolu currency string to integer amount', () => {
-    const data = { ...baseMockData, dan_spolu: '99,99' } as NorisBaseTax
+    const data = { ...baseMockData, dan_spolu: '99,99' }
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
     expect(result.amount).toBe(9999)
   })
 
   it('should handle dan_spolu with dot decimal separator', () => {
-    const data = { ...baseMockData, dan_spolu: '100.25' } as NorisBaseTax
+    const data = { ...baseMockData, dan_spolu: '100.25' }
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
     expect(result.amount).toBe(10_025)
   })
 
   it('should set isCancelled to true when stav_dokladu is S', () => {
-    const data = { ...baseMockData, stav_dokladu: 'S' } as NorisBaseTax
+    const data = { ...baseMockData, stav_dokladu: 'S' as const }
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
     expect(result.isCancelled).toBe(true)
   })
@@ -472,7 +471,7 @@ describe('mapNorisToDatabaseBaseTax', () => {
     const data = {
       ...baseMockData,
       variabilny_symbol: 'VS-12345',
-    } as NorisBaseTax
+    }
     const result = mapNorisToDatabaseBaseTax(data, 2024, 1)
     expect(result.variableSymbol).toBe('VS-12345')
   })

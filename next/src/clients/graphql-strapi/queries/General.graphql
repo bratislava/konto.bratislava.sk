@@ -2,7 +2,7 @@ fragment CommonLink on ComponentBlocksCommonLink {
   label
   municipalService {
     title
-    href
+    ...MunicipalServiceRedirect
   }
   url
 }

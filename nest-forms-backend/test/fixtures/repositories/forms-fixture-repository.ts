@@ -1,6 +1,6 @@
 import { TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 
+import { Forms } from '../../../src/generated/prisma/client'
 import PrismaService from '../../../src/prisma/prisma.service'
 
 export class FormsFixtureRepository {

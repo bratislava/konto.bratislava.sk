@@ -1,11 +1,13 @@
 import { createNestConfig } from '@bratislava/eslint-config-nest'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
 import customRulesPlugin from './eslint-custom-rules/index.js'
 
-export default [
+export default defineConfig([
   ...createNestConfig({
     tsconfigRootDir: import.meta.dirname,
   }),
+  globalIgnores(['src/generated/prisma/']),
   {
     plugins: {
       'custom-rules': customRulesPlugin,
@@ -47,7 +49,8 @@ export default [
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       'sonarjs/no-nested-functions': 'off',
     },
   },
-]
+])

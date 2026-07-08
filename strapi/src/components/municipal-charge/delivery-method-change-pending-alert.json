@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_municipal_charge_delivery_method_change_pending_alerts",
+  "info": {
+    "displayName": "deliveryMethodChangePendingAlert"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    }
+  },
+  "config": {}
+}

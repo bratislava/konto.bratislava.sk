@@ -20,7 +20,7 @@ export default async function e2eGlobalSetup(): Promise<void> {
   }
 
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  execSync('npx prisma db push --skip-generate', {
+  execSync('npx prisma db push', {
     stdio: 'inherit',
     env: process.env,
   })

@@ -69,6 +69,45 @@ export const InstallmentPaidStatusEnum = {
 export type InstallmentPaidStatusEnum =
   (typeof InstallmentPaidStatusEnum)[keyof typeof InstallmentPaidStatusEnum]
 
+/**
+ * Reason why installment is not possible
+ */
+
+export const InstallmentPaymentReasonNotPossibleEnum = {
+  BelowThreshold: 'BELOW_THRESHOLD',
+  AfterDueDate: 'AFTER_DUE_DATE',
+  AlreadyPaid: 'ALREADY_PAID',
+  TaxIsCancelled: 'TAX_IS_CANCELLED',
+  JustOneInstallment: 'JUST_ONE_INSTALLMENT',
+} as const
+
+export type InstallmentPaymentReasonNotPossibleEnum =
+  (typeof InstallmentPaymentReasonNotPossibleEnum)[keyof typeof InstallmentPaymentReasonNotPossibleEnum]
+
+/**
+ * Reason why payment is not possible
+ */
+
+export const OneTimePaymentReasonNotPossibleEnum = {
+  AlreadyPaid: 'ALREADY_PAID',
+  TaxIsCancelled: 'TAX_IS_CANCELLED',
+} as const
+
+export type OneTimePaymentReasonNotPossibleEnum =
+  (typeof OneTimePaymentReasonNotPossibleEnum)[keyof typeof OneTimePaymentReasonNotPossibleEnum]
+
+/**
+ * Type of payment
+ */
+
+export const OneTimePaymentTypeEnum = {
+  OneTimePayment: 'ONE_TIME_PAYMENT',
+  RemainingAmountPayment: 'REMAINING_AMOUNT_PAYMENT',
+} as const
+
+export type OneTimePaymentTypeEnum =
+  (typeof OneTimePaymentTypeEnum)[keyof typeof OneTimePaymentTypeEnum]
+
 export interface PaymentControllerPaymentResponse302Response {
   /**
    * Redirect URL with status query parameter. Status values are defined in PaymentRedirectStateEnum.
@@ -537,7 +576,7 @@ export interface ResponseInstallmentPaymentDetailDto {
   /**
    * Reason why installment is not possible
    */
-  reasonNotPossible?: ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum
+  reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum
   /**
    * Latest possible due date.
    */
@@ -551,17 +590,6 @@ export interface ResponseInstallmentPaymentDetailDto {
    */
   activeInstallment?: ResponseActiveInstallmentDto
 }
-
-export const ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum = {
-  BelowThreshold: 'BELOW_THRESHOLD',
-  AfterDueDate: 'AFTER_DUE_DATE',
-  AlreadyPaid: 'ALREADY_PAID',
-  TaxIsCancelled: 'TAX_IS_CANCELLED',
-  JustOneInstallment: 'JUST_ONE_INSTALLMENT',
-} as const
-
-export type ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum =
-  (typeof ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum)[keyof typeof ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum]
 
 export interface ResponseInternalServerErrorDto {
   /**
@@ -581,11 +609,11 @@ export interface ResponseOneTimePaymentDetailsDto {
   /**
    * Type of payment
    */
-  type?: ResponseOneTimePaymentDetailsDtoTypeEnum
+  type?: OneTimePaymentTypeEnum
   /**
    * Reason why payment is not possible
    */
-  reasonNotPossible?: ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum
+  reasonNotPossible?: OneTimePaymentReasonNotPossibleEnum
   /**
    * Payment amount
    */
@@ -603,21 +631,6 @@ export interface ResponseOneTimePaymentDetailsDto {
    */
   variableSymbol?: string
 }
-
-export const ResponseOneTimePaymentDetailsDtoTypeEnum = {
-  OneTimePayment: 'ONE_TIME_PAYMENT',
-  RemainingAmountPayment: 'REMAINING_AMOUNT_PAYMENT',
-} as const
-
-export type ResponseOneTimePaymentDetailsDtoTypeEnum =
-  (typeof ResponseOneTimePaymentDetailsDtoTypeEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoTypeEnum]
-export const ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum = {
-  AlreadyPaid: 'ALREADY_PAID',
-  TaxIsCancelled: 'TAX_IS_CANCELLED',
-} as const
-
-export type ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum =
-  (typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum]
 
 export interface ResponseRealEstateTaxDetailItemizedDto {
   /**

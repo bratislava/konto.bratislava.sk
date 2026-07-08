@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_sections_towings",
+  "info": {
+    "displayName": "Odťahy"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

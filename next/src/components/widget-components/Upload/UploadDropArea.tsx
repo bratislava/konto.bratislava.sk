@@ -25,6 +25,10 @@ interface UploadDropAreaProps {
   onUpload?: (files: File[]) => void
 }
 
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16743-7965
+ */
+
 const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
   (
     {

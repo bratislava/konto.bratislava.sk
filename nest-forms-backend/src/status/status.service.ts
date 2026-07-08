@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { ServiceRunningDto } from './dtos/status.dto'
 import {
   StatusErrorsEnum,
@@ -16,7 +16,7 @@ export default class StatusService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private minioClientSubservice: MinioClientSubservice,
+    private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
     private readonly scannerClientService: ScannerClientService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -72,7 +72,7 @@ export default class StatusService {
   // function which checks if minio is running
   public isMinioRunning(): ServiceRunningDto {
     try {
-      const result = this.minioClientSubservice.client()
+      const result = this.minioStorageService.client()
       this.logger.log(result)
       return {
         running: true,

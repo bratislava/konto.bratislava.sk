@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
 import dayjs from 'dayjs'
 import * as mssql from 'mssql'
@@ -12,6 +11,8 @@ import {
   RequestPostNorisPaymentDataLoadDto,
 } from '../../admin/dtos/requests.dto'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import BaConfigService from '../../config/ba-config.service'
+import { PaymentStatus, TaxPayment } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import {
   ErrorsEnum,
@@ -36,9 +37,7 @@ import { NorisValidatorSubservice } from './noris-validator.subservice'
 export class NorisPaymentSubservice {
   private readonly logger: Logger = new Logger('NorisService')
 
-  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
-
-  private readonly concurrencyLimit = pLimit(this.concurrency)
+  private readonly concurrencyLimit: ReturnType<typeof pLimit>
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -47,7 +46,10 @@ export class NorisPaymentSubservice {
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly norisValidatorSubservice: NorisValidatorSubservice,
-  ) {}
+    private readonly baConfigService: BaConfigService,
+  ) {
+    this.concurrencyLimit = pLimit(this.baConfigService.database.concurrency)
+  }
 
   async getPaymentDataFromNoris(
     data: RequestPostNorisPaymentDataLoadDto,
@@ -326,7 +328,9 @@ export class NorisPaymentSubservice {
 
   private isHistoricalPayment(norisPayment: NorisTaxPayment): boolean {
     const { datum_posledni_platby } = norisPayment
-    if (!datum_posledni_platby) return false
+    if (!datum_posledni_platby) {
+      return false
+    }
     return dayjs(datum_posledni_platby).isBefore(dayjs().subtract(180, 'day'))
   }
 

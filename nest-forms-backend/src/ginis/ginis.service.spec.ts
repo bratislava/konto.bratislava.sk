@@ -5,7 +5,6 @@ import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Files, FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -14,11 +13,18 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
+import {
+  Files,
+  FormError,
+  Forms,
+  FormState,
+  GinisState,
+} from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
@@ -53,24 +59,8 @@ jest.mock('forms-shared/slovensko-sk/xmlBuilder', () => ({
 describe('GinisService', () => {
   let service: GinisService
 
-  const { JEST_WORKER_ID } = process.env
-
   beforeEach(async () => {
     jest.resetAllMocks()
-
-    process.env = {
-      MAILGUN_API_KEY: 'test',
-      MAILGUN_DOMAIN: 'test',
-      MAILGUN_HOST: 'test',
-      MAILGUN_EMAIL_FROM: 'test',
-      RABBIT_MQ_USERNAME: 'test',
-      // eslint-disable-next-line sonarjs/no-hardcoded-passwords
-      RABBIT_MQ_PASSWORD: 'test',
-      RABBIT_MQ_HOST: 'test',
-      RABBIT_MQ_PORT: 'test',
-      NODE_ENV: 'development',
-      JEST_WORKER_ID: JEST_WORKER_ID ?? '1',
-    }
 
     const randomMocked = randomUUID as jest.MockedFunction<typeof randomUUID>
     randomMocked.mockReturnValue('mock-mock-mock-mock-mock')
@@ -84,7 +74,7 @@ describe('GinisService', () => {
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         { provide: ConvertService, useValue: createMock<ConvertService>() },
         {
-          provide: MinioClientSubservice,
+          provide: MinioStorageService,
           useValue: {
             download: jest.fn(),
           },
@@ -103,6 +93,9 @@ describe('GinisService', () => {
         {
           provide: BaConfigService,
           useValue: {
+            environment: {
+              nodeEnv: 'development',
+            },
             ginisApi: {
               username: '',
               password: '',
@@ -709,7 +702,7 @@ describe('GinisService', () => {
         .mockImplementation(async (fn) => fn())
 
       jest
-        .spyOn(service['minioClientSubservice'], 'download')
+        .spyOn(service['minioStorageService'], 'download')
         .mockResolvedValue(mockStream)
 
       jest

@@ -159,7 +159,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </div>
           ),
           text: (
-            <Typography className="text-warning-700">
+            <Typography variant="p-small" className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.delivered_nases')}
             </Typography>
           ),
@@ -172,7 +172,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </div>
           ),
           text: (
-            <Typography className="text-warning-700">
+            <Typography variant="p-small" className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.status_sending')}
             </Typography>
           ),
@@ -185,7 +185,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </div>
           ),
           text: (
-            <Typography className="text-warning-700">
+            <Typography variant="p-small" className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.status_processing')}
             </Typography>
           ),
@@ -198,7 +198,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </div>
           ),
           text: (
-            <Typography className="text-success-700">
+            <Typography variant="p-small" className="text-success-700">
               {t('account_section_applications.navigation_concept_card.status_finished')}
             </Typography>
           ),
@@ -211,7 +211,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </div>
           ),
           text: (
-            <Typography className="text-error">
+            <Typography variant="p-small" className="text-error">
               {t('account_section_applications.navigation_concept_card.status_rejected')}
             </Typography>
           ),
@@ -224,7 +224,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </div>
           ),
           text: (
-            <Typography className="text-error">
+            <Typography variant="p-small" className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
             </Typography>
           ),
@@ -238,7 +238,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
             </div>
           ),
           text: (
-            <Typography className="text-error">
+            <Typography variant="p-small" className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
             </Typography>
           ),

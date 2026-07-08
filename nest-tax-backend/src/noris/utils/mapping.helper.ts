@@ -1,6 +1,6 @@
-import { TaxType } from '@prisma/client'
 import currency from 'currency.js'
 
+import { TaxType } from '../../generated/prisma/client'
 import {
   CommunalWasteTaxDetail,
   RealEstateTaxAreaType,

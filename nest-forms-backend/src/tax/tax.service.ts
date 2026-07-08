@@ -2,7 +2,6 @@ import path from 'node:path'
 
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
-import { TaxFormData } from 'forms-shared/tax-form/types'
 import Piscina from 'piscina'
 
 @Injectable()
@@ -26,7 +25,7 @@ export default class TaxService implements OnModuleDestroy {
     /* Generating tax PDF is resource intensive. The generation usually takes ~3 seconds. Only a handful of concurrent
      * tasks completely block the main thread. */
     return this.pdfPool.run({
-      formData: formData as TaxFormData,
+      formData,
       formId,
     })
   }

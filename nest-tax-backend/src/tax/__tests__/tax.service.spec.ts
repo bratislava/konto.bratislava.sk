@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { PaymentStatus, Prisma, TaxType } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import { createTestTax } from '../../__tests__/factories/tax.factory'
@@ -8,6 +7,7 @@ import { createTestTaxAdministratorEntry } from '../../__tests__/factories/taxAd
 import { createTestTaxInstallment } from '../../__tests__/factories/taxInstallment.factory'
 import { createTestTaxPayer } from '../../__tests__/factories/taxPayer.factory'
 import { createTestTaxPayment } from '../../__tests__/factories/taxPayment.factory'
+import { PaymentStatus, Prisma, TaxType } from '../../generated/prisma/client'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { PaymentService } from '../../payment/payment.service'
 import type { CommunalWasteTaxDetail } from '../../prisma/json-types'

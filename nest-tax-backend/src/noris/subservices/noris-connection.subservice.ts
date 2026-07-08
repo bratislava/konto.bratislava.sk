@@ -1,7 +1,7 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
+import BaConfigService from '../../config/ba-config.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { NORIS_SILENT_CONNECTION_ERRORS_KEY } from '../../utils/constants'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
@@ -16,22 +16,10 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
   )
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly prismaService: PrismaService,
-  ) {
-    if (
-      !process.env.MSSQL_HOST ||
-      !process.env.MSSQL_DB ||
-      !process.env.MSSQL_USERNAME ||
-      !process.env.MSSQL_PASSWORD
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Missing one of noris envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
-      )
-    }
-  }
+  ) {}
 
   async onModuleDestroy(): Promise<void> {
     try {
@@ -52,13 +40,13 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
 
   private async createConnection(): Promise<ConnectionPool> {
     return await connect({
-      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
+      server: this.baConfigService.noris.host,
       port: 1433,
-      database: this.configService.getOrThrow<string>('MSSQL_DB'),
-      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+      database: this.baConfigService.noris.database,
+      user: this.baConfigService.noris.username,
       connectionTimeout: 120_000,
       requestTimeout: 120_000,
-      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
+      password: this.baConfigService.noris.password,
       options: {
         encrypt: true,
         trustServerCertificate: true,
@@ -140,8 +128,8 @@ export class NorisConnectionSubservice implements OnModuleDestroy {
         CustomErrorNorisTypesEnum.CONNECTION_ERROR,
         this.addMssqlErrorDetailsToErrorMessage(errorMessage, error),
         undefined,
-        error instanceof Error ? undefined : (error as string),
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
 

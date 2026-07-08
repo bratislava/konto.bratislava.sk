@@ -1,7 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
@@ -9,17 +7,19 @@ import {
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
+import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import { Forms } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertPdfService from './convert-pdf.service'
 
 jest.mock('../files/files.service')
@@ -56,14 +56,6 @@ describe('ConvertPdfService', () => {
     slotId: 'fake-slot',
   } as const
 
-  beforeAll(() => {
-    process.env = {
-      ...process.env,
-      MIMETYPE_WHITELIST: 'a b c',
-      MINIO_SAFE_BUCKET: 'calmav-clean-bucket',
-    }
-  })
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -74,13 +66,31 @@ describe('ConvertPdfService', () => {
         FormsService,
         FilesService,
         {
-          provide: MinioClientSubservice,
+          provide: MinioStorageService,
           useValue: { client: () => ({ putObject }) },
         },
         ConvertPdfService,
         { provide: ConvertService, useValue: { generatePdf } },
         FilesHelper,
-        ConfigService,
+        {
+          provide: BaConfigService,
+          useValue: {
+            files: { mimeTypeWhitelist: 'a b c' },
+            minio: {
+              buckets: {
+                safe: 'calmav-clean-bucket',
+                infected: 'infected-bucket',
+                unscanned: 'unscanned-bucket',
+              },
+            },
+            tokens: { jwtSecret: 'test-secret' },
+            scannerBackend: {
+              url: 'http://localhost:3001',
+              username: 'user1',
+              password: 'pass',
+            },
+          },
+        },
         ScannerClientService,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },

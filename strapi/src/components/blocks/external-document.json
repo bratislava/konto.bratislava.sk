@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_blocks_external_documents",
+  "info": {
+    "displayName": "External Document"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "config": {}
+}

@@ -18,7 +18,7 @@ const OAuthLogo = () => {
   const { isOAuthLogin, clientInfo } = useAmplifyClientOAuthContext()
 
   return isOAuthLogin && clientInfo?.clientName ? (
-    <div className="relative h-full shrink-0 py-2.5">
+    <div className="relative h-[57px] shrink-0 py-2.5">
       <OAuthClientLogo clientName={clientInfo.clientName} />
     </div>
   ) : null

@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "municipal_charge_configs",
+  "info": {
+    "singularName": "municipal-charge-config",
+    "pluralName": "municipal-charge-configs",
+    "displayName": "Dane a poplatky (nové)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "deliveryMethod": {
+      "type": "component",
+      "component": "municipal-charge.delivery-method",
+      "repeatable": false
+    },
+    "municipalChargeIdentifier": {
+      "type": "component",
+      "component": "municipal-charge.municipal-charge-identifier",
+      "repeatable": false
+    }
+  }
+}

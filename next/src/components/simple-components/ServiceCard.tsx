@@ -11,7 +11,7 @@ type ServiceCardBase = {
   buttonText: string
   className?: string
   icon: ReactNode
-  href: string
+  href: string | null | undefined
   tags?: string[]
   tagStyle?: string
   analyticsProps?: LinkAnalyticsProps
@@ -41,6 +41,7 @@ const ServiceCard = ({
     <div className={style}>
       <div className="flex w-full justify-between">
         <div className="rounded-lg border border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
+        {/* TODO Use Tag component */}
         {tags && tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {tags.map((tagItem, index) => (
@@ -66,12 +67,12 @@ const ServiceCard = ({
         >
           {title}
         </Typography>
-        <Typography variant="p-tiny">{description}</Typography>
+        <Typography variant="p-small">{description}</Typography>
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
           <Button
-            href={href}
+            href={href ?? '#'}
             variant="link"
             hasLinkIcon={false}
             stretched

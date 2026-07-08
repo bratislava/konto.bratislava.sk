@@ -1,6 +1,5 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { FormError, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse, isAxiosError } from 'axios'
 import { Job } from 'bull'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
@@ -24,6 +23,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { FormError, Forms, FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../global-enums/errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'

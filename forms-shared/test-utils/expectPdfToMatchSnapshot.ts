@@ -18,11 +18,15 @@ export const expectPdfToMatchSnapshot = vi.defineHelper(async (input: PdfInput) 
     scale: 2, // without scale the PDFs are too small
   })
 
-  for await (const page of outputPages) {
-    expect(page).toMatchImageSnapshot({
-      customDiffConfig: {
-        threshold: 0.05,
-      },
-    })
+  try {
+    for await (const page of outputPages) {
+      expect(page).toMatchImageSnapshot({
+        customDiffConfig: {
+          threshold: 0.05,
+        },
+      })
+    }
+  } finally {
+    await outputPages.destroy()
   }
 })

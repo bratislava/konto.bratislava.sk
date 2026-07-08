@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { FormState } from '@prisma/client'
 import { IsEnum, IsString, IsUUID } from 'class-validator'
+
+import { FormState } from '../../generated/prisma/client'
 
 export class SendFormResponseDto {
   @ApiProperty({

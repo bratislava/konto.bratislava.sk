@@ -1,7 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
-import { FormError, Forms, FormState } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
@@ -14,20 +12,26 @@ import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import { FormError, Forms, FormState } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { GetFormsRequestDto } from './dtos/requests.dto'
 import FormsService from './forms.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
-jest.mock('@nestjs/config')
+let mockFormDefinitions: { slug: string; isDisabled?: boolean }[] = []
+jest.mock('forms-shared/definitions/formDefinitions', () => ({
+  get formDefinitions() {
+    return mockFormDefinitions
+  },
+}))
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
-jest.mock('../utils/subservices/minio-client.subservice')
+jest.mock('../minio-storage/minio-storage.service')
 jest.mock('../scanner-client/scanner-client.service')
 jest.mock('forms-shared/form-utils/omitExtraData', () => ({
   baOmitExtraData: jest.fn(),
@@ -45,16 +49,17 @@ describe('FormsService', () => {
   })
 
   beforeEach(async () => {
+    mockFormDefinitions = []
+
     const app = await Test.createTestingModule({
       imports: [],
       providers: [
         FormsService,
         FilesService,
         FilesHelper,
-        MinioClientSubservice,
+        MinioStorageService,
         ScannerClientService,
         ThrowerErrorGuard,
-        ConfigService,
         FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -78,6 +83,10 @@ describe('FormsService', () => {
           baUiSchema: {},
         },
       })
+      mockFormDefinitions = [
+        { slug: 'enabled-slug' },
+        { slug: 'disabled-slug', isDisabled: true },
+      ]
       const spy = jest
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
@@ -117,7 +126,25 @@ describe('FormsService', () => {
             },
           },
           state: { in: [FormState.DRAFT, FormState.PROCESSING] },
-          AND: [{ userExternalId: authUser.sub }],
+          AND: [
+            { userExternalId: authUser.sub },
+            {
+              NOT: {
+                AND: [
+                  { formDefinitionSlug: { in: ['disabled-slug'] } },
+                  {
+                    OR: [
+                      { state: FormState.DRAFT },
+                      {
+                        state: FormState.ERROR,
+                        error: { in: [FormError.INFECTED_FILES] },
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
         },
         orderBy: [
           {

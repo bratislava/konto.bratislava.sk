@@ -1,13 +1,13 @@
 import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 
+import BaConfigService from '../../config/ba-config.service'
+import { TaxType } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
@@ -19,20 +19,16 @@ dayjs.extend(timezone)
 export default class SftpFileSubservice {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
   async getNewFiles(sftpPath: string, taxType: TaxType, from?: Date) {
     const sftp = new SFTPClient()
+    const { sftp: sftpConfig } = this.baConfigService.cardPaymentReporting
 
     try {
-      await sftp.connect({
-        host: this.configService.getOrThrow<string>('REPORTING_SFTP_HOST'),
-        port: this.configService.getOrThrow<number>('REPORTING_SFTP_PORT'),
-        username: this.configService.getOrThrow<string>('REPORTING_SFTP_USER'),
-        privateKey: this.configService.getOrThrow<string>('REPORTING_SFTP_KEY'),
-      })
+      await sftp.connect(sftpConfig)
 
       const sftpFiles: FileInfo[] = await sftp.list(sftpPath)
 
@@ -67,8 +63,9 @@ export default class SftpFileSubservice {
     return sftpFiles
       .filter((file) => {
         const fileDateMatches = file.name.split('_').pop()?.slice(0, 6)
-        if (!fileDateMatches || Number.isNaN(Number(fileDateMatches)))
+        if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) {
           return false
+        }
         const fileDate = dayjs(`20${fileDateMatches}`).tz('Europe/Bratislava')
         return fileDate.add(1, 'day').isAfter(from, 'day')
       })

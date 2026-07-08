@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { DeliveryMethodEnum, Prisma } from '@prisma/client'
 
+import { DeliveryMethodEnum, Prisma } from '../../generated/prisma/client'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
 import { CognitoUserAccountTypesEnum } from '../global-dtos/cognito.dto'

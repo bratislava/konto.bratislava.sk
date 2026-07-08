@@ -15,10 +15,10 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger'
-import { TaxType } from '@prisma/client'
 
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { NotProductionGuard } from '../auth/guards/not-production.guard'
+import { TaxType } from '../generated/prisma/client'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { AdminService } from './admin.service'
 import {

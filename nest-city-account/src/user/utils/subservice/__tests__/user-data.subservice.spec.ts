@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachOutboxService } from '../../../../bloomreach/bloomreach-outbox.service'
+import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '../../../../generated/prisma/client'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { UserIdentitySubservice } from '../../../../utils/subservices/user-identity.subservice'

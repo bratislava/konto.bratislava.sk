@@ -10,6 +10,10 @@ interface MyApplicationHistoryProps {
   historyData: GinisDocumentDetailResponseDto['documentHistory'] | undefined
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
+ */
+
 const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
   const { t } = useTranslation('account')
 
@@ -23,14 +27,14 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
   return (
     <>
       {/* Desktop */}
-      <div className="hidden w-full flex-col gap-4 md:flex">
+      <div className="flex w-full flex-col gap-4 max-lg:hidden">
         {/* TODO - history data needs changes in process and on BE - until then, we just take 1 instance and present it as 'document created' (all the instances are interpreted as document created) */}
         {/* TODO - fix the types in OpenAPI (BE) */}
         {historyData?.slice(-1).map((data: GenericObjectType, i) => (
-          <div key={i} className="flex flex-row flex-wrap gap-2 border-b py-4 md:flex-nowrap">
+          <div key={i} className="flex flex-row flex-wrap gap-2 border-b py-4 lg:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
-                <Typography variant="p-tiny" as="span" className="font-semibold">
+                <Typography variant="p-small" as="span" className="font-semibold">
                   {t('account_section_applications.details.application_history.edit_date')}
                 </Typography>
                 <Typography variant="p-small" as="span">
@@ -38,7 +42,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                 </Typography>
               </div>
               <div className="flex w-full flex-col">
-                <Typography variant="p-tiny" as="span" className="font-semibold">
+                <Typography variant="p-small" as="span" className="font-semibold">
                   {t('account_section_applications.details.application_history.description')}
                 </Typography>
                 <Typography variant="p-small" as="span">
@@ -50,7 +54,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
         ))}
       </div>
       {/* Mobile */}
-      <div className="flex flex-col overflow-x-auto md:hidden">
+      <div className="flex flex-col overflow-x-auto lg:hidden">
         <div className="w-[548px] rounded-lg border border-gray-200">
           <div className="flex items-center bg-gray-200 p-4">
             <Typography variant="p-small" as="span" className="min-w-60">

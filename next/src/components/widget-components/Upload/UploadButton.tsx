@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next/pages'
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { Button as ReactAriaButton } from 'react-aria-components/Button'
 import { FileTrigger } from 'react-aria-components/FileTrigger'
 
@@ -20,6 +20,10 @@ type UploadButtonProps = {
   allowsMultiple?: boolean
   onUpload?: (files: File[]) => void
 }
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16743-7964
+ */
 
 const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
   (

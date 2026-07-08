@@ -1,8 +1,7 @@
-import { timingSafeEqual } from 'node:crypto'
-
 import { Injectable } from '@nestjs/common'
 import { Request } from 'express'
 
+import { timingSafeStringEqual } from '../../utils/crypto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
 import { OAuth2Client, OAuth2ClientSubservice } from './oauth2-client.subservice'
@@ -253,25 +252,6 @@ export class OAuth2ValidationSubservice {
   }
 
   /**
-   * Timing-safe comparison of client secrets to prevent timing attacks
-   */
-  isValidSecret(expected: string, provided: string): boolean {
-    try {
-      // Convert strings to buffers for timing-safe comparison
-      const expectedBuffer = Buffer.from(expected, 'utf-8')
-      const providedBuffer = Buffer.from(provided, 'utf-8')
-      const dummyBuffer = Buffer.alloc(expectedBuffer.length)
-      const comparebuffer =
-        expectedBuffer.length === providedBuffer.length ? providedBuffer : dummyBuffer
-
-      return timingSafeEqual(expectedBuffer, comparebuffer)
-    } catch {
-      // timingSafeEqual throws if buffers have different lengths
-      return false
-    }
-  }
-
-  /**
    * Validate client authentication for token endpoint
    * Handles different grant types with appropriate authentication requirements
    *
@@ -345,7 +325,7 @@ export class OAuth2ValidationSubservice {
           { clientId, grantType }
         )
       }
-      if (!this.isValidSecret(client.secret, clientSecret)) {
+      if (!timingSafeStringEqual(client.secret, clientSecret)) {
         throw this.oAuth2ErrorThrower.tokenException(
           OAuth2TokenErrorCode.INVALID_CLIENT,
           'Invalid client: invalid client_secret',

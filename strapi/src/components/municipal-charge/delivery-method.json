@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_municipal_charge_delivery_methods",
+  "info": {
+    "displayName": "deliveryMethod"
+  },
+  "options": {},
+  "attributes": {
+    "consentText": {
+      "type": "richtext",
+      "required": true
+    },
+    "deliveryMethodChangePendingAlert": {
+      "type": "component",
+      "component": "municipal-charge.delivery-method-change-pending-alert",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

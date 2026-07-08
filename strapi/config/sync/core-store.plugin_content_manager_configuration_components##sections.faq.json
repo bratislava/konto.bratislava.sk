@@ -16,8 +16,8 @@
         "edit": {},
         "list": {
           "label": "id",
-          "searchable": true,
-          "sortable": true
+          "searchable": false,
+          "sortable": false
         }
       },
       "title": {
@@ -40,8 +40,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "questions",
@@ -59,6 +58,11 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "questions"
+      ],
       "edit": [
         [
           {
@@ -72,11 +76,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "title",
-        "questions"
       ]
     },
     "uid": "sections.faq",

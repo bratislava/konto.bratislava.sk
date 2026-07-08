@@ -1,7 +1,7 @@
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileInfo } from 'ssh2-sftp-client'
 
+import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../guards/errors.guard'
 import SftpFileSubservice from '../sftp-file.subservice'
@@ -16,8 +16,15 @@ const mockPrismaService = {
   },
 }
 
-const mockConfigService = {
-  getOrThrow: jest.fn(),
+const mockBaConfigService = {
+  cardPaymentReporting: {
+    sftp: {
+      host: 'sftp-host',
+      port: 22,
+      username: 'sftp-user',
+      privateKey: 'sftp-key',
+    },
+  },
 }
 
 const mockThrowerErrorGuard = {
@@ -32,7 +39,7 @@ describe('SftpFileSubservice', () => {
       providers: [
         SftpFileSubservice,
         { provide: PrismaService, useValue: mockPrismaService },
-        { provide: ConfigService, useValue: mockConfigService },
+        { provide: BaConfigService, useValue: mockBaConfigService },
         { provide: ThrowerErrorGuard, useValue: mockThrowerErrorGuard },
       ],
     }).compile()

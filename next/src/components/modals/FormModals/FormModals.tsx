@@ -31,6 +31,10 @@ export const formMessageModalsKeys = [
 ] as const
 export type FormMessageModalsKeys = (typeof formMessageModalsKeys)[number]
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10982-771&p=f
+ */
+
 export const FormMessageModals = () => {
   const { t } = useTranslation('forms')
 
@@ -245,7 +249,9 @@ export const FormMessageModals = () => {
       children: (
         <>
           {t('send_confirmation_eid_modal.content')}
-          <Typography variant="p-tiny">{t('send_confirmation_eid_modal.content_small')}</Typography>
+          <Typography variant="p-small">
+            {t('send_confirmation_eid_modal.content_small')}
+          </Typography>
         </>
       ),
     },
@@ -287,7 +293,7 @@ export const FormMessageModals = () => {
       children: (
         <>
           {t('send_confirmation_eid_legal_modal.content')}
-          <Typography variant="p-tiny">
+          <Typography variant="p-small">
             {t('send_confirmation_eid_legal_modal.content_small')}
           </Typography>
         </>

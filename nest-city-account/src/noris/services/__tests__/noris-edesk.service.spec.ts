@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { ConnectionPool } from 'mssql'
 import * as mssql from 'mssql'
+import { ConnectionPool } from 'mssql'
 
 import { EdeskRecordSchema, EdeskStatus } from '../../types/noris.types'
 import { NorisConnectionService } from '../noris-connection.service'

@@ -1,0 +1,27 @@
+fragment MunicipalChargeConfig on MunicipalChargeConfig {
+  deliveryMethod {
+    ...DeliveryMethod
+  }
+  municipalChargeIdentifier {
+    dzn {
+      ...MunicipalCharge
+    }
+    ko {
+      ...MunicipalCharge
+    }
+  }
+}
+
+fragment DeliveryMethod on ComponentMunicipalChargeDeliveryMethod {
+  consentText
+  deliveryMethodChangePendingAlert {
+    title
+    content
+  }
+}
+
+query MunicipalChargeConfig {
+  municipalChargeConfig {
+    ...MunicipalChargeConfig
+  }
+}

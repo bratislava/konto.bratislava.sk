@@ -1,8 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
@@ -10,17 +8,25 @@ import {
   isValidScanStatus,
   processingScanStatuses,
 } from '../common/utils/helpers'
+import BaConfigService from '../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import {
+  Files,
+  FileStatus,
+  FormError,
+  FormState,
+  Prisma,
+} from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
@@ -42,15 +48,16 @@ export default class FilesService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-    private readonly minioClientSubervice: MinioClientSubservice,
+    private readonly baConfigService: BaConfigService,
+    private readonly minioStorageService: MinioStorageService,
+    @Inject(forwardRef(() => FormsService))
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FilesService')
-    this.jwtSecret = this.configService.get('JWT_SECRET') ?? ''
+    this.jwtSecret = this.baConfigService.tokens.jwtSecret
   }
 
   async getFile(fileId: string): Promise<Files> {
@@ -130,7 +137,7 @@ export default class FilesService {
     }
 
     return files.map((file) => ({
-      minioPath: `${process.env.MINIO_SAFE_BUCKET ?? ''}/${
+      minioPath: `${this.baConfigService.minio.buckets.safe}/${
         file.pospId
       }/${formId}/${file.minioFileName}`,
       id: file.id,
@@ -255,7 +262,7 @@ export default class FilesService {
     const fileSize = bufferedFile.size
     const pathWithMinioFileName = filePath + minioFileName
 
-    const uploadedFile = await this.minioClientSubervice.upload(
+    const uploadedFile = await this.minioStorageService.upload(
       bufferedFile,
       pathWithMinioFileName,
       this.filesHelper.getBucketUid(),
@@ -359,7 +366,7 @@ export default class FilesService {
     )
 
     // download
-    return this.minioClientSubervice.download(bucket, pathWithMinioFileName)
+    return this.minioStorageService.download(bucket, pathWithMinioFileName)
   }
 
   async downloadToken(
@@ -538,7 +545,7 @@ export default class FilesService {
         `Deleting from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
       )
       // eslint-disable-next-line no-await-in-loop
-      const deleteStatus = await this.minioClientSubervice.deleteFile(
+      const deleteStatus = await this.minioStorageService.deleteFile(
         bucket,
         pathWithMinioFileName,
       )

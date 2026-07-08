@@ -11,7 +11,8 @@ type Props = {
  */
 const formats = {
   default: { day: 'numeric', month: 'long', year: 'numeric' } as DateFormatterOptions,
-  // short: { day: '2-digit', month: '2-digit', year: 'numeric' } as DateFormatterOptions,
+  short: { day: '2-digit', month: '2-digit', year: 'numeric' } as DateFormatterOptions,
+  time: { hour: '2-digit', minute: '2-digit', hour12: false } as DateFormatterOptions,
 }
 
 type CDateFormat = keyof typeof formats
@@ -27,7 +28,7 @@ export const formatDate = (
 
   const date = new Date(isoString)
 
-  return date.toLocaleDateString(localeMapped, formats[format])
+  return date.toLocaleString(localeMapped, formats[format])
 }
 
 const FormatDate = ({ children, format = 'default' }: Props) => {

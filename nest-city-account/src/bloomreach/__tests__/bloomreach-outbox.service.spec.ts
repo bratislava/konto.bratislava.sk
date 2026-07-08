@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { ConsentEnum } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
+import { ConsentEnum } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {

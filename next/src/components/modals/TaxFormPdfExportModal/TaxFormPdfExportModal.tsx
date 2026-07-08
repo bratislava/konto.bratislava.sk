@@ -139,7 +139,7 @@ const SuccessContent = () => {
         {!isSignedIn && (
           // Copied from RegistrationModal
           <>
-            <div className="mt-3 flex w-full items-center md:mt-6">
+            <div className="mt-3 flex w-full items-center lg:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
               <Typography variant="p-large" as="span" className="px-6">
                 {t('tax_form_pdf_export_modal.footer_choice')}
@@ -147,14 +147,14 @@ const SuccessContent = () => {
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
-              <div className="rounded-t-lg bg-gray-100 p-4 md:px-6 md:py-5">
+              <div className="rounded-t-lg bg-gray-100 p-4 lg:px-6 lg:py-5">
                 <Typography variant="h4">
                   {t('tax_form_pdf_export_modal.account_create')}
                 </Typography>
-                <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
+                <ul className="mt-6 flex flex-col gap-2 lg:gap-4">
                   {advantages.map((item, index) => (
                     <li key={index} className="flex items-center gap-4">
-                      <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
+                      <span className="flex size-5 min-w-[20px] items-center justify-center lg:size-6 lg:min-w-[24px]">
                         <Icon name="check" className="size-7" />
                       </span>
                       <Typography variant="p-small">{item}</Typography>
@@ -166,7 +166,7 @@ const SuccessContent = () => {
                 <Button
                   variant="solid"
                   fullWidth
-                  className="rounded-lg px-5 py-2 text-size-p-large-r font-semibold md:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6 lg:text-size-p-large"
+                  className="rounded-lg px-5 py-2 text-size-p-large-r font-semibold lg:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6 lg:text-size-p-large"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}
@@ -187,8 +187,8 @@ const SuccessContent = () => {
 const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) => {
   return (
     <Modal
-      modalOverlayClassname="md:py-4"
-      modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
+      modalOverlayClassname="lg:py-4"
+      modalClassname="lg:max-w-[800px] lg:my-4 lg:py-12 lg:px-14"
       mobileFullScreen
       {...mergeProps(props, {
         onOpenChange: (isOpen) => {

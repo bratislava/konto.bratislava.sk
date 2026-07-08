@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../test/singleton'
+import BaConfigService from '../config/ba-config.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
@@ -20,12 +20,9 @@ describe('ConvertService', () => {
         { provide: TaxService, useValue: createMock<TaxService>() },
         ThrowerErrorGuard,
         {
-          provide: ConfigService,
+          provide: BaConfigService,
           useValue: {
-            getOrThrow: jest.fn((key: string) => {
-              if (key === 'FEATURE_TOGGLE_VERSIONING') return 'true'
-              throw new Error(`Unexpected config key: ${key}`)
-            }),
+            featureToggles: { versioning: true, fileSizeLimits: false },
           },
         },
         {

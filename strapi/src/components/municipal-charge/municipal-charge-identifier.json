@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_municipal_charge_municipal_charge_identifiers",
+  "info": {
+    "displayName": "municipalChargeIdentifier"
+  },
+  "options": {},
+  "attributes": {
+    "dzn": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::municipal-charge.municipal-charge"
+    },
+    "ko": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::municipal-charge.municipal-charge"
+    }
+  },
+  "config": {}
+}

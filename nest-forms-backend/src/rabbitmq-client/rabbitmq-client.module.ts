@@ -1,7 +1,7 @@
 import { AmqpConnection, RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
 
+import BaConfigModule from '../config/ba-config.module'
 import BaConfigService from '../config/ba-config.service'
 import { RABBIT_FORM_DELIVERY } from '../utils/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -10,9 +10,9 @@ import RabbitmqClientService from './rabbitmq-client.service'
 @Module({
   imports: [
     RabbitMQModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get('RABBIT_MQ_URI') ?? '',
+      imports: [BaConfigModule],
+      useFactory: (baConfigService: BaConfigService) => ({
+        uri: baConfigService.rabbitMq.uri,
         exchanges: [
           {
             name: RABBIT_FORM_DELIVERY.EXCHANGE,
@@ -25,7 +25,7 @@ import RabbitmqClientService from './rabbitmq-client.service'
         connectionInitOptions: { wait: false },
         logger: new LineLoggerSubservice('RabbitMQ'),
       }),
-      inject: [ConfigService],
+      inject: [BaConfigService],
     }),
   ],
   providers: [RabbitmqClientService],

@@ -21,9 +21,6 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
   formCta {
     ...FormLandingPageFormCta
   }
-  sections {
-    ...FormLandingPageSections
-  }
 }
 
 fragment FormBase on Form {

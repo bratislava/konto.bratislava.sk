@@ -111,8 +111,12 @@ const schema = {
   required: ['account_type', 'email', 'password', 'turnstileToken'],
 }
 
+/**
+ * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=814-60380&p=f
+ */
+
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
-  const { t } = useTranslation('account')
+  const { t, i18n } = useTranslation('account')
 
   const { clientInfo } = useAmplifyClientOAuthContext()
 
@@ -151,7 +155,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
 
   return (
     <form
-      className="flex flex-col gap-4 md:gap-6"
+      className="flex flex-col gap-4 lg:gap-6"
       data-cy="register-form"
       onSubmit={handleSubmit((data: Data) => {
         const userAttributes: UserAttributes = {
@@ -301,6 +305,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           <>
             <Turnstile
               theme="light"
+              language={i18n.language}
               key={captchaKey}
               sitekey={environment.cloudflareTurnstileSiteKey}
               className="self-center"
@@ -326,7 +331,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             />
 
             {captchaWarning === 'show' && (
-              <Typography variant="p-tiny" className="italic">
+              <Typography variant="p-small" className="italic">
                 {t('auth.captcha_warning')}
               </Typography>
             )}

@@ -29,7 +29,7 @@ export const getLinkProps = (link: CommonLinkFragment | null | undefined) => {
   // Some content types are not in all strapi link fragments, so we have to check if they exist in the object first
   if ('municipalService' in link && link.municipalService) {
     label = link.label ?? link.municipalService.title
-    href = link.municipalService.href
+    href = link.municipalService.href ?? '#'
   } else if (link.url && !queryParams) {
     label = link.label ?? link.url
     href = link.url

@@ -93,7 +93,25 @@ fragment FaqSection on ComponentSectionsFaq {
   }
 }
 
-fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
+fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
+  title
+  url
+}
+
+fragment DocumentsSection on ComponentSectionsDocuments {
+  title
+  text
+  externalDocuments {
+    ...ExternalDocumentBlock
+  }
+}
+
+fragment TowingSection on ComponentSectionsTowing {
+  title
+  text
+}
+
+fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
   __typename
 
   ... on ComponentSectionsRichtext {
@@ -111,4 +129,13 @@ fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
   ... on ComponentSectionsFaq {
     ...FaqSection
   }
+
+  ... on ComponentSectionsDocuments {
+    ...DocumentsSection
+  }
+
+  ... on ComponentSectionsTowing {
+    ...TowingSection
+  }
 }
+

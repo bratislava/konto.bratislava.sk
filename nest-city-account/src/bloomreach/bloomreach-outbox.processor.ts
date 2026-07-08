@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '@prisma/client'
 import axios, { isAxiosError } from 'axios'
 
+import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'

@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "slug",
-      "defaultSortBy": "moreInformationUrl",
-      "defaultSortOrder": "ASC",
+      "defaultSortBy": "updatedAt",
+      "defaultSortOrder": "DESC",
       "relationOpenMode": "modal"
     },
     "metadatas": {
@@ -60,6 +60,21 @@
           "label": "landingPage",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "municipalService": {
+        "edit": {
+          "label": "Mestská služba",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "municipalService",
+          "searchable": true,
+          "sortable": true
         }
       },
       "createdAt": {
@@ -133,17 +148,21 @@
       "edit": [
         [
           {
+            "name": "landingPage",
+            "size": 12
+          }
+        ],
+        [
+          {
             "name": "slug",
             "size": 12
           },
           {
             "name": "moreInformationUrl",
             "size": 12
-          }
-        ],
-        [
+          },
           {
-            "name": "landingPage",
+            "name": "municipalService",
             "size": 12
           }
         ]
@@ -151,8 +170,9 @@
       "list": [
         "id",
         "slug",
+        "updatedAt",
         "moreInformationUrl",
-        "landingPage"
+        "municipalService"
       ]
     },
     "uid": "api::form.form"

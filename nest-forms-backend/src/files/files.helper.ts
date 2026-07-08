@@ -1,8 +1,6 @@
 import { createHash } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, FormError, Forms } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
@@ -12,10 +10,13 @@ import {
   infectedScanStatuses,
   isValidScanStatus,
 } from '../common/utils/helpers'
+import BaConfigService from '../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
+import { Files, FileStatus, FormError, Forms } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import PostScanFileResponseDto, {
   GetScanFileDto,
@@ -27,7 +28,6 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 
@@ -51,15 +51,14 @@ export default class FilesHelper {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-    private minioClientSubervice: MinioClientSubservice,
+    private readonly baConfigService: BaConfigService,
+    private minioStorageService: MinioStorageService,
     private scannerClientService: ScannerClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice('FilesHelper')
-    const mimeTypeList =
-      this.configService.getOrThrow<string>(`MIMETYPE_WHITELIST`)
-    this.supportedMimeTypes = mimeTypeList.split(' ')
+    this.supportedMimeTypes =
+      this.baConfigService.files.mimeTypeWhitelist.split(' ')
   }
 
   /**
@@ -353,7 +352,7 @@ export default class FilesHelper {
     const filepath = `${this.getPath(formInfo)}${minioFileName}`
     try {
       this.logger.debug(`Checking if file exists in minio: ${filepath}`)
-      return await this.minioClientSubervice.fileExists(
+      return await this.minioStorageService.fileExists(
         this.getBucketUid(),
         filepath,
       )
@@ -374,13 +373,13 @@ export default class FilesHelper {
   // optional status
   getBucketUid(status?: string): string {
     if (status === 'SAFE') {
-      return this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET')
+      return this.baConfigService.minio.buckets.safe
     }
     if (status === 'INFECTED') {
-      return this.configService.getOrThrow<string>('MINIO_INFECTED_BUCKET')
+      return this.baConfigService.minio.buckets.infected
     }
 
-    return this.configService.getOrThrow<string>('MINIO_UNSCANNED_BUCKET')
+    return this.baConfigService.minio.buckets.unscanned
   }
 
   forms2formInfo(form: Forms): FormInfo {

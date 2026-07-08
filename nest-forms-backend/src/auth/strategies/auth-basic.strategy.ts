@@ -1,14 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { BasicStrategy as Strategy } from 'passport-http'
+
+import BaConfigService from '../../config/ba-config.service'
+import { timingSafeStringEqual } from '../../utils/crypto'
 
 @Injectable()
 export default class BasicStrategy extends PassportStrategy(
   Strategy,
   'auth-basic',
 ) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly baConfigService: BaConfigService) {
     super({
       passReqToCallback: true,
     })
@@ -19,11 +21,18 @@ export default class BasicStrategy extends PassportStrategy(
     username: string,
     password: string,
   ): boolean => {
-    if (
-      this.configService.get<string>('NEST_FORMS_BACKEND_USERNAME') ===
-        username &&
-      this.configService.get<string>('NEST_FORMS_BACKEND_PASSWORD') === password
-    ) {
+    // Evaluate both comparisons before combining so we don't short-circuit and
+    // leak (via timing) which field was wrong.
+    const usernameMatch = timingSafeStringEqual(
+      this.baConfigService.self.username,
+      username,
+    )
+    const passwordMatch = timingSafeStringEqual(
+      this.baConfigService.self.password,
+      password,
+    )
+
+    if (usernameMatch && passwordMatch) {
       return true
     }
     throw new UnauthorizedException()

@@ -71,7 +71,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
 
   return (
     <form
-      className="flex flex-col gap-4 md:gap-6"
+      className="flex flex-col gap-4 lg:gap-6"
       data-cy="verification-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)

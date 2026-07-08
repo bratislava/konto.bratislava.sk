@@ -5,8 +5,12 @@ import { getTaxDeadlineDate } from '../tax-deadline'
 const TIMEZONE = 'Europe/Bratislava'
 
 const mockGetOrThrow = jest.fn((key: string): string => {
-  if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '04'
-  if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
+  if (key === 'MUNICIPAL_TAX_LOCK_MONTH') {
+    return '04'
+  }
+  if (key === 'MUNICIPAL_TAX_LOCK_DAY') {
+    return '01'
+  }
   throw new Error(`Unknown config key: ${key}`)
 })
 
@@ -87,16 +91,24 @@ describe('tax-deadline', () => {
   describe('when deadline is 1st of February, each date to 1st of February should be before deadline, each date from it should be after', () => {
     beforeEach(() => {
       mockGetOrThrow.mockImplementation((key: string): string => {
-        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '02'
-        if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
+        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') {
+          return '02'
+        }
+        if (key === 'MUNICIPAL_TAX_LOCK_DAY') {
+          return '01'
+        }
         throw new Error(`Unknown config key: ${key}`)
       })
     })
 
     afterEach(() => {
       mockGetOrThrow.mockImplementation((key: string): string => {
-        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') return '04'
-        if (key === 'MUNICIPAL_TAX_LOCK_DAY') return '01'
+        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') {
+          return '04'
+        }
+        if (key === 'MUNICIPAL_TAX_LOCK_DAY') {
+          return '01'
+        }
         throw new Error(`Unknown config key: ${key}`)
       })
     })

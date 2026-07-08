@@ -1,6 +1,5 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import React from 'react'
 
 import { FormStepperStep } from '@/src/components/forms/steps/types/Steps'
 import { useFormState } from '@/src/components/forms/useFormState'
@@ -12,6 +11,10 @@ interface StepperViewRowProps {
   isCurrent: boolean
   className?: string
 }
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-11155
+ */
 
 const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => {
   const { submittedStepsIndexes } = useFormState()

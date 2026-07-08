@@ -1,4 +1,14 @@
 name: Build Nest
+# Two modes, selected by the `cluster` input:
+#   - CI (cluster == ''): build the validation/test/lint[/e2e] images and the
+#     final `build` image, do not push.
+#   - Deploy (cluster != ''): reuse an existing commit image or build+push the
+#     `prod` image and re-tag it for the cluster. Pass skip_tests: true to skip
+#     the test images. The infrastructure deploy is triggered separately by the
+#     caller (deploy.yml).
+#
+# Backend images are environment-agnostic, so the commit image (no flavor
+# suffix) is reused across clusters.
 on:
   workflow_call:
     inputs:
@@ -24,10 +34,6 @@ on:
         description: "Docker target used for validation image build."
         type: string
         required: true
-      target_build:
-        description: "Docker target used for final image build."
-        type: string
-        required: true
       target_unit_test:
         description: "Docker target used for unit test image build."
         type: string
@@ -38,6 +44,20 @@ on:
         required: true
       target_e2e_test:
         description: "Docker target used for E2E test image build."
+        type: string
+        required: false
+        default: ""
+      skip_tests:
+        description: "Skip the validation/test/lint/e2e images (used in deploy mode)."
+        type: boolean
+        required: false
+        default: false
+      cluster:
+        description: >-
+          Target cluster (development, staging, production). Empty = CI build
+          only (no push). When set, the deployable image is built/pushed and
+          re-tagged for the cluster, ready for the caller to trigger the
+          infrastructure deploy.
         type: string
         required: false
         default: ""
@@ -60,11 +80,14 @@ jobs:
   test:
     name: Build Nest
     runs-on: bratislava
+    env:
+      # Per-cluster deploy tag prefix (empty in CI).
+      CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
     services:
       postgres:
         # GitHub Actions does not support `if:` on services, so use an empty image
         # to disable the service when E2E tests are not running.
-        image: ${{ inputs.target_e2e_test != '' && 'postgres:16-alpine' || '' }}
+        image: ${{ inputs.target_e2e_test != '' && !inputs.skip_tests && 'postgres:16-alpine' || '' }}
         env:
           POSTGRES_DB: forms
           POSTGRES_USER: forms
@@ -83,19 +106,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
+          ref: ${{ github.sha }}
           fetch-depth: 1
 
+      - name: Resolve short SHA
+        id: sha
+        run: echo "short_sha=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
       - name: Set up Docker build
-        id: docker
-        uses: ./.github/actions/setup-docker-build
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
         with:
-          image: ${{ inputs.image }}
-          suffixes: |
-            validate
-            test
-            lint
-            e2e-test
-            build
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           harbor_registry: ${{ env.REGISTRY }}
@@ -107,59 +127,133 @@ jobs:
           buildx_driver_opts: |
             network=host
 
+      # One metadata call per build stage: the flavor suffix keeps each
+      # stage's registry cache separate. The deployable image has no suffix, so
+      # its cache is shared across clusters and with CI's final image.
+      - name: Docker metadata (validate)
+        if: ${{ !inputs.skip_tests }}
+        id: meta-validate
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          suffix: -validate
+
+      - name: Docker metadata (test)
+        if: ${{ !inputs.skip_tests }}
+        id: meta-test
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          suffix: -test
+
+      - name: Docker metadata (lint)
+        if: ${{ !inputs.skip_tests }}
+        id: meta-lint
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          suffix: -lint
+
+      - name: Docker metadata (e2e)
+        if: ${{ !inputs.skip_tests && inputs.target_e2e_test != '' }}
+        id: meta-e2e
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          suffix: -e2e
+
+      # Used for both the CI final image (prefix empty) and the deploy image
+      # (cluster prefix), so a single metadata call serves both.
+      - name: Docker metadata (build)
+        id: meta-build
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          prefix: ${{ env.CLUSTER_PREFIX }}
+
       - name: Build validation image
+        if: ${{ !inputs.skip_tests }}
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
           target: ${{ inputs.target_validate }}
-          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).validate.cache_from }}
-          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).validate.cache_to }}
+          cache-from: ${{ steps.meta-validate.outputs.cache_from }}
+          cache-to: ${{ steps.meta-validate.outputs.cache_to }}
           build-args: |
             FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
             OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
 
       - name: Run unit tests
+        if: ${{ !inputs.skip_tests }}
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
           target: ${{ inputs.target_unit_test }}
-          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).test.cache_from }}
-          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).test.cache_to }}
+          cache-from: ${{ steps.meta-test.outputs.cache_from }}
+          cache-to: ${{ steps.meta-test.outputs.cache_to }}
           build-args: |
             FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
             OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
 
       - name: Run ESLint
+        if: ${{ !inputs.skip_tests }}
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
           target: ${{ inputs.target_lint }}
-          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).lint.cache_from }}
-          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).lint.cache_to }}
+          cache-from: ${{ steps.meta-lint.outputs.cache_from }}
+          cache-to: ${{ steps.meta-lint.outputs.cache_to }}
           build-args: |
             FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
             OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
 
       - name: Run E2E tests
-        if: ${{ inputs.target_e2e_test != '' }}
+        if: ${{ !inputs.skip_tests && inputs.target_e2e_test != '' }}
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
           target: ${{ inputs.target_e2e_test }}
-          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs)['e2e-test'].cache_from }}
-          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs)['e2e-test'].cache_to }}
+          cache-from: ${{ steps.meta-e2e.outputs.cache_from }}
+          cache-to: ${{ steps.meta-e2e.outputs.cache_to }}
           build-args: |
             FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
             OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
             CI_E2E_DATABASE_URL=postgresql://forms:password@localhost:${{ job.services.postgres.ports[5432] }}/forms?schema=public&connect_timeout=30
 
+      # CI mode: build the final `build` image, do not push.
       - name: Build final image
+        if: ${{ inputs.cluster == '' }}
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
-          target: ${{ inputs.target_build }}
-          cache-from: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_from }}
-          cache-to: ${{ fromJSON(steps.docker.outputs.cache_refs).build.cache_to }}
+          target: build
+          cache-from: ${{ steps.meta-build.outputs.cache_from }}
+          cache-to: ${{ steps.meta-build.outputs.cache_to }}
+          build-args: |
+            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
+            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
+
+      # Deploy mode only: reuse the commit image across clusters. If it already
+      # exists, re-tag it for this cluster and skip the build below.
+      - name: Check for existing image
+        if: ${{ inputs.cluster != '' }}
+        id: existing
+        uses: bratislava/github-actions/.github/actions/check-existing-image@beta
+        with:
+          existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}
+          new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}
+
+      # Deploy mode: build+push the deployable (prod) image when not reused.
+      - name: Build deploy image
+        if: ${{ inputs.cluster != '' && steps.existing.outputs.found != 'true' }}
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ inputs.directory }}
+          target: prod
+          push: true
+          tags: ${{ steps.meta-build.outputs.tags }}
+          cache-from: ${{ steps.meta-build.outputs.cache_from }}
+          cache-to: ${{ steps.meta-build.outputs.cache_to }}
           build-args: |
             FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
             OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}

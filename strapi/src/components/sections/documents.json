@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_sections_documents",
+  "info": {
+    "displayName": "Dokumenty"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "text"
+    },
+    "externalDocuments": {
+      "type": "component",
+      "component": "blocks.external-document",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

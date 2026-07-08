@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_municipal_service_links",
+  "info": {
+    "displayName": "municipalServiceLink"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

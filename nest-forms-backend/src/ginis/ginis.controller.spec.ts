@@ -2,7 +2,6 @@ import { GinisError } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 import { AxiosError, AxiosResponse } from 'axios'
 
 import { createMockGinisDocumentData } from '../__tests__/factories/ginisDocument.factory'
@@ -60,9 +59,7 @@ describe('GinisController', () => {
     })
 
     it('should throw error if the form has no ginis ID', async () => {
-      controller['formsService'].getUniqueForm = jest
-        .fn()
-        .mockResolvedValue({} as Forms)
+      controller['formsService'].getUniqueForm = jest.fn().mockResolvedValue({})
       await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
     })
 
@@ -82,7 +79,7 @@ describe('GinisController', () => {
 
       controller['formsService'].getUniqueForm = jest
         .fn()
-        .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
+        .mockResolvedValue({ ginisDocumentId: 'id' })
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
         .mockRejectedValue(ginisError)
@@ -115,7 +112,7 @@ describe('GinisController', () => {
     it('should return GinisDocumentDetailResponseDto', async () => {
       controller['formsService'].getUniqueForm = jest
         .fn()
-        .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
+        .mockResolvedValue({ ginisDocumentId: 'id' })
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
         .mockResolvedValue(createMockGinisDocumentData())
@@ -140,7 +137,7 @@ describe('GinisController', () => {
     it('should sanitize ginis owner name', async () => {
       controller['formsService'].getUniqueForm = jest
         .fn()
-        .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
+        .mockResolvedValue({ ginisDocumentId: 'id' })
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
         .mockResolvedValue(createMockGinisDocumentData())

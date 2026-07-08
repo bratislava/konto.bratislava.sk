@@ -12,15 +12,17 @@ import FormValidatorRegistryModule from '../form-validator-registry/form-validat
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
 import { MailerModule } from '../mailer/mailer.module'
+import { MinioStorageModule } from '../minio-storage/minio-storage.module'
 import NasesModule from '../nases/nases.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import SharepointSubservice from '../utils/subservices/sharepoint.subservice'
 import GinisController from './ginis.controller'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
-import SharepointService from './subservices/sharepoint.service'
 
 @Module({
   imports: [
@@ -40,14 +42,16 @@ import SharepointService from './subservices/sharepoint.service'
     FormsV2Module,
     AuthV2Module,
     NasesModule,
+    MinioStorageModule,
     MailerModule,
   ],
   providers: [
     GinisService,
     GinisHelper,
+    ThrowerErrorGuard,
     GinisAPIService,
     GinisTasksSubservice,
-    SharepointService,
+    SharepointSubservice,
   ],
   exports: [GinisService, GinisHelper],
   controllers: [GinisController],

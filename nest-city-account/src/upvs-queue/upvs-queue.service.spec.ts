@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { ExternalEdeskCheck, PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
+import { ExternalEdeskCheck, PhysicalEntity, QueueItemStatusEnum } from '../generated/prisma/client'
 import { NasesService } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'

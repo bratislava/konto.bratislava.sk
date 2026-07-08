@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import mssql, { MSSQLError } from 'mssql'
 
+import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
@@ -15,7 +15,7 @@ jest.spyOn(mssql, 'connect').mockImplementation(mockConnect)
 describe('NorisConnectionSubservice', () => {
   let module: TestingModule
   let service: NorisConnectionSubservice
-  let configService: jest.Mocked<ConfigService>
+  let baConfigService: BaConfigService
   let throwerErrorGuard: ThrowerErrorGuard
   let prismaService: jest.Mocked<PrismaService>
 
@@ -26,37 +26,19 @@ describe('NorisConnectionSubservice', () => {
     close: jest.fn().mockResolvedValue(undefined),
   }
 
-  const originalEnv = process.env
-
   beforeEach(async () => {
     jest.clearAllMocks()
 
     // Assign after clearAllMocks so we hold references to the (now-cleared) mock.
     mockMssqlConnect = mssql.connect as jest.Mock
 
-    process.env = {
-      ...originalEnv,
-      MSSQL_HOST: 'localhost',
-      MSSQL_DB: 'testdb',
-      MSSQL_USERNAME: 'user',
-
-      MSSQL_PASSWORD: 'pass',
-    }
-
-    configService = createMock<ConfigService>({
-      getOrThrow: jest.fn((key: string) => {
-        const map: Record<string, string> = {
-          MSSQL_HOST: 'localhost',
-          MSSQL_DB: 'testdb',
-          MSSQL_USERNAME: 'user',
-
-          MSSQL_PASSWORD: 'pass',
-        }
-        if (key in map) {
-          return map[key]
-        }
-        throw new Error(`Unknown key: ${key}`)
-      }),
+    baConfigService = createMock<BaConfigService>({
+      noris: {
+        host: 'localhost',
+        database: 'testdb',
+        username: 'user',
+        password: 'pass',
+      },
     })
 
     prismaService = createMock<PrismaService>()
@@ -64,7 +46,7 @@ describe('NorisConnectionSubservice', () => {
     module = await Test.createTestingModule({
       providers: [
         NorisConnectionSubservice,
-        { provide: ConfigService, useValue: configService },
+        { provide: BaConfigService, useValue: baConfigService },
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaService },
       ],
@@ -75,7 +57,6 @@ describe('NorisConnectionSubservice', () => {
   })
 
   afterEach(async () => {
-    process.env = originalEnv
     await module.close()
   })
 

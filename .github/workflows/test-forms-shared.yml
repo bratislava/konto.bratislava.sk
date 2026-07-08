@@ -44,8 +44,10 @@ jobs:
       - name: Prepare Docker build args
         id: docker-build-args
         shell: bash
+        env:
+          DIRECTORY: ${{ inputs.directory }}
         run: |
-          node "${{ inputs.directory }}/scripts/printDockerBuildArgs.ts" "${{ inputs.directory }}" >> "$GITHUB_OUTPUT"
+          node "$DIRECTORY/scripts/printDockerBuildArgs.ts" "$DIRECTORY" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker build
         uses: bratislava/github-actions/.github/actions/setup-docker-build@beta

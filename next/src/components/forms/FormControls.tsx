@@ -11,7 +11,7 @@ const FormControls = () => {
   return (
     <>
       {/* Desktop */}
-      <div className="mt-10 hidden flex-wrap gap-5 md:flex md:items-center md:justify-between">
+      <div className="mt-10 hidden flex-wrap gap-5 lg:flex lg:items-center lg:justify-between">
         <div className="grow">
           {canGoToPreviousStep && (
             <Button
@@ -42,7 +42,7 @@ const FormControls = () => {
       </div>
 
       {/* Mobile */}
-      <div className="mt-4 flex flex-col gap-2 md:hidden">
+      <div className="mt-4 flex flex-col gap-2 lg:hidden">
         <Button variant="solid" type="submit" fullWidth data-cy="continue-button-mobile">
           {t('form_controls.continue')}
         </Button>

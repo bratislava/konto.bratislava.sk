@@ -107,8 +107,12 @@ export default class NasesContactsService {
     if (naturalPerson.family_names && naturalPerson.family_names.length > 0) {
       const sortedFamilyNames = [...naturalPerson.family_names].sort((a, b) => {
         // Primary names come first
-        if (a.primary && !b.primary) return -1
-        if (!a.primary && b.primary) return 1
+        if (a.primary && !b.primary) {
+          return -1
+        }
+        if (!a.primary && b.primary) {
+          return 1
+        }
         return 0 // Maintain original order for same primary status
       })
       result.lastNames = sortedFamilyNames

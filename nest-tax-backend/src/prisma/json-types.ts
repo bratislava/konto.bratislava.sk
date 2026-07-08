@@ -1,5 +1,6 @@
-import { TaxType } from '@prisma/client'
 import { z } from 'zod'
+
+import { TaxType } from '../generated/prisma/client'
 
 export enum RealEstateTaxPropertyType {
   APARTMENT = 'APARTMENT',

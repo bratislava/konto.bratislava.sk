@@ -1,7 +1,6 @@
 import { Nack } from '@golevelup/nestjs-rabbitmq'
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, Forms, FormState } from '@prisma/client'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
@@ -14,13 +13,13 @@ import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
 import { createTestForm } from '../../../__tests__/factories/form.factory'
 import ConvertPdfService from '../../../convert-pdf/convert-pdf.service'
 import FormsService from '../../../forms/forms.service'
+import { FormError, Forms, FormState } from '../../../generated/prisma/client'
 import GinisService from '../../../ginis/ginis.service'
 import MailgunService from '../../../mailer/mailgun.service'
 import PrismaService from '../../../prisma/prisma.service'
 import RabbitmqClientService from '../../../rabbitmq-client/rabbitmq-client.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../../../utils/handlers/rabbitmq.handlers'
-import { FormWithFiles } from '../../../utils/types/prisma'
 import EmailFormsService from '../email-forms.service'
 import FormDeliveryConsumerService from '../form-delivery-consumer.service'
 import WebhookService from '../webhook.service'
@@ -82,7 +81,7 @@ describe('FormDeliveryConsumerService', () => {
     // mock resolving mick form & saving file to db in each convert-pdf call
     formsService['getUniqueForm'] = jest.fn().mockResolvedValue({
       id: 'id',
-    } as FormWithFiles)
+    })
   })
 
   describe('should be defined', () => {

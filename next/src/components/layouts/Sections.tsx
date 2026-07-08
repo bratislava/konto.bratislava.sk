@@ -1,4 +1,4 @@
-import { FormLandingPageSectionsFragment } from '@/src/clients/graphql-strapi/api'
+import { MunicipalServiceSectionsFragment } from '@/src/clients/graphql-strapi/api'
 import ContactsSection from '@/src/components/sections/ContactsSection'
 import DocumentsSection from '@/src/components/sections/DocumentsSection'
 import FaqsSection from '@/src/components/sections/FaqsSection'
@@ -11,7 +11,7 @@ import TowingSection from '@/src/components/sections/TowingSection'
  */
 
 type SectionsProps = {
-  sections: FormLandingPageSectionsFragment[]
+  sections: MunicipalServiceSectionsFragment[]
 }
 
 const SectionContent = ({ section }: { section: SectionsProps['sections'][number] }) => {

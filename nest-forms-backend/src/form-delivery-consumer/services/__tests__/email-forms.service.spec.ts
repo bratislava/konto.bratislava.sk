@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, Forms, FormState } from '@prisma/client'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionEmail,
@@ -25,6 +24,7 @@ import { ClusterEnv } from '../../../config/environment-variables'
 import ConvertService from '../../../convert/convert.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
+import { FormError, Forms, FormState } from '../../../generated/prisma/client'
 import { MailerAttachment } from '../../../mailer/mailer.interface'
 import MailgunService from '../../../mailer/mailgun.service'
 import OloMailerService from '../../../mailer/olo-mailer.service'
@@ -84,7 +84,7 @@ const mockFormWithOloDefinition = {
   ...mockForm,
   id: 'test-form-olo-id',
   formDefinitionSlug: 'test-form-olo',
-} as Forms
+}
 
 const mockFormDefinitionWithSendEmail = {
   slug: 'test-form-email',

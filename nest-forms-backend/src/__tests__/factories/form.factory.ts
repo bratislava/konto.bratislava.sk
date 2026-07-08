@@ -1,7 +1,12 @@
-import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { FormSummary } from 'forms-shared/summary/summary'
 import { SummaryJsonType } from 'forms-shared/summary-json/summaryJsonTypes'
 
+import {
+  FormError,
+  Forms,
+  FormState,
+  GinisState,
+} from '../../generated/prisma/client'
 import { FormWithFiles } from '../../utils/types/prisma'
 
 const DEFAULT_DATE = new Date('2024-01-01T00:00:00.000Z')

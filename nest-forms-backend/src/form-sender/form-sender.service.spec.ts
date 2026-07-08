@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   FormDefinitionSlovenskoSkGeneric,
@@ -27,9 +26,9 @@ import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import { FilesErrorsResponseEnum } from '../files/files.errors.enum'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
-import { FormUpdateBodyDto } from '../forms/dtos/requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import { FormError, Forms, FormState } from '../generated/prisma/client'
 import { NasesErrorsResponseEnum } from '../nases/nases.errors.enum'
 import NasesSenderService from '../nases/services/nases.sender.service'
 import { JwtNasesPayload } from '../nases/types/jwt-nases.types'
@@ -520,7 +519,7 @@ describe('FormSenderService', () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
       await expect(
-        service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
+        service.updateAndSendForm('1', {}, authUser.user),
       ).rejects.toThrow(FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND)
     })
 
@@ -536,7 +535,7 @@ describe('FormSenderService', () => {
         })
 
       await expect(
-        service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
+        service.updateAndSendForm('1', {}, authUser.user),
       ).rejects.toThrow(FormsErrorsResponseEnum.FORM_DATA_INVALID)
     })
 
@@ -547,7 +546,7 @@ describe('FormSenderService', () => {
       })
 
       await expect(
-        service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
+        service.updateAndSendForm('1', {}, authUser.user),
       ).rejects.toThrow(FormSenderErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
     })
 
@@ -558,7 +557,7 @@ describe('FormSenderService', () => {
       })
 
       await expect(
-        service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
+        service.updateAndSendForm('1', {}, authUser.user),
       ).rejects.toThrow(
         FormSenderErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
@@ -570,16 +569,12 @@ describe('FormSenderService', () => {
         .mockRejectedValue(new Error('RabbitMQ error'))
 
       await expect(
-        service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
+        service.updateAndSendForm('1', {}, authUser.user),
       ).rejects.toThrow(FormSenderErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT)
     })
 
     it('should queue the form', async () => {
-      const result = await service.updateAndSendForm(
-        '1',
-        {} as FormUpdateBodyDto,
-        authUser.user,
-      )
+      const result = await service.updateAndSendForm('1', {}, authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -593,11 +588,7 @@ describe('FormSenderService', () => {
         ...mockFormDefinitionEmail,
       })
 
-      const result = await service.updateAndSendForm(
-        '1',
-        {} as FormUpdateBodyDto,
-        authUser.user,
-      )
+      const result = await service.updateAndSendForm('1', {}, authUser.user)
 
       expect(result).toEqual({
         id: '1',
@@ -610,11 +601,7 @@ describe('FormSenderService', () => {
       const mockSummary = createMock<FormSummary>({ additionalInfo: 'test' })
       jest.spyOn(service, 'getFormSummaryOrThrow').mockReturnValue(mockSummary)
 
-      await service.updateAndSendForm(
-        '1',
-        {} as FormUpdateBodyDto,
-        authUser.user,
-      )
+      await service.updateAndSendForm('1', {}, authUser.user)
 
       expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
         state: FormState.QUEUED,
@@ -630,7 +617,7 @@ describe('FormSenderService', () => {
       })
 
       await expect(
-        service.updateAndSendForm('1', {} as FormUpdateBodyDto, authUser.user),
+        service.updateAndSendForm('1', {}, authUser.user),
       ).rejects.toThrow()
     })
 
@@ -669,11 +656,7 @@ describe('FormSenderService', () => {
           ])
 
         await expect(
-          service.updateAndSendForm(
-            '1',
-            {} as FormUpdateBodyDto,
-            authUser.user,
-          ),
+          service.updateAndSendForm('1', {}, authUser.user),
         ).rejects.toThrow(
           FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
         )
@@ -704,11 +687,7 @@ describe('FormSenderService', () => {
           ])
 
         await expect(
-          service.updateAndSendForm(
-            '1',
-            {} as FormUpdateBodyDto,
-            authUser.user,
-          ),
+          service.updateAndSendForm('1', {}, authUser.user),
         ).rejects.toThrow(
           FilesErrorsResponseEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,
         )
@@ -731,11 +710,7 @@ describe('FormSenderService', () => {
             { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 50_000_000 },
           ])
 
-        const result = await service.updateAndSendForm(
-          '1',
-          {} as FormUpdateBodyDto,
-          authUser.user,
-        )
+        const result = await service.updateAndSendForm('1', {}, authUser.user)
 
         expect(result).toEqual({
           id: '1',
@@ -768,11 +743,7 @@ describe('FormSenderService', () => {
             { id: 'test-id-4', slotId: 'test-slot-id-1', fileSize: 100 },
           ])
 
-        const result = await service.updateAndSendForm(
-          '1',
-          {} as FormUpdateBodyDto,
-          authUser.user,
-        )
+        const result = await service.updateAndSendForm('1', {}, authUser.user)
 
         expect(result).toEqual({
           id: '1',

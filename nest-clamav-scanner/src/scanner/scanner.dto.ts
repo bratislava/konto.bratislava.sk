@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FileStatus } from '@prisma/client' //dto for bucket file with file id and bucket id as optional. Add swagger documentation.
 import { Type } from 'class-transformer'
 import {
   IsDefined,
@@ -8,6 +7,8 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator'
+
+import { FileStatus } from '../generated/prisma/client'
 
 //dto for bucket file with file id and bucket id as optional. Add swagger documentation.
 export class ScanFileDto {

@@ -358,13 +358,13 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth" hideBackButton>
+        <PageLayout variant="auth">
           {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
 
           <AccountContainer
             dataCyPrefix="registration"
             ref={accountContainerRef}
-            className="flex flex-col gap-8 md:gap-10"
+            className="flex flex-col gap-8 lg:gap-10"
           >
             {registrationStatus === RegistrationStatus.INIT && (
               <>

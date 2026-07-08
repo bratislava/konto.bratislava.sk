@@ -3,24 +3,37 @@ import { forwardRef, Module } from '@nestjs/common'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import FilesModule from '../files/files.module'
+import FilesService from '../files/files.service'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
+import { MinioStorageModule } from '../minio-storage/minio-storage.module'
+import PrismaModule from '../prisma/prisma.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import FormsController from './forms.controller'
 import FormsService from './forms.service'
+import { FormDefinitionMustBeEnabledGuard } from './guards/form-definition-must-be-enabled.guard'
 import FormsTaskSubservice from './subservices/forms-task.subservice'
 
 @Module({
   imports: [
+    PrismaModule,
     ScannerClientModule,
     forwardRef(() => FilesModule),
     FormValidatorRegistryModule,
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
+    MinioStorageModule,
   ],
-  providers: [FormsService, FormsTaskSubservice],
-  exports: [FormsService],
+  providers: [
+    FormsService,
+    FilesService,
+    ThrowerErrorGuard,
+    FormsTaskSubservice,
+    FormDefinitionMustBeEnabledGuard,
+  ],
+  exports: [FormsService, FormDefinitionMustBeEnabledGuard],
   controllers: [FormsController],
 })
 export default class FormsModule {}

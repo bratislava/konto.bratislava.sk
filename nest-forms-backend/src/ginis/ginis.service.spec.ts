@@ -4,7 +4,6 @@ import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Files, FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -26,11 +25,18 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
+import {
+  Files,
+  FormError,
+  Forms,
+  FormState,
+  GinisState,
+} from '../generated/prisma/client'
 import MailgunService from '../mailer/mailgun.service'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import NasesContactsService from '../nases/services/nases.contacts.service'
 import PrismaService from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
@@ -70,7 +76,7 @@ describe('GinisService', () => {
         { provide: MailgunService, useValue: createMock<MailgunService>() },
         { provide: ConvertService, useValue: createMock<ConvertService>() },
         {
-          provide: MinioClientSubservice,
+          provide: MinioStorageService,
           useValue: {
             download: jest.fn(),
           },
@@ -182,7 +188,7 @@ describe('GinisService', () => {
 
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
-      } as FormWithFiles)
+      })
 
       await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
         'Form definition was not found for given slug. slug',
@@ -196,7 +202,7 @@ describe('GinisService', () => {
 
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
-      } as FormWithFiles)
+      })
 
       await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
         'onQueueConsumption: Got unsupported type of FormDefinition.',
@@ -442,7 +448,7 @@ describe('GinisService', () => {
         ...formBase,
         ginisDocumentId: 'docId',
         ginisState: GinisState.ATTACHMENTS_UPLOADED,
-      } as FormWithFiles)
+      })
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
@@ -465,7 +471,7 @@ describe('GinisService', () => {
         ...formBase,
         ginisDocumentId: 'docId',
         ginisState: GinisState.ERROR_ASSIGN_SUBMISSION,
-      } as FormWithFiles)
+      })
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(assignSpy).not.toHaveBeenCalled()
@@ -479,7 +485,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,
-      } as FormWithFiles)
+      })
 
       const sendMailSpy = jest
         .spyOn(service['mailgunService'], 'sendEmail')
@@ -514,7 +520,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,
-      } as FormWithFiles)
+      })
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeFalsy() // all processed
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
@@ -546,7 +552,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,
-      } as FormWithFiles)
+      })
 
       const sendMailSpy = jest
         .spyOn(service['mailgunService'], 'sendEmail')
@@ -589,7 +595,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,
-      } as FormWithFiles)
+      })
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeFalsy() // all processed
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
@@ -692,7 +698,7 @@ describe('GinisService', () => {
         .mockImplementation(async (fn) => fn())
 
       jest
-        .spyOn(service['minioClientSubservice'], 'download')
+        .spyOn(service['minioStorageService'], 'download')
         .mockResolvedValue(mockStream)
 
       jest

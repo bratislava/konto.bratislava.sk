@@ -1,7 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { Injectable } from '@nestjs/common'
-import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
@@ -16,11 +15,18 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import {
+  Files,
+  FileStatus,
+  FormError,
+  FormState,
+  Prisma,
+} from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
@@ -43,7 +49,8 @@ export default class FilesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly baConfigService: BaConfigService,
-    private readonly minioClientSubervice: MinioClientSubservice,
+    private readonly minioStorageService: MinioStorageService,
+    @Inject(forwardRef(() => FormsService))
     private readonly formsService: FormsService,
     private filesHelper: FilesHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -255,13 +262,13 @@ export default class FilesService {
     const fileSize = bufferedFile.size
     const pathWithMinioFileName = filePath + minioFileName
 
-    const uploadedFile = await this.minioClientSubervice.upload(
+    const uploadedFile = await this.minioStorageService.upload(
       bufferedFile,
       pathWithMinioFileName,
       this.filesHelper.getBucketUid(),
     )
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- upload() type is non-nullable but the else branch throws on unexpected falsy; keeping the guard
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- upload() type is non-nullable but the if branch throws on unexpected falsy; keeping the guard
     if (!uploadedFile) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FilesErrorsEnum.FILE_ID_ALREADY_EXISTS_ERROR,
@@ -358,7 +365,7 @@ export default class FilesService {
     )
 
     // download
-    return this.minioClientSubervice.download(bucket, pathWithMinioFileName)
+    return this.minioStorageService.download(bucket, pathWithMinioFileName)
   }
 
   async downloadToken(
@@ -533,7 +540,7 @@ export default class FilesService {
         this.logger.debug(
           `Deleting from bucket: ${bucket}, file path with minioFileName: ${pathWithMinioFileName}`,
         )
-        const deleteStatus = await this.minioClientSubervice.deleteFile(
+        const deleteStatus = await this.minioStorageService.deleteFile(
           bucket,
           pathWithMinioFileName,
         )

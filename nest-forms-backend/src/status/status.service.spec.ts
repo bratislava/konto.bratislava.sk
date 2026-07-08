@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import StatusService from './status.service'
 
 jest.mock('../prisma/prisma.service')
-jest.mock('../utils/subservices/minio-client.subservice')
+jest.mock('../minio-storage/minio-storage.service')
 jest.mock('../scanner-client/scanner-client.service')
 
 describe('StatusService', () => {
@@ -20,7 +20,7 @@ describe('StatusService', () => {
       providers: [
         // TODO we want to mock most of these
         StatusService,
-        MinioClientSubservice,
+        MinioStorageService,
         PrismaService,
         ScannerClientService,
         ThrowerErrorGuard,
@@ -95,7 +95,7 @@ describe('StatusService', () => {
 
   describe('isMinioRunning', () => {
     it('should return true', () => {
-      service['minioClientSubservice'].client = jest.fn()
+      service['minioStorageService'].client = jest.fn()
       const result = service.isMinioRunning()
       expect(result).toEqual({
         running: true,
@@ -103,7 +103,7 @@ describe('StatusService', () => {
     })
 
     it('should return false', () => {
-      service['minioClientSubservice'].client = jest
+      service['minioStorageService'].client = jest
         .fn()
         .mockImplementation(() => {
           throw new Error('Error')

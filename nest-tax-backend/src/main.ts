@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 
 import { AppModule } from './app.module'
+import BaConfigService from './config/ba-config.service'
 import {
   ErrorFilter,
   HttpExceptionFilter,
@@ -12,11 +13,11 @@ import {
 import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap() {
-  const port = process.env.PORT || 3000
   const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
     logger,
   })
+  const baConfigService = app.get(BaConfigService)
   app.enableVersioning({
     type: VersioningType.URI,
   })
@@ -41,7 +42,7 @@ async function bootstrap() {
       'https://inovacie.bratislava.sk',
       'inovacie@bratislava.sk',
     )
-    .addServer(`http://localhost:${port}/`)
+    .addServer(`http://localhost:${baConfigService.self.port}/`)
     .addServer('https://nest-tax-backend.dev.bratislava.sk/')
     .addServer('https://nest-tax-backend.staging.bratislava.sk/')
     .addServer('https://nest-tax-backend.bratislava.sk/')
@@ -59,7 +60,7 @@ async function bootstrap() {
     .getHttpAdapter()
     .get('/spec-json', (_req: Request, res: Response) => res.json(document))
 
-  await app.listen(port)
-  logger.log(`Nest is running on port: ${port}`)
+  await app.listen(baConfigService.self.port)
+  logger.log(`Nest is running on port: ${baConfigService.self.port}`)
 }
 void bootstrap()

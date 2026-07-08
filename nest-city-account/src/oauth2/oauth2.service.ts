@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import * as jwt from 'jsonwebtoken'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { decryptData, encryptData } from '../utils/crypto'
+import { decryptData, encryptData, timingSafeStringEqual } from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
@@ -502,7 +502,7 @@ export class OAuth2Service {
       )
     }
 
-    if (!this.validationSubservice.isValidSecret(codeChallenge, expectedChallenge)) {
+    if (!timingSafeStringEqual(codeChallenge, expectedChallenge)) {
       throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: invalid code_verifier',

@@ -3,8 +3,8 @@
 import { Button } from '@bratislava/component-library'
 import { useMemo, useState } from 'react'
 
+import TextField from '@/src/components/fields/TextField'
 import useToast from '@/src/components/simple-components/Toast/useToast'
-import InputField from '@/src/components/widget-components/InputField/InputField'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
@@ -73,7 +73,7 @@ const ToastShowCase = () => {
         </Button>
       </Stack>
       <Stack className="items-start">
-        <InputField
+        <TextField
           label="Custom duration (ms)"
           value={customDurationValue}
           onChange={(value) => setCustomDurationValue(value)}

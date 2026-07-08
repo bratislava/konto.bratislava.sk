@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { BloomreachOutbox, BloomreachOutboxStatus } from '@prisma/client'
 import axios from 'axios'
 
 import prismaMock from '../../../test/singleton'
+import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {

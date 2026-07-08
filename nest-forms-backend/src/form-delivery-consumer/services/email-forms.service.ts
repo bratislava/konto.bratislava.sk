@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState } from '@prisma/client'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }
 import {
   FormDefinitionEmail,
   FormDefinitionType,
+  isFormDefinitionWithReplyToAndExtractEmail,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
@@ -29,6 +29,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { FormError, FormState } from '../../generated/prisma/client'
 import { Mailer } from '../../mailer/mailer.interface'
 import MailgunService from '../../mailer/mailgun.service'
 import OloMailerService from '../../mailer/olo-mailer.service'
@@ -340,6 +341,9 @@ export default class EmailFormsService {
         },
       },
       emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
+      replyTo: isFormDefinitionWithReplyToAndExtractEmail(formDefinition)
+        ? extractEmailFormEmail(formDefinition, form.formDataJson)
+        : undefined,
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(
             formId,

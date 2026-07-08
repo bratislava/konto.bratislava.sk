@@ -55,12 +55,12 @@ const FormVersionCompareAction = () => {
       : 'warning'
 
   return (
-    <div className="flex flex-col justify-between bg-gray-0 py-16 md:bg-gray-50 md:py-28">
+    <div className="flex flex-col justify-between bg-gray-0 py-16 lg:bg-gray-50 lg:py-28">
       <div className="flex flex-col">
-        <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
+        <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:gap-6 lg:rounded-2xl lg:px-14 lg:py-12 lg:max-w-[800px]">
           <span
             className={cn(
-              'flex size-14 min-w-14 items-center justify-center rounded-full md:size-[88px] md:min-w-[88px]',
+              'flex size-14 min-w-14 items-center justify-center rounded-full lg:size-[88px] lg:min-w-[88px]',
               {
                 'bg-warning-100':
                   versionCompareContinueAction === VersionCompareContinueAction.RequiresBump,
@@ -71,7 +71,7 @@ const FormVersionCompareAction = () => {
           >
             <Icon
               name={iconName}
-              className={cn('flex size-8 items-center justify-center md:size-10', {
+              className={cn('flex size-8 items-center justify-center lg:size-10', {
                 'text-warning-700':
                   versionCompareContinueAction === VersionCompareContinueAction.RequiresBump,
                 'text-negative-700':
@@ -80,7 +80,7 @@ const FormVersionCompareAction = () => {
             />
           </span>
 
-          <div className="flex flex-col items-center gap-8 md:gap-6">
+          <div className="flex flex-col items-center gap-8 lg:gap-6">
             <Typography variant="h2" className="text-center">
               {
                 {
@@ -108,7 +108,7 @@ const FormVersionCompareAction = () => {
             />
           </div>
 
-          <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
+          <div className="flex w-full flex-col items-center gap-4 lg:flex-row">
             {isSignedIn ? (
               <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS} hasLinkIcon={false}>
                 {t('form_version_compare_action.button_back')}

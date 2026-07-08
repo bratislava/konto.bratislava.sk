@@ -1,7 +1,6 @@
 import { Stream } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { Forms } from '@prisma/client'
 import { isAxiosError } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
@@ -21,12 +20,13 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { Forms } from '../../generated/prisma/client'
+import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesSendResponse } from '../dtos/responses.dto'
 import {
   NasesErrorCodesEnum,
@@ -44,7 +44,7 @@ export default class NasesSenderService {
     private readonly convertService: ConvertService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
-    private minioClientSubservice: MinioClientSubservice,
+    private minioStorageService: MinioStorageService,
     private taxService: TaxService,
     private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
@@ -89,7 +89,7 @@ export default class NasesSenderService {
     const fileAttachments = await Promise.all(
       files.map(async (file) => {
         const mimeType = mime.lookup(file.fileName) || 'application/pdf'
-        const fileStream = await this.minioClientSubservice.loadFileStream(
+        const fileStream = await this.minioStorageService.loadFileStream(
           this.baConfigService.minio.buckets.safe,
           `${file.pospId}/${form.id}/${file.minioFileName}`,
         )

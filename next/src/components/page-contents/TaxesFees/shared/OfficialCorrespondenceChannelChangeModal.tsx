@@ -251,8 +251,8 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      modalOverlayClassname="md:py-4"
-      modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
+      modalOverlayClassname="lg:py-4"
+      modalClassname="lg:max-w-[800px] lg:my-4 lg:py-12 lg:px-14"
       mobileFullScreen
     >
       <Dialog>

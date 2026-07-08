@@ -4,8 +4,10 @@ import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
+import { MinioStorageModule } from '../minio-storage/minio-storage.module'
 import NasesModule from '../nases/nases.module'
 import TaxModule from '../tax/tax.module'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import AdminController from './admin.controller'
 import AdminService from './admin.service'
 
@@ -17,8 +19,9 @@ import AdminService from './admin.service'
     ClientsModule,
     UserInfoPipeModule,
     NasesModule,
+    MinioStorageModule,
   ],
-  providers: [AdminService],
+  providers: [AdminService, ThrowerErrorGuard],
   exports: [],
   controllers: [AdminController],
 })

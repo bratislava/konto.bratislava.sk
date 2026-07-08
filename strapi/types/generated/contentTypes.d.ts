@@ -770,6 +770,8 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
       'api::municipal-service.municipal-service'
     > &
       Schema.Attribute.Private
+    moreInformationUrl: Schema.Attribute.String
+    pageHeaderText: Schema.Attribute.Text
     publishedAt: Schema.Attribute.DateTime
     sections: Schema.Attribute.DynamicZone<
       [

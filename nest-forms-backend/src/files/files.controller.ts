@@ -31,6 +31,7 @@ import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decor
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
 import { UserType } from '../auth-v2/types/user'
+import { FormDefinitionMustBeEnabledGuard } from '../forms/guards/form-definition-must-be-enabled.guard'
 import {
   FormAccessAllowMigrations,
   FormAccessGuard,
@@ -140,7 +141,7 @@ export default class FilesController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
   @Post('upload/:formId')
   @UseInterceptors(FileUploadInterceptor)
   async uploadFile(

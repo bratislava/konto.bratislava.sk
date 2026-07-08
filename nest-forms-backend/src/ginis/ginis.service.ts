@@ -4,7 +4,6 @@ import { setTimeout } from 'node:timers/promises'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { isAxiosError } from 'axios'
 import { Queue } from 'bull'
@@ -33,7 +32,14 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
+import {
+  FormError,
+  Forms,
+  FormState,
+  GinisState,
+} from '../generated/prisma/client'
 import MailgunService from '../mailer/mailgun.service'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
@@ -51,7 +57,6 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { GinisCheckDeliveryPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
@@ -74,7 +79,7 @@ export default class GinisService {
     private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
     private mailgunService: MailgunService,
-    private readonly minioClientSubservice: MinioClientSubservice,
+    private readonly minioStorageService: MinioStorageService,
     private prismaService: PrismaService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly nasesContactsService: NasesContactsService,
@@ -182,7 +187,7 @@ export default class GinisService {
     try {
       // sometimes ginis times-out on the first try
       await this.ginisHelper.retryWithDelay(async () => {
-        const fileStream = await this.minioClientSubservice.download(
+        const fileStream = await this.minioStorageService.download(
           this.baConfigService.minio.buckets.safe,
           minioFilePath,
         )

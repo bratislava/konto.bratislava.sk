@@ -4,7 +4,6 @@ import BaConfigModule from '../../config/ba-config.module'
 import FormRegistrationStatusRepository from '../../nases/repositories/form-registration-status.repository'
 import PrismaModule from '../../prisma/prisma.module'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import MinioClientSubservice from './minio-client.subservice'
 
 /**
  * SharedModule is a global module that provides commonly used services and utilities
@@ -13,7 +12,7 @@ import MinioClientSubservice from './minio-client.subservice'
  *
  * ## What can be imported:
  * - Only "leaf modules" (modules with no dependencies on other feature modules)
- * - Currently imports: BaConfigModule, MailerModule
+ * - Currently imports: BaConfigModule, PrismaModule
  * - Do NOT import feature modules to avoid circular dependencies
  *
  * ## What can be provided:
@@ -33,16 +32,7 @@ import MinioClientSubservice from './minio-client.subservice'
 @Global()
 @Module({
   imports: [BaConfigModule, PrismaModule],
-  providers: [
-    ThrowerErrorGuard,
-    MinioClientSubservice,
-    FormRegistrationStatusRepository,
-  ],
-  exports: [
-    ThrowerErrorGuard,
-    MinioClientSubservice,
-    FormRegistrationStatusRepository,
-    PrismaModule,
-  ],
+  providers: [ThrowerErrorGuard, FormRegistrationStatusRepository],
+  exports: [ThrowerErrorGuard, FormRegistrationStatusRepository, PrismaModule],
 })
 export class SharedModule {}

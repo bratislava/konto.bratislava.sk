@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
+import { MinioStorageModule } from '../minio-storage/minio-storage.module'
+import PrismaModule from '../prisma/prisma.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FileUploadInterceptor } from './file-upload.interceptor'
 import FilesController from './files.controller'
 import FilesHelper from './files.helper'
@@ -12,13 +15,20 @@ import FilesService from './files.service'
 
 @Module({
   imports: [
-    FormsModule,
+    PrismaModule,
+    forwardRef(() => FormsModule),
     ScannerClientModule,
     UserInfoPipeModule,
     FormsV2Module,
     AuthV2Module,
+    MinioStorageModule,
   ],
-  providers: [FilesService, FilesHelper, FileUploadInterceptor],
+  providers: [
+    FilesService,
+    FilesHelper,
+    ThrowerErrorGuard,
+    FileUploadInterceptor,
+  ],
   exports: [FilesService, FilesHelper],
   controllers: [FilesController],
 })

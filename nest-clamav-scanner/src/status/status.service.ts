@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 
 import { ClamavClientService } from '../clamav-client/clamav-client.service'
 import { FormsClientService } from '../forms-client/forms-client.service'
-import { MinioClientService } from '../minio-client/minio-client.service'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { ClamavVersionDto, ServiceRunningDto } from './status.dto'
 
@@ -13,7 +13,7 @@ export class StatusService {
 
   constructor(
     private readonly configService: ConfigService,
-    private minioClientService: MinioClientService,
+    private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
     private readonly formsClientService: FormsClientService,
     private clamavClientService: ClamavClientService,
@@ -55,7 +55,7 @@ export class StatusService {
   //function which checks if minio is running
   public isMinioRunning(): ServiceRunningDto {
     try {
-      const result = this.minioClientService.client()
+      const result = this.minioStorageService.client()
       this.logger.log(result)
       return {
         running: true,

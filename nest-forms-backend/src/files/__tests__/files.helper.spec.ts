@@ -81,19 +81,11 @@ describe('FilesHelper', () => {
         pospID: 'test-posp-id',
       })
 
-      // Mock the getFormDefinitionBySlug function
-      ;(getFormDefinitionBySlug as unknown as jest.Mock) = jest
-        .fn()
-        .mockReturnValue(mockFormDefinition)
-
-      // Mock the isSlovenskoSkFormDefinition function
-      ;(isSlovenskoSkFormDefinition as unknown as jest.Mock) = jest.fn()
+      jest.mocked(getFormDefinitionBySlug).mockReturnValue(mockFormDefinition)
     })
 
     it('should return FormInfo with pospID for SlovenskoSk form definition', () => {
-      ;(isSlovenskoSkFormDefinition as unknown as jest.Mock).mockReturnValue(
-        true,
-      )
+      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(true)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -104,9 +96,7 @@ describe('FilesHelper', () => {
     })
 
     it('should return FormInfo with slug for non-SlovenskoSk form definition', () => {
-      ;(isSlovenskoSkFormDefinition as unknown as jest.Mock).mockReturnValue(
-        false,
-      )
+      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(false)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -117,7 +107,7 @@ describe('FilesHelper', () => {
     })
 
     it('should throw NotFoundException when form definition is not found', () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
+      jest.mocked(getFormDefinitionBySlug).mockReturnValue(null)
 
       const mockThrowException = jest.fn()
       service['throwerErrorGuard'].NotFoundException = mockThrowException

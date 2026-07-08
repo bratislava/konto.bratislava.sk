@@ -5,9 +5,7 @@ import { AuthV2Module } from '../auth-v2/auth-v2.module'
 import FormsModule from '../forms/forms.module'
 import { FormsV2Module } from '../forms-v2/forms-v2.module'
 import { MinioStorageModule } from '../minio-storage/minio-storage.module'
-import PrismaModule from '../prisma/prisma.module'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FileUploadInterceptor } from './file-upload.interceptor'
 import FilesController from './files.controller'
 import FilesHelper from './files.helper'
@@ -15,7 +13,6 @@ import FilesService from './files.service'
 
 @Module({
   imports: [
-    PrismaModule,
     forwardRef(() => FormsModule),
     ScannerClientModule,
     UserInfoPipeModule,
@@ -23,12 +20,7 @@ import FilesService from './files.service'
     AuthV2Module,
     MinioStorageModule,
   ],
-  providers: [
-    FilesService,
-    FilesHelper,
-    ThrowerErrorGuard,
-    FileUploadInterceptor,
-  ],
+  providers: [FilesService, FilesHelper, FileUploadInterceptor],
   exports: [FilesService, FilesHelper],
   controllers: [FilesController],
 })

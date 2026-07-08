@@ -7,7 +7,6 @@ import ConvertModule from '../convert/convert.module'
 import { MinioStorageModule } from '../minio-storage/minio-storage.module'
 import NasesModule from '../nases/nases.module'
 import TaxModule from '../tax/tax.module'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import AdminController from './admin.controller'
 import AdminService from './admin.service'
 
@@ -21,7 +20,7 @@ import AdminService from './admin.service'
     NasesModule,
     MinioStorageModule,
   ],
-  providers: [AdminService, ThrowerErrorGuard],
+  providers: [AdminService],
   exports: [],
   controllers: [AdminController],
 })

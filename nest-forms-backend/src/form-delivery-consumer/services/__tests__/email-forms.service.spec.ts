@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionEmail,
-  FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -14,6 +13,7 @@ import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEma
 
 import prismaMock from '../../../../test/singleton'
 import { createTestFormSummary } from '../../../__tests__/factories/form.factory'
+import { createTestFormDefinitionSlovenskoSkGeneric } from '../../../__tests__/factories/formDefinition.factory'
 import {
   expectArrayContaining,
   expectObjectContaining,
@@ -432,15 +432,9 @@ describe('EmailFormsService', () => {
     })
 
     it('should throw UnprocessableEntityException when form is not an email form', async () => {
-      const nonEmailFormDefinition = {
-        ...mockFormDefinitionWithSendEmail,
-        type: FormDefinitionType.SlovenskoSkGeneric,
-      }
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue(
-          nonEmailFormDefinition as unknown as FormDefinitionSlovenskoSkGeneric,
-        )
+        .mockReturnValue(createTestFormDefinitionSlovenskoSkGeneric())
 
       await expect(
         service.sendEmailForm(formId, userEmail, userFirstName),

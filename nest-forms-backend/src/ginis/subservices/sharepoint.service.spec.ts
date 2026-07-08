@@ -9,33 +9,33 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { SharepointRelationData } from 'forms-shared/definitions/sharepointTypes'
 import * as baOmitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
-import prismaMock from '../../../../test/singleton'
-import { expectObjectContaining } from '../../../__tests__/jest-matchers'
-import BaConfigService from '../../../config/ba-config.service'
-import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
-import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
-import { FormError, Forms, FormState } from '../../../generated/prisma/client'
-import PrismaService from '../../../prisma/prisma.service'
-import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import SharepointSubservice from '../sharepoint.subservice'
+import prismaMock from '../../../test/singleton'
+import { createTestFormDefinitionSlovenskoSkGeneric } from '../../__tests__/factories/formDefinition.factory'
+import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import BaConfigService from '../../config/ba-config.service'
+import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
+import { FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
+import { FormError, Forms, FormState } from '../../generated/prisma/client'
+import PrismaService from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import SharepointService from './sharepoint.service'
 
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
   extractFormSubjectPlain: jest.fn(),
 }))
-describe('SharepointSubservice', () => {
-  let service: SharepointSubservice
+describe('SharepointService', () => {
+  let service: SharepointService
 
   beforeEach(async () => {
     jest.spyOn(console, 'log').mockImplementation(jest.fn())
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        SharepointSubservice,
+        SharepointService,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         {
@@ -59,7 +59,7 @@ describe('SharepointSubservice', () => {
       ],
     }).compile()
 
-    service = module.get<SharepointSubservice>(SharepointSubservice)
+    service = module.get<SharepointService>(SharepointService)
   })
 
   afterEach(() => {
@@ -328,32 +328,33 @@ describe('SharepointSubservice', () => {
       } as Forms)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockReturnValue({
-          sharepointData: {
-            databaseName: 'dbName',
-            columnMap: {},
-            oneToMany: {
-              otm1: {
-                databaseName: 'otmDb1',
-                originalTableId: 'otmOriginal1',
-                columnMap: { col1otm1: { type: 'title' } },
-              } as SharepointRelationData,
+        .mockReturnValue(
+          createTestFormDefinitionSlovenskoSkGeneric({
+            sharepointData: {
+              databaseName: 'dbName',
+              columnMap: {},
+              oneToMany: {
+                otm1: {
+                  databaseName: 'otmDb1',
+                  originalTableId: 'otmOriginal1',
+                  columnMap: { col1otm1: { type: 'title' } },
+                },
+              },
+              oneToOne: {
+                oto1: {
+                  databaseName: 'otoDb1',
+                  originalTableId: 'otoOriginal1',
+                  columnMap: { col1oto1: { type: 'title' } },
+                },
+                oto2: {
+                  databaseName: 'otoDb2',
+                  originalTableId: 'otoOriginal2',
+                  columnMap: { col1oto2: { type: 'title' } },
+                },
+              },
             },
-            oneToOne: [
-              {
-                databaseName: 'otoDb1',
-                originalTableId: 'otoOriginal1',
-                columnMap: { col1oto1: { type: 'title' } },
-              },
-              {
-                databaseName: 'otoDb2',
-                originalTableId: 'otoOriginal2',
-                columnMap: { col1oto2: { type: 'title' } },
-              },
-            ] as SharepointRelationData[],
-          },
-          type: FormDefinitionType.SlovenskoSkGeneric,
-        } as unknown as FormDefinition)
+          }),
+        )
       service['postDataToSharepoint'] = jest.fn().mockResolvedValue({ id: 123 })
       service['handleOneToMany'] = jest
         .fn()

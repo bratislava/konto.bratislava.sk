@@ -7,7 +7,6 @@ import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
 import { MailerModule } from '../mailer/mailer.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import EmailFormsService from './services/email-forms.service'
 import FormDeliveryConsumerService from './services/form-delivery-consumer.service'
 import WebhookService from './services/webhook.service'
@@ -22,12 +21,7 @@ import WebhookService from './services/webhook.service'
     ConvertPdfModule,
     MailerModule,
   ],
-  providers: [
-    FormDeliveryConsumerService,
-    ThrowerErrorGuard,
-    EmailFormsService,
-    WebhookService,
-  ],
+  providers: [FormDeliveryConsumerService, EmailFormsService, WebhookService],
   exports: [FormDeliveryConsumerService],
 })
 export default class FormDeliveryConsumerModule {}

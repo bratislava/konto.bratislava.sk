@@ -23,6 +23,10 @@ export class FormSendOnlyRegisteredGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>()
     const { formId } = request.params
 
+    if (!formId || typeof formId !== 'string') {
+      return false
+    }
+
     const form = await this.prismaService.forms.findUnique({
       select: { formDefinitionSlug: true },
       where: { id: formId },

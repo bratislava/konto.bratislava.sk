@@ -24,7 +24,7 @@
     "update-markdown": "npm install remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
     "update-next": "npx @next/codemod@canary upgrade latest",
     "update-typescript": "npm install typescript@latest ts-node@latest --save-dev --save-exact",
-    "update-amplify": "npm install aws-amplify@latest @aws-amplify/adapter-nextjs@latest --save-exact",
+    "update-amplify": "npm install aws-amplify@latest @aws-amplify/core @aws-amplify/adapter-nextjs@latest --save-exact",
     "update-tailwind": "npm install tailwind-merge@latest clsx@latest --save-exact && npm install tailwindcss@latest @tailwindcss/postcss@latest postcss@latest prettier-plugin-tailwindcss@latest eslint-plugin-better-tailwindcss@latest --save-dev --save-exact",
     "update-i18next": "npm install i18next@latest next-i18next@latest react-i18next@latest --save-exact && npm install i18next-cli@latest --save-dev --save-exact",
     "update-prettier": "npm install prettier@latest --save-dev --save-exact",
@@ -38,7 +38,8 @@
     "@types/react-dom": "19.2.3"
   },
   "dependencies": {
-    "@aws-amplify/adapter-nextjs": "1.7.2",
+    "@aws-amplify/adapter-nextjs": "1.7.3",
+    "@aws-amplify/core": "6.16.4",
     "@bratislava/component-library": "1.1.3",
     "@grafana/faro-core": "2.5.0",
     "@grafana/faro-web-sdk": "2.5.0",
@@ -60,7 +61,7 @@
     "ajv": "8.20.0",
     "ajv-errors": "3.0.0",
     "ajv-formats": "3.0.1",
-    "aws-amplify": "6.16.4",
+    "aws-amplify": "6.18.0",
     "axios": "1.17.0",
     "axios-retry": "4.5.0",
     "clsx": "2.1.1",

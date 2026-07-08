@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import nodemailer from 'nodemailer'
 
-import BaConfigService from '../../../config/ba-config.service'
+import BaConfigService from '../config/ba-config.service'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
-} from '../../global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
+} from '../utils/global-enums/mailgun.errors.enum'
+import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { Mailer, MailerSendEmailParams } from './mailer.interface'
 import { getMailgunConfig } from './mailgun.constants'
 import MailgunHelper from './utils/mailgun.helper'
@@ -25,7 +25,7 @@ export default class OloMailerService implements Mailer {
   ) {
     this.logger = new LineLoggerSubservice(OloMailerService.name)
 
-    // eslint-disable-next-line sonarjs/no-clear-text-protocols
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols -- 'smtp.office365.com' is an SMTP hostname, not an HTTP URL; STARTTLS on port 587 provides transport security
     this.oloTransporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,

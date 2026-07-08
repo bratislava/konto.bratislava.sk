@@ -58,12 +58,12 @@ describe('NasesContactsService', () => {
     })
 
     it('should return false when only natural_person property exists but type is wrong', () => {
-      const contact = {
+      const contact: UpvsNaturalPerson = {
         type: 'legal_entity',
         natural_person: {
           given_names: ['John'],
         },
-      } as unknown as UpvsNaturalPerson
+      }
 
       expect(isUpvsNaturalPerson(contact)).toBe(false)
     })
@@ -102,12 +102,12 @@ describe('NasesContactsService', () => {
     })
 
     it('should return false when only corporate_body property exists but type is wrong', () => {
-      const contact = {
+      const contact: UpvsCorporateBody = {
         type: 'natural_person',
         corporate_body: {
           name: 'Test Company',
         },
-      } as unknown as UpvsCorporateBody
+      }
 
       expect(isUpvsCorporateBody(contact)).toBe(false)
     })
@@ -162,10 +162,11 @@ describe('NasesContactsService', () => {
     })
 
     it('should return empty arrays when natural_person is null', () => {
-      const contact = {
+      const contact: UpvsNaturalPerson = {
         type: 'natural_person',
-        natural_person: null,
-      } as unknown as UpvsNaturalPerson
+        // API contract types this as optional-only, but be defensive against null too
+        natural_person: null as unknown as UpvsNaturalPerson['natural_person'],
+      }
 
       const result = service.extractNaturalPersonData(contact)
 
@@ -289,11 +290,12 @@ describe('NasesContactsService', () => {
     })
 
     it('should return empty object when corporate_body is null', () => {
-      const contact = {
+      const contact: UpvsCorporateBody = {
         type: 'legal_entity',
         uri: 'uri://test',
-        corporate_body: null,
-      } as unknown as UpvsCorporateBody
+        // API contract types this as optional-only, but be defensive against null too
+        corporate_body: null as unknown as UpvsCorporateBody['corporate_body'],
+      }
 
       const result = service.extractCorporateBodyData(contact)
 

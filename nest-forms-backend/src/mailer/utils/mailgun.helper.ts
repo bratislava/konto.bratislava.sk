@@ -4,16 +4,16 @@ import Handlebars from 'handlebars'
 import Mailgun from 'mailgun.js'
 import { Interfaces, TemplateQuery } from 'mailgun.js/definitions'
 
-import BaConfigService from '../../../../config/ba-config.service'
+import BaConfigService from '../../config/ba-config.service'
 import {
   SendEmailInputDto,
   SendEmailVariablesDto,
-} from '../../../global-dtos/mailgun.dto'
+} from '../../utils/global-dtos/mailgun.dto'
 import {
   MailgunErrorsEnum,
   MailgunErrorsResponseEnum,
-} from '../../../global-enums/mailgun.errors.enum'
-import ThrowerErrorGuard from '../../../guards/thrower-error.guard'
+} from '../../utils/global-enums/mailgun.errors.enum'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
   getMailgunConfig,
   MailgunConfigVariableType,
@@ -67,9 +67,6 @@ export default class MailgunHelper {
 
           case MailgunConfigVariableType.STRING:
             response[key as keyof SendEmailVariablesDto] = val.value
-              ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
-                val.value.toString()
-              : ''
 
             break
 

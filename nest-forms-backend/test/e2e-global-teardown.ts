@@ -1,6 +1,7 @@
 import { e2eGlobalShared, getCiE2eDatabaseUrl } from './e2e-global-shared'
 
 export default async function e2eGlobalTeardown(): Promise<void> {
+  /* eslint-disable no-console -- intentional teardown progress output, no logger available in global jest setup */
   const ciE2eDatabaseUrl = getCiE2eDatabaseUrl()
   if (ciE2eDatabaseUrl) {
     console.log('Using workflow-provided Postgres, skipping container stop')
@@ -15,4 +16,5 @@ export default async function e2eGlobalTeardown(): Promise<void> {
   } else {
     console.log('Container not found')
   }
+  /* eslint-enable no-console */
 }

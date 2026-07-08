@@ -16,13 +16,16 @@ export interface RequestWithAuthorizationData extends Request {
 
 /**
  * Guard for OAuth2 endpoints that use authorization request ID
- * Validates authorization request ID and loads authorization request parameters from database
- * Uses the same validation logic as AuthorizationRequestGuard via OAuth2ValidationSubservice
+ * Validates authorization request ID and loads authorization request parameters
+ * from the database.
+ * Uses the same validation logic as AuthorizationRequestGuard via
+ * OAuth2ValidationSubservice.
  *
- * Used for: /oauth2/store, /oauth2/continue
+ * Used for: /oauth2/store, /oauth2/continue, /oauth2/info
  *
- * The authRequestId references stored authorization request parameters in the database.
- * This prevents tampering since parameters are not included in the request.
+ * The authRequestId references stored authorization request parameters in the
+ * database. This prevents tampering since parameters are not included in the
+ * request.
  */
 @Injectable()
 export class AuthRequestIdGuard implements CanActivate {

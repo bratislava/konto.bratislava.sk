@@ -5,6 +5,9 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import FormLandingPage, {
   FormLandingPageProps,
 } from '@/src/components/page-contents/FormLandingPageContent/FormLandingPageContent'
+import MunicipalServicePageContent, {
+  MunicipalServicePageContentProps,
+} from '@/src/components/page-contents/MunicipalServicePageContent/MunicipalServicePageContent'
 
 export type FormCreatedSplitPageProps =
   | ({
@@ -13,6 +16,9 @@ export type FormCreatedSplitPageProps =
   | ({
       type: 'landingPage'
     } & FormLandingPageProps)
+  | ({
+      type: 'municipalService'
+    } & MunicipalServicePageContentProps)
 
 const FormCreatedSplitPage = (props: FormCreatedSplitPageProps) => {
   // eslint-disable-next-line react/destructuring-assignment
@@ -24,6 +30,14 @@ const FormCreatedSplitPage = (props: FormCreatedSplitPageProps) => {
     return (
       <PageLayout>
         <FormLandingPage {...props} />
+      </PageLayout>
+    )
+  }
+
+  if (props.type === 'municipalService') {
+    return (
+      <PageLayout>
+        <MunicipalServicePageContent {...props} />
       </PageLayout>
     )
   }

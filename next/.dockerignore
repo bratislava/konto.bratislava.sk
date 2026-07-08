@@ -27,9 +27,5 @@ misc
 build/
 data/
 .next/
-# kustomize files
-kubernetes/
-# bratiska-cli manifest files
-manifest-*.y?ml
 # markdown files
 **/*.md

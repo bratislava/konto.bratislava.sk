@@ -23,6 +23,12 @@ import FormsService from './forms.service'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
+let mockFormDefinitions: { slug: string; isDisabled?: boolean }[] = []
+jest.mock('forms-shared/definitions/formDefinitions', () => ({
+  get formDefinitions() {
+    return mockFormDefinitions
+  },
+}))
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
 jest.mock('../minio-storage/minio-storage.service')
@@ -43,6 +49,8 @@ describe('FormsService', () => {
   })
 
   beforeEach(async () => {
+    mockFormDefinitions = []
+
     const app = await Test.createTestingModule({
       imports: [],
       providers: [
@@ -75,6 +83,10 @@ describe('FormsService', () => {
           baUiSchema: {},
         },
       })
+      mockFormDefinitions = [
+        { slug: 'enabled-slug' },
+        { slug: 'disabled-slug', isDisabled: true },
+      ]
       const spy = jest
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
@@ -114,7 +126,25 @@ describe('FormsService', () => {
             },
           },
           state: { in: [FormState.DRAFT, FormState.PROCESSING] },
-          AND: [{ userExternalId: authUser.sub }],
+          AND: [
+            { userExternalId: authUser.sub },
+            {
+              NOT: {
+                AND: [
+                  { formDefinitionSlug: { in: ['disabled-slug'] } },
+                  {
+                    OR: [
+                      { state: FormState.DRAFT },
+                      {
+                        state: FormState.ERROR,
+                        error: { in: [FormError.INFECTED_FILES] },
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
         },
         orderBy: [
           {

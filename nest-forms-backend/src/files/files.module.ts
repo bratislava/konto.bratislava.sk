@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import { AuthV2Module } from '../auth-v2/auth-v2.module'
@@ -15,7 +15,7 @@ import FilesService from './files.service'
 @Module({
   imports: [
     PrismaModule,
-    FormsModule,
+    forwardRef(() => FormsModule),
     ScannerClientModule,
     UserInfoPipeModule,
     FormsV2Module,

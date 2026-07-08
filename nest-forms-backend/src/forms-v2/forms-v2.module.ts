@@ -24,6 +24,10 @@ import { FormMigrationsService } from './services/form-migrations.service'
     FormSendOnlyRegisteredGuard,
     FormRegistrationStatusRepository,
   ],
-  exports: [FormAccessService, FormAccessGuard, FormSendOnlyRegisteredGuard],
+  exports: [
+    FormAccessService,
+    FormAccessGuard,
+    FormSendOnlyRegisteredGuard,
+  ],
 })
 export class FormsV2Module {}

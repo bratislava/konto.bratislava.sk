@@ -17,6 +17,7 @@ import { OAuth2ValidationSubservice } from './subservices/oauth2-validation.subs
 jest.mock('../utils/crypto', () => ({
   encryptData: jest.fn((data: string) => `enc:${data}`),
   decryptData: jest.fn((data: string) => data.replace('enc:', '')),
+  timingSafeStringEqual: jest.fn(),
 }))
 
 jest.mock('../utils/tokenSerialization', () => ({
@@ -32,7 +33,6 @@ describe('OAuth2Service', () => {
   let prisma: PrismaService
   let cognitoSubservice: CognitoSubservice
   let configService: ConfigService
-  let validationSubservice: OAuth2ValidationSubservice
   let clientSubservice: OAuth2ClientSubservice
 
   beforeEach(async () => {
@@ -43,6 +43,9 @@ describe('OAuth2Service', () => {
     ;(crypto.encryptData as jest.Mock).mockImplementation((data: string) => `enc:${data}`)
     ;(crypto.decryptData as jest.Mock).mockImplementation((data: string) =>
       data.replace('enc:', '')
+    )
+    ;(crypto.timingSafeStringEqual as jest.Mock).mockImplementation(
+      jest.requireActual('../utils/crypto').timingSafeStringEqual
     )
     ;(tokenSerialization.serializeTokenData as jest.Mock).mockImplementation(
       (token: string, clientId: string) => JSON.stringify({ token, clientId })
@@ -68,7 +71,6 @@ describe('OAuth2Service', () => {
     prisma = module.get<PrismaService>(PrismaService)
     cognitoSubservice = module.get<CognitoSubservice>(CognitoSubservice)
     configService = module.get<ConfigService>(ConfigService)
-    validationSubservice = module.get<OAuth2ValidationSubservice>(OAuth2ValidationSubservice)
     clientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
     jest.spyOn(oAuth2ErrorThrower, 'authorizationException')
@@ -730,7 +732,7 @@ describe('OAuth2Service', () => {
       //   SHA256("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk") base64url = E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
       const verifier = 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk'
       const expectedChallenge = 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM' // = SHA256(verifier)
-      jest.spyOn(validationSubservice, 'isValidSecret').mockReturnValue(true)
+      ;(crypto.timingSafeStringEqual as jest.Mock).mockReturnValue(true)
 
       await service.token({
         grant_type: 'authorization_code',
@@ -740,14 +742,14 @@ describe('OAuth2Service', () => {
       } as any)
 
       // The stored challenge and the freshly computed hash are identical for the test vector.
-      expect(validationSubservice.isValidSecret).toHaveBeenCalledWith(
+      expect(crypto.timingSafeStringEqual).toHaveBeenCalledWith(
         expectedChallenge,
         expectedChallenge
       )
     })
 
     it('should throw INVALID_REQUEST when S256 code_verifier does not match challenge', async () => {
-      jest.spyOn(validationSubservice, 'isValidSecret').mockReturnValue(false)
+      ;(crypto.timingSafeStringEqual as jest.Mock).mockReturnValue(false)
 
       await expect(
         service.token({
@@ -773,7 +775,7 @@ describe('OAuth2Service', () => {
         codeChallengeMethod: 'plain',
       }
       jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(plainData as any)
-      jest.spyOn(validationSubservice, 'isValidSecret').mockReturnValue(true)
+      ;(crypto.timingSafeStringEqual as jest.Mock).mockReturnValue(true)
 
       await service.token({
         grant_type: 'authorization_code',
@@ -782,7 +784,7 @@ describe('OAuth2Service', () => {
         code_verifier: 'plain-challenge-value',
       } as any)
 
-      expect(validationSubservice.isValidSecret).toHaveBeenCalledWith(
+      expect(crypto.timingSafeStringEqual).toHaveBeenCalledWith(
         'plain-challenge-value',
         'plain-challenge-value'
       )
@@ -820,7 +822,7 @@ describe('OAuth2Service', () => {
         code_verifier: 'v',
       } as any)
       expect(result.access_token).toBeDefined()
-      expect(validationSubservice.isValidSecret).not.toHaveBeenCalled()
+      expect(crypto.timingSafeStringEqual).not.toHaveBeenCalled()
     })
   })
 

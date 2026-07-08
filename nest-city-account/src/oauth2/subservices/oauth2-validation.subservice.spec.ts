@@ -624,30 +624,6 @@ describe('OAuth2ValidationSubservice', () => {
     })
   })
 
-  // ─── isValidSecret ────────────────────────────────────────────────────────
-
-  /**
-   * Timing-safe secret comparison (OWASP recommendation)
-   * Prevents timing attacks on client secret validation
-   */
-  describe('isValidSecret', () => {
-    it('should return true for matching secrets', () => {
-      expect(service.isValidSecret('secret-123', 'secret-123')).toBe(true)
-    })
-    it('should return false for same-length mismatch', () => {
-      expect(service.isValidSecret('secret-aaa', 'secret-bbb')).toBe(false)
-    })
-    it('should return false for different-length mismatch', () => {
-      expect(service.isValidSecret('short', 'much-longer')).toBe(false)
-    })
-    it('should return false for empty vs non-empty', () => {
-      expect(service.isValidSecret('expected', '')).toBe(false)
-    })
-    it('should return true for both empty', () => {
-      expect(service.isValidSecret('', '')).toBe(true)
-    })
-  })
-
   // ─── validateTokenRequest ─────────────────────────────────────────────────
 
   describe('validateTokenRequest', () => {

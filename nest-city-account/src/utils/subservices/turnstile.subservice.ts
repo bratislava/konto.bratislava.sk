@@ -9,6 +9,15 @@ import {
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
 
+/**
+ * Cloudflare's documented "always passes" Turnstile test secret
+ * (https://developers.cloudflare.com/turnstile/troubleshooting/testing/). Set
+ * TURNSTILE_SECRET to this value to make captcha validation always succeed
+ * (e.g. for local development) - there is no implicit fallback, so the env var
+ * must explicitly hold either this value or a real secret.
+ */
+const DUMMY_TURNSTILE_SECRET = '1x0000000000000000000000000000000AA'
+
 @Injectable()
 export class TurnstileSubservice {
   turnstile
@@ -19,13 +28,11 @@ export class TurnstileSubservice {
     private throwerErrorGuard: ThrowerErrorGuard,
     baConfigService: BaConfigService
   ) {
-    // TODO temporarily uses dummy token which always passes
     const { turnstileSecret } = baConfigService.security
-    if (!turnstileSecret) {
-      this.logger.warn('TURNSTILE_SECRET not set! Using dummy token, captcha will always pass.')
-      this.turnstile = Turnstile('1x0000000000000000000000000000000AA')
+    this.turnstile = Turnstile(turnstileSecret)
+    if (turnstileSecret === DUMMY_TURNSTILE_SECRET) {
+      this.logger.warn('TURNSTILE_SECRET is set to the dummy value, captcha will always pass.')
     } else {
-      this.turnstile = Turnstile(turnstileSecret)
       this.logger.log('Successfully initialized Turnstile')
     }
   }

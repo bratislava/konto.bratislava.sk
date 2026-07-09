@@ -1,4 +1,12 @@
-import { EnvBoolean, EnvEnum, EnvInt, EnvPort, EnvString, EnvUrl } from './environment-decorators'
+import {
+  EnvBoolean,
+  EnvEnum,
+  EnvInt,
+  EnvPort,
+  EnvString,
+  EnvStringList,
+  EnvUrl,
+} from './environment-decorators'
 
 export enum NodeEnv {
   Development = 'development',
@@ -67,14 +75,14 @@ export default class EnvironmentVariables {
   @EnvString()
   REDIS_PASSWORD: string
 
-  @EnvString(false)
-  REDIS_USER?: string
+  @EnvString()
+  REDIS_USER: string
 
-  @EnvPort(false)
-  REDIS_PORT?: number
+  @EnvPort()
+  REDIS_PORT: number
 
-  @EnvString(false)
-  TURNSTILE_SECRET?: string
+  @EnvString()
+  TURNSTILE_SECRET: string
 
   @EnvString()
   MAILGUN_API_KEY: string
@@ -142,13 +150,11 @@ export default class EnvironmentVariables {
   @EnvInt(1, 31)
   MUNICIPAL_TAX_LOCK_DAY: number
 
-  @EnvUrl(false)
-  OAUTH2_LOGIN_URL?: string
+  @EnvUrl()
+  OAUTH2_LOGIN_URL: string
 
-  // TODO: validate that this is a comma-separated list of uppercase identifiers
-  // (e.g. "DPB,PAAS_MPA") once we have a dedicated decorator for that pattern.
-  @EnvString(false)
-  OAUTH2_CLIENT_LIST?: string
+  @EnvStringList()
+  OAUTH2_CLIENT_LIST: string[]
 
   @EnvString()
   MSSQL_HOST: string
@@ -165,9 +171,9 @@ export default class EnvironmentVariables {
   @EnvPort()
   MSSQL_PORT: number
 
-  @EnvString(false)
-  PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?: string
+  @EnvString()
+  PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: string
 
-  @EnvBoolean(false)
-  REQUIRE_HTTPS?: boolean
+  @EnvBoolean()
+  REQUIRE_HTTPS: boolean
 }

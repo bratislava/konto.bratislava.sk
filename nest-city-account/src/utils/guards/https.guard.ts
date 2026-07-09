@@ -13,8 +13,7 @@ export class HttpsGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    // Defaults to true (fail-safe) when REQUIRE_HTTPS is not set.
-    const requireHttps = this.baConfigService.security.requireHttps ?? true
+    const requireHttps = this.baConfigService.security.requireHttps
     if (!requireHttps) {
       return true
     }

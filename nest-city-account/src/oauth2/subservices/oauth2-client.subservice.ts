@@ -169,7 +169,7 @@ export class OAuth2ClientSubservice {
     // Get well-known clients from enum
     const enumClientNames = Object.values(OAuth2ClientName)
     // Get clients from environment variable
-    const envClientNames = this.parseCommaSeparatedList(this.baConfigService.oauth2.clientList)
+    const envClientNames = this.baConfigService.oauth2.clientList
 
     // Merge into a Set to avoid duplicates
     const clientNames = new Set<string>([...enumClientNames, ...envClientNames])

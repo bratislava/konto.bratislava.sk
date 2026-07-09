@@ -244,6 +244,7 @@ describe('OAuth2Client', () => {
  */
 describe('OAuth2ClientSubservice', () => {
   let service: OAuth2ClientSubservice
+  let clientList: string[]
 
   // Tests only ever set OAUTH2_* variables.
   function clearOAuth2Env() {
@@ -284,6 +285,7 @@ describe('OAuth2ClientSubservice', () => {
   beforeEach(async () => {
     // Clear all OAUTH2_* vars so each test controls the full client configuration state
     clearOAuth2Env()
+    clientList = []
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OAuth2ClientSubservice,
@@ -291,7 +293,7 @@ describe('OAuth2ClientSubservice', () => {
           provide: BaConfigService,
           useValue: {
             get oauth2() {
-              return { clientList: process.env.OAUTH2_CLIENT_LIST }
+              return { clientList }
             },
             getDynamic: (key: string) => process.env[key],
           },
@@ -335,7 +337,7 @@ describe('OAuth2ClientSubservice', () => {
     })
 
     it('should load multiple clients from OAUTH2_CLIENT_LIST', () => {
-      process.env.OAUTH2_CLIENT_LIST = 'CLIENT_A,CLIENT_B'
+      clientList = ['CLIENT_A', 'CLIENT_B']
       setClientEnv('CLIENT_A', { clientId: 'a-id', allowedUris: 'https://a.com/cb' })
       setClientEnv('CLIENT_B', { clientId: 'b-id', allowedUris: 'https://b.com/cb' })
       expect(service.findClientById('a-id')).toBeDefined()
@@ -343,7 +345,7 @@ describe('OAuth2ClientSubservice', () => {
     })
 
     it('should merge enum client names with OAUTH2_CLIENT_LIST (deduplication)', () => {
-      process.env.OAUTH2_CLIENT_LIST = 'PAAS_MPA,CUSTOM'
+      clientList = ['PAAS_MPA', 'CUSTOM']
       setClientEnv('PAAS_MPA', { clientId: 'paas-id', allowedUris: 'https://paas.com/cb' })
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
       setClientEnv('CUSTOM', { clientId: 'custom-id', allowedUris: 'https://custom.com/cb' })
@@ -353,7 +355,7 @@ describe('OAuth2ClientSubservice', () => {
     })
 
     it('should skip clients with missing CLIENT_ID', () => {
-      process.env.OAUTH2_CLIENT_LIST = 'NO_ID'
+      clientList = ['NO_ID']
       process.env.OAUTH2_NO_ID_ALLOWED_URIS = 'https://no-id.example.com/cb'
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
       expect(service.findClientByName('DPB')).toBeDefined()
@@ -408,7 +410,7 @@ describe('OAuth2ClientSubservice', () => {
     })
 
     it('should load a confidential client (with secret) whether or not it requires PKCE', () => {
-      process.env.OAUTH2_CLIENT_LIST = 'CONF_PKCE,CONF_NO_PKCE'
+      clientList = ['CONF_PKCE', 'CONF_NO_PKCE']
       setClientEnv('CONF_PKCE', {
         clientId: 'conf-pkce-id',
         clientSecret: 'secret',

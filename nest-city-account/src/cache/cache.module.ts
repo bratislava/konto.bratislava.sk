@@ -12,8 +12,7 @@ import BaConfigService from '../config/ba-config.service'
  * - Nonce-based replay protection in signature authentication
  *
  * Configuration:
- * - Requires REDIS_SERVICE, REDIS_PASSWORD environment variables
- * - REDIS_USER defaults to 'default', REDIS_PORT defaults to 6379
+ * - Requires REDIS_SERVICE, REDIS_USER, REDIS_PASSWORD, REDIS_PORT environment variables
  */
 @Module({
   imports: [
@@ -22,8 +21,7 @@ import BaConfigService from '../config/ba-config.service'
       inject: [BaConfigService],
       useFactory: (baConfigService: BaConfigService) => {
         const { service, password, user, port } = baConfigService.redis
-        // REDIS_USER/REDIS_PORT default to 'default'/6379 when not set.
-        const redisUrl = `redis://${user ?? 'default'}:${password}@${service}:${port ?? 6379}`
+        const redisUrl = `redis://${user}:${password}@${service}:${port}`
 
         return {
           stores: [new KeyvRedis(redisUrl)],

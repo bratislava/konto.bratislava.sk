@@ -38,6 +38,7 @@ import {
   FormState,
   GinisState,
 } from '../generated/prisma/client'
+import MailgunService from '../mailer/mailgun.service'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import {
   NasesErrorsEnum,
@@ -54,7 +55,6 @@ import {
   ErrorsEnum,
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
-import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
@@ -238,7 +238,7 @@ export default class GinisService {
     for (const file of form.files) {
       const minioFilePath = `${pospID}/${form.id}/${file.minioFileName}`
 
-      // eslint-disable-next-line no-await-in-loop
+      // eslint-disable-next-line no-await-in-loop -- ginis can't handle parallel uploads; sequential is required to avoid race conditions on their side
       await this.uploadAttachmentToGinis(
         file,
         form.ginisDocumentId,
@@ -575,9 +575,7 @@ export default class GinisService {
     return result[0]
   }
 
-  private async extractContactParamsFromUri(
-    form: Forms,
-  ): Promise<GinContactParams> {
+  async extractContactParamsFromUri(form: Forms): Promise<GinContactParams> {
     if (!form.mainUri) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DATA_INVALID,
@@ -636,7 +634,7 @@ export default class GinisService {
     return params
   }
 
-  private async extractContactParamsFromExternalId(
+  async extractContactParamsFromExternalId(
     form: Forms,
   ): Promise<GinContactParams> {
     if (!form.userExternalId) {
@@ -670,39 +668,38 @@ export default class GinisService {
           console: `Failed to fetch contact info from city account for external id: ${form.userExternalId}`,
         })
       })
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive guard; typed as non-null but real API responses can omit the body
     if (!contactInfo) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
         `extractContactParamsFromExternalId: ${FormsErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR}: Contact info not found in city account for external id: ${form.userExternalId}. Form id: ${form.id}`,
       )
     }
-
     params.email = contactInfo.email
 
     // Map Cognito account type to Ginis contact type and set appropriate fields
-    if (contactInfo.accountType === CognitoUserAccountTypesEnum.Fo) {
-      // Physical entity (UserContactAndIdInfoDto)
-      params.type = GinContactType.PHYSICAL_ENTITY
-      params.firstName = contactInfo.firstName
-      params.lastName = contactInfo.lastName
-      params.birthNumber = contactInfo.birthNumber
-    } else if (
-      contactInfo.accountType === CognitoUserAccountTypesEnum.Po ||
-      contactInfo.accountType === CognitoUserAccountTypesEnum.FoP
-    ) {
-      // Legal entity or self-employed entity (LegalPersonContactAndIdInfoDto)
-      params.type =
-        contactInfo.accountType === CognitoUserAccountTypesEnum.Po
-          ? GinContactType.LEGAL_ENTITY
-          : GinContactType.SELF_EMPLOYED_ENTITY
-      params.name = contactInfo.name
-      params.ico = contactInfo.ico
+    switch (contactInfo.accountType) {
+      case CognitoUserAccountTypesEnum.Fo:
+        params.type = GinContactType.PHYSICAL_ENTITY
+        params.firstName = contactInfo.firstName
+        params.lastName = contactInfo.lastName
+        params.birthNumber = contactInfo.birthNumber
+        break
+      case CognitoUserAccountTypesEnum.Po:
+      case CognitoUserAccountTypesEnum.FoP:
+        params.type =
+          contactInfo.accountType === CognitoUserAccountTypesEnum.Po
+            ? GinContactType.LEGAL_ENTITY
+            : GinContactType.SELF_EMPLOYED_ENTITY
+        params.name = contactInfo.name
+        params.ico = contactInfo.ico
+        break
     }
 
     return params
   }
 
-  private sanitizeEmployeeContactParams(
+  sanitizeEmployeeContactParams(
     contactParams: GinContactParams,
   ): GinContactParams {
     let department: string | undefined

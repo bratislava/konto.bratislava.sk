@@ -7,6 +7,7 @@ import {
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
+import { createTestForm } from '../__tests__/factories/form.factory'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
@@ -14,7 +15,6 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
-import { Forms } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
@@ -104,10 +104,9 @@ describe('ConvertPdfService', () => {
     filesHelper = module.get<FilesHelper>(FilesHelper)
     convertService = module.get<ConvertService>(ConvertService)
 
-    prismaMock.forms.findUnique.mockResolvedValue({
-      id: formId,
-      formDataJson: testJsonData,
-    } as unknown as Forms)
+    prismaMock.forms.findUnique.mockResolvedValue(
+      createTestForm({ id: formId, formDataJson: testJsonData }),
+    )
 
     // mocks default of not finding an existing file when uploading
     prismaMock.files.findMany.mockResolvedValue([])

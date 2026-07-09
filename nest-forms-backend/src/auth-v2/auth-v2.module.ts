@@ -3,7 +3,6 @@ import { PassportModule } from '@nestjs/passport'
 
 import ClientsModule from '../clients/clients.module'
 import BaConfigModule from '../config/ba-config.module'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { UserAuthGuard } from './guards/user-auth.guard'
 import { CityAccountUserService } from './services/city-account-user.service'
 import { CognitoGuestIdentityService } from './services/cognito-guest-identity.service'
@@ -22,7 +21,6 @@ import { UserAuthStrategy } from './strategies/user-auth.strategy'
     CityAccountUserService,
     UserAuthStrategy,
     UserAuthGuard,
-    ThrowerErrorGuard,
   ],
   exports: [UserAuthGuard],
   controllers: [],

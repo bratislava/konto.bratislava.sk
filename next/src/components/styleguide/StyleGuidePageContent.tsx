@@ -2,7 +2,7 @@ import { parseAsString, useQueryState } from 'nuqs'
 import { ReactElement } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
-import { StatusBar } from '@/src/components/simple-components/StatusBar'
+import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
 import AuthFormsShowCase from '@/src/components/styleguide/showcases/AuthFormsShowCase'
@@ -18,6 +18,7 @@ import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShow
 import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase/ModalsShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
 import MyApplicationsShowCase from '@/src/components/styleguide/showcases/MyApplicationsShowCase/MyApplicationsShowCase'
+import NavBarShowCase from '@/src/components/styleguide/showcases/NavBarShowCase'
 import NumberFieldShowCase from '@/src/components/styleguide/showcases/NumberFieldShowCase'
 import PasswordFieldShowCase from '@/src/components/styleguide/showcases/PasswordFieldShowCase'
 import PaymentResultPageContentShowCase from '@/src/components/styleguide/showcases/PaymentResultPageContentShowCase'
@@ -43,7 +44,6 @@ import StyleGuideWrapper from './StyleGuideWrapper'
 
 const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'button', label: 'Button', component: <ButtonShowCase /> },
-  { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
   { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },
   { id: 'tag', label: 'Tag', component: <TagShowCase /> },
@@ -93,6 +93,8 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     label: 'My Applications Pages',
     component: <MyApplicationsShowCase />,
   },
+  { id: 'navbar', label: 'NavBar', component: <NavBarShowCase /> },
+  { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
 ]
 
 const StyleGuidePageContent = () => {
@@ -103,7 +105,7 @@ const StyleGuidePageContent = () => {
 
   return (
     <>
-      <StatusBar />
+      <AlertBanner />
 
       <StyleGuideWrapper>
         <Tabs

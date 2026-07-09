@@ -12,6 +12,7 @@
       "properties": {
         "fields": [
           "slug",
+          "municipalService",
           "moreInformationUrl",
           "landingPage.text",
           "landingPage.linkCtas.title",
@@ -20,9 +21,7 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections",
-          "municipalService"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
@@ -36,6 +35,7 @@
       "properties": {
         "fields": [
           "slug",
+          "municipalService",
           "moreInformationUrl",
           "landingPage.text",
           "landingPage.linkCtas.title",
@@ -44,9 +44,7 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections",
-          "municipalService"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
@@ -60,6 +58,7 @@
       "properties": {
         "fields": [
           "slug",
+          "municipalService",
           "moreInformationUrl",
           "landingPage.text",
           "landingPage.linkCtas.title",
@@ -68,9 +67,7 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel",
-          "landingPage.sections",
-          "municipalService"
+          "landingPage.formCta.buttonLabel"
         ]
       },
       "conditions": [],
@@ -82,7 +79,11 @@
       "actionParameters": {},
       "subject": "api::general.general",
       "properties": {
-        "fields": ["alerts.content", "alerts.dateFrom", "alerts.dateTo"]
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "rgqsnu2rt3vh9yex40bpx8jb",
@@ -93,7 +94,11 @@
       "actionParameters": {},
       "subject": "api::general.general",
       "properties": {
-        "fields": ["alerts.content", "alerts.dateFrom", "alerts.dateTo"]
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "oitn3n8sx5x0lo5hfmnepc5g",
@@ -104,7 +109,11 @@
       "actionParameters": {},
       "subject": "api::general.general",
       "properties": {
-        "fields": ["alerts.content", "alerts.dateFrom", "alerts.dateTo"]
+        "fields": [
+          "alerts.content",
+          "alerts.dateFrom",
+          "alerts.dateTo"
+        ]
       },
       "conditions": [],
       "documentId": "zh2p0mq2ofwa4t6hcivay9bp",
@@ -115,7 +124,11 @@
       "actionParameters": {},
       "subject": "api::help-page.help-page",
       "properties": {
-        "fields": ["categories.title", "categories.items.title", "categories.items.content"]
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
       },
       "conditions": [],
       "documentId": "bohevlurfcnvqmah59tukcep",
@@ -126,7 +139,11 @@
       "actionParameters": {},
       "subject": "api::help-page.help-page",
       "properties": {
-        "fields": ["categories.title", "categories.items.title", "categories.items.content"]
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
       },
       "conditions": [],
       "documentId": "w20gd7qy6uki9uww9urw27gw",
@@ -137,7 +154,11 @@
       "actionParameters": {},
       "subject": "api::help-page.help-page",
       "properties": {
-        "fields": ["categories.title", "categories.items.title", "categories.items.content"]
+        "fields": [
+          "categories.title",
+          "categories.items.title",
+          "categories.items.content"
+        ]
       },
       "conditions": [],
       "documentId": "o5z04snmwhdbcx1siafskb4s",
@@ -220,7 +241,9 @@
       "actionParameters": {},
       "subject": null,
       "properties": {},
-      "conditions": ["admin::is-creator"],
+      "conditions": [
+        "admin::is-creator"
+      ],
       "documentId": "zegfuulrzgl7ehr0ujnaatvp",
       "locale": null
     },
@@ -238,7 +261,9 @@
       "actionParameters": {},
       "subject": null,
       "properties": {},
-      "conditions": ["admin::is-creator"],
+      "conditions": [
+        "admin::is-creator"
+      ],
       "documentId": "xf5bzon50gecf9gra2vklc39",
       "locale": null
     }

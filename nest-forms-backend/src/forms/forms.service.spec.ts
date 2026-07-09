@@ -23,6 +23,12 @@ import FormsService from './forms.service'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
+let mockFormDefinitions: { slug: string; isDisabled?: boolean }[] = []
+jest.mock('forms-shared/definitions/formDefinitions', () => ({
+  get formDefinitions() {
+    return mockFormDefinitions
+  },
+}))
 jest.mock('../files/files.helper')
 jest.mock('../files/files.service')
 jest.mock('../minio-storage/minio-storage.service')
@@ -43,6 +49,8 @@ describe('FormsService', () => {
   })
 
   beforeEach(async () => {
+    mockFormDefinitions = []
+
     const app = await Test.createTestingModule({
       imports: [],
       providers: [
@@ -75,11 +83,15 @@ describe('FormsService', () => {
           baUiSchema: {},
         },
       })
+      mockFormDefinitions = [
+        { slug: 'enabled-slug' },
+        { slug: 'disabled-slug', isDisabled: true },
+      ]
       const spy = jest
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
       prismaMock.forms.count.mockResolvedValue(63)
-      prismaMock.forms.groupBy.mockResolvedValue([])
+      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
       Object.defineProperty(prismaMock.forms, 'fields', {
         value: { createdAt: 'createdAtMock' },
       })
@@ -114,7 +126,25 @@ describe('FormsService', () => {
             },
           },
           state: { in: [FormState.DRAFT, FormState.PROCESSING] },
-          AND: [{ userExternalId: authUser.sub }],
+          AND: [
+            { userExternalId: authUser.sub },
+            {
+              NOT: {
+                AND: [
+                  { formDefinitionSlug: { in: ['disabled-slug'] } },
+                  {
+                    OR: [
+                      { state: FormState.DRAFT },
+                      {
+                        state: FormState.ERROR,
+                        error: { in: [FormError.INFECTED_FILES] },
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
         },
         orderBy: [
           {
@@ -139,7 +169,7 @@ describe('FormsService', () => {
           {
             id: '2',
           },
-        ] as unknown as Forms[],
+        ],
         currentPage: 2,
         pagination: 20,
         meta: {
@@ -206,7 +236,7 @@ describe('FormsService', () => {
 
   describe('getFormsCount', () => {
     it('should return all 0 if there is no record in database', async () => {
-      prismaMock.forms.groupBy.mockResolvedValue([])
+      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([])
       const result = await service.getFormsCount({})
       Object.values(FormState).forEach((state) => {
         expect(result[state]).toBe(0)
@@ -214,14 +244,9 @@ describe('FormsService', () => {
     })
 
     it('should return correct count otherwise', async () => {
-      prismaMock.forms.groupBy.mockResolvedValue([
-        {
-          _count: {
-            _all: 10,
-          },
-          state: FormState.DRAFT,
-        },
-      ] as any)
+      ;(prismaMock.forms.groupBy as jest.Mock).mockResolvedValue([
+        { _count: { _all: 10 }, state: FormState.DRAFT },
+      ])
       const result = await service.getFormsCount({})
       Object.values(FormState).forEach((state) => {
         if (state === FormState.DRAFT) {

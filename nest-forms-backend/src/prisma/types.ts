@@ -5,6 +5,7 @@ import type { FormSignature as _FormSignature } from 'forms-shared/signer/signat
 import type { FormSummary as _FormSummary } from 'forms-shared/summary/summary'
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace -- necessary for Prisma JSON types
   namespace PrismaJson {
     type FormDataJson = GenericObjectType
 

@@ -1,5 +1,4 @@
 import { Injectable, Logger, PreconditionFailedException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Cron } from '@nestjs/schedule'
 import { Readable as ReadableStream } from 'stream'
 
@@ -10,6 +9,7 @@ import {
   listOfStatuses,
   timeout,
 } from '../common/utils/helpers'
+import BaConfigService from '../config/ba-config.service'
 import { FormsClientService } from '../forms-client/forms-client.service'
 import { Files, FileStatus } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
@@ -25,7 +25,7 @@ export class ScannerCronService {
     private scannerService: ScannerService,
     private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly clamavClientService: ClamavClientService,
     private readonly formsClientService: FormsClientService,
   ) {}
@@ -222,10 +222,10 @@ export class ScannerCronService {
 
     //move file to safe or infected bucket if scan status is SAFE or INFECTED
     if (scanStatus === FileStatus.SAFE || scanStatus === FileStatus.INFECTED) {
-      const destinationBucket: string = this.configService.get(
-        `CLAMAV_${scanStatus}_BUCKET`,
-        '',
-      )
+      const destinationBucket =
+        scanStatus === FileStatus.SAFE
+          ? this.baConfigService.minio.buckets.safe
+          : this.baConfigService.minio.buckets.infected
       const moveStatus = await this.minioStorageService.moveFileBetweenBuckets(
         file.bucketUid,
         file.fileUid,
@@ -268,7 +268,7 @@ export class ScannerCronService {
     let response: string
     try {
       response = await Promise.race([
-        timeout(this.configService.get('MAX_FILE_SCAN_RUNS_TIMEOUT', 0)),
+        timeout(this.baConfigService.scanner.maxFileScanRunsTimeout),
         this.clamavClientService.scanStream(fileStream),
       ])
       this.logger.debug(
@@ -416,7 +416,7 @@ export class ScannerCronService {
           },
         ],
         runs: {
-          gte: parseInt(this.configService.get('MAX_FILE_SCAN_RUNS', '1')),
+          gte: this.baConfigService.scanner.maxFileScanRuns,
         },
       },
       take: 200,

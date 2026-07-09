@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import * as clamd from 'clamdjs'
 import { Readable as ReadableStream } from 'stream'
 
+import BaConfigService from '../config/ba-config.service'
 import { FileStatus } from '../generated/prisma/client'
 
 @Injectable()
@@ -10,14 +10,13 @@ export class ClamavClientService {
   private readonly logger: Logger
   private readonly scanner: clamd.Scanner
 
-  //constructor with configService
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly baConfigService: BaConfigService) {
     this.logger = new Logger('ClamavClientService')
 
-    //connection initialisation to clamav
+    //connection initialization to clamav
     this.scanner = clamd.createScanner(
-      configService.get('CLAMAV_HOST', ''),
-      configService.get('CLAMAV_PORT', 0),
+      baConfigService.clamav.host,
+      baConfigService.clamav.port,
     )
   }
 
@@ -45,8 +44,8 @@ export class ClamavClientService {
   async isRunning() {
     try {
       return await clamd.ping(
-        this.configService.get('CLAMAV_HOST', ''),
-        this.configService.get('CLAMAV_PORT', 0),
+        this.baConfigService.clamav.host,
+        this.baConfigService.clamav.port,
       )
     } catch (error) {
       if (error instanceof Error) {
@@ -63,8 +62,8 @@ export class ClamavClientService {
     this.logger.debug('Checking if clamav version...')
     try {
       const version = await clamd.version(
-        this.configService.get('CLAMAV_HOST', ''),
-        this.configService.get('CLAMAV_PORT', 0),
+        this.baConfigService.clamav.host,
+        this.baConfigService.clamav.port,
         300,
       )
       this.logger.debug(`Clamav version result: ${version}`)

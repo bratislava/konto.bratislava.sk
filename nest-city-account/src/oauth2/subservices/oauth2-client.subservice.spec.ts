@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
+import BaConfigService from '../../config/ba-config.service'
 import { OAuth2Client, OAuth2ClientSubservice } from './oauth2-client.subservice'
 
 describe('OAuth2Client', () => {
@@ -284,7 +285,18 @@ describe('OAuth2ClientSubservice', () => {
     // Clear all OAUTH2_* vars so each test controls the full client configuration state
     clearOAuth2Env()
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OAuth2ClientSubservice],
+      providers: [
+        OAuth2ClientSubservice,
+        {
+          provide: BaConfigService,
+          useValue: {
+            get oauth2() {
+              return { clientList: process.env.OAUTH2_CLIENT_LIST }
+            },
+            getDynamic: (key: string) => process.env[key],
+          },
+        },
+      ],
     }).compile()
     service = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
   })

@@ -1,6 +1,6 @@
 import { ContactsSectionFragment } from '@/src/clients/graphql-strapi/api'
+import Contacts from '@/src/components/common/Contacts/Contacts'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import Contacts from '@/src/components/page-contents/Contacts/Contacts'
 
 type ContactsProps = {
   section: ContactsSectionFragment

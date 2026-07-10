@@ -1,8 +1,6 @@
 import { ContactCardBlockFragment, ContactsSectionFragment } from '@/src/clients/graphql-strapi/api'
+import ContactCtaCard, { ContactCtaCardType } from '@/src/components/common/Contacts/ContactCtaCard'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
-import ContactCtaCard, {
-  ContactCtaCardType,
-} from '@/src/components/page-contents/Contacts/ContactCtaCard'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type ContactsProps = {

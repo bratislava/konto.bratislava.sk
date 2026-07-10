@@ -243,15 +243,18 @@ jobs:
       forms_shared_digest: ${{ needs.build-forms-shared.outputs.image_digest }}
       openapi_clients_digest: ${{ needs.build-openapi-clients.outputs.image_digest }}
 
-  # ---- Gate: every deploy waits here until all builds succeed ----
-  # Nothing deploys until every in-scope build (and the forms-shared test) has
-  # finished and none failed. Out-of-scope jobs report `skipped` (not `failure`),
-  # so they don't block — that's the "skipped on purpose" carve-out.
+  # ---- Gate + trigger infrastructure deploys ----
+  # deploy-secrets is the gate: nothing deploys until every in-scope build (and
+  # the forms-shared test) has finished and none failed. Out-of-scope jobs
+  # report `skipped` (not `failure`), so they don't block — that's the
+  # "skipped on purpose" carve-out. Ordering after that: shared secrets first;
+  # cvdmirror -> clamav -> nest-clamav-scanner; all backends -> next.
 
-  builds-complete:
-    name: All builds complete
+  deploy-secrets:
+    name: Shared application secrets
     needs:
       [
+        resolve,
         build-forms-shared,
         test-forms-shared,
         build-openapi-clients,
@@ -264,108 +267,82 @@ jobs:
         build-nest-city-account,
         build-next,
       ]
-    if: ${{ !cancelled() }}
-    runs-on: bratislava
-    steps:
-      - name: Verify every in-scope build succeeded
-        run: |
-          if ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}; then
-            echo "::error::A build job failed or was cancelled — aborting all deploys."
-            exit 1
-          fi
-          echo "All in-scope builds succeeded (skipped builds are intentional); proceeding to deploy."
-
-  # ---- Trigger infrastructure deploys ----
-  # Ordering: shared secrets first; cvdmirror -> clamav -> nest-clamav-scanner;
-  # all backends -> next.
-
-  deploy-secrets:
-    name: Shared application secrets
-    needs: [resolve, builds-complete]
-    if: ${{ !failure() && !cancelled() }}
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/secrets
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-cvdmirror:
     name: cvdmirror
-    needs: [resolve, build-cvdmirror, builds-complete, deploy-secrets]
+    needs: [resolve, build-cvdmirror, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.cvdmirror == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/cvdmirror
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-clamav:
     name: clamav
-    needs: [resolve, build-clamav, deploy-cvdmirror, builds-complete]
+    needs: [resolve, build-clamav, deploy-cvdmirror]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.clamav == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/clamav
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-nest-clamav-scanner:
     name: nest-clamav-scanner
-    needs: [resolve, build-nest-clamav-scanner, deploy-clamav, builds-complete]
+    needs: [resolve, build-nest-clamav-scanner, deploy-clamav]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-clamav-scanner == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_clamav_scanner
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [resolve, build-nest-forms-backend, test-forms-shared, builds-complete, deploy-secrets]
+    needs: [resolve, build-nest-forms-backend, test-forms-shared, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_forms_backend
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-nest-tax-backend:
     name: nest-tax-backend
-    needs: [resolve, build-nest-tax-backend, builds-complete, deploy-secrets]
+    needs: [resolve, build-nest-tax-backend, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-tax-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_tax_backend
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-nest-city-account:
     name: nest-city-account
-    needs: [resolve, build-nest-city-account, builds-complete, deploy-secrets]
+    needs: [resolve, build-nest-city-account, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-city-account == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/nest_city_account
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-strapi:
     name: Strapi
-    needs: [resolve, build-strapi, builds-complete, deploy-secrets]
+    needs: [resolve, build-strapi, deploy-secrets]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.strapi == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@beta
     secrets: inherit
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/strapi
-      dispatch_ref: mpinter/konto-secret-handling
 
   deploy-next:
     name: after Backends deploy Next
@@ -374,7 +351,6 @@ jobs:
         resolve,
         build-next,
         test-forms-shared,
-        builds-complete,
         deploy-strapi,
         deploy-nest-forms-backend,
         deploy-nest-clamav-scanner,
@@ -387,7 +363,6 @@ jobs:
     with:
       cluster: ${{ needs.resolve.outputs.cluster }}
       app: konto.bratislava.sk/next
-      dispatch_ref: mpinter/konto-secret-handling
 
   check-openapi-clients:
     name: Check OpenAPI clients for changes

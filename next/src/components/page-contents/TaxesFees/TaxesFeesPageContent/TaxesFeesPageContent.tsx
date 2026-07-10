@@ -15,9 +15,9 @@ import TaxesFeesTabs, {
 } from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesTabs'
 import { useStrapiTaxAdministrator } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
 import { useTaxesData } from '@/src/components/page-contents/TaxesFees/useTaxesData'
-import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
 
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1475&t=fznV5maoQK8a2irI-4
@@ -29,7 +29,7 @@ const TaxesFeesPageContent = () => {
   const {
     tierStatus: { isInQueue, isIdentityVerified },
   } = useSsrAuth()
-  const { showChannelNeededBanner } = useUserDataDeliveryMethod()
+  const { showDeliveryMethodNeededBanner } = useUserDataDeliveryMethod()
   const taxesData = useTaxesData()
   const strapiTaxAdministrator = useStrapiTaxAdministrator()
 
@@ -76,7 +76,7 @@ const TaxesFeesPageContent = () => {
               <IdentityVerificationBanner variant="verification-needed" />
             ))}
           {isIdentityVerified &&
-            (showChannelNeededBanner ? (
+            (showDeliveryMethodNeededBanner ? (
               <DeliveryMethodNeededBanner />
             ) : (
               <div className="flex flex-col gap-4 lg:gap-6">

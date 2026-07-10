@@ -94,7 +94,7 @@ const DeliveryMethodModalVariant = ({
 
 const DeliveryMethodShowcase = () => {
   return (
-    <Wrapper title="Delivery method change modal" direction="column" noBorder>
+    <Wrapper title="Official correspondence channel change modal" direction="column" noBorder>
       <Typography>
         <strong>Where is this used: </strong>Taxes &amp; Fees page. Opened from the delivery method
         settings (gear icon in DeliveryMethodInformation) and from DeliveryMethodNeededBanner. Note:

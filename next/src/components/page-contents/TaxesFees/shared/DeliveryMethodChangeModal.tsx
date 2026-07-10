@@ -13,12 +13,12 @@ import RadioGroup from '@/src/components/fields/RadioGroup'
 import Markdown from '@/src/components/formatting/Markdown'
 import DeliveryMethodAlert from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodAlert'
 import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
-import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import Dialog from '@/src/components/simple-components/Dialog'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
 import { useDeliveryMethod } from '@/src/frontend/hooks/useUser'
+import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
 import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
@@ -208,7 +208,7 @@ const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
 
   const { showToast } = useToast()
 
-  const { deliveryMethod, hasChangedDeliveryMethodAfterDeadline } = useUserDataDeliveryMethod()
+  const { deliveryMethod, hasUserChangedDeliveryMethodAfterDeadline } = useUserDataDeliveryMethod()
   const { changeDeliveryMethod } = useDeliveryMethod()
 
   const strapiTaxConfig = useStrapiTaxConfig()
@@ -269,11 +269,8 @@ const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
               content={t('taxes.delivery_method_change_modal.description')}
             />
           </div>
-          {hasChangedDeliveryMethodAfterDeadline && (
-            <DeliveryMethodAlert
-              variant="change-effective-next-year"
-              strapiTaxConfig={strapiTaxConfig}
-            />
+          {hasUserChangedDeliveryMethodAfterDeadline && (
+            <DeliveryMethodAlert variant="change-effective-next-year" />
           )}
           <Form
             defaultValues={{

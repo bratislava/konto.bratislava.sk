@@ -5,8 +5,7 @@ import { useState } from 'react'
 import Icon from '@/src/components/icon-components/Icon'
 import DeliveryMethodAlert from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodAlert'
 import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodChangeModal'
-import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
-import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
+import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4
@@ -15,12 +14,11 @@ import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesF
 const DeliveryMethodInformation = () => {
   const { t } = useTranslation('account')
 
-  const strapiTaxConfig = useStrapiTaxConfig()
   const {
     deliveryMethod,
     deliveryMethodLabel,
     canUserChangeDeliveryMethod,
-    hasChangedDeliveryMethodAfterDeadline,
+    hasUserChangedDeliveryMethodAfterDeadline,
   } = useUserDataDeliveryMethod()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -65,11 +63,8 @@ const DeliveryMethodInformation = () => {
           )}
         </div>
 
-        {hasChangedDeliveryMethodAfterDeadline && (
-          <DeliveryMethodAlert
-            variant="change-effective-next-year"
-            strapiTaxConfig={strapiTaxConfig}
-          />
+        {hasUserChangedDeliveryMethodAfterDeadline && (
+          <DeliveryMethodAlert variant="change-effective-next-year" />
         )}
       </div>
     </>

@@ -7,9 +7,9 @@ import DeliveryMethodNeededBanner from '@/src/components/page-contents/TaxesFees
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
 import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/PaymentData'
 import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
-import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
+import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
 import { PaymentMethod } from '@/src/frontend/types/types'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -30,7 +30,7 @@ const TaxFeePaymentPageContent = () => {
 
   const { tierStatus } = useSsrAuth()
   const { isIdentityVerified, isInQueue } = tierStatus
-  const { showChannelNeededBanner } = useUserDataDeliveryMethod()
+  const { showDeliveryMethodNeededBanner } = useUserDataDeliveryMethod()
 
   const getTitle = () => {
     switch (paymentMethodParam) {
@@ -70,7 +70,7 @@ const TaxFeePaymentPageContent = () => {
       />
       <SectionContainer className="py-6 lg:py-12">
         {isIdentityVerified ? (
-          showChannelNeededBanner ? (
+          showDeliveryMethodNeededBanner ? (
             <DeliveryMethodNeededBanner />
           ) : (
             <PaymentData paymentMethod={paymentMethodParam} />

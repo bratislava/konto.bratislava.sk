@@ -3,6 +3,10 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 
 import { useUser } from '@/src/frontend/hooks/useUser'
 
+/**
+ * In this hook we rename 'official correspondence channel' to 'delivery method'
+ * to ensure more consistency in other components and with backends
+ */
 export const useUserDataDeliveryMethod = () => {
   const { t } = useTranslation('account')
 
@@ -41,8 +45,8 @@ export const useUserDataDeliveryMethod = () => {
     deliveryMethod: officialCorrespondenceChannel,
     deliveryMethodEffectiveInCurrentYear,
     deliveryMethodLabel,
-    hasChangedDeliveryMethodAfterDeadline,
+    hasUserChangedDeliveryMethodAfterDeadline: hasChangedDeliveryMethodAfterDeadline,
     canUserChangeDeliveryMethod,
-    showChannelNeededBanner: showEmailCommunicationBanner,
+    showDeliveryMethodNeededBanner: showEmailCommunicationBanner,
   }
 }

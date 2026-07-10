@@ -1,17 +1,16 @@
 import { Typography } from '@bratislava/component-library'
 
-import { MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import Markdown from '@/src/components/formatting/Markdown'
+import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import Alert from '@/src/components/simple-components/Alert'
 
 type Props = {
-  strapiTaxConfig: MunicipalChargeConfigFragment
   variant: 'change-effective-next-year'
 }
 
-const DeliveryMethodAlert = ({ strapiTaxConfig, variant }: Props) => {
-  const { deliveryMethodChangePendingAlert } = strapiTaxConfig.deliveryMethod
-  const { title, content } = deliveryMethodChangePendingAlert ?? {}
+const DeliveryMethodAlert = ({ variant }: Props) => {
+  const { deliveryMethod } = useStrapiTaxConfig()
+  const { title, content } = deliveryMethod.deliveryMethodChangePendingAlert ?? {}
 
   if (!title && !content) {
     return null

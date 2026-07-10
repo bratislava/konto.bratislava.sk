@@ -1,50 +1,27 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { ResponseTaxAdministratorDto, TaxType } from 'openapi-clients/tax'
+import { TaxType } from 'openapi-clients/tax'
 
-import { StrapiTaxAdministrator } from '@/src/backend/utils/strapi-tax-administrator'
 import Icon from '@/src/components/icon-components/Icon'
+import { TaxAdministrator } from '@/src/components/page-contents/TaxesFees/resolveTaxAdministrator'
 import MLink from '@/src/components/simple-components/MLink'
 import { EXTERNAL_LINKS } from '@/src/utils/routes'
 
 type Props = {
   taxType: TaxType
-  backendTaxAdministrator: ResponseTaxAdministratorDto | null
-  strapiTaxAdministrator: StrapiTaxAdministrator | null
-}
-
-// TODO this normalization shouldn't happen so deep, consider moving to SSR step
-const normalizeBackendTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorDto) => {
-  return {
-    name: taxAdministrator.name,
-    phone: taxAdministrator.phoneNumber,
-    email: taxAdministrator.email,
-  }
+  taxAdministrator: TaxAdministrator | null
 }
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29864&t=tNzWj4dunEH6eCGu-4
  *
- * TODO unify with OfficialCorrespondenceChannelCardWrapper
+ * TODO unify with DeliveryMethodCardWrapper
  */
 
-const TaxesFeesAdministratorCardWrapper = ({
-  backendTaxAdministrator,
-  strapiTaxAdministrator,
-  taxType,
-}: Props) => {
+const TaxesFeesAdministratorCardWrapper = ({ taxAdministrator, taxType }: Props) => {
   const { t } = useTranslation('account')
 
-  const taxAdministrator = backendTaxAdministrator
-    ? normalizeBackendTaxAdministrator(backendTaxAdministrator)
-    : strapiTaxAdministrator
-
   if (!taxAdministrator) {
-    return null
-  }
-
-  // TODO Temporarily hidden until we fetch the administator correctly
-  if (taxType !== TaxType.Dzn && !backendTaxAdministrator) {
     return null
   }
 

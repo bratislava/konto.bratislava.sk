@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Key } from 'react-aria-components/Breadcrumbs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import { resolveTaxAdministrator } from '@/src/components/page-contents/TaxesFees/resolveTaxAdministrator'
 import DeliveryMethodInformation from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodInformation'
 import DeliveryMethodNeededBanner from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodNeededBanner'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
@@ -39,6 +40,12 @@ const TaxesFeesPageContent = () => {
 
   const [selectedTaxType, setSelectedTaxType] = useState<TaxType>(taxTypeTabOptions[0].id)
 
+  const taxAdministrator = resolveTaxAdministrator({
+    taxType: selectedTaxType,
+    backendTaxAdministrator: taxesData[selectedTaxType]?.taxAdministrator ?? null,
+    strapiTaxAdministrator,
+  })
+
   const handleTabChange = (key: Key) => {
     if (key === TaxType.Dzn || key === TaxType.Ko) {
       setSelectedTaxType(key)
@@ -73,13 +80,10 @@ const TaxesFeesPageContent = () => {
               <DeliveryMethodNeededBanner />
             ) : (
               <div className="flex flex-col gap-4 lg:gap-6">
-                {(taxesData[selectedTaxType]?.taxAdministrator || strapiTaxAdministrator) && (
-                  <TaxesFeesAdministratorCardWrapper
-                    taxType={selectedTaxType}
-                    backendTaxAdministrator={taxesData[selectedTaxType]?.taxAdministrator ?? null}
-                    strapiTaxAdministrator={strapiTaxAdministrator}
-                  />
-                )}
+                <TaxesFeesAdministratorCardWrapper
+                  taxType={selectedTaxType}
+                  taxAdministrator={taxAdministrator}
+                />
                 <TaxesFeesOverview
                   taxesData={taxesData[selectedTaxType]}
                   taxType={selectedTaxType}

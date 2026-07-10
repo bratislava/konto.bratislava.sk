@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import { resolveTaxAdministrator } from '@/src/components/page-contents/TaxesFees/resolveTaxAdministrator'
 import DeliveryMethodCardWrapper from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodCardWrapper'
 import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxFeeDetails from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeDetails'
@@ -25,6 +26,12 @@ const TaxFeePageContent = () => {
 
   const { taxData } = useTaxData()
   const strapiTaxAdministrator = useStrapiTaxAdministrator()
+
+  const taxAdministrator = resolveTaxAdministrator({
+    taxType: taxData.type,
+    backendTaxAdministrator: taxData.taxAdministrator,
+    strapiTaxAdministrator,
+  })
 
   const pageTitle = {
     [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),
@@ -75,8 +82,7 @@ const TaxFeePageContent = () => {
               <TaxesFeesAdministratorCardWrapper
                 key="tax-administrator"
                 taxType={taxData.type}
-                backendTaxAdministrator={taxData.taxAdministrator}
-                strapiTaxAdministrator={strapiTaxAdministrator}
+                taxAdministrator={taxAdministrator}
               />,
             ]}
             className="w-full"

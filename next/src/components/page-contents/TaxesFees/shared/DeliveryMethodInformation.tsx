@@ -4,8 +4,8 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 import { useState } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
-import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
-import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
+import DeliveryMethodAlert from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodAlert'
+import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodChangeModal'
 import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 
@@ -13,7 +13,7 @@ import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesF
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4
  */
 
-const OfficialCorrespondenceChannelInformation = () => {
+const DeliveryMethodInformation = () => {
   const { t } = useTranslation('account')
 
   const strapiTaxConfig = useStrapiTaxConfig()
@@ -34,10 +34,7 @@ const OfficialCorrespondenceChannelInformation = () => {
 
   return (
     <>
-      <OfficialCorrespondenceChannelChangeModal
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-      />
+      <DeliveryMethodChangeModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
       <div className="flex flex-col gap-4 rounded-lg border bg-gray-0 p-4 lg:mx-0 lg:gap-5 lg:p-5">
         <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -72,7 +69,7 @@ const OfficialCorrespondenceChannelInformation = () => {
         </div>
 
         {hasChangedDeliveryMethodAfterDeadline && (
-          <OfficialCorrespondenceChannelAlert
+          <DeliveryMethodAlert
             variant="change-effective-next-year"
             strapiTaxConfig={strapiTaxConfig}
           />
@@ -82,4 +79,4 @@ const OfficialCorrespondenceChannelInformation = () => {
   )
 }
 
-export default OfficialCorrespondenceChannelInformation
+export default DeliveryMethodInformation

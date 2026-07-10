@@ -2,20 +2,17 @@ import { useTranslation } from 'next-i18next/pages'
 import { useState } from 'react'
 
 import ImageMestskeKontoSituacia from '@/src/assets/images/mestske-konto-situacia.png'
-import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
+import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodChangeModal'
 import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 
-const OfficialCorrespondenceChannelNeededBanner = () => {
+const DeliveryMethodNeededBanner = () => {
   const { t } = useTranslation('account')
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
     <>
-      <OfficialCorrespondenceChannelChangeModal
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-      />
+      <DeliveryMethodChangeModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
       <AnnouncementBlock
         announcementContent={t('account_section_payment.set_delivery_method_content')}
         imageSrc={ImageMestskeKontoSituacia}
@@ -32,4 +29,4 @@ const OfficialCorrespondenceChannelNeededBanner = () => {
   )
 }
 
-export default OfficialCorrespondenceChannelNeededBanner
+export default DeliveryMethodNeededBanner

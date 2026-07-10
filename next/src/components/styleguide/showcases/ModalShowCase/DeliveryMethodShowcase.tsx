@@ -6,7 +6,7 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 import { useState } from 'react'
 
 import { MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
-import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
+import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodChangeModal'
 import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { Stack } from '@/src/components/styleguide/Stack'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
@@ -66,17 +66,17 @@ const createQueryClient = (userData: object) => {
   return qc
 }
 
-type OfficialCorrespondenceChannelModalVariantProps = {
+type DeliveryMethodModalVariantProps = {
   label: string
   userData: object
   strapiTaxConfig: MunicipalChargeConfigFragment
 }
 
-const OfficialCorrespondenceChannelModalVariant = ({
+const DeliveryMethodModalVariant = ({
   label,
   userData,
   strapiTaxConfig,
-}: OfficialCorrespondenceChannelModalVariantProps) => {
+}: DeliveryMethodModalVariantProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [queryClient] = useState(() => createQueryClient(userData))
 
@@ -86,33 +86,32 @@ const OfficialCorrespondenceChannelModalVariant = ({
         <Button variant="solid" onPress={() => setIsOpen(true)}>
           {label}
         </Button>
-        <OfficialCorrespondenceChannelChangeModal isOpen={isOpen} onOpenChange={setIsOpen} />
+        <DeliveryMethodChangeModal isOpen={isOpen} onOpenChange={setIsOpen} />
       </StrapiTaxConfigProvider>
     </QueryClientProvider>
   )
 }
 
-const OfficialCorrespondenceChannelShowcase = () => {
+const DeliveryMethodShowcase = () => {
   return (
     <Wrapper title="Official correspondence channel change modal" direction="column" noBorder>
       <Typography>
         <strong>Where is this used: </strong>Taxes &amp; Fees page. Opened from the delivery method
-        settings (gear icon in OfficialCorrespondenceChannelInformation) and from
-        OfficialCorrespondenceChannelNeededBanner. Note: submitting will fail in the styleguide (no
-        auth) and show an error toast.
+        settings (gear icon in DeliveryMethodInformation) and from DeliveryMethodNeededBanner. Note:
+        submitting will fail in the styleguide (no auth) and show an error toast.
       </Typography>
       <Stack direction="row">
-        <OfficialCorrespondenceChannelModalVariant
+        <DeliveryMethodModalVariant
           label="Not subscribed (Postal)"
           userData={MOCK_USER_NOT_SUBSCRIBED}
           strapiTaxConfig={MOCK_STRAPI_TAX_CONFIG_BASE}
         />
-        <OfficialCorrespondenceChannelModalVariant
+        <DeliveryMethodModalVariant
           label="Subscribed (Email)"
           userData={MOCK_USER_SUBSCRIBED}
           strapiTaxConfig={MOCK_STRAPI_TAX_CONFIG_BASE}
         />
-        <OfficialCorrespondenceChannelModalVariant
+        <DeliveryMethodModalVariant
           label="Changed after deadline (shows alert)"
           userData={MOCK_USER_CHANGED_AFTER_DEADLINE}
           strapiTaxConfig={MOCK_STRAPI_TAX_CONFIG_WITH_DEADLINE_ALERT}
@@ -122,4 +121,4 @@ const OfficialCorrespondenceChannelShowcase = () => {
   )
 }
 
-export default OfficialCorrespondenceChannelShowcase
+export default DeliveryMethodShowcase

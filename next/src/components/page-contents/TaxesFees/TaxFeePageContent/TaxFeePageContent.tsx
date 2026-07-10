@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import OfficialCorrespondenceChannelCardWrapper from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
+import DeliveryMethodCardWrapper from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodCardWrapper'
 import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxFeeDetails from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeDetails'
 import TaxFeePaymentMethods from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethods'
@@ -69,7 +69,7 @@ const TaxFeePageContent = () => {
             desktop={2}
             hasVerticalPadding={false}
             items={[
-              <OfficialCorrespondenceChannelCardWrapper key="official-correspondence-channel" />,
+              <DeliveryMethodCardWrapper key="delivery-method" />,
               <TaxesFeesAdministratorCardWrapper
                 key="tax-administrator"
                 taxType={taxData.type}

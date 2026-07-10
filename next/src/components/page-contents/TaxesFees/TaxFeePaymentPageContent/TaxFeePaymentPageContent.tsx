@@ -3,8 +3,8 @@ import { parseAsStringLiteral, useQueryState } from 'nuqs'
 import { TaxType } from 'openapi-clients/tax'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import DeliveryMethodNeededBanner from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodNeededBanner'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
-import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/PaymentData'
 import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
@@ -71,7 +71,7 @@ const TaxFeePaymentPageContent = () => {
       <SectionContainer className="py-6 lg:py-12">
         {isIdentityVerified ? (
           showChannelNeededBanner ? (
-            <OfficialCorrespondenceChannelNeededBanner />
+            <DeliveryMethodNeededBanner />
           ) : (
             <PaymentData paymentMethod={paymentMethodParam} />
           )

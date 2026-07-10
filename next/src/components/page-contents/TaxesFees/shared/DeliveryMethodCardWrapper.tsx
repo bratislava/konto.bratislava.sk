@@ -10,7 +10,7 @@ import { ROUTES } from '@/src/utils/routes'
 
 // TODO unify with TaxesFeesAdministratorCardWrapper
 
-const OfficialCorrespondenceChannelCardWrapper = () => {
+const DeliveryMethodCardWrapper = () => {
   const { t } = useTranslation('account')
   const { deliveryMethod, canUserChangeDeliveryMethod } = useUserDataDeliveryMethod()
 
@@ -60,4 +60,4 @@ const OfficialCorrespondenceChannelCardWrapper = () => {
   )
 }
 
-export default OfficialCorrespondenceChannelCardWrapper
+export default DeliveryMethodCardWrapper

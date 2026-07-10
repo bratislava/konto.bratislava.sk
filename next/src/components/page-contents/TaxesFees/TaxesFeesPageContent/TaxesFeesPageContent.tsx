@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Key } from 'react-aria-components/Breadcrumbs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import DeliveryMethodInformation from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodInformation'
+import DeliveryMethodNeededBanner from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodNeededBanner'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
-import OfficialCorrespondenceChannelInformation from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelInformation'
-import OfficialCorrespondenceChannelNeededBanner from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelNeededBanner'
 import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/TaxesFees/shared/TaxesFeesAdministratorCardWrapper'
 import TaxesFeesOverview from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesOverview'
 import TaxesFeesTabs, {
@@ -51,7 +51,7 @@ const TaxesFeesPageContent = () => {
         titleWrapperClassName="pb-0 pt-8 lg:py-0"
         className="lg:pt-14"
       >
-        <OfficialCorrespondenceChannelInformation />
+        <DeliveryMethodInformation />
         <TaxesFeesTabs
           selectedKey={selectedTaxType}
           onSelectionChange={handleTabChange}
@@ -68,7 +68,7 @@ const TaxesFeesPageContent = () => {
             ))}
           {isIdentityVerified &&
             (showChannelNeededBanner ? (
-              <OfficialCorrespondenceChannelNeededBanner />
+              <DeliveryMethodNeededBanner />
             ) : (
               <div className="flex flex-col gap-4 lg:gap-6">
                 {(taxesData[selectedTaxType]?.taxAdministrator || strapiTaxAdministrator) && (

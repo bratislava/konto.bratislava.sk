@@ -11,7 +11,7 @@ import { Controller } from 'react-hook-form'
 import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
 import Markdown from '@/src/components/formatting/Markdown'
-import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
+import DeliveryMethodAlert from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodAlert'
 import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import Dialog from '@/src/components/simple-components/Dialog'
@@ -201,7 +201,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
  *
  * TODO Rewrite the radio group to actual values instead of true/false?
  */
-const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
+const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
   const { t } = useTranslation('account')
 
   const { showToast } = useToast()
@@ -268,7 +268,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
             />
           </div>
           {hasChangedDeliveryMethodAfterDeadline && (
-            <OfficialCorrespondenceChannelAlert
+            <DeliveryMethodAlert
               variant="change-effective-next-year"
               strapiTaxConfig={strapiTaxConfig}
             />
@@ -287,4 +287,4 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
   )
 }
 
-export default OfficialCorrespondenceChannelChangeModal
+export default DeliveryMethodChangeModal

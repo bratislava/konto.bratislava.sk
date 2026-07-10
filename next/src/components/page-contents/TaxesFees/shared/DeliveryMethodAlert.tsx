@@ -9,7 +9,7 @@ type Props = {
   variant: 'change-effective-next-year'
 }
 
-const OfficialCorrespondenceChannelAlert = ({ strapiTaxConfig, variant }: Props) => {
+const DeliveryMethodAlert = ({ strapiTaxConfig, variant }: Props) => {
   const { deliveryMethodChangePendingAlert } = strapiTaxConfig.deliveryMethod ?? {}
   const { title, content } = deliveryMethodChangePendingAlert ?? {}
 
@@ -40,4 +40,4 @@ const OfficialCorrespondenceChannelAlert = ({ strapiTaxConfig, variant }: Props)
   return null
 }
 
-export default OfficialCorrespondenceChannelAlert
+export default DeliveryMethodAlert

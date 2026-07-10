@@ -1226,7 +1226,7 @@ type MunicipalCharge {
 
 type MunicipalChargeConfig {
   createdAt: DateTime
-  deliveryMethod: ComponentMunicipalChargeDeliveryMethod
+  deliveryMethod: ComponentMunicipalChargeDeliveryMethod!
   documentId: ID!
   municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifier
   publishedAt: DateTime

@@ -14,7 +14,8 @@
     "deliveryMethod": {
       "type": "component",
       "component": "municipal-charge.delivery-method",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "municipalChargeIdentifier": {
       "type": "component",

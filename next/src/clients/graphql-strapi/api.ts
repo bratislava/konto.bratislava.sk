@@ -1509,7 +1509,7 @@ export type MunicipalCharge = {
 export type MunicipalChargeConfig = {
   __typename?: 'MunicipalChargeConfig'
   createdAt?: Maybe<Scalars['DateTime']['output']>
-  deliveryMethod?: Maybe<ComponentMunicipalChargeDeliveryMethod>
+  deliveryMethod: ComponentMunicipalChargeDeliveryMethod
   documentId: Scalars['ID']['output']
   municipalChargeIdentifier?: Maybe<ComponentMunicipalChargeMunicipalChargeIdentifier>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
@@ -3607,7 +3607,7 @@ export type MunicipalChargeFragment = {
 
 export type MunicipalChargeConfigFragment = {
   __typename?: 'MunicipalChargeConfig'
-  deliveryMethod?: {
+  deliveryMethod: {
     __typename?: 'ComponentMunicipalChargeDeliveryMethod'
     consentText: string
     deliveryMethodChangePendingAlert?: {
@@ -3615,7 +3615,7 @@ export type MunicipalChargeConfigFragment = {
       title?: string | null
       content?: string | null
     } | null
-  } | null
+  }
   municipalChargeIdentifier?: {
     __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
     dzn?: {
@@ -3651,7 +3651,7 @@ export type MunicipalChargeConfigQuery = {
   __typename?: 'Query'
   municipalChargeConfig?: {
     __typename?: 'MunicipalChargeConfig'
-    deliveryMethod?: {
+    deliveryMethod: {
       __typename?: 'ComponentMunicipalChargeDeliveryMethod'
       consentText: string
       deliveryMethodChangePendingAlert?: {
@@ -3659,7 +3659,7 @@ export type MunicipalChargeConfigQuery = {
         title?: string | null
         content?: string | null
       } | null
-    } | null
+    }
     municipalChargeIdentifier?: {
       __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
       dzn?: {

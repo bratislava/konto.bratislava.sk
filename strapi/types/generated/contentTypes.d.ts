@@ -584,7 +584,8 @@ export interface ApiMunicipalChargeConfigMunicipalChargeConfig extends Struct.Si
   attributes: {
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
-    deliveryMethod: Schema.Attribute.Component<'municipal-charge.delivery-method', false>
+    deliveryMethod: Schema.Attribute.Component<'municipal-charge.delivery-method', false> &
+      Schema.Attribute.Required
     locale: Schema.Attribute.String & Schema.Attribute.Private
     localizations: Schema.Attribute.Relation<
       'oneToMany',

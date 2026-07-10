@@ -11,7 +11,7 @@ import {
   TaxType,
 } from 'openapi-clients/tax'
 
-import { TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 import { Tier, UserAttributes } from '@/src/frontend/dtos/accountDto'
 import { TaxesData } from '@/src/pages/dane-a-poplatky'
@@ -60,12 +60,19 @@ export const MOCK_USER_WITHOUT_CHANNEL = {
 
 // ─── Strapi CMS mock ───
 
-export const MOCK_STRAPI_TAX = {
-  documentId: 'mock-strapi-tax',
-  accountCommunicationConsentText: TEXT_COMES_FROM_STRAPI,
-  channelChangeEffectiveNextYearText: TEXT_COMES_FROM_STRAPI,
-  channelChangeEffectiveNextYearTitle: TEXT_COMES_FROM_STRAPI,
-} as unknown as TaxFragment
+export const MOCK_STRAPI_TAX_CONFIG = {
+  deliveryMethod: {
+    consentText: TEXT_COMES_FROM_STRAPI,
+    deliveryMethodChangePendingAlert: {
+      title: TEXT_COMES_FROM_STRAPI,
+      content: TEXT_COMES_FROM_STRAPI,
+    },
+  },
+  municipalChargeIdentifier: {
+    dzn: { documentId: 'mock-dzn', title: 'DzN', slug: 'dzn', feedbackLink: '#' },
+    ko: { documentId: 'mock-ko', title: 'KO', slug: 'ko', feedbackLink: '#' },
+  },
+} as unknown as MunicipalChargeConfigFragment
 
 // ─── Helpers ───
 

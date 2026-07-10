@@ -12,7 +12,7 @@ import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
 import Markdown from '@/src/components/formatting/Markdown'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
-import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import Dialog from '@/src/components/simple-components/Dialog'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
@@ -198,8 +198,9 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=20612-3394&m=dev
+ *
+ * TODO Rewrite the radio group to actual values instead of true/false?
  */
-// TODO Rewrite the radio group to actual values instead of true/false?
 const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
   const { t } = useTranslation('account')
 
@@ -208,10 +209,10 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
   const { deliveryMethod, hasChangedDeliveryMethodAfterDeadline } = useUserDataDeliveryMethod()
   const { changeDeliveryMethod } = useDeliveryMethod()
 
-  const strapiTax = useStrapiTax()
-  const { accountCommunicationConsentText } = strapiTax
+  const strapiTaxConfig = useStrapiTaxConfig()
 
-  // EDESK users should not be able to change the delivery method. Modal shouls never be available to them, we return null in case.
+  // EDESK users should not be able to change the delivery method.
+  // Modal should never be available to them, we return null in case.
   if (deliveryMethod === UserOfficialCorrespondenceChannelEnum.Edesk) {
     return null
   }
@@ -269,7 +270,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
           {hasChangedDeliveryMethodAfterDeadline && (
             <OfficialCorrespondenceChannelAlert
               variant="change-effective-next-year"
-              strapiTax={strapiTax}
+              strapiTaxConfig={strapiTaxConfig}
             />
           )}
           <Form
@@ -278,7 +279,7 @@ const OfficialCorrespondenceChannelChangeModal = ({ isOpen, onOpenChange }: Moda
               scrolledToBottom: false,
             }}
             onSubmit={handleSubmit}
-            agreementContent={accountCommunicationConsentText}
+            agreementContent={strapiTaxConfig.deliveryMethod.consentText}
           />
         </div>
       </Dialog>

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import Icon from '@/src/components/icon-components/Icon'
 import OfficialCorrespondenceChannelAlert from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelAlert'
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
-import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 
 /**
@@ -16,7 +16,7 @@ import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesF
 const OfficialCorrespondenceChannelInformation = () => {
   const { t } = useTranslation('account')
 
-  const strapiTax = useStrapiTax()
+  const strapiTaxConfig = useStrapiTaxConfig()
   const { deliveryMethod, canUserChangeDeliveryMethod, hasChangedDeliveryMethodAfterDeadline } =
     useUserDataDeliveryMethod()
 
@@ -74,7 +74,7 @@ const OfficialCorrespondenceChannelInformation = () => {
         {hasChangedDeliveryMethodAfterDeadline && (
           <OfficialCorrespondenceChannelAlert
             variant="change-effective-next-year"
-            strapiTax={strapiTax}
+            strapiTaxConfig={strapiTaxConfig}
           />
         )}
       </div>

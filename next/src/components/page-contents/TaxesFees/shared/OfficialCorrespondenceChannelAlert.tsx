@@ -1,39 +1,43 @@
 import { Typography } from '@bratislava/component-library'
 
-import { TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 
 type Props = {
-  strapiTax: TaxFragment
+  strapiTaxConfig: MunicipalChargeConfigFragment
   variant: 'change-effective-next-year'
 }
 
-const OfficialCorrespondenceChannelAlert = ({ strapiTax }: Props) => {
-  const { channelChangeEffectiveNextYearTitle, channelChangeEffectiveNextYearText } = strapiTax
+const OfficialCorrespondenceChannelAlert = ({ strapiTaxConfig, variant }: Props) => {
+  const { deliveryMethodChangePendingAlert } = strapiTaxConfig.deliveryMethod ?? {}
+  const { title, content } = deliveryMethodChangePendingAlert ?? {}
 
-  if (!channelChangeEffectiveNextYearTitle && !channelChangeEffectiveNextYearText) {
+  if (!title && !content) {
     return null
   }
 
-  return (
-    <Alert
-      type="warning"
-      fullWidth
-      message={
-        <>
-          {channelChangeEffectiveNextYearTitle ? (
-            <Typography variant="h6" as="span">
-              {channelChangeEffectiveNextYearTitle}
-            </Typography>
-          ) : null}
-          {channelChangeEffectiveNextYearText ? (
-            <Markdown variant="small" content={channelChangeEffectiveNextYearText} />
-          ) : null}
-        </>
-      }
-    />
-  )
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (variant === 'change-effective-next-year') {
+    return (
+      <Alert
+        type="warning"
+        fullWidth
+        message={
+          <>
+            {title ? (
+              <Typography variant="h6" as="span">
+                {title}
+              </Typography>
+            ) : null}
+            {content ? <Markdown variant="small" content={content} /> : null}
+          </>
+        }
+      />
+    )
+  }
+
+  return null
 }
 
 export default OfficialCorrespondenceChannelAlert

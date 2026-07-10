@@ -7,13 +7,13 @@ import {
   StrapiTaxAdministrator,
 } from '@/src/backend/utils/strapi-tax-administrator'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { GeneralQuery, TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { GeneralQuery, MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import { taxClient } from '@/src/clients/tax'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import TaxFeePageContent from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePageContent'
-import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { TaxFeeProvider } from '@/src/components/page-contents/TaxesFees/useTaxFee'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -25,7 +25,7 @@ type PageProps = {
   general: GeneralQuery
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
   strapiTaxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment
+  strapiTaxConfig: MunicipalChargeConfigFragment
   dehydratedState: DehydratedState
 }
 
@@ -55,19 +55,20 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
     const queryClient = new QueryClient()
 
     try {
-      const [general, { data: taxData }, strapiTax, strapiTaxAdministrator] = await Promise.all([
-        strapiClient.General(),
-        taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, orderNumber, type, {
-          authStrategy: 'authOnly',
-          getSsrAuthSession: fetchAuthSession,
-        }),
-        strapiClient.Tax().then((response) => response.tax),
-        getTaxAdministratorForUser(amplifyContextSpec),
-      ])
+      const [general, { data: taxData }, strapiTaxConfig, strapiTaxAdministrator] =
+        await Promise.all([
+          strapiClient.General(),
+          taxClient.taxControllerV2GetTaxDetailByYearV2(yearNumber, orderNumber, type, {
+            authStrategy: 'authOnly',
+            getSsrAuthSession: fetchAuthSession,
+          }),
+          strapiClient.MunicipalChargeConfig().then((response) => response.municipalChargeConfig),
+          getTaxAdministratorForUser(amplifyContextSpec),
+        ])
 
       await prefetchUserQuery(queryClient, fetchAuthSession)
 
-      if (!strapiTax) {
+      if (!strapiTaxConfig) {
         return { notFound: true }
       }
 
@@ -75,7 +76,7 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
         props: {
           general,
           taxData,
-          strapiTax,
+          strapiTaxConfig,
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
@@ -105,19 +106,19 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
 const AccountTaxesFeesPage = ({
   general,
   taxData,
-  strapiTax,
-  dehydratedState,
+  strapiTaxConfig,
   strapiTaxAdministrator,
+  dehydratedState,
 }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
         <PageLayout>
-          <StrapiTaxProvider strapiTax={strapiTax}>
+          <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <TaxFeeProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
               <TaxFeePageContent />
             </TaxFeeProvider>
-          </StrapiTaxProvider>
+          </StrapiTaxConfigProvider>
         </PageLayout>
       </GeneralContextProvider>
     </HydrationBoundary>

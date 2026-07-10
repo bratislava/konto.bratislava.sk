@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
-import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import ThankYouTile, {
   ThankYouTileProps,
 } from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
@@ -110,7 +110,7 @@ export const usePaymentResultPropsMap = ({
  */
 
 const PaymentResultPageContent = () => {
-  const { feedbackLinkDzn, feedbackLinkKo } = useStrapiTax()
+  const { municipalChargeIdentifier } = useStrapiTaxConfig()
 
   const router = useRouter()
   const { status, type, year, order } = usePaymentResultQueryParams(router)
@@ -128,14 +128,18 @@ const PaymentResultPageContent = () => {
 
   const feedbackLink = useMemo(() => {
     if (type === TaxType.Dzn) {
-      return feedbackLinkDzn
+      return municipalChargeIdentifier?.dzn?.feedbackLink
     }
     if (type === TaxType.Ko) {
-      return feedbackLinkKo
+      return municipalChargeIdentifier?.ko?.feedbackLink
     }
 
     return null
-  }, [type, feedbackLinkDzn, feedbackLinkKo])
+  }, [
+    type,
+    municipalChargeIdentifier?.dzn?.feedbackLink,
+    municipalChargeIdentifier?.ko?.feedbackLink,
+  ])
 
   const { cardPropsMap } = usePaymentResultPropsMap({
     feedbackLink,

@@ -2,31 +2,33 @@
 
 import { Button, Typography } from '@bratislava/component-library'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import {
-  UserOfficialCorrespondenceChannelEnum,
-} from 'openapi-clients/city-account'
+import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
-import { TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import OfficialCorrespondenceChannelChangeModal from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelChangeModal'
-import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { Stack } from '@/src/components/styleguide/Stack'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
 
 const TEXT_COMES_FROM_STRAPI = 'Text sa doťahuje zo Strapi'
 
-const MOCK_STRAPI_TAX_BASE = {
-  documentId: 'mock-strapi-tax',
-  accountCommunicationConsentText: TEXT_COMES_FROM_STRAPI,
-  channelChangeEffectiveNextYearText: null,
-  channelChangeEffectiveNextYearTitle: null,
-}
+const MOCK_STRAPI_TAX_CONFIG_BASE = {
+  deliveryMethod: {
+    consentText: TEXT_COMES_FROM_STRAPI,
+    deliveryMethodChangePendingAlert: null,
+  },
+} as unknown as MunicipalChargeConfigFragment
 
-const MOCK_STRAPI_TAX_WITH_DEADLINE_ALERT = {
-  ...MOCK_STRAPI_TAX_BASE,
-  channelChangeEffectiveNextYearTitle: TEXT_COMES_FROM_STRAPI,
-  channelChangeEffectiveNextYearText: TEXT_COMES_FROM_STRAPI,
-}
+const MOCK_STRAPI_TAX_CONFIG_WITH_DEADLINE_ALERT = {
+  deliveryMethod: {
+    consentText: TEXT_COMES_FROM_STRAPI,
+    deliveryMethodChangePendingAlert: {
+      title: TEXT_COMES_FROM_STRAPI,
+      content: TEXT_COMES_FROM_STRAPI,
+    },
+  },
+} as unknown as MunicipalChargeConfigFragment
 
 const BASE_USER_DATA = {
   id: 'mock-user-id',
@@ -67,25 +69,25 @@ const createQueryClient = (userData: object) => {
 type OfficialCorrespondenceChannelModalVariantProps = {
   label: string
   userData: object
-  strapiTax: TaxFragment
+  strapiTaxConfig: MunicipalChargeConfigFragment
 }
 
 const OfficialCorrespondenceChannelModalVariant = ({
   label,
   userData,
-  strapiTax,
+  strapiTaxConfig,
 }: OfficialCorrespondenceChannelModalVariantProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [queryClient] = useState(() => createQueryClient(userData))
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StrapiTaxProvider strapiTax={strapiTax}>
+      <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
         <Button variant="solid" onPress={() => setIsOpen(true)}>
           {label}
         </Button>
         <OfficialCorrespondenceChannelChangeModal isOpen={isOpen} onOpenChange={setIsOpen} />
-      </StrapiTaxProvider>
+      </StrapiTaxConfigProvider>
     </QueryClientProvider>
   )
 }
@@ -103,17 +105,17 @@ const OfficialCorrespondenceChannelShowcase = () => {
         <OfficialCorrespondenceChannelModalVariant
           label="Not subscribed (Postal)"
           userData={MOCK_USER_NOT_SUBSCRIBED}
-          strapiTax={MOCK_STRAPI_TAX_BASE}
+          strapiTaxConfig={MOCK_STRAPI_TAX_CONFIG_BASE}
         />
         <OfficialCorrespondenceChannelModalVariant
           label="Subscribed (Email)"
           userData={MOCK_USER_SUBSCRIBED}
-          strapiTax={MOCK_STRAPI_TAX_BASE}
+          strapiTaxConfig={MOCK_STRAPI_TAX_CONFIG_BASE}
         />
         <OfficialCorrespondenceChannelModalVariant
           label="Changed after deadline (shows alert)"
           userData={MOCK_USER_CHANGED_AFTER_DEADLINE}
-          strapiTax={MOCK_STRAPI_TAX_WITH_DEADLINE_ALERT}
+          strapiTaxConfig={MOCK_STRAPI_TAX_CONFIG_WITH_DEADLINE_ALERT}
         />
       </Stack>
     </Wrapper>

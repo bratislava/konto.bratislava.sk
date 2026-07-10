@@ -9,13 +9,13 @@ import {
   StrapiTaxAdministrator,
 } from '@/src/backend/utils/strapi-tax-administrator'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { GeneralQuery, TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { GeneralQuery, MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import { taxClient } from '@/src/clients/tax'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import TaxesFeesPageContent from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesPageContent'
-import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import { TaxesFeesProvider } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
@@ -28,7 +28,7 @@ export type AccountTaxesFeesPageProps = {
   general: GeneralQuery
   taxesData: Record<TaxType, TaxesData | null>
   strapiTaxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment | null | undefined
+  strapiTaxConfig: MunicipalChargeConfigFragment | null | undefined
   dehydratedState: DehydratedState
 }
 
@@ -61,17 +61,23 @@ const queryClient = new QueryClient()
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps>(
   async ({ amplifyContextSpec, fetchAuthSession }) => {
     try {
-      const [general, taxesDataDzn, taxesDataKo, strapiTaxAdministrator, strapiTax, accountType] =
-        await Promise.all([
-          strapiClient.General(),
-          getTaxes(fetchAuthSession, TaxType.Dzn),
-          getTaxes(fetchAuthSession, TaxType.Ko),
-          getTaxAdministratorForUser(amplifyContextSpec),
-          strapiClient.Tax().then((response) => response.tax),
-          fetchUserAttributes(amplifyContextSpec).then(
-            (response) => response?.['custom:account_type'],
-          ),
-        ])
+      const [
+        general,
+        taxesDataDzn,
+        taxesDataKo,
+        strapiTaxAdministrator,
+        strapiTaxConfig,
+        accountType,
+      ] = await Promise.all([
+        strapiClient.General(),
+        getTaxes(fetchAuthSession, TaxType.Dzn),
+        getTaxes(fetchAuthSession, TaxType.Ko),
+        getTaxAdministratorForUser(amplifyContextSpec),
+        strapiClient.MunicipalChargeConfig().then((response) => response.municipalChargeConfig),
+        fetchUserAttributes(amplifyContextSpec).then(
+          (response) => response?.['custom:account_type'],
+        ),
+      ])
 
       await prefetchUserQuery(queryClient, fetchAuthSession)
 
@@ -87,8 +93,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
           general,
           taxesData: { [TaxType.Dzn]: taxesDataDzn, [TaxType.Ko]: taxesDataKo },
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
+          strapiTaxConfig,
           dehydratedState: dehydrate(queryClient),
-          strapiTax,
           ...(await slovakServerSideTranslations()),
         },
       }
@@ -108,21 +114,21 @@ const AccountTaxesFeesPage = ({
   general,
   taxesData,
   strapiTaxAdministrator,
-  strapiTax,
+  strapiTaxConfig,
   dehydratedState,
 }: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
         <PageLayout>
-          <StrapiTaxProvider strapiTax={strapiTax}>
+          <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <TaxesFeesProvider
               taxesData={taxesData}
               strapiTaxAdministrator={strapiTaxAdministrator}
             >
               <TaxesFeesPageContent />
             </TaxesFeesProvider>
-          </StrapiTaxProvider>
+          </StrapiTaxConfigProvider>
         </PageLayout>
       </GeneralContextProvider>
     </HydrationBoundary>

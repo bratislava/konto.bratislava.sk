@@ -2,13 +2,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode } from 'react'
 
 import { SsrAuthContext } from '@/src/components/logic/SsrAuthContext'
-import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
 import SelectField, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
 import { Tier } from '@/src/frontend/dtos/accountDto'
 
-import { MOCK_STRAPI_TAX, tierToUserAttributes } from './mockData'
+import { MOCK_STRAPI_TAX_CONFIG, tierToUserAttributes } from './mockData'
 
 type TaxShowcaseProvidersProps = {
   tier: Tier
@@ -25,7 +25,9 @@ export const TaxShowcaseProviders = ({
     value={{ isSignedIn: true, userAttributes: tierToUserAttributes(tier), guestIdentityId: null }}
   >
     <QueryClientProvider client={queryClient}>
-      <StrapiTaxProvider strapiTax={MOCK_STRAPI_TAX}>{children}</StrapiTaxProvider>
+      <StrapiTaxConfigProvider strapiTaxConfig={MOCK_STRAPI_TAX_CONFIG}>
+        {children}
+      </StrapiTaxConfigProvider>
     </QueryClientProvider>
   </SsrAuthContext.Provider>
 )

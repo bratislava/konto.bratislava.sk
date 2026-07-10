@@ -574,7 +574,7 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
 export interface ApiMunicipalChargeConfigMunicipalChargeConfig extends Struct.SingleTypeSchema {
   collectionName: 'municipal_charge_configs'
   info: {
-    displayName: 'Dane a poplatky (nov\u00E9)'
+    displayName: 'Dane a poplatky'
     pluralName: 'municipal-charge-configs'
     singularName: 'municipal-charge-config'
   }
@@ -818,34 +818,6 @@ export interface ApiMunicipalServicesPageMunicipalServicesPage extends Struct.Si
       'oneToMany',
       'api::municipal-service.municipal-service'
     >
-    updatedAt: Schema.Attribute.DateTime
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
-  }
-}
-
-export interface ApiTaxTax extends Struct.SingleTypeSchema {
-  collectionName: 'taxes'
-  info: {
-    description: ''
-    displayName: 'Dane a poplatky (star\u00E9)'
-    pluralName: 'taxes'
-    singularName: 'tax'
-  }
-  options: {
-    draftAndPublish: false
-  }
-  attributes: {
-    accountCommunicationConsentText: Schema.Attribute.RichText & Schema.Attribute.Required
-    channelChangeEffectiveNextYearText: Schema.Attribute.RichText
-    channelChangeEffectiveNextYearTitle: Schema.Attribute.String
-    createdAt: Schema.Attribute.DateTime
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
-    feedbackLinkDzn: Schema.Attribute.String
-    feedbackLinkKo: Schema.Attribute.String
-    locale: Schema.Attribute.String & Schema.Attribute.Private
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::tax.tax'> & Schema.Attribute.Private
-    paymentAlertText: Schema.Attribute.RichText
-    publishedAt: Schema.Attribute.DateTime
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
   }
@@ -1292,7 +1264,6 @@ declare module '@strapi/strapi' {
       'api::municipal-service-tag.municipal-service-tag': ApiMunicipalServiceTagMunicipalServiceTag
       'api::municipal-service.municipal-service': ApiMunicipalServiceMunicipalService
       'api::municipal-services-page.municipal-services-page': ApiMunicipalServicesPageMunicipalServicesPage
-      'api::tax.tax': ApiTaxTax
       'plugin::content-releases.release': PluginContentReleasesRelease
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction
       'plugin::i18n.locale': PluginI18NLocale

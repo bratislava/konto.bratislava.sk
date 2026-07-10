@@ -903,7 +903,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | Tax | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -1564,7 +1564,6 @@ type Mutation {
   deleteMunicipalServicesPage: DeleteMutationResponse
   deleteReviewWorkflowsWorkflow(documentId: ID!): DeleteMutationResponse
   deleteReviewWorkflowsWorkflowStage(documentId: ID!): DeleteMutationResponse
-  deleteTax: DeleteMutationResponse
   deleteUploadFile(id: ID!): UploadFile
 
   """Delete an existing role"""
@@ -1601,7 +1600,6 @@ type Mutation {
   updateMunicipalServicesPage(data: MunicipalServicesPageInput!, status: PublicationStatus = PUBLISHED): MunicipalServicesPage
   updateReviewWorkflowsWorkflow(data: ReviewWorkflowsWorkflowInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflow
   updateReviewWorkflowsWorkflowStage(data: ReviewWorkflowsWorkflowStageInput!, documentId: ID!, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStage
-  updateTax(data: TaxInput!, status: PublicationStatus = PUBLISHED): Tax
   updateUploadFile(id: ID!, info: FileInfoInput): UploadFile!
 
   """Update an existing role"""
@@ -1665,7 +1663,6 @@ type Query {
   reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStageEntityResponseCollection
   reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflow]!
   reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowEntityResponseCollection
-  tax(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Tax
   uploadFile(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UploadFile
   uploadFiles(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UploadFile]!
   uploadFiles_connection(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UploadFileEntityResponseCollection
@@ -1804,62 +1801,6 @@ input StringFilterInput {
   null: Boolean
   or: [String]
   startsWith: String
-}
-
-type Tax {
-  accountCommunicationConsentText: String!
-  channelChangeEffectiveNextYearText: String
-  channelChangeEffectiveNextYearTitle: String
-  createdAt: DateTime
-  documentId: ID!
-  feedbackLinkDzn: String
-  feedbackLinkKo: String
-  paymentAlertText: String
-  publishedAt: DateTime
-  updatedAt: DateTime
-}
-
-type TaxEntity {
-  attributes: Tax
-  id: ID
-}
-
-type TaxEntityResponse {
-  data: Tax
-}
-
-type TaxEntityResponseCollection {
-  nodes: [Tax!]!
-  pageInfo: Pagination!
-}
-
-input TaxFiltersInput {
-  accountCommunicationConsentText: StringFilterInput
-  and: [TaxFiltersInput]
-  channelChangeEffectiveNextYearText: StringFilterInput
-  channelChangeEffectiveNextYearTitle: StringFilterInput
-  createdAt: DateTimeFilterInput
-  feedbackLinkDzn: StringFilterInput
-  feedbackLinkKo: StringFilterInput
-  not: TaxFiltersInput
-  or: [TaxFiltersInput]
-  paymentAlertText: StringFilterInput
-  publishedAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-}
-
-input TaxInput {
-  accountCommunicationConsentText: String
-  channelChangeEffectiveNextYearText: String
-  channelChangeEffectiveNextYearTitle: String
-  feedbackLinkDzn: String
-  feedbackLinkKo: String
-  paymentAlertText: String
-  publishedAt: DateTime
-}
-
-type TaxRelationResponseCollection {
-  nodes: [Tax!]!
 }
 
 """A time string with format HH:mm:ss.SSS"""

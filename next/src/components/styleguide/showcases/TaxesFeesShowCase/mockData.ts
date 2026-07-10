@@ -20,7 +20,7 @@ const TEXT_COMES_FROM_STRAPI = 'Text sa doťahuje zo Strapi'
 
 // ─── Shared showcase option lists ───
 
-export type ChannelScenario = 'with' | 'without'
+export type DeliveryMethodScenario = 'with' | 'without'
 
 export const tierOptions: SelectOption[] = [
   { value: Tier.NEW, label: 'NEW — not yet attempted' },
@@ -28,12 +28,12 @@ export const tierOptions: SelectOption[] = [
   { value: Tier.IDENTITY_CARD, label: 'IDENTITY_CARD — verified' },
 ]
 
-export const channelOptions: SelectOption[] = [
-  { value: 'with', label: 'Channel set (showEmailCommunicationBanner=false)' },
-  { value: 'without', label: 'Channel NOT set (showEmailCommunicationBanner=true)' },
+export const deliveryMethodOptions: SelectOption[] = [
+  { value: 'with', label: 'Delivery method set (showEmailCommunicationBanner=false)' },
+  { value: 'without', label: 'Delivery method NOT set (showEmailCommunicationBanner=true)' },
 ]
 
-// ─── User mock objects (seeded into QueryClient for useOfficialCorrespondenceChannel) ───
+// ─── User mock objects (seeded into QueryClient for useUserDataDeliveryMethod) ───
 
 const MOCK_BASE_USER = {
   id: 'mock-user-id',
@@ -46,13 +46,13 @@ const MOCK_BASE_USER = {
   consents: [],
 }
 
-export const MOCK_USER_WITH_CHANNEL = {
+export const MOCK_USER_WITH_DELIVERY_METHOD = {
   ...MOCK_BASE_USER,
   officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum.Email,
   showEmailCommunicationBanner: false,
 }
 
-export const MOCK_USER_WITHOUT_CHANNEL = {
+export const MOCK_USER_WITHOUT_DELIVERY_METHOD = {
   ...MOCK_BASE_USER,
   officialCorrespondenceChannel: null,
   showEmailCommunicationBanner: true,

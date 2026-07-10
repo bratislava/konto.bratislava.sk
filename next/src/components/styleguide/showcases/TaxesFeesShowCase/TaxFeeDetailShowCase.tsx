@@ -7,7 +7,7 @@ import { TaxDataProvider } from '@/src/components/page-contents/TaxesFees/useTax
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 import { Tier } from '@/src/frontend/dtos/accountDto'
 
-import { createMockTaxDetail, createQueryClient, MOCK_USER_WITH_CHANNEL } from './mockData'
+import { createMockTaxDetail, createQueryClient, MOCK_USER_WITH_DELIVERY_METHOD } from './mockData'
 import { ShowcaseLayout, ShowcaseSelectField, TaxShowcaseProviders } from './shared'
 
 const paidStatusOptions: SelectOption[] = [
@@ -27,7 +27,7 @@ const TaxFeeDetailShowCase = () => {
   const [paidStatus, setPaidStatus] = useState<TaxStatusEnum>(TaxStatusEnum.NotPaid)
   const [taxType, setTaxType] = useState<TaxType>(TaxType.Dzn)
 
-  const queryClient = useMemo(() => createQueryClient(MOCK_USER_WITH_CHANNEL), [])
+  const queryClient = useMemo(() => createQueryClient(MOCK_USER_WITH_DELIVERY_METHOD), [])
   const taxData = useMemo(() => createMockTaxDetail(paidStatus, taxType), [paidStatus, taxType])
 
   return (

@@ -10,12 +10,12 @@ import { Tier } from '@/src/frontend/dtos/accountDto'
 import { PaymentMethod } from '@/src/frontend/types/types'
 
 import {
-  channelOptions,
-  ChannelScenario,
   createMockTaxDetail,
   createQueryClient,
-  MOCK_USER_WITH_CHANNEL,
-  MOCK_USER_WITHOUT_CHANNEL,
+  deliveryMethodOptions,
+  DeliveryMethodScenario,
+  MOCK_USER_WITH_DELIVERY_METHOD,
+  MOCK_USER_WITHOUT_DELIVERY_METHOD,
   tierOptions,
 } from './mockData'
 import { ShowcaseLayout, ShowcaseSelectField, TaxShowcaseProviders } from './shared'
@@ -27,7 +27,8 @@ const paymentMethodOptions: SelectOption[] = [
 
 const TaxFeePaymentShowCase = () => {
   const [tier, setTier] = useState<Tier>(Tier.IDENTITY_CARD)
-  const [channelScenario, setChannelScenario] = useState<ChannelScenario>('with')
+  const [deliveryMethodScenario, setDeliveryMethodScenario] =
+    useState<DeliveryMethodScenario>('with')
 
   // Controls the same URL param that TaxFeePaymentPageContent reads internally
   const [paymentMethod, setPaymentMethod] = useQueryState(
@@ -38,10 +39,13 @@ const TaxFeePaymentShowCase = () => {
   )
 
   const queryClient = useMemo(() => {
-    const userData = channelScenario === 'with' ? MOCK_USER_WITH_CHANNEL : MOCK_USER_WITHOUT_CHANNEL
+    const userData =
+      deliveryMethodScenario === 'with'
+        ? MOCK_USER_WITH_DELIVERY_METHOD
+        : MOCK_USER_WITHOUT_DELIVERY_METHOD
 
     return createQueryClient(userData)
-  }, [channelScenario])
+  }, [deliveryMethodScenario])
 
   const taxData = useMemo(() => createMockTaxDetail(TaxStatusEnum.NotPaid, TaxType.Dzn), [])
 
@@ -56,10 +60,10 @@ const TaxFeePaymentShowCase = () => {
             onChange={setTier}
           />
           <ShowcaseSelectField
-            label="Official correspondence channel"
-            options={channelOptions}
-            value={channelScenario}
-            onChange={setChannelScenario}
+            label="Delivery method"
+            options={deliveryMethodOptions}
+            value={deliveryMethodScenario}
+            onChange={setDeliveryMethodScenario}
           />
           <ShowcaseSelectField
             label="Payment method (sposob-uhrady)"
@@ -70,7 +74,7 @@ const TaxFeePaymentShowCase = () => {
         </>
       }
     >
-      <TaxShowcaseProviders key={channelScenario} tier={tier} queryClient={queryClient}>
+      <TaxShowcaseProviders key={deliveryMethodScenario} tier={tier} queryClient={queryClient}>
         <TaxDataProvider taxData={taxData}>
           <StrapiTaxAdministratorProvider strapiTaxAdministrator={null}>
             <div className="bg-background-passive-base">

@@ -1,4 +1,4 @@
-import React, { createContext, PropsWithChildren, useContext } from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 

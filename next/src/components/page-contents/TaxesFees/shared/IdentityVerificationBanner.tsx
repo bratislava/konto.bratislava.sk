@@ -1,5 +1,4 @@
 import { useTranslation } from 'next-i18next/pages'
-import React from 'react'
 
 import ImageMestskeKontoSituacia from '@/src/assets/images/mestske-konto-situacia.png'
 import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
@@ -29,6 +28,7 @@ const IdentityVerificationBanner = ({ variant }: Props) => {
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (variant === 'verification-in-process') {
     return (
       <AnnouncementBlock

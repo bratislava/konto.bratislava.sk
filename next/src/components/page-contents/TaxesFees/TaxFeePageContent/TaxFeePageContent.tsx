@@ -1,6 +1,5 @@
 import { useTranslation } from 'next-i18next/pages'
 import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
-import React from 'react'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import OfficialCorrespondenceChannelCardWrapper from '@/src/components/page-contents/TaxesFees/shared/OfficialCorrespondenceChannelCardWrapper'
@@ -70,10 +69,11 @@ const TaxFeePageContent = () => {
             desktop={2}
             hasVerticalPadding={false}
             items={[
-              <OfficialCorrespondenceChannelCardWrapper />,
+              <OfficialCorrespondenceChannelCardWrapper key="official-correspondence-channel" />,
               <TaxesFeesAdministratorCardWrapper
+                key="tax-administrator"
                 taxType={taxData.type}
-                beTaxAdministrator={taxData.taxAdministrator}
+                backendTaxAdministrator={taxData.taxAdministrator}
                 strapiTaxAdministrator={strapiTaxAdministrator}
               />,
             ]}

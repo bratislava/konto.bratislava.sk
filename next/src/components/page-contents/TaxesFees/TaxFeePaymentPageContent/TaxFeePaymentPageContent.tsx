@@ -1,7 +1,6 @@
 import { useTranslation } from 'next-i18next/pages'
 import { parseAsStringLiteral, useQueryState } from 'nuqs'
 import { TaxType } from 'openapi-clients/tax'
-import React from 'react'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'

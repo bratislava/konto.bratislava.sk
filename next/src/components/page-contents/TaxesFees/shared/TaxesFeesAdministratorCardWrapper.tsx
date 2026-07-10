@@ -9,12 +9,12 @@ import { EXTERNAL_LINKS } from '@/src/utils/routes'
 
 type Props = {
   taxType: TaxType
-  beTaxAdministrator: ResponseTaxAdministratorDto | null
+  backendTaxAdministrator: ResponseTaxAdministratorDto | null
   strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
 // TODO this normalization shouldn't happen so deep, consider moving to SSR step
-const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorDto) => {
+const normalizeBackendTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorDto) => {
   return {
     name: taxAdministrator.name,
     phone: taxAdministrator.phoneNumber,
@@ -29,22 +29,22 @@ const normalizeBeTaxAdministrator = (taxAdministrator: ResponseTaxAdministratorD
  */
 
 const TaxesFeesAdministratorCardWrapper = ({
-  beTaxAdministrator,
+  backendTaxAdministrator,
   strapiTaxAdministrator,
   taxType,
 }: Props) => {
   const { t } = useTranslation('account')
 
-  const taxAdministrator = beTaxAdministrator
-    ? normalizeBeTaxAdministrator(beTaxAdministrator)
+  const taxAdministrator = backendTaxAdministrator
+    ? normalizeBackendTaxAdministrator(backendTaxAdministrator)
     : strapiTaxAdministrator
 
   if (!taxAdministrator) {
     return null
   }
 
-  // TODO Temporarily hidden until we fetch the administator correctly 
-  if (taxType !== TaxType.Dzn && !beTaxAdministrator ) {
+  // TODO Temporarily hidden until we fetch the administator correctly
+  if (taxType !== TaxType.Dzn && !backendTaxAdministrator) {
     return null
   }
 

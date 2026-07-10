@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 
 import TaxesFeesPageContent from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesPageContent'
-import { TaxesFeesProvider } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
+import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
+import { TaxesDataProvider } from '@/src/components/page-contents/TaxesFees/useTaxesData'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 import { Tier } from '@/src/frontend/dtos/accountDto'
 
@@ -63,11 +64,13 @@ const TaxesFeesOverviewShowCase = () => {
       }
     >
       <TaxShowcaseProviders key={channelScenario} tier={tier} queryClient={queryClient}>
-        <TaxesFeesProvider taxesData={taxesData} strapiTaxAdministrator={null}>
-          <div className="bg-background-passive-base">
-            <TaxesFeesPageContent />
-          </div>
-        </TaxesFeesProvider>
+        <TaxesDataProvider taxesData={taxesData}>
+          <StrapiTaxAdministratorProvider strapiTaxAdministrator={null}>
+            <div className="bg-background-passive-base">
+              <TaxesFeesPageContent />
+            </div>
+          </StrapiTaxAdministratorProvider>
+        </TaxesDataProvider>
       </TaxShowcaseProviders>
     </ShowcaseLayout>
   )

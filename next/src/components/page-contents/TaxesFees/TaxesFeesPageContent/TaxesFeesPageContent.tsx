@@ -12,7 +12,8 @@ import TaxesFeesOverview from '@/src/components/page-contents/TaxesFees/TaxesFee
 import TaxesFeesTabs, {
   TaxTypeTabOptions,
 } from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesTabs'
-import { useTaxesFees } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
+import { useStrapiTaxAdministrator } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
+import { useTaxesData } from '@/src/components/page-contents/TaxesFees/useTaxesData'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -28,7 +29,8 @@ const TaxesFeesPageContent = () => {
     tierStatus: { isInQueue, isIdentityVerified },
   } = useSsrAuth()
   const { showChannelNeededBanner } = useUserDataDeliveryMethod()
-  const { taxesData, strapiTaxAdministrator } = useTaxesFees()
+  const taxesData = useTaxesData()
+  const strapiTaxAdministrator = useStrapiTaxAdministrator()
 
   const taxTypeTabOptions: TaxTypeTabOptions = [
     { title: t('account_section_payment.property_tax_title'), id: TaxType.Dzn },

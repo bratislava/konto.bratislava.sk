@@ -1244,13 +1244,11 @@ export type HomepageServices_ConnectionArgs = {
 
 export type HomepageAnnouncement = {
   __typename?: 'HomepageAnnouncement'
-  buttonText: Scalars['String']['output']
   createdAt?: Maybe<Scalars['DateTime']['output']>
   dateFrom?: Maybe<Scalars['DateTime']['output']>
   dateTo?: Maybe<Scalars['DateTime']['output']>
   description: Scalars['String']['output']
   documentId: Scalars['ID']['output']
-  href: Scalars['String']['output']
   image: UploadFile
   primaryButton?: Maybe<ComponentBlocksCommonLink>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
@@ -1277,13 +1275,11 @@ export type HomepageAnnouncementEntityResponseCollection = {
 
 export type HomepageAnnouncementFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
-  buttonText?: InputMaybe<StringFilterInput>
   createdAt?: InputMaybe<DateTimeFilterInput>
   dateFrom?: InputMaybe<DateTimeFilterInput>
   dateTo?: InputMaybe<DateTimeFilterInput>
   description?: InputMaybe<StringFilterInput>
   documentId?: InputMaybe<IdFilterInput>
-  href?: InputMaybe<StringFilterInput>
   not?: InputMaybe<HomepageAnnouncementFiltersInput>
   or?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
   primaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
@@ -1293,11 +1289,9 @@ export type HomepageAnnouncementFiltersInput = {
 }
 
 export type HomepageAnnouncementInput = {
-  buttonText?: InputMaybe<Scalars['String']['input']>
   dateFrom?: InputMaybe<Scalars['DateTime']['input']>
   dateTo?: InputMaybe<Scalars['DateTime']['input']>
   description?: InputMaybe<Scalars['String']['input']>
-  href?: InputMaybe<Scalars['String']['input']>
   image?: InputMaybe<Scalars['ID']['input']>
   primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
@@ -3586,8 +3580,6 @@ export type HomepageQuery = {
       documentId: string
       title: string
       description: string
-      buttonText: string
-      href: string
       dateFrom?: any | null
       dateTo?: any | null
       primaryButton?: {
@@ -3619,8 +3611,6 @@ export type HomepageQuery = {
       documentId: string
       title: string
       description: string
-      buttonText: string
-      href: string
       dateFrom?: any | null
       dateTo?: any | null
       primaryButton?: {
@@ -3655,8 +3645,6 @@ export type HomepageAnnouncementEntityFragment = {
   documentId: string
   title: string
   description: string
-  buttonText: string
-  href: string
   dateFrom?: any | null
   dateTo?: any | null
   primaryButton?: {
@@ -4849,8 +4837,6 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
     primaryButton {
       ...CommonLink
     }
-    buttonText
-    href
     dateFrom
     dateTo
     image {

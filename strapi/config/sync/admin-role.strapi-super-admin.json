@@ -319,8 +319,6 @@
         "fields": [
           "title",
           "description",
-          "buttonText",
-          "href",
           "primaryButton.label",
           "primaryButton.municipalService",
           "primaryButton.url",
@@ -330,7 +328,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "g388ytjq3lmkzyth4my6qkwu",
+      "documentId": "k72peeiumhzbc8iafq677p0x",
       "locale": null
     },
     {
@@ -359,8 +357,6 @@
         "fields": [
           "title",
           "description",
-          "buttonText",
-          "href",
           "primaryButton.label",
           "primaryButton.municipalService",
           "primaryButton.url",
@@ -370,7 +366,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "yx1pxe9hb9js13c2mcu6erqv",
+      "documentId": "kaiqlv135lwqobawwwqsyz7j",
       "locale": null
     },
     {
@@ -381,8 +377,6 @@
         "fields": [
           "title",
           "description",
-          "buttonText",
-          "href",
           "primaryButton.label",
           "primaryButton.municipalService",
           "primaryButton.url",
@@ -392,7 +386,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "bgmkxezi6ms2otn39brm282x",
+      "documentId": "bbz7rr84l2wym7pqpusfasc7",
       "locale": null
     },
     {

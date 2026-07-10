@@ -962,13 +962,11 @@ type Homepage {
 }
 
 type HomepageAnnouncement {
-  buttonText: String!
   createdAt: DateTime
   dateFrom: DateTime
   dateTo: DateTime
   description: String!
   documentId: ID!
-  href: String!
   image: UploadFile!
   primaryButton: ComponentBlocksCommonLink
   publishedAt: DateTime
@@ -992,13 +990,11 @@ type HomepageAnnouncementEntityResponseCollection {
 
 input HomepageAnnouncementFiltersInput {
   and: [HomepageAnnouncementFiltersInput]
-  buttonText: StringFilterInput
   createdAt: DateTimeFilterInput
   dateFrom: DateTimeFilterInput
   dateTo: DateTimeFilterInput
   description: StringFilterInput
   documentId: IDFilterInput
-  href: StringFilterInput
   not: HomepageAnnouncementFiltersInput
   or: [HomepageAnnouncementFiltersInput]
   primaryButton: ComponentBlocksCommonLinkFiltersInput
@@ -1008,11 +1004,9 @@ input HomepageAnnouncementFiltersInput {
 }
 
 input HomepageAnnouncementInput {
-  buttonText: String
   dateFrom: DateTime
   dateTo: DateTime
   description: String
-  href: String
   image: ID
   primaryButton: ComponentBlocksCommonLinkInput
   publishedAt: DateTime

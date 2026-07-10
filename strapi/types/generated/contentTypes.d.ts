@@ -515,13 +515,11 @@ export interface ApiHomepageAnnouncementHomepageAnnouncement extends Struct.Coll
     draftAndPublish: false
   }
   attributes: {
-    buttonText: Schema.Attribute.String & Schema.Attribute.Required
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
     dateFrom: Schema.Attribute.DateTime
     dateTo: Schema.Attribute.DateTime
     description: Schema.Attribute.Text & Schema.Attribute.Required
-    href: Schema.Attribute.String & Schema.Attribute.Required
     image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required
     locale: Schema.Attribute.String & Schema.Attribute.Private
     localizations: Schema.Attribute.Relation<

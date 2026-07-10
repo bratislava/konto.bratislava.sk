@@ -6,7 +6,7 @@ import { Fragment } from 'react'
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import Alert from '@/src/components/simple-components/Alert'
 import ClipboardCopy from '@/src/components/simple-components/ClipboardCopy'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
@@ -34,7 +34,7 @@ const PaymentData = ({ paymentMethod }: Props) => {
     redirectToInstallmentPaymentIsPending,
     downloadQrCodeOneTimePayment,
     downloadQrCodeInstallmentPayment,
-  } = useTaxFee()
+  } = useTaxData()
 
   const { userData } = useUser()
 

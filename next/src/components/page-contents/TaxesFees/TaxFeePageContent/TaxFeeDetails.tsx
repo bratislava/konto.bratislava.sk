@@ -5,7 +5,7 @@ import { TaxType } from 'openapi-clients/tax'
 import Icon from '@/src/components/icon-components/Icon'
 import TaxFeeAccordions from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeAccordions'
 import TaxFeePaymentSummary from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentSummary'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import { EXTERNAL_LINKS } from '@/src/utils/routes'
 
 /**
@@ -14,7 +14,8 @@ import { EXTERNAL_LINKS } from '@/src/utils/routes'
 
 const TaxFeeDetails = () => {
   const { t } = useTranslation('account')
-  const { taxData } = useTaxFee()
+
+  const { taxData } = useTaxData()
 
   const taxFeeAccordionsHeader = {
     [TaxType.Dzn]: t('taxes.tax_details.tax_liability_breakdown.taxes'),

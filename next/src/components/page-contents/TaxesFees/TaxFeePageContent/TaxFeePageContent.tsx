@@ -7,7 +7,8 @@ import TaxesFeesAdministratorCardWrapper from '@/src/components/page-contents/Ta
 import TaxFeeDetails from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeDetails'
 import TaxFeePaymentMethods from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethods'
 import TaxFeeSubjectInformation from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeeSubjectInformation'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useStrapiTaxAdministrator } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import Alert from '@/src/components/simple-components/Alert'
 import ResponsiveCarousel from '@/src/components/simple-components/Carousel/ResponsiveCarousel'
@@ -22,7 +23,8 @@ import { ROUTES } from '@/src/utils/routes'
 const TaxFeePageContent = () => {
   const { t } = useTranslation('account')
 
-  const { taxData, strapiTaxAdministrator } = useTaxFee()
+  const { taxData } = useTaxData()
+  const strapiTaxAdministrator = useStrapiTaxAdministrator()
 
   const pageTitle = {
     [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),

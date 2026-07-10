@@ -5,7 +5,7 @@ import { Fragment } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { formatDate } from '@/src/components/formatting/FormatDate'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import cn from '@/src/utils/cn'
 
@@ -16,7 +16,7 @@ import cn from '@/src/utils/cn'
 const PaymentSchedule = () => {
   const { t } = useTranslation('account')
 
-  const { taxData } = useTaxFee()
+  const { taxData } = useTaxData()
 
   // TODO: Use Table component
 

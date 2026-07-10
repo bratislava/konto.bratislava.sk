@@ -3,7 +3,8 @@ import { TaxStatusEnum, TaxType } from 'openapi-clients/tax'
 import { useMemo, useState } from 'react'
 
 import TaxFeePaymentPageContent from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/TaxFeePaymentPageContent'
-import { TaxFeeProvider } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
+import { TaxDataProvider } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 import { Tier } from '@/src/frontend/dtos/accountDto'
 import { PaymentMethod } from '@/src/frontend/types/types'
@@ -70,11 +71,13 @@ const TaxFeePaymentShowCase = () => {
       }
     >
       <TaxShowcaseProviders key={channelScenario} tier={tier} queryClient={queryClient}>
-        <TaxFeeProvider taxData={taxData} strapiTaxAdministrator={null}>
-          <div className="bg-background-passive-base">
-            <TaxFeePaymentPageContent />
-          </div>
-        </TaxFeeProvider>
+        <TaxDataProvider taxData={taxData}>
+          <StrapiTaxAdministratorProvider strapiTaxAdministrator={null}>
+            <div className="bg-background-passive-base">
+              <TaxFeePaymentPageContent />
+            </div>
+          </StrapiTaxAdministratorProvider>
+        </TaxDataProvider>
       </TaxShowcaseProviders>
     </ShowcaseLayout>
   )

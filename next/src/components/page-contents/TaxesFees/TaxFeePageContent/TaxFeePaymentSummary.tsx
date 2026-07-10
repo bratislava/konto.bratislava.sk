@@ -4,13 +4,14 @@ import { TaxType } from 'openapi-clients/tax'
 import { Fragment } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import cn from '@/src/utils/cn'
 
 const TaxFeePaymentSummary = () => {
-  const { taxData } = useTaxFee()
   const { t } = useTranslation('account')
+
+  const { taxData } = useTaxData()
 
   const overallAmountLabel = {
     [TaxType.Dzn]: t('taxes.tax_details.tax'),

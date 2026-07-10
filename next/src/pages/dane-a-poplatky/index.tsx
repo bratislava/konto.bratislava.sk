@@ -36,7 +36,7 @@ export type AccountTaxesFeesPageProps = {
 /**
  * BE returns 403 if users identity is not verified, it should return a flag instead
  */
-const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>, taxType: TaxType) => {
+const getTaxesData = async (getSsrAuthSession: () => Promise<AuthSession>, taxType: TaxType) => {
   try {
     const { data } = await taxClient.taxControllerV2GetTaxesListV2(taxType, {
       authStrategy: 'authOnly',
@@ -71,8 +71,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
         accountType,
       ] = await Promise.all([
         strapiClient.General(),
-        getTaxes(fetchAuthSession, TaxType.Dzn),
-        getTaxes(fetchAuthSession, TaxType.Ko),
+        getTaxesData(fetchAuthSession, TaxType.Dzn),
+        getTaxesData(fetchAuthSession, TaxType.Ko),
         getTaxAdministratorForUser(amplifyContextSpec),
         strapiClient.MunicipalChargeConfig().then((response) => response.municipalChargeConfig),
         fetchUserAttributes(amplifyContextSpec).then(

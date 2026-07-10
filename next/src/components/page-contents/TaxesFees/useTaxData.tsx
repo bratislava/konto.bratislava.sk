@@ -4,18 +4,16 @@ import { useTranslation } from 'next-i18next/pages'
 import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
-import { StrapiTaxAdministrator } from '@/src/backend/utils/strapi-tax-administrator'
 import { taxClient } from '@/src/clients/tax'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { base64ToArrayBuffer, downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
-type TaxFeeProviderProps = {
+type TaxDataProviderProps = {
   taxData: TaxControllerV2GetTaxDetailByYearV2200Response
-  strapiTaxAdministrator: StrapiTaxAdministrator | null
 }
 
-const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeProviderProps) => {
+const useGetContext = ({ taxData }: TaxDataProviderProps) => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -101,22 +99,21 @@ const useGetContext = ({ taxData, strapiTaxAdministrator }: TaxFeeProviderProps)
     redirectToInstallmentPaymentIsPending,
     downloadQrCodeOneTimePayment,
     downloadQrCodeInstallmentPayment,
-    strapiTaxAdministrator,
   }
 }
 
-const TaxFeeContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+const TaxDataContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const TaxFeeProvider = ({ children, ...rest }: PropsWithChildren<TaxFeeProviderProps>) => {
+export const TaxDataProvider = ({ children, ...rest }: PropsWithChildren<TaxDataProviderProps>) => {
   const context = useGetContext(rest)
 
-  return <TaxFeeContext.Provider value={context}>{children}</TaxFeeContext.Provider>
+  return <TaxDataContext.Provider value={context}>{children}</TaxDataContext.Provider>
 }
 
-export const useTaxFee = () => {
-  const context = useContext(TaxFeeContext)
+export const useTaxData = () => {
+  const context = useContext(TaxDataContext)
   if (!context) {
-    throw new Error('useTaxFee must be used within a TaxFeeProvider')
+    throw new Error('useTaxData must be used within a TaxDataProvider')
   }
 
   return context

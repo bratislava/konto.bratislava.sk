@@ -6,7 +6,7 @@ import SectionContainer from '@/src/components/layouts/SectionContainer'
 import DeliveryMethodNeededBanner from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodNeededBanner'
 import IdentityVerificationBanner from '@/src/components/page-contents/TaxesFees/shared/IdentityVerificationBanner'
 import PaymentData from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/PaymentData'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import { useUserDataDeliveryMethod } from '@/src/components/page-contents/TaxesFees/useUserDataDeliveryMethod'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
@@ -25,7 +25,7 @@ const TaxFeePaymentPageContent = () => {
       .withOptions({ clearOnDefault: false }),
   )
 
-  const { taxData } = useTaxFee()
+  const { taxData } = useTaxData()
   const isSinglePayment = taxData.overallAmount === taxData.overallBalance
 
   const { tierStatus } = useSsrAuth()

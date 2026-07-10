@@ -13,8 +13,9 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import TaxFeePaymentPageContent from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/TaxFeePaymentPageContent'
+import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
 import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
-import { TaxFeeProvider } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { TaxDataProvider } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { convertYearToNumber } from '@/src/frontend/utils/general'
@@ -103,19 +104,21 @@ const AccountTaxesFeesPage = ({
   general,
   taxData,
   strapiTaxConfig,
-  dehydratedState,
   strapiTaxAdministrator,
+  dehydratedState,
 }: PageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
-        <PageLayout>
+        <TaxDataProvider taxData={taxData}>
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
-            <TaxFeeProvider taxData={taxData} strapiTaxAdministrator={strapiTaxAdministrator}>
-              <TaxFeePaymentPageContent />
-            </TaxFeeProvider>
+            <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
+              <PageLayout>
+                <TaxFeePaymentPageContent />
+              </PageLayout>
+            </StrapiTaxAdministratorProvider>
           </StrapiTaxConfigProvider>
-        </PageLayout>
+        </TaxDataProvider>
       </GeneralContextProvider>
     </HydrationBoundary>
   )

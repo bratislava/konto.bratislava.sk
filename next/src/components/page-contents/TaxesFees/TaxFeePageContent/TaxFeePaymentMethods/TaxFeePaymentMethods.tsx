@@ -9,7 +9,7 @@ import {
 
 import { formatDate } from '@/src/components/formatting/FormatDate'
 import TaxFeePaymentMethodsItem from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/TaxFeePaymentMethods/TaxFeePaymentMethodsItem'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import Alert from '@/src/components/simple-components/Alert'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -20,7 +20,7 @@ import { ROUTES } from '@/src/utils/routes'
 const TaxFeePaymentMethods = () => {
   const { t } = useTranslation('account')
 
-  const { taxData } = useTaxFee()
+  const { taxData } = useTaxData()
   const { paidStatus, oneTimePayment, installmentPayment, overallBalance } = taxData
 
   const firstInstallment = installmentPayment.installments?.[0]

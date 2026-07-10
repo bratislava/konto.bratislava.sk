@@ -1,15 +1,15 @@
 import { useTranslation } from 'next-i18next/pages'
 import { TaxType } from 'openapi-clients/tax'
-import React from 'react'
 
 import { useCurrencyFromCentsFormatter } from '@/src/components/formatting/formatCurrency'
 import DznAccordionTableTaxContent from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/DznAccordionTableTaxContent'
 import KoAccordionTableTaxContent from '@/src/components/page-contents/TaxesFees/TaxFeePageContent/KoAccordionTableTaxContent'
-import { useTaxFee } from '@/src/components/page-contents/TaxesFees/useTaxFee'
+import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 
 const TaxFeeAccordions = () => {
-  const { taxData } = useTaxFee()
   const { t } = useTranslation('account')
+
+  const { taxData } = useTaxData()
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
 
   if (taxData.type === TaxType.Dzn)
@@ -39,6 +39,7 @@ const TaxFeeAccordions = () => {
         />
       </div>
     )
+
   if (taxData.type === TaxType.Ko) {
     return (
       <div className="flex w-full flex-col gap-4">

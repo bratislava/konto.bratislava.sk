@@ -1,6 +1,5 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
@@ -12,18 +11,12 @@ import { ROUTES } from '@/src/utils/routes'
 
 const DeliveryMethodCardWrapper = () => {
   const { t } = useTranslation('account')
-  const { deliveryMethod, canUserChangeDeliveryMethod } = useUserDataDeliveryMethod()
+  const { deliveryMethod, deliveryMethodLabel, canUserChangeDeliveryMethod } =
+    useUserDataDeliveryMethod()
 
   if (!deliveryMethod) {
     return null
   }
-
-  // TODO this is repeated 3 time in the codebase, we should move this logic to separate function
-  const title = {
-    [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
-    [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
-    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
-  }[deliveryMethod]
 
   return (
     <div className="flex flex-col gap-4">
@@ -39,7 +32,9 @@ const DeliveryMethodCardWrapper = () => {
       >
         <div className="flex w-full items-start justify-between gap-4">
           <div className="flex flex-col">
-            <Typography variant="p-large">{title}</Typography>
+            <Typography variant="p-small" className="font-semibold">
+              {deliveryMethodLabel}
+            </Typography>
             {canUserChangeDeliveryMethod && (
               <div className="pt-3 pb-2 lg:px-0">
                 <Markdown

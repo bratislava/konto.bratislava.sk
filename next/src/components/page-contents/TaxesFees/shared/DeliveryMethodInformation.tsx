@@ -1,6 +1,5 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
@@ -17,20 +16,18 @@ const DeliveryMethodInformation = () => {
   const { t } = useTranslation('account')
 
   const strapiTaxConfig = useStrapiTaxConfig()
-  const { deliveryMethod, canUserChangeDeliveryMethod, hasChangedDeliveryMethodAfterDeadline } =
-    useUserDataDeliveryMethod()
+  const {
+    deliveryMethod,
+    deliveryMethodLabel,
+    canUserChangeDeliveryMethod,
+    hasChangedDeliveryMethodAfterDeadline,
+  } = useUserDataDeliveryMethod()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   if (!deliveryMethod) {
     return null
   }
-
-  const channelLabel = {
-    [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
-    [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
-    [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
-  }[deliveryMethod]
 
   return (
     <>
@@ -42,7 +39,7 @@ const DeliveryMethodInformation = () => {
               <Icon name="mail" className="size-6" />
             </div>
             <Typography variant="p-large" className="font-semibold">
-              {channelLabel}
+              {deliveryMethodLabel}
             </Typography>
           </div>
           {canUserChangeDeliveryMethod && (

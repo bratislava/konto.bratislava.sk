@@ -142,7 +142,9 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
                 'taxes.delivery_method_change_modal.delivery_method_false.description',
               )}
             >
-              {t('taxes.delivery_method_change_modal.delivery_method_false.title')}
+              <Typography as="span">
+                {t('taxes.delivery_method_change_modal.delivery_method_false.title')}
+              </Typography>
             </Radio>
             <Radio
               value="true"

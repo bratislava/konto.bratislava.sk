@@ -31,9 +31,9 @@ export const useUserDataDeliveryMethod = () => {
 
   const deliveryMethodLabel = officialCorrespondenceChannel
     ? {
-        [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.communication_channel.email'),
-        [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.communication_channel.postal'),
-        [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.communication_channel.edesk'),
+        [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.delivery_method.email'),
+        [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.delivery_method.postal'),
+        [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.delivery_method.edesk'),
       }[officialCorrespondenceChannel]
     : null
 

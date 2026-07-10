@@ -25,7 +25,7 @@ const DeliveryMethodCardWrapper = () => {
             it is showing currently set delivery method, not the one for the year of this tax.
             IMHO if this is currently set delivery method, it should be shown in grey area
             or if it's for the year of this tax, it should be shown with same year as in title? */}
-        {t('taxes.communication_channel.info_title', { year: new Date().getFullYear() })}
+        {t('taxes.delivery_method.info_title', { year: new Date().getFullYear() })}
       </Typography>
       <div
         className={cn('flex w-full grow justify-between gap-4 rounded-lg border px-4 py-3 lg:p-5')}
@@ -39,9 +39,9 @@ const DeliveryMethodCardWrapper = () => {
               <div className="pt-3 pb-2 lg:px-0">
                 <Markdown
                   variant="small"
-                  content={`${t('taxes.communication_channel.info.youCanChangeChannelOnThisPage', {
+                  content={`${t('taxes.delivery_method.info.youCanChangeDeliveryMethodOnThisPage', {
                     url: ROUTES.TAXES_AND_FEES,
-                  })} \n ${t('taxes.communication_channel.info.youCanPayOnThisPage')}`}
+                  })} \n ${t('taxes.delivery_method.info.youCanPayOnThisPage')}`}
                 />
               </div>
             )}

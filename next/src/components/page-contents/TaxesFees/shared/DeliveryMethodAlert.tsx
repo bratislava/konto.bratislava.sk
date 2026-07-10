@@ -10,7 +10,7 @@ type Props = {
 }
 
 const DeliveryMethodAlert = ({ strapiTaxConfig, variant }: Props) => {
-  const { deliveryMethodChangePendingAlert } = strapiTaxConfig.deliveryMethod ?? {}
+  const { deliveryMethodChangePendingAlert } = strapiTaxConfig.deliveryMethod
   const { title, content } = deliveryMethodChangePendingAlert ?? {}
 
   if (!title && !content) {

@@ -33,31 +33,11 @@ let magproxyAzureAdToken = ''
 export class MagproxyService {
   private readonly logger: LineLoggerSubservice
 
-  private readonly config: {
-    magproxyAzureAdUrl: string
-    magproxyAzureClientId: string
-    magproxyAzureClientSecret: string
-    magproxyAzureScope: string
-    magproxyUrl: string
-  }
-
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly clientsService: ClientsService,
-    baConfigService: BaConfigService
+    private readonly baConfigService: BaConfigService
   ) {
-    const { azureAdUrl, azureClientId, azureClientSecret, azureScope, url } =
-      baConfigService.magproxy
-
-    /** Config */
-    this.config = {
-      magproxyAzureAdUrl: azureAdUrl,
-      magproxyAzureClientId: azureClientId,
-      magproxyAzureClientSecret: azureClientSecret,
-      magproxyAzureScope: azureScope,
-      magproxyUrl: url,
-    }
-
     this.logger = new LineLoggerSubservice(MagproxyService.name)
   }
 
@@ -75,12 +55,12 @@ export class MagproxyService {
     if (tokenCheck === '') {
       const result = await axios
         .post<TokenResponseDto>(
-          this.config.magproxyAzureAdUrl,
+          this.baConfigService.magproxy.azureAdUrl,
           new URLSearchParams({
-            client_id: this.config.magproxyAzureClientId,
+            client_id: this.baConfigService.magproxy.azureClientId,
             grant_type: 'client_credentials',
-            client_secret: this.config.magproxyAzureClientSecret,
-            scope: this.config.magproxyAzureScope,
+            client_secret: this.baConfigService.magproxy.azureClientSecret,
+            scope: this.baConfigService.magproxy.azureScope,
           })
         )
         .then((response) => {

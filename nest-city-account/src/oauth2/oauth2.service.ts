@@ -215,20 +215,7 @@ export class OAuth2Service {
    * @returns Redirect URL to frontend with authRequestId and isOAuth flag
    */
   buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
-    const oAuth2LoginUrl = this.baConfigService.oauth2.loginUrl
-    if (!oAuth2LoginUrl) {
-      throw this.oAuth2ErrorThrower.authorizationException(
-        OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization redirect error: server misconfiguration',
-        undefined,
-        'OAUTH2_LOGIN_URL environment variable is not configured',
-        {
-          clientId: request.client_id,
-          authRequestId,
-        }
-      )
-    }
-    const redirectUrl = new URL(oAuth2LoginUrl)
+    const redirectUrl = new URL(this.baConfigService.oauth2.loginUrl)
     redirectUrl.searchParams.set('authRequestId', authRequestId)
     redirectUrl.searchParams.set('isOAuth', 'true')
     if (

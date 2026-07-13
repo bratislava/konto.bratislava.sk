@@ -14,22 +14,15 @@ const mailgun = new Mailgun(formData)
 export class MailgunService {
   private mg: Interfaces.IMailgunClient
 
-  private readonly config
-
   private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly mailgunMessageBuilder: MailgunMessageBuilder,
-    baConfigService: BaConfigService
+    private readonly baConfigService: BaConfigService
   ) {
-    const { apiKey, defaultDomain } = baConfigService.mailgun
-    this.config = {
-      defaultMailgunDomain: defaultDomain,
-    }
-
     this.mg = mailgun.client({
       username: 'api',
-      key: apiKey,
+      key: baConfigService.mailgun.apiKey,
       url: MAILGUN.API_URL,
     })
     this.logger = new LineLoggerSubservice(MailgunService.name)
@@ -61,7 +54,10 @@ export class MailgunService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options as any)
 
-      const response = await this.mg.messages.create(this.config.defaultMailgunDomain, messageData)
+      const response = await this.mg.messages.create(
+        this.baConfigService.mailgun.defaultDomain,
+        messageData
+      )
       this.logger.log('Mailgun response', response)
     } catch (error) {
       this.logger.error(

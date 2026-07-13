@@ -32,7 +32,7 @@ describe('OAuth2Service', () => {
   let oAuth2ErrorThrower: OAuth2ErrorThrower
   let prisma: PrismaService
   let cognitoSubservice: CognitoSubservice
-  let baConfigService: { cognito: { clientId?: string }; oauth2: { loginUrl?: string } }
+  let baConfigService: { cognito: { clientId?: string }; oauth2: { loginUrl: string } }
   let clientSubservice: OAuth2ClientSubservice
 
   beforeEach(async () => {
@@ -62,7 +62,10 @@ describe('OAuth2Service', () => {
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
         {
           provide: BaConfigService,
-          useValue: { cognito: { clientId: undefined }, oauth2: { loginUrl: undefined } },
+          useValue: {
+            cognito: { clientId: undefined },
+            oauth2: { loginUrl: 'https://login.example.com' },
+          },
         },
         { provide: OAuth2ValidationSubservice, useValue: createMock<OAuth2ValidationSubservice>() },
         { provide: OAuth2ClientSubservice, useValue: createMock<OAuth2ClientSubservice>() },
@@ -340,23 +343,6 @@ describe('OAuth2Service', () => {
         'auth-req-123'
       )
       expect(url).not.toContain('isIdentityVerificationRequired')
-    })
-
-    it('should throw SERVER_ERROR when OAUTH2_LOGIN_URL is not configured', () => {
-      baConfigService.oauth2.loginUrl = undefined
-      expect(() =>
-        service.buildLoginRedirectUrl(
-          { response_type: 'code', client_id: 'cid', redirect_uri: 'https://example.com/cb' },
-          'id'
-        )
-      ).toThrow(OAuth2Exception)
-      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
-        OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization redirect error: server misconfiguration',
-        undefined,
-        'OAUTH2_LOGIN_URL environment variable is not configured',
-        { clientId: 'cid', authRequestId: 'id' }
-      )
     })
   })
 

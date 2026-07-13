@@ -243,7 +243,6 @@ describe('OAuth2Client', () => {
  * scope of this specification."), so an env-var registry is a valid implementation.
  */
 describe('OAuth2ClientSubservice', () => {
-  let service: OAuth2ClientSubservice
   let clientList: string[]
 
   // Tests only ever set OAUTH2_* variables.
@@ -282,10 +281,9 @@ describe('OAuth2ClientSubservice', () => {
     }
   }
 
-  beforeEach(async () => {
-    // Clear all OAUTH2_* vars so each test controls the full client configuration state
-    clearOAuth2Env()
-    clientList = []
+  // Clients are loaded eagerly at construction time, so env vars and clientList must be set
+  // BEFORE calling this — not after, as it was when loading was lazy.
+  async function createService(): Promise<OAuth2ClientSubservice> {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OAuth2ClientSubservice,
@@ -300,14 +298,21 @@ describe('OAuth2ClientSubservice', () => {
         },
       ],
     }).compile()
-    service = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
+    return module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
+  }
+
+  beforeEach(() => {
+    // Clear all OAUTH2_* vars so each test controls the full client configuration state
+    clearOAuth2Env()
+    clientList = []
   })
 
   afterEach(() => {
     clearOAuth2Env()
   })
 
-  it('should be defined', () => {
+  it('should be defined', async () => {
+    const service = await createService()
     expect(service).toBeDefined()
   })
 
@@ -316,7 +321,7 @@ describe('OAuth2ClientSubservice', () => {
    * CUSTOM PROXY DETAIL: OAUTH2_{PREFIX}_{PROPERTY} naming pattern is our convention.
    */
   describe('loadClientsFromEnv (via findClientById / findClientByName)', () => {
-    it('should load a fully configured client from environment variables', () => {
+    it('should load a fully configured client from environment variables', async () => {
       setClientEnv('PAAS_MPA', {
         clientId: 'paas-id',
         clientSecret: 'paas-secret',
@@ -325,6 +330,7 @@ describe('OAuth2ClientSubservice', () => {
         allowedGrantTypes: 'authorization_code,refresh_token',
         requiresPkce: 'true',
       })
+      const service = await createService()
       const client = service.findClientById('paas-id')
       expect(client).toBeDefined()
       expect(client!.id).toBe('paas-id')
@@ -336,45 +342,50 @@ describe('OAuth2ClientSubservice', () => {
       expect(client!.requiresPkce).toBe(true)
     })
 
-    it('should load multiple clients from OAUTH2_CLIENT_LIST', () => {
+    it('should load multiple clients from OAUTH2_CLIENT_LIST', async () => {
       clientList = ['CLIENT_A', 'CLIENT_B']
       setClientEnv('CLIENT_A', { clientId: 'a-id', allowedUris: 'https://a.com/cb' })
       setClientEnv('CLIENT_B', { clientId: 'b-id', allowedUris: 'https://b.com/cb' })
+      const service = await createService()
       expect(service.findClientById('a-id')).toBeDefined()
       expect(service.findClientById('b-id')).toBeDefined()
     })
 
-    it('should merge enum client names with OAUTH2_CLIENT_LIST (deduplication)', () => {
+    it('should merge enum client names with OAUTH2_CLIENT_LIST (deduplication)', async () => {
       clientList = ['PAAS_MPA', 'CUSTOM']
       setClientEnv('PAAS_MPA', { clientId: 'paas-id', allowedUris: 'https://paas.com/cb' })
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
       setClientEnv('CUSTOM', { clientId: 'custom-id', allowedUris: 'https://custom.com/cb' })
+      const service = await createService()
       expect(service.findClientById('paas-id')).toBeDefined()
       expect(service.findClientById('dpb-id')).toBeDefined()
       expect(service.findClientById('custom-id')).toBeDefined()
     })
 
-    it('should skip clients with missing CLIENT_ID', () => {
+    it('should skip clients with missing CLIENT_ID', async () => {
       clientList = ['NO_ID']
       process.env.OAUTH2_NO_ID_ALLOWED_URIS = 'https://no-id.example.com/cb'
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
+      const service = await createService()
       expect(service.findClientByName('DPB')).toBeDefined()
       expect(service.findClientByName('NO_ID')).toBeUndefined()
     })
 
-    it('should skip clients with missing ALLOWED_URIS', () => {
+    it('should skip clients with missing ALLOWED_URIS', async () => {
       process.env.OAUTH2_PAAS_MPA_CLIENT_ID = 'paas-id'
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
+      const service = await createService()
       expect(service.findClientById('paas-id')).toBeUndefined()
       expect(service.findClientById('dpb-id')).toBeDefined()
     })
 
-    it('should default requiresPkce to true when REQUIRES_PKCE is not set', () => {
+    it('should default requiresPkce to true when REQUIRES_PKCE is not set', async () => {
       setClientEnv('PAAS_MPA', { clientId: 'paas-id', allowedUris: 'https://paas.com/cb' })
+      const service = await createService()
       expect(service.findClientById('paas-id')!.requiresPkce).toBe(true)
     })
 
-    it('should set requiresPkce to false only when explicitly "false"', () => {
+    it('should set requiresPkce to false only when explicitly "false"', async () => {
       // A client that does not require PKCE must be confidential (have a secret), otherwise it is
       // rejected as an invalid public-client configuration.
       setClientEnv('PAAS_MPA', {
@@ -383,10 +394,11 @@ describe('OAuth2ClientSubservice', () => {
         allowedUris: 'https://paas.com/cb',
         requiresPkce: 'false',
       })
+      const service = await createService()
       expect(service.findClientById('paas-id')!.requiresPkce).toBe(false)
     })
 
-    it('should skip public clients (no secret) that do not require PKCE', () => {
+    it('should skip public clients (no secret) that do not require PKCE', async () => {
       // RFC 9700 Section 2.1.1: public clients MUST use PKCE — a public client with PKCE disabled
       // is an invalid configuration and must not be loaded.
       setClientEnv('PAAS_MPA', {
@@ -394,22 +406,24 @@ describe('OAuth2ClientSubservice', () => {
         allowedUris: 'https://paas.com/cb',
         requiresPkce: 'false',
       })
+      const service = await createService()
       expect(service.findClientById('paas-id')).toBeUndefined()
     })
 
-    it('should load a public client (no secret) when it requires PKCE', () => {
+    it('should load a public client (no secret) when it requires PKCE', async () => {
       setClientEnv('PAAS_MPA', {
         clientId: 'paas-id',
         allowedUris: 'https://paas.com/cb',
         requiresPkce: 'true',
       })
+      const service = await createService()
       const client = service.findClientById('paas-id')
       expect(client).toBeDefined()
       expect(client!.secret).toBeUndefined()
       expect(client!.requiresPkce).toBe(true)
     })
 
-    it('should load a confidential client (with secret) whether or not it requires PKCE', () => {
+    it('should load a confidential client (with secret) whether or not it requires PKCE', async () => {
       clientList = ['CONF_PKCE', 'CONF_NO_PKCE']
       setClientEnv('CONF_PKCE', {
         clientId: 'conf-pkce-id',
@@ -423,11 +437,12 @@ describe('OAuth2ClientSubservice', () => {
         allowedUris: 'https://conf.example.com/cb',
         requiresPkce: 'false',
       })
+      const service = await createService()
       expect(service.findClientById('conf-pkce-id')!.requiresPkce).toBe(true)
       expect(service.findClientById('conf-no-pkce-id')!.requiresPkce).toBe(false)
     })
 
-    it('should default requiresPkce to true when REQUIRES_PKCE is empty string', () => {
+    it('should default requiresPkce to true when REQUIRES_PKCE is empty string', async () => {
       // CUSTOM PROXY DETAIL: `!== 'false'` means empty string is NOT 'false', so defaults to true.
       // The PKCE-by-default policy aligns with RFC 9700 Section 2.1.1; the env-string parsing rule is ours.
       setClientEnv('PAAS_MPA', {
@@ -435,23 +450,26 @@ describe('OAuth2ClientSubservice', () => {
         allowedUris: 'https://paas.com/cb',
         requiresPkce: '',
       })
+      const service = await createService()
       expect(service.findClientById('paas-id')!.requiresPkce).toBe(true)
     })
 
-    it('should handle optional fields being absent', () => {
+    it('should handle optional fields being absent', async () => {
       setClientEnv('PAAS_MPA', { clientId: 'paas-id', allowedUris: 'https://paas.com/cb' })
+      const service = await createService()
       const client = service.findClientById('paas-id')!
       expect(client.secret).toBeUndefined()
       expect(client.allowedScopes).toEqual([])
       expect(client.allowedGrantTypes).toEqual([])
     })
 
-    it('should trim whitespace and filter empty values from comma-separated lists', () => {
+    it('should trim whitespace and filter empty values from comma-separated lists', async () => {
       setClientEnv('PAAS_MPA', {
         clientId: 'paas-id',
         allowedUris: ' https://a.com/cb , https://b.com/cb , ',
         allowedScopes: ' openid , , profile ',
       })
+      const service = await createService()
       const client = service.findClientById('paas-id')!
       expect(client.allowedRedirectUris).toEqual(['https://a.com/cb', 'https://b.com/cb'])
       expect(client.allowedScopes).toEqual(['openid', 'profile'])
@@ -459,13 +477,15 @@ describe('OAuth2ClientSubservice', () => {
   })
 
   /**
-   * Lazy Loading
-   * CUSTOM PROXY DETAIL: Clients loaded from env on first access, then cached for the
-   * lifetime of the service instance. Not addressed by any RFC.
+   * Eager Loading
+   * CUSTOM PROXY DETAIL: Clients are loaded from env once, at construction time, so that
+   * invalid configuration surfaces at application startup rather than on first use. Env
+   * changes after construction are not picked up. Not addressed by any RFC.
    */
-  describe('lazy loading', () => {
-    it('should load clients on first call and cache for subsequent calls', () => {
+  describe('eager loading', () => {
+    it('should load clients at construction time and not reflect later env changes', async () => {
       setClientEnv('PAAS_MPA', { clientId: 'paas-id', allowedUris: 'https://paas.com/cb' })
+      const service = await createService()
       expect(service.findClientById('paas-id')).toBeDefined()
       process.env.OAUTH2_PAAS_MPA_CLIENT_ID = 'changed-id'
       expect(service.findClientById('paas-id')).toBeDefined()
@@ -478,31 +498,35 @@ describe('OAuth2ClientSubservice', () => {
    * RFC 6749 Section 2.2 - Client identifier is unique to the authorization server
    */
   describe('findClientById', () => {
-    it('should find a client by its unique client_id', () => {
+    it('should find a client by its unique client_id', async () => {
       // RFC 6749 Section 2.2: Client identifier is unique to the authorization server
       setClientEnv('PAAS_MPA', { clientId: 'paas-id', allowedUris: 'https://paas.com/cb' })
+      const service = await createService()
       const client = service.findClientById('paas-id')
       expect(client).toBeDefined()
       expect(client!.id).toBe('paas-id')
     })
 
-    it('should return undefined for an unregistered client_id', () => {
+    it('should return undefined for an unregistered client_id', async () => {
       // RFC 6749 Section 2.2: Unregistered client identifiers must not resolve
       setClientEnv('PAAS_MPA', { clientId: 'paas-id', allowedUris: 'https://paas.com/cb' })
+      const service = await createService()
       expect(service.findClientById('nonexistent')).toBeUndefined()
     })
   })
 
   describe('findClientByName', () => {
-    it('should find a client by its name (env prefix)', () => {
+    it('should find a client by its name (env prefix)', async () => {
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
+      const service = await createService()
       const client = service.findClientByName('DPB')
       expect(client).toBeDefined()
       expect(client!.name).toBe('DPB')
     })
 
-    it('should return undefined for an unknown client name', () => {
+    it('should return undefined for an unknown client name', async () => {
       setClientEnv('DPB', { clientId: 'dpb-id', allowedUris: 'https://dpb.com/cb' })
+      const service = await createService()
       expect(service.findClientByName('NONEXISTENT')).toBeUndefined()
     })
   })

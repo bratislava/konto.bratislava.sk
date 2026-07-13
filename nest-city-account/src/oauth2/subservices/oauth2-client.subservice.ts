@@ -139,10 +139,11 @@ export class OAuth2Client {
 export class OAuth2ClientSubservice {
   private readonly logger: LineLoggerSubservice
 
-  private clients: OAuth2Client[] = []
+  private clients: OAuth2Client[]
 
   constructor(private readonly baConfigService: BaConfigService) {
     this.logger = new LineLoggerSubservice(OAuth2ClientSubservice.name)
+    this.clients = this.loadClientsFromEnv()
   }
 
   /**
@@ -246,7 +247,8 @@ export class OAuth2ClientSubservice {
   }
 
   /**
-   * Get all configured clients (lazy loaded from environment)
+   * Get all configured clients, loaded eagerly at construction time.
+   * Falls back to reloading from environment if the clients were cleared.
    */
   private getClients(): OAuth2Client[] {
     if (this.clients.length === 0) {
@@ -262,8 +264,7 @@ export class OAuth2ClientSubservice {
    * @returns The client configuration if found, undefined otherwise
    */
   findClientById(clientId: string): OAuth2Client | undefined {
-    const clients = this.getClients()
-    return clients.find((client) => client.id === clientId)
+    return this.getClients().find((client) => client.id === clientId)
   }
 
   /**
@@ -273,7 +274,6 @@ export class OAuth2ClientSubservice {
    * @returns The client configuration if found, undefined otherwise
    */
   findClientByName(clientName: string): OAuth2Client | undefined {
-    const clients = this.getClients()
-    return clients.find((client) => client.name === clientName)
+    return this.getClients().find((client) => client.name === clientName)
   }
 }

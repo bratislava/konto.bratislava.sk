@@ -31,9 +31,9 @@
     "update-aws": "npm install @aws-sdk/client-cognito-identity@latest @aws-sdk/client-cognito-identity-provider@latest @aws-sdk/client-sts@latest aws-jwt-verify@latest"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity": "3.1075.0",
-    "@aws-sdk/client-cognito-identity-provider": "3.1075.0",
-    "@aws-sdk/client-sts": "3.1075.0",
+    "@aws-sdk/client-cognito-identity": "3.1085.0",
+    "@aws-sdk/client-cognito-identity-provider": "3.1085.0",
+    "@aws-sdk/client-sts": "3.1085.0",
     "@bratislava/ginis-sdk": "2.2.0",
     "@golevelup/nestjs-rabbitmq": "7.1.2",
     "@nestjs/bull": "11.0.4",
@@ -82,7 +82,7 @@
   "devDependencies": {
     "@bratislava/eslint-config-nest": "0.17.0",
     "@golevelup/ts-jest": "3.0.0",
-    "@nestjs/cli": "11.0.23",
+    "@nestjs/cli": "11.0.24",
     "@nestjs/schematics": "11.1.0",
     "@nestjs/testing": "11.1.28",
     "@ngneat/falso": "8.0.2",

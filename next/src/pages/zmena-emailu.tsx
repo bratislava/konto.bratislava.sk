@@ -200,7 +200,7 @@ const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
       <GeneralContextProvider general={general}>
         <PageLayout
           variant="auth"
-          hideBackButton={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+          hasBackButton={emailChangeStatus !== EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
         >
           <AccountContainer ref={accountContainerRef}>
             {emailChangeStatus === EmailChangeStatus.INIT ? (

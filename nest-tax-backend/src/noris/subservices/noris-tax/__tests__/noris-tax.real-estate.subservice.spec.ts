@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxAdministrator, TaxPayer, TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
 import { ResponseUserByBirthNumberDtoTaxDeliveryMethodAtLockDateEnum } from 'openapi-clients/city-account'
 
@@ -9,6 +8,12 @@ import { createTestTax } from '../../../../__tests__/factories/tax.factory'
 import { createTestTaxAdministratorEntry } from '../../../../__tests__/factories/taxAdministrator.factory'
 import { createTestTaxPayer } from '../../../../__tests__/factories/taxPayer.factory'
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
+import BaConfigService from '../../../../config/ba-config.service'
+import {
+  TaxAdministrator,
+  TaxPayer,
+  TaxType,
+} from '../../../../generated/prisma/client'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import { QrCodeService } from '../../../../qrcode/qrcode.service'
 import { generateItemizedRealEstateTaxDetail } from '../../../../tax/utils/helpers/tax.helper'
@@ -192,6 +197,10 @@ describe('NorisTaxRealEstateSubservice', () => {
         {
           provide: DatabaseSubservice,
           useValue: createMock<DatabaseSubservice>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: { database: { concurrency: 10 } },
         },
       ],
     }).compile()

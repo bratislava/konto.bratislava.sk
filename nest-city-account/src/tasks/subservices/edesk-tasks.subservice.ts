@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ExternalEdeskCheck, QueueItemStatusEnum } from '@prisma/client'
 import { UpvsIdentityUpvsEdeskStatusEnum } from 'openapi-clients/slovensko-sk'
 import { z } from 'zod'
 
+import { ExternalEdeskCheck, QueueItemStatusEnum } from '../../generated/prisma/client'
 import { NorisEdeskService } from '../../noris/services/noris-edesk.service'
 import { EdeskStatus } from '../../noris/types/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'

@@ -21,17 +21,11 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
   formCta {
     ...FormLandingPageFormCta
   }
-  sections {
-    ...FormLandingPageSections
-  }
 }
 
 fragment FormBase on Form {
   slug
   moreInformationUrl
-  municipalService {
-    ...MunicipalServiceSlugEntity
-  }
 }
 
 fragment FormWithLandingPage on Form {

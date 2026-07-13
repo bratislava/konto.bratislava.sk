@@ -5,12 +5,12 @@ import { Modal as RACModal, ModalOverlay as RACModalOverlay } from 'react-aria-c
 
 import Icon from '@/src/components/icon-components/Icon'
 import BottomSheetMenuRow from '@/src/components/page-contents/MyApplicationsPageContent/BottomSheetMenu/BottomSheetMenuRow'
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 
 type BottomSheetMenuModalProps = {
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
-  conceptMenuContent: MenuItemBase[]
+  conceptMenuContent: DropdownMenuItemProps[]
 }
 
 const BottomSheetMenuModal = ({

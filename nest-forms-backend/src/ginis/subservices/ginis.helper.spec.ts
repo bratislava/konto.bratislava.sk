@@ -1,8 +1,8 @@
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 
 import FormsService from '../../forms/forms.service'
+import { Forms } from '../../generated/prisma/client'
 import GinisHelper from './ginis.helper'
 
 jest.mock('../../forms/forms.service')

@@ -48,7 +48,7 @@ const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
     <HydrationBoundary state={dehydratedState}>
       <AmplifyClientOAuthProvider clientInfo={clientInfo}>
         <GeneralContextProvider general={general}>
-          <PageLayout variant="auth" hideBackButton>
+          <PageLayout variant="auth">
             <AccountContainer>
               <AccountSuccessAlert variant="loading" title={t('auth.oauth_page.title')} />
             </AccountContainer>

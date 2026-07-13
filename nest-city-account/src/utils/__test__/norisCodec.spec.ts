@@ -1,5 +1,4 @@
-import { DeliveryMethodEnum } from '@prisma/client'
-
+import { DeliveryMethodEnum } from '../../generated/prisma/client'
 import { DeliveryMethod } from '../../noris/types/noris.enums'
 import { DeliveryMethodCodec } from '../norisCodec'
 

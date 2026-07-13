@@ -35,6 +35,14 @@ export class CreateFormService {
       )
     }
 
+    if (formDefinition.isDisabled) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        FormsErrorsEnum.FORM_DEFINITION_DISABLED,
+        FormsErrorsResponseEnum.FORM_DEFINITION_DISABLED,
+        { slug: requestData.formDefinitionSlug },
+      )
+    }
+
     return this.prismaService.forms.create({
       data: {
         formDefinitionSlug: requestData.formDefinitionSlug,

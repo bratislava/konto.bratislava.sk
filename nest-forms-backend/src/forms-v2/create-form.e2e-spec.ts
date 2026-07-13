@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { ResponseLegalPersonDataDto } from 'openapi-clients/city-account'
 
@@ -12,6 +13,7 @@ import {
   TestingApp,
 } from '../../test/initialize-testing-app'
 import { AppV2Module } from '../app-v2.module'
+import { FormsErrorsEnum } from '../forms/forms.errors.enum'
 import { CreateFormInput } from './inputs/create-form.input'
 import { CreateFormOutput } from './outputs/create-form.output'
 
@@ -146,5 +148,21 @@ describe('Create form', () => {
     )
     expect(form?.formDefinitionSlug).toBe(createFormRequest.formDefinitionSlug)
     expect(form?.email).toBe(poAuthUser.user.cityAccountUser.email)
+  })
+
+  // TODO: 'predzahradky' isDisabled was temporarily removed, re-enable this test once it is disabled again
+  it.skip('should throw error if form definition is disabled', async () => {
+    const response = await testingApp.axiosClient.post<{ errorName: string }>(
+      '/forms-v2/',
+      {
+        formDefinitionSlug: 'predzahradky',
+      },
+      { headers: foAuthUser.headers },
+    )
+
+    expect(response.status).toBe(HttpStatus.FORBIDDEN)
+    expect(response.data.errorName).toBe(
+      FormsErrorsEnum.FORM_DEFINITION_DISABLED,
+    )
   })
 })

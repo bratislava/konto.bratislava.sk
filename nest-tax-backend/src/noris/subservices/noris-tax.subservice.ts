@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
 
 import { RequestPostNorisLoadDataOptionsDto } from '../../admin/dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from '../../admin/dtos/responses.dto'
+import { TaxType } from '../../generated/prisma/client'
 import { TaxTypeToNorisData } from '../../tax-definitions/taxDefinitionsTypes'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'

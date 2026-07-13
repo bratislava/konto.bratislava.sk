@@ -30,7 +30,7 @@ COPY package*.json ./
 RUN npm ci --include=dev
 
 COPY . ./
-RUN npx prisma generate --schema=./prisma/schema.prisma
+RUN npm run db:generate
 
 FROM prebuild AS test
 RUN npm run test
@@ -55,7 +55,7 @@ COPY package*.json ./
 RUN npm install
 COPY . ./
 
-RUN npx prisma generate
+RUN npm run db:generate
 
 CMD [ "npm", "run", "start:debug" ]
 
@@ -78,6 +78,7 @@ RUN npm prune --production
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
 COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
+COPY --chown=node:node --from=build /root/nest-forms-backend/prisma.config.ts ./prisma.config.ts
 COPY --chown=node:node nest-cli.json ./nest-cli.json
 
-ENTRYPOINT npx prisma migrate deploy && npm run start:prod
+ENTRYPOINT npm run db:migrate:deploy && npm run start:prod

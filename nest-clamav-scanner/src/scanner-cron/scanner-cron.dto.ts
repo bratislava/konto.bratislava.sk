@@ -1,4 +1,4 @@
-import { FileStatus } from '@prisma/client'
+import { FileStatus } from '../generated/prisma/client'
 
 export class UpdateScanStatusDto {
   status: FileStatus

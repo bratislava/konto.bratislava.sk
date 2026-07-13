@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { Files } from '@prisma/client'
 import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
+import { Files } from '../generated/prisma/client'
 import { ServiceRunningDto } from '../status/dtos/status.dto'
 import {
   ErrorsEnum,

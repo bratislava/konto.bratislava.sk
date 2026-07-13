@@ -10,7 +10,7 @@ import { useCounter, useTimeout } from 'usehooks-ts'
 import { cityAccountClient } from '@/src/clients/city-account'
 import TowingNotFound from '@/src/components/common/Towing/TowingNotFound'
 import TowingTable from '@/src/components/common/Towing/TowingTable'
-import TextField from '@/src/components/fields/TextField'
+import SearchField from '@/src/components/fields/SearchField'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import { environment } from '@/src/environment'
@@ -34,7 +34,7 @@ const schema = {
     licensePlate: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'towing.licensePlate_required' },
+      errorMessage: { minLength: 'account:towing.licensePlate_required' },
     },
     turnstileToken: {
       type: 'string',
@@ -45,7 +45,7 @@ const schema = {
 }
 
 const Towing = ({ title, text }: TowingSectionProps) => {
-  const { t } = useTranslation('account')
+  const { t, i18n } = useTranslation('account')
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
 
@@ -100,7 +100,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           name="licensePlate"
           control={control}
           render={({ field }) => (
-            <TextField
+            <SearchField
               label={t('towing.licensePlate')}
               displayOptionalLabel={false}
               helptext={t('towing.typeInInstructions')}
@@ -108,7 +108,8 @@ const Towing = ({ title, text }: TowingSectionProps) => {
               autoCorrect="off"
               spellCheck="false"
               {...field}
-              onChange={(value) => field.onChange(value.trim().toUpperCase())}
+              // Remove all whitespaces and make sure it's uppercase (Safari ignores autoCapitalize)
+              onChange={(value) => field.onChange(value.replace(/\s/g, '').toUpperCase())}
               errorMessage={errors.licensePlate ?? requestErrorMessage}
             />
           )}
@@ -121,6 +122,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
             <>
               <Turnstile
                 theme="light"
+                language={i18n.language}
                 key={captchaKey}
                 sitekey={environment.cloudflareTurnstileSiteKey}
                 className="self-center"
@@ -159,7 +161,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
           variant="solid"
           fullWidth
           isLoading={isSubmitting}
-          loadingText={t('towing.searching')}
+          loadingText={t('common.searching')}
           startIcon={<Icon name="search" />}
         >
           {t('towing.searchButton')}

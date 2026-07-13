@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { FormError, Forms, FormState } from '@prisma/client'
+import { ValidatorType } from '@rjsf/utils'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -35,6 +35,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import { FormError, Forms, FormState } from '../generated/prisma/client'
 import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
@@ -139,7 +140,7 @@ export class FormSenderService {
 
     const validator = this.formValidatorRegistryService
       .getRegistry()
-      .getValidator(formDefinition.schema)
+      .getValidator(formDefinition.schema) as ValidatorType
     const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schema,
@@ -299,7 +300,7 @@ export class FormSenderService {
 
     const validator = this.formValidatorRegistryService
       .getRegistry()
-      .getValidator(formDefinition.schema)
+      .getValidator(formDefinition.schema) as ValidatorType
     const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schema,
@@ -475,6 +476,7 @@ export class FormSenderService {
     await this.formsService.updateForm(data.formId, {
       state: FormState.DELIVERED_NASES,
       error: FormError.NONE,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO with no prototype methods; spreading into Prisma update payload is safe
       ...additionalFormUpdates,
     })
 
@@ -486,7 +488,7 @@ export class FormSenderService {
     })
   }
 
-  private getFormSummaryOrThrow(
+  getFormSummaryOrThrow(
     form: Forms,
     formDefinition: FormDefinition,
   ): FormSummary {
@@ -556,7 +558,9 @@ export class FormSenderService {
     )
     const filesBySlot = new Map<string, { id: string; fileSize: number }[]>()
     for (const file of safeFiles) {
-      if (file.slotId === null) continue
+      if (file.slotId === null) {
+        continue
+      }
       const list = filesBySlot.get(file.slotId) ?? []
       list.push({ id: file.id, fileSize: file.fileSize })
       filesBySlot.set(file.slotId, list)
@@ -564,7 +568,9 @@ export class FormSenderService {
 
     for (const [slotId, slotFiles] of filesBySlot) {
       const slot = slotsById.get(slotId)
-      if (!slot) continue
+      if (!slot) {
+        continue
+      }
       this.enforceSingleSlotConstraints(slotId, slotFiles, slot)
     }
   }

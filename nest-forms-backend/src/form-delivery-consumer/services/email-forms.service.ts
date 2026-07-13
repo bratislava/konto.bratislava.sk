@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState } from '@prisma/client'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }
 import {
   FormDefinitionEmail,
   FormDefinitionType,
+  isFormDefinitionWithReplyToAndExtractEmail,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
@@ -29,12 +29,13 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { FormError, FormState } from '../../generated/prisma/client'
+import { Mailer } from '../../mailer/mailer.interface'
+import MailgunService from '../../mailer/mailgun.service'
+import OloMailerService from '../../mailer/olo-mailer.service'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import { Mailer } from '../../utils/global-services/mailer/mailer.interface'
-import MailgunService from '../../utils/global-services/mailer/mailgun.service'
-import OloMailerService from '../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'
@@ -91,7 +92,8 @@ export default class EmailFormsService {
       default:
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Unsupported mailer: ${formDefinition.email.mailer}`,
+          'Unsupported mailer',
+          { mailer: formDefinition.email.mailer },
         )
     }
   }
@@ -339,6 +341,9 @@ export default class EmailFormsService {
         },
       },
       emailFrom: this.resolveAddress(formDefinition.email.fromAddress),
+      replyTo: isFormDefinitionWithReplyToAndExtractEmail(formDefinition)
+        ? extractEmailFormEmail(formDefinition, form.formDataJson)
+        : undefined,
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(
             formId,

@@ -3,11 +3,11 @@ import { useTranslation } from 'next-i18next/pages'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 import Icon from '@/src/components/icon-components/Icon'
 import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
-import { MenuItemBase } from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 import { isDefined } from '@/src/frontend/utils/general'
 
-type FormMenuItem = MenuItemBase & {
+type FormMenuItem = DropdownMenuItemProps & {
   dataCy?: string
   className?: string
 }

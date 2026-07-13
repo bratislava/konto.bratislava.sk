@@ -2,6 +2,7 @@ services:
   nest:
     depends_on:
       - postgres
+    restart: unless-stopped
     build:
       context: ..
       dockerfile: nest-clamav-scanner/Dockerfile
@@ -30,6 +31,7 @@ services:
 
   postgres:
     image: postgres:latest
+    restart: unless-stopped
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass

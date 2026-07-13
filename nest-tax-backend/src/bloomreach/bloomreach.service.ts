@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 
+import BaConfigService from '../config/ba-config.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -15,26 +15,17 @@ import {
 export class BloomreachService {
   private readonly logger: LineLoggerSubservice
 
-  private readonly bloomreachCredentials = Buffer.from(
-    `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
-    'binary',
-  ).toString('base64')
+  private readonly bloomreachCredentials: string
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
   ) {
-    if (
-      !process.env.BLOOMREACH_API_URL ||
-      !process.env.BLOOMREACH_API_KEY ||
-      !process.env.BLOOMREACH_API_SECRET ||
-      !process.env.BLOOMREACH_PROJECT_TOKEN
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Missing on of pricing api envs: BLOOMREACH_API_URL, BLOOMREACH_API_KEY, BLOOMREACH_API_SECRET, BLOOMREACH_PROJECT_TOKEN.',
-      )
-    }
+    const { apiKey, apiSecret } = this.baConfigService.bloomreach
+    this.bloomreachCredentials = Buffer.from(
+      `${apiKey}:${apiSecret}`,
+      'binary',
+    ).toString('base64')
     this.logger = new LineLoggerSubservice(BloomreachService.name)
   }
 
@@ -43,18 +34,15 @@ export class BloomreachService {
     cognitoId: string,
     eventName: BloomreachEventNameEnum,
   ): Promise<boolean> {
-    if (
-      this.configService.getOrThrow<string>(
-        'FEATURE_TOGGLE_SEND_BLOOMREACH_EVENTS',
-      ) !== 'true'
-    ) {
+    if (!this.baConfigService.featureToggles.sendBloomreachEvents) {
       this.logger.debug(
         `Bloomreach events are disabled, skipping event ${eventName} for user ${cognitoId}. Object content: ${JSON.stringify(data)}`,
       )
       return true
     }
+    const { apiUrl, projectToken } = this.baConfigService.bloomreach
     const eventResponse = await fetch(
-      `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
+      `${apiUrl}/track/v2/projects/${projectToken}/customers/events`,
       {
         method: 'POST',
         body: JSON.stringify({

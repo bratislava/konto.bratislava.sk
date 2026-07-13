@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, QueueItemStatusEnum } from '@prisma/client'
 import dayjs from 'dayjs'
 
+import { PhysicalEntity, QueueItemStatusEnum } from '../generated/prisma/client'
 import { parseName } from '../magproxy/dtos/uri'
 import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 import {

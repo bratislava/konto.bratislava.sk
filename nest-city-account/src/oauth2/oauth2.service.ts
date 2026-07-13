@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import * as jwt from 'jsonwebtoken'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { decryptData, encryptData,timingSafeStringEqual } from '../utils/crypto'
+import { decryptData, encryptData, timingSafeStringEqual } from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
@@ -83,6 +83,9 @@ export class OAuth2Service {
     const storedRequest = await this.prisma.oAuth2Data.findUnique({
       where: { id: authRequestId },
     })
+
+    // A cron job (deleteOldOAuth2Data) handles expiry in tasks service after at
+    // most 2 months by deleting the whole entry.
 
     if (!storedRequest) {
       this.logger.debug('Authorization request not found', { authRequestId })

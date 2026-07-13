@@ -1,9 +1,11 @@
 import { createNestConfig } from '@bratislava/eslint-config-nest'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
-export default [
+export default defineConfig([
   ...createNestConfig({
     tsconfigRootDir: import.meta.dirname,
   }),
+  globalIgnores(['src/generated/prisma/']),
   // Project-specific rule overrides
   {
     rules: {
@@ -39,6 +41,7 @@ export default [
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
     },
   },
-]
+])

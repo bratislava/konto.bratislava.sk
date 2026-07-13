@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
@@ -8,6 +7,7 @@ import {
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
+import { createTestForm } from '../__tests__/factories/form.factory'
 import BaConfigService from '../config/ba-config.service'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
@@ -15,11 +15,11 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import FormsService from '../forms/forms.service'
 import { FormAccessService } from '../forms-v2/services/form-access.service'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertPdfService from './convert-pdf.service'
 
 jest.mock('../files/files.service')
@@ -66,7 +66,7 @@ describe('ConvertPdfService', () => {
         FormsService,
         FilesService,
         {
-          provide: MinioClientSubservice,
+          provide: MinioStorageService,
           useValue: { client: () => ({ putObject }) },
         },
         ConvertPdfService,
@@ -87,7 +87,6 @@ describe('ConvertPdfService', () => {
             scannerBackend: {
               url: 'http://localhost:3001',
               username: 'user1',
-              // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- test password for scanner backend
               password: 'pass',
             },
           },
@@ -105,10 +104,9 @@ describe('ConvertPdfService', () => {
     filesHelper = module.get<FilesHelper>(FilesHelper)
     convertService = module.get<ConvertService>(ConvertService)
 
-    prismaMock.forms.findUnique.mockResolvedValue({
-      id: formId,
-      formDataJson: testJsonData,
-    } as unknown as Forms)
+    prismaMock.forms.findUnique.mockResolvedValue(
+      createTestForm({ id: formId, formDataJson: testJsonData }),
+    )
 
     // mocks default of not finding an existing file when uploading
     prismaMock.files.findMany.mockResolvedValue([])

@@ -39,24 +39,17 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 export class CognitoSubservice {
   private readonly cognitoClient: CognitoIdentityProviderClient
 
-  private readonly config
-
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    baConfigService: BaConfigService
+    private readonly baConfigService: BaConfigService
   ) {
-    const { region, accessKeyId, secretAccessKey, userPoolId } = baConfigService.cognito
     this.cognitoClient = new CognitoIdentityProviderClient({
-      region,
+      region: baConfigService.cognito.region,
       credentials: {
-        accessKeyId,
-        secretAccessKey,
+        accessKeyId: baConfigService.cognito.accessKeyId,
+        secretAccessKey: baConfigService.cognito.secretAccessKey,
       },
     })
-
-    this.config = {
-      cognitoUserPoolId: userPoolId,
-    }
   }
 
   private attributesToObject(attributes: AttributeType[]): CognitoGetUserAttributesData {
@@ -72,7 +65,7 @@ export class CognitoSubservice {
 
   private async getUser(externalId: string): Promise<AdminGetUserCommandOutput> {
     const inputParams = {
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
 
@@ -118,7 +111,7 @@ export class CognitoSubservice {
 
   async cognitoDeactivateUser(externalId: string): Promise<void> {
     const inputParams = {
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
 
@@ -155,7 +148,7 @@ export class CognitoSubservice {
           Value: newTier,
         },
       ],
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
     try {
@@ -188,7 +181,7 @@ export class CognitoSubservice {
           Value: 'true',
         },
       ],
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
 
@@ -219,7 +212,7 @@ export class CognitoSubservice {
   async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
     const result: UserType[] = []
     const params: ListUsersCommandInput = {
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
     }
     do {
       // TODO: add proper error handling

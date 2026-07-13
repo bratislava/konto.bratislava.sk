@@ -7,14 +7,7 @@ let bloomreachContactDatabase: IDatabase<unknown> | undefined
 
 export const getBloomreachContactDatabase = (): IDatabase<unknown> => {
   if (!bloomreachContactDatabase) {
-    const { host, port, name, user, password } = getBaConfigInstance().bloomreachContactDatabase
-    bloomreachContactDatabase = pgp({
-      host,
-      port,
-      database: name,
-      user,
-      password,
-    })
+    bloomreachContactDatabase = pgp(getBaConfigInstance().bloomreachContactDatabase)
   }
 
   return bloomreachContactDatabase

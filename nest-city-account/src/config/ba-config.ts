@@ -102,7 +102,7 @@ export default class BaConfig {
     return {
       host: this.validatedConfig.BLOOMREACH_CONTACT_DB_HOST,
       port: this.validatedConfig.BLOOMREACH_CONTACT_DB_PORT,
-      name: this.validatedConfig.BLOOMREACH_CONTACT_DB_NAME,
+      database: this.validatedConfig.BLOOMREACH_CONTACT_DB_NAME,
       user: this.validatedConfig.BLOOMREACH_CONTACT_DB_USER,
       password: this.validatedConfig.BLOOMREACH_CONTACT_DB_PASSWORD,
     }

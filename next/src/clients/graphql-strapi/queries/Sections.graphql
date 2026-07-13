@@ -112,34 +112,6 @@ fragment TowingSection on ComponentSectionsTowing {
   text
 }
 
-fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
-  __typename
-
-  ... on ComponentSectionsRichtext {
-    ...RichtextSection
-  }
-
-  ... on ComponentSectionsStepper {
-    ...StepperSection
-  }
-
-  ... on ComponentSectionsContacts {
-    ...ContactsSection
-  }
-
-  ... on ComponentSectionsFaq {
-    ...FaqSection
-  }
-
-  ... on ComponentSectionsDocuments {
-    ...DocumentsSection
-  }
-
-  ... on ComponentSectionsTowing {
-    ...TowingSection
-  }
-}
-
 fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
   __typename
 

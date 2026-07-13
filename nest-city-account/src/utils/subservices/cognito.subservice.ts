@@ -13,9 +13,9 @@ import {
   UserType,
 } from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
-import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { plainToInstance } from 'class-transformer'
 
+import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
 import {
   SendToQueueErrorsEnum,
   SendToQueueErrorsResponseEnum,

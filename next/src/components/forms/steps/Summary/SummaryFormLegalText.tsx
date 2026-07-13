@@ -18,7 +18,7 @@ const SummaryFormLegalText = () => {
       <Markdown
         content={termsAndConditions}
         variant="small"
-        className="rounded-[10px] bg-gray-50 p-4 md:p-6 lg:p-8"
+        className="rounded-[10px] bg-gray-50 p-4 lg:p-8"
       />
     </div>
   )

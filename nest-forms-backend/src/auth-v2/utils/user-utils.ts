@@ -1,9 +1,9 @@
-import { FormOwnerType } from '@prisma/client'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesTierEnum,
 } from 'openapi-clients/city-account'
 
+import { FormOwnerType } from '../../generated/prisma/client'
 import { AuthUser, isAuthUser, User } from '../types/user'
 
 const tierVerifiedMap = {

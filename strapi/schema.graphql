@@ -215,7 +215,6 @@ type ComponentBlocksFormLandingPage {
   formCta: ComponentBlocksFormLandingPageFormCta
   id: ID!
   linkCtas(filters: ComponentBlocksFormLandingPageLinkCtaFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFormLandingPageLinkCta]
-  sections: [FormLandingPageSectionsDynamicZone]
   text: String
 }
 
@@ -255,7 +254,6 @@ input ComponentBlocksFormLandingPageInput {
   formCta: ComponentBlocksFormLandingPageFormCtaInput
   id: ID
   linkCtas: [ComponentBlocksFormLandingPageLinkCtaInput]
-  sections: [FormLandingPageSectionsDynamicZoneInput!]
   text: String
 }
 
@@ -863,10 +861,6 @@ input FormInput {
   slug: String
 }
 
-union FormLandingPageSectionsDynamicZone = ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Error
-
-scalar FormLandingPageSectionsDynamicZoneInput
-
 type FormRelationResponseCollection {
   nodes: [Form!]!
 }
@@ -1334,6 +1328,8 @@ type MunicipalService {
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON!
   links(filters: ComponentBlocksMunicipalServiceLinkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksMunicipalServiceLink]
+  moreInformationUrl: String
+  pageHeaderText: String
   publishedAt: DateTime
   sections: [MunicipalServiceSectionsDynamicZone]
   slug: String!
@@ -1416,8 +1412,10 @@ input MunicipalServiceFiltersInput {
   href: StringFilterInput
   icon: StringFilterInput
   links: ComponentBlocksMunicipalServiceLinkFiltersInput
+  moreInformationUrl: StringFilterInput
   not: MunicipalServiceFiltersInput
   or: [MunicipalServiceFiltersInput]
+  pageHeaderText: StringFilterInput
   publishedAt: DateTimeFilterInput
   slug: StringFilterInput
   tags: MunicipalServiceTagFiltersInput
@@ -1435,6 +1433,8 @@ input MunicipalServiceInput {
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
   links: [ComponentBlocksMunicipalServiceLinkInput]
+  moreInformationUrl: String
+  pageHeaderText: String
   publishedAt: DateTime
   sections: [MunicipalServiceSectionsDynamicZoneInput!]
   slug: String

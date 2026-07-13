@@ -1,5 +1,5 @@
 import { WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import CustomComponents from '@/src/components/widget-components/CustomComponents/CustomComponents'
 import cn from '@/src/utils/cn'
@@ -19,7 +19,7 @@ const WidgetWrapper = ({ id, options, className, children }: WidgetWrapperProps)
   return (
     <div id={id ?? undefined} className={cn('flex flex-col gap-4', className, optionsClassName)}>
       {hasRightComponents ? (
-        <div className="sm:grid sm:grid-cols-2 sm:gap-4">
+        <div className="lg:grid lg:grid-cols-2 lg:gap-4">
           <div>{children}</div>
           <div>
             <CustomComponents id={id} components={rightComponents} />

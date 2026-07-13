@@ -17,7 +17,7 @@ import BaConfigService from '../../config/ba-config.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
-enum GinContactDatabase {
+export enum GinContactDatabase {
   COMMON = '0',
   ADMIN = '1',
   NORIS = '2',
@@ -197,7 +197,7 @@ export default class GinisAPIService {
     return undefined
   }
 
-  private async updateContactInContactDatabase(
+  async updateContactInContactDatabase(
     contact: GinNajdiEsuNajdiEsuItem,
     params: GinContactParams,
     contactDatabase: GinContactDatabase,
@@ -237,15 +237,14 @@ export default class GinisAPIService {
     return data['Vytvor-esu']['Id-esu']
   }
 
-  private async findAndUpdateContactInContactDatabase(
+  async findAndUpdateContactInContactDatabase(
     request: GinNajdiEsuRequest,
     params: GinContactParams,
     extended = false,
     contactDatabases: GinContactDatabase[] = this.defaultContactDatabaseOrder,
   ): Promise<string | undefined> {
     for (const database of contactDatabases) {
-      // contact database search must happen one by one, not in parallel, in specified order
-      // eslint-disable-next-line no-await-in-loop
+      // eslint-disable-next-line no-await-in-loop -- contact database search must happen one by one in specified priority order; parallel search would break the priority logic
       const data = await this.ginis.gin.najdiEsu(
         {
           Aktivita: 'aktivni',
@@ -277,7 +276,7 @@ export default class GinisAPIService {
     )
   }
 
-  private async findAndUpdateContactByIdentifier(
+  async findAndUpdateContactByIdentifier(
     params: GinContactParams,
   ): Promise<string | undefined> {
     if (params.firstName && params.lastName && params.birthNumber) {
@@ -309,7 +308,7 @@ export default class GinisAPIService {
     return undefined
   }
 
-  private async findAndUpdateContactByEmail(
+  async findAndUpdateContactByEmail(
     params: GinContactParams,
   ): Promise<string | undefined> {
     if (params.firstName && params.lastName && params.email) {

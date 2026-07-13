@@ -1,5 +1,4 @@
-import { ConsentEnum } from '@prisma/client'
-
+import { ConsentEnum } from '../generated/prisma/client'
 import { UserOfficialCorrespondenceChannelEnum } from '../user/dtos/gdpr.user.dto'
 import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 

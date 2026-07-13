@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { FormState } from '@prisma/client'
 import axios, { isAxiosError } from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -11,6 +10,7 @@ import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
+import { FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'

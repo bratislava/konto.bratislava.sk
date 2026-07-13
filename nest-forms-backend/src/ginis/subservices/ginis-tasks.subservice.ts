@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Forms, FormState } from '@prisma/client'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 
+import { Forms, FormState } from '../../generated/prisma/client'
 import PrismaService from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
@@ -38,7 +38,9 @@ export default class GinisTasksSubservice {
 
   private async updateSubmissionState(submission: Forms): Promise<void> {
     const { ginisDocumentId } = submission
-    if (ginisDocumentId === null) return
+    if (ginisDocumentId === null) {
+      return
+    }
 
     let docState: string
     try {

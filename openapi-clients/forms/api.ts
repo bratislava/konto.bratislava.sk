@@ -524,15 +524,15 @@ export interface SendFormResponseDto {
 }
 
 export const SendFormResponseDtoStateEnum = {
-  Error: 'ERROR',
+  Finished: 'FINISHED',
   Draft: 'DRAFT',
   Queued: 'QUEUED',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
   Processing: 'PROCESSING',
-  Finished: 'FINISHED',
   Rejected: 'REJECTED',
+  Error: 'ERROR',
 } as const
 
 export type SendFormResponseDtoStateEnum =
@@ -828,6 +828,10 @@ export interface ValidateFormRegistrationsResultDto {
    * Forms with errors
    */
   error: Array<ValidateFormRegistrationDto>
+  /**
+   * Forms published in slovensko.sk but disabled in our system
+   */
+  'published-but-disabled': Array<ValidateFormRegistrationDto>
   /**
    * Valid forms
    */

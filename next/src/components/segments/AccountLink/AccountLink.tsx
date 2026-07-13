@@ -37,7 +37,7 @@ const AccountLink = ({ variant }: Props) => {
   )[variant]
 
   return (
-    <div className="flex flex-col justify-between md:flex-row">
+    <div className="flex flex-col justify-between lg:flex-row">
       <Typography variant="p-small" className="font-semibold text-gray-800">
         {description}
       </Typography>

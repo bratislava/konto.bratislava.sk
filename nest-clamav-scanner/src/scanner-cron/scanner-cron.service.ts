@@ -1,7 +1,6 @@
 import { Injectable, Logger, PreconditionFailedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Cron } from '@nestjs/schedule'
-import { Files, FileStatus } from '@prisma/client'
 import { Readable as ReadableStream } from 'stream'
 
 import { ClamavClientService } from '../clamav-client/clamav-client.service'
@@ -12,7 +11,8 @@ import {
   timeout,
 } from '../common/utils/helpers'
 import { FormsClientService } from '../forms-client/forms-client.service'
-import { MinioClientService } from '../minio-client/minio-client.service'
+import { Files, FileStatus } from '../generated/prisma/client'
+import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { ScannerService } from '../scanner/scanner.service'
 import { UpdateScanStatusDto } from './scanner-cron.dto'
@@ -23,7 +23,7 @@ export class ScannerCronService {
 
   constructor(
     private scannerService: ScannerService,
-    private minioClientService: MinioClientService,
+    private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
     private readonly clamavClientService: ClamavClientService,
@@ -189,7 +189,7 @@ export class ScannerCronService {
 
     let fileStream
     try {
-      fileStream = await this.minioClientService.loadFileStream(
+      fileStream = await this.minioStorageService.loadFileStream(
         file.bucketUid,
         file.fileUid,
       )
@@ -226,7 +226,7 @@ export class ScannerCronService {
         `CLAMAV_${scanStatus}_BUCKET`,
         '',
       )
-      const moveStatus = await this.minioClientService.moveFileBetweenBuckets(
+      const moveStatus = await this.minioStorageService.moveFileBetweenBuckets(
         file.bucketUid,
         file.fileUid,
         destinationBucket,
@@ -351,7 +351,10 @@ export class ScannerCronService {
           file.id,
           status,
         )
-        this.logger.debug(`Forms response for file id: ${file.id}`, response.data)
+        this.logger.debug(
+          `Forms response for file id: ${file.id}`,
+          response.data,
+        )
         responseStatus = response.status
       } catch {
         notifiedStatus = false

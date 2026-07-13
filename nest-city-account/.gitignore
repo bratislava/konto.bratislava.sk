@@ -48,29 +48,9 @@ eslint-report.json
 postgres/
 pgdata/
 
-kubernetes/base/secrets/cognito.yml
-kubernetes/base/secrets/magproxy.yml
-kubernetes/envs/Dev/secrets/azure.yml
-kubernetes/envs/Prod/secrets/azure-magproxy.yml
-kubernetes/envs/Prod/secrets/cognito.yml
-kubernetes/envs/Prod/secrets/database.yml
-kubernetes/envs/Staging/secrets/azure-magproxy.yml
-kubernetes/envs/Staging/secrets/cognito.yml
-kubernetes/envs/Staging/secrets/database.yml
 
-# bratiska-cli manifest files
-manifest-*.y?ml
-kubernetes/envs/Prod/secrets/mailgun.yml
-kubernetes/envs/Dev/secrets/apikey.yml
-kubernetes/envs/Prod/secrets/apikey.yml
-kubernetes/envs/Staging/secrets/apikey.yml
 
 # local files
 docker-compose-postgres.yml
 api-responses.json
-kubernetes/envs/Staging/secrets/nases.yml
-kubernetes/envs/Dev/secrets/nases.yml
-kubernetes/envs/Prod/secrets/nases.yml
-kubernetes/envs/Dev/secrets/bloomreach.yml
-kubernetes/envs/Prod/secrets/bloomreach.yml
-kubernetes/envs/Staging/secrets/bloomreach.yml
+src/generated/prisma

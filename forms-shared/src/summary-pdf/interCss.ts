@@ -1,16 +1,38 @@
-import * as path from 'path'
-import { injectBase64 } from 'node-font2base64'
-import fs from 'node:fs'
+import * as path from 'node:path'
+import fs from 'node:fs/promises'
+
+const fontMimeTypes: Record<string, string> = {
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+}
+
+// Example: url(./files/inter-latin-ext-100-normal.woff2) format('woff2')
+const fontSourceUrlRegex = /url\((\.\/files\/[^)]+)\) format\('([^']+)'\)/g
 
 const getInlinedFontCssByPath = async (filePath: string) => {
-  const cssFileContents = fs.readFileSync(filePath, 'utf8')
-  const fontsDirName = path.dirname(filePath)
-  const { content } = await injectBase64.fromContent(fontsDirName, cssFileContents)
-  if (!content) {
-    throw new Error('Failed to inject base64')
+  let css = await fs.readFile(filePath, 'utf8')
+  const cssDir = path.dirname(filePath)
+  const urlMatches = [...css.matchAll(fontSourceUrlRegex)]
+
+  if (urlMatches.length === 0) {
+    throw new Error(`No Fontsource font URLs found in ${filePath}`)
   }
 
-  return content
+  for (const match of urlMatches) {
+    const [fontUrlDeclaration, fontUrl, format] = match
+
+    const fontPath = path.resolve(cssDir, fontUrl)
+    const mimeType = fontMimeTypes[path.extname(fontPath)]
+
+    if (!mimeType) {
+      throw new Error(`Unsupported font type: ${fontPath}`)
+    }
+
+    const base64 = await fs.readFile(fontPath, 'base64')
+    css = css.replace(fontUrlDeclaration, `url(data:${mimeType};base64,${base64}) format('${format}')`)
+  }
+
+  return css
 }
 
 export const getInterCss = async () => {

@@ -1,11 +1,15 @@
 import * as jwt from 'jsonwebtoken'
 
+import { createTestFile } from '../../__tests__/factories/files.factory'
+import {
+  createTestFormWithEmptyFiles,
+  createTestFormWithFiles,
+} from '../../__tests__/factories/form.factory'
 import {
   fileIdIsValid,
   getFileIdsToInfoMap,
   PDF_FORM_FAKE_FILE_ID,
 } from '../files'
-import { FormWithFiles } from '../types/prisma'
 
 jest.mock('jsonwebtoken')
 
@@ -33,13 +37,11 @@ describe('files utils', () => {
     })
 
     it('should create a map of file IDs to download URLs', () => {
-      const mockForm = {
-        files: [
-          { id: 'file1', fileName: 'file1.pdf' },
-          { id: 'file2', fileName: 'file2.pdf' },
-          { id: 'file3', fileName: 'file3.pdf' },
-        ],
-      } as FormWithFiles
+      const mockForm = createTestFormWithFiles([
+        createTestFile({ id: 'file1', fileName: 'file1.pdf' }),
+        createTestFile({ id: 'file2', fileName: 'file2.pdf' }),
+        createTestFile({ id: 'file3', fileName: 'file3.pdf' }),
+      ])
 
       const result = getFileIdsToInfoMap(mockForm, mockJwtSecret, mockSelfUrl)
 
@@ -67,7 +69,7 @@ describe('files utils', () => {
     })
 
     it('should handle empty files array', () => {
-      const mockForm = { files: [] } as unknown as FormWithFiles
+      const mockForm = createTestFormWithEmptyFiles()
 
       const result = getFileIdsToInfoMap(mockForm, mockJwtSecret, mockSelfUrl)
 

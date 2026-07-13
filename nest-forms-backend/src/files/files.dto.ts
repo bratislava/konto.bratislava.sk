@@ -3,7 +3,6 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger'
-import { FileStatus, FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBoolean,
@@ -15,6 +14,8 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator'
+
+import { FileStatus, FormError, FormState } from '../generated/prisma/client'
 
 class FormUserInformationDto {
   @ApiProperty({

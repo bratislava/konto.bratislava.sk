@@ -8,13 +8,21 @@ export default function HandleErrors(
     propertyKey: string | symbol,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor {
-    const originalMethod = descriptor.value
+    const value: unknown = descriptor.value
+    if (typeof value !== 'function') {
+      throw new TypeError(
+        `@HandleErrors can only be applied to methods, got ${typeof value}`,
+      )
+    }
     const logger = new LineLoggerSubservice(loggerName)
 
     const modifiedDescriptor = descriptor
-    modifiedDescriptor.value = async function (...args: undefined[]) {
+    modifiedDescriptor.value = async function errorHandlerWrapper(
+      this: unknown,
+      ...args: unknown[]
+    ) {
       try {
-        const result = await originalMethod.apply(this, args)
+        const result: unknown = await value.apply(this, args)
         return result
       } catch (error) {
         logger.error(error)

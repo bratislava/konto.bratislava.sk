@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import formurlencoded from 'form-urlencoded'
+
+import { BloomreachService } from '../bloomreach/bloomreach.service'
+import BaConfigService from '../config/ba-config.service'
 import {
   PaymentStatus,
   Prisma,
   TaxPayment,
   TaxPaymentSource,
   TaxType,
-} from '@prisma/client'
-import formurlencoded from 'form-urlencoded'
-
-import { BloomreachService } from '../bloomreach/bloomreach.service'
+} from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { TaxService } from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
@@ -26,10 +26,7 @@ import {
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentResponseQueryDto } from './dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
-import {
-  GP_WEBPAY_CONFIG_KEY_MAP,
-  GpWebpaySubservice,
-} from './subservices/gpwebpay.subservice'
+import { GpWebpaySubservice } from './subservices/gpwebpay.subservice'
 
 interface GpWebpayProcessingStrategy {
   dbStatus: 'SUCCESS' | 'NEW_TO_FAILED' | 'KEEP_CURRENT'
@@ -46,16 +43,14 @@ export class PaymentService {
     private readonly gpWebpaySubservice: GpWebpaySubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxService: TaxService,
     private readonly retryService: RetryService,
   ) {}
 
   private getRedirectUrl(taxType: TaxType) {
-    const redirectUrl = this.configService.getOrThrow<string>(
-      'PAYGATE_REDIRECT_URL',
-    )
+    const redirectUrl = this.baConfigService.paygate.redirectUrl
 
     const url = new URL(redirectUrl)
 
@@ -98,13 +93,11 @@ export class PaymentService {
       // data that goes to payment gateway should not contain diacritics
       const redirectUrl = this.getRedirectUrl(options.taxType)
       const requestData = {
-        MERCHANTNUMBER: this.configService.getOrThrow<string>(
-          GP_WEBPAY_CONFIG_KEY_MAP[options.taxType].PAYGATE_MERCHANT_NUMBER,
-        ),
+        MERCHANTNUMBER: this.baConfigService.paygate[options.taxType].merchantNumber,
         OPERATION: 'CREATE_ORDER',
         ORDERNUMBER: orderId,
         AMOUNT: payment.amount.toString(),
-        CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
+        CURRENCY: this.baConfigService.paygate.currency,
         DEPOSITFLAG: '1',
         URL: redirectUrl,
         DESCRIPTION: options.description,
@@ -114,7 +107,7 @@ export class PaymentService {
         options.taxType,
         requestData,
       )
-      return `${this.configService.getOrThrow<string>('PAYGATE_PAYMENT_REDIRECT_URL')}?${formurlencoded(
+      return `${this.baConfigService.paygate.paymentRedirectUrl}?${formurlencoded(
         signedData,
         {
           ignorenull: true,
@@ -239,7 +232,7 @@ export class PaymentService {
     }: PaymentResponseQueryDto,
   ): Promise<string> {
     if (!ORDERNUMBER) {
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+      return `${this.baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
     }
 
     try {
@@ -255,14 +248,14 @@ export class PaymentService {
           this.gpWebpaySubservice.verifyData(taxType, dataToVerify, DIGEST) &&
           this.gpWebpaySubservice.verifyData(
             taxType,
-            `${dataToVerify}|${this.configService.getOrThrow<string>(GP_WEBPAY_CONFIG_KEY_MAP[taxType].PAYGATE_MERCHANT_NUMBER)}`,
+            `${dataToVerify}|${this.baConfigService.paygate[taxType].merchantNumber}`,
             DIGEST1,
           )
         )
       ) {
         // We failed to verify this payment. If we have any side effects here, they can be triggered
         // by just guessing the ORDERNUMBER we generate as a timestamp.
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+        return `${this.baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
       }
 
       const taxPaymentWithTax: Prisma.TaxPaymentGetPayload<{
@@ -281,7 +274,7 @@ export class PaymentService {
             `We received a valid payment response for payment we do not have in our database. ORDERNUMBER: ${ORDERNUMBER}`,
           ),
         )
-        return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
+        return `${this.baConfigService.paygate.afterPaymentRedirectFrontend}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
       }
 
       const strategy = this.getProcessingStrategy(PRCODE)
@@ -355,7 +348,7 @@ export class PaymentService {
         )
       }
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
+      return `${this.baConfigService.paygate.afterPaymentRedirectFrontend}?status=${strategy.feState}&taxType=${type}&year=${year}&order=${order}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

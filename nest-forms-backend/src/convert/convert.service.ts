@@ -1,7 +1,6 @@
 import { Readable } from 'node:stream'
 
 import { Injectable, StreamableFile } from '@nestjs/common'
-import { Forms, FormState } from '@prisma/client'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }
@@ -37,6 +36,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
+import { Forms, FormState } from '../generated/prisma/client'
 import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'

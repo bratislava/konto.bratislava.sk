@@ -26,14 +26,14 @@ const SummaryRow = (props: SummaryRowProps) => {
   const { t } = useTranslation('forms')
   const { data, size = 'large', isEditable = true, hasBorder = true, onGoToStep } = props
 
-  const containerClassName = cn('flex flex-row flex-wrap gap-2 py-2.5 md:flex-nowrap', {
+  const containerClassName = cn('flex flex-wrap gap-2 py-2.5 lg:flex-nowrap', {
     'border-red-500 [&>div>*]:block': data.isError,
     'border-gray-200 hover:[&>div>*]:block': !data.isError,
     'hover:border-gray-700': isEditable,
     'border-b': hasBorder,
   })
 
-  const labelClassName = cn('w-full flex-1', {
+  const labelClassName = cn('w-full', {
     'text-size-p-large-r font-semibold lg:text-size-p-large': size === 'large',
     'text-size-p-small-r font-semibold lg:text-size-p-small': size === 'small',
   })
@@ -46,7 +46,7 @@ const SummaryRow = (props: SummaryRowProps) => {
   return (
     <div className={containerClassName} data-cy={`summary-row-${data.name}`}>
       <Typography className={labelClassName}>{data.label}</Typography>
-      <div className="flex w-full flex-1 flex-row items-center">
+      <div className="flex w-full flex-row items-center">
         <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (
           <Button

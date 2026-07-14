@@ -1,4 +1,3 @@
-
 import Carousel, {
   AllowedVisibleCount,
   CarouselProps,

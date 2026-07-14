@@ -121,7 +121,7 @@
       },
       "formButtonLabel": {
         "edit": {
-          "label": "Formulár - text CTA buttonu",
+          "label": "(TBD - ešte neimplementované) Formulár - text CTA buttonu",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -207,12 +207,11 @@
       },
       "links": {
         "edit": {
-          "label": "Odkazy v sidebare",
+          "label": "(TBD - ešte neimplementované) Odkazy v sidebare",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "label"
+          "editable": true
         },
         "list": {
           "label": "links",
@@ -302,6 +301,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "updatedAt",
+        "categories",
+        "form"
+      ],
       "edit": [
         [
           {
@@ -385,8 +391,7 @@
             "size": 12
           }
         ]
-      ],
-      "list": ["id", "title", "updatedAt", "categories", "form"]
+      ]
     },
     "uid": "api::municipal-service.municipal-service"
   },

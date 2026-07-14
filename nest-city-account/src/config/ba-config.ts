@@ -144,13 +144,4 @@ export default class BaConfig {
       chromiumExecutablePath: this.validatedConfig.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
     }
   }
-
-  /**
-   * Escape hatch for per-client dynamic environment variables (e.g. per-tenant OAuth2
-   * client credentials, RSA public keys) whose names are only known at runtime and
-   * therefore cannot be declared as static fields on EnvironmentVariables.
-   */
-  getDynamic(key: string): string | undefined {
-    return process.env[key]
-  }
 }

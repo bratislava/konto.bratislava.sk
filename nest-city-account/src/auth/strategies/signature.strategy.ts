@@ -64,7 +64,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
 
     // The public key env var name is per-client and dynamic (see @SignaturePublicKey()),
     // so it cannot be part of the statically validated EnvironmentVariables schema.
-    const publicKeyRaw = this.baConfigService.getDynamic(envVarName)
+    const publicKeyRaw = process.env[envVarName]
     if (!publicKeyRaw) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,

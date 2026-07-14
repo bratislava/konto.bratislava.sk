@@ -1,3 +1,4 @@
+import { SignaturePublicKey } from '../auth/types/signature-public-key.enum'
 import EnvironmentVariables from './environment-variables'
 
 export default class BaConfig {
@@ -142,6 +143,12 @@ export default class BaConfig {
   get pdfGenerator() {
     return {
       chromiumExecutablePath: this.validatedConfig.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    }
+  }
+
+  get signaturePublicKey() {
+    return {
+      [SignaturePublicKey.DPB]: this.validatedConfig.DPB_CLIENT_PUBLIC_KEY,
     }
   }
 }

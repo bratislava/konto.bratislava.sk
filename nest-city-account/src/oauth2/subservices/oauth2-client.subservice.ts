@@ -106,25 +106,10 @@ export class OAuth2Client {
  */
 @Injectable()
 export class OAuth2ClientSubservice {
-  private clients: OAuth2Client[]
+  private readonly clients: OAuth2Client[]
 
   constructor(private readonly baConfigService: BaConfigService) {
-    this.clients = this.loadClients()
-  }
-
-  private loadClients(): OAuth2Client[] {
-    return this.baConfigService.oauth2.clients.map((client) => new OAuth2Client(client))
-  }
-
-  /**
-   * Get all configured clients, loaded eagerly at construction time.
-   * Falls back to reloading from config if the clients were cleared.
-   */
-  private getClients(): OAuth2Client[] {
-    if (this.clients.length === 0) {
-      this.clients = this.loadClients()
-    }
-    return this.clients
+    this.clients = this.baConfigService.oauth2.clients.map((client) => new OAuth2Client(client))
   }
 
   /**
@@ -134,7 +119,7 @@ export class OAuth2ClientSubservice {
    * @returns The client configuration if found, undefined otherwise
    */
   findClientById(clientId: string): OAuth2Client | undefined {
-    return this.getClients().find((client) => client.id === clientId)
+    return this.clients.find((client) => client.id === clientId)
   }
 
   /**
@@ -144,6 +129,6 @@ export class OAuth2ClientSubservice {
    * @returns The client configuration if found, undefined otherwise
    */
   findClientByName(clientName: string): OAuth2Client | undefined {
-    return this.getClients().find((client) => client.name === clientName)
+    return this.clients.find((client) => client.name === clientName)
   }
 }

@@ -53,31 +53,36 @@ function StringListTransform() {
   })
 }
 
-export function EnvBoolean() {
-  return applyDecorators(Expose(), BooleanTransform(), IsBoolean(), IsNotEmpty())
+export function EnvBoolean(required = true) {
+  return applyDecorators(
+    Expose(),
+    BooleanTransform(),
+    IsBoolean(),
+    ...(required ? [IsNotEmpty()] : [])
+  )
 }
 
-export function EnvInt(min?: number, max?: number) {
+export function EnvInt(min?: number, max?: number, required = true) {
   return applyDecorators(
     Expose(),
     NumberTransform(),
     IsInt(),
-    IsNotEmpty(),
+    ...(required ? [IsNotEmpty()] : []),
     ...(min === undefined ? [] : [Min(min)]),
     ...(max === undefined ? [] : [Max(max)])
   )
 }
 
-export function EnvPort() {
-  return EnvInt(0, 65_535)
+export function EnvPort(required = true) {
+  return EnvInt(0, 65_535, required)
 }
 
-export function EnvString() {
-  return applyDecorators(Expose(), IsString(), IsNotEmpty())
+export function EnvString(required = true) {
+  return applyDecorators(Expose(), IsString(), ...(required ? [IsNotEmpty()] : []))
 }
 
-export function EnvUrl() {
-  return applyDecorators(Expose(), IsUrl(), IsNotEmpty())
+export function EnvUrl(required = true) {
+  return applyDecorators(Expose(), IsUrl(), ...(required ? [IsNotEmpty()] : []))
 }
 
 export function EnvStringList() {
@@ -90,20 +95,25 @@ export function EnvStringList() {
   )
 }
 
-export function EnvEnum(enumType: object) {
-  return applyDecorators(Expose(), IsEnum(enumType), IsNotEmpty())
+export function EnvEnum(enumType: object, required = true) {
+  return applyDecorators(Expose(), IsEnum(enumType), ...(required ? [IsNotEmpty()] : []))
 }
 
 /**
- * For a field whose value is computed from - and must be validated against - the entire
- * raw environment object, not just its own key. Use for derived/cross-field config (e.g. a
- * per-name family of related variables, such as OAUTH2_{PREFIX}_*) where a single-property
- * decorator can't express the dependency. parseFn should throw on invalid input, failing
- * config validation the same way any other required environment variable would.
+ * For a field whose value is computed by a custom transform - and validated against - the
+ * entire raw environment object, not just its own key. Use for derived/cross-field config
+ * (e.g. a per-name family of related variables, such as OAUTH2_{PREFIX}_*) where a
+ * single-property decorator can't express the dependency. parseFn should throw on invalid
+ * input, failing config validation the same way any other required environment variable
+ * would.
+ *
+ * `required` only guards against the transformed value being undefined/null/empty-string -
+ * an empty array or object still passes, since IsNotEmpty does not consider those "empty".
  */
-export function EnvValidateDependent(parseFn: (env: Record<string, unknown>) => unknown) {
+export function EnvCustom(parseFn: (env: Record<string, unknown>) => unknown, required = true) {
   return applyDecorators(
     Expose(),
-    Transform(({ obj }: { obj: Record<string, unknown> }) => parseFn(obj))
+    Transform(({ obj }: { obj: Record<string, unknown> }) => parseFn(obj)),
+    ...(required ? [IsNotEmpty()] : [])
   )
 }

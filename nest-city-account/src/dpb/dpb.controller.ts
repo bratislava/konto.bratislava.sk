@@ -2,6 +2,7 @@ import { Controller, Get, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { SignatureAuth } from '../auth/decorators/signature-auth.decorator'
+import { SignaturePublicKey } from '../auth/types/signature-public-key.enum'
 import { ClientName } from '../oauth2/decorators/client-name.decorator'
 import { OAuth2AccessGuard } from '../oauth2/guards/oauth2-access.guard'
 import { OAuth2ClientName } from '../oauth2/oauth2-client-name.enum'
@@ -41,7 +42,7 @@ export class DpbController {
   }
 
   @Get('list-user-logins')
-  @SignatureAuth('DPB_CLIENT_PUBLIC_KEY')
+  @SignatureAuth(SignaturePublicKey.DPB)
   @ApiOperation({
     summary: 'List all user logins for DPB',
     description: `Returns a list of all user logins with statistics.

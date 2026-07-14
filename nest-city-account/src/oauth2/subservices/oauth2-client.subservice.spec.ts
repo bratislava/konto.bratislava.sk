@@ -354,7 +354,7 @@ describe('OAuth2ClientSubservice', () => {
    * Eager Loading
    * CUSTOM PROXY DETAIL: Clients are loaded from BaConfigService once, at construction
    * time - not on first find call - so a subservice consumer never observes a partially
-   * loaded registry. If cleared, getClients() falls back to reloading from config.
+   * loaded registry.
    */
   describe('eager loading', () => {
     it('should load clients at construction time', async () => {
@@ -363,25 +363,6 @@ describe('OAuth2ClientSubservice', () => {
       ]
       const service = await createService()
       expect(service.findClientById('paas-id')).toBeDefined()
-    })
-
-    it('should self-heal by reloading from config if the internal client list was cleared', async () => {
-      clients = [
-        makeClientConfig({ id: 'paas-id', allowedRedirectUris: ['https://paas.example.com/cb'] }),
-      ]
-      const service = await createService()
-      expect(service.findClientById('paas-id')).toBeDefined()
-
-      // Simulate the internal cache having been cleared somehow.
-      ;(service as unknown as { clients: OAuth2Client[] }).clients = []
-      clients = [
-        makeClientConfig({
-          id: 'reloaded-id',
-          allowedRedirectUris: ['https://reloaded.example.com/cb'],
-        }),
-      ]
-
-      expect(service.findClientById('reloaded-id')).toBeDefined()
     })
   })
 

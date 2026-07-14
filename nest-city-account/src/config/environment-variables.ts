@@ -4,13 +4,13 @@ import {
 } from '../oauth2/oauth2-client-env.parser'
 import {
   EnvBoolean,
+  EnvCustom,
   EnvEnum,
   EnvInt,
   EnvPort,
   EnvString,
   EnvStringList,
   EnvUrl,
-  EnvValidateDependent,
 } from './environment-decorators'
 
 export enum NodeEnv {
@@ -161,7 +161,7 @@ export default class EnvironmentVariables {
   @EnvStringList()
   OAUTH2_CLIENT_LIST: string[]
 
-  @EnvValidateDependent(parseOAuth2ClientsFromEnv)
+  @EnvCustom(parseOAuth2ClientsFromEnv)
   OAUTH2_CLIENTS: OAuth2ClientEnvConfig[]
 
   @EnvString()
@@ -184,4 +184,7 @@ export default class EnvironmentVariables {
 
   @EnvBoolean()
   REQUIRE_HTTPS: boolean
+
+  @EnvString()
+  DPB_CLIENT_PUBLIC_KEY: string
 }

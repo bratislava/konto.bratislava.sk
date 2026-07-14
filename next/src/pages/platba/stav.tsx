@@ -18,6 +18,7 @@ export const getServerSideProps = amplifyGetServerSideProps(async () => {
     strapiClient.General(),
     strapiClient.MunicipalChargeConfig().then((response) => response.municipalChargeConfig),
   ])
+
   if (!strapiTaxConfig) {
     return { notFound: true }
   }
@@ -31,16 +32,16 @@ export const getServerSideProps = amplifyGetServerSideProps(async () => {
   }
 })
 
-const PaymentPage = ({ general, strapiTaxConfig }: Props) => {
+const PaymentResultPage = ({ general, strapiTaxConfig }: Props) => {
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout className="lg:bg-gray-50">
-        <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
+      <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
+        <PageLayout className="lg:bg-gray-50">
           <PaymentResultPageContent />
-        </StrapiTaxConfigProvider>
-      </PageLayout>
+        </PageLayout>
+      </StrapiTaxConfigProvider>
     </GeneralContextProvider>
   )
 }
 
-export default SsrAuthProviderHOC(PaymentPage)
+export default SsrAuthProviderHOC(PaymentResultPage)

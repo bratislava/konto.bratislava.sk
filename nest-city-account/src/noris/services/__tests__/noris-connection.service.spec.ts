@@ -1,10 +1,10 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 import { ConnectionPool } from 'mssql'
 
 import prismaMock from '../../../../test/singleton'
+import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisConnectionService } from '../noris-connection.service'
@@ -26,23 +26,26 @@ describe('NorisConnectionService', () => {
     close: jest.fn().mockResolvedValue(undefined),
   }
 
-  const envBackup: NodeJS.ProcessEnv = { ...process.env }
-
   beforeEach(async () => {
     jest.clearAllMocks()
 
     mockMssqlConnect = mssql.connect as jest.Mock
 
-    process.env.MSSQL_HOST = 'localhost'
-    process.env.MSSQL_PORT = '1433'
-    process.env.MSSQL_DB = 'testdb'
-    process.env.MSSQL_USERNAME = 'user'
-    process.env.MSSQL_PASSWORD = 'pass'
-
     module = await Test.createTestingModule({
       providers: [
         NorisConnectionService,
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            noris: {
+              host: 'localhost',
+              port: 1433,
+              database: 'testdb',
+              username: 'user',
+              password: 'pass',
+            },
+          },
+        },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
         { provide: PrismaService, useValue: prismaMock },
       ],
@@ -50,25 +53,9 @@ describe('NorisConnectionService', () => {
 
     service = module.get<NorisConnectionService>(NorisConnectionService)
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
-
-    jest.mocked(module.get(ConfigService).getOrThrow).mockImplementation((key: string) => {
-      const map: Record<string, string> = {
-        MSSQL_HOST: 'localhost',
-        MSSQL_PORT: '1433',
-        MSSQL_DB: 'testdb',
-        MSSQL_USERNAME: 'user',
-
-        MSSQL_PASSWORD: 'pass',
-      }
-      if (key in map) {
-        return map[key]
-      }
-      throw new Error(`Environment variable ${key} not found`)
-    })
   })
 
   afterEach(() => {
-    process.env = { ...envBackup }
     jest.clearAllMocks()
   })
 

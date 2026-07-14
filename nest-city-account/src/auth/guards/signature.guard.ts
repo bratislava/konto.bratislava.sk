@@ -6,15 +6,16 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dt
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { REQUIRE_NONCE } from '../decorators/require-nonce.decorator'
 import { SIGNATURE_PUBLIC_KEY } from '../decorators/signature-public-key.decorator'
+import { SignaturePublicKey } from '../types/signature-public-key.enum'
 import { SignatureRequest } from '../types/signature-request.types'
 
 /**
  * Guard that validates requests signed with RSA private key using Passport strategy
- * Verifies signature using the client's public key from environment variables
+ * Verifies signature using the client's validated public key (see BaConfigService.signaturePublicKey)
  * Prevents replay attacks by checking timestamp freshness
  *
  * Usage:
- * @SignaturePublicKey('YOUR_ENV_VAR_NAME')
+ * @SignaturePublicKeyName(SignaturePublicKey.DPB)
  * @UseGuards(SignatureGuard)
  */
 @Injectable()
@@ -29,16 +30,16 @@ export class SignatureGuard extends AuthGuard('signature') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<SignatureRequest>()
 
-    const envVarName = this.reflector.getAllAndOverride<string>(SIGNATURE_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ])
+    const publicKeyName = this.reflector.getAllAndOverride<SignaturePublicKey | undefined>(
+      SIGNATURE_PUBLIC_KEY,
+      [context.getHandler(), context.getClass()]
+    )
 
-    if (!envVarName) {
+    if (!publicKeyName) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Public key environment variable not specified. Use @SignaturePublicKey() decorator on the endpoint.'
+        'Public key not specified. Use @SignaturePublicKeyName() decorator on the endpoint.'
       )
     }
 
@@ -47,7 +48,7 @@ export class SignatureGuard extends AuthGuard('signature') {
       context.getClass(),
     ])
 
-    request.signaturePublicKeyEnvVar = envVarName
+    request.signaturePublicKeyName = publicKeyName
     request.requireNonce = !!requireNonce
 
     return !!(await super.canActivate(context))

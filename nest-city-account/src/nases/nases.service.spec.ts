@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NasesService } from './nases.service'
 
@@ -18,7 +18,15 @@ describe('NasesService', () => {
         ThrowerErrorGuard,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: ApiJwtTokensService, useValue: createMock<ApiJwtTokensService>() },
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            nases: {
+              subNasesTechnicalAccount: 'test-sub',
+              apiTokenPrivate: 'test-api-token',
+            },
+          },
+        },
       ],
     }).compile()
 

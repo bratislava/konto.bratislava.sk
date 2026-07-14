@@ -2,4 +2,5 @@ fragment MunicipalCharge on MunicipalCharge {
   documentId
   title
   slug
+  feedbackLink
 }

@@ -1123,7 +1123,6 @@ export type GenericMorph =
   | MunicipalServicesPage
   | ReviewWorkflowsWorkflow
   | ReviewWorkflowsWorkflowStage
-  | Tax
   | UploadFile
   | UsersPermissionsPermission
   | UsersPermissionsRole
@@ -1247,13 +1246,11 @@ export type HomepageServices_ConnectionArgs = {
 
 export type HomepageAnnouncement = {
   __typename?: 'HomepageAnnouncement'
-  buttonText: Scalars['String']['output']
   createdAt?: Maybe<Scalars['DateTime']['output']>
   dateFrom?: Maybe<Scalars['DateTime']['output']>
   dateTo?: Maybe<Scalars['DateTime']['output']>
   description: Scalars['String']['output']
   documentId: Scalars['ID']['output']
-  href: Scalars['String']['output']
   image: UploadFile
   primaryButton?: Maybe<ComponentBlocksCommonLink>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
@@ -1280,13 +1277,11 @@ export type HomepageAnnouncementEntityResponseCollection = {
 
 export type HomepageAnnouncementFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
-  buttonText?: InputMaybe<StringFilterInput>
   createdAt?: InputMaybe<DateTimeFilterInput>
   dateFrom?: InputMaybe<DateTimeFilterInput>
   dateTo?: InputMaybe<DateTimeFilterInput>
   description?: InputMaybe<StringFilterInput>
   documentId?: InputMaybe<IdFilterInput>
-  href?: InputMaybe<StringFilterInput>
   not?: InputMaybe<HomepageAnnouncementFiltersInput>
   or?: InputMaybe<Array<InputMaybe<HomepageAnnouncementFiltersInput>>>
   primaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
@@ -1296,11 +1291,9 @@ export type HomepageAnnouncementFiltersInput = {
 }
 
 export type HomepageAnnouncementInput = {
-  buttonText?: InputMaybe<Scalars['String']['input']>
   dateFrom?: InputMaybe<Scalars['DateTime']['input']>
   dateTo?: InputMaybe<Scalars['DateTime']['input']>
   description?: InputMaybe<Scalars['String']['input']>
-  href?: InputMaybe<Scalars['String']['input']>
   image?: InputMaybe<Scalars['ID']['input']>
   primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
@@ -1519,7 +1512,7 @@ export type MunicipalCharge = {
 export type MunicipalChargeConfig = {
   __typename?: 'MunicipalChargeConfig'
   createdAt?: Maybe<Scalars['DateTime']['output']>
-  deliveryMethod?: Maybe<ComponentMunicipalChargeDeliveryMethod>
+  deliveryMethod: ComponentMunicipalChargeDeliveryMethod
   documentId: Scalars['ID']['output']
   municipalChargeIdentifier?: Maybe<ComponentMunicipalChargeMunicipalChargeIdentifier>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
@@ -1967,7 +1960,6 @@ export type Mutation = {
   deleteMunicipalServicesPage?: Maybe<DeleteMutationResponse>
   deleteReviewWorkflowsWorkflow?: Maybe<DeleteMutationResponse>
   deleteReviewWorkflowsWorkflowStage?: Maybe<DeleteMutationResponse>
-  deleteTax?: Maybe<DeleteMutationResponse>
   deleteUploadFile?: Maybe<UploadFile>
   /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>
@@ -1996,7 +1988,6 @@ export type Mutation = {
   updateMunicipalServicesPage?: Maybe<MunicipalServicesPage>
   updateReviewWorkflowsWorkflow?: Maybe<ReviewWorkflowsWorkflow>
   updateReviewWorkflowsWorkflowStage?: Maybe<ReviewWorkflowsWorkflowStage>
-  updateTax?: Maybe<Tax>
   updateUploadFile: UploadFile
   /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>
@@ -2202,11 +2193,6 @@ export type MutationUpdateReviewWorkflowsWorkflowStageArgs = {
   status?: InputMaybe<PublicationStatus>
 }
 
-export type MutationUpdateTaxArgs = {
-  data: TaxInput
-  status?: InputMaybe<PublicationStatus>
-}
-
 export type MutationUpdateUploadFileArgs = {
   id: Scalars['ID']['input']
   info?: InputMaybe<FileInfoInput>
@@ -2278,7 +2264,6 @@ export type Query = {
   reviewWorkflowsWorkflowStages_connection?: Maybe<ReviewWorkflowsWorkflowStageEntityResponseCollection>
   reviewWorkflowsWorkflows: Array<Maybe<ReviewWorkflowsWorkflow>>
   reviewWorkflowsWorkflows_connection?: Maybe<ReviewWorkflowsWorkflowEntityResponseCollection>
-  tax?: Maybe<Tax>
   uploadFile?: Maybe<UploadFile>
   uploadFiles: Array<Maybe<UploadFile>>
   uploadFiles_connection?: Maybe<UploadFileEntityResponseCollection>
@@ -2518,11 +2503,6 @@ export type QueryReviewWorkflowsWorkflows_ConnectionArgs = {
   status?: InputMaybe<PublicationStatus>
 }
 
-export type QueryTaxArgs = {
-  hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
-  status?: InputMaybe<PublicationStatus>
-}
-
 export type QueryUploadFileArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
@@ -2739,67 +2719,6 @@ export type StringFilterInput = {
   null?: InputMaybe<Scalars['Boolean']['input']>
   or?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   startsWith?: InputMaybe<Scalars['String']['input']>
-}
-
-export type Tax = {
-  __typename?: 'Tax'
-  accountCommunicationConsentText: Scalars['String']['output']
-  channelChangeEffectiveNextYearText?: Maybe<Scalars['String']['output']>
-  channelChangeEffectiveNextYearTitle?: Maybe<Scalars['String']['output']>
-  createdAt?: Maybe<Scalars['DateTime']['output']>
-  documentId: Scalars['ID']['output']
-  feedbackLinkDzn?: Maybe<Scalars['String']['output']>
-  feedbackLinkKo?: Maybe<Scalars['String']['output']>
-  paymentAlertText?: Maybe<Scalars['String']['output']>
-  publishedAt?: Maybe<Scalars['DateTime']['output']>
-  updatedAt?: Maybe<Scalars['DateTime']['output']>
-}
-
-export type TaxEntity = {
-  __typename?: 'TaxEntity'
-  attributes?: Maybe<Tax>
-  id?: Maybe<Scalars['ID']['output']>
-}
-
-export type TaxEntityResponse = {
-  __typename?: 'TaxEntityResponse'
-  data?: Maybe<Tax>
-}
-
-export type TaxEntityResponseCollection = {
-  __typename?: 'TaxEntityResponseCollection'
-  nodes: Array<Tax>
-  pageInfo: Pagination
-}
-
-export type TaxFiltersInput = {
-  accountCommunicationConsentText?: InputMaybe<StringFilterInput>
-  and?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
-  channelChangeEffectiveNextYearText?: InputMaybe<StringFilterInput>
-  channelChangeEffectiveNextYearTitle?: InputMaybe<StringFilterInput>
-  createdAt?: InputMaybe<DateTimeFilterInput>
-  feedbackLinkDzn?: InputMaybe<StringFilterInput>
-  feedbackLinkKo?: InputMaybe<StringFilterInput>
-  not?: InputMaybe<TaxFiltersInput>
-  or?: InputMaybe<Array<InputMaybe<TaxFiltersInput>>>
-  paymentAlertText?: InputMaybe<StringFilterInput>
-  publishedAt?: InputMaybe<DateTimeFilterInput>
-  updatedAt?: InputMaybe<DateTimeFilterInput>
-}
-
-export type TaxInput = {
-  accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
-  channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
-  channelChangeEffectiveNextYearTitle?: InputMaybe<Scalars['String']['input']>
-  feedbackLinkDzn?: InputMaybe<Scalars['String']['input']>
-  feedbackLinkKo?: InputMaybe<Scalars['String']['input']>
-  paymentAlertText?: InputMaybe<Scalars['String']['input']>
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
-}
-
-export type TaxRelationResponseCollection = {
-  __typename?: 'TaxRelationResponseCollection'
-  nodes: Array<Tax>
 }
 
 export type TimeFilterInput = {
@@ -3589,8 +3508,6 @@ export type HomepageQuery = {
       documentId: string
       title: string
       description: string
-      buttonText: string
-      href: string
       dateFrom?: any | null
       dateTo?: any | null
       primaryButton?: {
@@ -3622,8 +3539,6 @@ export type HomepageQuery = {
       documentId: string
       title: string
       description: string
-      buttonText: string
-      href: string
       dateFrom?: any | null
       dateTo?: any | null
       primaryButton?: {
@@ -3658,8 +3573,6 @@ export type HomepageAnnouncementEntityFragment = {
   documentId: string
   title: string
   description: string
-  buttonText: string
-  href: string
   dateFrom?: any | null
   dateTo?: any | null
   primaryButton?: {
@@ -3692,11 +3605,12 @@ export type MunicipalChargeFragment = {
   documentId: string
   title: string
   slug: string
+  feedbackLink?: string | null
 }
 
 export type MunicipalChargeConfigFragment = {
   __typename?: 'MunicipalChargeConfig'
-  deliveryMethod?: {
+  deliveryMethod: {
     __typename?: 'ComponentMunicipalChargeDeliveryMethod'
     consentText: string
     deliveryMethodChangePendingAlert?: {
@@ -3704,11 +3618,23 @@ export type MunicipalChargeConfigFragment = {
       title?: string | null
       content?: string | null
     } | null
-  } | null
+  }
   municipalChargeIdentifier?: {
     __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
-    dzn?: { __typename?: 'MunicipalCharge'; documentId: string; title: string; slug: string } | null
-    ko?: { __typename?: 'MunicipalCharge'; documentId: string; title: string; slug: string } | null
+    dzn?: {
+      __typename?: 'MunicipalCharge'
+      documentId: string
+      title: string
+      slug: string
+      feedbackLink?: string | null
+    } | null
+    ko?: {
+      __typename?: 'MunicipalCharge'
+      documentId: string
+      title: string
+      slug: string
+      feedbackLink?: string | null
+    } | null
   } | null
 }
 
@@ -3728,7 +3654,7 @@ export type MunicipalChargeConfigQuery = {
   __typename?: 'Query'
   municipalChargeConfig?: {
     __typename?: 'MunicipalChargeConfig'
-    deliveryMethod?: {
+    deliveryMethod: {
       __typename?: 'ComponentMunicipalChargeDeliveryMethod'
       consentText: string
       deliveryMethodChangePendingAlert?: {
@@ -3736,7 +3662,7 @@ export type MunicipalChargeConfigQuery = {
         title?: string | null
         content?: string | null
       } | null
-    } | null
+    }
     municipalChargeIdentifier?: {
       __typename?: 'ComponentMunicipalChargeMunicipalChargeIdentifier'
       dzn?: {
@@ -3744,12 +3670,14 @@ export type MunicipalChargeConfigQuery = {
         documentId: string
         title: string
         slug: string
+        feedbackLink?: string | null
       } | null
       ko?: {
         __typename?: 'MunicipalCharge'
         documentId: string
         title: string
         slug: string
+        feedbackLink?: string | null
       } | null
     } | null
   } | null
@@ -4742,31 +4670,6 @@ export type MunicipalServiceSectionsFragment =
   | MunicipalServiceSections_ComponentSectionsTowing_Fragment
   | MunicipalServiceSections_Error_Fragment
 
-export type TaxFragment = {
-  __typename?: 'Tax'
-  documentId: string
-  accountCommunicationConsentText: string
-  channelChangeEffectiveNextYearText?: string | null
-  channelChangeEffectiveNextYearTitle?: string | null
-  feedbackLinkDzn?: string | null
-  feedbackLinkKo?: string | null
-}
-
-export type TaxQueryVariables = Exact<{ [key: string]: never }>
-
-export type TaxQuery = {
-  __typename?: 'Query'
-  tax?: {
-    __typename?: 'Tax'
-    documentId: string
-    accountCommunicationConsentText: string
-    channelChangeEffectiveNextYearText?: string | null
-    channelChangeEffectiveNextYearTitle?: string | null
-    feedbackLinkDzn?: string | null
-    feedbackLinkKo?: string | null
-  } | null
-}
-
 export const AlertFragmentDoc = gql`
   fragment Alert on ComponentGeneralAlert {
     id
@@ -4858,8 +4761,6 @@ export const HomepageAnnouncementEntityFragmentDoc = gql`
     primaryButton {
       ...CommonLink
     }
-    buttonText
-    href
     dateFrom
     dateTo
     image {
@@ -4883,6 +4784,7 @@ export const MunicipalChargeFragmentDoc = gql`
     documentId
     title
     slug
+    feedbackLink
   }
 `
 export const MunicipalChargeConfigFragmentDoc = gql`
@@ -5178,16 +5080,6 @@ export const MunicipalServiceEntityFragmentDoc = gql`
   ${MunicipalServiceLinkFragmentDoc}
   ${MunicipalServiceSectionsFragmentDoc}
 `
-export const TaxFragmentDoc = gql`
-  fragment Tax on Tax {
-    documentId
-    accountCommunicationConsentText
-    channelChangeEffectiveNextYearText
-    channelChangeEffectiveNextYearTitle
-    feedbackLinkDzn
-    feedbackLinkKo
-  }
-`
 export const AlertsDocument = gql`
   query Alerts {
     general {
@@ -5280,14 +5172,6 @@ export const MunicipalServicesPageDocument = gql`
     }
   }
   ${MunicipalServiceEntityFragmentDoc}
-`
-export const TaxDocument = gql`
-  query Tax {
-    tax {
-      ...Tax
-    }
-  }
-  ${TaxFragmentDoc}
 `
 
 export type SdkFunctionWrapper = <T>(
@@ -5460,24 +5344,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             signal,
           }),
         'MunicipalServicesPage',
-        'query',
-        variables,
-      )
-    },
-    Tax(
-      variables?: TaxQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<TaxQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<TaxQuery>({
-            document: TaxDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'Tax',
         'query',
         variables,
       )

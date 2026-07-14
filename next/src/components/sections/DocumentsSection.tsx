@@ -11,7 +11,7 @@ import SectionHeader from '@/src/components/layouts/SectionHeader'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { isDefined } from '@/src/frontend/utils/general'
 
-type DocumentsSectionProps = {
+type Props = {
   section: DocumentsSectionFragment
 }
 
@@ -19,7 +19,7 @@ const AMOUNT_OF_DOCUMENTS_TO_SHOW = 5
 
 const DocumentsSection = ({
   section: { allowCollapsingDocuments, title, text, externalDocuments },
-}: DocumentsSectionProps) => {
+}: Props) => {
   const { t } = useTranslation('account')
   const [showAllDocuments, setShowAllDocuments] = useState(false)
   const listId = useId()

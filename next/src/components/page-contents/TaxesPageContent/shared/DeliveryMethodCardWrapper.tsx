@@ -40,7 +40,7 @@ const DeliveryMethodCardWrapper = () => {
                 <Markdown
                   variant="small"
                   content={`${t('taxes.delivery_method.info.youCanChangeDeliveryMethodOnThisPage', {
-                    url: ROUTES.TAXES_AND_FEES,
+                    url: ROUTES.TAXES,
                   })} \n ${t('taxes.delivery_method.info.youCanPayOnThisPage')}`}
                 />
               </div>

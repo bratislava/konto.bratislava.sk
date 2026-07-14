@@ -31,8 +31,8 @@ const TaxAdministratorCardWrapper = ({ taxAdministrator, taxType }: Props) => {
   }[taxType]
 
   const workingHoursLinkHref = {
-    [TaxType.Dzn]: EXTERNAL_LINKS.BRATISLAVA_TAXES_AND_FEES_INFO_DZN,
-    [TaxType.Ko]: EXTERNAL_LINKS.BRATISLAVA_TAXES_AND_FEES_INFO_KO,
+    [TaxType.Dzn]: EXTERNAL_LINKS.BRATISLAVA_TAXES_INFO_DZN,
+    [TaxType.Ko]: EXTERNAL_LINKS.BRATISLAVA_TAXES_INFO_KO,
   }[taxType]
 
   return (

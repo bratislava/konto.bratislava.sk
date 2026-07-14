@@ -16,11 +16,11 @@ export const ROUTES = {
   PASSWORD_CHANGE: '/zmena-hesla',
   EMAIL_CHANGE: '/zmena-emailu',
   HELP: '/pomoc',
-  TAXES_AND_FEES: '/dane-a-poplatky',
-  TAXES_AND_FEES_YEAR: (year: number) => `/dane-a-poplatky/${year}`,
-  TAXES_AND_FEES_DETAIL: ({ year, type, order }: TaxRouteProps) =>
+  TAXES: '/dane-a-poplatky',
+  TAXES_BY_YEAR: (year: number) => `/dane-a-poplatky/${year}`,
+  TAXES_TAX_DETAIL: ({ year, type, order }: TaxRouteProps) =>
     `/dane-a-poplatky/${year}/${type}/${order}`,
-  TAXES_AND_FEES_PAYMENT: ({ year, type, order }: TaxRouteProps) =>
+  TAXES_TAX_PAYMENT: ({ year, type, order }: TaxRouteProps) =>
     `/dane-a-poplatky/${year}/${type}/${order}/platba`,
   MUNICIPAL_SERVICES: '/mestske-sluzby',
   // TODO revisit after landing pages migration
@@ -37,8 +37,8 @@ export const ROUTES = {
  * External links used more than once, to keep them in sync
  */
 export const EXTERNAL_LINKS = {
-  BRATISLAVA_TAXES_AND_FEES_INFO_DZN:
+  BRATISLAVA_TAXES_INFO_DZN:
     'https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti',
-  BRATISLAVA_TAXES_AND_FEES_INFO_KO:
+  BRATISLAVA_TAXES_INFO_KO:
     'https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady',
 }

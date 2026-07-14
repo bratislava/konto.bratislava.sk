@@ -66,7 +66,7 @@ export const usePaymentResultPropsMap = ({
 
   const commonProps = {
     secondButtonTitle: t('thank_you.button_back_to_taxes_fees_text'),
-    secondButtonLink: ROUTES.TAXES_AND_FEES,
+    secondButtonLink: ROUTES.TAXES,
   }
 
   const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouTileProps> = {
@@ -122,9 +122,7 @@ const PaymentResultPageContent = () => {
   }, [router.query, status])
 
   const taxDetailLink =
-    year && type && order
-      ? ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })
-      : ROUTES.TAXES_AND_FEES
+    year && type && order ? ROUTES.TAXES_TAX_DETAIL({ year, type, order }) : ROUTES.TAXES
 
   const feedbackLink = useMemo(() => {
     if (type === TaxType.Dzn) {

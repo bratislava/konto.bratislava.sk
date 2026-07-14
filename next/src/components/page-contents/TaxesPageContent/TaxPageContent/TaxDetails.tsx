@@ -24,11 +24,11 @@ const TaxDetails = () => {
 
   const taxAccordionsHeaderLinkProps = {
     [TaxType.Dzn]: {
-      href: EXTERNAL_LINKS.BRATISLAVA_TAXES_AND_FEES_INFO_DZN,
+      href: EXTERNAL_LINKS.BRATISLAVA_TAXES_INFO_DZN,
       children: t('tax_detail_section.tax_detail_fees_link.dzn'),
     },
     [TaxType.Ko]: {
-      href: EXTERNAL_LINKS.BRATISLAVA_TAXES_AND_FEES_INFO_KO,
+      href: EXTERNAL_LINKS.BRATISLAVA_TAXES_INFO_KO,
       children: t('tax_detail_section.tax_detail_fees_link.ko'),
     },
   }[taxData.type]
@@ -39,11 +39,7 @@ const TaxDetails = () => {
         <Typography variant="h5" as="p" className="font-semibold">
           {taxAccordionsHeader}
         </Typography>
-        <Button
-          variant="link"
-          endIcon={<Icon name="export" />}
-          {...taxAccordionsHeaderLinkProps}
-        />
+        <Button variant="link" endIcon={<Icon name="export" />} {...taxAccordionsHeaderLinkProps} />
       </div>
       <TaxAccordions />
       <TaxPaymentSummary />

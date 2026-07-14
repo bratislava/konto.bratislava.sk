@@ -49,7 +49,7 @@ const TaxPageContent = () => {
   }[taxData.type]
 
   const breadcrumbs = [
-    { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
+    { title: t('account_section_payment.title'), path: ROUTES.TAXES },
     { title: pageTitle, path: null },
   ]
 

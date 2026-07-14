@@ -62,7 +62,7 @@ const TaxesOverviewRow = ({ taxData }: Props) => {
     [TaxType.Ko]: t('account_section_payment.tax_card_title.ko', { year, order }),
   }[type]
 
-  const href = ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })
+  const href = ROUTES.TAXES_TAX_DETAIL({ year, type, order })
   const isActiveLink = status !== TaxStatusEnum.AwaitingProcessing
 
   return (

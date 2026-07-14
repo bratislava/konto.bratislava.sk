@@ -28,7 +28,7 @@ const TaxPaymentMethods = () => {
     firstInstallment?.status === InstallmentPaidStatusEnum.Paid ||
     firstInstallment?.status === InstallmentPaidStatusEnum.OverPaid
 
-  const paymentPagePath = ROUTES.TAXES_AND_FEES_PAYMENT({
+  const paymentPagePath = ROUTES.TAXES_TAX_PAYMENT({
     year: taxData.year,
     type: taxData.type,
     order: taxData.order,

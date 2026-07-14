@@ -52,7 +52,7 @@ const TaxPaymentPageContent = () => {
     [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year, order: taxData.order }),
   }[taxData.type]
 
-  const detailPagePath = ROUTES.TAXES_AND_FEES_DETAIL({
+  const detailPagePath = ROUTES.TAXES_TAX_DETAIL({
     year: taxData.year,
     type: taxData.type,
     order: taxData.order,
@@ -63,7 +63,7 @@ const TaxPaymentPageContent = () => {
       <TaxPageHeader
         title={getTitle()}
         breadcrumbs={[
-          { title: t('account_section_payment.title'), path: ROUTES.TAXES_AND_FEES },
+          { title: t('account_section_payment.title'), path: ROUTES.TAXES },
           { title: detailPageTitle, path: detailPagePath },
           { title: getTitle(), path: null },
         ]}

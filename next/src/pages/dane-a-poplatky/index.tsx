@@ -14,10 +14,10 @@ import { taxClient } from '@/src/clients/tax'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import TaxesFeesPageContent from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesPageContent'
-import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
-import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
-import { TaxesDataProvider } from '@/src/components/page-contents/TaxesFees/useTaxesData'
+import TaxesPageContent from '@/src/components/page-contents/TaxesPageContent/TaxesPageContent/TaxesPageContent'
+import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxAdministrator'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
+import { TaxesDataProvider } from '@/src/components/page-contents/TaxesPageContent/useTaxesData'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -25,7 +25,7 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 
 export type TaxesData = ResponseGetTaxesListDto
 
-export type AccountTaxesFeesPageProps = {
+export type TaxesPageProps = {
   general: GeneralQuery
   taxesData: Record<TaxType, TaxesData | null>
   strapiTaxAdministrator: StrapiTaxAdministrator | null
@@ -59,7 +59,7 @@ const getTaxesData = async (getSsrAuthSession: () => Promise<AuthSession>, taxTy
 
 const queryClient = new QueryClient()
 
-export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps>(
+export const getServerSideProps = amplifyGetServerSideProps<TaxesPageProps>(
   async ({ amplifyContextSpec, fetchAuthSession }) => {
     try {
       const [
@@ -111,13 +111,13 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({
+const TaxesPage = ({
   general,
   taxesData,
   strapiTaxAdministrator,
   strapiTaxConfig,
   dehydratedState,
-}: AccountTaxesFeesPageProps) => {
+}: TaxesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
@@ -125,7 +125,7 @@ const AccountTaxesFeesPage = ({
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
               <PageLayout>
-                <TaxesFeesPageContent />
+                <TaxesPageContent />
               </PageLayout>
             </StrapiTaxAdministratorProvider>
           </StrapiTaxConfigProvider>
@@ -135,4 +135,4 @@ const AccountTaxesFeesPage = ({
   )
 }
 
-export default SsrAuthProviderHOC(AccountTaxesFeesPage)
+export default SsrAuthProviderHOC(TaxesPage)

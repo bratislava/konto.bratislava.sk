@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
-import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
+import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import ThankYouTile, {
   ThankYouTileProps,
 } from '@/src/components/simple-components/ThankYouTile/ThankYouTile'

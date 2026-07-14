@@ -12,15 +12,15 @@ import { taxClient } from '@/src/clients/tax'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import TaxFeePaymentPageContent from '@/src/components/page-contents/TaxesFees/TaxFeePaymentPageContent/TaxFeePaymentPageContent'
-import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxAdministrator'
-import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
-import { TaxDataProvider } from '@/src/components/page-contents/TaxesFees/useTaxData'
+import TaxPaymentPageContent from '@/src/components/page-contents/TaxesPageContent/TaxPaymentPageContent/TaxPaymentPageContent'
+import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxAdministrator'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
+import { TaxDataProvider } from '@/src/components/page-contents/TaxesPageContent/useTaxData'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { convertYearToNumber } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
-import { TaxFeeRouteProps } from '@/src/utils/routes'
+import { TaxRouteProps } from '@/src/utils/routes'
 
 type PageProps = {
   general: GeneralQuery
@@ -30,7 +30,7 @@ type PageProps = {
   dehydratedState: DehydratedState
 }
 
-type Params = Record<keyof TaxFeeRouteProps, string>
+type Params = Record<keyof TaxRouteProps, string>
 
 export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
   async ({ amplifyContextSpec, context, fetchAuthSession }) => {
@@ -100,7 +100,7 @@ export const getServerSideProps = amplifyGetServerSideProps<PageProps, Params>(
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({
+const TaxPaymentPage = ({
   general,
   taxData,
   strapiTaxConfig,
@@ -114,7 +114,7 @@ const AccountTaxesFeesPage = ({
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
               <PageLayout>
-                <TaxFeePaymentPageContent />
+                <TaxPaymentPageContent />
               </PageLayout>
             </StrapiTaxAdministratorProvider>
           </StrapiTaxConfigProvider>
@@ -124,4 +124,4 @@ const AccountTaxesFeesPage = ({
   )
 }
 
-export default SsrAuthProviderHOC(AccountTaxesFeesPage)
+export default SsrAuthProviderHOC(TaxPaymentPage)

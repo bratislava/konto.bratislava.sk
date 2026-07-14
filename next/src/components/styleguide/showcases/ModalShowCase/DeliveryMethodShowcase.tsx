@@ -6,8 +6,8 @@ import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-acco
 import { useState } from 'react'
 
 import { MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
-import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesFees/shared/DeliveryMethodChangeModal'
-import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTaxConfig'
+import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesPageContent/shared/DeliveryMethodChangeModal'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import { Stack } from '@/src/components/styleguide/Stack'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
 

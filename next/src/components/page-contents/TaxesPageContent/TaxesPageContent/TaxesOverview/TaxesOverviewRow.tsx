@@ -1,0 +1,161 @@
+import { Typography } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
+import { ResponseGetTaxesListBodyDto, TaxStatusEnum, TaxType } from 'openapi-clients/tax'
+
+import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
+import { formatDate } from '@/src/components/formatting/FormatDate'
+import Icon from '@/src/components/icon-components/Icon'
+import MLink from '@/src/components/simple-components/MLink'
+import { isDefined } from '@/src/frontend/utils/general'
+import cn from '@/src/utils/cn'
+import { ROUTES } from '@/src/utils/routes'
+
+type Props = {
+  taxData: ResponseGetTaxesListBodyDto
+}
+
+const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
+  const { t } = useTranslation('account')
+
+  const title = {
+    [TaxStatusEnum.AwaitingProcessing]: t(
+      'account_section_payment.tax_card_status_waiting_for_processing',
+    ),
+    [TaxStatusEnum.NotPaid]: t('account_section_payment.tax_card_status_not_paid'),
+    [TaxStatusEnum.PartiallyPaid]: t('account_section_payment.tax_card_status_partially_paid'),
+    [TaxStatusEnum.Paid]: t('account_section_payment.tax_card_status_paid'),
+    [TaxStatusEnum.OverPaid]: t('account_section_payment.tax_card_status_overpaid'),
+    [TaxStatusEnum.Cancelled]: t('account_section_payment.tax_card_status_cancelled'),
+  }[status]
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <span
+        className={cn('w-max text-size-p-small-r font-semibold lg:text-size-p-small', {
+          'text-content-error-default': status === TaxStatusEnum.NotPaid,
+          'text-content-warning-default':
+            // partially paid should be blue color but we don't such color,
+            // colors not defined in design system, using what we have
+
+            status === TaxStatusEnum.AwaitingProcessing || status === TaxStatusEnum.PartiallyPaid,
+          'text-content-success-default':
+            status === TaxStatusEnum.OverPaid || status === TaxStatusEnum.Paid,
+        })}
+      >
+        {title}
+      </span>
+    </div>
+  )
+}
+
+/**
+ * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19579-923&m=dev
+ */
+
+const TaxesOverviewRow = ({ taxData }: Props) => {
+  const { t } = useTranslation('account')
+
+  const { year, order, status, createdAt, amountToBePaid, type } = taxData
+
+  const title = {
+    [TaxType.Dzn]: t('account_section_payment.tax_card_title.dzn', { year }),
+    [TaxType.Ko]: t('account_section_payment.tax_card_title.ko', { year, order }),
+  }[type]
+
+  const href = ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })
+  const isActiveLink = status !== TaxStatusEnum.AwaitingProcessing
+
+  return (
+    <>
+      {/* Desktop */}
+      <div className="group relative hidden w-full items-center justify-between gap-6 py-4 wrapper-focus-ring lg:flex">
+        <div className="flex w-full max-w-[450px] flex-col">
+          {isActiveLink ? (
+            <MLink href={href} variant="unstyled" stretched>
+              <Typography variant="h6" as="h3" className="mb-1 group-hover:underline">
+                {title}
+              </Typography>
+            </MLink>
+          ) : (
+            <Typography variant="h6" as="h3" className="mb-1">
+              {title}
+            </Typography>
+          )}
+        </div>
+        <div className="flex w-full items-center gap-18">
+          <div className="flex flex-col">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
+              {t('account_section_payment.tax_card_delivered')}
+            </Typography>
+            <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
+          </div>
+          <div className="flex flex-col">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
+              {t('account_section_payment.tax_card_amount')}
+            </Typography>
+            {amountToBePaid === undefined ? (
+              <span>-</span>
+            ) : (
+              <span>
+                <FormatCurrencyFromCents value={amountToBePaid} />
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
+              {t('account_section_payment.tax_card_status')}
+            </Typography>
+            <PaymentStatus status={status} />
+          </div>
+        </div>
+        <div className="h-full w-16">
+          {isActiveLink && (
+            <div className="flex size-full items-center justify-center">
+              <Icon name="chevron-right" />
+            </div>
+          )}
+        </div>
+      </div>
+      {/* Mobile */}
+      <div className="relative flex w-full items-start justify-between py-4 lg:hidden">
+        <div className="flex flex-col gap-2">
+          {isActiveLink ? (
+            <MLink
+              href={href}
+              variant="unstyled"
+              stretched
+              className="text-size-p-small-r font-semibold lg:text-size-p-small"
+            >
+              {title}
+            </MLink>
+          ) : (
+            <Typography variant="p-small" className="font-semibold">
+              {title}
+            </Typography>
+          )}
+          {createdAt && <span>{formatDate(createdAt)}</span>}
+          <div className="flex flex-row">
+            {isDefined(amountToBePaid) && (
+              <Typography variant="p-tiny" as="span">
+                <FormatCurrencyFromCents value={amountToBePaid} />
+              </Typography>
+            )}
+            <span className="flex items-center">
+              {isDefined(amountToBePaid) && (
+                <span className="mx-3 size-1 rounded-full bg-gray-700" />
+              )}
+              <PaymentStatus status={status} />
+            </span>
+          </div>
+        </div>
+        {isActiveLink && (
+          <span className="flex size-5 items-center justify-center">
+            <Icon name="chevron-right" />
+          </span>
+        )}
+      </div>
+    </>
+  )
+}
+
+export default TaxesOverviewRow

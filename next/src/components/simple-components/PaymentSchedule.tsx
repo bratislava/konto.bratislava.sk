@@ -5,7 +5,7 @@ import { Fragment } from 'react'
 
 import { FormatCurrencyFromCents } from '@/src/components/formatting/formatCurrency'
 import { formatDate } from '@/src/components/formatting/FormatDate'
-import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
+import { useTaxData } from '@/src/components/page-contents/TaxesPageContent/useTaxData'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import cn from '@/src/utils/cn'
 
@@ -49,7 +49,7 @@ const PaymentSchedule = () => {
             <li className="flex w-full flex-col items-start py-4 max-lg:gap-2 lg:flex-row">
               <Typography variant="h6" as="span" className="lg:basis-200">
                 {/* only first installment is calculated, others are hardcoded so they will always be available for DzN,
-               how date calculation works for PKO is not yet determined same in TaxFeePaymentMethodSection */}
+               how date calculation works for PKO is not yet determined same in TaxPaymentMethods */}
                 {installment.dueDate
                   ? translationMap[index]
                   : t('tax_detail_section.installments.not_available')}

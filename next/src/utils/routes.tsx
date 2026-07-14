@@ -1,6 +1,6 @@
 import { ResponseGetTaxesListBodyDto } from 'openapi-clients/tax'
 
-export type TaxFeeRouteProps = Pick<ResponseGetTaxesListBodyDto, 'year' | 'type' | 'order'>
+export type TaxRouteProps = Pick<ResponseGetTaxesListBodyDto, 'year' | 'type' | 'order'>
 
 export const ROUTES = {
   HOME: '/',
@@ -18,9 +18,9 @@ export const ROUTES = {
   HELP: '/pomoc',
   TAXES_AND_FEES: '/dane-a-poplatky',
   TAXES_AND_FEES_YEAR: (year: number) => `/dane-a-poplatky/${year}`,
-  TAXES_AND_FEES_DETAIL: ({ year, type, order }: TaxFeeRouteProps) =>
+  TAXES_AND_FEES_DETAIL: ({ year, type, order }: TaxRouteProps) =>
     `/dane-a-poplatky/${year}/${type}/${order}`,
-  TAXES_AND_FEES_PAYMENT: ({ year, type, order }: TaxFeeRouteProps) =>
+  TAXES_AND_FEES_PAYMENT: ({ year, type, order }: TaxRouteProps) =>
     `/dane-a-poplatky/${year}/${type}/${order}/platba`,
   MUNICIPAL_SERVICES: '/mestske-sluzby',
   // TODO revisit after landing pages migration

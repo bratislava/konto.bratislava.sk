@@ -125,7 +125,7 @@ export default class BaConfig {
   get oauth2() {
     return {
       loginUrl: this.validatedConfig.OAUTH2_LOGIN_URL,
-      clientList: this.validatedConfig.OAUTH2_CLIENT_LIST,
+      clients: this.validatedConfig.OAUTH2_CLIENTS,
     }
   }
 

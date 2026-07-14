@@ -1,4 +1,8 @@
 import {
+  OAuth2ClientEnvConfig,
+  parseOAuth2ClientsFromEnv,
+} from '../oauth2/oauth2-client-env.parser'
+import {
   EnvBoolean,
   EnvEnum,
   EnvInt,
@@ -6,6 +10,7 @@ import {
   EnvString,
   EnvStringList,
   EnvUrl,
+  EnvValidateDependent,
 } from './environment-decorators'
 
 export enum NodeEnv {
@@ -155,6 +160,9 @@ export default class EnvironmentVariables {
 
   @EnvStringList()
   OAUTH2_CLIENT_LIST: string[]
+
+  @EnvValidateDependent(parseOAuth2ClientsFromEnv)
+  OAUTH2_CLIENTS: OAuth2ClientEnvConfig[]
 
   @EnvString()
   MSSQL_HOST: string

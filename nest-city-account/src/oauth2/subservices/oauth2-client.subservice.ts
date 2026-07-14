@@ -1,16 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
 import BaConfigService from '../../config/ba-config.service'
-import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
-
-/**
- * Well-known OAuth2 client names
- * These correspond to the prefixes used in OAUTH2_CLIENT_LIST environment variable
- */
-export enum OAuth2ClientName {
-  PAAS_MPA = 'PAAS_MPA',
-  DPB = 'DPB',
-}
 
 export enum OAuth2ClientAllowedScopes {
   IDENTITY_VERIFIED = 'identity:verified',
@@ -19,33 +9,10 @@ export enum OAuth2ClientAllowedScopes {
 /**
  * OAuth2 Client Configuration
  *
- * Configuration is loaded from environment variables with the following pattern:
- *
- * @example Example environment variables:
- * ```bash
- * # List of client prefixes
- * OAUTH2_CLIENT_LIST=DPB,PAAS_MPA
- *
- * # For PAAS_MPA client:
- * OAUTH2_PAAS_MPA_CLIENT_ID=my-client-id
- * OAUTH2_PAAS_MPA_CLIENT_SECRET=my-secret-key
- * OAUTH2_PAAS_MPA_ALLOWED_URIS=http://localhost:3000/callback,https://paas-mpa.example.com/callback
- * OAUTH2_PAAS_MPA_ALLOWED_SCOPES=openid,profile,email
- * OAUTH2_PAAS_MPA_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
- * OAUTH2_PAAS_MPA_REQUIRES_PKCE=true
- *
- * # For DPB client:
- * OAUTH2_DPB_CLIENT_ID=dpb-client-id
- * OAUTH2_DPB_CLIENT_SECRET=dpb-secret-key
- * OAUTH2_DPB_ALLOWED_URIS=https://dpb.example.com/callback
- * OAUTH2_DPB_ALLOWED_SCOPES=identity:verified
-OAUTH2_DPB_ALLOWED_GRANT_TYPES=authorization_code,refresh_token
- * ```
- *
- * @required - OAUTH2_CLIENT_LIST, OAUTH2_{PREFIX}_CLIENT_ID
- * @optional - OAUTH2_{PREFIX}_CLIENT_SECRET
- * @required - OAUTH2_{PREFIX}_ALLOWED_URIS (at least one redirect URI required)
- * @optional - OAUTH2_{PREFIX}_ALLOWED_SCOPES, ALLOWED_GRANT_TYPES, REQUIRES_PKCE
+ * Parsed and validated from environment variables by parseOAuth2ClientsFromEnv (see
+ * src/oauth2/oauth2-client-env.parser.ts) as part of config validation, and exposed via
+ * BaConfigService.oauth2.clients. See that file for the OAUTH2_{PREFIX}_* variable pattern
+ * and requirements.
  */
 
 export class OAuth2Client {
@@ -133,126 +100,29 @@ export class OAuth2Client {
 
 /**
  * Subservice for OAuth2 client configuration management
- * Loads and manages client configurations from environment variables
+ * Clients themselves are parsed and validated from environment variables during config
+ * validation (see src/oauth2/oauth2-client-env.parser.ts) - this subservice only wraps
+ * the already-validated data in OAuth2Client instances and looks them up.
  */
 @Injectable()
 export class OAuth2ClientSubservice {
-  private readonly logger: LineLoggerSubservice
-
   private clients: OAuth2Client[]
 
   constructor(private readonly baConfigService: BaConfigService) {
-    this.logger = new LineLoggerSubservice(OAuth2ClientSubservice.name)
-    this.clients = this.loadClientsFromEnv()
+    this.clients = this.loadClients()
   }
 
-  /**
-   * Parse a comma-separated string into an array of trimmed, non-empty values
-   *
-   * @param value - The comma-separated string to parse (optional)
-   * @returns Array of trimmed, non-empty strings
-   */
-  private parseCommaSeparatedList(value?: string): string[] {
-    if (!value) {
-      return []
-    }
-    return value
-      .split(',')
-      .map((item) => item.trim())
-      .filter((item) => item.length > 0)
-  }
-
-  /**
-   * Load clients from environment variables
-   * Environment variable pattern: OAUTH2_{PREFIX}_{PROPERTY}
-   */
-  private loadClientsFromEnv(): OAuth2Client[] {
-    // Get well-known clients from enum
-    const enumClientNames = Object.values(OAuth2ClientName)
-    // Get clients from environment variable
-    const envClientNames = this.baConfigService.oauth2.clientList
-
-    // Merge into a Set to avoid duplicates
-    const clientNames = new Set<string>([...enumClientNames, ...envClientNames])
-
-    if (clientNames.size === 0) {
-      this.logger.warn(
-        'No OAuth2 clients configured. No well-known clients found and OAUTH2_CLIENT_LIST is empty or not set.'
-      )
-      return []
-    }
-
-    const clients: OAuth2Client[] = []
-
-    for (const name of clientNames) {
-      const clientId = this.baConfigService.getDynamic(`OAUTH2_${name}_CLIENT_ID`)
-      const clientSecret = this.baConfigService.getDynamic(`OAUTH2_${name}_CLIENT_SECRET`)
-
-      if (!clientId) {
-        this.logger.error(
-          `Missing configuration for client name: ${name} - CLIENT_ID is required`,
-          { alert: 1 }
-        )
-        continue
-      }
-
-      // Parse allowed redirect URIs (required - at least one must be configured)
-      const allowedRedirectUris = this.parseCommaSeparatedList(
-        this.baConfigService.getDynamic(`OAUTH2_${name}_ALLOWED_URIS`)
-      )
-      if (allowedRedirectUris.length === 0) {
-        this.logger.error(
-          `Invalid configuration for client name: ${name} - ALLOWED_URIS is required and must contain at least one URI`,
-          { alert: 1 }
-        )
-        continue
-      }
-
-      // Parse optional comma-separated arrays (filter out empty values)
-      const allowedScopes = this.parseCommaSeparatedList(
-        this.baConfigService.getDynamic(`OAUTH2_${name}_ALLOWED_SCOPES`)
-      )
-
-      const allowedGrantTypes = this.parseCommaSeparatedList(
-        this.baConfigService.getDynamic(`OAUTH2_${name}_ALLOWED_GRANT_TYPES`)
-      )
-
-      // Default to true if not specified
-      const requiresPkce =
-        this.baConfigService.getDynamic(`OAUTH2_${name}_REQUIRES_PKCE`) !== 'false'
-
-      if (!clientSecret && !requiresPkce) {
-        this.logger.error(
-          // https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.1
-          `Invalid configuration for client name: ${name} - public clients MUST use PKCE`,
-          { alert: 1 }
-        )
-        continue
-      }
-
-      const client = new OAuth2Client({
-        id: clientId,
-        secret: clientSecret,
-        name,
-        allowedRedirectUris,
-        allowedScopes,
-        allowedGrantTypes,
-        requiresPkce,
-      })
-
-      clients.push(client)
-    }
-
-    return clients
+  private loadClients(): OAuth2Client[] {
+    return this.baConfigService.oauth2.clients.map((client) => new OAuth2Client(client))
   }
 
   /**
    * Get all configured clients, loaded eagerly at construction time.
-   * Falls back to reloading from environment if the clients were cleared.
+   * Falls back to reloading from config if the clients were cleared.
    */
   private getClients(): OAuth2Client[] {
     if (this.clients.length === 0) {
-      this.clients = this.loadClientsFromEnv()
+      this.clients = this.loadClients()
     }
     return this.clients
   }

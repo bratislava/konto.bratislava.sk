@@ -93,3 +93,17 @@ export function EnvStringList() {
 export function EnvEnum(enumType: object) {
   return applyDecorators(Expose(), IsEnum(enumType), IsNotEmpty())
 }
+
+/**
+ * For a field whose value is computed from - and must be validated against - the entire
+ * raw environment object, not just its own key. Use for derived/cross-field config (e.g. a
+ * per-name family of related variables, such as OAUTH2_{PREFIX}_*) where a single-property
+ * decorator can't express the dependency. parseFn should throw on invalid input, failing
+ * config validation the same way any other required environment variable would.
+ */
+export function EnvValidateDependent(parseFn: (env: Record<string, unknown>) => unknown) {
+  return applyDecorators(
+    Expose(),
+    Transform(({ obj }: { obj: Record<string, unknown> }) => parseFn(obj))
+  )
+}

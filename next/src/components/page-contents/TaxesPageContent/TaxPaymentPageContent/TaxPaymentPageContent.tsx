@@ -8,8 +8,8 @@ import IdentityVerificationBanner from '@/src/components/page-contents/TaxesPage
 import TaxPaymentData from '@/src/components/page-contents/TaxesPageContent/TaxPaymentPageContent/TaxPaymentData'
 import { useTaxData } from '@/src/components/page-contents/TaxesPageContent/useTaxData'
 import TaxPageHeader from '@/src/components/segments/PageHeader/TaxPageHeader'
+import { useGetDeliveryMethod } from '@/src/frontend/hooks/useDeliveryMethod'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
-import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
 import { PaymentMethod } from '@/src/frontend/types/paymentMethodTypes'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -30,7 +30,7 @@ const TaxPaymentPageContent = () => {
 
   const { tierStatus } = useSsrAuth()
   const { isIdentityVerified, isInQueue } = tierStatus
-  const { showDeliveryMethodNeededBanner } = useUserDataDeliveryMethod()
+  const { showDeliveryMethodNeededBanner } = useGetDeliveryMethod()
 
   const getTitle = () => {
     switch (paymentMethodParam) {

@@ -16,9 +16,11 @@ import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesPageCont
 import Dialog from '@/src/components/simple-components/Dialog'
 import Modal, { ModalProps } from '@/src/components/simple-components/Modal'
 import useToast from '@/src/components/simple-components/Toast/useToast'
+import {
+  useChangeDeliveryMethod,
+  useGetDeliveryMethod,
+} from '@/src/frontend/hooks/useDeliveryMethod'
 import useHookForm from '@/src/frontend/hooks/useHookForm'
-import { useDeliveryMethod } from '@/src/frontend/hooks/useUser'
-import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
 import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
@@ -208,8 +210,8 @@ const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
 
   const { showToast } = useToast()
 
-  const { deliveryMethod, hasUserChangedDeliveryMethodAfterDeadline } = useUserDataDeliveryMethod()
-  const { changeDeliveryMethod } = useDeliveryMethod()
+  const { deliveryMethod, hasUserChangedDeliveryMethodAfterDeadline } = useGetDeliveryMethod()
+  const { changeDeliveryMethod } = useChangeDeliveryMethod()
 
   const strapiTaxConfig = useStrapiTaxConfig()
 

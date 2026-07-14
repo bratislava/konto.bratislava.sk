@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
-import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
+import { useGetDeliveryMethod } from '@/src/frontend/hooks/useDeliveryMethod'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -12,7 +12,7 @@ import { ROUTES } from '@/src/utils/routes'
 const DeliveryMethodCardWrapper = () => {
   const { t } = useTranslation('account')
   const { deliveryMethod, deliveryMethodLabel, canUserChangeDeliveryMethod } =
-    useUserDataDeliveryMethod()
+    useGetDeliveryMethod()
 
   if (!deliveryMethod) {
     return null

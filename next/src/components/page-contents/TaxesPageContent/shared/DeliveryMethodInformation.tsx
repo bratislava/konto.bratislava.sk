@@ -5,7 +5,7 @@ import { useState } from 'react'
 import Icon from '@/src/components/icon-components/Icon'
 import DeliveryMethodAlert from '@/src/components/page-contents/TaxesPageContent/shared/DeliveryMethodAlert'
 import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesPageContent/shared/DeliveryMethodChangeModal'
-import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
+import { useGetDeliveryMethod } from '@/src/frontend/hooks/useDeliveryMethod'
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19565-29877&t=zZFpVkREtcEMkKS5-4
@@ -19,7 +19,7 @@ const DeliveryMethodInformation = () => {
     deliveryMethodLabel,
     canUserChangeDeliveryMethod,
     hasUserChangedDeliveryMethodAfterDeadline,
-  } = useUserDataDeliveryMethod()
+  } = useGetDeliveryMethod()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 

@@ -1,13 +1,10 @@
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthSession } from 'aws-amplify/auth'
-import {
-  ConsentEnum,
-  SetDeliveryMethodPreferenceDtoDeliveryMethodEnum,
-} from 'openapi-clients/city-account'
+import { ConsentEnum } from 'openapi-clients/city-account'
 
 import { cityAccountClient } from '@/src/clients/city-account'
 
-const userQueryKey = ['user']
+export const userQueryKey = ['user']
 
 export const prefetchUserQuery = async (
   queryClient: QueryClient,
@@ -67,27 +64,6 @@ export const useGdprConsent = (consentType: ConsentEnum) => {
     isGranted,
     changeConsent,
     consentChangePending,
-  }
-}
-
-export const useDeliveryMethod = () => {
-  const queryClient = useQueryClient()
-
-  const { mutateAsync: changeDeliveryMethod, isPending: deliveryMethodChangePending } = useMutation(
-    {
-      mutationFn: (deliveryMethod: SetDeliveryMethodPreferenceDtoDeliveryMethodEnum) =>
-        cityAccountClient.userControllerSetDeliveryMethodPreference(
-          { deliveryMethod },
-          { authStrategy: 'authOnly' },
-        ),
-      onSuccess: () => queryClient.refetchQueries({ queryKey: userQueryKey }),
-      networkMode: 'always',
-    },
-  )
-
-  return {
-    changeDeliveryMethod,
-    deliveryMethodChangePending,
   }
 }
 

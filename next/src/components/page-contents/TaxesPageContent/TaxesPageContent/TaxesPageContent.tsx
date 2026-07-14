@@ -16,8 +16,8 @@ import TaxesPageTabs, {
 import { useStrapiTaxAdministrator } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxAdministrator'
 import { useTaxesData } from '@/src/components/page-contents/TaxesPageContent/useTaxesData'
 import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
+import { useGetDeliveryMethod } from '@/src/frontend/hooks/useDeliveryMethod'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
-import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
 
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=13580-1475&t=fznV5maoQK8a2irI-4
@@ -29,7 +29,7 @@ const TaxesPageContent = () => {
   const {
     tierStatus: { isInQueue, isIdentityVerified },
   } = useSsrAuth()
-  const { showDeliveryMethodNeededBanner } = useUserDataDeliveryMethod()
+  const { showDeliveryMethodNeededBanner } = useGetDeliveryMethod()
   const taxesData = useTaxesData()
   const strapiTaxAdministrator = useStrapiTaxAdministrator()
 

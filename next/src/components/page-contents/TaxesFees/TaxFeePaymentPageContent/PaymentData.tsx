@@ -12,7 +12,7 @@ import ClipboardCopy from '@/src/components/simple-components/ClipboardCopy'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import PaymentSchedule from '@/src/components/simple-components/PaymentSchedule'
 import { useUser } from '@/src/frontend/hooks/useUser'
-import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/types'
+import { PaymentMethod, PaymentMethodType } from '@/src/frontend/types/paymentMethodTypes'
 import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {

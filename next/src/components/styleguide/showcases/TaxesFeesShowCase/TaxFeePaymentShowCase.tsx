@@ -7,7 +7,7 @@ import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/T
 import { TaxDataProvider } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
 import { Tier } from '@/src/frontend/dtos/accountDto'
-import { PaymentMethod } from '@/src/frontend/types/types'
+import { PaymentMethod } from '@/src/frontend/types/paymentMethodTypes'
 
 import {
   createMockTaxDetail,

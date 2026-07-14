@@ -10,7 +10,7 @@ import { useTaxData } from '@/src/components/page-contents/TaxesFees/useTaxData'
 import TaxFeePageHeader from '@/src/components/segments/PageHeader/TaxFeePageHeader'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { useUserDataDeliveryMethod } from '@/src/frontend/hooks/useUserDataDeliveryMethod'
-import { PaymentMethod } from '@/src/frontend/types/types'
+import { PaymentMethod } from '@/src/frontend/types/paymentMethodTypes'
 import { ROUTES } from '@/src/utils/routes'
 
 // query param "sposob-uhrady" could have "zvysna suma" split to "zvysna-suma" and "jednorazova-uhrada"

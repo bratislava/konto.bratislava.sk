@@ -4,10 +4,10 @@ import axios, { isAxiosError } from 'axios'
 import {
   BloomreachCustomerIdsQuery,
   BloomreachEventNameEnum,
-  BloomreachExportCustomerResponse,
+  BloomreachExportCustomerResponseSchema,
   BloomreachExportedCustomer,
   BloomreachExportedEvent,
-  BloomreachExportEventsResponse,
+  BloomreachExportEventsResponseSchema,
 } from './bloomreach.types'
 
 @Injectable()
@@ -27,9 +27,7 @@ export class BloomreachExportService {
         { headers: { Authorization: `Basic ${this.bloomreachCredentials}` } }
       )
 
-      // TODO type checking
-
-      const body = response.data as BloomreachExportCustomerResponse
+      const body = BloomreachExportCustomerResponseSchema.parse(response.data)
       return body.success && body.value ? body.value : null
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 404) {
@@ -49,9 +47,7 @@ export class BloomreachExportService {
         { headers: { Authorization: `Basic ${this.bloomreachCredentials}` } }
       )
 
-      // TODO type checking
-
-      const body = response.data as BloomreachExportEventsResponse
+      const body = BloomreachExportEventsResponseSchema.parse(response.data)
       return body.success ? (body.data ?? []) : []
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 404) {

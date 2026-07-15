@@ -1,4 +1,5 @@
 import { ConsentEnum } from '@prisma/client'
+import * as z from 'zod'
 
 import { UserOfficialCorrespondenceChannelEnum } from '../user/dtos/gdpr.user.dto'
 import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
@@ -89,30 +90,41 @@ export type BloomreachCustomerIdsQuery =
   | { city_account_id: string; contact_id?: string }
   | { city_account_id?: string; contact_id: string }
 
+/** An ID can hold a single value or an array (a merged customer keeps all values of an ID). */
+const BloomreachIdValueSchema = z.union([z.string(), z.array(z.string())]).nullish()
+
 /**
- * Customer returned by the export-one endpoint. `ids` values can be a single
- * value or an array (a merged customer keeps all values of an ID).
+ * Customer returned by the export-one endpoint. Only the fields we read are
+ * validated, Bloomreach may send more. `ids` holds the IDs we work with
+ * explicitly, but can contain any other ID name too.
  */
-export interface BloomreachExportedCustomer {
-  ids: Record<string, string | string[] | null | undefined>
-  properties: Record<string, unknown>
-}
+export const BloomreachExportedCustomerSchema = z.object({
+  ids: z
+    .object({
+      city_account_id: BloomreachIdValueSchema,
+      contact_id: BloomreachIdValueSchema,
+    })
+    .catchall(BloomreachIdValueSchema),
+  properties: z.record(z.string(), z.unknown()),
+})
+export type BloomreachExportedCustomer = z.infer<typeof BloomreachExportedCustomerSchema>
 
-export interface BloomreachExportCustomerResponse {
-  success: boolean
-  value?: BloomreachExportedCustomer
-}
+export const BloomreachExportCustomerResponseSchema = z.object({
+  success: z.boolean(),
+  value: BloomreachExportedCustomerSchema.optional(),
+})
 
-export interface BloomreachExportedEvent {
-  type: string
-  timestamp: number
-  properties: Record<string, unknown>
-}
+export const BloomreachExportedEventSchema = z.object({
+  type: z.string(),
+  timestamp: z.number(),
+  properties: z.record(z.string(), z.unknown()),
+})
+export type BloomreachExportedEvent = z.infer<typeof BloomreachExportedEventSchema>
 
-export interface BloomreachExportEventsResponse {
-  success: boolean
-  data?: BloomreachExportedEvent[]
-}
+export const BloomreachExportEventsResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.array(BloomreachExportedEventSchema).optional(),
+})
 
 // ─── Bloomreach enums ───────────────────────────────────────────────────────
 

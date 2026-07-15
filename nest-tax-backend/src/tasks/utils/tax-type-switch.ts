@@ -1,4 +1,4 @@
-import { TaxType } from '@prisma/client'
+import { TaxType } from '../../generated/prisma/client'
 
 /** Cycle order follows Prisma schema enum declaration order. */
 const taxTypes = Object.values(TaxType)

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { isAxiosError } from 'axios'
 import _ from 'lodash'
 import {
@@ -10,6 +9,7 @@ import {
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import { VerificationErrorsResponseEnum } from '../user-verification/verification.errors.enum'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -65,7 +65,7 @@ export class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
-    private readonly configService: ConfigService
+    private readonly baConfigService: BaConfigService
   ) {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
@@ -94,8 +94,8 @@ export class NasesService {
 
   private async searchUpvsIdentitiesByUri(uris: string[]) {
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
-      this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+      this.baConfigService.nases.subNasesTechnicalAccount,
+      this.baConfigService.nases.apiTokenPrivate
     )
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesSearchPost(
@@ -232,7 +232,9 @@ export class NasesService {
 
     const resultDataSuccess: UpvsIdentityByUriSuccessType[] = directMatches.flatMap((result) => {
       const input = inputsByUri[result.uri]
-      if (!input) return []
+      if (!input) {
+        return []
+      }
       return [
         {
           inputUri: input.uri,

@@ -1,23 +1,14 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-  PayloadTooLargeException,
-} from '@nestjs/common'
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor, PayloadTooLargeException, } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import multer from 'multer'
-import { Observable } from 'rxjs'
 
 import BaConfigService from '../config/ba-config.service'
-import {
-  FormsErrorsEnum,
-  FormsErrorsResponseEnum,
-} from '../forms/forms.errors.enum'
+import { FormsErrorsEnum, FormsErrorsResponseEnum, } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
+
 /**
  * Conservative overhead allowance for multipart boundaries, headers, and the other form fields (filename, id).
  */
@@ -49,7 +40,7 @@ export class FileUploadInterceptor implements NestInterceptor {
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Promise<Observable<unknown>> {
+  ): Promise<ReturnType<CallHandler['handle']>> {
     const ctx = context.switchToHttp()
     const req = ctx.getRequest<Request>()
     const res = ctx.getResponse<Response>()
@@ -114,7 +105,7 @@ export class FileUploadInterceptor implements NestInterceptor {
     }
 
     const { formId } = req.params
-    if (!formId) {
+    if (!formId || typeof formId !== 'string') {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,

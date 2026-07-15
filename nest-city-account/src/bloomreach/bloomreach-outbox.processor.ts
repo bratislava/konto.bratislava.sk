@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '@prisma/client'
 import axios, { isAxiosError } from 'axios'
 
+import BaConfigService from '../config/ba-config.service'
+import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -26,21 +27,21 @@ const RETRY_BACKOFF_BASE_MS = 60_000
 export class BloomreachOutboxProcessor {
   private readonly logger: LineLoggerSubservice
 
-  private readonly bloomreachCredentials = Buffer.from(
-    `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
-    'binary'
-  ).toString('base64')
+  private readonly bloomreachCredentials: string
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly mergeConsentService: BloomreachMergeConsentService
+    private readonly mergeConsentService: BloomreachMergeConsentService,
+    private readonly baConfigService: BaConfigService
   ) {
+    const { apiKey, apiSecret } = this.baConfigService.bloomreach
+    this.bloomreachCredentials = Buffer.from(`${apiKey}:${apiSecret}`, 'binary').toString('base64')
     this.logger = new LineLoggerSubservice(BloomreachOutboxProcessor.name)
   }
 
   async processOutbox(): Promise<void> {
-    if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
+    if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
       return
     }
 
@@ -325,8 +326,9 @@ export class BloomreachOutboxProcessor {
   }
 
   private async sendBatch(commands: BloomreachBatchCommand[]): Promise<BloomreachBatchResponse> {
+    const { apiUrl, projectToken } = this.baConfigService.bloomreach
     const response = await axios.post(
-      `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/batch`,
+      `${apiUrl}/track/v2/projects/${projectToken}/batch`,
       { commands },
       {
         headers: {

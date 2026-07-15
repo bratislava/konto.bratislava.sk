@@ -1,8 +1,8 @@
 import { GinDetailReferentaDetailReferenta } from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
-import { FormError, FormState } from '@prisma/client'
 
 import FormsService from '../../forms/forms.service'
+import { FormError, FormState } from '../../generated/prisma/client'
 
 @Injectable()
 export default class GinisHelper {

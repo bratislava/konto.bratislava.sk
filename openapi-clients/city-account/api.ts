@@ -123,7 +123,7 @@ export interface CognitoGetUserData {
   /**
    * Cognito confirmation statue
    */
-  UserStatus?: CognitoGetUserDataUserStatusEnum
+  UserStatus?: CognitoUserStatusEnum
 }
 
 export const CognitoGetUserDataCustomTierEnum = {
@@ -136,18 +136,6 @@ export const CognitoGetUserDataCustomTierEnum = {
 
 export type CognitoGetUserDataCustomTierEnum =
   (typeof CognitoGetUserDataCustomTierEnum)[keyof typeof CognitoGetUserDataCustomTierEnum]
-export const CognitoGetUserDataUserStatusEnum = {
-  Archived: 'ARCHIVED',
-  Compromised: 'COMPROMISED',
-  Confirmed: 'CONFIRMED',
-  ForceChangePassword: 'FORCE_CHANGE_PASSWORD',
-  ResetRequired: 'RESET_REQUIRED',
-  Unconfirmed: 'UNCONFIRMED',
-  Unknown: 'UNKNOWN',
-} as const
-
-export type CognitoGetUserDataUserStatusEnum =
-  (typeof CognitoGetUserDataUserStatusEnum)[keyof typeof CognitoGetUserDataUserStatusEnum]
 
 /**
  * Which type of account it is?
@@ -176,6 +164,23 @@ export const CognitoUserAttributesTierEnum = {
 
 export type CognitoUserAttributesTierEnum =
   (typeof CognitoUserAttributesTierEnum)[keyof typeof CognitoUserAttributesTierEnum]
+
+/**
+ * Cognito confirmation statue
+ */
+
+export const CognitoUserStatusEnum = {
+  Archived: 'ARCHIVED',
+  Compromised: 'COMPROMISED',
+  Confirmed: 'CONFIRMED',
+  ForceChangePassword: 'FORCE_CHANGE_PASSWORD',
+  ResetRequired: 'RESET_REQUIRED',
+  Unconfirmed: 'UNCONFIRMED',
+  Unknown: 'UNKNOWN',
+} as const
+
+export type CognitoUserStatusEnum =
+  (typeof CognitoUserStatusEnum)[keyof typeof CognitoUserStatusEnum]
 
 /**
  * Type of consent
@@ -333,18 +338,8 @@ export interface MarkDeceasedAccountResponseItemDto {
   /**
    * Status of the anonymization of user in Bloomreach
    */
-  bloomreachRemoved?: MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum
+  bloomreachRemoved?: AnonymizeResponse
 }
-
-export const MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum = {
-  NotFound: 'NOT_FOUND',
-  NotActive: 'NOT_ACTIVE',
-  Error: 'ERROR',
-  Success: 'SUCCESS',
-} as const
-
-export type MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum =
-  (typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum)[keyof typeof MarkDeceasedAccountResponseItemDtoBloomreachRemovedEnum]
 
 /**
  * Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)

@@ -1,7 +1,7 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { connect, ConnectionError, ConnectionPool, MSSQLError } from 'mssql'
 
+import BaConfigService from '../../config/ba-config.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -15,23 +15,10 @@ export class NorisConnectionService implements OnModuleDestroy {
   private readonly logger = new LineLoggerSubservice(NorisConnectionService.name)
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly prismaService: PrismaService
-  ) {
-    if (
-      !process.env.MSSQL_HOST ||
-      !process.env.MSSQL_DB ||
-      !process.env.MSSQL_USERNAME ||
-      !process.env.MSSQL_PASSWORD ||
-      !process.env.MSSQL_PORT
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Missing one of noris envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD, MSSQL_PORT.'
-      )
-    }
-  }
+  ) {}
 
   async onModuleDestroy(): Promise<void> {
     try {
@@ -50,14 +37,15 @@ export class NorisConnectionService implements OnModuleDestroy {
   }
 
   private async createConnection(): Promise<ConnectionPool> {
+    const noris = this.baConfigService.noris
     return await connect({
-      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
-      port: Number(this.configService.getOrThrow<string>('MSSQL_PORT')),
-      database: this.configService.getOrThrow<string>('MSSQL_DB'),
-      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+      server: noris.host,
+      port: noris.port,
+      database: noris.database,
+      user: noris.username,
       connectionTimeout: 120_000,
       requestTimeout: 120_000,
-      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
+      password: noris.password,
       options: {
         encrypt: true,
         trustServerCertificate: true,

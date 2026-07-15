@@ -52,6 +52,15 @@ export class ValidateFormRegistrationsResultDto {
 
   @ApiProperty({
     type: [ValidateFormRegistrationDto],
+    description: 'Forms published in slovensko.sk but disabled in our system',
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ValidateFormRegistrationDto)
+  'published-but-disabled': ValidateFormRegistrationDto[]
+
+  @ApiProperty({
+    type: [ValidateFormRegistrationDto],
     description: 'Valid forms',
   })
   @IsArray()

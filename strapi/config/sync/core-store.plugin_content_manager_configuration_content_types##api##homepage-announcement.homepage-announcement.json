@@ -48,34 +48,6 @@
           "sortable": true
         }
       },
-      "buttonText": {
-        "edit": {
-          "label": "(deprecated - použi Primárny odkaz) Text tlačidla",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "buttonText",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "href": {
-        "edit": {
-          "label": "(deprecated - použi Primárny odkaz) Odkaz",
-          "description": "Mal by začínať lomítkom, napr. /mestske-sluzby/...",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "href",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "primaryButton": {
         "edit": {
           "label": "Button (primary)",
@@ -203,8 +175,7 @@
       "list": [
         "id",
         "title",
-        "description",
-        "buttonText"
+        "description"
       ],
       "edit": [
         [
@@ -220,16 +191,6 @@
         [
           {
             "name": "primaryButton",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "buttonText",
-            "size": 8
-          },
-          {
-            "name": "href",
             "size": 12
           }
         ],

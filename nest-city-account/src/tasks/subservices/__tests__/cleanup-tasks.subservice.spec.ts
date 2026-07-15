@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { OAuth2Data } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
+import { OAuth2Data } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { CleanupTasksSubservice } from '../cleanup-tasks.subservice'
 

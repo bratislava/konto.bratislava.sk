@@ -21,6 +21,12 @@
       "targetField": "title",
       "required": true
     },
+    "pageHeaderText": {
+      "type": "text"
+    },
+    "moreInformationUrl": {
+      "type": "string"
+    },
     "description": {
       "type": "text",
       "required": true

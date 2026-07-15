@@ -1,8 +1,12 @@
-import { DeliveryMethodNamed, PaymentStatus, TaxType } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import {
+  DeliveryMethodNamed,
+  PaymentStatus,
+  TaxType,
+} from '../../generated/prisma/client'
 import { PaymentGateURLGeneratorDto } from '../../payment/dtos/generator.dto'
 import { QrPaymentNoteEnum } from '../../qrcode/dtos/qrcode.dto'
 import { getTaxDefinitionByType } from '../../tax-definitions/getTaxDefinitionByType'

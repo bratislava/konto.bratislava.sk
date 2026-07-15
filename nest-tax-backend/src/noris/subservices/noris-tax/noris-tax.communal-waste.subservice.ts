@@ -1,9 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
 import groupBy from 'lodash/groupBy'
 import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import BaConfigService from '../../../config/ba-config.service'
+import { TaxType } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { QrCodeService } from '../../../qrcode/qrcode.service'
 import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
@@ -42,6 +43,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
     cityAccountSubservice: CityAccountSubservice,
     paymentSubservice: NorisPaymentSubservice,
     databaseSubservice: DatabaseSubservice,
+    baConfigService: BaConfigService,
   ) {
     const logger = new LineLoggerSubservice(
       NorisTaxCommunalWasteSubservice.name,
@@ -55,6 +57,7 @@ export class NorisTaxCommunalWasteSubservice extends AbstractNorisTaxSubservice<
       logger,
       cityAccountSubservice,
       paymentSubservice,
+      baConfigService,
     )
   }
 

@@ -1,9 +1,13 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { ConsentEnum, DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import {
+  ConsentEnum,
+  DeliveryMethodEnum,
+  DeliveryMethodUserPreferenceEnum,
+} from '../generated/prisma/client'
 import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-method.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'

@@ -1,6 +1,6 @@
 import { SetMetadata } from '@nestjs/common'
 
-import { OAuth2ClientName } from '../subservices/oauth2-client.subservice'
+import { OAuth2ClientName } from '../oauth2-client-name.enum'
 
 export const CLIENT_NAME_KEY = 'clientName'
 

@@ -27,7 +27,9 @@ export class LineLoggerSubservice implements LoggerService {
   }
 
   private formatStringMessage(messages: string): string {
-    if (messages.length === 0) return ''
+    if (messages.length === 0) {
+      return ''
+    }
     return isLogfmt(messages)
       ? ' '.concat(messages)
       : `message="${escapeForLogfmt(messages)}"`
@@ -60,6 +62,7 @@ export class LineLoggerSubservice implements LoggerService {
     const colorStart = this.color ? colorCode : ''
     const colorEnd = this.color ? ANSI_RESET : ''
 
+    // eslint-disable-next-line no-console -- this is the logging utility itself; console.log is the intentional output mechanism
     console.log(
       [
         colorStart,

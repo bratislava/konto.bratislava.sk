@@ -1,4 +1,4 @@
-import { ConsentEnum } from '@prisma/client'
+import { ConsentEnum } from '../generated/prisma/client'
 import * as z from 'zod'
 
 import { UserOfficialCorrespondenceChannelEnum } from '../user/dtos/gdpr.user.dto'

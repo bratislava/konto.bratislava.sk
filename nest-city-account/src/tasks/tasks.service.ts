@@ -94,10 +94,10 @@ export class TasksService {
   }
 
   /**
-   * Daily digest of identity lookups rejected by UPVS IAM in the last month.
-   * Runs daily at 9:02 AM.
+   * Weekly digest of identity lookups rejected by UPVS IAM in the last month.
+   * Runs every Monday at 9:00 AM.
    */
-  @Cron('2 09 * * *', { timeZone: bratislavaTimezone })
+  @Cron('0 09 * * 1', { timeZone: bratislavaTimezone })
   @HandleErrors('CronError')
   async alertIdentityLookupRejections(): Promise<void> {
     return this.edeskTasksSubservice.alertIdentityLookupRejections()

@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "title",
-      "defaultSortBy": "title",
-      "defaultSortOrder": "ASC",
+      "defaultSortBy": "updatedAt",
+      "defaultSortOrder": "DESC",
       "relationOpenMode": "modal"
     },
     "metadatas": {
@@ -48,6 +48,34 @@
           "sortable": true
         }
       },
+      "pageHeaderText": {
+        "edit": {
+          "label": "Text v hlavičke",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "pageHeaderText",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "moreInformationUrl": {
+        "edit": {
+          "label": "Odkaz na viac informácií o službe",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "moreInformationUrl",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "description": {
         "edit": {
           "label": "Kartička - text",
@@ -83,7 +111,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "moreInformationUrl"
+          "mainField": "slug"
         },
         "list": {
           "label": "form",
@@ -93,7 +121,7 @@
       },
       "formButtonLabel": {
         "edit": {
-          "label": "Formulár - text CTA buttonu",
+          "label": "(TBD - ešte neimplementované) Formulár - text CTA buttonu",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -107,7 +135,7 @@
       },
       "href": {
         "edit": {
-          "label": "Externý odkaz",
+          "label": "Kartička - externý odkaz",
           "description": "Vyplní sa v prípade, že služba smeruje na externú URL mimo konta.",
           "placeholder": "",
           "visible": true,
@@ -179,12 +207,11 @@
       },
       "links": {
         "edit": {
-          "label": "Odkazy v sidebare",
+          "label": "(TBD - ešte neimplementované) Odkazy v sidebare",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "label"
+          "editable": true
         },
         "list": {
           "label": "links",
@@ -274,6 +301,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "updatedAt",
+        "categories",
+        "form"
+      ],
       "edit": [
         [
           {
@@ -289,18 +323,14 @@
         ],
         [
           {
-            "name": "href",
+            "name": "pageHeaderText",
             "size": 12
           }
         ],
         [
           {
-            "name": "form",
-            "size": 6
-          },
-          {
-            "name": "formButtonLabel",
-            "size": 6
+            "name": "moreInformationUrl",
+            "size": 12
           }
         ],
         [
@@ -335,6 +365,22 @@
         ],
         [
           {
+            "name": "href",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "form",
+            "size": 6
+          },
+          {
+            "name": "formButtonLabel",
+            "size": 6
+          }
+        ],
+        [
+          {
             "name": "links",
             "size": 12
           }
@@ -345,8 +391,7 @@
             "size": 12
           }
         ]
-      ],
-      "list": ["id", "title", "description", "buttonText"]
+      ]
     },
     "uid": "api::municipal-service.municipal-service"
   },

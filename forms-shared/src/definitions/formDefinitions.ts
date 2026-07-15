@@ -196,6 +196,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisFunctionId: 'MAG0SF00AG9O',
     },
     files: predzahradkyFiles,
+    isDisabled: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -739,6 +740,7 @@ export const formDefinitions: FormDefinition[] = [
       },
       newSubmissionTemplate: MailgunTemplateEnum.BRATISLAVA_NEW_SUBMISSION,
       technicalEmailSubjectAppendId: true,
+      technicalEmailReplyToExtractedEmail: true,
     },
     termsAndConditions: generalTermsAndConditions,
   },

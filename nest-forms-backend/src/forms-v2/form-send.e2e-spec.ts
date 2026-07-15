@@ -24,6 +24,7 @@ class FormSendOnlyRegisteredResponseDto {
   formId: string
 }
 
+// eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided -- test-only controller used directly in the e2e test module setup
 @Controller('test-form-send-e2e')
 @ApiTags('test-form-send-e2e')
 class TestFormSendController {

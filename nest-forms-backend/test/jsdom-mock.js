@@ -17,7 +17,7 @@ class DOMParserMock {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class -- JavaScript mock file; class structure required to match the jsdom module's API shape
 class JSDOM {
   constructor() {
     this.window = {

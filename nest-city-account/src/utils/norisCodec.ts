@@ -1,6 +1,6 @@
-import { DeliveryMethodEnum } from '@prisma/client'
 import { z } from 'zod'
 
+import { DeliveryMethodEnum } from '../generated/prisma/client'
 import { DeliveryMethod } from '../noris/types/noris.enums'
 
 const DELIVERY_METHOD_MAPPING = {

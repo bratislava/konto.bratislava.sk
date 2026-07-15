@@ -1,16 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { AxiosError, isAxiosError } from 'axios'
 import _ from 'lodash'
 import {
   ApiIamIdentitiesIdGet200Response,
   UpvsCorporateBody,
   UpvsNaturalPerson,
-  UpvsNaturalPersonAllOfNaturalPerson,
 } from 'openapi-clients/slovensko-sk'
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   VerificationErrorsEnum,
@@ -122,8 +121,8 @@ export class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
-    private readonly configService: ConfigService,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    private readonly baConfigService: BaConfigService
   ) {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
@@ -262,8 +261,8 @@ export class NasesService {
 
   private async searchUpvsIdentitiesByUri(uris: string[]) {
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
-      this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+      this.baConfigService.nases.subNasesTechnicalAccount,
+      this.baConfigService.nases.apiTokenPrivate
     )
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesSearchPost(

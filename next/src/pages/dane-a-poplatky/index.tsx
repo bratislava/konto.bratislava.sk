@@ -9,14 +9,15 @@ import {
   StrapiTaxAdministrator,
 } from '@/src/backend/utils/strapi-tax-administrator'
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { GeneralQuery, TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { GeneralQuery, MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import { taxClient } from '@/src/clients/tax'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import TaxesFeesPageContent from '@/src/components/page-contents/TaxesFees/TaxesFeesPageContent/TaxesFeesPageContent'
-import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
-import { TaxesFeesProvider } from '@/src/components/page-contents/TaxesFees/useTaxesFees'
+import TaxesPageContent from '@/src/components/page-contents/TaxesPageContent/TaxesPageContent/TaxesPageContent'
+import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxAdministrator'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
+import { TaxesDataProvider } from '@/src/components/page-contents/TaxesPageContent/useTaxesData'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -24,18 +25,18 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 
 export type TaxesData = ResponseGetTaxesListDto
 
-export type AccountTaxesFeesPageProps = {
+export type TaxesPageProps = {
   general: GeneralQuery
   taxesData: Record<TaxType, TaxesData | null>
   strapiTaxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment | null | undefined
+  strapiTaxConfig: MunicipalChargeConfigFragment | null | undefined
   dehydratedState: DehydratedState
 }
 
 /**
  * BE returns 403 if users identity is not verified, it should return a flag instead
  */
-const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>, taxType: TaxType) => {
+const getTaxesData = async (getSsrAuthSession: () => Promise<AuthSession>, taxType: TaxType) => {
   try {
     const { data } = await taxClient.taxControllerV2GetTaxesListV2(taxType, {
       authStrategy: 'authOnly',
@@ -58,20 +59,26 @@ const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>, taxType: 
 
 const queryClient = new QueryClient()
 
-export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps>(
+export const getServerSideProps = amplifyGetServerSideProps<TaxesPageProps>(
   async ({ amplifyContextSpec, fetchAuthSession }) => {
     try {
-      const [general, taxesDataDzn, taxesDataKo, strapiTaxAdministrator, strapiTax, accountType] =
-        await Promise.all([
-          strapiClient.General(),
-          getTaxes(fetchAuthSession, TaxType.Dzn),
-          getTaxes(fetchAuthSession, TaxType.Ko),
-          getTaxAdministratorForUser(amplifyContextSpec),
-          strapiClient.Tax().then((response) => response.tax),
-          fetchUserAttributes(amplifyContextSpec).then(
-            (response) => response?.['custom:account_type'],
-          ),
-        ])
+      const [
+        general,
+        taxesDataDzn,
+        taxesDataKo,
+        strapiTaxAdministrator,
+        strapiTaxConfig,
+        accountType,
+      ] = await Promise.all([
+        strapiClient.General(),
+        getTaxesData(fetchAuthSession, TaxType.Dzn),
+        getTaxesData(fetchAuthSession, TaxType.Ko),
+        getTaxAdministratorForUser(amplifyContextSpec),
+        strapiClient.MunicipalChargeConfig().then((response) => response.municipalChargeConfig),
+        fetchUserAttributes(amplifyContextSpec).then(
+          (response) => response?.['custom:account_type'],
+        ),
+      ])
 
       await prefetchUserQuery(queryClient, fetchAuthSession)
 
@@ -87,8 +94,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
           general,
           taxesData: { [TaxType.Dzn]: taxesDataDzn, [TaxType.Ko]: taxesDataKo },
           strapiTaxAdministrator: strapiTaxAdministrator ?? null,
+          strapiTaxConfig,
           dehydratedState: dehydrate(queryClient),
-          strapiTax,
           ...(await slovakServerSideTranslations()),
         },
       }
@@ -104,29 +111,28 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({
+const TaxesPage = ({
   general,
   taxesData,
   strapiTaxAdministrator,
-  strapiTax,
+  strapiTaxConfig,
   dehydratedState,
-}: AccountTaxesFeesPageProps) => {
+}: TaxesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
-        <PageLayout>
-          <StrapiTaxProvider strapiTax={strapiTax}>
-            <TaxesFeesProvider
-              taxesData={taxesData}
-              strapiTaxAdministrator={strapiTaxAdministrator}
-            >
-              <TaxesFeesPageContent />
-            </TaxesFeesProvider>
-          </StrapiTaxProvider>
-        </PageLayout>
+        <TaxesDataProvider taxesData={taxesData}>
+          <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
+            <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
+              <PageLayout>
+                <TaxesPageContent />
+              </PageLayout>
+            </StrapiTaxAdministratorProvider>
+          </StrapiTaxConfigProvider>
+        </TaxesDataProvider>
       </GeneralContextProvider>
     </HydrationBoundary>
   )
 }
 
-export default SsrAuthProviderHOC(AccountTaxesFeesPage)
+export default SsrAuthProviderHOC(TaxesPage)

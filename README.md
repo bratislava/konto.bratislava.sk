@@ -60,6 +60,23 @@ Backend images are environment-agnostic, so a single per-commit build is reused 
 
 The build and deploy plumbing (Buildx setup, registry logins, Docker tag/cache metadata, image reuse checks, and the infrastructure deploy trigger) comes from shared actions in [bratislava/github-actions](https://github.com/bratislava/github-actions).
 
+### Environment variables and secrets
+
+Runtime configuration no longer lives in this repo (the per-service `kubernetes` directories were removed). It is managed per cluster in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration), under `clusters/<cluster>/applications/konto.bratislava.sk/<service>` (clusters: `development`, `staging`, `production`).
+
+**Non-secret env vars** are defined in a `kubernetes_config_map` resource (usually `<service>-env`) in that service's `app/main.tf`. To change one, open a PR in the infrastructure repo editing the config map for each affected cluster and notify the infra repo maintainers — the change is applied when the Terragrunt module is applied (which also happens on every deploy of the service).
+
+**Secrets** live in [Passbolt](https://www.passbolt.com/) and are synced into the cluster by External Secrets Operator, so you need Passbolt access to change them:
+
+- Service-private secrets are Passbolt resources named `<cluster>/<service>/<ENV_VAR_NAME>` (e.g. `staging/nest-city-account/TURNSTILE_SECRET_KEY`), synced into the `<service>-secret` Kubernetes Secret.
+- Secrets shared by multiple services (Mailgun, NASES, Noris, Bloomreach, AWS Cognito, …) are grouped as `<cluster>/konto-<group>/<ENV_VAR_NAME>` — see `clusters/<cluster>/applications/konto.bratislava.sk/secrets` in the infrastructure repo.
+
+Updating the value in Passbolt is enough — it syncs to the cluster automatically with next deploy. Same goes for **new** secret env vars, as long as they match the existing service name or `konto-<group>` name. Creating new secret "groups" requires a change and apply in infra repo `clusters/<cluster>/applications/konto.bratislava.sk/secrets`. If needed, it's also possible to sync secrets without full redeployment, only with (rolling - no production downtime) application restart (ask the infra repo maintainers).
+
+If you don't have Passbolt access, ask around on the konto.bratislava.sk team.
+
+If you aren't sure where a variable belongs, or need help with anything else deployment-config wise, ask the maintainers of the infrastructure repo.
+
 ### Validation and build pipelines
 
 By creating a PR, GitHub actions will run validation pipelines and Dockerized build, lint and test pipelines.

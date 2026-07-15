@@ -67,6 +67,7 @@ export class MarkDeceasedAccountResponseItemDto {
     description: 'Status of the anonymization of user in Bloomreach',
     example: AnonymizeResponse.SUCCESS,
     enum: AnonymizeResponse,
+    enumName: 'AnonymizeResponse',
   })
   @IsEnum(AnonymizeResponse)
   @IsOptional()

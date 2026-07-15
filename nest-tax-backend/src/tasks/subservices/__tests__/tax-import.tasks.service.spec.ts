@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
 import dayjs from 'dayjs'
 
 import prismaMock from '../../../../test/singleton'
+import { TaxType } from '../../../generated/prisma/client'
 import { NorisService } from '../../../noris/noris.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { OVERPAYMENTS_LOOKBACK_DAYS } from '../../../utils/constants'

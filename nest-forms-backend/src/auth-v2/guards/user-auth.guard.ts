@@ -1,4 +1,5 @@
 import {
+  CanActivate,
   ExecutionContext,
   Injectable,
   InternalServerErrorException,
@@ -6,7 +7,6 @@ import {
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
-import { Observable } from 'rxjs'
 
 import { ALLOWED_USER_TYPES_KEY } from '../decorators/allowed-user-types.decorator'
 import { User, UserType } from '../types/user'
@@ -17,9 +17,7 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     super()
   }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): ReturnType<CanActivate['canActivate']> {
     const allowedUserTypes = this.reflector.getAllAndOverride<
       UserType[] | undefined
     >(ALLOWED_USER_TYPES_KEY, [context.getHandler(), context.getClass()])
@@ -47,6 +45,7 @@ export class UserAuthGuard extends AuthGuard('user-auth') {
     return super.canActivate(context)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- generic required to satisfy IAuthGuard.handleRequest<TUser> contract from @nestjs/passport
   handleRequest<TUser = User>(
     err: Error | null,
     user: unknown,

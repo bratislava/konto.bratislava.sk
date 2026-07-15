@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
+import BaConfigService from '../../config/ba-config.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { TowingErrorsEnum } from '../towing.errors.enum'
@@ -42,17 +42,12 @@ describe('TowingService', () => {
         TowingService,
         ThrowerErrorGuard,
         {
-          provide: ConfigService,
+          provide: BaConfigService,
           useValue: {
-            getOrThrow: jest.fn().mockImplementation((key: string) => {
-              if (key === 'ENFORCEMENT_BACKEND_URL') {
-                return ENFORCEMENT_BACKEND_URL
-              }
-              if (key === 'ENFORCEMENT_BACKEND_TOW_API_KEY') {
-                return ENFORCEMENT_BACKEND_TOW_API_KEY
-              }
-              throw new Error(`Unexpected config key: ${key}`)
-            }),
+            enforcement: {
+              backendUrl: ENFORCEMENT_BACKEND_URL,
+              towApiKey: ENFORCEMENT_BACKEND_TOW_API_KEY,
+            },
           },
         },
       ],

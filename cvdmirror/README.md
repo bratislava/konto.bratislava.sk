@@ -26,7 +26,7 @@ docker compose up
 
 ## Deployment
 
-The service can be deployed to a Kubernetes cluster using the provided configurations in the kubernetes directory. As it needs a persistent CVD data, it is set up as a StatefulSet with a PersistentVolumeClaim. The container contains a Caddy server and in background it runs `cvdupdate` script which is initiated by cron.
+The service is deployed to a Kubernetes cluster via [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration) (see the root README's Deployment section). As it needs a persistent CVD data, it is set up as a StatefulSet with a PersistentVolumeClaim. The container contains a Caddy server and in background it runs `cvdupdate` script which is initiated by cron.
 
 ## Related Links
 

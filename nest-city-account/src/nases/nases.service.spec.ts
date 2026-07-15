@@ -10,6 +10,7 @@ import ClientsService from '../clients/clients.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { VerificationErrorsEnum } from '../user-verification/verification.errors.enum'
 import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import BaConfigService from '../config/ba-config.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NasesService } from './nases.service'
 
@@ -25,6 +26,15 @@ describe('NasesService', () => {
         ThrowerErrorGuard,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
         { provide: ApiJwtTokensService, useValue: createMock<ApiJwtTokensService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            nases: {
+              subNasesTechnicalAccount: 'test-sub',
+              apiTokenPrivate: 'test-api-token',
+            },
+          },
+        },
         { provide: ConfigService, useValue: createMock<ConfigService>() },
         { provide: PrismaService, useValue: prismaMock },
       ],

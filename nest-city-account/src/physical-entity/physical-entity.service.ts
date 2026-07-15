@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity } from '@prisma/client'
 
+import { PhysicalEntity } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'

@@ -13,8 +13,5 @@ misc
 .nvmrc
 .prettierrc
 .vscode
-# bratiska-cli manifest files
-manifest-*.y?ml
 *.pem
 *.md
-kubernetes/

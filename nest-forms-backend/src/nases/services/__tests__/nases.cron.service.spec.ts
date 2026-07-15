@@ -6,6 +6,12 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 
+import {
+  createTestFormDefinitionSlovenskoSkGeneric,
+  createTestFormDefinitionSlovenskoSkTax,
+  createTestFormDefinitionWebhook,
+} from '../../../__tests__/factories/formDefinition.factory'
+import { expectStringContaining } from '../../../__tests__/jest-matchers'
 import ApiJwtTokensService from '../../../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../../../clients/clients.service'
 import BaConfigService from '../../../config/ba-config.service'
@@ -29,23 +35,20 @@ jest.mock('../../../utils/subservices/line-logger.subservice', () => ({
 
 jest.mock('forms-shared/definitions/formDefinitions', () => ({
   formDefinitions: [
-    {
-      type: FormDefinitionType.SlovenskoSkGeneric,
+    createTestFormDefinitionSlovenskoSkGeneric({
       pospID: 'test.form.definition.1',
       pospVersion: '1.0',
       slug: 'test-form-1',
-    },
-    {
-      type: FormDefinitionType.SlovenskoSkTax,
+    }),
+    createTestFormDefinitionSlovenskoSkTax({
       pospID: 'test.form.definition.2',
       pospVersion: '2.0',
       slug: 'test-form-2',
-    },
-    {
-      type: FormDefinitionType.Webhook,
+    }),
+    createTestFormDefinitionWebhook({
       slug: 'non-slovensko-form',
-    },
-  ] as unknown as FormDefinition[],
+    }),
+  ],
 }))
 
 describe('NasesCronService', () => {
@@ -116,7 +119,7 @@ describe('NasesCronService', () => {
   })
 
   describe('validateFormRegistrations', () => {
-    let originalFormDefinitions: any
+    let originalFormDefinitions: FormDefinition[]
 
     beforeEach(() => {
       apiJwtTokensService.createTechnicalAccountJwtToken.mockReturnValue(
@@ -124,17 +127,17 @@ describe('NasesCronService', () => {
       )
 
       // Store original mock for restoration
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       originalFormDefinitions = [...formDefinitionsModule.formDefinitions]
     })
 
     afterEach(() => {
       // Restore original mock after each test
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       formDefinitionsModule.formDefinitions = originalFormDefinitions
     })
 
@@ -277,7 +280,7 @@ describe('NasesCronService', () => {
       await service.validateFormRegistrations()
 
       expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
+        expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )
@@ -292,9 +295,9 @@ describe('NasesCronService', () => {
         skipProductionRegistrationCheck: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       const extendedMockFormDefinitions = [
         ...formDefinitionsModule.formDefinitions,
         testingForm,
@@ -320,7 +323,7 @@ describe('NasesCronService', () => {
 
       expect(mockSlovenskoSkApi.apiEformStatusGet).toHaveBeenCalledTimes(2)
       expect(logSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
+        expectStringContaining(
           'All 2 Slovensko.sk form registrations are valid.',
         ),
       )
@@ -335,9 +338,9 @@ describe('NasesCronService', () => {
         skipProductionRegistrationCheck: true,
       } as FormDefinition
 
-      const formDefinitionsModule = jest.requireMock(
-        'forms-shared/definitions/formDefinitions',
-      )
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
       const extendedMockFormDefinitions = [
         ...formDefinitionsModule.formDefinitions,
         testingForm,
@@ -390,6 +393,113 @@ describe('NasesCronService', () => {
 
       expect(result['error']).toHaveLength(2)
       expect(setStatusSpy).not.toHaveBeenCalled()
+    })
+
+    it('should put a published but disabled form into published-but-disabled, not valid', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
+      formDefinitionsModule.formDefinitions = [
+        ...originalFormDefinitions,
+        disabledForm,
+      ]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Publikovaný' },
+      })
+
+      const result = await service.validateFormRegistrations()
+
+      expect(result['published-but-disabled']).toHaveLength(1)
+      expect(result['published-but-disabled'][0].slug).toBe('disabled-form')
+      expect(result.valid).toHaveLength(2)
+    })
+
+    it('should set registration status to true for a published-but-disabled form', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
+      formDefinitionsModule.formDefinitions = [disabledForm]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Publikovaný' },
+      })
+
+      const setStatusSpy = jest.spyOn(
+        service['formRegistrationStatusRepository'],
+        'setStatus',
+      )
+
+      await service.validateFormRegistrations()
+
+      expect(setStatusSpy).toHaveBeenCalledWith(disabledForm, true)
+    })
+
+    it('should trigger an error alert when there are published-but-disabled forms', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
+      formDefinitionsModule.formDefinitions = [disabledForm]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Publikovaný' },
+      })
+
+      const errorSpy = jest.spyOn(service['logger'], 'error')
+      const logSpy = jest.spyOn(service['logger'], 'log')
+
+      await service.validateFormRegistrations()
+
+      expect(errorSpy).toHaveBeenCalled()
+      expect(logSpy).not.toHaveBeenCalled()
+    })
+
+    it('should put a not-published disabled form into not-published, not published-but-disabled', async () => {
+      const disabledForm = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'test.form.definition.disabled',
+        pospVersion: '1.0',
+        slug: 'disabled-form',
+        isDisabled: true,
+      } as FormDefinition
+
+      const formDefinitionsModule = jest.requireMock<{
+        formDefinitions: FormDefinition[]
+      }>('forms-shared/definitions/formDefinitions')
+      formDefinitionsModule.formDefinitions = [disabledForm]
+
+      mockSlovenskoSkApi.apiEformStatusGet.mockResolvedValue({
+        data: { status: 'Nepublikovaný' },
+      })
+
+      const result = await service.validateFormRegistrations()
+
+      expect(result['not-published']).toHaveLength(1)
+      expect(result['published-but-disabled']).toHaveLength(0)
     })
   })
 })

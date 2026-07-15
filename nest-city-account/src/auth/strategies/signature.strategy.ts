@@ -1,14 +1,15 @@
 import { createPublicKey } from 'node:crypto'
 
 import { HttpException, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { createVerify } from 'crypto'
 import { Strategy as CustomStrategy } from 'passport-custom'
 
+import BaConfigService from '../../config/ba-config.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { NonceService } from '../services/nonce.service'
+import { SignaturePublicKey } from '../types/signature-public-key.enum'
 import { SignatureRequest } from '../types/signature-request.types'
 
 /**
@@ -24,7 +25,8 @@ import { SignatureRequest } from '../types/signature-request.types'
  * - Comprehensive audit logging
  *
  * The strategy validates requests signed with RSA private keys
- * and verifies them using the client's public key from environment variables.
+ * and verifies them using the client's public key from validated config
+ * (see BaConfigService.signaturePublicKey).
  *
  * For mutating endpoints (POST/PUT/DELETE), use @RequireNonce() decorator
  * to enforce nonce-based replay protection in addition to timestamp validation.
@@ -36,9 +38,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
   private readonly maxClockSkew: number = 60 * 1000 // 1 minute
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly nonceService: NonceService
+    private readonly nonceService: NonceService,
+    private readonly baConfigService: BaConfigService
   ) {
     super()
   }
@@ -50,26 +52,18 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
    * @throws UnauthorizedException if validation fails
    */
   async validate(req: SignatureRequest): Promise<boolean> {
-    // Extract the environment variable name from request metadata
-    // This should be set by the @SignaturePublicKey() decorator
-    const envVarName = req.signaturePublicKeyEnvVar
+    // Set by the @SignaturePublicKeyName() decorator via SignatureGuard
+    const publicKeyName = req.signaturePublicKeyName
 
-    if (!envVarName) {
+    if (!publicKeyName) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        'Server configuration error: Public key environment variable not specified'
+        'Server configuration error: Public key not specified'
       )
     }
 
-    const publicKeyRaw = this.configService.get<string>(envVarName)
-    if (!publicKeyRaw) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-        `Server configuration error: Public key ${req.signaturePublicKeyEnvVar} not configured.`
-      )
-    }
+    const publicKeyRaw = this.baConfigService.signaturePublicKey[publicKeyName]
 
     // Support PEM keys stored as single-line with literal \n (e.g. in Kubernetes ConfigMaps from .env files)
     const publicKey = publicKeyRaw.replace(/\\n/g, '\n')
@@ -164,7 +158,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
         )
       }
 
-      await this.validateNonceOrThrow(req, envVarName)
+      await this.validateNonceOrThrow(req, publicKeyName)
 
       return true
     } catch (error) {
@@ -183,7 +177,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
     }
   }
 
-  private async validateNonceOrThrow(req: SignatureRequest, envVarName: string) {
+  private async validateNonceOrThrow(req: SignatureRequest, publicKeyName: SignaturePublicKey) {
     const nonce = req.headers['x-nonce']
 
     if (!req.requireNonce && typeof nonce === 'undefined') {
@@ -198,7 +192,7 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    await this.nonceService.validateAndMarkUsed(nonce, envVarName)
+    await this.nonceService.validateAndMarkUsed(nonce, publicKeyName)
   }
 
   private isValidPublicKeyPem(value: string): boolean {

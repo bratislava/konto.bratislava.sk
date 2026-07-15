@@ -1,8 +1,14 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum, Prisma, User } from '@prisma/client'
 
 import prismaMock from '../../../../test/singleton'
+import getBaConfigInstance from '../../../config/ba-config.instance'
+import {
+  DeliveryMethodEnum,
+  DeliveryMethodUserPreferenceEnum,
+  Prisma,
+  User,
+} from '../../../generated/prisma/client'
 import { MailgunService } from '../../../mailgun/mailgun.service'
 import { NorisDeliveryMethodService } from '../../../noris/services/noris-delivery-method.service'
 import { DeliveryMethod } from '../../../noris/types/noris.enums'
@@ -10,6 +16,8 @@ import { PdfGeneratorService } from '../../../pdf-generator/pdf-generator.servic
 import { PrismaService } from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
+
+jest.mock('../../../config/ba-config.instance')
 
 type UserWithRelations = Prisma.UserGetPayload<{
   include: {
@@ -24,12 +32,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
   let service: TaxDeliveryMethodsTasksSubservice
   let throwerErrorGuard: ThrowerErrorGuard
 
+  const mockGetBaConfigInstance = getBaConfigInstance as jest.MockedFunction<
+    typeof getBaConfigInstance
+  >
+
   beforeAll(() => {
-    process.env = {
-      ...process.env,
-      MUNICIPAL_TAX_LOCK_MONTH: '02',
-      MUNICIPAL_TAX_LOCK_DAY: '01',
-    }
     jest.spyOn(console, 'log').mockImplementation(() => {})
   })
 
@@ -44,6 +51,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
   beforeEach(async () => {
     jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] })
     jest.setSystemTime(new Date('2024-02-15T12:00:00.000Z'))
+    mockGetBaConfigInstance.mockReturnValue({ taxDeadline: { month: 2, day: 1 } } as ReturnType<
+      typeof getBaConfigInstance
+    >)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

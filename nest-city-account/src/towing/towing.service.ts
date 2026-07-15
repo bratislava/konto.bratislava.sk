@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import axios, { isAxiosError } from 'axios'
 
+import BaConfigService from '../config/ba-config.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
@@ -20,10 +20,10 @@ export class TowingService {
   private readonly enforcementBackendUrl: string
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {
-    this.enforcementBackendUrl = this.configService.getOrThrow<string>('ENFORCEMENT_BACKEND_URL')
+    this.enforcementBackendUrl = this.baConfigService.enforcement.backendUrl
   }
 
   /**
@@ -50,7 +50,7 @@ export class TowingService {
       const { data } = await axios.get<TowingSearchResponseDto>(url, {
         timeout: 10_000,
         headers: {
-          'X-Api-Key': this.configService.getOrThrow<string>('ENFORCEMENT_BACKEND_TOW_API_KEY'),
+          'X-Api-Key': this.baConfigService.enforcement.towApiKey,
         },
       })
       return data

@@ -19,17 +19,6 @@
       "type": "component",
       "component": "blocks.form-landing-page-form-cta",
       "repeatable": false
-    },
-    "sections": {
-      "type": "dynamiczone",
-      "components": [
-        "sections.richtext",
-        "sections.documents",
-        "sections.faq",
-        "sections.contacts",
-        "sections.towing",
-        "sections.stepper"
-      ]
     }
   }
 }

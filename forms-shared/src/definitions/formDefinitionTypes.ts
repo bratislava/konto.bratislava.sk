@@ -50,6 +50,10 @@ type FormDefinitionBase = {
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
   feedbackLink?: string
+  /**
+   * If true, only viewing of sent forms is allowed. Creating, updating and sending is disabled.
+   */
+  isDisabled?: boolean
 
   files?: FormFiles<string>
 }
@@ -102,10 +106,29 @@ export type FormDefinitionEmail = FormDefinitionBase & {
     userResponseTemplate: MailgunTemplateEnum
     replyToAddress?: { test: string; prod: string }
     sendJsonDataAttachmentInTechnicalMail?: boolean
-    extractEmail?: SchemalessFormDataExtractor<any>
     extractName?: SchemalessFormDataExtractor<any>
     technicalEmailSubjectAppendId?: boolean
-  }
+  } & (
+    | {
+        /**
+         * When extractEmail is provided, there is an option to enable reply-to header on technical
+         * email to be set to extracted email, so admin replies go to the submitter instead of Konto.
+         */
+        extractEmail: SchemalessFormDataExtractor<any>
+        technicalEmailReplyToExtractedEmail?: boolean
+      }
+    | {
+        /**
+         * When extractEmail is not provided, technicalEmailReplyToExtractedEmail CANNOT be provided
+         */
+        extractEmail?: never
+        technicalEmailReplyToExtractedEmail?: never
+      }
+  )
+}
+
+export type FormDefinitionEmailWithExtractEmail = FormDefinitionEmail & {
+  email: { extractEmail: SchemalessFormDataExtractor<any> }
 }
 
 export type FormDefinition =
@@ -137,3 +160,12 @@ export const isEmailFormDefinition = (
 export const isWebhookFormDefinition = (
   formDefinition: FormDefinition,
 ): formDefinition is FormDefinitionWebhook => formDefinition.type === FormDefinitionType.Webhook
+
+/**
+ * When `technicalEmailReplyToExtractedEmail` is `true`, the type guarantees `extractEmail` is set,
+ * so the narrowed definition can be passed where a defined `extractEmail` is required.
+ */
+export const isFormDefinitionWithReplyToAndExtractEmail = (
+  formDefinition: FormDefinitionEmail,
+): formDefinition is FormDefinitionEmailWithExtractEmail =>
+  formDefinition.email.technicalEmailReplyToExtractedEmail === true

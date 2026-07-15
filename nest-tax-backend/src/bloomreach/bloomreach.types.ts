@@ -1,5 +1,8 @@
-import { DeliveryMethodNamed, TaxPaymentSource, TaxType } from '@prisma/client'
-
+import {
+  DeliveryMethodNamed,
+  TaxPaymentSource,
+  TaxType,
+} from '../generated/prisma/client'
 import { INSTALLMENT_DUE_DATE_TYPE } from '../tasks/utils/types'
 
 export enum BloomreachEventNameEnum {

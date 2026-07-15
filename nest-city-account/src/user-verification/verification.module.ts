@@ -1,9 +1,11 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
-import ApiJwtTokensModule from 'src/api-jwt-tokens/api-jwt-tokens.module'
-import { MagproxyModule } from 'src/magproxy/magproxy.module'
 
+import ApiJwtTokensModule from '../api-jwt-tokens/api-jwt-tokens.module'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
+import BaConfigModule from '../config/ba-config.module'
+import BaConfigService from '../config/ba-config.service'
+import { MagproxyModule } from '../magproxy/magproxy.module'
 import { MailgunModule } from '../mailgun/mailgun.module'
 import { NasesModule } from '../nases/nases.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
@@ -17,19 +19,23 @@ import { VerificationService } from './verification.service'
 
 @Module({
   imports: [
-    RabbitMQModule.forRoot({
-      uri: process.env.RABBIT_MQ_URI ?? '',
-      exchanges: [
-        {
-          name: RABBIT_MQ.EXCHANGE,
-          type: 'x-delayed-message',
-          options: {
-            arguments: { 'x-delayed-type': 'direct' },
+    RabbitMQModule.forRootAsync({
+      imports: [BaConfigModule],
+      inject: [BaConfigService],
+      useFactory: (baConfigService: BaConfigService) => ({
+        uri: baConfigService.rabbitMq.uri,
+        exchanges: [
+          {
+            name: RABBIT_MQ.EXCHANGE,
+            type: 'x-delayed-message',
+            options: {
+              arguments: { 'x-delayed-type': 'direct' },
+            },
           },
-        },
-      ],
-      connectionInitOptions: { wait: false },
-      logger: new LineLoggerSubservice('RabbitMQ'),
+        ],
+        connectionInitOptions: { wait: false },
+        logger: new LineLoggerSubservice('RabbitMQ'),
+      }),
     }),
     NasesModule,
     MagproxyModule,

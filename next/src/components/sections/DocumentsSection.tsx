@@ -7,13 +7,17 @@ import SectionHeader from '@/src/components/layouts/SectionHeader'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import { isDefined } from '@/src/frontend/utils/general'
 
-type DocumentsSectionProps = {
+type Props = {
   section: DocumentsSectionFragment
 }
 
+/**
+ * Figma: TODO
+ */
+
 const DocumentsSection = ({
   section: { title, text, externalDocuments },
-}: DocumentsSectionProps) => {
+}: Props) => {
   const filteredExternalDocuments = externalDocuments?.filter(isDefined) ?? []
 
   return (

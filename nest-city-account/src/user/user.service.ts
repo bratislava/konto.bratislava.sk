@@ -1,13 +1,5 @@
 // TODO - communication state to LEGAL_ENTITY
 import { Injectable } from '@nestjs/common'
-import {
-  CognitoUserAttributesTierEnum,
-  ConsentEnum,
-  DeliveryMethodEnum,
-  DeliveryMethodUserPreferenceEnum,
-  LoginClientEnum,
-  User,
-} from '@prisma/client'
 
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 import {
@@ -15,6 +7,14 @@ import {
   CustomErrorAdminTypesResponseEnum,
 } from '../admin/dtos/error.dto'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import {
+  CognitoUserAttributesTierEnum,
+  ConsentEnum,
+  DeliveryMethodEnum,
+  DeliveryMethodUserPreferenceEnum,
+  LoginClientEnum,
+  User,
+} from '../generated/prisma/client'
 import {
   GetNewVerifiedUsersBirthNumbersResponseDto,
   ResponseUserByBirthNumberDto,

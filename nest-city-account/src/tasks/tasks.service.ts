@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression, Interval } from '@nestjs/schedule'
 
 import { BloomreachOutboxProcessor } from '../bloomreach/bloomreach-outbox.processor'
+import getBaConfigInstance from '../config/ba-config.instance'
 import HandleErrors from '../utils/decorators/errorHandler.decorators'
 import { CleanupTasksSubservice } from './subservices/cleanup-tasks.subservice'
 import { EdeskTasksSubservice } from './subservices/edesk-tasks.subservice'
 import { TaxDeliveryMethodsTasksSubservice } from './subservices/tax-delivery-methods-tasks.subservice'
 
 const bratislavaTimezone = 'Europe/Bratislava'
+const { month: taxLockMonth, day: taxLockDay } = getBaConfigInstance().taxDeadline
 
 /**
  * Main task orchestration service that schedules and coordinates all cron jobs.
@@ -48,7 +50,7 @@ export class TasksService {
    * Processes users in batches and validates that users aren't deactivated during the update.
    * Runs every 5 minutes from February 2nd onwards during tax season.
    */
-  @Cron(`*/5 * 2-31 ${process.env.MUNICIPAL_TAX_LOCK_MONTH}-12 *`, {
+  @Cron(`*/5 * 2-31 ${taxLockMonth}-12 *`, {
     timeZone: bratislavaTimezone,
   })
   @HandleErrors('Cron Error')
@@ -131,7 +133,7 @@ export class TasksService {
    * Processes users in batches with delays to avoid overwhelming the database.
    * Runs once per year on MUNICIPAL_TAX_LOCK_DAY/MUNICIPAL_TAX_LOCK_MONTH.
    */
-  @Cron(`0 0 ${process.env.MUNICIPAL_TAX_LOCK_DAY} ${process.env.MUNICIPAL_TAX_LOCK_MONTH} *`, {
+  @Cron(`0 0 ${taxLockDay} ${taxLockMonth} *`, {
     timeZone: bratislavaTimezone,
   })
   @HandleErrors('Cron')

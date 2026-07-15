@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { TaxType } from '@prisma/client'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { TaxType } from '../generated/prisma/client'
 import { ResponseCreatedAlreadyCreatedDto } from '../noris/dtos/response.dto'
 import { NorisService } from '../noris/noris.service'
 import { NorisTaxPayment } from '../noris/types/noris.types'

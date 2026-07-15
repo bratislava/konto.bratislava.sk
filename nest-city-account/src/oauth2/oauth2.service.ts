@@ -1,11 +1,11 @@
 import { createHash, randomBytes } from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import * as jwt from 'jsonwebtoken'
 
+import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { decryptData, encryptData } from '../utils/crypto'
+import { decryptData, encryptData, timingSafeStringEqual } from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { deserializeTokenData, serializeTokenData, TokenData } from '../utils/tokenSerialization'
@@ -37,7 +37,7 @@ export class OAuth2Service {
     private readonly prisma: PrismaService,
     private readonly cognitoSubservice: CognitoSubservice,
     private readonly validationSubservice: OAuth2ValidationSubservice,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly oAuth2ClientSubservice: OAuth2ClientSubservice
   ) {}
 
@@ -83,6 +83,9 @@ export class OAuth2Service {
     const storedRequest = await this.prisma.oAuth2Data.findUnique({
       where: { id: authRequestId },
     })
+
+    // A cron job (deleteOldOAuth2Data) handles expiry in tasks service after at
+    // most 2 months by deleting the whole entry.
 
     if (!storedRequest) {
       this.logger.debug('Authorization request not found', { authRequestId })
@@ -137,7 +140,7 @@ export class OAuth2Service {
     try {
       refreshed = await this.cognitoSubservice.refreshTokens(
         refreshToken,
-        this.configService.getOrThrow<string>('AWS_COGNITO_CLIENT_ID')
+        this.baConfigService.cognito.clientId
       )
     } catch (error) {
       throw this.oAuth2ErrorThrower.authorizationException(
@@ -212,20 +215,7 @@ export class OAuth2Service {
    * @returns Redirect URL to frontend with authRequestId and isOAuth flag
    */
   buildLoginRedirectUrl(request: AuthorizationRequestDto, authRequestId: string): string {
-    const oAuth2LoginUrl = this.configService.get<string>('OAUTH2_LOGIN_URL')
-    if (!oAuth2LoginUrl) {
-      throw this.oAuth2ErrorThrower.authorizationException(
-        OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization redirect error: server misconfiguration',
-        undefined,
-        'OAUTH2_LOGIN_URL environment variable is not configured',
-        {
-          clientId: request.client_id,
-          authRequestId,
-        }
-      )
-    }
-    const redirectUrl = new URL(oAuth2LoginUrl)
+    const redirectUrl = new URL(this.baConfigService.oauth2.loginUrl)
     redirectUrl.searchParams.set('authRequestId', authRequestId)
     redirectUrl.searchParams.set('isOAuth', 'true')
     if (
@@ -502,7 +492,7 @@ export class OAuth2Service {
       )
     }
 
-    if (!this.validationSubservice.isValidSecret(codeChallenge, expectedChallenge)) {
+    if (!timingSafeStringEqual(codeChallenge, expectedChallenge)) {
       throw this.oAuth2ErrorThrower.tokenException(
         OAuth2TokenErrorCode.INVALID_REQUEST,
         'Invalid request: invalid code_verifier',
@@ -568,7 +558,7 @@ export class OAuth2Service {
     try {
       refreshed = await this.cognitoSubservice.refreshTokens(
         refreshTokenData.token,
-        this.configService.getOrThrow<string>('AWS_COGNITO_CLIENT_ID')
+        this.baConfigService.cognito.clientId
       )
     } catch (error) {
       throw this.oAuth2ErrorThrower.tokenException(

@@ -56,10 +56,10 @@ WHERE
              "IdentityLookupRejection" r
          WHERE
              r."physicalEntityId" = e."id")
-    AND \${retryEligible(NOW)}
+    AND ${retryEligible(NOW)}
 ORDER BY
     GREATEST(e."createdAt", e."activeEdeskUpdateFailedAt") NULLS FIRST
-LIMIT \${limit}
+LIMIT ${limit}
   `
 }
 

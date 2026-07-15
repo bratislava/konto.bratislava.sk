@@ -45,9 +45,7 @@ describe('upvs-queue.queries', () => {
       const rows = [{ id: 'pe-1', uri: 'rc://sk/1' }]
       prismaMock.$queryRaw.mockResolvedValue(rows)
 
-      await expect(selectHighPriorityEntities(prisma, new Date('2024-01-01'), 8)).resolves.toEqual(
-        rows
-      )
+      await expect(selectHighPriorityEntities(prisma, 8)).resolves.toEqual(rows)
     })
   })
 })

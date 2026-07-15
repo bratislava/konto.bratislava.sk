@@ -150,10 +150,9 @@ export class UrgentLookupService {
         success: { entityId: entity.entityId, identity },
       }
     } catch (error) {
-      if (
-        error instanceof HttpException &&
-        (error.getStatus()) === HttpStatus.TOO_MANY_REQUESTS
-      ) {
+      const status: HttpStatus | undefined =
+        error instanceof HttpException ? error.getStatus() : undefined
+      if (status === HttpStatus.TOO_MANY_REQUESTS) {
         return { outcome: 'rateLimited' }
       }
       return {

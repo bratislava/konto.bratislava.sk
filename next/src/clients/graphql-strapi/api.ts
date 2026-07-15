@@ -392,6 +392,36 @@ export type ComponentBlocksHelpItemInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentBlocksMunicipalServiceCard = {
+  __typename?: 'ComponentBlocksMunicipalServiceCard'
+  color: Enum_Componentblocksmunicipalservicecard_Color
+  id: Scalars['ID']['output']
+  linkLabel: Scalars['String']['output']
+  overrideTitle?: Maybe<Scalars['String']['output']>
+  pictogram: Enum_Componentblocksmunicipalservicecard_Pictogram
+  text: Scalars['String']['output']
+}
+
+export type ComponentBlocksMunicipalServiceCardFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>>>
+  color?: InputMaybe<StringFilterInput>
+  linkLabel?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>>>
+  overrideTitle?: InputMaybe<StringFilterInput>
+  pictogram?: InputMaybe<StringFilterInput>
+  text?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksMunicipalServiceCardInput = {
+  color?: InputMaybe<Enum_Componentblocksmunicipalservicecard_Color>
+  id?: InputMaybe<Scalars['ID']['input']>
+  linkLabel?: InputMaybe<Scalars['String']['input']>
+  overrideTitle?: InputMaybe<Scalars['String']['input']>
+  pictogram?: InputMaybe<Enum_Componentblocksmunicipalservicecard_Pictogram>
+  text?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksMunicipalServiceLink = {
   __typename?: 'ComponentBlocksMunicipalServiceLink'
   id: Scalars['ID']['output']
@@ -814,6 +844,48 @@ export type DeleteMutationResponse = {
   documentId: Scalars['ID']['output']
 }
 
+export enum Enum_Componentblocksmunicipalservicecard_Color {
+  Culture = 'culture',
+  Education = 'education',
+  Environment = 'environment',
+  Main = 'main',
+  Marianum = 'marianum',
+  Olo = 'olo',
+  Social = 'social',
+  Transport = 'transport',
+  Tsb = 'tsb',
+}
+
+export enum Enum_Componentblocksmunicipalservicecard_Pictogram {
+  Administration = 'administration',
+  ChristmasTree = 'christmas_tree',
+  CommunityGardens = 'community_gardens',
+  Connector = 'connector',
+  CulturalOrganizations = 'cultural_organizations',
+  EventsSupport = 'events_support',
+  Excavations = 'excavations',
+  FrontGardens = 'front_gardens',
+  Greenery = 'greenery',
+  Housing = 'housing',
+  KidsTeenagers = 'kids_teenagers',
+  Lamp = 'lamp',
+  Library = 'library',
+  ManagementCommunications = 'management_communications',
+  Marianum = 'marianum',
+  Mosquito = 'mosquito',
+  Parking = 'parking',
+  PublicSpaceOccupation = 'public_space_occupation',
+  Scooter = 'scooter',
+  Security = 'security',
+  SpatialPlanning = 'spatial_planning',
+  SwimmingPool = 'swimming_pool',
+  Taxes = 'taxes',
+  Towing = 'towing',
+  Transport = 'transport',
+  Waste = 'waste',
+  Zoo = 'zoo',
+}
+
 export enum Enum_Componentsectionscontacts_Titlelevel {
   H2 = 'h2',
   H3 = 'h3',
@@ -1093,6 +1165,7 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
+  | ComponentBlocksMunicipalServiceCard
   | ComponentBlocksMunicipalServiceLink
   | ComponentBlocksQuestion
   | ComponentGeneralAlert
@@ -1600,6 +1673,7 @@ export type MunicipalChargeRelationResponseCollection = {
 export type MunicipalService = {
   __typename?: 'MunicipalService'
   buttonText: Scalars['String']['output']
+  card?: Maybe<ComponentBlocksMunicipalServiceCard>
   categories: Array<Maybe<MunicipalServiceCategory>>
   categories_connection?: Maybe<MunicipalServiceCategoryRelationResponseCollection>
   color: Enum_Municipalservice_Color
@@ -1735,6 +1809,7 @@ export type MunicipalServiceEntityResponseCollection = {
 export type MunicipalServiceFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<MunicipalServiceFiltersInput>>>
   buttonText?: InputMaybe<StringFilterInput>
+  card?: InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>
   categories?: InputMaybe<MunicipalServiceCategoryFiltersInput>
   color?: InputMaybe<StringFilterInput>
   createdAt?: InputMaybe<DateTimeFilterInput>
@@ -1758,6 +1833,7 @@ export type MunicipalServiceFiltersInput = {
 
 export type MunicipalServiceInput = {
   buttonText?: InputMaybe<Scalars['String']['input']>
+  card?: InputMaybe<ComponentBlocksMunicipalServiceCardInput>
   categories?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   color?: InputMaybe<Enum_Municipalservice_Color>
   description?: InputMaybe<Scalars['String']['input']>
@@ -3709,6 +3785,13 @@ export type MunicipalServiceRedirectFragment = {
   > | null
 }
 
+export type MunicipalServiceSlugEntityFragment = {
+  __typename?: 'MunicipalService'
+  documentId: string
+  title: string
+  slug: string
+}
+
 export type MunicipalServiceLinkFragment = {
   __typename?: 'ComponentBlocksMunicipalServiceLink'
   id: string
@@ -3716,11 +3799,14 @@ export type MunicipalServiceLinkFragment = {
   url?: string | null
 }
 
-export type MunicipalServiceSlugEntityFragment = {
-  __typename?: 'MunicipalService'
-  documentId: string
-  title: string
-  slug: string
+export type MunicipalServiceCardFragment = {
+  __typename?: 'ComponentBlocksMunicipalServiceCard'
+  id: string
+  overrideTitle?: string | null
+  text: string
+  linkLabel: string
+  pictogram: Enum_Componentblocksmunicipalservicecard_Pictogram
+  color: Enum_Componentblocksmunicipalservicecard_Color
 }
 
 export type MunicipalServiceCardEntityFragment = {
@@ -4794,6 +4880,16 @@ export const MunicipalChargeConfigFragmentDoc = gql`
   }
   ${DeliveryMethodFragmentDoc}
   ${MunicipalChargeFragmentDoc}
+`
+export const MunicipalServiceCardFragmentDoc = gql`
+  fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
+    id
+    overrideTitle
+    text
+    linkLabel
+    pictogram
+    color
+  }
 `
 export const MunicipalServiceSlugEntityFragmentDoc = gql`
   fragment MunicipalServiceSlugEntity on MunicipalService {

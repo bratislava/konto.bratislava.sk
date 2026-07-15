@@ -20,16 +20,26 @@ fragment MunicipalServiceRedirect on MunicipalService {
   }
 }
 
+fragment MunicipalServiceSlugEntity on MunicipalService {
+  documentId
+  title
+  slug
+}
+
 fragment MunicipalServiceLink on ComponentBlocksMunicipalServiceLink {
   id
   label
   url
 }
 
-fragment MunicipalServiceSlugEntity on MunicipalService {
-  documentId
-  title
-  slug
+# TODO consolidate with MunicipalServiceCardEntity when old fields are removed
+fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
+  id
+  overrideTitle
+  text
+  linkLabel
+  pictogram
+  color
 }
 
 fragment MunicipalServiceCardEntity on MunicipalService {

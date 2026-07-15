@@ -1,8 +1,6 @@
 # UPVS multi-tier priority work scheduler
 
-`UpvsQueueService` resolves and refreshes **UPVS identities** (URI + eDesk status) for two
-populations:
-
+`UpvsQueueService` resolves and refreshes **UPVS identities** (URI + eDesk status) for two kinds of records:
 - **Internal** users - `PhysicalEntity` rows linked to a `User`.
 - **External** records - `ExternalEdeskCheck` rows fed from the **Noris** tax backend.
 

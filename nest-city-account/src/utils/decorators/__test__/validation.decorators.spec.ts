@@ -27,7 +27,7 @@ describe('IsBirthNumber', () => {
     expect(errors).toHaveLength(1)
     expect(errors[0].property).toBe('birthNumber')
     expect(errors[0].constraints).toMatchObject(
-      expect.objectContaining({
+      expect.objectContaining<Record<string, unknown>>({
         isBirthNumber: expect.any(String),
       })
     )
@@ -46,7 +46,7 @@ describe('IsBirthNumber', () => {
     expect(errors).toHaveLength(1)
     expect(errors[0].property).toBe('birthNumber')
     expect(errors[0].constraints).toMatchObject(
-      expect.objectContaining({
+      expect.objectContaining<Record<string, unknown>>({
         isBirthNumber: expect.any(String),
       })
     )

@@ -12,6 +12,7 @@ import {
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
 import { BloomreachOutboxService } from '../bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from '../bloomreach-outbox-writer.service'
 import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachOutboxService', () => {
@@ -57,6 +58,7 @@ describe('BloomreachOutboxService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BloomreachOutboxService,
+        BloomreachOutboxWriterService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
@@ -127,6 +129,7 @@ describe('BloomreachOutboxService', () => {
           commandData: {
             customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
             properties: { phone: '0900000000', email: 'test@example.com' },
+            update_timestamp: 200,
           },
         },
       })
@@ -173,6 +176,7 @@ describe('BloomreachOutboxService', () => {
           category: 'ESBS-MARKETING',
           valid_until: 'unlimited',
         },
+        timestamp: 100,
       }
 
       const unsubscribeCommandData = {
@@ -183,6 +187,7 @@ describe('BloomreachOutboxService', () => {
           category: 'ESBS-MARKETING',
           valid_until: 'unlimited',
         },
+        timestamp: 200,
       }
 
       const existingEntry = { id: 'pending-subscribe-id', commandData: subscribeCommandData }

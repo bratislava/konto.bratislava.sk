@@ -14,8 +14,8 @@ import {
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
-import { BloomreachContactDatabaseService } from '../contact-database/bloomreach-contact-database.service'
 import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
+import { BloomreachContactDatabaseService } from '../contact-database/bloomreach-contact-database.service'
 
 describe('BloomreachPayloadBuilder', () => {
   let builder: BloomreachPayloadBuilder

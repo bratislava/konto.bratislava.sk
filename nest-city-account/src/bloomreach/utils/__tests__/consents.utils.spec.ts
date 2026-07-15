@@ -1,5 +1,4 @@
-import { ConsentEnum } from '@prisma/client'
-
+import { ConsentEnum } from '../../../generated/prisma/client'
 import { BloomreachEventNameEnum, BloomreachExportedEvent } from '../../bloomreach.types'
 import { consentCategory, extractLatestCityAccountConsents } from '../consents.utils'
 

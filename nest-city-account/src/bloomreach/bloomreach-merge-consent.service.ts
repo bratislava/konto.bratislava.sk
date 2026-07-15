@@ -160,9 +160,8 @@ export class BloomreachMergeConsentService {
    * attachment for the account is taken to mean Bloomreach has received it.
    */
   private async couldCauseMerge(entry: BloomreachOutbox, contactId: string): Promise<boolean> {
-    const rows = await this.prisma.$queryRaw<{ exists: boolean }[]>
     //language=postgresql
-    `
+    const rows = await this.prisma.$queryRaw<{ exists: boolean }[]>`
         SELECT EXISTS
             (SELECT 1
              FROM

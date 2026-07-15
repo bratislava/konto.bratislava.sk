@@ -1,18 +1,23 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { BloomreachOutbox, BloomreachOutboxStatus, ConsentEnum } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
+import {
+  BloomreachOutbox,
+  BloomreachOutboxStatus,
+  ConsentEnum,
+} from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { BloomreachCommandNameEnum } from '../bloomreach.types'
 import { BloomreachExportService } from '../bloomreach-export.service'
 import { BloomreachMergeConsentService } from '../bloomreach-merge-consent.service'
-import { BloomreachOutboxService } from '../bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from '../bloomreach-outbox-writer.service'
 
 describe('BloomreachMergeConsentService', () => {
   let service: BloomreachMergeConsentService
   let exportService: jest.Mocked<BloomreachExportService>
-  let outboxService: jest.Mocked<BloomreachOutboxService>
+  let outboxWriter: jest.Mocked<BloomreachOutboxWriterService>
 
   const externalId = 'cognito-new'
   const contactId = 'contact-1'
@@ -58,17 +63,22 @@ describe('BloomreachMergeConsentService', () => {
         BloomreachMergeConsentService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachExportService, useValue: createMock<BloomreachExportService>() },
-        { provide: BloomreachOutboxService, useValue: createMock<BloomreachOutboxService>() },
+        {
+          provide: BloomreachOutboxWriterService,
+          useValue: createMock<BloomreachOutboxWriterService>(),
+        },
+        { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
       ],
     }).compile()
 
     service = module.get<BloomreachMergeConsentService>(BloomreachMergeConsentService)
     exportService = module.get(BloomreachExportService)
-    outboxService = module.get(BloomreachOutboxService)
+    outboxWriter = module.get(BloomreachOutboxWriterService)
 
     // Default: no COMPLETED contact attachment, no anonymize in flight
     prismaMock.$queryRaw.mockResolvedValue([{ exists: false }])
     prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
+    prismaMock.bloomreachOutbox.findMany.mockResolvedValue([])
   })
 
   afterEach(() => {
@@ -76,15 +86,16 @@ describe('BloomreachMergeConsentService', () => {
   })
 
   it('should skip event commands', async () => {
-    await service.ensureConsentsSurviveMerge(
+    const result = await service.ensureConsentsSurviveMerge(
       makeEntry({ commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS })
     )
 
-    expect(exportService.exportCustomer).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(exportService.fetchCustomer).not.toHaveBeenCalled()
   })
 
   it('should skip customer commands without contact_id', async () => {
-    await service.ensureConsentsSurviveMerge(
+    const result = await service.ensureConsentsSurviveMerge(
       makeEntry({
         commandData: {
           customer_ids: { city_account_id: externalId },
@@ -94,68 +105,75 @@ describe('BloomreachMergeConsentService', () => {
       })
     )
 
-    expect(exportService.exportCustomer).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(exportService.fetchCustomer).not.toHaveBeenCalled()
   })
 
-  it('should skip when a contact attachment was already delivered for the customer', async () => {
+  it('should skip when the contact attachment was already delivered for the customer', async () => {
     prismaMock.$queryRaw.mockResolvedValue([{ exists: true }])
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
-    expect(exportService.exportCustomer).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(exportService.fetchCustomer).not.toHaveBeenCalled()
   })
 
   it('should skip when no Bloomreach profile carries the contact_id', async () => {
-    exportService.exportCustomer.mockResolvedValue(null)
+    exportService.fetchCustomer.mockResolvedValue(null)
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
-    expect(outboxService.queueConsentEvents).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(outboxWriter.queueConsentEvents).not.toHaveBeenCalled()
   })
 
   it('should skip when the profile already carries the customer city_account_id', async () => {
-    exportService.exportCustomer.mockResolvedValue({
+    exportService.fetchCustomer.mockResolvedValue({
       ids: { city_account_id: ['cognito-old', externalId], contact_id: contactId },
       properties: { is_identity_verified: false },
     })
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
-    expect(outboxService.queueConsentEvents).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(outboxWriter.queueConsentEvents).not.toHaveBeenCalled()
   })
 
   it('should skip when the profile is not anonymized and no anonymize is in flight', async () => {
-    exportService.exportCustomer.mockResolvedValue({
+    exportService.fetchCustomer.mockResolvedValue({
       ids: { city_account_id: 'cognito-old', contact_id: contactId },
       properties: { is_identity_verified: true },
     })
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
-    expect(outboxService.queueConsentEvents).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(outboxWriter.queueConsentEvents).not.toHaveBeenCalled()
   })
 
   it('should not treat profiles of other backends without is_identity_verified as anonymized', async () => {
-    exportService.exportCustomer.mockResolvedValue({
+    exportService.fetchCustomer.mockResolvedValue({
       ids: { contact_id: contactId },
       properties: {},
     })
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
-    expect(outboxService.queueConsentEvents).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(outboxWriter.queueConsentEvents).not.toHaveBeenCalled()
   })
 
   it('should queue latest consent state when the profile is anonymized in Bloomreach', async () => {
-    exportService.exportCustomer.mockResolvedValue(anonymizedProfile)
-    exportService.exportConsentEvents.mockResolvedValue(consentEvents)
+    exportService.fetchCustomer.mockResolvedValue(anonymizedProfile)
+    exportService.fetchConsentEvents.mockResolvedValue(consentEvents)
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
-    expect(exportService.exportConsentEvents).toHaveBeenCalledWith({
+    expect(result).toBe(true)
+    expect(exportService.fetchConsentEvents).toHaveBeenCalledWith({
       city_account_id: externalId,
     })
-    expect(outboxService.queueConsentEvents).toHaveBeenCalledWith(
+    expect(outboxWriter.queueConsentEvents).toHaveBeenCalledWith(
       [
         { consentType: ConsentEnum.MARKETING, isGranted: true },
         { consentType: ConsentEnum.GENERAL, isGranted: false },
@@ -165,46 +183,51 @@ describe('BloomreachMergeConsentService', () => {
   })
 
   it('should queue latest consent state when an anonymize command is in flight', async () => {
-    exportService.exportCustomer.mockResolvedValue({
+    exportService.fetchCustomer.mockResolvedValue({
       ids: { city_account_id: 'cognito-old', contact_id: contactId },
       properties: { is_identity_verified: true },
     })
     prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(
       makeEntry({ externalId: 'cognito-old' })
     )
-    exportService.exportConsentEvents.mockResolvedValue(consentEvents)
+    exportService.fetchConsentEvents.mockResolvedValue(consentEvents)
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
+    expect(result).toBe(true)
     expect(prismaMock.bloomreachOutbox.findFirst).toHaveBeenCalledWith({
       where: expect.objectContaining({
         externalId: { in: ['cognito-old'] },
-        commandData: { path: ['properties', 'is_identity_verified'], equals: false },
+        AND: [
+          { commandData: { path: ['properties', 'is_identity_verified'], equals: false } },
+          { commandData: { path: ['update_timestamp'], lt: 100 } },
+        ],
       }),
     })
-    expect(outboxService.queueConsentEvents).toHaveBeenCalled()
+    expect(outboxWriter.queueConsentEvents).toHaveBeenCalled()
   })
 
   it('should not queue anything when the customer has no consent events', async () => {
-    exportService.exportCustomer.mockResolvedValue(anonymizedProfile)
-    exportService.exportConsentEvents.mockResolvedValue([])
+    exportService.fetchCustomer.mockResolvedValue(anonymizedProfile)
+    exportService.fetchConsentEvents.mockResolvedValue([])
 
-    await service.ensureConsentsSurviveMerge(makeEntry())
+    const result = await service.ensureConsentsSurviveMerge(makeEntry())
 
-    expect(outboxService.queueConsentEvents).not.toHaveBeenCalled()
+    expect(result).toBe(true)
+    expect(outboxWriter.queueConsentEvents).not.toHaveBeenCalled()
   })
 
-  it('should propagate export failures', async () => {
-    exportService.exportCustomer.mockRejectedValue(new Error('Bloomreach down'))
+  it('should return false when Bloomreach cannot be read', async () => {
+    exportService.fetchCustomer.mockRejectedValue(new Error('Bloomreach down'))
 
-    await expect(service.ensureConsentsSurviveMerge(makeEntry())).rejects.toThrow('Bloomreach down')
+    expect(await service.ensureConsentsSurviveMerge(makeEntry())).toBe(false)
   })
 
-  it('should propagate consent queueing failures', async () => {
-    exportService.exportCustomer.mockResolvedValue(anonymizedProfile)
-    exportService.exportConsentEvents.mockResolvedValue(consentEvents)
-    outboxService.queueConsentEvents.mockRejectedValue(new Error('DB error'))
+  it('should return false when the consent events cannot be queued', async () => {
+    exportService.fetchCustomer.mockResolvedValue(anonymizedProfile)
+    exportService.fetchConsentEvents.mockResolvedValue(consentEvents)
+    outboxWriter.queueConsentEvents.mockRejectedValue(new Error('DB error'))
 
-    await expect(service.ensureConsentsSurviveMerge(makeEntry())).rejects.toThrow('DB error')
+    expect(await service.ensureConsentsSurviveMerge(makeEntry())).toBe(false)
   })
 })

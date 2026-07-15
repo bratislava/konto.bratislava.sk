@@ -245,9 +245,7 @@ describe('BloomreachOutboxProcessor', () => {
       const entry = makeEntry()
       prismaMock.$queryRaw.mockResolvedValue([entry])
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
-      mergeConsentService.ensureConsentsSurviveMerge.mockRejectedValue(
-        new Error('Bloomreach export down')
-      )
+      mergeConsentService.ensureConsentsSurviveMerge.mockResolvedValue(false)
 
       await processor.processOutbox()
 
@@ -267,9 +265,9 @@ describe('BloomreachOutboxProcessor', () => {
       prismaMock.$queryRaw.mockResolvedValue(entries)
       prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
       // Checks run in claim order — the first call is for entry-1
-      mergeConsentService.ensureConsentsSurviveMerge.mockRejectedValueOnce(
-        new Error('Bloomreach export down')
-      )
+      mergeConsentService.ensureConsentsSurviveMerge
+        .mockResolvedValueOnce(false)
+        .mockResolvedValueOnce(true)
       mockedAxios.post.mockResolvedValue({
         data: { success: true, results: [{ success: true, time: 0.01 }] },
       })

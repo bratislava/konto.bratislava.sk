@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { QueueItemStatusEnum } from '@prisma/client'
-import dayjs from 'dayjs'
 
 import {
   GetIdentitiesByUrisResult,
@@ -17,8 +16,6 @@ import { selectHighPriorityEntities } from './upvs-queue.queries'
 @Injectable()
 export class EdeskBatchUpdateService {
   private readonly logger = new LineLoggerSubservice(EdeskBatchUpdateService.name)
-
-  private readonly CACHE_TTL_HOURS = 144 // Configurable cache TTL
 
   private readonly BATCH_SIZE = 8 // 8 requests per batch for the URI-search flow
 
@@ -176,8 +173,7 @@ export class EdeskBatchUpdateService {
    * Filters out entities with fresh cache and respects exponential backoff
    */
   private async getHighPriorityQueueItems(limit: number): Promise<GetUpvsIdentitiesByUrisParam> {
-    const lookBackDate = dayjs().subtract(this.CACHE_TTL_HOURS, 'hour').toDate()
-    const entities = await selectHighPriorityEntities(this.prismaService, lookBackDate, limit)
+    const entities = await selectHighPriorityEntities(this.prismaService, limit)
 
     return entities.map((entity) => {
       return { physicalEntityId: entity.id, uri: entity.uri }

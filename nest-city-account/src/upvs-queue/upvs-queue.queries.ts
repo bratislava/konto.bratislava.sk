@@ -12,6 +12,11 @@ export interface UrgentEntityRow {
 
 const NOW = Prisma.sql`NOW()`
 
+/** How stale a high-priority entity's eDesk status may be before refresh. */
+const CACHE_TTL_HOURS = 144
+
+const CACHE_STALE_BEFORE = Prisma.sql`(NOW() - ${CACHE_TTL_HOURS} * INTERVAL '1 hour')`
+
 /**
  * Whether a `PhysicalEntity` is clear to retry under exponential backoff.
  *
@@ -77,11 +82,11 @@ export async function selectUriToUpdateInternal(
 
 /**
  * High-priority items: `PhysicalEntity` with a `uri` whose eDesk status is stale (older
- * than `lookBackDate`) and is eligible to refresh. Backoff relative to `lookBackDate`.
+ * than `CACHE_TTL_HOURS`) and is eligible to refresh. Backoff relative to the same
+ * staleness cutoff, so a failed refresh waits out TTL + backoff before the next attempt.
  */
 export async function selectHighPriorityEntities(
   prismaService: PrismaService,
-  lookBackDate: Date,
   limit: number
 ): Promise<PhysicalEntityWithUri[]> {
   return prismaService.$queryRaw`
@@ -89,8 +94,8 @@ export async function selectHighPriorityEntities(
       FROM "PhysicalEntity" e
       WHERE "userId" IS NOT NULL
         AND "uri" IS NOT NULL
-        AND ("activeEdeskUpdatedAt" IS NULL OR "activeEdeskUpdatedAt" < ${lookBackDate})
-        AND ${retryEligible(Prisma.sql`${lookBackDate}`)}
+        AND ("activeEdeskUpdatedAt" IS NULL OR "activeEdeskUpdatedAt" < ${CACHE_STALE_BEFORE})
+        AND ${retryEligible(CACHE_STALE_BEFORE)}
       ORDER BY GREATEST("createdAt", "activeEdeskUpdatedAt", "activeEdeskUpdateFailedAt") NULLS FIRST
       LIMIT ${limit}
   `

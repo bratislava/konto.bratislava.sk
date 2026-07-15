@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { BloomreachOutboxStatus } from '@prisma/client'
 
+import { BloomreachOutboxStatus } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   BloomreachCommandNameEnum,

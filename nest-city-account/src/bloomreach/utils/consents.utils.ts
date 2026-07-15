@@ -1,7 +1,7 @@
-import { ConsentEnum } from '@prisma/client'
-
-import { BloomreachConsentActionEnum, BloomreachExportedEvent, Consent } from '../bloomreach.types'
 import { maxBy } from 'lodash'
+
+import { ConsentEnum } from '../../generated/prisma/client'
+import { BloomreachConsentActionEnum, BloomreachExportedEvent, Consent } from '../bloomreach.types'
 
 export function consentCategory(consentType: ConsentEnum): string {
   return `ESBS-${consentType}`

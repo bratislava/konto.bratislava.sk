@@ -1,6 +1,6 @@
 import pgPromise, { IDatabase } from 'pg-promise'
 
-import getBaConfigInstance from '../config/ba-config.instance'
+import getBaConfigInstance from '../../config/ba-config.instance'
 
 const pgp = pgPromise()
 let bloomreachContactDatabase: IDatabase<unknown> | undefined

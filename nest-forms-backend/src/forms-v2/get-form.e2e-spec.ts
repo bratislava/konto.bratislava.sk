@@ -66,8 +66,7 @@ describe('Get form', () => {
     expect(response.status).toBe(HttpStatus.OK)
   })
 
-  // TODO: 'predzahradky' isDisabled was temporarily removed, re-enable this test once it is disabled again
-  it.skip('should return the form if user has access, form definition is disabled, but it is not editable', async () => {
+  it('should return the form if user has access, form definition is disabled, but it is not editable', async () => {
     const createdForm = await testingApp.axiosClient.post<CreateFormOutput>(
       '/forms-v2/',
       // 'predzahradky' is disabled so it cannot be created, we will manually set it after
@@ -94,8 +93,7 @@ describe('Get form', () => {
     expect(response.status).toBe(HttpStatus.OK)
   })
 
-  // TODO: 'predzahradky' isDisabled was temporarily removed, re-enable this test once it is disabled again
-  it.skip('should not return the form if form definition is disabled and form is editable', async () => {
+  it('should not return the form if form definition is disabled and form is editable', async () => {
     const createdForm = await testingApp.axiosClient.post<CreateFormOutput>(
       '/forms-v2/',
       { formDefinitionSlug: 'zavazne-stanovisko-k-investicnej-cinnosti' },

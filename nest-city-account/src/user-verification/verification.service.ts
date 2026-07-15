@@ -1,6 +1,5 @@
 import { AmqpConnection, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Channel, ConsumeMessage } from 'amqplib'
 
 import { ManuallyVerifyUserRequestDto } from '../admin/dtos/requests.admin.dto'
@@ -10,6 +9,8 @@ import { getBloomreachContactDatabase } from '../bloomreach/bloomreach-contact-d
 import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { BloomreachPayloadBuilder } from '../bloomreach/bloomreach-payload.builder'
+import getBaConfigInstance from '../config/ba-config.instance'
+import BaConfigService from '../config/ba-config.service'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '../generated/prisma/client'
 import { MailgunService } from '../mailgun/mailgun.service'
 import { NasesService } from '../nases/nases.service'
@@ -22,7 +23,7 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import { CustomErrorEnums, ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { CustomErrorEnums } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -65,14 +66,8 @@ export class VerificationService {
     private readonly bloomreachOutboxService: BloomreachOutboxService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
     private readonly userTierService: UserTierService,
-    private readonly configService: ConfigService
+    private readonly baConfigService: BaConfigService
   ) {
-    if (!process.env.CRYPTO_SECRET_KEY) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Secret key for crypto must be set in env! (CRYPTO_SECRET_KEY)'
-      )
-    }
     this.logger = new LineLoggerSubservice(VerificationService.name)
   }
 
@@ -139,8 +134,8 @@ export class VerificationService {
       try {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto
         const throwerErrorGuard: ThrowerErrorGuard = new ThrowerErrorGuard()
-        const prismaService = new PrismaService()
-        const cognitoSubservice = new CognitoSubservice(throwerErrorGuard)
+        const prismaService = new PrismaService(getBaConfigInstance())
+        const cognitoSubservice = new CognitoSubservice(throwerErrorGuard, getBaConfigInstance())
         const userTierService = new UserTierService(cognitoSubservice, prismaService)
         await userTierService.changeTier(
           data.msg.user.idUser,
@@ -163,7 +158,8 @@ export class VerificationService {
         const bloomreachOutboxService = new BloomreachOutboxService(
           prismaService,
           bloomreachPayloadBuilder,
-          throwerErrorGuard
+          throwerErrorGuard,
+          getBaConfigInstance()
         )
 
         await bloomreachOutboxService.trackCustomer(data.msg.user.idUser)
@@ -338,7 +334,7 @@ export class VerificationService {
   ): Promise<ResponseVerificationDto> {
     const jwtToken = this.apiJwtTokensService.createUserJwtToken(
       oboToken,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+      this.baConfigService.nases.apiTokenPrivate
     )
     try {
       // we do this only to verify that the token is valid, we don't need the result

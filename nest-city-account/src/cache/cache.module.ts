@@ -1,7 +1,9 @@
 import KeyvRedis from '@keyv/redis'
 import { CacheModule as NestCacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+
+import BaConfigModule from '../config/ba-config.module'
+import BaConfigService from '../config/ba-config.service'
 
 /**
  * Redis-based cache module for the application
@@ -10,26 +12,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
  * - Nonce-based replay protection in signature authentication
  *
  * Configuration:
- * - Requires REDIS_SERVICE, REDIS_USER, REDIS_PASSWORD environment variables
- * - REDIS_PORT defaults to 6379
+ * - Requires REDIS_SERVICE, REDIS_USER, REDIS_PASSWORD, REDIS_PORT environment variables
  */
 @Module({
   imports: [
     NestCacheModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const service = configService.get<string>('REDIS_SERVICE')
-        const password = configService.get<string>('REDIS_PASSWORD')
-        const user = configService.get<string>('REDIS_USER', 'default')
-        const port = configService.get<number>('REDIS_PORT', 6379)
-
-        if (!service || !password) {
-          throw new Error(
-            'REDIS_SERVICE and REDIS_PASSWORD must be configured. Required for nonce-based replay protection in signature authentication.'
-          )
-        }
-
+      imports: [BaConfigModule],
+      inject: [BaConfigService],
+      useFactory: (baConfigService: BaConfigService) => {
+        const { service, password, user, port } = baConfigService.redis
         const redisUrl = `redis://${user}:${password}@${service}:${port}`
 
         return {

@@ -63,7 +63,7 @@ export const useNavMenu = () => {
       id: 3,
       title: t('account_section_payment.title'),
       icon: <Icon name="payment" className="size-6" />,
-      url: ROUTES.TAXES_AND_FEES,
+      url: ROUTES.TAXES,
       isHidden: isLegalEntity,
     },
   ].filter((section) => !section.isHidden)

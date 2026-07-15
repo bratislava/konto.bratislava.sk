@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { PaymentRedirectStateEnum, TaxType } from 'openapi-clients/tax'
 import { useEffect, useMemo } from 'react'
 
-import { useStrapiTax } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { useStrapiTaxConfig } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import ThankYouTile, {
   ThankYouTileProps,
 } from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
@@ -66,7 +66,7 @@ export const usePaymentResultPropsMap = ({
 
   const commonProps = {
     secondButtonTitle: t('thank_you.button_back_to_taxes_fees_text'),
-    secondButtonLink: ROUTES.TAXES_AND_FEES,
+    secondButtonLink: ROUTES.TAXES,
   }
 
   const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouTileProps> = {
@@ -110,7 +110,7 @@ export const usePaymentResultPropsMap = ({
  */
 
 const PaymentResultPageContent = () => {
-  const { feedbackLinkDzn, feedbackLinkKo } = useStrapiTax()
+  const { municipalChargeIdentifier } = useStrapiTaxConfig()
 
   const router = useRouter()
   const { status, type, year, order } = usePaymentResultQueryParams(router)
@@ -122,20 +122,22 @@ const PaymentResultPageContent = () => {
   }, [router.query, status])
 
   const taxDetailLink =
-    year && type && order
-      ? ROUTES.TAXES_AND_FEES_DETAIL({ year, type, order })
-      : ROUTES.TAXES_AND_FEES
+    year && type && order ? ROUTES.TAXES_TAX_DETAIL({ year, type, order }) : ROUTES.TAXES
 
   const feedbackLink = useMemo(() => {
     if (type === TaxType.Dzn) {
-      return feedbackLinkDzn
+      return municipalChargeIdentifier?.dzn?.feedbackLink
     }
     if (type === TaxType.Ko) {
-      return feedbackLinkKo
+      return municipalChargeIdentifier?.ko?.feedbackLink
     }
 
     return null
-  }, [type, feedbackLinkDzn, feedbackLinkKo])
+  }, [
+    type,
+    municipalChargeIdentifier?.dzn?.feedbackLink,
+    municipalChargeIdentifier?.ko?.feedbackLink,
+  ])
 
   const { cardPropsMap } = usePaymentResultPropsMap({
     feedbackLink,

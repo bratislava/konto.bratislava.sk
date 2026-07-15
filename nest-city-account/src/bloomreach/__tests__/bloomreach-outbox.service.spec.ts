@@ -24,6 +24,7 @@ describe('BloomreachOutboxService', () => {
     commandData: {
       customer_ids: { city_account_id: externalId },
       properties: { email: 'test@example.com' },
+      update_timestamp: 200,
     },
   }
 
@@ -43,6 +44,7 @@ describe('BloomreachOutboxService', () => {
         oauth_origin_client_name: '',
         current_tax_correspondence_channel: '',
       },
+      update_timestamp: 200,
     },
   }
 

@@ -72,7 +72,7 @@ describe('BloomreachOutboxProcessor', () => {
     prismaMock.bloomreachOutbox.findMany.mockResolvedValue([])
     // findSupersededEntriesAndMerge uses a transaction — pass prismaMock as the tx client
     // so findFirst/update mocks work inside the transaction
-    prismaMock.$transaction.mockImplementation((fn: any) => fn(prismaMock))
+    prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
   })
 
   afterEach(() => {

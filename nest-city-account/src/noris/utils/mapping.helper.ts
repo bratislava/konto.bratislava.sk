@@ -7,13 +7,13 @@ export const mapDeliveryMethodToNoris = (
     return null
   }
 
-  const mapping: Partial<Record<DeliveryMethod, DeliveryMethodNoris>> = {
-    [DeliveryMethod.EDESK]: DeliveryMethodNoris.EDESK,
-    [DeliveryMethod.CITY_ACCOUNT]: DeliveryMethodNoris.CITY_ACCOUNT,
-    [DeliveryMethod.POSTAL]: DeliveryMethodNoris.EDESK, // Postal is saved in Noris as EDESK ('E')
-  }
+  const mapping = new Map<DeliveryMethod, DeliveryMethodNoris>([
+    [DeliveryMethod.EDESK, DeliveryMethodNoris.EDESK],
+    [DeliveryMethod.CITY_ACCOUNT, DeliveryMethodNoris.CITY_ACCOUNT],
+    [DeliveryMethod.POSTAL, DeliveryMethodNoris.EDESK], // Postal is saved in Noris as EDESK ('E')
+  ])
 
-  const norisMethod = mapping[deliveryMethod]
+  const norisMethod = mapping.get(deliveryMethod)
   if (!norisMethod) {
     throw new Error(`Unknown delivery method: ${deliveryMethod}`)
   }

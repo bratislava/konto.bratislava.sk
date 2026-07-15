@@ -311,7 +311,7 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should throw SERVER_ERROR when authorization request is not found (null)', async () => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined as any)
+      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined)
       const context = createMockContext({
         body: { authRequestId: validAuthRequestId },
         method: 'POST',
@@ -327,7 +327,7 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should include authRequestId in error metadata for not-found errors', async () => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined as any)
+      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined)
       const context = createMockContext({
         query: { authRequestId: validAuthRequestId },
         method: 'GET',

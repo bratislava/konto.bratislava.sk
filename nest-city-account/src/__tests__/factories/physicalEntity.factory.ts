@@ -1,8 +1,6 @@
 import { PhysicalEntity } from '../../generated/prisma/client'
 
-export const physicalEntityFactory = (
-  overrides: Partial<PhysicalEntity> = {}
-): PhysicalEntity => ({
+export const physicalEntityFactory = (overrides: Partial<PhysicalEntity> = {}): PhysicalEntity => ({
   id: '44444444-4444-4444-4444-444444444444',
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),

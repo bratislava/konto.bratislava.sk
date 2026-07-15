@@ -94,11 +94,11 @@ export class BloomreachOutboxProcessor {
       const succeededIds: string[] = []
       const failedEntries: BloomreachOutbox[] = []
 
-      for (let i = 0; i < entries.length; i++) {
-        if (!response.results[i]?.success) {
-          failedEntries.push(entries[i])
+      for (const [i, entry] of entries.entries()) {
+        if (response.results.at(i)?.success) {
+          succeededIds.push(entry.id)
         } else {
-          succeededIds.push(entries[i].id)
+          failedEntries.push(entry)
         }
       }
 

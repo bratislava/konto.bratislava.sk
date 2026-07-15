@@ -1,4 +1,7 @@
-import { BloomreachCommandNameEnum, BloomreachCustomerCommandData } from '../../bloomreach/bloomreach.types'
+import {
+  BloomreachCommandNameEnum,
+  BloomreachCustomerCommandData,
+} from '../../bloomreach/bloomreach.types'
 import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
 
 const defaultCommandData: BloomreachCustomerCommandData = {

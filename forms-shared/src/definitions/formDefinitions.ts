@@ -196,6 +196,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisFunctionId: 'MAG0SF00AG9O',
     },
     files: predzahradkyFiles,
+    isDisabled: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,

@@ -11,7 +11,7 @@ export function consentCategory(consentType: ConsentEnum): string {
  * Reduces exported consent events to the latest state per city-account consent
  * category. Categories with no event (never granted nor rejected) are omitted.
  */
-export function extractLatestConsents(events: BloomreachExportedEvent[]): Consent[] {
+export function extractLatestCityAccountConsents(events: BloomreachExportedEvent[]): Consent[] {
   const consents: Consent[] = []
 
   for (const consentType of Object.values(ConsentEnum)) {

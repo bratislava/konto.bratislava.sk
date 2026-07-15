@@ -11,7 +11,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { BloomreachCommandNameEnum, BloomreachCustomerCommandData } from './bloomreach.types'
 import { BloomreachExportService } from './bloomreach-export.service'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
-import { extractLatestConsents } from './utils/consents.utils'
+import { extractLatestCityAccountConsents } from './utils/consents.utils'
 
 /**
  * Bloomreach processes delivered commands in a queue. Typically within ~10
@@ -131,7 +131,7 @@ export class BloomreachMergeConsentService {
     const consentEvents = await this.exportService.fetchConsentEvents({
       city_account_id: entry.externalId,
     })
-    const consents = extractLatestConsents(consentEvents)
+    const consents = extractLatestCityAccountConsents(consentEvents)
 
     if (consents.length === 0) {
       this.logger.warn(

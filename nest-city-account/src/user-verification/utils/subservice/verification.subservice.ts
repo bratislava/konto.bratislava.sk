@@ -117,21 +117,19 @@ export class VerificationSubservice {
       return false
     }
 
-    const stripDiacritics = (str: string): string =>
-      str.normalize('NFD').replace(/\p{Diacritic}/gu, '')
-
-    const splitToPartsAndNormalize = (str: string): string[] =>
+    const splitToParts = (str: string): string[] =>
       str
         .split(/\s+/g) // handles multiple spaces + leading/trailing spaces after trim()
         .filter(Boolean)
 
-    const normalizedFirstNames = splitToPartsAndNormalize(firstName)
-    const normalizedLastNames = splitToPartsAndNormalize(lastName)
+    const firstNames = splitToParts(firstName)
+    const lastNames = splitToParts(lastName)
 
-    if (normalizedFirstNames.length === 0 || normalizedLastNames.length === 0) {
+    if (firstNames.length === 0 || lastNames.length === 0) {
       return false
     }
 
+    // Assuming that RFO always splits names and never returns a name with whitespace.
     const rfoFirstNames = (rfoData.menaOsoby ?? [])
       .map((x) => x.meno)
       .filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
@@ -144,8 +142,8 @@ export class VerificationSubservice {
       return false
     }
 
-    const inputFirstSet = new Set(normalizedFirstNames)
-    const inputLastSet = new Set(normalizedLastNames)
+    const inputFirstSet = new Set(firstNames)
+    const inputLastSet = new Set(lastNames)
     const rfoFirstSet = new Set(rfoFirstNames)
     const rfoLastSet = new Set(rfoLastNames)
 

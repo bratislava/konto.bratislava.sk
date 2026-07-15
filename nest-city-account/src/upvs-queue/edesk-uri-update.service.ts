@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { QueueItemStatusEnum } from '@prisma/client'
 
+import { QueueItemStatusEnum } from '../generated/prisma/enums'
 import { getUpvsDeathDate, NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'

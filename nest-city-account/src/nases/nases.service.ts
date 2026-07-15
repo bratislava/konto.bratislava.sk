@@ -196,7 +196,7 @@ export class NasesService {
       })
       .then((response) => {
         // FO criteria resolve to a natural person with omitted fields - see LookupIdentityFOResult.
-        return response.data as LookupIdentityFOResult
+        return response.data
       })
       .catch(async (error: unknown) => {
         if (!isAxiosError(error)) {

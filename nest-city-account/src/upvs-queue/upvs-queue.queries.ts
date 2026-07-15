@@ -1,5 +1,4 @@
-import { PhysicalEntity, Prisma } from '@prisma/client'
-
+import { PhysicalEntity, Prisma } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 
 export type PhysicalEntityWithUri = Omit<PhysicalEntity, 'uri'> & { uri: string }

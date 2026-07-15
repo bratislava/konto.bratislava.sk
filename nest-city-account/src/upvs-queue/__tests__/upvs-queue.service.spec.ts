@@ -1,8 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { QueueItemStatusEnum } from '@prisma/client'
-
 import prismaMock from '../../../test/singleton'
+import { QueueItemStatusEnum } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
 import { EdeskBatchUpdateService } from '../edesk-batch-update.service'
 import { EdeskUriUpdateService } from '../edesk-uri-update.service'

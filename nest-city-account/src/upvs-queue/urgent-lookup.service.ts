@@ -152,7 +152,7 @@ export class UrgentLookupService {
     } catch (error) {
       if (
         error instanceof HttpException &&
-        (error.getStatus() as HttpStatus) === HttpStatus.TOO_MANY_REQUESTS
+        (error.getStatus()) === HttpStatus.TOO_MANY_REQUESTS
       ) {
         return { outcome: 'rateLimited' }
       }

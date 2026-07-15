@@ -182,13 +182,33 @@ describe('VerificationSubservice', () => {
       expect(service['validatePersonName'](rfoData, 'Ján', '')).toBe(false)
     })
 
-    it('should match names case-insensitively, ignoring diacritics and surrounding whitespace', () => {
+    it('should ignore surrounding whitespace', () => {
       const rfoData = {
         menaOsoby: [{ meno: 'Ján' }],
         priezviskaOsoby: [{ meno: 'Novák' }],
       } as unknown as RfoIdentityListElement
 
-      expect(service['validatePersonName'](rfoData, '  jan  ', '  NOVAK  ')).toBe(true)
+      expect(service['validatePersonName'](rfoData, '  Ján  ', '  Novák  ')).toBe(true)
+    })
+
+    it('should not match when diacritics differ', () => {
+      const rfoData = {
+        menaOsoby: [{ meno: 'Ján' }],
+        priezviskaOsoby: [{ meno: 'Novák' }],
+      } as unknown as RfoIdentityListElement
+
+      expect(service['validatePersonName'](rfoData, 'Jan', 'Novák')).toBe(false)
+      expect(service['validatePersonName'](rfoData, 'Ján', 'Novak')).toBe(false)
+    })
+
+    it('should not match when letter case differs', () => {
+      const rfoData = {
+        menaOsoby: [{ meno: 'Ján' }],
+        priezviskaOsoby: [{ meno: 'Novák' }],
+      } as unknown as RfoIdentityListElement
+
+      expect(service['validatePersonName'](rfoData, 'ján', 'Novák')).toBe(false)
+      expect(service['validatePersonName'](rfoData, 'Ján', 'NOVÁK')).toBe(false)
     })
 
     it('should support multiple first names and multiple last names (all parts must match)', () => {
@@ -198,7 +218,7 @@ describe('VerificationSubservice', () => {
       } as unknown as RfoIdentityListElement
 
       expect(service['validatePersonName'](rfoData, 'Ján Peter', 'Novák Horváth')).toBe(true)
-      expect(service['validatePersonName'](rfoData, '  jan   PETER  ', '  NOVAK   horvath  ')).toBe(
+      expect(service['validatePersonName'](rfoData, '  Ján   Peter  ', '  Novák   Horváth  ')).toBe(
         true
       )
     })
@@ -238,8 +258,8 @@ describe('VerificationSubservice', () => {
         priezviskaOsoby: [{ meno: 'Novák' }, { meno: 'Horváth' }],
       } as unknown as RfoIdentityListElement
 
-      expect(service['validatePersonName'](rfoData, 'peter jan', 'horvath novak')).toBe(true)
-      expect(service['validatePersonName'](rfoData, 'jan peter', 'novak horvath')).toBe(true)
+      expect(service['validatePersonName'](rfoData, 'Peter Ján', 'Horváth Novák')).toBe(true)
+      expect(service['validatePersonName'](rfoData, 'Ján Peter', 'Novák Horváth')).toBe(true)
     })
 
     it('should treat tabs/newlines as whitespace between multiple names', () => {
@@ -281,7 +301,7 @@ describe('VerificationSubservice', () => {
         priezviskaOsoby: [{ meno: 'Novák' }],
       } as unknown as RfoIdentityListElement
 
-      // Input splits to ["maria","anna"], but RFO normalizes to ["maria anna"] => currently false.
+      // Input splits to ["Maria","Anna"], but the RFO entry stays one token "Maria Anna" => currently false.
       expect(service['validatePersonName'](rfoData, 'Maria Anna', 'Novák')).toBe(false)
     })
     it('should return false if the user did not provide all first names that exist in RFO', () => {

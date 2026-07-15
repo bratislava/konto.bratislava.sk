@@ -51,42 +51,29 @@ export class EdeskUriUpdateService {
           uri: successItem.data.uri,
         },
       })
-    } else {
-      const confirmedFailed = upvsResult.failed.some(
-        (item) => item.inputUri === input.uri && !item.possibleUriChange
-      )
-      await this.prismaService.physicalEntity.update({
-        where: { id: input.id },
-        data: {
-          uriPossiblyOutdated: !confirmedFailed,
-          activeEdeskUpdateFailedAt: new Date(),
-          activeEdeskUpdateFailCount: { increment: 1 },
-        },
-      })
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Failed to update URI for physical entity id ${input.id}`
-      )
+      return
     }
+
+    const confirmedFailed = upvsResult.failed.some(
+      (item) => item.inputUri === input.uri && !item.possibleUriChange
+    )
+    await this.prismaService.physicalEntity.update({
+      where: { id: input.id },
+      data: {
+        uriPossiblyOutdated: !confirmedFailed,
+        activeEdeskUpdateFailedAt: new Date(),
+        activeEdeskUpdateFailCount: { increment: 1 },
+      },
+    })
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      `Failed to update URI for physical entity id ${input.id}`
+    )
   }
 
   async handleUriUpdateExternal(uri: string) {
     const upvsResult = await this.nasesService.getIdentitiesByUris([{ uri }])
-    if (upvsResult.success.length === 1) {
-      const successItem = upvsResult.success[0]
-      await this.prismaService.externalEdeskCheck.update({
-        where: { uri: successItem.inputUri },
-        data: {
-          queueStatus: QueueItemStatusEnum.COMPLETED,
-          upvsStatus: successItem.data.status ?? null,
-          edeskStatus: successItem.data.upvs?.edesk_status ?? null,
-          edeskNumber: successItem.data.upvs?.edesk_number ?? null,
-          edeskDeathDate: getUpvsDeathDate(successItem.data),
-          processedAt: new Date(),
-          newUri: successItem.inputUri === successItem.data.uri ? undefined : successItem.data.uri,
-        },
-      })
-    } else {
+    if (upvsResult.success.length !== 1) {
       await this.prismaService.externalEdeskCheck.update({
         where: { uri },
         data: {
@@ -94,6 +81,21 @@ export class EdeskUriUpdateService {
           failCount: { increment: 1 },
         },
       })
+      return
     }
+
+    const successItem = upvsResult.success[0]
+    await this.prismaService.externalEdeskCheck.update({
+      where: { uri: successItem.inputUri },
+      data: {
+        queueStatus: QueueItemStatusEnum.COMPLETED,
+        upvsStatus: successItem.data.status ?? null,
+        edeskStatus: successItem.data.upvs?.edesk_status ?? null,
+        edeskNumber: successItem.data.upvs?.edesk_number ?? null,
+        edeskDeathDate: getUpvsDeathDate(successItem.data),
+        processedAt: new Date(),
+        newUri: successItem.inputUri === successItem.data.uri ? undefined : successItem.data.uri,
+      },
+    })
   }
 }

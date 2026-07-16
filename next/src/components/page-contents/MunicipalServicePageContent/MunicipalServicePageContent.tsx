@@ -1,4 +1,4 @@
-import { Typography } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
@@ -9,7 +9,6 @@ import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
 import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
-import MLink from '@/src/components/simple-components/MLink'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
@@ -39,9 +38,10 @@ const MunicipalServicePageContent = ({
           <Typography variant="h1">{municipalService.title}</Typography>
           {pageHeaderText ? <Typography>{pageHeaderText}</Typography> : null}
           {moreInformationUrl ? (
-            <MLink className="w-max" variant="underlined" href={moreInformationUrl} target="_blank">
+            // TODO size
+            <Button variant="link" size="small" className="w-max" href={moreInformationUrl}>
               {t('form_header.services_link')}
-            </MLink>
+            </Button>
           ) : null}
         </div>
       </SectionContainer>
@@ -89,7 +89,7 @@ const MunicipalServicePageContent = ({
           ) : null}
         </div>
 
-        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
+        <aside className="w-full lg:w-80 lg:shrink-0">
           <TableOfContents />
         </aside>
       </div>

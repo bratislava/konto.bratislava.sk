@@ -14,47 +14,42 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
   const { feedbackLink } = formDefinition
   const { isSignedIn } = useSsrAuth()
 
-  if (isTaxForm) {
-    return {
-      title: t('thank_you.form_submit_tax.title'),
-      content: t('thank_you.form_submit_tax.content'),
-      primaryButton: feedbackLink
-        ? {
-            title: t('thank_you.button_to_feedback'),
-            href: feedbackLink,
-          }
-        : null,
-    }
-  }
-
-  if (isEmbedded) {
-    return {
-      title: t('thank_you.form_submit.title'),
-      content: t('thank_you.form_submit.content_embedded'),
-      isContentCentered: true,
-    }
-  }
-
   const feedbackButton = feedbackLink
     ? {
-        title: t('thank_you.button_to_feedback'),
+        title: t('FormSentPageContent.button_to_feedback'),
         href: feedbackLink,
       }
     : null
 
   const userProfileButton = isSignedIn
     ? {
-        title: t('thank_you.button_to_profile_text'),
+        title: t('FormSentPageContent.button_to_profile'),
         href: ROUTES.USER_PROFILE,
       }
     : null
 
+  if (isTaxForm) {
+    return {
+      title: t('FormSentPageContent.tax.title'),
+      content: t('FormSentPageContent.tax.content'),
+      primaryButton: feedbackButton,
+    }
+  }
+
+  if (isEmbedded) {
+    return {
+      title: t('FormSentPageContent.title'),
+      content: t('FormSentPageContent.content_embedded'),
+      isContentCentered: true,
+    }
+  }
+
   return {
-    title: t('thank_you.form_submit.title'),
+    title: t('FormSentPageContent.title'),
     content: [
-      t('thank_you.form_submit.content_generic'),
-      isSignedIn ? ` ${t('thank_you.form_submit.content_signed_in')}` : '',
-      feedbackLink ? `\n\n${t('thank_you.form_submit.content_feedback')}` : '',
+      t('FormSentPageContent.content_generic'),
+      isSignedIn ? ` ${t('FormSentPageContent.content_signed_in')}` : '',
+      feedbackLink ? `\n\n${t('FormSentPageContent.content_feedback')}` : '',
     ].join(''),
     isContentCentered: true,
     primaryButton: feedbackButton,

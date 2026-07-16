@@ -67,7 +67,7 @@ export const usePaymentResultPropsMap = ({
   const commonProps: Partial<ThankYouTileProps> = {
     isContentCentered: true,
     secondaryButton: {
-      title: t('thank_you.button_back_to_taxes_fees_text'),
+      title: t('PaymentResultPageContent.button_to_taxes'),
       href: ROUTES.TAXES,
     },
   }
@@ -76,11 +76,11 @@ export const usePaymentResultPropsMap = ({
     [PaymentRedirectStateEnum.PaymentSuccess]: {
       ...commonProps,
       variant: 'success',
-      title: t('thank_you.result.payment_success.title'),
-      content: t('thank_you.result.payment_success.content'),
+      title: t('PaymentResultPageContent.payment_success.title'),
+      content: t('PaymentResultPageContent.payment_success.content'),
       primaryButton: feedbackLink
         ? {
-            title: t('thank_you.button_to_feedback'),
+            title: t('PaymentResultPageContent.button_to_feedback'),
             href: feedbackLink,
           }
         : null,
@@ -88,26 +88,26 @@ export const usePaymentResultPropsMap = ({
     [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
       ...commonProps,
       variant: 'success',
-      title: t('thank_you.result.payment_already_paid.title'),
-      content: t('thank_you.result.payment_success.content'),
+      title: t('PaymentResultPageContent.payment_already_paid.title'),
+      content: t('PaymentResultPageContent.payment_success.content'),
     },
     [PaymentRedirectStateEnum.FailedToVerify]: {
       ...commonProps,
       variant: 'warning',
-      title: t('thank_you.result.failed_to_verify.title'),
-      content: t('thank_you.result.payment_failed.content'),
+      title: t('PaymentResultPageContent.payment_failed_to_verify.title'),
+      content: t('PaymentResultPageContent.payment_failed.content'),
       primaryButton: {
-        title: t('thank_you.button_restart_text'),
+        title: t('PaymentResultPageContent.button_repeat_payment'),
         href: taxDetailLink,
       },
     },
     [PaymentRedirectStateEnum.PaymentFailed]: {
       ...commonProps,
       variant: 'error',
-      title: t('thank_you.result.payment_failed.title'),
-      content: t('thank_you.result.payment_failed.content'),
+      title: t('PaymentResultPageContent.payment_failed.title'),
+      content: t('PaymentResultPageContent.payment_failed.content'),
       primaryButton: {
-        title: t('thank_you.button_restart_text'),
+        title: t('PaymentResultPageContent.button_repeat_payment'),
         href: taxDetailLink,
       },
     },

@@ -152,10 +152,7 @@ export class NorisDeliveryMethodService {
 
       deliveryGroups[methodInfo.deliveryMethod].push({
         birthNumber: addSlashToBirthNumber(birthNumber),
-        date:
-          methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT
-            ? (methodInfo.date ?? null)
-            : null,
+        date: methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT ? methodInfo.date : null,
       })
     })
 

@@ -10,7 +10,7 @@ import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisConnectionService } from '../noris-connection.service'
 
 jest.mock('mssql', () => ({
-  ...jest.requireActual('mssql'),
+  ...jest.requireActual<typeof mssql>('mssql'),
   connect: jest.fn(),
 }))
 
@@ -101,7 +101,7 @@ describe('NorisConnectionService', () => {
       const mockConnection = { connected: false } as ConnectionPool
       const maxWaitTime = 500
       setTimeout(() => {
-        ;(mockConnection as any).connected = true
+        ;(mockConnection as { connected: boolean }).connected = true
       }, 50)
 
       await expect(

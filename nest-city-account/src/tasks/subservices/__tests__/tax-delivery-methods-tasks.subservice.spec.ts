@@ -2,6 +2,14 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
+import { configFactory } from '../../../__tests__/factories/config.factory'
+import { deliveryMethodPreferenceHistoryFactory } from '../../../__tests__/factories/deliveryMethodPreferenceHistory.factory'
+import { physicalEntityFactory } from '../../../__tests__/factories/physicalEntity.factory'
+import {
+  expectAny,
+  expectArrayContaining,
+  expectObjectContaining,
+} from '../../../__tests__/jest-matchers'
 import getBaConfigInstance from '../../../config/ba-config.instance'
 import {
   DeliveryMethodEnum,
@@ -37,7 +45,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
   >
 
   beforeAll(() => {
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(jest.fn())
   })
 
   afterAll(() => {
@@ -75,14 +83,14 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
 
     // Make $transaction execute its callback so the advisory-lock path is exercised in tests.
-    ;(prismaMock.$transaction as jest.Mock).mockImplementation(async (fn: any) => {
+    prismaMock.$transaction.mockImplementation(async (fn) => {
       if (typeof fn === 'function') {
         return fn(prismaMock)
       }
       return Promise.all(fn)
     })
     // $executeRaw is used for pg_advisory_xact_lock — no-op in tests.
-    ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(0)
+    prismaMock.$executeRaw.mockResolvedValue(0)
   })
 
   describe('updateDeliveryMethods', () => {
@@ -195,7 +203,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: { in: ['1', '2', '3', '4', '5', '6', '7', '8'] } },
-          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+          data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
       )
     })
@@ -246,7 +254,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: { in: ['1'] } },
-          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+          data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
       )
     })
@@ -288,7 +296,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: { in: ['1', '2'] } },
-          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+          data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
       )
 
@@ -542,10 +550,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should not send emails when SEND_DAILY_DELIVERY_METHOD_SUMMARIES config is disabled', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        key: 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES',
-        value: { active: false },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          key: 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES',
+          value: { active: false },
+        })
+      )
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -558,17 +568,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should skip users without email, externalId, or birthNumber', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       // Mock initial query for users with changes
       prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([
-          { userId: 'user1' },
-          { userId: 'user2' },
-          { userId: 'user3' },
-        ] as any)
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user1' }),
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user2' }),
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user3' }),
+        ])
         .mockResolvedValueOnce([]) // Latest delivery method
         .mockResolvedValueOnce([]) // Previous delivery method
         .mockResolvedValueOnce([]) // Yesterday delivery method change
@@ -861,19 +873,21 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     it('should skip users with active eDesk who had delivery method changes but no eDesk status change', async () => {
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - delivery method change
+        .mockResolvedValueOnce([deliveryMethodPreferenceHistoryFactory({ userId: 'user1' })]) // Initial query - delivery method change
         .mockResolvedValueOnce([
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([])
 
@@ -956,29 +970,34 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should combine both delivery method and eDesk changes and deduplicate by userId', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       // User1 and User2 have delivery method changes, User1 and User3 have eDesk changes
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any)
+        .mockResolvedValueOnce([
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user1' }),
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user2' }),
+        ])
         .mockResolvedValueOnce([]) // Latest delivery method
         .mockResolvedValueOnce([]) // Previous delivery method
         .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
-        {
+        physicalEntityFactory({
           userId: 'user1', // Duplicate - should be deduplicated
           activeEdesk: true,
           edeskStatusChangedAt: yesterday,
-        },
-        {
+        }),
+        physicalEntityFactory({
           userId: 'user3',
           activeEdesk: true,
           edeskStatusChangedAt: yesterday,
-        },
-      ] as any)
+        }),
+      ])
 
       // Mock batch fetch - should fetch all 3 unique users
       prismaMock.user.findMany.mockResolvedValue([
@@ -1023,9 +1042,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should only process users with changes between yesterday start (00:00:00) and end (23:59:59)', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query

@@ -258,9 +258,9 @@ describe('VerificationSubservice', () => {
 
     it('should ignore empty/non-string entries in RFO name arrays', () => {
       const rfoData = {
-        menaOsoby: [{ meno: '' }, { meno: '   ' }, { meno: 'Ján' }, { meno: undefined as any }],
+        menaOsoby: [{ meno: '' }, { meno: '   ' }, { meno: 'Ján' }, { meno: undefined }],
 
-        priezviskaOsoby: [{ meno: 'Novák' }, { meno: null as any }],
+        priezviskaOsoby: [{ meno: 'Novák' }, { meno: null }],
       } as unknown as RfoIdentityListElement
 
       expect(service['validatePersonName'](rfoData, 'Ján', 'Novák')).toBe(true)

@@ -33,7 +33,7 @@ const createMockCompletedItem = (
     failCount: 0,
     newUri: null,
     ...overrides,
-  } as ExternalEdeskCheck
+  }
 }
 
 describe('EdeskTasksSubservice', () => {

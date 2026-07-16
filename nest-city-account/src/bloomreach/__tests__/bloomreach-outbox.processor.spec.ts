@@ -3,11 +3,17 @@ import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
 import prismaMock from '../../../test/singleton'
+import {
+  expectAny,
+  expectObjectContaining,
+  expectStringContaining,
+} from '../../__tests__/jest-matchers'
 import BaConfigService from '../../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
+  BloomreachBatchCommand,
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
@@ -112,7 +118,9 @@ describe('BloomreachOutboxProcessor', () => {
           commands: [{ name: entry.commandName, data: entry.commandData, command_id: 'entry-1' }],
         },
         expect.objectContaining({
-          headers: expect.objectContaining({ Authorization: expect.stringContaining('Basic ') }),
+          headers: expectObjectContaining({
+            Authorization: expectStringContaining('Basic '),
+          }),
         })
       )
       expect(prismaMock.bloomreachOutbox.updateMany).toHaveBeenCalledWith({
@@ -134,7 +142,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.PENDING,
           attempts: 2,
-          lastError: expect.stringContaining('500'),
+          lastError: expectStringContaining('500'),
         },
       })
     })
@@ -152,7 +160,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.FAILED,
           attempts: 5,
-          lastError: expect.any(String),
+          lastError: expectAny<string>(String),
         },
       })
     })
@@ -184,7 +192,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.PENDING,
           attempts: 1,
-          lastError: expect.stringContaining('success=false'),
+          lastError: expectStringContaining('success=false'),
         },
       })
     })
@@ -199,7 +207,7 @@ describe('BloomreachOutboxProcessor', () => {
 
       expect(prismaMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'entry-1' },
-        data: expect.objectContaining({
+        data: expectObjectContaining({
           status: BloomreachOutboxStatus.PENDING,
         }),
       })
@@ -223,7 +231,9 @@ describe('BloomreachOutboxProcessor', () => {
 
       await processor.processOutbox()
 
-      expect((mockedAxios.post.mock.calls[0][1] as any).commands).toHaveLength(2)
+      expect(
+        (mockedAxios.post.mock.calls[0][1] as { commands: BloomreachBatchCommand[] }).commands
+      ).toHaveLength(2)
       expect(prismaMock.bloomreachOutbox.updateMany).toHaveBeenCalledWith({
         where: { id: { in: ['entry-1', 'entry-2'] } },
         data: { status: BloomreachOutboxStatus.COMPLETED },
@@ -248,7 +258,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
 
       prismaMock.$queryRaw.mockResolvedValue([oldEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
       await processor.processOutbox()
@@ -304,7 +314,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
 
       prismaMock.$queryRaw.mockResolvedValue([oldEventEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
       await processor.processOutbox()
@@ -367,7 +377,7 @@ describe('BloomreachOutboxProcessor', () => {
         },
       })
       prismaMock.bloomreachOutbox.findMany.mockResolvedValue([staleEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEntry)
       prismaMock.$queryRaw.mockResolvedValue([])
 
       await processor.processOutbox()

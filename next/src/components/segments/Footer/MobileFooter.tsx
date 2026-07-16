@@ -33,7 +33,7 @@ const MobileFooter = () => {
   }
 
   return (
-    <SectionContainer>
+    <SectionContainer className="bg-background-passive-base">
       <HorizontalDivider />
       <footer className="flex flex-col gap-6 py-6">
         <div className="flex justify-center py-2">

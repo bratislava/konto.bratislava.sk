@@ -64,41 +64,52 @@ export const usePaymentResultPropsMap = ({
 }) => {
   const { t } = useTranslation('account')
 
-  const commonProps = {
-    secondButtonTitle: t('thank_you.button_back_to_taxes_fees_text'),
-    secondButtonLink: ROUTES.TAXES,
+  const commonProps: Partial<ThankYouTileProps> = {
+    isContentCentered: true,
+    secondaryButton: {
+      title: t('thank_you.button_back_to_taxes_fees_text'),
+      href: ROUTES.TAXES,
+    },
   }
 
   const cardPropsMap: Record<PaymentRedirectStateEnum, ThankYouTileProps> = {
     [PaymentRedirectStateEnum.PaymentSuccess]: {
+      ...commonProps,
       variant: 'success',
       title: t('thank_you.result.payment_success.title'),
       content: t('thank_you.result.payment_success.content'),
-      firstButtonTitle: t('thank_you.button_to_formular_text'),
-      firstButtonLink: feedbackLink ?? '#',
-      ...commonProps,
+      primaryButton: feedbackLink
+        ? {
+            title: t('thank_you.button_to_feedback'),
+            href: feedbackLink,
+          }
+        : null,
     },
     [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
+      ...commonProps,
       variant: 'success',
       title: t('thank_you.result.payment_already_paid.title'),
       content: t('thank_you.result.payment_success.content'),
-      ...commonProps,
     },
     [PaymentRedirectStateEnum.FailedToVerify]: {
+      ...commonProps,
       variant: 'warning',
       title: t('thank_you.result.failed_to_verify.title'),
       content: t('thank_you.result.payment_failed.content'),
-      firstButtonTitle: t('thank_you.button_restart_text'),
-      firstButtonLink: taxDetailLink,
-      ...commonProps,
+      primaryButton: {
+        title: t('thank_you.button_restart_text'),
+        href: taxDetailLink,
+      },
     },
     [PaymentRedirectStateEnum.PaymentFailed]: {
+      ...commonProps,
       variant: 'error',
       title: t('thank_you.result.payment_failed.title'),
       content: t('thank_you.result.payment_failed.content'),
-      firstButtonTitle: t('thank_you.button_restart_text'),
-      firstButtonLink: taxDetailLink,
-      ...commonProps,
+      primaryButton: {
+        title: t('thank_you.button_restart_text'),
+        href: taxDetailLink,
+      },
     },
   }
 
@@ -145,7 +156,7 @@ const PaymentResultPageContent = () => {
   })
 
   return (
-    <div className="bg-gray-0 pt-16 lg:bg-gray-50 lg:pt-8">
+    <div className="bg-gray-0 py-12 lg:bg-gray-50">
       <ThankYouTile {...cardPropsMap[status]} />
     </div>
   )

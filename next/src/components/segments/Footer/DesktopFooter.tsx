@@ -28,7 +28,7 @@ const DesktopFooter = () => {
   }
 
   return (
-    <SectionContainer>
+    <SectionContainer className="bg-background-passive-base">
       <HorizontalDivider />
       <footer className="flex flex-col gap-6 py-6 lg:gap-8 lg:py-8">
         <div className="flex justify-between py-2 lg:py-0">

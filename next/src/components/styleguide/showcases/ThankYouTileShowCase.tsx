@@ -22,10 +22,14 @@ const ThankYouTileShowCase = () => (
             variant={variant}
             title="Placeholder title"
             content="Placeholder content describing the outcome."
-            firstButtonTitle="Primary action"
-            firstButtonLink="#"
-            secondButtonTitle="Secondary action"
-            secondButtonLink="#"
+            primaryButton={{
+              title: 'Primary button',
+              href: '#',
+            }}
+            secondaryButton={{
+              title: 'Secondary button',
+              href: '#',
+            }}
           />
         </Stack>
       </div>

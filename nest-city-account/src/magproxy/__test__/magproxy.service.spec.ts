@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 
 import ClientsService from '../../clients/clients.service'
+import BaConfigService from '../../config/ba-config.service'
 import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.test'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { MagproxyService } from '../magproxy.service'
@@ -10,24 +11,25 @@ import { MagproxyService } from '../magproxy.service'
 describe('MagproxyService', () => {
   let service: MagproxyService
 
-  beforeAll(() => {
-    process.env = {
-      ...process.env,
-      MAGPROXY_URL: 'https://mock-new-magproxy.bratislava.sk',
-      MAGPROXY_AZURE_AD_URL:
-        'https://mock-login.microsoftonline.com/mock-azure-ad-id/oauth2/v2.0/token',
-      MAGPROXY_AZURE_CLIENT_ID: 'mock-magproxy-azure-client-id',
-      MAGPROXY_AZURE_CLIENT_SECRET: 'mock-magproxy-azure-secret',
-      MAGPROXY_AZURE_SCOPE: 'api://mock-azure-scope/.default',
-    }
-  })
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MagproxyService,
         ThrowerErrorGuard,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            magproxy: {
+              url: 'https://mock-new-magproxy.bratislava.sk',
+              azureAdUrl:
+                'https://mock-login.microsoftonline.com/mock-azure-ad-id/oauth2/v2.0/token',
+              azureClientId: 'mock-magproxy-azure-client-id',
+              azureClientSecret: 'mock-magproxy-azure-secret',
+              azureScope: 'api://mock-azure-scope/.default',
+            },
+          },
+        },
       ],
     }).compile()
 

@@ -7,6 +7,6 @@ module.exports = {
     locales: ['sk'],
     localeDetection: false,
   },
-  defaultNS: ['account'], // Changed to match the used namespace. TODO change to `translation` namespace used by i18next-parser
+  defaultNS: ['account'], // Changed to match the used namespace. TODO change to `translation` namespace used by i18next-cli
   reloadOnPrerender: process.env.NODE_ENV === 'development',
 }

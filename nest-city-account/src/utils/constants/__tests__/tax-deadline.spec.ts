@@ -1,27 +1,32 @@
 import { DateTime } from 'luxon'
 
+import getBaConfigInstance from '../../../config/ba-config.instance'
 import { getTaxDeadlineDate } from '../tax-deadline'
+
+jest.mock('../../../config/ba-config.instance')
 
 const TIMEZONE = 'Europe/Bratislava'
 
-const mockGetOrThrow = jest.fn((key: string): string => {
-  if (key === 'MUNICIPAL_TAX_LOCK_MONTH') {
-    return '04'
-  }
-  if (key === 'MUNICIPAL_TAX_LOCK_DAY') {
-    return '01'
-  }
-  throw new Error(`Unknown config key: ${key}`)
-})
+const mockGetBaConfigInstance = getBaConfigInstance as jest.MockedFunction<
+  typeof getBaConfigInstance
+>
 
-jest.mock('@nestjs/config', () => ({
-  ConfigService: jest.fn().mockImplementation(() => ({
-    getOrThrow: mockGetOrThrow,
-  })),
-}))
+const mockTaxDeadline = (config: { month: number; day: number }) => {
+  mockGetBaConfigInstance.mockReturnValue({ taxDeadline: config } as ReturnType<
+    typeof getBaConfigInstance
+  >)
+}
 
 describe('tax-deadline', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   describe('each date to 1st of April should be before deadline, each date from it should be after', () => {
+    beforeEach(() => {
+      mockTaxDeadline({ month: 4, day: 1 })
+    })
+
     const year = DateTime.now().setZone(TIMEZONE).year
     const afterDeadline = [
       DateTime.fromObject(
@@ -90,27 +95,7 @@ describe('tax-deadline', () => {
 
   describe('when deadline is 1st of February, each date to 1st of February should be before deadline, each date from it should be after', () => {
     beforeEach(() => {
-      mockGetOrThrow.mockImplementation((key: string): string => {
-        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') {
-          return '02'
-        }
-        if (key === 'MUNICIPAL_TAX_LOCK_DAY') {
-          return '01'
-        }
-        throw new Error(`Unknown config key: ${key}`)
-      })
-    })
-
-    afterEach(() => {
-      mockGetOrThrow.mockImplementation((key: string): string => {
-        if (key === 'MUNICIPAL_TAX_LOCK_MONTH') {
-          return '04'
-        }
-        if (key === 'MUNICIPAL_TAX_LOCK_DAY') {
-          return '01'
-        }
-        throw new Error(`Unknown config key: ${key}`)
-      })
+      mockTaxDeadline({ month: 2, day: 1 })
     })
 
     const year = DateTime.now().setZone(TIMEZONE).year

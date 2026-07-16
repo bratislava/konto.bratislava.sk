@@ -17,6 +17,10 @@ type Props = {
 
 const AMOUNT_OF_DOCUMENTS_TO_SHOW = 5
 
+/**
+ * Figma: TODO
+ */
+
 const DocumentsSection = ({
   section: { allowCollapsingDocuments, title, text, externalDocuments },
 }: Props) => {

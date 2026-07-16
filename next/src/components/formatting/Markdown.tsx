@@ -187,12 +187,20 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
             />
           ),
           ol: ({ children, node, ...props }) => (
-            <ol className="list-decimal pl-8 marker:text-content-passive-secondary" {...props}>
+            <ol
+              // force text-left here, because sometimes text-center is set for the whole markdown
+              className="list-decimal pl-8 text-left marker:text-content-passive-secondary"
+              {...props}
+            >
               {children}
             </ol>
           ),
           ul: ({ children, node, ...props }) => (
-            <ul className="list-disc pl-8 marker:text-content-passive-secondary" {...props}>
+            <ul
+              // force text-left here, because sometimes text-center is set for the whole markdown
+              className="list-disc pl-8 text-left marker:text-content-passive-secondary"
+              {...props}
+            >
               {children}
             </ul>
           ),

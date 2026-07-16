@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../test/singleton'
+import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import {
   ConsentEnum,
@@ -12,7 +13,6 @@ import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-met
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import {
-  CognitoGetUserData,
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
@@ -23,18 +23,6 @@ import { UserTierService } from './user-tier.service'
 import { UserDataSubservice } from './utils/subservice/user-data.subservice'
 
 jest.mock('../utils/constants/tax-deadline')
-
-const buildCognitoUserData = (
-  accountType: CognitoUserAccountTypesEnum,
-  overrides: Partial<CognitoGetUserData> = {}
-): CognitoGetUserData => ({
-  sub: 'sub-id',
-  idUser: 'sub-id',
-  email: 'test@example.com',
-  Enabled: true,
-  [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
-  ...overrides,
-})
 
 describe('UserService', () => {
   let service: UserService
@@ -205,7 +193,9 @@ describe('UserService', () => {
 
   describe('updateGdprConsent', () => {
     it('should persist a user consent for a physical entity', async () => {
-      const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY)
+      const cognitoUserData = cognitoUserDataFactory({
+        [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
+      })
       userDataSubservice.getOrFallbackCreateUser.mockResolvedValue({
         id: 'user-id',
         externalId: 'external-id',
@@ -222,7 +212,9 @@ describe('UserService', () => {
     })
 
     it('should persist a revoked consent for a physical entity', async () => {
-      const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY)
+      const cognitoUserData = cognitoUserDataFactory({
+        [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
+      })
       userDataSubservice.getOrFallbackCreateUser.mockResolvedValue({
         id: 'user-id',
         externalId: 'external-id',
@@ -239,7 +231,9 @@ describe('UserService', () => {
       CognitoUserAccountTypesEnum.LEGAL_ENTITY,
       CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY,
     ])('should persist a legal person consent for account type %s', async (accountType) => {
-      const cognitoUserData = buildCognitoUserData(accountType)
+      const cognitoUserData = cognitoUserDataFactory({
+        [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
+      })
       userDataSubservice.getOrFallbackCreateLegalPerson.mockResolvedValue({
         id: 'legal-person-id',
         externalId: 'external-id',
@@ -260,9 +254,10 @@ describe('UserService', () => {
     })
 
     it('should throw for an unknown account type', async () => {
-      const cognitoUserData = buildCognitoUserData(
-        'unknown' as unknown as CognitoUserAccountTypesEnum
-      )
+      const cognitoUserData = cognitoUserDataFactory({
+        [CognitoUserAttributesEnum.ACCOUNT_TYPE]:
+          'unknown' as unknown as CognitoUserAccountTypesEnum,
+      })
       throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
         new Error('invalid account type') as never
       )
@@ -279,7 +274,8 @@ describe('UserService', () => {
 
   describe('setDeliveryMethodPreference', () => {
     it('should delegate to the subservice for a physical entity', async () => {
-      const cognitoUserData = buildCognitoUserData(CognitoUserAccountTypesEnum.PHYSICAL_ENTITY, {
+      const cognitoUserData = cognitoUserDataFactory({
+        [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
         sub: 'cognito-sub-id',
       })
 
@@ -299,7 +295,9 @@ describe('UserService', () => {
       CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY,
       'unknown' as unknown as CognitoUserAccountTypesEnum,
     ])('should reject account type %s', async (accountType) => {
-      const cognitoUserData = buildCognitoUserData(accountType)
+      const cognitoUserData = cognitoUserDataFactory({
+        [CognitoUserAttributesEnum.ACCOUNT_TYPE]: accountType,
+      })
       throwerErrorGuard.UnprocessableEntityException.mockReturnValueOnce(
         new Error('invalid account type') as never
       )

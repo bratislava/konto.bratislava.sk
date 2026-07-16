@@ -12,16 +12,20 @@ describe('TokenRequestGuard', () => {
   let validationSubservice: OAuth2ValidationSubservice
 
   function createMockContext(
-    overrides: { body?: any; query?: any; headers?: any } = {}
+    overrides: {
+      body?: Record<string, unknown>
+      query?: Record<string, string>
+      headers?: Record<string, string>
+    } = {}
   ): ExecutionContext {
     const mockRequest: Partial<RequestWithClientCredentials> = {
       body: overrides.body ?? {},
       query: overrides.query ?? {},
       headers: overrides.headers ?? {},
     }
-    return {
+    return createMock<ExecutionContext>({
       switchToHttp: jest.fn().mockReturnValue({ getRequest: () => mockRequest }),
-    } as any
+    })
   }
 
   function getRequest(context: ExecutionContext): RequestWithClientCredentials {

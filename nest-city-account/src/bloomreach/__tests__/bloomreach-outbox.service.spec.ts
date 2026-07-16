@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
+import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOutbox.factory'
 import BaConfigService from '../../config/ba-config.service'
 import { ConsentEnum } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -90,7 +91,7 @@ describe('BloomreachOutboxService', () => {
       payloadBuilder.buildCustomerCommand.mockResolvedValue(mockCustomerCommand)
       const txMock = createMock<PrismaService>()
       txMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
-      prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
+      prismaMock.$transaction.mockImplementation(async (fn) => fn(txMock))
 
       await service.trackCustomer(externalId, '0900123456')
 
@@ -106,16 +107,16 @@ describe('BloomreachOutboxService', () => {
 
     it('should update existing PENDING entry instead of creating a new one', async () => {
       payloadBuilder.buildCustomerCommand.mockResolvedValue(mockCustomerCommand)
-      const existingEntry = {
+      const existingEntry = bloomreachOutboxFactory({
         id: 'existing-id',
         commandData: {
           customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
           properties: { phone: '0900000000', email: 'old@never.test' },
         },
-      }
+      })
       const txMock = createMock<PrismaService>()
-      txMock.bloomreachOutbox.findFirst.mockResolvedValue(existingEntry as any)
-      prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
+      txMock.bloomreachOutbox.findFirst.mockResolvedValue(existingEntry)
+      prismaMock.$transaction.mockImplementation(async (fn) => fn(txMock))
 
       await service.trackCustomer(externalId)
 
@@ -183,10 +184,13 @@ describe('BloomreachOutboxService', () => {
         },
       }
 
-      const existingEntry = { id: 'pending-subscribe-id', commandData: subscribeCommandData }
+      const existingEntry = bloomreachOutboxFactory({
+        id: 'pending-subscribe-id',
+        commandData: subscribeCommandData,
+      })
       const txMock = createMock<PrismaService>()
-      txMock.bloomreachOutbox.findFirst.mockResolvedValue(existingEntry as any)
-      prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
+      txMock.bloomreachOutbox.findFirst.mockResolvedValue(existingEntry)
+      prismaMock.$transaction.mockImplementation(async (fn) => fn(txMock))
 
       payloadBuilder.buildConsentEventCommands.mockReturnValue([
         {
@@ -222,7 +226,7 @@ describe('BloomreachOutboxService', () => {
       payloadBuilder.buildAnonymizeCommand.mockReturnValue(mockAnonymizeCommand)
       const txMock = createMock<PrismaService>()
       txMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
-      prismaMock.$transaction.mockImplementation((fn: any) => fn(txMock))
+      prismaMock.$transaction.mockImplementation(async (fn) => fn(txMock))
 
       await service.anonymizeCustomer(externalId)
 

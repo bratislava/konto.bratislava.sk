@@ -96,11 +96,6 @@
       "locale": null
     },
     {
-      "action": "api::tax.tax.find",
-      "documentId": "grfavszay1bonm3eqehzd9fj",
-      "locale": null
-    },
-    {
       "action": "plugin::upload.content-api.find",
       "documentId": "cgrxk6fqgdnmtq3iyg2mwjgk",
       "locale": null

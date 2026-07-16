@@ -4,7 +4,7 @@
   "info": {
     "singularName": "municipal-charge-config",
     "pluralName": "municipal-charge-configs",
-    "displayName": "Dane a poplatky (nové)"
+    "displayName": "Dane a poplatky"
   },
   "options": {
     "draftAndPublish": true
@@ -14,7 +14,8 @@
     "deliveryMethod": {
       "type": "component",
       "component": "municipal-charge.delivery-method",
-      "repeatable": false
+      "repeatable": false,
+      "required": true
     },
     "municipalChargeIdentifier": {
       "type": "component",

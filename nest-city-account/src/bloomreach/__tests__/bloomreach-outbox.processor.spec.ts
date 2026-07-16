@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
 import prismaMock from '../../../test/singleton'
+import BaConfigService from '../../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -21,6 +22,14 @@ describe('BloomreachOutboxProcessor', () => {
 
   const now = new Date('2026-03-26T12:00:00Z')
 
+  const bloomreachConfig = {
+    integrationState: 'ACTIVE',
+    apiUrl: 'https://api.bloomreach.test',
+    projectToken: 'test-project',
+    apiKey: 'dummy-key',
+    apiSecret: 'dummy-secret',
+  }
+
   const makeEntry = (overrides: Partial<BloomreachOutbox> = {}): BloomreachOutbox => ({
     id: 'entry-1',
     createdAt: now,
@@ -35,17 +44,25 @@ describe('BloomreachOutboxProcessor', () => {
   })
 
   beforeEach(async () => {
-    process.env.BLOOMREACH_INTEGRATION_STATE = 'ACTIVE'
-    process.env.BLOOMREACH_API_URL = 'https://api.bloomreach.test'
-    process.env.BLOOMREACH_PROJECT_TOKEN = 'test-project'
-    process.env.BLOOMREACH_API_KEY = 'key'
-    process.env.BLOOMREACH_API_SECRET = 'secret'
+    bloomreachConfig.integrationState = 'ACTIVE'
+    bloomreachConfig.apiUrl = 'https://api.bloomreach.test'
+    bloomreachConfig.projectToken = 'test-project'
+    bloomreachConfig.apiKey = 'dummy-key'
+    bloomreachConfig.apiSecret = 'dummy-secret'
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BloomreachOutboxProcessor,
         { provide: PrismaService, useValue: prismaMock },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            get bloomreach() {
+              return bloomreachConfig
+            },
+          },
+        },
       ],
     }).compile()
 
@@ -60,12 +77,11 @@ describe('BloomreachOutboxProcessor', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
-    delete process.env.BLOOMREACH_INTEGRATION_STATE
   })
 
   describe('processOutbox', () => {
     it('should skip when integration is not active', async () => {
-      process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
+      bloomreachConfig.integrationState = 'INACTIVE'
 
       await processor.processOutbox()
 

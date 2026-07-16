@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 
 import { ClientName } from '../oauth2/decorators/client-name.decorator'
 import { OAuth2AccessGuard } from '../oauth2/guards/oauth2-access.guard'
-import { OAuth2ClientName } from '../oauth2/subservices/oauth2-client.subservice'
+import { OAuth2ClientName } from '../oauth2/oauth2-client-name.enum'
 import { User } from '../utils/decorators/request.decorator'
 import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
 import { PaasMpaRegisterRequestDto, PaasMpaRegisterResponseDto } from './dtos/paas-mpa.dto'

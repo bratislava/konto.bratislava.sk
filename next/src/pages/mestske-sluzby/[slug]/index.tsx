@@ -101,7 +101,7 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
 
     const serverFormDefinition = getFormDefinitionBySlug(slug)
 
-    if (!serverFormDefinition) {
+    if (!serverFormDefinition || serverFormDefinition.isDisabled) {
       return { notFound: true }
     }
 

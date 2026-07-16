@@ -15,7 +15,7 @@ export const REQUIRE_NONCE = 'require_nonce'
  * @example
  * ```ts
  *   @Post('mutating-endpoint')
- *   @SignaturePublicKeyEnvVarName('CLIENT_PUBLIC_KEY')
+ *   @SignaturePublicKeyName(SignaturePublicKey.DPB)
  *   @RequireNonce()
  *   @UseGuards(SignatureGuard)
  *   async createResource() { ... }

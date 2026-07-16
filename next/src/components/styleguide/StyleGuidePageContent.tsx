@@ -30,7 +30,7 @@ import ServiceCardShowCase from '@/src/components/styleguide/showcases/ServiceCa
 import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCase'
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
-import TaxesFeesShowCase from '@/src/components/styleguide/showcases/TaxesFeesShowCase/TaxesFeesShowCase'
+import TaxesShowCase from '@/src/components/styleguide/showcases/TaxesShowCase/TaxesShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
 import TextFieldShowCase from '@/src/components/styleguide/showcases/TextFieldShowCase'
 import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
@@ -87,7 +87,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     label: 'Form Version Compare Action',
     component: <FormVersionCompareActionShowCase />,
   },
-  { id: 'taxes-fees', label: 'Taxes & Fees Pages', component: <TaxesFeesShowCase /> },
+  { id: 'taxes', label: 'Taxes Pages (Dane a poplatky)', component: <TaxesShowCase /> },
   {
     id: 'my-applications',
     label: 'My Applications Pages',

@@ -51,6 +51,7 @@ export default schema({ title: 'Nahlásenie podnetu k elektrickým kolobežkám'
         required: true,
         items: [
           { value: 'bolt', label: 'Bolt' },
+          { value: 'dott', label: 'Dott (TIER)' },
           { value: 'svist', label: 'Svišť' },
         ],
       },
@@ -109,7 +110,7 @@ export const nahlaseniePodnetuKElektrickymKolobezkamFiles = {
 
 type ExtractProviderFormData = {
   podnet: {
-    poskytovatel: 'bolt' | 'svist'
+    poskytovatel: 'bolt' | 'dott' | 'svist'
   }
 }
 
@@ -120,6 +121,8 @@ export const nahlaseniePodnetuKElektrickymKolobezkamExtractProviderEmailAddress:
       switch (formData.podnet.poskytovatel) {
         case 'bolt':
           return 'boltskba@bolt.eu'
+        case 'dott':
+          return 'joanna.kravjar@ridedott.com'
         case 'svist':
           return 'bratislava@svist.sk'
       }

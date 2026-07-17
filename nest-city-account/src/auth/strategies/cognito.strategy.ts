@@ -16,7 +16,6 @@ export class CognitoStrategy extends PassportStrategy(Strategy, 'cognito-strateg
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      audience: baConfigService.cognito.clientId,
       issuer: `https://cognito-idp.${baConfigService.cognito.region}.amazonaws.com/${baConfigService.cognito.userPoolId}`,
       algorithms: ['RS256'],
       secretOrKeyProvider: passportJwtSecret({

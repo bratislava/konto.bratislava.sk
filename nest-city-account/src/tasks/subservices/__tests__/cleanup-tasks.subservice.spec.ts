@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
+import { expectAny } from '../../../__tests__/jest-matchers'
 import { OAuth2Data } from '../../../generated/prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { CleanupTasksSubservice } from '../cleanup-tasks.subservice'
@@ -79,7 +80,7 @@ describe('CleanupTasksSubservice', () => {
         where: {
           authorizationCodeCreatedAt: {
             not: null,
-            lt: expect.any(Date),
+            lt: expectAny<Date>(Date),
           },
           refreshTokenEnc: {
             not: null,
@@ -139,13 +140,13 @@ describe('CleanupTasksSubservice', () => {
             {
               authorizationCodeCreatedAt: {
                 not: null,
-                lt: expect.any(Date),
+                lt: expectAny<Date>(Date),
               },
             },
             {
               authorizationCodeCreatedAt: null,
               createdAt: {
-                lt: expect.any(Date),
+                lt: expectAny<Date>(Date),
               },
             },
           ],

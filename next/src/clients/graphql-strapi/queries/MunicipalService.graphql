@@ -20,12 +20,6 @@ fragment MunicipalServiceRedirect on MunicipalService {
   }
 }
 
-fragment MunicipalServiceSlugEntity on MunicipalService {
-  documentId
-  title
-  slug
-}
-
 fragment MunicipalServiceLink on ComponentBlocksMunicipalServiceLink {
   id
   label
@@ -40,6 +34,12 @@ fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
   linkLabel
   pictogram
   color
+}
+
+fragment MunicipalServiceSlugEntity on MunicipalService {
+  documentId
+  title
+  slug
 }
 
 fragment MunicipalServiceCardEntity on MunicipalService {

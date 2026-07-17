@@ -3785,13 +3785,6 @@ export type MunicipalServiceRedirectFragment = {
   > | null
 }
 
-export type MunicipalServiceSlugEntityFragment = {
-  __typename?: 'MunicipalService'
-  documentId: string
-  title: string
-  slug: string
-}
-
 export type MunicipalServiceLinkFragment = {
   __typename?: 'ComponentBlocksMunicipalServiceLink'
   id: string
@@ -3807,6 +3800,13 @@ export type MunicipalServiceCardFragment = {
   linkLabel: string
   pictogram: Enum_Componentblocksmunicipalservicecard_Pictogram
   color: Enum_Componentblocksmunicipalservicecard_Color
+}
+
+export type MunicipalServiceSlugEntityFragment = {
+  __typename?: 'MunicipalService'
+  documentId: string
+  title: string
+  slug: string
 }
 
 export type MunicipalServiceCardEntityFragment = {

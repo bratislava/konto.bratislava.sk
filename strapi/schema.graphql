@@ -323,6 +323,35 @@ input ComponentBlocksHelpItemInput {
   title: String
 }
 
+type ComponentBlocksMunicipalServiceCard {
+  color: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_COLOR!
+  id: ID!
+  linkLabel: String!
+  overrideTitle: String
+  pictogram: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_PICTOGRAM!
+  text: String!
+}
+
+input ComponentBlocksMunicipalServiceCardFiltersInput {
+  and: [ComponentBlocksMunicipalServiceCardFiltersInput]
+  color: StringFilterInput
+  linkLabel: StringFilterInput
+  not: ComponentBlocksMunicipalServiceCardFiltersInput
+  or: [ComponentBlocksMunicipalServiceCardFiltersInput]
+  overrideTitle: StringFilterInput
+  pictogram: StringFilterInput
+  text: StringFilterInput
+}
+
+input ComponentBlocksMunicipalServiceCardInput {
+  color: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_COLOR
+  id: ID
+  linkLabel: String
+  overrideTitle: String
+  pictogram: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_PICTOGRAM
+  text: String
+}
+
 type ComponentBlocksMunicipalServiceLink {
   id: ID!
   label: String
@@ -669,6 +698,48 @@ type DeleteMutationResponse {
   documentId: ID!
 }
 
+enum ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_COLOR {
+  culture
+  education
+  environment
+  main
+  marianum
+  olo
+  social
+  transport
+  tsb
+}
+
+enum ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_PICTOGRAM {
+  administration
+  christmas_tree
+  community_gardens
+  connector
+  cultural_organizations
+  events_support
+  excavations
+  front_gardens
+  greenery
+  housing
+  kids_teenagers
+  lamp
+  library
+  management_communications
+  marianum
+  mosquito
+  parking
+  public_space_occupation
+  scooter
+  security
+  spatial_planning
+  swimming_pool
+  taxes
+  towing
+  transport
+  waste
+  zoo
+}
+
 enum ENUM_COMPONENTSECTIONSCONTACTS_TITLELEVEL {
   h2
   h3
@@ -906,7 +977,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceCard | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -1311,6 +1382,7 @@ type MunicipalChargeRelationResponseCollection {
 
 type MunicipalService {
   buttonText: String!
+  card: ComponentBlocksMunicipalServiceCard
   categories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceCategory]!
   categories_connection(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryRelationResponseCollection
   color: ENUM_MUNICIPALSERVICE_COLOR!
@@ -1396,6 +1468,7 @@ type MunicipalServiceEntityResponseCollection {
 input MunicipalServiceFiltersInput {
   and: [MunicipalServiceFiltersInput]
   buttonText: StringFilterInput
+  card: ComponentBlocksMunicipalServiceCardFiltersInput
   categories: MunicipalServiceCategoryFiltersInput
   color: StringFilterInput
   createdAt: DateTimeFilterInput
@@ -1419,6 +1492,7 @@ input MunicipalServiceFiltersInput {
 
 input MunicipalServiceInput {
   buttonText: String
+  card: ComponentBlocksMunicipalServiceCardInput
   categories: [ID]
   color: ENUM_MUNICIPALSERVICE_COLOR
   description: String

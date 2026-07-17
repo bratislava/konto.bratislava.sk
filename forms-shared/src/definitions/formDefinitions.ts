@@ -683,7 +683,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
     title: 'Nahlásenie podnetu k elektrickým kolobežkám',
-    jsonVersion: '1.0.2',
+    jsonVersion: '1.0.3',
     schema: nahlaseniePodnetuKElektrickymKolobezkam,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     subject: {

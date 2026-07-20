@@ -26,6 +26,16 @@ fragment MunicipalServiceLink on ComponentBlocksMunicipalServiceLink {
   url
 }
 
+# TODO consolidate with MunicipalServiceCardEntity when old fields are removed
+fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
+  id
+  overrideTitle
+  text
+  linkLabel
+  pictogram
+  color
+}
+
 fragment MunicipalServiceSlugEntity on MunicipalService {
   documentId
   title

@@ -161,6 +161,65 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksMunicipalServiceCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_municipal_service_cards'
+  info: {
+    displayName: 'municipalServiceCard'
+  }
+  attributes: {
+    color: Schema.Attribute.Enumeration<
+      [
+        'main',
+        'transport',
+        'environment',
+        'social',
+        'education',
+        'culture',
+        'marianum',
+        'olo',
+        'tsb',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'main'>
+    linkLabel: Schema.Attribute.String & Schema.Attribute.Required
+    overrideTitle: Schema.Attribute.String
+    pictogram: Schema.Attribute.Enumeration<
+      [
+        'administration',
+        'public-space-occupation',
+        'taxes',
+        'cultural-organizations',
+        'events-support',
+        'library',
+        'zoo',
+        'kids-teenagers',
+        'swimming-pool',
+        'community-gardens',
+        'connector',
+        'front-gardens',
+        'greenery',
+        'lamp',
+        'spatial-planning',
+        'waste',
+        'security',
+        'marianum',
+        'mosquito',
+        'christmas-tree',
+        'housing',
+        'transport',
+        'excavations',
+        'management-communications',
+        'parking',
+        'towing',
+        'scooter',
+      ]
+    > &
+      Schema.Attribute.Required
+    text: Schema.Attribute.Text & Schema.Attribute.Required
+  }
+}
+
 export interface BlocksMunicipalServiceLink extends Struct.ComponentSchema {
   collectionName: 'components_blocks_municipal_service_links'
   info: {
@@ -335,6 +394,7 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.municipal-service-card': BlocksMunicipalServiceCard
       'blocks.municipal-service-link': BlocksMunicipalServiceLink
       'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert

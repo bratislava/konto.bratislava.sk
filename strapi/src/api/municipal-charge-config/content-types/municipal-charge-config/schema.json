@@ -21,6 +21,12 @@
       "type": "component",
       "component": "municipal-charge.municipal-charge-identifier",
       "repeatable": false
+    },
+    "paymentResultPage": {
+      "type": "component",
+      "component": "municipal-charge.payment-result-page",
+      "repeatable": false,
+      "required": true
     }
   }
 }

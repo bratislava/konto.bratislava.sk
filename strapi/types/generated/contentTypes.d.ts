@@ -441,6 +441,7 @@ export interface ApiFormForm extends Struct.CollectionTypeSchema {
   attributes: {
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    formSentPage: Schema.Attribute.Component<'blocks.form-sent-page', false>
     landingPage: Schema.Attribute.Component<'blocks.form-landing-page', false>
     locale: Schema.Attribute.String & Schema.Attribute.Private
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::form.form'> &
@@ -596,6 +597,8 @@ export interface ApiMunicipalChargeConfigMunicipalChargeConfig extends Struct.Si
       'municipal-charge.municipal-charge-identifier',
       false
     >
+    paymentResultPage: Schema.Attribute.Component<'municipal-charge.payment-result-page', false> &
+      Schema.Attribute.Required
     publishedAt: Schema.Attribute.DateTime
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private

@@ -283,6 +283,46 @@ input ComponentBlocksFormLandingPageLinkCtaInput {
   url: String
 }
 
+type ComponentBlocksFormSentButton {
+  id: ID!
+}
+
+input ComponentBlocksFormSentButtonFiltersInput {
+  and: [ComponentBlocksFormSentButtonFiltersInput]
+  not: ComponentBlocksFormSentButtonFiltersInput
+  or: [ComponentBlocksFormSentButtonFiltersInput]
+}
+
+input ComponentBlocksFormSentButtonInput {
+  id: ID
+}
+
+type ComponentBlocksFormSentPage {
+  content: String
+  id: ID!
+  primaryButton: ComponentBlocksCommonLink
+  secondaryButton: ComponentBlocksCommonLink
+  title: String!
+}
+
+input ComponentBlocksFormSentPageFiltersInput {
+  and: [ComponentBlocksFormSentPageFiltersInput]
+  content: StringFilterInput
+  not: ComponentBlocksFormSentPageFiltersInput
+  or: [ComponentBlocksFormSentPageFiltersInput]
+  primaryButton: ComponentBlocksCommonLinkFiltersInput
+  secondaryButton: ComponentBlocksCommonLinkFiltersInput
+  title: StringFilterInput
+}
+
+input ComponentBlocksFormSentPageInput {
+  content: String
+  id: ID
+  primaryButton: ComponentBlocksCommonLinkInput
+  secondaryButton: ComponentBlocksCommonLinkInput
+  title: String
+}
+
 type ComponentBlocksHelpCategory {
   id: ID!
   items(filters: ComponentBlocksHelpItemFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpItem]!
@@ -444,6 +484,58 @@ input ComponentMunicipalChargeMunicipalChargeIdentifierInput {
   dzn: ID
   id: ID
   ko: ID
+}
+
+type ComponentMunicipalChargePaymentResultPage {
+  failedToVerify: ComponentMunicipalChargePaymentResultPageContent!
+  id: ID!
+  paymentAlreadyPaid: ComponentMunicipalChargePaymentResultPageContent!
+  paymentFailed: ComponentMunicipalChargePaymentResultPageContent!
+  paymentSuccess: ComponentMunicipalChargePaymentResultPageContent!
+}
+
+type ComponentMunicipalChargePaymentResultPageContent {
+  content: String
+  id: ID!
+  primaryButton: ComponentBlocksCommonLink
+  secondaryButton: ComponentBlocksCommonLink
+  title: String!
+}
+
+input ComponentMunicipalChargePaymentResultPageContentFiltersInput {
+  and: [ComponentMunicipalChargePaymentResultPageContentFiltersInput]
+  content: StringFilterInput
+  not: ComponentMunicipalChargePaymentResultPageContentFiltersInput
+  or: [ComponentMunicipalChargePaymentResultPageContentFiltersInput]
+  primaryButton: ComponentBlocksCommonLinkFiltersInput
+  secondaryButton: ComponentBlocksCommonLinkFiltersInput
+  title: StringFilterInput
+}
+
+input ComponentMunicipalChargePaymentResultPageContentInput {
+  content: String
+  id: ID
+  primaryButton: ComponentBlocksCommonLinkInput
+  secondaryButton: ComponentBlocksCommonLinkInput
+  title: String
+}
+
+input ComponentMunicipalChargePaymentResultPageFiltersInput {
+  and: [ComponentMunicipalChargePaymentResultPageFiltersInput]
+  failedToVerify: ComponentMunicipalChargePaymentResultPageContentFiltersInput
+  not: ComponentMunicipalChargePaymentResultPageFiltersInput
+  or: [ComponentMunicipalChargePaymentResultPageFiltersInput]
+  paymentAlreadyPaid: ComponentMunicipalChargePaymentResultPageContentFiltersInput
+  paymentFailed: ComponentMunicipalChargePaymentResultPageContentFiltersInput
+  paymentSuccess: ComponentMunicipalChargePaymentResultPageContentFiltersInput
+}
+
+input ComponentMunicipalChargePaymentResultPageInput {
+  failedToVerify: ComponentMunicipalChargePaymentResultPageContentInput
+  id: ID
+  paymentAlreadyPaid: ComponentMunicipalChargePaymentResultPageContentInput
+  paymentFailed: ComponentMunicipalChargePaymentResultPageContentInput
+  paymentSuccess: ComponentMunicipalChargePaymentResultPageContentInput
 }
 
 type ComponentSectionsContacts {
@@ -814,6 +906,7 @@ type FooterRelationResponseCollection {
 type Form {
   createdAt: DateTime
   documentId: ID!
+  formSentPage: ComponentBlocksFormSentPage
   landingPage: ComponentBlocksFormLandingPage
   moreInformationUrl: String
   municipalService: MunicipalService
@@ -840,6 +933,7 @@ input FormFiltersInput {
   and: [FormFiltersInput]
   createdAt: DateTimeFilterInput
   documentId: IDFilterInput
+  formSentPage: ComponentBlocksFormSentPageFiltersInput
   landingPage: ComponentBlocksFormLandingPageFiltersInput
   moreInformationUrl: StringFilterInput
   municipalService: MunicipalServiceFiltersInput
@@ -851,6 +945,7 @@ input FormFiltersInput {
 }
 
 input FormInput {
+  formSentPage: ComponentBlocksFormSentPageInput
   landingPage: ComponentBlocksFormLandingPageInput
   moreInformationUrl: String
   municipalService: ID
@@ -903,7 +998,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksFormSentButton | ComponentBlocksFormSentPage | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentMunicipalChargePaymentResultPage | ComponentMunicipalChargePaymentResultPageContent | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -1229,6 +1324,7 @@ type MunicipalChargeConfig {
   deliveryMethod: ComponentMunicipalChargeDeliveryMethod!
   documentId: ID!
   municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifier
+  paymentResultPage: ComponentMunicipalChargePaymentResultPage!
   publishedAt: DateTime
   updatedAt: DateTime
 }
@@ -1254,6 +1350,7 @@ input MunicipalChargeConfigFiltersInput {
   municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput
   not: MunicipalChargeConfigFiltersInput
   or: [MunicipalChargeConfigFiltersInput]
+  paymentResultPage: ComponentMunicipalChargePaymentResultPageFiltersInput
   publishedAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
 }
@@ -1261,6 +1358,7 @@ input MunicipalChargeConfigFiltersInput {
 input MunicipalChargeConfigInput {
   deliveryMethod: ComponentMunicipalChargeDeliveryMethodInput
   municipalChargeIdentifier: ComponentMunicipalChargeMunicipalChargeIdentifierInput
+  paymentResultPage: ComponentMunicipalChargePaymentResultPageInput
   publishedAt: DateTime
 }
 

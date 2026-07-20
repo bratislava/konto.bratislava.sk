@@ -138,6 +138,27 @@ export interface BlocksFormLandingPageLinkCta extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksFormSentButton extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_form_sent_buttons'
+  info: {
+    displayName: 'formSentButton'
+  }
+  attributes: {}
+}
+
+export interface BlocksFormSentPage extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_form_sent_pages'
+  info: {
+    displayName: 'formSentPage'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    primaryButton: Schema.Attribute.Component<'blocks.common-link', false>
+    secondaryButton: Schema.Attribute.Component<'blocks.common-link', false>
+    title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
 export interface BlocksHelpCategory extends Struct.ComponentSchema {
   collectionName: 'components_blocks_help_categories'
   info: {
@@ -229,6 +250,48 @@ export interface MunicipalChargeMunicipalChargeIdentifier extends Struct.Compone
   attributes: {
     dzn: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
     ko: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
+  }
+}
+
+export interface MunicipalChargePaymentResultPage extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_payment_result_pages'
+  info: {
+    displayName: 'paymentResultPage'
+  }
+  attributes: {
+    failedToVerify: Schema.Attribute.Component<
+      'municipal-charge.payment-result-page-content',
+      false
+    > &
+      Schema.Attribute.Required
+    paymentAlreadyPaid: Schema.Attribute.Component<
+      'municipal-charge.payment-result-page-content',
+      false
+    > &
+      Schema.Attribute.Required
+    paymentFailed: Schema.Attribute.Component<
+      'municipal-charge.payment-result-page-content',
+      false
+    > &
+      Schema.Attribute.Required
+    paymentSuccess: Schema.Attribute.Component<
+      'municipal-charge.payment-result-page-content',
+      false
+    > &
+      Schema.Attribute.Required
+  }
+}
+
+export interface MunicipalChargePaymentResultPageContent extends Struct.ComponentSchema {
+  collectionName: 'components_municipal_charge_payment_result_page_contents'
+  info: {
+    displayName: 'paymentResultPageContent'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    primaryButton: Schema.Attribute.Component<'blocks.common-link', false>
+    secondaryButton: Schema.Attribute.Component<'blocks.common-link', false>
+    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
@@ -332,6 +395,8 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
+      'blocks.form-sent-button': BlocksFormSentButton
+      'blocks.form-sent-page': BlocksFormSentPage
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'blocks.municipal-service-link': BlocksMunicipalServiceLink
@@ -340,6 +405,8 @@ declare module '@strapi/strapi' {
       'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod
       'municipal-charge.delivery-method-change-pending-alert': MunicipalChargeDeliveryMethodChangePendingAlert
       'municipal-charge.municipal-charge-identifier': MunicipalChargeMunicipalChargeIdentifier
+      'municipal-charge.payment-result-page': MunicipalChargePaymentResultPage
+      'municipal-charge.payment-result-page-content': MunicipalChargePaymentResultPageContent
       'sections.contacts': SectionsContacts
       'sections.documents': SectionsDocuments
       'sections.faq': SectionsFaq

@@ -114,11 +114,19 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.title",
+          "formSentPage.content",
+          "formSentPage.primaryButton.label",
+          "formSentPage.primaryButton.municipalService",
+          "formSentPage.primaryButton.url",
+          "formSentPage.secondaryButton.label",
+          "formSentPage.secondaryButton.municipalService",
+          "formSentPage.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "ngz8bhks143ivvzxwt8d21ar",
+      "documentId": "j80umt2ttikmb3cl7wzl78o6",
       "locale": null
     },
     {
@@ -155,11 +163,19 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.title",
+          "formSentPage.content",
+          "formSentPage.primaryButton.label",
+          "formSentPage.primaryButton.municipalService",
+          "formSentPage.primaryButton.url",
+          "formSentPage.secondaryButton.label",
+          "formSentPage.secondaryButton.municipalService",
+          "formSentPage.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "vgmy0g413dckqxplco7j6si1",
+      "documentId": "kuxdbbed9tzx3vn0wrxxkuof",
       "locale": null
     },
     {
@@ -178,11 +194,19 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.title",
+          "formSentPage.content",
+          "formSentPage.primaryButton.label",
+          "formSentPage.primaryButton.municipalService",
+          "formSentPage.primaryButton.url",
+          "formSentPage.secondaryButton.label",
+          "formSentPage.secondaryButton.municipalService",
+          "formSentPage.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "hjrgs4sxnt2xyhhiw5wiwp7j",
+      "documentId": "sydrt01jyded2t7438dv2xvq",
       "locale": null
     },
     {
@@ -465,11 +489,43 @@
           "deliveryMethod.deliveryMethodChangePendingAlert.title",
           "deliveryMethod.deliveryMethodChangePendingAlert.content",
           "municipalChargeIdentifier.dzn",
-          "municipalChargeIdentifier.ko"
+          "municipalChargeIdentifier.ko",
+          "paymentResultPage.paymentSuccess.title",
+          "paymentResultPage.paymentSuccess.content",
+          "paymentResultPage.paymentSuccess.primaryButton.label",
+          "paymentResultPage.paymentSuccess.primaryButton.municipalService",
+          "paymentResultPage.paymentSuccess.primaryButton.url",
+          "paymentResultPage.paymentSuccess.secondaryButton.label",
+          "paymentResultPage.paymentSuccess.secondaryButton.municipalService",
+          "paymentResultPage.paymentSuccess.secondaryButton.url",
+          "paymentResultPage.paymentAlreadyPaid.title",
+          "paymentResultPage.paymentAlreadyPaid.content",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.label",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.municipalService",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.url",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.label",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.municipalService",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.url",
+          "paymentResultPage.failedToVerify.title",
+          "paymentResultPage.failedToVerify.content",
+          "paymentResultPage.failedToVerify.primaryButton.label",
+          "paymentResultPage.failedToVerify.primaryButton.municipalService",
+          "paymentResultPage.failedToVerify.primaryButton.url",
+          "paymentResultPage.failedToVerify.secondaryButton.label",
+          "paymentResultPage.failedToVerify.secondaryButton.municipalService",
+          "paymentResultPage.failedToVerify.secondaryButton.url",
+          "paymentResultPage.paymentFailed.title",
+          "paymentResultPage.paymentFailed.content",
+          "paymentResultPage.paymentFailed.primaryButton.label",
+          "paymentResultPage.paymentFailed.primaryButton.municipalService",
+          "paymentResultPage.paymentFailed.primaryButton.url",
+          "paymentResultPage.paymentFailed.secondaryButton.label",
+          "paymentResultPage.paymentFailed.secondaryButton.municipalService",
+          "paymentResultPage.paymentFailed.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "k3uo43zch4s6f4sk875fzow7",
+      "documentId": "ombrh07poqi8j0w2e9yplhf4",
       "locale": null
     },
     {
@@ -500,11 +556,43 @@
           "deliveryMethod.deliveryMethodChangePendingAlert.title",
           "deliveryMethod.deliveryMethodChangePendingAlert.content",
           "municipalChargeIdentifier.dzn",
-          "municipalChargeIdentifier.ko"
+          "municipalChargeIdentifier.ko",
+          "paymentResultPage.paymentSuccess.title",
+          "paymentResultPage.paymentSuccess.content",
+          "paymentResultPage.paymentSuccess.primaryButton.label",
+          "paymentResultPage.paymentSuccess.primaryButton.municipalService",
+          "paymentResultPage.paymentSuccess.primaryButton.url",
+          "paymentResultPage.paymentSuccess.secondaryButton.label",
+          "paymentResultPage.paymentSuccess.secondaryButton.municipalService",
+          "paymentResultPage.paymentSuccess.secondaryButton.url",
+          "paymentResultPage.paymentAlreadyPaid.title",
+          "paymentResultPage.paymentAlreadyPaid.content",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.label",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.municipalService",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.url",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.label",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.municipalService",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.url",
+          "paymentResultPage.failedToVerify.title",
+          "paymentResultPage.failedToVerify.content",
+          "paymentResultPage.failedToVerify.primaryButton.label",
+          "paymentResultPage.failedToVerify.primaryButton.municipalService",
+          "paymentResultPage.failedToVerify.primaryButton.url",
+          "paymentResultPage.failedToVerify.secondaryButton.label",
+          "paymentResultPage.failedToVerify.secondaryButton.municipalService",
+          "paymentResultPage.failedToVerify.secondaryButton.url",
+          "paymentResultPage.paymentFailed.title",
+          "paymentResultPage.paymentFailed.content",
+          "paymentResultPage.paymentFailed.primaryButton.label",
+          "paymentResultPage.paymentFailed.primaryButton.municipalService",
+          "paymentResultPage.paymentFailed.primaryButton.url",
+          "paymentResultPage.paymentFailed.secondaryButton.label",
+          "paymentResultPage.paymentFailed.secondaryButton.municipalService",
+          "paymentResultPage.paymentFailed.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "doh1a4ft1gvcrbb5u9ergl7z",
+      "documentId": "ebotnem3059g92g9d9klj8wj",
       "locale": null
     },
     {
@@ -517,11 +605,43 @@
           "deliveryMethod.deliveryMethodChangePendingAlert.title",
           "deliveryMethod.deliveryMethodChangePendingAlert.content",
           "municipalChargeIdentifier.dzn",
-          "municipalChargeIdentifier.ko"
+          "municipalChargeIdentifier.ko",
+          "paymentResultPage.paymentSuccess.title",
+          "paymentResultPage.paymentSuccess.content",
+          "paymentResultPage.paymentSuccess.primaryButton.label",
+          "paymentResultPage.paymentSuccess.primaryButton.municipalService",
+          "paymentResultPage.paymentSuccess.primaryButton.url",
+          "paymentResultPage.paymentSuccess.secondaryButton.label",
+          "paymentResultPage.paymentSuccess.secondaryButton.municipalService",
+          "paymentResultPage.paymentSuccess.secondaryButton.url",
+          "paymentResultPage.paymentAlreadyPaid.title",
+          "paymentResultPage.paymentAlreadyPaid.content",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.label",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.municipalService",
+          "paymentResultPage.paymentAlreadyPaid.primaryButton.url",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.label",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.municipalService",
+          "paymentResultPage.paymentAlreadyPaid.secondaryButton.url",
+          "paymentResultPage.failedToVerify.title",
+          "paymentResultPage.failedToVerify.content",
+          "paymentResultPage.failedToVerify.primaryButton.label",
+          "paymentResultPage.failedToVerify.primaryButton.municipalService",
+          "paymentResultPage.failedToVerify.primaryButton.url",
+          "paymentResultPage.failedToVerify.secondaryButton.label",
+          "paymentResultPage.failedToVerify.secondaryButton.municipalService",
+          "paymentResultPage.failedToVerify.secondaryButton.url",
+          "paymentResultPage.paymentFailed.title",
+          "paymentResultPage.paymentFailed.content",
+          "paymentResultPage.paymentFailed.primaryButton.label",
+          "paymentResultPage.paymentFailed.primaryButton.municipalService",
+          "paymentResultPage.paymentFailed.primaryButton.url",
+          "paymentResultPage.paymentFailed.secondaryButton.label",
+          "paymentResultPage.paymentFailed.secondaryButton.municipalService",
+          "paymentResultPage.paymentFailed.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "sk8jimxnt33yn9x4rwfdmydr",
+      "documentId": "mnhzf433ogbv37o7o858xkdp",
       "locale": null
     },
     {
@@ -732,7 +852,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "lv83t0o7zvh6nvmh2141epe7",
+      "documentId": "fvcy1ma2zfct5026nkzjrdjo",
       "locale": null
     },
     {
@@ -778,7 +898,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "su96u0kd5v907bfw4ner3ibl",
+      "documentId": "yh8vrf204vug98fkdubjk5b4",
       "locale": null
     },
     {
@@ -806,7 +926,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "y152m7fjcgcz3hcljtqwxdvx",
+      "documentId": "qbcfsgkxey2ivihn7c2uzsr8",
       "locale": null
     },
     {

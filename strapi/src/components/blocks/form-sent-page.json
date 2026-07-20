@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_blocks_form_sent_pages",
+  "info": {
+    "displayName": "formSentPage"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "primaryButton": {
+      "type": "component",
+      "component": "blocks.common-link",
+      "repeatable": false
+    },
+    "secondaryButton": {
+      "type": "component",
+      "component": "blocks.common-link",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

@@ -26,6 +26,16 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
 fragment FormBase on Form {
   slug
   moreInformationUrl
+  formSentPage {
+    title
+    content
+    primaryButton {
+      ...CommonLink
+    }
+    secondaryButton {
+      ...CommonLink
+    }
+  }
 }
 
 fragment FormWithLandingPage on Form {

@@ -34,6 +34,21 @@
           "sortable": true
         }
       },
+      "municipalService": {
+        "edit": {
+          "label": "Mestská služba",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "title"
+        },
+        "list": {
+          "label": "municipalService",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "moreInformationUrl": {
         "edit": {
           "label": "Odkaz pre viac informácií o službe",
@@ -62,19 +77,18 @@
           "sortable": false
         }
       },
-      "municipalService": {
+      "formSentPage": {
         "edit": {
-          "label": "Mestská služba",
+          "label": "Stránka po odoslaní formuláru",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
-          "label": "municipalService",
-          "searchable": true,
-          "sortable": true
+          "label": "formSentPage",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -145,6 +159,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "slug",
+        "updatedAt",
+        "moreInformationUrl",
+        "municipalService"
+      ],
       "edit": [
         [
           {
@@ -165,14 +186,13 @@
             "name": "municipalService",
             "size": 12
           }
+        ],
+        [
+          {
+            "name": "formSentPage",
+            "size": 12
+          }
         ]
-      ],
-      "list": [
-        "id",
-        "slug",
-        "updatedAt",
-        "moreInformationUrl",
-        "municipalService"
       ]
     },
     "uid": "api::form.form"

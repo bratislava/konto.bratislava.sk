@@ -53,6 +53,7 @@ export class TowingSearchResponseDto {
   @ApiPropertyOptional({
     description: 'Reason for towing. Raw enum value - clients render the localized label.',
     enum: TowReason,
+    example: TowReason.RESERVED_PARKING,
     enumName: 'TowReason',
   })
   towReason?: TowReason

@@ -361,6 +361,7 @@ export type ComponentBlocksFormSentButtonInput = {
 
 export type ComponentBlocksFormSentPage = {
   __typename?: 'ComponentBlocksFormSentPage'
+  alert?: Maybe<ComponentBlocksFormSentPageAlert>
   content?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
   primaryButton?: Maybe<ComponentBlocksCommonLink>
@@ -368,7 +369,29 @@ export type ComponentBlocksFormSentPage = {
   title: Scalars['String']['output']
 }
 
+export type ComponentBlocksFormSentPageAlert = {
+  __typename?: 'ComponentBlocksFormSentPageAlert'
+  content?: Maybe<Scalars['String']['output']>
+  id: Scalars['ID']['output']
+  title?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksFormSentPageAlertFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentPageAlertFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksFormSentPageAlertFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentPageAlertFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksFormSentPageAlertInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksFormSentPageFiltersInput = {
+  alert?: InputMaybe<ComponentBlocksFormSentPageAlertFiltersInput>
   and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentPageFiltersInput>>>
   content?: InputMaybe<StringFilterInput>
   not?: InputMaybe<ComponentBlocksFormSentPageFiltersInput>
@@ -379,6 +402,7 @@ export type ComponentBlocksFormSentPageFiltersInput = {
 }
 
 export type ComponentBlocksFormSentPageInput = {
+  alert?: InputMaybe<ComponentBlocksFormSentPageAlertInput>
   content?: InputMaybe<Scalars['String']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
   primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
@@ -1192,6 +1216,7 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksFormSentButton
   | ComponentBlocksFormSentPage
+  | ComponentBlocksFormSentPageAlert
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentBlocksMunicipalServiceLink
@@ -3234,6 +3259,61 @@ export type FormLandingPageFormCtaFragment = {
   buttonLabel: string
 }
 
+export type FormSentPageFragment = {
+  __typename?: 'ComponentBlocksFormSentPage'
+  title: string
+  content?: string | null
+  alert?: {
+    __typename?: 'ComponentBlocksFormSentPageAlert'
+    title?: string | null
+    content?: string | null
+  } | null
+  primaryButton?: {
+    __typename?: 'ComponentBlocksCommonLink'
+    label?: string | null
+    url?: string | null
+    municipalService?: {
+      __typename?: 'MunicipalService'
+      title: string
+      slug: string
+      href?: string | null
+      form?: { __typename?: 'Form'; documentId: string } | null
+      sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
+        | { __typename: 'ComponentSectionsDocuments' }
+        | { __typename: 'ComponentSectionsFaq' }
+        | { __typename: 'ComponentSectionsRichtext' }
+        | { __typename: 'ComponentSectionsStepper' }
+        | { __typename: 'ComponentSectionsTowing' }
+        | { __typename: 'Error' }
+        | null
+      > | null
+    } | null
+  } | null
+  secondaryButton?: {
+    __typename?: 'ComponentBlocksCommonLink'
+    label?: string | null
+    url?: string | null
+    municipalService?: {
+      __typename?: 'MunicipalService'
+      title: string
+      slug: string
+      href?: string | null
+      form?: { __typename?: 'Form'; documentId: string } | null
+      sections?: Array<
+        | { __typename: 'ComponentSectionsContacts' }
+        | { __typename: 'ComponentSectionsDocuments' }
+        | { __typename: 'ComponentSectionsFaq' }
+        | { __typename: 'ComponentSectionsRichtext' }
+        | { __typename: 'ComponentSectionsStepper' }
+        | { __typename: 'ComponentSectionsTowing' }
+        | { __typename: 'Error' }
+        | null
+      > | null
+    } | null
+  } | null
+}
+
 export type FormLandingPageFragment = {
   __typename?: 'ComponentBlocksFormLandingPage'
   text?: string | null
@@ -3261,6 +3341,11 @@ export type FormBaseFragment = {
     __typename?: 'ComponentBlocksFormSentPage'
     title: string
     content?: string | null
+    alert?: {
+      __typename?: 'ComponentBlocksFormSentPageAlert'
+      title?: string | null
+      content?: string | null
+    } | null
     primaryButton?: {
       __typename?: 'ComponentBlocksCommonLink'
       label?: string | null
@@ -3334,6 +3419,11 @@ export type FormWithLandingPageFragment = {
     __typename?: 'ComponentBlocksFormSentPage'
     title: string
     content?: string | null
+    alert?: {
+      __typename?: 'ComponentBlocksFormSentPageAlert'
+      title?: string | null
+      content?: string | null
+    } | null
     primaryButton?: {
       __typename?: 'ComponentBlocksCommonLink'
       label?: string | null
@@ -3396,6 +3486,11 @@ export type FormBaseBySlugQuery = {
       __typename?: 'ComponentBlocksFormSentPage'
       title: string
       content?: string | null
+      alert?: {
+        __typename?: 'ComponentBlocksFormSentPageAlert'
+        title?: string | null
+        content?: string | null
+      } | null
       primaryButton?: {
         __typename?: 'ComponentBlocksCommonLink'
         label?: string | null
@@ -3477,6 +3572,11 @@ export type FormWithLandingPageBySlugQuery = {
       __typename?: 'ComponentBlocksFormSentPage'
       title: string
       content?: string | null
+      alert?: {
+        __typename?: 'ComponentBlocksFormSentPageAlert'
+        title?: string | null
+        content?: string | null
+      } | null
       primaryButton?: {
         __typename?: 'ComponentBlocksCommonLink'
         label?: string | null
@@ -4536,6 +4636,11 @@ export type MunicipalServiceEntityFragment = {
       __typename?: 'ComponentBlocksFormSentPage'
       title: string
       content?: string | null
+      alert?: {
+        __typename?: 'ComponentBlocksFormSentPageAlert'
+        title?: string | null
+        content?: string | null
+      } | null
       primaryButton?: {
         __typename?: 'ComponentBlocksCommonLink'
         label?: string | null
@@ -4744,6 +4849,11 @@ export type MunicipalServiceBySlugQuery = {
         __typename?: 'ComponentBlocksFormSentPage'
         title: string
         content?: string | null
+        alert?: {
+          __typename?: 'ComponentBlocksFormSentPageAlert'
+          title?: string | null
+          content?: string | null
+        } | null
         primaryButton?: {
           __typename?: 'ComponentBlocksCommonLink'
           label?: string | null
@@ -4953,6 +5063,11 @@ export type MunicipalServicesPageQuery = {
           __typename?: 'ComponentBlocksFormSentPage'
           title: string
           content?: string | null
+          alert?: {
+            __typename?: 'ComponentBlocksFormSentPageAlert'
+            title?: string | null
+            content?: string | null
+          } | null
           primaryButton?: {
             __typename?: 'ComponentBlocksCommonLink'
             label?: string | null
@@ -5154,6 +5269,11 @@ export type MunicipalServicesPageQuery = {
           __typename?: 'ComponentBlocksFormSentPage'
           title: string
           content?: string | null
+          alert?: {
+            __typename?: 'ComponentBlocksFormSentPageAlert'
+            title?: string | null
+            content?: string | null
+          } | null
           primaryButton?: {
             __typename?: 'ComponentBlocksCommonLink'
             label?: string | null
@@ -5798,22 +5918,32 @@ export const MunicipalServiceCardEntityFragmentDoc = gql`
   ${MunicipalServiceRedirectFragmentDoc}
   ${MunicipalServiceTagEntityFragmentDoc}
 `
+export const FormSentPageFragmentDoc = gql`
+  fragment FormSentPage on ComponentBlocksFormSentPage {
+    title
+    content
+    alert {
+      title
+      content
+    }
+    primaryButton {
+      ...CommonLink
+    }
+    secondaryButton {
+      ...CommonLink
+    }
+  }
+  ${CommonLinkFragmentDoc}
+`
 export const FormBaseFragmentDoc = gql`
   fragment FormBase on Form {
     slug
     moreInformationUrl
     formSentPage {
-      title
-      content
-      primaryButton {
-        ...CommonLink
-      }
-      secondaryButton {
-        ...CommonLink
-      }
+      ...FormSentPage
     }
   }
-  ${CommonLinkFragmentDoc}
+  ${FormSentPageFragmentDoc}
 `
 export const FormLandingPageLinkCtaFragmentDoc = gql`
   fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {

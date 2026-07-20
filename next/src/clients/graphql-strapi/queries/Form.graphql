@@ -13,6 +13,22 @@ fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
   text
   buttonLabel
 }
+
+fragment FormSentPage on ComponentBlocksFormSentPage {
+  title
+  content
+  alert {
+    title
+    content
+  }
+  primaryButton {
+    ...CommonLink
+  }
+  secondaryButton {
+    ...CommonLink
+  }
+}
+
 fragment FormLandingPage on ComponentBlocksFormLandingPage {
   text
   linkCtas {
@@ -27,14 +43,7 @@ fragment FormBase on Form {
   slug
   moreInformationUrl
   formSentPage {
-    title
-    content
-    primaryButton {
-      ...CommonLink
-    }
-    secondaryButton {
-      ...CommonLink
-    }
+    ...FormSentPage
   }
 }
 

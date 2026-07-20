@@ -152,10 +152,22 @@ export interface BlocksFormSentPage extends Struct.ComponentSchema {
     displayName: 'formSentPage'
   }
   attributes: {
+    alert: Schema.Attribute.Component<'blocks.form-sent-page-alert', false>
     content: Schema.Attribute.RichText
     primaryButton: Schema.Attribute.Component<'blocks.common-link', false>
     secondaryButton: Schema.Attribute.Component<'blocks.common-link', false>
     title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksFormSentPageAlert extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_form_sent_page_alerts'
+  info: {
+    displayName: 'formSentPageAlert'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
   }
 }
 
@@ -397,6 +409,7 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.form-sent-button': BlocksFormSentButton
       'blocks.form-sent-page': BlocksFormSentPage
+      'blocks.form-sent-page-alert': BlocksFormSentPageAlert
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'blocks.municipal-service-link': BlocksMunicipalServiceLink

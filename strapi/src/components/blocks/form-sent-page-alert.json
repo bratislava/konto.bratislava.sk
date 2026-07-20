@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_form_sent_page_alerts",
+  "info": {
+    "displayName": "formSentPageAlert"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    }
+  },
+  "config": {}
+}

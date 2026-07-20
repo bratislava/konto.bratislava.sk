@@ -1,5 +1,5 @@
 {
-  "key": "plugin_content_manager_configuration_components::blocks.form-sent-page",
+  "key": "plugin_content_manager_configuration_components::blocks.form-sent-page-alert",
   "value": {
     "settings": {
       "bulkable": true,
@@ -48,51 +48,6 @@
           "sortable": false
         }
       },
-      "alert": {
-        "edit": {
-          "label": "Alert",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "title"
-        },
-        "list": {
-          "label": "alert",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "primaryButton": {
-        "edit": {
-          "label": "Button (primary)",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "label"
-        },
-        "list": {
-          "label": "primaryButton",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "secondaryButton": {
-        "edit": {
-          "label": "Button (secondary)",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "label"
-        },
-        "list": {
-          "label": "secondaryButton",
-          "searchable": false,
-          "sortable": false
-        }
-      },
       "documentId": {
         "edit": {},
         "list": {
@@ -115,34 +70,14 @@
             "name": "content",
             "size": 12
           }
-        ],
-        [
-          {
-            "name": "alert",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "primaryButton",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "secondaryButton",
-            "size": 12
-          }
         ]
       ],
       "list": [
         "id",
-        "title",
-        "primaryButton",
-        "secondaryButton"
+        "title"
       ]
     },
-    "uid": "blocks.form-sent-page",
+    "uid": "blocks.form-sent-page-alert",
     "isComponent": true
   },
   "type": "object",

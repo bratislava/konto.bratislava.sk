@@ -21,11 +21,21 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.title",
+          "formSentPage.content",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content",
+          "formSentPage.primaryButton.label",
+          "formSentPage.primaryButton.municipalService",
+          "formSentPage.primaryButton.url",
+          "formSentPage.secondaryButton.label",
+          "formSentPage.secondaryButton.municipalService",
+          "formSentPage.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "odqcr1v9lz4zo1mzs7f1tjxs",
+      "documentId": "qnawhsiagf83rjtgou7i3r7i",
       "locale": null
     },
     {
@@ -44,11 +54,21 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.title",
+          "formSentPage.content",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content",
+          "formSentPage.primaryButton.label",
+          "formSentPage.primaryButton.municipalService",
+          "formSentPage.primaryButton.url",
+          "formSentPage.secondaryButton.label",
+          "formSentPage.secondaryButton.municipalService",
+          "formSentPage.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "gknp3gbc9b92169spwm8rwb7",
+      "documentId": "n3hna2f1unsc1bcp6t3cj77c",
       "locale": null
     },
     {
@@ -67,11 +87,21 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.title",
+          "formSentPage.content",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content",
+          "formSentPage.primaryButton.label",
+          "formSentPage.primaryButton.municipalService",
+          "formSentPage.primaryButton.url",
+          "formSentPage.secondaryButton.label",
+          "formSentPage.secondaryButton.municipalService",
+          "formSentPage.secondaryButton.url"
         ]
       },
       "conditions": [],
-      "documentId": "e31y47k13zsqiw642gjmq7g9",
+      "documentId": "zac2fxkhljsz70c50fcpvcq5",
       "locale": null
     },
     {

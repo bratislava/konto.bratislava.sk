@@ -117,6 +117,8 @@
           "landingPage.formCta.buttonLabel",
           "formSentPage.title",
           "formSentPage.content",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content",
           "formSentPage.primaryButton.label",
           "formSentPage.primaryButton.municipalService",
           "formSentPage.primaryButton.url",
@@ -126,7 +128,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "j80umt2ttikmb3cl7wzl78o6",
+      "documentId": "hkapny5152cwi91zmzhvuqbo",
       "locale": null
     },
     {
@@ -166,6 +168,8 @@
           "landingPage.formCta.buttonLabel",
           "formSentPage.title",
           "formSentPage.content",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content",
           "formSentPage.primaryButton.label",
           "formSentPage.primaryButton.municipalService",
           "formSentPage.primaryButton.url",
@@ -175,7 +179,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "kuxdbbed9tzx3vn0wrxxkuof",
+      "documentId": "s8o29ckfqc3cuvekqtfvwb13",
       "locale": null
     },
     {
@@ -197,6 +201,8 @@
           "landingPage.formCta.buttonLabel",
           "formSentPage.title",
           "formSentPage.content",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content",
           "formSentPage.primaryButton.label",
           "formSentPage.primaryButton.municipalService",
           "formSentPage.primaryButton.url",
@@ -206,7 +212,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "sydrt01jyded2t7438dv2xvq",
+      "documentId": "ty35begmt8kw5nxj3xl8werz",
       "locale": null
     },
     {

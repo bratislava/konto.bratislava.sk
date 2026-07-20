@@ -57,7 +57,7 @@ export class NorisDeliveryMethodService {
     return this.getBirthNumbersWithUpdatedDeliveryMethods(updatedSubjects.flat())
   }
 
-  private async executeDeliveryMethodUpdate(
+  async executeDeliveryMethodUpdate(
     connection: mssql.ConnectionPool,
     dataItem: UpdateNorisDeliveryMethods
   ): Promise<NorisDeliveryMethodsUpdateResult[]> {

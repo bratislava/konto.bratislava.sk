@@ -44,17 +44,7 @@ export class BloomreachPayloadBuilder {
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
 
-    let contactId: string | undefined
-
-    if (isIdentityVerified) {
-      const { birthNumber, ico } = await this.userIdentitySubservice.getVerifiedIdentifiers(
-        user.idUser,
-        accountType
-      )
-      if (birthNumber) {
-        contactId = await this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
-      }
-    }
+    const contactId = await this.resolveContactId(user, accountType, isIdentityVerified)
 
     if (contactId && phoneNumber) {
       await this.bloomreachContactDatabaseService.addPhone(contactId, phoneNumber)
@@ -78,7 +68,7 @@ export class BloomreachPayloadBuilder {
           ...(firstName && { first_name: firstName }),
           ...(lastName && { last_name: lastName }),
           ...(name && { name }),
-          ...(accountType && { person_type: accountType }),
+          person_type: accountType,
           ...(registrationDate && { registration_date: registrationDate.toISOString() }),
           ...(email && { email }),
           ...(phoneNumber && { phone: phoneNumber }),
@@ -90,6 +80,26 @@ export class BloomreachPayloadBuilder {
         },
       },
     }
+  }
+
+  private async resolveContactId(
+    user: Awaited<ReturnType<CognitoSubservice['getDataFromCognito']>>,
+    accountType: CognitoUserAccountTypesEnum,
+    isIdentityVerified: boolean
+  ): Promise<string | undefined> {
+    if (!isIdentityVerified) {
+      return undefined
+    }
+
+    const { birthNumber, ico } = await this.userIdentitySubservice.getVerifiedIdentifiers(
+      user.idUser,
+      accountType
+    )
+    if (!birthNumber) {
+      return undefined
+    }
+
+    return this.bloomreachContactDatabaseService.upsert(user.email, birthNumber, ico)
   }
 
   buildAnonymizeCommand(externalId: string): BloomreachCustomerCommand {

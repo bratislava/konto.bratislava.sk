@@ -10,7 +10,7 @@ import * as crypto from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import * as tokenSerialization from '../utils/tokenSerialization'
 import { TokenData } from '../utils/tokenSerialization'
-import { TokenRequestUnion } from './dtos/requests.oauth2.dto'
+import { TokenRequestDto } from './dtos/requests.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { OAuth2Exception } from './oauth2.exception'
 import { OAuth2Service } from './oauth2.service'
@@ -226,15 +226,14 @@ describe('OAuth2Service', () => {
       jest
         .spyOn(cognitoSubservice, 'refreshTokens')
         .mockResolvedValue({ accessToken: 'fresh-at', idToken: undefined })
-      let storedExpiry: Date | undefined
-      jest.spyOn(prisma.oAuth2Data, 'update').mockImplementation((arg: any) => {
-        storedExpiry = arg.data.accessTokenExpiresAt
-        return {} as any
-      })
+      const updateSpy = jest
+        .spyOn(prisma.oAuth2Data, 'update')
+        .mockResolvedValue(oauth2DataFactory())
 
       const before = Date.now()
       await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
 
+      const storedExpiry = updateSpy.mock.calls[0][0].data.accessTokenExpiresAt as Date | undefined
       expect(storedExpiry?.getTime()).toBeGreaterThanOrEqual(before + 60 * 60 * 1000)
       expect(storedExpiry?.getTime()).toBeLessThanOrEqual(Date.now() + 60 * 60 * 1000)
     })
@@ -267,7 +266,7 @@ describe('OAuth2Service', () => {
         'Authorization server error: failed to process tokens',
         undefined,
         'Failed to refresh tokens via Cognito',
-        { error: expect.any(Error), authRequestId: 'auth-req-id' }
+        { error: expectAny<Error>(Error), authRequestId: 'auth-req-id' }
       )
       expect(prisma.oAuth2Data.update).not.toHaveBeenCalled()
     })
@@ -306,7 +305,7 @@ describe('OAuth2Service', () => {
         'Authorization server error: failed to process tokens',
         undefined,
         'Failed to encrypt tokens',
-        { error: expect.any(Error), authRequestId: 'auth-req-id' }
+        { error: expectAny<Error>(Error), authRequestId: 'auth-req-id' }
       )
       expect(prisma.oAuth2Data.update).not.toHaveBeenCalled()
     })
@@ -1047,9 +1046,16 @@ describe('OAuth2Service', () => {
    */
   describe('token - grant_type routing', () => {
     it('should throw UNSUPPORTED_GRANT_TYPE for unknown grant type', async () => {
-      await expect(service.token({ grant_type: 'client_credentials' } as any)).rejects.toThrow(
-        OAuth2Exception
-      )
+      // RFC-valid grant types are a closed union; this simulates a value that slipped past
+      // the guard/pipe validation (defence-in-depth), which TypeScript otherwise disallows.
+      const unsupportedGrantTypeRequest: TokenRequestDto = {
+        grant_type: 'client_credentials' as TokenRequestDto['grant_type'],
+        code: 'unused',
+        redirect_uri: 'https://example.com/callback',
+        code_verifier: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
+      }
+
+      await expect(service.token(unsupportedGrantTypeRequest)).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
         'Unsupported grant type',

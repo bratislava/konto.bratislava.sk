@@ -1,4 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
+import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import * as mssql from 'mssql'
 import { ConnectionPool } from 'mssql'
@@ -6,6 +7,7 @@ import { ConnectionPool } from 'mssql'
 import prismaMock from '../../../../test/singleton'
 import BaConfigService from '../../../config/ba-config.service'
 import { PrismaService } from '../../../prisma/prisma.service'
+import { ErrorsEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { NorisConnectionService } from '../noris-connection.service'
 
@@ -123,44 +125,27 @@ describe('NorisConnectionService', () => {
       const operation = jest.fn().mockResolvedValue(result)
 
       await expect(service.withConnection(operation, 'error message')).resolves.toEqual(result)
-      expect(operation).toHaveBeenCalledWith(mockConnection)
-    })
-
-    it('should call handleDatabaseError when operation throws', async () => {
-      const mockConnection = {
-        connected: true,
-        close: jest.fn().mockResolvedValue(undefined),
-      } as any
-      const opError = new Error('DB operation failed')
-      jest.spyOn(service as any, 'createConnection').mockResolvedValue(mockConnection)
-      const handleDbErrorSpy = jest
-        .spyOn(service as any, 'handleDatabaseError')
-        .mockRejectedValue(new Error('handled'))
-
-      const operation = jest.fn().mockRejectedValue(opError)
-
-      await expect(service.withConnection(operation, 'error message')).rejects.toThrow('handled')
-      expect(handleDbErrorSpy).toHaveBeenCalledWith(opError, 'error message')
+      expect(operation).toHaveBeenCalledWith(mockConnectionPool)
     })
 
     it('should throw InternalServerError for non-MSSQL errors', async () => {
-      const mockConnection = { connected: true } as any
-      jest.spyOn(service as any, 'createConnection').mockResolvedValue(mockConnection)
-      const internalError = new Error('internal')
-      jest
-        .mocked(throwerErrorGuard.InternalServerErrorException)
-        .mockReturnValue(internalError as any)
+      const internalError = new HttpException('internal', 500)
+      jest.mocked(throwerErrorGuard.InternalServerErrorException).mockReturnValue(internalError)
 
-      const operation = jest.fn().mockRejectedValue(new Error('generic error'))
+      const opError = new Error('generic error')
+      const operation = jest.fn().mockRejectedValue(opError)
 
-      await expect(service.withConnection(operation, 'fail')).rejects.toThrow()
-      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalled()
+      await expect(service.withConnection(operation, 'fail')).rejects.toThrow('internal')
+      expect(throwerErrorGuard.InternalServerErrorException).toHaveBeenCalledWith(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'fail',
+        undefined,
+        opError
+      )
     })
 
     it('should throw BadRequestException and increment counter for MSSQL connection errors', async () => {
-      const mockConnection = { connected: true } as any
-      jest.spyOn(service as any, 'createConnection').mockResolvedValue(mockConnection)
-      const badRequestError = new Error('bad request') as any
+      const badRequestError = new HttpException('bad request', 400)
       jest.mocked(throwerErrorGuard.BadRequestException).mockReturnValue(badRequestError)
       ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(1)
 

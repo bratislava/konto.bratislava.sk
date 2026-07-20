@@ -118,7 +118,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
     // Filter out keys starting with `$`. We will log them later
     const { responseLog, responseMessage } = separateLogFromResponseObj(
-      typeof exitData === 'string' ? JSON.parse(exitData) : exitData
+      typeof exitData === 'string' ? (JSON.parse(exitData) as object) : exitData
     )
     const returnExitData = JSON.stringify(responseMessage)
 

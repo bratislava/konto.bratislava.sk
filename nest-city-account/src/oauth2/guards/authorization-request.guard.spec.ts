@@ -12,9 +12,9 @@ describe('AuthorizationRequestGuard', () => {
   let validationSubservice: OAuth2ValidationSubservice
 
   function createMockContext(query: Record<string, string> = {}): ExecutionContext {
-    return {
+    return createMock<ExecutionContext>({
       switchToHttp: jest.fn().mockReturnValue({ getRequest: () => ({ query }) }),
-    } as any
+    })
   }
 
   beforeEach(async () => {

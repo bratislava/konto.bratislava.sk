@@ -3,6 +3,11 @@ import { RequiredError } from 'openapi-clients/magproxy/base'
 
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
 
+interface SeparateLogResult<T extends object> {
+  responseLog: Record<string, T[keyof T]>
+  responseMessage: Record<string, T[keyof T]>
+}
+
 /**
  * Escapes occurrences of the `"` and `\` characters in input string for logfmt compatibility
  * The function also replaces newline symbols with the "\n" (new line) string.
@@ -23,14 +28,9 @@ export function escapeForLogfmt(value: string): string {
  * will be put in one object and keys that are a string will be put in another. Keys with symbol as
  * a key will be replaced by their descriptions.
  */
-export function separateLogFromResponseObj<T extends object>(
-  obj: T
-): {
-  responseLog: Record<string, T[keyof T]>
-  responseMessage: Record<string, T[keyof T]>
-} {
-  const responseLog: ReturnType<typeof separateLogFromResponseObj>['responseLog'] = {}
-  const responseMessage: ReturnType<typeof separateLogFromResponseObj>['responseLog'] = {}
+export function separateLogFromResponseObj<T extends object>(obj: T): SeparateLogResult<T> {
+  const responseLog: SeparateLogResult<T>['responseLog'] = {}
+  const responseMessage: SeparateLogResult<T>['responseMessage'] = {}
 
   Object.getOwnPropertyNames(obj).forEach((objKey) => {
     if (errorTypeStrings.includes(objKey)) {
@@ -77,7 +77,7 @@ export function objToLogfmt(obj: object): string {
         formattedValue = escapeForLogfmt(formattedValue)
       }
 
-      return `${key}="${formattedValue}"`
+      return `${key}="${String(formattedValue)}"`
     })
     .join(' ')
 }
@@ -95,7 +95,7 @@ function httpExceptionToObj(error: HttpException, methodName?: string | symbol):
       method: methodName,
       stack: error.stack,
     }
-  } catch (parseError) {
+  } catch {
     return {
       errorType: error.name,
       message: error.message,
@@ -160,7 +160,8 @@ export function toLogfmt(input: unknown): string {
   if (typeof input === 'string') {
     return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
   }
-  return `message="${escapeForLogfmt(input.toString())}"`
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- Object is already stringified above
+  return `message="${escapeForLogfmt(String(input))}"`
 }
 
 /**

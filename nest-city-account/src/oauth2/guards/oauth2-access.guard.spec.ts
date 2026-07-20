@@ -2,12 +2,8 @@ import { createMock } from '@golevelup/ts-jest'
 import { ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
+import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
 import * as crypto from '../../utils/crypto'
-import {
-  CognitoGetUserData,
-  CognitoUserAccountTypesEnum,
-  CognitoUserAttributesEnum,
-} from '../../utils/global-dtos/cognito.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import * as tokenSerialization from '../../utils/tokenSerialization'
 import { OAuth2Client, OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
@@ -274,13 +270,7 @@ describe('OAuth2AccessGuard', () => {
 
     it('should return user data when Passport succeeds', () => {
       const context = createMock<ExecutionContext>()
-      const user: CognitoGetUserData = {
-        sub: 'user-123',
-        email: 'test@example.com',
-        idUser: 'user-123',
-        Enabled: true,
-        [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
-      }
+      const user = cognitoUserDataFactory({ sub: 'user-123', idUser: 'user-123' })
       const result = guard.handleRequest(null, user, null, context)
       expect(result).toBe(user)
     })

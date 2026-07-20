@@ -1,4 +1,4 @@
-import { Typography } from '@bratislava/component-library'
+import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
@@ -8,7 +8,6 @@ import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFo
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
-import MLink from '@/src/components/simple-components/MLink'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
@@ -42,14 +41,14 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
         <div className="flex flex-col gap-2 lg:gap-4">
           <Typography variant="h1">{formDefinition.title}</Typography>
           {strapiForm.moreInformationUrl ? (
-            <MLink
-              className="w-max text-size-p-large-r lg:text-size-p-large"
-              variant="underlined"
+            <Button
+              variant="link"
+              size="large"
+              className="w-max"
               href={strapiForm.moreInformationUrl}
-              target="_blank"
             >
               {t('form_header.services_link')}
-            </MLink>
+            </Button>
           ) : null}
         </div>
       </SectionContainer>
@@ -91,7 +90,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           </SectionContainer>
         </div>
 
-        <aside className="w-full lg:top-40 lg:w-80 lg:shrink-0">
+        <aside className="w-full lg:w-80 lg:shrink-0">
           <TableOfContents />
         </aside>
       </div>

@@ -8,6 +8,7 @@ import pLimit from 'p-limit'
 import { Browser, BrowserContext, chromium, Page } from 'playwright'
 import { v4 as uuidv4 } from 'uuid'
 
+import BaConfigService from '../config/ba-config.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -23,7 +24,10 @@ export class PdfGeneratorService {
 
   private readonly sharedBrowserLock = pLimit(1)
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly baConfigService: BaConfigService
+  ) {
     this.logger = new LineLoggerSubservice(PdfGeneratorService.name)
   }
 
@@ -47,7 +51,7 @@ export class PdfGeneratorService {
     return this.sharedBrowserLock(async () => {
       if (this.sharedBrowserRefCount === 0) {
         const browser = await chromium.launch({
-          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
+          executablePath: this.baConfigService.pdfGenerator.chromiumExecutablePath,
         })
         this.sharedBrowser = browser
         this.sharedBrowserRefCount = 1

@@ -4,13 +4,13 @@ import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 import FormProviders from '@/src/components/forms/FormProviders'
 import { FormContextProvider } from '@/src/components/forms/useFormContext'
 import { FormSentProvider } from '@/src/components/forms/useFormSent'
+import DeliveryMethodShowcase from '@/src/components/styleguide/showcases/ModalShowCase/DeliveryMethodShowcase'
 import { mockFormServerContext } from '@/src/components/styleguide/utils/mockFormServerContext'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
 
 import BaseModalsShowcase from './BaseModalsShowcase'
 import FormMessageModalsShowcase from './FormMessageModalsShowcase'
 import IdentityVerificationShowcase from './IdentityVerificationShowcase'
-import OfficialCorrespondenceChannelShowcase from './OfficialCorrespondenceChannelShowcase'
 import RegistrationShowcase from './RegistrationShowcase'
 import TaxFormPdfExportShowcase from './TaxFormPdfExportShowcase'
 
@@ -25,7 +25,7 @@ const modalShowcaseTabs = [
   { id: 'tax-form-pdf-export', label: 'Tax form PDF export' },
   { id: 'identity-verification', label: 'Identity verification' },
   { id: 'registration', label: 'Registration' },
-  { id: 'official-correspondence-channel', label: 'Official correspondence channel' },
+  { id: 'delivery-method', label: 'Delivery method' },
 ] as const
 
 const ModalShowCaseContent = () => {
@@ -73,8 +73,8 @@ const ModalShowCaseContent = () => {
           <RegistrationShowcase />
         </TabPanel>
 
-        <TabPanel id="official-correspondence-channel">
-          <OfficialCorrespondenceChannelShowcase />
+        <TabPanel id="delivery-method">
+          <DeliveryMethodShowcase />
         </TabPanel>
       </Tabs>
     </Wrapper>

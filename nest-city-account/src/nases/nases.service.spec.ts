@@ -1,6 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { AxiosResponse } from 'axios'
+import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
+import { expectObjectContaining } from '../__tests__/jest-matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -10,6 +13,14 @@ import { NasesService } from './nases.service'
 describe('NasesService', () => {
   let service: NasesService
   let throwerErrorGuard: ThrowerErrorGuard
+  let clientsService: ClientsService
+
+  const mockSearchResults = (results: ApiIamIdentitiesIdGet200Response[]) =>
+    jest
+      .mocked(clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost)
+      .mockResolvedValue(
+        createMock<AxiosResponse<ApiIamIdentitiesIdGet200Response[]>>({ data: results })
+      )
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,6 +43,7 @@ describe('NasesService', () => {
 
     service = module.get<NasesService>(NasesService)
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
+    clientsService = module.get<ClientsService>(ClientsService)
   })
 
   afterEach(() => {
@@ -49,7 +61,7 @@ describe('NasesService', () => {
         { uri: 'rc://sk/9876543210_smith_jane', physicalEntityId: 'entity-2' },
       ]
 
-      jest.spyOn(service as any, 'searchUpvsIdentitiesByUri').mockResolvedValue([
+      mockSearchResults([
         {
           uri: 'rc://sk/1234567890_doe_john',
           status: 'activated',
@@ -60,7 +72,7 @@ describe('NasesService', () => {
           status: 'activated',
           upvs: { edesk_status: 'active', edesk_number: '456' },
         },
-      ] as any)
+      ])
 
       const result = await service.createMany(inputs)
 
@@ -68,12 +80,16 @@ describe('NasesService', () => {
       expect(result.failed).toHaveLength(0)
       expect(result.success[0]).toEqual({
         inputUri: 'rc://sk/1234567890_doe_john',
-        data: expect.objectContaining({ uri: 'rc://sk/1234567890_doe_john' }),
+        data: expectObjectContaining<ApiIamIdentitiesIdGet200Response>({
+          uri: 'rc://sk/1234567890_doe_john',
+        }),
         physicalEntityId: 'entity-1',
       })
       expect(result.success[1]).toEqual({
         inputUri: 'rc://sk/9876543210_smith_jane',
-        data: expect.objectContaining({ uri: 'rc://sk/9876543210_smith_jane' }),
+        data: expectObjectContaining<ApiIamIdentitiesIdGet200Response>({
+          uri: 'rc://sk/9876543210_smith_jane',
+        }),
         physicalEntityId: 'entity-2',
       })
     })
@@ -82,13 +98,13 @@ describe('NasesService', () => {
       const inputs = [{ uri: 'rc://sk/1234567890_doe_john', physicalEntityId: 'entity-1' }]
 
       // API returns different URI (e.g., surname changed)
-      jest.spyOn(service as any, 'searchUpvsIdentitiesByUri').mockResolvedValue([
+      mockSearchResults([
         {
           uri: 'rc://sk/1234567890_smith_john',
           status: 'activated',
           upvs: { edesk_status: 'active', edesk_number: '123' },
         },
-      ] as any)
+      ])
 
       const result = await service.createMany(inputs)
 
@@ -96,7 +112,9 @@ describe('NasesService', () => {
       expect(result.failed).toHaveLength(0)
       expect(result.success[0]).toEqual({
         inputUri: 'rc://sk/1234567890_doe_john',
-        data: expect.objectContaining({ uri: 'rc://sk/1234567890_smith_john' }),
+        data: expectObjectContaining<ApiIamIdentitiesIdGet200Response>({
+          uri: 'rc://sk/1234567890_smith_john',
+        }),
         physicalEntityId: 'entity-1',
       })
     })
@@ -108,7 +126,7 @@ describe('NasesService', () => {
       ]
 
       // API returns different URIs that we can't safely match
-      jest.spyOn(service as any, 'searchUpvsIdentitiesByUri').mockResolvedValue([
+      mockSearchResults([
         {
           uri: 'rc://sk/1234567890_jones_john',
           status: 'activated',
@@ -119,7 +137,7 @@ describe('NasesService', () => {
           status: 'activated',
           upvs: { edesk_status: 'active', edesk_number: '456' },
         },
-      ] as any)
+      ])
 
       const result = await service.createMany(inputs)
 
@@ -144,12 +162,7 @@ describe('NasesService', () => {
     it('should handle regular failures when no URI is returned', async () => {
       const inputs = [{ uri: 'rc://sk/invalid_uri', physicalEntityId: 'entity-1' }]
 
-      jest.spyOn(service as any, 'searchUpvsIdentitiesByUri').mockResolvedValue([
-        {
-          uri: null,
-          status: 'not_found',
-        },
-      ] as any)
+      mockSearchResults([{}])
 
       const result = await service.createMany(inputs)
 
@@ -168,7 +181,7 @@ describe('NasesService', () => {
         { uri: 'rc://sk/2222222222_nomatch_old', physicalEntityId: 'entity-2' },
       ]
 
-      jest.spyOn(service as any, 'searchUpvsIdentitiesByUri').mockResolvedValue([
+      mockSearchResults([
         {
           uri: 'rc://sk/1111111111_match_direct',
           status: 'activated',
@@ -179,7 +192,7 @@ describe('NasesService', () => {
           status: 'activated',
           upvs: { edesk_status: 'active', edesk_number: '222' },
         },
-      ] as any)
+      ])
 
       const result = await service.createMany(inputs)
 
@@ -207,18 +220,18 @@ describe('NasesService', () => {
         { uri: 'rc://sk/same_uri', physicalEntityId: 'entity-2' },
       ]
 
-      const searchSpy = jest.spyOn(service as any, 'searchUpvsIdentitiesByUri').mockResolvedValue([
+      const searchSpy = mockSearchResults([
         {
           uri: 'rc://sk/same_uri',
           status: 'activated',
           upvs: { edesk_status: 'active', edesk_number: '123' },
         },
-      ] as any)
+      ])
 
       await service.createMany(inputs)
 
       // Should only search for unique URI once
-      expect(searchSpy).toHaveBeenCalledWith(['rc://sk/same_uri'])
+      expect(searchSpy).toHaveBeenCalledWith({ uris: ['rc://sk/same_uri'] }, expect.anything())
     })
 
     it('should throw error if UPVS server is down', async () => {
@@ -228,7 +241,7 @@ describe('NasesService', () => {
       ]
 
       const searchSpy = jest
-        .spyOn(service as any, 'searchUpvsIdentitiesByUri')
+        .mocked(clientsService.slovenskoSkApi.apiIamIdentitiesSearchPost)
         .mockRejectedValue(new Error('UPVS server is down'))
 
       await expect(service.createMany(inputs)).rejects.toThrow()

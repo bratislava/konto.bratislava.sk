@@ -76,9 +76,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
     service = module.get<PdfGeneratorService>(PdfGeneratorService)
 
-    jest
-      .spyOn(service as any, 'addPasswordToPdf')
-      .mockImplementation((buf: unknown) => buf as Buffer)
+    jest.spyOn(service, 'addPasswordToPdf').mockResolvedValue(Buffer.from('mock-encrypted-pdf'))
   })
 
   afterEach(() => {

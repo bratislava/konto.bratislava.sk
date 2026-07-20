@@ -47,7 +47,7 @@ describe('PhysicalEntityService', () => {
     }).compile()
     service = module.get<PhysicalEntityService>(PhysicalEntityService)
     consoleSpy = jest.spyOn(console, 'log')
-    consoleSpy.mockImplementation(() => {})
+    consoleSpy.mockImplementation(jest.fn())
   })
 
   it('should be defined', () => {

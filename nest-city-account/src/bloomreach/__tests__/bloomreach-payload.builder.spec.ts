@@ -1,10 +1,10 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
 import { CognitoUserAttributesTierEnum, ConsentEnum } from '../../generated/prisma/client'
 import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
 import {
-  CognitoGetUserData,
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../../utils/global-dtos/cognito.dto'
@@ -26,7 +26,7 @@ describe('BloomreachPayloadBuilder', () => {
 
   const externalId = 'test-cognito-id'
 
-  const baseCognitoUser: CognitoGetUserData = {
+  const baseCognitoUser = cognitoUserDataFactory({
     sub: externalId,
     idUser: externalId,
     given_name: 'John',
@@ -35,11 +35,9 @@ describe('BloomreachPayloadBuilder', () => {
     email: 'john@example.com',
     UserCreateDate: new Date('2025-01-15T10:00:00Z'),
     UserLastModifiedDate: new Date('2025-06-01T12:00:00Z'),
-    Enabled: true,
-    [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
     [CognitoUserAttributesEnum.TIER]: CognitoUserAttributesTierEnum.NEW,
     [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_NAME]: undefined,
-  }
+  })
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

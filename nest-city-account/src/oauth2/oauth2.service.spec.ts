@@ -1,11 +1,16 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { oauth2DataFactory } from '../__tests__/factories/oauth2Data.factory'
+import { expectAny, expectObjectContaining } from '../__tests__/jest-matchers'
 import BaConfigService from '../config/ba-config.service'
+import { Prisma } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import * as crypto from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import * as tokenSerialization from '../utils/tokenSerialization'
+import { TokenData } from '../utils/tokenSerialization'
+import { TokenRequestUnion } from './dtos/requests.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from './oauth2.error.enum'
 import { OAuth2Exception } from './oauth2.exception'
 import { OAuth2Service } from './oauth2.service'
@@ -24,7 +29,7 @@ jest.mock('../utils/tokenSerialization', () => ({
   serializeTokenData: jest.fn((token: string, clientId: string) =>
     JSON.stringify({ token, clientId })
   ),
-  deserializeTokenData: jest.fn((data: string) => JSON.parse(data)),
+  deserializeTokenData: jest.fn((data: string) => JSON.parse(data) as TokenData),
 }))
 
 describe('OAuth2Service', () => {
@@ -45,13 +50,13 @@ describe('OAuth2Service', () => {
       data.replace('enc:', '')
     )
     ;(crypto.timingSafeStringEqual as jest.Mock).mockImplementation(
-      jest.requireActual('../utils/crypto').timingSafeStringEqual
+      jest.requireActual<typeof import('../utils/crypto')>('../utils/crypto').timingSafeStringEqual
     )
     ;(tokenSerialization.serializeTokenData as jest.Mock).mockImplementation(
       (token: string, clientId: string) => JSON.stringify({ token, clientId })
     )
-    ;(tokenSerialization.deserializeTokenData as jest.Mock).mockImplementation((data: string) =>
-      JSON.parse(data)
+    ;(tokenSerialization.deserializeTokenData as jest.Mock).mockImplementation(
+      (data: string) => JSON.parse(data) as TokenData
     )
 
     const module: TestingModule = await Test.createTestingModule({
@@ -76,9 +81,7 @@ describe('OAuth2Service', () => {
     oAuth2ErrorThrower = module.get<OAuth2ErrorThrower>(OAuth2ErrorThrower)
     prisma = module.get<PrismaService>(PrismaService)
     cognitoSubservice = module.get<CognitoSubservice>(CognitoSubservice)
-    baConfigService = module.get<BaConfigService>(
-      BaConfigService
-    ) as unknown as typeof baConfigService
+    baConfigService = module.get<BaConfigService>(BaConfigService)
     clientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
     jest.spyOn(oAuth2ErrorThrower, 'authorizationException')
@@ -99,7 +102,9 @@ describe('OAuth2Service', () => {
    */
   describe('storeAuthorizationRequest', () => {
     it('should store all parameters in database and return the ID', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'create').mockResolvedValue({ id: 'stored-id' } as any)
+      jest
+        .spyOn(prisma.oAuth2Data, 'create')
+        .mockResolvedValue(oauth2DataFactory({ id: 'stored-id' }))
       const result = await service.storeAuthorizationRequest({
         response_type: 'code',
         client_id: 'cid',
@@ -125,14 +130,16 @@ describe('OAuth2Service', () => {
 
     it('should convert optional scope/state/PKCE to null when absent', async () => {
       // CUSTOM PROXY DETAIL: Prisma stores null for absent optional fields
-      jest.spyOn(prisma.oAuth2Data, 'create').mockResolvedValue({ id: 'stored-id' } as any)
+      jest
+        .spyOn(prisma.oAuth2Data, 'create')
+        .mockResolvedValue(oauth2DataFactory({ id: 'stored-id' }))
       await service.storeAuthorizationRequest({
         response_type: 'code',
         client_id: 'cid',
         redirect_uri: 'https://example.com/cb',
       })
       expect(prisma.oAuth2Data.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
+        data: expectObjectContaining<Prisma.OAuth2DataCreateInput>({
           scope: null,
           state: null,
           codeChallenge: null,
@@ -165,8 +172,10 @@ describe('OAuth2Service', () => {
   describe('storeTokensForAuthRequest', () => {
     beforeEach(() => {
       baConfigService.cognito.clientId = 'cognito-client-id'
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue({ id: 'auth-req-id' } as any)
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue({} as any)
+      jest
+        .spyOn(prisma.oAuth2Data, 'findUnique')
+        .mockResolvedValue(oauth2DataFactory({ id: 'auth-req-id' }))
+      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
     })
 
     it('should refresh via Cognito, then serialize+encrypt all tokens bound to the client id and persist them', async () => {
@@ -189,11 +198,11 @@ describe('OAuth2Service', () => {
 
       expect(prisma.oAuth2Data.update).toHaveBeenCalledWith({
         where: { id: 'auth-req-id' },
-        data: expect.objectContaining({
+        data: expectObjectContaining<Prisma.OAuth2DataUpdateInput>({
           accessTokenEnc: `enc:${JSON.stringify({ token: 'fresh-at', clientId: 'cid' })}`,
           idTokenEnc: `enc:${JSON.stringify({ token: 'fresh-id', clientId: 'cid' })}`,
           refreshTokenEnc: `enc:${JSON.stringify({ token: 'refresh-tok', clientId: 'cid' })}`,
-          accessTokenExpiresAt: expect.any(Date),
+          accessTokenExpiresAt: expectAny<Date>(Date),
         }),
       })
     })
@@ -208,7 +217,7 @@ describe('OAuth2Service', () => {
       expect(tokenSerialization.serializeTokenData).not.toHaveBeenCalledWith(undefined, 'cid')
       expect(prisma.oAuth2Data.update).toHaveBeenCalledWith({
         where: { id: 'auth-req-id' },
-        data: expect.objectContaining({ idTokenEnc: null }),
+        data: expectObjectContaining<Prisma.OAuth2DataUpdateInput>({ idTokenEnc: null }),
       })
     })
 
@@ -357,7 +366,7 @@ describe('OAuth2Service', () => {
    */
   describe('continueAuthorization', () => {
     it('should generate a random authorization code and store it', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue({} as any)
+      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
@@ -370,16 +379,16 @@ describe('OAuth2Service', () => {
       expect(prisma.oAuth2Data.update).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 'auth-req-id' },
-          data: expect.objectContaining({
+          data: expectObjectContaining<Prisma.OAuth2DataUpdateInput>({
             authorizationCode: result.code,
-            authorizationCodeCreatedAt: expect.any(Date),
+            authorizationCodeCreatedAt: expectAny<Date>(Date),
           }),
         })
       )
     })
 
     it('should omit state from response when not present in request', async () => {
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue({} as any)
+      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
@@ -390,7 +399,7 @@ describe('OAuth2Service', () => {
 
     it('should omit state from response when state is empty string', async () => {
       // RFC 6749 Section 4.1.2: state REQUIRED if present in authorization request — empty string is falsy
-      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue({} as any)
+      jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue(oauth2DataFactory())
       const result = await service.continueAuthorization('auth-req-id', {
         response_type: 'code',
         client_id: 'cid',
@@ -446,7 +455,7 @@ describe('OAuth2Service', () => {
    * RFC 7636 Section 4.6 - Server Verifies code_verifier
    */
   describe('token - authorization_code exchange', () => {
-    const validOAuth2Data = {
+    const validOAuth2Data = oauth2DataFactory({
       id: 'auth-req-id',
       clientId: 'test-client',
       redirectUri: 'https://example.com/callback',
@@ -458,11 +467,11 @@ describe('OAuth2Service', () => {
       refreshTokenEnc: 'enc:refresh',
       accessTokenExpiresAt: new Date(Date.now() + 3600000),
       scope: 'read',
-    }
+    })
 
     beforeEach(() => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(validOAuth2Data as any)
-      jest.spyOn(prisma.oAuth2Data, 'delete').mockResolvedValue({} as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(validOAuth2Data)
+      jest.spyOn(prisma.oAuth2Data, 'delete').mockResolvedValue(oauth2DataFactory())
     })
 
     it('should return token response for a valid authorization code', async () => {
@@ -471,7 +480,7 @@ describe('OAuth2Service', () => {
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'v',
-      } as any)
+      })
       expect(result.access_token).toBe('enc:access')
       expect(result.token_type).toBe('Bearer')
       expect(result.refresh_token).toBe('enc:refresh')
@@ -486,7 +495,7 @@ describe('OAuth2Service', () => {
           code: 'nonexistent',
           redirect_uri: 'https://example.com/callback',
           code_verifier: 'v',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -503,7 +512,7 @@ describe('OAuth2Service', () => {
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'v',
-      } as any)
+      })
       expect(prisma.oAuth2Data.delete).toHaveBeenCalledWith({ where: { id: 'auth-req-id' } })
     })
 
@@ -515,14 +524,14 @@ describe('OAuth2Service', () => {
           code: 'valid-code',
           redirect_uri: 'https://example.com/callback',
           code_verifier: 'v',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: authorization code already used or deleted',
         undefined,
         'Authorization code already used or deleted',
-        { error: expect.any(Error), authRequestId: 'auth-req-id', clientId: 'test-client' }
+        { error: expectAny<Error>(Error), authRequestId: 'auth-req-id', clientId: 'test-client' }
       )
     })
 
@@ -531,14 +540,14 @@ describe('OAuth2Service', () => {
         ...validOAuth2Data,
         authorizationCodeCreatedAt: new Date(Date.now() - 6 * 60 * 1000), // 6 min ago
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(expiredData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(expiredData)
       await expect(
         service.token({
           grant_type: 'authorization_code',
           code: 'valid-code',
           redirect_uri: 'https://example.com/callback',
           code_verifier: 'v',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -548,7 +557,7 @@ describe('OAuth2Service', () => {
         {
           authRequestId: 'auth-req-id',
           clientId: 'test-client',
-          codeAgeMs: expect.any(Number),
+          codeAgeMs: expectAny<number>(Number),
           maxAgeMs: 5 * 60 * 1000,
         }
       )
@@ -559,13 +568,13 @@ describe('OAuth2Service', () => {
         ...validOAuth2Data,
         authorizationCodeCreatedAt: new Date(Date.now() - 4 * 60 * 1000), // 4 min ago
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(recentData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(recentData)
       const result = await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'v',
-      } as any)
+      })
       expect(result.access_token).toBeDefined()
     })
 
@@ -576,7 +585,7 @@ describe('OAuth2Service', () => {
           code: 'valid-code',
           redirect_uri: 'https://different.com/callback',
           code_verifier: 'v',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
@@ -599,14 +608,14 @@ describe('OAuth2Service', () => {
         refreshTokenEnc: null,
         accessTokenExpiresAt: null,
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noTokensData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noTokensData)
       await expect(
         service.token({
           grant_type: 'authorization_code',
           code: 'valid-code',
           redirect_uri: 'https://example.com/callback',
           code_verifier: 'v',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -630,34 +639,34 @@ describe('OAuth2Service', () => {
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'v',
-      } as any)
+      })
       expect(result.scope).toBe('read')
     })
 
     it('should omit scope from token response when no scope was stored', async () => {
       // RFC 6749 Section 5.1: scope omitted when identical to originally granted scope
       const noScopeData = { ...validOAuth2Data, scope: null }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noScopeData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noScopeData)
       const result = await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'v',
-      } as any)
+      })
       expect(result.scope).toBeUndefined()
     })
 
     it('should throw INVALID_GRANT when authorizationCodeCreatedAt is null (missing timestamp)', async () => {
       // CUSTOM PROXY DETAIL: Defensive guard against corrupted DB rows where code exists but timestamp is null
       const nullTimestamp = { ...validOAuth2Data, authorizationCodeCreatedAt: null }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(nullTimestamp as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(nullTimestamp)
       await expect(
         service.token({
           grant_type: 'authorization_code',
           code: 'valid-code',
           redirect_uri: 'https://example.com/callback',
           code_verifier: 'v',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -674,13 +683,13 @@ describe('OAuth2Service', () => {
         ...validOAuth2Data,
         accessTokenExpiresAt: new Date(Date.now() - 60000),
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(expiredTokenData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(expiredTokenData)
       const result = await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'v',
-      } as any)
+      })
       expect(result.expires_in).toBe(0)
     })
   })
@@ -699,7 +708,7 @@ describe('OAuth2Service', () => {
    * previously received code_challenge using SHA-256."
    */
   describe('token - PKCE code_verifier verification (RFC 7636 Section 4.6)', () => {
-    const pkceOAuth2Data = {
+    const pkceOAuth2Data = oauth2DataFactory({
       id: 'auth-req-id',
       clientId: 'test-client',
       redirectUri: 'https://example.com/callback',
@@ -711,11 +720,11 @@ describe('OAuth2Service', () => {
       refreshTokenEnc: 'enc:refresh',
       accessTokenExpiresAt: new Date(Date.now() + 3600000),
       scope: null,
-    }
+    })
 
     beforeEach(() => {
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(pkceOAuth2Data as any)
-      jest.spyOn(prisma.oAuth2Data, 'delete').mockResolvedValue({} as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(pkceOAuth2Data)
+      jest.spyOn(prisma.oAuth2Data, 'delete').mockResolvedValue(oauth2DataFactory())
     })
 
     it('should validate S256 code_verifier by hashing with SHA-256 and base64url encoding', async () => {
@@ -730,7 +739,7 @@ describe('OAuth2Service', () => {
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: verifier,
-      } as any)
+      })
 
       // The stored challenge and the freshly computed hash are identical for the test vector.
       expect(crypto.timingSafeStringEqual).toHaveBeenCalledWith(
@@ -748,7 +757,7 @@ describe('OAuth2Service', () => {
           code: 'valid-code',
           redirect_uri: 'https://example.com/callback',
           code_verifier: 'wrong-verifier-that-does-not-match-challenge-xx',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
@@ -765,7 +774,7 @@ describe('OAuth2Service', () => {
         codeChallenge: 'plain-challenge-value',
         codeChallengeMethod: 'plain',
       }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(plainData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(plainData)
       ;(crypto.timingSafeStringEqual as jest.Mock).mockReturnValue(true)
 
       await service.token({
@@ -773,7 +782,7 @@ describe('OAuth2Service', () => {
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'plain-challenge-value',
-      } as any)
+      })
 
       expect(crypto.timingSafeStringEqual).toHaveBeenCalledWith(
         'plain-challenge-value',
@@ -783,7 +792,7 @@ describe('OAuth2Service', () => {
 
     it('should throw INVALID_REQUEST for unsupported code_challenge_method', async () => {
       const badMethodData = { ...pkceOAuth2Data, codeChallengeMethod: 'SHA1' }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(badMethodData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(badMethodData)
 
       await expect(
         service.token({
@@ -791,7 +800,7 @@ describe('OAuth2Service', () => {
           code: 'valid-code',
           redirect_uri: 'https://example.com/callback',
           code_verifier: 'some-verifier-value-that-is-long-enough-chars',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
@@ -804,14 +813,14 @@ describe('OAuth2Service', () => {
 
     it('should skip PKCE validation when no code_challenge was stored', async () => {
       const noPkceData = { ...pkceOAuth2Data, codeChallenge: null, codeChallengeMethod: null }
-      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noPkceData as any)
+      jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noPkceData)
 
       const result = await service.token({
         grant_type: 'authorization_code',
         code: 'valid-code',
         redirect_uri: 'https://example.com/callback',
         code_verifier: 'v',
-      } as any)
+      })
       expect(result.access_token).toBeDefined()
       expect(crypto.timingSafeStringEqual).not.toHaveBeenCalled()
     })
@@ -836,7 +845,7 @@ describe('OAuth2Service', () => {
         service.token({
           grant_type: 'refresh_token',
           refresh_token: 'enc-token',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
@@ -855,14 +864,14 @@ describe('OAuth2Service', () => {
           grant_type: 'refresh_token',
           refresh_token: 'bad-enc',
           client_id: 'cid',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: invalid refresh token',
         undefined,
         'Failed to decrypt refresh token',
-        { error: expect.any(Error), clientId: 'cid' }
+        { error: expectAny<Error>(Error), clientId: 'cid' }
       )
     })
 
@@ -879,7 +888,7 @@ describe('OAuth2Service', () => {
           grant_type: 'refresh_token',
           refresh_token: 'enc-token',
           client_id: 'my-client',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -904,7 +913,7 @@ describe('OAuth2Service', () => {
         grant_type: 'refresh_token',
         refresh_token: 'enc',
         client_id: 'cid',
-      } as any)
+      })
       expect(cognitoSubservice.refreshTokens).toHaveBeenCalledWith('real-rt', 'cognito-client-id')
     })
 
@@ -921,14 +930,14 @@ describe('OAuth2Service', () => {
           grant_type: 'refresh_token',
           refresh_token: 'enc',
           client_id: 'cid',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: unable to refresh access token',
         undefined,
         'Failed to refresh tokens via Cognito',
-        { error: expect.any(Error), clientId: 'cid' }
+        { error: expectAny<Error>(Error), clientId: 'cid' }
       )
     })
 
@@ -946,7 +955,7 @@ describe('OAuth2Service', () => {
         grant_type: 'refresh_token',
         refresh_token: 'enc',
         client_id: 'cid',
-      } as any)
+      })
 
       expect(result.token_type).toBe('Bearer')
       expect(result.access_token).toBeDefined()
@@ -969,7 +978,7 @@ describe('OAuth2Service', () => {
           grant_type: 'refresh_token',
           refresh_token: 'enc',
           client_id: 'cid',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
@@ -999,14 +1008,14 @@ describe('OAuth2Service', () => {
           grant_type: 'refresh_token',
           refresh_token: 'enc',
           client_id: 'cid',
-        } as any)
+        })
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_GRANT,
         'Invalid grant: unable to process access token after refresh',
         undefined,
         'Failed to encrypt access token after refresh',
-        { error: expect.any(Error), clientId: 'cid' }
+        { error: expectAny<Error>(Error), clientId: 'cid' }
       )
     })
   })

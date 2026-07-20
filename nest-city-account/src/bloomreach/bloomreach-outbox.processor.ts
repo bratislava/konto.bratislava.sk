@@ -313,7 +313,9 @@ export class BloomreachOutboxProcessor {
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive check: Bloomreach API should always return results array
     if (!response.data.results) {
-      throw new Error(`Bloomreach batch API returned unexpected response: ${JSON.stringify(response.data)}`)
+      throw new Error(
+        `Bloomreach batch API returned unexpected response: ${JSON.stringify(response.data)}`
+      )
     }
 
     return response.data

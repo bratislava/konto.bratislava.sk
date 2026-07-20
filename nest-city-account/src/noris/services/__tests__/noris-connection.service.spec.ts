@@ -83,12 +83,12 @@ describe('NorisConnectionService', () => {
 
   describe('waitForConnection', () => {
     it('should resolve immediately when connection is already connected', async () => {
-      const mockConnection = { connected: true } as ConnectionPool
+      const mockConnection = createMock<ConnectionPool>({ connected: true })
       await expect(service['waitForConnection'](mockConnection, 10_000)).resolves.toBeUndefined()
     })
 
     it('should reject with timeout error when connection is not established within maxWaitTime', async () => {
-      const mockConnection = { connected: false } as ConnectionPool
+      const mockConnection = createMock<ConnectionPool>({ connected: false })
       const maxWaitTime = 150
 
       await expect(service['waitForConnection'](mockConnection, maxWaitTime)).rejects.toThrow(
@@ -98,9 +98,11 @@ describe('NorisConnectionService', () => {
 
     it('should resolve when connection becomes connected before maxWaitTime', async () => {
       const setTimeoutSpy = jest.spyOn(global, 'setTimeout')
-      const mockConnection = { connected: false } as ConnectionPool
+      const mockConnection = createMock<ConnectionPool>({ connected: false })
       const maxWaitTime = 500
       setTimeout(() => {
+        // `connected` is readonly on ConnectionPool; the mock is deliberately mutated here
+        // to simulate the pool transitioning to connected mid-wait.
         ;(mockConnection as { connected: boolean }).connected = true
       }, 50)
 
@@ -112,14 +114,12 @@ describe('NorisConnectionService', () => {
   })
 
   describe('withConnection', () => {
-    it('should return operation result on success', async () => {
-      const mockConnection = {
-        connected: true,
-        close: jest.fn().mockResolvedValue(undefined),
-      } as any
-      const result = { data: 'ok' }
-      jest.spyOn(service as any, 'createConnection').mockResolvedValue(mockConnection)
+    beforeEach(() => {
+      mockMssqlConnect.mockResolvedValue(mockConnectionPool)
+    })
 
+    it('should return operation result on success', async () => {
+      const result = { data: 'ok' }
       const operation = jest.fn().mockResolvedValue(result)
 
       await expect(service.withConnection(operation, 'error message')).resolves.toEqual(result)

@@ -1,6 +1,10 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { Interfaces } from 'mailgun.js/definitions'
 
+import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
+import { expectAny, expectObjectContaining } from '../__tests__/jest-matchers'
+import BaConfigService from '../config/ba-config.service'
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MailgunService } from './mailgun.service'
@@ -11,23 +15,18 @@ describe('MailgunService', () => {
   let cognitoSubservice: CognitoSubservice
   let pdfGeneratorService: PdfGeneratorService
 
-  const ORIGINAL_ENV = process.env
-
   const mockCreate = jest.fn()
 
   beforeAll(() => {
-    process.env = { ...ORIGINAL_ENV }
-    process.env.MAILGUN_API_KEY = 'test-mailgun-api-key'
-    process.env.DEFAULT_MAILGUN_DOMAIN = 'test.example.com'
-    jest.spyOn(console, 'log').mockImplementation(() => {})
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(jest.fn())
+    jest.spyOn(console, 'error').mockImplementation(jest.fn())
   })
 
   beforeEach(async () => {
     jest.clearAllMocks()
     mockCreate.mockResolvedValue({ id: 'mock-message-id', message: 'Queued' })
 
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(jest.fn())
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -35,6 +34,12 @@ describe('MailgunService', () => {
         MailgunMessageBuilder,
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
         { provide: PdfGeneratorService, useValue: createMock<PdfGeneratorService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            mailgun: { apiKey: 'test-mailgun-api-key', defaultDomain: 'test.example.com' },
+          },
+        },
       ],
     }).compile()
 
@@ -43,24 +48,20 @@ describe('MailgunService', () => {
     pdfGeneratorService = module.get<PdfGeneratorService>(PdfGeneratorService)
 
     // Mock the Mailgun client
-    ;(service as any).mg = {
+    const mgMock = createMock<Interfaces.IMailgunClient>({
       messages: {
         create: mockCreate,
       },
-    }
+    })
+    service['mg'] = mgMock
   })
 
   afterAll(() => {
-    process.env = ORIGINAL_ENV
     jest.restoreAllMocks()
   })
 
   afterEach(() => {
     jest.resetAllMocks()
-  })
-
-  afterAll(() => {
-    process.env = ORIGINAL_ENV
   })
 
   it('should be defined', () => {
@@ -79,7 +80,7 @@ describe('MailgunService', () => {
       await service.sendEmail('2023-registration-successful', options)
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'test@example.com',
         subject: 'Vitajte v Bratislavskom konte',
         template: '2023-registration-successful',
@@ -98,7 +99,7 @@ describe('MailgunService', () => {
       await service.sendEmail('2023-identity-check-successful', options)
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'test@example.com',
         subject: 'Vaša identita v Bratislavskom konte bola overená',
         template: '2023-identity-check-successful',
@@ -117,7 +118,7 @@ describe('MailgunService', () => {
       await service.sendEmail('2023-identity-check-rejected', options)
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'test@example.com',
         subject: 'Vašu identitu sa v Bratislavskom konte nepodarilo overiť',
         template: '2023-identity-check-rejected',
@@ -136,7 +137,7 @@ describe('MailgunService', () => {
       await service.sendEmail('2023-registration-successful', options)
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'test@example.com',
         subject: 'Vitajte v Bratislavskom konte',
         template: '2023-registration-successful',
@@ -162,10 +163,12 @@ describe('MailgunService', () => {
 
   describe('sendEmail with 2025-delivery-method-changed-from-user-data template', () => {
     it('should send eDesk delivery method message without attachment', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
+      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+        cognitoUserDataFactory({
+          given_name: 'John',
+          family_name: 'Doe',
+        })
+      )
 
       await service.sendEmail('2025-delivery-method-changed-from-user-data', {
         userEmail: 'test@example.com',
@@ -177,7 +180,7 @@ describe('MailgunService', () => {
       expect(pdfGeneratorService.generateFromTemplate).not.toHaveBeenCalled()
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'test@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
         template: '2025-delivery-method-changed-notify',
@@ -190,10 +193,12 @@ describe('MailgunService', () => {
     })
 
     it('should send postal delivery method message without attachment', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'Jane',
-        family_name: 'Smith',
-      } as any)
+      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+        cognitoUserDataFactory({
+          given_name: 'Jane',
+          family_name: 'Smith',
+        })
+      )
 
       await service.sendEmail('2025-delivery-method-changed-from-user-data', {
         userEmail: 'jane@example.com',
@@ -204,7 +209,7 @@ describe('MailgunService', () => {
       expect(pdfGeneratorService.generateFromTemplate).not.toHaveBeenCalled()
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'jane@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
         template: '2025-delivery-method-changed-notify',
@@ -217,10 +222,12 @@ describe('MailgunService', () => {
     })
 
     it('should send email delivery method message with PDF attachment', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'Alice',
-        family_name: 'Johnson',
-      } as any)
+      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+        cognitoUserDataFactory({
+          given_name: 'Alice',
+          family_name: 'Johnson',
+        })
+      )
 
       const mockPdf = {
         data: Buffer.from('mock-pdf-content'),
@@ -244,13 +251,13 @@ describe('MailgunService', () => {
           email: 'alice@example.com',
           name: 'Alice Johnson',
           birthNumber: '1234567890',
-          date: expect.any(String),
+          date: expectAny<string>(String),
         },
         '1234567890'
       )
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'alice@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
         template: '2025-delivery-method-changed-notify',
@@ -264,10 +271,12 @@ describe('MailgunService', () => {
     })
 
     it('should send email delivery method message without PDF when birthNumber is missing', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'Bob',
-        family_name: 'Brown',
-      } as any)
+      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+        cognitoUserDataFactory({
+          given_name: 'Bob',
+          family_name: 'Brown',
+        })
+      )
 
       await service.sendEmail('2025-delivery-method-changed-from-user-data', {
         userEmail: 'bob@example.com',
@@ -278,7 +287,7 @@ describe('MailgunService', () => {
       expect(pdfGeneratorService.generateFromTemplate).not.toHaveBeenCalled()
 
       expect(mockCreate).toHaveBeenCalledWith('test.example.com', {
-        from: expect.any(String),
+        from: expectAny<string>(String),
         to: 'bob@example.com',
         subject: 'Váš spôsob doručenia v Bratislavskom konte sa zmenil',
         template: '2025-delivery-method-changed-notify',
@@ -291,10 +300,12 @@ describe('MailgunService', () => {
     })
 
     it('should handle null firstName from Cognito', async () => {
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: null,
-        family_name: 'Doe',
-      } as any)
+      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(
+        cognitoUserDataFactory({
+          given_name: undefined,
+          family_name: 'Doe',
+        })
+      )
 
       await service.sendEmail('2025-delivery-method-changed-from-user-data', {
         userEmail: 'test@example.com',
@@ -304,7 +315,7 @@ describe('MailgunService', () => {
 
       expect(mockCreate).toHaveBeenCalledWith(
         'test.example.com',
-        expect.objectContaining({
+        expectObjectContaining({
           'h:X-Mailgun-Variables': JSON.stringify({
             firstName: null,
             year: new Date().getFullYear().toString(),

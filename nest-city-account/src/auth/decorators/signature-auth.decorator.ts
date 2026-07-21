@@ -2,34 +2,38 @@ import { applyDecorators, UseGuards } from '@nestjs/common'
 import { ApiHeader } from '@nestjs/swagger'
 
 import { SignatureGuard } from '../guards/signature.guard'
+import { SignaturePublicKey } from '../types/signature-public-key.enum'
 import { RequireNonce } from './require-nonce.decorator'
-import { SignaturePublicKeyEnvVarName } from './signature-public-key.decorator'
+import { SignaturePublicKeyName } from './signature-public-key.decorator'
 
 /**
  * Composite decorator for signature-based authentication
  *
  * Combines:
- * - @SignaturePublicKeyEnvVarName() - specifies which env var contains the public key
+ * - @SignaturePublicKeyName() - specifies which well-known client's public key to use
  * - @RequireNonce() - optionally requires nonce for replay protection
  * - @UseGuards(SignatureGuard) - applies the signature validation guard
  * - @ApiHeader() decorators - documents required headers in Swagger
  *
- * @param publicKeyEnvVarName - Name of environment variable containing the RSA public key
+ * @param publicKeyName - SignaturePublicKey enum member identifying the client
  * @param options - Optional configuration
  * @param options.requireNonce - Whether to require nonce-based replay protection (default: false)
  *
  * @example
  * ```typescript
- * @SignatureAuth('DPB_CLIENT_PUBLIC_KEY', { requireNonce: true })
+ * @SignatureAuth(SignaturePublicKey.DPB, { requireNonce: true })
  * @Get('list-users')
  * async listUsers() {
  *   // ...
  * }
  * ```
  */
-export function SignatureAuth(publicKeyEnvVarName: string, options?: { requireNonce?: boolean }) {
+export function SignatureAuth(
+  publicKeyName: SignaturePublicKey,
+  options?: { requireNonce?: boolean }
+) {
   const decorators = [
-    SignaturePublicKeyEnvVarName(publicKeyEnvVarName),
+    SignaturePublicKeyName(publicKeyName),
     UseGuards(SignatureGuard),
     ApiHeader({
       name: 'X-Signature',

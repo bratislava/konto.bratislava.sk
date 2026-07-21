@@ -1,5 +1,7 @@
 import * as crypto from 'node:crypto'
 
+import getBaConfigInstance from '../config/ba-config.instance'
+
 // Implementation from https://envshh.js.org/start-here/security/
 
 const ALGORITHM_NAME = 'aes-256-gcm'
@@ -33,12 +35,10 @@ const decrypt = (ciphertextAndNonce: Buffer, key: Buffer) => {
 }
 
 export const encryptData = (plaintext: string): string => {
-  if (!process.env.CRYPTO_SECRET_KEY) {
-    throw new Error('CRYPTO_SECRET_KEY not set')
-  }
+  const { cryptoSecretKey } = getBaConfigInstance().security
   const salt = crypto.randomBytes(PBKDF2_SALT_SIZE)
   const key = crypto.pbkdf2Sync(
-    Buffer.from(process.env.CRYPTO_SECRET_KEY, 'utf8'),
+    Buffer.from(cryptoSecretKey, 'utf8'),
     salt,
     PBKDF2_ITERATIONS,
     ALGORITHM_KEY_SIZE,
@@ -53,15 +53,13 @@ export const encryptData = (plaintext: string): string => {
 }
 
 export const decryptData = (encryptedText: string): string => {
-  if (!process.env.CRYPTO_SECRET_KEY) {
-    throw new Error('CRYPTO_SECRET_KEY not set')
-  }
+  const { cryptoSecretKey } = getBaConfigInstance().security
   const ciphertextAndNonceAndSalt = Buffer.from(encryptedText, 'base64')
   const salt = ciphertextAndNonceAndSalt.subarray(0, PBKDF2_SALT_SIZE)
   const ciphertextAndNonce = ciphertextAndNonceAndSalt.subarray(PBKDF2_SALT_SIZE)
 
   const key = crypto.pbkdf2Sync(
-    Buffer.from(process.env.CRYPTO_SECRET_KEY, 'utf8'),
+    Buffer.from(cryptoSecretKey, 'utf8'),
     salt,
     PBKDF2_ITERATIONS,
     ALGORITHM_KEY_SIZE,

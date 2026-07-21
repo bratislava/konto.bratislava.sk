@@ -55,7 +55,8 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     body: unknown
     userId: string
   } {
-    const { method, originalUrl, body } = request
+    const { method, originalUrl } = request
+    const body: unknown = request.body
     const ip = request.ip ?? '<NO IP>'
     const userAgent = request.get('user-agent') || ''
 
@@ -117,7 +118,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
     // Filter out keys starting with `$`. We will log them later
     const { responseLog, responseMessage } = separateLogFromResponseObj(
-      typeof exitData === 'string' ? JSON.parse(exitData) : exitData
+      typeof exitData === 'string' ? (JSON.parse(exitData) as object) : exitData
     )
     const returnExitData = JSON.stringify(responseMessage)
 

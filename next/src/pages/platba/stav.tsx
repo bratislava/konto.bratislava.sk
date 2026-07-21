@@ -1,46 +1,47 @@
 import { strapiClient } from '@/src/clients/graphql-strapi'
-import { GeneralQuery, TaxFragment } from '@/src/clients/graphql-strapi/api'
+import { GeneralQuery, MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import PaymentResultPageContent from '@/src/components/page-contents/PaymentResultPageContent/PaymentResultPageContent'
-import { StrapiTaxProvider } from '@/src/components/page-contents/TaxesFees/useStrapiTax'
+import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
-type AccountThankYouPageProps = {
+type Props = {
   general: GeneralQuery
-  strapiTax: TaxFragment
+  strapiTaxConfig: MunicipalChargeConfigFragment
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(async () => {
-  const [general, strapiTax] = await Promise.all([
+  const [general, strapiTaxConfig] = await Promise.all([
     strapiClient.General(),
-    strapiClient.Tax().then((response) => response.tax),
+    strapiClient.MunicipalChargeConfig().then((response) => response.municipalChargeConfig),
   ])
-  if (!strapiTax) {
+
+  if (!strapiTaxConfig) {
     return { notFound: true }
   }
 
   return {
     props: {
       general,
-      strapiTax,
+      strapiTaxConfig,
       ...(await slovakServerSideTranslations()),
     },
   }
 })
 
-const AccountThankYouPage = ({ general, strapiTax }: AccountThankYouPageProps) => {
+const PaymentResultPage = ({ general, strapiTaxConfig }: Props) => {
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout className="lg:bg-gray-50">
-        <StrapiTaxProvider strapiTax={strapiTax}>
+      <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
+        <PageLayout className="lg:bg-gray-50">
           <PaymentResultPageContent />
-        </StrapiTaxProvider>
-      </PageLayout>
+        </PageLayout>
+      </StrapiTaxConfigProvider>
     </GeneralContextProvider>
   )
 }
 
-export default SsrAuthProviderHOC(AccountThankYouPage)
+export default SsrAuthProviderHOC(PaymentResultPage)

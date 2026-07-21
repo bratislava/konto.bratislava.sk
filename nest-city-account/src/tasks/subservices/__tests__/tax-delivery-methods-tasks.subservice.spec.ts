@@ -2,6 +2,17 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
+import { configFactory } from '../../../__tests__/factories/config.factory'
+import { deliveryMethodPreferenceHistoryFactory } from '../../../__tests__/factories/deliveryMethodPreferenceHistory.factory'
+import { physicalEntityFactory } from '../../../__tests__/factories/physicalEntity.factory'
+import { userWithRelationsFactory } from '../../../__tests__/factories/userWithRelations.factory'
+import {
+  expectAny,
+  expectArrayContaining,
+  expectDefined,
+  expectObjectContaining,
+} from '../../../__tests__/jest-matchers'
+import getBaConfigInstance from '../../../config/ba-config.instance'
 import {
   DeliveryMethodEnum,
   DeliveryMethodUserPreferenceEnum,
@@ -16,12 +27,7 @@ import { PrismaService } from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { TaxDeliveryMethodsTasksSubservice } from '../tax-delivery-methods-tasks.subservice'
 
-type UserWithRelations = Prisma.UserGetPayload<{
-  include: {
-    physicalEntity: true
-    deliveryMethodUserHistory: true
-  }
-}>
+jest.mock('../../../config/ba-config.instance')
 
 const mockEmail = 'test@example.com'
 
@@ -29,13 +35,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
   let service: TaxDeliveryMethodsTasksSubservice
   let throwerErrorGuard: ThrowerErrorGuard
 
+  const mockGetBaConfigInstance = getBaConfigInstance as jest.MockedFunction<
+    typeof getBaConfigInstance
+  >
+
   beforeAll(() => {
-    process.env = {
-      ...process.env,
-      MUNICIPAL_TAX_LOCK_MONTH: '02',
-      MUNICIPAL_TAX_LOCK_DAY: '01',
-    }
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(jest.fn())
   })
 
   afterAll(() => {
@@ -49,6 +54,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
   beforeEach(async () => {
     jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] })
     jest.setSystemTime(new Date('2024-02-15T12:00:00.000Z'))
+    mockGetBaConfigInstance.mockReturnValue({ taxDeadline: { month: 2, day: 1 } } as ReturnType<
+      typeof getBaConfigInstance
+    >)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -70,14 +78,14 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
 
     // Make $transaction execute its callback so the advisory-lock path is exercised in tests.
-    ;(prismaMock.$transaction as jest.Mock).mockImplementation(async (fn: any) => {
+    prismaMock.$transaction.mockImplementation(async (fn) => {
       if (typeof fn === 'function') {
         return fn(prismaMock)
       }
       return Promise.all(fn)
     })
     // $executeRaw is used for pg_advisory_xact_lock — no-op in tests.
-    ;(prismaMock.$executeRaw as jest.Mock).mockResolvedValue(0)
+    prismaMock.$executeRaw.mockResolvedValue(0)
   })
 
   describe('updateDeliveryMethods', () => {
@@ -95,58 +103,58 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       prismaMock.user.findMany
         // Initial batch
         .mockResolvedValueOnce([
-          {
+          userWithRelationsFactory({
             birthNumber: '1234562020',
             id: '1',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234564848',
             id: '2',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234561234',
             id: '3',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
             taxDeliveryMethodCityAccountLockDate: new Date('2023-08-03'),
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234569999',
             id: '4',
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234567777',
             id: '5',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234564646',
             id: '6',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234564649',
             id: '7',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.CITY_ACCOUNT,
             taxDeliveryMethodCityAccountLockDate: new Date('2020-01-03'),
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234564521',
             id: '8',
-          },
-        ] as unknown as UserWithRelations[])
+          }),
+        ])
         // Re-check inside advisory-lock transaction: all users still active
         .mockResolvedValueOnce([
-          { birthNumber: '1234562020' },
-          { birthNumber: '1234564848' },
-          { birthNumber: '1234561234' },
-          { birthNumber: '1234569999' },
-          { birthNumber: '1234567777' },
-          { birthNumber: '1234564646' },
-          { birthNumber: '1234564649' },
-          { birthNumber: '1234564521' },
-        ] as unknown as UserWithRelations[])
+          userWithRelationsFactory({ birthNumber: '1234562020' }),
+          userWithRelationsFactory({ birthNumber: '1234564848' }),
+          userWithRelationsFactory({ birthNumber: '1234561234' }),
+          userWithRelationsFactory({ birthNumber: '1234569999' }),
+          userWithRelationsFactory({ birthNumber: '1234567777' }),
+          userWithRelationsFactory({ birthNumber: '1234564646' }),
+          userWithRelationsFactory({ birthNumber: '1234564649' }),
+          userWithRelationsFactory({ birthNumber: '1234564521' }),
+        ])
 
       await service.updateDeliveryMethodsInNoris()
 
@@ -188,9 +196,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         data: { lastTaxDeliveryMethodsUpdateYear: new Date().getFullYear() },
       })
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: ['1', '2', '3', '4', '5', '6', '7', '8'] } },
-          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+          data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
       )
     })
@@ -223,12 +231,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       prismaMock.user.findMany
         // Initial batch: one user
         .mockResolvedValueOnce([
-          {
+          userWithRelationsFactory({
             birthNumber: '1234562020',
             id: '1',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
-          },
-        ] as unknown as UserWithRelations[])
+          }),
+        ])
         // Re-check inside the transaction: user was deactivated (birthNumber now null) → empty
         .mockResolvedValueOnce([])
 
@@ -239,9 +247,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(updateDeliveryMethodsSpy).not.toHaveBeenCalled()
       // lastTaxDeliveryMethodsUpdateTry is still stamped for the batch.
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: ['1'] } },
-          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+          data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
       )
     })
@@ -257,19 +265,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       prismaMock.user.findMany
         // Initial batch: two users
         .mockResolvedValueOnce([
-          {
+          userWithRelationsFactory({
             birthNumber: '1234562020',
             id: '1',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.EDESK,
-          },
-          {
+          }),
+          userWithRelationsFactory({
             birthNumber: '1234564848',
             id: '2',
             taxDeliveryMethodAtLockDate: DeliveryMethodEnum.POSTAL,
-          },
-        ] as unknown as UserWithRelations[])
+          }),
+        ])
         // Re-check: only user1 is still active (user2 was deactivated between the initial query and the lock)
-        .mockResolvedValueOnce([{ birthNumber: '1234562020' }] as unknown as UserWithRelations[])
+        .mockResolvedValueOnce([userWithRelationsFactory({ birthNumber: '1234562020' })])
 
       await service.updateDeliveryMethodsInNoris()
 
@@ -281,9 +289,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // lastTaxDeliveryMethodsUpdateTry is stamped for the entire batch, including the deactivated user.
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: ['1', '2'] } },
-          data: { lastTaxDeliveryMethodsUpdateTry: expect.any(Date) },
+          data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
       )
 
@@ -303,17 +311,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
-        {
+        userWithRelationsFactory({
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
           taxDeliveryMethod: null,
           deliveryMethodUserHistory: [],
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: true,
-          },
-        },
-      ] as unknown as UserWithRelations[])
+          }),
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValueOnce([])
 
@@ -334,17 +342,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       const updateSpy = jest.spyOn(prismaMock.user, 'update').mockResolvedValue({} as User)
 
       prismaMock.user.findMany.mockResolvedValueOnce([
-        {
+        userWithRelationsFactory({
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
           taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
-          deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
-          physicalEntity: {
+          deliveryMethodUserHistory: [
+            deliveryMethodPreferenceHistoryFactory({ createdAt: cityAccountDate }),
+          ],
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
-          },
-        },
-      ] as unknown as UserWithRelations[])
+          }),
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValueOnce([])
 
@@ -365,17 +375,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       const updateSpy = jest.spyOn(prismaMock.user, 'update').mockResolvedValue({} as User)
 
       prismaMock.user.findMany.mockResolvedValueOnce([
-        {
+        userWithRelationsFactory({
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
           taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
-          deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
-          physicalEntity: {
+          deliveryMethodUserHistory: [
+            deliveryMethodPreferenceHistoryFactory({ createdAt: cityAccountDate }),
+          ],
+          physicalEntity: physicalEntityFactory({
             activeEdesk: null,
-          },
-        },
-      ] as unknown as UserWithRelations[])
+          }),
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValueOnce([])
 
@@ -397,17 +409,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
-        {
+        userWithRelationsFactory({
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
           taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.POSTAL,
           deliveryMethodUserHistory: [],
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
-          },
-        },
-      ] as unknown as UserWithRelations[])
+          }),
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValueOnce([])
 
@@ -429,17 +441,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
-        {
+        userWithRelationsFactory({
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
           taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
-          deliveryMethodUserHistory: [{ createdAt: new Date('2024-01-15') }],
-          physicalEntity: {
+          deliveryMethodUserHistory: [
+            deliveryMethodPreferenceHistoryFactory({ createdAt: new Date('2024-01-15') }),
+          ],
+          physicalEntity: physicalEntityFactory({
             activeEdesk: true,
-          },
-        },
-      ] as unknown as UserWithRelations[])
+          }),
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValueOnce([])
 
@@ -461,17 +475,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
-        {
+        userWithRelationsFactory({
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
           taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.POSTAL,
           deliveryMethodUserHistory: [],
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: null,
-          },
-        },
-      ] as unknown as UserWithRelations[])
+          }),
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValueOnce([])
 
@@ -494,17 +508,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValue({ count: 1 })
 
       prismaMock.user.findMany.mockResolvedValueOnce([
-        {
+        userWithRelationsFactory({
           id: '1',
           birthNumber: '1234567890',
           createdAt: new Date(jobStartTime.getTime() - 10000),
           taxDeliveryMethod: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
-          deliveryMethodUserHistory: [{ createdAt: cityAccountDate }],
-          physicalEntity: {
+          deliveryMethodUserHistory: [
+            deliveryMethodPreferenceHistoryFactory({ createdAt: cityAccountDate }),
+          ],
+          physicalEntity: physicalEntityFactory({
             activeEdesk: true, // EDESK should take priority
-          },
-        },
-      ] as unknown as UserWithRelations[])
+          }),
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValueOnce([])
 
@@ -537,10 +553,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should not send emails when SEND_DAILY_DELIVERY_METHOD_SUMMARIES config is disabled', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        key: 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES',
-        value: { active: false },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          key: 'SEND_DAILY_DELIVERY_METHOD_SUMMARIES',
+          value: { active: false },
+        })
+      )
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -553,17 +571,19 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should skip users without email, externalId, or birthNumber', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       // Mock initial query for users with changes
       prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([
-          { userId: 'user1' },
-          { userId: 'user2' },
-          { userId: 'user3' },
-        ] as any)
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user1' }),
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user2' }),
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user3' }),
+        ])
         .mockResolvedValueOnce([]) // Latest delivery method
         .mockResolvedValueOnce([]) // Previous delivery method
         .mockResolvedValueOnce([]) // Yesterday delivery method change
@@ -572,28 +592,28 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // Mock batch fetch returning users with missing data
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: null, // Missing email
           externalId: 'ext-123',
           birthNumber: '1234567890',
           physicalEntity: null,
-        },
-        {
+        }),
+        userWithRelationsFactory({
           id: 'user2',
           email: mockEmail,
-          externalId: null, // Missing externalId
+          externalId: undefined, // Missing externalId
           birthNumber: '1234567890',
           physicalEntity: null,
-        },
-        {
+        }),
+        userWithRelationsFactory({
           id: 'user3',
           email: mockEmail,
           externalId: 'ext-456',
           birthNumber: null, // Missing birthNumber
           physicalEntity: null,
-        },
-      ] as any)
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -603,9 +623,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should send eDesk activation email when eDesk was activated yesterday', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       // Mock initial query for users with eDesk changes
       prismaMock.deliveryMethodPreferenceHistory.findMany
@@ -615,26 +637,26 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
-        {
+        physicalEntityFactory({
           userId: 'user1',
           activeEdesk: true,
           edeskStatusChangedAt: yesterday,
-        },
-      ] as any)
+        }),
+      ])
 
       // Mock batch fetch
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: true,
             edeskStatusChangedAt: yesterday,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -648,9 +670,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should send postal email when eDesk was deactivated yesterday (no CITY_ACCOUNT preference)', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query - no delivery method changes
@@ -659,25 +683,25 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
-        {
+        physicalEntityFactory({
           userId: 'user1',
           activeEdesk: false,
           edeskStatusChangedAt: yesterday,
-        },
-      ] as any)
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
             edeskStatusChangedAt: yesterday,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -691,43 +715,45 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should send City Account email when eDesk was deactivated yesterday and user has CITY_ACCOUNT preference', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query - no delivery method changes
         .mockResolvedValueOnce([
           // Latest delivery method - user prefers CITY_ACCOUNT
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: new Date(yesterday.getTime() - 86400000), // Day before yesterday
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([]) // Previous delivery method
         .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
-        {
+        physicalEntityFactory({
           userId: 'user1',
           activeEdesk: false,
           edeskStatusChangedAt: yesterday,
-        },
-      ] as any)
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
             edeskStatusChangedAt: yesterday,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -742,44 +768,46 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should send City Account email when delivery method changed to CITY_ACCOUNT yesterday', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - user has delivery method change
+        .mockResolvedValueOnce([deliveryMethodPreferenceHistoryFactory({ userId: 'user1' })]) // Initial query - user has delivery method change
         .mockResolvedValueOnce([
           // Latest delivery method
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([]) // Previous delivery method - no previous state
         .mockResolvedValueOnce([
           // Yesterday delivery method change
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
             edeskStatusChangedAt: null,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -796,51 +824,53 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     it('should send postal email when delivery method changed to POSTAL yesterday', async () => {
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
+        .mockResolvedValueOnce([deliveryMethodPreferenceHistoryFactory({ userId: 'user1' })]) // Initial query
         .mockResolvedValueOnce([
           // Latest delivery method
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([
           // Previous delivery method
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([
           // Yesterday delivery method change
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
             edeskStatusChangedAt: null,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -856,36 +886,38 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     it('should skip users with active eDesk who had delivery method changes but no eDesk status change', async () => {
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - delivery method change
+        .mockResolvedValueOnce([deliveryMethodPreferenceHistoryFactory({ userId: 'user1' })]) // Initial query - delivery method change
         .mockResolvedValueOnce([
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([])
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: true,
             edeskStatusChangedAt: twoDaysAgo, // Changed 2 days ago, not yesterday
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -897,51 +929,53 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     it('should skip users when delivery method did not change from previous state', async () => {
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query
+        .mockResolvedValueOnce([deliveryMethodPreferenceHistoryFactory({ userId: 'user1' })]) // Initial query
         .mockResolvedValueOnce([
           // Latest delivery method - CITY_ACCOUNT
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([
           // Previous delivery method - also CITY_ACCOUNT (no change)
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([
           // Yesterday delivery method change
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([])
 
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
             edeskStatusChangedAt: null,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -951,76 +985,86 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should combine both delivery method and eDesk changes and deduplicate by userId', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       // User1 and User2 have delivery method changes, User1 and User3 have eDesk changes
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any)
+        .mockResolvedValueOnce([
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user1' }),
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user2' }),
+        ])
         .mockResolvedValueOnce([]) // Latest delivery method
         .mockResolvedValueOnce([]) // Previous delivery method
         .mockResolvedValueOnce([]) // Yesterday delivery method change
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
-        {
+        physicalEntityFactory({
           userId: 'user1', // Duplicate - should be deduplicated
           activeEdesk: true,
           edeskStatusChangedAt: yesterday,
-        },
-        {
+        }),
+        physicalEntityFactory({
           userId: 'user3',
           activeEdesk: true,
           edeskStatusChangedAt: yesterday,
-        },
-      ] as any)
+        }),
+      ])
 
       // Mock batch fetch - should fetch all 3 unique users
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: null, // Will be skipped
           externalId: 'ext-1',
           birthNumber: '1234567890',
           physicalEntity: null,
-        },
-        {
+        }),
+        userWithRelationsFactory({
           id: 'user2',
           email: null, // Will be skipped
           externalId: 'ext-2',
           birthNumber: '1234567890',
           physicalEntity: null,
-        },
-        {
+        }),
+        userWithRelationsFactory({
           id: 'user3',
           email: null, // Will be skipped
           externalId: 'ext-3',
           birthNumber: '1234567890',
           physicalEntity: null,
-        },
-      ] as any)
+        }),
+      ])
 
       await service.sendDailyDeliveryMethodSummaries()
 
       // Verify batch fetch was called with deduplicated user IDs
       expect(prismaMock.user.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { id: { in: expect.arrayContaining(['user1', 'user2', 'user3']) } },
+        expectObjectContaining({
+          where: { id: { in: expectArrayContaining(['user1', 'user2', 'user3']) } },
         })
       )
       expect(prismaMock.user.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { id: { in: expect.any(Array) } },
+        expectObjectContaining({
+          where: { id: { in: expectAny<string[]>(Array) } },
         })
       )
-      const calledWith = (prismaMock.user.findMany as jest.Mock).mock.calls[0][0]
-      expect(calledWith.where.id.in).toHaveLength(3) // Deduplicated
+      const [calledWith] = expectDefined(prismaMock.user.findMany.mock.lastCall) as [
+        Prisma.UserFindManyArgs,
+      ]
+      const whereId = calledWith.where?.id
+      expect(whereId && typeof whereId === 'object' ? whereId.in : undefined).toHaveLength(3) // Deduplicated
     })
 
     it('should only process users with changes between yesterday start (00:00:00) and end (23:59:59)', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
         .mockResolvedValueOnce([]) // Initial query
@@ -1033,10 +1077,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       await service.sendDailyDeliveryMethodSummaries()
 
       // Verify delivery-method initial query uses correct date range
-      const initialCall = (prismaMock.deliveryMethodPreferenceHistory.findMany as jest.Mock).mock
-        .calls[0][0]
-      const rangeStart = initialCall.where.createdAt.gte
-      const rangeEnd = initialCall.where.createdAt.lte
+      const initialCall = prismaMock.deliveryMethodPreferenceHistory.findMany.mock
+        .calls[0][0] as Prisma.DeliveryMethodPreferenceHistoryFindManyArgs
+      const createdAtFilter = initialCall.where
+        ?.createdAt as Prisma.DateTimeFilter<'DeliveryMethodPreferenceHistory'>
+      const rangeStart = createdAtFilter.gte as Date
+      const rangeEnd = createdAtFilter.lte as Date
 
       expect(rangeStart.getHours()).toBe(0)
       expect(rangeStart.getMinutes()).toBe(0)
@@ -1050,11 +1096,11 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // Verify eDesk query uses same date range
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
+        expectObjectContaining({
+          where: expectObjectContaining<Prisma.PhysicalEntityWhereInput>({
             edeskStatusChangedAt: {
-              gte: expect.any(Date),
-              lte: expect.any(Date),
+              gte: expectAny<Date>(Date),
+              lte: expectAny<Date>(Date),
             },
           }),
         })
@@ -1062,20 +1108,22 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should prioritize eDesk status over delivery method changes when eDesk is active', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }] as any) // Initial query - delivery method change
+        .mockResolvedValueOnce([deliveryMethodPreferenceHistoryFactory({ userId: 'user1' })]) // Initial query - delivery method change
         .mockResolvedValueOnce([
           // Latest delivery method
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([]) // Previous delivery method
         .mockResolvedValueOnce([]) // Yesterday delivery method change
 
@@ -1083,17 +1131,17 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // User has active eDesk (changed yesterday) AND delivery method change yesterday
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: mockEmail,
           externalId: 'ext-123',
           birthNumber: '1234567890',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: true,
             edeskStatusChangedAt: yesterday,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 
@@ -1108,89 +1156,94 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
     })
 
     it('should process multiple users in batch with different delivery method changes', async () => {
-      prismaMock.config.findFirst.mockResolvedValue({
-        value: { active: true },
-      } as any)
+      prismaMock.config.findFirst.mockResolvedValue(
+        configFactory({
+          value: { active: true },
+        })
+      )
 
       const twoDaysAgo = new Date(yesterday.getTime() - 86400000)
 
       prismaMock.deliveryMethodPreferenceHistory.findMany
-        .mockResolvedValueOnce([{ userId: 'user1' }, { userId: 'user2' }] as any) // Initial query
+        .mockResolvedValueOnce([
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user1' }),
+          deliveryMethodPreferenceHistoryFactory({ userId: 'user2' }),
+        ]) // Initial query
         .mockResolvedValueOnce([
           // Latest delivery method
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-          {
+          }),
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user2',
             method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([
           // Previous delivery method
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user2',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: twoDaysAgo,
-          },
-        ] as any)
+          }),
+        ])
         .mockResolvedValueOnce([
           // Yesterday delivery method change
-          {
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user1',
             method: DeliveryMethodUserPreferenceEnum.CITY_ACCOUNT,
             createdAt: yesterday,
-          },
-          {
+          }),
+          deliveryMethodPreferenceHistoryFactory({
             userId: 'user2',
             method: DeliveryMethodUserPreferenceEnum.POSTAL,
             createdAt: yesterday,
-          },
-        ] as any)
+          }),
+        ])
 
       prismaMock.physicalEntity.findMany.mockResolvedValue([
-        {
+        physicalEntityFactory({
           userId: 'user3',
           activeEdesk: true,
           edeskStatusChangedAt: yesterday,
-        },
-      ] as any)
+        }),
+      ])
 
       prismaMock.user.findMany.mockResolvedValue([
-        {
+        userWithRelationsFactory({
           id: 'user1',
           email: 'user1@example.com',
           externalId: 'ext-1',
           birthNumber: '1111111111',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
             edeskStatusChangedAt: null,
-          },
-        },
-        {
+          }),
+        }),
+        userWithRelationsFactory({
           id: 'user2',
           email: 'user2@example.com',
           externalId: 'ext-2',
           birthNumber: '2222222222',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: false,
             edeskStatusChangedAt: null,
-          },
-        },
-        {
+          }),
+        }),
+        userWithRelationsFactory({
           id: 'user3',
           email: 'user3@example.com',
           externalId: 'ext-3',
           birthNumber: '3333333333',
-          physicalEntity: {
+          physicalEntity: physicalEntityFactory({
             activeEdesk: true,
             edeskStatusChangedAt: yesterday,
-          },
-        },
-      ] as any)
+          }),
+        }),
+      ])
 
       const sendEmailSpy = jest.spyOn(mailgunService, 'sendEmail')
 

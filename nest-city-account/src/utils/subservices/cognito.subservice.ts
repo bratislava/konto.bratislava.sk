@@ -14,7 +14,9 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
+import { Simplify } from 'type-fest'
 
+import BaConfigService from '../../config/ba-config.service'
 import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
 import {
   SendToQueueErrorsEnum,
@@ -38,31 +40,20 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 export class CognitoSubservice {
   private readonly cognitoClient: CognitoIdentityProviderClient
 
-  private readonly config
-
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
-    if (
-      !process.env.AWS_COGNITO_ACCESS ||
-      !process.env.AWS_COGNITO_SECRET ||
-      !process.env.AWS_COGNITO_REGION ||
-      !process.env.AWS_COGNITO_USERPOOL_ID
-    ) {
-      throw new Error('CognitoSubservice ENV vars are not set ')
-    }
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly baConfigService: BaConfigService
+  ) {
     this.cognitoClient = new CognitoIdentityProviderClient({
-      region: process.env.AWS_COGNITO_REGION,
+      region: baConfigService.cognito.region,
       credentials: {
-        accessKeyId: process.env.AWS_COGNITO_ACCESS,
-        secretAccessKey: process.env.AWS_COGNITO_SECRET,
+        accessKeyId: baConfigService.cognito.accessKeyId,
+        secretAccessKey: baConfigService.cognito.secretAccessKey,
       },
     })
-
-    this.config = {
-      cognitoUserPoolId: process.env.AWS_COGNITO_USERPOOL_ID,
-    }
   }
 
-  private attributesToObject(attributes: AttributeType[]): CognitoGetUserAttributesData {
+  private attributesToObject(attributes: AttributeType[]): Simplify<CognitoGetUserAttributesData> {
     const obj = Object.fromEntries(
       attributes
         .filter((attr): attr is AttributeType & { Name: string } => attr.Name != null)
@@ -75,7 +66,7 @@ export class CognitoSubservice {
 
   private async getUser(externalId: string): Promise<AdminGetUserCommandOutput> {
     const inputParams = {
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
 
@@ -121,7 +112,7 @@ export class CognitoSubservice {
 
   async cognitoDeactivateUser(externalId: string): Promise<void> {
     const inputParams = {
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
 
@@ -158,7 +149,7 @@ export class CognitoSubservice {
           Value: newTier,
         },
       ],
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
     try {
@@ -191,7 +182,7 @@ export class CognitoSubservice {
           Value: 'true',
         },
       ],
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: externalId,
     }
 
@@ -222,7 +213,7 @@ export class CognitoSubservice {
   async getAllCognitoUsers(): Promise<CognitoGetUserData[]> {
     const result: UserType[] = []
     const params: ListUsersCommandInput = {
-      UserPoolId: this.config.cognitoUserPoolId,
+      UserPoolId: this.baConfigService.cognito.userPoolId,
     }
     do {
       // TODO: add proper error handling
@@ -231,16 +222,14 @@ export class CognitoSubservice {
       result.push(...(cognitoData.Users ?? []))
       params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
-    return result.map((user) => {
-      return {
-        idUser: user.Username ?? '',
-        ...this.attributesToObject(user.Attributes ?? []),
-        UserCreateDate: user.UserCreateDate,
-        UserLastModifiedDate: user.UserLastModifiedDate,
-        Enabled: user.Enabled ?? false,
-        UserStatus: user.UserStatus as CognitoUserStatusEnum,
-      }
-    })
+    return result.map((user) => ({
+      idUser: user.Username ?? '',
+      ...this.attributesToObject(user.Attributes ?? []),
+      UserCreateDate: user.UserCreateDate,
+      UserLastModifiedDate: user.UserLastModifiedDate,
+      Enabled: user.Enabled ?? false,
+      UserStatus: user.UserStatus as CognitoUserStatusEnum,
+    }))
   }
 
   async refreshTokens(refreshToken: string, clientId: string) {

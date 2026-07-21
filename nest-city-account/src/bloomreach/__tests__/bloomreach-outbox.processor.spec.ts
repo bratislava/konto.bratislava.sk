@@ -3,10 +3,18 @@ import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
 import prismaMock from '../../../test/singleton'
+import {
+  expectAny,
+  expectDefined,
+  expectObjectContaining,
+  expectStringContaining,
+} from '../../__tests__/jest-matchers'
+import BaConfigService from '../../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
+  BloomreachBatchCommand,
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
@@ -20,6 +28,14 @@ describe('BloomreachOutboxProcessor', () => {
   let processor: BloomreachOutboxProcessor
 
   const now = new Date('2026-03-26T12:00:00Z')
+
+  const bloomreachConfig = {
+    integrationState: 'ACTIVE',
+    apiUrl: 'https://api.bloomreach.test',
+    projectToken: 'test-project',
+    apiKey: 'dummy-key',
+    apiSecret: 'dummy-secret',
+  }
 
   const makeEntry = (overrides: Partial<BloomreachOutbox> = {}): BloomreachOutbox => ({
     id: 'entry-1',
@@ -35,17 +51,25 @@ describe('BloomreachOutboxProcessor', () => {
   })
 
   beforeEach(async () => {
-    process.env.BLOOMREACH_INTEGRATION_STATE = 'ACTIVE'
-    process.env.BLOOMREACH_API_URL = 'https://api.bloomreach.test'
-    process.env.BLOOMREACH_PROJECT_TOKEN = 'test-project'
-    process.env.BLOOMREACH_API_KEY = 'key'
-    process.env.BLOOMREACH_API_SECRET = 'secret'
+    bloomreachConfig.integrationState = 'ACTIVE'
+    bloomreachConfig.apiUrl = 'https://api.bloomreach.test'
+    bloomreachConfig.projectToken = 'test-project'
+    bloomreachConfig.apiKey = 'dummy-key'
+    bloomreachConfig.apiSecret = 'dummy-secret'
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BloomreachOutboxProcessor,
         { provide: PrismaService, useValue: prismaMock },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            get bloomreach() {
+              return bloomreachConfig
+            },
+          },
+        },
       ],
     }).compile()
 
@@ -55,17 +79,16 @@ describe('BloomreachOutboxProcessor', () => {
     prismaMock.bloomreachOutbox.findMany.mockResolvedValue([])
     // findSupersededEntriesAndMerge uses a transaction — pass prismaMock as the tx client
     // so findFirst/update mocks work inside the transaction
-    prismaMock.$transaction.mockImplementation((fn: any) => fn(prismaMock))
+    prismaMock.$transaction.mockImplementation(async (fn) => fn(prismaMock))
   })
 
   afterEach(() => {
     jest.clearAllMocks()
-    delete process.env.BLOOMREACH_INTEGRATION_STATE
   })
 
   describe('processOutbox', () => {
     it('should skip when integration is not active', async () => {
-      process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
+      bloomreachConfig.integrationState = 'INACTIVE'
 
       await processor.processOutbox()
 
@@ -95,8 +118,10 @@ describe('BloomreachOutboxProcessor', () => {
         {
           commands: [{ name: entry.commandName, data: entry.commandData, command_id: 'entry-1' }],
         },
-        expect.objectContaining({
-          headers: expect.objectContaining({ Authorization: expect.stringContaining('Basic ') }),
+        expectObjectContaining({
+          headers: expectObjectContaining({
+            Authorization: expectStringContaining('Basic '),
+          }),
         })
       )
       expect(prismaMock.bloomreachOutbox.updateMany).toHaveBeenCalledWith({
@@ -118,7 +143,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.PENDING,
           attempts: 2,
-          lastError: expect.stringContaining('500'),
+          lastError: expectStringContaining('500'),
         },
       })
     })
@@ -136,7 +161,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.FAILED,
           attempts: 5,
-          lastError: expect.any(String),
+          lastError: expectAny<string>(String),
         },
       })
     })
@@ -168,7 +193,7 @@ describe('BloomreachOutboxProcessor', () => {
         data: {
           status: BloomreachOutboxStatus.PENDING,
           attempts: 1,
-          lastError: expect.stringContaining('success=false'),
+          lastError: expectStringContaining('success=false'),
         },
       })
     })
@@ -183,7 +208,7 @@ describe('BloomreachOutboxProcessor', () => {
 
       expect(prismaMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'entry-1' },
-        data: expect.objectContaining({
+        data: expectObjectContaining({
           status: BloomreachOutboxStatus.PENDING,
         }),
       })
@@ -207,7 +232,8 @@ describe('BloomreachOutboxProcessor', () => {
 
       await processor.processOutbox()
 
-      expect((mockedAxios.post.mock.calls[0][1] as any).commands).toHaveLength(2)
+      const [, requestBody] = expectDefined(mockedAxios.post.mock.lastCall)
+      expect((requestBody as { commands: BloomreachBatchCommand[] }).commands).toHaveLength(2)
       expect(prismaMock.bloomreachOutbox.updateMany).toHaveBeenCalledWith({
         where: { id: { in: ['entry-1', 'entry-2'] } },
         data: { status: BloomreachOutboxStatus.COMPLETED },
@@ -232,7 +258,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
 
       prismaMock.$queryRaw.mockResolvedValue([oldEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerPendingEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
       await processor.processOutbox()
@@ -288,7 +314,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
 
       prismaMock.$queryRaw.mockResolvedValue([oldEventEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEventEntry)
       mockedAxios.post.mockRejectedValue(new Error('API down'))
 
       await processor.processOutbox()
@@ -304,7 +330,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
       // Newer event should NOT be updated (no merge for events)
       expect(prismaMock.bloomreachOutbox.update).not.toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: 'newer-event' } })
+        expectObjectContaining({ where: { id: 'newer-event' } })
       )
     })
   })
@@ -351,7 +377,7 @@ describe('BloomreachOutboxProcessor', () => {
         },
       })
       prismaMock.bloomreachOutbox.findMany.mockResolvedValue([staleEntry])
-      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEntry as any)
+      prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(newerEntry)
       prismaMock.$queryRaw.mockResolvedValue([])
 
       await processor.processOutbox()

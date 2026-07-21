@@ -2,20 +2,22 @@ import { Injectable } from '@nestjs/common'
 import * as mssql from 'mssql'
 import pLimit from 'p-limit'
 
+import BaConfigService from '../../config/ba-config.service'
 import { EdeskRecord, EdeskRecordSchema, UpdateEdeskChecks } from '../types/noris.types'
 import { NorisConnectionService } from './noris-connection.service'
 import { NorisValidatorService } from './noris-validator.service'
 
 @Injectable()
 export class NorisEdeskService {
-  private readonly concurrency = Number(process.env.DB_CONCURRENCY ?? 10)
-
-  private readonly concurrencyLimit = pLimit(this.concurrency)
+  private readonly concurrencyLimit: ReturnType<typeof pLimit>
 
   constructor(
     private readonly connectionService: NorisConnectionService,
-    private readonly validatorService: NorisValidatorService
-  ) {}
+    private readonly validatorService: NorisValidatorService,
+    baConfigService: BaConfigService
+  ) {
+    this.concurrencyLimit = pLimit(baConfigService.database.concurrency)
+  }
 
   async getExternalEdeskChecks(
     physicalPersons: number,

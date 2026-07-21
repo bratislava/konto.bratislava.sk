@@ -3,10 +3,14 @@ import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Response } from 'express'
 
+import { expectStringContaining } from '../__tests__/jest-matchers'
 import { HttpsGuard } from '../utils/guards/https.guard'
-import { AuthorizationRequestDto } from './dtos/requests.oauth2.dto'
+import { AuthorizationRequestDto, TokenRequestDto } from './dtos/requests.oauth2.dto'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
-import { AuthRequestIdGuard, RequestWithAuthorizationData } from './guards/auth-request-id.guard'
+import {
+  AuthRequestIdGuard,
+  RequestWithValidatedAuthorizationData,
+} from './guards/auth-request-id.guard'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { RequestWithClientCredentials, TokenRequestGuard } from './guards/token-request.guard'
 import { OAuth2Controller } from './oauth2.controller'
@@ -32,27 +36,31 @@ describe('OAuth2Controller', () => {
   }
 
   function mockResponse(): Response {
-    return { redirect: jest.fn() } as any
+    return createMock<Response>({ redirect: jest.fn() })
   }
 
   function mockReqWithAuthData(
-    overrides: { body?: any; query?: any } = {}
-  ): RequestWithAuthorizationData {
-    return {
+    overrides: { body?: Record<string, unknown>; query?: Record<string, string> } = {}
+  ): RequestWithValidatedAuthorizationData {
+    return createMock<RequestWithValidatedAuthorizationData>({
       body: overrides.body ?? {},
       query: overrides.query ?? {},
       authorizationRequestData: validAuthRequestData,
-    } as any
+    })
   }
 
   function mockReqWithCreds(
-    overrides: { body?: any; tokenClientId?: string; oauth2ClientSecret?: string } = {}
+    overrides: {
+      body?: Partial<TokenRequestDto>
+      tokenClientId?: string
+      oauth2ClientSecret?: string
+    } = {}
   ): RequestWithClientCredentials {
-    return {
+    return createMock<RequestWithClientCredentials>({
       body: overrides.body ?? {},
       tokenClientId: overrides.tokenClientId,
       oauth2ClientSecret: overrides.oauth2ClientSecret,
-    } as any
+    })
   }
 
   beforeEach(async () => {
@@ -75,7 +83,7 @@ describe('OAuth2Controller', () => {
       .overrideFilter(OAuth2ExceptionFilter)
       .useValue({ catch: jest.fn() })
       .overridePipe(TokenRequestValidationPipe)
-      .useValue({ transform: (v: any) => v })
+      .useValue({ transform: (v: unknown) => v })
       .compile()
 
     controller = module.get<OAuth2Controller>(OAuth2Controller)
@@ -195,7 +203,7 @@ describe('OAuth2Controller', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        expect.stringContaining('unable to provide tokens')
+        expectStringContaining('unable to provide tokens')
       )
     })
 
@@ -236,7 +244,12 @@ describe('OAuth2Controller', () => {
       jest
         .spyOn(oauth2Service, 'token')
         .mockResolvedValue({ access_token: 'at', token_type: 'Bearer', expires_in: 3600 })
-      const body: any = { grant_type: 'authorization_code', code: 'xyz' }
+      const body: TokenRequestDto = {
+        grant_type: 'authorization_code',
+        code: 'xyz',
+        redirect_uri: 'https://example.com/callback',
+        code_verifier: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
+      }
       const req = mockReqWithCreds({
         body,
         tokenClientId: 'guard-client',
@@ -253,7 +266,13 @@ describe('OAuth2Controller', () => {
       jest
         .spyOn(oauth2Service, 'token')
         .mockResolvedValue({ access_token: 'at', token_type: 'Bearer', expires_in: 3600 })
-      const body: any = { grant_type: 'authorization_code', client_id: 'body-client' }
+      const body: TokenRequestDto = {
+        grant_type: 'authorization_code',
+        code: 'xyz',
+        redirect_uri: 'https://example.com/callback',
+        code_verifier: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
+        client_id: 'body-client',
+      }
       const req = mockReqWithCreds({ body, tokenClientId: 'guard-client' }) // oauth2ClientSecret undefined
       await controller.token(body, req)
       expect(body.client_id).toBe('body-client') // not overwritten
@@ -267,7 +286,12 @@ describe('OAuth2Controller', () => {
         refresh_token: 'rt',
       }
       jest.spyOn(oauth2Service, 'token').mockResolvedValue(tokenResponse)
-      const body: any = { grant_type: 'authorization_code', code: 'xyz' }
+      const body: TokenRequestDto = {
+        grant_type: 'authorization_code',
+        code: 'xyz',
+        redirect_uri: 'https://example.com/callback',
+        code_verifier: 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk',
+      }
       const result = await controller.token(body, mockReqWithCreds({ body }))
       expect(oauth2Service.token).toHaveBeenCalledWith(body)
       expect(result).toBe(tokenResponse)

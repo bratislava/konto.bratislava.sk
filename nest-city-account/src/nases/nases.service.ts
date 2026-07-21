@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { isAxiosError } from 'axios'
 import _ from 'lodash'
 import {
@@ -10,6 +9,7 @@ import {
 
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import { VerificationErrorsResponseEnum } from '../user-verification/verification.errors.enum'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -65,7 +65,7 @@ export class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private clientsService: ClientsService,
     private readonly apiJwtTokensService: ApiJwtTokensService,
-    private readonly configService: ConfigService
+    private readonly baConfigService: BaConfigService
   ) {
     this.logger = new LineLoggerSubservice(NasesService.name)
   }
@@ -94,8 +94,8 @@ export class NasesService {
 
   private async searchUpvsIdentitiesByUri(uris: string[]) {
     const jwt = this.apiJwtTokensService.createTechnicalAccountJwtToken(
-      this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE')
+      this.baConfigService.nases.subNasesTechnicalAccount,
+      this.baConfigService.nases.apiTokenPrivate
     )
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesSearchPost(
@@ -165,10 +165,12 @@ export class NasesService {
     // If we have exactly one unmatched result and one unmatched input URI, we can safely assume they represent the same
     // identity.
     if (unmatchedResults.length === 1 && unmatchedInputs.length === 1) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know there is at least one value in the array, because we checked the length above
       const unmatchedResult = unmatchedResults.pop()!
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know there is at least one value in the array, because we checked the length above
       const unmatchedInput = unmatchedInputs.pop()!
       this.logger.log({
-        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInput}`,
+        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInput.uri}`,
       })
       resultDataSuccess.push({
         inputUri: unmatchedInput.uri,

@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
 import { CognitoUserAttributesTierEnum, ConsentEnum } from '../../generated/prisma/client'
 import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
 import {
@@ -25,7 +26,8 @@ describe('BloomreachPayloadBuilder', () => {
 
   const externalId = 'test-cognito-id'
 
-  const baseCognitoUser = {
+  const baseCognitoUser = cognitoUserDataFactory({
+    sub: externalId,
     idUser: externalId,
     given_name: 'John',
     family_name: 'Doe',
@@ -33,11 +35,9 @@ describe('BloomreachPayloadBuilder', () => {
     email: 'john@example.com',
     UserCreateDate: new Date('2025-01-15T10:00:00Z'),
     UserLastModifiedDate: new Date('2025-06-01T12:00:00Z'),
-    Enabled: true,
-    [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum.PHYSICAL_ENTITY,
     [CognitoUserAttributesEnum.TIER]: CognitoUserAttributesTierEnum.NEW,
     [CognitoUserAttributesEnum.OAUTH_ORIGIN_CLIENT_NAME]: undefined,
-  }
+  })
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -64,7 +64,7 @@ describe('BloomreachPayloadBuilder', () => {
 
   describe('buildCustomerCommand', () => {
     it('should build a basic customer command with user data', async () => {
-      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
+      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser)
       userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(null)
 
       const result = await builder.buildCustomerCommand(externalId)
@@ -78,7 +78,7 @@ describe('BloomreachPayloadBuilder', () => {
     })
 
     it('should include phone number when provided', async () => {
-      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
+      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser)
       userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(null)
 
       const result = await builder.buildCustomerCommand(externalId, '0900123456')
@@ -91,7 +91,7 @@ describe('BloomreachPayloadBuilder', () => {
         ...baseCognitoUser,
         [CognitoUserAttributesEnum.TIER]: CognitoUserAttributesTierEnum.IDENTITY_CARD,
       }
-      cognitoSubservice.getDataFromCognito.mockResolvedValue(verifiedUser as any)
+      cognitoSubservice.getDataFromCognito.mockResolvedValue(verifiedUser)
       userIdentitySubservice.getVerifiedIdentifiers.mockResolvedValue({
         birthNumber: '9001011234',
         ico: undefined,
@@ -117,7 +117,7 @@ describe('BloomreachPayloadBuilder', () => {
         ...baseCognitoUser,
         [CognitoUserAttributesEnum.TIER]: CognitoUserAttributesTierEnum.EID,
       }
-      cognitoSubservice.getDataFromCognito.mockResolvedValue(verifiedUser as any)
+      cognitoSubservice.getDataFromCognito.mockResolvedValue(verifiedUser)
       userIdentitySubservice.getVerifiedIdentifiers.mockResolvedValue({
         birthNumber: '9001011234',
       })
@@ -130,7 +130,7 @@ describe('BloomreachPayloadBuilder', () => {
     })
 
     it('should not look up contact for non-verified users', async () => {
-      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
+      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser)
       userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(null)
 
       const result = await builder.buildCustomerCommand(externalId)
@@ -140,7 +140,7 @@ describe('BloomreachPayloadBuilder', () => {
     })
 
     it('should include correspondence channel for physical entities', async () => {
-      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser as any)
+      cognitoSubservice.getDataFromCognito.mockResolvedValue(baseCognitoUser)
       userIdentitySubservice.getActiveDeliveryMethod.mockResolvedValue(
         UserOfficialCorrespondenceChannelEnum.EDESK
       )
@@ -157,7 +157,7 @@ describe('BloomreachPayloadBuilder', () => {
         ...baseCognitoUser,
         [CognitoUserAttributesEnum.ACCOUNT_TYPE]: CognitoUserAccountTypesEnum.LEGAL_ENTITY,
       }
-      cognitoSubservice.getDataFromCognito.mockResolvedValue(legalUser as any)
+      cognitoSubservice.getDataFromCognito.mockResolvedValue(legalUser)
 
       const result = await builder.buildCustomerCommand(externalId)
 

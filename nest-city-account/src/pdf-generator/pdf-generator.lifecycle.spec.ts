@@ -7,6 +7,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { chromium } from 'playwright'
 
+import BaConfig from '../config/ba-config'
+import BaConfigService from '../config/ba-config.service'
+import EnvironmentVariables from '../config/environment-variables'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { PdfGeneratorService } from './pdf-generator.service'
 
@@ -47,7 +50,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
   beforeEach(async () => {
     mockBrowsers = []
-    launchMock = jest.mocked(chromium.launch) as unknown as jest.Mock
+    launchMock = jest.mocked(chromium.launch)
     launchMock.mockReset()
     launchMock.mockImplementation(() => {
       const browser = buildMockBrowser()
@@ -56,14 +59,24 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
     })
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PdfGeneratorService, ThrowerErrorGuard],
+      providers: [
+        PdfGeneratorService,
+        ThrowerErrorGuard,
+        {
+          provide: BaConfigService,
+          // `playwright` is mocked at the module level above, so the value here is
+          // inert - kept as a real BaConfig instance for consistency with
+          // pdf-generator.service.spec.ts.
+          useValue: new BaConfig({
+            PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+          } as EnvironmentVariables),
+        },
+      ],
     }).compile()
 
     service = module.get<PdfGeneratorService>(PdfGeneratorService)
 
-    jest
-      .spyOn(service as any, 'addPasswordToPdf')
-      .mockImplementation((buf: unknown) => buf as Buffer)
+    jest.spyOn(service, 'addPasswordToPdf').mockResolvedValue(Buffer.from('mock-encrypted-pdf'))
   })
 
   afterEach(() => {

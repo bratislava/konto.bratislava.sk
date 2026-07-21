@@ -199,17 +199,41 @@ export class VerificationSubservice {
       return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
     }
 
-    let birthNumberNotExistCounter = 0
-    let firstMatchingRfo: (typeof rfoData.data)[number] | null = null
+    const { firstMatchingRfo, birthNumberNotExistCounter } = this.findMatchingRfoEntry(
+      rfoData.data,
+      data.identityCard,
+      user,
+      ico
+    )
 
-    for (const rfoDataSingle of rfoData.data) {
+    if (firstMatchingRfo !== null) {
+      return this.handleMatchedRfoEntry(user, ico, firstMatchingRfo)
+    }
+
+    // No RFO response contained birthNumber
+    if (birthNumberNotExistCounter === rfoData.data.length) {
+      return { success: false, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+    }
+
+    return this.verifyIdentityCardViaDcom(user, data, ico)
+  }
+
+  private findMatchingRfoEntry(
+    rfoEntries: RfoIdentityListElement[],
+    identityCard: string,
+    user: CognitoGetUserData,
+    ico: string | undefined
+  ): { firstMatchingRfo: RfoIdentityListElement | null; birthNumberNotExistCounter: number } {
+    let birthNumberNotExistCounter = 0
+
+    for (const rfoDataSingle of rfoEntries) {
       // If the check fails, increment counter
       if (!rfoDataSingle.rodneCislo) {
         birthNumberNotExistCounter += 1
         continue
       }
 
-      const identityCardCheckResult = this.checkIdentityCard(rfoDataSingle, data.identityCard)
+      const identityCardCheckResult = this.checkIdentityCard(rfoDataSingle, identityCard)
       if (!identityCardCheckResult.success) {
         continue
       }
@@ -223,53 +247,56 @@ export class VerificationSubservice {
         continue
       }
 
-      firstMatchingRfo = rfoDataSingle
-      break
+      return { firstMatchingRfo: rfoDataSingle, birthNumberNotExistCounter }
     }
 
-    if (firstMatchingRfo !== null) {
-      const birthNumber = firstMatchingRfo.rodneCislo?.replaceAll('/', '')
-      if (!birthNumber) {
-        return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
-      }
-      let databaseResult: VerificationReturnType
-      if (ico) {
-        databaseResult =
-          await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
-            user,
-            ico,
-            birthNumber
-          )
-      } else {
-        databaseResult = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
+    return { firstMatchingRfo: null, birthNumberNotExistCounter }
+  }
+
+  private async handleMatchedRfoEntry(
+    user: CognitoGetUserData,
+    ico: string | undefined,
+    matchingRfo: RfoIdentityListElement
+  ): Promise<VerificationReturnType> {
+    const birthNumber = matchingRfo.rodneCislo?.replaceAll('/', '')
+    if (!birthNumber) {
+      return { success: false, reason: VerificationErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+    }
+
+    const databaseResult = ico
+      ? await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
           user,
-          firstMatchingRfo.ifo || null,
+          ico,
+          birthNumber
+        )
+      : await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
+          user,
+          matchingRfo.ifo || null,
           birthNumber,
           0
         )
-      }
 
-      if (!databaseResult.success) {
-        return databaseResult
-      }
-
-      if (!ico) {
-        const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
-          user.email,
-          user.idUser
-        )
-        if (dbUser !== null) {
-          await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
-        }
-      }
-      return { success: true }
+    if (!databaseResult.success) {
+      return databaseResult
     }
 
-    // No RFO response contained birthNumber
-    if (birthNumberNotExistCounter === rfoData.data.length) {
-      return { success: false, reason: MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS }
+    if (!ico) {
+      const dbUser = await this.verificationDataSubservice.findUserByEmailOrExternalId(
+        user.email,
+        user.idUser
+      )
+      if (dbUser !== null) {
+        await this.physicalEntityService.linkToUserIdByBirthnumber(dbUser.id, birthNumber)
+      }
     }
+    return { success: true }
+  }
 
+  private async verifyIdentityCardViaDcom(
+    user: CognitoGetUserData,
+    data: RequestBodyVerifyIdentityCardDto,
+    ico: string | undefined
+  ): Promise<VerificationReturnType> {
     const rfoDataDcom = await this.magproxyService.rfoBirthNumberDcom(data.birthNumber)
 
     if (!rfoDataDcom.success) {
@@ -295,22 +322,18 @@ export class VerificationSubservice {
     }
 
     const birthNumber = rfoDataDcom.data.rodneCislo.replaceAll('/', '')
-    let dbResultDcom: { success: boolean }
-    if (ico) {
-      dbResultDcom =
-        await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
+    const dbResultDcom = ico
+      ? await this.verificationDataSubservice.checkAndCreateLegalPersonIcoAndBirthNumber(
           user,
           ico,
           birthNumber
         )
-    } else {
-      dbResultDcom = await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
-        user,
-        rfoDataDcom.data.ifo || null,
-        birthNumber,
-        1
-      )
-    }
+      : await this.verificationDataSubservice.checkAndCreateUserIfoAndBirthNumber(
+          user,
+          rfoDataDcom.data.ifo || null,
+          birthNumber,
+          1
+        )
 
     return dbResultDcom.success
       ? { success: true }

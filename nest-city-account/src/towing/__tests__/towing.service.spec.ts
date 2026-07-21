@@ -2,6 +2,7 @@ import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
+import { expectAny, expectObjectContaining } from '../../__tests__/jest-matchers'
 import BaConfigService from '../../config/ba-config.service'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
@@ -82,8 +83,8 @@ describe('TowingService', () => {
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${ENFORCEMENT_BACKEND_URL}/api/public/tow/BA123AB`,
-        expect.objectContaining({
-          timeout: expect.any(Number),
+        expectObjectContaining({
+          timeout: expectAny<number>(Number),
           headers: {
             'X-Api-Key': ENFORCEMENT_BACKEND_TOW_API_KEY,
           },
@@ -98,7 +99,7 @@ describe('TowingService', () => {
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${ENFORCEMENT_BACKEND_URL}/api/public/tow/BA%20123`,
-        expect.objectContaining({
+        expectObjectContaining({
           headers: {
             'X-Api-Key': ENFORCEMENT_BACKEND_TOW_API_KEY,
           },

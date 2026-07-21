@@ -1,7 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
-import { HttpStatus } from '@nestjs/common'
+import { ArgumentMetadata, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { expectStringContaining } from '../../__tests__/jest-matchers'
+import { TokenRequestUnion } from '../dtos/requests.oauth2.dto'
 import { OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
 import { OAuth2ErrorThrower } from '../oauth2-error.thrower'
@@ -11,7 +13,7 @@ describe('TokenRequestValidationPipe', () => {
   let pipe: TokenRequestValidationPipe
   let oAuth2ErrorThrower: OAuth2ErrorThrower
 
-  const metadata = { type: 'body', metatype: Object, data: '' } as any
+  const metadata: ArgumentMetadata = { type: 'body', metatype: Object, data: '' }
 
   beforeEach(async () => {
     jest.clearAllMocks()
@@ -125,7 +127,7 @@ describe('TokenRequestValidationPipe', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        expect.stringContaining('Invalid request:')
+        expectStringContaining('Invalid request:')
       )
     })
 
@@ -144,7 +146,7 @@ describe('TokenRequestValidationPipe', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        expect.stringContaining('Invalid request:')
+        expectStringContaining('Invalid request:')
       )
     })
   })
@@ -181,7 +183,7 @@ describe('TokenRequestValidationPipe', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        expect.stringContaining('Invalid request:')
+        expectStringContaining('Invalid request:')
       )
     })
   })
@@ -209,15 +211,15 @@ describe('TokenRequestValidationPipe', () => {
       // CUSTOM PROXY DETAIL: class-validator whitelist removes unknown properties.
       // RFC 6749 Section 3.2 says servers "MUST ignore unrecognized request parameters" —
       // stripping them via whitelist achieves that contract.
-      const result = (await pipe.transform(
+      const result: TokenRequestUnion = await pipe.transform(
         {
           grant_type: 'refresh_token',
           refresh_token: 'enc-token',
           unknown_property: 'should-be-stripped',
         },
         metadata
-      )) as any
-      expect(result.unknown_property).toBeUndefined()
+      )
+      expect((result as unknown as Record<string, unknown>).unknown_property).toBeUndefined()
       expect(result.grant_type).toBe('refresh_token')
     })
   })

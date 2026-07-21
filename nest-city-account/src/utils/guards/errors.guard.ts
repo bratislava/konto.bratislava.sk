@@ -254,7 +254,7 @@ export default class ThrowerErrorGuard {
     const override = status !== undefined ? statusOverrides?.[status] : undefined
 
     if (override !== undefined) {
-      const overrideStatus = override.status ?? status
+      const overrideStatus = override.status
       return this.LoggingHttpException(
         overrideStatus,
         STATUS_CODES[overrideStatus] ?? message ?? '',

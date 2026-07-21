@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { Request } from 'express'
 
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
@@ -52,8 +53,18 @@ describe('OAuth2ValidationSubservice', () => {
     }
   }
 
-  function mockRequest(overrides: { headers?: any; body?: any } = {}): any {
-    return { headers: overrides.headers ?? {}, body: overrides.body ?? {} }
+  function mockRequest(
+    overrides: {
+      headers?: Record<string, string>
+      body?: { client_id?: string | number; client_secret?: string }
+    } = {}
+  ): Request<unknown, unknown, { client_id?: string; client_secret?: string }> {
+    return createMock<Request<unknown, unknown, { client_id?: string; client_secret?: string }>>({
+      headers: overrides.headers ?? {},
+      // body is intentionally allowed to hold non-string client_id here: some tests exercise
+      // extractClientCredentials' runtime typeof-check against malformed request bodies.
+      body: (overrides.body ?? {}) as { client_id?: string; client_secret?: string },
+    })
   }
 
   function basicAuth(clientId: string, clientSecret: string): string {
@@ -889,7 +900,7 @@ describe('OAuth2ValidationSubservice', () => {
           service.validateTokenRequest({
             clientId: 'test-client-id',
             clientSecret: 'test-secret',
-            redirectUri: 12345 as any,
+            redirectUri: 12345,
             grantType: 'authorization_code',
             codeVerifier: 'v',
           })

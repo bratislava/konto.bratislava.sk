@@ -14,6 +14,7 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
+import { Simplify } from 'type-fest'
 
 import BaConfigService from '../../config/ba-config.service'
 import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
@@ -52,7 +53,7 @@ export class CognitoSubservice {
     })
   }
 
-  private attributesToObject(attributes: AttributeType[]): CognitoGetUserAttributesData {
+  private attributesToObject(attributes: AttributeType[]): Simplify<CognitoGetUserAttributesData> {
     const obj = Object.fromEntries(
       attributes
         .filter((attr): attr is AttributeType & { Name: string } => attr.Name != null)
@@ -221,16 +222,14 @@ export class CognitoSubservice {
       result.push(...(cognitoData.Users ?? []))
       params.PaginationToken = cognitoData.PaginationToken
     } while (params.PaginationToken)
-    return result.map((user) => {
-      return {
-        idUser: user.Username ?? '',
-        ...this.attributesToObject(user.Attributes ?? []),
-        UserCreateDate: user.UserCreateDate,
-        UserLastModifiedDate: user.UserLastModifiedDate,
-        Enabled: user.Enabled ?? false,
-        UserStatus: user.UserStatus as CognitoUserStatusEnum,
-      }
-    })
+    return result.map((user) => ({
+      idUser: user.Username ?? '',
+      ...this.attributesToObject(user.Attributes ?? []),
+      UserCreateDate: user.UserCreateDate,
+      UserLastModifiedDate: user.UserLastModifiedDate,
+      Enabled: user.Enabled ?? false,
+      UserStatus: user.UserStatus as CognitoUserStatusEnum,
+    }))
   }
 
   async refreshTokens(refreshToken: string, clientId: string) {

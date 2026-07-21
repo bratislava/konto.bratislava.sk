@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common'
 import { lookup } from 'mime-types'
 
-import { ClamavClientService } from '../clamav-client/clamav-client.service'
 import { isBase64, isDefined, isValidUid } from '../common/utils/helpers'
 import BaConfigService from '../config/ba-config.service'
 import { FileStatus } from '../generated/prisma/client'
@@ -31,7 +30,6 @@ const extensionToMimeType = new Map<string, string>([
 @Injectable()
 export class ScannerService {
   private readonly logger: Logger
-  private readonly clamavClientService: ClamavClientService
   private readonly supportedMimeTypes: string[]
 
   constructor(
@@ -40,7 +38,6 @@ export class ScannerService {
     private readonly prismaService: PrismaService,
   ) {
     this.logger = new Logger('ScannerService')
-    this.clamavClientService = new ClamavClientService(baConfigService)
     this.supportedMimeTypes =
       this.baConfigService.files.mimeTypeWhitelist.split(' ')
   }

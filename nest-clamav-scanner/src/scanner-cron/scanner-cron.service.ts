@@ -220,26 +220,38 @@ export class ScannerCronService {
       return FileStatus.SCAN_ERROR
     }
 
-    //move file to safe or infected bucket if scan status is SAFE or INFECTED
-    if (scanStatus === FileStatus.SAFE || scanStatus === FileStatus.INFECTED) {
-      const destinationBucket =
-        scanStatus === FileStatus.SAFE
-          ? this.baConfigService.minio.buckets.safe
-          : this.baConfigService.minio.buckets.infected
-      const moveStatus = await this.minioStorageService.moveFileBetweenBuckets(
+    // Determines which file statuses should move a file and where to
+    const moveTargetByScanStatus = new Map<
+      FileStatus,
+      { destinationBucket: string; moveErrorStatus: FileStatus }
+    >([
+      [
+        FileStatus.SAFE,
+        {
+          destinationBucket: this.baConfigService.minio.buckets.safe,
+          moveErrorStatus: FileStatus.MOVE_ERROR_SAFE,
+        },
+      ],
+      [
+        FileStatus.INFECTED,
+        {
+          destinationBucket: this.baConfigService.minio.buckets.infected,
+          moveErrorStatus: FileStatus.MOVE_ERROR_INFECTED,
+        },
+      ],
+    ])
+
+    //move file to its target bucket if the scan status has one configured
+    const moveTarget = moveTargetByScanStatus.get(scanStatus)
+    if (moveTarget) {
+      const moveSuccess = await this.minioStorageService.moveFileBetweenBuckets(
         file.bucketUid,
         file.fileUid,
-        destinationBucket,
+        moveTarget.destinationBucket,
         file.fileUid,
       )
-      if (!moveStatus) {
-        let moveErrorStatus: FileStatus = FileStatus.MOVE_ERROR_SAFE
-
-        if (scanStatus === FileStatus.INFECTED) {
-          moveErrorStatus = FileStatus.MOVE_ERROR_INFECTED
-        }
-
-        await this.updateScanStatusWithNotify(file, moveErrorStatus)
+      if (!moveSuccess) {
+        await this.updateScanStatusWithNotify(file, moveTarget.moveErrorStatus)
 
         throw new Error(
           `${file.fileUid} could not be moved to ${scanStatus} bucket.`,

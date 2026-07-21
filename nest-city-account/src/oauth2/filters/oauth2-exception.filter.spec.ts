@@ -3,7 +3,11 @@ import { ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Response } from 'express'
 
-import { expectAny, expectObjectContaining } from '../../__tests__/jest-matchers'
+import {
+  expectAny,
+  expectObjectContaining,
+  expectStringContaining,
+} from '../../__tests__/jest-matchers'
 import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
@@ -151,15 +155,15 @@ describe('OAuth2ExceptionFilter', () => {
       // https://datatracker.ietf.org/doc/html/rfc9700#section-2.1
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('https://example.com/callback')
+        expectStringContaining('https://example.com/callback')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=invalid_request')
+        expectStringContaining('error=invalid_request')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=test-state')
+        expectStringContaining('state=test-state')
       )
     })
 
@@ -181,7 +185,7 @@ describe('OAuth2ExceptionFilter', () => {
       expect(mockResponse.redirect).not.toHaveBeenCalled()
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST)
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         })
       )
@@ -249,7 +253,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=csrf-token-12345')
+        expectStringContaining('state=csrf-token-12345')
       )
     })
 
@@ -285,7 +289,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error_description=The+requested+scope+is+invalid')
+        expectStringContaining('error_description=The+requested+scope+is+invalid')
       )
     })
 
@@ -320,11 +324,11 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=server_error')
+        expectStringContaining('error=server_error')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error_description=Internal+server+error')
+        expectStringContaining('error_description=Internal+server+error')
       )
 
       // Internal metadata (consoleMessage, metadata) must never leak to the
@@ -359,7 +363,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('https://example.com/stored-callback')
+        expectStringContaining('https://example.com/stored-callback')
       )
     })
   })
@@ -401,7 +405,7 @@ describe('OAuth2ExceptionFilter', () => {
         'application/json;charset=UTF-8'
       )
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_GRANT,
           error_description: 'Invalid authorization code',
         })
@@ -424,7 +428,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED)
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_CLIENT,
         })
       )
@@ -492,7 +496,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST)
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
         })
       )
@@ -510,7 +514,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_SCOPE,
         })
       )
@@ -571,7 +575,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=invalid_request')
+        expectStringContaining('error=invalid_request')
       )
     })
 
@@ -583,7 +587,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=access_denied')
+        expectStringContaining('error=access_denied')
       )
     })
 
@@ -595,7 +599,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=server_error')
+        expectStringContaining('error=server_error')
       )
     })
 
@@ -607,7 +611,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=temporarily_unavailable')
+        expectStringContaining('error=temporarily_unavailable')
       )
     })
   })
@@ -639,7 +643,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_REQUEST,
         })
       )
@@ -652,7 +656,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_CLIENT,
         })
       )
@@ -665,7 +669,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.UNAUTHORIZED_CLIENT,
         })
       )
@@ -683,7 +687,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_REQUEST,
           error_description: 'Simple error message',
         })
@@ -699,7 +703,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'Detailed error message',
         })
       )
@@ -718,7 +722,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_GRANT,
           error_description: 'Authorization code is invalid',
           error_uri: 'https://docs.example.com/errors/invalid_grant',
@@ -894,7 +898,7 @@ describe('OAuth2ExceptionFilter', () => {
 
         expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
         expect(mockResponse.json).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             error: OAuth2AuthorizationErrorCode.SERVER_ERROR,
             error_description: 'Database error',
           })
@@ -916,7 +920,7 @@ describe('OAuth2ExceptionFilter', () => {
         filter.catch(exception, mockArgumentsHost)
 
         expect(loggerSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             method: 'POST',
             authRequestData: expectObjectContaining({
               client_id: 'test-client',
@@ -944,7 +948,7 @@ describe('OAuth2ExceptionFilter', () => {
 
         expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST)
         expect(mockResponse.json).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             error: OAuth2AuthorizationErrorCode.INVALID_REQUEST,
           })
         )
@@ -960,7 +964,7 @@ describe('OAuth2ExceptionFilter', () => {
         filter.catch(exception, mockArgumentsHost)
 
         expect(loggerSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             authRequestData: '<NO REQUEST>',
           })
         )
@@ -1009,11 +1013,11 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=test-state')
+        expectStringContaining('state=test-state')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('https://example.com/callback')
+        expectStringContaining('https://example.com/callback')
       )
     })
 
@@ -1083,7 +1087,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=query-state-123')
+        expectStringContaining('state=query-state-123')
       )
     })
 
@@ -1152,7 +1156,7 @@ describe('OAuth2ExceptionFilter', () => {
       // Should still use original state in redirect
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=correct-state')
+        expectStringContaining('state=correct-state')
       )
     })
 
@@ -1232,7 +1236,7 @@ describe('OAuth2ExceptionFilter', () => {
       // request state even though the exception itself had none
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=original-state')
+        expectStringContaining('state=original-state')
       )
     })
   })
@@ -1272,7 +1276,7 @@ describe('OAuth2ExceptionFilter', () => {
       // Alert is in logObject but gets overridden by undefined metadata.alert
       // The important thing is the log includes the warning message
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           message: 'OAuth2 endpoint error - ENDPOINT ERRORS NOT HANDLED!!!.',
         })
       )
@@ -1356,7 +1360,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Metadata should be logged but not sent to client
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           consoleMessage: 'Internal diagnostic: DB connection pool exhausted',
           alert: 1,
           dbHost: 'db.example.com',
@@ -1391,7 +1395,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           ip: '127.0.0.2',
           userAgent: 'Mozilla/5.0',
           requestBody: expectObjectContaining({
@@ -1412,7 +1416,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           ip: '<NO IP>',
         })
       )
@@ -1442,7 +1446,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           consoleMessage: 'Code expired 5 minutes ago',
           alert: 0,
           codeId: 'abc123',
@@ -1462,7 +1466,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Should log with undefined metadata fields
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           consoleMessage: undefined,
           alert: undefined,
         })
@@ -1499,7 +1503,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'Custom error description',
         })
       )
@@ -1519,7 +1523,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'Primary message',
         })
       )
@@ -1538,7 +1542,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'An error occurred',
         })
       )

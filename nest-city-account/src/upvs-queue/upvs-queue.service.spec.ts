@@ -227,7 +227,7 @@ describe('UpvsQueueService', () => {
       expect(errorSpy).toHaveBeenCalledWith('Error processing batch', expect.any(Error))
 
       expect(prismaMock.externalEdeskCheck.updateMany).not.toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           data: expectObjectContaining<Prisma.ExternalEdeskCheckUpdateManyMutationInput>({
             queueStatus: QueueItemStatusEnum.FAILED,
           }),
@@ -332,8 +332,8 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       expect(nasesService.createMany).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
+        expectArrayContaining([
+          expectObjectContaining({
             uri: 'rc://sk/1234567890_novak_jan',
             physicalEntityId: 'entity-1',
           }),
@@ -359,7 +359,7 @@ describe('UpvsQueueService', () => {
       expect(urgentCall[urgentCall.length - 1]).toBe(8) // Last parameter is the limit
       expect(highPriorityCall[highPriorityCall.length - 1]).toBe(5) // We take only 5 for high priority
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 8,
         })
       )
@@ -410,7 +410,7 @@ describe('UpvsQueueService', () => {
 
       // Should request 3 external items (8 - 5 high priority)
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 3,
         })
       )
@@ -457,7 +457,7 @@ describe('UpvsQueueService', () => {
 
       // Should request 5 external items to fill remaining slots
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 5,
         })
       )
@@ -503,7 +503,7 @@ describe('UpvsQueueService', () => {
 
       // Should request 0 external items (batch is full with urgent)
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 0,
         })
       )

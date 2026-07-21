@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { ArgumentMetadata, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { expectStringContaining } from '../../__tests__/jest-matchers'
 import { TokenRequestUnion } from '../dtos/requests.oauth2.dto'
 import { OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
@@ -126,7 +127,7 @@ describe('TokenRequestValidationPipe', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        expect.stringContaining('Invalid request:')
+        expectStringContaining('Invalid request:')
       )
     })
 
@@ -145,7 +146,7 @@ describe('TokenRequestValidationPipe', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        expect.stringContaining('Invalid request:')
+        expectStringContaining('Invalid request:')
       )
     })
   })
@@ -182,7 +183,7 @@ describe('TokenRequestValidationPipe', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
         OAuth2TokenErrorCode.INVALID_REQUEST,
-        expect.stringContaining('Invalid request:')
+        expectStringContaining('Invalid request:')
       )
     })
   })

@@ -195,7 +195,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
         data: { lastTaxDeliveryMethodsUpdateYear: new Date().getFullYear() },
       })
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: ['1', '2', '3', '4', '5', '6', '7', '8'] } },
           data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
@@ -246,7 +246,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
       expect(updateDeliveryMethodsSpy).not.toHaveBeenCalled()
       // lastTaxDeliveryMethodsUpdateTry is still stamped for the batch.
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: ['1'] } },
           data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
@@ -288,7 +288,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // lastTaxDeliveryMethodsUpdateTry is stamped for the entire batch, including the deactivated user.
       expect(prismaUserUpdateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: ['1', '2'] } },
           data: { lastTaxDeliveryMethodsUpdateTry: expectAny<Date>(Date) },
         })
@@ -1042,12 +1042,12 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // Verify batch fetch was called with deduplicated user IDs
       expect(prismaMock.user.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: expectArrayContaining(['user1', 'user2', 'user3']) } },
         })
       )
       expect(prismaMock.user.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: { in: expectAny<string[]>(Array) } },
         })
       )
@@ -1093,7 +1093,7 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
 
       // Verify eDesk query uses same date range
       expect(prismaMock.physicalEntity.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: expectObjectContaining<Prisma.PhysicalEntityWhereInput>({
             edeskStatusChangedAt: {
               gte: expectAny<Date>(Date),

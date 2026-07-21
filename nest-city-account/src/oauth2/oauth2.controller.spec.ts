@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Response } from 'express'
 
+import { expectStringContaining } from '../__tests__/jest-matchers'
 import { HttpsGuard } from '../utils/guards/https.guard'
 import { AuthorizationRequestDto, TokenRequestDto } from './dtos/requests.oauth2.dto'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
@@ -202,7 +203,7 @@ describe('OAuth2Controller', () => {
       ).rejects.toThrow(OAuth2Exception)
       expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
         OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        expect.stringContaining('unable to provide tokens')
+        expectStringContaining('unable to provide tokens')
       )
     })
 

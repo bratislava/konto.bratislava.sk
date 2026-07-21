@@ -117,7 +117,7 @@ describe('BloomreachOutboxProcessor', () => {
         {
           commands: [{ name: entry.commandName, data: entry.commandData, command_id: 'entry-1' }],
         },
-        expect.objectContaining({
+        expectObjectContaining({
           headers: expectObjectContaining({
             Authorization: expectStringContaining('Basic '),
           }),
@@ -330,7 +330,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
       // Newer event should NOT be updated (no merge for events)
       expect(prismaMock.bloomreachOutbox.update).not.toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: 'newer-event' } })
+        expectObjectContaining({ where: { id: 'newer-event' } })
       )
     })
   })

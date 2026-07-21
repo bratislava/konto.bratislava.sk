@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { expectObjectContaining } from '../../../../__tests__/jest-matchers'
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
@@ -107,7 +108,7 @@ describe('VerificationSubservice', () => {
       }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           success: false,
           reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
@@ -121,7 +122,7 @@ describe('VerificationSubservice', () => {
       } as RfoIdentityListElement // This can happen, sometimes it returns empty object instead of empty array
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           success: false,
           reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
@@ -133,7 +134,7 @@ describe('VerificationSubservice', () => {
       const rfoData: RfoIdentityListElement = { doklady: [] }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           success: false,
           reason: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
         })
@@ -161,7 +162,7 @@ describe('VerificationSubservice', () => {
       }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
-        expect.objectContaining({
+        expectObjectContaining({
           success: false,
           reason: VerificationErrorsEnum.DEAD_PERSON,
         })

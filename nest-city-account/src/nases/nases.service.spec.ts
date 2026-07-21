@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { AxiosResponse } from 'axios'
 import { ApiIamIdentitiesIdGet200Response } from 'openapi-clients/slovensko-sk'
 
-import { expectObjectContaining } from '../__tests__/jest-matchers'
+import { expectArrayContaining, expectObjectContaining } from '../__tests__/jest-matchers'
 import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import ClientsService from '../clients/clients.service'
 import BaConfigService from '../config/ba-config.service'
@@ -144,7 +144,7 @@ describe('NasesService', () => {
       expect(result.success).toHaveLength(0)
       expect(result.failed).toHaveLength(2)
       expect(result.failed).toEqual(
-        expect.arrayContaining([
+        expectArrayContaining([
           {
             physicalEntityId: 'entity-1',
             inputUri: 'rc://sk/1234567890_doe_john',

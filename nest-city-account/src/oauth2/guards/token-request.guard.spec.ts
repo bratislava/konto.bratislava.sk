@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { ExecutionContext, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { expectObjectContaining } from '../../__tests__/jest-matchers'
 import { OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
 import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
@@ -115,7 +116,7 @@ describe('TokenRequestGuard', () => {
       })
       guard.canActivate(context)
       expect(validationSubservice.validateTokenRequest).toHaveBeenCalledWith(
-        expect.objectContaining({ redirectUri: 'https://example.com/cb' })
+        expectObjectContaining({ redirectUri: 'https://example.com/cb' })
       )
     })
 
@@ -126,7 +127,7 @@ describe('TokenRequestGuard', () => {
       })
       guard.canActivate(context)
       expect(validationSubservice.validateTokenRequest).toHaveBeenCalledWith(
-        expect.objectContaining({ redirectUri: 'https://example.com/query-cb' })
+        expectObjectContaining({ redirectUri: 'https://example.com/query-cb' })
       )
     })
 

@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { Interfaces } from 'mailgun.js/definitions'
 
 import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
-import { expectAny } from '../__tests__/jest-matchers'
+import { expectAny, expectObjectContaining } from '../__tests__/jest-matchers'
 import BaConfigService from '../config/ba-config.service'
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -315,7 +315,7 @@ describe('MailgunService', () => {
 
       expect(mockCreate).toHaveBeenCalledWith(
         'test.example.com',
-        expect.objectContaining({
+        expectObjectContaining({
           'h:X-Mailgun-Variables': JSON.stringify({
             firstName: null,
             year: new Date().getFullYear().toString(),

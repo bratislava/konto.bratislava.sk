@@ -1,15 +1,17 @@
 import { SetMetadata } from '@nestjs/common'
 
+import { SignaturePublicKey } from '../types/signature-public-key.enum'
+
 export const SIGNATURE_PUBLIC_KEY = 'signature_public_key'
 
 /**
- * Decorator to specify the environment variable name containing the public key for signature verification
- * @param envVarName - The name of the environment variable containing the public key
+ * Decorator to specify which well-known client's public key to use for signature verification
+ * @param publicKeyName - The SignaturePublicKey enum member identifying the client
  * @example
  * ```ts
- *   @SignaturePublicKey('DPB_CLIENT_PUBLIC_KEY')
+ *   @SignaturePublicKeyName(SignaturePublicKey.DPB)
  *   @UseGuards(SignatureGuard)
  * ```
  */
-export const SignaturePublicKeyEnvVarName = (envVarName: string) =>
-  SetMetadata(SIGNATURE_PUBLIC_KEY, envVarName)
+export const SignaturePublicKeyName = (publicKeyName: SignaturePublicKey) =>
+  SetMetadata(SIGNATURE_PUBLIC_KEY, publicKeyName)

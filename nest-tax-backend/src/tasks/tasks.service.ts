@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import dayjs from 'dayjs'
 
@@ -26,7 +25,6 @@ const NORIS_SILENT_CONNECTION_ERRORS_THRESHOLD = 20
 export class TasksService {
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly configService: ConfigService,
     private readonly notificationsEventsService: NotificationsEventsService,
     private readonly reportingTasksService: ReportingTasksService,
     private readonly norisSyncTasksService: NorisSyncTasksService,
@@ -34,11 +32,7 @@ export class TasksService {
     private readonly taxImportTasksService: TaxImportTasksService,
     private readonly databaseSubservice: DatabaseSubservice,
     private readonly prismaService: PrismaService,
-  ) {
-    this.configService.getOrThrow<string>(
-      'FEATURE_TOGGLE_UPDATE_TAXES_FROM_NORIS',
-    )
-  }
+  ) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')

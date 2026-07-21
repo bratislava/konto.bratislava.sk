@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { baOmitExtraData } from 'forms-shared/form-utils/omitExtraData'
@@ -190,6 +191,7 @@ export default class FormsService {
 
     return this.updateForm(id, {
       ...getUserFormFields(user),
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- FormUpdateBodyDto is a plain data DTO; spreading into update payload is safe
       ...requestData,
     })
   }
@@ -202,6 +204,7 @@ export default class FormsService {
   ): Promise<UpdateFormResponseDto> {
     return this.updateFormWithUser(
       id,
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread -- UpdateFormRequestDto is a plain data DTO; spreading into object literal is safe
       { mainUri: nasesUser.sub, actorUri: nasesUser.actor.sub, ...requestData },
       user,
     )
@@ -252,6 +255,21 @@ export default class FormsService {
           ? { OR: editableStates }
           : { NOT: editableStates }
 
+    // Forms with an enabled form definition are returned regardless of their
+    // state, while forms with a disabled form definition are only returned when
+    // they are NOT in an editable state (i.e. already submitted/completed).
+    const disabledSlugs = formDefinitions
+      .filter((formDefinition) => formDefinition.isDisabled)
+      .map((formDefinition) => formDefinition.slug)
+    const disabledFormDefinitionCondition: Prisma.FormsWhereInput = {
+      NOT: {
+        AND: [
+          { formDefinitionSlug: { in: disabledSlugs } },
+          { OR: editableStates },
+        ],
+      },
+    }
+
     const where: Prisma.FormsWhereInput = {
       ...statesFilter,
       archived: false,
@@ -268,6 +286,7 @@ export default class FormsService {
       },
       AND: [
         identityCondition,
+        disabledFormDefinitionCondition,
         ...(editabilityCondition ? [editabilityCondition] : []),
       ],
     }

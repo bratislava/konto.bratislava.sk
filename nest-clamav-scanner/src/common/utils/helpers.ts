@@ -1,5 +1,6 @@
-import { FileStatus } from '@prisma/client'
 import { isString } from 'class-validator'
+
+import { FileStatus } from '../../generated/prisma/client'
 
 export function isValidUid(resource: unknown): boolean {
   if (!isString(resource)) {

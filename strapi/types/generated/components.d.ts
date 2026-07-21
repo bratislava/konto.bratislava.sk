@@ -109,16 +109,6 @@ export interface BlocksFormLandingPage extends Struct.ComponentSchema {
   attributes: {
     formCta: Schema.Attribute.Component<'blocks.form-landing-page-form-cta', false>
     linkCtas: Schema.Attribute.Component<'blocks.form-landing-page-link-cta', true>
-    sections: Schema.Attribute.DynamicZone<
-      [
-        'sections.richtext',
-        'sections.documents',
-        'sections.faq',
-        'sections.contacts',
-        'sections.towing',
-        'sections.stepper',
-      ]
-    >
     text: Schema.Attribute.RichText
   }
 }
@@ -168,6 +158,65 @@ export interface BlocksHelpItem extends Struct.ComponentSchema {
   attributes: {
     content: Schema.Attribute.RichText & Schema.Attribute.Required
     title: Schema.Attribute.String & Schema.Attribute.Required
+  }
+}
+
+export interface BlocksMunicipalServiceCard extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_municipal_service_cards'
+  info: {
+    displayName: 'municipalServiceCard'
+  }
+  attributes: {
+    color: Schema.Attribute.Enumeration<
+      [
+        'main',
+        'transport',
+        'environment',
+        'social',
+        'education',
+        'culture',
+        'marianum',
+        'olo',
+        'tsb',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'main'>
+    linkLabel: Schema.Attribute.String & Schema.Attribute.Required
+    overrideTitle: Schema.Attribute.String
+    pictogram: Schema.Attribute.Enumeration<
+      [
+        'administration',
+        'public-space-occupation',
+        'taxes',
+        'cultural-organizations',
+        'events-support',
+        'library',
+        'zoo',
+        'kids-teenagers',
+        'swimming-pool',
+        'community-gardens',
+        'connector',
+        'front-gardens',
+        'greenery',
+        'lamp',
+        'spatial-planning',
+        'waste',
+        'security',
+        'marianum',
+        'mosquito',
+        'christmas-tree',
+        'housing',
+        'transport',
+        'excavations',
+        'management-communications',
+        'parking',
+        'towing',
+        'scooter',
+      ]
+    > &
+      Schema.Attribute.Required
+    text: Schema.Attribute.Text & Schema.Attribute.Required
   }
 }
 
@@ -271,6 +320,7 @@ export interface SectionsDocuments extends Struct.ComponentSchema {
     displayName: 'Dokumenty'
   }
   attributes: {
+    allowCollapsingDocuments: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>
     externalDocuments: Schema.Attribute.Component<'blocks.external-document', true>
     text: Schema.Attribute.Text
     title: Schema.Attribute.String
@@ -344,6 +394,7 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.municipal-service-card': BlocksMunicipalServiceCard
       'blocks.municipal-service-link': BlocksMunicipalServiceLink
       'blocks.question': BlocksQuestion
       'general.alert': GeneralAlert

@@ -4,6 +4,7 @@ import https from 'https'
 import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 import { TokenResponseDto } from '../oauth2/dtos/responses.oauth2.dto'
 import {
   RfoIdentityList,
@@ -32,40 +33,11 @@ let magproxyAzureAdToken = ''
 export class MagproxyService {
   private readonly logger: LineLoggerSubservice
 
-  private readonly config: {
-    magproxyAzureAdUrl: string
-    magproxyAzureClientId: string
-    magproxyAzureClientSecret: string
-    magproxyAzureScope: string
-    magproxyUrl: string
-  }
-
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly clientsService: ClientsService
+    private readonly clientsService: ClientsService,
+    private readonly baConfigService: BaConfigService
   ) {
-    if (
-      !process.env.MAGPROXY_AZURE_AD_URL ||
-      !process.env.MAGPROXY_AZURE_CLIENT_ID ||
-      !process.env.MAGPROXY_AZURE_CLIENT_SECRET ||
-      !process.env.MAGPROXY_AZURE_SCOPE ||
-      !process.env.MAGPROXY_URL
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'MagproxyService ENV vars are not set '
-      )
-    }
-
-    /** Config */
-    this.config = {
-      magproxyAzureAdUrl: process.env.MAGPROXY_AZURE_AD_URL,
-      magproxyAzureClientId: process.env.MAGPROXY_AZURE_CLIENT_ID,
-      magproxyAzureClientSecret: process.env.MAGPROXY_AZURE_CLIENT_SECRET,
-      magproxyAzureScope: process.env.MAGPROXY_AZURE_SCOPE,
-      magproxyUrl: process.env.MAGPROXY_URL,
-    }
-
     this.logger = new LineLoggerSubservice(MagproxyService.name)
   }
 
@@ -83,12 +55,12 @@ export class MagproxyService {
     if (tokenCheck === '') {
       const result = await axios
         .post<TokenResponseDto>(
-          this.config.magproxyAzureAdUrl,
+          this.baConfigService.magproxy.azureAdUrl,
           new URLSearchParams({
-            client_id: this.config.magproxyAzureClientId,
+            client_id: this.baConfigService.magproxy.azureClientId,
             grant_type: 'client_credentials',
-            client_secret: this.config.magproxyAzureClientSecret,
-            scope: this.config.magproxyAzureScope,
+            client_secret: this.baConfigService.magproxy.azureClientSecret,
+            scope: this.baConfigService.magproxy.azureScope,
           })
         )
         .then((response) => {

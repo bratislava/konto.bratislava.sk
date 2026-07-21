@@ -1,30 +1,18 @@
 import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
-import { MinioModule } from 'nestjs-minio-client'
 
 import BaConfigModule from './config/ba-config.module'
 import BaConfigService from './config/ba-config.service'
 import FormValidatorRegistryModule from './form-validator-registry/form-validator-registry.module'
+import { MinioClientModule } from './minio-client/minio-client.module'
 import PrismaModule from './prisma/prisma.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
 
 @Module({
   imports: [
     BaConfigModule,
-    MinioModule.registerAsync({
-      isGlobal: true,
-      imports: [BaConfigModule],
-      inject: [BaConfigService],
-      useFactory: (baConfigService: BaConfigService) => ({
-        endPoint: baConfigService.minio.endpoint,
-        port: baConfigService.minio.port,
-        useSSL: baConfigService.minio.useSSL,
-        accessKey: baConfigService.minio.accessKey,
-        secretKey: baConfigService.minio.secretKey,
-        pathStyle: baConfigService.minio.pathStyle,
-      }),
-    }),
+    MinioClientModule,
     PrismaModule,
     FormValidatorRegistryModule,
     BullModule.forRootAsync({

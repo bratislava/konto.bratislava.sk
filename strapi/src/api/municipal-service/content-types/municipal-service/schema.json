@@ -21,6 +21,17 @@
       "targetField": "title",
       "required": true
     },
+    "pageHeaderText": {
+      "type": "text"
+    },
+    "moreInformationUrl": {
+      "type": "string"
+    },
+    "card": {
+      "type": "component",
+      "component": "blocks.municipal-service-card",
+      "repeatable": false
+    },
     "description": {
       "type": "text",
       "required": true

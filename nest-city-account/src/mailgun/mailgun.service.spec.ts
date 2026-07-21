@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import BaConfigService from '../config/ba-config.service'
 import { PdfGeneratorService } from '../pdf-generator/pdf-generator.service'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MailgunService } from './mailgun.service'
@@ -11,14 +12,9 @@ describe('MailgunService', () => {
   let cognitoSubservice: CognitoSubservice
   let pdfGeneratorService: PdfGeneratorService
 
-  const ORIGINAL_ENV = process.env
-
   const mockCreate = jest.fn()
 
   beforeAll(() => {
-    process.env = { ...ORIGINAL_ENV }
-    process.env.MAILGUN_API_KEY = 'test-mailgun-api-key'
-    process.env.DEFAULT_MAILGUN_DOMAIN = 'test.example.com'
     jest.spyOn(console, 'log').mockImplementation(() => {})
     jest.spyOn(console, 'error').mockImplementation(() => {})
   })
@@ -35,6 +31,12 @@ describe('MailgunService', () => {
         MailgunMessageBuilder,
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
         { provide: PdfGeneratorService, useValue: createMock<PdfGeneratorService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            mailgun: { apiKey: 'test-mailgun-api-key', defaultDomain: 'test.example.com' },
+          },
+        },
       ],
     }).compile()
 
@@ -51,16 +53,11 @@ describe('MailgunService', () => {
   })
 
   afterAll(() => {
-    process.env = ORIGINAL_ENV
     jest.restoreAllMocks()
   })
 
   afterEach(() => {
     jest.resetAllMocks()
-  })
-
-  afterAll(() => {
-    process.env = ORIGINAL_ENV
   })
 
   it('should be defined', () => {

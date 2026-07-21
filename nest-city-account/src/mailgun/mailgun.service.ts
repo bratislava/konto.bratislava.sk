@@ -3,6 +3,7 @@ import formData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { Interfaces } from 'mailgun.js/definitions'
 
+import BaConfigService from '../config/ba-config.service'
 import { MAILGUN } from '../user-verification/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MailgunMessageBuilder, MailgunTemplates } from './mailgun-message.builder'
@@ -13,22 +14,15 @@ const mailgun = new Mailgun(formData)
 export class MailgunService {
   private mg: Interfaces.IMailgunClient
 
-  private readonly config
-
   private readonly logger: LineLoggerSubservice
 
-  constructor(private readonly mailgunMessageBuilder: MailgunMessageBuilder) {
-    // TODO temporarily uses dummy token which always passes
-    if (!process.env.MAILGUN_API_KEY || !process.env.DEFAULT_MAILGUN_DOMAIN) {
-      throw new Error('MailgunSubservice ENV vars are not set.')
-    }
-    this.config = {
-      defaultMailgunDomain: process.env.DEFAULT_MAILGUN_DOMAIN,
-    }
-
+  constructor(
+    private readonly mailgunMessageBuilder: MailgunMessageBuilder,
+    private readonly baConfigService: BaConfigService
+  ) {
     this.mg = mailgun.client({
       username: 'api',
-      key: process.env.MAILGUN_API_KEY,
+      key: baConfigService.mailgun.apiKey,
       url: MAILGUN.API_URL,
     })
     this.logger = new LineLoggerSubservice(MailgunService.name)
@@ -60,7 +54,10 @@ export class MailgunService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const messageData = await factoryMethod.call(this.mailgunMessageBuilder, options as any)
 
-      const response = await this.mg.messages.create(this.config.defaultMailgunDomain, messageData)
+      const response = await this.mg.messages.create(
+        this.baConfigService.mailgun.defaultDomain,
+        messageData
+      )
       this.logger.log('Mailgun response', response)
     } catch (error) {
       this.logger.error(

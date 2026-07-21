@@ -1,9 +1,10 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TaxType } from '@prisma/client'
 import * as mssql from 'mssql'
 
 import { BloomreachService } from '../../../../bloomreach/bloomreach.service'
+import BaConfigService from '../../../../config/ba-config.service'
+import { TaxType } from '../../../../generated/prisma/client'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import { QrCodeService } from '../../../../qrcode/qrcode.service'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
@@ -76,6 +77,10 @@ describe('NorisTaxCommunalWasteSubservice', () => {
         {
           provide: DatabaseSubservice,
           useValue: createMock<DatabaseSubservice>(),
+        },
+        {
+          provide: BaConfigService,
+          useValue: { database: { concurrency: 10 } },
         },
       ],
     }).compile()

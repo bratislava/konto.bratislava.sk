@@ -1,19 +1,23 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test } from '@nestjs/testing'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../../test/singleton'
+import { createTestFormDefinitionSlovenskoSkGeneric } from '../../__tests__/factories/formDefinition.factory'
 import BaConfigService from '../../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import { Files, Forms } from '../../generated/prisma/client'
+import { MinioStorageService } from '../../minio-storage/minio-storage.service'
 import PrismaService from '../../prisma/prisma.service'
 import ScannerClientService from '../../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import FilesHelper from '../files.helper'
 
 jest.mock('forms-shared/definitions/formDefinitionTypes')
@@ -41,8 +45,8 @@ describe('FilesHelper', () => {
           },
         },
         {
-          provide: MinioClientSubservice,
-          useValue: createMock<MinioClientSubservice>(),
+          provide: MinioStorageService,
+          useValue: createMock<MinioStorageService>(),
         },
         {
           provide: ScannerClientService,
@@ -64,7 +68,7 @@ describe('FilesHelper', () => {
 
   describe('forms2formInfo', () => {
     let mockForm: Forms
-    let mockFormDefinition: any
+    let mockFormDefinition: FormDefinition
 
     beforeEach(() => {
       mockForm = {
@@ -72,24 +76,16 @@ describe('FilesHelper', () => {
         formDefinitionSlug: 'test-slug',
       } as Forms
 
-      mockFormDefinition = {
+      mockFormDefinition = createTestFormDefinitionSlovenskoSkGeneric({
         slug: 'test-slug',
         pospID: 'test-posp-id',
-      }
+      })
 
-      // Mock the getFormDefinitionBySlug function
-      ;(getFormDefinitionBySlug as unknown as jest.Mock) = jest
-        .fn()
-        .mockReturnValue(mockFormDefinition)
-
-      // Mock the isSlovenskoSkFormDefinition function
-      ;(isSlovenskoSkFormDefinition as unknown as jest.Mock) = jest.fn()
+      jest.mocked(getFormDefinitionBySlug).mockReturnValue(mockFormDefinition)
     })
 
     it('should return FormInfo with pospID for SlovenskoSk form definition', () => {
-      ;(isSlovenskoSkFormDefinition as unknown as jest.Mock).mockReturnValue(
-        true,
-      )
+      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(true)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -100,9 +96,7 @@ describe('FilesHelper', () => {
     })
 
     it('should return FormInfo with slug for non-SlovenskoSk form definition', () => {
-      ;(isSlovenskoSkFormDefinition as unknown as jest.Mock).mockReturnValue(
-        false,
-      )
+      jest.mocked(isSlovenskoSkFormDefinition).mockReturnValue(false)
 
       const result = service.forms2formInfo(mockForm)
 
@@ -113,7 +107,7 @@ describe('FilesHelper', () => {
     })
 
     it('should throw NotFoundException when form definition is not found', () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
+      jest.mocked(getFormDefinitionBySlug).mockReturnValue(null)
 
       const mockThrowException = jest.fn()
       service['throwerErrorGuard'].NotFoundException = mockThrowException
@@ -128,7 +122,7 @@ describe('FilesHelper', () => {
 
   describe('areErrorFilesInForm', () => {
     beforeEach(() => {
-      jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+      jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
     })
 
     afterEach(() => {

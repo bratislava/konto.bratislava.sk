@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { BloomreachOutboxStatus, ConsentEnum } from '@prisma/client'
 
+import BaConfigService from '../config/ba-config.service'
+import { BloomreachOutboxStatus, ConsentEnum } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -22,13 +23,14 @@ export class BloomreachOutboxService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly payloadBuilder: BloomreachPayloadBuilder,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly baConfigService: BaConfigService
   ) {
     this.logger = new LineLoggerSubservice(BloomreachOutboxService.name)
   }
 
   async trackCustomer(externalId: string, phoneNumber?: string): Promise<void> {
-    if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
+    if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
       return
     }
 
@@ -59,7 +61,7 @@ export class BloomreachOutboxService {
     userId?: string,
     isLegalPerson?: boolean
   ): Promise<void> {
-    if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
+    if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
       return
     }
 
@@ -100,7 +102,7 @@ export class BloomreachOutboxService {
   }
 
   async anonymizeCustomer(externalId: string): Promise<void> {
-    if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
+    if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
       return
     }
 

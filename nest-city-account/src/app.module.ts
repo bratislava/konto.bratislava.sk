@@ -1,11 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 
 import { AdminModule } from './admin/admin.module'
 import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
 import ClientsModule from './clients/clients.module'
+import BaConfigModule from './config/ba-config.module'
 import { DpbModule } from './dpb/dpb.module'
 import { IntegrationModule } from './integration/integration.module'
 import { NorisModule } from './noris/noris.module'
@@ -21,6 +21,7 @@ import { SharedModule } from './utils/subservices/shared.module'
 
 @Module({
   imports: [
+    BaConfigModule,
     PrismaModule,
     AuthModule,
     UserModule,
@@ -29,8 +30,6 @@ import { SharedModule } from './utils/subservices/shared.module'
     IntegrationModule,
     SharedModule,
     ScheduleModule.forRoot(),
-    SharedModule,
-    ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule,
     TasksModule,
     OAuth2Module,

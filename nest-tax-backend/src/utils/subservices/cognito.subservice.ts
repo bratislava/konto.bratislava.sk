@@ -5,9 +5,9 @@ import {
   CognitoIdentityProviderServiceException,
 } from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { CognitoUserAttributesTierEnum } from 'openapi-clients/city-account'
 
+import BaConfigService from '../../config/ba-config.service'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 
@@ -17,23 +17,20 @@ export class CognitoSubservice {
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
   ) {
     this.cognitoClient = new CognitoIdentityProviderClient({
-      region: this.configService.getOrThrow<string>('COGNITO_REGION'),
+      region: this.baConfigService.cognito.region,
       credentials: {
-        accessKeyId:
-          this.configService.getOrThrow<string>('AWS_COGNITO_ACCESS'),
-        secretAccessKey:
-          this.configService.getOrThrow<string>('AWS_COGNITO_SECRET'),
+        accessKeyId: this.baConfigService.cognito.accessKeyId,
+        secretAccessKey: this.baConfigService.cognito.secretAccessKey,
       },
     })
-    this.configService.getOrThrow<string>('COGNITO_USER_POOL_ID') // Check if exists
   }
 
   private async getUser(userId: string): Promise<AdminGetUserCommandOutput> {
     const inputParams = {
-      UserPoolId: this.configService.getOrThrow<string>('COGNITO_USER_POOL_ID'),
+      UserPoolId: this.baConfigService.cognito.userPoolId,
       Username: userId,
     }
 

@@ -1,36 +1,46 @@
-import { Button, Typography } from '@bratislava/component-library'
+import { Button } from '@bratislava/component-library'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useConditionalFormRedirects } from '@/src/components/forms/useFormRedirects'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import UserAvatar from '@/src/components/segments/NavBar/UserAvatar'
+import BackButton from '@/src/components/segments/NavBar/BackButton'
+import SkipToContentButton from '@/src/components/segments/NavBar/SkipToContentButton'
+import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
+import OAuthLogo from '@/src/components/segments/OAuthLogo/OAuthLogo'
 import Brand from '@/src/components/simple-components/Brand'
+import DropdownMenu from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
-import MenuDropdown, {
-  MenuItemBase,
-} from '@/src/components/simple-components/MenuDropdown/MenuDropdown'
+import UserAvatar from '@/src/components/simple-components/UserAvatar'
+import { AmplifyClientOAuthContext } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
-type Props = {
-  menuItems: MenuItemBase[]
-}
-
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21360&t=EGiWvvrAjJLDEfQk-4
  */
 
-export const NavBarHeader = ({ menuItems }: Props) => {
+type Props = {
+  variant?: 'default' | 'auth'
+  hasBackButton?: boolean
+}
+
+export const NavBarHeader = ({ variant, hasBackButton = false }: Props) => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
+  const { signedInActionsMenuItems } = useNavMenu()
+
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
+
+  // Auth-variant pages are wrapped in AmplifyClientOAuthProvider; default pages are not, so read the
+  // context optionally and treat its absence as a non-OAuth login.
+  const isOAuthLogin = useContext(AmplifyClientOAuthContext)?.isOAuthLogin ?? false
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
@@ -47,56 +57,63 @@ export const NavBarHeader = ({ menuItems }: Props) => {
 
   return (
     <SectionContainer>
-      <div className="flex h-[57px] items-center gap-x-6">
-        <Brand
-          className="group grow"
-          url={ROUTES.HOME}
-          title={
-            <Typography
-              variant="p-small"
-              className="text-content-active-primary-default group-hover:text-content-active-primary-hover"
-            >
-              {t('NavBar.logoTitle')}
-            </Typography>
-          }
-        />
-        <IdentityVerificationStatus />
-        <nav className="flex gap-x-8 font-semibold text-font/75">
-          {isSignedIn ? (
-            <MenuDropdown
-              setIsOpen={setIsMenuOpen}
-              buttonTrigger={
-                <Button
-                  variant="unstyled"
-                  data-cy="account-button"
-                  className="flex items-center gap-4 rounded-lg font-semibold text-font/75"
-                >
-                  <UserAvatar userAttributes={userAttributes} />
-                  <div className="flex items-center gap-1 font-light lg:font-semibold">
-                    {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
-                    <Icon
-                      name="chevron-down-small"
-                      className={cn('hidden size-5 mix-blend-normal lg:flex', {
-                        '-rotate-180': isMenuOpen,
-                      })}
-                    />
-                  </div>
-                </Button>
-              }
-              itemVariant="header"
-              items={menuItems}
-            />
+      {/* TODO Figma says 64px */}
+      <div className="flex h-[57px] items-center justify-between gap-x-6">
+        <SkipToContentButton />
+        <div className="flex">
+          {hasBackButton && <BackButton />}
+          <Brand className="grow" variant="header" unlinked={isOAuthLogin} />
+        </div>
+        <div className="flex gap-6">
+          {variant === 'auth' ? (
+            <OAuthLogo />
           ) : (
-            <div className="flex items-center gap-6">
-              <Button variant="plain" size="small" onPress={login} data-cy="login-button">
-                {t('menu_links.login')}
-              </Button>
-              <Button variant="solid" onPress={register} size="small" data-cy="register-button">
-                {t('menu_links.register')}
-              </Button>
-            </div>
+            <>
+              <IdentityVerificationStatus />
+              <nav className="flex gap-x-8">
+                {isSignedIn ? (
+                  <DropdownMenu
+                    setIsOpen={setIsMenuOpen}
+                    items={signedInActionsMenuItems}
+                    itemVariant="header"
+                    buttonTrigger={
+                      <Button
+                        variant="unstyled"
+                        data-cy="account-button"
+                        className="flex items-center gap-4 rounded-lg font-semibold text-content-active-primary-default hover:text-content-active-primary-hover"
+                      >
+                        <UserAvatar userAttributes={userAttributes} />
+                        <div className="flex items-center gap-1">
+                          {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
+                          <Icon
+                            name="chevron-down-small"
+                            className={cn('size-5 mix-blend-normal', {
+                              '-rotate-180': isMenuOpen,
+                            })}
+                          />
+                        </div>
+                      </Button>
+                    }
+                  />
+                ) : (
+                  <div className="flex items-center gap-6">
+                    <Button variant="plain" size="small" onPress={login} data-cy="login-button">
+                      {t('menu_links.login')}
+                    </Button>
+                    <Button
+                      variant="solid"
+                      size="small"
+                      onPress={register}
+                      data-cy="register-button"
+                    >
+                      {t('menu_links.register')}
+                    </Button>
+                  </div>
+                )}
+              </nav>
+            </>
           )}
-        </nav>
+        </div>
       </div>
     </SectionContainer>
   )

@@ -99,6 +99,7 @@ fragment ExternalDocumentBlock on ComponentBlocksExternalDocument {
 }
 
 fragment DocumentsSection on ComponentSectionsDocuments {
+  allowCollapsingDocuments
   title
   text
   externalDocuments {
@@ -109,34 +110,6 @@ fragment DocumentsSection on ComponentSectionsDocuments {
 fragment TowingSection on ComponentSectionsTowing {
   title
   text
-}
-
-fragment FormLandingPageSections on FormLandingPageSectionsDynamicZone {
-  __typename
-
-  ... on ComponentSectionsRichtext {
-    ...RichtextSection
-  }
-
-  ... on ComponentSectionsStepper {
-    ...StepperSection
-  }
-
-  ... on ComponentSectionsContacts {
-    ...ContactsSection
-  }
-
-  ... on ComponentSectionsFaq {
-    ...FaqSection
-  }
-
-  ... on ComponentSectionsDocuments {
-    ...DocumentsSection
-  }
-
-  ... on ComponentSectionsTowing {
-    ...TowingSection
-  }
 }
 
 fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
@@ -166,4 +139,3 @@ fragment MunicipalServiceSections on MunicipalServiceSectionsDynamicZone {
     ...TowingSection
   }
 }
-

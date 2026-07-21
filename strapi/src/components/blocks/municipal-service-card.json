@@ -1,0 +1,70 @@
+{
+  "collectionName": "components_blocks_municipal_service_cards",
+  "info": {
+    "displayName": "municipalServiceCard"
+  },
+  "options": {},
+  "attributes": {
+    "overrideTitle": {
+      "type": "string"
+    },
+    "text": {
+      "type": "text",
+      "required": true
+    },
+    "linkLabel": {
+      "type": "string",
+      "required": true
+    },
+    "pictogram": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "administration",
+        "public-space-occupation",
+        "taxes",
+        "cultural-organizations",
+        "events-support",
+        "library",
+        "zoo",
+        "kids-teenagers",
+        "swimming-pool",
+        "community-gardens",
+        "connector",
+        "front-gardens",
+        "greenery",
+        "lamp",
+        "spatial-planning",
+        "waste",
+        "security",
+        "marianum",
+        "mosquito",
+        "christmas-tree",
+        "housing",
+        "transport",
+        "excavations",
+        "management-communications",
+        "parking",
+        "towing",
+        "scooter"
+      ]
+    },
+    "color": {
+      "type": "enumeration",
+      "required": true,
+      "default": "main",
+      "enum": [
+        "main",
+        "transport",
+        "environment",
+        "social",
+        "education",
+        "culture",
+        "marianum",
+        "olo",
+        "tsb"
+      ]
+    }
+  },
+  "config": {}
+}

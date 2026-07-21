@@ -11,7 +11,7 @@ type Props = {
   announcementsLegalPerson: HomepageAnnouncementEntityFragment[]
 }
 
-const Announcements = ({ announcements, announcementsLegalPerson }: Props) => {
+const AnnouncementsHomepageSection = ({ announcements, announcementsLegalPerson }: Props) => {
   const { isLegalEntity } = useSsrAuth()
   const { t } = useTranslation('account')
 
@@ -33,4 +33,4 @@ const Announcements = ({ announcements, announcementsLegalPerson }: Props) => {
   )
 }
 
-export default Announcements
+export default AnnouncementsHomepageSection

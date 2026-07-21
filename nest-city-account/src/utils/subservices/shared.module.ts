@@ -1,6 +1,5 @@
 // utils/shared.module.ts
 import { Global, Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 
 import ClientsModule from '../../clients/clients.module'
 import { PrismaModule } from '../../prisma/prisma.module'
@@ -16,7 +15,7 @@ import { UserIdentitySubservice } from './user-identity.subservice'
  *
  * ## What can be imported:
  * - Only "leaf modules" (modules with no dependencies on other feature modules)
- * - Currently imports: PrismaModule, ClientsModule, ConfigModule
+ * - Currently imports: PrismaModule, ClientsModule
  * - Do NOT import feature modules to avoid circular dependencies
  *
  * ## What can be provided:
@@ -35,7 +34,7 @@ import { UserIdentitySubservice } from './user-identity.subservice'
  */
 @Global()
 @Module({
-  imports: [PrismaModule, ClientsModule, ConfigModule], // Only leaf modules can be imported here.
+  imports: [PrismaModule, ClientsModule], // Only leaf modules can be imported here.
   providers: [ThrowerErrorGuard, CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
   exports: [ThrowerErrorGuard, CognitoSubservice, TurnstileSubservice, UserIdentitySubservice],
 })

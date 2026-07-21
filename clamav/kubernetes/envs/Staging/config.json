@@ -1,9 +1,0 @@
-{
-  "envs": {
-    "REPLICAS": "1",
-    "CPU_LIMITS": "0",
-    "MEMORY_LIMITS": "0",
-    "CPU_REQUESTS": "0",
-    "MEMORY_REQUESTS": "0"
-  }
-}

@@ -1,8 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { ConsentEnum } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
+import BaConfigService from '../../config/ba-config.service'
+import { ConsentEnum } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
@@ -46,8 +47,10 @@ describe('BloomreachOutboxService', () => {
     },
   }
 
+  const bloomreachConfig = { integrationState: 'ACTIVE' }
+
   beforeEach(async () => {
-    process.env.BLOOMREACH_INTEGRATION_STATE = 'ACTIVE'
+    bloomreachConfig.integrationState = 'ACTIVE'
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -55,6 +58,14 @@ describe('BloomreachOutboxService', () => {
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            get bloomreach() {
+              return bloomreachConfig
+            },
+          },
+        },
       ],
     }).compile()
 
@@ -64,12 +75,11 @@ describe('BloomreachOutboxService', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
-    delete process.env.BLOOMREACH_INTEGRATION_STATE
   })
 
   describe('trackCustomer', () => {
     it('should skip when integration is not active', async () => {
-      process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
+      bloomreachConfig.integrationState = 'INACTIVE'
 
       await service.trackCustomer(externalId)
 
@@ -132,7 +142,7 @@ describe('BloomreachOutboxService', () => {
     const consents = [{ consentType: ConsentEnum.MARKETING, isGranted: true }]
 
     it('should skip when integration is not active', async () => {
-      process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
+      bloomreachConfig.integrationState = 'INACTIVE'
 
       await service.trackConsents(consents, externalId)
 
@@ -200,7 +210,7 @@ describe('BloomreachOutboxService', () => {
 
   describe('anonymizeCustomer', () => {
     it('should skip when integration is not active', async () => {
-      process.env.BLOOMREACH_INTEGRATION_STATE = 'INACTIVE'
+      bloomreachConfig.integrationState = 'INACTIVE'
 
       await service.anonymizeCustomer(externalId)
 

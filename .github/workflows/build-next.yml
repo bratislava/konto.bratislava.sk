@@ -81,20 +81,22 @@ jobs:
 
       - name: Prepare Next.js build env
         shell: bash
+        env:
+          BUILD_ENV: ${{ inputs.build_env }}
         run: |
           # Mimic bratiska-cli build_image behavior by promoting the
           # bratiska-cli build env file to .env.production.local
           # before docker build starts.
-          case "${{ inputs.build_env }}" in
+          case "$BUILD_ENV" in
             dev|staging|prod)
               ;;
             *)
-              echo "::error::Unsupported build_env '${{ inputs.build_env }}'. Allowed values: dev, staging, prod."
+              echo "::error::Unsupported build_env '$BUILD_ENV'. Allowed values: dev, staging, prod."
               exit 1
               ;;
           esac
 
-          source_env_file=".env.bratiska-cli-build.${{ inputs.build_env }}"
+          source_env_file=".env.bratiska-cli-build.$BUILD_ENV"
           if [[ ! -f "$source_env_file" ]]; then
             echo "::error file=$source_env_file::Missing $source_env_file in $PWD"
             exit 1

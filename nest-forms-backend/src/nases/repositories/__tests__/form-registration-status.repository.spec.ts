@@ -34,7 +34,7 @@ describe('FormRegistrationStatusRepository', () => {
     it('should return false if form is marked in DB as not registered', async () => {
       const formDefinition = {
         type: FormDefinitionType.SlovenskoSkGeneric,
-      } as Partial<FormDefinitionSlovenskoSk> as FormDefinitionSlovenskoSk
+      } as Partial<FormDefinitionSlovenskoSk>
       prismaMock.formRegistrationStatus.findUnique.mockResolvedValue({
         isRegistered: false,
       } as Partial<FormRegistrationStatus> as FormRegistrationStatus)
@@ -47,7 +47,7 @@ describe('FormRegistrationStatusRepository', () => {
     it('should return true if form is marked in DB as registered', async () => {
       const formDefinition = {
         type: FormDefinitionType.SlovenskoSkGeneric,
-      } as Partial<FormDefinitionSlovenskoSk> as FormDefinitionSlovenskoSk
+      } as Partial<FormDefinitionSlovenskoSk>
       prismaMock.formRegistrationStatus.findUnique.mockResolvedValue({
         isRegistered: true,
       } as Partial<FormRegistrationStatus> as FormRegistrationStatus)
@@ -60,7 +60,7 @@ describe('FormRegistrationStatusRepository', () => {
     it('should return false if form is missing from the table with registration states', async () => {
       const formDefinition = {
         type: FormDefinitionType.SlovenskoSkGeneric,
-      } as Partial<FormDefinitionSlovenskoSk> as FormDefinitionSlovenskoSk
+      } as Partial<FormDefinitionSlovenskoSk>
       prismaMock.formRegistrationStatus.findUnique.mockResolvedValue(null)
 
       const result =

@@ -39,7 +39,7 @@ const TableOfContents = ({ scrollOffset = DEFAULT_SCROLL_OFFSET, className }: Pr
   return (
     <div
       className={cn(
-        'sticky top-40 flex max-w-200 flex-col overflow-hidden rounded-lg border border-border-passive-primary bg-background-passive-base px-6',
+        'sticky top-12 flex max-w-200 flex-col overflow-hidden rounded-lg border border-border-passive-primary bg-background-passive-base px-6',
         className,
       )}
     >
@@ -62,6 +62,7 @@ const TableOfContents = ({ scrollOffset = DEFAULT_SCROLL_OFFSET, className }: Pr
                     onPress={() => {
                       handleItemPress(heading.id)
                     }}
+                    className="text-left"
                   >
                     {heading.text}
                   </Button>

@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-jest'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import BaConfigService from '../config/ba-config.service'
 import { PrismaService } from '../prisma/prisma.service'
 import * as crypto from '../utils/crypto'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
@@ -32,7 +32,7 @@ describe('OAuth2Service', () => {
   let oAuth2ErrorThrower: OAuth2ErrorThrower
   let prisma: PrismaService
   let cognitoSubservice: CognitoSubservice
-  let configService: ConfigService
+  let baConfigService: { cognito: { clientId?: string }; oauth2: { loginUrl: string } }
   let clientSubservice: OAuth2ClientSubservice
 
   beforeEach(async () => {
@@ -60,7 +60,13 @@ describe('OAuth2Service', () => {
         OAuth2ErrorThrower,
         { provide: PrismaService, useValue: createMock<PrismaService>() },
         { provide: CognitoSubservice, useValue: createMock<CognitoSubservice>() },
-        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: BaConfigService,
+          useValue: {
+            cognito: { clientId: undefined },
+            oauth2: { loginUrl: 'https://login.example.com' },
+          },
+        },
         { provide: OAuth2ValidationSubservice, useValue: createMock<OAuth2ValidationSubservice>() },
         { provide: OAuth2ClientSubservice, useValue: createMock<OAuth2ClientSubservice>() },
       ],
@@ -70,7 +76,9 @@ describe('OAuth2Service', () => {
     oAuth2ErrorThrower = module.get<OAuth2ErrorThrower>(OAuth2ErrorThrower)
     prisma = module.get<PrismaService>(PrismaService)
     cognitoSubservice = module.get<CognitoSubservice>(CognitoSubservice)
-    configService = module.get<ConfigService>(ConfigService)
+    baConfigService = module.get<BaConfigService>(
+      BaConfigService
+    ) as unknown as typeof baConfigService
     clientSubservice = module.get<OAuth2ClientSubservice>(OAuth2ClientSubservice)
 
     jest.spyOn(oAuth2ErrorThrower, 'authorizationException')
@@ -156,7 +164,7 @@ describe('OAuth2Service', () => {
    */
   describe('storeTokensForAuthRequest', () => {
     beforeEach(() => {
-      jest.spyOn(configService, 'getOrThrow').mockReturnValue('cognito-client-id')
+      baConfigService.cognito.clientId = 'cognito-client-id'
       jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue({ id: 'auth-req-id' } as any)
       jest.spyOn(prisma.oAuth2Data, 'update').mockResolvedValue({} as any)
     })
@@ -299,7 +307,7 @@ describe('OAuth2Service', () => {
 
   describe('buildLoginRedirectUrl', () => {
     it('should build URL with authRequestId and isOAuth flag', () => {
-      jest.spyOn(configService, 'get').mockReturnValue('https://login.example.com')
+      baConfigService.oauth2.loginUrl = 'https://login.example.com'
       const url = service.buildLoginRedirectUrl(
         { response_type: 'code', client_id: 'cid', redirect_uri: 'https://example.com/cb' },
         'auth-req-123'
@@ -309,7 +317,7 @@ describe('OAuth2Service', () => {
     })
 
     it('should include isIdentityVerificationRequired when scope includes identity:verified', () => {
-      jest.spyOn(configService, 'get').mockReturnValue('https://login.example.com')
+      baConfigService.oauth2.loginUrl = 'https://login.example.com'
       const url = service.buildLoginRedirectUrl(
         {
           response_type: 'code',
@@ -324,7 +332,7 @@ describe('OAuth2Service', () => {
 
     it('should NOT include isIdentityVerificationRequired when scope does not include identity:verified', () => {
       // CUSTOM PROXY DETAIL: Only set verification flag for the custom identity:verified scope
-      jest.spyOn(configService, 'get').mockReturnValue('https://login.example.com')
+      baConfigService.oauth2.loginUrl = 'https://login.example.com'
       const url = service.buildLoginRedirectUrl(
         {
           response_type: 'code',
@@ -335,23 +343,6 @@ describe('OAuth2Service', () => {
         'auth-req-123'
       )
       expect(url).not.toContain('isIdentityVerificationRequired')
-    })
-
-    it('should throw SERVER_ERROR when OAUTH2_LOGIN_URL is not configured', () => {
-      jest.spyOn(configService, 'get').mockReturnValue(undefined)
-      expect(() =>
-        service.buildLoginRedirectUrl(
-          { response_type: 'code', client_id: 'cid', redirect_uri: 'https://example.com/cb' },
-          'id'
-        )
-      ).toThrow(OAuth2Exception)
-      expect(oAuth2ErrorThrower.authorizationException).toHaveBeenCalledWith(
-        OAuth2AuthorizationErrorCode.SERVER_ERROR,
-        'Authorization redirect error: server misconfiguration',
-        undefined,
-        'OAUTH2_LOGIN_URL environment variable is not configured',
-        { clientId: 'cid', authRequestId: 'id' }
-      )
     })
   })
 
@@ -837,7 +828,7 @@ describe('OAuth2Service', () => {
    */
   describe('token - refresh_token grant (RFC 6749 Section 6)', () => {
     beforeEach(() => {
-      jest.spyOn(configService, 'getOrThrow').mockReturnValue('cognito-client-id')
+      baConfigService.cognito.clientId = 'cognito-client-id'
     })
 
     it('should throw INVALID_REQUEST when client_id is missing', async () => {

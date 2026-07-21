@@ -1,0 +1,139 @@
+{
+  "key": "plugin_content_manager_configuration_components::blocks.municipal-service-card",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "relationOpenMode": "modal",
+      "mainField": "overrideTitle",
+      "defaultSortBy": "overrideTitle",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "overrideTitle": {
+        "edit": {
+          "label": "Custom nadpis",
+          "description": "Ak je pole prázdne, nadpis kartičky sa dotiahne z názvu služby. Toto pole umožňuje nadpis prepísať. Používame iba v opodstatnených prípadoch.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "overrideTitle",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "text": {
+        "edit": {
+          "label": "Text",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "text",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "linkLabel": {
+        "edit": {
+          "label": "Text odkazu",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "linkLabel",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "pictogram": {
+        "edit": {
+          "label": "Piktogram",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "pictogram",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "color": {
+        "edit": {
+          "label": "Farba",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "color",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "edit": [
+        [
+          {
+            "name": "text",
+            "size": 6
+          },
+          {
+            "name": "linkLabel",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "pictogram",
+            "size": 6
+          },
+          {
+            "name": "color",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "overrideTitle",
+            "size": 6
+          }
+        ]
+      ],
+      "list": ["id", "text", "linkLabel", "overrideTitle"]
+    },
+    "uid": "blocks.municipal-service-card",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

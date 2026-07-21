@@ -5,8 +5,6 @@ fragment HomepageAnnouncementEntity on HomepageAnnouncement {
   primaryButton {
     ...CommonLink
   }
-  buttonText
-  href
   dateFrom
   dateTo
   image {

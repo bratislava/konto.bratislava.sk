@@ -19,14 +19,6 @@
       "type": "text",
       "required": true
     },
-    "buttonText": {
-      "type": "string",
-      "required": true
-    },
-    "href": {
-      "type": "string",
-      "required": true
-    },
     "primaryButton": {
       "type": "component",
       "component": "blocks.common-link",
@@ -36,7 +28,9 @@
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "dateFrom": {
       "type": "datetime"

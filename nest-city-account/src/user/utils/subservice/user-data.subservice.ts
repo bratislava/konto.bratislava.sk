@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import { omit } from 'lodash'
+import { Simplify } from 'type-fest'
 
 import { Consent } from '../../../bloomreach/bloomreach.types'
 import { BloomreachOutboxService } from '../../../bloomreach/bloomreach-outbox.service'
@@ -16,7 +18,6 @@ import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.servic
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
 import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { UserIdentitySubservice } from '../../../utils/subservices/user-identity.subservice'
 import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
@@ -117,7 +118,7 @@ export class UserDataSubservice {
 
     if (user.isDeceased) {
       if (isAdminCall) {
-        return prismaExclude(user, ['ifo'])
+        return omit(user, ['ifo'])
       }
 
       throw this.throwerErrorGuard.ForbiddenException(
@@ -150,7 +151,7 @@ export class UserDataSubservice {
     }
 
     await this.bloomreachOutboxService.trackCustomer(externalId)
-    return prismaExclude(user, ['ifo'])
+    return omit(user, ['ifo'])
   }
 
   // ===========================================================================
@@ -205,7 +206,7 @@ export class UserDataSubservice {
    */
   async upsertLegalPerson(
     cognitoLegalPersonData: CognitoGetUserData
-  ): Promise<ResponseLegalPersonDataSimpleDto> {
+  ): Promise<Simplify<ResponseLegalPersonDataSimpleDto>> {
     const legalPersonData = {
       externalId: cognitoLegalPersonData.idUser,
       email: cognitoLegalPersonData.email,

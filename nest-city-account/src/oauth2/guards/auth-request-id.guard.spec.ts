@@ -54,16 +54,20 @@ describe('AuthRequestIdGuard', () => {
    * by this guard.
    */
   function createMockContext(
-    overrides: { body?: any; query?: any; method?: string } = {}
+    overrides: {
+      body?: Record<string, unknown>
+      query?: Record<string, string | number>
+      method?: string
+    } = {}
   ): ExecutionContext {
     const mockRequest: Partial<RequestWithAuthorizationData> = {
       body: overrides.body ?? {},
-      query: overrides.query ?? {},
+      query: (overrides.query ?? {}) as Partial<RequestWithAuthorizationData>['query'],
       method: overrides.method ?? 'GET',
     }
-    return {
+    return createMock<ExecutionContext>({
       switchToHttp: jest.fn().mockReturnValue({ getRequest: () => mockRequest }),
-    } as any
+    })
   }
 
   function getRequest(context: ExecutionContext): RequestWithAuthorizationData {
@@ -311,7 +315,7 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should throw SERVER_ERROR when authorization request is not found (null)', async () => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined as any)
+      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined)
       const context = createMockContext({
         body: { authRequestId: validAuthRequestId },
         method: 'POST',
@@ -327,7 +331,7 @@ describe('AuthRequestIdGuard', () => {
     })
 
     it('should include authRequestId in error metadata for not-found errors', async () => {
-      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined as any)
+      jest.spyOn(oauth2Service, 'loadAuthorizationRequest').mockResolvedValue(undefined)
       const context = createMockContext({
         query: { authRequestId: validAuthRequestId },
         method: 'GET',

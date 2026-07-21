@@ -44,7 +44,12 @@ export class BloomreachPayloadBuilder {
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
       user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
 
-    const contactId = await this.resolveContactId(user, accountType, isIdentityVerified)
+    const contactId = await this.resolveContactId(
+      externalId,
+      email,
+      accountType,
+      isIdentityVerified
+    )
 
     if (contactId && phoneNumber) {
       await this.bloomreachContactDatabaseService.addPhone(contactId, phoneNumber)
@@ -83,7 +88,8 @@ export class BloomreachPayloadBuilder {
   }
 
   private async resolveContactId(
-    user: Awaited<ReturnType<CognitoSubservice['getDataFromCognito']>>,
+    externalId: string,
+    email: string,
     accountType: CognitoUserAccountTypesEnum,
     isIdentityVerified: boolean
   ): Promise<string | undefined> {
@@ -92,14 +98,14 @@ export class BloomreachPayloadBuilder {
     }
 
     const { birthNumber, ico } = await this.userIdentitySubservice.getVerifiedIdentifiers(
-      user.idUser,
+      externalId,
       accountType
     )
     if (!birthNumber) {
       return undefined
     }
 
-    return this.bloomreachContactDatabaseService.upsert(user.email, birthNumber, ico)
+    return this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
   }
 
   buildAnonymizeCommand(externalId: string): BloomreachCustomerCommand {

@@ -6,24 +6,26 @@ import {
 } from '@nestjs/common'
 import { PrismaPg } from '@prisma/adapter-pg'
 
+import BaConfigService from '../config/ba-config.service'
 import { PrismaClient } from '../generated/prisma/client'
 import type * as Prisma from '../generated/prisma/internal/prismaNamespace'
 
-const prismaClientOptions = {
-  adapter: new PrismaPg({
-    connectionString: process.env.DATABASE_URL,
-  }),
-} satisfies Prisma.PrismaClientOptions
+const getPrismaClientOptions = (connectionString: string) =>
+  ({
+    adapter: new PrismaPg({
+      connectionString,
+    }),
+  }) satisfies Prisma.PrismaClientOptions
 
 @Injectable()
 export class PrismaService
-  extends PrismaClient<typeof prismaClientOptions>
+  extends PrismaClient<ReturnType<typeof getPrismaClientOptions>>
   implements OnModuleInit
 {
   private readonly logger: Logger
 
-  constructor() {
-    super(prismaClientOptions)
+  constructor(private readonly baConfigService: BaConfigService) {
+    super(getPrismaClientOptions(baConfigService.database.url))
 
     this.logger = new Logger(PrismaService.name)
   }

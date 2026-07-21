@@ -1,6 +1,6 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { TowingSearchResponseDto, TowReason } from 'openapi-clients/city-account'
+import { TowingSearchResponseDto, TowingSearchResponseDtoTowReasonEnum } from 'openapi-clients/city-account'
 import { useState } from 'react'
 
 import Table from '@/src/components/common/Table/Table'
@@ -13,6 +13,24 @@ type Props = {
   initialLicensePlate: string
 }
 
+// The API returns the raw `TowReason` enum value; map it to the localized label's translation key here.
+const towReasonTranslationKeyMap: Record<TowingSearchResponseDtoTowReasonEnum, string> = {
+  [TowingSearchResponseDtoTowReasonEnum.ReservedParking]: 'towing.towReason.RESERVED_PARKING',
+  [TowingSearchResponseDtoTowReasonEnum.PrivateAccessObstacle]: 'towing.towReason.PRIVATE_ACCESS_OBSTACLE',
+  [TowingSearchResponseDtoTowReasonEnum.ParkingNearPublicTransportStop]:
+    'towing.towReason.PARKING_NEAR_PUBLIC_TRANSPORT_STOP',
+  [TowingSearchResponseDtoTowReasonEnum.ParkingNearPedestrianCrossing]:
+    'towing.towReason.PARKING_NEAR_PEDESTRIAN_CROSSING',
+  [TowingSearchResponseDtoTowReasonEnum.ParkingOnSidewalk]: 'towing.towReason.PARKING_ON_SIDEWALK',
+  [TowingSearchResponseDtoTowReasonEnum.ParkingInTrafficLane]: 'towing.towReason.PARKING_IN_TRAFFIC_LANE',
+  [TowingSearchResponseDtoTowReasonEnum.ParkingAtStreetCrossing]: 'towing.towReason.PARKING_AT_STREET_CROSSING',
+  [TowingSearchResponseDtoTowReasonEnum.Other]: 'towing.towReason.OTHER',
+  [TowingSearchResponseDtoTowReasonEnum.TrafficFlowObstacle]: 'towing.towReason.TRAFFIC_FLOW_OBSTACLE',
+  [TowingSearchResponseDtoTowReasonEnum.NoStoppingZone]: 'towing.towReason.NO_STOPPING_ZONE',
+  [TowingSearchResponseDtoTowReasonEnum.StoppedAtCrosswalk]: 'towing.towReason.STOPPED_AT_CROSSWALK',
+  [TowingSearchResponseDtoTowReasonEnum.NoParkingZone]: 'towing.towReason.NO_PARKING_ZONE',
+}
+
 const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
   const [licensePlate] = useState(initialLicensePlate) // TODO: Remove this once the license plate is part of the response
   const { t } = useTranslation('account')
@@ -23,23 +41,9 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
     towing: t('towing.informationTitle.towing', { licensePlate }),
   }
 
-  // The API returns the raw `TowReason` enum value; render the localized label here.
-  const towReasonTranslationMap: Record<TowReason, string> = {
-    [TowReason.ReservedParking]: t('towing.towReason.RESERVED_PARKING'),
-    [TowReason.PrivateAccessObstacle]: t('towing.towReason.PRIVATE_ACCESS_OBSTACLE'),
-    [TowReason.ParkingNearPublicTransportStop]: t(
-      'towing.towReason.PARKING_NEAR_PUBLIC_TRANSPORT_STOP',
-    ),
-    [TowReason.ParkingNearPedestrianCrossing]: t('towing.towReason.PARKING_NEAR_PEDESTRIAN_CROSSING'),
-    [TowReason.ParkingOnSidewalk]: t('towing.towReason.PARKING_ON_SIDEWALK'),
-    [TowReason.ParkingInTrafficLane]: t('towing.towReason.PARKING_IN_TRAFFIC_LANE'),
-    [TowReason.ParkingAtStreetCrossing]: t('towing.towReason.PARKING_AT_STREET_CROSSING'),
-    [TowReason.Other]: t('towing.towReason.OTHER'),
-    [TowReason.TrafficFlowObstacle]: t('towing.towReason.TRAFFIC_FLOW_OBSTACLE'),
-    [TowReason.NoStoppingZone]: t('towing.towReason.NO_STOPPING_ZONE'),
-    [TowReason.StoppedAtCrosswalk]: t('towing.towReason.STOPPED_AT_CROSSWALK'),
-    [TowReason.NoParkingZone]: t('towing.towReason.NO_PARKING_ZONE'),
-  }
+  const towReasonTranslationKey = vehicle.towReason
+    ? towReasonTranslationKeyMap[vehicle.towReason]
+    : undefined
 
   return (
     <>
@@ -65,7 +69,7 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
               ? [
                   {
                     label: t('towing.informationTable.towReason'),
-                    value: towReasonTranslationMap[vehicle.towReason] ?? vehicle.towReason,
+                    value: towReasonTranslationKey ? t(towReasonTranslationKey) : vehicle.towReason,
                   },
                 ]
               : []),

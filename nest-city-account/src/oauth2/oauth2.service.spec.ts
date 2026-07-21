@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { oauth2DataFactory } from '../__tests__/factories/oauth2Data.factory'
-import { expectAny, expectObjectContaining } from '../__tests__/jest-matchers'
+import { expectAny, expectDefined, expectObjectContaining } from '../__tests__/jest-matchers'
 import BaConfigService from '../config/ba-config.service'
 import { Prisma } from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
@@ -233,7 +233,8 @@ describe('OAuth2Service', () => {
       const before = Date.now()
       await service.storeTokensForAuthRequest('auth-req-id', 'cid', 'refresh-tok')
 
-      const storedExpiry = updateSpy.mock.calls[0][0].data.accessTokenExpiresAt as Date | undefined
+      const [updateArgs] = expectDefined(updateSpy.mock.lastCall)
+      const storedExpiry = updateArgs.data.accessTokenExpiresAt as Date | undefined
       expect(storedExpiry?.getTime()).toBeGreaterThanOrEqual(before + 60 * 60 * 1000)
       expect(storedExpiry?.getTime()).toBeLessThanOrEqual(Date.now() + 60 * 60 * 1000)
     })
@@ -376,7 +377,7 @@ describe('OAuth2Service', () => {
       expect(result.code.length).toBeGreaterThan(0)
       expect(result.state).toBe('csrf')
       expect(prisma.oAuth2Data.update).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           where: { id: 'auth-req-id' },
           data: expectObjectContaining<Prisma.OAuth2DataUpdateInput>({
             authorizationCode: result.code,

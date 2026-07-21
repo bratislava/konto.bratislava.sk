@@ -9,6 +9,7 @@ import { userWithRelationsFactory } from '../../../__tests__/factories/userWithR
 import {
   expectAny,
   expectArrayContaining,
+  expectDefined,
   expectObjectContaining,
 } from '../../../__tests__/jest-matchers'
 import getBaConfigInstance from '../../../config/ba-config.instance'
@@ -1051,7 +1052,9 @@ describe('TaxDeliveryMethodsTasksSubservice', () => {
           where: { id: { in: expectAny<string[]>(Array) } },
         })
       )
-      const calledWith = prismaMock.user.findMany.mock.calls[0][0] as Prisma.UserFindManyArgs
+      const [calledWith] = expectDefined(prismaMock.user.findMany.mock.lastCall) as [
+        Prisma.UserFindManyArgs,
+      ]
       const whereId = calledWith.where?.id
       expect(whereId && typeof whereId === 'object' ? whereId.in : undefined).toHaveLength(3) // Deduplicated
     })

@@ -5,6 +5,7 @@ import axios from 'axios'
 import prismaMock from '../../../test/singleton'
 import {
   expectAny,
+  expectDefined,
   expectObjectContaining,
   expectStringContaining,
 } from '../../__tests__/jest-matchers'
@@ -231,9 +232,8 @@ describe('BloomreachOutboxProcessor', () => {
 
       await processor.processOutbox()
 
-      expect(
-        (mockedAxios.post.mock.calls[0][1] as { commands: BloomreachBatchCommand[] }).commands
-      ).toHaveLength(2)
+      const [, requestBody] = expectDefined(mockedAxios.post.mock.lastCall)
+      expect((requestBody as { commands: BloomreachBatchCommand[] }).commands).toHaveLength(2)
       expect(prismaMock.bloomreachOutbox.updateMany).toHaveBeenCalledWith({
         where: { id: { in: ['entry-1', 'entry-2'] } },
         data: { status: BloomreachOutboxStatus.COMPLETED },

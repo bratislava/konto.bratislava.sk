@@ -4,14 +4,18 @@ import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../test/singleton'
 import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
 import { externalEdeskCheckFactory } from '../__tests__/factories/externalEdeskCheck.factory'
-import { expectObjectContaining } from '../__tests__/jest-matchers'
+import {
+  expectArrayContaining,
+  expectDefined,
+  expectObjectContaining,
+} from '../__tests__/jest-matchers'
 import {
   ExternalEdeskCheck,
   PhysicalEntity,
   Prisma,
   QueueItemStatusEnum,
 } from '../generated/prisma/client'
-import { CreateManyParam, NasesService } from '../nases/nases.service'
+import { NasesService } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -356,8 +360,8 @@ describe('UpvsQueueService', () => {
       // Should request full batch size (8) for urgent items (second call, after getUriToUpdateInternal)
       const urgentCall = prismaMock.$queryRaw.mock.calls[1]
       const highPriorityCall = prismaMock.$queryRaw.mock.calls[2]
-      expect(urgentCall[urgentCall.length - 1]).toBe(8) // Last parameter is the limit
-      expect(highPriorityCall[highPriorityCall.length - 1]).toBe(5) // We take only 5 for high priority
+      expect(urgentCall.at(-1)).toBe(8) // Last parameter is the limit
+      expect(highPriorityCall.at(-1)).toBe(5) // We take only 5 for high priority
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
         expectObjectContaining({
           take: 8,
@@ -406,7 +410,7 @@ describe('UpvsQueueService', () => {
 
       // Should request up to 5 high priority items (third call, after getUriToUpdateInternal and urgent)
       const highPriorityCall = prismaMock.$queryRaw.mock.calls[2]
-      expect(highPriorityCall[highPriorityCall.length - 1]).toBe(5) // Last parameter is the limit
+      expect(highPriorityCall.at(-1)).toBe(5) // Last parameter is the limit
 
       // Should request 3 external items (8 - 5 high priority)
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
@@ -462,8 +466,7 @@ describe('UpvsQueueService', () => {
         })
       )
 
-      const callArg = (nasesService.createMany as jest.Mock<Promise<unknown>, [CreateManyParam]>)
-        .mock.calls[0][0]
+      const [callArg] = expectDefined(jest.mocked(nasesService.createMany).mock.lastCall)
       expect(callArg.length).toBe(8) // 3 high priority + 5 external
     })
 
@@ -498,8 +501,8 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       // Should request 0 high priority slots (third call) since 8 urgent items fill the batch
-      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock<unknown, unknown[]>).mock.calls[2]
-      expect(highPriorityCall[highPriorityCall.length - 1]).toBe(0) // Last parameter is the limit
+      const highPriorityCall = prismaMock.$queryRaw.mock.calls[2]
+      expect(highPriorityCall.at(-1)).toBe(0) // Last parameter is the limit
 
       // Should request 0 external items (batch is full with urgent)
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
@@ -508,8 +511,7 @@ describe('UpvsQueueService', () => {
         })
       )
 
-      const callArg = (nasesService.createMany as jest.Mock<Promise<unknown>, [CreateManyParam]>)
-        .mock.calls[0][0]
+      const [callArg] = expectDefined(jest.mocked(nasesService.createMany).mock.lastCall)
       expect(callArg.length).toBe(8)
     })
 
@@ -567,8 +569,7 @@ describe('UpvsQueueService', () => {
 
       await service.processBatch()
 
-      const callArg = (nasesService.createMany as jest.Mock<Promise<unknown>, [CreateManyParam]>)
-        .mock.calls[0][0]
+      const [callArg] = expectDefined(jest.mocked(nasesService.createMany).mock.lastCall)
       expect(callArg.length).toBe(8)
 
       // Verify correct distribution

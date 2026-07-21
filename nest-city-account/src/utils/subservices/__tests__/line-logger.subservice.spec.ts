@@ -1,27 +1,29 @@
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerSubservice', () => {
-  let service: any
+  let service: LineLoggerSubservice
   let consoleSpy: jest.SpyInstance
 
   beforeEach(() => {
     service = new LineLoggerSubservice('LineLogger TEST')
     consoleSpy = jest.spyOn(console, 'log')
-    consoleSpy.mockImplementation(() => {})
+    consoleSpy.mockImplementation(jest.fn())
   })
 
   afterEach(() => {
     consoleSpy.mockRestore()
   })
 
-  test.each([
+  const testCases: [keyof LineLoggerSubservice, string][] = [
     ['log', 'LOG'],
     ['error', 'ERROR'],
     ['warn', 'WARN'],
     ['debug', 'DEBUG'],
     ['verbose', 'VERBOSE'],
     ['fatal', 'FATAL'],
-  ])('should print %s message with severity %s', (method, severity) => {
+  ]
+
+  test.each(testCases)('should print %s message with severity %s', (method, severity) => {
     service[method]('test message')
 
     const regex = new RegExp(

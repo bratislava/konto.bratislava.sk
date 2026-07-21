@@ -7,6 +7,7 @@ import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 import {
   CreateManyParam,
   CreateManyResult,
+  CreateManyResultFailed,
   getUpvsDeathDate,
   NasesService,
 } from '../nases/nases.service'
@@ -207,8 +208,11 @@ export class UpvsQueueService {
 
     // Handle regular failures
     const failedInternalIds = failed
-      .filter((item) => item.physicalEntityId)
-      .map((item) => item.physicalEntityId!)
+      .filter(
+        (item): item is CreateManyResultFailed & { physicalEntityId: string } =>
+          !!item.physicalEntityId
+      )
+      .map((item) => item.physicalEntityId)
 
     if (failedInternalIds.length > 0) {
       await this.physicalEntityService.updateFailedActiveEdeskUpdateInDatabase(failedInternalIds)
@@ -232,7 +236,7 @@ export class UpvsQueueService {
     }
   }
 
-  private async getUriToUpdateInternal() {
+  private async getUriToUpdateInternal(): Promise<{ uri: string; id: string } | null> {
     const results = await this.prismaService.$queryRaw<{ uri: string; id: string }[]>`
       SELECT "uri", "id"
       FROM "PhysicalEntity"
@@ -267,11 +271,10 @@ export class UpvsQueueService {
       upvsResult.success[0].data.uri &&
       upvsResult.success[0].physicalEntityId
     ) {
-      const successItem = upvsResult.success[0]
       await this.prismaService.physicalEntity.update({
-        where: { id: successItem.physicalEntityId! },
+        where: { id: upvsResult.success[0].physicalEntityId },
         data: {
-          uri: successItem.data.uri,
+          uri: upvsResult.success[0].data.uri,
         },
       })
     } else {

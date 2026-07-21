@@ -3,7 +3,19 @@ import { Request } from 'express'
 
 import { OAuth2ValidationSubservice } from '../subservices/oauth2-validation.subservice'
 
-export interface RequestWithClientCredentials extends Request {
+interface TokenRequestBody {
+  client_id?: string
+  client_secret?: string
+  redirect_uri?: string
+  grant_type?: string
+  code_verifier?: string
+}
+
+export interface RequestWithClientCredentials extends Request<
+  Record<string, string>,
+  unknown,
+  TokenRequestBody | undefined
+> {
   tokenClientId?: string
   oauth2ClientSecret?: string
 }

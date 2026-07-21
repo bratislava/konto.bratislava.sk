@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { expectDefined } from '../../__tests__/jest-matchers'
 import BaConfigService from '../../config/ba-config.service'
 import { OAuth2ClientEnvConfig } from '../oauth2-client-env.parser'
 import { OAuth2Client, OAuth2ClientSubservice } from './oauth2-client.subservice'
@@ -303,15 +304,15 @@ describe('OAuth2ClientSubservice', () => {
         }),
       ]
       const service = await createService()
-      const client = service.findClientById('paas-id')
+      const client = expectDefined(service.findClientById('paas-id'))
       expect(client).toBeInstanceOf(OAuth2Client)
-      expect(client!.id).toBe('paas-id')
-      expect(client!.secret).toBe('paas-secret')
-      expect(client!.name).toBe('PAAS_MPA')
-      expect(client!.allowedRedirectUris).toEqual(['https://paas.example.com/cb'])
-      expect(client!.allowedScopes).toEqual(['openid', 'profile'])
-      expect(client!.allowedGrantTypes).toEqual(['authorization_code', 'refresh_token'])
-      expect(client!.requiresPkce).toBe(true)
+      expect(client.id).toBe('paas-id')
+      expect(client.secret).toBe('paas-secret')
+      expect(client.name).toBe('PAAS_MPA')
+      expect(client.allowedRedirectUris).toEqual(['https://paas.example.com/cb'])
+      expect(client.allowedScopes).toEqual(['openid', 'profile'])
+      expect(client.allowedGrantTypes).toEqual(['authorization_code', 'refresh_token'])
+      expect(client.requiresPkce).toBe(true)
     })
 
     it('should wrap multiple configured clients', async () => {
@@ -343,7 +344,7 @@ describe('OAuth2ClientSubservice', () => {
         }),
       ]
       const service = await createService()
-      const client = service.findClientById('paas-id')!
+      const client = expectDefined(service.findClientById('paas-id'))
       expect(client.secret).toBeUndefined()
       expect(client.allowedScopes).toEqual([])
       expect(client.allowedGrantTypes).toEqual([])
@@ -381,9 +382,8 @@ describe('OAuth2ClientSubservice', () => {
         }),
       ]
       const service = await createService()
-      const client = service.findClientById('paas-id')
-      expect(client).toBeDefined()
-      expect(client!.id).toBe('paas-id')
+      const client = expectDefined(service.findClientById('paas-id'))
+      expect(client.id).toBe('paas-id')
     })
 
     it('should return undefined for an unregistered client_id', async () => {
@@ -410,9 +410,8 @@ describe('OAuth2ClientSubservice', () => {
         }),
       ]
       const service = await createService()
-      const client = service.findClientByName('DPB')
-      expect(client).toBeDefined()
-      expect(client!.name).toBe('DPB')
+      const client = expectDefined(service.findClientByName('DPB'))
+      expect(client.name).toBe('DPB')
     })
 
     it('should return undefined for an unknown client name', async () => {

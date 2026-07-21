@@ -57,7 +57,7 @@ export class NorisDeliveryMethodService {
     return this.getBirthNumbersWithUpdatedDeliveryMethods(updatedSubjects.flat())
   }
 
-  private async executeDeliveryMethodUpdate(
+  async executeDeliveryMethodUpdate(
     connection: mssql.ConnectionPool,
     dataItem: UpdateNorisDeliveryMethods
   ): Promise<NorisDeliveryMethodsUpdateResult[]> {
@@ -152,10 +152,7 @@ export class NorisDeliveryMethodService {
 
       deliveryGroups[methodInfo.deliveryMethod].push({
         birthNumber: addSlashToBirthNumber(birthNumber),
-        date:
-          methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT
-            ? (methodInfo.date ?? null)
-            : null,
+        date: methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT ? methodInfo.date : null,
       })
     })
 

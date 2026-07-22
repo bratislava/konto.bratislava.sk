@@ -171,4 +171,20 @@ Representative trace -- **`POST /user-verification/identity-card`**: logger midd
 
 ---
 
-> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, the integration API, crons), update this `ARCHITECTURE.md` in the same change.
+## Async Messaging & Scheduled Jobs
+
+- **Bloomreach outbox** -- a transactional (DB-backed) outbox processed on an interval rather than through a broker queue.
+- **Cron** (`@nestjs/schedule`, `src/tasks/tasks.service.ts`) -- Bloomreach outbox processing, delivery-method + eDesk sync to Noris, OAuth2 code cleanup, yearly delivery-method lock, daily summary emails.
+- **Redis** backs the nonce/replay store; RabbitMQ is provisioned.
+
+## API Documentation
+
+Swagger UI is served at `/api`.
+
+## Deployment
+
+The app is containerised and deployed to **Kubernetes** across three environments -- **development**, **staging**, and **production** -- automated through **GitHub Actions**. Infrastructure code lives in [bratislava/infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration).
+
+---
+
+> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, the integration API, crons, deployment), update this `ARCHITECTURE.md` in the same change.

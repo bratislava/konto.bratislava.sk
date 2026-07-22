@@ -179,4 +179,10 @@ The three backend clients come from the local **`openapi-clients`** package (reg
 
 ---
 
-> **Keep this doc in sync:** if a code change updates something described here (routing, auth, data layer, integrations), update this `ARCHITECTURE.md` in the same change.
+## Deployment
+
+The app is containerised (standalone Next.js build) and deployed to **Kubernetes** across three environments -- **development**, **staging**, and **production** -- automated through **GitHub Actions**. Infrastructure code lives in [bratislava/infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration).
+
+---
+
+> **Keep this doc in sync:** if a code change updates something described here (routing, auth, data layer, integrations, deployment), update this `ARCHITECTURE.md` in the same change.

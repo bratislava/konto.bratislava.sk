@@ -194,4 +194,21 @@ The **eID** path (`/form-sender/eid/...`) verifies the signature, submits to NAS
 
 ---
 
-> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, delivery pipeline), update this `ARCHITECTURE.md` in the same change.
+## Async Messaging & Scheduled Jobs
+
+- **RabbitMQ** (`@golevelup/nestjs-rabbitmq`) -- an `x-delayed-message` exchange with queues `RABBIT_FORM_DELIVERY` and `RABBIT_GINIS`; `@RabbitRPC` consumers drive the form-delivery and GINIS pipelines.
+- **Bull / Redis** -- a `sharepoint` queue for SharePoint/PowerApps delivery.
+- **Piscina** -- a worker pool for tax-form PDF generation.
+- **Cron** (`@nestjs/schedule`) -- delete old drafts, GINIS submission-state check, NASES registration validation, expired-migration purge.
+
+## API Documentation
+
+Swagger UI is served at `/api` (raw OpenAPI spec at `/spec-json`).
+
+## Deployment
+
+The app is containerised and deployed to **Kubernetes** across three environments -- **development**, **staging**, and **production** -- automated through **GitHub Actions**. Infrastructure code lives in [bratislava/infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration).
+
+---
+
+> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, delivery pipeline, async messaging, deployment), update this `ARCHITECTURE.md` in the same change.

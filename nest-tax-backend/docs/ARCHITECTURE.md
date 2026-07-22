@@ -189,4 +189,18 @@ sequenceDiagram
 
 ---
 
-> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, crons), update this `ARCHITECTURE.md` in the same change.
+## Scheduled Jobs
+
+All async work is `@nestjs/schedule` `@Cron` jobs (`src/tasks/tasks.service.ts`) -- Noris tax/payment sync, unpaid reminders, card-payment reporting, city-account ingestion (every 30s), historical/overpayment loads, Bloomreach resend, and Noris-connection-error alerts. There is no message broker.
+
+## API Documentation
+
+Swagger UI is served at `/api` (raw OpenAPI spec at `/spec-json`).
+
+## Deployment
+
+The app is containerised and deployed to **Kubernetes** across three environments -- **development**, **staging**, and **production** -- automated through **GitHub Actions**. Infrastructure code lives in [bratislava/infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration).
+
+---
+
+> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, crons, deployment), update this `ARCHITECTURE.md` in the same change.

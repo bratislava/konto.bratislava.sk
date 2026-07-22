@@ -141,4 +141,18 @@ sequenceDiagram
 
 ---
 
-> **Keep this doc in sync:** if a code change updates something described here (endpoints, statuses, the scan/callback flow, ClamAV/MinIO wiring), update this `ARCHITECTURE.md` in the same change.
+## Scheduled Jobs
+
+The scan worker is a single in-process `@Cron('*/20 * * * * *')` job; the durable queue is the Postgres `Files` table (no message broker). Horizontally scaling the worker would double-process without external coordination.
+
+## API Documentation
+
+Swagger UI is served at `/api` (raw OpenAPI spec at `/spec-json`).
+
+## Deployment
+
+The app is containerised and deployed to **Kubernetes** across three environments -- **development**, **staging**, and **production** -- automated through **GitHub Actions**. Infrastructure code lives in [bratislava/infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration).
+
+---
+
+> **Keep this doc in sync:** if a code change updates something described here (endpoints, statuses, the scan/callback flow, ClamAV/MinIO wiring, deployment), update this `ARCHITECTURE.md` in the same change.

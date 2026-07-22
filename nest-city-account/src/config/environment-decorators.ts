@@ -81,8 +81,14 @@ export function EnvString(required = true) {
   return applyDecorators(Expose(), IsString(), ...(required ? [IsNotEmpty()] : []))
 }
 
-export function EnvUrl(required = true) {
-  return applyDecorators(Expose(), IsUrl(), ...(required ? [IsNotEmpty()] : []))
+export function EnvUrl(requireTld = true, required = true) {
+  return applyDecorators(
+    Expose(),
+    // requireTld toggles whether the URL must have a top-level domain (TLD)
+    // Disable it for Kubernetes service URLs (e.g. http://nest-forms-backend-app).
+    IsUrl({ require_tld: requireTld }),
+    ...(required ? [IsNotEmpty()] : [])
+  )
 }
 
 export function EnvStringList() {

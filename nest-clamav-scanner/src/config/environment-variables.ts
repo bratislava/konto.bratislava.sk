@@ -38,7 +38,7 @@ export default class EnvironmentVariables {
   @EnvString()
   DATABASE_URL: string
 
-  @EnvUrl()
+  @EnvUrl(false)
   NEST_FORMS_BACKEND: string
 
   @EnvString()

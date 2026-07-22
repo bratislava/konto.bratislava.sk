@@ -4,11 +4,11 @@
 
 ## System Overview
 
-`nest-tax-backend` is the backend for the City of Bratislava's **digital tax payment** in City Account (konto.bratislava.sk). It ingests taxes and payments from the municipal **Noris** tax registry, presents tax detail to citizens, generates card-payment links (GP webpay) and QR pay-by-square codes, reconciles payments, and produces bank reports.
+`nest-tax-backend` is the backend for the City of Bratislava's **digital tax payment** in City Account (konto.bratislava.sk). It ingests taxes and payments from the municipal **Noris** financial system, presents tax detail to citizens, generates card-payment links (GP webpay) and QR pay-by-square codes, reconciles payments, and produces bank reports.
 
 It handles two tax types (`TaxType`): **DZN** (daň z nehnuteľnosti / real-estate tax) and **KO** (komunálny odpad / municipal waste tax). Users authenticate with **AWS Cognito**; user identity (birth number) is resolved through the sibling **nest-city-account** service.
 
-The backend is a **NestJS 11** application backed by **PostgreSQL** (Prisma), plus a read integration to an external **MSSQL** Noris database. All async work is `@nestjs/schedule` `@Cron` jobs (no queue/broker).
+The backend is a **NestJS** application backed by **PostgreSQL** (Prisma), plus an integration to the external **Noris** financial system (an **MSSQL** database). All async work is `@nestjs/schedule` `@Cron` jobs (no queue/broker).
 
 ### Environments
 
@@ -51,7 +51,7 @@ graph TB
     subgraph external [External Systems]
         Cognito["AWS Cognito"]
         CityAccount["nest-city-account<br/>(sibling backend)"]
-        NorisDB["Noris (MSSQL registry)"]
+        NorisDB["Noris (financial system, MSSQL)"]
         GP["GP webpay"]
         Bloomreach["Bloomreach / Exponea"]
         SES["AWS SES (email)"]
@@ -83,7 +83,7 @@ Root `src/app.module.ts` wires config, Cognito, Prisma, the feature modules, and
 | **Tax** (`src/tax/`) | `tax` (v2) | Cognito + Tier | Read tax detail & tax lists for the citizen |
 | **Payment** (`src/payment/`) | `payment` | Cognito + Tier (response public) | GP webpay link creation + gateway response processing |
 | **Admin** (`src/admin/`) | `admin` | apiKey | Load/update taxes & payments from Noris; testing taxes (non-prod) |
-| **Noris** (`src/noris/`) | -- | -- | Integration with the Noris MSSQL registry (tax + payment sync) |
+| **Noris** (`src/noris/`) | -- | -- | Integration with the Noris financial system, MSSQL (tax + payment sync) |
 | **Tasks** (`src/tasks/`) | -- | -- | All `@Cron` jobs (Noris sync, city-account ingestion, reminders, reporting) |
 | **CardPaymentReporting** | `card-payment-reporting` | apiKey | Generate + email/SFTP card-payment bank reports |
 | **Bloomreach**, **QrCode**, **Clients**, **Prisma**, **Shared**, **Config** | -- | -- | CRM events, QR codes, sibling HTTP client, DB, cross-cutting helpers, typed env |
@@ -129,7 +129,7 @@ Enums: `TaxType`, `PaymentStatus`, `TaxPaymentSource`, `DeliveryMethodNamed`, `U
 
 | Integration | Purpose | Files / env |
 |---|---|---|
-| **Noris** (MSSQL) | Source of truth for taxes & payments; read via `mssql`. | `src/noris/subservices/*`; `MSSQL_*` |
+| **Noris** (financial system, MSSQL) | Source of truth for taxes & payments; read via `mssql`. | `src/noris/subservices/*`; `MSSQL_*` |
 | **nest-city-account** (sibling) | Resolve user birth number / `externalId`; ingest new verified users. | `src/clients/clients.service.ts`, `src/utils/subservices/cityaccount.subservice.ts`; `CITY_ACCOUNT_API_URL`, `CITY_ACCOUNT_ADMIN_API_KEY` -- see Cross-Backend. |
 | **GP webpay** | Card payment link (SHA1-signed CREATE_ORDER) + response digest verification. | `src/payment/subservices/gpwebpay.subservice.ts`; `PAYGATE_*` (per-tax-type keys). |
 | **pay-by-square / QR** | QR pay codes (`bysquare` + `qrcode`). | `src/qrcode/qrcode.service.ts`. |
@@ -189,19 +189,4 @@ sequenceDiagram
 
 ---
 
-## Deployment
-
-- **Docker** -- multi-stage on `node:24-alpine`; pulls the shared `openapi-clients` image from Harbor. Prod `CMD` runs `db:migrate:deploy && start:prod` (**Prisma migrations at container start**). `tini` init.
-- **docker-compose (local)** -- `nest` (port 3001, debug 9229) + `postgres` (54320).
-- **Scheduling** -- `@nestjs/schedule` `@Cron` jobs in `src/tasks/tasks.service.ts` (Noris tax/payment sync, unpaid reminders, card-payment reporting, city-account ingestion every 30s, historical/overpayment loads, Bloomreach resend, Noris-error alerts). **No RabbitMQ/Bull.**
-- **CI/CD** -- monorepo `.github/workflows/build.yml` + `deploy.yml`; builds image `harbor.bratislava.sk/standalone/nest-tax-backend` via reusable `build-nest.yml`, deploys via `bratislava/github-actions trigger-infra-deploy` (k8s manifests live in an external infra repo).
-
----
-
-## Swagger / OpenAPI
-
-Docs UI at **`/api`**; raw spec at **`/spec-json`** (`src/main.ts`). Security schemes: `apiKey` (header, admin/reporting) and Bearer (Cognito, citizen).
-
----
-
-> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, crons, deployment), update this `ARCHITECTURE.md` in the same change.
+> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, crons), update this `ARCHITECTURE.md` in the same change.

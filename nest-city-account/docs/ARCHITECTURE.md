@@ -6,7 +6,7 @@
 
 `nest-city-account` is the backend that owns the **user / account domain** for Bratislava City Account (Konto). It manages user and legal-person records, account verification (identity card, eID/UPVS, IČO/RPO), GDPR consents, tax-document delivery-method preferences, and acts as an **OAuth2 identity provider** for client apps (DPB, PAAS-MPA). It also exposes a stable B2B **integration API** consumed by sibling konto backends.
 
-The backend is a **NestJS 11** application backed by **PostgreSQL** (Prisma), with **Redis** (nonce/cache), a transactional **Bloomreach outbox**, and a direct **MSSQL** connection to the municipal **Noris** tax system. Users authenticate with **AWS Cognito**; service callers use an admin **apiKey**; some clients use **RSA request signing**.
+The backend is a **NestJS** application backed by **PostgreSQL** (Prisma), with **Redis** (nonce/cache), a transactional **Bloomreach outbox**, and a direct **MSSQL** connection to the municipal **Noris** financial system. Users authenticate with **AWS Cognito**; service callers use an admin **apiKey**; some clients use **RSA request signing**.
 
 ### Environments
 
@@ -133,7 +133,7 @@ Three Passport strategies:
 
 **OAuth2 server** endpoints use their own request guards (`HttpsGuard`, `AuthorizationRequestGuard`, `TokenRequestGuard`, `OAuth2AccessGuard`). **Public**: `GET /healthcheck` and `POST /towing/public/:ecv` (Cloudflare Turnstile captcha).
 
-Swagger schemes: `apiKey` (header) + Bearer (Cognito).
+Auth schemes: `apiKey` (header) + Bearer (Cognito).
 
 ---
 
@@ -144,7 +144,7 @@ Swagger schemes: `apiKey` (header) + Bearer (Cognito).
 | **AWS Cognito** | Identity provider; user attribute/tier management. | `src/auth/strategies/cognito.strategy.ts`; `AWS_COGNITO_*`. |
 | **Magproxy** | RFO/RPO registry lookups (natural + legal persons) via Azure-AD-authenticated OpenAPI client. | `src/magproxy/*`, `openapi-clients/magproxy`; `MAGPROXY_*`. |
 | **NASES / slovensko.sk (UPVS, eDesk)** | eID identity checks, eDesk status. | `src/nases/*`, `openapi-clients/slovensko-sk`; `SLOVENSKO_SK_*`. |
-| **Noris (MSSQL)** | Push delivery methods + eDesk status to the tax system (direct DB). | `src/noris/*`; `MSSQL_*`. |
+| **Noris (MSSQL)** | Push delivery methods + eDesk status to the municipal financial system (direct DB). | `src/noris/*`; `MSSQL_*`. |
 | **Bloomreach / Exponea** | CRM via transactional outbox; separate contacts Postgres. | `src/bloomreach/*`; `BLOOMREACH_*`. |
 | **Mailgun** | Delivery-method change emails with PDF attachments. | `src/mailgun/*`; `MAILGUN_*`. |
 | **PDF generator (Playwright)** | Render tax-delivery PDFs. | `src/pdf-generator/*`. |
@@ -171,19 +171,4 @@ Representative trace -- **`POST /user-verification/identity-card`**: logger midd
 
 ---
 
-## Deployment
-
-- **Docker** -- multi-stage on `node:24-alpine` (with Chromium/qpdf for PDF, tini); pulls the shared `openapi-clients` image from Harbor. Prod `CMD` runs `db:migrate:deploy && start:prod` (Prisma migrations at start).
-- **docker-compose (local)** -- main Postgres + Bloomreach-contacts Postgres + RabbitMQ; a bootstrap SQL for the contacts DB.
-- **Scheduling / queues** -- `@nestjs/schedule` crons in `src/tasks/tasks.service.ts` (Bloomreach outbox every 30s, delivery-method + eDesk sync to Noris, OAuth2 cleanup, yearly delivery-method lock, daily summary emails). RabbitMQ + Redis are provisioned; Bloomreach uses a DB outbox rather than a broker.
-- **CI/CD** -- centralized monorepo `.github/workflows/` (`build-nest.yml`, `deploy.yml`); no in-repo k8s manifests (infra in an external repo).
-
----
-
-## Swagger / OpenAPI
-
-Docs UI at **`/api`** (`src/main.ts`). Security schemes: `apiKey` (header, B2B) + Bearer (Cognito). B2B endpoints tagged `Backend Integration API`, `User integration`, `Towing`.
-
----
-
-> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, the integration API, crons, deployment), update this `ARCHITECTURE.md` in the same change.
+> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, the integration API, crons), update this `ARCHITECTURE.md` in the same change.

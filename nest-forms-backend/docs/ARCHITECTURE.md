@@ -4,9 +4,9 @@
 
 ## System Overview
 
-`nest-forms-backend` processes Bratislava City Account **e-forms**. It owns the full form lifecycle: creation, draft editing, file upload + antivirus scanning, validation, submission to the Slovak government (**NASES / slovensko.sk**), registration into **GINIS** (document management), delivery to SharePoint/PowerApps and email/webhook channels, and PDF generation.
+`nest-forms-backend` processes Bratislava City Account **e-forms**. It owns the full form lifecycle: creation, draft editing, file upload + antivirus scanning, validation, submission to the Slovak government (**NASES / slovensko.sk**), registration into **GINIS** (the municipality's registry system), delivery to SharePoint/PowerApps and email/webhook channels, and PDF generation.
 
-The backend is a **NestJS 11** application backed by **PostgreSQL** (Prisma), with **RabbitMQ** (delayed-message exchange) for async delivery, **Redis/Bull** for SharePoint jobs, **MinIO/S3** for files, and **Playwright/Piscina** for PDF rendering. End users authenticate with **AWS Cognito** (including guest identities); service callers use HTTP Basic / admin apiKey.
+The backend is a **NestJS** application backed by **PostgreSQL** (Prisma), with **RabbitMQ** (delayed-message exchange) for async delivery, **Redis/Bull** for SharePoint jobs, **MinIO/S3** for files, and **Playwright/Piscina** for PDF rendering. End users authenticate with **AWS Cognito** (including guest identities); service callers use HTTP Basic / admin apiKey.
 
 Form lifecycle (`FormState`): `DRAFT -> QUEUED -> DELIVERED_NASES -> DELIVERED_GINIS -> SENDING_TO_SHAREPOINT -> PROCESSING -> FINISHED` (plus `REJECTED`, `ERROR`), with a parallel `GinisState` sub-lifecycle.
 
@@ -125,7 +125,7 @@ Two generations coexist:
 - **v2 (end users)** -- `UserAuthStrategy` (`passport-custom`) accepts **either** a Cognito Bearer token **or** a guest-identity header (never both). Bearer path verifies the JWT (`aws-jwt-verify`), fetches Cognito attributes, and fetches the City Account user (cross-backend, see below). Guest path assumes the unauth IAM role via STS and validates the ARN. `UserAuthGuard` + `@AllowedUserTypes(...)` gate user types; `FormAccessGuard` enforces per-form ownership.
 - **v1 (service/admin)** -- `BasicStrategy` (HTTP Basic, `NEST_FORMS_BACKEND_USERNAME/PASSWORD`, timing-safe) -- **used by the ClamAV scanner callback**; `AdminStrategy` (`apiKey` -> `ADMIN_APP_SECRET`) on `admin` endpoints.
 
-**Public**: root, status, `POST /webhook`, and `GET /files/download/file/:jwtToken` (auth inside a signed JWT). Swagger schemes: Bearer, Basic, apiKey, and a custom `cognitoGuestIdentityId` header.
+**Public**: root, status, `POST /webhook`, and `GET /files/download/file/:jwtToken` (auth inside a signed JWT). Auth schemes: Bearer, Basic, apiKey, and a custom `cognitoGuestIdentityId` header.
 
 ---
 
@@ -136,7 +136,7 @@ Two generations coexist:
 | **nest-city-account** (sibling) | Resolve/create the City Account user on every authenticated request. | `src/clients/clients.service.ts`, `src/auth-v2/services/city-account-user.service.ts`; `USER_ACCOUNT_API`. See Cross-Backend. |
 | **nest-clamav-scanner** (sibling) | Antivirus scanning of uploaded files (bidirectional). | `src/scanner-client/scanner-client.service.ts`, `src/files/*`; `NEST_CLAMAV_SCANNER`. See Cross-Backend. |
 | **slovensko.sk / NASES** | Government form submission (SKTalk XML) + identity. | `src/nases/*`, `openapi-clients/slovensko-sk`, `src/api-jwt-tokens/*`; `SLOVENSKO_SK_*`. |
-| **GINIS** | Document register/upload/assign (`@bratislava/ginis-sdk`). | `src/ginis/*`; `GINIS_*`. |
+| **GINIS** | The municipality's registry system: register/upload/assign documents (`@bratislava/ginis-sdk`). | `src/ginis/*`; `GINIS_*`. |
 | **SharePoint / Graph** | Deliver "nájomné bývanie" forms after NASES (Bull job). | `src/ginis/subservices/sharepoint.service.ts`; `SHAREPOINT_*`. |
 | **MinIO / S3** | File storage (unscanned/safe/infected buckets). | `src/minio-*`; `MINIO_*`. |
 | **Mailgun / OLO SMTP** | Confirmation + delivery emails. | `src/mailer/*`; `MAILGUN_*`, `OLO_SMTP_*`. |
@@ -194,19 +194,4 @@ The **eID** path (`/form-sender/eid/...`) verifies the signature, submits to NAS
 
 ---
 
-## Deployment
-
-- **Docker** -- multi-stage; pulls prebuilt `forms-shared` + `openapi-clients` images from Harbor (by digest); installs Playwright Chromium. Prod `CMD` runs `db:migrate:deploy && start:prod`.
-- **docker-compose (local)** -- Postgres (54321), RabbitMQ delayed-message image (5611/15611), Redis (6311).
-- **Async infra** -- RabbitMQ (`@golevelup/nestjs-rabbitmq`, `x-delayed-message` exchange; queues `RABBIT_FORM_DELIVERY`, `RABBIT_GINIS`), Bull/Redis (`sharepoint` queue), Piscina (tax PDFs). `@nestjs/schedule` crons: delete old drafts, GINIS submission-state check, NASES registration validation, expired-migration purge.
-- **CI/CD** -- monorepo `.github/workflows/` (`build-nest.yml`, `deploy.yml`); no service-local k8s manifests (infra external).
-
----
-
-## Swagger / OpenAPI
-
-Docs UI at **`/api`**; raw spec at **`/spec-json`** (`src/bootstrap.ts`). Security schemes: Bearer, Basic (scanner), apiKey, and custom `cognitoGuestIdentityId`.
-
----
-
-> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, delivery pipeline, deployment), update this `ARCHITECTURE.md` in the same change.
+> **Keep this doc in sync:** if a code change updates something described here (modules, data model, auth, integrations, cross-backend calls, delivery pipeline), update this `ARCHITECTURE.md` in the same change.

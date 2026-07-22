@@ -6,7 +6,7 @@
 
 `city-account-next` is the **City Account (Bratislavské konto)** web frontend: account management, the e-forms UI, and the tax UI. It has no business data of its own -- it consumes three sibling konto backends (**nest-city-account**, **nest-forms-backend**, **nest-tax-backend**) through generated typed clients, plus two **Strapi** CMS instances for content, and authenticates users with **AWS Cognito** (via Amplify, including guest identities).
 
-It is a **Next.js 16** (Pages Router, Turbopack) application built to a `standalone` server, with heavy SSR via `getServerSideProps` wrapped in Amplify server context, and **TanStack React Query** for client/SSR data. Slovak is the only shipped locale.
+It is a **Next.js** (Pages Router, Turbopack) application built to a `standalone` server, with heavy SSR via `getServerSideProps` wrapped in Amplify server context, and **TanStack React Query** for client/SSR data. Slovak is the only shipped locale.
 
 ### Environments
 
@@ -179,12 +179,4 @@ The three backend clients come from the local **`openapi-clients`** package (reg
 
 ---
 
-## Deployment
-
-- **Docker** -- multi-stage, `output: 'standalone'`. Pulls prebuilt `forms-shared` and `openapi-clients` images from Harbor by digest; `node:24-alpine` base with `tini`, non-root user; prod runs `node build/server.js` (standalone nested under `build/` due to Turbopack root).
-- **Build-time public envs** -- `.env.bratiska-cli-build.{dev,staging,prod}` baked per environment via `build-next.yml`.
-- **CI/CD** -- monorepo `.github/workflows/` (`build.yml`, `build-next.yml`, `deploy.yml` with per-service change detection, `cypress-test.yaml`). Registry Harbor; k8s config lives in an external infra repo. Liveness: `pages/api/healthcheck.ts`.
-
----
-
-> **Keep this doc in sync:** if a code change updates something described here (routing, auth, data layer, integrations, deployment), update this `ARCHITECTURE.md` in the same change.
+> **Keep this doc in sync:** if a code change updates something described here (routing, auth, data layer, integrations), update this `ARCHITECTURE.md` in the same change.

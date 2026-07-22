@@ -6,7 +6,7 @@
 
 `nest-clamav-scanner` scans files uploaded to MinIO/S3 for viruses via **ClamAV**. Callers (in practice **nest-forms-backend**) register already-uploaded files for scanning; a 20-second cron worker drains a DB-backed queue, streams each file to ClamAV, moves it to a safe/infected bucket, and calls back to the forms backend with the final verdict.
 
-The backend is a **NestJS 11** application backed by **PostgreSQL** (Prisma, pg adapter). There is **no message broker** -- the "queue" is a Postgres `Files` table polled by an in-process cron. Callers authenticate with **HTTP Basic auth**.
+The backend is a **NestJS** application backed by **PostgreSQL** (Prisma). There is **no message broker** -- the "queue" is a Postgres `Files` table polled by an in-process cron. Callers authenticate with **HTTP Basic auth**.
 
 ### Environments
 
@@ -141,19 +141,4 @@ sequenceDiagram
 
 ---
 
-## Deployment
-
-- **Docker** -- multi-stage on `node:24-alpine`; pulls the shared `openapi-clients` image from Harbor. Prod `CMD` runs `db:migrate:deploy && start:prod` (Prisma migrations at start). `tini` init.
-- **docker-compose (local)** -- `nest` (port 3200, debug 9229) + `postgres` (54302); overrides `CLAMAV_HOST=clamav-app` and points at a local forms backend. Depends on the `/clamav` (clamd) and `/cvdmirror` (definitions) sibling repo dirs.
-- **Scheduling** -- one in-process `@Cron('*/20 * * * * *')` job; Postgres is the durable queue (no broker). Horizontal scaling of the worker would double-process without external coordination.
-- **CI/CD** -- centralized monorepo `.github/workflows/` (`build-nest.yml`, `build.yml`, `deploy.yml`); no service-local k8s manifests (infra lives in an external repo).
-
----
-
-## Swagger / OpenAPI
-
-Docs UI at **`/api`**; raw spec at **`/spec-json`** (`src/main.ts`). Single security scheme: **HTTP Basic**. Tags: `Health`, `Statuses`, `Scanner`.
-
----
-
-> **Keep this doc in sync:** if a code change updates something described here (endpoints, statuses, the scan/callback flow, ClamAV/MinIO wiring, deployment), update this `ARCHITECTURE.md` in the same change.
+> **Keep this doc in sync:** if a code change updates something described here (endpoints, statuses, the scan/callback flow, ClamAV/MinIO wiring), update this `ARCHITECTURE.md` in the same change.

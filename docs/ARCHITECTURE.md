@@ -152,7 +152,7 @@ sequenceDiagram
 
 - **Single-service internal flows** -- e.g. the forms NASES/GINIS delivery pipeline, tax GP-webpay payment, verification against Magproxy/NASES -- documented in each service's own `docs/ARCHITECTURE.md`.
 - **Calls to external (non-konto) systems** -- AWS Cognito, slovensko.sk/NASES, GINIS, Magproxy/RFO/RPO, GP webpay, Bloomreach, Mailgun/SES, Strapi, SharePoint, and the `nest-enforcement-backend` towing proxy called by city-account. These are external dependencies, not konto-to-konto workflows.
-- **Shared-database coupling (not a service call):** both **nest-city-account** and **nest-tax-backend** connect **directly** to the municipal **Noris** MSSQL database. They influence the same external data (e.g. tax delivery methods) but do **not** call each other -- so this is a shared-datastore coupling, not a cross-backend workflow.
+- **Shared-database coupling (not a service call):** both **nest-city-account** and **nest-tax-backend** connect **directly** to the municipal **Noris** financial system (an MSSQL database). They influence the same external data (e.g. tax delivery methods) but do **not** call each other -- so this is a shared-datastore coupling, not a cross-backend workflow.
 - **The frontend (`next`)** calls all three business backends, but as a client, not as one backend orchestrating another; those are covered in the frontend's own doc.
 
 ---

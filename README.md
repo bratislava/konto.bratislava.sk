@@ -10,21 +10,23 @@ Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](ht
 
 Each sub-project contains a README which should get you up and running. More documentation can be (eventually) found [here](https://bratislava.github.io)
 
+Each NestJS/Next.js app has a high-level architecture doc in its own `docs/ARCHITECTURE.md` (linked below). Workflows that span multiple backends are documented in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (cross-backend workflows only).
+
 ⚙️️ `/clamav` Instance of clamav https://www.clamav.net
 
 ⚙️️ `/cvdmirror` Local mirror of cvd database used for clamav scanner
 
 📟 `/forms-shared` Shared components and utils for frontend and backend
 
-🗄️ `/nest-city-account` Service which is handling user related logic for konto
+🗄️ `/nest-city-account` Service which is handling user related logic for konto — [architecture](nest-city-account/docs/ARCHITECTURE.md)
 
-🗄️ `/nest-clamav-scanner` This service is responsible for handling files which were sent to the clamav scanner.
+🗄️ `/nest-clamav-scanner` This service is responsible for handling files which were sent to the clamav scanner. — [architecture](nest-clamav-scanner/docs/ARCHITECTURE.md)
 
-🗄️ `/nest-forms-backend` Service which is handling incoming and outgoing forms created by users
+🗄️ `/nest-forms-backend` Service which is handling incoming and outgoing forms created by users — [architecture](nest-forms-backend/docs/ARCHITECTURE.md)
 
-🗄️ `/nest-tax-backend` This service is responsible for digital tax payment.
+🗄️ `/nest-tax-backend` This service is responsible for digital tax payment. — [architecture](nest-tax-backend/docs/ARCHITECTURE.md)
 
-🏡 `/next` Next.js web app
+🏡 `/next` Next.js web app — [architecture](next/docs/ARCHITECTURE.md)
 
 🗄️ `/strapi` Strapi CMS server
 

@@ -2,6 +2,10 @@
 
 This readme should get you up & running. For more detailed documentation, check the /docs file in the root of the repo.
 
+## Architecture
+
+For a high-level overview of this app (routing, data layer, auth, integrations, deployment), see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). For workflows that span multiple konto backends, see the repo-root [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
 ## First-time setup
 
 You need `node` and `npm` installed locally.

@@ -32,7 +32,7 @@ export default class EnvironmentVariables {
   @EnvString()
   DATABASE_URL: string
 
-  @EnvInt(1)
+  @EnvInt({ min: 1 })
   DB_CONCURRENCY: number
 
   @EnvUrl()

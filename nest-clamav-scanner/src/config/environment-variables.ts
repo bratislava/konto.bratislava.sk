@@ -38,7 +38,7 @@ export default class EnvironmentVariables {
   @EnvString()
   DATABASE_URL: string
 
-  @EnvUrl()
+  @EnvUrl({ requireTld: false })
   NEST_FORMS_BACKEND: string
 
   @EnvString()
@@ -83,16 +83,16 @@ export default class EnvironmentVariables {
   @EnvString()
   CLAMAV_INFECTED_BUCKET: string
 
-  @EnvInt(0)
+  @EnvInt({ min: 0 })
   MAX_FILE_SCAN_RUNS: number
 
-  @EnvInt(0)
+  @EnvInt({ min: 0 })
   MAX_FILE_SCAN_RUNS_TIMEOUT: number
 
-  @EnvInt(0)
+  @EnvInt({ min: 0 })
   MAX_FILES_PER_REQUEST: number
 
-  @EnvInt(0)
+  @EnvInt({ min: 0 })
   MAX_FILE_SIZE: number
 
   @EnvString()

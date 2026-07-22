@@ -107,7 +107,7 @@ export default class EnvironmentVariables {
   @EnvString()
   USER_ACCOUNT_API_KEY: string
 
-  @EnvUrl(false)
+  @EnvUrl({ requireTld: false })
   NEST_CLAMAV_SCANNER: string
 
   @EnvString()
@@ -224,10 +224,10 @@ export default class EnvironmentVariables {
   @EnvBoolean()
   FEATURE_TOGGLE_FILE_SIZE_LIMITS: boolean
 
-  @EnvInt(0)
+  @EnvInt({ min: 0 })
   MAX_FILE_SIZE: number
 
-  @EnvInt(0)
+  @EnvInt({ min: 0 })
   MAX_CUMULATIVE_FILE_SIZE: number
 
   @EnvString()

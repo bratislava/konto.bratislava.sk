@@ -8,6 +8,7 @@ import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFo
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
+import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
@@ -69,6 +70,12 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           )}
           id={PAGE_CONTENT_ID}
         >
+          <TemporarilyDisabledAlert
+            strapiForm={strapiForm}
+            variant="landingPage"
+            className="mb-8 lg:mb-12"
+          />
+
           {strapiForm.landingPage.text ? (
             <SectionContainer>
               <Markdown variant="small" content={strapiForm.landingPage.text} />

@@ -3,10 +3,11 @@ import { useTranslation } from 'next-i18next/pages'
 
 import { useFormSummary } from '@/src/components/forms/steps/Summary/useFormSummary'
 import { useFormContext } from '@/src/components/forms/useFormContext'
+import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
 import Alert from '@/src/components/simple-components/Alert'
 
 const SummaryHeader = () => {
-  const { isSigned } = useFormContext()
+  const { isSigned, isTemporarilyDisabled, strapiForm } = useFormContext()
   const { getValidatedSummary, getInfectedFiles, getUploadFiles } = useFormSummary()
   const { hasErrors } = getValidatedSummary()
   const infectedFiles = getInfectedFiles()
@@ -18,6 +19,9 @@ const SummaryHeader = () => {
   return (
     <>
       <Typography variant="h2">{t('summary.title')}</Typography>
+      {isTemporarilyDisabled && (
+        <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" className="mt-4" />
+      )}
       {hasErrors && (
         <Alert
           type="error"

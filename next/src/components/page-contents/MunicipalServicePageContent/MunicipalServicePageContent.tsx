@@ -9,6 +9,7 @@ import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
 import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
+import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
@@ -64,6 +65,8 @@ const MunicipalServicePageContent = ({
             '**:data-section-container-inner:lg:px-0',
           )}
         >
+          <TemporarilyDisabledAlert strapiForm={strapiForm} variant="landingPage" />
+
           {/* TODO: Temporarily showing landing page from form, until sections are gradually migrated to municipal services. */}
           {filteredSections.length ? (
             <Sections sections={filteredSections} />

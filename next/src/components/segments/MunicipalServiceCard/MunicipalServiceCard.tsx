@@ -116,18 +116,20 @@ type MunicipalServiceCardProps = {
   service: MunicipalServiceEntityFragment | MunicipalServiceCardEntityFragment
 }
 
-const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => (
-  <ServiceCard
-    key={service.documentId}
-    title={service.title}
-    description={service.description}
-    buttonText={service.buttonText}
-    icon={getIconComponent(service.icon, service.color)}
-    href={service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug)}
-    tags={service.tags.map((tag) => tag?.title).filter(isDefined)}
-    tagStyle={getTagStyle(service.color)}
-    analyticsProps={{ id: `Mestské služby: ${service.title}` }}
-  />
-)
+const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
+  return (
+    <ServiceCard
+      key={service.documentId}
+      title={service.title}
+      description={service.description}
+      buttonText={service.buttonText}
+      icon={getIconComponent(service.icon, service.color)}
+      href={service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug)}
+      tags={service.tags.map((tag) => tag?.title).filter(isDefined)}
+      tagStyle={getTagStyle(service.color)}
+      analyticsProps={{ id: `Mestské služby: ${service.title}` }}
+    />
+  )
+}
 
 export default MunicipalServiceCard

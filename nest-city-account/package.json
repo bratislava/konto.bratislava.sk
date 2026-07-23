@@ -42,7 +42,7 @@
     "@prisma/adapter-pg": "7.8.0",
     "@prisma/client": "7.8.0",
     "amqplib": "0.10.9",
-    "axios": "1.17.0",
+    "axios": "1.18.1",
     "cache-manager": "7.2.8",
     "cf-turnstile": "1.0.8",
     "class-transformer": "0.5.1",

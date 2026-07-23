@@ -40,7 +40,10 @@ const useGetContext = (formServerContext: FormServerContext) => {
   const isSSR = useIsSSR()
   const { isSignedIn, tierStatus } = useSsrAuth()
 
-  const { formDefinition, formMigrationRequired, initialFormSent, isEmbedded } = formServerContext
+  const { formDefinition, formMigrationRequired, initialFormSent, isEmbedded, strapiForm } =
+    formServerContext
+
+  const isTemporarilyDisabled = Boolean(strapiForm?.isTemporarilyDisabled)
 
   const getSendPolicyAccountType = () => {
     if (!isSignedIn) {
@@ -95,6 +98,7 @@ const useGetContext = (formServerContext: FormServerContext) => {
     isSigned,
     isReadonly,
     isDeletable,
+    isTemporarilyDisabled,
   }
 }
 

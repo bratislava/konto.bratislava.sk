@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
 import AdministrationIcon from '@/src/assets/icons/city-bratislava/city-administration.svg'
@@ -117,6 +118,15 @@ type MunicipalServiceCardProps = {
 }
 
 const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
+  const { t } = useTranslation('forms')
+
+  const tags: string[] = [
+    ...(service.form?.isTemporarilyDisabled
+      ? [t('MunicipalServiceCard.temporarily_disabled_badge')]
+      : []),
+    ...service.tags.map((tag) => tag?.title).filter(isDefined),
+  ]
+
   return (
     <ServiceCard
       key={service.documentId}
@@ -125,7 +135,7 @@ const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
       buttonText={service.buttonText}
       icon={getIconComponent(service.icon, service.color)}
       href={service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug)}
-      tags={service.tags.map((tag) => tag?.title).filter(isDefined)}
+      tags={tags}
       tagStyle={getTagStyle(service.color)}
       analyticsProps={{ id: `Mestské služby: ${service.title}` }}
     />

@@ -302,6 +302,7 @@ type ComponentBlocksFormSentPage {
   content: String
   feedbackLink: String
   id: ID!
+  isContentCentered: Boolean!
 }
 
 type ComponentBlocksFormSentPageAlert {
@@ -329,6 +330,7 @@ input ComponentBlocksFormSentPageFiltersInput {
   and: [ComponentBlocksFormSentPageFiltersInput]
   content: StringFilterInput
   feedbackLink: StringFilterInput
+  isContentCentered: BooleanFilterInput
   not: ComponentBlocksFormSentPageFiltersInput
   or: [ComponentBlocksFormSentPageFiltersInput]
 }
@@ -338,6 +340,7 @@ input ComponentBlocksFormSentPageInput {
   content: String
   feedbackLink: String
   id: ID
+  isContentCentered: Boolean
 }
 
 type ComponentBlocksHelpCategory {

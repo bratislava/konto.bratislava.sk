@@ -17,6 +17,7 @@ fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
 fragment FormSentPage on ComponentBlocksFormSentPage {
   feedbackLink
   content
+  isContentCentered
   alert {
     title
     content

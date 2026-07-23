@@ -11,6 +11,11 @@
     "content": {
       "type": "richtext"
     },
+    "isContentCentered": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
     "alert": {
       "type": "component",
       "component": "blocks.form-sent-page-alert",

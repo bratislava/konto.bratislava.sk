@@ -365,6 +365,7 @@ export type ComponentBlocksFormSentPage = {
   content?: Maybe<Scalars['String']['output']>
   feedbackLink?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
+  isContentCentered: Scalars['Boolean']['output']
 }
 
 export type ComponentBlocksFormSentPageAlert = {
@@ -393,6 +394,7 @@ export type ComponentBlocksFormSentPageFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentPageFiltersInput>>>
   content?: InputMaybe<StringFilterInput>
   feedbackLink?: InputMaybe<StringFilterInput>
+  isContentCentered?: InputMaybe<BooleanFilterInput>
   not?: InputMaybe<ComponentBlocksFormSentPageFiltersInput>
   or?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentPageFiltersInput>>>
 }
@@ -402,6 +404,7 @@ export type ComponentBlocksFormSentPageInput = {
   content?: InputMaybe<Scalars['String']['input']>
   feedbackLink?: InputMaybe<Scalars['String']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
+  isContentCentered?: InputMaybe<Scalars['Boolean']['input']>
 }
 
 export type ComponentBlocksHelpCategory = {
@@ -3198,6 +3201,7 @@ export type FormSentPageFragment = {
   __typename?: 'ComponentBlocksFormSentPage'
   feedbackLink?: string | null
   content?: string | null
+  isContentCentered: boolean
   alert?: {
     __typename?: 'ComponentBlocksFormSentPageAlert'
     title?: string | null
@@ -3262,6 +3266,7 @@ export type FormFragment = {
     __typename?: 'ComponentBlocksFormSentPage'
     feedbackLink?: string | null
     content?: string | null
+    isContentCentered: boolean
     alert?: {
       __typename?: 'ComponentBlocksFormSentPageAlert'
       title?: string | null
@@ -4831,6 +4836,7 @@ export const FormSentPageFragmentDoc = gql`
   fragment FormSentPage on ComponentBlocksFormSentPage {
     feedbackLink
     content
+    isContentCentered
     alert {
       title
       content

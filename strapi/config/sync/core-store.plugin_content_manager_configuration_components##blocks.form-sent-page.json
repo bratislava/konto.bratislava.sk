@@ -20,6 +20,20 @@
           "sortable": false
         }
       },
+      "feedbackLink": {
+        "edit": {
+          "label": "Odkaz na dotazník spokojnosti",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "feedbackLink",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "content": {
         "edit": {
           "label": "Text",
@@ -32,6 +46,20 @@
           "label": "content",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "isContentCentered": {
+        "edit": {
+          "label": "Zarovanať text na stred?",
+          "description": "Ak je FALSE, text sa zarovná doľava.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isContentCentered",
+          "searchable": true,
+          "sortable": true
         }
       },
       "alert": {
@@ -47,20 +75,6 @@
           "label": "alert",
           "searchable": false,
           "sortable": false
-        }
-      },
-      "feedbackLink": {
-        "edit": {
-          "label": "Odkaz na dotazník spokojnosti",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "feedbackLink",
-          "searchable": true,
-          "sortable": true
         }
       },
       "documentId": {
@@ -88,15 +102,18 @@
         ],
         [
           {
+            "name": "isContentCentered",
+            "size": 4
+          }
+        ],
+        [
+          {
             "name": "alert",
             "size": 12
           }
         ]
       ],
-      "list": [
-        "id",
-        "feedbackLink"
-      ]
+      "list": ["id", "feedbackLink", "isContentCentered"]
     },
     "uid": "blocks.form-sent-page",
     "isComponent": true

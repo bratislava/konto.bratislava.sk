@@ -155,6 +155,9 @@ export interface BlocksFormSentPage extends Struct.ComponentSchema {
     alert: Schema.Attribute.Component<'blocks.form-sent-page-alert', false>
     content: Schema.Attribute.RichText
     feedbackLink: Schema.Attribute.String
+    isContentCentered: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>
   }
 }
 

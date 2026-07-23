@@ -117,12 +117,13 @@
           "landingPage.formCta.buttonLabel",
           "formSentPage.feedbackLink",
           "formSentPage.content",
+          "formSentPage.isContentCentered",
           "formSentPage.alert.title",
           "formSentPage.alert.content"
         ]
       },
       "conditions": [],
-      "documentId": "txu9ihdpiqnkf7b390hyqzbz",
+      "documentId": "rxxv79l44q0ts5vpmuyo1a0n",
       "locale": null
     },
     {
@@ -162,12 +163,13 @@
           "landingPage.formCta.buttonLabel",
           "formSentPage.feedbackLink",
           "formSentPage.content",
+          "formSentPage.isContentCentered",
           "formSentPage.alert.title",
           "formSentPage.alert.content"
         ]
       },
       "conditions": [],
-      "documentId": "szofv3p9opu34ev2694fjyoq",
+      "documentId": "jsdtkzmzo3fh7eehu020qkc9",
       "locale": null
     },
     {
@@ -189,12 +191,13 @@
           "landingPage.formCta.buttonLabel",
           "formSentPage.feedbackLink",
           "formSentPage.content",
+          "formSentPage.isContentCentered",
           "formSentPage.alert.title",
           "formSentPage.alert.content"
         ]
       },
       "conditions": [],
-      "documentId": "t7a04pptk4zjho35bcenj7jk",
+      "documentId": "iu34fmcriq70scppzhim3uha",
       "locale": null
     },
     {

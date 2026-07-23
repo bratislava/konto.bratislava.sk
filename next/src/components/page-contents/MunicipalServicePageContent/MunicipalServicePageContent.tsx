@@ -54,46 +54,43 @@ const MunicipalServicePageContent = ({
           'mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse gap-8 px-4 py-8 lg:px-8 lg:py-12',
         )}
       >
-        <div
-          className={cn(
-            'flex flex-col gap-12',
-            'w-full max-w-200',
-            '**:data-section-container-outer:not-first:pt-8',
-            '**:data-section-container-outer:not-first:lg:pt-12',
-            // In sidebar layout, horizontal padding is handled by parent wrapper (otherwise it is handled by sections)
-            '**:data-section-container-inner:px-0',
-            '**:data-section-container-inner:lg:px-0',
-          )}
-        >
-          {strapiForm?.isTemporarilyDisabled ? (
-            <SectionContainer>
-              <TemporarilyDisabledAlert strapiForm={strapiForm} variant="landingPage" />
-            </SectionContainer>
-          ) : null}
+        <div className="flex w-full max-w-200 flex-col gap-12">
+          <TemporarilyDisabledAlert strapiForm={strapiForm} variant="landingPage" />
 
-          {/* TODO: Temporarily showing landing page from form, until sections are gradually migrated to municipal services. */}
-          {filteredSections.length ? (
-            <Sections sections={filteredSections} />
-          ) : strapiForm?.landingPage?.text ? (
-            <SectionContainer>
-              <Markdown content={strapiForm.landingPage.text} />
-            </SectionContainer>
-          ) : null}
+          <div
+            className={cn(
+              'flex flex-col gap-12',
+              '**:data-section-container-outer:not-first:pt-8',
+              '**:data-section-container-outer:not-first:lg:pt-12',
+              // In sidebar layout, horizontal padding is handled by parent wrapper (otherwise it is handled by sections)
+              '**:data-section-container-inner:px-0',
+              '**:data-section-container-inner:lg:px-0',
+            )}
+          >
+            {/* TODO: Temporarily showing landing page from form, until sections are gradually migrated to municipal services. */}
+            {filteredSections.length ? (
+              <Sections sections={filteredSections} />
+            ) : strapiForm?.landingPage?.text ? (
+              <SectionContainer>
+                <Markdown content={strapiForm.landingPage.text} />
+              </SectionContainer>
+            ) : null}
 
-          {/* TODO: Temporarily rendering CTA cards from from (links and form CTA), until implement in municipal services. */}
-          {strapiForm?.landingPage ? (
-            <div className="flex flex-col rounded-xl border empty:hidden">
-              {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
-                <FormLandingPageCard key={linkCta.id} {...linkCta} />
-              ))}
-              {formDefinition && strapiForm.landingPage.formCta ? (
-                <FormLandingPageCtaCard
-                  formCta={strapiForm.landingPage.formCta}
-                  formDefinition={formDefinition}
-                />
-              ) : null}
-            </div>
-          ) : null}
+            {/* TODO: Temporarily rendering CTA cards from from (links and form CTA), until implement in municipal services. */}
+            {strapiForm?.landingPage ? (
+              <div className="flex flex-col rounded-xl border empty:hidden">
+                {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
+                  <FormLandingPageCard key={linkCta.id} {...linkCta} />
+                ))}
+                {formDefinition && strapiForm.landingPage.formCta ? (
+                  <FormLandingPageCtaCard
+                    formCta={strapiForm.landingPage.formCta}
+                    formDefinition={formDefinition}
+                  />
+                ) : null}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <aside className="w-full lg:w-80 lg:shrink-0">

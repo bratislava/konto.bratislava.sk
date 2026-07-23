@@ -59,42 +59,42 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
         key={formDefinition.slug} // Helps to re-render table of contents on page change
         className="mx-auto flex w-full max-w-(--breakpoint-xl) flex-wrap-reverse gap-8 px-4 py-8 lg:px-8 lg:py-12"
       >
-        <div
-          className={cn(
-            'w-full max-w-200',
-            '**:data-section-container-outer:not-first:pt-8',
-            '**:data-section-container-outer:not-first:lg:pt-12',
-            // In sidebar layout, horizontal padding is handled by parent wrapper (otherwise it is handled by sections)
-            '**:data-section-container-inner:px-0',
-            '**:data-section-container-inner:lg:px-0',
-          )}
-          id={PAGE_CONTENT_ID}
-        >
+        <div className="w-full max-w-200" id={PAGE_CONTENT_ID}>
           <TemporarilyDisabledAlert
             strapiForm={strapiForm}
             variant="landingPage"
             className="mb-8 lg:mb-12"
           />
 
-          {strapiForm.landingPage.text ? (
-            <SectionContainer>
-              <Markdown variant="small" content={strapiForm.landingPage.text} />
-            </SectionContainer>
-          ) : null}
+          <div
+            className={cn(
+              '**:data-section-container-outer:not-first:pt-8',
+              '**:data-section-container-outer:not-first:lg:pt-12',
+              // In sidebar layout, horizontal padding is handled by parent wrapper (otherwise it is handled by sections)
+              '**:data-section-container-inner:px-0',
+              '**:data-section-container-inner:lg:px-0',
+            )}
+          >
+            {strapiForm.landingPage.text ? (
+              <SectionContainer>
+                <Markdown variant="small" content={strapiForm.landingPage.text} />
+              </SectionContainer>
+            ) : null}
 
-          <SectionContainer>
-            <div className="flex flex-col rounded-xl border">
-              {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
-                <FormLandingPageCard key={linkCta.id} {...linkCta} />
-              ))}
-              {isDefined(strapiForm.landingPage.formCta) ? (
-                <FormLandingPageCtaCard
-                  formCta={strapiForm.landingPage.formCta}
-                  formDefinition={formDefinition}
-                />
-              ) : null}
-            </div>
-          </SectionContainer>
+            <SectionContainer>
+              <div className="flex flex-col rounded-xl border">
+                {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
+                  <FormLandingPageCard key={linkCta.id} {...linkCta} />
+                ))}
+                {isDefined(strapiForm.landingPage.formCta) ? (
+                  <FormLandingPageCtaCard
+                    formCta={strapiForm.landingPage.formCta}
+                    formDefinition={formDefinition}
+                  />
+                ) : null}
+              </div>
+            </SectionContainer>
+          </div>
         </div>
 
         <aside className="w-full lg:w-80 lg:shrink-0">

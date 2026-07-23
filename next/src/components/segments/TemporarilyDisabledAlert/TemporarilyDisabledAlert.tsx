@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next/pages'
 
 import { FormTemporarilyDisabledFragment } from '@/src/clients/graphql-strapi/api'
+import Markdown from '@/src/components/formatting/Markdown'
 import Alert from '@/src/components/simple-components/Alert'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 
@@ -47,13 +48,14 @@ const TemporarilyDisabledAlert = ({
 
   const message = (
     <div className="flex flex-col gap-2">
-      <div>
-        {
+      <Markdown
+        variant="small"
+        content={
           translationMap[isSignedIn ? 'authenticated' : 'notAuthenticated'][
             date ? 'withDate' : 'withoutDate'
           ]
         }
-      </div>
+      />
       {showReason ? (
         <div>
           <span className="font-semibold">{t('TemporarilyDisabledAlert.reason_label')}</span>{' '}

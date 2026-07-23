@@ -65,7 +65,11 @@ const MunicipalServicePageContent = ({
             '**:data-section-container-inner:lg:px-0',
           )}
         >
-          <TemporarilyDisabledAlert strapiForm={strapiForm} variant="landingPage" />
+          {strapiForm?.isTemporarilyDisabled ? (
+            <SectionContainer>
+              <TemporarilyDisabledAlert strapiForm={strapiForm} variant="landingPage" />
+            </SectionContainer>
+          ) : null}
 
           {/* TODO: Temporarily showing landing page from form, until sections are gradually migrated to municipal services. */}
           {filteredSections.length ? (

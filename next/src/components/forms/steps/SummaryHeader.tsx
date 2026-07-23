@@ -18,48 +18,46 @@ const SummaryHeader = () => {
 
   return (
     <>
+      {isTemporarilyDisabled && <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" />}
+
       <Typography variant="h2">{t('summary.title')}</Typography>
-      {isTemporarilyDisabled && (
-        <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" className="mt-4" />
-      )}
-      {hasErrors && (
-        <Alert
-          type="error"
-          message={isSigned ? t('summary.form_has_errors_signed') : t('summary.form_has_errors')}
-          fullWidth
-          className="mt-4"
-        />
-      )}
-      {infectedFiles.length === 1 && (
-        <Alert
-          type="error"
-          message={t('summary.virus_alert', {
-            file: infectedFilesFilenames[0],
-          })}
-          fullWidth
-          className="mt-4"
-        />
-      )}
-      {infectedFiles.length > 1 && (
-        <Alert
-          type="error"
-          message={t('summary.virus_alert_plural', {
-            files: infectedFilesFilenames.map((name) => `“${name}“`).join(', '),
-          })}
-          fullWidth
-          className="mt-4"
-        />
-      )}
-      {uploadFiles.length > 0 && (
-        <Alert
-          type="warning"
-          message={t('summary.uploading_files', {
-            files: uploadFiles.map((file) => file.fileName).join(', '),
-          })}
-          fullWidth
-          className="mt-4"
-        />
-      )}
+
+      <div className="flex flex-col gap-4">
+        {hasErrors && (
+          <Alert
+            type="error"
+            message={isSigned ? t('summary.form_has_errors_signed') : t('summary.form_has_errors')}
+            fullWidth
+          />
+        )}
+        {infectedFiles.length === 1 && (
+          <Alert
+            type="error"
+            message={t('summary.virus_alert', {
+              file: infectedFilesFilenames[0],
+            })}
+            fullWidth
+          />
+        )}
+        {infectedFiles.length > 1 && (
+          <Alert
+            type="error"
+            message={t('summary.virus_alert_plural', {
+              files: infectedFilesFilenames.map((name) => `“${name}“`).join(', '),
+            })}
+            fullWidth
+          />
+        )}
+        {uploadFiles.length > 0 && (
+          <Alert
+            type="warning"
+            message={t('summary.uploading_files', {
+              files: uploadFiles.map((file) => file.fileName).join(', '),
+            })}
+            fullWidth
+          />
+        )}
+      </div>
     </>
   )
 }

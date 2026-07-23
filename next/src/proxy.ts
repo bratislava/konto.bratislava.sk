@@ -68,11 +68,17 @@ export function proxy(request: NextRequest) {
     .filter(isDefined)
     .join(' ')
 
+  // MINIO_BUCKET is a server-only env (not NEXT_PUBLIC), same as used in next.config.ts image
+  // remotePatterns. Middleware runs server-side so process.env is available here.
+  const minioBucket = process.env.MINIO_BUCKET
+  const minioImgSrc = minioBucket ? `https://${minioBucket}.s3.bratislava.sk` : undefined
+
   const imgSrc = [
     'https://www.googletagmanager.com',
     'https://*.google-analytics.com',
     'https://*.clarity.ms',
     'https://c.bing.com',
+    minioImgSrc,
   ]
     .filter(isDefined)
     .join(' ')

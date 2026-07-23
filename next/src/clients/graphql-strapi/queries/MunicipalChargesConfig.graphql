@@ -10,20 +10,6 @@ fragment MunicipalChargeConfig on MunicipalChargeConfig {
       ...MunicipalCharge
     }
   }
-  paymentResultPage {
-    paymentSuccess {
-      ...PaymentResultPageContent
-    }
-    paymentAlreadyPaid {
-      ...PaymentResultPageContent
-    }
-    failedToVerify {
-      ...PaymentResultPageContent
-    }
-    paymentFailed {
-      ...PaymentResultPageContent
-    }
-  }
 }
 
 fragment DeliveryMethod on ComponentMunicipalChargeDeliveryMethod {
@@ -31,17 +17,6 @@ fragment DeliveryMethod on ComponentMunicipalChargeDeliveryMethod {
   deliveryMethodChangePendingAlert {
     title
     content
-  }
-}
-
-fragment PaymentResultPageContent on ComponentMunicipalChargePaymentResultPageContent {
-  title
-  content
-  primaryButton {
-    ...CommonLink
-  }
-  secondaryButton {
-    ...CommonLink
   }
 }
 

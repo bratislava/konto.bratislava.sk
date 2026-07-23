@@ -597,8 +597,6 @@ export interface ApiMunicipalChargeConfigMunicipalChargeConfig extends Struct.Si
       'municipal-charge.municipal-charge-identifier',
       false
     >
-    paymentResultPage: Schema.Attribute.Component<'municipal-charge.payment-result-page', false> &
-      Schema.Attribute.Required
     publishedAt: Schema.Attribute.DateTime
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private

@@ -15,17 +15,11 @@ fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
 }
 
 fragment FormSentPage on ComponentBlocksFormSentPage {
-  title
+  feedbackLink
   content
   alert {
     title
     content
-  }
-  primaryButton {
-    ...CommonLink
-  }
-  secondaryButton {
-    ...CommonLink
   }
 }
 
@@ -42,15 +36,19 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
 fragment FormBase on Form {
   slug
   moreInformationUrl
-  formSentPage {
-    ...FormSentPage
-  }
 }
 
 fragment FormWithLandingPage on Form {
   ...FormBase
   landingPage {
     ...FormLandingPage
+  }
+}
+
+fragment Form on Form {
+  ...FormWithLandingPage
+  formSentPage {
+    ...FormSentPage
   }
 }
 

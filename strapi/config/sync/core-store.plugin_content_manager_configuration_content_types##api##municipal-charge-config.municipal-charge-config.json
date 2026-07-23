@@ -48,20 +48,6 @@
           "sortable": false
         }
       },
-      "paymentResultPage": {
-        "edit": {
-          "label": "Stránka po odoslaní platby",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "paymentResultPage",
-          "searchable": false,
-          "sortable": false
-        }
-      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -146,12 +132,6 @@
         [
           {
             "name": "municipalChargeIdentifier",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "paymentResultPage",
             "size": 12
           }
         ]

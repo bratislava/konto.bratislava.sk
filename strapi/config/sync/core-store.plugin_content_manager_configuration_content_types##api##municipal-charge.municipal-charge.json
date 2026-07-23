@@ -50,7 +50,7 @@
       },
       "feedbackLink": {
         "edit": {
-          "label": "Feedback link",
+          "label": "Odkaz na dotazník spokojnosti",
           "description": "Zobrazí sa po úspešne dokončenej platbe",
           "placeholder": "",
           "visible": true,

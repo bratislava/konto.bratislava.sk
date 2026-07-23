@@ -363,10 +363,8 @@ export type ComponentBlocksFormSentPage = {
   __typename?: 'ComponentBlocksFormSentPage'
   alert?: Maybe<ComponentBlocksFormSentPageAlert>
   content?: Maybe<Scalars['String']['output']>
+  feedbackLink?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
-  primaryButton?: Maybe<ComponentBlocksCommonLink>
-  secondaryButton?: Maybe<ComponentBlocksCommonLink>
-  title: Scalars['String']['output']
 }
 
 export type ComponentBlocksFormSentPageAlert = {
@@ -394,20 +392,16 @@ export type ComponentBlocksFormSentPageFiltersInput = {
   alert?: InputMaybe<ComponentBlocksFormSentPageAlertFiltersInput>
   and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentPageFiltersInput>>>
   content?: InputMaybe<StringFilterInput>
+  feedbackLink?: InputMaybe<StringFilterInput>
   not?: InputMaybe<ComponentBlocksFormSentPageFiltersInput>
   or?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentPageFiltersInput>>>
-  primaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
-  secondaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
-  title?: InputMaybe<StringFilterInput>
 }
 
 export type ComponentBlocksFormSentPageInput = {
   alert?: InputMaybe<ComponentBlocksFormSentPageAlertInput>
   content?: InputMaybe<Scalars['String']['input']>
+  feedbackLink?: InputMaybe<Scalars['String']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
-  primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
-  secondaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
-  title?: InputMaybe<Scalars['String']['input']>
 }
 
 export type ComponentBlocksHelpCategory = {
@@ -589,60 +583,6 @@ export type ComponentMunicipalChargeMunicipalChargeIdentifierInput = {
   dzn?: InputMaybe<Scalars['ID']['input']>
   id?: InputMaybe<Scalars['ID']['input']>
   ko?: InputMaybe<Scalars['ID']['input']>
-}
-
-export type ComponentMunicipalChargePaymentResultPage = {
-  __typename?: 'ComponentMunicipalChargePaymentResultPage'
-  failedToVerify: ComponentMunicipalChargePaymentResultPageContent
-  id: Scalars['ID']['output']
-  paymentAlreadyPaid: ComponentMunicipalChargePaymentResultPageContent
-  paymentFailed: ComponentMunicipalChargePaymentResultPageContent
-  paymentSuccess: ComponentMunicipalChargePaymentResultPageContent
-}
-
-export type ComponentMunicipalChargePaymentResultPageContent = {
-  __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-  content?: Maybe<Scalars['String']['output']>
-  id: Scalars['ID']['output']
-  primaryButton?: Maybe<ComponentBlocksCommonLink>
-  secondaryButton?: Maybe<ComponentBlocksCommonLink>
-  title: Scalars['String']['output']
-}
-
-export type ComponentMunicipalChargePaymentResultPageContentFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargePaymentResultPageContentFiltersInput>>>
-  content?: InputMaybe<StringFilterInput>
-  not?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentFiltersInput>
-  or?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargePaymentResultPageContentFiltersInput>>>
-  primaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
-  secondaryButton?: InputMaybe<ComponentBlocksCommonLinkFiltersInput>
-  title?: InputMaybe<StringFilterInput>
-}
-
-export type ComponentMunicipalChargePaymentResultPageContentInput = {
-  content?: InputMaybe<Scalars['String']['input']>
-  id?: InputMaybe<Scalars['ID']['input']>
-  primaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
-  secondaryButton?: InputMaybe<ComponentBlocksCommonLinkInput>
-  title?: InputMaybe<Scalars['String']['input']>
-}
-
-export type ComponentMunicipalChargePaymentResultPageFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargePaymentResultPageFiltersInput>>>
-  failedToVerify?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentFiltersInput>
-  not?: InputMaybe<ComponentMunicipalChargePaymentResultPageFiltersInput>
-  or?: InputMaybe<Array<InputMaybe<ComponentMunicipalChargePaymentResultPageFiltersInput>>>
-  paymentAlreadyPaid?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentFiltersInput>
-  paymentFailed?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentFiltersInput>
-  paymentSuccess?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentFiltersInput>
-}
-
-export type ComponentMunicipalChargePaymentResultPageInput = {
-  failedToVerify?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentInput>
-  id?: InputMaybe<Scalars['ID']['input']>
-  paymentAlreadyPaid?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentInput>
-  paymentFailed?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentInput>
-  paymentSuccess?: InputMaybe<ComponentMunicipalChargePaymentResultPageContentInput>
 }
 
 export type ComponentSectionsContacts = {
@@ -1225,8 +1165,6 @@ export type GenericMorph =
   | ComponentMunicipalChargeDeliveryMethod
   | ComponentMunicipalChargeDeliveryMethodChangePendingAlert
   | ComponentMunicipalChargeMunicipalChargeIdentifier
-  | ComponentMunicipalChargePaymentResultPage
-  | ComponentMunicipalChargePaymentResultPageContent
   | ComponentSectionsContacts
   | ComponentSectionsDocuments
   | ComponentSectionsFaq
@@ -1640,7 +1578,6 @@ export type MunicipalChargeConfig = {
   deliveryMethod: ComponentMunicipalChargeDeliveryMethod
   documentId: Scalars['ID']['output']
   municipalChargeIdentifier?: Maybe<ComponentMunicipalChargeMunicipalChargeIdentifier>
-  paymentResultPage: ComponentMunicipalChargePaymentResultPage
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
@@ -1669,7 +1606,6 @@ export type MunicipalChargeConfigFiltersInput = {
   municipalChargeIdentifier?: InputMaybe<ComponentMunicipalChargeMunicipalChargeIdentifierFiltersInput>
   not?: InputMaybe<MunicipalChargeConfigFiltersInput>
   or?: InputMaybe<Array<InputMaybe<MunicipalChargeConfigFiltersInput>>>
-  paymentResultPage?: InputMaybe<ComponentMunicipalChargePaymentResultPageFiltersInput>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
 }
@@ -1677,7 +1613,6 @@ export type MunicipalChargeConfigFiltersInput = {
 export type MunicipalChargeConfigInput = {
   deliveryMethod?: InputMaybe<ComponentMunicipalChargeDeliveryMethodInput>
   municipalChargeIdentifier?: InputMaybe<ComponentMunicipalChargeMunicipalChargeIdentifierInput>
-  paymentResultPage?: InputMaybe<ComponentMunicipalChargePaymentResultPageInput>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
 }
 
@@ -3261,56 +3196,12 @@ export type FormLandingPageFormCtaFragment = {
 
 export type FormSentPageFragment = {
   __typename?: 'ComponentBlocksFormSentPage'
-  title: string
+  feedbackLink?: string | null
   content?: string | null
   alert?: {
     __typename?: 'ComponentBlocksFormSentPageAlert'
     title?: string | null
     content?: string | null
-  } | null
-  primaryButton?: {
-    __typename?: 'ComponentBlocksCommonLink'
-    label?: string | null
-    url?: string | null
-    municipalService?: {
-      __typename?: 'MunicipalService'
-      title: string
-      slug: string
-      href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
-      sections?: Array<
-        | { __typename: 'ComponentSectionsContacts' }
-        | { __typename: 'ComponentSectionsDocuments' }
-        | { __typename: 'ComponentSectionsFaq' }
-        | { __typename: 'ComponentSectionsRichtext' }
-        | { __typename: 'ComponentSectionsStepper' }
-        | { __typename: 'ComponentSectionsTowing' }
-        | { __typename: 'Error' }
-        | null
-      > | null
-    } | null
-  } | null
-  secondaryButton?: {
-    __typename?: 'ComponentBlocksCommonLink'
-    label?: string | null
-    url?: string | null
-    municipalService?: {
-      __typename?: 'MunicipalService'
-      title: string
-      slug: string
-      href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
-      sections?: Array<
-        | { __typename: 'ComponentSectionsContacts' }
-        | { __typename: 'ComponentSectionsDocuments' }
-        | { __typename: 'ComponentSectionsFaq' }
-        | { __typename: 'ComponentSectionsRichtext' }
-        | { __typename: 'ComponentSectionsStepper' }
-        | { __typename: 'ComponentSectionsTowing' }
-        | { __typename: 'Error' }
-        | null
-      > | null
-    } | null
   } | null
 }
 
@@ -3337,60 +3228,6 @@ export type FormBaseFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
-  formSentPage?: {
-    __typename?: 'ComponentBlocksFormSentPage'
-    title: string
-    content?: string | null
-    alert?: {
-      __typename?: 'ComponentBlocksFormSentPageAlert'
-      title?: string | null
-      content?: string | null
-    } | null
-    primaryButton?: {
-      __typename?: 'ComponentBlocksCommonLink'
-      label?: string | null
-      url?: string | null
-      municipalService?: {
-        __typename?: 'MunicipalService'
-        title: string
-        slug: string
-        href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
-        sections?: Array<
-          | { __typename: 'ComponentSectionsContacts' }
-          | { __typename: 'ComponentSectionsDocuments' }
-          | { __typename: 'ComponentSectionsFaq' }
-          | { __typename: 'ComponentSectionsRichtext' }
-          | { __typename: 'ComponentSectionsStepper' }
-          | { __typename: 'ComponentSectionsTowing' }
-          | { __typename: 'Error' }
-          | null
-        > | null
-      } | null
-    } | null
-    secondaryButton?: {
-      __typename?: 'ComponentBlocksCommonLink'
-      label?: string | null
-      url?: string | null
-      municipalService?: {
-        __typename?: 'MunicipalService'
-        title: string
-        slug: string
-        href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
-        sections?: Array<
-          | { __typename: 'ComponentSectionsContacts' }
-          | { __typename: 'ComponentSectionsDocuments' }
-          | { __typename: 'ComponentSectionsFaq' }
-          | { __typename: 'ComponentSectionsRichtext' }
-          | { __typename: 'ComponentSectionsStepper' }
-          | { __typename: 'ComponentSectionsTowing' }
-          | { __typename: 'Error' }
-          | null
-        > | null
-      } | null
-    } | null
-  } | null
 }
 
 export type FormWithLandingPageFragment = {
@@ -3415,58 +3252,38 @@ export type FormWithLandingPageFragment = {
       buttonLabel: string
     } | null
   } | null
+}
+
+export type FormFragment = {
+  __typename?: 'Form'
+  slug: string
+  moreInformationUrl?: string | null
   formSentPage?: {
     __typename?: 'ComponentBlocksFormSentPage'
-    title: string
+    feedbackLink?: string | null
     content?: string | null
     alert?: {
       __typename?: 'ComponentBlocksFormSentPageAlert'
       title?: string | null
       content?: string | null
     } | null
-    primaryButton?: {
-      __typename?: 'ComponentBlocksCommonLink'
-      label?: string | null
-      url?: string | null
-      municipalService?: {
-        __typename?: 'MunicipalService'
-        title: string
-        slug: string
-        href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
-        sections?: Array<
-          | { __typename: 'ComponentSectionsContacts' }
-          | { __typename: 'ComponentSectionsDocuments' }
-          | { __typename: 'ComponentSectionsFaq' }
-          | { __typename: 'ComponentSectionsRichtext' }
-          | { __typename: 'ComponentSectionsStepper' }
-          | { __typename: 'ComponentSectionsTowing' }
-          | { __typename: 'Error' }
-          | null
-        > | null
-      } | null
-    } | null
-    secondaryButton?: {
-      __typename?: 'ComponentBlocksCommonLink'
-      label?: string | null
-      url?: string | null
-      municipalService?: {
-        __typename?: 'MunicipalService'
-        title: string
-        slug: string
-        href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
-        sections?: Array<
-          | { __typename: 'ComponentSectionsContacts' }
-          | { __typename: 'ComponentSectionsDocuments' }
-          | { __typename: 'ComponentSectionsFaq' }
-          | { __typename: 'ComponentSectionsRichtext' }
-          | { __typename: 'ComponentSectionsStepper' }
-          | { __typename: 'ComponentSectionsTowing' }
-          | { __typename: 'Error' }
-          | null
-        > | null
-      } | null
+  } | null
+  landingPage?: {
+    __typename?: 'ComponentBlocksFormLandingPage'
+    text?: string | null
+    linkCtas?: Array<{
+      __typename: 'ComponentBlocksFormLandingPageLinkCta'
+      id: string
+      title: string
+      text?: string | null
+      buttonLabel: string
+      url: string
+    } | null> | null
+    formCta?: {
+      __typename: 'ComponentBlocksFormLandingPageFormCta'
+      title: string
+      text?: string | null
+      buttonLabel: string
     } | null
   } | null
 }
@@ -3482,60 +3299,6 @@ export type FormBaseBySlugQuery = {
     documentId: string
     slug: string
     moreInformationUrl?: string | null
-    formSentPage?: {
-      __typename?: 'ComponentBlocksFormSentPage'
-      title: string
-      content?: string | null
-      alert?: {
-        __typename?: 'ComponentBlocksFormSentPageAlert'
-        title?: string | null
-        content?: string | null
-      } | null
-      primaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-      secondaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-    } | null
   } | null>
 }
 
@@ -3566,60 +3329,6 @@ export type FormWithLandingPageBySlugQuery = {
         title: string
         text?: string | null
         buttonLabel: string
-      } | null
-    } | null
-    formSentPage?: {
-      __typename?: 'ComponentBlocksFormSentPage'
-      title: string
-      content?: string | null
-      alert?: {
-        __typename?: 'ComponentBlocksFormSentPageAlert'
-        title?: string | null
-        content?: string | null
-      } | null
-      primaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-      secondaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
       } | null
     } | null
   } | null>
@@ -4035,205 +3744,6 @@ export type MunicipalChargeConfigFragment = {
       feedbackLink?: string | null
     } | null
   } | null
-  paymentResultPage: {
-    __typename?: 'ComponentMunicipalChargePaymentResultPage'
-    paymentSuccess: {
-      __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-      title: string
-      content?: string | null
-      primaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-      secondaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-    }
-    paymentAlreadyPaid: {
-      __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-      title: string
-      content?: string | null
-      primaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-      secondaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-    }
-    failedToVerify: {
-      __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-      title: string
-      content?: string | null
-      primaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-      secondaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-    }
-    paymentFailed: {
-      __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-      title: string
-      content?: string | null
-      primaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-      secondaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-    }
-  }
 }
 
 export type DeliveryMethodFragment = {
@@ -4243,56 +3753,6 @@ export type DeliveryMethodFragment = {
     __typename?: 'ComponentMunicipalChargeDeliveryMethodChangePendingAlert'
     title?: string | null
     content?: string | null
-  } | null
-}
-
-export type PaymentResultPageContentFragment = {
-  __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-  title: string
-  content?: string | null
-  primaryButton?: {
-    __typename?: 'ComponentBlocksCommonLink'
-    label?: string | null
-    url?: string | null
-    municipalService?: {
-      __typename?: 'MunicipalService'
-      title: string
-      slug: string
-      href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
-      sections?: Array<
-        | { __typename: 'ComponentSectionsContacts' }
-        | { __typename: 'ComponentSectionsDocuments' }
-        | { __typename: 'ComponentSectionsFaq' }
-        | { __typename: 'ComponentSectionsRichtext' }
-        | { __typename: 'ComponentSectionsStepper' }
-        | { __typename: 'ComponentSectionsTowing' }
-        | { __typename: 'Error' }
-        | null
-      > | null
-    } | null
-  } | null
-  secondaryButton?: {
-    __typename?: 'ComponentBlocksCommonLink'
-    label?: string | null
-    url?: string | null
-    municipalService?: {
-      __typename?: 'MunicipalService'
-      title: string
-      slug: string
-      href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
-      sections?: Array<
-        | { __typename: 'ComponentSectionsContacts' }
-        | { __typename: 'ComponentSectionsDocuments' }
-        | { __typename: 'ComponentSectionsFaq' }
-        | { __typename: 'ComponentSectionsRichtext' }
-        | { __typename: 'ComponentSectionsStepper' }
-        | { __typename: 'ComponentSectionsTowing' }
-        | { __typename: 'Error' }
-        | null
-      > | null
-    } | null
   } | null
 }
 
@@ -4328,205 +3788,6 @@ export type MunicipalChargeConfigQuery = {
         feedbackLink?: string | null
       } | null
     } | null
-    paymentResultPage: {
-      __typename?: 'ComponentMunicipalChargePaymentResultPage'
-      paymentSuccess: {
-        __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-        title: string
-        content?: string | null
-        primaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-        secondaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-      }
-      paymentAlreadyPaid: {
-        __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-        title: string
-        content?: string | null
-        primaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-        secondaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-      }
-      failedToVerify: {
-        __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-        title: string
-        content?: string | null
-        primaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-        secondaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-      }
-      paymentFailed: {
-        __typename?: 'ComponentMunicipalChargePaymentResultPageContent'
-        title: string
-        content?: string | null
-        primaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-        secondaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-      }
-    }
   } | null
 }
 
@@ -4630,60 +3891,6 @@ export type MunicipalServiceEntityFragment = {
         title: string
         text?: string | null
         buttonLabel: string
-      } | null
-    } | null
-    formSentPage?: {
-      __typename?: 'ComponentBlocksFormSentPage'
-      title: string
-      content?: string | null
-      alert?: {
-        __typename?: 'ComponentBlocksFormSentPageAlert'
-        title?: string | null
-        content?: string | null
-      } | null
-      primaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
-      } | null
-      secondaryButton?: {
-        __typename?: 'ComponentBlocksCommonLink'
-        label?: string | null
-        url?: string | null
-        municipalService?: {
-          __typename?: 'MunicipalService'
-          title: string
-          slug: string
-          href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
-          sections?: Array<
-            | { __typename: 'ComponentSectionsContacts' }
-            | { __typename: 'ComponentSectionsDocuments' }
-            | { __typename: 'ComponentSectionsFaq' }
-            | { __typename: 'ComponentSectionsRichtext' }
-            | { __typename: 'ComponentSectionsStepper' }
-            | { __typename: 'ComponentSectionsTowing' }
-            | { __typename: 'Error' }
-            | null
-          > | null
-        } | null
       } | null
     } | null
   } | null
@@ -4843,60 +4050,6 @@ export type MunicipalServiceBySlugQuery = {
           title: string
           text?: string | null
           buttonLabel: string
-        } | null
-      } | null
-      formSentPage?: {
-        __typename?: 'ComponentBlocksFormSentPage'
-        title: string
-        content?: string | null
-        alert?: {
-          __typename?: 'ComponentBlocksFormSentPageAlert'
-          title?: string | null
-          content?: string | null
-        } | null
-        primaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
-        } | null
-        secondaryButton?: {
-          __typename?: 'ComponentBlocksCommonLink'
-          label?: string | null
-          url?: string | null
-          municipalService?: {
-            __typename?: 'MunicipalService'
-            title: string
-            slug: string
-            href?: string | null
-            form?: { __typename?: 'Form'; documentId: string } | null
-            sections?: Array<
-              | { __typename: 'ComponentSectionsContacts' }
-              | { __typename: 'ComponentSectionsDocuments' }
-              | { __typename: 'ComponentSectionsFaq' }
-              | { __typename: 'ComponentSectionsRichtext' }
-              | { __typename: 'ComponentSectionsStepper' }
-              | { __typename: 'ComponentSectionsTowing' }
-              | { __typename: 'Error' }
-              | null
-            > | null
-          } | null
         } | null
       } | null
     } | null
@@ -5059,60 +4212,6 @@ export type MunicipalServicesPageQuery = {
             buttonLabel: string
           } | null
         } | null
-        formSentPage?: {
-          __typename?: 'ComponentBlocksFormSentPage'
-          title: string
-          content?: string | null
-          alert?: {
-            __typename?: 'ComponentBlocksFormSentPageAlert'
-            title?: string | null
-            content?: string | null
-          } | null
-          primaryButton?: {
-            __typename?: 'ComponentBlocksCommonLink'
-            label?: string | null
-            url?: string | null
-            municipalService?: {
-              __typename?: 'MunicipalService'
-              title: string
-              slug: string
-              href?: string | null
-              form?: { __typename?: 'Form'; documentId: string } | null
-              sections?: Array<
-                | { __typename: 'ComponentSectionsContacts' }
-                | { __typename: 'ComponentSectionsDocuments' }
-                | { __typename: 'ComponentSectionsFaq' }
-                | { __typename: 'ComponentSectionsRichtext' }
-                | { __typename: 'ComponentSectionsStepper' }
-                | { __typename: 'ComponentSectionsTowing' }
-                | { __typename: 'Error' }
-                | null
-              > | null
-            } | null
-          } | null
-          secondaryButton?: {
-            __typename?: 'ComponentBlocksCommonLink'
-            label?: string | null
-            url?: string | null
-            municipalService?: {
-              __typename?: 'MunicipalService'
-              title: string
-              slug: string
-              href?: string | null
-              form?: { __typename?: 'Form'; documentId: string } | null
-              sections?: Array<
-                | { __typename: 'ComponentSectionsContacts' }
-                | { __typename: 'ComponentSectionsDocuments' }
-                | { __typename: 'ComponentSectionsFaq' }
-                | { __typename: 'ComponentSectionsRichtext' }
-                | { __typename: 'ComponentSectionsStepper' }
-                | { __typename: 'ComponentSectionsTowing' }
-                | { __typename: 'Error' }
-                | null
-              > | null
-            } | null
-          } | null
-        } | null
       } | null
       categories: Array<{
         __typename?: 'MunicipalServiceCategory'
@@ -5263,60 +4362,6 @@ export type MunicipalServicesPageQuery = {
             title: string
             text?: string | null
             buttonLabel: string
-          } | null
-        } | null
-        formSentPage?: {
-          __typename?: 'ComponentBlocksFormSentPage'
-          title: string
-          content?: string | null
-          alert?: {
-            __typename?: 'ComponentBlocksFormSentPageAlert'
-            title?: string | null
-            content?: string | null
-          } | null
-          primaryButton?: {
-            __typename?: 'ComponentBlocksCommonLink'
-            label?: string | null
-            url?: string | null
-            municipalService?: {
-              __typename?: 'MunicipalService'
-              title: string
-              slug: string
-              href?: string | null
-              form?: { __typename?: 'Form'; documentId: string } | null
-              sections?: Array<
-                | { __typename: 'ComponentSectionsContacts' }
-                | { __typename: 'ComponentSectionsDocuments' }
-                | { __typename: 'ComponentSectionsFaq' }
-                | { __typename: 'ComponentSectionsRichtext' }
-                | { __typename: 'ComponentSectionsStepper' }
-                | { __typename: 'ComponentSectionsTowing' }
-                | { __typename: 'Error' }
-                | null
-              > | null
-            } | null
-          } | null
-          secondaryButton?: {
-            __typename?: 'ComponentBlocksCommonLink'
-            label?: string | null
-            url?: string | null
-            municipalService?: {
-              __typename?: 'MunicipalService'
-              title: string
-              slug: string
-              href?: string | null
-              form?: { __typename?: 'Form'; documentId: string } | null
-              sections?: Array<
-                | { __typename: 'ComponentSectionsContacts' }
-                | { __typename: 'ComponentSectionsDocuments' }
-                | { __typename: 'ComponentSectionsFaq' }
-                | { __typename: 'ComponentSectionsRichtext' }
-                | { __typename: 'ComponentSectionsStepper' }
-                | { __typename: 'ComponentSectionsTowing' }
-                | { __typename: 'Error' }
-                | null
-              > | null
-            } | null
           } | null
         } | null
       } | null
@@ -5735,6 +4780,73 @@ export const AlertFragmentDoc = gql`
     dateTo
   }
 `
+export const FormBaseFragmentDoc = gql`
+  fragment FormBase on Form {
+    slug
+    moreInformationUrl
+  }
+`
+export const FormLandingPageLinkCtaFragmentDoc = gql`
+  fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
+    __typename
+    id
+    title
+    text
+    buttonLabel
+    url
+  }
+`
+export const FormLandingPageFormCtaFragmentDoc = gql`
+  fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
+    __typename
+    title
+    text
+    buttonLabel
+  }
+`
+export const FormLandingPageFragmentDoc = gql`
+  fragment FormLandingPage on ComponentBlocksFormLandingPage {
+    text
+    linkCtas {
+      ...FormLandingPageLinkCta
+    }
+    formCta {
+      ...FormLandingPageFormCta
+    }
+  }
+  ${FormLandingPageLinkCtaFragmentDoc}
+  ${FormLandingPageFormCtaFragmentDoc}
+`
+export const FormWithLandingPageFragmentDoc = gql`
+  fragment FormWithLandingPage on Form {
+    ...FormBase
+    landingPage {
+      ...FormLandingPage
+    }
+  }
+  ${FormBaseFragmentDoc}
+  ${FormLandingPageFragmentDoc}
+`
+export const FormSentPageFragmentDoc = gql`
+  fragment FormSentPage on ComponentBlocksFormSentPage {
+    feedbackLink
+    content
+    alert {
+      title
+      content
+    }
+  }
+`
+export const FormFragmentDoc = gql`
+  fragment Form on Form {
+    ...FormWithLandingPage
+    formSentPage {
+      ...FormSentPage
+    }
+  }
+  ${FormWithLandingPageFragmentDoc}
+  ${FormSentPageFragmentDoc}
+`
 export const MunicipalServiceRedirectFragmentDoc = gql`
   fragment MunicipalServiceRedirect on MunicipalService {
     slug
@@ -5844,19 +4956,6 @@ export const MunicipalChargeFragmentDoc = gql`
     feedbackLink
   }
 `
-export const PaymentResultPageContentFragmentDoc = gql`
-  fragment PaymentResultPageContent on ComponentMunicipalChargePaymentResultPageContent {
-    title
-    content
-    primaryButton {
-      ...CommonLink
-    }
-    secondaryButton {
-      ...CommonLink
-    }
-  }
-  ${CommonLinkFragmentDoc}
-`
 export const MunicipalChargeConfigFragmentDoc = gql`
   fragment MunicipalChargeConfig on MunicipalChargeConfig {
     deliveryMethod {
@@ -5870,24 +4969,9 @@ export const MunicipalChargeConfigFragmentDoc = gql`
         ...MunicipalCharge
       }
     }
-    paymentResultPage {
-      paymentSuccess {
-        ...PaymentResultPageContent
-      }
-      paymentAlreadyPaid {
-        ...PaymentResultPageContent
-      }
-      failedToVerify {
-        ...PaymentResultPageContent
-      }
-      paymentFailed {
-        ...PaymentResultPageContent
-      }
-    }
   }
   ${DeliveryMethodFragmentDoc}
   ${MunicipalChargeFragmentDoc}
-  ${PaymentResultPageContentFragmentDoc}
 `
 export const MunicipalServiceSlugEntityFragmentDoc = gql`
   fragment MunicipalServiceSlugEntity on MunicipalService {
@@ -5917,74 +5001,6 @@ export const MunicipalServiceCardEntityFragmentDoc = gql`
   ${MunicipalServiceSlugEntityFragmentDoc}
   ${MunicipalServiceRedirectFragmentDoc}
   ${MunicipalServiceTagEntityFragmentDoc}
-`
-export const FormSentPageFragmentDoc = gql`
-  fragment FormSentPage on ComponentBlocksFormSentPage {
-    title
-    content
-    alert {
-      title
-      content
-    }
-    primaryButton {
-      ...CommonLink
-    }
-    secondaryButton {
-      ...CommonLink
-    }
-  }
-  ${CommonLinkFragmentDoc}
-`
-export const FormBaseFragmentDoc = gql`
-  fragment FormBase on Form {
-    slug
-    moreInformationUrl
-    formSentPage {
-      ...FormSentPage
-    }
-  }
-  ${FormSentPageFragmentDoc}
-`
-export const FormLandingPageLinkCtaFragmentDoc = gql`
-  fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
-    __typename
-    id
-    title
-    text
-    buttonLabel
-    url
-  }
-`
-export const FormLandingPageFormCtaFragmentDoc = gql`
-  fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
-    __typename
-    title
-    text
-    buttonLabel
-  }
-`
-export const FormLandingPageFragmentDoc = gql`
-  fragment FormLandingPage on ComponentBlocksFormLandingPage {
-    text
-    linkCtas {
-      ...FormLandingPageLinkCta
-    }
-    formCta {
-      ...FormLandingPageFormCta
-    }
-  }
-  ${FormLandingPageLinkCtaFragmentDoc}
-  ${FormLandingPageFormCtaFragmentDoc}
-`
-export const FormWithLandingPageFragmentDoc = gql`
-  fragment FormWithLandingPage on Form {
-    ...FormBase
-    landingPage {
-      ...FormLandingPage
-    }
-  }
-  ${FormBaseFragmentDoc}
-  ${FormLandingPageFragmentDoc}
 `
 export const MunicipalServiceCategoryEntityFragmentDoc = gql`
   fragment MunicipalServiceCategoryEntity on MunicipalServiceCategory {

@@ -154,9 +154,7 @@ export interface BlocksFormSentPage extends Struct.ComponentSchema {
   attributes: {
     alert: Schema.Attribute.Component<'blocks.form-sent-page-alert', false>
     content: Schema.Attribute.RichText
-    primaryButton: Schema.Attribute.Component<'blocks.common-link', false>
-    secondaryButton: Schema.Attribute.Component<'blocks.common-link', false>
-    title: Schema.Attribute.String & Schema.Attribute.Required
+    feedbackLink: Schema.Attribute.String
   }
 }
 
@@ -262,48 +260,6 @@ export interface MunicipalChargeMunicipalChargeIdentifier extends Struct.Compone
   attributes: {
     dzn: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
     ko: Schema.Attribute.Relation<'oneToOne', 'api::municipal-charge.municipal-charge'>
-  }
-}
-
-export interface MunicipalChargePaymentResultPage extends Struct.ComponentSchema {
-  collectionName: 'components_municipal_charge_payment_result_pages'
-  info: {
-    displayName: 'paymentResultPage'
-  }
-  attributes: {
-    failedToVerify: Schema.Attribute.Component<
-      'municipal-charge.payment-result-page-content',
-      false
-    > &
-      Schema.Attribute.Required
-    paymentAlreadyPaid: Schema.Attribute.Component<
-      'municipal-charge.payment-result-page-content',
-      false
-    > &
-      Schema.Attribute.Required
-    paymentFailed: Schema.Attribute.Component<
-      'municipal-charge.payment-result-page-content',
-      false
-    > &
-      Schema.Attribute.Required
-    paymentSuccess: Schema.Attribute.Component<
-      'municipal-charge.payment-result-page-content',
-      false
-    > &
-      Schema.Attribute.Required
-  }
-}
-
-export interface MunicipalChargePaymentResultPageContent extends Struct.ComponentSchema {
-  collectionName: 'components_municipal_charge_payment_result_page_contents'
-  info: {
-    displayName: 'paymentResultPageContent'
-  }
-  attributes: {
-    content: Schema.Attribute.RichText
-    primaryButton: Schema.Attribute.Component<'blocks.common-link', false>
-    secondaryButton: Schema.Attribute.Component<'blocks.common-link', false>
-    title: Schema.Attribute.String & Schema.Attribute.Required
   }
 }
 
@@ -418,8 +374,6 @@ declare module '@strapi/strapi' {
       'municipal-charge.delivery-method': MunicipalChargeDeliveryMethod
       'municipal-charge.delivery-method-change-pending-alert': MunicipalChargeDeliveryMethodChangePendingAlert
       'municipal-charge.municipal-charge-identifier': MunicipalChargeMunicipalChargeIdentifier
-      'municipal-charge.payment-result-page': MunicipalChargePaymentResultPage
-      'municipal-charge.payment-result-page-content': MunicipalChargePaymentResultPageContent
       'sections.contacts': SectionsContacts
       'sections.documents': SectionsDocuments
       'sections.faq': SectionsFaq

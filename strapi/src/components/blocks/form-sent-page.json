@@ -5,9 +5,8 @@
   },
   "options": {},
   "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
+    "feedbackLink": {
+      "type": "string"
     },
     "content": {
       "type": "richtext"
@@ -15,16 +14,6 @@
     "alert": {
       "type": "component",
       "component": "blocks.form-sent-page-alert",
-      "repeatable": false
-    },
-    "primaryButton": {
-      "type": "component",
-      "component": "blocks.common-link",
-      "repeatable": false
-    },
-    "secondaryButton": {
-      "type": "component",
-      "component": "blocks.common-link",
       "repeatable": false
     }
   },

@@ -7,8 +7,8 @@
       "searchable": true,
       "pageSize": 10,
       "relationOpenMode": "modal",
-      "mainField": "title",
-      "defaultSortBy": "title",
+      "mainField": "documentId",
+      "defaultSortBy": "documentId",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -20,24 +20,10 @@
           "sortable": false
         }
       },
-      "title": {
-        "edit": {
-          "label": "Nadpis",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "title",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "content": {
         "edit": {
           "label": "Text",
-          "description": "",
+          "description": "Ak je nevyplnený, dotiahne sa defaultný text \"Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať. Detail vašej žiadosti nájdete v časti Moje žiadosti\".",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -63,34 +49,18 @@
           "sortable": false
         }
       },
-      "primaryButton": {
+      "feedbackLink": {
         "edit": {
-          "label": "Button (primary)",
+          "label": "Odkaz na dotazník spokojnosti",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "label"
+          "editable": true
         },
         "list": {
-          "label": "primaryButton",
-          "searchable": false,
-          "sortable": false
-        }
-      },
-      "secondaryButton": {
-        "edit": {
-          "label": "Button (secondary)",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "label"
-        },
-        "list": {
-          "label": "secondaryButton",
-          "searchable": false,
-          "sortable": false
+          "label": "feedbackLink",
+          "searchable": true,
+          "sortable": true
         }
       },
       "documentId": {
@@ -106,7 +76,7 @@
       "edit": [
         [
           {
-            "name": "title",
+            "name": "feedbackLink",
             "size": 12
           }
         ],
@@ -121,25 +91,11 @@
             "name": "alert",
             "size": 12
           }
-        ],
-        [
-          {
-            "name": "primaryButton",
-            "size": 12
-          }
-        ],
-        [
-          {
-            "name": "secondaryButton",
-            "size": 12
-          }
         ]
       ],
       "list": [
         "id",
-        "title",
-        "primaryButton",
-        "secondaryButton"
+        "feedbackLink"
       ]
     },
     "uid": "blocks.form-sent-page",

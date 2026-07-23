@@ -22,16 +22,9 @@
           "landingPage.formCta.title",
           "landingPage.formCta.text",
           "landingPage.formCta.buttonLabel",
-          "formSentPage.title",
           "formSentPage.content",
           "formSentPage.alert.title",
-          "formSentPage.alert.content",
-          "formSentPage.primaryButton.label",
-          "formSentPage.primaryButton.municipalService",
-          "formSentPage.primaryButton.url",
-          "formSentPage.secondaryButton.label",
-          "formSentPage.secondaryButton.municipalService",
-          "formSentPage.secondaryButton.url"
+          "formSentPage.alert.content"
         ]
       },
       "conditions": [],
@@ -55,16 +48,9 @@
           "landingPage.formCta.title",
           "landingPage.formCta.text",
           "landingPage.formCta.buttonLabel",
-          "formSentPage.title",
           "formSentPage.content",
           "formSentPage.alert.title",
-          "formSentPage.alert.content",
-          "formSentPage.primaryButton.label",
-          "formSentPage.primaryButton.municipalService",
-          "formSentPage.primaryButton.url",
-          "formSentPage.secondaryButton.label",
-          "formSentPage.secondaryButton.municipalService",
-          "formSentPage.secondaryButton.url"
+          "formSentPage.alert.content"
         ]
       },
       "conditions": [],
@@ -88,16 +74,9 @@
           "landingPage.formCta.title",
           "landingPage.formCta.text",
           "landingPage.formCta.buttonLabel",
-          "formSentPage.title",
           "formSentPage.content",
           "formSentPage.alert.title",
-          "formSentPage.alert.content",
-          "formSentPage.primaryButton.label",
-          "formSentPage.primaryButton.municipalService",
-          "formSentPage.primaryButton.url",
-          "formSentPage.secondaryButton.label",
-          "formSentPage.secondaryButton.municipalService",
-          "formSentPage.secondaryButton.url"
+          "formSentPage.alert.content"
         ]
       },
       "conditions": [],

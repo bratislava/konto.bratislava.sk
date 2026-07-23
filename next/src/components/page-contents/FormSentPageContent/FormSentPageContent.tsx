@@ -4,7 +4,6 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import ThankYouTile, {
   ThankYouTileProps,
 } from '@/src/components/simple-components/ThankYouTile/ThankYouTile'
-import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { ROUTES } from '@/src/utils/routes'
 
 const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
@@ -12,7 +11,6 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
 
   const { isTaxForm, formDefinition, isEmbedded } = useFormContext()
   const { feedbackLink } = formDefinition
-  const { isSignedIn } = useSsrAuth()
 
   const feedbackButton = feedbackLink
     ? {
@@ -21,19 +19,9 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
       }
     : null
 
-  const userProfileButton = isSignedIn
-    ? {
-        title: t('FormSentPageContent.button_to_profile'),
-        href: ROUTES.USER_PROFILE,
-      }
-    : null
-
-  if (isTaxForm) {
-    return {
-      title: t('FormSentPageContent.tax.title'),
-      content: t('FormSentPageContent.tax.content'),
-      primaryButton: feedbackButton,
-    }
+  const municipalServicesButton = {
+    title: t('FormSentPageContent.button_to_municipal_services'),
+    href: ROUTES.MUNICIPAL_SERVICES,
   }
 
   if (isEmbedded) {
@@ -44,16 +32,21 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
     }
   }
 
+  if (isTaxForm) {
+    return {
+      title: t('FormSentPageContent.title'),
+      content: t('FormSentPageContent.content_tax'),
+      primaryButton: feedbackButton,
+      secondaryButton: municipalServicesButton,
+    }
+  }
+
   return {
     title: t('FormSentPageContent.title'),
-    content: [
-      t('FormSentPageContent.content_generic'),
-      isSignedIn ? ` ${t('FormSentPageContent.content_signed_in')}` : '',
-      feedbackLink ? `\n\n${t('FormSentPageContent.content_feedback')}` : '',
-    ].join(''),
+    content: t('FormSentPageContent.content'),
     isContentCentered: true,
     primaryButton: feedbackButton,
-    secondaryButton: userProfileButton,
+    secondaryButton: municipalServicesButton,
   }
 }
 

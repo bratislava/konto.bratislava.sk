@@ -10,9 +10,18 @@ jest.mock('axios', () => ({
 }))
 const mockedAxios = axios as jest.Mocked<typeof axios>
 
-const axiosNotFoundError = () => {
-  const error = new axios.AxiosError('Request failed with status code 404')
-  error.response = { status: 404 } as never
+/**
+ * Build a plain object that satisfies axios's `isAxiosError` predicate
+ * (it only checks for `error.isAxiosError === true`). Avoids depending on
+ * the real AxiosError class, which auto-mocking would replace.
+ */
+const makeAxiosError = (status: number): Error => {
+  const error = new Error(`Request failed with status code ${status}`) as Error & {
+    isAxiosError: boolean
+    response?: { status: number }
+  }
+  error.isAxiosError = true
+  error.response = { status }
   return error
 }
 
@@ -52,7 +61,7 @@ describe('BloomreachExportService', () => {
     })
 
     it('should return null on 404', async () => {
-      mockedAxios.post.mockRejectedValue(axiosNotFoundError())
+      mockedAxios.post.mockRejectedValue(makeAxiosError(404))
 
       expect(await service.fetchCustomer({ contact_id: 'contact-1' })).toBeNull()
     })
@@ -72,7 +81,7 @@ describe('BloomreachExportService', () => {
     })
 
     it('should return empty array on 404', async () => {
-      mockedAxios.post.mockRejectedValue(axiosNotFoundError())
+      mockedAxios.post.mockRejectedValue(makeAxiosError(404))
 
       expect(await service.fetchConsentEvents({ city_account_id: 'cognito-1' })).toEqual([])
     })

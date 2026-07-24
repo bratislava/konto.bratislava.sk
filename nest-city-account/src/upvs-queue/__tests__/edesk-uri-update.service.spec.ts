@@ -1,9 +1,12 @@
 import { createMock } from '@golevelup/ts-jest'
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
+import { expectObjectContaining } from '../../__tests__/jest-matchers'
+import { ExternalEdeskCheck } from '../../generated/prisma/client'
 import { QueueItemStatusEnum } from '../../generated/prisma/enums'
-import { NasesService } from '../../nases/nases.service'
+import { GetIdentitiesByUrisResult, NasesService } from '../../nases/nases.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { EdeskUriUpdateService } from '../edesk-uri-update.service'
@@ -47,12 +50,14 @@ describe('EdeskUriUpdateService', () => {
 
   describe('getUriToUpdateExternal', () => {
     it('queries NEW_URI_CHECK_REQUIRED items with a non-null uri', async () => {
-      prismaMock.externalEdeskCheck.findFirst.mockResolvedValue({ uri: 'rc://sk/ext' } as any)
+      prismaMock.externalEdeskCheck.findFirst.mockResolvedValue({
+        uri: 'rc://sk/ext',
+      } as ExternalEdeskCheck)
 
       await expect(service.getUriToUpdateExternal()).resolves.toEqual({ uri: 'rc://sk/ext' })
       expect(prismaMock.externalEdeskCheck.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({
+          where: expectObjectContaining({
             queueStatus: QueueItemStatusEnum.NEW_URI_CHECK_REQUIRED,
           }),
         })
@@ -67,7 +72,7 @@ describe('EdeskUriUpdateService', () => {
           { physicalEntityId: 'id-1', inputUri: 'rc://sk/old', data: { uri: 'rc://sk/new' } },
         ],
         failed: [],
-      } as any)
+      } satisfies GetIdentitiesByUrisResult)
 
       await service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
 
@@ -81,10 +86,10 @@ describe('EdeskUriUpdateService', () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: false }],
-      } as any)
+      } satisfies GetIdentitiesByUrisResult)
       jest
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockReturnValue(new Error('failed to update') as any)
+        .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
       await expect(
         service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
@@ -92,7 +97,7 @@ describe('EdeskUriUpdateService', () => {
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
         where: { id: 'id-1' },
-        data: expect.objectContaining({
+        data: expectObjectContaining({
           uriPossiblyOutdated: false,
           activeEdeskUpdateFailCount: { increment: 1 },
         }),
@@ -103,10 +108,10 @@ describe('EdeskUriUpdateService', () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/old', possibleUriChange: true }],
-      } as any)
+      } satisfies GetIdentitiesByUrisResult)
       jest
         .spyOn(throwerErrorGuard, 'InternalServerErrorException')
-        .mockReturnValue(new Error('failed to update') as any)
+        .mockReturnValue(new HttpException('failed to update', HttpStatus.INTERNAL_SERVER_ERROR))
 
       await expect(
         service.handleUriUpdateInternal({ uri: 'rc://sk/old', id: 'id-1' })
@@ -114,7 +119,7 @@ describe('EdeskUriUpdateService', () => {
 
       expect(prismaMock.physicalEntity.update).toHaveBeenCalledWith({
         where: { id: 'id-1' },
-        data: expect.objectContaining({
+        data: expectObjectContaining({
           uriPossiblyOutdated: true,
           activeEdeskUpdateFailCount: { increment: 1 },
         }),
@@ -127,6 +132,7 @@ describe('EdeskUriUpdateService', () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [
           {
+            physicalEntityId: null,
             inputUri: 'rc://sk/ext',
             data: {
               status: 'activated',
@@ -137,13 +143,13 @@ describe('EdeskUriUpdateService', () => {
           },
         ],
         failed: [],
-      } as any)
+      } satisfies GetIdentitiesByUrisResult)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 
       expect(prismaMock.externalEdeskCheck.update).toHaveBeenCalledWith({
         where: { uri: 'rc://sk/ext' },
-        data: expect.objectContaining({
+        data: expectObjectContaining({
           queueStatus: QueueItemStatusEnum.COMPLETED,
           edeskDeathDate: '2026-06-15',
         }),
@@ -153,7 +159,7 @@ describe('EdeskUriUpdateService', () => {
     it('marks the row FAILED and bumps failCount when nothing is resolved', async () => {
       jest
         .spyOn(nasesService, 'getIdentitiesByUris')
-        .mockResolvedValue({ success: [], failed: [] } as any)
+        .mockResolvedValue({ success: [], failed: [] } satisfies GetIdentitiesByUrisResult)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 
@@ -167,7 +173,7 @@ describe('EdeskUriUpdateService', () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: false }],
-      } as any)
+      } satisfies GetIdentitiesByUrisResult)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 
@@ -181,7 +187,7 @@ describe('EdeskUriUpdateService', () => {
       jest.spyOn(nasesService, 'getIdentitiesByUris').mockResolvedValue({
         success: [],
         failed: [{ inputUri: 'rc://sk/ext', possibleUriChange: true }],
-      } as any)
+      } satisfies GetIdentitiesByUrisResult)
 
       await service.handleUriUpdateExternal('rc://sk/ext')
 

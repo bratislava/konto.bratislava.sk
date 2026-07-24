@@ -184,10 +184,10 @@ describe('VerificationSubservice', () => {
     })
 
     it('should ignore surrounding whitespace', () => {
-      const rfoData = {
+      const rfoData: RfoIdentityListElement = {
         menaOsoby: [{ meno: 'Ján' }],
         priezviskaOsoby: [{ meno: 'Novák' }],
-      } as unknown as RfoIdentityListElement
+      }
 
       expect(service['validatePersonName'](rfoData, '  Ján  ', '  Novák  ')).toBe(true)
     })
@@ -203,10 +203,10 @@ describe('VerificationSubservice', () => {
     })
 
     it('should not match when letter case differs', () => {
-      const rfoData = {
+      const rfoData: RfoIdentityListElement = {
         menaOsoby: [{ meno: 'Ján' }],
         priezviskaOsoby: [{ meno: 'Novák' }],
-      } as unknown as RfoIdentityListElement
+      }
 
       expect(service['validatePersonName'](rfoData, 'ján', 'Novák')).toBe(false)
       expect(service['validatePersonName'](rfoData, 'Ján', 'NOVÁK')).toBe(false)

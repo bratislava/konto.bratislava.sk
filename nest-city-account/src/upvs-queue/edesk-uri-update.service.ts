@@ -39,14 +39,14 @@ export class EdeskUriUpdateService {
 
   async handleUriUpdateInternal(input: { uri: string; id: string }) {
     const upvsResult = await this.nasesService.getIdentitiesByUris([input])
+    const successItem = upvsResult.success[0]
     if (
       upvsResult.success.length === 1 &&
-      upvsResult.success[0].data.uri &&
-      upvsResult.success[0].physicalEntityId
+      successItem.data.uri &&
+      successItem.physicalEntityId
     ) {
-      const successItem = upvsResult.success[0]
       await this.prismaService.physicalEntity.update({
-        where: { id: successItem.physicalEntityId! },
+        where: { id: successItem.physicalEntityId },
         data: {
           uri: successItem.data.uri,
         },

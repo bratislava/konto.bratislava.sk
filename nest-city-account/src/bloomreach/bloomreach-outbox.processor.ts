@@ -172,7 +172,14 @@ export class BloomreachOutboxProcessor {
 
     const failedCheckEntries = checkResults.filter((r) => !r.safeToSend).map((r) => r.entry)
     if (failedCheckEntries.length > 0) {
-      await this.revertEntries(failedCheckEntries, 'Bloomreach merge consent check failed')
+      // A failed merge-consent check means we couldn't verify it's safe to
+      // send (e.g. the export API is down, or a DB read/write failed) - it
+      // says nothing about whether Bloomreach would accept the command
+      // itself, so it must not count toward the same attempts/backoff budget
+      // as a genuine delivery failure.
+      await this.revertEntries(failedCheckEntries, 'Bloomreach merge consent check failed', {
+        countsTowardAttempts: false,
+      })
     }
 
     return checkResults.filter((r) => r.safeToSend).map((r) => r.entry)
@@ -187,15 +194,26 @@ export class BloomreachOutboxProcessor {
    * (mirroring write-time merge that was skipped while the entry was PROCESSING).
    *
    * Uses allSettled so one DB failure doesn't block the rest.
+   *
+   * @param countsTowardAttempts whether this revert counts toward the
+   *   attempts/backoff budget that eventually marks an entry FAILED - false
+   *   for failures unrelated to Bloomreach actually rejecting the command
+   *   (e.g. a merge-consent check that couldn't complete), so those retry
+   *   indefinitely instead of exhausting the same budget as a real delivery
+   *   failure.
    */
-  private async revertEntries(entries: BloomreachOutbox[], errorMessage?: string): Promise<void> {
+  private async revertEntries(
+    entries: BloomreachOutbox[],
+    errorMessage?: string,
+    { countsTowardAttempts = true }: { countsTowardAttempts?: boolean } = {}
+  ): Promise<void> {
     const supersededByMap = await this.findSupersededEntriesAndMerge(entries)
 
     const results = await Promise.allSettled(
       entries.map(async (entry) => {
         const supersededBy = supersededByMap.get(entry.id)
-        const newAttempts = entry.attempts + 1
-        const exhausted = newAttempts >= MAX_ATTEMPTS
+        const newAttempts = countsTowardAttempts ? entry.attempts + 1 : entry.attempts
+        const exhausted = countsTowardAttempts && newAttempts >= MAX_ATTEMPTS
 
         if (exhausted) {
           this.logger.error(

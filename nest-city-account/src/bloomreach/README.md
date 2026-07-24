@@ -20,7 +20,7 @@ flowchart TD
 ### Why the outbox pattern?
 
 - **Decouples** request handling from Bloomreach availability - callers never fail due to Bloomreach being down.
-- **Automatic retries** - failed batches are retried with exponential backoff up to `MAX_ATTEMPTS` (5) before being marked `FAILED`.
+- **Automatic retries** - failed batches are retried with exponential backoff up to `MAX_ATTEMPTS` (5) before being marked `FAILED`. A failed merge consent check (see below) doesn't count toward this budget - it isn't Bloomreach rejecting the command, so it retries indefinitely instead of ever being marked `FAILED`.
 - **Batching** - multiple commands are sent in a single Bloomreach batch API call, reducing HTTP overhead.
 - **Single-writer** - `@Interval(30_000)` does *not* wait for the previous run to finish, so `processOutbox` wraps `processBatch` in a `pg_try_advisory_lock`-based single-flight guard (`runSingleFlight`) instead - a shared DB-level lock, so it also holds if this ever runs on more than one instance, unlike an in-memory flag.
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { CognitoUserAttributesTierEnum } from '../generated/prisma/client'
+import { CognitoUserAttributesTierEnum } from '../generated/prisma/enums'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,

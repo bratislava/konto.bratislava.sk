@@ -1,4 +1,6 @@
-import { ConsentEnum } from '../generated/prisma/client'
+import * as z from 'zod'
+
+import { BloomreachCommandName, ConsentEnum } from '../generated/prisma/enums'
 import { UserOfficialCorrespondenceChannelEnum } from '../user/dtos/gdpr.user.dto'
 import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
@@ -6,6 +8,7 @@ import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 export interface Consent {
   consentType: ConsentEnum
   isGranted: boolean
+  timestamp?: number
 }
 
 // ─── Bloomreach Batch API types ─────────────────────────────────────────────
@@ -13,6 +16,18 @@ export interface Consent {
 export enum BloomreachCommandNameEnum {
   CUSTOMERS = 'customers',
   CUSTOMERS_EVENTS = 'customers/events',
+}
+
+/**
+ * Translates a `BloomreachOutbox.commandName` (Prisma enum) into the string
+ * Bloomreach's batch API.
+ */
+export const BLOOMREACH_WIRE_COMMAND_NAME: Record<
+  BloomreachCommandName,
+  BloomreachCommandNameEnum
+> = {
+  [BloomreachCommandName.CUSTOMERS]: BloomreachCommandNameEnum.CUSTOMERS,
+  [BloomreachCommandName.CUSTOMERS_EVENTS]: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
 }
 
 export interface BloomreachCustomerIds {
@@ -36,6 +51,7 @@ export interface BloomreachCustomerProperties {
 export interface BloomreachCustomerCommandData {
   customer_ids: BloomreachCustomerIds
   properties: BloomreachCustomerProperties
+  update_timestamp: number
 }
 
 export interface BloomreachConsentEventProperties {
@@ -48,11 +64,24 @@ export interface BloomreachEventCommandData {
   customer_ids: BloomreachCustomerIds
   properties: BloomreachConsentEventProperties
   event_type: BloomreachEventNameEnum
+  timestamp: number
+}
+
+export function isBloomreachCustomerData(
+  data: BloomreachCustomerCommandData | BloomreachEventCommandData
+): data is BloomreachCustomerCommandData {
+  return 'update_timestamp' in data
 }
 
 export interface BloomreachCustomerCommand {
   commandName: BloomreachCommandNameEnum.CUSTOMERS
   commandData: BloomreachCustomerCommandData
+}
+
+export function isBloomreachEventCommandData(
+  data: BloomreachCustomerCommandData | BloomreachEventCommandData
+): data is BloomreachEventCommandData {
+  return 'timestamp' in data
 }
 
 export interface BloomreachEventCommand {

@@ -23,7 +23,7 @@ const TemporarilyDisabledAlert = ({
   variant,
   className,
 }: TemporarilyDisabledAlertProps) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const { isSignedIn } = useSsrAuth()
 
   if (!strapiForm?.isTemporarilyDisabled) {

@@ -1,9 +1,14 @@
 import { ajvResolver } from '@hookform/resolvers/ajv'
 import { JSONSchemaType } from 'ajv'
 import { useTranslation } from 'next-i18next/pages'
-import { DefaultValues, FieldValues, useForm } from 'react-hook-form'
+import { DefaultValues, FieldValues, useForm, UseFormHandleSubmit } from 'react-hook-form'
+
+import trimStringValues from '@/src/frontend/utils/trimStringValues'
 
 type Errors = Record<string, string | undefined>
+
+// IMPORTANT: All password fields must be included in this array to prevent whitespace trimming on them.
+const passwordKeys = ['password', 'oldPassword'] as const
 
 interface Props<T> {
   // used any as strictNullChecks must be true in tsconfig to use JSONSchemaType<T>
@@ -13,7 +18,7 @@ interface Props<T> {
 
 export default function useHookForm<T extends FieldValues>({ schema, defaultValues }: Props<T>) {
   const { t } = useTranslation('account')
-  // if we want password to contain special symbol add (?=.*?[ !"#$%&'()*+,./:;<=>?@[\\\]^_`{|}~-])
+
   const form = useForm({
     resolver: ajvResolver(schema as JSONSchemaType<T>, {
       formats: {
@@ -25,6 +30,7 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
         postalCode: '^\\s*(\\d\\s*\\d\\s*\\d\\s*\\d\\s*\\d)?\\s*$',
         // postalCode: '^([0-9]{5}|)$',
         idCard: '^([a-zA-Z]{2})([0-9]{6})([0-9]?)$',
+        // TODO: Child organizations can have ICO with 12 digits (it contains 4-digit SID at the end),
         ico: '^[0-9]{8}$',
         rc: (value: string) => {
           const formattedValue = value.replace('/', '')
@@ -55,5 +61,13 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
     errors[key] = t(errorMessage || 'error')
   })
 
-  return { ...form, errors }
+  // Trim the whole payload once more here before submitting, since per-field blur may not fire
+  // on every input (e.g. mobile autofill). Password fields are skipped.
+  const handleSubmit: UseFormHandleSubmit<T> = (onValid, onInvalid) =>
+    form.handleSubmit(
+      (data, event) => onValid(trimStringValues(data, { skippedKeys: passwordKeys }), event),
+      onInvalid,
+    )
+
+  return { ...form, handleSubmit, errors }
 }

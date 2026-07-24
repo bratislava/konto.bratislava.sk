@@ -32,6 +32,7 @@ import {
   popSendEidMetadata,
   setSendEidMetadata,
 } from '@/src/frontend/utils/metadataStorage'
+import trimStringValues from '@/src/frontend/utils/trimStringValues'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.
@@ -98,7 +99,7 @@ const useGetContext = () => {
       formsClient.formSenderControllerSendAndUpdateForm(
         formId,
         {
-          formDataJson: formData,
+          formDataJson: trimStringValues(formData),
         },
         { authStrategy: 'authOrGuestWithToken' },
       ),
@@ -126,7 +127,7 @@ const useGetContext = () => {
         formsClient.formsControllerUpdateForm(
           formId,
           {
-            formDataJson: formData,
+            formDataJson: trimStringValues(formData),
             // `null` must be set explicitly, otherwise the signature would not be removed if needed
             formSignature: signature ?? null,
           },
@@ -154,7 +155,7 @@ const useGetContext = () => {
       formsClient.formSenderControllerSendAndUpdateFormEid(
         formId,
         {
-          formDataJson: formData,
+          formDataJson: trimStringValues(formData),
           // `null` must be set explicitly, otherwise the signature would not be removed if needed
           formSignature: signature ?? null,
           eidToken: sendEidTokenRef.current as string,

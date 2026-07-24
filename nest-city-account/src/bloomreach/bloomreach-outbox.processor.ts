@@ -3,25 +3,28 @@ import axios, { isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '../generated/prisma/client'
+import { BloomreachCommandName } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
+  BLOOMREACH_WIRE_COMMAND_NAME,
   BloomreachBatchCommand,
   BloomreachBatchResponse,
-  BloomreachCommandNameEnum,
   BloomreachCustomerCommandData,
-  BloomreachEventCommandData,
+  isBloomreachEventCommandData,
 } from './bloomreach.types'
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
-import { mergeCustomerCommandData } from './utils/merge-commands.utils'
+import { isAnonymizationCommand, mergeCustomerCommandData } from './utils/merge-commands.utils'
+import { lockOutboxDedupKey, runSingleFlight } from './utils/outbox-lock.utils'
 
 const BATCH_SIZE = 50
 const MAX_ATTEMPTS = 5
 const STALE_PROCESSING_THRESHOLD_MS = 60_000
 const RETRY_BACKOFF_BASE_MS = 60_000
+const PROCESSOR_LOCK_KEY = 'bloomreach-outbox-processor'
 
 @Injectable()
 export class BloomreachOutboxProcessor {
@@ -45,7 +48,7 @@ export class BloomreachOutboxProcessor {
       return
     }
 
-    await this.processBatch()
+    await runSingleFlight(this.prisma, PROCESSOR_LOCK_KEY, () => this.processBatch())
   }
 
   private async processBatch(): Promise<void> {
@@ -91,7 +94,7 @@ export class BloomreachOutboxProcessor {
     }
 
     const commands: BloomreachBatchCommand[] = entries.map((entry) => ({
-      name: entry.commandName as BloomreachCommandNameEnum,
+      name: BLOOMREACH_WIRE_COMMAND_NAME[entry.commandName],
       data: entry.commandData,
       command_id: entry.id,
     }))
@@ -254,27 +257,35 @@ export class BloomreachOutboxProcessor {
         }
 
         const { commandData } = entry
+        const eventData = isBloomreachEventCommandData(commandData) ? commandData : undefined
 
-        let where: Prisma.BloomreachOutboxWhereInput
-        if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS_EVENTS.toString()) {
-          const eventData = commandData as BloomreachEventCommandData
-          where = {
-            ...baseWhere,
-            AND: [
-              { commandData: { path: ['event_type'], equals: eventData.event_type } },
-              {
-                commandData: {
-                  path: ['properties', 'category'],
-                  equals: eventData.properties.category,
+        const where: Prisma.BloomreachOutboxWhereInput = eventData
+          ? {
+              ...baseWhere,
+              AND: [
+                { commandData: { path: ['event_type'], equals: eventData.event_type } },
+                {
+                  commandData: {
+                    path: ['properties', 'category'],
+                    equals: eventData.properties.category,
+                  },
                 },
-              },
-            ],
-          }
-        } else {
-          where = baseWhere
-        }
+              ],
+            }
+          : baseWhere
+
+        const lockKeyParts = eventData
+          ? [
+              entry.externalId,
+              BloomreachCommandName.CUSTOMERS_EVENTS,
+              eventData.event_type,
+              eventData.properties.category,
+            ]
+          : [entry.externalId, BloomreachCommandName.CUSTOMERS]
 
         await this.prisma.$transaction(async (tx) => {
+          await lockOutboxDedupKey(tx, ...lockKeyParts)
+
           const newer = await tx.bloomreachOutbox.findFirst({ where })
 
           if (!newer) {
@@ -283,15 +294,22 @@ export class BloomreachOutboxProcessor {
 
           // For customers commands, merge the old entry's data into the newer one
           // (newer values take precedence, matching the write-time merge logic)
-          if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS.toString()) {
+          if (entry.commandName === BloomreachCommandName.CUSTOMERS) {
+            const merged = mergeCustomerCommandData(
+              commandData as BloomreachCustomerCommandData,
+              newer.commandData as BloomreachCustomerCommandData
+            )
             await tx.bloomreachOutbox.update({
               where: { id: newer.id },
-              data: {
-                commandData: mergeCustomerCommandData(
-                  commandData as BloomreachCustomerCommandData,
-                  newer.commandData as BloomreachCustomerCommandData
-                ),
-              },
+              data: { commandData: merged, isTerminal: isAnonymizationCommand(merged) },
+            })
+          } else if (entry.isTerminal && !newer.isTerminal) {
+            // A terminal (anonymize) reject being superseded must still win
+            // over a non-terminal newer entry, or it would be silently
+            // discarded instead of the other way around.
+            await tx.bloomreachOutbox.update({
+              where: { id: newer.id },
+              data: { commandData, isTerminal: true },
             })
           }
 

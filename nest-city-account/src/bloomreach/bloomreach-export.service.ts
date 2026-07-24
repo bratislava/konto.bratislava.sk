@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import axios, { isAxiosError } from 'axios'
 
+import BaConfigService from '../config/ba-config.service'
 import {
   BloomreachCustomerIdsQuery,
   BloomreachEventNameEnum,
@@ -12,17 +13,21 @@ import {
 
 @Injectable()
 export class BloomreachExportService {
-  private readonly bloomreachCredentials = Buffer.from(
-    `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
-    'binary'
-  ).toString('base64')
+  private readonly bloomreachCredentials: string
+
+  constructor(private readonly baConfigService: BaConfigService) {
+    this.bloomreachCredentials = Buffer.from(
+      `${this.baConfigService.bloomreach.apiKey}:${this.baConfigService.bloomreach.apiSecret}`,
+      'binary'
+    ).toString('base64')
+  }
 
   async fetchCustomer(
     customerIds: BloomreachCustomerIdsQuery
   ): Promise<BloomreachExportedCustomer | null> {
     try {
       const response = await axios.post(
-        `${process.env.BLOOMREACH_API_URL}/data/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/export-one`,
+        `${this.baConfigService.bloomreach.apiUrl}/data/v2/projects/${this.baConfigService.bloomreach.projectToken}/customers/export-one`,
         { customer_ids: customerIds },
         { headers: { Authorization: `Basic ${this.bloomreachCredentials}` } }
       )
@@ -42,7 +47,7 @@ export class BloomreachExportService {
   ): Promise<BloomreachExportedEvent[]> {
     try {
       const response = await axios.post(
-        `${process.env.BLOOMREACH_API_URL}/data/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/events`,
+        `${this.baConfigService.bloomreach.apiUrl}/data/v2/projects/${this.baConfigService.bloomreach.projectToken}/customers/events`,
         { customer_ids: customerIds, event_types: [BloomreachEventNameEnum.CONSENT] },
         { headers: { Authorization: `Basic ${this.bloomreachCredentials}` } }
       )

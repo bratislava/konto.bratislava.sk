@@ -3,13 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
 import {
+  BloomreachCommandName,
   BloomreachOutbox,
   BloomreachOutboxStatus,
   ConsentEnum,
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { BloomreachCommandNameEnum } from '../bloomreach.types'
 import { BloomreachExportService } from '../bloomreach-export.service'
 import { BloomreachMergeConsentService } from '../bloomreach-merge-consent.service'
 import { BloomreachOutboxWriterService } from '../bloomreach-outbox-writer.service'
@@ -27,7 +27,7 @@ describe('BloomreachMergeConsentService', () => {
     createdAt: new Date('2026-03-26T12:00:00Z'),
     updatedAt: new Date('2026-03-26T12:00:00Z'),
     externalId,
-    commandName: BloomreachCommandNameEnum.CUSTOMERS,
+    commandName: BloomreachCommandName.CUSTOMERS,
     commandData: {
       customer_ids: { city_account_id: externalId, contact_id: contactId },
       properties: { is_identity_verified: true },
@@ -87,7 +87,7 @@ describe('BloomreachMergeConsentService', () => {
 
   it('should skip event commands', async () => {
     const result = await service.ensureConsentsSurviveMerge(
-      makeEntry({ commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS })
+      makeEntry({ commandName: BloomreachCommandName.CUSTOMERS_EVENTS })
     )
 
     expect(result).toBe(true)
@@ -175,8 +175,8 @@ describe('BloomreachMergeConsentService', () => {
     })
     expect(outboxWriter.queueConsentEvents).toHaveBeenCalledWith(
       [
-        { consentType: ConsentEnum.MARKETING, isGranted: true },
-        { consentType: ConsentEnum.GENERAL, isGranted: false },
+        { consentType: ConsentEnum.MARKETING, isGranted: true, timestamp: 100 },
+        { consentType: ConsentEnum.GENERAL, isGranted: false, timestamp: 200 },
       ],
       externalId
     )

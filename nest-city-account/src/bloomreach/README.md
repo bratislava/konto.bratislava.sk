@@ -22,7 +22,7 @@ flowchart TD
 - **Decouples** request handling from Bloomreach availability - callers never fail due to Bloomreach being down.
 - **Automatic retries** - failed batches are retried with exponential backoff up to `MAX_ATTEMPTS` (5) before being marked `FAILED`.
 - **Batching** - multiple commands are sent in a single Bloomreach batch API call, reducing HTTP overhead.
-- **Single-writer** - `@Interval(30_000)` waits for the previous run to complete before scheduling the next, so batches never overlap.
+- **Single-writer** - `@Interval(30_000)` does *not* wait for the previous run to finish, so `processOutbox` wraps `processBatch` in a `pg_try_advisory_lock`-based single-flight guard (`runSingleFlight`) instead - a shared DB-level lock, so it also holds if this ever runs on more than one instance, unlike an in-memory flag.
 
 ## Key Components
 
@@ -88,7 +88,7 @@ Before sending such a command, `BloomreachMergeConsentService` runs these steps.
 
 The processor claims entries in **global `createdAt` order** - oldest first, up to `BATCH_SIZE` (50) per cycle. There is no per-key grouping or ordering constraint in the claim query itself.
 
-This is safe because write-time deduplication already prevents duplicate PENDING entries for the same key (see above), so in practice there is at most one PENDING entry per key at any time. Since `@Interval` waits for the previous run to complete, batches never overlap, and `recoverStaleProcessingEntries` resets any entries stuck from a crash before each cycle.
+This is safe because write-time deduplication already prevents duplicate PENDING entries for the same key (see above), so in practice there is at most one PENDING entry per key at any time. The `runSingleFlight` guard (see above) ensures batches never overlap, and `recoverStaleProcessingEntries` resets any entries stuck from a crash before each cycle.
 
 ## Revert-Time Deduplication
 

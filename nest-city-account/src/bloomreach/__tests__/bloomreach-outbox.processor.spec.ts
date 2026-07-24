@@ -4,11 +4,15 @@ import axios from 'axios'
 
 import prismaMock from '../../../test/singleton'
 import BaConfigService from '../../config/ba-config.service'
-import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
+import {
+  BloomreachCommandName,
+  BloomreachOutbox,
+  BloomreachOutboxStatus,
+} from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
-  BloomreachCommandNameEnum,
+  BLOOMREACH_WIRE_COMMAND_NAME,
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
@@ -37,7 +41,7 @@ describe('BloomreachOutboxProcessor', () => {
     createdAt: now,
     updatedAt: now,
     externalId: 'cognito-1',
-    commandName: BloomreachCommandNameEnum.CUSTOMERS,
+    commandName: BloomreachCommandName.CUSTOMERS,
     commandData: {
       customer_ids: { city_account_id: 'cognito-1' },
       properties: {},
@@ -120,7 +124,13 @@ describe('BloomreachOutboxProcessor', () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         'https://api.bloomreach.test/track/v2/projects/test-project/batch',
         {
-          commands: [{ name: entry.commandName, data: entry.commandData, command_id: 'entry-1' }],
+          commands: [
+            {
+              name: BLOOMREACH_WIRE_COMMAND_NAME[entry.commandName],
+              data: entry.commandData,
+              command_id: 'entry-1',
+            },
+          ],
         },
         expect.objectContaining({
           headers: expect.objectContaining({ Authorization: expect.stringContaining('Basic ') }),
@@ -219,7 +229,7 @@ describe('BloomreachOutboxProcessor', () => {
     it('should process multiple entries in a single batch', async () => {
       const entries = [
         makeEntry({ id: 'entry-1' }),
-        makeEntry({ id: 'entry-2', commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS }),
+        makeEntry({ id: 'entry-2', commandName: BloomreachCommandName.CUSTOMERS_EVENTS }),
       ]
       prismaMock.$queryRaw.mockResolvedValue(entries)
       mockedAxios.post.mockResolvedValue({
@@ -275,7 +285,11 @@ describe('BloomreachOutboxProcessor', () => {
       await processor.processOutbox()
 
       expect((mockedAxios.post.mock.calls[0][1] as any).commands).toEqual([
-        { name: entries[1].commandName, data: entries[1].commandData, command_id: 'entry-2' },
+        {
+          name: BLOOMREACH_WIRE_COMMAND_NAME[entries[1].commandName],
+          data: entries[1].commandData,
+          command_id: 'entry-2',
+        },
       ])
       expect(prismaMock.bloomreachOutbox.updateMany).toHaveBeenCalledWith({
         where: { id: { in: ['entry-2'] } },
@@ -341,7 +355,7 @@ describe('BloomreachOutboxProcessor', () => {
     it('should mark reverted event entry as SUPERSEDED without merge when newer PENDING exists', async () => {
       const oldEventEntry = makeEntry({
         id: 'old-event',
-        commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+        commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
         commandData: {
           customer_ids: { city_account_id: 'cognito-1' },
           event_type: BloomreachEventNameEnum.CONSENT,
@@ -355,7 +369,7 @@ describe('BloomreachOutboxProcessor', () => {
       })
       const newerEventEntry = makeEntry({
         id: 'newer-event',
-        commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+        commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
           customer_ids: { city_account_id: 'cognito-1' },

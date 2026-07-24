@@ -1,21 +1,31 @@
 import { Injectable } from '@nestjs/common'
 
-import { BloomreachOutboxStatus } from '../generated/prisma/enums'
+import { BloomreachCommandName, BloomreachOutboxStatus } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { toLogfmt } from '../utils/logging'
 import {
-  BloomreachCommandNameEnum,
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
   Consent,
+  isBloomreachEventCommandData,
 } from './bloomreach.types'
 import { BloomreachPayloadBuilder } from './bloomreach-payload.builder'
-import { mergeCustomerCommandData } from './utils/merge-commands.utils'
+import {
+  isAnonymizationCommand,
+  isBloomreachOutboxDedupConflictError,
+  isExistingHigherPriorityEventCommand,
+  mergeCustomerCommandData,
+} from './utils/merge-commands.utils'
+import { lockOutboxDedupKey } from './utils/outbox-lock.utils'
 
 @Injectable()
 export class BloomreachOutboxWriterService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly payloadBuilder: BloomreachPayloadBuilder
+    private readonly payloadBuilder: BloomreachPayloadBuilder,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
   async queueCustomerCommand(externalId: string, phoneNumber?: string): Promise<void> {
@@ -30,25 +40,38 @@ export class BloomreachOutboxWriterService {
     await this.upsertPendingCustomerCommand(externalId, commandData)
   }
 
-  async queueConsentEvents(consents: Consent[], externalId: string): Promise<void> {
+  async queueConsentEvents(
+    consents: Consent[],
+    externalId: string,
+    terminal = false
+  ): Promise<void> {
     const commands = this.payloadBuilder.buildConsentEventCommands(consents, externalId)
 
     await Promise.all(
       commands.map(async ({ commandData }) =>
-        this.upsertPendingEventCommand(externalId, commandData)
+        this.upsertPendingEventCommand(externalId, commandData, terminal)
       )
     )
   }
 
   private async upsertPendingEventCommand(
     externalId: string,
-    commandData: BloomreachEventCommandData
+    commandData: BloomreachEventCommandData,
+    terminal: boolean
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
+      await lockOutboxDedupKey(
+        tx,
+        externalId,
+        BloomreachCommandName.CUSTOMERS_EVENTS,
+        commandData.event_type,
+        commandData.properties.category
+      )
+
       const existing = await tx.bloomreachOutbox.findFirst({
         where: {
           externalId,
-          commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
+          commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
           status: BloomreachOutboxStatus.PENDING,
           AND: [
             {
@@ -68,57 +91,110 @@ export class BloomreachOutboxWriterService {
       })
 
       if (existing) {
+        if (!isBloomreachEventCommandData(existing.commandData)) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'Bloomreach outbox entry has commandName CUSTOMERS_EVENTS but commandData is not event command data',
+            toLogfmt({ externalId, entryId: existing.id })
+          )
+        }
+
+        const existingData = existing.commandData
+
+        if (
+          isExistingHigherPriorityEventCommand(
+            { isTerminal: existing.isTerminal, timestamp: existingData.timestamp },
+            { isTerminal: terminal, timestamp: commandData.timestamp }
+          )
+        ) {
+          return
+        }
+
         await tx.bloomreachOutbox.update({
           where: { id: existing.id },
-          data: { commandData },
+          data: { commandData, isTerminal: terminal },
         })
       } else {
-        await tx.bloomreachOutbox.create({
-          data: {
-            externalId,
-            commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
-            commandData,
-          },
-        })
+        try {
+          await tx.bloomreachOutbox.create({
+            data: {
+              externalId,
+              commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
+              commandData,
+              isTerminal: terminal,
+            },
+          })
+        } catch (error) {
+          if (!isBloomreachOutboxDedupConflictError(error)) {
+            throw error
+          }
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'bloomreach_outbox_events_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
+            toLogfmt({
+              externalId,
+              eventType: commandData.event_type,
+              category: commandData.properties.category,
+            }),
+            error
+          )
+        }
       }
     })
   }
 
-  // Prisma's upsert requires a @@unique constraint, but we can't add one on
-  // (externalId, commandName, status) — multiple COMPLETED/FAILED rows for the
-  // same combo are valid. A partial unique index (WHERE status = 'PENDING')
-  // would work in PostgreSQL, but Prisma doesn't support partial indexes.
+  // A partial unique index (bloomreach_outbox_customers_pending_key,
+  // bloomreach_outbox_events_pending_key - added via migration
+  // 20260723140000_add_bloomreach_outbox_partial_unique_indexes) enforces at
+  // most one live PENDING row per dedup key at the database level; this
+  // findFirst-then-create/update is additionally serialized in-process by
+  // lockOutboxDedupKey.
   private async upsertPendingCustomerCommand(
     externalId: string,
     commandData: BloomreachCustomerCommandData
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
+      await lockOutboxDedupKey(tx, externalId, BloomreachCommandName.CUSTOMERS)
+
       const existing = await tx.bloomreachOutbox.findFirst({
         where: {
           externalId,
-          commandName: BloomreachCommandNameEnum.CUSTOMERS,
+          commandName: BloomreachCommandName.CUSTOMERS,
           status: BloomreachOutboxStatus.PENDING,
         },
       })
 
       if (existing) {
+        const merged = mergeCustomerCommandData(
+          existing.commandData as BloomreachCustomerCommandData,
+          commandData
+        )
+
         await tx.bloomreachOutbox.update({
           where: { id: existing.id },
-          data: {
-            commandData: mergeCustomerCommandData(
-              existing.commandData as BloomreachCustomerCommandData,
-              commandData
-            ),
-          },
+          data: { commandData: merged, isTerminal: isAnonymizationCommand(merged) },
         })
       } else {
-        await tx.bloomreachOutbox.create({
-          data: {
-            externalId,
-            commandName: BloomreachCommandNameEnum.CUSTOMERS,
-            commandData,
-          },
-        })
+        try {
+          await tx.bloomreachOutbox.create({
+            data: {
+              externalId,
+              commandName: BloomreachCommandName.CUSTOMERS,
+              commandData,
+              isTerminal: isAnonymizationCommand(commandData),
+            },
+          })
+        } catch (error) {
+          if (!isBloomreachOutboxDedupConflictError(error)) {
+            throw error
+          }
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'bloomreach_outbox_customers_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
+            toLogfmt({ externalId }),
+            error
+          )
+        }
       }
     })
   }

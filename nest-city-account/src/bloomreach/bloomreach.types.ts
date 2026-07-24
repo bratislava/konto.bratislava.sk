@@ -1,20 +1,47 @@
 import * as z from 'zod'
 
-import { ConsentEnum } from '../generated/prisma/client'
+import { BloomreachCommandName, ConsentEnum } from '../generated/prisma/client'
 import { UserOfficialCorrespondenceChannelEnum } from '../user/dtos/gdpr.user.dto'
 import { CognitoUserAccountTypesEnum } from '../utils/global-dtos/cognito.dto'
 
-/** A single consent state Bloomreach consent events are built from. */
+/**
+ * A single consent state Bloomreach consent events are built from.
+ * `timestamp` is set when this reflects a state read back from Bloomreach's
+ * export (a restore) - it must carry the time that state was actually true,
+ * not the time the command is built, or a restore can incorrectly outrank a
+ * genuinely newer local change. Omit it for a consent change happening now.
+ */
 export interface Consent {
   consentType: ConsentEnum
   isGranted: boolean
+  timestamp?: number
 }
 
 // ─── Bloomreach Batch API types ─────────────────────────────────────────────
 
+/**
+ * Bloomreach's batch API requires these exact lowercase/slash strings in the
+ * wire payload - unrelated to and not derivable from `BloomreachCommandName`
+ * (Prisma's generated enum uses the TS member names as its JS-facing values,
+ * e.g. `'CUSTOMERS'`, regardless of the `@map`'d DB storage string).
+ */
 export enum BloomreachCommandNameEnum {
   CUSTOMERS = 'customers',
   CUSTOMERS_EVENTS = 'customers/events',
+}
+
+/**
+ * Translates a `BloomreachOutbox.commandName` (Prisma enum) into the string
+ * Bloomreach's batch API actually expects in the wire payload's `name` field.
+ * Never send `entry.commandName` to Bloomreach directly - the two enums'
+ * values do not match.
+ */
+export const BLOOMREACH_WIRE_COMMAND_NAME: Record<
+  BloomreachCommandName,
+  BloomreachCommandNameEnum
+> = {
+  [BloomreachCommandName.CUSTOMERS]: BloomreachCommandNameEnum.CUSTOMERS,
+  [BloomreachCommandName.CUSTOMERS_EVENTS]: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
 }
 
 export interface BloomreachCustomerIds {
@@ -54,9 +81,23 @@ export interface BloomreachEventCommandData {
   timestamp: number
 }
 
+/** Narrows `BloomreachOutbox.commandData` by its actual shape, not by trusting `commandName`. */
+export function isBloomreachCustomerData(
+  data: BloomreachCustomerCommandData | BloomreachEventCommandData
+): data is BloomreachCustomerCommandData {
+  return 'update_timestamp' in data
+}
+
 export interface BloomreachCustomerCommand {
   commandName: BloomreachCommandNameEnum.CUSTOMERS
   commandData: BloomreachCustomerCommandData
+}
+
+/** Narrows `BloomreachOutbox.commandData` by its actual shape, not by trusting `commandName`. */
+export function isBloomreachEventCommandData(
+  data: BloomreachCustomerCommandData | BloomreachEventCommandData
+): data is BloomreachEventCommandData {
+  return 'timestamp' in data
 }
 
 export interface BloomreachEventCommand {

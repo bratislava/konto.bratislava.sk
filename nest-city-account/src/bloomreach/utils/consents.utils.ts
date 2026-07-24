@@ -23,6 +23,7 @@ export function extractLatestCityAccountConsents(events: BloomreachExportedEvent
       consents.push({
         consentType,
         isGranted: latest.properties.action === BloomreachConsentActionEnum.ACCEPT.toString(),
+        timestamp: latest.timestamp,
       })
     }
   }

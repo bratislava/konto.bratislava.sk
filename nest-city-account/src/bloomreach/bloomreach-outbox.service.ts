@@ -49,7 +49,8 @@ export class BloomreachOutboxService {
     consents: Consent[],
     externalId: string | null,
     userId?: string,
-    isLegalPerson?: boolean
+    isLegalPerson?: boolean,
+    terminal = false
   ): Promise<void> {
     if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
       return
@@ -70,7 +71,7 @@ export class BloomreachOutboxService {
     }
 
     try {
-      await this.outboxWriter.queueConsentEvents(consents, externalId)
+      await this.outboxWriter.queueConsentEvents(consents, externalId, terminal)
 
       this.logger.debug(`Queued ${consents.length} consent events for ${userType} ${externalId}`)
     } catch (error) {
@@ -95,7 +96,10 @@ export class BloomreachOutboxService {
         { consentType: ConsentEnum.MARKETING, isGranted: false },
         { consentType: ConsentEnum.GENERAL, isGranted: false },
       ],
-      externalId
+      externalId,
+      undefined,
+      undefined,
+      true
     )
 
     try {

@@ -138,7 +138,10 @@ export class BloomreachPayloadBuilder {
           valid_until: 'unlimited',
         },
         event_type: BloomreachEventNameEnum.CONSENT,
-        timestamp: nowUnixSeconds(),
+        // A restored consent (from extractLatestCityAccountConsents) carries
+        // the time it was actually true - stamping it "now" would let it
+        // incorrectly outrank a genuinely newer local change.
+        timestamp: consent.timestamp ?? nowUnixSeconds(),
       },
     }))
   }

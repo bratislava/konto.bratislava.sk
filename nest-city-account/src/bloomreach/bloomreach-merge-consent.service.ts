@@ -1,24 +1,25 @@
 import { Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
-import dayjs from 'dayjs'
 
-import { BloomreachOutbox, BloomreachOutboxStatus } from '../generated/prisma/client'
+import {
+  BloomreachCommandName,
+  BloomreachOutbox,
+  BloomreachOutboxStatus,
+} from '../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { BloomreachCommandNameEnum, BloomreachCustomerCommandData } from './bloomreach.types'
+import { isBloomreachCustomerData } from './bloomreach.types'
 import { BloomreachExportService } from './bloomreach-export.service'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
 import { extractLatestCityAccountConsents } from './utils/consents.utils'
-
-/**
- * Bloomreach processes delivered commands in a queue. Typically within ~10
- * seconds, up to 8 hours at worst. A COMPLETED anonymize this recent may not
- * be visible in exports yet and must still count as an anonymization in flight.
- */
-const ANONYMIZE_PROPAGATION_WINDOW_HOURS = 8
+import { isAnonymizationCommand } from './utils/merge-commands.utils'
+import {
+  ANONYMIZE_PROPAGATION_WINDOW_HOURS,
+  isLiveOrRecentlyCompleted,
+} from './utils/outbox-staleness.utils'
 
 /** A merged Bloomreach customer keeps all values of an ID, so ids can be arrays. */
 function normalizeIdValues(value: string | string[] | null | undefined): string[] {
@@ -81,11 +82,28 @@ export class BloomreachMergeConsentService {
   }
 
   private async queueConsentsSurvivingMerge(entry: BloomreachOutbox): Promise<void> {
-    if (entry.commandName !== BloomreachCommandNameEnum.CUSTOMERS.toString()) {
+    if (entry.commandName !== BloomreachCommandName.CUSTOMERS) {
       return
     }
 
-    const commandData = entry.commandData as BloomreachCustomerCommandData
+    if (!isBloomreachCustomerData(entry.commandData)) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Bloomreach outbox entry has commandName CUSTOMERS but commandData is not customer command data',
+        toLogfmt({ entryId: entry.id, externalId: entry.externalId })
+      )
+    }
+
+    const commandData = entry.commandData
+
+    // A command that itself de-verifies/anonymizes the account must never
+    // restore this same account's consents: the exported consent state it
+    // would read is guaranteed stale (pre-anonymization) during the export
+    // lag, and would resurrect the reject this command is issuing.
+    if (isAnonymizationCommand(commandData)) {
+      return
+    }
+
     const contactId = commandData.customer_ids.contact_id
 
     if (!contactId) {
@@ -160,19 +178,19 @@ export class BloomreachMergeConsentService {
    * attachment for the account is taken to mean Bloomreach has received it.
    */
   private async couldCauseMerge(entry: BloomreachOutbox, contactId: string): Promise<boolean> {
-    //language=postgresql
-    const rows = await this.prisma.$queryRaw<{ exists: boolean }[]>`
-        SELECT EXISTS
-            (SELECT 1
-             FROM
-                 "BloomreachOutbox"
-             WHERE
-                 "externalId" = ${entry.externalId}
-                 AND "status" = ${BloomreachOutboxStatus.COMPLETED}::"BloomreachOutboxStatus"
-                 AND "commandData" -> 'customer_ids' ->> 'contact_id' = ${contactId}) AS "exists"
-    `
+    const match = await this.prisma.bloomreachOutbox.findFirst({
+      where: {
+        externalId: entry.externalId,
+        status: BloomreachOutboxStatus.COMPLETED,
+        commandData: {
+          path: ['customer_ids', 'contact_id'],
+          equals: contactId,
+        },
+      },
+      select: { id: true },
+    })
 
-    return !(rows[0]?.exists ?? false)
+    return !match
   }
 
   /**
@@ -188,17 +206,9 @@ export class BloomreachMergeConsentService {
     const entries = await this.prisma.bloomreachOutbox.findMany({
       where: {
         externalId: { not: excludeExternalId },
-        commandName: BloomreachCommandNameEnum.CUSTOMERS,
+        commandName: BloomreachCommandName.CUSTOMERS,
         commandData: { path: ['customer_ids', 'contact_id'], equals: contactId },
-        OR: [
-          { status: { in: [BloomreachOutboxStatus.PENDING, BloomreachOutboxStatus.PROCESSING] } },
-          {
-            status: BloomreachOutboxStatus.COMPLETED,
-            updatedAt: {
-              gte: dayjs().subtract(ANONYMIZE_PROPAGATION_WINDOW_HOURS, 'hour').toDate(),
-            },
-          },
-        ],
+        OR: isLiveOrRecentlyCompleted(),
       },
       select: { externalId: true },
       distinct: ['externalId'],
@@ -224,20 +234,12 @@ export class BloomreachMergeConsentService {
     const anonymizeInFlight = await this.prisma.bloomreachOutbox.findFirst({
       where: {
         externalId: { in: cityAccountIds },
-        commandName: BloomreachCommandNameEnum.CUSTOMERS,
+        commandName: BloomreachCommandName.CUSTOMERS,
         AND: [
           { commandData: { path: ['properties', 'is_identity_verified'], equals: false } },
           { commandData: { path: ['update_timestamp'], lt: beforeTimestamp } },
         ],
-        OR: [
-          { status: { in: [BloomreachOutboxStatus.PENDING, BloomreachOutboxStatus.PROCESSING] } },
-          {
-            status: BloomreachOutboxStatus.COMPLETED,
-            updatedAt: {
-              gte: dayjs().subtract(ANONYMIZE_PROPAGATION_WINDOW_HOURS, 'hour').toDate(),
-            },
-          },
-        ],
+        OR: isLiveOrRecentlyCompleted(),
       },
     })
 

@@ -38,15 +38,15 @@ describe('consents.utils', () => {
       ])
 
       expect(result).toEqual([
-        { consentType: ConsentEnum.MARKETING, isGranted: false },
-        { consentType: ConsentEnum.GENERAL, isGranted: true },
+        { consentType: ConsentEnum.MARKETING, isGranted: false, timestamp: 300 },
+        { consentType: ConsentEnum.GENERAL, isGranted: true, timestamp: 200 },
       ])
     })
 
     it('should omit categories without events', () => {
       const result = extractLatestCityAccountConsents([consentEvent('ESBS-GENERAL', 'accept', 100)])
 
-      expect(result).toEqual([{ consentType: ConsentEnum.GENERAL, isGranted: true }])
+      expect(result).toEqual([{ consentType: ConsentEnum.GENERAL, isGranted: true, timestamp: 100 }])
     })
 
     it('should ignore categories not belonging to city account', () => {

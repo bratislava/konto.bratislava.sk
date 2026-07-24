@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import axios from 'axios'
 
+import BaConfigService from '../../config/ba-config.service'
 import { BloomreachExportService } from '../bloomreach-export.service'
 
 jest.mock('axios', () => ({
@@ -19,13 +20,21 @@ describe('BloomreachExportService', () => {
   let service: BloomreachExportService
 
   beforeEach(async () => {
-    process.env.BLOOMREACH_API_URL = 'https://api.bloomreach.test'
-    process.env.BLOOMREACH_PROJECT_TOKEN = 'test-project'
-    process.env.BLOOMREACH_API_KEY = 'key'
-    process.env.BLOOMREACH_API_SECRET = 'secret'
-
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BloomreachExportService],
+      providers: [
+        BloomreachExportService,
+        {
+          provide: BaConfigService,
+          useValue: {
+            bloomreach: {
+              apiUrl: 'https://api.bloomreach.test',
+              projectToken: 'test-project',
+              apiKey: 'key',
+              apiSecret: 'secret',
+            },
+          },
+        },
+      ],
     }).compile()
 
     service = module.get<BloomreachExportService>(BloomreachExportService)

@@ -51,6 +51,20 @@ export class BloomreachOutboxService {
     userId?: string,
     isLegalPerson?: boolean
   ): Promise<void> {
+    return this.trackConsentsInternal(consents, externalId, userId, isLegalPerson, false)
+  }
+
+  /**
+   * `terminal` is only ever set by {@link anonymizeCustomer} so it is kept out
+   * of {@link trackConsents}'s public signature.
+   */
+  private async trackConsentsInternal(
+    consents: Consent[],
+    externalId: string | null,
+    userId: string | undefined,
+    isLegalPerson: boolean | undefined,
+    terminal: boolean
+  ): Promise<void> {
     if (this.baConfigService.bloomreach.integrationState !== 'ACTIVE') {
       return
     }
@@ -90,7 +104,7 @@ export class BloomreachOutboxService {
       return
     }
 
-    await this.trackConsents(
+    await this.trackConsentsInternal(
       [
         { consentType: ConsentEnum.MARKETING, isGranted: false },
         { consentType: ConsentEnum.GENERAL, isGranted: false },

@@ -81,7 +81,7 @@ const FormContentInner = () => {
         >
           <StepperView />
           <div className="grow">
-            {/* On the summary step the alert is rendered by SummaryHeader instead (replacing the error alert). */}
+            {/* On the summary step the alert is rendered by SummaryHeader. */}
             {currentStepperStep.index !== 'summary' ? (
               <TemporarilyDisabledAlert
                 strapiForm={strapiForm}

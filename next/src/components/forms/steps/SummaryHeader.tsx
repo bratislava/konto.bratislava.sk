@@ -7,7 +7,7 @@ import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisab
 import Alert from '@/src/components/simple-components/Alert'
 
 const SummaryHeader = () => {
-  const { isSigned, isTemporarilyDisabled, strapiForm } = useFormContext()
+  const { isSigned, strapiForm } = useFormContext()
   const { getValidatedSummary, getInfectedFiles, getUploadFiles } = useFormSummary()
   const { hasErrors } = getValidatedSummary()
   const infectedFiles = getInfectedFiles()
@@ -18,7 +18,7 @@ const SummaryHeader = () => {
 
   return (
     <>
-      {isTemporarilyDisabled && <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" />}
+      <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" />
 
       <Typography variant="h2">{t('summary.title')}</Typography>
 

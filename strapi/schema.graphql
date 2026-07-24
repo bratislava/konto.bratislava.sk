@@ -888,11 +888,14 @@ type FooterRelationResponseCollection {
 type Form {
   createdAt: DateTime
   documentId: ID!
+  isTemporarilyDisabled: Boolean!
   landingPage: ComponentBlocksFormLandingPage
   moreInformationUrl: String
   municipalService: MunicipalService
   publishedAt: DateTime
   slug: String!
+  temporarilyDisabledReason: String
+  temporarilyDisabledUntil: String
   updatedAt: DateTime
 }
 
@@ -914,6 +917,7 @@ input FormFiltersInput {
   and: [FormFiltersInput]
   createdAt: DateTimeFilterInput
   documentId: IDFilterInput
+  isTemporarilyDisabled: BooleanFilterInput
   landingPage: ComponentBlocksFormLandingPageFiltersInput
   moreInformationUrl: StringFilterInput
   municipalService: MunicipalServiceFiltersInput
@@ -921,15 +925,20 @@ input FormFiltersInput {
   or: [FormFiltersInput]
   publishedAt: DateTimeFilterInput
   slug: StringFilterInput
+  temporarilyDisabledReason: StringFilterInput
+  temporarilyDisabledUntil: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input FormInput {
+  isTemporarilyDisabled: Boolean
   landingPage: ComponentBlocksFormLandingPageInput
   moreInformationUrl: String
   municipalService: ID
   publishedAt: DateTime
   slug: String
+  temporarilyDisabledReason: String
+  temporarilyDisabledUntil: String
 }
 
 type FormRelationResponseCollection {

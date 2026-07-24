@@ -13,45 +13,57 @@ const SummaryFormControls = () => {
   const {
     isTaxForm,
     isReadonly,
+    isTemporarilyDisabled,
     evaluatedSendPolicy: { sendPossible, eidSendPossible },
   } = useFormContext()
   const { goToPreviousStep } = useFormState()
-  const { exportPdf } = useFormExportImport()
+  const { exportPdf, saveConcept } = useFormExportImport()
   const { submitDisabled, handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
 
   if (isReadonly) {
     return null
   }
 
-  const buttons: ((ButtonButtonProps & { 'data-cy'?: string }) | null)[] = [
-    isTaxForm
-      ? {
-          variant: 'outline',
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onPress: () => exportPdf(),
-          children: t('summary.export_pdf'),
-          'data-cy': 'download-pdf-button',
-        }
-      : null,
-    eidSendPossible
-      ? {
-          isDisabled: submitDisabled(),
-          variant: sendPossible ? 'outline' : 'solid',
-          onPress: () => handleSendEidButtonPress(),
-          type: 'submit',
-          children: t('summary.button_send_eid'),
-        }
-      : null,
-    sendPossible
-      ? {
-          isDisabled: submitDisabled(),
+  // While temporarily disabled, sending is not possible - the send buttons are replaced by "save as draft".
+  const buttons: ((ButtonButtonProps & { 'data-cy'?: string }) | null)[] = isTemporarilyDisabled
+    ? [
+        {
           variant: 'solid',
-          onPress: () => handleSendButtonPress(),
-          type: 'submit',
-          children: t('summary.button_send'),
-        }
-      : null,
-  ]
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onPress: () => saveConcept(),
+          children: t('menu_list.save_concept'),
+          'data-cy': 'save-concept-summary',
+        },
+      ]
+    : [
+        isTaxForm
+          ? {
+              variant: 'outline',
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onPress: () => exportPdf(),
+              children: t('summary.export_pdf'),
+              'data-cy': 'download-pdf-button',
+            }
+          : null,
+        eidSendPossible
+          ? {
+              isDisabled: submitDisabled(),
+              variant: sendPossible ? 'outline' : 'solid',
+              onPress: () => handleSendEidButtonPress(),
+              type: 'submit',
+              children: t('summary.button_send_eid'),
+            }
+          : null,
+        sendPossible
+          ? {
+              isDisabled: submitDisabled(),
+              variant: 'solid',
+              onPress: () => handleSendButtonPress(),
+              type: 'submit',
+              children: t('summary.button_send'),
+            }
+          : null,
+      ]
 
   return (
     <div className="mt-4 flex flex-col gap-2 lg:mt-10 lg:flex-row lg:flex-wrap lg:gap-5">

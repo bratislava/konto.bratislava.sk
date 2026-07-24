@@ -136,7 +136,7 @@ describe('UpvsQueueService', () => {
       jest
         .spyOn(edeskBatchUpdateService, 'updateEdeskStatusBatch')
         .mockResolvedValue({ highPriorityProcessed: 3, externalProcessed: 1 })
-      const logSpy = jest.spyOn((service as any).logger, 'log').mockImplementation(() => {})
+      const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
 
       await service.processBatch()
 
@@ -156,7 +156,7 @@ describe('UpvsQueueService', () => {
         rateLimited: false,
         failures: [{ entityId: 'e1', reason: 'Lookup failed' }],
       })
-      const logSpy = jest.spyOn((service as any).logger, 'log').mockImplementation(() => {})
+      const logSpy = jest.spyOn(service['logger'], 'log').mockImplementation(jest.fn())
 
       await service.processBatch()
 

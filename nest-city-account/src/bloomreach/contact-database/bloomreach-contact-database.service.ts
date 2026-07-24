@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { IDatabase } from 'pg-promise'
 
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { toLogfmt } from '../utils/logging'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { toLogfmt } from '../../utils/logging'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 interface BloomreachContactRecord {
   uuid: string

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { CognitoUserAttributesTierEnum, ConsentEnum } from '../generated/prisma/client'
+import { CognitoUserAttributesTierEnum } from '../generated/prisma/client'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
@@ -15,7 +15,13 @@ import {
   BloomreachEventNameEnum,
   Consent,
 } from './bloomreach.types'
-import { BloomreachContactDatabaseService } from './bloomreach-contact-database.service'
+import { BloomreachContactDatabaseService } from './contact-database/bloomreach-contact-database.service'
+import { consentCategory } from './utils/consents.utils'
+
+/** Unix timestamp in seconds, the format Bloomreach expects. */
+function nowUnixSeconds(): number {
+  return Date.now() / 1000
+}
 
 @Injectable()
 export class BloomreachPayloadBuilder {
@@ -83,6 +89,7 @@ export class BloomreachPayloadBuilder {
             current_tax_correspondence_channel: correspondenceChannel,
           }),
         },
+        update_timestamp: nowUnixSeconds(),
       },
     }
   }
@@ -127,12 +134,9 @@ export class BloomreachPayloadBuilder {
           oauth_origin_client_name: '',
           current_tax_correspondence_channel: '',
         },
+        update_timestamp: nowUnixSeconds(),
       },
     }
-  }
-
-  private static consentCategory(consentType: ConsentEnum): string {
-    return `ESBS-${consentType}`
   }
 
   buildConsentEventCommands(consents: Consent[], externalId: string): BloomreachEventCommand[] {
@@ -146,10 +150,14 @@ export class BloomreachPayloadBuilder {
           action: consent.isGranted
             ? BloomreachConsentActionEnum.ACCEPT
             : BloomreachConsentActionEnum.REJECT,
-          category: BloomreachPayloadBuilder.consentCategory(consent.consentType),
+          category: consentCategory(consent.consentType),
           valid_until: 'unlimited',
         },
         event_type: BloomreachEventNameEnum.CONSENT,
+        // A restored consent (from extractLatestCityAccountConsents) carries
+        // the time it was actually true - stamping it "now" would let it
+        // incorrectly outrank a genuinely newer local change.
+        timestamp: consent.timestamp ?? nowUnixSeconds(),
       },
     }))
   }

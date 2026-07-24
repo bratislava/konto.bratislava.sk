@@ -158,7 +158,8 @@ export class VerificationService {
 
         const bloomreachOutboxWriter = new BloomreachOutboxWriterService(
           prismaService,
-          bloomreachPayloadBuilder
+          bloomreachPayloadBuilder,
+          throwerErrorGuard
         )
         const bloomreachOutboxService = new BloomreachOutboxService(
           bloomreachOutboxWriter,

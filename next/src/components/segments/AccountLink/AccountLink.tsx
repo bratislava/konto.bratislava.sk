@@ -1,5 +1,7 @@
-import { Typography } from '@bratislava/component-library'
-import Link, { LinkProps } from 'next/link'
+import url from 'node:url'
+
+import { Button, Typography } from '@bratislava/component-library'
+import { LinkProps } from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
@@ -7,18 +9,23 @@ import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   variant: 'login' | 'registration' | 'forgotten-password'
+  // Used in RegistrationModal for saving drafts before logging-in and redirecting back to form
+  // The function passed to onLoginPress MUST contain redirect to login page, since the href is ignored
+  onLoginPress?: () => void
 }
 
-const AccountLink = ({ variant }: Props) => {
+const AccountLink = ({ variant, onLoginPress: onLoginPressFromProps }: Props) => {
   const { t } = useTranslation('account')
   const { getRouteWithRedirect } = useQueryParamRedirect()
 
-  const { label, description, href } = (
+  const { label, description, href, onLoginPress } = (
     {
       login: {
         label: t('auth.links.login_link_text'),
         description: t('auth.links.login_description'),
+        // Standard href to login page, used when onLoginPress is undefined
         href: getRouteWithRedirect(ROUTES.LOGIN),
+        onLoginPress: onLoginPressFromProps,
       },
       registration: {
         label: t('auth.links.register_link_text'),
@@ -32,7 +39,7 @@ const AccountLink = ({ variant }: Props) => {
       },
     } satisfies Record<
       Props['variant'],
-      { label: string; description: string; href: LinkProps['href'] }
+      { label: string; description: string; href: LinkProps['href']; onLoginPress?: () => void }
     >
   )[variant]
 
@@ -41,12 +48,20 @@ const AccountLink = ({ variant }: Props) => {
       <Typography variant="p-small" className="font-semibold text-gray-800">
         {description}
       </Typography>
-      <Link
-        href={href}
-        className="rounded-xs font-semibold text-gray-700 underline base-focus-ring hover:text-gray-600 focus:text-gray-800"
+      <Button
+        variant="link"
+        className="font-semibold"
+        // Ignore the href if onLoginPress is present
+        {...(onLoginPress
+          ? { onPress: onLoginPress }
+          : {
+              // getRouteWithRedirect returns UrlObject, so we must convert it to string (until Button accepts UrlObject as href).
+              href: url.format(href),
+              hasLinkIcon: false,
+            })}
       >
         {label}
-      </Link>
+      </Button>
     </div>
   )
 }

@@ -9,9 +9,14 @@ import cn from '@/src/utils/cn'
 
 import FieldWrapper from './_shared/FieldWrapper'
 import { FieldBaseProps } from './_shared/types'
+import useTrimOnBlur from './_shared/useTrimOnBlur'
 
 export interface TextAreaFieldProps extends RACTextFieldProps, FieldBaseProps {
   placeholder?: string
+  /**
+   * @default true
+   */
+  isTrimmedOnBlur?: boolean
 }
 
 const TextAreaField = (
@@ -23,13 +28,17 @@ const TextAreaField = (
     helptextFooter,
     errorMessage,
     placeholder,
+    isTrimmedOnBlur = true,
     ...rest
   }: TextAreaFieldProps,
   ref: Ref<HTMLTextAreaElement>,
 ) => {
+  const handleBlur = useTrimOnBlur({ isTrimmedOnBlur, ...rest })
+
   return (
     <RACTextField
       {...rest}
+      onBlur={handleBlur}
       isInvalid={!!errorMessage}
       validationBehavior="aria"
       className={cn('flex w-full flex-col gap-2', rest.className)}

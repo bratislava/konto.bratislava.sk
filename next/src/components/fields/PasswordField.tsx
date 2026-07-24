@@ -17,6 +17,8 @@ const PasswordField = (props: PasswordFieldProps, ref: Ref<HTMLInputElement>) =>
       {...props}
       ref={ref}
       type={isHidden ? 'password' : 'text'}
+      // Do not trim password fields on blur
+      isTrimmedOnBlur={false}
       endIcon={
         <RACToggleButton
           aria-label={t('auth.fields.password_eyeButton.aria')}

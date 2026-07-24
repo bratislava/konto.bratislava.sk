@@ -9,6 +9,7 @@ import cn from '@/src/utils/cn'
 
 import FieldWrapper from './_shared/FieldWrapper'
 import { FieldBaseProps } from './_shared/types'
+import useTrimOnBlur from './_shared/useTrimOnBlur'
 
 export interface TextFieldProps
   extends
@@ -17,6 +18,10 @@ export interface TextFieldProps
     Pick<RACInputProps, 'autoCapitalize' | 'autoCorrect' | 'spellCheck'> {
   placeholder?: string
   endIcon?: ReactNode
+  /**
+   * @default true
+   */
+  isTrimmedOnBlur?: boolean
 }
 
 const TextField = (
@@ -33,13 +38,17 @@ const TextField = (
     autoCorrect,
     spellCheck,
     autoComplete,
+    isTrimmedOnBlur = true,
     ...rest
   }: TextFieldProps,
   ref: Ref<HTMLInputElement>,
 ) => {
+  const handleBlur = useTrimOnBlur({ isTrimmedOnBlur, ...rest })
+
   return (
     <RACTextField
       {...rest}
+      onBlur={handleBlur}
       isInvalid={!!errorMessage}
       validationBehavior="aria"
       className={cn('flex w-full flex-col gap-2', rest.className)}

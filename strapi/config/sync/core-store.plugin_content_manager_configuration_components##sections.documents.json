@@ -54,12 +54,27 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "externalDocuments",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "allowCollapsingDocuments": {
+        "edit": {
+          "label": "Povoliť skladanie dokumentov",
+          "description": "Ak je dokumentov menej než 5 tak sa tlačidlo nezobrazí aj tak",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "allowCollapsingDocuments",
+          "searchable": true,
+          "sortable": true
         }
       },
       "documentId": {
@@ -72,12 +87,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "externalDocuments",
-        "text"
-      ],
       "edit": [
         [
           {
@@ -95,8 +104,18 @@
           {
             "name": "text",
             "size": 6
+          },
+          {
+            "name": "allowCollapsingDocuments",
+            "size": 4
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "externalDocuments",
+        "text"
       ]
     },
     "uid": "sections.documents",

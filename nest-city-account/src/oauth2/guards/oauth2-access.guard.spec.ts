@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
+import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
 import * as crypto from '../../utils/crypto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import * as tokenSerialization from '../../utils/tokenSerialization'
@@ -15,7 +16,7 @@ jest.mock('@nestjs/passport', () => ({
       canActivate() {
         return true
       }
-      handleRequest(_err: any, user: any) {
+      handleRequest(_err: unknown, user: unknown): unknown {
         return user
       }
     }
@@ -62,9 +63,11 @@ describe('OAuth2AccessGuard', () => {
     jest.spyOn(clientSubservice, 'findClientByName').mockReturnValue(mockClient)
 
     // Make throwerErrorGuard throw real errors
-    jest.spyOn(throwerErrorGuard, 'UnauthorizedException').mockImplementation(((...args: any[]) => {
-      throw new Error(args[2] ?? args[1])
-    }) as any)
+    jest
+      .spyOn(throwerErrorGuard, 'UnauthorizedException')
+      .mockImplementation((_errorEnum, message, console) => {
+        throw new Error(console ?? message)
+      })
   })
 
   it('should be defined', () => {
@@ -196,7 +199,7 @@ describe('OAuth2AccessGuard', () => {
         .mockReturnValue({ token: 'plain-jwt-token', clientId: 'test-client-id' })
 
       const context = createMockContext({ headers: { authorization: 'Bearer encrypted-token' } })
-      const request = context.switchToHttp().getRequest()
+      const request = context.switchToHttp().getRequest<{ headers: Record<string, string> }>()
       await guard.canActivate(context)
 
       // The guard replaces the encrypted token with the plain JWT before Passport processes it
@@ -267,8 +270,8 @@ describe('OAuth2AccessGuard', () => {
 
     it('should return user data when Passport succeeds', () => {
       const context = createMock<ExecutionContext>()
-      const user = { sub: 'user-123', email: 'test@example.com' }
-      const result = guard.handleRequest(null, user as any, null, context)
+      const user = cognitoUserDataFactory({ sub: 'user-123', idUser: 'user-123' })
+      const result = guard.handleRequest(null, user, null, context)
       expect(result).toBe(user)
     })
   })

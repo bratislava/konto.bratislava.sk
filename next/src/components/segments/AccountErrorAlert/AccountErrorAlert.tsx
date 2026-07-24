@@ -57,6 +57,9 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       UsernameExistsException: t('errors.UsernameExistsException', args),
       ExpiredCodeException: t('errors.ExpiredCodeException'),
       IncorrectPasswordException: t('errors.IncorrectPasswordException'),
+      // InvalidPasswordException returns probably also a message which rule failed ("Password did not conform with policy: Password must have symbol characters").
+      InvalidPasswordException: t('errors.InvalidPasswordException'),
+      InvalidParameterException: t('errors.InvalidParameterException'),
       AliasExistsException: t('errors.AliasExistsException', args),
       API_ERROR: t('errors.API_ERROR'),
       RFO_ACCESS_ERROR: t('errors.RFO_ACCESS_ERROR'),

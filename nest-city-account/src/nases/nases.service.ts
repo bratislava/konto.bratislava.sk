@@ -335,10 +335,12 @@ export class NasesService {
     // If we have exactly one unmatched result and one unmatched input URI, we can safely assume they represent the same
     // identity.
     if (unmatchedResults.length === 1 && unmatchedInputs.length === 1) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know there is at least one value in the array, because we checked the length above
       const unmatchedResult = unmatchedResults.pop()!
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know there is at least one value in the array, because we checked the length above
       const unmatchedInput = unmatchedInputs.pop()!
       this.logger.log({
-        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInput}`,
+        message: `Matching unmatched result URI to input URI: ${unmatchedResult.uri} -> ${unmatchedInput.uri}`,
       })
       resultDataSuccess.push({
         inputUri: unmatchedInput.uri,

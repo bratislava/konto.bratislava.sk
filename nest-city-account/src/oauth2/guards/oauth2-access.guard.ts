@@ -96,6 +96,7 @@ export class OAuth2AccessGuard extends AuthGuard('cognito-strategy') {
     return !!(await super.canActivate(context))
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- TUser must stay to match the IAuthGuard.handleRequest<TUser> override signature
   handleRequest<TUser = CognitoGetUserData>(
     error: Error | null,
     user: CognitoGetUserData | null,

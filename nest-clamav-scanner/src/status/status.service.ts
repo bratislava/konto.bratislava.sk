@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 
 import { ClamavClientService } from '../clamav-client/clamav-client.service'
 import { FormsClientService } from '../forms-client/forms-client.service'
@@ -12,7 +11,6 @@ export class StatusService {
   private readonly logger: Logger
 
   constructor(
-    private readonly configService: ConfigService,
     private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
     private readonly formsClientService: FormsClientService,

@@ -1,6 +1,15 @@
 import { Injectable } from '@nestjs/common'
 
-import { QueueItemStatusEnum } from '../generated/prisma/enums'
+import { PhysicalEntity, QueueItemStatusEnum } from '../generated/prisma/client'
+import { parseName } from '../magproxy/dtos/uri'
+import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
+import {
+  CreateManyParam,
+  CreateManyResult,
+  getUpvsDeathDate,
+  NasesService,
+} from '../nases/nases.service'
+import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'

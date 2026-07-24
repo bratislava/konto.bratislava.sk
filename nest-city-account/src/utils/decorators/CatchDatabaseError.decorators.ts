@@ -20,6 +20,7 @@ export function CatchDatabaseError() {
       try {
         return await originalMethod.apply(this, args)
       } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Defensive check, just in case
         if (!this.throwerErrorGuard) {
           throw new Error(
             `CatchDatabaseError decorator requires the class to have a 'throwerErrorGuard' property. ` +

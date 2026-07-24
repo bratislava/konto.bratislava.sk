@@ -4,7 +4,7 @@ import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 
 import ClientsService from '../../clients/clients.service'
 import BaConfigService from '../../config/ba-config.service'
-import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.test'
+import { mockRfoResponseListOneItems } from '../../rfo-by-birthnumber/dtos/__test__/rfoResponse.mock'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { MagproxyService } from '../magproxy.service'
 
@@ -42,7 +42,7 @@ describe('MagproxyService', () => {
 
   describe('validateRfoDataFormat', () => {
     it('should return result for valid RFO data', () => {
-      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
       const response = service['validateRfoDataFormat'](
         mockRfoResponseListOneItems as unknown as ResponseRfoPersonDto[]
       )
@@ -52,10 +52,10 @@ describe('MagproxyService', () => {
     })
 
     it('should log error for invalid RFO data, however still return', () => {
-      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
 
-      const mockRfoResponseListOneItemsInvalid = mockRfoResponseListOneItems as any
-      mockRfoResponseListOneItemsInvalid[0].rodnePriezviskaOsoby[0].meno = 1222 // Invalid data - name as number
+      const mockRfoResponseListOneItemsInvalid = mockRfoResponseListOneItems
+      mockRfoResponseListOneItemsInvalid[0].rodnePriezviskaOsoby[0].meno = 1222 as unknown as string // Invalid data - name as number
       const response = service['validateRfoDataFormat'](
         mockRfoResponseListOneItemsInvalid as unknown as ResponseRfoPersonDto[]
       )
@@ -65,9 +65,9 @@ describe('MagproxyService', () => {
     })
 
     it('should throw error if the data is not an array', () => {
-      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+      const errorLogSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
       expect(() => {
-        service['validateRfoDataFormat']({} as any)
+        service['validateRfoDataFormat']({} as unknown as ResponseRfoPersonDto[])
       }).toThrow()
 
       expect(errorLogSpy).toHaveBeenCalled()

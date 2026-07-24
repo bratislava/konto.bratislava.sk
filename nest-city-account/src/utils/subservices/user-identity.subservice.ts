@@ -46,40 +46,41 @@ export class UserIdentitySubservice {
     externalId: string,
     accountType: CognitoUserAccountTypesEnum
   ): Promise<{ birthNumber?: string; ico?: string }> {
-    if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          externalId,
-          ...ACTIVE_USER_FILTER,
-        },
-        select: {
-          birthNumber: true,
-        },
-      })
+    switch (accountType) {
+      case CognitoUserAccountTypesEnum.PHYSICAL_ENTITY: {
+        const user = await this.prisma.user.findUnique({
+          where: {
+            externalId,
+            ...ACTIVE_USER_FILTER,
+          },
+          select: {
+            birthNumber: true,
+          },
+        })
 
-      return { birthNumber: user?.birthNumber ?? undefined }
-    }
-
-    if (
-      accountType === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      accountType === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
-    ) {
-      const legalPerson = await this.prisma.legalPerson.findUnique({
-        where: {
-          externalId,
-        },
-        select: {
-          birthNumber: true,
-          ico: true,
-        },
-      })
-
-      return {
-        birthNumber: legalPerson?.birthNumber ?? undefined,
-        ico: legalPerson?.ico ?? undefined,
+        return { birthNumber: user?.birthNumber ?? undefined }
       }
-    }
 
-    return {}
+      case CognitoUserAccountTypesEnum.LEGAL_ENTITY:
+      case CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY: {
+        const legalPerson = await this.prisma.legalPerson.findUnique({
+          where: {
+            externalId,
+          },
+          select: {
+            birthNumber: true,
+            ico: true,
+          },
+        })
+
+        return {
+          birthNumber: legalPerson?.birthNumber ?? undefined,
+          ico: legalPerson?.ico ?? undefined,
+        }
+      }
+
+      default:
+        return {}
+    }
   }
 }

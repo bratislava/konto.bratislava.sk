@@ -704,6 +704,7 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
   }
   attributes: {
     buttonText: Schema.Attribute.String & Schema.Attribute.Required
+    card: Schema.Attribute.Component<'blocks.municipal-service-card', false>
     categories: Schema.Attribute.Relation<
       'manyToMany',
       'api::municipal-service-category.municipal-service-category'

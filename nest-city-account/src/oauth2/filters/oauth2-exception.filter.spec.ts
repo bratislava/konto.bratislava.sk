@@ -3,16 +3,34 @@ import { ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Response } from 'express'
 
+import {
+  expectAny,
+  expectObjectContaining,
+  expectStringContaining,
+} from '../../__tests__/jest-matchers'
+import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2AuthorizationErrorCode, OAuth2TokenErrorCode } from '../oauth2.error.enum'
 import { OAuth2Exception } from '../oauth2.exception'
 import { OAuth2Client, OAuth2ClientSubservice } from '../subservices/oauth2-client.subservice'
 import { OAuth2ExceptionFilter } from './oauth2-exception.filter'
 
+interface MockOAuth2Request {
+  path: string
+  method: string
+  originalUrl: string
+  body: Record<string, unknown>
+  query: Record<string, unknown>
+  headers: Record<string, unknown>
+  ip: string | undefined
+  get: jest.Mock<string | undefined, [string]>
+  authorizationRequestData?: Partial<AuthorizationRequestDto>
+}
+
 describe('OAuth2ExceptionFilter', () => {
   let filter: OAuth2ExceptionFilter
   let oauth2ClientSubservice: OAuth2ClientSubservice
-  let mockResponse: Partial<Response>
-  let mockRequest: any
+  let mockResponse: Response
+  let mockRequest: MockOAuth2Request
   let mockArgumentsHost: ArgumentsHost
 
   /**
@@ -47,28 +65,26 @@ describe('OAuth2ExceptionFilter', () => {
     // assertions work), but each call also captures its output into
     // sentResponse for direct value assertions
     sentResponse = { headers: {} }
-    mockResponse = {
-      status: jest.fn((code: number) => {
-        sentResponse.status = code
-        return mockResponse
-      }),
-      json: jest.fn((body: unknown) => {
-        sentResponse.json = body
-        return mockResponse
-      }),
-      redirect: jest.fn((status: number, url: string) => {
-        sentResponse.redirect = { status, url }
-        return mockResponse
-      }),
-      header: jest.fn((name: string, value: string) => {
-        sentResponse.headers[name] = value
-        return mockResponse
-      }),
-      setHeader: jest.fn((name: string, value: string) => {
-        sentResponse.headers[name] = value
-        return mockResponse
-      }),
-    } as unknown as Partial<Response>
+    mockResponse = createMock<Response>()
+    jest.mocked(mockResponse.status).mockImplementation((code: number) => {
+      sentResponse.status = code
+      return mockResponse
+    })
+    jest.mocked(mockResponse.json).mockImplementation((body: unknown) => {
+      sentResponse.json = body
+      return mockResponse
+    })
+    jest.mocked(mockResponse.redirect).mockImplementation((status: number, url: string) => {
+      sentResponse.redirect = { status, url }
+    })
+    jest.mocked(mockResponse.header).mockImplementation(((name: string, value: string) => {
+      sentResponse.headers[name] = value
+      return mockResponse
+    }) as Response['header'])
+    jest.mocked(mockResponse.setHeader).mockImplementation(((name: string, value: string) => {
+      sentResponse.headers[name] = value
+      return mockResponse
+    }) as Response['setHeader'])
 
     // Mock request object
     mockRequest = {
@@ -79,16 +95,16 @@ describe('OAuth2ExceptionFilter', () => {
       query: {},
       headers: {},
       ip: '127.0.0.1',
-      get: jest.fn().mockReturnValue('test-user-agent'),
+      get: jest.fn<string | undefined, [string]>().mockReturnValue('test-user-agent'),
     }
 
     // Mock ArgumentsHost
-    mockArgumentsHost = {
+    mockArgumentsHost = createMock<ArgumentsHost>({
       switchToHttp: jest.fn().mockReturnValue({
         getResponse: () => mockResponse,
         getRequest: () => mockRequest,
       }),
-    } as any
+    })
   })
 
   it('should be defined', () => {
@@ -139,15 +155,15 @@ describe('OAuth2ExceptionFilter', () => {
       // https://datatracker.ietf.org/doc/html/rfc9700#section-2.1
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('https://example.com/callback')
+        expectStringContaining('https://example.com/callback')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=invalid_request')
+        expectStringContaining('error=invalid_request')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=test-state')
+        expectStringContaining('state=test-state')
       )
     })
 
@@ -169,7 +185,7 @@ describe('OAuth2ExceptionFilter', () => {
       expect(mockResponse.redirect).not.toHaveBeenCalled()
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST)
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2AuthorizationErrorCode.INVALID_REQUEST,
         })
       )
@@ -237,7 +253,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=csrf-token-12345')
+        expectStringContaining('state=csrf-token-12345')
       )
     })
 
@@ -273,7 +289,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error_description=The+requested+scope+is+invalid')
+        expectStringContaining('error_description=The+requested+scope+is+invalid')
       )
     })
 
@@ -308,11 +324,11 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=server_error')
+        expectStringContaining('error=server_error')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error_description=Internal+server+error')
+        expectStringContaining('error_description=Internal+server+error')
       )
 
       // Internal metadata (consoleMessage, metadata) must never leak to the
@@ -347,7 +363,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('https://example.com/stored-callback')
+        expectStringContaining('https://example.com/stored-callback')
       )
     })
   })
@@ -389,7 +405,7 @@ describe('OAuth2ExceptionFilter', () => {
         'application/json;charset=UTF-8'
       )
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_GRANT,
           error_description: 'Invalid authorization code',
         })
@@ -412,7 +428,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.UNAUTHORIZED)
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_CLIENT,
         })
       )
@@ -460,7 +476,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.json).toHaveBeenCalledWith(
         expect.not.objectContaining({
-          state: expect.anything(),
+          state: expectAny<string>(String),
         })
       )
       // The state value must not appear in any response channel at all
@@ -480,7 +496,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST)
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.UNSUPPORTED_GRANT_TYPE,
         })
       )
@@ -498,7 +514,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_SCOPE,
         })
       )
@@ -559,7 +575,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=invalid_request')
+        expectStringContaining('error=invalid_request')
       )
     })
 
@@ -571,7 +587,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=access_denied')
+        expectStringContaining('error=access_denied')
       )
     })
 
@@ -583,7 +599,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=server_error')
+        expectStringContaining('error=server_error')
       )
     })
 
@@ -595,7 +611,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('error=temporarily_unavailable')
+        expectStringContaining('error=temporarily_unavailable')
       )
     })
   })
@@ -627,7 +643,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_REQUEST,
         })
       )
@@ -640,7 +656,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_CLIENT,
         })
       )
@@ -653,7 +669,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.UNAUTHORIZED_CLIENT,
         })
       )
@@ -671,7 +687,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_REQUEST,
           error_description: 'Simple error message',
         })
@@ -687,7 +703,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'Detailed error message',
         })
       )
@@ -706,7 +722,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error: OAuth2TokenErrorCode.INVALID_GRANT,
           error_description: 'Authorization code is invalid',
           error_uri: 'https://docs.example.com/errors/invalid_grant',
@@ -717,7 +733,7 @@ describe('OAuth2ExceptionFilter', () => {
     it('should fallback to valid error when validation fails', () => {
       mockRequest.path = '/oauth2/token'
       // Malformed error object
-      const exception = new HttpException({ invalid: 'structure' } as any, HttpStatus.BAD_REQUEST)
+      const exception = new HttpException({ invalid: 'structure' }, HttpStatus.BAD_REQUEST)
 
       filter.catch(exception, mockArgumentsHost)
 
@@ -726,8 +742,8 @@ describe('OAuth2ExceptionFilter', () => {
       const response = sentResponse.json as Record<string, unknown>
 
       expect(response).toMatchObject({
-        error: expect.any(String),
-        error_description: expect.any(String),
+        error: expectAny<string>(String),
+        error_description: expectAny<string>(String),
       })
 
       // Error code must be one of the valid OAuth2TokenErrorCode values from RFC 6749 Section 5.2
@@ -882,7 +898,7 @@ describe('OAuth2ExceptionFilter', () => {
 
         expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
         expect(mockResponse.json).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             error: OAuth2AuthorizationErrorCode.SERVER_ERROR,
             error_description: 'Database error',
           })
@@ -899,14 +915,14 @@ describe('OAuth2ExceptionFilter', () => {
         }
 
         const exception = new HttpException('Store failed', HttpStatus.BAD_REQUEST)
-        const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+        const loggerSpy = jest.spyOn(filter['logger'], 'error')
 
         filter.catch(exception, mockArgumentsHost)
 
         expect(loggerSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             method: 'POST',
-            authRequestData: expect.objectContaining({
+            authRequestData: expectObjectContaining({
               client_id: 'test-client',
             }),
           })
@@ -932,7 +948,7 @@ describe('OAuth2ExceptionFilter', () => {
 
         expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST)
         expect(mockResponse.json).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             error: OAuth2AuthorizationErrorCode.INVALID_REQUEST,
           })
         )
@@ -943,12 +959,12 @@ describe('OAuth2ExceptionFilter', () => {
         delete mockRequest.authorizationRequestData
 
         const exception = new HttpException('Info not found', HttpStatus.NOT_FOUND)
-        const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+        const loggerSpy = jest.spyOn(filter['logger'], 'error')
 
         filter.catch(exception, mockArgumentsHost)
 
         expect(loggerSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
+          expectObjectContaining({
             authRequestData: '<NO REQUEST>',
           })
         )
@@ -997,11 +1013,11 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=test-state')
+        expectStringContaining('state=test-state')
       )
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('https://example.com/callback')
+        expectStringContaining('https://example.com/callback')
       )
     })
 
@@ -1071,14 +1087,14 @@ describe('OAuth2ExceptionFilter', () => {
 
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=query-state-123')
+        expectStringContaining('state=query-state-123')
       )
     })
 
     it('should handle non-string values in query parameters', () => {
       mockRequest.path = authorizePath
       mockRequest.query = {
-        client_id: ['array-value'] as any,
+        client_id: ['array-value'],
         redirect_uri: 'https://example.com/callback',
       }
 
@@ -1121,7 +1137,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'correct-state',
       }
 
-      const loggerWarnSpy = jest.spyOn((filter as any).logger, 'warn')
+      const loggerWarnSpy = jest.spyOn(filter['logger'], 'warn')
 
       const exception = new HttpException(
         {
@@ -1140,7 +1156,7 @@ describe('OAuth2ExceptionFilter', () => {
       // Should still use original state in redirect
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=correct-state')
+        expectStringContaining('state=correct-state')
       )
     })
 
@@ -1160,7 +1176,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'matching-state',
       }
 
-      const loggerWarnSpy = jest.spyOn((filter as any).logger, 'warn')
+      const loggerWarnSpy = jest.spyOn(filter['logger'], 'warn')
 
       const exception = new HttpException(
         {
@@ -1201,7 +1217,7 @@ describe('OAuth2ExceptionFilter', () => {
         state: 'original-state',
       }
 
-      const loggerWarnSpy = jest.spyOn((filter as any).logger, 'warn')
+      const loggerWarnSpy = jest.spyOn(filter['logger'], 'warn')
 
       const exception = new HttpException(
         {
@@ -1220,7 +1236,7 @@ describe('OAuth2ExceptionFilter', () => {
       // request state even though the exception itself had none
       expect(mockResponse.redirect).toHaveBeenCalledWith(
         HttpStatus.SEE_OTHER,
-        expect.stringContaining('state=original-state')
+        expectStringContaining('state=original-state')
       )
     })
   })
@@ -1246,11 +1262,9 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Capture the logged object instead of reading it back from mock.calls
       let loggedObject: object | undefined
-      const loggerSpy = jest
-        .spyOn((filter as any).logger, 'error')
-        .mockImplementation((logObject) => {
-          loggedObject = logObject as object
-        })
+      const loggerSpy = jest.spyOn(filter['logger'], 'error').mockImplementation((logObject) => {
+        loggedObject = logObject as object
+      })
 
       const exception = new HttpException('Unhandled endpoint', HttpStatus.NOT_FOUND)
 
@@ -1262,7 +1276,7 @@ describe('OAuth2ExceptionFilter', () => {
       // Alert is in logObject but gets overridden by undefined metadata.alert
       // The important thing is the log includes the warning message
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           message: 'OAuth2 endpoint error - ENDPOINT ERRORS NOT HANDLED!!!.',
         })
       )
@@ -1324,7 +1338,7 @@ describe('OAuth2ExceptionFilter', () => {
         redirect_uri: 'https://example.com/callback',
       }
 
-      const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+      const loggerSpy = jest.spyOn(filter['logger'], 'error')
 
       const exception = new OAuth2Exception(
         {
@@ -1346,7 +1360,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Metadata should be logged but not sent to client
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           consoleMessage: 'Internal diagnostic: DB connection pool exhausted',
           alert: 1,
           dbHost: 'db.example.com',
@@ -1372,19 +1386,19 @@ describe('OAuth2ExceptionFilter', () => {
       mockRequest.path = '/oauth2/token'
       mockRequest.ip = '127.0.0.2'
       mockRequest.body = { grant_type: 'authorization_code', code: 'secret-code' }
-      ;(mockRequest.get as jest.Mock).mockReturnValue('Mozilla/5.0')
+      mockRequest.get.mockReturnValue('Mozilla/5.0')
 
-      const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+      const loggerSpy = jest.spyOn(filter['logger'], 'error')
 
       const exception = new HttpException('Token error', HttpStatus.BAD_REQUEST)
 
       filter.catch(exception, mockArgumentsHost)
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           ip: '127.0.0.2',
           userAgent: 'Mozilla/5.0',
-          requestBody: expect.objectContaining({
+          requestBody: expectObjectContaining({
             grant_type: 'authorization_code',
           }),
         })
@@ -1395,14 +1409,14 @@ describe('OAuth2ExceptionFilter', () => {
       mockRequest.path = '/oauth2/token'
       mockRequest.ip = undefined
 
-      const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+      const loggerSpy = jest.spyOn(filter['logger'], 'error')
 
       const exception = new HttpException('Error', HttpStatus.BAD_REQUEST)
 
       filter.catch(exception, mockArgumentsHost)
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           ip: '<NO IP>',
         })
       )
@@ -1411,7 +1425,7 @@ describe('OAuth2ExceptionFilter', () => {
     it('should merge OAuth2Exception metadata with log object', () => {
       mockRequest.path = '/oauth2/token'
 
-      const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+      const loggerSpy = jest.spyOn(filter['logger'], 'error')
 
       const exception = new OAuth2Exception(
         {
@@ -1432,7 +1446,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           consoleMessage: 'Code expired 5 minutes ago',
           alert: 0,
           codeId: 'abc123',
@@ -1444,7 +1458,7 @@ describe('OAuth2ExceptionFilter', () => {
     it('should handle regular HttpException without metadata', () => {
       mockRequest.path = '/oauth2/token'
 
-      const loggerSpy = jest.spyOn((filter as any).logger, 'error')
+      const loggerSpy = jest.spyOn(filter['logger'], 'error')
 
       const exception = new HttpException('Regular error', HttpStatus.BAD_REQUEST)
 
@@ -1452,7 +1466,7 @@ describe('OAuth2ExceptionFilter', () => {
 
       // Should log with undefined metadata fields
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           consoleMessage: undefined,
           alert: undefined,
         })
@@ -1489,7 +1503,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'Custom error description',
         })
       )
@@ -1509,7 +1523,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'Primary message',
         })
       )
@@ -1528,7 +1542,7 @@ describe('OAuth2ExceptionFilter', () => {
       filter.catch(exception, mockArgumentsHost)
 
       expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           error_description: 'An error occurred',
         })
       )

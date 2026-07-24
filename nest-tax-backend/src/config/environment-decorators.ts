@@ -36,7 +36,7 @@ function NumberTransform() {
   })
 }
 
-export function EnvBoolean(required = true) {
+export function EnvBoolean({ required = true }: { required?: boolean } = {}) {
   return applyDecorators(
     Expose(),
     BooleanTransform(),
@@ -45,7 +45,15 @@ export function EnvBoolean(required = true) {
   )
 }
 
-export function EnvInt(min?: number, max?: number, required = true) {
+export function EnvInt({
+  min,
+  max,
+  required = true,
+}: {
+  min?: number
+  max?: number
+  required?: boolean
+} = {}) {
   return applyDecorators(
     Expose(),
     NumberTransform(),
@@ -56,11 +64,11 @@ export function EnvInt(min?: number, max?: number, required = true) {
   )
 }
 
-export function EnvPort(required = true) {
-  return EnvInt(0, 65_535, required)
+export function EnvPort({ required = true }: { required?: boolean } = {}) {
+  return EnvInt({ min: 0, max: 65_535, required })
 }
 
-export function EnvString(required = true) {
+export function EnvString({ required = true }: { required?: boolean } = {}) {
   return applyDecorators(
     Expose(),
     IsString(),
@@ -68,11 +76,26 @@ export function EnvString(required = true) {
   )
 }
 
-export function EnvUrl(required = true) {
-  return applyDecorators(Expose(), IsUrl(), ...(required ? [IsNotEmpty()] : []))
+export function EnvUrl({
+  requireTld = true,
+  required = true,
+}: {
+  requireTld?: boolean
+  required?: boolean
+} = {}) {
+  return applyDecorators(
+    Expose(),
+    // requireTld toggles whether the URL must have a top-level domain (TLD)
+    // Disable it for Kubernetes service URLs (e.g. http://nest-forms-backend-app).
+    IsUrl({ require_tld: requireTld }),
+    ...(required ? [IsNotEmpty()] : []),
+  )
 }
 
-export function EnvEnum(enumType: object, required = true) {
+export function EnvEnum(
+  enumType: object,
+  { required = true }: { required?: boolean } = {},
+) {
   return applyDecorators(
     Expose(),
     IsEnum(enumType),

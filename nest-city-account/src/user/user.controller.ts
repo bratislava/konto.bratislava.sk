@@ -206,15 +206,8 @@ export class UserController {
         )
     }
 
-    if (result) {
-      await this.bloomreachOutboxService.trackCustomer(user.idUser)
-      return result
-    }
-
-    throw this.throwerErrorGuard.UnprocessableEntityException(
-      UserErrorsEnum.COGNITO_TYPE_ERROR,
-      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
-    )
+    await this.bloomreachOutboxService.trackCustomer(user.idUser)
+    return result
   }
 
   @HttpCode(204)

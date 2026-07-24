@@ -124,3 +124,6 @@ dist
 
 # Volta
 .volta
+
+# Claude Code worktrees
+.claude/worktrees/

@@ -1,5 +1,4 @@
 import { Injectable, Logger, PreconditionFailedException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Cron } from '@nestjs/schedule'
 import { Readable as ReadableStream } from 'stream'
 
@@ -10,6 +9,7 @@ import {
   listOfStatuses,
   timeout,
 } from '../common/utils/helpers'
+import BaConfigService from '../config/ba-config.service'
 import { FormsClientService } from '../forms-client/forms-client.service'
 import { Files, FileStatus } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
@@ -25,7 +25,7 @@ export class ScannerCronService {
     private scannerService: ScannerService,
     private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly clamavClientService: ClamavClientService,
     private readonly formsClientService: FormsClientService,
   ) {}
@@ -220,26 +220,38 @@ export class ScannerCronService {
       return FileStatus.SCAN_ERROR
     }
 
-    //move file to safe or infected bucket if scan status is SAFE or INFECTED
-    if (scanStatus === FileStatus.SAFE || scanStatus === FileStatus.INFECTED) {
-      const destinationBucket: string = this.configService.get(
-        `CLAMAV_${scanStatus}_BUCKET`,
-        '',
-      )
-      const moveStatus = await this.minioStorageService.moveFileBetweenBuckets(
+    // Determines which file statuses should move a file and where to
+    const moveTargetByScanStatus = new Map<
+      FileStatus,
+      { destinationBucket: string; moveErrorStatus: FileStatus }
+    >([
+      [
+        FileStatus.SAFE,
+        {
+          destinationBucket: this.baConfigService.minio.buckets.safe,
+          moveErrorStatus: FileStatus.MOVE_ERROR_SAFE,
+        },
+      ],
+      [
+        FileStatus.INFECTED,
+        {
+          destinationBucket: this.baConfigService.minio.buckets.infected,
+          moveErrorStatus: FileStatus.MOVE_ERROR_INFECTED,
+        },
+      ],
+    ])
+
+    //move file to its target bucket if the scan status has one configured
+    const moveTarget = moveTargetByScanStatus.get(scanStatus)
+    if (moveTarget) {
+      const moveSuccess = await this.minioStorageService.moveFileBetweenBuckets(
         file.bucketUid,
         file.fileUid,
-        destinationBucket,
+        moveTarget.destinationBucket,
         file.fileUid,
       )
-      if (!moveStatus) {
-        let moveErrorStatus: FileStatus = FileStatus.MOVE_ERROR_SAFE
-
-        if (scanStatus === FileStatus.INFECTED) {
-          moveErrorStatus = FileStatus.MOVE_ERROR_INFECTED
-        }
-
-        await this.updateScanStatusWithNotify(file, moveErrorStatus)
+      if (!moveSuccess) {
+        await this.updateScanStatusWithNotify(file, moveTarget.moveErrorStatus)
 
         throw new Error(
           `${file.fileUid} could not be moved to ${scanStatus} bucket.`,
@@ -268,7 +280,7 @@ export class ScannerCronService {
     let response: string
     try {
       response = await Promise.race([
-        timeout(this.configService.get('MAX_FILE_SCAN_RUNS_TIMEOUT', 0)),
+        timeout(this.baConfigService.scanner.maxFileScanRunsTimeout),
         this.clamavClientService.scanStream(fileStream),
       ])
       this.logger.debug(
@@ -416,7 +428,7 @@ export class ScannerCronService {
           },
         ],
         runs: {
-          gte: parseInt(this.configService.get('MAX_FILE_SCAN_RUNS', '1')),
+          gte: this.baConfigService.scanner.maxFileScanRuns,
         },
       },
       take: 200,

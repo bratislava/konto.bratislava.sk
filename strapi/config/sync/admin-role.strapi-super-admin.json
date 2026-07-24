@@ -105,6 +105,9 @@
       "properties": {
         "fields": [
           "slug",
+          "isTemporarilyDisabled",
+          "temporarilyDisabledUntil",
+          "temporarilyDisabledReason",
           "municipalService",
           "moreInformationUrl",
           "landingPage.text",
@@ -118,7 +121,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "ngz8bhks143ivvzxwt8d21ar",
+      "documentId": "yfctyr5to0l7jgumvkf809mz",
       "locale": null
     },
     {
@@ -146,6 +149,9 @@
       "properties": {
         "fields": [
           "slug",
+          "isTemporarilyDisabled",
+          "temporarilyDisabledUntil",
+          "temporarilyDisabledReason",
           "municipalService",
           "moreInformationUrl",
           "landingPage.text",
@@ -159,7 +165,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "vgmy0g413dckqxplco7j6si1",
+      "documentId": "tw5j77elvyz3hu0lvm2hazag",
       "locale": null
     },
     {
@@ -169,6 +175,9 @@
       "properties": {
         "fields": [
           "slug",
+          "isTemporarilyDisabled",
+          "temporarilyDisabledUntil",
+          "temporarilyDisabledReason",
           "municipalService",
           "moreInformationUrl",
           "landingPage.text",
@@ -182,7 +191,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "hjrgs4sxnt2xyhhiw5wiwp7j",
+      "documentId": "tiq8rx1e4p5vq9g4o0tgxd7u",
       "locale": null
     },
     {
@@ -717,6 +726,11 @@
           "slug",
           "pageHeaderText",
           "moreInformationUrl",
+          "card.overrideTitle",
+          "card.text",
+          "card.linkLabel",
+          "card.pictogram",
+          "card.color",
           "description",
           "buttonText",
           "form",
@@ -732,7 +746,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "lv83t0o7zvh6nvmh2141epe7",
+      "documentId": "y3d0ukzq72cwjt3sngoyyro2",
       "locale": null
     },
     {
@@ -763,6 +777,11 @@
           "slug",
           "pageHeaderText",
           "moreInformationUrl",
+          "card.overrideTitle",
+          "card.text",
+          "card.linkLabel",
+          "card.pictogram",
+          "card.color",
           "description",
           "buttonText",
           "form",
@@ -778,7 +797,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "su96u0kd5v907bfw4ner3ibl",
+      "documentId": "ppqfpoehf9mf15dsi1bn2lt7",
       "locale": null
     },
     {
@@ -791,6 +810,11 @@
           "slug",
           "pageHeaderText",
           "moreInformationUrl",
+          "card.overrideTitle",
+          "card.text",
+          "card.linkLabel",
+          "card.pictogram",
+          "card.color",
           "description",
           "buttonText",
           "form",
@@ -806,7 +830,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "y152m7fjcgcz3hcljtqwxdvx",
+      "documentId": "srwk3s9l263wickgaay0pxuo",
       "locale": null
     },
     {

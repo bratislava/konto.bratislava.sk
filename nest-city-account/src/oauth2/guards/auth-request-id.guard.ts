@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Request } from 'express'
+import { SetRequired } from 'type-fest'
 
 import { AuthorizationRequestDto } from '../dtos/requests.oauth2.dto'
 import { OAuth2AuthorizationErrorCode } from '../oauth2.error.enum'
@@ -10,9 +11,23 @@ import {
   OAuth2ValidationSubservice,
 } from '../subservices/oauth2-validation.subservice'
 
-export interface RequestWithAuthorizationData extends Request {
+export interface RequestWithAuthorizationData extends Request<
+  Record<string, string>,
+  unknown,
+  { authRequestId?: unknown } | undefined
+> {
   authorizationRequestData?: AuthorizationRequestDto
 }
+
+/**
+ * Narrows {@link RequestWithAuthorizationData} for use after {@link AuthRequestIdGuard} has run:
+ * the guard always sets `authorizationRequestData` before the controller is reached, so consumers
+ * can rely on it being present without a runtime check.
+ */
+export type RequestWithValidatedAuthorizationData = SetRequired<
+  RequestWithAuthorizationData,
+  'authorizationRequestData'
+>
 
 /**
  * Guard for OAuth2 endpoints that use authorization request ID

@@ -210,7 +210,7 @@ export class OAuth2ValidationSubservice {
    * Extract client credentials from request (Basic Auth header or body)
    */
   extractClientCredentials(
-    request: Request<unknown, unknown, { client_id?: string; client_secret?: string }>
+    request: Request<unknown, unknown, { client_id?: string; client_secret?: string } | undefined>
   ): {
     clientId?: string
     clientSecret?: string
@@ -236,8 +236,8 @@ export class OAuth2ValidationSubservice {
     }
 
     if (!clientId) {
-      const bodyClientId = request.body.client_id
-      const bodyClientSecret = request.body.client_secret
+      const bodyClientId = request.body?.client_id
+      const bodyClientSecret = request.body?.client_secret
 
       // Validate that values are non-empty strings (do not trim client-provided values)
       if (typeof bodyClientId === 'string' && bodyClientId.length > 0) {

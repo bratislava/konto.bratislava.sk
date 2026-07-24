@@ -62,6 +62,20 @@
           "sortable": false
         }
       },
+      "allowCollapsingDocuments": {
+        "edit": {
+          "label": "Povoliť skladanie dokumentov",
+          "description": "Ak je dokumentov menej než 5 tak sa tlačidlo nezobrazí aj tak",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "allowCollapsingDocuments",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "documentId": {
         "edit": {},
         "list": {
@@ -95,6 +109,10 @@
           {
             "name": "text",
             "size": 6
+          },
+          {
+            "name": "allowCollapsingDocuments",
+            "size": 4
           }
         ]
       ]

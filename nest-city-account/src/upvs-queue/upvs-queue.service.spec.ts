@@ -2,7 +2,19 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../test/singleton'
-import { ExternalEdeskCheck, PhysicalEntity, QueueItemStatusEnum } from '../generated/prisma/client'
+import { cognitoUserDataFactory } from '../__tests__/factories/cognitoUserData.factory'
+import { externalEdeskCheckFactory } from '../__tests__/factories/externalEdeskCheck.factory'
+import {
+  expectArrayContaining,
+  expectDefined,
+  expectObjectContaining,
+} from '../__tests__/jest-matchers'
+import {
+  ExternalEdeskCheck,
+  PhysicalEntity,
+  Prisma,
+  QueueItemStatusEnum,
+} from '../generated/prisma/client'
 import { NasesService } from '../nases/nases.service'
 import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -80,10 +92,9 @@ describe('UpvsQueueService', () => {
         .mockResolvedValueOnce([mockHighPriorityEntity])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
+      jest
+        .spyOn(cognitoSubservice, 'getDataFromCognito')
+        .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [
@@ -111,7 +122,7 @@ describe('UpvsQueueService', () => {
       expect(physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase).toHaveBeenCalled()
       expect(prismaMock.externalEdeskCheck.updateMany).toHaveBeenCalledWith({
         where: { uri: 'rc://sk/external' },
-        data: expect.objectContaining({
+        data: expectObjectContaining<Prisma.ExternalEdeskCheckUpdateManyMutationInput>({
           queueStatus: QueueItemStatusEnum.COMPLETED,
           upvsStatus: 'activated',
           edeskStatus: 'active',
@@ -213,15 +224,15 @@ describe('UpvsQueueService', () => {
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([mockExternalItem])
 
       jest.spyOn(nasesService, 'createMany').mockRejectedValue(new Error('Mock error'))
-      const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {})
+      const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
 
       await service.processBatch()
 
       expect(errorSpy).toHaveBeenCalledWith('Error processing batch', expect.any(Error))
 
       expect(prismaMock.externalEdeskCheck.updateMany).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
+        expectObjectContaining({
+          data: expectObjectContaining<Prisma.ExternalEdeskCheckUpdateManyMutationInput>({
             queueStatus: QueueItemStatusEnum.FAILED,
           }),
         })
@@ -313,10 +324,9 @@ describe('UpvsQueueService', () => {
         .mockResolvedValueOnce([])
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([])
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'Ján',
-        family_name: 'Novák',
-      } as any)
+      jest
+        .spyOn(cognitoSubservice, 'getDataFromCognito')
+        .mockResolvedValue(cognitoUserDataFactory({ given_name: 'Ján', family_name: 'Novák' }))
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
@@ -326,8 +336,8 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       expect(nasesService.createMany).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
+        expectArrayContaining([
+          expectObjectContaining({
             uri: 'rc://sk/1234567890_novak_jan',
             physicalEntityId: 'entity-1',
           }),
@@ -348,12 +358,12 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       // Should request full batch size (8) for urgent items (second call, after getUriToUpdateInternal)
-      const urgentCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[1]
-      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[2]
-      expect(urgentCall[urgentCall.length - 1]).toBe(8) // Last parameter is the limit
-      expect(highPriorityCall[highPriorityCall.length - 1]).toBe(5) // We take only 5 for high priority
+      const urgentCall = prismaMock.$queryRaw.mock.calls[1]
+      const highPriorityCall = prismaMock.$queryRaw.mock.calls[2]
+      expect(urgentCall.at(-1)).toBe(8) // Last parameter is the limit
+      expect(highPriorityCall.at(-1)).toBe(5) // We take only 5 for high priority
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 8,
         })
       )
@@ -399,12 +409,12 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       // Should request up to 5 high priority items (third call, after getUriToUpdateInternal and urgent)
-      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[2]
-      expect(highPriorityCall[highPriorityCall.length - 1]).toBe(5) // Last parameter is the limit
+      const highPriorityCall = prismaMock.$queryRaw.mock.calls[2]
+      expect(highPriorityCall.at(-1)).toBe(5) // Last parameter is the limit
 
       // Should request 3 external items (8 - 5 high priority)
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 3,
         })
       )
@@ -451,12 +461,12 @@ describe('UpvsQueueService', () => {
 
       // Should request 5 external items to fill remaining slots
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 5,
         })
       )
 
-      const callArg = (nasesService.createMany as jest.Mock).mock.calls[0][0]
+      const [callArg] = expectDefined(jest.mocked(nasesService.createMany).mock.lastCall)
       expect(callArg.length).toBe(8) // 3 high priority + 5 external
     })
 
@@ -479,10 +489,9 @@ describe('UpvsQueueService', () => {
 
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue([])
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
+      jest
+        .spyOn(cognitoSubservice, 'getDataFromCognito')
+        .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
@@ -492,17 +501,17 @@ describe('UpvsQueueService', () => {
       await service.processBatch()
 
       // Should request 0 high priority slots (third call) since 8 urgent items fill the batch
-      const highPriorityCall = (prismaMock.$queryRaw as jest.Mock).mock.calls[2]
-      expect(highPriorityCall[highPriorityCall.length - 1]).toBe(0) // Last parameter is the limit
+      const highPriorityCall = prismaMock.$queryRaw.mock.calls[2]
+      expect(highPriorityCall.at(-1)).toBe(0) // Last parameter is the limit
 
       // Should request 0 external items (batch is full with urgent)
       expect(prismaMock.externalEdeskCheck.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expectObjectContaining({
           take: 0,
         })
       )
 
-      const callArg = (nasesService.createMany as jest.Mock).mock.calls[0][0]
+      const [callArg] = expectDefined(jest.mocked(nasesService.createMany).mock.lastCall)
       expect(callArg.length).toBe(8)
     })
 
@@ -549,10 +558,9 @@ describe('UpvsQueueService', () => {
 
       prismaMock.externalEdeskCheck.findMany.mockResolvedValue(mockExternalItems)
 
-      jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({
-        given_name: 'John',
-        family_name: 'Doe',
-      } as any)
+      jest
+        .spyOn(cognitoSubservice, 'getDataFromCognito')
+        .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],
@@ -561,17 +569,17 @@ describe('UpvsQueueService', () => {
 
       await service.processBatch()
 
-      const callArg = (nasesService.createMany as jest.Mock).mock.calls[0][0]
+      const [callArg] = expectDefined(jest.mocked(nasesService.createMany).mock.lastCall)
       expect(callArg.length).toBe(8)
 
       // Verify correct distribution
-      const urgentCount = callArg.filter((item: any) =>
+      const urgentCount = callArg.filter((item) =>
         item.physicalEntityId?.startsWith('urgent-')
       ).length
-      const highPriorityCount = callArg.filter((item: any) =>
+      const highPriorityCount = callArg.filter((item) =>
         item.physicalEntityId?.startsWith('high-')
       ).length
-      const externalCount = callArg.filter((item: any) => item.uri?.includes('external')).length
+      const externalCount = callArg.filter((item) => item.uri.includes('external')).length
 
       expect(urgentCount).toBe(2)
       expect(highPriorityCount).toBe(4)
@@ -609,12 +617,10 @@ describe('UpvsQueueService', () => {
     })
 
     it('should handle external URI update when NEW_URI_CHECK_REQUIRED status is set', async () => {
-      const mockExternalItem = {
-        uri: 'rc://sk/external_old',
-      }
+      const mockExternalItem = externalEdeskCheckFactory({ uri: 'rc://sk/external_old' })
 
       prismaMock.$queryRaw.mockResolvedValueOnce([])
-      prismaMock.externalEdeskCheck.findFirst.mockResolvedValue(mockExternalItem as any)
+      prismaMock.externalEdeskCheck.findFirst.mockResolvedValue(mockExternalItem)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [
@@ -635,7 +641,7 @@ describe('UpvsQueueService', () => {
 
       expect(prismaMock.externalEdeskCheck.update).toHaveBeenCalledWith({
         where: { uri: 'rc://sk/external_old' },
-        data: expect.objectContaining({
+        data: expectObjectContaining<Prisma.ExternalEdeskCheckUpdateInput>({
           queueStatus: QueueItemStatusEnum.COMPLETED,
           upvsStatus: 'activated',
           edeskStatus: 'active',
@@ -645,12 +651,10 @@ describe('UpvsQueueService', () => {
     })
 
     it('should handle failed external URI update', async () => {
-      const mockExternalItem = {
-        uri: 'rc://sk/external_old',
-      }
+      const mockExternalItem = externalEdeskCheckFactory({ uri: 'rc://sk/external_old' })
 
       prismaMock.$queryRaw.mockResolvedValueOnce([])
-      prismaMock.externalEdeskCheck.findFirst.mockResolvedValue(mockExternalItem as any)
+      prismaMock.externalEdeskCheck.findFirst.mockResolvedValue(mockExternalItem)
 
       jest.spyOn(nasesService, 'createMany').mockResolvedValue({
         success: [],

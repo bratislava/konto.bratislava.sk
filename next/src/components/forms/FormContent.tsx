@@ -14,6 +14,7 @@ import { useFormState } from '@/src/components/forms/useFormState'
 import { useFormValidatorRegistry } from '@/src/components/forms/useFormValidatorRegistry'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import FormModals from '@/src/components/modals/FormModals/FormModals'
+import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
 import FormBottomMenu from '@/src/components/simple-components/FormBottomMenu'
 import FormHeader from '@/src/components/simple-components/FormHeader'
 
@@ -53,7 +54,7 @@ const FormStep = () => {
 }
 
 const FormContentInner = () => {
-  const { displayHeaderAndMenu } = useFormContext()
+  const { displayHeaderAndMenu, strapiForm } = useFormContext()
   const { currentStepIndex, currentStepperStep, popScrollToFieldId } = useFormState()
 
   useIsomorphicLayoutEffect(() => {
@@ -80,6 +81,14 @@ const FormContentInner = () => {
         >
           <StepperView />
           <div className="grow">
+            {/* On the summary step the alert is rendered by SummaryHeader. */}
+            {currentStepperStep.index !== 'summary' ? (
+              <TemporarilyDisabledAlert
+                strapiForm={strapiForm}
+                variant="form"
+                className="mb-6 lg:mb-8"
+              />
+            ) : null}
             {currentStepperStep.index === 'summary' ? <FormSummary /> : <FormStep />}
             {displayHeaderAndMenu && <FormBottomMenu />}
           </div>

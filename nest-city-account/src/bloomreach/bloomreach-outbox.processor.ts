@@ -105,11 +105,11 @@ export class BloomreachOutboxProcessor {
       const succeededIds: string[] = []
       const failedEntries: BloomreachOutbox[] = []
 
-      for (let i = 0; i < entries.length; i++) {
-        if (!response.results[i]?.success) {
-          failedEntries.push(entries[i])
+      for (const [i, entry] of entries.entries()) {
+        if (response.results.at(i)?.success) {
+          succeededIds.push(entry.id)
         } else {
-          succeededIds.push(entries[i].id)
+          failedEntries.push(entry)
         }
       }
 
@@ -363,7 +363,7 @@ export class BloomreachOutboxProcessor {
 
   private async sendBatch(commands: BloomreachBatchCommand[]): Promise<BloomreachBatchResponse> {
     const { apiUrl, projectToken } = this.baConfigService.bloomreach
-    const response = await axios.post(
+    const response = await axios.post<BloomreachBatchResponse>(
       `${apiUrl}/track/v2/projects/${projectToken}/batch`,
       { commands },
       {
@@ -373,11 +373,13 @@ export class BloomreachOutboxProcessor {
       }
     )
 
-    const body = response.data as BloomreachBatchResponse
-    if (!body.results) {
-      throw new Error(`Bloomreach batch API returned unexpected response: ${JSON.stringify(body)}`)
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive check: Bloomreach API should always return results array
+    if (!response.data.results) {
+      throw new Error(
+        `Bloomreach batch API returned unexpected response: ${JSON.stringify(response.data)}`
+      )
     }
 
-    return body
+    return response.data
   }
 }

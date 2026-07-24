@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { AxiosPromise, isAxiosError } from 'axios'
 import {
   UpdateFileStatusRequestDtoStatusEnum,
@@ -7,13 +6,14 @@ import {
 } from 'openapi-clients/forms'
 
 import ClientsService from '../clients/clients.service'
+import BaConfigService from '../config/ba-config.service'
 
 @Injectable()
 export class FormsClientService {
   private readonly logger: Logger
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly clientsService: ClientsService,
   ) {
     this.logger = new Logger('FormsClientService')
@@ -52,12 +52,8 @@ export class FormsClientService {
         {
           timeout: 2000,
           auth: {
-            username: this.configService.getOrThrow<string>(
-              'NEST_FORMS_BACKEND_USERNAME',
-            ),
-            password: this.configService.getOrThrow<string>(
-              'NEST_FORMS_BACKEND_PASSWORD',
-            ),
+            username: this.baConfigService.formsBackend.username,
+            password: this.baConfigService.formsBackend.password,
           },
         },
       )

@@ -3,13 +3,13 @@ import { ReactElement } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
-import AccordionShowCase from '@/src/components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
 import AuthFormsShowCase from '@/src/components/styleguide/showcases/AuthFormsShowCase'
 import BannerShowCase from '@/src/components/styleguide/showcases/BannerShowCase'
 import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
+import DisclosureShowCase from '@/src/components/styleguide/showcases/DisclosureShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
 import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
 import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
@@ -31,6 +31,7 @@ import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCa
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
 import TaxesShowCase from '@/src/components/styleguide/showcases/TaxesShowCase/TaxesShowCase'
+import TemporarilyDisabledAlertShowCase from '@/src/components/styleguide/showcases/TemporarilyDisabledAlertShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
 import TextFieldShowCase from '@/src/components/styleguide/showcases/TextFieldShowCase'
 import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
@@ -62,8 +63,13 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },
   { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
+  {
+    id: 'temporarily-disabled-alert',
+    label: 'Temporarily Disabled Alert',
+    component: <TemporarilyDisabledAlertShowCase />,
+  },
   { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
-  { id: 'accordion', label: 'Accordion', component: <AccordionShowCase /> },
+  { id: 'disclosure', label: 'Disclosure', component: <DisclosureShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
   { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
   { id: 'banner', label: 'Banner', component: <BannerShowCase /> },

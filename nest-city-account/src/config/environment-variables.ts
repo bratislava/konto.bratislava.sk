@@ -38,7 +38,7 @@ export default class EnvironmentVariables {
   @EnvString()
   DATABASE_URL: string
 
-  @EnvInt(1)
+  @EnvInt({ min: 1 })
   DB_CONCURRENCY: number
 
   @EnvString()
@@ -149,10 +149,10 @@ export default class EnvironmentVariables {
   @EnvString()
   CRYPTO_SECRET_KEY: string
 
-  @EnvInt(1, 12)
+  @EnvInt({ min: 1, max: 12 })
   MUNICIPAL_TAX_LOCK_MONTH: number
 
-  @EnvInt(1, 31)
+  @EnvInt({ min: 1, max: 31 })
   MUNICIPAL_TAX_LOCK_DAY: number
 
   @EnvUrl()

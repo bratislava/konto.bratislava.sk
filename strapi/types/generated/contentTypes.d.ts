@@ -441,6 +441,9 @@ export interface ApiFormForm extends Struct.CollectionTypeSchema {
   attributes: {
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
+    isTemporarilyDisabled: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>
     landingPage: Schema.Attribute.Component<'blocks.form-landing-page', false>
     locale: Schema.Attribute.String & Schema.Attribute.Private
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::form.form'> &
@@ -452,6 +455,8 @@ export interface ApiFormForm extends Struct.CollectionTypeSchema {
     >
     publishedAt: Schema.Attribute.DateTime
     slug: Schema.Attribute.UID & Schema.Attribute.Required
+    temporarilyDisabledReason: Schema.Attribute.Text
+    temporarilyDisabledUntil: Schema.Attribute.String
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
   }
@@ -704,6 +709,7 @@ export interface ApiMunicipalServiceMunicipalService extends Struct.CollectionTy
   }
   attributes: {
     buttonText: Schema.Attribute.String & Schema.Attribute.Required
+    card: Schema.Attribute.Component<'blocks.municipal-service-card', false>
     categories: Schema.Attribute.Relation<
       'manyToMany',
       'api::municipal-service-category.municipal-service-category'

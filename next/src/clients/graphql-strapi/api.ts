@@ -392,6 +392,36 @@ export type ComponentBlocksHelpItemInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentBlocksMunicipalServiceCard = {
+  __typename?: 'ComponentBlocksMunicipalServiceCard'
+  color: Enum_Componentblocksmunicipalservicecard_Color
+  id: Scalars['ID']['output']
+  linkLabel: Scalars['String']['output']
+  overrideTitle?: Maybe<Scalars['String']['output']>
+  pictogram: Enum_Componentblocksmunicipalservicecard_Pictogram
+  text: Scalars['String']['output']
+}
+
+export type ComponentBlocksMunicipalServiceCardFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>>>
+  color?: InputMaybe<StringFilterInput>
+  linkLabel?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>>>
+  overrideTitle?: InputMaybe<StringFilterInput>
+  pictogram?: InputMaybe<StringFilterInput>
+  text?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksMunicipalServiceCardInput = {
+  color?: InputMaybe<Enum_Componentblocksmunicipalservicecard_Color>
+  id?: InputMaybe<Scalars['ID']['input']>
+  linkLabel?: InputMaybe<Scalars['String']['input']>
+  overrideTitle?: InputMaybe<Scalars['String']['input']>
+  pictogram?: InputMaybe<Enum_Componentblocksmunicipalservicecard_Pictogram>
+  text?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksMunicipalServiceLink = {
   __typename?: 'ComponentBlocksMunicipalServiceLink'
   id: Scalars['ID']['output']
@@ -635,6 +665,7 @@ export type ComponentSectionsContactsInput = {
 
 export type ComponentSectionsDocuments = {
   __typename?: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: Maybe<Scalars['Boolean']['output']>
   externalDocuments?: Maybe<Array<Maybe<ComponentBlocksExternalDocument>>>
   id: Scalars['ID']['output']
   text?: Maybe<Scalars['String']['output']>
@@ -648,6 +679,7 @@ export type ComponentSectionsDocumentsExternalDocumentsArgs = {
 }
 
 export type ComponentSectionsDocumentsFiltersInput = {
+  allowCollapsingDocuments?: InputMaybe<BooleanFilterInput>
   and?: InputMaybe<Array<InputMaybe<ComponentSectionsDocumentsFiltersInput>>>
   externalDocuments?: InputMaybe<ComponentBlocksExternalDocumentFiltersInput>
   not?: InputMaybe<ComponentSectionsDocumentsFiltersInput>
@@ -657,6 +689,7 @@ export type ComponentSectionsDocumentsFiltersInput = {
 }
 
 export type ComponentSectionsDocumentsInput = {
+  allowCollapsingDocuments?: InputMaybe<Scalars['Boolean']['input']>
   externalDocuments?: InputMaybe<Array<InputMaybe<ComponentBlocksExternalDocumentInput>>>
   id?: InputMaybe<Scalars['ID']['input']>
   text?: InputMaybe<Scalars['String']['input']>
@@ -812,6 +845,48 @@ export type DateTimeFilterInput = {
 export type DeleteMutationResponse = {
   __typename?: 'DeleteMutationResponse'
   documentId: Scalars['ID']['output']
+}
+
+export enum Enum_Componentblocksmunicipalservicecard_Color {
+  Culture = 'culture',
+  Education = 'education',
+  Environment = 'environment',
+  Main = 'main',
+  Marianum = 'marianum',
+  Olo = 'olo',
+  Social = 'social',
+  Transport = 'transport',
+  Tsb = 'tsb',
+}
+
+export enum Enum_Componentblocksmunicipalservicecard_Pictogram {
+  Administration = 'administration',
+  ChristmasTree = 'christmas_tree',
+  CommunityGardens = 'community_gardens',
+  Connector = 'connector',
+  CulturalOrganizations = 'cultural_organizations',
+  EventsSupport = 'events_support',
+  Excavations = 'excavations',
+  FrontGardens = 'front_gardens',
+  Greenery = 'greenery',
+  Housing = 'housing',
+  KidsTeenagers = 'kids_teenagers',
+  Lamp = 'lamp',
+  Library = 'library',
+  ManagementCommunications = 'management_communications',
+  Marianum = 'marianum',
+  Mosquito = 'mosquito',
+  Parking = 'parking',
+  PublicSpaceOccupation = 'public_space_occupation',
+  Scooter = 'scooter',
+  Security = 'security',
+  SpatialPlanning = 'spatial_planning',
+  SwimmingPool = 'swimming_pool',
+  Taxes = 'taxes',
+  Towing = 'towing',
+  Transport = 'transport',
+  Waste = 'waste',
+  Zoo = 'zoo',
 }
 
 export enum Enum_Componentsectionscontacts_Titlelevel {
@@ -975,11 +1050,14 @@ export type Form = {
   __typename?: 'Form'
   createdAt?: Maybe<Scalars['DateTime']['output']>
   documentId: Scalars['ID']['output']
+  isTemporarilyDisabled: Scalars['Boolean']['output']
   landingPage?: Maybe<ComponentBlocksFormLandingPage>
   moreInformationUrl?: Maybe<Scalars['String']['output']>
   municipalService?: Maybe<MunicipalService>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   slug: Scalars['String']['output']
+  temporarilyDisabledReason?: Maybe<Scalars['String']['output']>
+  temporarilyDisabledUntil?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
@@ -1004,6 +1082,7 @@ export type FormFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<FormFiltersInput>>>
   createdAt?: InputMaybe<DateTimeFilterInput>
   documentId?: InputMaybe<IdFilterInput>
+  isTemporarilyDisabled?: InputMaybe<BooleanFilterInput>
   landingPage?: InputMaybe<ComponentBlocksFormLandingPageFiltersInput>
   moreInformationUrl?: InputMaybe<StringFilterInput>
   municipalService?: InputMaybe<MunicipalServiceFiltersInput>
@@ -1011,15 +1090,20 @@ export type FormFiltersInput = {
   or?: InputMaybe<Array<InputMaybe<FormFiltersInput>>>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   slug?: InputMaybe<StringFilterInput>
+  temporarilyDisabledReason?: InputMaybe<StringFilterInput>
+  temporarilyDisabledUntil?: InputMaybe<StringFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
 }
 
 export type FormInput = {
+  isTemporarilyDisabled?: InputMaybe<Scalars['Boolean']['input']>
   landingPage?: InputMaybe<ComponentBlocksFormLandingPageInput>
   moreInformationUrl?: InputMaybe<Scalars['String']['input']>
   municipalService?: InputMaybe<Scalars['ID']['input']>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   slug?: InputMaybe<Scalars['String']['input']>
+  temporarilyDisabledReason?: InputMaybe<Scalars['String']['input']>
+  temporarilyDisabledUntil?: InputMaybe<Scalars['String']['input']>
 }
 
 export type FormRelationResponseCollection = {
@@ -1093,6 +1177,7 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
+  | ComponentBlocksMunicipalServiceCard
   | ComponentBlocksMunicipalServiceLink
   | ComponentBlocksQuestion
   | ComponentGeneralAlert
@@ -1600,6 +1685,7 @@ export type MunicipalChargeRelationResponseCollection = {
 export type MunicipalService = {
   __typename?: 'MunicipalService'
   buttonText: Scalars['String']['output']
+  card?: Maybe<ComponentBlocksMunicipalServiceCard>
   categories: Array<Maybe<MunicipalServiceCategory>>
   categories_connection?: Maybe<MunicipalServiceCategoryRelationResponseCollection>
   color: Enum_Municipalservice_Color
@@ -1735,6 +1821,7 @@ export type MunicipalServiceEntityResponseCollection = {
 export type MunicipalServiceFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<MunicipalServiceFiltersInput>>>
   buttonText?: InputMaybe<StringFilterInput>
+  card?: InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>
   categories?: InputMaybe<MunicipalServiceCategoryFiltersInput>
   color?: InputMaybe<StringFilterInput>
   createdAt?: InputMaybe<DateTimeFilterInput>
@@ -1758,6 +1845,7 @@ export type MunicipalServiceFiltersInput = {
 
 export type MunicipalServiceInput = {
   buttonText?: InputMaybe<Scalars['String']['input']>
+  card?: InputMaybe<ComponentBlocksMunicipalServiceCardInput>
   categories?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   color?: InputMaybe<Enum_Municipalservice_Color>
   description?: InputMaybe<Scalars['String']['input']>
@@ -3147,16 +3235,29 @@ export type FormLandingPageFragment = {
   } | null
 }
 
+export type FormTemporarilyDisabledFragment = {
+  __typename?: 'Form'
+  isTemporarilyDisabled: boolean
+  temporarilyDisabledUntil?: string | null
+  temporarilyDisabledReason?: string | null
+}
+
 export type FormBaseFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
+  isTemporarilyDisabled: boolean
+  temporarilyDisabledUntil?: string | null
+  temporarilyDisabledReason?: string | null
 }
 
 export type FormWithLandingPageFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
+  isTemporarilyDisabled: boolean
+  temporarilyDisabledUntil?: string | null
+  temporarilyDisabledReason?: string | null
   landingPage?: {
     __typename?: 'ComponentBlocksFormLandingPage'
     text?: string | null
@@ -3188,6 +3289,9 @@ export type FormBaseBySlugQuery = {
     documentId: string
     slug: string
     moreInformationUrl?: string | null
+    isTemporarilyDisabled: boolean
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
   } | null>
 }
 
@@ -3202,6 +3306,9 @@ export type FormWithLandingPageBySlugQuery = {
     documentId: string
     slug: string
     moreInformationUrl?: string | null
+    isTemporarilyDisabled: boolean
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
     landingPage?: {
       __typename?: 'ComponentBlocksFormLandingPage'
       text?: string | null
@@ -3232,7 +3339,13 @@ export type CommonLinkFragment = {
     title: string
     slug: string
     href?: string | null
-    form?: { __typename?: 'Form'; documentId: string } | null
+    form?: {
+      __typename?: 'Form'
+      documentId: string
+      isTemporarilyDisabled: boolean
+      temporarilyDisabledUntil?: string | null
+      temporarilyDisabledReason?: string | null
+    } | null
     sections?: Array<
       | { __typename: 'ComponentSectionsContacts' }
       | { __typename: 'ComponentSectionsDocuments' }
@@ -3258,7 +3371,13 @@ export type FooterColumnBlockFragment = {
       title: string
       slug: string
       href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled: boolean
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3293,7 +3412,13 @@ export type FooterFragment = {
         title: string
         slug: string
         href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
+        form?: {
+          __typename?: 'Form'
+          documentId: string
+          isTemporarilyDisabled: boolean
+          temporarilyDisabledUntil?: string | null
+          temporarilyDisabledReason?: string | null
+        } | null
         sections?: Array<
           | { __typename: 'ComponentSectionsContacts' }
           | { __typename: 'ComponentSectionsDocuments' }
@@ -3316,7 +3441,13 @@ export type FooterFragment = {
       title: string
       slug: string
       href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled: boolean
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3355,7 +3486,13 @@ export type GeneralQuery = {
           title: string
           slug: string
           href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
+          form?: {
+            __typename?: 'Form'
+            documentId: string
+            isTemporarilyDisabled: boolean
+            temporarilyDisabledUntil?: string | null
+            temporarilyDisabledReason?: string | null
+          } | null
           sections?: Array<
             | { __typename: 'ComponentSectionsContacts' }
             | { __typename: 'ComponentSectionsDocuments' }
@@ -3378,7 +3515,13 @@ export type GeneralQuery = {
         title: string
         slug: string
         href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
+        form?: {
+          __typename?: 'Form'
+          documentId: string
+          isTemporarilyDisabled: boolean
+          temporarilyDisabledUntil?: string | null
+          temporarilyDisabledReason?: string | null
+        } | null
         sections?: Array<
           | { __typename: 'ComponentSectionsContacts' }
           | { __typename: 'ComponentSectionsDocuments' }
@@ -3465,7 +3608,13 @@ export type HomepageQuery = {
       slug: string
       href?: string | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled: boolean
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3488,7 +3637,13 @@ export type HomepageQuery = {
       slug: string
       href?: string | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled: boolean
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3516,7 +3671,13 @@ export type HomepageQuery = {
           title: string
           slug: string
           href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
+          form?: {
+            __typename?: 'Form'
+            documentId: string
+            isTemporarilyDisabled: boolean
+            temporarilyDisabledUntil?: string | null
+            temporarilyDisabledReason?: string | null
+          } | null
           sections?: Array<
             | { __typename: 'ComponentSectionsContacts' }
             | { __typename: 'ComponentSectionsDocuments' }
@@ -3547,7 +3708,13 @@ export type HomepageQuery = {
           title: string
           slug: string
           href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
+          form?: {
+            __typename?: 'Form'
+            documentId: string
+            isTemporarilyDisabled: boolean
+            temporarilyDisabledUntil?: string | null
+            temporarilyDisabledReason?: string | null
+          } | null
           sections?: Array<
             | { __typename: 'ComponentSectionsContacts' }
             | { __typename: 'ComponentSectionsDocuments' }
@@ -3581,7 +3748,13 @@ export type HomepageAnnouncementEntityFragment = {
       title: string
       slug: string
       href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled: boolean
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3696,7 +3869,13 @@ export type MunicipalServiceRedirectFragment = {
   __typename?: 'MunicipalService'
   slug: string
   href?: string | null
-  form?: { __typename?: 'Form'; documentId: string } | null
+  form?: {
+    __typename?: 'Form'
+    documentId: string
+    isTemporarilyDisabled: boolean
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
+  } | null
   sections?: Array<
     | { __typename: 'ComponentSectionsContacts' }
     | { __typename: 'ComponentSectionsDocuments' }
@@ -3714,6 +3893,16 @@ export type MunicipalServiceLinkFragment = {
   id: string
   label?: string | null
   url?: string | null
+}
+
+export type MunicipalServiceCardFragment = {
+  __typename?: 'ComponentBlocksMunicipalServiceCard'
+  id: string
+  overrideTitle?: string | null
+  text: string
+  linkLabel: string
+  pictogram: Enum_Componentblocksmunicipalservicecard_Pictogram
+  color: Enum_Componentblocksmunicipalservicecard_Color
 }
 
 export type MunicipalServiceSlugEntityFragment = {
@@ -3734,7 +3923,13 @@ export type MunicipalServiceCardEntityFragment = {
   slug: string
   href?: string | null
   tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
-  form?: { __typename?: 'Form'; documentId: string } | null
+  form?: {
+    __typename?: 'Form'
+    documentId: string
+    isTemporarilyDisabled: boolean
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
+  } | null
   sections?: Array<
     | { __typename: 'ComponentSectionsContacts' }
     | { __typename: 'ComponentSectionsDocuments' }
@@ -3762,6 +3957,9 @@ export type MunicipalServiceEntityFragment = {
   form?: {
     __typename?: 'Form'
     documentId: string
+    isTemporarilyDisabled: boolean
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
     slug: string
     moreInformationUrl?: string | null
     landingPage?: {
@@ -3860,6 +4058,7 @@ export type MunicipalServiceEntityFragment = {
       }
     | {
         __typename: 'ComponentSectionsDocuments'
+        allowCollapsingDocuments?: boolean | null
         title?: string | null
         text?: string | null
         externalDocuments?: Array<{
@@ -3921,6 +4120,9 @@ export type MunicipalServiceBySlugQuery = {
     form?: {
       __typename?: 'Form'
       documentId: string
+      isTemporarilyDisabled: boolean
+      temporarilyDisabledUntil?: string | null
+      temporarilyDisabledReason?: string | null
       slug: string
       moreInformationUrl?: string | null
       landingPage?: {
@@ -4019,6 +4221,7 @@ export type MunicipalServiceBySlugQuery = {
         }
       | {
           __typename: 'ComponentSectionsDocuments'
+          allowCollapsingDocuments?: boolean | null
           title?: string | null
           text?: string | null
           externalDocuments?: Array<{
@@ -4081,6 +4284,9 @@ export type MunicipalServicesPageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
+        isTemporarilyDisabled: boolean
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
         slug: string
         moreInformationUrl?: string | null
         landingPage?: {
@@ -4179,6 +4385,7 @@ export type MunicipalServicesPageQuery = {
           }
         | {
             __typename: 'ComponentSectionsDocuments'
+            allowCollapsingDocuments?: boolean | null
             title?: string | null
             text?: string | null
             externalDocuments?: Array<{
@@ -4233,6 +4440,9 @@ export type MunicipalServicesPageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
+        isTemporarilyDisabled: boolean
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
         slug: string
         moreInformationUrl?: string | null
         landingPage?: {
@@ -4331,6 +4541,7 @@ export type MunicipalServicesPageQuery = {
           }
         | {
             __typename: 'ComponentSectionsDocuments'
+            allowCollapsingDocuments?: boolean | null
             title?: string | null
             text?: string | null
             externalDocuments?: Array<{
@@ -4523,6 +4734,7 @@ export type ExternalDocumentBlockFragment = {
 
 export type DocumentsSectionFragment = {
   __typename?: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: boolean | null
   title?: string | null
   text?: string | null
   externalDocuments?: Array<{
@@ -4604,6 +4816,7 @@ type MunicipalServiceSections_ComponentSectionsContacts_Fragment = {
 
 type MunicipalServiceSections_ComponentSectionsDocuments_Fragment = {
   __typename: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: boolean | null
   title?: string | null
   text?: string | null
   externalDocuments?: Array<{
@@ -4669,17 +4882,26 @@ export const AlertFragmentDoc = gql`
     dateTo
   }
 `
+export const FormTemporarilyDisabledFragmentDoc = gql`
+  fragment FormTemporarilyDisabled on Form {
+    isTemporarilyDisabled
+    temporarilyDisabledUntil
+    temporarilyDisabledReason
+  }
+`
 export const MunicipalServiceRedirectFragmentDoc = gql`
   fragment MunicipalServiceRedirect on MunicipalService {
     slug
     href
     form {
       documentId
+      ...FormTemporarilyDisabled
     }
     sections {
       __typename
     }
   }
+  ${FormTemporarilyDisabledFragmentDoc}
 `
 export const CommonLinkFragmentDoc = gql`
   fragment CommonLink on ComponentBlocksCommonLink {
@@ -4795,6 +5017,16 @@ export const MunicipalChargeConfigFragmentDoc = gql`
   ${DeliveryMethodFragmentDoc}
   ${MunicipalChargeFragmentDoc}
 `
+export const MunicipalServiceCardFragmentDoc = gql`
+  fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
+    id
+    overrideTitle
+    text
+    linkLabel
+    pictogram
+    color
+  }
+`
 export const MunicipalServiceSlugEntityFragmentDoc = gql`
   fragment MunicipalServiceSlugEntity on MunicipalService {
     documentId
@@ -4828,7 +5060,9 @@ export const FormBaseFragmentDoc = gql`
   fragment FormBase on Form {
     slug
     moreInformationUrl
+    ...FormTemporarilyDisabled
   }
+  ${FormTemporarilyDisabledFragmentDoc}
 `
 export const FormLandingPageLinkCtaFragmentDoc = gql`
   fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
@@ -5003,6 +5237,7 @@ export const ExternalDocumentBlockFragmentDoc = gql`
 `
 export const DocumentsSectionFragmentDoc = gql`
   fragment DocumentsSection on ComponentSectionsDocuments {
+    allowCollapsingDocuments
     title
     text
     externalDocuments {

@@ -16,6 +16,17 @@
       "type": "uid",
       "required": true
     },
+    "isTemporarilyDisabled": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "temporarilyDisabledUntil": {
+      "type": "string"
+    },
+    "temporarilyDisabledReason": {
+      "type": "text"
+    },
     "municipalService": {
       "type": "relation",
       "relation": "oneToOne",

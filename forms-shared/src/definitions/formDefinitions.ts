@@ -196,6 +196,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisFunctionId: 'MAG0SF00AG9O',
     },
     files: predzahradkyFiles,
+    isDisabled: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -682,7 +683,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'nahlasenie-podnetu-k-elektrickym-kolobezkam',
     title: 'Nahlásenie podnetu k elektrickým kolobežkám',
-    jsonVersion: '1.0.2',
+    jsonVersion: '1.0.3',
     schema: nahlaseniePodnetuKElektrickymKolobezkam,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     subject: {

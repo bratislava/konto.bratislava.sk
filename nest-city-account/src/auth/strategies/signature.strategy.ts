@@ -95,8 +95,9 @@ export class SignatureStrategy extends PassportStrategy(CustomStrategy, 'signatu
       )
     }
 
-    // We tried to find a smarter way to test this.
-    if (!/^\d{10}(\d{3})?$/.test(timestamp)) {
+    const isValidTimestampFormat =
+      /^\d+$/.test(timestamp) && (timestamp.length === 10 || timestamp.length === 13)
+    if (!isValidTimestampFormat) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,

@@ -3,7 +3,6 @@
  */
 export const styleguideMarkdownContent = `
 
----
 ###### Paragraphs
 
 Paragraph 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fringilla ac arcu quis pulvinar. Morbi vulputate, ipsum sed bibendum sollicitudin, neque ex lacinia sem, nec tincidunt nunc massa vel mauris.

@@ -1,9 +1,6 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import {
-  TowingSearchResponseDto,
-  TowingSearchResponseDtoTowReasonEnum,
-} from 'openapi-clients/city-account'
+import { TowingSearchResponseDto, TowReason } from 'openapi-clients/city-account'
 import { useMemo, useState } from 'react'
 
 import Table from '@/src/components/common/Table/Table'
@@ -28,37 +25,23 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
   }[variant]
 
   const towReasonTranslation = useMemo(() => {
-    const towReasonTranslationMap: Record<TowingSearchResponseDtoTowReasonEnum, string> = {
-      [TowingSearchResponseDtoTowReasonEnum.ReservedParking]: t(
-        'towing.towReason.RESERVED_PARKING',
-      ),
-      [TowingSearchResponseDtoTowReasonEnum.PrivateAccessObstacle]: t(
-        'towing.towReason.PRIVATE_ACCESS_OBSTACLE',
-      ),
-      [TowingSearchResponseDtoTowReasonEnum.ParkingNearPublicTransportStop]: t(
+    const towReasonTranslationMap: Record<TowReason, string> = {
+      [TowReason.ReservedParking]: t('towing.towReason.RESERVED_PARKING'),
+      [TowReason.PrivateAccessObstacle]: t('towing.towReason.PRIVATE_ACCESS_OBSTACLE'),
+      [TowReason.ParkingNearPublicTransportStop]: t(
         'towing.towReason.PARKING_NEAR_PUBLIC_TRANSPORT_STOP',
       ),
-      [TowingSearchResponseDtoTowReasonEnum.ParkingNearPedestrianCrossing]: t(
+      [TowReason.ParkingNearPedestrianCrossing]: t(
         'towing.towReason.PARKING_NEAR_PEDESTRIAN_CROSSING',
       ),
-      [TowingSearchResponseDtoTowReasonEnum.ParkingOnSidewalk]: t(
-        'towing.towReason.PARKING_ON_SIDEWALK',
-      ),
-      [TowingSearchResponseDtoTowReasonEnum.ParkingInTrafficLane]: t(
-        'towing.towReason.PARKING_IN_TRAFFIC_LANE',
-      ),
-      [TowingSearchResponseDtoTowReasonEnum.ParkingAtStreetCrossing]: t(
-        'towing.towReason.PARKING_AT_STREET_CROSSING',
-      ),
-      [TowingSearchResponseDtoTowReasonEnum.Other]: t('towing.towReason.OTHER'),
-      [TowingSearchResponseDtoTowReasonEnum.TrafficFlowObstacle]: t(
-        'towing.towReason.TRAFFIC_FLOW_OBSTACLE',
-      ),
-      [TowingSearchResponseDtoTowReasonEnum.NoStoppingZone]: t('towing.towReason.NO_STOPPING_ZONE'),
-      [TowingSearchResponseDtoTowReasonEnum.StoppedAtCrosswalk]: t(
-        'towing.towReason.STOPPED_AT_CROSSWALK',
-      ),
-      [TowingSearchResponseDtoTowReasonEnum.NoParkingZone]: t('towing.towReason.NO_PARKING_ZONE'),
+      [TowReason.ParkingOnSidewalk]: t('towing.towReason.PARKING_ON_SIDEWALK'),
+      [TowReason.ParkingInTrafficLane]: t('towing.towReason.PARKING_IN_TRAFFIC_LANE'),
+      [TowReason.ParkingAtStreetCrossing]: t('towing.towReason.PARKING_AT_STREET_CROSSING'),
+      [TowReason.Other]: t('towing.towReason.OTHER'),
+      [TowReason.TrafficFlowObstacle]: t('towing.towReason.TRAFFIC_FLOW_OBSTACLE'),
+      [TowReason.NoStoppingZone]: t('towing.towReason.NO_STOPPING_ZONE'),
+      [TowReason.StoppedAtCrosswalk]: t('towing.towReason.STOPPED_AT_CROSSWALK'),
+      [TowReason.NoParkingZone]: t('towing.towReason.NO_PARKING_ZONE'),
     }
 
     return vehicle.towReason ? towReasonTranslationMap[vehicle.towReason] : undefined

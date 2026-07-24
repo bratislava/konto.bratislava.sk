@@ -3,7 +3,9 @@ import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../test/singleton'
-import { NasesService } from '../../nases/nases.service'
+import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
+import { expectObjectContaining, expectStringContaining } from '../../__tests__/jest-matchers'
+import { LookupIdentityFOResult, NasesService } from '../../nases/nases.service'
 import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
@@ -57,10 +59,10 @@ describe('UrgentLookupService', () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
     jest
       .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue({ given_name: 'John', family_name: 'Doe' } as any)
+      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
     jest
       .spyOn(nasesService, 'lookupIdentityFO')
-      .mockResolvedValue({ uri: 'rc://sk/resolved' } as any)
+      .mockResolvedValue({ uri: 'rc://sk/resolved' } satisfies LookupIdentityFOResult)
 
     const result = await service.processUrgentItems()
 
@@ -78,7 +80,7 @@ describe('UrgentLookupService', () => {
 
   it('records a failure when Cognito is missing the name', async () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
-    jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue({} as any)
+    jest.spyOn(cognitoSubservice, 'getDataFromCognito').mockResolvedValue(cognitoUserDataFactory())
 
     const result = await service.processUrgentItems()
 
@@ -88,7 +90,7 @@ describe('UrgentLookupService', () => {
     ])
     expect(result.attempted).toBe(1)
     expect(result.failures).toEqual([
-      expect.objectContaining({ entityId: 'urgent-1', reason: expect.stringContaining('Cognito') }),
+      expectObjectContaining({ entityId: 'urgent-1', reason: expectStringContaining('Cognito') }),
     ])
   })
 
@@ -96,8 +98,10 @@ describe('UrgentLookupService', () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
     jest
       .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue({ given_name: 'John', family_name: 'Doe' } as any)
-    jest.spyOn(nasesService, 'lookupIdentityFO').mockResolvedValue({ uri: undefined } as any)
+      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
+    jest
+      .spyOn(nasesService, 'lookupIdentityFO')
+      .mockResolvedValue({ uri: undefined } satisfies LookupIdentityFOResult)
 
     const result = await service.processUrgentItems()
 
@@ -113,7 +117,7 @@ describe('UrgentLookupService', () => {
     prismaMock.$queryRaw.mockResolvedValue([urgentEntity()])
     jest
       .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue({ given_name: 'John', family_name: 'Doe' } as any)
+      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
     jest.spyOn(nasesService, 'lookupIdentityFO').mockRejectedValue(new Error('upstream down'))
 
     const result = await service.processUrgentItems()
@@ -129,11 +133,11 @@ describe('UrgentLookupService', () => {
     ])
     jest
       .spyOn(cognitoSubservice, 'getDataFromCognito')
-      .mockResolvedValue({ given_name: 'John', family_name: 'Doe' } as any)
+      .mockResolvedValue(cognitoUserDataFactory({ given_name: 'John', family_name: 'Doe' }))
     jest
       .spyOn(nasesService, 'lookupIdentityFO')
       .mockRejectedValue(new HttpException('Too many requests', HttpStatus.TOO_MANY_REQUESTS))
-    const errorSpy = jest.spyOn((service as any).logger, 'error').mockImplementation(() => {})
+    const errorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(jest.fn())
 
     const result = await service.processUrgentItems()
 
@@ -143,7 +147,7 @@ describe('UrgentLookupService', () => {
     expect(physicalEntityService.updateSuccessfulActiveEdeskUpdateInDatabase).not.toHaveBeenCalled()
     expect(physicalEntityService.updateFailedActiveEdeskUpdateInDatabase).not.toHaveBeenCalled()
     expect(errorSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ event: 'upvs_lookup_rate_limited', alert: 1 })
+      expectObjectContaining({ event: 'upvs_lookup_rate_limited', alert: 1 })
     )
   })
 })

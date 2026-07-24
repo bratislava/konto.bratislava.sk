@@ -811,17 +811,29 @@ describe('OAuth2Service', () => {
       )
     })
 
-    it('should skip PKCE validation when no code_challenge was stored', async () => {
+    it('should throw INVALID_REQUEST when a code_verifier is supplied but no code_challenge was stored', async () => {
       const noPkceData = { ...pkceOAuth2Data, codeChallenge: null, codeChallengeMethod: null }
       jest.spyOn(prisma.oAuth2Data, 'findUnique').mockResolvedValue(noPkceData)
 
-      const result = await service.token({
-        grant_type: 'authorization_code',
-        code: 'valid-code',
-        redirect_uri: 'https://example.com/callback',
-        code_verifier: 'v',
-      })
-      expect(result.access_token).toBeDefined()
+      await expect(
+        service.token({
+          grant_type: 'authorization_code',
+          code: 'valid-code',
+          redirect_uri: 'https://example.com/callback',
+          code_verifier: 'v',
+        })
+      ).rejects.toThrow(OAuth2Exception)
+      expect(oAuth2ErrorThrower.tokenException).toHaveBeenCalledWith(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: code_verifier provided but no code_challenge was stored',
+        undefined,
+        'PKCE code_verifier provided without stored code_challenge',
+        {
+          authRequestId: noPkceData.id,
+          clientId: noPkceData.clientId,
+          hasCodeVerifier: true,
+        }
+      )
       expect(crypto.timingSafeStringEqual).not.toHaveBeenCalled()
     })
   })

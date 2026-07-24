@@ -420,6 +420,20 @@ export class OAuth2Service {
         oauth2Data.codeChallenge,
         oauth2Data.codeChallengeMethod
       )
+    } else if (request.code_verifier) {
+      // A code_verifier was supplied but no code_challenge was stored during the authorization
+      // request. Accepting it would let a client bypass PKCE (a downgrade attack), so reject.
+      throw this.oAuth2ErrorThrower.tokenException(
+        OAuth2TokenErrorCode.INVALID_REQUEST,
+        'Invalid request: code_verifier provided but no code_challenge was stored',
+        undefined,
+        'PKCE code_verifier provided without stored code_challenge',
+        {
+          authRequestId: oauth2Data.id,
+          clientId: oauth2Data.clientId,
+          hasCodeVerifier: !!request.code_verifier,
+        }
+      )
     }
 
     if (

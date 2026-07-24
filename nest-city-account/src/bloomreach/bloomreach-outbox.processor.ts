@@ -13,7 +13,7 @@ import {
   BLOOMREACH_WIRE_COMMAND_NAME,
   BloomreachBatchCommand,
   BloomreachBatchResponse,
-  BloomreachCustomerCommandData,
+  isBloomreachCustomerData,
   isBloomreachEventCommandData,
 } from './bloomreach.types'
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
@@ -48,7 +48,7 @@ export class BloomreachOutboxProcessor {
       return
     }
 
-    await runSingleFlight(this.prisma, PROCESSOR_LOCK_KEY, () => this.processBatch())
+    await runSingleFlight(this.prisma, PROCESSOR_LOCK_KEY, async () => this.processBatch())
   }
 
   private async processBatch(): Promise<void> {
@@ -172,11 +172,9 @@ export class BloomreachOutboxProcessor {
 
     const failedCheckEntries = checkResults.filter((r) => !r.safeToSend).map((r) => r.entry)
     if (failedCheckEntries.length > 0) {
-      // A failed merge-consent check means we couldn't verify it's safe to
-      // send (e.g. the export API is down, or a DB read/write failed) - it
-      // says nothing about whether Bloomreach would accept the command
-      // itself, so it must not count toward the same attempts/backoff budget
-      // as a genuine delivery failure.
+      // A failed merge-consent check means we couldn't verify it's safe to send.
+      // It says nothing about whether Bloomreach would accept the command
+      // itself, so it must not count toward the same attempts/backoff budget.
       await this.revertEntries(failedCheckEntries, 'Bloomreach merge consent check failed', {
         countsTowardAttempts: false,
       })
@@ -186,21 +184,15 @@ export class BloomreachOutboxProcessor {
   }
 
   /**
-   * Reverts PROCESSING entries back to PENDING, or marks them as:
+   * Reverts PROCESSING entries to PENDING, or marks them as:
    * - FAILED if max attempts reached
    * - SUPERSEDED if a newer PENDING entry exists for the same dedup key
    *
    * For superseded `customers` commands, merges old data into the newer entry
-   * (mirroring write-time merge that was skipped while the entry was PROCESSING).
-   *
-   * Uses allSettled so one DB failure doesn't block the rest.
+   * (mirroring write-time merge skipped while the entry was PROCESSING).
    *
    * @param countsTowardAttempts whether this revert counts toward the
-   *   attempts/backoff budget that eventually marks an entry FAILED - false
-   *   for failures unrelated to Bloomreach actually rejecting the command
-   *   (e.g. a merge-consent check that couldn't complete), so those retry
-   *   indefinitely instead of exhausting the same budget as a real delivery
-   *   failure.
+   *   attempts/backoff budget that eventually marks an entry FAILED.
    */
   private async revertEntries(
     entries: BloomreachOutbox[],
@@ -256,10 +248,13 @@ export class BloomreachOutboxProcessor {
   }
 
   /**
-   * Finds entries that have been superseded by a newer PENDING entry for the same dedup key.
-   * For superseded `customers` commands, merges old data into the newer PENDING entry
-   * (newer values take precedence, matching the write-time merge logic).
-   * For `customers/events` commands: no merge needed — the newer entry fully replaces.
+   * Finds entries that have been superseded by a newer PENDING entry for the
+   * same dedup key.
+   *
+   * For superseded `customers` commands, merges old data into the newer PENDING
+   * entry (newer values take precedence, matching the write-time merge logic).
+   * For `customers/events` commands: no merge needed, the newer entry fully
+   * replaces old one.
    */
   private async findSupersededEntriesAndMerge(
     entries: BloomreachOutbox[]
@@ -310,21 +305,28 @@ export class BloomreachOutboxProcessor {
             return
           }
 
-          // For customers commands, merge the old entry's data into the newer one
-          // (newer values take precedence, matching the write-time merge logic)
+          // For customers commands, merge the old entry's data into the newer
+          // one, matching the write-time merge logic.
           if (entry.commandName === BloomreachCommandName.CUSTOMERS) {
-            const merged = mergeCustomerCommandData(
-              commandData as BloomreachCustomerCommandData,
-              newer.commandData as BloomreachCustomerCommandData
-            )
+            if (
+              !isBloomreachCustomerData(commandData) ||
+              !isBloomreachCustomerData(newer.commandData)
+            ) {
+              throw this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                'Bloomreach outbox entry has commandName CUSTOMERS but commandData is not customer command data',
+                toLogfmt({ entryId: entry.id, externalId: entry.externalId })
+              )
+            }
+
+            const merged = mergeCustomerCommandData(commandData, newer.commandData)
             await tx.bloomreachOutbox.update({
               where: { id: newer.id },
               data: { commandData: merged, isTerminal: isAnonymizationCommand(merged) },
             })
           } else if (entry.isTerminal && !newer.isTerminal) {
             // A terminal (anonymize) reject being superseded must still win
-            // over a non-terminal newer entry, or it would be silently
-            // discarded instead of the other way around.
+            // over a non-terminal newer entry.
             await tx.bloomreachOutbox.update({
               where: { id: newer.id },
               data: { commandData, isTerminal: true },

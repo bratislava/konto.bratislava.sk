@@ -193,7 +193,7 @@ describe('VerificationSubservice', () => {
     })
 
     it('should not match when diacritics differ', () => {
-      const rfoData = {
+      const rfoData: RfoIdentityListElement = {
         menaOsoby: [{ meno: 'Ján' }],
         priezviskaOsoby: [{ meno: 'Novák' }],
       }

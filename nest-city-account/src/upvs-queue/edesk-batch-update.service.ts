@@ -142,9 +142,9 @@ export class EdeskBatchUpdateService {
     }
 
     // Handle regular failures
-    const failedInternalIds = failed
-      .filter((item) => item.physicalEntityId)
-      .map((item) => item.physicalEntityId!)
+    const failedInternalIds = failed.flatMap((item) =>
+      item.physicalEntityId ? [item.physicalEntityId] : []
+    )
 
     if (failedInternalIds.length > 0) {
       await this.physicalEntityService.updateFailedActiveEdeskUpdateInDatabase(failedInternalIds)

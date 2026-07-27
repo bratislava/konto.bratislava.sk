@@ -1050,7 +1050,7 @@ export type Form = {
   __typename?: 'Form'
   createdAt?: Maybe<Scalars['DateTime']['output']>
   documentId: Scalars['ID']['output']
-  isTemporarilyDisabled: Scalars['Boolean']['output']
+  isTemporarilyDisabled?: Maybe<Scalars['Boolean']['output']>
   landingPage?: Maybe<ComponentBlocksFormLandingPage>
   moreInformationUrl?: Maybe<Scalars['String']['output']>
   municipalService?: Maybe<MunicipalService>
@@ -3237,7 +3237,7 @@ export type FormLandingPageFragment = {
 
 export type FormTemporarilyDisabledFragment = {
   __typename?: 'Form'
-  isTemporarilyDisabled: boolean
+  isTemporarilyDisabled?: boolean | null
   temporarilyDisabledUntil?: string | null
   temporarilyDisabledReason?: string | null
 }
@@ -3246,7 +3246,7 @@ export type FormBaseFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
-  isTemporarilyDisabled: boolean
+  isTemporarilyDisabled?: boolean | null
   temporarilyDisabledUntil?: string | null
   temporarilyDisabledReason?: string | null
 }
@@ -3255,7 +3255,7 @@ export type FormWithLandingPageFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
-  isTemporarilyDisabled: boolean
+  isTemporarilyDisabled?: boolean | null
   temporarilyDisabledUntil?: string | null
   temporarilyDisabledReason?: string | null
   landingPage?: {
@@ -3289,7 +3289,7 @@ export type FormBaseBySlugQuery = {
     documentId: string
     slug: string
     moreInformationUrl?: string | null
-    isTemporarilyDisabled: boolean
+    isTemporarilyDisabled?: boolean | null
     temporarilyDisabledUntil?: string | null
     temporarilyDisabledReason?: string | null
   } | null>
@@ -3306,7 +3306,7 @@ export type FormWithLandingPageBySlugQuery = {
     documentId: string
     slug: string
     moreInformationUrl?: string | null
-    isTemporarilyDisabled: boolean
+    isTemporarilyDisabled?: boolean | null
     temporarilyDisabledUntil?: string | null
     temporarilyDisabledReason?: string | null
     landingPage?: {
@@ -3342,7 +3342,7 @@ export type CommonLinkFragment = {
     form?: {
       __typename?: 'Form'
       documentId: string
-      isTemporarilyDisabled: boolean
+      isTemporarilyDisabled?: boolean | null
       temporarilyDisabledUntil?: string | null
       temporarilyDisabledReason?: string | null
     } | null
@@ -3374,7 +3374,7 @@ export type FooterColumnBlockFragment = {
       form?: {
         __typename?: 'Form'
         documentId: string
-        isTemporarilyDisabled: boolean
+        isTemporarilyDisabled?: boolean | null
         temporarilyDisabledUntil?: string | null
         temporarilyDisabledReason?: string | null
       } | null
@@ -3415,7 +3415,7 @@ export type FooterFragment = {
         form?: {
           __typename?: 'Form'
           documentId: string
-          isTemporarilyDisabled: boolean
+          isTemporarilyDisabled?: boolean | null
           temporarilyDisabledUntil?: string | null
           temporarilyDisabledReason?: string | null
         } | null
@@ -3444,7 +3444,7 @@ export type FooterFragment = {
       form?: {
         __typename?: 'Form'
         documentId: string
-        isTemporarilyDisabled: boolean
+        isTemporarilyDisabled?: boolean | null
         temporarilyDisabledUntil?: string | null
         temporarilyDisabledReason?: string | null
       } | null
@@ -3489,7 +3489,7 @@ export type GeneralQuery = {
           form?: {
             __typename?: 'Form'
             documentId: string
-            isTemporarilyDisabled: boolean
+            isTemporarilyDisabled?: boolean | null
             temporarilyDisabledUntil?: string | null
             temporarilyDisabledReason?: string | null
           } | null
@@ -3518,7 +3518,7 @@ export type GeneralQuery = {
         form?: {
           __typename?: 'Form'
           documentId: string
-          isTemporarilyDisabled: boolean
+          isTemporarilyDisabled?: boolean | null
           temporarilyDisabledUntil?: string | null
           temporarilyDisabledReason?: string | null
         } | null
@@ -3611,7 +3611,7 @@ export type HomepageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
-        isTemporarilyDisabled: boolean
+        isTemporarilyDisabled?: boolean | null
         temporarilyDisabledUntil?: string | null
         temporarilyDisabledReason?: string | null
       } | null
@@ -3640,7 +3640,7 @@ export type HomepageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
-        isTemporarilyDisabled: boolean
+        isTemporarilyDisabled?: boolean | null
         temporarilyDisabledUntil?: string | null
         temporarilyDisabledReason?: string | null
       } | null
@@ -3674,7 +3674,7 @@ export type HomepageQuery = {
           form?: {
             __typename?: 'Form'
             documentId: string
-            isTemporarilyDisabled: boolean
+            isTemporarilyDisabled?: boolean | null
             temporarilyDisabledUntil?: string | null
             temporarilyDisabledReason?: string | null
           } | null
@@ -3711,7 +3711,7 @@ export type HomepageQuery = {
           form?: {
             __typename?: 'Form'
             documentId: string
-            isTemporarilyDisabled: boolean
+            isTemporarilyDisabled?: boolean | null
             temporarilyDisabledUntil?: string | null
             temporarilyDisabledReason?: string | null
           } | null
@@ -3751,7 +3751,7 @@ export type HomepageAnnouncementEntityFragment = {
       form?: {
         __typename?: 'Form'
         documentId: string
-        isTemporarilyDisabled: boolean
+        isTemporarilyDisabled?: boolean | null
         temporarilyDisabledUntil?: string | null
         temporarilyDisabledReason?: string | null
       } | null
@@ -3872,7 +3872,7 @@ export type MunicipalServiceRedirectFragment = {
   form?: {
     __typename?: 'Form'
     documentId: string
-    isTemporarilyDisabled: boolean
+    isTemporarilyDisabled?: boolean | null
     temporarilyDisabledUntil?: string | null
     temporarilyDisabledReason?: string | null
   } | null
@@ -3926,7 +3926,7 @@ export type MunicipalServiceCardEntityFragment = {
   form?: {
     __typename?: 'Form'
     documentId: string
-    isTemporarilyDisabled: boolean
+    isTemporarilyDisabled?: boolean | null
     temporarilyDisabledUntil?: string | null
     temporarilyDisabledReason?: string | null
   } | null
@@ -3957,7 +3957,7 @@ export type MunicipalServiceEntityFragment = {
   form?: {
     __typename?: 'Form'
     documentId: string
-    isTemporarilyDisabled: boolean
+    isTemporarilyDisabled?: boolean | null
     temporarilyDisabledUntil?: string | null
     temporarilyDisabledReason?: string | null
     slug: string
@@ -4120,7 +4120,7 @@ export type MunicipalServiceBySlugQuery = {
     form?: {
       __typename?: 'Form'
       documentId: string
-      isTemporarilyDisabled: boolean
+      isTemporarilyDisabled?: boolean | null
       temporarilyDisabledUntil?: string | null
       temporarilyDisabledReason?: string | null
       slug: string
@@ -4284,7 +4284,7 @@ export type MunicipalServicesPageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
-        isTemporarilyDisabled: boolean
+        isTemporarilyDisabled?: boolean | null
         temporarilyDisabledUntil?: string | null
         temporarilyDisabledReason?: string | null
         slug: string
@@ -4440,7 +4440,7 @@ export type MunicipalServicesPageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
-        isTemporarilyDisabled: boolean
+        isTemporarilyDisabled?: boolean | null
         temporarilyDisabledUntil?: string | null
         temporarilyDisabledReason?: string | null
         slug: string

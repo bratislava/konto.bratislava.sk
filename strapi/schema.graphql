@@ -888,7 +888,7 @@ type FooterRelationResponseCollection {
 type Form {
   createdAt: DateTime
   documentId: ID!
-  isTemporarilyDisabled: Boolean!
+  isTemporarilyDisabled: Boolean
   landingPage: ComponentBlocksFormLandingPage
   moreInformationUrl: String
   municipalService: MunicipalService

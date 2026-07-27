@@ -122,11 +122,12 @@
       },
       "formSentPage": {
         "edit": {
-          "label": "Stránka po odoslaní formuláru",
+          "label": "Stránka po odoslaní formuláru (TBD - ešte neimplementované)",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "documentId"
         },
         "list": {
           "label": "formSentPage",
@@ -202,7 +203,6 @@
       }
     },
     "layouts": {
-      "list": ["id", "slug", "updatedAt", "moreInformationUrl", "municipalService"],
       "edit": [
         [
           {
@@ -244,6 +244,13 @@
             "size": 4
           }
         ]
+      ],
+      "list": [
+        "id",
+        "slug",
+        "updatedAt",
+        "moreInformationUrl",
+        "municipalService"
       ]
     },
     "uid": "api::form.form"

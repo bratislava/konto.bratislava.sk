@@ -10,7 +10,7 @@ type FileUploadMultipleOptions<K extends FormFiles<string>> = GeneratorBaseOptio
 export const fileUploadMultiple = <K extends FormFiles<string> = never>(
   property: string,
   options: FileUploadMultipleOptions<K>,
-  uiOptions: Omit<FileUploadUiOptions, 'slotId'>
+  uiOptions: Omit<FileUploadUiOptions, 'slotId'>,
 ): GeneratorField => ({
   property,
   schema: removeUndefinedValues({

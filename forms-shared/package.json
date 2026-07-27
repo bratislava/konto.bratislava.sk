@@ -30,7 +30,9 @@
   },
   "typesVersions": {
     "*": {
-      "*": ["dist/*.d.ts"]
+      "*": [
+        "dist/*.d.ts"
+      ]
     }
   },
   "sideEffects": false,

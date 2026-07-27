@@ -29,7 +29,10 @@ const getInlinedFontCssByPath = async (filePath: string) => {
     }
 
     const base64 = await fs.readFile(fontPath, 'base64')
-    css = css.replace(fontUrlDeclaration, `url(data:${mimeType};base64,${base64}) format('${format}')`)
+    css = css.replace(
+      fontUrlDeclaration,
+      `url(data:${mimeType};base64,${base64}) format('${format}')`,
+    )
   }
 
   return css

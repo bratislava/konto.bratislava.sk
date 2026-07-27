@@ -31,6 +31,7 @@ import SpinnerShowCase from '@/src/components/styleguide/showcases/SpinnerShowCa
 import SummaryRowShowCase from '@/src/components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '@/src/components/styleguide/showcases/TagShowCase'
 import TaxesShowCase from '@/src/components/styleguide/showcases/TaxesShowCase/TaxesShowCase'
+import TemporarilyDisabledAlertShowCase from '@/src/components/styleguide/showcases/TemporarilyDisabledAlertShowCase'
 import TextAreaFieldShowCase from '@/src/components/styleguide/showcases/TextAreaFieldShowCase'
 import TextFieldShowCase from '@/src/components/styleguide/showcases/TextFieldShowCase'
 import ThankYouTileShowCase from '@/src/components/styleguide/showcases/ThankYouTileShowCase'
@@ -62,6 +63,11 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },
   { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
+  {
+    id: 'temporarily-disabled-alert',
+    label: 'Temporarily Disabled Alert',
+    component: <TemporarilyDisabledAlertShowCase />,
+  },
   { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
   { id: 'disclosure', label: 'Disclosure', component: <DisclosureShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },

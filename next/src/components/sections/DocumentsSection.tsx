@@ -73,7 +73,7 @@ const DocumentsSection = ({
                     {showAllDocuments
                       ? t('DocumentsSection.documents.showLess')
                       : t('DocumentsSection.documents.showMore', {
-                          count: filteredExternalDocuments.length,
+                          numberOfDocuments: filteredExternalDocuments.length,
                         })}
                   </Button>
                 </div>

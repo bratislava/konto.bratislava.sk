@@ -320,10 +320,7 @@ describe('NorisDeliveryMethodService', () => {
           ],
         })
 
-      const executeDeliveryMethodUpdateSpy = jest.spyOn(
-        service as any,
-        'executeDeliveryMethodUpdate'
-      )
+      const executeDeliveryMethodUpdateSpy = jest.spyOn(service, 'executeDeliveryMethodUpdate')
 
       const result = await service.updateDeliveryMethods({ data: mockData })
 

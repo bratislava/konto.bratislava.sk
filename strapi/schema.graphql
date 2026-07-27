@@ -383,6 +383,35 @@ input ComponentBlocksHelpItemInput {
   title: String
 }
 
+type ComponentBlocksMunicipalServiceCard {
+  color: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_COLOR!
+  id: ID!
+  linkLabel: String!
+  overrideTitle: String
+  pictogram: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_PICTOGRAM!
+  text: String!
+}
+
+input ComponentBlocksMunicipalServiceCardFiltersInput {
+  and: [ComponentBlocksMunicipalServiceCardFiltersInput]
+  color: StringFilterInput
+  linkLabel: StringFilterInput
+  not: ComponentBlocksMunicipalServiceCardFiltersInput
+  or: [ComponentBlocksMunicipalServiceCardFiltersInput]
+  overrideTitle: StringFilterInput
+  pictogram: StringFilterInput
+  text: StringFilterInput
+}
+
+input ComponentBlocksMunicipalServiceCardInput {
+  color: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_COLOR
+  id: ID
+  linkLabel: String
+  overrideTitle: String
+  pictogram: ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_PICTOGRAM
+  text: String
+}
+
 type ComponentBlocksMunicipalServiceLink {
   id: ID!
   label: String
@@ -560,6 +589,7 @@ input ComponentSectionsContactsInput {
 }
 
 type ComponentSectionsDocuments {
+  allowCollapsingDocuments: Boolean
   externalDocuments(filters: ComponentBlocksExternalDocumentFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksExternalDocument]
   id: ID!
   text: String
@@ -567,6 +597,7 @@ type ComponentSectionsDocuments {
 }
 
 input ComponentSectionsDocumentsFiltersInput {
+  allowCollapsingDocuments: BooleanFilterInput
   and: [ComponentSectionsDocumentsFiltersInput]
   externalDocuments: ComponentBlocksExternalDocumentFiltersInput
   not: ComponentSectionsDocumentsFiltersInput
@@ -576,6 +607,7 @@ input ComponentSectionsDocumentsFiltersInput {
 }
 
 input ComponentSectionsDocumentsInput {
+  allowCollapsingDocuments: Boolean
   externalDocuments: [ComponentBlocksExternalDocumentInput]
   id: ID
   text: String
@@ -724,6 +756,48 @@ input DateTimeFilterInput {
 
 type DeleteMutationResponse {
   documentId: ID!
+}
+
+enum ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_COLOR {
+  culture
+  education
+  environment
+  main
+  marianum
+  olo
+  social
+  transport
+  tsb
+}
+
+enum ENUM_COMPONENTBLOCKSMUNICIPALSERVICECARD_PICTOGRAM {
+  administration
+  christmas_tree
+  community_gardens
+  connector
+  cultural_organizations
+  events_support
+  excavations
+  front_gardens
+  greenery
+  housing
+  kids_teenagers
+  lamp
+  library
+  management_communications
+  marianum
+  mosquito
+  parking
+  public_space_occupation
+  scooter
+  security
+  spatial_planning
+  swimming_pool
+  taxes
+  towing
+  transport
+  waste
+  zoo
 }
 
 enum ENUM_COMPONENTSECTIONSCONTACTS_TITLELEVEL {
@@ -875,11 +949,14 @@ type Form {
   createdAt: DateTime
   documentId: ID!
   formSentPage: ComponentBlocksFormSentPage
+  isTemporarilyDisabled: Boolean
   landingPage: ComponentBlocksFormLandingPage
   moreInformationUrl: String
   municipalService: MunicipalService
   publishedAt: DateTime
   slug: String!
+  temporarilyDisabledReason: String
+  temporarilyDisabledUntil: String
   updatedAt: DateTime
 }
 
@@ -902,6 +979,7 @@ input FormFiltersInput {
   createdAt: DateTimeFilterInput
   documentId: IDFilterInput
   formSentPage: ComponentBlocksFormSentPageFiltersInput
+  isTemporarilyDisabled: BooleanFilterInput
   landingPage: ComponentBlocksFormLandingPageFiltersInput
   moreInformationUrl: StringFilterInput
   municipalService: MunicipalServiceFiltersInput
@@ -909,16 +987,21 @@ input FormFiltersInput {
   or: [FormFiltersInput]
   publishedAt: DateTimeFilterInput
   slug: StringFilterInput
+  temporarilyDisabledReason: StringFilterInput
+  temporarilyDisabledUntil: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input FormInput {
   formSentPage: ComponentBlocksFormSentPageInput
+  isTemporarilyDisabled: Boolean
   landingPage: ComponentBlocksFormLandingPageInput
   moreInformationUrl: String
   municipalService: ID
   publishedAt: DateTime
   slug: String
+  temporarilyDisabledReason: String
+  temporarilyDisabledUntil: String
 }
 
 type FormRelationResponseCollection {
@@ -966,7 +1049,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksFormSentButton | ComponentBlocksFormSentPage | ComponentBlocksFormSentPageAlert | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksFormSentButton | ComponentBlocksFormSentPage | ComponentBlocksFormSentPageAlert | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceCard | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -1371,6 +1454,7 @@ type MunicipalChargeRelationResponseCollection {
 
 type MunicipalService {
   buttonText: String!
+  card: ComponentBlocksMunicipalServiceCard
   categories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalServiceCategory]!
   categories_connection(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryRelationResponseCollection
   color: ENUM_MUNICIPALSERVICE_COLOR!
@@ -1456,6 +1540,7 @@ type MunicipalServiceEntityResponseCollection {
 input MunicipalServiceFiltersInput {
   and: [MunicipalServiceFiltersInput]
   buttonText: StringFilterInput
+  card: ComponentBlocksMunicipalServiceCardFiltersInput
   categories: MunicipalServiceCategoryFiltersInput
   color: StringFilterInput
   createdAt: DateTimeFilterInput
@@ -1479,6 +1564,7 @@ input MunicipalServiceFiltersInput {
 
 input MunicipalServiceInput {
   buttonText: String
+  card: ComponentBlocksMunicipalServiceCardInput
   categories: [ID]
   color: ENUM_MUNICIPALSERVICE_COLOR
   description: String
@@ -1686,55 +1772,66 @@ input PaginationArg {
   start: Int
 }
 
+enum PublicationFilter {
+  HAS_PUBLISHED_VERSION
+  HAS_PUBLISHED_VERSION_DOCUMENT
+  MODIFIED
+  NEVER_PUBLISHED
+  NEVER_PUBLISHED_DOCUMENT
+  PUBLISHED_WITHOUT_DRAFT
+  PUBLISHED_WITH_DRAFT
+  UNMODIFIED
+}
+
 enum PublicationStatus {
   DRAFT
   PUBLISHED
 }
 
 type Query {
-  footer(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Footer
-  form(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Form
-  forms(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [Form]!
-  forms_connection(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): FormEntityResponseCollection
-  general(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): General
-  helpPage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): HelpPage
-  homepage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): Homepage
-  homepageAnnouncement(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
-  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [HomepageAnnouncement]!
-  homepageAnnouncements_connection(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): HomepageAnnouncementEntityResponseCollection
-  i18NLocale(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): I18NLocale
-  i18NLocales(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [I18NLocale]!
-  i18NLocales_connection(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): I18NLocaleEntityResponseCollection
+  footer(hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): Footer
+  form(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): Form
+  forms(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [Form]!
+  forms_connection(filters: FormFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): FormEntityResponseCollection
+  general(hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): General
+  helpPage(hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): HelpPage
+  homepage(hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): Homepage
+  homepageAnnouncement(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): HomepageAnnouncement
+  homepageAnnouncements(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [HomepageAnnouncement]!
+  homepageAnnouncements_connection(filters: HomepageAnnouncementFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): HomepageAnnouncementEntityResponseCollection
+  i18NLocale(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): I18NLocale
+  i18NLocales(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [I18NLocale]!
+  i18NLocales_connection(filters: I18NLocaleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe
-  municipalCharge(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalCharge
-  municipalChargeConfig(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalChargeConfig
-  municipalCharges(filters: MunicipalChargeFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalCharge]!
-  municipalCharges_connection(filters: MunicipalChargeFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalChargeEntityResponseCollection
-  municipalService(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalService
-  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceCategory]!
-  municipalServiceCategories_connection(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceCategoryEntityResponseCollection
-  municipalServiceCategory(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
-  municipalServiceTag(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
-  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceTag]!
-  municipalServiceTags_connection(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceTagEntityResponseCollection
-  municipalServices(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalService]!
-  municipalServicesPage(hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): MunicipalServicesPage
-  municipalServices_connection(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceEntityResponseCollection
-  reviewWorkflowsWorkflow(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflow
-  reviewWorkflowsWorkflowStage(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStage
-  reviewWorkflowsWorkflowStages(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflowStage]!
-  reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStageEntityResponseCollection
-  reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflow]!
-  reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowEntityResponseCollection
-  uploadFile(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UploadFile
-  uploadFiles(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UploadFile]!
-  uploadFiles_connection(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UploadFileEntityResponseCollection
-  usersPermissionsRole(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UsersPermissionsRole
-  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsRole]!
-  usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsRoleEntityResponseCollection
-  usersPermissionsUser(documentId: ID!, hasPublishedVersion: Boolean, status: PublicationStatus = PUBLISHED): UsersPermissionsUser
-  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsUser]!
-  usersPermissionsUsers_connection(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsUserEntityResponseCollection
+  municipalCharge(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): MunicipalCharge
+  municipalChargeConfig(hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): MunicipalChargeConfig
+  municipalCharges(filters: MunicipalChargeFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalCharge]!
+  municipalCharges_connection(filters: MunicipalChargeFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalChargeEntityResponseCollection
+  municipalService(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): MunicipalService
+  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceCategory]!
+  municipalServiceCategories_connection(filters: MunicipalServiceCategoryFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceCategoryEntityResponseCollection
+  municipalServiceCategory(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): MunicipalServiceCategory
+  municipalServiceTag(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): MunicipalServiceTag
+  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalServiceTag]!
+  municipalServiceTags_connection(filters: MunicipalServiceTagFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceTagEntityResponseCollection
+  municipalServices(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [MunicipalService]!
+  municipalServicesPage(hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): MunicipalServicesPage
+  municipalServices_connection(filters: MunicipalServiceFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): MunicipalServiceEntityResponseCollection
+  reviewWorkflowsWorkflow(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflow
+  reviewWorkflowsWorkflowStage(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStage
+  reviewWorkflowsWorkflowStages(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflowStage]!
+  reviewWorkflowsWorkflowStages_connection(filters: ReviewWorkflowsWorkflowStageFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowStageEntityResponseCollection
+  reviewWorkflowsWorkflows(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [ReviewWorkflowsWorkflow]!
+  reviewWorkflowsWorkflows_connection(filters: ReviewWorkflowsWorkflowFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): ReviewWorkflowsWorkflowEntityResponseCollection
+  uploadFile(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): UploadFile
+  uploadFiles(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UploadFile]!
+  uploadFiles_connection(filters: UploadFileFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): UploadFileEntityResponseCollection
+  usersPermissionsRole(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): UsersPermissionsRole
+  usersPermissionsRoles(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsRole]!
+  usersPermissionsRoles_connection(filters: UsersPermissionsRoleFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsRoleEntityResponseCollection
+  usersPermissionsUser(documentId: ID!, hasPublishedVersion: Boolean, publicationFilter: PublicationFilter, status: PublicationStatus = PUBLISHED): UsersPermissionsUser
+  usersPermissionsUsers(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): [UsersPermissionsUser]!
+  usersPermissionsUsers_connection(filters: UsersPermissionsUserFiltersInput, hasPublishedVersion: Boolean, pagination: PaginationArg = {}, publicationFilter: PublicationFilter, sort: [String] = [], status: PublicationStatus = PUBLISHED): UsersPermissionsUserEntityResponseCollection
 }
 
 type ResponseCollectionMeta {

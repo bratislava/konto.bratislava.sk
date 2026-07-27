@@ -7,11 +7,10 @@ import {
   PayloadTooLargeException,
   UnprocessableEntityException,
 } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { lookup } from 'mime-types'
 
-import { ClamavClientService } from '../clamav-client/clamav-client.service'
 import { isBase64, isDefined, isValidUid } from '../common/utils/helpers'
+import BaConfigService from '../config/ba-config.service'
 import { FileStatus } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -31,19 +30,16 @@ const extensionToMimeType = new Map<string, string>([
 @Injectable()
 export class ScannerService {
   private readonly logger: Logger
-  private readonly clamavClientService: ClamavClientService
   private readonly supportedMimeTypes: string[]
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private minioStorageService: MinioStorageService,
     private readonly prismaService: PrismaService,
   ) {
     this.logger = new Logger('ScannerService')
-    this.clamavClientService = new ClamavClientService(configService)
-    this.supportedMimeTypes = this.configService
-      .get<string>('MIMETYPE_WHITELIST', '')
-      .split(' ')
+    this.supportedMimeTypes =
+      this.baConfigService.files.mimeTypeWhitelist.split(' ')
   }
 
   public isSupportedMimeType(mimeType: string): boolean {
@@ -57,7 +53,7 @@ export class ScannerService {
       }
 
       if (!isValidUid(bucketFile.bucketUid)) {
-        bucketFile.bucketUid = this.configService.get('CLAMAV_UNSCANNED_BUCKET')
+        bucketFile.bucketUid = this.baConfigService.minio.buckets.unscanned
       }
 
       const bucketUid = bucketFile.bucketUid || ''
@@ -93,10 +89,10 @@ export class ScannerService {
         )
       }
 
-      const MAX_FILE_SIZE: number = this.configService.get('MAX_FILE_SIZE', 0)
-      if (fileSize > MAX_FILE_SIZE) {
+      const maxFileSize = this.baConfigService.fileLimits.maxSingleSizeGlobal
+      if (fileSize > maxFileSize) {
         throw new PayloadTooLargeException(
-          `File size (${fileSize}) exceeds the maximum allowed size (${MAX_FILE_SIZE}). Please check the file size.`,
+          `File size (${fileSize}) exceeds the maximum allowed size (${maxFileSize}). Please check the file size.`,
         )
       }
 
@@ -158,7 +154,7 @@ export class ScannerService {
     }
 
     //check if bucketFiles array contains more than 20 files
-    const maxFiles: number = this.configService.get('MAX_FILES_PER_REQUEST', 1)
+    const maxFiles = this.baConfigService.scanner.maxFilesPerRequest
     if (bucketFiles.length > maxFiles) {
       throw new PayloadTooLargeException(
         `Please provide a maximum of ${maxFiles} files!`,

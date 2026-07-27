@@ -27,6 +27,11 @@
     "moreInformationUrl": {
       "type": "string"
     },
+    "card": {
+      "type": "component",
+      "component": "blocks.municipal-service-card",
+      "repeatable": false
+    },
     "description": {
       "type": "text",
       "required": true

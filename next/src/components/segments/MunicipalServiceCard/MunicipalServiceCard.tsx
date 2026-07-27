@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
 import AdministrationIcon from '@/src/assets/icons/city-bratislava/city-administration.svg'
@@ -116,18 +117,29 @@ type MunicipalServiceCardProps = {
   service: MunicipalServiceEntityFragment | MunicipalServiceCardEntityFragment
 }
 
-const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => (
-  <ServiceCard
-    key={service.documentId}
-    title={service.title}
-    description={service.description}
-    buttonText={service.buttonText}
-    icon={getIconComponent(service.icon, service.color)}
-    href={service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug)}
-    tags={service.tags.map((tag) => tag?.title).filter(isDefined)}
-    tagStyle={getTagStyle(service.color)}
-    analyticsProps={{ id: `Mestské služby: ${service.title}` }}
-  />
-)
+const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
+  const { t } = useTranslation('account')
+
+  const tags: string[] = [
+    ...(service.form?.isTemporarilyDisabled
+      ? [t('MunicipalServiceCard.temporarily_disabled_badge')]
+      : []),
+    ...service.tags.map((tag) => tag?.title).filter(isDefined),
+  ]
+
+  return (
+    <ServiceCard
+      key={service.documentId}
+      title={service.title}
+      description={service.description}
+      buttonText={service.buttonText}
+      icon={getIconComponent(service.icon, service.color)}
+      href={service.href ?? ROUTES.MUNICIPAL_SERVICES_FORM(service.slug)}
+      tags={tags}
+      tagStyle={getTagStyle(service.color)}
+      analyticsProps={{ id: `Mestské služby: ${service.title}` }}
+    />
+  )
+}
 
 export default MunicipalServiceCard

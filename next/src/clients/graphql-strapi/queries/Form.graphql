@@ -34,9 +34,16 @@ fragment FormLandingPage on ComponentBlocksFormLandingPage {
   }
 }
 
+fragment FormTemporarilyDisabled on Form {
+  isTemporarilyDisabled
+  temporarilyDisabledUntil
+  temporarilyDisabledReason
+}
+
 fragment FormBase on Form {
   slug
   moreInformationUrl
+  ...FormTemporarilyDisabled
 }
 
 fragment FormWithLandingPage on Form {

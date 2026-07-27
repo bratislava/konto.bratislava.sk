@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { createFormsClient, type FormsClient } from 'openapi-clients/forms'
+
+import BaConfigService from '../config/ba-config.service'
 
 @Injectable()
 export default class ClientsService {
   public readonly formsApi: FormsClient
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly baConfigService: BaConfigService) {
     this.formsApi = createFormsClient({
-      basePath: this.configService.getOrThrow('NEST_FORMS_BACKEND'),
+      basePath: this.baConfigService.formsBackend.url,
     })
   }
 }

@@ -1,6 +1,7 @@
 import { plainToInstance } from 'class-transformer'
 import { validate } from 'class-validator'
 
+import { expectAny, expectObjectContaining } from '../../../__tests__/jest-matchers'
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../validation.decorators'
 
 /** Known-valid samples for `rodnecislo` / Slovak birth number (see rodnecislo checksum rules). */
@@ -27,8 +28,8 @@ describe('IsBirthNumber', () => {
     expect(errors).toHaveLength(1)
     expect(errors[0].property).toBe('birthNumber')
     expect(errors[0].constraints).toMatchObject(
-      expect.objectContaining({
-        isBirthNumber: expect.any(String),
+      expectObjectContaining({
+        isBirthNumber: expectAny<string>(String),
       })
     )
 
@@ -46,7 +47,7 @@ describe('IsBirthNumber', () => {
     expect(errors).toHaveLength(1)
     expect(errors[0].property).toBe('birthNumber')
     expect(errors[0].constraints).toMatchObject(
-      expect.objectContaining({
+      expectObjectContaining<Record<string, unknown>>({
         isBirthNumber: expect.any(String),
       })
     )

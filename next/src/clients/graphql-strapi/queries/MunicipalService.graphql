@@ -14,6 +14,7 @@ fragment MunicipalServiceRedirect on MunicipalService {
   href
   form {
     documentId
+    ...FormTemporarilyDisabled
   }
   sections {
     __typename
@@ -24,6 +25,16 @@ fragment MunicipalServiceLink on ComponentBlocksMunicipalServiceLink {
   id
   label
   url
+}
+
+# TODO consolidate with MunicipalServiceCardEntity when old fields are removed
+fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
+  id
+  overrideTitle
+  text
+  linkLabel
+  pictogram
+  color
 }
 
 fragment MunicipalServiceSlugEntity on MunicipalService {

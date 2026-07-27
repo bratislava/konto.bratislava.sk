@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 
 import { AppController } from './app.controller'
@@ -7,6 +6,7 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { ClamavClientModule } from './clamav-client/clamav-client.module'
 import ClientsModule from './clients/clients.module'
+import BaConfigModule from './config/ba-config.module'
 import { MinioClientModule } from './minio-client/minio-client.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { ScannerModule } from './scanner/scanner.module'
@@ -17,7 +17,7 @@ import { StatusModule } from './status/status.module'
   controllers: [AppController],
   providers: [AppService],
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    BaConfigModule,
     ClientsModule,
     StatusModule,
     ScannerModule,

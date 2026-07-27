@@ -34,6 +34,48 @@
           "sortable": true
         }
       },
+      "isTemporarilyDisabled": {
+        "edit": {
+          "label": "Dočasne vypnúť možnosť odoslať formulár?",
+          "description": "Ak je TRUE, formulár nebude možné odoslať, iba uložiť ako koncept. Na landing page, aj vo formulári sa zobrazí alert a na kartičke mestskej služby sa zobrazí badge.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isTemporarilyDisabled",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "temporarilyDisabledUntil": {
+        "edit": {
+          "label": "Dočasné vypnutie formuláru - dokedy",
+          "description": "Uvádzame presný dátum (ak vieme), alebo aspoň mesiac a rok, kedy sa očakáva opätovné spustenie formuláru.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "temporarilyDisabledUntil",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "temporarilyDisabledReason": {
+        "edit": {
+          "label": "Dočasné vypnutie formuláru - dôvod",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "temporarilyDisabledReason",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "municipalService": {
         "edit": {
           "label": "Mestská služba",
@@ -69,7 +111,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "documentId"
         },
         "list": {
           "label": "landingPage",
@@ -159,13 +202,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "slug",
-        "updatedAt",
-        "moreInformationUrl",
-        "municipalService"
-      ],
+      "list": ["id", "slug", "updatedAt", "moreInformationUrl", "municipalService"],
       "edit": [
         [
           {
@@ -191,6 +228,20 @@
           {
             "name": "formSentPage",
             "size": 12
+          }
+        ],
+        [
+          {
+            "name": "isTemporarilyDisabled",
+            "size": 4
+          },
+          {
+            "name": "temporarilyDisabledUntil",
+            "size": 4
+          },
+          {
+            "name": "temporarilyDisabledReason",
+            "size": 4
           }
         ]
       ]

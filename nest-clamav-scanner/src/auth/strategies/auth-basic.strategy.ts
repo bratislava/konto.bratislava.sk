@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { BasicStrategy as Strategy } from 'passport-http'
 
+import BaConfigService from '../../config/ba-config.service'
 import { timingSafeStringEqual } from '../../utils/crypto'
 
 @Injectable()
 export class BasicStrategy extends PassportStrategy(Strategy, 'auth-basic') {
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly baConfigService: BaConfigService) {
     super({
       passReqToCallback: true,
     })
@@ -21,11 +21,11 @@ export class BasicStrategy extends PassportStrategy(Strategy, 'auth-basic') {
     // Evaluate both comparisons before combining so we don't short-circuit and
     // leak (via timing) which field was wrong.
     const usernameMatch = timingSafeStringEqual(
-      this.configService.get<string>('NEST_CLAMAV_SCANNER_USERNAME'),
+      this.baConfigService.self.username,
       username,
     )
     const passwordMatch = timingSafeStringEqual(
-      this.configService.get<string>('NEST_CLAMAV_SCANNER_PASSWORD'),
+      this.baConfigService.self.password,
       password,
     )
 

@@ -462,9 +462,7 @@ type ExtractFormData = {
   ziadatel: (
     | {
         typOdberatela:
-          | 'Nový'
-          | 'Existujúci'
-          | 'Zmena poplatkovej povinnosti pre existujúceho zákazníka'
+          'Nový' | 'Existujúci' | 'Zmena poplatkovej povinnosti pre existujúceho zákazníka'
         email: string
       }
     | {

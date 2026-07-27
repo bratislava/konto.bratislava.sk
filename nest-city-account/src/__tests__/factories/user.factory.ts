@@ -1,0 +1,27 @@
+import { User } from '../../generated/prisma/client'
+
+export const userFactory = (overrides: Partial<User> = {}): User => ({
+  id: '11111111-1111-1111-1111-111111111111',
+  createdAt: new Date('2024-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+  registeredAt: new Date('2024-01-01T00:00:00.000Z'),
+  externalId: 'external-id',
+  email: 'user@example.com',
+  ifo: null,
+  birthNumber: '9001011234',
+  lastVerificationIdentityCard: null,
+  oldMagproxyDatabase: 0,
+  requeuedInVerification: 0,
+  birthnumberAlreadyExistsLast: null,
+  birthnumberAlreadyExistsCounter: 0,
+  userAttribute: null,
+  lastTaxDeliveryMethodsUpdateYear: null,
+  taxDeliveryMethod: null,
+  taxDeliveryMethodAtLockDate: null,
+  taxDeliveryMethodCityAccountLockDate: null,
+  lastTaxDeliveryMethodsUpdateTry: new Date('2024-01-01T00:00:00.000Z'),
+  cognitoTier: null,
+  isDeceased: false,
+  markedDeceasedAt: null,
+  ...overrides,
+})

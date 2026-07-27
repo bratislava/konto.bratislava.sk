@@ -2,6 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../test/singleton'
+import { expectArrayContaining, expectObjectContaining } from '../../../__tests__/jest-matchers'
 import {
   ExternalEdeskCheck,
   PhysicalEntity,
@@ -33,7 +34,7 @@ const createMockCompletedItem = (
     failCount: 0,
     newUri: null,
     ...overrides,
-  } as ExternalEdeskCheck
+  }
 }
 
 describe('EdeskTasksSubservice', () => {
@@ -321,8 +322,8 @@ describe('EdeskTasksSubservice', () => {
       await service.updateEdeskInNoris()
 
       expect(updateEdeskChecksSpy).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
+        expectArrayContaining([
+          expectObjectContaining({
             idNoris: 99,
             edeskStatus: 'NONEXISTENT',
             edeskNumber: null,
@@ -355,8 +356,8 @@ describe('EdeskTasksSubservice', () => {
       await service.updateEdeskInNoris()
 
       expect(updateEdeskChecksSpy).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
+        expectArrayContaining([
+          expectObjectContaining({
             idNoris: 1,
             deathDate,
           }),
@@ -385,8 +386,8 @@ describe('EdeskTasksSubservice', () => {
       await service.updateEdeskInNoris()
 
       expect(updateEdeskChecksSpy).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
+        expectArrayContaining([
+          expectObjectContaining({
             idNoris: 1,
             deathDate: null,
           }),

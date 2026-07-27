@@ -455,6 +455,36 @@ export type ComponentBlocksHelpItemInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentBlocksMunicipalServiceCard = {
+  __typename?: 'ComponentBlocksMunicipalServiceCard'
+  color: Enum_Componentblocksmunicipalservicecard_Color
+  id: Scalars['ID']['output']
+  linkLabel: Scalars['String']['output']
+  overrideTitle?: Maybe<Scalars['String']['output']>
+  pictogram: Enum_Componentblocksmunicipalservicecard_Pictogram
+  text: Scalars['String']['output']
+}
+
+export type ComponentBlocksMunicipalServiceCardFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>>>
+  color?: InputMaybe<StringFilterInput>
+  linkLabel?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>>>
+  overrideTitle?: InputMaybe<StringFilterInput>
+  pictogram?: InputMaybe<StringFilterInput>
+  text?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksMunicipalServiceCardInput = {
+  color?: InputMaybe<Enum_Componentblocksmunicipalservicecard_Color>
+  id?: InputMaybe<Scalars['ID']['input']>
+  linkLabel?: InputMaybe<Scalars['String']['input']>
+  overrideTitle?: InputMaybe<Scalars['String']['input']>
+  pictogram?: InputMaybe<Enum_Componentblocksmunicipalservicecard_Pictogram>
+  text?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksMunicipalServiceLink = {
   __typename?: 'ComponentBlocksMunicipalServiceLink'
   id: Scalars['ID']['output']
@@ -698,6 +728,7 @@ export type ComponentSectionsContactsInput = {
 
 export type ComponentSectionsDocuments = {
   __typename?: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: Maybe<Scalars['Boolean']['output']>
   externalDocuments?: Maybe<Array<Maybe<ComponentBlocksExternalDocument>>>
   id: Scalars['ID']['output']
   text?: Maybe<Scalars['String']['output']>
@@ -711,6 +742,7 @@ export type ComponentSectionsDocumentsExternalDocumentsArgs = {
 }
 
 export type ComponentSectionsDocumentsFiltersInput = {
+  allowCollapsingDocuments?: InputMaybe<BooleanFilterInput>
   and?: InputMaybe<Array<InputMaybe<ComponentSectionsDocumentsFiltersInput>>>
   externalDocuments?: InputMaybe<ComponentBlocksExternalDocumentFiltersInput>
   not?: InputMaybe<ComponentSectionsDocumentsFiltersInput>
@@ -720,6 +752,7 @@ export type ComponentSectionsDocumentsFiltersInput = {
 }
 
 export type ComponentSectionsDocumentsInput = {
+  allowCollapsingDocuments?: InputMaybe<Scalars['Boolean']['input']>
   externalDocuments?: InputMaybe<Array<InputMaybe<ComponentBlocksExternalDocumentInput>>>
   id?: InputMaybe<Scalars['ID']['input']>
   text?: InputMaybe<Scalars['String']['input']>
@@ -875,6 +908,48 @@ export type DateTimeFilterInput = {
 export type DeleteMutationResponse = {
   __typename?: 'DeleteMutationResponse'
   documentId: Scalars['ID']['output']
+}
+
+export enum Enum_Componentblocksmunicipalservicecard_Color {
+  Culture = 'culture',
+  Education = 'education',
+  Environment = 'environment',
+  Main = 'main',
+  Marianum = 'marianum',
+  Olo = 'olo',
+  Social = 'social',
+  Transport = 'transport',
+  Tsb = 'tsb',
+}
+
+export enum Enum_Componentblocksmunicipalservicecard_Pictogram {
+  Administration = 'administration',
+  ChristmasTree = 'christmas_tree',
+  CommunityGardens = 'community_gardens',
+  Connector = 'connector',
+  CulturalOrganizations = 'cultural_organizations',
+  EventsSupport = 'events_support',
+  Excavations = 'excavations',
+  FrontGardens = 'front_gardens',
+  Greenery = 'greenery',
+  Housing = 'housing',
+  KidsTeenagers = 'kids_teenagers',
+  Lamp = 'lamp',
+  Library = 'library',
+  ManagementCommunications = 'management_communications',
+  Marianum = 'marianum',
+  Mosquito = 'mosquito',
+  Parking = 'parking',
+  PublicSpaceOccupation = 'public_space_occupation',
+  Scooter = 'scooter',
+  Security = 'security',
+  SpatialPlanning = 'spatial_planning',
+  SwimmingPool = 'swimming_pool',
+  Taxes = 'taxes',
+  Towing = 'towing',
+  Transport = 'transport',
+  Waste = 'waste',
+  Zoo = 'zoo',
 }
 
 export enum Enum_Componentsectionscontacts_Titlelevel {
@@ -1039,11 +1114,14 @@ export type Form = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   documentId: Scalars['ID']['output']
   formSentPage?: Maybe<ComponentBlocksFormSentPage>
+  isTemporarilyDisabled?: Maybe<Scalars['Boolean']['output']>
   landingPage?: Maybe<ComponentBlocksFormLandingPage>
   moreInformationUrl?: Maybe<Scalars['String']['output']>
   municipalService?: Maybe<MunicipalService>
   publishedAt?: Maybe<Scalars['DateTime']['output']>
   slug: Scalars['String']['output']
+  temporarilyDisabledReason?: Maybe<Scalars['String']['output']>
+  temporarilyDisabledUntil?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
@@ -1069,6 +1147,7 @@ export type FormFiltersInput = {
   createdAt?: InputMaybe<DateTimeFilterInput>
   documentId?: InputMaybe<IdFilterInput>
   formSentPage?: InputMaybe<ComponentBlocksFormSentPageFiltersInput>
+  isTemporarilyDisabled?: InputMaybe<BooleanFilterInput>
   landingPage?: InputMaybe<ComponentBlocksFormLandingPageFiltersInput>
   moreInformationUrl?: InputMaybe<StringFilterInput>
   municipalService?: InputMaybe<MunicipalServiceFiltersInput>
@@ -1076,16 +1155,21 @@ export type FormFiltersInput = {
   or?: InputMaybe<Array<InputMaybe<FormFiltersInput>>>
   publishedAt?: InputMaybe<DateTimeFilterInput>
   slug?: InputMaybe<StringFilterInput>
+  temporarilyDisabledReason?: InputMaybe<StringFilterInput>
+  temporarilyDisabledUntil?: InputMaybe<StringFilterInput>
   updatedAt?: InputMaybe<DateTimeFilterInput>
 }
 
 export type FormInput = {
   formSentPage?: InputMaybe<ComponentBlocksFormSentPageInput>
+  isTemporarilyDisabled?: InputMaybe<Scalars['Boolean']['input']>
   landingPage?: InputMaybe<ComponentBlocksFormLandingPageInput>
   moreInformationUrl?: InputMaybe<Scalars['String']['input']>
   municipalService?: InputMaybe<Scalars['ID']['input']>
   publishedAt?: InputMaybe<Scalars['DateTime']['input']>
   slug?: InputMaybe<Scalars['String']['input']>
+  temporarilyDisabledReason?: InputMaybe<Scalars['String']['input']>
+  temporarilyDisabledUntil?: InputMaybe<Scalars['String']['input']>
 }
 
 export type FormRelationResponseCollection = {
@@ -1162,6 +1246,7 @@ export type GenericMorph =
   | ComponentBlocksFormSentPageAlert
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
+  | ComponentBlocksMunicipalServiceCard
   | ComponentBlocksMunicipalServiceLink
   | ComponentBlocksQuestion
   | ComponentGeneralAlert
@@ -1669,6 +1754,7 @@ export type MunicipalChargeRelationResponseCollection = {
 export type MunicipalService = {
   __typename?: 'MunicipalService'
   buttonText: Scalars['String']['output']
+  card?: Maybe<ComponentBlocksMunicipalServiceCard>
   categories: Array<Maybe<MunicipalServiceCategory>>
   categories_connection?: Maybe<MunicipalServiceCategoryRelationResponseCollection>
   color: Enum_Municipalservice_Color
@@ -1804,6 +1890,7 @@ export type MunicipalServiceEntityResponseCollection = {
 export type MunicipalServiceFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<MunicipalServiceFiltersInput>>>
   buttonText?: InputMaybe<StringFilterInput>
+  card?: InputMaybe<ComponentBlocksMunicipalServiceCardFiltersInput>
   categories?: InputMaybe<MunicipalServiceCategoryFiltersInput>
   color?: InputMaybe<StringFilterInput>
   createdAt?: InputMaybe<DateTimeFilterInput>
@@ -1827,6 +1914,7 @@ export type MunicipalServiceFiltersInput = {
 
 export type MunicipalServiceInput = {
   buttonText?: InputMaybe<Scalars['String']['input']>
+  card?: InputMaybe<ComponentBlocksMunicipalServiceCardInput>
   categories?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
   color?: InputMaybe<Enum_Municipalservice_Color>
   description?: InputMaybe<Scalars['String']['input']>
@@ -2289,6 +2377,17 @@ export type PaginationArg = {
   start?: InputMaybe<Scalars['Int']['input']>
 }
 
+export enum PublicationFilter {
+  HasPublishedVersion = 'HAS_PUBLISHED_VERSION',
+  HasPublishedVersionDocument = 'HAS_PUBLISHED_VERSION_DOCUMENT',
+  Modified = 'MODIFIED',
+  NeverPublished = 'NEVER_PUBLISHED',
+  NeverPublishedDocument = 'NEVER_PUBLISHED_DOCUMENT',
+  PublishedWithoutDraft = 'PUBLISHED_WITHOUT_DRAFT',
+  PublishedWithDraft = 'PUBLISHED_WITH_DRAFT',
+  Unmodified = 'UNMODIFIED',
+}
+
 export enum PublicationStatus {
   Draft = 'DRAFT',
   Published = 'PUBLISHED',
@@ -2343,12 +2442,14 @@ export type Query = {
 
 export type QueryFooterArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryFormArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2356,6 +2457,7 @@ export type QueryFormsArgs = {
   filters?: InputMaybe<FormFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2364,28 +2466,33 @@ export type QueryForms_ConnectionArgs = {
   filters?: InputMaybe<FormFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryGeneralArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHelpPageArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryHomepageAnnouncementArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2393,6 +2500,7 @@ export type QueryHomepageAnnouncementsArgs = {
   filters?: InputMaybe<HomepageAnnouncementFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2401,6 +2509,7 @@ export type QueryHomepageAnnouncements_ConnectionArgs = {
   filters?: InputMaybe<HomepageAnnouncementFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2408,6 +2517,7 @@ export type QueryHomepageAnnouncements_ConnectionArgs = {
 export type QueryI18NLocaleArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2415,6 +2525,7 @@ export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2423,6 +2534,7 @@ export type QueryI18NLocales_ConnectionArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2430,11 +2542,13 @@ export type QueryI18NLocales_ConnectionArgs = {
 export type QueryMunicipalChargeArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalChargeConfigArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2442,6 +2556,7 @@ export type QueryMunicipalChargesArgs = {
   filters?: InputMaybe<MunicipalChargeFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2450,6 +2565,7 @@ export type QueryMunicipalCharges_ConnectionArgs = {
   filters?: InputMaybe<MunicipalChargeFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2457,6 +2573,7 @@ export type QueryMunicipalCharges_ConnectionArgs = {
 export type QueryMunicipalServiceArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2464,6 +2581,7 @@ export type QueryMunicipalServiceCategoriesArgs = {
   filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2472,6 +2590,7 @@ export type QueryMunicipalServiceCategories_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2479,12 +2598,14 @@ export type QueryMunicipalServiceCategories_ConnectionArgs = {
 export type QueryMunicipalServiceCategoryArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServiceTagArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2492,6 +2613,7 @@ export type QueryMunicipalServiceTagsArgs = {
   filters?: InputMaybe<MunicipalServiceTagFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2500,6 +2622,7 @@ export type QueryMunicipalServiceTags_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceTagFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2508,12 +2631,14 @@ export type QueryMunicipalServicesArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryMunicipalServicesPageArgs = {
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2521,6 +2646,7 @@ export type QueryMunicipalServices_ConnectionArgs = {
   filters?: InputMaybe<MunicipalServiceFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2528,12 +2654,14 @@ export type QueryMunicipalServices_ConnectionArgs = {
 export type QueryReviewWorkflowsWorkflowArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
 export type QueryReviewWorkflowsWorkflowStageArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2541,6 +2669,7 @@ export type QueryReviewWorkflowsWorkflowStagesArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2549,6 +2678,7 @@ export type QueryReviewWorkflowsWorkflowStages_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowStageFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2557,6 +2687,7 @@ export type QueryReviewWorkflowsWorkflowsArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2565,6 +2696,7 @@ export type QueryReviewWorkflowsWorkflows_ConnectionArgs = {
   filters?: InputMaybe<ReviewWorkflowsWorkflowFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2572,6 +2704,7 @@ export type QueryReviewWorkflowsWorkflows_ConnectionArgs = {
 export type QueryUploadFileArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2579,6 +2712,7 @@ export type QueryUploadFilesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2587,6 +2721,7 @@ export type QueryUploadFiles_ConnectionArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2594,6 +2729,7 @@ export type QueryUploadFiles_ConnectionArgs = {
 export type QueryUsersPermissionsRoleArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2601,6 +2737,7 @@ export type QueryUsersPermissionsRolesArgs = {
   filters?: InputMaybe<UsersPermissionsRoleFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2609,6 +2746,7 @@ export type QueryUsersPermissionsRoles_ConnectionArgs = {
   filters?: InputMaybe<UsersPermissionsRoleFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2616,6 +2754,7 @@ export type QueryUsersPermissionsRoles_ConnectionArgs = {
 export type QueryUsersPermissionsUserArgs = {
   documentId: Scalars['ID']['input']
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
+  publicationFilter?: InputMaybe<PublicationFilter>
   status?: InputMaybe<PublicationStatus>
 }
 
@@ -2623,6 +2762,7 @@ export type QueryUsersPermissionsUsersArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -2631,6 +2771,7 @@ export type QueryUsersPermissionsUsers_ConnectionArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>
   hasPublishedVersion?: InputMaybe<Scalars['Boolean']['input']>
   pagination?: InputMaybe<PaginationArg>
+  publicationFilter?: InputMaybe<PublicationFilter>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   status?: InputMaybe<PublicationStatus>
 }
@@ -3228,16 +3369,29 @@ export type FormLandingPageFragment = {
   } | null
 }
 
+export type FormTemporarilyDisabledFragment = {
+  __typename?: 'Form'
+  isTemporarilyDisabled?: boolean | null
+  temporarilyDisabledUntil?: string | null
+  temporarilyDisabledReason?: string | null
+}
+
 export type FormBaseFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
+  isTemporarilyDisabled?: boolean | null
+  temporarilyDisabledUntil?: string | null
+  temporarilyDisabledReason?: string | null
 }
 
 export type FormWithLandingPageFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
+  isTemporarilyDisabled?: boolean | null
+  temporarilyDisabledUntil?: string | null
+  temporarilyDisabledReason?: string | null
   landingPage?: {
     __typename?: 'ComponentBlocksFormLandingPage'
     text?: string | null
@@ -3262,6 +3416,9 @@ export type FormFragment = {
   __typename?: 'Form'
   slug: string
   moreInformationUrl?: string | null
+  isTemporarilyDisabled?: boolean | null
+  temporarilyDisabledUntil?: string | null
+  temporarilyDisabledReason?: string | null
   formSentPage?: {
     __typename?: 'ComponentBlocksFormSentPage'
     feedbackLink?: string | null
@@ -3304,6 +3461,9 @@ export type FormBaseBySlugQuery = {
     documentId: string
     slug: string
     moreInformationUrl?: string | null
+    isTemporarilyDisabled?: boolean | null
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
   } | null>
 }
 
@@ -3318,6 +3478,9 @@ export type FormWithLandingPageBySlugQuery = {
     documentId: string
     slug: string
     moreInformationUrl?: string | null
+    isTemporarilyDisabled?: boolean | null
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
     landingPage?: {
       __typename?: 'ComponentBlocksFormLandingPage'
       text?: string | null
@@ -3348,7 +3511,13 @@ export type CommonLinkFragment = {
     title: string
     slug: string
     href?: string | null
-    form?: { __typename?: 'Form'; documentId: string } | null
+    form?: {
+      __typename?: 'Form'
+      documentId: string
+      isTemporarilyDisabled?: boolean | null
+      temporarilyDisabledUntil?: string | null
+      temporarilyDisabledReason?: string | null
+    } | null
     sections?: Array<
       | { __typename: 'ComponentSectionsContacts' }
       | { __typename: 'ComponentSectionsDocuments' }
@@ -3374,7 +3543,13 @@ export type FooterColumnBlockFragment = {
       title: string
       slug: string
       href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled?: boolean | null
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3409,7 +3584,13 @@ export type FooterFragment = {
         title: string
         slug: string
         href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
+        form?: {
+          __typename?: 'Form'
+          documentId: string
+          isTemporarilyDisabled?: boolean | null
+          temporarilyDisabledUntil?: string | null
+          temporarilyDisabledReason?: string | null
+        } | null
         sections?: Array<
           | { __typename: 'ComponentSectionsContacts' }
           | { __typename: 'ComponentSectionsDocuments' }
@@ -3432,7 +3613,13 @@ export type FooterFragment = {
       title: string
       slug: string
       href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled?: boolean | null
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3471,7 +3658,13 @@ export type GeneralQuery = {
           title: string
           slug: string
           href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
+          form?: {
+            __typename?: 'Form'
+            documentId: string
+            isTemporarilyDisabled?: boolean | null
+            temporarilyDisabledUntil?: string | null
+            temporarilyDisabledReason?: string | null
+          } | null
           sections?: Array<
             | { __typename: 'ComponentSectionsContacts' }
             | { __typename: 'ComponentSectionsDocuments' }
@@ -3494,7 +3687,13 @@ export type GeneralQuery = {
         title: string
         slug: string
         href?: string | null
-        form?: { __typename?: 'Form'; documentId: string } | null
+        form?: {
+          __typename?: 'Form'
+          documentId: string
+          isTemporarilyDisabled?: boolean | null
+          temporarilyDisabledUntil?: string | null
+          temporarilyDisabledReason?: string | null
+        } | null
         sections?: Array<
           | { __typename: 'ComponentSectionsContacts' }
           | { __typename: 'ComponentSectionsDocuments' }
@@ -3581,7 +3780,13 @@ export type HomepageQuery = {
       slug: string
       href?: string | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled?: boolean | null
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3604,7 +3809,13 @@ export type HomepageQuery = {
       slug: string
       href?: string | null
       tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled?: boolean | null
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3632,7 +3843,13 @@ export type HomepageQuery = {
           title: string
           slug: string
           href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
+          form?: {
+            __typename?: 'Form'
+            documentId: string
+            isTemporarilyDisabled?: boolean | null
+            temporarilyDisabledUntil?: string | null
+            temporarilyDisabledReason?: string | null
+          } | null
           sections?: Array<
             | { __typename: 'ComponentSectionsContacts' }
             | { __typename: 'ComponentSectionsDocuments' }
@@ -3663,7 +3880,13 @@ export type HomepageQuery = {
           title: string
           slug: string
           href?: string | null
-          form?: { __typename?: 'Form'; documentId: string } | null
+          form?: {
+            __typename?: 'Form'
+            documentId: string
+            isTemporarilyDisabled?: boolean | null
+            temporarilyDisabledUntil?: string | null
+            temporarilyDisabledReason?: string | null
+          } | null
           sections?: Array<
             | { __typename: 'ComponentSectionsContacts' }
             | { __typename: 'ComponentSectionsDocuments' }
@@ -3697,7 +3920,13 @@ export type HomepageAnnouncementEntityFragment = {
       title: string
       slug: string
       href?: string | null
-      form?: { __typename?: 'Form'; documentId: string } | null
+      form?: {
+        __typename?: 'Form'
+        documentId: string
+        isTemporarilyDisabled?: boolean | null
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
+      } | null
       sections?: Array<
         | { __typename: 'ComponentSectionsContacts' }
         | { __typename: 'ComponentSectionsDocuments' }
@@ -3812,7 +4041,13 @@ export type MunicipalServiceRedirectFragment = {
   __typename?: 'MunicipalService'
   slug: string
   href?: string | null
-  form?: { __typename?: 'Form'; documentId: string } | null
+  form?: {
+    __typename?: 'Form'
+    documentId: string
+    isTemporarilyDisabled?: boolean | null
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
+  } | null
   sections?: Array<
     | { __typename: 'ComponentSectionsContacts' }
     | { __typename: 'ComponentSectionsDocuments' }
@@ -3830,6 +4065,16 @@ export type MunicipalServiceLinkFragment = {
   id: string
   label?: string | null
   url?: string | null
+}
+
+export type MunicipalServiceCardFragment = {
+  __typename?: 'ComponentBlocksMunicipalServiceCard'
+  id: string
+  overrideTitle?: string | null
+  text: string
+  linkLabel: string
+  pictogram: Enum_Componentblocksmunicipalservicecard_Pictogram
+  color: Enum_Componentblocksmunicipalservicecard_Color
 }
 
 export type MunicipalServiceSlugEntityFragment = {
@@ -3850,7 +4095,13 @@ export type MunicipalServiceCardEntityFragment = {
   slug: string
   href?: string | null
   tags: Array<{ __typename?: 'MunicipalServiceTag'; documentId: string; title: string } | null>
-  form?: { __typename?: 'Form'; documentId: string } | null
+  form?: {
+    __typename?: 'Form'
+    documentId: string
+    isTemporarilyDisabled?: boolean | null
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
+  } | null
   sections?: Array<
     | { __typename: 'ComponentSectionsContacts' }
     | { __typename: 'ComponentSectionsDocuments' }
@@ -3878,6 +4129,9 @@ export type MunicipalServiceEntityFragment = {
   form?: {
     __typename?: 'Form'
     documentId: string
+    isTemporarilyDisabled?: boolean | null
+    temporarilyDisabledUntil?: string | null
+    temporarilyDisabledReason?: string | null
     slug: string
     moreInformationUrl?: string | null
     landingPage?: {
@@ -3976,6 +4230,7 @@ export type MunicipalServiceEntityFragment = {
       }
     | {
         __typename: 'ComponentSectionsDocuments'
+        allowCollapsingDocuments?: boolean | null
         title?: string | null
         text?: string | null
         externalDocuments?: Array<{
@@ -4037,6 +4292,9 @@ export type MunicipalServiceBySlugQuery = {
     form?: {
       __typename?: 'Form'
       documentId: string
+      isTemporarilyDisabled?: boolean | null
+      temporarilyDisabledUntil?: string | null
+      temporarilyDisabledReason?: string | null
       slug: string
       moreInformationUrl?: string | null
       landingPage?: {
@@ -4135,6 +4393,7 @@ export type MunicipalServiceBySlugQuery = {
         }
       | {
           __typename: 'ComponentSectionsDocuments'
+          allowCollapsingDocuments?: boolean | null
           title?: string | null
           text?: string | null
           externalDocuments?: Array<{
@@ -4197,6 +4456,9 @@ export type MunicipalServicesPageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
+        isTemporarilyDisabled?: boolean | null
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
         slug: string
         moreInformationUrl?: string | null
         landingPage?: {
@@ -4295,6 +4557,7 @@ export type MunicipalServicesPageQuery = {
           }
         | {
             __typename: 'ComponentSectionsDocuments'
+            allowCollapsingDocuments?: boolean | null
             title?: string | null
             text?: string | null
             externalDocuments?: Array<{
@@ -4349,6 +4612,9 @@ export type MunicipalServicesPageQuery = {
       form?: {
         __typename?: 'Form'
         documentId: string
+        isTemporarilyDisabled?: boolean | null
+        temporarilyDisabledUntil?: string | null
+        temporarilyDisabledReason?: string | null
         slug: string
         moreInformationUrl?: string | null
         landingPage?: {
@@ -4447,6 +4713,7 @@ export type MunicipalServicesPageQuery = {
           }
         | {
             __typename: 'ComponentSectionsDocuments'
+            allowCollapsingDocuments?: boolean | null
             title?: string | null
             text?: string | null
             externalDocuments?: Array<{
@@ -4639,6 +4906,7 @@ export type ExternalDocumentBlockFragment = {
 
 export type DocumentsSectionFragment = {
   __typename?: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: boolean | null
   title?: string | null
   text?: string | null
   externalDocuments?: Array<{
@@ -4720,6 +4988,7 @@ type MunicipalServiceSections_ComponentSectionsContacts_Fragment = {
 
 type MunicipalServiceSections_ComponentSectionsDocuments_Fragment = {
   __typename: 'ComponentSectionsDocuments'
+  allowCollapsingDocuments?: boolean | null
   title?: string | null
   text?: string | null
   externalDocuments?: Array<{
@@ -4785,11 +5054,20 @@ export const AlertFragmentDoc = gql`
     dateTo
   }
 `
+export const FormTemporarilyDisabledFragmentDoc = gql`
+  fragment FormTemporarilyDisabled on Form {
+    isTemporarilyDisabled
+    temporarilyDisabledUntil
+    temporarilyDisabledReason
+  }
+`
 export const FormBaseFragmentDoc = gql`
   fragment FormBase on Form {
     slug
     moreInformationUrl
+    ...FormTemporarilyDisabled
   }
+  ${FormTemporarilyDisabledFragmentDoc}
 `
 export const FormLandingPageLinkCtaFragmentDoc = gql`
   fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
@@ -4859,11 +5137,13 @@ export const MunicipalServiceRedirectFragmentDoc = gql`
     href
     form {
       documentId
+      ...FormTemporarilyDisabled
     }
     sections {
       __typename
     }
   }
+  ${FormTemporarilyDisabledFragmentDoc}
 `
 export const CommonLinkFragmentDoc = gql`
   fragment CommonLink on ComponentBlocksCommonLink {
@@ -4978,6 +5258,16 @@ export const MunicipalChargeConfigFragmentDoc = gql`
   }
   ${DeliveryMethodFragmentDoc}
   ${MunicipalChargeFragmentDoc}
+`
+export const MunicipalServiceCardFragmentDoc = gql`
+  fragment MunicipalServiceCard on ComponentBlocksMunicipalServiceCard {
+    id
+    overrideTitle
+    text
+    linkLabel
+    pictogram
+    color
+  }
 `
 export const MunicipalServiceSlugEntityFragmentDoc = gql`
   fragment MunicipalServiceSlugEntity on MunicipalService {
@@ -5140,6 +5430,7 @@ export const ExternalDocumentBlockFragmentDoc = gql`
 `
 export const DocumentsSectionFragmentDoc = gql`
   fragment DocumentsSection on ComponentSectionsDocuments {
+    allowCollapsingDocuments
     title
     text
     externalDocuments {

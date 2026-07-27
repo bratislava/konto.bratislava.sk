@@ -50,7 +50,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
   beforeEach(async () => {
     mockBrowsers = []
-    launchMock = jest.mocked(chromium.launch) as unknown as jest.Mock
+    launchMock = jest.mocked(chromium.launch)
     launchMock.mockReset()
     launchMock.mockImplementation(() => {
       const browser = buildMockBrowser()
@@ -76,9 +76,7 @@ describe('PdfGeneratorService — shared browser lifecycle', () => {
 
     service = module.get<PdfGeneratorService>(PdfGeneratorService)
 
-    jest
-      .spyOn(service as any, 'addPasswordToPdf')
-      .mockImplementation((buf: unknown) => buf as Buffer)
+    jest.spyOn(service, 'addPasswordToPdf').mockResolvedValue(Buffer.from('mock-encrypted-pdf'))
   })
 
   afterEach(() => {

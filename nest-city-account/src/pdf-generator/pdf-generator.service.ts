@@ -176,7 +176,7 @@ export class PdfGeneratorService {
   /**
    * Adds password protection to a PDF buffer using pdf-lib
    */
-  private async addPasswordToPdf(pdfBuffer: Buffer, password: string): Promise<Buffer> {
+  async addPasswordToPdf(pdfBuffer: Buffer, password: string): Promise<Buffer> {
     const tempInputPath = join(tmpdir(), `input-${uuidv4()}.pdf`)
 
     try {
@@ -185,6 +185,7 @@ export class PdfGeneratorService {
       return await new Promise<Buffer>((resolve, reject) => {
         const args = ['--encrypt', password, password, '256', '--', tempInputPath, '-']
 
+        // eslint-disable-next-line sonarjs/no-os-command-from-path -- qpdf is a trusted system dependency installed via the Dockerfile/local dev setup, not user-controlled
         const child = spawn('qpdf', args)
         const stdoutChunks: Buffer[] = []
         const stderrChunks: Buffer[] = []

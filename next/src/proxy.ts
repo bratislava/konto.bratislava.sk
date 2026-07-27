@@ -68,11 +68,17 @@ export function proxy(request: NextRequest) {
     .filter(isDefined)
     .join(' ')
 
+  // MINIO_BUCKET is a server-only env (not NEXT_PUBLIC), same as used in next.config.ts image
+  // remotePatterns. Middleware runs server-side so process.env is available here.
+  const minioBucket = process.env.MINIO_BUCKET
+  const minioImgSrc = minioBucket ? `https://${minioBucket}.s3.bratislava.sk` : undefined
+
   const imgSrc = [
     'https://www.googletagmanager.com',
     'https://*.google-analytics.com',
     'https://*.clarity.ms',
     'https://c.bing.com',
+    minioImgSrc,
   ]
     .filter(isDefined)
     .join(' ')
@@ -107,7 +113,7 @@ export function proxy(request: NextRequest) {
     object-src 'none';
     base-uri 'self';
     form-action 'self';
-    frame-ancestors 'self' https://*.staging.bratislava.sk https://*.dev.bratislava.sk https://kupaliska.bratislava.sk https://olo.sk;
+    frame-ancestors 'self' https://*.staging.bratislava.sk https://*.dev.bratislava.sk https://kupaliska.bratislava.sk https://www.kupaliska.bratislava.sk https://olo.sk https://www.olo.sk;
     frame-src 'self' https://consentcdn.cookiebot.eu https://challenges.cloudflare.com https://www.slovensko.sk https://www.google.com/maps/ https://maps.app.goo.gl;
     upgrade-insecure-requests;
     report-uri /api/csp-report;

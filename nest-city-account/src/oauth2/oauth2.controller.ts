@@ -36,7 +36,10 @@ import {
 } from './dtos/requests.oauth2.dto'
 import { ClientInfoResponseDto, TokenResponseDto } from './dtos/responses.oauth2.dto'
 import { OAuth2ExceptionFilter } from './filters/oauth2-exception.filter'
-import { AuthRequestIdGuard, RequestWithAuthorizationData } from './guards/auth-request-id.guard'
+import {
+  AuthRequestIdGuard,
+  RequestWithValidatedAuthorizationData,
+} from './guards/auth-request-id.guard'
 import { AuthorizationRequestGuard } from './guards/authorization-request.guard'
 import { RequestWithClientCredentials, TokenRequestGuard } from './guards/token-request.guard'
 import { OAuth2AuthorizationErrorCode } from './oauth2.error.enum'
@@ -104,9 +107,11 @@ export class OAuth2Controller {
     status: 200,
     description: 'Tokens successfully stored',
   })
-  async storeTokens(@Body() body: StoreTokensRequestDto, @Req() req: Request): Promise<void> {
-    const request = req as RequestWithAuthorizationData
-    const authorizationRequest = request.authorizationRequestData!
+  async storeTokens(
+    @Body() body: StoreTokensRequestDto,
+    @Req() request: RequestWithValidatedAuthorizationData
+  ): Promise<void> {
+    const authorizationRequest = request.authorizationRequestData
 
     this.logger.debug('Store tokens request received', {
       client_id: authorizationRequest.client_id,
@@ -136,11 +141,10 @@ export class OAuth2Controller {
   })
   async continueComplete(
     @Query() query: ContinueRequestDto,
-    @Req() req: Request,
+    @Req() request: RequestWithValidatedAuthorizationData,
     @Res() res: Response
   ): Promise<void> {
-    const request = req as RequestWithAuthorizationData
-    const authRequestData = request.authorizationRequestData!
+    const authRequestData = request.authorizationRequestData
 
     this.logger.debug('Continue complete request received', {
       client_id: authRequestData.client_id,
@@ -240,9 +244,11 @@ export class OAuth2Controller {
     description: 'Invalid request or client not found',
     type: OAuth2AuthorizationErrorDto,
   })
-  info(@Query() query: ClientInfoRequestDto, @Req() req: Request): ClientInfoResponseDto {
-    const request = req as RequestWithAuthorizationData
-    const authRequestData = request.authorizationRequestData!
+  info(
+    @Query() query: ClientInfoRequestDto,
+    @Req() request: RequestWithValidatedAuthorizationData
+  ): ClientInfoResponseDto {
+    const authRequestData = request.authorizationRequestData
 
     this.logger.debug('Info request received', {
       client_id: authRequestData.client_id,

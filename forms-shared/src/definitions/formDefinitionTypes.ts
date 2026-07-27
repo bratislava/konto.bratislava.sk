@@ -90,8 +90,7 @@ export type FormDefinitionWebhook = FormDefinitionBase & {
 }
 
 export type FormDefinitionSlovenskoSk =
-  | FormDefinitionSlovenskoSkGeneric
-  | FormDefinitionSlovenskoSkTax
+  FormDefinitionSlovenskoSkGeneric | FormDefinitionSlovenskoSkTax
 
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email

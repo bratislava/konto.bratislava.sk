@@ -91,7 +91,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     response: Response,
     status: number,
     exceptionResponse: string | object
-  ) {
+  ): Record<string, unknown> {
     const requestWithAuthData = request as RequestWithAuthorizationData
     const errorResponse = this.extractOAuth2AuthorizationError(exceptionResponse, status)
 
@@ -150,7 +150,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     response: Response,
     status: number,
     exceptionResponse: string | object
-  ) {
+  ): Record<string, unknown> {
     const requestWithAuthData = request as RequestWithAuthorizationData
     let redirectUri = requestWithAuthData.authorizationRequestData?.redirect_uri
     let state = requestWithAuthData.authorizationRequestData?.state
@@ -231,7 +231,7 @@ export class OAuth2ExceptionFilter implements ExceptionFilter {
     response: Response,
     status: number,
     exceptionResponse: string | object
-  ) {
+  ): Record<string, unknown> {
     const errorResponse = this.extractOAuth2TokenError(exceptionResponse, status)
 
     // RFC 6749 Section 5.2: invalid_client errors should return 401 with WWW-Authenticate header

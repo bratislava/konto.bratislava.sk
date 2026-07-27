@@ -131,7 +131,11 @@ export default schema(
     step('prilohy', { title: 'Prílohy' }, [
       fileUpload<typeof predzahradkyFiles>(
         'mapa',
-        { title: 'Snímka z mapy so zakreslením miesta predzáhradky', required: true, slotId: 'mapa' },
+        {
+          title: 'Snímka z mapy so zakreslením miesta predzáhradky',
+          required: true,
+          slotId: 'mapa',
+        },
         { type: 'dragAndDrop' },
       ),
       fileUpload<typeof predzahradkyFiles>(
@@ -151,7 +155,11 @@ export default schema(
           helptext: 'Napríklad, vo forme jednoduchého nákresu rozloženia jednotlivých prvkov.',
         },
       ),
-      fileUpload<typeof predzahradkyFiles>('inePrilohy', { title: 'Iné', slotId: 'inePrilohy' }, { type: 'dragAndDrop' }),
+      fileUpload<typeof predzahradkyFiles>(
+        'inePrilohy',
+        { title: 'Iné', slotId: 'inePrilohy' },
+        { type: 'dragAndDrop' },
+      ),
     ]),
   ],
 )

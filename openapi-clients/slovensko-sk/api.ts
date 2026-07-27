@@ -6560,8 +6560,8 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiAxiosParamCreator = function (
 ) {
   return {
     /**
-     * Vráti identitu.  Pozor, volanie je dostupné len pre OVM.
-     * @summary Vráti identitu
+     * Vráti identitu na základe ID identity.  Pozor, volanie je dostupné len pre OVM.
+     * @summary Vráti identitu podľa ID
      * @param {string} id ID identity.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6590,6 +6590,70 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiAxiosParamCreator = function (
       // authentication API Token required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Accept'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Vráti identitu na základe osobných údajov alebo IČO.  Možné spôsoby vyhľadávania: - IČO (company_registration_number) samostatne, alebo - Všetky tri parametre spoločne: rodné číslo (personal_identification_number), krstné meno (given_name) a priezvisko (family_name)  Pozor, volanie je dostupné len pre OVM.
+     * @summary Vráti identitu podľa osobných údajov alebo IČO
+     * @param {string} [personalIdentificationNumber] Rodné číslo fyzickej osoby. Vyžadované spolu s given_name a family_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [givenName] Krstné meno fyzickej osoby. Vyžadované spolu s personal_identification_number a family_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [familyName] Priezvisko fyzickej osoby. Vyžadované spolu s personal_identification_number a given_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [companyRegistrationNumber] IČO právnickej osoby. Môže byť použité samostatne na vyhľadávanie.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiIamIdentitiesLookupGet: async (
+      personalIdentificationNumber?: string,
+      givenName?: string,
+      familyName?: string,
+      companyRegistrationNumber?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/iam/identities/lookup`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication API Token required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (personalIdentificationNumber !== undefined) {
+        localVarQueryParameter['personal_identification_number'] = personalIdentificationNumber
+      }
+
+      if (givenName !== undefined) {
+        localVarQueryParameter['given_name'] = givenName
+      }
+
+      if (familyName !== undefined) {
+        localVarQueryParameter['family_name'] = familyName
+      }
+
+      if (companyRegistrationNumber !== undefined) {
+        localVarQueryParameter['company_registration_number'] = companyRegistrationNumber
+      }
 
       localVarHeaderParameter['Accept'] = 'application/json'
 
@@ -6671,8 +6735,8 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiFp = function (configuration?: C
     VyhadvanieIdenttDostupnLenPreOVMApiAxiosParamCreator(configuration)
   return {
     /**
-     * Vráti identitu.  Pozor, volanie je dostupné len pre OVM.
-     * @summary Vráti identitu
+     * Vráti identitu na základe ID identity.  Pozor, volanie je dostupné len pre OVM.
+     * @summary Vráti identitu podľa ID
      * @param {string} id ID identity.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6687,6 +6751,45 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiFp = function (configuration?: C
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['VyhadvanieIdenttDostupnLenPreOVMApi.apiIamIdentitiesIdGet']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Vráti identitu na základe osobných údajov alebo IČO.  Možné spôsoby vyhľadávania: - IČO (company_registration_number) samostatne, alebo - Všetky tri parametre spoločne: rodné číslo (personal_identification_number), krstné meno (given_name) a priezvisko (family_name)  Pozor, volanie je dostupné len pre OVM.
+     * @summary Vráti identitu podľa osobných údajov alebo IČO
+     * @param {string} [personalIdentificationNumber] Rodné číslo fyzickej osoby. Vyžadované spolu s given_name a family_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [givenName] Krstné meno fyzickej osoby. Vyžadované spolu s personal_identification_number a family_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [familyName] Priezvisko fyzickej osoby. Vyžadované spolu s personal_identification_number a given_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [companyRegistrationNumber] IČO právnickej osoby. Môže byť použité samostatne na vyhľadávanie.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiIamIdentitiesLookupGet(
+      personalIdentificationNumber?: string,
+      givenName?: string,
+      familyName?: string,
+      companyRegistrationNumber?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiIamIdentitiesIdGet200Response>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiIamIdentitiesLookupGet(
+        personalIdentificationNumber,
+        givenName,
+        familyName,
+        companyRegistrationNumber,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['VyhadvanieIdenttDostupnLenPreOVMApi.apiIamIdentitiesLookupGet']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -6744,8 +6847,8 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiFactory = function (
   const localVarFp = VyhadvanieIdenttDostupnLenPreOVMApiFp(configuration)
   return {
     /**
-     * Vráti identitu.  Pozor, volanie je dostupné len pre OVM.
-     * @summary Vráti identitu
+     * Vráti identitu na základe ID identity.  Pozor, volanie je dostupné len pre OVM.
+     * @summary Vráti identitu podľa ID
      * @param {string} id ID identity.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6756,6 +6859,33 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiFactory = function (
     ): AxiosPromise<ApiIamIdentitiesIdGet200Response> {
       return localVarFp
         .apiIamIdentitiesIdGet(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Vráti identitu na základe osobných údajov alebo IČO.  Možné spôsoby vyhľadávania: - IČO (company_registration_number) samostatne, alebo - Všetky tri parametre spoločne: rodné číslo (personal_identification_number), krstné meno (given_name) a priezvisko (family_name)  Pozor, volanie je dostupné len pre OVM.
+     * @summary Vráti identitu podľa osobných údajov alebo IČO
+     * @param {string} [personalIdentificationNumber] Rodné číslo fyzickej osoby. Vyžadované spolu s given_name a family_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [givenName] Krstné meno fyzickej osoby. Vyžadované spolu s personal_identification_number a family_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [familyName] Priezvisko fyzickej osoby. Vyžadované spolu s personal_identification_number a given_name, ak nie je poskytnuté company_registration_number.
+     * @param {string} [companyRegistrationNumber] IČO právnickej osoby. Môže byť použité samostatne na vyhľadávanie.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiIamIdentitiesLookupGet(
+      personalIdentificationNumber?: string,
+      givenName?: string,
+      familyName?: string,
+      companyRegistrationNumber?: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ApiIamIdentitiesIdGet200Response> {
+      return localVarFp
+        .apiIamIdentitiesLookupGet(
+          personalIdentificationNumber,
+          givenName,
+          familyName,
+          companyRegistrationNumber,
+          options,
+        )
         .then((request) => request(axios, basePath))
     },
     /**
@@ -6781,8 +6911,8 @@ export const VyhadvanieIdenttDostupnLenPreOVMApiFactory = function (
  */
 export class VyhadvanieIdenttDostupnLenPreOVMApi extends BaseAPI {
   /**
-   * Vráti identitu.  Pozor, volanie je dostupné len pre OVM.
-   * @summary Vráti identitu
+   * Vráti identitu na základe ID identity.  Pozor, volanie je dostupné len pre OVM.
+   * @summary Vráti identitu podľa ID
    * @param {string} id ID identity.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -6790,6 +6920,34 @@ export class VyhadvanieIdenttDostupnLenPreOVMApi extends BaseAPI {
   public apiIamIdentitiesIdGet(id: string, options?: RawAxiosRequestConfig) {
     return VyhadvanieIdenttDostupnLenPreOVMApiFp(this.configuration)
       .apiIamIdentitiesIdGet(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Vráti identitu na základe osobných údajov alebo IČO.  Možné spôsoby vyhľadávania: - IČO (company_registration_number) samostatne, alebo - Všetky tri parametre spoločne: rodné číslo (personal_identification_number), krstné meno (given_name) a priezvisko (family_name)  Pozor, volanie je dostupné len pre OVM.
+   * @summary Vráti identitu podľa osobných údajov alebo IČO
+   * @param {string} [personalIdentificationNumber] Rodné číslo fyzickej osoby. Vyžadované spolu s given_name a family_name, ak nie je poskytnuté company_registration_number.
+   * @param {string} [givenName] Krstné meno fyzickej osoby. Vyžadované spolu s personal_identification_number a family_name, ak nie je poskytnuté company_registration_number.
+   * @param {string} [familyName] Priezvisko fyzickej osoby. Vyžadované spolu s personal_identification_number a given_name, ak nie je poskytnuté company_registration_number.
+   * @param {string} [companyRegistrationNumber] IČO právnickej osoby. Môže byť použité samostatne na vyhľadávanie.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public apiIamIdentitiesLookupGet(
+    personalIdentificationNumber?: string,
+    givenName?: string,
+    familyName?: string,
+    companyRegistrationNumber?: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return VyhadvanieIdenttDostupnLenPreOVMApiFp(this.configuration)
+      .apiIamIdentitiesLookupGet(
+        personalIdentificationNumber,
+        givenName,
+        familyName,
+        companyRegistrationNumber,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath))
   }
 

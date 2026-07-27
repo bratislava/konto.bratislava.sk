@@ -76,6 +76,20 @@
           "sortable": true
         }
       },
+      "card": {
+        "edit": {
+          "label": "(TBD - ešte neimplementované) - Kartička",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "card",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "description": {
         "edit": {
           "label": "Kartička - text",
@@ -301,13 +315,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "updatedAt",
-        "categories",
-        "form"
-      ],
+      "list": ["id", "title", "updatedAt", "categories", "form"],
       "edit": [
         [
           {
@@ -388,6 +396,12 @@
         [
           {
             "name": "sections",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "card",
             "size": 12
           }
         ]

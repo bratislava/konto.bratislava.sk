@@ -24,6 +24,7 @@ export enum ErrorsEnum {
   BAD_GATEWAY_ERROR = 'BAD_GATEWAY_ERROR',
   BAD_GATEWAY_AUTH_ERROR = 'BAD_GATEWAY_AUTH_ERROR',
   SERVICE_UNAVAILABLE_ERROR = 'SERVICE_UNAVAILABLE_ERROR',
+  TOO_MANY_REQUESTS_ERROR = 'TOO_MANY_REQUESTS_ERROR',
 }
 
 export enum ErrorsResponseEnum {
@@ -37,6 +38,7 @@ export enum ErrorsResponseEnum {
   BAD_GATEWAY_ERROR = 'Bad gateway.',
   BAD_GATEWAY_AUTH_ERROR = 'Bad gateway: downstream rejected our credentials.',
   SERVICE_UNAVAILABLE_ERROR = 'Service unavailable.',
+  TOO_MANY_REQUESTS_ERROR = 'Too many requests',
 }
 
 export class ResponseInternalServerErrorDto {
@@ -65,21 +67,15 @@ export type CustomErrorEnums =
   | CustomErrorNorisTypesEnum
   | TowingErrorsEnum
 
-export class ErrorSymbols {
-  static readonly alert: unique symbol = Symbol('alert')
-
-  static readonly console: unique symbol = Symbol('console')
-
-  static readonly errorType: unique symbol = Symbol('errorType')
-
-  static readonly stack: unique symbol = Symbol('stack')
-
-  static readonly field: unique symbol = Symbol('field')
-
-  static readonly errorCause = Symbol('errorCause')
-
-  static readonly causedByMessage = Symbol('causedByMessage')
-}
+export const ErrorSymbols = {
+  alert: Symbol('alert'),
+  console: Symbol('console'),
+  errorType: Symbol('errorType'),
+  stack: Symbol('stack'),
+  field: Symbol('field'),
+  errorCause: Symbol('errorCause'),
+  causedByMessage: Symbol('causedByMessage'),
+} as const
 
 export const errorTypeKeys: Record<string, string> = {
   alert: `$Symbol-alert`,

@@ -1784,14 +1784,14 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      * Creates a payment link for paying the entire tax amount or remaining balance for the current year and tax type.
      * @summary Generate payment link for full tax payment for the current year and tax type.
      * @param {number} year
-     * @param {string} type
+     * @param {PaymentControllerGenerateFullPaymentLinkTypeEnum} type
      * @param {number} order
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     paymentControllerGenerateFullPaymentLink: async (
       year: number,
-      type: string,
+      type: PaymentControllerGenerateFullPaymentLinkTypeEnum,
       order: number,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
@@ -1839,14 +1839,14 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      * Creates a payment link for making an installment payment for the specified year and tax type.
      * @summary Generate payment link for installment tax payment.
      * @param {number} year
-     * @param {string} type
+     * @param {PaymentControllerGenerateInstallmentPaymentLinkTypeEnum} type
      * @param {number} order
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     paymentControllerGenerateInstallmentPaymentLink: async (
       year: number,
-      type: string,
+      type: PaymentControllerGenerateInstallmentPaymentLinkTypeEnum,
       order: number,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
@@ -1892,7 +1892,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
-     * @param {string} taxType
+     * @param {PaymentControllerPaymentResponseTaxTypeEnum} taxType
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -1904,7 +1904,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      * @throws {RequiredError}
      */
     paymentControllerPaymentResponse: async (
-      taxType: string,
+      taxType: PaymentControllerPaymentResponseTaxTypeEnum,
       dIGEST: string,
       dIGEST1: string,
       oPERATION: string,
@@ -2001,14 +2001,14 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      * Creates a payment link for paying the entire tax amount or remaining balance for the current year and tax type.
      * @summary Generate payment link for full tax payment for the current year and tax type.
      * @param {number} year
-     * @param {string} type
+     * @param {PaymentControllerGenerateFullPaymentLinkTypeEnum} type
      * @param {number} order
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async paymentControllerGenerateFullPaymentLink(
       year: number,
-      type: string,
+      type: PaymentControllerGenerateFullPaymentLinkTypeEnum,
       order: number,
       options?: RawAxiosRequestConfig,
     ): Promise<
@@ -2038,14 +2038,14 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      * Creates a payment link for making an installment payment for the specified year and tax type.
      * @summary Generate payment link for installment tax payment.
      * @param {number} year
-     * @param {string} type
+     * @param {PaymentControllerGenerateInstallmentPaymentLinkTypeEnum} type
      * @param {number} order
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async paymentControllerGenerateInstallmentPaymentLink(
       year: number,
-      type: string,
+      type: PaymentControllerGenerateInstallmentPaymentLinkTypeEnum,
       order: number,
       options?: RawAxiosRequestConfig,
     ): Promise<
@@ -2073,7 +2073,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {string} taxType
+     * @param {PaymentControllerPaymentResponseTaxTypeEnum} taxType
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2085,7 +2085,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async paymentControllerPaymentResponse(
-      taxType: string,
+      taxType: PaymentControllerPaymentResponseTaxTypeEnum,
       dIGEST: string,
       dIGEST1: string,
       oPERATION: string,
@@ -2136,14 +2136,14 @@ export const PaymentApiFactory = function (
      * Creates a payment link for paying the entire tax amount or remaining balance for the current year and tax type.
      * @summary Generate payment link for full tax payment for the current year and tax type.
      * @param {number} year
-     * @param {string} type
+     * @param {PaymentControllerGenerateFullPaymentLinkTypeEnum} type
      * @param {number} order
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     paymentControllerGenerateFullPaymentLink(
       year: number,
-      type: string,
+      type: PaymentControllerGenerateFullPaymentLinkTypeEnum,
       order: number,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseGetPaymentUrlDto> {
@@ -2155,14 +2155,14 @@ export const PaymentApiFactory = function (
      * Creates a payment link for making an installment payment for the specified year and tax type.
      * @summary Generate payment link for installment tax payment.
      * @param {number} year
-     * @param {string} type
+     * @param {PaymentControllerGenerateInstallmentPaymentLinkTypeEnum} type
      * @param {number} order
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     paymentControllerGenerateInstallmentPaymentLink(
       year: number,
-      type: string,
+      type: PaymentControllerGenerateInstallmentPaymentLinkTypeEnum,
       order: number,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseGetPaymentUrlDto> {
@@ -2172,7 +2172,7 @@ export const PaymentApiFactory = function (
     },
     /**
      *
-     * @param {string} taxType
+     * @param {PaymentControllerPaymentResponseTaxTypeEnum} taxType
      * @param {string} dIGEST
      * @param {string} dIGEST1
      * @param {string} oPERATION
@@ -2184,7 +2184,7 @@ export const PaymentApiFactory = function (
      * @throws {RequiredError}
      */
     paymentControllerPaymentResponse(
-      taxType: string,
+      taxType: PaymentControllerPaymentResponseTaxTypeEnum,
       dIGEST: string,
       dIGEST1: string,
       oPERATION: string,
@@ -2219,14 +2219,14 @@ export class PaymentApi extends BaseAPI {
    * Creates a payment link for paying the entire tax amount or remaining balance for the current year and tax type.
    * @summary Generate payment link for full tax payment for the current year and tax type.
    * @param {number} year
-   * @param {string} type
+   * @param {PaymentControllerGenerateFullPaymentLinkTypeEnum} type
    * @param {number} order
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public paymentControllerGenerateFullPaymentLink(
     year: number,
-    type: string,
+    type: PaymentControllerGenerateFullPaymentLinkTypeEnum,
     order: number,
     options?: RawAxiosRequestConfig,
   ) {
@@ -2239,14 +2239,14 @@ export class PaymentApi extends BaseAPI {
    * Creates a payment link for making an installment payment for the specified year and tax type.
    * @summary Generate payment link for installment tax payment.
    * @param {number} year
-   * @param {string} type
+   * @param {PaymentControllerGenerateInstallmentPaymentLinkTypeEnum} type
    * @param {number} order
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    */
   public paymentControllerGenerateInstallmentPaymentLink(
     year: number,
-    type: string,
+    type: PaymentControllerGenerateInstallmentPaymentLinkTypeEnum,
     order: number,
     options?: RawAxiosRequestConfig,
   ) {
@@ -2257,7 +2257,7 @@ export class PaymentApi extends BaseAPI {
 
   /**
    *
-   * @param {string} taxType
+   * @param {PaymentControllerPaymentResponseTaxTypeEnum} taxType
    * @param {string} dIGEST
    * @param {string} dIGEST1
    * @param {string} oPERATION
@@ -2269,7 +2269,7 @@ export class PaymentApi extends BaseAPI {
    * @throws {RequiredError}
    */
   public paymentControllerPaymentResponse(
-    taxType: string,
+    taxType: PaymentControllerPaymentResponseTaxTypeEnum,
     dIGEST: string,
     dIGEST1: string,
     oPERATION: string,
@@ -2294,6 +2294,25 @@ export class PaymentApi extends BaseAPI {
       .then((request) => request(this.axios, this.basePath))
   }
 }
+
+export const PaymentControllerGenerateFullPaymentLinkTypeEnum = {
+  Dzn: 'DZN',
+  Ko: 'KO',
+} as const
+export type PaymentControllerGenerateFullPaymentLinkTypeEnum =
+  (typeof PaymentControllerGenerateFullPaymentLinkTypeEnum)[keyof typeof PaymentControllerGenerateFullPaymentLinkTypeEnum]
+export const PaymentControllerGenerateInstallmentPaymentLinkTypeEnum = {
+  Dzn: 'DZN',
+  Ko: 'KO',
+} as const
+export type PaymentControllerGenerateInstallmentPaymentLinkTypeEnum =
+  (typeof PaymentControllerGenerateInstallmentPaymentLinkTypeEnum)[keyof typeof PaymentControllerGenerateInstallmentPaymentLinkTypeEnum]
+export const PaymentControllerPaymentResponseTaxTypeEnum = {
+  Dzn: 'DZN',
+  Ko: 'KO',
+} as const
+export type PaymentControllerPaymentResponseTaxTypeEnum =
+  (typeof PaymentControllerPaymentResponseTaxTypeEnum)[keyof typeof PaymentControllerPaymentResponseTaxTypeEnum]
 
 /**
  * TaxApi - axios parameter creator

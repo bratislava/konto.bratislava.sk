@@ -41,7 +41,7 @@
     "adm-zip": "0.5.17",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
-    "dayjs": "1.11.20",
+    "dayjs": "1.11.21",
     "eta": "3.5.0",
     "expr-eval": "2.0.2",
     "ibantools": "4.5.1",

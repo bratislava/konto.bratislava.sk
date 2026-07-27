@@ -38,12 +38,20 @@ export default class NasesCronService {
 
   private resolvePublishedResultKey(
     isPublished: boolean,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isDisabled: boolean | undefined,
   ): keyof ValidateFormRegistrationsResultDto {
     if (!isPublished) {
       return 'not-published'
     }
-    return isDisabled ? 'published-but-disabled' : 'valid'
+    /**
+     * TODO: slovensko.sk /eform/status returns only one property, that is "status". Even when it is disabled in slovensko.sk, it returns
+     * "Publikovaný", thus we can't differ between published and active, and not active.
+     *
+     * https://github.com/bratislava/private-konto.bratislava.sk/issues/1680
+     */
+    // return isDisabled ? 'published-but-disabled' : 'valid'
+    return 'valid'
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

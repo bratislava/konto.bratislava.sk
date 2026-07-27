@@ -299,7 +299,11 @@ export default schema(
               ),
             )
             .otherwise(() => null),
-          fileUpload<typeof komunitneZahradyFiles>('ine', { title: 'Iné', slotId: 'ine' }, { type: 'dragAndDrop' }),
+          fileUpload<typeof komunitneZahradyFiles>(
+            'ine',
+            { title: 'Iné', slotId: 'ine' },
+            { type: 'dragAndDrop' },
+          ),
         ],
       ),
     ),

@@ -441,9 +441,7 @@ export interface ApiFormForm extends Struct.CollectionTypeSchema {
   attributes: {
     createdAt: Schema.Attribute.DateTime
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
-    isTemporarilyDisabled: Schema.Attribute.Boolean &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<false>
+    isTemporarilyDisabled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>
     landingPage: Schema.Attribute.Component<'blocks.form-landing-page', false>
     locale: Schema.Attribute.String & Schema.Attribute.Private
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::form.form'> &

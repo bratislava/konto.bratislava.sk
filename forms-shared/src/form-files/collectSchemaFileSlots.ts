@@ -10,17 +10,22 @@ import { FileUploadUiOptions } from '../generator/uiOptionsTypes'
  */
 export const collectSchemaFileSlots = (schema: RJSFSchema): string[] => {
   return traverse(schema).reduce(function traverseFn(acc: string[], value) {
-    if (this.key !== 'baUiSchema' || value === null || typeof value !== 'object' || Array.isArray(value)) {
+    if (
+      this.key !== 'baUiSchema' ||
+      value === null ||
+      typeof value !== 'object' ||
+      Array.isArray(value)
+    ) {
       return acc
     }
 
-    const baUiSchema = value as {'ui:widget': string, 'ui:options': Record<string, any> }
-    const uiWidget = baUiSchema['ui:widget'];
+    const baUiSchema = value as { 'ui:widget': string; 'ui:options': Record<string, any> }
+    const uiWidget = baUiSchema['ui:widget']
     if (uiWidget !== 'FileUpload' && uiWidget !== 'FileUploadMultiple') {
       return acc
     }
 
-    acc.push(((baUiSchema['ui:options'] as FileUploadUiOptions).slotId))
+    acc.push((baUiSchema['ui:options'] as FileUploadUiOptions).slotId)
 
     return acc
   }, []) as string[]

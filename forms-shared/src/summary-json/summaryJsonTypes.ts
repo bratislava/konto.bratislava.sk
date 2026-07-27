@@ -49,8 +49,4 @@ export type SummaryJsonArrayItem = {
 }
 
 export type SummaryJsonElement =
-  | SummaryJsonForm
-  | SummaryJsonStep
-  | SummaryJsonField
-  | SummaryJsonArray
-  | SummaryJsonArrayItem
+  SummaryJsonForm | SummaryJsonStep | SummaryJsonField | SummaryJsonArray | SummaryJsonArrayItem

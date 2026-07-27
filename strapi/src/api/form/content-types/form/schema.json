@@ -18,8 +18,8 @@
     },
     "isTemporarilyDisabled": {
       "type": "boolean",
-      "default": false,
-      "required": true
+      "required": false,
+      "default": false
     },
     "temporarilyDisabledUntil": {
       "type": "string"

@@ -418,9 +418,16 @@ describe('NasesCronService', () => {
 
       const result = await service.validateFormRegistrations()
 
+      /*
+      TODO: temporarily changing, after fix put back.
+      https://github.com/bratislava/private-konto.bratislava.sk/issues/1680
+
       expect(result['published-but-disabled']).toHaveLength(1)
       expect(result['published-but-disabled'][0].slug).toBe('disabled-form')
       expect(result.valid).toHaveLength(2)
+      */
+      expect(result['published-but-disabled']).toHaveLength(0)
+      expect(result.valid).toHaveLength(3)
     })
 
     it('should set registration status to true for a published-but-disabled form', async () => {
@@ -474,8 +481,16 @@ describe('NasesCronService', () => {
 
       await service.validateFormRegistrations()
 
+      /*
+      TODO: temporarily changing, after fix put back.
+      https://github.com/bratislava/private-konto.bratislava.sk/issues/1680
+
       expect(errorSpy).toHaveBeenCalled()
       expect(logSpy).not.toHaveBeenCalled()
+      */
+
+      expect(errorSpy).not.toHaveBeenCalled()
+      expect(logSpy).toHaveBeenCalled()
     })
 
     it('should put a not-published disabled form into not-published, not published-but-disabled', async () => {

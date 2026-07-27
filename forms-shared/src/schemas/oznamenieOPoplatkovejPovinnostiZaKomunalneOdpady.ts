@@ -267,10 +267,7 @@ const komunalnyOdpadOptions = {
 const getKomunalnyOdpadNadoby = (
   typZmeny: 'vznikZanik' | 'zmena',
   oznamovatelTyp:
-    | 'fyzickaOsoba'
-    | 'spravcaSpolocenstvoVlastnikov'
-    | 'fyzickaOsobaPodnikatel'
-    | 'pravnickaOsoba',
+    'fyzickaOsoba' | 'spravcaSpolocenstvoVlastnikov' | 'fyzickaOsobaPodnikatel' | 'pravnickaOsoba',
 ) => {
   return [
     match(typZmeny)
@@ -415,10 +412,7 @@ const getBioOdpadNadobaItems = ({
 
 const getVznikKomunalnyOdpadFields = (
   oznamovatelTyp:
-    | 'fyzickaOsoba'
-    | 'spravcaSpolocenstvoVlastnikov'
-    | 'fyzickaOsobaPodnikatel'
-    | 'pravnickaOsoba',
+    'fyzickaOsoba' | 'spravcaSpolocenstvoVlastnikov' | 'fyzickaOsobaPodnikatel' | 'pravnickaOsoba',
 ) => {
   return [
     arrayField(
@@ -441,10 +435,7 @@ const getVznikKomunalnyOdpadFields = (
 
 const getZmenaKomunalnyOdpadFields = (
   oznamovatelTyp:
-    | 'fyzickaOsoba'
-    | 'spravcaSpolocenstvoVlastnikov'
-    | 'fyzickaOsobaPodnikatel'
-    | 'pravnickaOsoba',
+    'fyzickaOsoba' | 'spravcaSpolocenstvoVlastnikov' | 'fyzickaOsobaPodnikatel' | 'pravnickaOsoba',
 ) => {
   return [
     radioGroup(

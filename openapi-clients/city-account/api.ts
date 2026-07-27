@@ -931,6 +931,27 @@ export const TokenResponseDtoTokenTypeEnum = {
 export type TokenResponseDtoTokenTypeEnum =
   (typeof TokenResponseDtoTokenTypeEnum)[keyof typeof TokenResponseDtoTokenTypeEnum]
 
+/**
+ * Reason for towing. Raw enum value - clients render the localized label.
+ */
+
+export const TowReason = {
+  ReservedParking: 'RESERVED_PARKING',
+  PrivateAccessObstacle: 'PRIVATE_ACCESS_OBSTACLE',
+  ParkingNearPublicTransportStop: 'PARKING_NEAR_PUBLIC_TRANSPORT_STOP',
+  ParkingNearPedestrianCrossing: 'PARKING_NEAR_PEDESTRIAN_CROSSING',
+  ParkingOnSidewalk: 'PARKING_ON_SIDEWALK',
+  ParkingInTrafficLane: 'PARKING_IN_TRAFFIC_LANE',
+  ParkingAtStreetCrossing: 'PARKING_AT_STREET_CROSSING',
+  Other: 'OTHER',
+  TrafficFlowObstacle: 'TRAFFIC_FLOW_OBSTACLE',
+  NoStoppingZone: 'NO_STOPPING_ZONE',
+  StoppedAtCrosswalk: 'STOPPED_AT_CROSSWALK',
+  NoParkingZone: 'NO_PARKING_ZONE',
+} as const
+
+export type TowReason = (typeof TowReason)[keyof typeof TowReason]
+
 export interface TowingSearchRequestDto {
   /**
    * Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.
@@ -947,9 +968,9 @@ export interface TowingSearchResponseDto {
    */
   loadingLocation: string
   /**
-   * Reason for towing
+   * Reason for towing. Raw enum value - clients render the localized label.
    */
-  towReason?: string
+  towReason?: TowReason
   /**
    * Dropoff location - where the vehicle was relocated to
    */
@@ -959,6 +980,7 @@ export interface TowingSearchResponseDto {
    */
   relocationReason?: string
 }
+
 export interface UpdateGdprConsentRequestDto {
   /**
    * The consent the user is toggling

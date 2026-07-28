@@ -41,6 +41,11 @@
       "component": "blocks.form-landing-page",
       "repeatable": false,
       "required": false
+    },
+    "formSentPage": {
+      "type": "component",
+      "component": "blocks.form-sent-page",
+      "repeatable": false
     }
   }
 }

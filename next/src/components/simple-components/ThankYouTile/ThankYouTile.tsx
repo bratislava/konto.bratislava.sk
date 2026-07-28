@@ -4,15 +4,47 @@ import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
+type ThankYouTileButton = {
+  label: string
+  href: string
+}
+
 export type ThankYouTileProps = {
   variant: 'success' | 'error' | 'warning'
   title?: string
-  firstButtonTitle?: string
-  secondButtonTitle?: string
   content?: string
-  feedbackTitle?: string
-  firstButtonLink?: string
-  secondButtonLink?: string
+  isContentCentered?: boolean
+  primaryButton?: ThankYouTileButton | null
+  secondaryButton?: ThankYouTileButton | null
+}
+
+const ThankYouTileIcon = ({ variant }: Pick<ThankYouTileProps, 'variant'>) => {
+  return (
+    <div
+      className={cn('flex size-14 min-w-14 items-center justify-center rounded-full lg:size-22', {
+        'bg-background-success-soft-default': variant === 'success',
+        'bg-background-error-soft-default': variant === 'error',
+        'bg-background-warning-soft-default': variant === 'warning',
+      })}
+    >
+      <Icon
+        name={
+          (
+            {
+              success: 'check',
+              error: 'close',
+              warning: 'warning',
+            } as const
+          )[variant]
+        }
+        className={cn('flex size-8 items-center justify-center lg:size-10', {
+          'text-content-success-default': variant === 'success',
+          'text-content-error-default': variant === 'error',
+          'text-content-warning-default': variant === 'warning',
+        })}
+      />
+    </div>
+  )
 }
 
 /**
@@ -22,83 +54,38 @@ export type ThankYouTileProps = {
 const ThankYouTile = ({
   variant,
   title,
-  firstButtonTitle,
-  secondButtonTitle,
   content,
-  feedbackTitle,
-  firstButtonLink,
-  secondButtonLink,
+  isContentCentered = true,
+  primaryButton,
+  secondaryButton,
 }: ThankYouTileProps) => {
-  const iconClassname = 'flex size-8 items-center justify-center lg:size-10'
-  const iconByVariant = {
-    success: <Icon name="check" className={cn(iconClassname, 'text-content-success-default')} />,
-    error: <Icon name="close" className={cn(iconClassname, 'text-content-error-default')} />,
-    warning: <Icon name="warning" className={cn(iconClassname, 'text-content-warning-default')} />,
-  }[variant]
-
   return (
-    <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:gap-8 lg:rounded-2xl lg:px-12 lg:py-10 lg:max-w-[800px]">
-      <span
-        className={cn(
-          'flex size-14 min-w-14 items-center justify-center rounded-full lg:size-[88px] lg:min-w-[88px]',
-          {
-            'bg-background-success-soft-default': variant === 'success',
-            'bg-background-error-soft-default': variant === 'error',
-            'bg-background-warning-soft-default': variant === 'warning',
-          },
-        )}
-      >
-        {iconByVariant}
-      </span>
-      <div className="flex flex-col items-center gap-8 lg:gap-3">
+    <div className="mx-auto flex w-full max-w-200 flex-col items-center gap-4 bg-gray-0 p-4 lg:gap-6 lg:rounded-2xl lg:p-12">
+      <ThankYouTileIcon variant={variant} />
+      <div className="flex flex-col gap-4 lg:gap-3">
         <Typography variant="h3" as="h2" className="text-center">
           {title}
         </Typography>
-        <Markdown variant="small" content={content} className="text-center" />
+        <Markdown
+          variant="small"
+          content={content}
+          className={cn('w-full', {
+            'text-center': isContentCentered,
+            'text-left': !isContentCentered,
+          })}
+        />
       </div>
-      <div
-        className={cn('flex w-full flex-col items-center gap-4', {
-          'px-0 lg:flex-row': !feedbackTitle,
-        })}
-      >
-        {variant === 'success' ? (
-          <>
-            {firstButtonLink ? (
-              feedbackTitle ? (
-                <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
-                  <Typography variant="h3" className="text-left">
-                    {feedbackTitle}
-                  </Typography>
-                  <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
-                    {firstButtonTitle}
-                  </Button>
-                </div>
-              ) : (
-                <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
-                  {firstButtonTitle}
-                </Button>
-              )
-            ) : null}
-            {secondButtonLink ? (
-              <Button href={secondButtonLink} variant="outline" fullWidth hasLinkIcon={false}>
-                {secondButtonTitle}
-              </Button>
-            ) : null}
-          </>
-        ) : (
-          <>
-            {firstButtonLink ? (
-              <Button href={firstButtonLink} variant="solid" fullWidth hasLinkIcon={false}>
-                {firstButtonTitle}
-              </Button>
-            ) : null}
-            {secondButtonLink ? (
-              <Button href={secondButtonLink} variant="outline" fullWidth hasLinkIcon={false}>
-                {secondButtonTitle}
-              </Button>
-            ) : null}
-          </>
-        )}
+      <div className="flex w-full flex-col items-center gap-3 empty:hidden">
+        {primaryButton ? (
+          <Button href={primaryButton.href} variant="solid" fullWidth hasLinkIcon={false}>
+            {primaryButton.label}
+          </Button>
+        ) : null}
+        {secondaryButton ? (
+          <Button href={secondaryButton.href} variant="outline" fullWidth hasLinkIcon={false}>
+            {secondaryButton.label}
+          </Button>
+        ) : null}
       </div>
     </div>
   )

@@ -1,0 +1,127 @@
+{
+  "key": "plugin_content_manager_configuration_components::blocks.form-sent-page",
+  "value": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "relationOpenMode": "modal",
+      "mainField": "documentId",
+      "defaultSortBy": "documentId",
+      "defaultSortOrder": "ASC"
+    },
+    "metadatas": {
+      "id": {
+        "edit": {},
+        "list": {
+          "label": "id",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "feedbackLink": {
+        "edit": {
+          "label": "Odkaz na dotazník spokojnosti",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "feedbackLink",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "content": {
+        "edit": {
+          "label": "Text",
+          "description": "Ak je nevyplnený, dotiahne sa defaultný text \"Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať. Detail vašej žiadosti nájdete v časti Moje žiadosti\".",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "content",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "isContentCentered": {
+        "edit": {
+          "label": "Zarovanať text na stred?",
+          "description": "Ak je FALSE, text sa zarovná doľava.",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isContentCentered",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "alert": {
+        "edit": {
+          "label": "Alert",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "alert",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "documentId": {
+        "edit": {},
+        "list": {
+          "label": "documentId",
+          "searchable": true,
+          "sortable": true
+        }
+      }
+    },
+    "layouts": {
+      "list": [
+        "id",
+        "feedbackLink",
+        "isContentCentered"
+      ],
+      "edit": [
+        [
+          {
+            "name": "feedbackLink",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "content",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "isContentCentered",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "alert",
+            "size": 12
+          }
+        ]
+      ]
+    },
+    "uid": "blocks.form-sent-page",
+    "isComponent": true
+  },
+  "type": "object",
+  "environment": null,
+  "tag": null
+}

@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_blocks_form_sent_pages",
+  "info": {
+    "displayName": "formSentPage"
+  },
+  "options": {},
+  "attributes": {
+    "feedbackLink": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "isContentCentered": {
+      "type": "boolean",
+      "required": false,
+      "default": true
+    },
+    "alert": {
+      "type": "component",
+      "component": "blocks.form-sent-page-alert",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

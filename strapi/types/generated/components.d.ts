@@ -138,6 +138,30 @@ export interface BlocksFormLandingPageLinkCta extends Struct.ComponentSchema {
   }
 }
 
+export interface BlocksFormSentPage extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_form_sent_pages'
+  info: {
+    displayName: 'formSentPage'
+  }
+  attributes: {
+    alert: Schema.Attribute.Component<'blocks.form-sent-page-alert', false>
+    content: Schema.Attribute.RichText
+    feedbackLink: Schema.Attribute.String
+    isContentCentered: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>
+  }
+}
+
+export interface BlocksFormSentPageAlert extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_form_sent_page_alerts'
+  info: {
+    displayName: 'formSentPageAlert'
+  }
+  attributes: {
+    content: Schema.Attribute.RichText
+    title: Schema.Attribute.String
+  }
+}
+
 export interface BlocksHelpCategory extends Struct.ComponentSchema {
   collectionName: 'components_blocks_help_categories'
   info: {
@@ -392,6 +416,8 @@ declare module '@strapi/strapi' {
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.form-landing-page-form-cta': BlocksFormLandingPageFormCta
       'blocks.form-landing-page-link-cta': BlocksFormLandingPageLinkCta
+      'blocks.form-sent-page': BlocksFormSentPage
+      'blocks.form-sent-page-alert': BlocksFormSentPageAlert
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
       'blocks.municipal-service-card': BlocksMunicipalServiceCard

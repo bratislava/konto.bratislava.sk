@@ -13,6 +13,17 @@ fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
   text
   buttonLabel
 }
+
+fragment FormSentPage on ComponentBlocksFormSentPage {
+  feedbackLink
+  content
+  isContentCentered
+  alert {
+    title
+    content
+  }
+}
+
 fragment FormLandingPage on ComponentBlocksFormLandingPage {
   text
   linkCtas {
@@ -39,6 +50,13 @@ fragment FormWithLandingPage on Form {
   ...FormBase
   landingPage {
     ...FormLandingPage
+  }
+}
+
+fragment Form on Form {
+  ...FormWithLandingPage
+  formSentPage {
+    ...FormSentPage
   }
 }
 

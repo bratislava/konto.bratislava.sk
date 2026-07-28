@@ -111,11 +111,24 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "documentId"
+          "editable": true
         },
         "list": {
           "label": "landingPage",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "formSentPage": {
+        "edit": {
+          "label": "Stránka po odoslaní formuláru (TBD - ešte neimplementované)",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "formSentPage",
           "searchable": false,
           "sortable": false
         }
@@ -188,6 +201,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "slug",
+        "updatedAt",
+        "moreInformationUrl",
+        "municipalService"
+      ],
       "edit": [
         [
           {
@@ -211,6 +231,12 @@
         ],
         [
           {
+            "name": "formSentPage",
+            "size": 12
+          }
+        ],
+        [
+          {
             "name": "isTemporarilyDisabled",
             "size": 4
           },
@@ -223,13 +249,6 @@
             "size": 4
           }
         ]
-      ],
-      "list": [
-        "id",
-        "slug",
-        "updatedAt",
-        "moreInformationUrl",
-        "municipalService"
       ]
     },
     "uid": "api::form.form"

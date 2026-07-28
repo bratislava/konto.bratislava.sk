@@ -117,7 +117,12 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.feedbackLink",
+          "formSentPage.content",
+          "formSentPage.isContentCentered",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content"
         ]
       },
       "conditions": [],
@@ -161,7 +166,12 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.feedbackLink",
+          "formSentPage.content",
+          "formSentPage.isContentCentered",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content"
         ]
       },
       "conditions": [],
@@ -187,7 +197,12 @@
           "landingPage.linkCtas.url",
           "landingPage.formCta.title",
           "landingPage.formCta.text",
-          "landingPage.formCta.buttonLabel"
+          "landingPage.formCta.buttonLabel",
+          "formSentPage.feedbackLink",
+          "formSentPage.content",
+          "formSentPage.isContentCentered",
+          "formSentPage.alert.title",
+          "formSentPage.alert.content"
         ]
       },
       "conditions": [],
@@ -478,7 +493,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "k3uo43zch4s6f4sk875fzow7",
+      "documentId": "o5drgdd754gw4ab0pg73x3wy",
       "locale": null
     },
     {
@@ -513,7 +528,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "doh1a4ft1gvcrbb5u9ergl7z",
+      "documentId": "b3e4wcezafvt10h3rctogzu5",
       "locale": null
     },
     {
@@ -530,7 +545,7 @@
         ]
       },
       "conditions": [],
-      "documentId": "sk8jimxnt33yn9x4rwfdmydr",
+      "documentId": "ldhoqh061441zyiv69nm07ie",
       "locale": null
     },
     {

@@ -47,11 +47,36 @@ export interface BumpJsonVersionResponseDto {
 export interface ClaimMigrationOutput {
   success: boolean
 }
+export interface ClientFileInfoFileDto {
+  name: string
+  size: number
+}
+export interface ClientFileInfoStatusDto {
+  type: ClientFileInfoStatusDtoTypeEnum
+}
+
+export const ClientFileInfoStatusDtoTypeEnum = {
+  UploadQueued: 'UploadQueued',
+  Uploading: 'Uploading',
+  UploadClientError: 'UploadClientError',
+  WaitingForScan: 'WaitingForScan',
+  Scanning: 'Scanning',
+  ScanError: 'ScanError',
+  ScanDone: 'ScanDone',
+  ScanInfected: 'ScanInfected',
+  UnknownFile: 'UnknownFile',
+  UnknownStatus: 'UnknownStatus',
+  UploadServerError: 'UploadServerError',
+} as const
+
+export type ClientFileInfoStatusDtoTypeEnum =
+  (typeof ClientFileInfoStatusDtoTypeEnum)[keyof typeof ClientFileInfoStatusDtoTypeEnum]
+
 export interface ConvertToPdfRequestDto {
   /**
    * Form values in JSON
    */
-  jsonData?: object
+  jsonData?: { [key: string]: any }
   /**
    * Used only in the FE requests to display files not yet uploaded to the server.
    */
@@ -73,7 +98,7 @@ export interface EidUpdateSendFormRequestDto {
   /**
    * Send JSON body of form
    */
-  formDataJson?: object
+  formDataJson?: { [key: string]: any }
   /**
    * Form signature with metadata
    */
@@ -194,7 +219,7 @@ export interface GetFormMetaDto {
   /**
    * Number of forms for each state
    */
-  countByState: object
+  countByState: { [key: string]: number }
 }
 export interface GetFormResponseDto {
   /**
@@ -248,7 +273,7 @@ export interface GetFormResponseDto {
   /**
    * Data in JSON format
    */
-  formDataJson: object | null
+  formDataJson: { [key: string]: any } | null
   /**
    * Form signature with metadata
    */
@@ -334,7 +359,7 @@ export interface GetFormResponseSimpleDto {
   /**
    * Data in JSON format
    */
-  formDataJson: object | null
+  formDataJson: { [key: string]: any } | null
   /**
    * Form subject
    */
@@ -426,7 +451,7 @@ export interface JsonToXmlV2RequestDto {
   /**
    * JSON form values, if not provided the form data from the database will be used.
    */
-  jsonData?: object
+  jsonData?: { [key: string]: any }
 }
 export interface PostFileResponseDto {
   /**
@@ -548,7 +573,7 @@ export interface SignerDataRequestDto {
   /**
    * Form values in JSON
    */
-  formDataJson: object
+  formDataJson: { [key: string]: any }
 }
 export interface SignerDataResponseDto {
   signatureId: string
@@ -570,8 +595,9 @@ export interface SignerDataResponseDto {
 }
 export interface SimplifiedClientFileInfoDto {
   id: string
-  file: object
-  status: object
+  slotId: string
+  file: ClientFileInfoFileDto
+  status: ClientFileInfoStatusDto
 }
 export interface StatusResponseDto {
   prisma: ServiceRunningDto
@@ -686,7 +712,7 @@ export interface UpdateFormRequestDto {
   /**
    * Send JSON body of form
    */
-  formDataJson?: object
+  formDataJson?: { [key: string]: any }
   /**
    * Form signature with metadata
    */
@@ -744,7 +770,7 @@ export interface UpdateFormResponseDto {
   /**
    * Data in JSON format
    */
-  formDataJson: object | null
+  formDataJson: { [key: string]: any } | null
   /**
    * Form signature with metadata
    */
@@ -853,11 +879,11 @@ export interface WebhookDto {
   /**
    * Data of the form
    */
-  data: object
+  data: { [key: string]: any }
   /**
    * Files of the form
    */
-  files: object
+  files: { [key: string]: any }
 }
 export interface XmlToJsonRequestDto {
   /**
@@ -869,7 +895,7 @@ export interface XmlToJsonResponseDto {
   /**
    * Form values in JSON
    */
-  formDataJson: object
+  formDataJson: { [key: string]: any }
   /**
    * Indicates if version confirmation is required
    */

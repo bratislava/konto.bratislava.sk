@@ -1047,8 +1047,7 @@ export interface UserContactAndIdInfoResponseDto {
  * @type UserControllerChangeEmail200Response
  */
 export type UserControllerChangeEmail200Response =
-  | ResponseLegalPersonDataSimpleDto
-  | ResponseUserDataBasicDto
+  ResponseLegalPersonDataSimpleDto | ResponseUserDataBasicDto
 
 /**
  * @type UserControllerUpsertUser200Response

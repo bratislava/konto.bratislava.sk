@@ -193,7 +193,7 @@ export class NasesService {
     )
     const result = await this.clientsService.slovenskoSkApi
       .apiIamIdentitiesLookupGet(personalIdentificationNumber, givenName, familyName, undefined, {
-        headers: { Authorization: `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+        headers: { Authorization: `Bearer ${jwt}` },
       })
       .then((response) => {
         // FO criteria resolve to a natural person with omitted fields - see LookupIdentityFOResult.

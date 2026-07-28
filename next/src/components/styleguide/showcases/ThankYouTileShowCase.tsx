@@ -23,11 +23,11 @@ const ThankYouTileShowCase = () => (
             title="Placeholder title"
             content="Placeholder content describing the outcome."
             primaryButton={{
-              title: 'Primary button',
+              label: 'Primary button',
               href: '#',
             }}
             secondaryButton={{
-              title: 'Secondary button',
+              label: 'Secondary button',
               href: '#',
             }}
           />

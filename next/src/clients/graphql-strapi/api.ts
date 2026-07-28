@@ -344,28 +344,13 @@ export type ComponentBlocksFormLandingPageLinkCtaInput = {
   url?: InputMaybe<Scalars['String']['input']>
 }
 
-export type ComponentBlocksFormSentButton = {
-  __typename?: 'ComponentBlocksFormSentButton'
-  id: Scalars['ID']['output']
-}
-
-export type ComponentBlocksFormSentButtonFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentButtonFiltersInput>>>
-  not?: InputMaybe<ComponentBlocksFormSentButtonFiltersInput>
-  or?: InputMaybe<Array<InputMaybe<ComponentBlocksFormSentButtonFiltersInput>>>
-}
-
-export type ComponentBlocksFormSentButtonInput = {
-  id?: InputMaybe<Scalars['ID']['input']>
-}
-
 export type ComponentBlocksFormSentPage = {
   __typename?: 'ComponentBlocksFormSentPage'
   alert?: Maybe<ComponentBlocksFormSentPageAlert>
   content?: Maybe<Scalars['String']['output']>
   feedbackLink?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
-  isContentCentered: Scalars['Boolean']['output']
+  isContentCentered?: Maybe<Scalars['Boolean']['output']>
 }
 
 export type ComponentBlocksFormSentPageAlert = {
@@ -1241,7 +1226,6 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPage
   | ComponentBlocksFormLandingPageFormCta
   | ComponentBlocksFormLandingPageLinkCta
-  | ComponentBlocksFormSentButton
   | ComponentBlocksFormSentPage
   | ComponentBlocksFormSentPageAlert
   | ComponentBlocksHelpCategory
@@ -3342,7 +3326,7 @@ export type FormSentPageFragment = {
   __typename?: 'ComponentBlocksFormSentPage'
   feedbackLink?: string | null
   content?: string | null
-  isContentCentered: boolean
+  isContentCentered?: boolean | null
   alert?: {
     __typename?: 'ComponentBlocksFormSentPageAlert'
     title?: string | null
@@ -3423,7 +3407,7 @@ export type FormFragment = {
     __typename?: 'ComponentBlocksFormSentPage'
     feedbackLink?: string | null
     content?: string | null
-    isContentCentered: boolean
+    isContentCentered?: boolean | null
     alert?: {
       __typename?: 'ComponentBlocksFormSentPageAlert'
       title?: string | null

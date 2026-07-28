@@ -68,8 +68,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "title"
+          "editable": true
         },
         "list": {
           "label": "alert",
@@ -87,6 +86,11 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "feedbackLink",
+        "isContentCentered"
+      ],
       "edit": [
         [
           {
@@ -112,8 +116,7 @@
             "size": 12
           }
         ]
-      ],
-      "list": ["id", "feedbackLink", "isContentCentered"]
+      ]
     },
     "uid": "blocks.form-sent-page",
     "isComponent": true

@@ -13,8 +13,8 @@
     },
     "isContentCentered": {
       "type": "boolean",
-      "required": true,
-      "default": false
+      "required": false,
+      "default": true
     },
     "alert": {
       "type": "component",

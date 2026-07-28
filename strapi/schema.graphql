@@ -283,26 +283,12 @@ input ComponentBlocksFormLandingPageLinkCtaInput {
   url: String
 }
 
-type ComponentBlocksFormSentButton {
-  id: ID!
-}
-
-input ComponentBlocksFormSentButtonFiltersInput {
-  and: [ComponentBlocksFormSentButtonFiltersInput]
-  not: ComponentBlocksFormSentButtonFiltersInput
-  or: [ComponentBlocksFormSentButtonFiltersInput]
-}
-
-input ComponentBlocksFormSentButtonInput {
-  id: ID
-}
-
 type ComponentBlocksFormSentPage {
   alert: ComponentBlocksFormSentPageAlert
   content: String
   feedbackLink: String
   id: ID!
-  isContentCentered: Boolean!
+  isContentCentered: Boolean
 }
 
 type ComponentBlocksFormSentPageAlert {
@@ -1049,7 +1035,7 @@ type GeneralRelationResponseCollection {
   nodes: [General!]!
 }
 
-union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksFormSentButton | ComponentBlocksFormSentPage | ComponentBlocksFormSentPageAlert | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceCard | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksChecklist | ComponentBlocksChecklistItem | ComponentBlocksCommonLink | ComponentBlocksContactCard | ComponentBlocksContactDirectionsCard | ComponentBlocksContactPersonCard | ComponentBlocksExternalDocument | ComponentBlocksFooterColumn | ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksFormSentPage | ComponentBlocksFormSentPageAlert | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksMunicipalServiceCard | ComponentBlocksMunicipalServiceLink | ComponentBlocksQuestion | ComponentGeneralAlert | ComponentMunicipalChargeDeliveryMethod | ComponentMunicipalChargeDeliveryMethodChangePendingAlert | ComponentMunicipalChargeMunicipalChargeIdentifier | ComponentSectionsContacts | ComponentSectionsDocuments | ComponentSectionsFaq | ComponentSectionsRichtext | ComponentSectionsStepper | ComponentSectionsTowing | Footer | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalCharge | MunicipalChargeConfig | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | ReviewWorkflowsWorkflow | ReviewWorkflowsWorkflowStage | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!

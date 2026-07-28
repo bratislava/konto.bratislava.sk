@@ -14,13 +14,13 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
 
   const feedbackButton = feedbackLink
     ? {
-        title: t('FormSentPageContent.button_to_feedback'),
+        label: t('FormSentPageContent.button_to_feedback'),
         href: feedbackLink,
       }
     : null
 
   const municipalServicesButton = {
-    title: t('FormSentPageContent.button_to_municipal_services'),
+    label: t('FormSentPageContent.button_to_municipal_services'),
     href: ROUTES.MUNICIPAL_SERVICES,
   }
 

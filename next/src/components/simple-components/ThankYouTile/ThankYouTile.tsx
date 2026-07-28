@@ -5,8 +5,8 @@ import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
 type ThankYouTileButton = {
+  label: string
   href: string
-  title: string
 }
 
 export type ThankYouTileProps = {
@@ -20,7 +20,7 @@ export type ThankYouTileProps = {
 
 const ThankYouTileIcon = ({ variant }: Pick<ThankYouTileProps, 'variant'>) => {
   return (
-    <span
+    <div
       className={cn('flex size-14 min-w-14 items-center justify-center rounded-full lg:size-22', {
         'bg-background-success-soft-default': variant === 'success',
         'bg-background-error-soft-default': variant === 'error',
@@ -43,7 +43,7 @@ const ThankYouTileIcon = ({ variant }: Pick<ThankYouTileProps, 'variant'>) => {
           'text-content-warning-default': variant === 'warning',
         })}
       />
-    </span>
+    </div>
   )
 }
 
@@ -55,7 +55,7 @@ const ThankYouTile = ({
   variant,
   title,
   content,
-  isContentCentered,
+  isContentCentered = true,
   primaryButton,
   secondaryButton,
 }: ThankYouTileProps) => {
@@ -78,12 +78,12 @@ const ThankYouTile = ({
       <div className="flex w-full flex-col items-center gap-3 empty:hidden">
         {primaryButton ? (
           <Button href={primaryButton.href} variant="solid" fullWidth hasLinkIcon={false}>
-            {primaryButton.title}
+            {primaryButton.label}
           </Button>
         ) : null}
         {secondaryButton ? (
           <Button href={secondaryButton.href} variant="outline" fullWidth hasLinkIcon={false}>
-            {secondaryButton.title}
+            {secondaryButton.label}
           </Button>
         ) : null}
       </div>

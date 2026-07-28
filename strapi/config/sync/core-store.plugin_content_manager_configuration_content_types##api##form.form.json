@@ -111,8 +111,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "documentId"
+          "editable": true
         },
         "list": {
           "label": "landingPage",
@@ -126,8 +125,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "documentId"
+          "editable": true
         },
         "list": {
           "label": "formSentPage",
@@ -203,6 +201,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "slug",
+        "updatedAt",
+        "moreInformationUrl",
+        "municipalService"
+      ],
       "edit": [
         [
           {
@@ -244,13 +249,6 @@
             "size": 4
           }
         ]
-      ],
-      "list": [
-        "id",
-        "slug",
-        "updatedAt",
-        "moreInformationUrl",
-        "municipalService"
       ]
     },
     "uid": "api::form.form"

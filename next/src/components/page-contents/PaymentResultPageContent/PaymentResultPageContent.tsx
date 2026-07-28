@@ -67,7 +67,7 @@ export const usePaymentResultPropsMap = ({
   const commonProps: Partial<ThankYouTileProps> = {
     isContentCentered: true,
     secondaryButton: {
-      title: t('PaymentResultPageContent.button_to_taxes'),
+      label: t('PaymentResultPageContent.button_to_taxes'),
       href: ROUTES.TAXES,
     },
   }
@@ -80,7 +80,7 @@ export const usePaymentResultPropsMap = ({
       content: t('PaymentResultPageContent.payment_success.content'),
       primaryButton: feedbackLink
         ? {
-            title: t('PaymentResultPageContent.button_to_feedback'),
+            label: t('PaymentResultPageContent.button_to_feedback'),
             href: feedbackLink,
           }
         : null,
@@ -97,7 +97,7 @@ export const usePaymentResultPropsMap = ({
       title: t('PaymentResultPageContent.payment_failed_to_verify.title'),
       content: t('PaymentResultPageContent.payment_failed.content'),
       primaryButton: {
-        title: t('PaymentResultPageContent.button_repeat_payment'),
+        label: t('PaymentResultPageContent.button_repeat_payment'),
         href: taxDetailLink,
       },
     },
@@ -107,7 +107,7 @@ export const usePaymentResultPropsMap = ({
       title: t('PaymentResultPageContent.payment_failed.title'),
       content: t('PaymentResultPageContent.payment_failed.content'),
       primaryButton: {
-        title: t('PaymentResultPageContent.button_repeat_payment'),
+        label: t('PaymentResultPageContent.button_repeat_payment'),
         href: taxDetailLink,
       },
     },

@@ -60,6 +60,7 @@ COPY --chown=node:node --from=install-prod /build/node_modules ./node_modules
 COPY --chown=node:node --from=build /build/app/config ./config
 COPY --chown=node:node --from=build /build/app/public ./public
 COPY --chown=node:node --from=build /build/app/dist ./dist
+COPY --chown=node:node --from=build /build/app/database ./database
 # COPY to final image any built Strapi plugins. In this stage you will *ONLY* need
 # - plugins/<name>/package-lock.json
 # - plugins/<name>/package.json

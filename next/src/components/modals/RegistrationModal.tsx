@@ -144,7 +144,6 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             <div className="rounded-t-lg bg-gray-100 p-4 lg:px-6 lg:py-5">
               <Typography variant="h4">{t('registration_modal.body_title')}</Typography>
               <ul className="mt-6 flex flex-col gap-2 lg:gap-4">
-                {}
                 {bodyList.map((item, index) => (
                   <li key={index} className="flex items-center gap-4">
                     <span className="flex size-5 min-w-[20px] items-center justify-center lg:size-6 lg:min-w-[24px]">
@@ -170,7 +169,8 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             </div>
           </div>
 
-          <AccountLink variant="login" />
+          {/* Use the `login` function that saves draft and redirects to the login page and back to form after login */}
+          <AccountLink variant="login" onLoginPress={login} />
         </div>
         {(type === RegistrationModalType.Initial ||
           type === RegistrationModalType.NotAuthenticatedSubmitForm) && (

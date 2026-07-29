@@ -17,7 +17,7 @@ import { plainToInstance } from 'class-transformer'
 import { Simplify } from 'type-fest'
 
 import BaConfigService from '../../config/ba-config.service'
-import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
+import { CognitoUserAttributesTierEnum } from '../../generated/prisma/enums'
 import {
   SendToQueueErrorsEnum,
   SendToQueueErrorsResponseEnum,

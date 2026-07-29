@@ -8,7 +8,7 @@ import {
   ConsentEnum,
   DeliveryMethodEnum,
   DeliveryMethodUserPreferenceEnum,
-} from '../generated/prisma/client'
+} from '../generated/prisma/enums'
 import { NorisDeliveryMethodService } from '../noris/services/noris-delivery-method.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'

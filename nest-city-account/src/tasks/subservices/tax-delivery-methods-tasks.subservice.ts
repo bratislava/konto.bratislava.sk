@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import pLimit from 'p-limit'
 import { z } from 'zod'
 
-import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '../../generated/prisma/client'
+import { DeliveryMethodEnum, DeliveryMethodUserPreferenceEnum } from '../../generated/prisma/enums'
 import { MailgunService } from '../../mailgun/mailgun.service'
 import {
   NorisDeliveryMethodService,

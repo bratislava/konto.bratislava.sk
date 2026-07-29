@@ -71,14 +71,11 @@ BEGIN
             AND "status" <> 'FAILED'
             AND "isTerminal" = TRUE
             AND (
-                ("commandName" = 'customers' AND ("commandData" ->> 'update_timestamp')::DOUBLE PRECISION
-                        >= (new."commandData" ->> 'update_timestamp')::DOUBLE PRECISION)
+                ("commandName" = 'customers')
                         OR ("commandName" = 'customers/events'
                         AND "commandData" ->> 'event_type' = new."commandData" ->> 'event_type'
                         AND "commandData" -> 'properties' ->> 'category'
-                            = new."commandData" -> 'properties' ->> 'category'
-                        AND ("commandData" ->> 'timestamp')::DOUBLE PRECISION
-                            >= (new."commandData" ->> 'timestamp')::DOUBLE PRECISION))
+                            = new."commandData" -> 'properties' ->> 'category'))
         LIMIT 1;
 
     ELSE

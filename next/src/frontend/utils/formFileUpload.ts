@@ -41,16 +41,23 @@ export const uploadFile = async ({
   ) => void
 }) => {
   try {
-    const response = await formsClient.filesControllerUploadFile(formId, slotId, file, file.name, id, {
-      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
-        if (progressEvent.total == null) {
-          return
-        }
-        onProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+    const response = await formsClient.filesControllerUploadFile(
+      formId,
+      slotId,
+      file,
+      file.name,
+      id,
+      {
+        onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+          if (progressEvent.total == null) {
+            return
+          }
+          onProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+        },
+        signal: abortController.signal,
+        authStrategy: 'authOrGuestWithToken',
       },
-      signal: abortController.signal,
-      authStrategy: 'authOrGuestWithToken',
-    })
+    )
     onSuccess(response)
   } catch (error: any) {
     // TODO: Error type
@@ -223,7 +230,11 @@ const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints)
   return { type: FileStatusType.UploadQueued as const }
 }
 
-export const getFileInfoForNewFiles = (files: File[], slotId: string, constraints: FormFileUploadConstraints) =>
+export const getFileInfoForNewFiles = (
+  files: File[],
+  slotId: string,
+  constraints: FormFileUploadConstraints,
+) =>
   files.map((file) => {
     return {
       id: createUuid(),

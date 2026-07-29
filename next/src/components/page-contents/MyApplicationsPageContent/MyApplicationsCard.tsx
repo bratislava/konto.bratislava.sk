@@ -91,7 +91,9 @@ const MyApplicationsCard = ({
   const exportXml = async () => {
     showToast({ message: t('forms:info_messages.xml_export'), variant: 'info' })
     try {
-      if (!formId) throw new Error('No form id provided for exportXml')
+      if (!formId) {
+        throw new Error('No form id provided for exportXml')
+      }
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
         formId,
         {},
@@ -110,11 +112,12 @@ const MyApplicationsCard = ({
   const exportPdf = async () => {
     showToast({ message: t('forms:info_messages.pdf_export'), variant: 'info' })
     try {
-      if (!formSlug || !formId)
+      if (!formSlug || !formId) {
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
+      }
       const response = await formsClient.convertControllerConvertToPdf(
         formId,
         {},
@@ -133,7 +136,9 @@ const MyApplicationsCard = ({
   const deleteConcept = async () => {
     showToast({ message: t('forms:info_messages.concept_delete'), variant: 'info' })
     try {
-      if (!formId) throw new Error(`No formId provided on deleteConcept`)
+      if (!formId) {
+        throw new Error(`No formId provided on deleteConcept`)
+      }
       await formsClient.formsControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
@@ -182,7 +187,9 @@ const MyApplicationsCard = ({
   const stateIconAndText = useFormStateComponents({ error, state })
 
   const openBottomSheetModal = () => {
-    if (variant === 'SENT') return
+    if (variant === 'SENT') {
+      return
+    }
     setBottomSheetIsOpen(true)
   }
 

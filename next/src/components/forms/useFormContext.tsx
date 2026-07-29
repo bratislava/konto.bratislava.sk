@@ -102,7 +102,9 @@ const useGetContext = (formServerContext: FormServerContext) => {
   }
 }
 
-export const FormContextContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormContextContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 type FormContextProviderProps = {
   formServerContext: FormServerContext

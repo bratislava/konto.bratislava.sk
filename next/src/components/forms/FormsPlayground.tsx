@@ -239,7 +239,9 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
 
   const handleImportJson = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (!file) return
+    if (!file) {
+      return
+    }
 
     try {
       const jsonForm = await file.text()
@@ -282,7 +284,9 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   )
 
   const exampleOptions: SelectOption[] = useMemo(() => {
-    if (!selectedForm) return []
+    if (!selectedForm) {
+      return []
+    }
     const currentFormExamples = exampleForms[selectedForm.slug] || []
 
     return [

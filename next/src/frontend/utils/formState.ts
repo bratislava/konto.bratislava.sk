@@ -46,7 +46,9 @@ export const getStepProperty = (step: BAJSONSchema7 | null) => {
 }
 
 export const getStepperData = (stepsSchemas: (BAJSONSchema7 | null)[]): FormStepperStep[] => {
-  if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
+  if (!stepsSchemas || !Array.isArray(stepsSchemas)) {
+    return []
+  }
   let displayIndex = 0
 
   const steps = stepsSchemas

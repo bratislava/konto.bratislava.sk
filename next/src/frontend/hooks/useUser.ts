@@ -12,7 +12,6 @@ export const prefetchUserQuery = async (
 ) =>
   // https://github.com/TanStack/query/discussions/3306#discussioncomment-2205514
   queryClient.fetchQuery({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient

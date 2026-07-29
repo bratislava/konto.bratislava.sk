@@ -196,7 +196,7 @@ const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) 
             state.onClose()
           }
         },
-      } as ModalProps)}
+      })}
     >
       <Dialog>
         {state?.type === 'loading' && <LoadingContent />}

@@ -12,7 +12,7 @@ const TaxAccordions = () => {
   const { taxData } = useTaxData()
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
 
-  if (taxData.type === TaxType.Dzn)
+  if (taxData.type === TaxType.Dzn) {
     return (
       <div className="flex w-full flex-col gap-4">
         <DznAccordionContent
@@ -39,6 +39,7 @@ const TaxAccordions = () => {
         />
       </div>
     )
+  }
 
   if (taxData.type === TaxType.Ko) {
     return (

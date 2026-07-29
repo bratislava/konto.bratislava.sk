@@ -23,7 +23,7 @@ const IdentityVerificationStatus = () => {
     return null
   }
 
-  if (tierStatus.isIdentityVerified)
+  if (tierStatus.isIdentityVerified) {
     return (
       <div className="flex rounded-sm bg-success-100 px-2 py-0 lg:px-3 lg:py-1.5">
         <Typography variant="p-small" className="text-content-success-default">
@@ -31,8 +31,9 @@ const IdentityVerificationStatus = () => {
         </Typography>
       </div>
     )
+  }
 
-  if (tierStatus.isInQueue)
+  if (tierStatus.isInQueue) {
     return (
       <div className="flex rounded-sm bg-warning-100 px-2 py-0 lg:px-3 lg:py-1.5">
         <Typography variant="p-small" className="text-content-warning-default">
@@ -40,8 +41,9 @@ const IdentityVerificationStatus = () => {
         </Typography>
       </div>
     )
+  }
 
-  if (tierStatus.isIdentityVerificationNotYetAttempted || tierStatus.isNotVerifiedIdentityCard)
+  if (tierStatus.isIdentityVerificationNotYetAttempted || tierStatus.isNotVerifiedIdentityCard) {
     return (
       <div className="flex items-center gap-1.5">
         <div className="flex items-center gap-2 rounded-sm bg-background-passive-secondary px-2 py-0 lg:px-3 lg:py-1.5">
@@ -63,6 +65,7 @@ const IdentityVerificationStatus = () => {
         </Button>
       </div>
     )
+  }
 
   return null
 }

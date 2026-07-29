@@ -9,12 +9,14 @@ const ClearButton = () => {
   const state = useContext(DatePickerStateContext)
   const { t } = useTranslation('account')
 
-  if (!state) return null
+  if (!state) {
+    return null
+  }
 
   return (
     <Button
       variant="plain"
-      slot={null as never}
+      slot={null}
       onPress={() => {
         state.setValue(null)
         state.close()

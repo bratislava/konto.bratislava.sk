@@ -131,7 +131,7 @@ export type ClientLandingPageFormDefinition = Pick<
 export const makeClientLandingPageFormDefinition = (
   formDefinition: FormDefinition,
 ): ClientLandingPageFormDefinition => {
-  return pick(formDefinition, landingPagePropertiesToPick) as ClientLandingPageFormDefinition
+  return pick(formDefinition, landingPagePropertiesToPick)
 }
 
 const playgroundPropertiesToPick = [

@@ -124,7 +124,9 @@ const someOptionHasDescription = <
 >(
   options: ReactSelectProps<Option, IsMulti, Group>['options'] | undefined,
 ) => {
-  if (!options) return false
+  if (!options) {
+    return false
+  }
 
   return options.some((option) =>
     'options' in option ? someOptionHasDescription(option.options) : Boolean(option.description),

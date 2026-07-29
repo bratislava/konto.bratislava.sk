@@ -57,7 +57,7 @@ const FormVersionCompareAction = () => {
   return (
     <div className="flex flex-col justify-between bg-gray-0 py-16 lg:bg-gray-50 lg:py-28">
       <div className="flex flex-col">
-        <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:gap-6 lg:rounded-2xl lg:px-14 lg:py-12 lg:max-w-[800px]">
+        <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:max-w-[800px] lg:gap-6 lg:rounded-2xl lg:px-14 lg:py-12">
           <span
             className={cn(
               'flex size-14 min-w-14 items-center justify-center rounded-full lg:size-[88px] lg:min-w-[88px]',

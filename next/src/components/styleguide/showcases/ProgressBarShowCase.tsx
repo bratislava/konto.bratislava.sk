@@ -1,4 +1,3 @@
-
 import ProgressBar from '@/src/components/simple-components/ProgressBar'
 
 import { Stack } from '../Stack'

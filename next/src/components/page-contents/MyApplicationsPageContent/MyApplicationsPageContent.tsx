@@ -34,7 +34,9 @@ export const getTotalNumberOfApplications = async (
   getSsrAuthSession?: () => Promise<AuthSession>,
 ) => {
   const firstPage = await getDraftApplications(variant, 1, emailFormSlugs, getSsrAuthSession)
-  if (firstPage.countPages === 0) return 0
+  if (firstPage.countPages === 0) {
+    return 0
+  }
 
   const lastPage = await getDraftApplications(
     variant,
@@ -49,7 +51,7 @@ export const getTotalNumberOfApplications = async (
 const useTotalCount = (variant: ApplicationsListVariant, emailFormSlugs: string[]) => {
   const { data, refetch } = useQuery({
     // `emailFormSlugs` is stable and should be part of the key
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+
     queryKey: [`ApplicationsCount_${variant}`, variant],
     queryFn: () => getTotalNumberOfApplications(variant, emailFormSlugs),
   })

@@ -24,7 +24,9 @@ const ResetButton = () => {
   const state = useContext(RadioGroupStateContext)
   const { t } = useTranslation('account')
 
-  if (!state) return null
+  if (!state) {
+    return null
+  }
 
   return (
     <Button

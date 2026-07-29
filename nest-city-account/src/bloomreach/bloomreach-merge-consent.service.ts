@@ -16,10 +16,7 @@ import { BloomreachExportService } from './bloomreach-export.service'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
 import { extractLatestCityAccountConsents } from './utils/consents.utils'
 import { isAnonymizationCommand } from './utils/merge-commands.utils'
-import {
-  BLOOMREACH_PROPAGATION_WINDOW_HOURS,
-  isLiveOrRecentlyCompleted,
-} from './utils/outbox-staleness.utils'
+import { isLiveOrRecentlyCompleted } from './utils/outbox-staleness.utils'
 
 function normalizeIdValues(value: string | string[] | null | undefined): string[] {
   if (value == null) {

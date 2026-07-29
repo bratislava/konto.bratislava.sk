@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsBoolean, IsEmail, IsEnum } from 'class-validator'
 
-import { ConsentEnum } from '../../generated/prisma/client'
+import { ConsentEnum } from '../../generated/prisma/enums'
 
 export class ResponseConsentDto {
   @ApiProperty({

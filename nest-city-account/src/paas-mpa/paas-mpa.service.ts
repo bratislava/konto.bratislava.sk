@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { BloomreachContactDatabaseService } from '../bloomreach/bloomreach-contact-database.service'
+import { BloomreachContactDatabaseService } from '../bloomreach/contact-database/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
 import { CognitoUserAttributesTierEnum } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'

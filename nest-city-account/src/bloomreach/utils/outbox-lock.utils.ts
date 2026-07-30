@@ -1,7 +1,7 @@
 import { Prisma } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 
-export async function lockOutboxDedupKey(
+export async function lockTransactionWithKey(
   tx: Prisma.TransactionClient,
   ...keyParts: string[]
 ): Promise<void> {

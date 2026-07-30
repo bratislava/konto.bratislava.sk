@@ -25,7 +25,7 @@ import {
   isTerminalDowngradeError,
   isTerminalOverrideError,
 } from './utils/outbox-errors.utils'
-import { lockOutboxDedupKey } from './utils/outbox-lock.utils'
+import { lockTransactionWithKey } from './utils/outbox-lock.utils'
 
 @Injectable()
 export class BloomreachOutboxWriterService {
@@ -71,7 +71,7 @@ export class BloomreachOutboxWriterService {
     terminal: boolean
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
-      await lockOutboxDedupKey(
+      await lockTransactionWithKey(
         tx,
         externalId,
         BloomreachCommandName.CUSTOMERS_EVENTS,
@@ -160,7 +160,7 @@ export class BloomreachOutboxWriterService {
     commandData: BloomreachCustomerCommandData
   ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
-      await lockOutboxDedupKey(tx, externalId, BloomreachCommandName.CUSTOMERS)
+      await lockTransactionWithKey(tx, externalId, BloomreachCommandName.CUSTOMERS)
 
       const existing = await tx.bloomreachOutbox.findFirst({
         where: {

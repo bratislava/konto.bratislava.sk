@@ -15,6 +15,10 @@
       "type": "string",
       "required": true
     },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
     "municipalServices": {
       "type": "relation",
       "relation": "manyToMany",

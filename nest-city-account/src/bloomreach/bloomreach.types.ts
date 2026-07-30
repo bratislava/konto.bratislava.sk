@@ -70,7 +70,7 @@ export interface BloomreachEventCommandData {
 export function isBloomreachCustomerData(
   data: BloomreachCustomerCommandData | BloomreachEventCommandData
 ): data is BloomreachCustomerCommandData {
-  return 'update_timestamp' in data
+  return !('event_type' in data)
 }
 
 export interface BloomreachCustomerCommand {
@@ -81,7 +81,7 @@ export interface BloomreachCustomerCommand {
 export function isBloomreachEventCommandData(
   data: BloomreachCustomerCommandData | BloomreachEventCommandData
 ): data is BloomreachEventCommandData {
-  return 'timestamp' in data
+  return 'event_type' in data
 }
 
 export interface BloomreachEventCommand {

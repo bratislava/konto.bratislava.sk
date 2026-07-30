@@ -107,38 +107,7 @@ export class BloomreachOutboxWriterService {
         category: commandData.properties.category,
       }
 
-      if (existing) {
-        if (!isBloomreachEventCommandData(existing.commandData)) {
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'Bloomreach outbox entry has commandName CUSTOMERS_EVENTS but commandData is not event command data',
-            toLogfmt({ externalId, entryId: existing.id })
-          )
-        }
-
-        const existingData = existing.commandData
-
-        if (
-          isExistingHigherPriorityEventCommand(
-            { isTerminal: existing.isTerminal, timestamp: existingData.timestamp },
-            { isTerminal: terminal, timestamp: commandData.timestamp }
-          )
-        ) {
-          return
-        }
-
-        try {
-          await tx.bloomreachOutbox.update({
-            where: { id: existing.id },
-            data: {
-              commandData,
-              isTerminal: terminal,
-            },
-          })
-        } catch (error) {
-          this.handleEventDowngradeFailure(error, eventContext)
-        }
-      } else {
+      if (!existing) {
         try {
           await tx.bloomreachOutbox.create({
             data: {
@@ -151,6 +120,38 @@ export class BloomreachOutboxWriterService {
         } catch (error) {
           this.handleEventCreateFailure(error, eventContext)
         }
+        return
+      }
+
+      if (!isBloomreachEventCommandData(existing.commandData)) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Bloomreach outbox entry has commandName CUSTOMERS_EVENTS but commandData is not event command data',
+          toLogfmt({ externalId, entryId: existing.id })
+        )
+      }
+
+      const existingData = existing.commandData
+
+      if (
+        isExistingHigherPriorityEventCommand(
+          { isTerminal: existing.isTerminal, timestamp: existingData.timestamp },
+          { isTerminal: terminal, timestamp: commandData.timestamp }
+        )
+      ) {
+        return
+      }
+
+      try {
+        await tx.bloomreachOutbox.update({
+          where: { id: existing.id },
+          data: {
+            commandData,
+            isTerminal: terminal,
+          },
+        })
+      } catch (error) {
+        this.handleEventDowngradeFailure(error, eventContext)
       }
     })
   }
@@ -170,24 +171,7 @@ export class BloomreachOutboxWriterService {
         },
       })
 
-      if (existing) {
-        const merged = mergeCustomerCommandData(
-          existing.commandData as BloomreachCustomerCommandData,
-          commandData
-        )
-
-        try {
-          await tx.bloomreachOutbox.update({
-            where: { id: existing.id },
-            data: {
-              commandData: merged,
-              isTerminal: isAnonymizationCommand(merged),
-            },
-          })
-        } catch (error) {
-          this.handleCustomerDowngradeFailure(error, externalId)
-        }
-      } else {
+      if (!existing) {
         try {
           await tx.bloomreachOutbox.create({
             data: {
@@ -200,6 +184,23 @@ export class BloomreachOutboxWriterService {
         } catch (error) {
           this.handleCustomerCreateFailure(error, externalId)
         }
+      }
+
+      const merged = mergeCustomerCommandData(
+        existing.commandData as BloomreachCustomerCommandData,
+        commandData
+      )
+
+      try {
+        await tx.bloomreachOutbox.update({
+          where: { id: existing.id },
+          data: {
+            commandData: merged,
+            isTerminal: isAnonymizationCommand(merged),
+          },
+        })
+      } catch (error) {
+        this.handleCustomerDowngradeFailure(error, externalId)
       }
     })
   }

@@ -1,12 +1,16 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import { useState } from 'react'
+import slugify from 'slugify'
 
 import {
   MunicipalServiceCategoryEntityFragment,
   MunicipalServiceEntityFragment,
 } from '@/src/clients/graphql-strapi/api'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import {
+  ALL_CATEGORIES_VALUE,
+  useMunicipalServicesFilters,
+} from '@/src/components/page-contents/MunicipalServicesPageContent/useMunicipalServicesFilters'
 import MunicipalServiceCard from '@/src/components/segments/MunicipalServiceCard/MunicipalServiceCard'
 import MunicipalServicesPageHeader from '@/src/components/segments/PageHeader/MunicipalServicesPageHeader'
 import Pagination from '@/src/components/simple-components/Pagination/Pagination'
@@ -21,6 +25,8 @@ export type MunicipalServicesPageContentProps = {
   categoriesLegalPerson: MunicipalServiceCategoryEntityFragment[]
 }
 
+const SERVICES_PER_PAGE = 12
+
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-94617
  */
@@ -32,53 +38,47 @@ const MunicipalServicesPageContent = ({
   categoriesLegalPerson,
 }: MunicipalServicesPageContentProps) => {
   const { t } = useTranslation('account')
-  const [currentPage, setCurrentPage] = useState<number>(1)
+
+  const { categorySlug, setCategorySlug, currentPage, setCurrentPage } =
+    useMunicipalServicesFilters()
   const { isLegalEntity } = useSsrAuth()
+
   const servicesByPersonType = isLegalEntity ? servicesLegalPerson : services
   const categoriesByPersonType = isLegalEntity ? categoriesLegalPerson : categories
 
-  const enumOptions: SelectOption[] = [
-    { value: 'ALL_CATEGORIES', label: t('account_section_services.all_categories') },
-    ...categoriesByPersonType.map((category) => {
-      if (!category.documentId) {
-        return null
-      }
+  const categorySelectOptions: SelectOption[] = [
+    { value: ALL_CATEGORIES_VALUE, label: t('account_section_services.all_categories') },
+    ...categoriesByPersonType.map((category) => ({
+      // TODO: remove fallback value once slug is set to required in strapi
+      value: category.slug ?? slugify(category.title),
+      label: category.title,
+    })),
+  ]
 
-      return {
-        value: category.documentId,
-        label: category.title,
-      }
-    }),
-  ].filter(isDefined)
+  // Falls back to "all categories" if the query param holds a category that is not available for the current person type
+  const selectorValue =
+    categorySelectOptions.find((option) => option.value === categorySlug) ??
+    categorySelectOptions[0]
 
-  const [selectorValue, setSelectorValue] = useState<SelectOption>(enumOptions[0])
-  const ITEMS_PER_PAGE = 12
-
-  const handleCategoryChange = (newSelectorValue: SelectOption) => {
-    if (newSelectorValue.value !== selectorValue.value) {
-      setCurrentPage(1)
+  const filteredServices = servicesByPersonType.filter(isDefined).filter((service) => {
+    if (selectorValue.value === ALL_CATEGORIES_VALUE) {
+      return true
     }
-    setSelectorValue(newSelectorValue)
-  }
 
-  const filteredServices = servicesByPersonType
-    .filter(isDefined)
-    .filter((service) => {
-      if (selectorValue.value === 'ALL_CATEGORIES') {
-        return true
-      }
-
-      return service.categories.some((category) => category?.documentId === selectorValue.value)
-    })
-    .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+    return service.categories.some(
+      (category) =>
+        isDefined(category) &&
+        // TODO: remove fallback value once slug is set to required in strapi
+        (category.slug ?? slugify(category.title)) === selectorValue.value,
+    )
+  })
 
   return (
-    <div className="flex flex-col">
+    <>
       <MunicipalServicesPageHeader
-        enumOptions={enumOptions}
-        setSelectorValue={handleCategoryChange}
+        enumOptions={categorySelectOptions}
+        setSelectorValue={(newSelectorValue) => setCategorySlug(newSelectorValue.value)}
         selectorValue={selectorValue}
-        setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
       <SectionContainer className="w-full pt-4 lg:pt-8">
@@ -86,19 +86,21 @@ const MunicipalServicesPageContent = ({
           {t('account_section_services.services_list')}
         </Typography>
         <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:gap-8">
-          {filteredServices.map((service) => (
-            <MunicipalServiceCard key={service.documentId} service={service} />
-          ))}
+          {filteredServices
+            .slice((currentPage - 1) * SERVICES_PER_PAGE, currentPage * SERVICES_PER_PAGE)
+            .map((service) => (
+              <MunicipalServiceCard key={service.documentId} service={service} />
+            ))}
         </div>
         <div className="my-4 lg:my-8">
           <Pagination
-            totalCount={Math.ceil(filteredServices.length / ITEMS_PER_PAGE)}
+            totalCount={Math.ceil(filteredServices.length / SERVICES_PER_PAGE)}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
           />
         </div>
       </SectionContainer>
-    </div>
+    </>
   )
 }
 

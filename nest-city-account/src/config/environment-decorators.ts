@@ -23,7 +23,7 @@ import {
  * as a real value), required fields fail with "should not be empty" instead of
  * a type error, and `config.get('FOO') ?? fallback` behaves.
  */
-function EmptyStringTransform() {
+function EmptyToUndefinedTransform() {
   return Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' && value.trim() === '' ? undefined : value
   )
@@ -35,7 +35,7 @@ function EmptyStringTransform() {
  * Omitting it leaves IsString()/IsInt()/IsUrl() to reject an absent value with
  * a type error.
  */
-function Presence(required: boolean) {
+function IsRequired(required: boolean) {
   // eslint-disable-next-line sonarjs/no-selector-parameter -- callers pass a named variable, never a literal
   return required ? IsNotEmpty() : IsOptional()
 }
@@ -83,9 +83,9 @@ function StringListTransform() {
 export function EnvBoolean({ required = true }: { required?: boolean } = {}) {
   return applyDecorators(
     Expose(),
-    EmptyStringTransform(),
+    EmptyToUndefinedTransform(),
     BooleanTransform(),
-    Presence(required),
+    IsRequired(required),
     IsBoolean()
   )
 }
@@ -101,9 +101,9 @@ export function EnvInt({
 } = {}) {
   return applyDecorators(
     Expose(),
-    EmptyStringTransform(),
+    EmptyToUndefinedTransform(),
     NumberTransform(),
-    Presence(required),
+    IsRequired(required),
     IsInt(),
     ...(min === undefined ? [] : [Min(min)]),
     ...(max === undefined ? [] : [Max(max)])
@@ -115,7 +115,7 @@ export function EnvPort({ required = true }: { required?: boolean } = {}) {
 }
 
 export function EnvString({ required = true }: { required?: boolean } = {}) {
-  return applyDecorators(Expose(), EmptyStringTransform(), Presence(required), IsString())
+  return applyDecorators(Expose(), EmptyToUndefinedTransform(), IsRequired(required), IsString())
 }
 
 export function EnvUrl({
@@ -127,8 +127,8 @@ export function EnvUrl({
 } = {}) {
   return applyDecorators(
     Expose(),
-    EmptyStringTransform(),
-    Presence(required),
+    EmptyToUndefinedTransform(),
+    IsRequired(required),
     // requireTld toggles whether the URL must have a top-level domain (TLD)
     // Disable it for Kubernetes service URLs (e.g. http://nest-forms-backend-app).
     IsUrl({ require_tld: requireTld })
@@ -149,7 +149,7 @@ export function EnvEnum(
   enumType: object,
   { required = true }: { required?: boolean } = {}
 ) {
-  return applyDecorators(Expose(), EmptyStringTransform(), Presence(required), IsEnum(enumType))
+  return applyDecorators(Expose(), EmptyToUndefinedTransform(), IsRequired(required), IsEnum(enumType))
 }
 
 /**

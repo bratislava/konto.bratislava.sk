@@ -61,13 +61,16 @@ const MunicipalServicesPageContent = ({
     setSelectorValue(newSelectorValue)
   }
 
-  const filteredServices = servicesByPersonType.filter(isDefined).filter((service) => {
-    if (selectorValue.value === 'ALL_CATEGORIES') {
-      return true
-    }
+  const filteredServices = servicesByPersonType
+    .filter(isDefined)
+    .filter((service) => {
+      if (selectorValue.value === 'ALL_CATEGORIES') {
+        return true
+      }
 
-    return service.categories.some((category) => category?.documentId === selectorValue.value)
-  })
+      return service.categories.some((category) => category?.documentId === selectorValue.value)
+    })
+    .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   return (
     <div className="flex flex-col">
@@ -82,15 +85,10 @@ const MunicipalServicesPageContent = ({
         <Typography variant="h2" className="sr-only">
           {t('account_section_services.services_list')}
         </Typography>
-        <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:gap-8 lg:grid-cols-4">
-          {filteredServices
-            .filter(
-              (_, i) =>
-                i + 1 <= currentPage * ITEMS_PER_PAGE && i + 1 > (currentPage - 1) * ITEMS_PER_PAGE,
-            )
-            .map((service) => (
-              <MunicipalServiceCard key={service.documentId} service={service} />
-            ))}
+        <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:gap-8">
+          {filteredServices.map((service) => (
+            <MunicipalServiceCard key={service.documentId} service={service} />
+          ))}
         </div>
         <div className="my-4 lg:my-8">
           <Pagination

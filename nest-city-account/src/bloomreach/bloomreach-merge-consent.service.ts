@@ -52,7 +52,7 @@ function normalizeIdValues(value: string | string[] | null | undefined): string[
  * When a customer command attaches a contact_id for the first time, Bloomreach
  * merges the customer with any existing profile carrying that contact_id. If
  * that profile was anonymized, its consent rejects could win the merge's
- * latest-wins resolution. Before such a command is sent, this service re-queues
+ * latest-wins resolution. Before such command is sent, this service re-queues
  * the customer's consent state (as exported from Bloomreach), stamped to land
  * just after the anonymization it needs to outrank (see
  * {@link MERGE_CONSENT_RESTORE_BUFFER_SECONDS}), so it wins the merge instead.

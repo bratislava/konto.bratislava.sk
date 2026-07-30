@@ -18,6 +18,7 @@ import {
 } from './bloomreach.types'
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
 import { isAnonymizationCommand, mergeCustomerCommandData } from './utils/merge-commands.utils'
+import { isTerminalDowngradeError } from './utils/outbox-errors.utils'
 import { lockOutboxDedupKey, runSingleFlight } from './utils/outbox-lock.utils'
 
 const BATCH_SIZE = 50
@@ -320,10 +321,22 @@ export class BloomreachOutboxProcessor {
             }
 
             const merged = mergeCustomerCommandData(commandData, newer.commandData)
-            await tx.bloomreachOutbox.update({
-              where: { id: newer.id },
-              data: { commandData: merged, isTerminal: isAnonymizationCommand(merged) },
-            })
+            try {
+              await tx.bloomreachOutbox.update({
+                where: { id: newer.id },
+                data: { commandData: merged, isTerminal: isAnonymizationCommand(merged) },
+              })
+            } catch (error) {
+              if (!isTerminalDowngradeError(error)) {
+                throw error
+              }
+              throw this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                'Attempted to downgrade a terminal outbox entry while merging a superseded entry - mergeCustomerCommandData should have prevented this, investigate',
+                toLogfmt({ entryId: entry.id, newerEntryId: newer.id, externalId: entry.externalId }),
+                error
+              )
+            }
           } else if (entry.isTerminal && !newer.isTerminal) {
             // A terminal (anonymize) reject being superseded must still win
             // over a non-terminal newer entry.

@@ -19,7 +19,9 @@ import {
   mergeCustomerCommandData,
 } from './utils/merge-commands.utils'
 import {
-  isBloomreachOutboxDedupConflictError,
+  isDuplicatePendingCustomerError,
+  isDuplicatePendingEventError,
+  isTerminalDowngradeError,
   isTerminalOverrideError,
 } from './utils/outbox-errors.utils'
 import { lockOutboxDedupKey } from './utils/outbox-lock.utils'
@@ -98,6 +100,12 @@ export class BloomreachOutboxWriterService {
         },
       })
 
+      const eventContext = {
+        externalId,
+        eventType: commandData.event_type,
+        category: commandData.properties.category,
+      }
+
       if (existing) {
         if (!isBloomreachEventCommandData(existing.commandData)) {
           throw this.throwerErrorGuard.InternalServerErrorException(
@@ -118,13 +126,17 @@ export class BloomreachOutboxWriterService {
           return
         }
 
-        await tx.bloomreachOutbox.update({
-          where: { id: existing.id },
-          data: {
-            commandData,
-            isTerminal: terminal,
-          },
-        })
+        try {
+          await tx.bloomreachOutbox.update({
+            where: { id: existing.id },
+            data: {
+              commandData,
+              isTerminal: terminal,
+            },
+          })
+        } catch (error) {
+          this.handleEventDowngradeFailure(error, eventContext)
+        }
       } else {
         try {
           await tx.bloomreachOutbox.create({
@@ -136,32 +148,7 @@ export class BloomreachOutboxWriterService {
             },
           })
         } catch (error) {
-          if (isTerminalOverrideError(error)) {
-            this.logger.warn(
-              `Skipped queuing consent event - a terminal entry for this dedup key is at least as recent, ${toLogfmt(
-                {
-                  externalId,
-                  eventType: commandData.event_type,
-                  category: commandData.properties.category,
-                }
-              )}`
-            )
-            return
-          }
-
-          if (!isBloomreachOutboxDedupConflictError(error)) {
-            throw error
-          }
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'bloomreach_outbox_events_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
-            toLogfmt({
-              externalId,
-              eventType: commandData.event_type,
-              category: commandData.properties.category,
-            }),
-            error
-          )
+          this.handleEventCreateFailure(error, eventContext)
         }
       }
     })
@@ -188,13 +175,17 @@ export class BloomreachOutboxWriterService {
           commandData
         )
 
-        await tx.bloomreachOutbox.update({
-          where: { id: existing.id },
-          data: {
-            commandData: merged,
-            isTerminal: isAnonymizationCommand(merged),
-          },
-        })
+        try {
+          await tx.bloomreachOutbox.update({
+            where: { id: existing.id },
+            data: {
+              commandData: merged,
+              isTerminal: isAnonymizationCommand(merged),
+            },
+          })
+        } catch (error) {
+          this.handleCustomerDowngradeFailure(error, externalId)
+        }
       } else {
         try {
           await tx.bloomreachOutbox.create({
@@ -206,17 +197,80 @@ export class BloomreachOutboxWriterService {
             },
           })
         } catch (error) {
-          if (!isBloomreachOutboxDedupConflictError(error)) {
-            throw error
-          }
-          throw this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            'bloomreach_outbox_customers_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
-            toLogfmt({ externalId }),
-            error
-          )
+          this.handleCustomerCreateFailure(error, externalId)
         }
       }
     })
+  }
+
+  private handleEventDowngradeFailure(
+    error: unknown,
+    context: { externalId: string; eventType: BloomreachEventNameEnum; category: string }
+  ): void {
+    if (!isTerminalDowngradeError(error)) {
+      throw error
+    }
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      'Attempted to downgrade a terminal outbox entry - isExistingHigherPriorityEventCommand should have prevented this, investigate',
+      toLogfmt(context),
+      error
+    )
+  }
+
+  private handleEventCreateFailure(
+    error: unknown,
+    context: { externalId: string; eventType: BloomreachEventNameEnum; category: string }
+  ): void {
+    if (isTerminalOverrideError(error)) {
+      this.logger.warn(
+        `Skipped queuing consent event - a terminal entry for this dedup key is at least as recent, ${toLogfmt(
+          context
+        )}`
+      )
+      return
+    }
+
+    if (!isDuplicatePendingEventError(error)) {
+      throw error
+    }
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      'bloomreach_outbox_events_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
+      toLogfmt(context),
+      error
+    )
+  }
+
+  private handleCustomerDowngradeFailure(error: unknown, externalId: string): void {
+    if (!isTerminalDowngradeError(error)) {
+      throw error
+    }
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      'Attempted to downgrade a terminal outbox entry - mergeCustomerCommandData should have prevented this, investigate',
+      toLogfmt({ externalId }),
+      error
+    )
+  }
+
+  private handleCustomerCreateFailure(error: unknown, externalId: string): void {
+    if (isTerminalOverrideError(error)) {
+      this.logger.warn(
+        `Skipped queuing customer command - a terminal entry for this dedup key is at least as recent`,
+        { externalId }
+      )
+      return
+    }
+
+    if (!isDuplicatePendingCustomerError(error)) {
+      throw error
+    }
+    throw this.throwerErrorGuard.InternalServerErrorException(
+      ErrorsEnum.INTERNAL_SERVER_ERROR,
+      'bloomreach_outbox_customers_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
+      toLogfmt({ externalId }),
+      error
+    )
   }
 }

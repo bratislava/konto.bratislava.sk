@@ -333,7 +333,11 @@ export class BloomreachOutboxProcessor {
               throw this.throwerErrorGuard.InternalServerErrorException(
                 ErrorsEnum.INTERNAL_SERVER_ERROR,
                 'Attempted to downgrade a terminal outbox entry while merging a superseded entry - mergeCustomerCommandData should have prevented this, investigate',
-                toLogfmt({ entryId: entry.id, newerEntryId: newer.id, externalId: entry.externalId }),
+                toLogfmt({
+                  entryId: entry.id,
+                  newerEntryId: newer.id,
+                  externalId: entry.externalId,
+                }),
                 error
               )
             }

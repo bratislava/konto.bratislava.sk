@@ -5,11 +5,38 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUrl,
   Max,
   Min,
 } from 'class-validator'
+
+/**
+ * `process.env` cannot distinguish "unset" from "set to nothing": `FOO=` and a
+ * missing `FOO` mean the same thing to whoever wrote the env file, but arrive
+ * as '' and undefined respectively. Normalising '' to undefined means
+ * IsOptional() actually skips the property (it short-circuits on
+ * null/undefined only, so a raw '' falls through to IsString() and is accepted
+ * as a real value), required fields fail with "should not be empty" instead of
+ * a type error, and `config.get('FOO') ?? fallback` behaves.
+ */
+function EmptyToUndefinedTransform() {
+  return Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' && value.trim() === '' ? undefined : value,
+  )
+}
+
+/**
+ * IsOptional() is not a validator but a conditional on the whole property: if
+ * the value is null or undefined, every other validator on it is skipped.
+ * Omitting it leaves IsString()/IsInt()/IsUrl() to reject an absent value with
+ * a type error.
+ */
+function IsRequired(required: boolean) {
+  // eslint-disable-next-line sonarjs/no-selector-parameter -- callers pass a named variable, never a literal
+  return required ? IsNotEmpty() : IsOptional()
+}
 
 function BooleanTransform() {
   return Transform(({ value }: { value: unknown }) => {
@@ -39,9 +66,10 @@ function NumberTransform() {
 export function EnvBoolean({ required = true }: { required?: boolean } = {}) {
   return applyDecorators(
     Expose(),
+    EmptyToUndefinedTransform(),
     BooleanTransform(),
+    IsRequired(required),
     IsBoolean(),
-    ...(required ? [IsNotEmpty()] : []),
   )
 }
 
@@ -56,9 +84,10 @@ export function EnvInt({
 } = {}) {
   return applyDecorators(
     Expose(),
+    EmptyToUndefinedTransform(),
     NumberTransform(),
+    IsRequired(required),
     IsInt(),
-    ...(required ? [IsNotEmpty()] : []),
     ...(min === undefined ? [] : [Min(min)]),
     ...(max === undefined ? [] : [Max(max)]),
   )
@@ -71,8 +100,9 @@ export function EnvPort({ required = true }: { required?: boolean } = {}) {
 export function EnvString({ required = true }: { required?: boolean } = {}) {
   return applyDecorators(
     Expose(),
+    EmptyToUndefinedTransform(),
+    IsRequired(required),
     IsString(),
-    ...(required ? [IsNotEmpty()] : []),
   )
 }
 
@@ -85,10 +115,11 @@ export function EnvUrl({
 } = {}) {
   return applyDecorators(
     Expose(),
+    EmptyToUndefinedTransform(),
+    IsRequired(required),
     // requireTld toggles whether the URL must have a top-level domain (TLD)
     // Disable it for Kubernetes service URLs (e.g. http://nest-forms-backend-app).
     IsUrl({ require_tld: requireTld }),
-    ...(required ? [IsNotEmpty()] : []),
   )
 }
 
@@ -98,7 +129,8 @@ export function EnvEnum(
 ) {
   return applyDecorators(
     Expose(),
+    EmptyToUndefinedTransform(),
+    IsRequired(required),
     IsEnum(enumType),
-    ...(required ? [IsNotEmpty()] : []),
   )
 }

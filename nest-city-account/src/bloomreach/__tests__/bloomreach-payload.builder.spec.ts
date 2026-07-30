@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { cognitoUserDataFactory } from '../../__tests__/factories/cognitoUserData.factory'
-import { CognitoUserAttributesTierEnum, ConsentEnum } from '../../generated/prisma/client'
+import { CognitoUserAttributesTierEnum, ConsentEnum } from '../../generated/prisma/enums'
 import { UserOfficialCorrespondenceChannelEnum } from '../../user/dtos/gdpr.user.dto'
 import {
   CognitoUserAccountTypesEnum,
@@ -15,8 +15,8 @@ import {
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
-import { BloomreachContactDatabaseService } from '../bloomreach-contact-database.service'
 import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
+import { BloomreachContactDatabaseService } from '../contact-database/bloomreach-contact-database.service'
 
 describe('BloomreachPayloadBuilder', () => {
   let builder: BloomreachPayloadBuilder
@@ -75,6 +75,7 @@ describe('BloomreachPayloadBuilder', () => {
       expect(result.commandData.properties.last_name).toBe('Doe')
       expect(result.commandData.properties.email).toBe('john@example.com')
       expect(result.commandData.properties.registration_date).toBe('2025-01-15T10:00:00.000Z')
+      expect(result.commandData.update_timestamp).toBeCloseTo(Date.now() / 1000, -1)
     })
 
     it('should include phone number when provided', async () => {
@@ -168,13 +169,14 @@ describe('BloomreachPayloadBuilder', () => {
 
   describe('buildAnonymizeCommand', () => {
     it('should return a customers command with empty properties', () => {
-      const result = builder.buildAnonymizeCommand(externalId)
+      const result = builder.buildAnonymizeCommand(externalId, 200)
 
       expect(result.commandName).toBe(BloomreachCommandNameEnum.CUSTOMERS)
       expect(result.commandData.customer_ids.city_account_id).toBe(externalId)
       expect(result.commandData.properties.first_name).toBe('')
       expect(result.commandData.properties.email).toBe('')
       expect(result.commandData.properties.is_identity_verified).toBe(false)
+      expect(result.commandData.update_timestamp).toBe(200)
     })
   })
 
@@ -192,6 +194,7 @@ describe('BloomreachPayloadBuilder', () => {
       expect(result[0].commandData.properties.action).toBe(BloomreachConsentActionEnum.ACCEPT)
       expect(result[0].commandData.properties.category).toBe('ESBS-MARKETING')
       expect(result[0].commandData.properties.valid_until).toBe('unlimited')
+      expect(result[0].commandData.timestamp).toBeCloseTo(Date.now() / 1000, -1)
     })
 
     it('should map each consent type and grant state to category and action', () => {

@@ -7,6 +7,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { Consent } from './bloomreach.types'
+import { nowUnixSeconds } from './bloomreach-payload.builder'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
 
 @Injectable()
@@ -104,10 +105,13 @@ export class BloomreachOutboxService {
       return
     }
 
+    // Unify the anonymization commands timestamps.
+    const anonymizedAt = nowUnixSeconds()
+
     await this.trackConsentsInternal(
       [
-        { consentType: ConsentEnum.MARKETING, isGranted: false },
-        { consentType: ConsentEnum.GENERAL, isGranted: false },
+        { consentType: ConsentEnum.MARKETING, isGranted: false, timestamp: anonymizedAt },
+        { consentType: ConsentEnum.GENERAL, isGranted: false, timestamp: anonymizedAt },
       ],
       externalId,
       undefined,
@@ -116,7 +120,7 @@ export class BloomreachOutboxService {
     )
 
     try {
-      await this.outboxWriter.queueAnonymizeCommand(externalId)
+      await this.outboxWriter.queueAnonymizeCommand(externalId, anonymizedAt)
 
       this.logger.debug(`Queued anonymize commands for ${externalId}`)
     } catch (error) {

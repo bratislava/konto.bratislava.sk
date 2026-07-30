@@ -19,7 +19,7 @@ import { BloomreachContactDatabaseService } from './contact-database/bloomreach-
 import { consentCategory } from './utils/consents.utils'
 
 /** Unix timestamp in seconds, the format Bloomreach expects. */
-function nowUnixSeconds(): number {
+export function nowUnixSeconds(): number {
   return Date.now() / 1000
 }
 
@@ -115,7 +115,7 @@ export class BloomreachPayloadBuilder {
     return this.bloomreachContactDatabaseService.upsert(email, birthNumber, ico)
   }
 
-  buildAnonymizeCommand(externalId: string): BloomreachCustomerCommand {
+  buildAnonymizeCommand(externalId: string, timestamp: number): BloomreachCustomerCommand {
     return {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
@@ -134,7 +134,7 @@ export class BloomreachPayloadBuilder {
           oauth_origin_client_name: '',
           current_tax_correspondence_channel: '',
         },
-        update_timestamp: nowUnixSeconds(),
+        update_timestamp: timestamp,
       },
     }
   }

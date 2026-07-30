@@ -9,6 +9,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import {
   BloomreachCustomerCommandData,
   BloomreachEventCommandData,
+  BloomreachEventNameEnum,
   Consent,
   isBloomreachEventCommandData,
 } from './bloomreach.types'
@@ -44,8 +45,8 @@ export class BloomreachOutboxWriterService {
     await this.upsertPendingCustomerCommand(externalId, commandData)
   }
 
-  async queueAnonymizeCommand(externalId: string): Promise<void> {
-    const { commandData } = this.payloadBuilder.buildAnonymizeCommand(externalId)
+  async queueAnonymizeCommand(externalId: string, timestamp: number): Promise<void> {
+    const { commandData } = this.payloadBuilder.buildAnonymizeCommand(externalId, timestamp)
 
     await this.upsertPendingCustomerCommand(externalId, commandData)
   }

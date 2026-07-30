@@ -69,8 +69,6 @@ RUN chown -R node:node /app
 
 USER node
 
-# Ordered least- to most-frequently-changing: a layer invalidates every layer
-# below it, so the app's own `dist` -- rebuilt on every commit -- goes last.
 COPY --from=prod-deps --chown=node:node /app ./
 COPY --from=builder --chown=node:node /app/nest-forms-backend/nest-cli.json ./nest-forms-backend/nest-cli.json
 COPY --from=builder --chown=node:node /app/nest-forms-backend/prisma.config.ts ./nest-forms-backend/prisma.config.ts

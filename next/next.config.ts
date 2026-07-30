@@ -33,7 +33,8 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingIncludes: {
     '/**': [
-      // tells Next to force-copy the config file into the standalone bundle for all routes, so the runtime require finds it at /home/node/app/next-i18next.config.js
+      // tells Next to force-copy the config file into the standalone bundle for all routes,
+      // so the runtime require finds it at /app/next/next-i18next.config.js
       './next-i18next.config.js',
     ],
   },

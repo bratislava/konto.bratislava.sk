@@ -62,8 +62,6 @@ RUN chown -R node:node /app
 
 USER node
 
-# Ordered least- to most-frequently-changing: a layer invalidates every layer
-# below it, so the build output `dist` goes last.
 COPY --from=prod-deps --chown=node:node /app ./
 COPY --from=builder --chown=node:node /app/strapi/favicon.ico ./strapi/favicon.ico
 COPY --from=builder --chown=node:node /app/strapi/tsconfig.json ./strapi/tsconfig.json

@@ -57,10 +57,6 @@ RUN chown -R node:node /app
 USER node
 
 COPY --from=builder --chown=node:node /app/next/public ./next/public
-# next-i18next resolves its config relative to the server bundle, so this has to
-# sit next to the standalone `next/server.js`.
-# https://github.com/i18next/next-i18next?tab=readme-ov-file#docker
-COPY --from=builder --chown=node:node /app/next/next-i18next.config.js ./next/
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=node:node /app/next/.next/standalone ./

@@ -16,7 +16,7 @@ COPY . .
 ARG TURBO_VERSION
 RUN pnpm dlx turbo@${TURBO_VERSION} prune city-account-strapi --docker
 
-FROM base AS build-base
+FROM base AS builder-deps
 RUN apk add --no-cache \
       autoconf \
       automake \
@@ -31,9 +31,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY --from=prepare /app/out/full/ .
 
-FROM build-base AS builder
+FROM builder-deps AS builder
 # Declared here rather than in `base` so that rotating a Turbo cache credential
-# cannot invalidate `apk add` or `pnpm install` in `build-base` -- an ENV change
+# cannot invalidate `apk add` or `pnpm install` in `builder-deps` -- an ENV change
 # re-keys every layer below it.
 ARG TURBO_API
 ENV TURBO_API=$TURBO_API
@@ -52,7 +52,6 @@ RUN pnpm install --frozen-lockfile --prod
 
 FROM node:${NODE_VERSION}-alpine AS runner
 ENV NODE_ENV=production
-ENV PATH=/app/node_modules/.bin:/app/strapi/node_modules/.bin:$PATH
 
 RUN apk add --no-cache \
       tini \
@@ -77,5 +76,7 @@ WORKDIR /app/strapi
 
 EXPOSE 1337
 
+# tini reaps orphaned children and forwards SIGTERM. Exec-form CMD keeps `node`
+# as tini's direct child, so Kubernetes rollouts can shut it down gracefully.
 ENTRYPOINT [ "/sbin/tini", "--" ]
-CMD [ "strapi", "start" ]
+CMD [ "./node_modules/.bin/strapi", "start" ]

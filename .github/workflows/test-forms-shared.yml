@@ -13,8 +13,6 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
-      TURBOREPO_CACHE_MINIO_SECRET_KEY:
-        required: true
 
 permissions:
   contents: read
@@ -46,12 +44,6 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Set up Turborepo cache
-        id: turbo-cache
-        uses: ./.github/actions/setup-turborepo-cache
-        with:
-          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
-
       - name: Docker metadata
         id: meta
         uses: bratislava/github-actions/.github/actions/docker-metadata@beta
@@ -64,7 +56,7 @@ jobs:
         with:
           context: .
           file: forms-shared/Dockerfile.test
-          target: ci-test
+          target: test
           cache-from: ${{ steps.meta.outputs.cache_from }}
           cache-to: ${{ steps.meta.outputs.cache_to }}
           network: host
@@ -74,7 +66,4 @@ jobs:
             NODE_VERSION=${{ steps.toolchain.outputs.node_version }}
             PNPM_VERSION=${{ steps.toolchain.outputs.pnpm_version }}
             TURBO_VERSION=${{ steps.toolchain.outputs.turbo_version }}
-            TURBO_API=${{ steps.turbo-cache.outputs.turbo_api }}
-            TURBO_TEAM=city-account
-            TURBO_TOKEN=local
             PLAYWRIGHT_VERSION=${{ steps.toolchain.outputs.playwright_version }}

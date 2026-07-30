@@ -25,6 +25,15 @@ COPY --from=prepare /app/out/full/ .
 
 RUN pnpm --filter nest-clamav-scanner db:generate
 
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
+
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
 RUN pnpm turbo run build --filter=nest-clamav-scanner^... --filter=!nest-clamav-scanner
 
 FROM builder-deps AS builder

@@ -45,9 +45,9 @@ async function main() {
   const args = process.argv.slice(2)
   const target = args[0]
 
-  if (target !== 'test' && target !== 'test-update') {
+  if (target !== 'test-local' && target !== 'test-local-update') {
     console.error(
-      'Error: Missing or invalid target. Usage: ts-node scripts/runDockerTest.ts <test|test-update>',
+      'Error: Missing or invalid target. Usage: ts-node scripts/runDockerTest.ts <test-local|test-local-update>',
     )
     process.exit(1)
   }
@@ -73,7 +73,7 @@ async function main() {
 
     let runCommand = 'docker run --rm'
 
-    if (target === 'test-update') {
+    if (target === 'test-local-update') {
       console.log('Configuring volume mounts for snapshot updates...')
       runCommand += ` -v "${projectRoot}:/app/forms-shared" -v /app/forms-shared/node_modules -v /app/node_modules`
     }

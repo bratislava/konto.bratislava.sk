@@ -206,7 +206,7 @@ export class BloomreachOutboxProcessor {
       entries.map(async (entry) => {
         const supersededBy = supersededByMap.get(entry.id)
         const newAttempts = countsTowardAttempts ? entry.attempts + 1 : entry.attempts
-        const exhausted = countsTowardAttempts && newAttempts >= MAX_ATTEMPTS
+        const exhausted = newAttempts >= MAX_ATTEMPTS
 
         if (exhausted) {
           this.logger.error(

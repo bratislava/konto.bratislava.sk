@@ -21,7 +21,7 @@ import {
  * as a real value), required fields fail with "should not be empty" instead of
  * a type error, and `config.get('FOO') ?? fallback` behaves.
  */
-function EmptyTransform() {
+function EmptyStringTransform() {
   return Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' && value.trim() === '' ? undefined : value,
   )
@@ -65,7 +65,7 @@ function NumberTransform() {
 export function EnvBoolean({ required = true }: { required?: boolean } = {}) {
   return applyDecorators(
     Expose(),
-    EmptyTransform(),
+    EmptyStringTransform(),
     BooleanTransform(),
     Presence(required),
     IsBoolean(),
@@ -83,7 +83,7 @@ export function EnvInt({
 } = {}) {
   return applyDecorators(
     Expose(),
-    EmptyTransform(),
+    EmptyStringTransform(),
     NumberTransform(),
     Presence(required),
     IsInt(),
@@ -99,7 +99,7 @@ export function EnvPort({ required = true }: { required?: boolean } = {}) {
 export function EnvString({ required = true }: { required?: boolean } = {}) {
   return applyDecorators(
     Expose(),
-    EmptyTransform(),
+    EmptyStringTransform(),
     Presence(required),
     IsString(),
   )
@@ -114,7 +114,7 @@ export function EnvUrl({
 } = {}) {
   return applyDecorators(
     Expose(),
-    EmptyTransform(),
+    EmptyStringTransform(),
     Presence(required),
     // requireTld toggles whether the URL must have a top-level domain (TLD)
     // Disable it for Kubernetes service URLs (e.g. http://nest-forms-backend-app).
@@ -128,7 +128,7 @@ export function EnvEnum(
 ) {
   return applyDecorators(
     Expose(),
-    EmptyTransform(),
+    EmptyStringTransform(),
     Presence(required),
     IsEnum(enumType),
   )

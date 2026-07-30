@@ -36,6 +36,7 @@ function EmptyStringTransform() {
  * a type error.
  */
 function Presence(required: boolean) {
+  // eslint-disable-next-line sonarjs/no-selector-parameter -- callers pass a named variable, never a literal
   return required ? IsNotEmpty() : IsOptional()
 }
 

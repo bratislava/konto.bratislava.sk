@@ -184,6 +184,7 @@ export class BloomreachOutboxWriterService {
         } catch (error) {
           this.handleCustomerCreateFailure(error, externalId)
         }
+        return
       }
 
       const merged = mergeCustomerCommandData(

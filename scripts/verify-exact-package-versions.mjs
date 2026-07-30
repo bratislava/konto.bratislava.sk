@@ -1,7 +1,8 @@
-import { access, readdir, readFile } from 'node:fs/promises'
-import path from 'node:path'
-
-const rootDir = process.cwd()
+import { isExactVersion } from './utils/exact-version.mjs'
+import { readPackageJson } from './utils/package-json.mjs'
+import { relativeToRepositoryRoot, rootPackageJsonPath } from './utils/repository-paths.mjs'
+import { reportViolations } from './utils/violations.mjs'
+import { readWorkspacePackageJsonPaths } from './utils/workspaces.mjs'
 
 const enforcedSections = new Set([
   'dependencies',
@@ -24,7 +25,7 @@ const allowedNonSemverPrefixes = [
   '../',
 ]
 
-function isExactVersion(value) {
+function isAllowedDependencyVersion(value) {
   if (typeof value !== 'string') {
     return false
   }
@@ -33,37 +34,15 @@ function isExactVersion(value) {
     return true
   }
 
-  // Accept pinned semver versions, including prerelease/build metadata.
-  return /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(value)
-}
-
-async function findPackageJsonFiles(directory) {
-  const entries = await readdir(directory, { withFileTypes: true })
-
-  return entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => path.join(directory, entry.name, 'package.json'))
-}
-
-async function exists(filePath) {
-  try {
-    await access(filePath)
-    return true
-  } catch {
-    return false
-  }
+  return isExactVersion(value)
 }
 
 async function main() {
-  const packageJsonFiles = await findPackageJsonFiles(rootDir)
+  const packageJsonPaths = [rootPackageJsonPath, ...(await readWorkspacePackageJsonPaths())]
   const violations = []
 
-  for (const packageJsonPath of packageJsonFiles) {
-    if (!(await exists(packageJsonPath))) {
-      continue
-    }
-
-    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'))
+  for (const packageJsonPath of packageJsonPaths) {
+    const packageJson = await readPackageJson(packageJsonPath)
 
     for (const sectionName of enforcedSections) {
       const section = packageJson[sectionName]
@@ -73,10 +52,10 @@ async function main() {
       }
 
       for (const [dependencyName, version] of Object.entries(section)) {
-        if (!isExactVersion(version)) {
+        if (!isAllowedDependencyVersion(version)) {
           violations.push({
             dependencyName,
-            packageJsonPath: path.relative(rootDir, packageJsonPath),
+            packageJsonPath: relativeToRepositoryRoot(packageJsonPath),
             sectionName,
             version,
           })
@@ -85,20 +64,13 @@ async function main() {
     }
   }
 
-  if (violations.length === 0) {
-    console.log('All enforced dependency versions are exact.')
-    return
-  }
-
-  console.error('Non-exact dependency versions found:\n')
-
-  for (const violation of violations) {
-    console.error(
+  reportViolations({
+    violations,
+    successMessage: `All enforced dependency versions are exact across ${packageJsonPaths.length} package.json files.`,
+    failureHeading: 'Non-exact dependency versions found:',
+    formatViolation: (violation) =>
       `${violation.packageJsonPath} :: ${violation.sectionName} :: ${violation.dependencyName} -> ${violation.version}`,
-    )
-  }
-
-  process.exitCode = 1
+  })
 }
 
 await main()

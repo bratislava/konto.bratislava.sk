@@ -1,9 +1,9 @@
 {
-  "name": "cypress",
+  "name": "city-account-cypress-tests",
   "scripts": {
     "lint": "eslint '**/*.ts'",
     "typecheck": "tsc",
-    "start:e2e": "cd ../next && npm run build:e2e && npm run start",
+    "start:e2e": "cd ../next && cp .env.e2e .env.production.local && pnpm run build && pnpm run start",
     "cypress:open": "node ./run-cypress.js open --browser chrome --device all --visualTesting local",
     "cypress:open:desktop": "node ./run-cypress.js open --browser chrome --device desktop --visualTesting local",
     "cypress:open:mobile": "node ./run-cypress.js open --browser chrome --device mobile --visualTesting local",
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@frsource/cypress-plugin-visual-regression-diff": "3.3.10",
-    "@types/node": "24.12.2",
+    "@types/node": "catalog:",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
     "cypress": "15.11.0",
@@ -30,12 +30,21 @@
     "typescript": "5.9.3",
     "yargs": "18.0.0"
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
+  "packageManager": "pnpm@11.17.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.18.0",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.17.0",
+      "onFail": "error"
+    }
   },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
-  }
+    "extends": "../package.json"
+  },
+  "private": true
 }

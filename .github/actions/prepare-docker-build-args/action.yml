@@ -1,0 +1,31 @@
+name: Prepare Docker build args
+description: Reads the pinned Node, pnpm and turbo versions from the root package.json and the Playwright version from the pnpm catalog, and exposes them as Docker build args.
+
+outputs:
+  node_version:
+    description: Node version pinned in devEngines.runtime.
+    value: ${{ steps.build-args.outputs.NODE_VERSION }}
+  pnpm_version:
+    description: pnpm version pinned in devEngines.packageManager.
+    value: ${{ steps.build-args.outputs.PNPM_VERSION }}
+  turbo_version:
+    description: turbo version pinned in devDependencies.
+    value: ${{ steps.build-args.outputs.TURBO_VERSION }}
+  playwright_version:
+    description: Playwright version pinned in the pnpm-workspace.yaml catalog.
+    value: ${{ steps.build-args.outputs.PLAYWRIGHT_VERSION }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version-file: package.json
+
+    - name: Read build arg versions
+      id: build-args
+      shell: bash
+      run: |
+        set -euo pipefail
+        node ./scripts/print-docker-build-args.mjs >> "$GITHUB_OUTPUT"

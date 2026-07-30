@@ -40,6 +40,7 @@
   },
   "sideEffects": false,
   "scripts": {
+    "dev": "pnpm run build:watch",
     "generate:forms": "tsx scripts/generateClient.ts forms",
     "generate:tax": "tsx scripts/generateClient.ts tax",
     "generate:city-account": "tsx scripts/generateClient.ts city-account",
@@ -53,18 +54,20 @@
     "generate:clamav-scanner:local": "tsx scripts/generateClient.ts clamav-scanner --local-url localhost:3000",
     "generate:slovensko-sk:local": "tsx scripts/generateClient.ts slovensko-sk --local-url localhost:3000",
     "generate:magproxy:local": "tsx scripts/generateClient.ts magproxy --local-url localhost:3000",
-    "check-for-changes": "tsx scripts/checkForChanges.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
+    "build:watch": "tsc --project tsconfig.build.json --watch",
     "prettier": "prettier --write .",
-    "generate-and-build": "npm run generate && npm run build"
+    "generate-and-build": "pnpm run generate && pnpm run build"
+  },
+  "dependencies": {
+    "axios": "1.18.1"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.40.1",
     "@types/app-root-dir": "0.1.4",
     "@types/fs-extra": "11.0.4",
-    "@types/node": "24.13.3",
+    "@types/node": "catalog:",
     "app-root-dir": "1.0.2",
-    "axios": "1.18.1",
     "camelcase": "9.0.0",
     "chalk": "5.6.2",
     "commander": "15.0.0",
@@ -79,12 +82,20 @@
   "peerDependencies": {
     "axios": "1.18.1"
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
+  "packageManager": "pnpm@11.17.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.18.0",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.17.0",
+      "onFail": "error"
+    }
   },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   }
 }

@@ -1,0 +1,53 @@
+# Single ignore file for the whole monorepo.
+#
+# Every turborepo-based image (nest-*, next, strapi, forms-shared, openapi-clients)
+# builds with the repository root as its Docker context, and Docker only ever reads
+# the .dockerignore at the context root. The per-package .dockerignore files are
+# therefore inert -- change rules here, not there.
+#
+# Two caveats when editing:
+#   1. Anything excluded here is also missing from `turbo prune --docker` output,
+#      so it can never be recovered in a later stage.
+#   2. Never exclude a directory listed in pnpm-workspace.yaml. `turbo prune` reads
+#      every workspace package.json to build the dependency graph, so a missing
+#      member breaks it. Narrow inside package dirs instead.
+
+# ---- never useful in any build ----
+**/node_modules
+**/.git
+**/.turbo
+**/.idea
+**/.vscode
+**/.volta
+**/.claude
+.github
+
+# ---- build outputs (always regenerated inside the image) ----
+**/dist
+**/.next
+**/out
+**/build
+**/coverage
+**/*.tsbuildinfo
+**/.eslintcache
+# Prisma's `prisma-client` generator emits a host-platform query engine binary
+# here; `db:generate` regenerates it for the image platform during the build.
+**/src/generated/prisma
+
+# ---- noise ----
+**/*.log
+**/.DS_Store
+**/*.md
+tests/cypress/videos
+tests/cypress/screenshots
+
+# ---- secrets: excluded by default ----
+**/.env*
+**/*.pem
+**/*.key
+
+# ---- ...except the committed, non-secret Next.js config it needs to build ----
+# next/Dockerfile promotes .env.ci-build.<BUILD_ENV> to .env.production.local
+# during the build, so the sources must reach the context.
+!next/.env.ci-build.*
+!**/.env.spec

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["CI", "NODE_ENV"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "forms-shared#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "openapi-clients#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "nest-city-account#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "nest-city-account#test": {
+      "dependsOn": ["^build"],
+      "env": [
+        "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH",
+        "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"
+      ],
+      "outputs": []
+    },
+    "nest-forms-backend#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "nest-forms-backend#test:e2e": {
+      "dependsOn": ["^build"],
+      "env": ["CI_E2E_DATABASE_URL"],
+      "outputs": []
+    },
+    "nest-tax-backend#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "nest-clamav-scanner#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "city-account-next#build": {
+      "dependsOn": ["^build"],
+      "env": ["BUILD_ENV"],
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+    },
+    "city-account-strapi#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    }
+  }
+}

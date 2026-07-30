@@ -9,9 +9,8 @@
   },
   "scripts": {
     "build": "strapi build",
-    "dev": "npm run develop",
+    "dev": "pnpm run develop",
     "develop": "cross-env ENV_PATH='./.env.local' strapi develop",
-    "postinstall": "patch-package",
     "start": "strapi start",
     "strapi": "strapi"
   },
@@ -22,7 +21,6 @@
     "@strapi/strapi": "5.50.0",
     "@strapi/typescript-utils": "5.50.0",
     "@strapi/utils": "5.50.0",
-    "patch-package": "8.0.1",
     "pg": "8.22.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -37,13 +35,21 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-scope": "9.1.2"
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
+  "packageManager": "pnpm@11.17.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.18.0",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.17.0",
+      "onFail": "error"
+    }
   },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   },
   "strapi": {
     "uuid": "61130046-63b5-40a0-a617-713763ba3913"

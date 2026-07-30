@@ -1,5 +1,4 @@
 import { Typography } from '@bratislava/component-library'
-import { Dispatch, SetStateAction } from 'react'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SelectFieldNew, {
@@ -10,7 +9,6 @@ type Props = {
   title: string
   selectorValue: SelectOption
   setSelectorValue: (val: SelectOption) => void
-  setCurrentPage: Dispatch<SetStateAction<number>>
   enumOptions: SelectOption[]
 }
 
@@ -18,7 +16,6 @@ const MunicipalServicesPageHeader = ({
   title,
   enumOptions,
   selectorValue,
-  setCurrentPage,
   setSelectorValue,
 }: Props) => {
   return (
@@ -34,7 +31,6 @@ const MunicipalServicesPageHeader = ({
           onChange={(value) => {
             if (!value) return
             setSelectorValue(value)
-            setCurrentPage(1)
           }}
           options={enumOptions}
           displayOptionalLabel={false}

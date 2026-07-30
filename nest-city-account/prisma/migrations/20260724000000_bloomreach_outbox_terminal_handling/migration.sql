@@ -103,7 +103,7 @@ CREATE TRIGGER trg_prevent_bloomreach_outbox_terminal_override
 EXECUTE FUNCTION bloomreach_outbox_prevent_terminal_override();
 
 -- Enforce at most one live "customers" command per account. This unique index is the actual
--- DB-level enforcement/backstop - lockOutboxDedupKey is what normally keeps it from ever being hit.
+-- DB-level enforcement/backstop - lockTransactionWithKey is what normally keeps it from ever being hit.
 CREATE UNIQUE INDEX "bloomreach_outbox_customers_pending_key"
     ON "BloomreachOutbox" ("externalId")
     WHERE "commandName" = 'customers' AND "status" = 'PENDING';
@@ -120,7 +120,7 @@ CREATE UNIQUE INDEX "bloomreach_outbox_events_pending_key"
 -- isn't two mechanisms redundantly enforcing the same insert; it's the one that runs first, replacing what would
 -- otherwise be a bare, ambiguous unique-constraint violation. The index remains the actual backstop (this check has no
 -- comparable atomicity guarantee on its own). The only real added cost is this trigger's own lookup running once per
--- insert attempt, successful or not. Firing at all always means lockOutboxDedupKey failed to prevent a race - alert.
+-- insert attempt, successful or not. Firing at all always means lockTransactionWithKey failed to prevent a race - alert.
 --
 -- Empirical note (verified against a real Postgres instance, Prisma 7.8.0 + @prisma/adapter-pg, by disabling this
 --  trigger so the index below caused Prisma to raise P2002 directly):
@@ -144,7 +144,7 @@ BEGIN
              AND "commandName" = 'customers'
              AND "status" = 'PENDING') THEN
         RAISE EXCEPTION
-            'Duplicate PENDING customers command for external id % - lockOutboxDedupKey should have prevented this',
+            'Duplicate PENDING customers command for external id % - lockTransactionWithKey should have prevented this',
             new."externalId"
             USING ERRCODE = 'BR004';
     END IF;
@@ -164,7 +164,7 @@ EXECUTE FUNCTION bloomreach_outbox_prevent_duplicate_pending_customer();
 -- Diagnostic only, not additional enforcement - see bloomreach_outbox_prevent_duplicate_pending_customer above for why
 -- running before the unique index isn't wasted duplicate work. Mirrors the events pending-key index so a violation
 -- raises BR005 instead of an ambiguous unique-constraint error.
--- Firing at all always means lockOutboxDedupKey failed - alert.
+-- Firing at all always means lockTransactionWithKey failed - alert.
 --
 -- Empirical note (same test session as the customer trigger's note above, same method - disabling this trigger and
 -- letting the events pending-key index raise P2002 directly): the resulting
@@ -192,7 +192,7 @@ BEGIN
              AND "commandData" -> 'properties' ->> 'category'
                      = new."commandData" -> 'properties' ->> 'category') THEN
         RAISE EXCEPTION
-            'Duplicate PENDING customers/events command for external id % - lockOutboxDedupKey should have prevented this',
+            'Duplicate PENDING customers/events command for external id % - lockTransactionWithKey should have prevented this',
             new."externalId"
             USING ERRCODE = 'BR005';
     END IF;

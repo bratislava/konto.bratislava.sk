@@ -19,7 +19,7 @@ import {
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
 import { isAnonymizationCommand, mergeCustomerCommandData } from './utils/merge-commands.utils'
 import { isTerminalDowngradeError } from './utils/outbox-errors.utils'
-import { lockOutboxDedupKey, runSingleFlight } from './utils/outbox-lock.utils'
+import { lockOutboxDedupKey, runWithAdvisoryLock } from './utils/outbox-lock.utils'
 
 const BATCH_SIZE = 50
 const MAX_ATTEMPTS = 5
@@ -49,7 +49,7 @@ export class BloomreachOutboxProcessor {
       return
     }
 
-    await runSingleFlight(this.prisma, PROCESSOR_LOCK_KEY, async () => this.processBatch())
+    await runWithAdvisoryLock(this.prisma, PROCESSOR_LOCK_KEY, async () => this.processBatch())
   }
 
   private async processBatch(): Promise<void> {

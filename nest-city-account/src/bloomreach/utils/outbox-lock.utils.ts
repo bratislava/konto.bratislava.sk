@@ -10,7 +10,7 @@ export async function lockOutboxDedupKey(
   await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${key}))`
 }
 
-export async function runSingleFlight(
+export async function runWithAdvisoryLock(
   prisma: PrismaService,
   key: string,
   fn: () => Promise<void>

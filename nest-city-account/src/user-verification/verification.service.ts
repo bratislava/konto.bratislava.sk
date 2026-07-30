@@ -9,6 +9,7 @@ import ApiJwtTokensService from '../api-jwt-tokens/api-jwt-tokens.service'
 import { getBloomreachContactDatabase } from '../bloomreach/contact-database/bloomreach-contact-database.provider'
 import { BloomreachContactDatabaseService } from '../bloomreach/contact-database/bloomreach-contact-database.service'
 import { BloomreachOutboxService } from '../bloomreach/bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from '../bloomreach/bloomreach-outbox-writer.service'
 import { BloomreachPayloadBuilder } from '../bloomreach/bloomreach-payload.builder'
 import getBaConfigInstance from '../config/ba-config.instance'
 import BaConfigService from '../config/ba-config.service'
@@ -154,9 +155,14 @@ export class VerificationService {
           userIdentitySubservice
         )
 
-        const bloomreachOutboxService = new BloomreachOutboxService(
+        const bloomreachOutboxWriterService = new BloomreachOutboxWriterService(
           prismaService,
           bloomreachPayloadBuilder,
+          errorFactoryService,
+          new LineLoggerSubservice(BloomreachOutboxWriterService.name)
+        )
+        const bloomreachOutboxService = new BloomreachOutboxService(
+          bloomreachOutboxWriterService,
           errorFactoryService,
           getBaConfigInstance(),
           new LineLoggerSubservice(BloomreachOutboxService.name)

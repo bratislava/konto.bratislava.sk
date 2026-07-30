@@ -239,7 +239,7 @@ export class BloomreachOutboxWriterService {
     }
     throw this.throwerErrorGuard.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,
-      'bloomreach_outbox_events_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
+      'bloomreach_outbox_events_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
       toLogfmt(context),
       error
     )
@@ -271,7 +271,7 @@ export class BloomreachOutboxWriterService {
     }
     throw this.throwerErrorGuard.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,
-      'bloomreach_outbox_customers_pending_key violated - lockOutboxDedupKey should have prevented this, investigate a locking bug',
+      'bloomreach_outbox_customers_pending_key violated - lockTransactionWithKey should have prevented this, investigate a locking bug',
       toLogfmt({ externalId }),
       error
     )

@@ -23,12 +23,12 @@ export function isTerminalOverrideError(error: unknown): boolean {
   return isBloomreachTriggerError(error, TERMINAL_OVERRIDE_SQLSTATE)
 }
 
-/** Duplicate PENDING customers row - lockOutboxDedupKey should have prevented this. */
+/** Duplicate PENDING customers row - lockTransactionWithKey should have prevented this. */
 export function isDuplicatePendingCustomerError(error: unknown): boolean {
   return isBloomreachTriggerError(error, DUPLICATE_PENDING_CUSTOMER_SQLSTATE)
 }
 
-/** Duplicate PENDING customers/events row - lockOutboxDedupKey should have prevented this. */
+/** Duplicate PENDING customers/events row - lockTransactionWithKey should have prevented this. */
 export function isDuplicatePendingEventError(error: unknown): boolean {
   return isBloomreachTriggerError(error, DUPLICATE_PENDING_EVENT_SQLSTATE)
 }

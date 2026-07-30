@@ -1,5 +1,3 @@
-import { maxBy } from 'lodash'
-
 import { ConsentEnum } from '../../generated/prisma/enums'
 import { BloomreachConsentActionEnum, BloomreachExportedEvent, Consent } from '../bloomreach.types'
 
@@ -7,26 +5,43 @@ export function consentCategory(consentType: ConsentEnum): string {
   return `ESBS-${consentType}`
 }
 
+const CONSENT_TYPE_BY_CATEGORY = new Map<string, ConsentEnum>(
+  Object.values(ConsentEnum).map((consentType) => [consentCategory(consentType), consentType])
+)
+
+export function consentTypeFromCategory(category: string): ConsentEnum | undefined {
+  return CONSENT_TYPE_BY_CATEGORY.get(category)
+}
+
 /**
- * Reduces exported consent events to the latest state per city-account consent
- * category. Categories with no event (never granted nor rejected) are omitted.
+ * Maps exported Bloomreach consent events to (unreduced) Consent records - one
+ * per event, dropping events outside the known city-account categories.
  */
-export function extractLatestCityAccountConsents(events: BloomreachExportedEvent[]): Consent[] {
-  const consents: Consent[] = []
-
-  for (const consentType of Object.values(ConsentEnum)) {
-    const category = consentCategory(consentType)
-    const eventsInCategory = events.filter((event) => event.properties.category === category)
-    const latest = maxBy(eventsInCategory, 'timestamp')
-
-    if (latest) {
-      consents.push({
+export function eventsToConsents(events: BloomreachExportedEvent[]): Consent[] {
+  return events.flatMap((event) => {
+    const consentType = consentTypeFromCategory(event.properties.category as string)
+    if (!consentType) {
+      return []
+    }
+    return [
+      {
         consentType,
-        isGranted: latest.properties.action === BloomreachConsentActionEnum.ACCEPT.toString(),
-        timestamp: latest.timestamp,
-      })
+        isGranted: event.properties.action === BloomreachConsentActionEnum.ACCEPT.toString(),
+        timestamp: event.timestamp,
+      },
+    ]
+  })
+}
+
+export function extractLatestCityAccountConsents(consents: Consent[]): Consent[] {
+  const latestByType = new Map<ConsentEnum, Consent>()
+
+  for (const consent of consents) {
+    const current = latestByType.get(consent.consentType)
+    if (!current || (consent.timestamp ?? 0) > (current.timestamp ?? 0)) {
+      latestByType.set(consent.consentType, consent)
     }
   }
 
-  return consents
+  return [...latestByType.values()]
 }

@@ -19,7 +19,7 @@ import {
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
 import { isAnonymizationCommand, mergeCustomerCommandData } from './utils/merge-commands.utils'
 import { isTerminalDowngradeError } from './utils/outbox-errors.utils'
-import { lockOutboxDedupKey, runWithAdvisoryLock } from './utils/outbox-lock.utils'
+import { lockTransactionWithKey, runWithAdvisoryLock } from './utils/outbox-lock.utils'
 
 const BATCH_SIZE = 50
 const MAX_ATTEMPTS = 5
@@ -298,7 +298,7 @@ export class BloomreachOutboxProcessor {
           : [entry.externalId, BloomreachCommandName.CUSTOMERS]
 
         await this.prisma.$transaction(async (tx) => {
-          await lockOutboxDedupKey(tx, ...lockKeyParts)
+          await lockTransactionWithKey(tx, ...lockKeyParts)
 
           const newer = await tx.bloomreachOutbox.findFirst({ where })
 

@@ -5,7 +5,6 @@ import {
   FileStatusType,
   UploadClientErrorReasonType,
 } from 'forms-shared/form-files/fileStatus'
-import flatten from 'lodash/flatten'
 import { extensions } from 'mime-types'
 import {
   GetFileResponseReducedDto,
@@ -135,12 +134,12 @@ const customMimeExtensions: Record<string, string[]> = {
  * The list must be filtered first, as some mimetypes (e.g. application/x-zip-compressed) supported
  * by BE are not present in this library, however are duplicates of other mimetypes (e.g. application/zip).
  */
-const supportedFileExtensions = flatten(
-  environment.formsMimetypes
-    .map((format) => extensions[format] ?? customMimeExtensions[format])
-    .filter(isDefined)
-    .map((extensionsList) => extensionsList.map((ext) => `.${ext}`)),
-).filter((extension) => !excludedFileExtensions.has(extension))
+const supportedFileExtensions = environment.formsMimetypes
+  .map((format) => extensions[format] ?? customMimeExtensions[format])
+  .filter(isDefined)
+  .map((extensionsList) => extensionsList.map((ext) => `.${ext}`))
+  .flat()
+  .filter((extension) => !excludedFileExtensions.has(extension))
 
 /**
  * Returns an overlap of globally supported file extensions and the file extensions defined in the field if provided.

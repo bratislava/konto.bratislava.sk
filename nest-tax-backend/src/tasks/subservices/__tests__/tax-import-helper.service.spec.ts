@@ -83,96 +83,61 @@ describe('TaxImportHelperService', () => {
       ])
     })
 
-    it('should return false when current time is before the window', async () => {
-      // Set time to 6:00 in Bratislava (before 7:00 start)
-      // 6:00 CET = 5:00 UTC
-      jest.setSystemTime(new Date('2025-01-15T05:00:00.000Z'))
+    it.each([
+      {
+        scenario: 'before the window',
+        // Set time to 6:00 in Bratislava (before 7:00 start)
+        // 6:00 CET = 5:00 UTC
+        now: '2025-01-15T05:00:00.000Z',
+        expected: false,
+      },
+      {
+        scenario: 'after the window',
+        // Set time to 21:00 in Bratislava (after 20:00 end)
+        // 21:00 CET = 20:00 UTC
+        now: '2025-01-15T20:00:00.000Z',
+        expected: false,
+      },
+      {
+        scenario: 'exactly at start hour',
+        // Set time to 7:00 in Bratislava (exactly at start)
+        // 7:00 CET = 6:00 UTC
+        now: '2025-01-15T06:00:00.000Z',
+        expected: true,
+      },
+      {
+        scenario: 'exactly at end hour',
+        // Set time to 20:00 in Bratislava (exactly at end, should be excluded)
+        // 20:00 CET = 19:00 UTC
+        now: '2025-01-15T19:00:00.000Z',
+        expected: false,
+      },
+      {
+        scenario: 'within the window in summer time (CEST)',
+        // Set time to 12:00 in Bratislava during summer (CEST, UTC+2)
+        // 12:00 CEST = 10:00 UTC
+        // Using a date in July (summer time)
+        now: '2025-07-15T10:00:00.000Z',
+        expected: true,
+      },
+    ])(
+      'should return $expected when current time is $scenario',
+      async ({ now, expected }) => {
+        jest.setSystemTime(new Date(now))
 
-      const mockConfig = {
-        TAX_IMPORT_WINDOW_START_HOUR: '7',
-        TAX_IMPORT_WINDOW_END_HOUR: '20',
-      }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
+        const mockConfig = {
+          TAX_IMPORT_WINDOW_START_HOUR: '7',
+          TAX_IMPORT_WINDOW_END_HOUR: '20',
+        }
+        jest
+          .spyOn(databaseSubservice, 'getConfigByKeys')
+          .mockResolvedValue(mockConfig)
 
-      const result = await service.isWithinImportWindow()
+        const result = await service.isWithinImportWindow()
 
-      expect(result).toBe(false)
-    })
-
-    it('should return false when current time is after the window', async () => {
-      // Set time to 21:00 in Bratislava (after 20:00 end)
-      // 21:00 CET = 20:00 UTC
-      jest.setSystemTime(new Date('2025-01-15T20:00:00.000Z'))
-
-      const mockConfig = {
-        TAX_IMPORT_WINDOW_START_HOUR: '7',
-        TAX_IMPORT_WINDOW_END_HOUR: '20',
-      }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
-
-      const result = await service.isWithinImportWindow()
-
-      expect(result).toBe(false)
-    })
-
-    it('should return true when current time is exactly at start hour', async () => {
-      // Set time to 7:00 in Bratislava (exactly at start)
-      // 7:00 CET = 6:00 UTC
-      jest.setSystemTime(new Date('2025-01-15T06:00:00.000Z'))
-
-      const mockConfig = {
-        TAX_IMPORT_WINDOW_START_HOUR: '7',
-        TAX_IMPORT_WINDOW_END_HOUR: '20',
-      }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
-
-      const result = await service.isWithinImportWindow()
-
-      expect(result).toBe(true)
-    })
-
-    it('should return false when current time is exactly at end hour', async () => {
-      // Set time to 20:00 in Bratislava (exactly at end, should be excluded)
-      // 20:00 CET = 19:00 UTC
-      jest.setSystemTime(new Date('2025-01-15T19:00:00.000Z'))
-
-      const mockConfig = {
-        TAX_IMPORT_WINDOW_START_HOUR: '7',
-        TAX_IMPORT_WINDOW_END_HOUR: '20',
-      }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
-
-      const result = await service.isWithinImportWindow()
-
-      expect(result).toBe(false)
-    })
-
-    it('should handle summer time (CEST) correctly', async () => {
-      // Set time to 12:00 in Bratislava during summer (CEST, UTC+2)
-      // 12:00 CEST = 10:00 UTC
-      // Using a date in July (summer time)
-      jest.setSystemTime(new Date('2025-07-15T10:00:00.000Z'))
-
-      const mockConfig = {
-        TAX_IMPORT_WINDOW_START_HOUR: '7',
-        TAX_IMPORT_WINDOW_END_HOUR: '20',
-      }
-      jest
-        .spyOn(databaseSubservice, 'getConfigByKeys')
-        .mockResolvedValue(mockConfig)
-
-      const result = await service.isWithinImportWindow()
-
-      expect(result).toBe(true)
-    })
+        expect(result).toBe(expected)
+      },
+    )
 
     it('should propagate error when getConfigByKeys fails', async () => {
       jest.setSystemTime(new Date('2025-01-15T11:00:00.000Z'))

@@ -31,7 +31,7 @@ function compare({
   field: string
   actual: unknown
   expected: unknown
-}): void {
+}) {
   // Key order in package.json is irrelevant, and structural comparison ignores it.
   if (isDeepStrictEqual(actual, expected)) {
     return
@@ -45,7 +45,7 @@ function compare({
   })
 }
 
-async function main(): Promise<void> {
+async function main() {
   const versions = await readToolchainVersions()
 
   const targets = [

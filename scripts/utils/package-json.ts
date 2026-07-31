@@ -17,7 +17,7 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-export async function readPackageJson(packageJsonPath: string): Promise<PackageJson> {
+export async function readPackageJson(packageJsonPath: string) {
   const contents = await readFile(packageJsonPath, 'utf8')
 
   try {

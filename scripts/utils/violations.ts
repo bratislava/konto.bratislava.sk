@@ -13,7 +13,7 @@ export function reportViolations<Violation>({
   successMessage: string
   failureHeading: string
   formatViolation: (violation: Violation) => string
-}): void {
+}) {
   if (violations.length === 0) {
     console.log(successMessage)
     return

@@ -10,7 +10,7 @@ import { pnpmWorkspaceYamlPath } from './repository-paths.ts'
  * instead of from a workspace package.json, which only holds the `catalog:`
  * placeholder.
  */
-export async function readCatalogVersions(): Promise<Record<string, string>> {
+export async function readCatalogVersions() {
   const contents = await readFile(pnpmWorkspaceYamlPath, 'utf8')
   const workspace: unknown = parse(contents)
 
@@ -24,13 +24,14 @@ export async function readCatalogVersions(): Promise<Record<string, string>> {
     throw new Error(`Missing "catalog" entries in ${pnpmWorkspaceYamlPath}.`)
   }
 
-  // An unquoted entry such as `1.2` parses as a number rather than a string.
+  // An unquoted entry such as `1.2` parses as a number rather than a string. The
+  // tuple keeps the inferred return type a `Record<string, string>`.
   return Object.fromEntries(
-    Object.entries(catalog).map(([packageName, version]) => [packageName, String(version)]),
+    Object.entries(catalog).map(([packageName, version]) => [packageName, String(version)] as const),
   )
 }
 
-export async function readCatalogVersion(packageName: string): Promise<string> {
+export async function readCatalogVersion(packageName: string) {
   const versions = await readCatalogVersions()
   const version = versions[packageName]
 

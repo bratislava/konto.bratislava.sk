@@ -34,7 +34,7 @@ const allowedNonSemverPrefixes = [
   '../',
 ]
 
-function isAllowedDependencyVersion(value: unknown): boolean {
+function isAllowedDependencyVersion(value: unknown) {
   if (typeof value !== 'string') {
     return false
   }
@@ -46,11 +46,11 @@ function isAllowedDependencyVersion(value: unknown): boolean {
   return isExactVersion(value)
 }
 
-function formatVersion(version: unknown): string {
+function formatVersion(version: unknown) {
   return typeof version === 'string' ? version : JSON.stringify(version)
 }
 
-async function main(): Promise<void> {
+async function main() {
   const packageJsonPaths = [rootPackageJsonPath, ...(await readWorkspacePackageJsonPaths())]
   const violations: Violation[] = []
 

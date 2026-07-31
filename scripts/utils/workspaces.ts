@@ -6,12 +6,14 @@ import { repositoryPath, rootPackageJsonPath } from './repository-paths.ts'
  * iterates over. Glob patterns are rejected rather than silently skipped,
  * otherwise a workspace could quietly escape verification.
  */
-export async function readWorkspaceDirectories(): Promise<string[]> {
+export async function readWorkspaceDirectories() {
   const { workspaces } = await readPackageJson(rootPackageJsonPath)
 
   if (!Array.isArray(workspaces) || workspaces.length === 0) {
     throw new Error(`Missing "workspaces" array in ${rootPackageJsonPath}.`)
   }
+
+  const directories: string[] = []
 
   for (const workspace of workspaces) {
     if (typeof workspace !== 'string' || workspace === '') {
@@ -25,12 +27,14 @@ export async function readWorkspaceDirectories(): Promise<string[]> {
         `Glob workspace patterns are not supported by this script: "${workspace}" in ${rootPackageJsonPath}.`,
       )
     }
+
+    directories.push(workspace)
   }
 
-  return workspaces
+  return directories
 }
 
-export async function readWorkspacePackageJsonPaths(): Promise<string[]> {
+export async function readWorkspacePackageJsonPaths() {
   const directories = await readWorkspaceDirectories()
 
   return directories.map((directory) => repositoryPath(directory, 'package.json'))

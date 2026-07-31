@@ -12,22 +12,7 @@ export type ToolchainVersions = {
   turboVersion: string
 }
 
-export type DevEngine = {
-  name: string
-  version: string
-  onFail: string
-}
-
-export type DevEngines = {
-  runtime: DevEngine
-  packageManager: DevEngine
-}
-
-function readDevEngineVersion(
-  packageJson: PackageJson,
-  sectionName: string,
-  expectedName: string,
-): string {
+function readDevEngineVersion(packageJson: PackageJson, sectionName: string, expectedName: string) {
   const section = packageJson.devEngines?.[sectionName]
 
   if (!isRecord(section)) {
@@ -54,7 +39,7 @@ function readDevEngineVersion(
  * workspace package.json and every Dockerfile derives its versions from here,
  * so bumping Node, pnpm or turbo is a one-line change in one file.
  */
-export async function readToolchainVersions(): Promise<ToolchainVersions> {
+export async function readToolchainVersions() {
   const packageJson = await readPackageJson(rootPackageJsonPath)
 
   const nodeVersion = readDevEngineVersion(packageJson, 'runtime', runtimeName)
@@ -72,7 +57,7 @@ export async function readToolchainVersions(): Promise<ToolchainVersions> {
   return { nodeVersion, pnpmVersion, turboVersion }
 }
 
-export function expectedDevEngines({ nodeVersion, pnpmVersion }: ToolchainVersions): DevEngines {
+export function expectedDevEngines({ nodeVersion, pnpmVersion }: ToolchainVersions) {
   return {
     runtime: {
       name: runtimeName,
@@ -87,7 +72,7 @@ export function expectedDevEngines({ nodeVersion, pnpmVersion }: ToolchainVersio
   }
 }
 
-export function expectedPackageManager({ pnpmVersion }: ToolchainVersions): string {
+export function expectedPackageManager({ pnpmVersion }: ToolchainVersions) {
   return `${packageManagerName}@${pnpmVersion}`
 }
 

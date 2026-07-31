@@ -8,6 +8,7 @@
     "types": [
       "node"
     ],
+    "noUncheckedIndexedAccess": true,
     "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true

@@ -8,7 +8,7 @@ import { readToolchainVersions } from './utils/toolchain-versions.ts'
  * package.json and the pnpm catalog the only places where the versions are
  * written down.
  */
-async function main(): Promise<void> {
+async function main() {
   const { nodeVersion, pnpmVersion, turboVersion } = await readToolchainVersions()
   const playwrightVersion = await readCatalogVersion('playwright')
 

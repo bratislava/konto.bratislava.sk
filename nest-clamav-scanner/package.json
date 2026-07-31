@@ -99,19 +99,6 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-  "packageManager": "pnpm@11.17.0",
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "24.18.0",
-      "onFail": "error"
-    },
-    "packageManager": {
-      "name": "pnpm",
-      "version": "11.17.0",
-      "onFail": "error"
-    }
-  },
   "volta": {
     "extends": "../package.json"
   }

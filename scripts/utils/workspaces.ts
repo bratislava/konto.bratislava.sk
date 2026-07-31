@@ -1,12 +1,12 @@
-import { readPackageJson } from './package-json.mjs'
-import { repositoryPath, rootPackageJsonPath } from './repository-paths.mjs'
+import { readPackageJson } from './package-json.ts'
+import { repositoryPath, rootPackageJsonPath } from './repository-paths.ts'
 
 /**
  * The `workspaces` array in the root package.json is the list every script
  * iterates over. Glob patterns are rejected rather than silently skipped,
  * otherwise a workspace could quietly escape verification.
  */
-export async function readWorkspaceDirectories() {
+export async function readWorkspaceDirectories(): Promise<string[]> {
   const { workspaces } = await readPackageJson(rootPackageJsonPath)
 
   if (!Array.isArray(workspaces) || workspaces.length === 0) {
@@ -30,7 +30,7 @@ export async function readWorkspaceDirectories() {
   return workspaces
 }
 
-export async function readWorkspacePackageJsonPaths() {
+export async function readWorkspacePackageJsonPaths(): Promise<string[]> {
   const directories = await readWorkspaceDirectories()
 
   return directories.map((directory) => repositoryPath(directory, 'package.json'))

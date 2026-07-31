@@ -1,27 +1,48 @@
-import { isExactVersion } from './exact-version.mjs'
-import { readPackageJson } from './package-json.mjs'
-import { rootPackageJsonPath } from './repository-paths.mjs'
+import { isExactVersion } from './exact-version.ts'
+import { isRecord, readPackageJson, type PackageJson } from './package-json.ts'
+import { rootPackageJsonPath } from './repository-paths.ts'
 
 export const runtimeName = 'node'
 export const packageManagerName = 'pnpm'
 export const onFail = 'error'
 
-function readDevEngineVersion(packageJson, sectionName, expectedName) {
+export type ToolchainVersions = {
+  nodeVersion: string
+  pnpmVersion: string
+  turboVersion: string
+}
+
+export type DevEngine = {
+  name: string
+  version: string
+  onFail: string
+}
+
+export type DevEngines = {
+  runtime: DevEngine
+  packageManager: DevEngine
+}
+
+function readDevEngineVersion(
+  packageJson: PackageJson,
+  sectionName: string,
+  expectedName: string,
+): string {
   const section = packageJson.devEngines?.[sectionName]
 
-  if (!section || typeof section !== 'object') {
+  if (!isRecord(section)) {
     throw new Error(`Missing "devEngines.${sectionName}" in ${rootPackageJsonPath}.`)
   }
 
   if (section.name !== expectedName) {
     throw new Error(
-      `Expected "devEngines.${sectionName}.name" to be "${expectedName}" in ${rootPackageJsonPath}, found "${section.name}".`,
+      `Expected "devEngines.${sectionName}.name" to be "${expectedName}" in ${rootPackageJsonPath}, found "${String(section.name)}".`,
     )
   }
 
   if (!isExactVersion(section.version)) {
     throw new Error(
-      `Expected "devEngines.${sectionName}.version" to be an exact version in ${rootPackageJsonPath}, found "${section.version}".`,
+      `Expected "devEngines.${sectionName}.version" to be an exact version in ${rootPackageJsonPath}, found "${String(section.version)}".`,
     )
   }
 
@@ -33,23 +54,25 @@ function readDevEngineVersion(packageJson, sectionName, expectedName) {
  * workspace package.json and every Dockerfile derives its versions from here,
  * so bumping Node, pnpm or turbo is a one-line change in one file.
  */
-export async function readToolchainVersions() {
+export async function readToolchainVersions(): Promise<ToolchainVersions> {
   const packageJson = await readPackageJson(rootPackageJsonPath)
 
   const nodeVersion = readDevEngineVersion(packageJson, 'runtime', runtimeName)
   const pnpmVersion = readDevEngineVersion(packageJson, 'packageManager', packageManagerName)
-  const turboVersion = packageJson.devDependencies?.turbo
+  const turboVersion = isRecord(packageJson.devDependencies)
+    ? packageJson.devDependencies.turbo
+    : undefined
 
   if (!isExactVersion(turboVersion)) {
     throw new Error(
-      `Expected "devDependencies.turbo" to be an exact version in ${rootPackageJsonPath}, found "${turboVersion}".`,
+      `Expected "devDependencies.turbo" to be an exact version in ${rootPackageJsonPath}, found "${String(turboVersion)}".`,
     )
   }
 
   return { nodeVersion, pnpmVersion, turboVersion }
 }
 
-export function expectedDevEngines({ nodeVersion, pnpmVersion }) {
+export function expectedDevEngines({ nodeVersion, pnpmVersion }: ToolchainVersions): DevEngines {
   return {
     runtime: {
       name: runtimeName,
@@ -64,11 +87,11 @@ export function expectedDevEngines({ nodeVersion, pnpmVersion }) {
   }
 }
 
-export function expectedPackageManager({ pnpmVersion }) {
+export function expectedPackageManager({ pnpmVersion }: ToolchainVersions): string {
   return `${packageManagerName}@${pnpmVersion}`
 }
 
-export function expectedRootVolta({ nodeVersion, pnpmVersion }) {
+export function expectedRootVolta({ nodeVersion, pnpmVersion }: ToolchainVersions) {
   return {
     [runtimeName]: nodeVersion,
     [packageManagerName]: pnpmVersion,

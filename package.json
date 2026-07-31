@@ -22,6 +22,7 @@
     "nest-tax-backend",
     "openapi-clients",
     "next",
+    "scripts",
     "strapi",
     "tests"
   ],

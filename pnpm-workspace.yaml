@@ -27,6 +27,7 @@ packages:
   - nest-tax-backend
   - openapi-clients
   - next
+  - scripts
   - strapi
   - tests
 # `ssh2` (via `ssh2-sftp-client` in nest-tax-backend) compiles two optional

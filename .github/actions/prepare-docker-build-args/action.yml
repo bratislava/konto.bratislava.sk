@@ -23,9 +23,18 @@ runs:
       with:
         node-version-file: package.json
 
+    - name: Use pnpm and install dependencies
+      uses: pnpm/action-setup@v6
+      with:
+        cache: true
+        run_install: |
+          - args:
+              - --frozen-lockfile
+              - --filter=repository-scripts
+
     - name: Read build arg versions
       id: build-args
       shell: bash
       run: |
         set -euo pipefail
-        node ./scripts/print-docker-build-args.mjs >> "$GITHUB_OUTPUT"
+        node ./scripts/print-docker-build-args.ts >> "$GITHUB_OUTPUT"

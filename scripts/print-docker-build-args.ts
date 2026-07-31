@@ -1,5 +1,5 @@
-import { readCatalogVersion } from './utils/catalog-versions.mjs'
-import { readToolchainVersions } from './utils/toolchain-versions.mjs'
+import { readCatalogVersion } from './utils/catalog-versions.ts'
+import { readToolchainVersions } from './utils/toolchain-versions.ts'
 
 /**
  * Prints the Docker build args as `KEY=value` lines, so they can be appended to
@@ -8,7 +8,7 @@ import { readToolchainVersions } from './utils/toolchain-versions.mjs'
  * package.json and the pnpm catalog the only places where the versions are
  * written down.
  */
-async function main() {
+async function main(): Promise<void> {
   const { nodeVersion, pnpmVersion, turboVersion } = await readToolchainVersions()
   const playwrightVersion = await readCatalogVersion('playwright')
 

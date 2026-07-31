@@ -5,11 +5,11 @@ import { fileURLToPath } from 'node:url'
 // matter which directory they are invoked from.
 export const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 
-export function repositoryPath(...segments) {
+export function repositoryPath(...segments: string[]): string {
   return path.join(repositoryRoot, ...segments)
 }
 
-export function relativeToRepositoryRoot(absolutePath) {
+export function relativeToRepositoryRoot(absolutePath: string): string {
   return path.relative(repositoryRoot, absolutePath)
 }
 

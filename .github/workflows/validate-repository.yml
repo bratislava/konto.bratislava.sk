@@ -7,25 +7,8 @@ permissions:
   contents: read
 
 jobs:
-  #  exact-package-versions:
-  #    name: Verify exact package versions
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: Checkout code
-  #        uses: actions/checkout@v6
-  #        with:
-  #          fetch-depth: 1
-  #
-  #      - name: Set up Node.js
-  #        uses: actions/setup-node@v7
-  #        with:
-  #          node-version-file: package.json
-  #
-  #      - name: Verify exact package versions
-  #        run: node ./scripts/verify-exact-package-versions.mjs
-
-  toolchain-versions:
-    name: Verify toolchain versions
+  verify-versions:
+    name: Verify versions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -38,5 +21,20 @@ jobs:
         with:
           node-version-file: package.json
 
+      - name: Use pnpm and install dependencies
+        uses: pnpm/action-setup@v6
+        with:
+          cache: true
+          run_install: |
+            - args:
+                - --frozen-lockfile
+                - --filter=repository-scripts
+
+      - name: Typecheck scripts
+        run: pnpm --filter=repository-scripts run typecheck
+
       - name: Verify toolchain versions
-        run: node ./scripts/verify-toolchain-versions.mjs
+        run: node ./scripts/verify-toolchain-versions.ts
+
+      - name: Verify exact package versions
+        run: node ./scripts/verify-exact-package-versions.ts

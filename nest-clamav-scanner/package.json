@@ -76,7 +76,8 @@
   },
   "overrides": {
     "typescript-eslint": "8.62.1",
-    "@typescript-eslint/parser": "8.62.1"
+    "@typescript-eslint/parser": "8.62.1",
+    "eslint-plugin-sonarjs": "4.2.0"
   },
   "jest": {
     "moduleFileExtensions": [

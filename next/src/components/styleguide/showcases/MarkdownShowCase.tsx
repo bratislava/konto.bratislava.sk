@@ -18,7 +18,7 @@ const markdownShowcaseTabs = [
   { id: 'form-markdown', label: 'FormMarkdown' },
 ] as const
 
-const markdownVariants: { id: string; label: string; variant?: MarkdownProps['variant'] }[] = [
+const markdownVariants: { id: string; label: string; variant: MarkdownProps['variant'] }[] = [
   { id: 'small', label: 'Small', variant: 'small' },
   { id: 'default', label: 'Default', variant: 'default' },
   { id: 'accordion', label: 'Accordion', variant: 'accordion' },

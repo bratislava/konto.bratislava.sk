@@ -192,24 +192,20 @@ describe('VerificationSubservice', () => {
       expect(service['validatePersonName'](rfoData, '  Ján  ', '  Novák  ')).toBe(true)
     })
 
-    it('should not match when diacritics differ', () => {
+    it.each([
+      { scenario: 'diacritics differ in the first name', firstName: 'Jan', lastName: 'Novák' },
+      { scenario: 'diacritics differ in the last name', firstName: 'Ján', lastName: 'Novak' },
+      { scenario: 'letter case differs in the first name', firstName: 'ján', lastName: 'Novák' },
+      { scenario: 'letter case differs in the last name', firstName: 'Ján', lastName: 'NOVÁK' },
+      { scenario: 'the first name does not match', firstName: 'Peter', lastName: 'Novák' },
+      { scenario: 'the last name does not match', firstName: 'Ján', lastName: 'Horváth' },
+    ])('should not match when $scenario', ({ firstName, lastName }) => {
       const rfoData: RfoIdentityListElement = {
         menaOsoby: [{ meno: 'Ján' }],
         priezviskaOsoby: [{ meno: 'Novák' }],
       }
 
-      expect(service['validatePersonName'](rfoData, 'Jan', 'Novák')).toBe(false)
-      expect(service['validatePersonName'](rfoData, 'Ján', 'Novak')).toBe(false)
-    })
-
-    it('should not match when letter case differs', () => {
-      const rfoData: RfoIdentityListElement = {
-        menaOsoby: [{ meno: 'Ján' }],
-        priezviskaOsoby: [{ meno: 'Novák' }],
-      }
-
-      expect(service['validatePersonName'](rfoData, 'ján', 'Novák')).toBe(false)
-      expect(service['validatePersonName'](rfoData, 'Ján', 'NOVÁK')).toBe(false)
+      expect(service['validatePersonName'](rfoData, firstName, lastName)).toBe(false)
     })
 
     it('should support multiple first names and multiple last names (all parts must match)', () => {
@@ -241,16 +237,6 @@ describe('VerificationSubservice', () => {
       }
 
       expect(service['validatePersonName'](rfoData, 'Ján', 'Novák')).toBe(false)
-    })
-
-    it('should return false when the provided names do not match RFO', () => {
-      const rfoData: RfoIdentityListElement = {
-        menaOsoby: [{ meno: 'Ján' }],
-        priezviskaOsoby: [{ meno: 'Novák' }],
-      }
-
-      expect(service['validatePersonName'](rfoData, 'Peter', 'Novák')).toBe(false)
-      expect(service['validatePersonName'](rfoData, 'Ján', 'Horváth')).toBe(false)
     })
 
     it('should not depend on the order of names in RFO lists (order-insensitive)', () => {
@@ -321,16 +307,6 @@ describe('VerificationSubservice', () => {
       }
 
       expect(service['validatePersonName'](rfoData, 'Ján', 'Novák')).toBe(false)
-    })
-
-    it('should return false if any provided name part is missing in RFO (multi-name input)', () => {
-      const rfoData: RfoIdentityListElement = {
-        menaOsoby: [{ meno: 'Ján' }], // Peter missing
-        priezviskaOsoby: [{ meno: 'Novák' }, { meno: 'Horváth' }],
-      }
-
-      expect(service['validatePersonName'](rfoData, 'Ján Peter', 'Novák')).toBe(false)
-      expect(service['validatePersonName'](rfoData, 'Ján', 'Novák Horváth Svoboda')).toBe(false)
     })
   })
 })

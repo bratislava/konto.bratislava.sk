@@ -30,6 +30,7 @@ export const mockConfigService = {
       MSSQL_DB: 'test_db',
       MSSQL_USERNAME: 'test_user',
 
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- mock env value for tests, not a real credential
       MSSQL_PASSWORD: 'test_password',
     }
     return mockEnvs[key] || 'default_value'

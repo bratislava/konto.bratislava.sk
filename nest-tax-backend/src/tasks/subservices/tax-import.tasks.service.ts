@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
-import _ from 'lodash'
+import groupBy from 'lodash/groupBy'
 
 import { Prisma, TaxType } from '../../generated/prisma/client'
 import { CustomErrorNorisTypesEnum } from '../../noris/noris.errors'
@@ -232,7 +232,7 @@ export default class TaxImportTasksService {
     }
 
     // Group by year and taxType to batch the import calls
-    const grouped = _.groupBy(
+    const grouped = groupBy(
       missingTaxAttempts,
       (item) => `${item.year}-${item.taxType}`,
     )

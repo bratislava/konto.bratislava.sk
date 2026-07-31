@@ -92,7 +92,7 @@ describe('DeliveryMethodCodec', () => {
 
       allNorisValues.forEach((norisValue) => {
         const encoded = DeliveryMethodCodec.encode(norisValue)
-        expect(encoded).not.toBe(null)
+        expect(encoded).not.toBeNull()
         expect(Object.values(DeliveryMethodEnum)).toContain(encoded)
       })
     })
@@ -117,19 +117,19 @@ describe('DeliveryMethodCodec', () => {
       }).toThrow()
     })
 
-    it('should throw when decoding empty string', () => {
+    it('should throw when encoding empty string', () => {
       expect(() => {
         DeliveryMethodCodec.encode('' as DeliveryMethod)
       }).toThrow()
     })
 
-    it('should throw when decoding numeric input', () => {
+    it('should throw when encoding numeric input', () => {
       expect(() => {
         DeliveryMethodCodec.encode(123 as unknown as DeliveryMethod)
       }).toThrow()
     })
 
-    it('should throw when decoding object input', () => {
+    it('should throw when encoding object input', () => {
       expect(() => {
         DeliveryMethodCodec.encode({} as DeliveryMethod)
       }).toThrow()

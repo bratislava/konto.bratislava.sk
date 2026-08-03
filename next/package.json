@@ -115,7 +115,7 @@
     "yet-another-react-lightbox": "3.32.0"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-next": "0.14.0",
+    "@bratislava/eslint-config-next": "0.19.1",
     "@graphql-codegen/cli": "6.3.0",
     "@graphql-codegen/client-preset": "5.3.0",
     "@graphql-codegen/typescript-graphql-request": "7.0.0",

@@ -33,12 +33,14 @@ const createMockBaConfigService = () => ({
       key: 'mock-value',
       signCert: 'mock-value',
       merchantNumber: '12345',
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- mock config value for tests, not a real credential
       passphrase: 'mock-value',
     },
     [TaxType.KO]: {
       key: 'mock-value',
       signCert: 'mock-value',
       merchantNumber: '12345',
+      // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- mock config value for tests, not a real credential
       passphrase: 'mock-value',
     },
   },
@@ -790,42 +792,40 @@ describe('PaymentService', () => {
       expect(resultKO).toBe('https://example.com/payment/response/KO')
     })
 
-    it('should handle base URL with query parameters', () => {
-      baConfigService.paygate.redirectUrl =
-        'https://example.com/payment/response?param=value'
+    it.each([
+      {
+        scenario: 'with query parameters',
+        redirectUrl: 'https://example.com/payment/response?param=value',
+        taxType: TaxType.DZN,
+        expected: 'https://example.com/payment/response/DZN',
+      },
+      {
+        scenario: 'with hash',
+        redirectUrl: 'https://example.com/payment/response#section',
+        taxType: TaxType.DZN,
+        expected: 'https://example.com/payment/response/DZN',
+      },
+      {
+        scenario: 'with port number',
+        redirectUrl: 'http://payments.example.com:8080/payment/response',
+        taxType: TaxType.KO,
+        expected: 'http://payments.example.com:8080/payment/response/KO',
+      },
+      {
+        scenario: 'ending with multiple slashes',
+        redirectUrl: 'https://example.com/payment/response//',
+        taxType: TaxType.DZN,
+        expected: 'https://example.com/payment/response//DZN',
+      },
+    ])(
+      'should handle base URL $scenario',
+      ({ redirectUrl, taxType, expected }) => {
+        baConfigService.paygate.redirectUrl = redirectUrl
 
-      const result = service['getRedirectUrl'](TaxType.DZN)
+        const result = service['getRedirectUrl'](taxType)
 
-      expect(result).toBe('https://example.com/payment/response/DZN')
-    })
-
-    it('should handle base URL with hash', () => {
-      baConfigService.paygate.redirectUrl =
-        'https://example.com/payment/response#section'
-
-      const result = service['getRedirectUrl'](TaxType.DZN)
-
-      expect(result).toBe('https://example.com/payment/response/DZN')
-    })
-
-    it('should handle base URL with port number', () => {
-      baConfigService.paygate.redirectUrl =
-        'http://payments.example.com:8080/payment/response'
-
-      const result = service['getRedirectUrl'](TaxType.KO)
-
-      expect(result).toBe(
-        'http://payments.example.com:8080/payment/response/KO',
-      )
-    })
-
-    it('should handle base URL ending with multiple slashes', () => {
-      baConfigService.paygate.redirectUrl =
-        'https://example.com/payment/response//'
-
-      const result = service['getRedirectUrl'](TaxType.DZN)
-
-      expect(result).toBe('https://example.com/payment/response//DZN')
-    })
+        expect(result).toBe(expected)
+      },
+    )
   })
 })

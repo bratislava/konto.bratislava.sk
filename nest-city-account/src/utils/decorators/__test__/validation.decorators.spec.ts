@@ -90,26 +90,13 @@ describe('IsIdentityCard', () => {
     expect(errors).toHaveLength(0)
   })
 
-  it('rejects wrong length', async () => {
-    const dto = plainToInstance(IdentityCardDto, { idCard: 'AB12345' })
-    const errors = await validate(dto)
-    expect(errors.length).toBeGreaterThan(0)
-  })
-
-  it('rejects missing letter prefix', async () => {
-    const dto = plainToInstance(IdentityCardDto, { idCard: 'A1123456' })
-    const errors = await validate(dto)
-    expect(errors.length).toBeGreaterThan(0)
-  })
-
-  it('rejects non-digit middle segment', async () => {
-    const dto = plainToInstance(IdentityCardDto, { idCard: 'AB12X456' })
-    const errors = await validate(dto)
-    expect(errors.length).toBeGreaterThan(0)
-  })
-
-  it('rejects non-string', async () => {
-    const dto = plainToInstance(IdentityCardDto, { idCard: null })
+  it.each([
+    { reason: 'wrong length', idCard: 'AB12345' },
+    { reason: 'missing letter prefix', idCard: 'A1123456' },
+    { reason: 'non-digit middle segment', idCard: 'AB12X456' },
+    { reason: 'non-string', idCard: null },
+  ])('rejects $reason', async ({ idCard }) => {
+    const dto = plainToInstance(IdentityCardDto, { idCard })
     const errors = await validate(dto)
     expect(errors.length).toBeGreaterThan(0)
   })
@@ -127,26 +114,13 @@ describe('IsIco', () => {
     expect(errors).toHaveLength(0)
   })
 
-  it('rejects too short', async () => {
-    const dto = plainToInstance(IcoDto, { ico: '12345' })
-    const errors = await validate(dto)
-    expect(errors.length).toBeGreaterThan(0)
-  })
-
-  it('rejects too long', async () => {
-    const dto = plainToInstance(IcoDto, { ico: '123456789' })
-    const errors = await validate(dto)
-    expect(errors.length).toBeGreaterThan(0)
-  })
-
-  it('rejects non-digits', async () => {
-    const dto = plainToInstance(IcoDto, { ico: '12345a' })
-    const errors = await validate(dto)
-    expect(errors.length).toBeGreaterThan(0)
-  })
-
-  it('rejects non-string', async () => {
-    const dto = plainToInstance(IcoDto, { ico: 123456 })
+  it.each([
+    { reason: 'too short', ico: '12345' },
+    { reason: 'too long', ico: '123456789' },
+    { reason: 'non-digits', ico: '12345a' },
+    { reason: 'non-string', ico: 123456 },
+  ])('rejects $reason', async ({ ico }) => {
+    const dto = plainToInstance(IcoDto, { ico })
     const errors = await validate(dto)
     expect(errors.length).toBeGreaterThan(0)
   })

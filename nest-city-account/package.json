@@ -71,7 +71,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "0.17.0",
+    "@bratislava/eslint-config-nest": "0.19.1",
     "@golevelup/ts-jest": "3.0.0",
     "@nestjs/cli": "11.0.24",
     "@nestjs/testing": "11.1.28",
@@ -101,10 +101,6 @@
     "ts-unused-exports": "11.0.1",
     "type-fest": "5.8.0",
     "typescript": "6.0.3"
-  },
-  "overrides": {
-    "typescript-eslint": "8.62.1",
-    "@typescript-eslint/parser": "8.62.1"
   },
   "jest": {
     "moduleFileExtensions": [

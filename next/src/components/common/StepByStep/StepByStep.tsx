@@ -58,7 +58,9 @@ const StepByStep = ({ section: { title, description, checklists } }: Props) => {
                 <div className="flex flex-col gap-6">
                   <Markdown variant="default" content={checklist.description} />
 
-                  <Checklist checklistItems={checklist.checklistItems?.filter(isDefined)} />
+                  {checklist.checklistItems ? (
+                    <Checklist checklistItems={checklist.checklistItems.filter(isDefined)} />
+                  ) : null}
                 </div>
               </DisclosurePanel>
             </Disclosure>

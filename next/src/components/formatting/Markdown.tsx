@@ -261,7 +261,7 @@ const Markdown = ({ content, variant = 'default', className }: MarkdownProps) =>
             ) : null,
         }}
       >
-        {content ?? ''}
+        {content}
       </ReactMarkdown>
     </div>
   )

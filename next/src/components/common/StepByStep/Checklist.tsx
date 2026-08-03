@@ -1,11 +1,11 @@
 import ChecklistItem, { ChecklistItemProps } from '@/src/components/common/StepByStep/ChecklistItem'
 
 type Props = {
-  checklistItems?: ChecklistItemProps[] | null
+  checklistItems: ChecklistItemProps[]
 }
 
 const Checklist = ({ checklistItems }: Props) => {
-  if (!checklistItems || checklistItems.length === 0) {
+  if (!checklistItems.length) {
     return null
   }
 

@@ -10,7 +10,7 @@ type Props = {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=25144-21147&t=aBqs3sK8a9uFmnaX-4
  */
 
-const StepperSection = ({ section }: Props) => {
+const StepByStepSection = ({ section }: Props) => {
   return (
     <SectionContainer>
       <StepByStep section={section} />
@@ -18,4 +18,4 @@ const StepperSection = ({ section }: Props) => {
   )
 }
 
-export default StepperSection
+export default StepByStepSection

@@ -2,7 +2,7 @@ import type { GenericObjectType, RJSFSchema } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }
 import { SchemaValidateFunction } from 'ajv'
-import traverse from 'traverse'
+import traverse from 'neotraverse/legacy'
 
 import { getFileValidatorBaRjsf } from './validators'
 import { validateBaFileUuid } from './ajvFormats'

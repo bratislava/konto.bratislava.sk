@@ -11,7 +11,7 @@ type TranslatedFormat = keyof typeof baAjvFormats | 'email' | 'date'
 /**
  * Ajv error names we provide a translation for, other names fall back to the unknown error message.
  */
-type TranslatedErrorName = 'minItems' | 'minLength' | 'pattern' | 'required'
+type TranslatedErrorName = 'const' | 'minItems' | 'minLength' | 'pattern' | 'required'
 
 const getErrorFormat = (error: RJSFValidationError) => {
   const params = error.params as { format?: string } | undefined
@@ -46,6 +46,7 @@ export const useFormErrorTranslations = () => {
   }
 
   const errorNameMessages: Record<TranslatedErrorName, string> = {
+    const: t('const'),
     minItems: t('minItems'),
     minLength: t('minLength'),
     pattern: t('pattern'),

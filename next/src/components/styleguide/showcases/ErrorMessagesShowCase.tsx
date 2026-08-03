@@ -220,6 +220,13 @@ const rjsfExistingRows: ErrorMessageRow[] = [
     note: 'Pre polia položiek (arrayField) navrhujeme vlastné kľúče so znením „Pridajte aspoň {{count}} položku / položky / položiek.“',
   },
   {
+    translationKey: 'const',
+    trigger: 'Odznačené povinné zaškrtnutie, napríklad súhlas – 15 použití v schémach',
+    sources: ['CheckboxWidgetRJSF.tsx'],
+    proposed: null,
+    note: 'Nastane, keď používateľ súhlas označí a znova odznačí – vo formulári vtedy zostane hodnota false. Ak sa poľa nikdy nedotkne, zobrazí sa chyba required.',
+  },
+  {
     translationKey: 'pattern',
     trigger: 'Hodnota nesedí s regulárnym výrazom',
     sources: ['InputWidgetRJSF.tsx', 'TextAreaWidgetRJSF.tsx'],
@@ -300,13 +307,6 @@ const rjsfExistingRows: ErrorMessageRow[] = [
 ]
 
 const rjsfMissingRows: ErrorMessageRow[] = [
-  {
-    translationKey: 'const',
-    trigger: 'Odznačené povinné zaškrtnutie, napríklad súhlas – 15 použití v schémach',
-    sources: ['CheckboxWidgetRJSF.tsx'],
-    proposed: 'Na pokračovanie označte toto pole.',
-    note: 'Najvyššia priorita – jediná chýbajúca správa dosiahnuteľná bežným klikaním: súhlas označiť a znova odznačiť.',
-  },
   {
     translationKey: 'maxItems',
     trigger: 'Prekročený počet vybraných možností alebo pridaných položiek – 3 použitia',

@@ -32,7 +32,6 @@ export default schema(
           required: true,
         },
         {
-          placeholder: 'Enter text here',
           helptext: 'Basic text input example',
         },
       ),
@@ -153,8 +152,40 @@ export default schema(
               required: true,
             },
             {
-              placeholder: '1/2',
-              helptext: 'Format: number/number',
+              helptext: 'Format: number/number, for example 1/2',
+            },
+          ),
+          input(
+            'email',
+            {
+              type: 'email',
+              title: 'Email',
+              required: true,
+            },
+            {
+              helptext: 'Email format',
+            },
+          ),
+          input(
+            'baSlovakZip',
+            {
+              type: 'ba-slovak-zip',
+              title: 'Slovak Zip Code',
+              required: true,
+            },
+            {
+              helptext: 'Slovak zip code (PSČ), five digits, for example 81101',
+            },
+          ),
+          input(
+            'ico',
+            {
+              type: 'ba-ico',
+              title: 'IČO',
+              required: true,
+            },
+            {
+              helptext: 'Slovak IČO, six to eight digits',
             },
           ),
         ],
@@ -166,7 +197,6 @@ export default schema(
           required: true,
         },
         {
-          placeholder: 'Enter longer text here',
           helptext: 'Multi-line text input',
         },
       ),
@@ -180,7 +210,6 @@ export default schema(
           items: createStringItems(['Option 1', 'Option 2', 'Option 3']),
         },
         {
-          placeholder: 'Select an option',
           helptext: 'Single selection dropdown',
         },
       ),

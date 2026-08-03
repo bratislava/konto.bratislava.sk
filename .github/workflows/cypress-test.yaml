@@ -126,7 +126,7 @@ jobs:
                 - --filter=city-account-cypress-tests
 
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           install: false
           wait-on: "http://localhost:3000"

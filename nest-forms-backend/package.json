@@ -80,7 +80,7 @@
     "xml2js": "0.6.2"
   },
   "devDependencies": {
-    "@bratislava/eslint-config-nest": "0.17.0",
+    "@bratislava/eslint-config-nest": "0.19.1",
     "@golevelup/ts-jest": "3.0.0",
     "@nestjs/cli": "11.0.24",
     "@nestjs/schematics": "11.1.0",
@@ -114,11 +114,6 @@
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
     "typescript": "6.0.3"
-  },
-  "overrides": {
-    "typescript-eslint": "8.62.1",
-    "@typescript-eslint/parser": "8.62.1",
-    "eslint-plugin-sonarjs": "4.2.0"
   },
   "engines": {
     "node": ">=24.15.x",

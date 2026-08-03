@@ -2,7 +2,7 @@ import { Typography } from '@bratislava/component-library'
 import { Fragment } from 'react'
 
 import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
-import { Checklist } from '@/src/components/common/Stepper/Checklist'
+import Checklist from '@/src/components/common/StepByStep/Checklist'
 import Markdown from '@/src/components/formatting/Markdown'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import Disclosure from '@/src/components/simple-components/Disclosure/Disclosure'
@@ -30,7 +30,7 @@ const IndexIcon = ({ index }: { index: number }) => {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-14458&t=FB9MA6UJV5t84NVu-4
  */
 
-export const Stepper = ({ section: { title, description, checklists } }: Props) => {
+const StepByStep = ({ section: { title, description, checklists } }: Props) => {
   return (
     <div className="flex flex-col gap-4">
       <SectionHeader title={title} text={description} asRichtext />
@@ -68,3 +68,5 @@ export const Stepper = ({ section: { title, description, checklists } }: Props) 
     </div>
   )
 }
+
+export default StepByStep

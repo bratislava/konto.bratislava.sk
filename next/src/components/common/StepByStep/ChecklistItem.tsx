@@ -8,7 +8,7 @@ export type ChecklistItemProps = {
   content?: string | null
 }
 
-export const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
+const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
   return (
     <li className="flex flex-row items-start gap-4">
       <Icon
@@ -27,3 +27,5 @@ export const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
     </li>
   )
 }
+
+export default ChecklistItem

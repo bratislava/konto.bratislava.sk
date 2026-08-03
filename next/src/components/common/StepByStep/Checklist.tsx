@@ -1,10 +1,10 @@
-import { ChecklistItem, ChecklistItemProps } from '@/src/components/common/Stepper/ChecklistItem'
+import ChecklistItem, { ChecklistItemProps } from '@/src/components/common/StepByStep/ChecklistItem'
 
 type Props = {
   checklistItems?: ChecklistItemProps[] | null
 }
 
-export const Checklist = ({ checklistItems }: Props) => {
+const Checklist = ({ checklistItems }: Props) => {
   if (!checklistItems || checklistItems.length === 0) {
     return null
   }
@@ -17,3 +17,5 @@ export const Checklist = ({ checklistItems }: Props) => {
     </ul>
   )
 }
+
+export default Checklist

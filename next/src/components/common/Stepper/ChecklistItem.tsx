@@ -11,7 +11,11 @@ export type ChecklistItemProps = {
 export const ChecklistItem = ({ title, content }: ChecklistItemProps) => {
   return (
     <li className="flex flex-row items-start gap-4">
-      <Icon name="check-circle" className="size-6 shrink-0 text-content-passive-secondary" />
+      <Icon
+        name="check-circle"
+        // Added custom lg:mt-0.5 to align the icon with the text vertically
+        className="size-6 shrink-0 text-content-passive-secondary lg:mt-0.5"
+      />
 
       <div className="flex flex-col gap-1">
         <Typography variant="p-default" className="font-medium">

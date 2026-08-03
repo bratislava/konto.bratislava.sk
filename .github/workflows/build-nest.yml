@@ -212,7 +212,7 @@ jobs:
           targets: ${{ inputs.service }}-test-e2e
           allow: network.host
           set: |
-            *.args.CI_E2E_DATABASE_URL=postgresql://forms:password@localhost:${{ job.services.postgres.ports[5432] }}/forms?schema=public&connect_timeout=30
+            *.args.CI_E2E_DATABASE_URL=postgresql://forms:password@localhost:${{ job.services.postgres.ports['5432'] }}/forms?schema=public&connect_timeout=30
         env:
           CACHE_FROM: ${{ steps.meta-e2e.outputs.cache_from }}
           CACHE_TO: ${{ steps.meta-e2e.outputs.cache_to }}

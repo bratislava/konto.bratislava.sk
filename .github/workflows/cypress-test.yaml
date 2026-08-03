@@ -48,7 +48,7 @@ jobs:
   cypress-tests:
     needs: [ dependabot-approval ]
     if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
-    runs-on: bratislava
+    runs-on: ubuntu-latest
     timeout-minutes: 25
 
     steps:

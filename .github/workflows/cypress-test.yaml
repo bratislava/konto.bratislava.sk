@@ -5,6 +5,12 @@ name: Cypress test
 # `docker run`. Only NEXT_BUILD_ENV differs -- `e2e` bakes
 # next/.env.ci-build.e2e, which disables the captcha and points cookies at
 # localhost. The image is loaded into the local Docker store, never pushed.
+#
+# The Cypress toolchain install runs as a background step so it overlaps the
+# image build. Note that a `wait` step blocks the whole job, not one branch --
+# background steps simply keep running through it -- and that a background
+# step's outputs and environment changes only become visible after a `wait`
+# naming it. Both rules shape the step order below.
 
 on:
   pull_request:
@@ -48,6 +54,10 @@ jobs:
   cypress-tests:
     needs: [ dependabot-approval ]
     if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
+    # Not the `bratislava` self-hosted runner the other Docker builds use:
+    # Cypress needs Xvfb and Chrome, which the GitHub-hosted image preinstalls.
+    # Harbor and the MinIO cache endpoint are public, so the build reaches both
+    # from here.
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
@@ -55,7 +65,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Node has to finish before pnpm can install, and `install-deps` only sees
+      # its PATH change after a wait -- so start it first and let the three
+      # Docker setup steps below run during that wait.
+      - name: Use Node.js
+        id: node
+        background: true
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+
       - name: Set up Docker build
+        id: docker-build-setup
+        background: true
         uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
         with:
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
@@ -74,6 +96,7 @@ jobs:
       # the deployable images, whose builds bake a different environment.
       - name: Docker metadata
         id: meta
+        background: true
         uses: bratislava/github-actions/.github/actions/docker-metadata@beta
         with:
           image: ${{ env.REGISTRY }}/standalone/next
@@ -81,9 +104,32 @@ jobs:
 
       - name: Set up Turborepo cache
         id: turbo-cache
+        background: true
         uses: ./.github/actions/setup-turborepo-cache
         with:
           minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Wait for Node.js
+        wait: node
+
+      # Cypress and its browser only; the application is not built here. Runs in
+      # the background for the whole duration of the image build below.
+      - name: Use pnpm and install dependencies
+        id: install-deps
+        background: true
+        uses: pnpm/action-setup@v6
+        with:
+          cache: true
+          run_install: |
+            - args:
+                - --frozen-lockfile
+                - --filter=konto-bratislava-sk-monorepo
+                - --filter=city-account-cypress-tests
+
+      # The build step reads `steps.meta.outputs.*` and
+      # `steps.turbo-cache.outputs.turbo_api`, which only exist after this wait.
+      - name: Wait for Docker and Turborepo cache setup
+        wait: [docker-build-setup, meta, turbo-cache]
 
       - name: Build application image
         uses: docker/bake-action@v7
@@ -109,21 +155,9 @@ jobs:
             --publish 3000:3000 \
             "$IMAGE_TAG"
 
-      # Cypress and its browser only; the application is not built here.
-      - name: Use Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: package.json
-
-      - name: Use pnpm and install dependencies
-        uses: pnpm/action-setup@v6
-        with:
-          cache: true
-          run_install: |
-            - args:
-                - --frozen-lockfile
-                - --filter=konto-bratislava-sk-monorepo
-                - --filter=city-account-cypress-tests
+      # Cypress needs pnpm on PATH, which the install step only publishes here.
+      - name: Wait for dependency install
+        wait: install-deps
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v7
@@ -133,17 +167,12 @@ jobs:
           wait-on-timeout: 120
           command: pnpm --filter city-account-cypress-tests run cypress:ci
 
-      - name: Application logs
-        if: always()
-        run: docker logs "$CONTAINER_NAME"
-
-      - name: Stop application container
-        if: always()
-        run: docker rm --force "$CONTAINER_NAME"
-
+      # The three uploads are independent, so they run concurrently and overlap
+      # the container teardown below.
       - name: Upload Cypress screenshots
         uses: actions/upload-artifact@v4
         if: always()
+        background: true
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
@@ -152,6 +181,7 @@ jobs:
       - name: Upload Cypress videos
         uses: actions/upload-artifact@v4
         if: always()
+        background: true
         with:
           name: cypress-videos
           path: tests/cypress/videos
@@ -160,7 +190,27 @@ jobs:
       - name: Visual testing screenshots
         uses: actions/upload-artifact@v4
         if: always()
+        background: true
         with:
           name: visual-testing
           path: tests/cypress/visualTesting
           retention-days: 1
+
+      # Both are a couple of seconds, so they stay plain sequential steps rather
+      # than a background pair needing its own wait. `continue-on-error` keeps a
+      # missing container (the build failed, so it was never started) from
+      # masking the real failure.
+      - name: Application logs
+        if: always()
+        continue-on-error: true
+        run: docker logs "$CONTAINER_NAME"
+
+      - name: Stop application container
+        if: always()
+        continue-on-error: true
+        run: docker rm --force "$CONTAINER_NAME"
+
+      # An implicit wait-all would run before post-job cleanup anyway; making it
+      # explicit surfaces a failed upload as a step rather than during teardown.
+      - name: Wait for uploads
+        wait-all:

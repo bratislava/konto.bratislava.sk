@@ -43,14 +43,22 @@ pnpm run dev
 ## Run project for e2e testing
 
 Tests need captcha disabled, are run against staging backend & staging cognito, and may have other env changes - see
-`.env.e2e`. Otherwise they behave as a production build - to build & run the app in this setup
+`.env.ci-build.e2e`. Otherwise they behave as a production build - to build & run the app in this setup
 
 ```bash
 # only if you need to rebuild - this rewrites local .env.production.local
-cp .env.e2e .env.production.local
+cp .env.ci-build.e2e .env.production.local
 pnpm run build
 # start the same way as you would start the app in production
 pnpm run start
+```
+
+CI does not use the commands above - the Cypress workflow builds the same Docker image as the deploy pipeline
+(`NEXT_BUILD_ENV=e2e`) and runs the container. To reproduce that locally:
+
+```bash
+NEXT_BUILD_ENV=e2e docker buildx bake next --set next.tags=city-account-next:e2e --load
+docker run --rm -p 3000:3000 city-account-next:e2e
 ```
 
 ## FOP

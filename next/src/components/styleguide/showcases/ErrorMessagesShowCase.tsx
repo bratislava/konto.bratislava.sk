@@ -53,7 +53,8 @@ const hookFormRows: ErrorMessageRow[] = [
       'EmailChangeForm.tsx',
       'UserProfileDetailsEdit.tsx',
     ],
-    proposed: 'Zadajte e-mail v tvare jan.novak@example.com.',
+    proposed: 'Zadajte e-mail v tvare meno.priezvisko@priklad.sk.',
+    note: 'Rovnaké znenie ako rjsf-errors:format.email vo formulároch mestských služieb.',
   },
   {
     translationKey: 'auth.fields.password_required',
@@ -123,7 +124,7 @@ const hookFormRows: ErrorMessageRow[] = [
     translationKey: 'auth.fields.rc_format',
     trigger: 'Rodné číslo má nesprávnu dĺžku alebo kontrolný súčet',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
-    proposed: 'Rodné číslo zadajte v tvare 123456/7890.',
+    proposed: 'Zadajte rodné číslo s lomkou v tvare 123456/7890.',
     note: 'Validácia prijme aj deväť číslic bez lomky, správa však lomku vyžaduje.',
   },
   {
@@ -137,14 +138,14 @@ const hookFormRows: ErrorMessageRow[] = [
     translationKey: 'auth.fields.id_card_format',
     trigger: 'Číslo dokladu nemá tvar dvoch písmen a šiestich až siedmich číslic',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
-    proposed: 'Číslo dokladu zadajte bez medzier v tvare AB123456.',
+    proposed: 'Zadajte číslo dokladu bez medzier v tvare AB123456.',
   },
   {
     translationKey: 'auth.fields.phone_number_format',
     trigger: 'Telefónne číslo nie je v medzinárodnom tvare',
     sources: ['PhoneNumberForm.tsx'],
-    proposed: 'Telefónne číslo zadajte v medzinárodnom tvare, napríklad +421912345678.',
-    note: 'Pole nie je povinné, správa pre prázdne pole neexistuje.',
+    proposed: null,
+    note: 'Znenie je rovnaké ako rjsf-errors:format.ba-phone-number. Pole nie je povinné, správa pre prázdne pole neexistuje.',
   },
   {
     translationKey: 'towing.licensePlate_required',
@@ -229,38 +230,67 @@ const rjsfExistingRows: ErrorMessageRow[] = [
     translationKey: 'format.email',
     trigger: 'E-mail nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
-    proposed: 'Zadajte e-mail v tvare jan.novak@example.com.',
+    proposed: null,
   },
   {
     translationKey: 'format.ba-iban',
     trigger: 'IBAN nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
-    proposed: 'Zadajte IBAN v tvare SK89 0000 0000 0000 0000 0000.',
+    proposed: null,
   },
   {
     translationKey: 'format.ba-phone-number',
     trigger: 'Telefónne číslo nie je v medzinárodnom tvare',
     sources: ['InputWidgetRJSF.tsx'],
-    proposed: 'Zadajte telefónne číslo v medzinárodnom tvare, napríklad +421912345678.',
+    proposed: null,
   },
   {
-    translationKey: 'format.ba-zip',
-    trigger: 'Nikdy, kľúč je mŕtvy – formát sa v schémach volá ba-slovak-zip',
-    proposed:
-      'Kľúč premenovať na format.ba-slovak-zip so znením „Zadajte PSČ v tvare 81101.“ Chyba PSČ dnes končí na format.unknown.',
+    translationKey: 'format.ba-slovak-phone-number',
+    trigger: 'Slovenské telefónne číslo nemá platný tvar',
+    sources: ['InputWidgetRJSF.tsx'],
+    proposed: null,
+  },
+  {
+    translationKey: 'format.ba-slovak-zip',
+    trigger: 'PSČ nemá platný tvar',
+    sources: ['InputWidgetRJSF.tsx'],
+    proposed: null,
+  },
+  {
+    translationKey: 'format.ba-ico',
+    trigger: 'IČO nemá platný tvar',
+    sources: ['InputWidgetRJSF.tsx'],
+    proposed: null,
+  },
+  {
+    translationKey: 'format.ba-ratio',
+    trigger: 'Spoluvlastnícky podiel nemá platný tvar',
+    sources: ['InputWidgetRJSF.tsx'],
+    proposed: null,
+  },
+  {
+    translationKey: 'format.date',
+    trigger: 'Dátum nemá platný tvar',
+    sources: ['DatePickerWidgetRJSF.tsx'],
+    proposed: null,
+  },
+  {
+    translationKey: 'format.ba-time',
+    trigger: 'Čas nemá platný tvar',
+    sources: ['TimePickerWidgetRJSF.tsx'],
+    proposed: null,
+  },
+  {
+    translationKey: 'format.ba-file-uuid',
+    trigger: 'Neplatný identifikátor nahranej prílohy',
+    sources: ['FileUploadWidgetRJSF.tsx', 'FileUploadMultipleWidgetRJSF.tsx'],
+    proposed: null,
   },
   {
     translationKey: 'format.unknown',
-    trigger:
-      'Formát bez vlastného kľúča – dnes PSČ, IČO, spoluvlastnícky podiel, dátum, čas, slovenské telefónne číslo a identifikátor prílohy',
-    sources: [
-      'InputWidgetRJSF.tsx',
-      'DatePickerWidgetRJSF.tsx',
-      'TimePickerWidgetRJSF.tsx',
-      'FileUploadWidgetRJSF.tsx',
-    ],
+    trigger: 'Formát bez vlastného kľúča',
     proposed: null,
-    note: 'Znenie je rovnaké ako pri chybe pattern, takže používateľ nevie, aký tvar hodnoty sa od neho čaká.',
+    note: 'Všetky formáty používané v schémach majú vlastný kľúč, táto správa je len záloha pre nový formát bez prekladu.',
   },
   {
     translationKey: 'unknown',
@@ -347,48 +377,6 @@ const rjsfMissingRows: ErrorMessageRow[] = [
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte hodnotu v správnom formáte.',
     note: 'Pole desatinné miesta ani text nedovolí, chyba nastane len pri importe XML alebo JSON.',
-  },
-  {
-    translationKey: 'format.ba-slovak-zip',
-    trigger: 'PSČ nemá platný tvar',
-    sources: ['InputWidgetRJSF.tsx'],
-    proposed: 'Zadajte PSČ v tvare 81101.',
-  },
-  {
-    translationKey: 'format.ba-slovak-phone-number',
-    trigger: 'Slovenské telefónne číslo nemá platný tvar',
-    sources: ['InputWidgetRJSF.tsx'],
-    proposed: 'Zadajte slovenské telefónne číslo v tvare +421912345678.',
-  },
-  {
-    translationKey: 'format.ba-ico',
-    trigger: 'IČO nemá platný tvar',
-    sources: ['InputWidgetRJSF.tsx'],
-    proposed: 'Zadajte IČO ako šesť až osem číslic, napríklad 00603481.',
-  },
-  {
-    translationKey: 'format.ba-ratio',
-    trigger: 'Spoluvlastnícky podiel nemá platný tvar',
-    sources: ['InputWidgetRJSF.tsx'],
-    proposed: 'Zadajte podiel v tvare 1/2, kde prvé číslo nie je väčšie ako druhé.',
-  },
-  {
-    translationKey: 'format.date',
-    trigger: 'Dátum nemá platný tvar',
-    sources: ['DatePickerWidgetRJSF.tsx'],
-    proposed: 'Zadajte dátum v tvare DD.MM.RRRR.',
-  },
-  {
-    translationKey: 'format.ba-time',
-    trigger: 'Čas nemá platný tvar',
-    sources: ['TimePickerWidgetRJSF.tsx'],
-    proposed: 'Zadajte čas v tvare HH:MM, napríklad 14:30.',
-  },
-  {
-    translationKey: 'format.ba-file-uuid',
-    trigger: 'Neplatný identifikátor nahranej prílohy',
-    sources: ['FileUploadWidgetRJSF.tsx', 'FileUploadMultipleWidgetRJSF.tsx'],
-    proposed: 'Nahrajte súbor znova.',
   },
 ]
 
@@ -622,10 +610,11 @@ const sections: ErrorMessageSection[] = [
     namespace: 'rjsf-errors',
     description: (
       <>
-        <code>useFormErrorTranslations.ts</code> prekladá chyby podľa názvu AJV chyby, nie podľa
-        poľa. Týchto 10 správ pokrýva všetky formuláre mestských služieb a nevyužívajú parametre
-        chyby (limit, minimum), takže nedokážu povedať konkrétny limit. Chyby formátu majú záložný
-        kľúč format.unknown, ostatné názvy chýb záložný kľúč nemajú.
+        <code>useFormErrorTranslations.ts</code> prekladá chyby podľa názvu AJV chyby, chyby formátu
+        podľa samotného formátu. Znenie nie je definované pre jednotlivé polia a nevyužíva parametre
+        chyby (limit, minimum), takže nedokáže povedať konkrétny limit. Každý formát používaný v
+        schémach má vlastný kľúč, formát bez kľúča skončí na format.unknown a chyba s neznámym
+        názvom na unknown.
       </>
     ),
     rows: rjsfExistingRows,
@@ -634,7 +623,7 @@ const sections: ErrorMessageSection[] = [
     title: 'Formuláre mestských služieb (RJSF) – chýbajúce chyby polí',
     namespace: 'rjsf-errors',
     description:
-      'Tieto chyby v schémach nastávajú, ale preklad neexistuje. Chyby formátu (format.*) skončia na záložnom kľúči format.unknown, takže používateľ dostane rovnakú vetu ako pri chybe pattern a nedozvie sa, aký tvar má hodnota mať. Pri ostatných názvoch chýb záloha neexistuje – i18next vráti samotný kľúč a používateľ vidí v poli anglický text ako „minimum“ alebo „const“.',
+      'Tieto chyby v schémach nastávajú, ale preklad neexistuje a pre názvy chýb neexistuje ani záloha – i18next vráti samotný kľúč a používateľ vidí v poli anglický text ako „minimum“ alebo „const“.',
     rows: rjsfMissingRows,
   },
   {

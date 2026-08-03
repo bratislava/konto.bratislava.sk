@@ -1,7 +1,7 @@
 import type { RJSFSchema } from '@rjsf/utils' with {
   'resolution-mode': 'import',
 }
-import traverse from 'traverse'
+import traverse from 'neotraverse/legacy'
 import { FileUploadUiOptions } from '../generator/uiOptionsTypes'
 
 /**

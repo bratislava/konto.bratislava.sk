@@ -20,16 +20,18 @@ const ExternalDocumentRowCard = ({ title, url, ariaLabel }: Props) => {
     <li className="relative flex flex-row items-center justify-between gap-4 rounded-md px-6 py-4 wrapper-focus-ring">
       <div className="flex flex-row items-start gap-2 lg:items-center lg:gap-4">
         <Icon
-          name="attachment"
+          name="document"
           className="size-5 rounded-lg lg:size-12 lg:bg-background-passive-secondary lg:p-3"
         />
 
         <div className="flex flex-col gap-1">
-          <Typography variant="h6" className="line-clamp-3 wrap-anywhere lg:line-clamp-2">
+          <Typography variant="h6" as="h3" className="wrap-anywhere">
             {title}
           </Typography>
 
-          <Typography variant="p-small">{url}</Typography>
+          <Typography variant="p-small" className="line-clamp-1">
+            {url}
+          </Typography>
         </div>
       </div>
       {/* Screen: desktop */}

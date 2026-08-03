@@ -1,5 +1,5 @@
 import { StepperSectionFragment } from '@/src/clients/graphql-strapi/api'
-import { Stepper } from '@/src/components/common/Stepper/Stepper'
+import StepByStep from '@/src/components/common/StepByStep/StepByStep'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 
 type Props = {
@@ -10,12 +10,12 @@ type Props = {
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=25144-21147&t=aBqs3sK8a9uFmnaX-4
  */
 
-const StepperSection = ({ section }: Props) => {
+const StepByStepSection = ({ section }: Props) => {
   return (
     <SectionContainer>
-      <Stepper section={section} />
+      <StepByStep section={section} />
     </SectionContainer>
   )
 }
 
-export default StepperSection
+export default StepByStepSection

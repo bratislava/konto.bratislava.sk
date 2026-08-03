@@ -17,12 +17,13 @@
 
 variable "NEXT_BUILD_ENV" {
   # Which next/.env.ci-build.<env> is baked into the Next.js image. Deploys
-  # override this per cluster; staging is the sensible local default.
+  # override this per cluster and the Cypress workflow uses `e2e`; staging is
+  # the sensible local default.
   default = "staging"
 
   validation {
-    condition     = contains(["dev", "staging", "prod"], NEXT_BUILD_ENV)
-    error_message = "NEXT_BUILD_ENV must be one of dev, staging, prod."
+    condition     = contains(["dev", "staging", "prod", "e2e"], NEXT_BUILD_ENV)
+    error_message = "NEXT_BUILD_ENV must be one of dev, staging, prod, e2e."
   }
 }
 

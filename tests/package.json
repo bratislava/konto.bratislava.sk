@@ -3,7 +3,7 @@
   "scripts": {
     "lint": "eslint '**/*.ts'",
     "typecheck": "tsc",
-    "start:e2e": "cd ../next && cp .env.e2e .env.production.local && pnpm run build && pnpm run start",
+    "start:e2e": "cd ../next && cp .env.ci-build.e2e .env.production.local && pnpm run build && pnpm run start",
     "cypress:open": "node ./run-cypress.js open --browser chrome --device all --visualTesting local",
     "cypress:open:desktop": "node ./run-cypress.js open --browser chrome --device desktop --visualTesting local",
     "cypress:open:mobile": "node ./run-cypress.js open --browser chrome --device mobile --visualTesting local",

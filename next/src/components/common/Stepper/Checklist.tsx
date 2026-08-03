@@ -5,6 +5,10 @@ type Props = {
 }
 
 export const Checklist = ({ checklistItems }: Props) => {
+  if (!checklistItems || checklistItems.length === 0) {
+    return null
+  }
+
   return (
     <ul className="list-inside list-disc space-y-5">
       {checklistItems?.map((item, index) => (

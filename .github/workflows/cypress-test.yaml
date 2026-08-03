@@ -34,36 +34,39 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: "24.15"
+          node-version-file: package.json
 
-      - name: Build forms-shared
-        working-directory: forms-shared
-        run: |
-          npm install
-          npm run build
+      - name: Use pnpm and install dependencies
+        uses: pnpm/action-setup@v6
+        with:
+          cache: true
+          run_install: |
+            - args:
+                - --frozen-lockfile
+                - --filter=konto-bratislava-sk-monorepo
+                - --filter=city-account-next
+                - --filter=city-account-cypress-tests
+                - --filter=forms-shared
+                - --filter=openapi-clients
 
-      - name: Build openapi-clients
-        working-directory: openapi-clients
-        run: |
-          npm install
-          npm run build
+      - name: Prepare e2e environment
+        run: cp next/.env.e2e next/.env.production.local
 
-      - name: Install and build application
-        working-directory: next
-        run: |
-          npm install
-          npm run build:e2e
-          npm run start &
+      - name: Build application
+        run: pnpm turbo run build --filter=city-account-next
+
+      - name: Start application
+        run: pnpm --filter city-account-next start &
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
+          install: false
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
-          working-directory: tests
-          command: npm run cypress:ci
+          command: pnpm --filter city-account-cypress-tests run cypress:ci
 
       - name: Upload Cypress screenshots
         uses: actions/upload-artifact@v4

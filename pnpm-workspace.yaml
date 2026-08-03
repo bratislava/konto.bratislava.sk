@@ -1,0 +1,67 @@
+catalog:
+  '@internationalized/date': 3.12.2
+  '@react-aria/utils': 3.34.1
+  '@react-stately/utils': 3.12.1
+  '@react-types/shared': 3.36.0
+  '@rjsf/core': 6.5.2
+  '@rjsf/utils': 6.5.2
+  '@rjsf/validator-ajv8': 6.5.2
+  '@types/node': 24.13.3
+  '@types/react': 19.2.14
+  '@types/react-dom': 19.2.3
+  ajv: 8.20.0
+  ajv-errors: 3.0.0
+  ajv-formats: 3.0.1
+  axios: 1.18.1
+  playwright: 1.59.1
+  react: 19.2.6
+  react-aria: 3.50.0
+  react-aria-components: 1.19.0
+  react-dom: 19.2.6
+  react-stately: 3.48.0
+
+packages:
+  - forms-shared
+  - nest-city-account
+  - nest-clamav-scanner
+  - nest-forms-backend
+  - nest-tax-backend
+  - openapi-clients
+  - next
+  - scripts
+  - strapi
+  - tests
+# `eslint-plugin-sonarjs` up to 4.1.0 depends on `typescript: '>=5'` as a regular
+# (not peer) dependency, so pnpm resolves it to the highest TypeScript in the
+# workspace. That is `scripts`' 7.0.2, whose npm package only ships the native
+# `tsgo` launcher and a `version` export — not the JS compiler API the plugin loads
+# at startup. Every `lint` script then dies with `Cannot read properties of
+# undefined (reading 'FunctionType')`. 4.2.0 caps the range at `>=5 <6.1.0`, so
+# bump the copy `@bratislava/eslint-config` pulls in until it ships 4.2.0 itself.
+overrides:
+  '@bratislava/eslint-config>eslint-plugin-sonarjs': 4.2.0
+# `ssh2` (via `ssh2-sftp-client` in nest-tax-backend) compiles two optional
+# native speedups — its own `sshcrypto` binding and `cpu-features`. Neither
+# builds in the alpine images (no python3/g++) and both are `require`d inside a
+# try/catch, so ssh2 silently falls back to Node's `crypto`. Skipping the builds
+# keeps the images free of a compiler toolchain and makes local, CI and Docker
+# installs behave the same.
+allowBuilds:
+  '@apollo/protobufjs': true
+  '@openapitools/openapi-generator-cli': true
+  '@prisma/engines': true
+  '@scarf/scarf': true
+  '@swc/core': true
+  core-js-pure: true
+  cpu-features: false
+  cypress: true
+  esbuild: true
+  msgpackr-extract: true
+  prisma: true
+  protobufjs: true
+  sharp: true
+  ssh2: false
+  unrs-resolver: true
+minimumReleaseAge: 120
+minimumReleaseAgeExclude:
+  - '@bratislava/*'

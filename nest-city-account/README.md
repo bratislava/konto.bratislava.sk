@@ -23,8 +23,8 @@ Adjust the values as you need. (all secret variables)
 ```bash
 # Build openapi-clients
 cd ../openapi-clients/
-npm install
-npm run build
+pnpm install
+pnpm run build
 cd ../nest-city-account/
 ```
 
@@ -37,7 +37,7 @@ cd ../nest-city-account/
 3. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 copy and adjust .env from .env.example
@@ -48,27 +48,27 @@ if you are using a different database or different postgres with user, adjust en
 Migrate database and generate prisma files
 
 ```bash
-npx prisma migrate dev
-npx prisma generate
+pnpm exec prisma migrate dev
+pnpm exec prisma generate
 ```
 
 Run the app:
 
 ```bash
 # development mode without auto reload
-npm run start
+pnpm run start
 
 # development mode with auto reload
-npm run start:dev
+pnpm run start:dev
 
 # production mode
-npm run start:prod
+pnpm run start:prod
 ```
 
 ## Test
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ## Used external services and tools

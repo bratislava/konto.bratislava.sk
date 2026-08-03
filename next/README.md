@@ -11,18 +11,18 @@ To install dependencies and build required packages:
 ```bash
 # Build required shared packages
 cd ../forms-shared/
-npm install
-npm run build
+pnpm install
+pnpm run build
 cd ../openapi-clients/
-npm install
-npm run build
+pnpm install
+pnpm run build
 
 # Install dependencies
 cd ../next/
-npm install
+pnpm install
 
 # Build the project
-npm run dev
+pnpm run dev
 ```
 
 ### VSCode support
@@ -37,7 +37,7 @@ the [command pallete](https://code.visualstudio.com/docs/getstarted/userinterfac
 ## Run project locally
 
 ```
-npm run dev
+pnpm run dev
 ```
 
 ## Run project for e2e testing
@@ -47,9 +47,10 @@ Tests need captcha disabled, are run against staging backend & staging cognito, 
 
 ```bash
 # only if you need to rebuild - this rewrites local .env.production.local
-npm run build:e2e
+cp .env.e2e .env.production.local
+pnpm run build
 # start the same way as you would start the app in production
-npm run start
+pnpm run start
 ```
 
 ## FOP
@@ -70,7 +71,7 @@ specification provided by our BEs.
 We are using [graphql-codegen](https://the-guild.dev/graphql/codegen) to generate GraphQL client from our Strapi (CMS)
 schema.
 
-To generate API clients run `npm run generate-clients`. `--skip-validate-spec` flag is required until all errors in the
+To generate API clients run `pnpm run generate-clients`. `--skip-validate-spec` flag is required until all errors in the
 specification are resolved.
 
 Forms:

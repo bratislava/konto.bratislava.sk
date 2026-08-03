@@ -30,7 +30,7 @@ describe('slovenskoSkForm', () => {
 
   beforeAll(async () => {
     slovenskoSkMetadata = await fetchSlovenskoSkMetadata()
-  })
+  }, 60000)
 
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
     describe(`${formDefinition.slug}`, () => {

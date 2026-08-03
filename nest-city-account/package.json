@@ -12,7 +12,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:repl": "nest start --watch --entryFile repl",
-    "start:prod": "node dist/src/main",
+    "start:prod": "node dist/main",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
     "lint:fix": "eslint \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\" --fix",
@@ -25,7 +26,7 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
+    "vulnerabilities": "pnpm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "3.1095.0",
@@ -42,12 +43,11 @@
     "@prisma/adapter-pg": "7.9.1",
     "@prisma/client": "7.9.1",
     "amqplib": "0.10.9",
-    "axios": "1.18.1",
+    "axios": "catalog:",
     "cache-manager": "7.2.8",
     "cf-turnstile": "1.0.8",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.4",
-    "crypto": "1.0.1",
     "dayjs": "1.11.20",
     "express": "5.2.1",
     "form-data": "4.0.6",
@@ -57,14 +57,14 @@
     "luxon": "3.7.2",
     "mailgun.js": "13.2.0",
     "mssql": "12.5.5",
-    "openapi-clients": "file:../openapi-clients",
+    "openapi-clients": "workspace:*",
     "p-limit": "3.1.0",
     "passport-custom": "1.1.1",
     "passport-headerapikey": "1.2.2",
     "passport-jwt": "4.0.1",
     "pg": "8.22.0",
     "pg-promise": "12.7.0",
-    "playwright": "1.59.1",
+    "playwright": "catalog:",
     "prisma": "7.9.1",
     "rodnecislo": "1.6.0",
     "uuid": "11.1.0",
@@ -82,7 +82,7 @@
     "@types/lodash": "4.17.24",
     "@types/luxon": "3.7.2",
     "@types/mssql": "12.3.0",
-    "@types/node": "24.12.2",
+    "@types/node": "catalog:",
     "@types/passport-jwt": "4.0.1",
     "@types/supertest": "7.2.0",
     "@types/uuid": "10.0.0",
@@ -126,12 +126,7 @@
       "<rootDir>/../test/singleton.ts"
     ]
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
-  },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   }
 }

@@ -20,12 +20,14 @@ describe('GpWebpaySubservice', () => {
         key: 'mock-key',
         signCert: 'mock-cert',
         merchantNumber: 'mock-merchant-number',
+        // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- mock config value for tests, not a real credential
         passphrase: 'mock-passphrase',
       },
       [TaxType.KO]: {
         key: 'mock-key-ko',
         signCert: 'mock-cert-ko',
         merchantNumber: 'mock-merchant-number-ko',
+        // eslint-disable-next-line sonarjs/no-hardcoded-passwords -- mock config value for tests, not a real credential
         passphrase: 'mock-passphrase-ko',
       },
     },

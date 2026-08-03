@@ -1,0 +1,114 @@
+name: Build Strapi
+# Turborepo-aware Strapi image build. Uses the repository root as Docker context
+# so `turbo prune city-account-strapi --docker` can include workspace metadata.
+#
+# Two modes, selected by the `cluster` input:
+#   - CI (cluster == ''): build the final image, do not push.
+#   - Deploy (cluster != ''): reuse an existing commit image or build+push it
+#     and re-tag it for the cluster. The infrastructure deploy is triggered
+#     separately by the caller (deploy.yml).
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: "Full image name including registry/repository."
+        type: string
+        required: true
+      cluster:
+        description: >-
+          Target cluster (development, staging, production). Empty = CI build
+          only (no push). When set, the image is built/pushed and re-tagged for
+          the cluster, ready for the caller to trigger the infrastructure deploy.
+        type: string
+        required: false
+        default: ""
+    secrets:
+      DOCKER_REGISTRY_USERNAME:
+        required: true
+      DOCKER_REGISTRY_PASSWORD:
+        required: true
+      HARBOR_REGISTRY_PASSWORD:
+        required: true
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+  # Root definitions (targets and the pinned build args) plus the CI overlay
+  # that adds registry cache, tags and the Turborepo remote cache.
+  BAKE_FILES: |
+    docker-bake.json
+    docker-bake.hcl
+    .github/docker-bake.ci.hcl
+
+jobs:
+  build:
+    name: Build Strapi
+    runs-on: bratislava
+    env:
+      CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Resolve short SHA
+        id: sha
+        run: echo "short_sha=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker build
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        with:
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+          # Put BuildKit itself in the runner's network namespace so that a
+          # build step with `network = "host"` can reach the Turborepo cache
+          # server on plain localhost. Without this the builder runs on the
+          # bridge network and "host" only means the builder's own namespace.
+          buildx_driver_opts: |
+            network=host
+
+      - name: Docker metadata
+        id: meta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          prefix: ${{ env.CLUSTER_PREFIX }}
+
+      - name: Check for existing image
+        if: ${{ inputs.cluster != '' }}
+        id: existing
+        uses: bratislava/github-actions/.github/actions/check-existing-image@beta
+        with:
+          existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}
+          new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}
+
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Build image
+        if: ${{ inputs.cluster == '' || steps.existing.outputs.found != 'true' }}
+        uses: docker/bake-action@v7
+        with:
+          files: ${{ env.BAKE_FILES }}
+          targets: strapi
+          push: ${{ inputs.cluster != '' }}
+          # The bake target sets network=host, which is a gated entitlement.
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
+          TAGS: ${{ steps.meta.outputs.tags }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}

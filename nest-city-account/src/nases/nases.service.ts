@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { AxiosError, isAxiosError } from 'axios'
-import _ from 'lodash'
+import keyBy from 'lodash/keyBy'
+import uniqBy from 'lodash/uniqBy'
 import {
   ApiIamIdentitiesIdGet200Response,
   UpvsCorporateBody,
@@ -297,8 +298,8 @@ export class NasesService {
   async getIdentitiesByUris(
     inputs: GetUpvsIdentitiesByUrisParam
   ): Promise<GetIdentitiesByUrisResult> {
-    const uniqueInputs = _.uniqBy(inputs, 'uri')
-    const inputsByUri = _.keyBy(uniqueInputs, 'uri') as Partial<
+    const uniqueInputs = uniqBy(inputs, 'uri')
+    const inputsByUri = keyBy(uniqueInputs, 'uri') as Partial<
       Record<string, GetUpvsIdentitiesByUrisParam[number]>
     >
 

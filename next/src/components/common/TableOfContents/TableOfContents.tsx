@@ -1,5 +1,6 @@
 import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
+import { ReactNode } from 'react'
 
 import useHeadings from '@/src/components/common/TableOfContents/useHeadings'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
@@ -8,6 +9,7 @@ import cn from '@/src/utils/cn'
 type Props = {
   scrollOffset?: number
   className?: string
+  footerComponent?: ReactNode
 }
 
 // Prevents from scrolling the clicked table of contents item to the very top of window,
@@ -19,7 +21,11 @@ const DEFAULT_SCROLL_OFFSET = 120
  * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/page-contents/UrbanStudyPageContent.tsx#L118
  */
 
-const TableOfContents = ({ scrollOffset = DEFAULT_SCROLL_OFFSET, className }: Props) => {
+const TableOfContents = ({
+  scrollOffset = DEFAULT_SCROLL_OFFSET,
+  className,
+  footerComponent,
+}: Props) => {
   const { t } = useTranslation('account')
   const headings = useHeadings()
 
@@ -71,6 +77,13 @@ const TableOfContents = ({ scrollOffset = DEFAULT_SCROLL_OFFSET, className }: Pr
             })
           : null}
       </ul>
+
+      {footerComponent ? (
+        <>
+          <HorizontalDivider />
+          {footerComponent}
+        </>
+      ) : null}
     </div>
   )
 }

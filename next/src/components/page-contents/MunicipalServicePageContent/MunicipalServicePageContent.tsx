@@ -8,6 +8,7 @@ import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFo
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
 import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
+import MunicipalServiceCtas from '@/src/components/page-contents/MunicipalServicePageContent/MunicipalServiceCtas'
 import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
 import { isDefined } from '@/src/frontend/utils/general'
@@ -30,6 +31,8 @@ const MunicipalServicePageContent = ({
   const { sections, form: strapiForm, pageHeaderText, moreInformationUrl } = municipalService
 
   const filteredSections = sections?.filter(isDefined) ?? []
+  const shouldShowCtaButtons =
+    !!formDefinition || !!municipalService.links?.filter(isDefined).length
 
   return (
     <>
@@ -94,7 +97,16 @@ const MunicipalServicePageContent = ({
         </div>
 
         <aside className="w-full lg:w-80 lg:shrink-0">
-          <TableOfContents />
+          <TableOfContents
+            footerComponent={
+              shouldShowCtaButtons ? (
+                <MunicipalServiceCtas
+                  municipalService={municipalService}
+                  formDefinition={formDefinition}
+                />
+              ) : null
+            }
+          />
         </aside>
       </div>
     </>

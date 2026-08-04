@@ -82,7 +82,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "overrideTitle"
         },
         "list": {
           "label": "card",
@@ -135,8 +136,8 @@
       },
       "formButtonLabel": {
         "edit": {
-          "label": "(TBD - ešte neimplementované) Formulár - text CTA buttonu",
-          "description": "",
+          "label": "Formulár - text CTA buttonu",
+          "description": "Ak je toto políčko prázdne, button bude mať text \"Vyplniť formulár\".",
           "placeholder": "",
           "visible": true,
           "editable": true
@@ -221,11 +222,12 @@
       },
       "links": {
         "edit": {
-          "label": "(TBD - ešte neimplementované) Odkazy v sidebare",
+          "label": "Odkazy v sidebare",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "label"
         },
         "list": {
           "label": "links",
@@ -315,7 +317,6 @@
       }
     },
     "layouts": {
-      "list": ["id", "title", "updatedAt", "categories", "form"],
       "edit": [
         [
           {
@@ -405,6 +406,13 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "updatedAt",
+        "categories",
+        "form"
       ]
     },
     "uid": "api::municipal-service.municipal-service"

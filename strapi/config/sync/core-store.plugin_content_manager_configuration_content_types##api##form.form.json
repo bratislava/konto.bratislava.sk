@@ -107,11 +107,12 @@
       },
       "landingPage": {
         "edit": {
-          "label": "Landing page",
+          "label": "UŽ SA NEPOUŽIVA - Landing page",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "documentId"
         },
         "list": {
           "label": "landingPage",
@@ -125,7 +126,8 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "documentId"
         },
         "list": {
           "label": "formSentPage",
@@ -201,20 +203,7 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "slug",
-        "updatedAt",
-        "moreInformationUrl",
-        "municipalService"
-      ],
       "edit": [
-        [
-          {
-            "name": "landingPage",
-            "size": 12
-          }
-        ],
         [
           {
             "name": "slug",
@@ -248,7 +237,20 @@
             "name": "temporarilyDisabledReason",
             "size": 4
           }
+        ],
+        [
+          {
+            "name": "landingPage",
+            "size": 12
+          }
         ]
+      ],
+      "list": [
+        "id",
+        "slug",
+        "updatedAt",
+        "moreInformationUrl",
+        "municipalService"
       ]
     },
     "uid": "api::form.form"

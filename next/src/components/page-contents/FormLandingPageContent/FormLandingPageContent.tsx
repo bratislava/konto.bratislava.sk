@@ -2,9 +2,8 @@ import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
-import TableOfContents, {
-  TABLE_OF_CONTENTS_STICKY_TOP,
-} from '@/src/components/common/TableOfContents/TableOfContents'
+import { TABLE_OF_CONTENTS_STICKY_TOP } from '@/src/components/common/TableOfContents/MobileTableOfContents'
+import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
 import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'

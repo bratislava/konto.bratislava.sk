@@ -15,18 +15,16 @@ const TowingNotFound = ({ initialLicensePlate }: Props) => {
 
   return (
     <>
-      <Typography variant="h3">
-        {t('towing.informationTitle.notFound', { licensePlate })}
-      </Typography>
+      <Typography variant="h3">{t('TowingNotFound.heading', { licensePlate })}</Typography>
 
       <div className="flex flex-col items-center gap-6 rounded-md border p-6 text-center lg:p-12">
         <div className="size-12 shrink-0 lg:size-16">
           <TowingIcon />
         </div>
 
-        <Typography variant="p-large">{t('towing.notFound.title')}</Typography>
+        <Typography variant="p-large">{t('TowingNotFound.title')}</Typography>
 
-        <Markdown content={t('towing.notFound.content')} />
+        <Markdown content={t('TowingNotFound.content')} />
       </div>
     </>
   )

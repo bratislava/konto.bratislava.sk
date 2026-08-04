@@ -147,7 +147,7 @@ const hookFormRows: ErrorMessageRow[] = [
     note: 'Znenie je rovnaké ako rjsfErrors.format.ba-phone-number. Pole nie je povinné, správa pre prázdne pole neexistuje.',
   },
   {
-    translationKey: 'towing.licensePlate_required',
+    translationKey: 'Towing.licensePlateRequired',
     trigger: 'Prázdne evidenčné číslo vozidla',
     sources: ['Towing.tsx'],
     proposed: 'Zadajte evidenčné číslo vozidla bez medzier, napríklad BA123AB.',

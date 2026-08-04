@@ -20,28 +20,28 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
   const variant = vehicle.unloadingLocation ? 'relay' : 'towing'
 
   const title = {
-    relay: t('towing.informationTitle.relay', { licensePlate }),
-    towing: t('towing.informationTitle.towing', { licensePlate }),
+    relay: t('TowingTable.title.relay', { licensePlate }),
+    towing: t('TowingTable.title.towing', { licensePlate }),
   }[variant]
 
   const towReasonTranslation = useMemo(() => {
     const towReasonTranslationMap: Record<TowReason, string> = {
-      [TowReason.ReservedParking]: t('towing.towReason.RESERVED_PARKING'),
-      [TowReason.PrivateAccessObstacle]: t('towing.towReason.PRIVATE_ACCESS_OBSTACLE'),
+      [TowReason.ReservedParking]: t('TowingTable.towReasons.RESERVED_PARKING'),
+      [TowReason.PrivateAccessObstacle]: t('TowingTable.towReasons.PRIVATE_ACCESS_OBSTACLE'),
       [TowReason.ParkingNearPublicTransportStop]: t(
-        'towing.towReason.PARKING_NEAR_PUBLIC_TRANSPORT_STOP',
+        'TowingTable.towReasons.PARKING_NEAR_PUBLIC_TRANSPORT_STOP',
       ),
       [TowReason.ParkingNearPedestrianCrossing]: t(
-        'towing.towReason.PARKING_NEAR_PEDESTRIAN_CROSSING',
+        'TowingTable.towReasons.PARKING_NEAR_PEDESTRIAN_CROSSING',
       ),
-      [TowReason.ParkingOnSidewalk]: t('towing.towReason.PARKING_ON_SIDEWALK'),
-      [TowReason.ParkingInTrafficLane]: t('towing.towReason.PARKING_IN_TRAFFIC_LANE'),
-      [TowReason.ParkingAtStreetCrossing]: t('towing.towReason.PARKING_AT_STREET_CROSSING'),
-      [TowReason.Other]: t('towing.towReason.OTHER'),
-      [TowReason.TrafficFlowObstacle]: t('towing.towReason.TRAFFIC_FLOW_OBSTACLE'),
-      [TowReason.NoStoppingZone]: t('towing.towReason.NO_STOPPING_ZONE'),
-      [TowReason.StoppedAtCrosswalk]: t('towing.towReason.STOPPED_AT_CROSSWALK'),
-      [TowReason.NoParkingZone]: t('towing.towReason.NO_PARKING_ZONE'),
+      [TowReason.ParkingOnSidewalk]: t('TowingTable.towReasons.PARKING_ON_SIDEWALK'),
+      [TowReason.ParkingInTrafficLane]: t('TowingTable.towReasons.PARKING_IN_TRAFFIC_LANE'),
+      [TowReason.ParkingAtStreetCrossing]: t('TowingTable.towReasons.PARKING_AT_STREET_CROSSING'),
+      [TowReason.Other]: t('TowingTable.towReasons.OTHER'),
+      [TowReason.TrafficFlowObstacle]: t('TowingTable.towReasons.TRAFFIC_FLOW_OBSTACLE'),
+      [TowReason.NoStoppingZone]: t('TowingTable.towReasons.NO_STOPPING_ZONE'),
+      [TowReason.StoppedAtCrosswalk]: t('TowingTable.towReasons.STOPPED_AT_CROSSWALK'),
+      [TowReason.NoParkingZone]: t('TowingTable.towReasons.NO_PARKING_ZONE'),
     }
 
     return vehicle.towReason ? towReasonTranslationMap[vehicle.towReason] : undefined
@@ -54,23 +54,23 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
       <div className="flex flex-col gap-4">
         <Table
           rows={[
-            { label: t('towing.informationTable.licensePlate'), value: licensePlate },
+            { label: t('TowingTable.licensePlate'), value: licensePlate },
             {
-              label: t('towing.informationTable.loadingDate'),
+              label: t('TowingTable.loadingDate'),
               value: formatDate(vehicle.loadingDate, 'sk', 'short'),
             },
             {
-              label: t('towing.informationTable.loadingTime'),
+              label: t('TowingTable.loadingTime'),
               value: formatDate(vehicle.loadingDate, 'sk', 'time'),
             },
             {
-              label: t('towing.informationTable.loadingLocation'),
+              label: t('TowingTable.loadingLocation'),
               value: vehicle.loadingLocation,
             },
             ...(vehicle.towReason
               ? [
                   {
-                    label: t('towing.informationTable.towReason'),
+                    label: t('TowingTable.towReason'),
                     value: towReasonTranslation ?? vehicle.towReason,
                   },
                 ]
@@ -78,7 +78,7 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
             ...(vehicle.unloadingLocation
               ? [
                   {
-                    label: t('towing.informationTable.unloadingLocation'),
+                    label: t('TowingTable.unloadingLocation'),
                     value: vehicle.unloadingLocation,
                   },
                 ]
@@ -86,7 +86,7 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
             ...(vehicle.relocationReason
               ? [
                   {
-                    label: t('towing.informationTable.relocationReason'),
+                    label: t('TowingTable.relocationReason'),
                     value: vehicle.relocationReason,
                   },
                 ]
@@ -94,8 +94,8 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
             ...(variant === 'towing'
               ? [
                   {
-                    label: t('towing.informationTable.payment'),
-                    value: t('towing.informationTable.paymentValue'),
+                    label: t('TowingTable.payment'),
+                    value: t('TowingTable.paymentValue'),
                     isMarkdown: true,
                   },
                 ]
@@ -104,7 +104,7 @@ const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
           notification={
             variant === 'towing' ? (
               <Alert
-                message={<Markdown content={t('towing.informationTable.paymentNotification')} />}
+                message={<Markdown content={t('TowingTable.paymentNotification')} />}
                 type="info"
                 fullWidth
               />

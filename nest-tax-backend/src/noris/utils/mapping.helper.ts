@@ -30,7 +30,6 @@ export const mapNorisToTaxPayerData = (data: NorisBaseTax) => {
 
 interface NorisTaxAdministratorData {
   email: string
-  externalId: string
   id: number
   name: string
   phoneNumber: string
@@ -42,7 +41,6 @@ export const mapNorisToTaxAdministratorData = (
   return data.vyb_id && data.vyb_telefon_prace && data.vyb_email
     ? {
         email: data.vyb_email,
-        externalId: data.cislo_poradace.toString(),
         id: data.vyb_id,
         name: data.vyb_nazov,
         phoneNumber: data.vyb_telefon_prace,

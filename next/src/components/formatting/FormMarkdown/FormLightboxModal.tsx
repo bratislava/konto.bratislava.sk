@@ -44,7 +44,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
               size="large"
               onPress={() => setIsOpen(false)}
               icon={<Icon name="close" className="size-6" />}
-              aria-label={t('Modal.aria.close')}
+              aria-label={t('Dialog.aria.close')}
               className="text-content-active-primary-inverted-default hover:text-content-active-primary-inverted-hover active:text-content-active-primary-inverted-pressed"
             />
           ),

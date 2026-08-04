@@ -71,19 +71,19 @@ export const useNavMenu = () => {
   const signedInActionsMenuItems: DropdownMenuItemProps[] = [
     {
       id: 0,
-      title: t('menu_links.profile'),
+      title: t('UserProfilePageContent.title'),
       icon: <Icon name="user" className="size-5" />,
       url: ROUTES.USER_PROFILE,
     },
     {
       id: 1,
-      title: t('menu_links.help'),
+      title: t('HelpPageContent.title'),
       icon: <Icon name="help" className="size-5" />,
       url: ROUTES.HELP,
     },
     {
       id: 2,
-      title: t('menu_links.logout'),
+      title: t('useNavMenu.logout'),
       icon: <Icon name="logout" className="size-5 text-content-error-default" />,
       onPress: () => signOut(),
       itemClassName: 'bg-negative-50',
@@ -93,13 +93,13 @@ export const useNavMenu = () => {
   const notSignedInActionsMenuItems: DropdownMenuItemProps[] = [
     {
       id: 0,
-      title: t('menu_links.login'),
+      title: t('useNavMenu.login'),
       icon: <Icon name="user" className="size-5" />,
       onPress: login,
     },
     {
       id: 1,
-      title: t('menu_links.register'),
+      title: t('useNavMenu.register'),
       icon: <Icon name="user" className="size-5" />,
       onPress: register,
     },

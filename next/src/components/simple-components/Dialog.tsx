@@ -30,7 +30,7 @@ const Dialog = ({ children, className, noCloseButton, ...rest }: DialogProps) =>
             <Button
               variant="icon-wrapped-negative-margin"
               icon={<Icon name="close" className="size-6" />}
-              aria-label={t('Modal.aria.close')}
+              aria-label={t('Dialog.aria.close')}
               onPress={renderProps.close}
               data-cy="close-modal"
               className="absolute top-3 right-3 lg:top-4 lg:right-4"

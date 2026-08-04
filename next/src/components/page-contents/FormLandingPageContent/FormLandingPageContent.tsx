@@ -7,10 +7,7 @@ import TableOfContents from '@/src/components/common/TableOfContents/TableOfCont
 import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
-import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
-import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
 /**
@@ -81,20 +78,6 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
                 <Markdown variant="small" content={strapiForm.landingPage.text} />
               </SectionContainer>
             ) : null}
-
-            <SectionContainer>
-              <div className="flex flex-col rounded-xl border">
-                {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
-                  <FormLandingPageCard key={linkCta.id} {...linkCta} />
-                ))}
-                {isDefined(strapiForm.landingPage.formCta) ? (
-                  <FormLandingPageCtaCard
-                    formCta={strapiForm.landingPage.formCta}
-                    formDefinition={formDefinition}
-                  />
-                ) : null}
-              </div>
-            </SectionContainer>
           </div>
         </div>
 

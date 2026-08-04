@@ -53,8 +53,8 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         control={control}
         render={({ field }) => (
           <TextField
-            label={t('my_profile.profile_detail.phone_number')}
-            helptext={t('my_profile.profile_detail.phone_number_helptext')}
+            label={t('PhoneNumberForm.phoneNumber')}
+            helptext={t('PhoneNumberForm.phoneNumberHelptext')}
             autoComplete="tel"
             autoCapitalize="none"
             autoCorrect="off"

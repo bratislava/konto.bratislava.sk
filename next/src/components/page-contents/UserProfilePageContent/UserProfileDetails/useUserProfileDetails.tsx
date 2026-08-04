@@ -40,7 +40,7 @@ export const useUserProfileDetails = () => {
       })
 
       showToast({
-        message: t('my_profile.profile_detail.success_snackbar_message'),
+        message: t('useUserProfileDetails.successSnackbarMessage'),
         variant: 'success',
         duration: 3000,
       })
@@ -62,7 +62,7 @@ export const useUserProfileDetails = () => {
       }
 
       showToast({
-        message: t('my_profile.profile_detail.error_snackbar_message'),
+        message: t('useUserProfileDetails.errorSnackbarMessage'),
         variant: 'error',
         duration: 3000,
       })

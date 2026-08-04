@@ -25,11 +25,11 @@ const UserProfileDetails = () => {
             <div className="flex flex-col gap-2">
               <div className="flex gap-3">
                 <Typography variant="h5" as="h2">
-                  {t('my_profile.profile_detail.title')}
+                  {t('UserProfileDetails.title')}
                 </Typography>
                 {tierStatus.isIdentityVerified && <IdentityVerificationStatus />}
               </div>
-              <Typography variant="p-small">{t('my_profile.profile_detail.text')}</Typography>
+              <Typography variant="p-small">{t('UserProfileDetails.text')}</Typography>
             </div>
             {isEditing ? (
               <div className="flex items-center gap-6 lg:flex-row-reverse">
@@ -39,10 +39,10 @@ const UserProfileDetails = () => {
                   form={formId}
                   data-cy="save-personal-information-button"
                 >
-                  {t('my_profile.profile_detail.save_changes_button')}
+                  {t('UserProfileDetails.saveChangesButton')}
                 </Button>
                 <Button variant="plain" onPress={() => setIsEditing(false)}>
-                  {t('my_profile.profile_detail.discard_changes_button')}
+                  {t('UserProfileDetails.discardChangesButton')}
                 </Button>
               </div>
             ) : (
@@ -52,7 +52,7 @@ const UserProfileDetails = () => {
                 onPress={() => setIsEditing(true)}
                 data-cy="edit-personal-information-button"
               >
-                {t('my_profile.profile_detail.edit_button')}
+                {t('UserProfileDetails.editButton')}
               </Button>
             )}
           </div>

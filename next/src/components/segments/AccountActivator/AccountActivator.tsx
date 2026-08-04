@@ -10,10 +10,10 @@ const AccountActivator = () => {
   return (
     <AccountContainer>
       <div className="flex flex-col gap-2 rounded-xl bg-gray-50 px-5 py-4 lg:rounded-none lg:bg-gray-0 lg:p-0">
-        <Typography variant="h3">{t('account_activator.title')}</Typography>
-        <Markdown variant="small" content={t('account_activator.content')} />
+        <Typography variant="h3">{t('AccountActivator.title')}</Typography>
+        <Markdown variant="small" content={t('AccountActivator.content')} />
         <Button variant="link" className="mt-2 lg:mt-4" href="https://bratislava.sk/konto">
-          {t('account_activator.button_text')}
+          {t('AccountActivator.buttonText')}
         </Button>
       </div>
     </AccountContainer>

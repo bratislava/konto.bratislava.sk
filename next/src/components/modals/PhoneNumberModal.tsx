@@ -71,7 +71,7 @@ const PhoneNumberModal = () => {
 
   return (
     <MessageModal
-      title={t('phone_number_modal.title')}
+      title={t('PhoneNumberModal.title')}
       type="info"
       isOpen={isOpen}
       onOpenChange={handleOpenChange}

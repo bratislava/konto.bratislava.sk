@@ -46,7 +46,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
-      <Typography variant="p-small">{t('phone_number_modal.description')}</Typography>
+      <Typography variant="p-small">{t('PhoneNumberForm.description')}</Typography>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
         name="phone_number"
@@ -65,7 +65,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('phone_number_form.save_changes_button')}
+        {t('PhoneNumberForm.saveChangesButton')}
       </Button>
     </form>
   )

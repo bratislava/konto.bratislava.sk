@@ -39,17 +39,17 @@ const ExternalDocumentRowCard = ({ title, url, ariaLabel }: Props) => {
         variant="plain"
         href={url}
         stretched
-        aria-label={ariaLabel ?? `${t('ExternalDocumentRowCard.go_to_document')}: ${title}`}
+        aria-label={ariaLabel ?? `${t('ExternalDocumentRowCard.goToDocument')}: ${title}`}
         className="whitespace-nowrap focus-visible:ring-0 max-lg:hidden"
       >
-        {t('ExternalDocumentRowCard.go_to_document')}
+        {t('ExternalDocumentRowCard.goToDocument')}
       </Button>
       {/* Screen: mobile */}
       <Button
         variant="unstyled"
         href={url}
         stretched
-        aria-label={ariaLabel ?? `${t('ExternalDocumentRowCard.go_to_document')}: ${title}`}
+        aria-label={ariaLabel ?? `${t('ExternalDocumentRowCard.goToDocument')}: ${title}`}
         className="ml-auto p-1.5 lg:hidden"
       />
     </li>

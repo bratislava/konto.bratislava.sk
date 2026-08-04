@@ -22,7 +22,7 @@ const HelpPageContent = ({ helpPage }: Props) => {
 
   return (
     <>
-      <PageHeader title={t('account_section_help.navigation')} />
+      <PageHeader title={t('HelpPageContent.title')} />
       <div className="flex flex-col">
         {helpPage.categories.filter(isDefined).map((category) => (
           <SectionContainer className="pt-6 last:pb-6 lg:pt-18 lg:last:pb-18" key={category.id}>
@@ -35,9 +35,9 @@ const HelpPageContent = ({ helpPage }: Props) => {
       </div>
       <SectionContainer className="bg-background-passive-primary py-6 lg:py-18">
         <Banner
-          title={t('account_section_help.banner_title')}
-          content={t('account_section_help.banner_content')}
-          buttonText={t('account_section_help.banner_button_text')}
+          title={t('HelpPageContent.bannerTitle')}
+          content={t('HelpPageContent.bannerContent')}
+          buttonText={t('HelpPageContent.bannerButtonText')}
           href="mailto:info@bratislava.sk"
           image={BannerPhone}
         />

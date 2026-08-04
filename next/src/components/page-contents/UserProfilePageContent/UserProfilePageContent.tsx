@@ -14,7 +14,7 @@ const UserProfilePageContent = () => {
 
   return (
     <>
-      <PageHeader title={t('account_section_my_profile.title')} />
+      <PageHeader title={t('UserProfilePageContent.title')} />
       <div className="flex flex-col gap-2.5 py-6 lg:gap-6 lg:py-10">
         <UserProfileDetails />
         <UserProfilePassword />

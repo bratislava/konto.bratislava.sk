@@ -74,7 +74,7 @@ const MyApplicationDetailsHeader = ({
             <Icon name="chevron-left" className="size-5" />
 
             <Typography variant="p-tiny" className="font-medium underline underline-offset-2">
-              {t('back_to_list')}
+              {t('MyApplicationDetailsHeader.backToList')}
             </Typography>
           </Link>
           <div className="flex flex-col gap-4 lg:gap-6">
@@ -90,7 +90,7 @@ const MyApplicationDetailsHeader = ({
                   startIcon={<Icon name="download" />}
                   onPress={exportPdf}
                 >
-                  {t('my_application.details.download_pdf')}
+                  {t('MyApplicationDetailsHeader.downloadPdf')}
                 </Button>
               </div>
             </div>
@@ -125,7 +125,7 @@ const MyApplicationDetailsHeader = ({
               startIcon={<Icon name="download" />}
               onPress={exportPdf}
             >
-              {t('my_application.details.download_pdf')}
+              {t('MyApplicationDetailsHeader.downloadPdf')}
             </Button>
           </div>
         </div>

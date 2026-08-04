@@ -43,13 +43,13 @@ export const useNavMenu = () => {
   const mainMenuItems: (MainMenuItemProps & { hidden?: boolean })[] = [
     {
       id: 0,
-      title: t('account_section_intro.navigation'),
+      title: t('useNavMenu.homepage'),
       icon: <Icon name="home" className="size-6" />,
       url: '/',
     },
     {
       id: 1,
-      title: t('account_section_services.navigation'),
+      title: t('MunicipalServicesPageContent.title'),
       icon: <Icon name="city-services" className="size-6" />,
       url: ROUTES.MUNICIPAL_SERVICES,
     },

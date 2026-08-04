@@ -1,4 +1,4 @@
-import { ReactNode, RefObject, useEffect, useRef, useState } from 'react'
+import { ReactNode, RefObject, useEffect, useState } from 'react'
 
 import TableOfContentsLinks from '@/src/components/common/TableOfContents/TableOfContentsLinks'
 import TableOfContentsTitle from '@/src/components/common/TableOfContents/TableOfContentsTitle'
@@ -8,34 +8,19 @@ import DisclosureHeader from '@/src/components/simple-components/Disclosure/Disc
 import DisclosurePanel from '@/src/components/simple-components/Disclosure/DisclosurePanel'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 
-/**
- * Distance from the top of the window, where the table of contents sticks on small screens -
- * mobile navbar height (56px) + 32px gap below it.
- * The wrapper of the table of contents has to be the sticky element (inside it there would be no
- * room to move), so it is applied there and used here to detect when it gets sticky.
- */
+// Where the table of contents sticks on small screens - navbar height (56px) + 32px gap.
+// Applied by its sticky wrapper, used here to detect when it gets sticky.
 export const TABLE_OF_CONTENTS_STICKY_TOP = 88
 
 type Props = {
-  /**
-   * The sticky container of the table of contents - the collapsing is driven by its position and
-   * size, not by the position and size of this component, which is offset by the container border.
-   */
+  // The sticky wrapper - its position and size drive the collapsing, not the ones of this component.
   containerRef: RefObject<HTMLDivElement | null>
   headings: Heading[]
-  scrollOffset?: number
   footerComponent?: ReactNode
   className?: string
 }
 
-const MobileTableOfContents = ({
-  containerRef,
-  headings,
-  scrollOffset,
-  footerComponent,
-  className,
-}: Props) => {
-  const linksRef = useRef<HTMLUListElement>(null)
+const MobileTableOfContents = ({ containerRef, headings, footerComponent, className }: Props) => {
   // Expanded on mount, collapses once the table of contents gets sticky.
   const [isExpanded, setExpanded] = useState(true)
 
@@ -61,19 +46,11 @@ const MobileTableOfContents = ({
   }, [containerRef])
 
   /**
-   * Height of the collapsed table of contents (the title and the footer with CTAs), which covers
-   * the content while it is sticky, so the clicked heading has to be scrolled below it.
-   * Expects the links to be expanded, which is always the case when an item is pressed.
+   * The current height is exactly how far below the clicked heading has to be scrolled - it covers
+   * both the collapsed table of contents, which stays over the content while sticky, and the links,
+   * whose collapsing moves the content below them up.
    */
-  const getCollapsedHeight = () => {
-    const container = containerRef.current
-    const links = linksRef.current
-    if (!container || !links) {
-      return 0
-    }
-
-    return container.offsetHeight - links.offsetHeight
-  }
+  const getHeight = () => containerRef.current?.offsetHeight ?? 0
 
   return (
     <div className={className}>
@@ -85,10 +62,8 @@ const MobileTableOfContents = ({
           {/* TODO remove "*:py-0" class, when our DisclosurePanel has option to disable the padding */}
           <DisclosurePanel className="*:py-0">
             <TableOfContentsLinks
-              ref={linksRef}
               headings={headings}
-              scrollOffset={scrollOffset}
-              getAdditionalScrollOffset={getCollapsedHeight}
+              getAdditionalScrollOffset={getHeight}
               onItemPress={() => {
                 setExpanded(false)
               }}

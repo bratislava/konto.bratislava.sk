@@ -6,7 +6,6 @@ import useHeadings from '@/src/components/common/TableOfContents/useHeadings'
 import cn from '@/src/utils/cn'
 
 type Props = {
-  scrollOffset?: number
   className?: string
   footerComponent?: ReactNode
 }
@@ -16,7 +15,7 @@ type Props = {
  * Based on Bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/master/next/src/components/page-contents/UrbanStudyPageContent.tsx#L118
  */
 
-const TableOfContents = ({ scrollOffset, className, footerComponent }: Props) => {
+const TableOfContents = ({ className, footerComponent }: Props) => {
   const headings = useHeadings()
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -31,13 +30,11 @@ const TableOfContents = ({ scrollOffset, className, footerComponent }: Props) =>
       <MobileTableOfContents
         containerRef={containerRef}
         headings={headings}
-        scrollOffset={scrollOffset}
         footerComponent={footerComponent}
         className="lg:hidden"
       />
       <DesktopTableOfContents
         headings={headings}
-        scrollOffset={scrollOffset}
         footerComponent={footerComponent}
         className="max-lg:hidden"
       />

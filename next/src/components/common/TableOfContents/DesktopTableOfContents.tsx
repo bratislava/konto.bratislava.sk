@@ -7,12 +7,11 @@ import HorizontalDivider from '@/src/components/simple-components/HorizontalDivi
 
 type Props = {
   headings: Heading[]
-  scrollOffset?: number
   footerComponent?: ReactNode
   className?: string
 }
 
-const DesktopTableOfContents = ({ headings, scrollOffset, footerComponent, className }: Props) => {
+const DesktopTableOfContents = ({ headings, footerComponent, className }: Props) => {
   return (
     <div className={className}>
       {headings.length ? (
@@ -21,7 +20,7 @@ const DesktopTableOfContents = ({ headings, scrollOffset, footerComponent, class
             <TableOfContentsTitle />
           </div>
           <HorizontalDivider />
-          <TableOfContentsLinks headings={headings} scrollOffset={scrollOffset} />
+          <TableOfContentsLinks headings={headings} />
         </>
       ) : null}
 

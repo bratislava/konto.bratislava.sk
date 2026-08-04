@@ -630,7 +630,7 @@ describe('FormSenderService', () => {
           }),
           configurable: true,
         })
-        Object.defineProperty(service['baConfigService'], 'fileLimits', {
+        Object.defineProperty(service['baConfigService'], 'files', {
           get: () => ({
             maxSingleSizeGlobal: 500_000_000,
             maxCumulativeSizeGlobal: 1_000_000_000,
@@ -663,7 +663,7 @@ describe('FormSenderService', () => {
       })
 
       it('should throw if total file size exceeds global cumulative limit', async () => {
-        Object.defineProperty(service['baConfigService'], 'fileLimits', {
+        Object.defineProperty(service['baConfigService'], 'files', {
           get: () => ({
             maxSingleSizeGlobal: 500_000_000,
             maxCumulativeSizeGlobal: 200_000_000,

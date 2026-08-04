@@ -536,7 +536,7 @@ export class FormSenderService {
     const totalFileSize = safeFiles.reduce((sum, f) => sum + f.fileSize, 0)
     const maxTotalFileSize =
       formDefinitionFiles.maxTotalFileSize ??
-      this.baConfigService.fileLimits.maxCumulativeSizeGlobal
+      this.baConfigService.files.maxCumulativeSizeGlobal
     if (totalFileSize > maxTotalFileSize) {
       throw this.throwerErrorGuard.BadRequestException(
         FilesErrorsEnum.TOTAL_FILE_SIZE_EXCEEDED_ERROR,

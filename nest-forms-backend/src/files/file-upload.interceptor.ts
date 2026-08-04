@@ -26,7 +26,7 @@ const MULTIPART_OVERHEAD_BYTES = 10_000
  * Cumulative (maxTotalFileSize) limits are NOT checked here — they are enforced at form submission time in
  * NasesService.sendForm, because the set of active files is not final until the user submits.
  *
- * When the feature toggle is disabled, the limit falls back to the global limit (fileLimits.maxSingleSizeGlobal).
+ * When the feature toggle is disabled, the limit falls back to the global limit (files.maxSingleSizeGlobal).
  * Otherwise the form is looked up to resolve the limit, and a missing form or form definition throws an error.
  */
 @Injectable()
@@ -98,7 +98,7 @@ export class FileUploadInterceptor implements NestInterceptor {
   }
 
   private async resolveLimit(req: Request): Promise<number> {
-    const globalMax = this.baConfigService.fileLimits.maxSingleSizeGlobal
+    const globalMax = this.baConfigService.files.maxSingleSizeGlobal
 
     if (!this.baConfigService.featureToggles.fileSizeLimits) {
       return globalMax

@@ -89,7 +89,7 @@ export class ScannerService {
         )
       }
 
-      const maxFileSize = this.baConfigService.fileLimits.maxSingleSizeGlobal
+      const maxFileSize = this.baConfigService.files.maxSingleSizeGlobal
       if (fileSize > maxFileSize) {
         throw new PayloadTooLargeException(
           `File size (${fileSize}) exceeds the maximum allowed size (${maxFileSize}). Please check the file size.`,

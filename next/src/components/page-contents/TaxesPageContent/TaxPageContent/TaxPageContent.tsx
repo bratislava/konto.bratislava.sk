@@ -34,8 +34,8 @@ const TaxPageContent = () => {
   })
 
   const pageTitle = {
-    [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),
-    [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year, order: taxData.order }),
+    [TaxType.Dzn]: t('TaxPageContent.title.dzn', { year: taxData.year }),
+    [TaxType.Ko]: t('TaxPageContent.title.ko', { year: taxData.year, order: taxData.order }),
   }[taxData.type]
 
   const paymentSuccessMessage = {

@@ -63,7 +63,7 @@ const TaxAdministratorCardWrapper = ({ taxAdministrator, taxType }: Props) => {
             <span className="flex items-center gap-x-2">
               <Icon name="clock" className="size-5 shrink-0" />
               <MLink href={workingHoursLinkHref} variant="underlined-medium" target="_blank">
-                {t('taxes.tax_administrator_card.working_hours')}
+                {t('TaxAdministratorCardWrapper.workingHours')}
               </MLink>
             </span>
           </div>

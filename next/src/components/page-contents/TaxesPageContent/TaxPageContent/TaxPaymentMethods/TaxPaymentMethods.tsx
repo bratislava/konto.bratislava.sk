@@ -36,30 +36,30 @@ const TaxPaymentMethods = () => {
 
   // If first installment is paid, there is no need to show the subtitle with due date for the one-time payment
   const oneTimePaymentSubtitleText = oneTimePayment.dueDate
-    ? t('tax_detail_section.tax_payment_rest_subtitle', {
+    ? t('TaxPaymentMethods.oneTimePaymentSubtitle', {
         date: formatDate(oneTimePayment.dueDate),
       })
-    : t('tax_detail_section.tax_payment_rest_subtitle_not_available')
+    : t('TaxPaymentMethods.oneTimePaymentSubtitleNotAvailable')
   const oneTimePaymentSubtitle = isFirstInstallmentPaid ? undefined : oneTimePaymentSubtitleText
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 pt-4 lg:px-0 lg:pt-0">
       <Typography variant="h5" as="p" className="font-semibold">
-        {t('tax_detail_section.tax_payment_methods')}
+        {t('TaxPaymentMethods.title')}
       </Typography>
       <div className="flex w-full flex-col rounded-lg border border-gray-200">
         <TaxPaymentMethodsItem
           title={
             taxData.paidStatus === TaxStatusEnum.PartiallyPaid
-              ? t('tax_detail_section.tax_payment_rest')
-              : t('tax_detail_section.tax_payment_full')
+              ? t('TaxPaymentMethods.rest')
+              : t('TaxPaymentMethods.full')
           }
           subtitle={oneTimePaymentSubtitle}
           amount={overallBalance}
           buttonText={
             paidStatus === TaxStatusEnum.PartiallyPaid
-              ? t('taxes.payment.pay_rest')
-              : t('taxes.payment.pay_all')
+              ? t('TaxPaymentMethods.payRest')
+              : t('TaxPaymentMethods.payAll')
           }
           buttonVariant="solid"
           buttonHref={`${paymentPagePath}?sposob-uhrady=zvysna-suma`}
@@ -67,17 +67,17 @@ const TaxPaymentMethods = () => {
         {installmentPayment.isPossible &&
           installmentPayment.activeInstallment?.remainingAmount !== undefined && (
             <TaxPaymentMethodsItem
-              title={t('tax_detail_section.tax_payment_installment')}
+              title={t('TaxPaymentMethods.installment')}
               subtitle={
                 installmentPayment.activeInstallment?.dueDate
-                  ? t('tax_detail_section.tax_payment_installment_subtitle', {
+                  ? t('TaxPaymentMethods.installmentSubtitle', {
                       date: formatDate(installmentPayment.activeInstallment?.dueDate),
                     })
-                  : t('tax_detail_section.tax_payment_installment_subtitle_not_available')
+                  : t('TaxPaymentMethods.installmentSubtitleNotAvailable')
               }
               amount={installmentPayment.activeInstallment?.remainingAmount}
               buttonVariant="outline"
-              buttonText={t('taxes.payment.pay_installment')}
+              buttonText={t('TaxPaymentMethods.payInstallment')}
               buttonHref={`${paymentPagePath}?sposob-uhrady=splatky`}
             />
           )}
@@ -89,7 +89,7 @@ const TaxPaymentMethods = () => {
               <Alert
                 type="warning"
                 fullWidth
-                message={t('tax_detail_section.tax_payment_under_threshold_alert')}
+                message={t('TaxPaymentMethods.underThresholdAlert')}
               />
             </div>
           )}

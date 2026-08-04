@@ -75,39 +75,39 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
   const bankPaymentInfoRows = [
     taxData.type === TaxType.Dzn
       ? {
-          label: t('taxes.payment_data.bank_info.slovenska_sporitelna_title'),
-          value: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban.dzn'),
-          clipboardCopyValue: t('taxes.payment_data.bank_info.slovenska_sporitelna_iban.dzn'),
+          label: t('TaxPaymentData.bankInfo.slovenskaSporitelnaTitle'),
+          value: t('TaxPaymentData.bankInfo.slovenskaSporitelnaIban.dzn'),
+          clipboardCopyValue: t('TaxPaymentData.bankInfo.slovenskaSporitelnaIban.dzn'),
         }
       : null,
     taxData.type === TaxType.Dzn
       ? {
-          label: t('taxes.payment_data.bank_info.csob_title'),
-          value: t('taxes.payment_data.bank_info.csob_iban.dzn'),
-          clipboardCopyValue: t('taxes.payment_data.bank_info.csob_iban.dzn'),
+          label: t('TaxPaymentData.bankInfo.csobTitle'),
+          value: t('TaxPaymentData.bankInfo.csobIban.dzn'),
+          clipboardCopyValue: t('TaxPaymentData.bankInfo.csobIban.dzn'),
         }
       : null,
     taxData.type === TaxType.Ko
       ? {
-          label: t('taxes.payment_data.bank_info.csob_title'),
-          value: t('taxes.payment_data.bank_info.csob_iban.ko'),
-          clipboardCopyValue: t('taxes.payment_data.bank_info.csob_iban.ko'),
+          label: t('TaxPaymentData.bankInfo.csobTitle'),
+          value: t('TaxPaymentData.bankInfo.csobIban.ko'),
+          clipboardCopyValue: t('TaxPaymentData.bankInfo.csobIban.ko'),
         }
       : null,
     {
-      label: t('taxes.payment_data.variable_symbol'),
+      label: t('TaxPaymentData.variableSymbol'),
       value: variableSymbol,
       clipboardCopyValue: variableSymbol,
     },
     {
-      label: t('taxes.payment_data.sum'),
+      label: t('TaxPaymentData.sum'),
       value: amountToPay ? <FormatCurrencyFromCents value={amountToPay} /> : null,
       clipboardCopyValue: amountToPay ? (amountToPay / 100).toFixed(2) : null,
     },
     {
-      label: t('taxes.payment_data.beneficiary_name'),
-      value: t('taxes.payment_data.beneficiary_name_value'),
-      clipboardCopyValue: t('taxes.payment_data.beneficiary_name_value'),
+      label: t('TaxPaymentData.beneficiaryName'),
+      value: t('TaxPaymentData.beneficiaryNameValue'),
+      clipboardCopyValue: t('TaxPaymentData.beneficiaryNameValue'),
     },
   ].filter(isDefined)
 
@@ -120,7 +120,7 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
             fullWidth
             message={
               <Markdown
-                content={t('tax_detail_section.tax_payment_installment_alert_before_next_payment', {
+                content={t('TaxPaymentData.installmentReminderAlert', {
                   email: userData.email,
                 })}
                 variant="small"
@@ -130,7 +130,7 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
 
           {hasMultipleInstallments && (
             <div className="flex flex-col gap-3">
-              <Typography variant="h5">{t('taxes.payment_data.installments.title')}</Typography>
+              <Typography variant="h5">{t('TaxPaymentData.installments.title')}</Typography>
               <PaymentSchedule />
             </div>
           )}
@@ -138,13 +138,13 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
       )}
 
       <div className="flex flex-col gap-2 lg:gap-4">
-        <Typography variant="h5">{t('taxes.payment_data.payment_methods_title')}</Typography>
+        <Typography variant="h5">{t('TaxPaymentData.paymentMethodsTitle')}</Typography>
         <div className="rounded-lg border px-4 lg:px-6">
           <div className="flex flex-col gap-4 py-4 lg:flex-row lg:justify-between lg:py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
               <div className="flex flex-row-reverse items-center justify-between gap-4 lg:flex-row lg:justify-start">
                 <Icon name="payment" className="size-8 lg:size-12" />
-                <Typography variant="h5">{t('taxes.payment_data.card_payment_title')}</Typography>
+                <Typography variant="h5">{t('TaxPaymentData.cardPaymentTitle')}</Typography>
               </div>
               <div className="flex flex-row items-center gap-1.5 lg:gap-3">
                 <div className="rounded-lg bg-background-passive-primary px-3 py-1">
@@ -163,10 +163,10 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
                 onPress={handleRedirectToPayment}
                 isLoading={isLoading}
                 endIcon={<Icon name="arrow-right" />}
-                loadingText={t('taxes.payment_data.redirect_to_payment_loading_text')}
+                loadingText={t('TaxPaymentData.redirectToPaymentLoadingText')}
                 className="max-lg:w-full"
               >
-                {t('taxes.payment.to_pay')}
+                {t('TaxPaymentData.toPay')}
               </Button>
             </div>
           </div>
@@ -177,7 +177,7 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
               <div className="flex w-full flex-row-reverse items-center justify-between gap-5 lg:flex-row lg:justify-start">
                 <Icon name="qr-code" className="size-8 lg:size-12" />
                 <Typography variant="h5">
-                  {t('taxes.payment_data.qr_code_and_bank_transfer_title')}
+                  {t('TaxPaymentData.qrCodeAndBankTransferTitle')}
                 </Typography>
               </div>
               <Typography variant="h5" className="max-lg:w-full">
@@ -214,10 +214,10 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
                 <div className="flex w-full grow flex-col items-start justify-between gap-4">
                   <div className="flex flex-col items-start gap-2">
                     <Typography variant="h6" as="p" className="font-semibold">
-                      {t('taxes.payment_data.qr_code')}
+                      {t('TaxPaymentData.qrCode')}
                     </Typography>
                     <Typography variant="p-small">
-                      {t('taxes.payment_data.use_your_banking_app_to_load')}
+                      {t('TaxPaymentData.useYourBankingAppToLoad')}
                     </Typography>
                   </div>
                   <Button
@@ -226,7 +226,7 @@ const TaxPaymentData = ({ paymentMethod }: Props) => {
                     className="text-nowrap max-lg:w-full"
                     onPress={handleDownloadQrCode}
                   >
-                    {t('taxes.payment_data.download_qr_code')}
+                    {t('TaxPaymentData.downloadQrCode')}
                   </Button>
                 </div>
                 <div className="flex h-full flex-col justify-center lg:w-100">

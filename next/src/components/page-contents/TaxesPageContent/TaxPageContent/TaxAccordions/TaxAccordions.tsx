@@ -17,7 +17,7 @@ const TaxAccordions = () => {
       <div className="flex w-full flex-col gap-4">
         <DznAccordionContent
           dataType="APARTMENT"
-          title={t('tax_detail_section.tax_type.APARTMENT.title')}
+          title={t('TaxAccordions.taxTypes.APARTMENT')}
           secondTitle={currencyFromCentsFormatter.format(
             taxData.itemizedDetail.apartmentTotalAmount,
           )}
@@ -25,13 +25,13 @@ const TaxAccordions = () => {
         />
         <DznAccordionContent
           dataType="GROUND"
-          title={t('tax_detail_section.tax_type.GROUND.title')}
+          title={t('TaxAccordions.taxTypes.GROUND')}
           secondTitle={currencyFromCentsFormatter.format(taxData.itemizedDetail.groundTotalAmount)}
           data={taxData.itemizedDetail.groundTaxDetail}
         />
         <DznAccordionContent
           dataType="CONSTRUCTION"
-          title={t('tax_detail_section.tax_type.CONSTRUCTION.title')}
+          title={t('TaxAccordions.taxTypes.CONSTRUCTION')}
           secondTitle={currencyFromCentsFormatter.format(
             taxData.itemizedDetail.constructionTotalAmount,
           )}

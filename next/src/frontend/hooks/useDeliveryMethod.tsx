@@ -40,9 +40,9 @@ export const useGetDeliveryMethod = () => {
 
   const deliveryMethodLabel = officialCorrespondenceChannel
     ? {
-        [UserOfficialCorrespondenceChannelEnum.Email]: t('taxes.delivery_method.email'),
-        [UserOfficialCorrespondenceChannelEnum.Postal]: t('taxes.delivery_method.postal'),
-        [UserOfficialCorrespondenceChannelEnum.Edesk]: t('taxes.delivery_method.edesk'),
+        [UserOfficialCorrespondenceChannelEnum.Email]: t('useGetDeliveryMethod.email'),
+        [UserOfficialCorrespondenceChannelEnum.Postal]: t('useGetDeliveryMethod.postal'),
+        [UserOfficialCorrespondenceChannelEnum.Edesk]: t('useGetDeliveryMethod.edesk'),
       }[officialCorrespondenceChannel]
     : null
 

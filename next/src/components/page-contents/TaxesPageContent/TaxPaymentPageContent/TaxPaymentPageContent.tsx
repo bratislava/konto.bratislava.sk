@@ -35,21 +35,21 @@ const TaxPaymentPageContent = () => {
   const getTitle = () => {
     switch (paymentMethodParam) {
       case PaymentMethod.Installments:
-        return t('tax_detail_section.title_payment_installments')
+        return t('TaxPaymentPageContent.title.installments')
 
       case PaymentMethod.RemainingAmount:
         return isSinglePayment
-          ? t('tax_detail_section.title_payment_all')
-          : t('tax_detail_section.title_payment_rest')
+          ? t('TaxPaymentPageContent.title.all')
+          : t('TaxPaymentPageContent.title.rest')
 
       default:
-        return t('tax_detail_section.title_payment_all')
+        return t('TaxPaymentPageContent.title.all')
     }
   }
 
   const detailPageTitle = {
-    [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),
-    [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year, order: taxData.order }),
+    [TaxType.Dzn]: t('TaxPageContent.title.dzn', { year: taxData.year }),
+    [TaxType.Ko]: t('TaxPageContent.title.ko', { year: taxData.year, order: taxData.order }),
   }[taxData.type]
 
   const detailPagePath = ROUTES.TAXES_TAX_DETAIL({

@@ -25,22 +25,18 @@ const PaymentSchedule = () => {
       {taxData.installmentPayment.installments?.map((installment, index) => {
         const formattedDate = formatDate(installment.dueDate)
         const translationMap = {
-          0: t('tax_detail_section.installments.0', { date: formattedDate }),
-          1: t('tax_detail_section.installments.1', { date: formattedDate }),
-          2: t('tax_detail_section.installments.2', { date: formattedDate }),
-          3: t('tax_detail_section.installments.3', { date: formattedDate }),
+          0: t('PaymentSchedule.installments.0', { date: formattedDate }),
+          1: t('PaymentSchedule.installments.1', { date: formattedDate }),
+          2: t('PaymentSchedule.installments.2', { date: formattedDate }),
+          3: t('PaymentSchedule.installments.3', { date: formattedDate }),
         }
 
         const statusLabel = {
-          [InstallmentPaidStatusEnum.Paid]: t('tax_detail_section.installment.status.paid'),
-          [InstallmentPaidStatusEnum.OverPaid]: t('tax_detail_section.installment.status.overpaid'),
-          [InstallmentPaidStatusEnum.NotPaid]: t('tax_detail_section.installment.status.not_paid'),
-          [InstallmentPaidStatusEnum.PartiallyPaid]: t(
-            'tax_detail_section.installment.status.partially_paid',
-          ),
-          [InstallmentPaidStatusEnum.AfterDueDate]: t(
-            'tax_detail_section.installment.status.after_due_date',
-          ),
+          [InstallmentPaidStatusEnum.Paid]: t('PaymentSchedule.status.paid'),
+          [InstallmentPaidStatusEnum.OverPaid]: t('PaymentSchedule.status.overpaid'),
+          [InstallmentPaidStatusEnum.NotPaid]: t('PaymentSchedule.status.notPaid'),
+          [InstallmentPaidStatusEnum.PartiallyPaid]: t('PaymentSchedule.status.partiallyPaid'),
+          [InstallmentPaidStatusEnum.AfterDueDate]: t('PaymentSchedule.status.afterDueDate'),
         }[installment.status]
 
         return (
@@ -52,7 +48,7 @@ const PaymentSchedule = () => {
                how date calculation works for PKO is not yet determined same in TaxPaymentMethods */}
                 {installment.dueDate
                   ? translationMap[index]
-                  : t('tax_detail_section.installments.not_available')}
+                  : t('PaymentSchedule.installments.notAvailable')}
               </Typography>
               <div className="flex justify-between max-lg:w-full lg:grow">
                 <Typography

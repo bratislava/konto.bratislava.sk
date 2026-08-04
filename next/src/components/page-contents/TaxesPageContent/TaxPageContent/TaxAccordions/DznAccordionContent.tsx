@@ -30,22 +30,16 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
 
   const matchHeader: Record<string, string[]> = {
     GROUND: [
-      t('tax_detail_section.dzn_table.area'),
-      t('tax_detail_section.dzn_table.base_monetary'),
-      t('tax_detail_section.dzn_table.total'),
+      t('DznAccordionContent.area'),
+      t('DznAccordionContent.baseMonetary'),
+      t('DznAccordionContent.total'),
     ],
-    CONSTRUCTION: [
-      t('tax_detail_section.dzn_table.base_metric'),
-      t('tax_detail_section.dzn_table.total'),
-    ],
-    APARTMENT: [
-      t('tax_detail_section.dzn_table.base_metric'),
-      t('tax_detail_section.dzn_table.total'),
-    ],
+    CONSTRUCTION: [t('DznAccordionContent.baseMetric'), t('DznAccordionContent.total')],
+    APARTMENT: [t('DznAccordionContent.baseMetric'), t('DznAccordionContent.total')],
   }
 
   const headerData = [
-    t('tax_detail_section.dzn_table.subject'),
+    t('DznAccordionContent.subject'),
     ...(matchHeader[dataType] ?? matchHeader.APARTMENT),
   ]
 
@@ -79,30 +73,30 @@ const TableData = ({
 
   const translationMap = {
     GROUND: {
-      A: t('tax_detail_section.tax_type.GROUND.ground_type.A.title'),
-      B: t('tax_detail_section.tax_type.GROUND.ground_type.B.title'),
-      C: t('tax_detail_section.tax_type.GROUND.ground_type.C.title'),
-      D: t('tax_detail_section.tax_type.GROUND.ground_type.D.title'),
-      E: t('tax_detail_section.tax_type.GROUND.ground_type.E.title'),
-      F: t('tax_detail_section.tax_type.GROUND.ground_type.F.title'),
-      G: t('tax_detail_section.tax_type.GROUND.ground_type.G.title'),
-      H: t('tax_detail_section.tax_type.GROUND.ground_type.H.title'),
+      A: t('DznAccordionContent.groundTypes.GROUND.A'),
+      B: t('DznAccordionContent.groundTypes.GROUND.B'),
+      C: t('DznAccordionContent.groundTypes.GROUND.C'),
+      D: t('DznAccordionContent.groundTypes.GROUND.D'),
+      E: t('DznAccordionContent.groundTypes.GROUND.E'),
+      F: t('DznAccordionContent.groundTypes.GROUND.F'),
+      G: t('DznAccordionContent.groundTypes.GROUND.G'),
+      H: t('DznAccordionContent.groundTypes.GROUND.H'),
     },
     CONSTRUCTION: {
-      A: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.A.title'),
-      B: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.B.title'),
-      C: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.C.title'),
-      D: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.D.title'),
-      E: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.E.title'),
-      F: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.F.title'),
-      G: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.G.title'),
-      jH: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.jH.title'),
-      jI: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.jI.title'),
-      H: t('tax_detail_section.tax_type.CONSTRUCTION.ground_type.H.title'),
+      A: t('DznAccordionContent.groundTypes.CONSTRUCTION.A'),
+      B: t('DznAccordionContent.groundTypes.CONSTRUCTION.B'),
+      C: t('DznAccordionContent.groundTypes.CONSTRUCTION.C'),
+      D: t('DznAccordionContent.groundTypes.CONSTRUCTION.D'),
+      E: t('DznAccordionContent.groundTypes.CONSTRUCTION.E'),
+      F: t('DznAccordionContent.groundTypes.CONSTRUCTION.F'),
+      G: t('DznAccordionContent.groundTypes.CONSTRUCTION.G'),
+      jH: t('DznAccordionContent.groundTypes.CONSTRUCTION.jH'),
+      jI: t('DznAccordionContent.groundTypes.CONSTRUCTION.jI'),
+      H: t('DznAccordionContent.groundTypes.CONSTRUCTION.H'),
     },
     APARTMENT: {
-      byt: t('tax_detail_section.tax_type.APARTMENT.ground_type.byt.title'),
-      nebyt: t('tax_detail_section.tax_type.APARTMENT.ground_type.nebyt.title'),
+      byt: t('DznAccordionContent.groundTypes.APARTMENT.byt'),
+      nebyt: t('DznAccordionContent.groundTypes.APARTMENT.nebyt'),
     },
   } as const
 

@@ -23,8 +23,8 @@ const TaxSubjectInformation = () => {
   const { userAttributes } = useSsrAuth()
 
   const title = {
-    [TaxType.Dzn]: t('taxes.contact_information.personal_info.tax'),
-    [TaxType.Ko]: t('taxes.contact_information.personal_info.fee'),
+    [TaxType.Dzn]: t('TaxSubjectInformation.subject.tax'),
+    [TaxType.Ko]: t('TaxSubjectInformation.subject.fee'),
   }[taxData.type]
 
   const displayName =
@@ -42,15 +42,15 @@ const TaxSubjectInformation = () => {
 
   const rows = [
     {
-      label: t('taxes.contact_information.name_and_surname'),
+      label: t('TaxSubjectInformation.nameAndSurname'),
       value: displayName,
     },
     {
-      label: t('taxes.contact_information.permanent_address'),
+      label: t('TaxSubjectInformation.permanentAddress'),
       value: displayPermanentAddress,
     },
     {
-      label: t('taxes.contact_information.taxpayer_id'),
+      label: t('TaxSubjectInformation.taxpayerId'),
       value: taxData.taxPayer?.externalId,
     },
   ]

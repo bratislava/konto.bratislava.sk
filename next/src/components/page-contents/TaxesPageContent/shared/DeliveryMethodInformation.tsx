@@ -49,7 +49,7 @@ const DeliveryMethodInformation = () => {
                 startIcon={<Icon name="settings" />}
                 className="max-lg:hidden"
               >
-                {t('taxes.delivery_method.change_button')}
+                {t('DeliveryMethodInformation.changeButton')}
               </Button>
               {/* Mobile */}
               <Button
@@ -57,7 +57,7 @@ const DeliveryMethodInformation = () => {
                 variant="icon-wrapped"
                 icon={<Icon name="settings" />}
                 className="self-start lg:hidden"
-                aria-label={t('taxes.delivery_method.change_button.aria')}
+                aria-label={t('DeliveryMethodInformation.aria.changeButton')}
               />
             </>
           )}

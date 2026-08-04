@@ -14,8 +14,8 @@ const TaxPaymentSummary = () => {
   const { taxData } = useTaxData()
 
   const overallAmountLabel = {
-    [TaxType.Dzn]: t('taxes.tax_details.tax'),
-    [TaxType.Ko]: t('taxes.tax_details.fee'),
+    [TaxType.Dzn]: t('TaxPaymentSummary.tax'),
+    [TaxType.Ko]: t('TaxPaymentSummary.fee'),
   }[taxData.type]
 
   const rows = [
@@ -24,12 +24,12 @@ const TaxPaymentSummary = () => {
       value: taxData.overallAmount,
     },
     {
-      label: t('tax_detail_section.tax_to_pay'),
+      label: t('TaxPaymentSummary.toPay'),
       value: taxData.overallBalance,
       valueClassName: 'text-error',
     },
     {
-      label: t('tax_detail_section.tax_already_paid'),
+      label: t('TaxPaymentSummary.alreadyPaid'),
       value: taxData.overallPaid,
       valueClassName: 'text-success-700',
     },

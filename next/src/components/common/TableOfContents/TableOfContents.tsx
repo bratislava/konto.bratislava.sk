@@ -45,22 +45,22 @@ const TableOfContents = ({
   return (
     <div
       className={cn(
-        'sticky top-12 flex max-w-200 flex-col overflow-hidden rounded-lg border border-border-passive-primary bg-background-passive-base px-6',
+        'sticky top-12 flex max-w-200 flex-col overflow-hidden rounded-lg border border-border-passive-primary bg-background-passive-base',
         className,
       )}
     >
-      <div className="py-6">
-        <Typography variant="h5" as="h2">
-          {t('TableOfContents.title')}
-        </Typography>
-      </div>
+      {headings.length ? (
+        <>
+          <div className="p-4 lg:p-6">
+            <Typography variant="h5" as="h2">
+              {t('TableOfContents.title')}
+            </Typography>
+          </div>
 
-      <HorizontalDivider />
+          <HorizontalDivider />
 
-      {/* TODO setup correct responsive design for small screens - now it is just a guess  */}
-      <ul className="flex flex-col py-2">
-        {headings.length
-          ? headings.map((heading) => {
+          <ul className="flex flex-col px-4 py-2 lg:px-6">
+            {headings.map((heading) => {
               return (
                 <li key={heading.id} className="py-2 lg:py-3">
                   <Button
@@ -68,20 +68,22 @@ const TableOfContents = ({
                     onPress={() => {
                       handleItemPress(heading.id)
                     }}
+                    // TODO remove when Button is updated in https://github.com/bratislava/component-library/pull/48
                     className="text-left"
                   >
                     {heading.text}
                   </Button>
                 </li>
               )
-            })
-          : null}
-      </ul>
+            })}
+          </ul>
+        </>
+      ) : null}
 
       {footerComponent ? (
         <>
           <HorizontalDivider />
-          {footerComponent}
+          <div className="p-4 lg:p-6">{footerComponent}</div>
         </>
       ) : null}
     </div>

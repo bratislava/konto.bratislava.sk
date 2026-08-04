@@ -14,7 +14,7 @@ const MunicipalServiceCtas = ({ municipalService, formDefinition }: Props) => {
   const filteredLinks = municipalService.links?.filter(isDefined) ?? []
 
   return (
-    <div className="flex flex-col gap-3 py-6">
+    <div className="flex flex-col gap-3">
       {formDefinition ? (
         <FormCtaButton
           formDefinition={formDefinition}

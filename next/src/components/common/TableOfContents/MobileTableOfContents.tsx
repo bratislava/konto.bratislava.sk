@@ -56,9 +56,11 @@ const MobileTableOfContents = ({ containerRef, headings, footerComponent, classN
     <div className={className}>
       {headings.length ? (
         <Disclosure isExpanded={isExpanded} onExpandedChange={setExpanded}>
-          <DisclosureHeader className="p-4 ring-inset open:border-b">
+          <DisclosureHeader className="p-4 ring-inset">
             <TableOfContentsTitle />
           </DisclosureHeader>
+          {/* Rendered only when expanded, so it does not double with the divider above the footer */}
+          {isExpanded ? <HorizontalDivider /> : null}
           {/* TODO remove "*:py-0" class, when our DisclosurePanel has option to disable the padding */}
           <DisclosurePanel className="*:py-0">
             <TableOfContentsLinks

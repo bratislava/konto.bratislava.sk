@@ -96,7 +96,7 @@
     "prisma-json-types-generator": "5.1.1",
     "rimraf": "6.1.2",
     "supertest": "7.2.2",
-    "ts-jest": "29.4.11",
+    "ts-jest": "29.4.12",
     "ts-node": "10.9.2",
     "ts-unused-exports": "11.0.1",
     "type-fest": "5.8.0",

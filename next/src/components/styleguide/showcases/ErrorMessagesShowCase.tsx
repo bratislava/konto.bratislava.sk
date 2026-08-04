@@ -317,7 +317,10 @@ const rjsfMissingRows: ErrorMessageRow[] = [
     proposed: [
       { translationKey: 'rjsfErrors.maxItems_one', message: 'Vyberte najviac {{count}} možnosť.' },
       { translationKey: 'rjsfErrors.maxItems_few', message: 'Vyberte najviac {{count}} možnosti.' },
-      { translationKey: 'rjsfErrors.maxItems_other', message: 'Vyberte najviac {{count}} možností.' },
+      {
+        translationKey: 'rjsfErrors.maxItems_other',
+        message: 'Vyberte najviac {{count}} možností.',
+      },
     ],
   },
   {
@@ -348,7 +351,10 @@ const rjsfMissingRows: ErrorMessageRow[] = [
     proposed: [
       { translationKey: 'rjsfErrors.maxLength_one', message: 'Zadajte najviac {{count}} znak.' },
       { translationKey: 'rjsfErrors.maxLength_few', message: 'Zadajte najviac {{count}} znaky.' },
-      { translationKey: 'rjsfErrors.maxLength_other', message: 'Zadajte najviac {{count}} znakov.' },
+      {
+        translationKey: 'rjsfErrors.maxLength_other',
+        message: 'Zadajte najviac {{count}} znakov.',
+      },
     ],
     note: 'Žiadna schéma dnes maxLength nepoužíva.',
   },

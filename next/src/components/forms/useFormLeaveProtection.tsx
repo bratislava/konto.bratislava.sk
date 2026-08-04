@@ -8,10 +8,12 @@ import logger from '@/src/frontend/utils/logger'
 
 const useGetContext = () => {
   const { isDevRoute } = useFormContext()
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const router = useRouter()
   const enabledRef = useRef(false)
-  useBeforeunload(() => (enabledRef.current ? t('info_messages.form_leave_protection') : null))
+  useBeforeunload(() =>
+    enabledRef.current ? t('forms.info_messages.form_leave_protection') : null,
+  )
 
   const turnOffLeaveProtection = () => {
     enabledRef.current = false
@@ -34,7 +36,7 @@ const useGetContext = () => {
       if (
         enabledRef.current &&
         !isShallow &&
-        !window.confirm(t('info_messages.form_leave_protection'))
+        !window.confirm(t('forms.info_messages.form_leave_protection'))
       ) {
         router.events.emit('routeChangeError')
         logger.info('routeChange aborted.')

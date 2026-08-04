@@ -27,7 +27,7 @@ type RegistrationModalBase = {
  */
 
 const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const {
     evaluatedSendPolicy: { sendAllowedForUserResult, eidSendPossible },
   } = useFormContext()
@@ -38,14 +38,14 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       type === RegistrationModalType.NotAuthenticatedSubmitForm
     ) {
       if (eidSendPossible) {
-        return t('registration_modal.header_initial_title_with_eid')
+        return t('forms.registration_modal.header_initial_title_with_eid')
       }
 
-      return t('registration_modal.header_initial_title_without_eid')
+      return t('forms.registration_modal.header_initial_title_without_eid')
     }
 
     if (type === RegistrationModalType.NotAuthenticatedConceptSave) {
-      return t('registration_modal.header_not_authenticated_concept_save_title')
+      return t('forms.registration_modal.header_not_authenticated_concept_save_title')
     }
 
     return ''
@@ -61,17 +61,17 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
     if (type === RegistrationModalType.Initial) {
       if (eidSendPossible) {
         if (verificationMissingType) {
-          return t('registration_modal.header_initial_subtitle_with_eid_verified')
+          return t('forms.registration_modal.header_initial_subtitle_with_eid_verified')
         }
         if (onlyAuthenticationMissingType) {
-          return t('registration_modal.header_initial_subtitle_with_eid_not_verified')
+          return t('forms.registration_modal.header_initial_subtitle_with_eid_not_verified')
         }
       } else {
         if (verificationMissingType) {
-          return t('registration_modal.header_initial_subtitle_without_eid_verified')
+          return t('forms.registration_modal.header_initial_subtitle_without_eid_verified')
         }
         if (onlyAuthenticationMissingType) {
-          return t('registration_modal.header_initial_subtitle_without_eid_not_verified')
+          return t('forms.registration_modal.header_initial_subtitle_without_eid_not_verified')
         }
       }
     }
@@ -79,29 +79,31 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
     if (type === RegistrationModalType.NotAuthenticatedSubmitForm) {
       if (eidSendPossible) {
         if (verificationMissingType) {
-          return t('registration_modal.header_not_authenticated_submit_subtitle_with_eid_verified')
+          return t(
+            'forms.registration_modal.header_not_authenticated_submit_subtitle_with_eid_verified',
+          )
         }
         if (onlyAuthenticationMissingType) {
           return t(
-            'registration_modal.header_not_authenticated_submit_subtitle_with_eid_not_verified',
+            'forms.registration_modal.header_not_authenticated_submit_subtitle_with_eid_not_verified',
           )
         }
       } else {
         if (verificationMissingType) {
           return t(
-            'registration_modal.header_not_authenticated_submit_subtitle_without_eid_verified',
+            'forms.registration_modal.header_not_authenticated_submit_subtitle_without_eid_verified',
           )
         }
         if (onlyAuthenticationMissingType) {
           return t(
-            'registration_modal.header_not_authenticated_submit_subtitle_without_eid_not_verified',
+            'forms.registration_modal.header_not_authenticated_submit_subtitle_without_eid_not_verified',
           )
         }
       }
     }
 
     if (type === RegistrationModalType.NotAuthenticatedConceptSave) {
-      return t('registration_modal.header_not_authenticated_concept_save_subtitle')
+      return t('forms.registration_modal.header_not_authenticated_concept_save_subtitle')
     }
 
     return ''
@@ -115,11 +117,11 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
     : { title: null, subtitle: null }
 
   const bodyList = [
-    t('registration_modal.body_list.0'),
-    t('registration_modal.body_list.1'),
-    t('registration_modal.body_list.2'),
-    t('registration_modal.body_list.3'),
-    t('registration_modal.body_list.4'),
+    t('forms.registration_modal.body_list.0'),
+    t('forms.registration_modal.body_list.1'),
+    t('forms.registration_modal.body_list.2'),
+    t('forms.registration_modal.body_list.3'),
+    t('forms.registration_modal.body_list.4'),
   ]
 
   const close = () => {
@@ -142,7 +144,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         <div className="flex flex-col gap-6">
           <div className="flex flex-col">
             <div className="rounded-t-lg bg-gray-100 p-4 lg:px-6 lg:py-5">
-              <Typography variant="h4">{t('registration_modal.body_title')}</Typography>
+              <Typography variant="h4">{t('forms.registration_modal.body_title')}</Typography>
               <ul className="mt-6 flex flex-col gap-2 lg:gap-4">
                 {bodyList.map((item, index) => (
                   <li key={index} className="flex items-center gap-4">
@@ -164,7 +166,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
                 className="lg:rounded-t-none lg:py-6"
                 data-cy="registration-modal-button"
               >
-                {t('registration_modal.body_action')}
+                {t('forms.registration_modal.body_action')}
               </Button>
             </div>
           </div>
@@ -178,7 +180,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             <div className="mt-3 flex items-center lg:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
               <span className="px-6 text-size-p-large-r lg:text-size-p-large">
-                {t('registration_modal.footer_choice')}
+                {t('forms.registration_modal.footer_choice')}
               </span>
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
@@ -187,21 +189,21 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
                 <>
                   {eidSendPossible ? (
                     <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                      {t('registration_modal.buttons_initial_continue_eid')}
+                      {t('forms.registration_modal.buttons_initial_continue_eid')}
                     </Button>
                   ) : null}
                   <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                    {t('registration_modal.buttons_initial_skip')}
+                    {t('forms.registration_modal.buttons_initial_skip')}
                   </Button>
                 </>
               )}
               {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
                 <>
                   <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                    {t('registration_modal.buttons_not_verified_submit_back')}
+                    {t('forms.registration_modal.buttons_not_verified_submit_back')}
                   </Button>
                   <Button variant="outline-soft" size="small" onPress={close} fullWidth>
-                    {t('registration_modal.buttons_not_verified_submit_send')}
+                    {t('forms.registration_modal.buttons_not_verified_submit_send')}
                   </Button>
                 </>
               )}

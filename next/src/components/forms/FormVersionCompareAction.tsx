@@ -25,7 +25,7 @@ const FormVersionCompareAction = () => {
     formDefinition: { slug },
   } = useFormContext()
   const { isSignedIn } = useSsrAuth()
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const { showToast } = useToast()
   const [isRedirecting, setIsRedirecting] = useState(false)
 
@@ -39,7 +39,7 @@ const FormVersionCompareAction = () => {
     },
     onError: () => {
       showToast({
-        message: t('form_version_compare_action.error_version_update'),
+        message: t('forms.form_version_compare_action.error_version_update'),
         variant: 'error',
       })
     },
@@ -57,7 +57,7 @@ const FormVersionCompareAction = () => {
   return (
     <div className="flex flex-col justify-between bg-gray-0 py-16 lg:bg-gray-50 lg:py-28">
       <div className="flex flex-col">
-        <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:gap-6 lg:rounded-2xl lg:px-14 lg:py-12 lg:max-w-[800px]">
+        <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 lg:max-w-[800px] lg:gap-6 lg:rounded-2xl lg:px-14 lg:py-12">
           <span
             className={cn(
               'flex size-14 min-w-14 items-center justify-center rounded-full lg:size-[88px] lg:min-w-[88px]',
@@ -85,10 +85,10 @@ const FormVersionCompareAction = () => {
               {
                 {
                   [VersionCompareContinueAction.CannotContinue]: t(
-                    'form_version_compare_action.title_cannot_continue',
+                    'forms.form_version_compare_action.title_cannot_continue',
                   ),
                   [VersionCompareContinueAction.RequiresBump]: t(
-                    'form_version_compare_action.title_requires_bump',
+                    'forms.form_version_compare_action.title_requires_bump',
                   ),
                 }[versionCompareContinueAction]
               }
@@ -98,10 +98,10 @@ const FormVersionCompareAction = () => {
               content={
                 {
                   [VersionCompareContinueAction.CannotContinue]: t(
-                    'form_version_compare_action.content_cannot_continue',
+                    'forms.form_version_compare_action.content_cannot_continue',
                   ),
                   [VersionCompareContinueAction.RequiresBump]: t(
-                    'form_version_compare_action.content_requires_bump',
+                    'forms.form_version_compare_action.content_requires_bump',
                   ),
                 }[versionCompareContinueAction]
               }
@@ -111,7 +111,7 @@ const FormVersionCompareAction = () => {
           <div className="flex w-full flex-col items-center gap-4 lg:flex-row">
             {isSignedIn ? (
               <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS} hasLinkIcon={false}>
-                {t('form_version_compare_action.button_back')}
+                {t('forms.form_version_compare_action.button_back')}
               </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.CannotContinue ? (
@@ -121,7 +121,7 @@ const FormVersionCompareAction = () => {
                 href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}
                 hasLinkIcon={false}
               >
-                {t('form_version_compare_action.button_create_new')}
+                {t('forms.form_version_compare_action.button_create_new')}
               </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.RequiresBump ? (
@@ -133,7 +133,7 @@ const FormVersionCompareAction = () => {
                 }}
                 isLoading={bumpVersionIsPending || isRedirecting}
               >
-                {t('form_version_compare_action.button_confirm')}
+                {t('forms.form_version_compare_action.button_confirm')}
               </Button>
             ) : null}
           </div>

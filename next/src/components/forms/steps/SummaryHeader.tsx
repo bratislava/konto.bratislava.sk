@@ -12,7 +12,7 @@ const SummaryHeader = () => {
   const { hasErrors } = getValidatedSummary()
   const infectedFiles = getInfectedFiles()
   const uploadFiles = getUploadFiles()
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
 
   const infectedFilesFilenames = infectedFiles.map((file) => file.fileName)
 
@@ -20,20 +20,24 @@ const SummaryHeader = () => {
     <>
       <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" />
 
-      <Typography variant="h2">{t('summary.title')}</Typography>
+      <Typography variant="h2">{t('forms.summary.title')}</Typography>
 
       <div className="flex flex-col gap-4">
         {hasErrors && (
           <Alert
             type="error"
-            message={isSigned ? t('summary.form_has_errors_signed') : t('summary.form_has_errors')}
+            message={
+              isSigned
+                ? t('forms.summary.form_has_errors_signed')
+                : t('forms.summary.form_has_errors')
+            }
             fullWidth
           />
         )}
         {infectedFiles.length === 1 && (
           <Alert
             type="error"
-            message={t('summary.virus_alert', {
+            message={t('forms.summary.virus_alert', {
               file: infectedFilesFilenames[0],
             })}
             fullWidth
@@ -42,7 +46,7 @@ const SummaryHeader = () => {
         {infectedFiles.length > 1 && (
           <Alert
             type="error"
-            message={t('summary.virus_alert_plural', {
+            message={t('forms.summary.virus_alert_plural', {
               files: infectedFilesFilenames.map((name) => `“${name}“`).join(', '),
             })}
             fullWidth
@@ -51,7 +55,7 @@ const SummaryHeader = () => {
         {uploadFiles.length > 0 && (
           <Alert
             type="warning"
-            message={t('summary.uploading_files', {
+            message={t('forms.summary.uploading_files', {
               files: uploadFiles.map((file) => file.fileName).join(', '),
             })}
             fullWidth

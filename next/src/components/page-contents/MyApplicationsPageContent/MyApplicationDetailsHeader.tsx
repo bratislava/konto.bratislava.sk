@@ -28,7 +28,7 @@ const MyApplicationDetailsHeader = ({
   ginisData,
 }: MyApplicationDetailsHeaderBase) => {
   // TODO Translations
-  const { t } = useTranslation(['account', 'forms'])
+  const { t } = useTranslation('account')
 
   const { showToast, closeToasts } = useToast()
 
@@ -47,7 +47,7 @@ const MyApplicationDetailsHeader = ({
   const { icon: iconComponent, text: textComponent } = useFormStateComponents({ error, state })
 
   const exportPdf = async () => {
-    showToast({ message: t('forms:info_messages.pdf_export'), variant: 'info' })
+    showToast({ message: t('forms.info_messages.pdf_export'), variant: 'info' })
     try {
       if (!formId) throw new Error(`No form id.`)
       const response = await formsClient.convertControllerConvertToPdf(
@@ -58,10 +58,10 @@ const MyApplicationDetailsHeader = ({
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
       closeToasts()
-      showToast({ message: t('forms:success_messages.pdf_export'), variant: 'success' })
+      showToast({ message: t('forms.success_messages.pdf_export'), variant: 'success' })
     } catch (error) {
       logger.error(error)
-      showToast({ message: t('forms:errors.pdf_export'), variant: 'error' })
+      showToast({ message: t('forms.errors.pdf_export'), variant: 'error' })
     }
   }
 

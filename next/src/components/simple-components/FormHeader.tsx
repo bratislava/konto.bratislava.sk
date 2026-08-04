@@ -15,7 +15,7 @@ const FormHeader = () => {
     strapiForm,
   } = useFormContext()
   const { saveConcept } = useFormExportImport()
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
 
   const menuItems = useFormMenuItems()
 
@@ -31,7 +31,7 @@ const FormHeader = () => {
               className="w-max"
               href={strapiForm.moreInformationUrl}
             >
-              {t('form_header.services_link')}
+              {t('forms.form_header.services_link')}
             </Button>
           ) : null}
         </div>
@@ -44,7 +44,7 @@ const FormHeader = () => {
               onPress={() => saveConcept()}
               data-cy="save-concept-desktop"
             >
-              {t('menu_list.save_concept')}
+              {t('forms.menu_list.save_concept')}
             </Button>
           )}
           <DropdownMenu
@@ -53,7 +53,7 @@ const FormHeader = () => {
                 variant="outline"
                 size="small"
                 icon={<Icon name="menu-kebab" />}
-                aria-label={t('form_header.additional_fom_action_menu_aria_label')}
+                aria-label={t('forms.form_header.additional_fom_action_menu_aria_label')}
               />
             }
             items={menuItems}

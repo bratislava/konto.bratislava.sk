@@ -23,7 +23,7 @@ interface SummaryRowProps {
 }
 
 const SummaryRow = (props: SummaryRowProps) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const { data, size = 'large', isEditable = true, hasBorder = true, onGoToStep } = props
 
   const containerClassName = cn('flex flex-wrap gap-2 py-2.5 lg:flex-nowrap', {
@@ -52,7 +52,7 @@ const SummaryRow = (props: SummaryRowProps) => {
           <Button
             variant="icon-wrapped-negative-margin"
             icon={<Icon name="edit" />}
-            aria-label={t('SummaryRow.EditButton.aria')}
+            aria-label={t('forms.SummaryRow.EditButton.aria')}
             onPress={onGoToStep}
           />
         )}

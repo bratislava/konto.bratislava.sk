@@ -8,7 +8,7 @@ import Icon from '@/src/components/icon-components/Icon'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 
 const SummaryFormControls = () => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
 
   const {
     isTaxForm,
@@ -31,7 +31,7 @@ const SummaryFormControls = () => {
           variant: 'solid',
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onPress: () => saveConcept(),
-          children: t('menu_list.save_concept'),
+          children: t('forms.menu_list.save_concept'),
           'data-cy': 'save-concept-summary',
         },
       ]
@@ -41,7 +41,7 @@ const SummaryFormControls = () => {
               variant: 'outline',
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onPress: () => exportPdf(),
-              children: t('summary.export_pdf'),
+              children: t('forms.summary.export_pdf'),
               'data-cy': 'download-pdf-button',
             }
           : null,
@@ -51,7 +51,7 @@ const SummaryFormControls = () => {
               variant: sendPossible ? 'outline' : 'solid',
               onPress: () => handleSendEidButtonPress(),
               type: 'submit',
-              children: t('summary.button_send_eid'),
+              children: t('forms.summary.button_send_eid'),
             }
           : null,
         sendPossible
@@ -60,7 +60,7 @@ const SummaryFormControls = () => {
               variant: 'solid',
               onPress: () => handleSendButtonPress(),
               type: 'submit',
-              children: t('summary.button_send'),
+              children: t('forms.summary.button_send'),
             }
           : null,
       ]
@@ -74,7 +74,7 @@ const SummaryFormControls = () => {
           onPress={goToPreviousStep}
           startIcon={<Icon name="chevron-left" className="size-6" />}
         >
-          {t('form_controls.back')}
+          {t('forms.form_controls.back')}
         </Button>
       </div>
       <div className="flex flex-col gap-2 lg:flex-row lg:gap-5">
@@ -87,7 +87,7 @@ const SummaryFormControls = () => {
         })}
 
         <Button className="lg:hidden" variant="outline" onPress={goToPreviousStep} fullWidthMobile>
-          {t('form_controls.back')}
+          {t('forms.form_controls.back')}
         </Button>
       </div>
     </div>

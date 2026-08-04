@@ -14,7 +14,7 @@ type SummaryRowProps = PropsWithChildren<{
 }>
 
 const SummaryRowSimple = (props: SummaryRowProps) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const { size = 'large', children, isError, label, isEditable = true, onGoToStep } = props
 
   const containerClassName = cn('flex flex-wrap gap-2 border-b py-4 lg:flex-nowrap', {
@@ -42,7 +42,7 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
           <Button
             variant="icon-wrapped-negative-margin"
             icon={<Icon name="edit" />}
-            aria-label={t('SummaryRow.EditButton.aria')}
+            aria-label={t('forms.SummaryRow.EditButton.aria')}
             onPress={onGoToStep}
           />
         )}

@@ -24,7 +24,7 @@ const BAArrayFieldItemTemplate = <
 >(
   props: ArrayFieldItemTemplateProps<T, S, F>,
 ) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const { children, buttonsProps, index, parentUiSchema } = props
   const { hasRemove } = buttonsProps
   const { parentId } = getObjectFieldInfo(buttonsProps.fieldPathId)
@@ -72,7 +72,7 @@ const BAArrayFieldItemTemplate = <
             variant="icon-wrapped"
             icon={<Icon name="clear" />}
             // TODO: Improve message
-            aria-label={t('array_field_item.remove_aria_label')}
+            aria-label={t('forms.array_field_item.remove_aria_label')}
             onPress={onRemoveItemPatched}
             className="self-start"
           />

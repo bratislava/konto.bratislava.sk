@@ -8,12 +8,12 @@ const SummaryFormLegalText = () => {
   const {
     formDefinition: { termsAndConditions },
   } = useFormContext()
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
 
   return (
     <div>
       <Typography variant="h3" className="mb-4">
-        {t('summary.vop_agreement_title')}
+        {t('forms.summary.vop_agreement_title')}
       </Typography>
       <Markdown
         content={termsAndConditions}

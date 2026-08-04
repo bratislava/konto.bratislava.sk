@@ -8,7 +8,7 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 
 const SummaryAdditionalInfo = () => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
   const { formDefinition } = useFormContext()
   const { formData } = useFormData()
   const additionalInfo = useMemo(
@@ -23,7 +23,7 @@ const SummaryAdditionalInfo = () => {
   return (
     <div>
       <Typography variant="h3" className="mb-4">
-        {t('summary.additional_info')}
+        {t('forms.summary.additional_info')}
       </Typography>
       <Markdown
         content={additionalInfo}

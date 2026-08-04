@@ -26,8 +26,8 @@ const TaxAdministratorCardWrapper = ({ taxAdministrator, taxType }: Props) => {
   }
 
   const cardTitle = {
-    [TaxType.Dzn]: t('account_section_payment.your_tax_administrator.tax'),
-    [TaxType.Ko]: t('account_section_payment.your_tax_administrator.fee'),
+    [TaxType.Dzn]: t('TaxAdministratorCardWrapper.title.tax'),
+    [TaxType.Ko]: t('TaxAdministratorCardWrapper.title.fee'),
   }[taxType]
 
   const workingHoursLinkHref = {

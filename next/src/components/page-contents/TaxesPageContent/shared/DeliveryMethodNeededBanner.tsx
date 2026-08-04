@@ -14,11 +14,11 @@ const DeliveryMethodNeededBanner = () => {
     <>
       <DeliveryMethodChangeModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
       <AnnouncementBlock
-        announcementContent={t('account_section_payment.set_delivery_method_content')}
+        announcementContent={t('DeliveryMethodNeededBanner.content')}
         imageSrc={ImageMestskeKontoSituacia}
         buttons={[
           {
-            children: t('account_section_payment.set_delivery_method'),
+            children: t('DeliveryMethodNeededBanner.button'),
             onPress: () => setIsModalOpen(true),
             variant: 'solid',
             fullWidthMobile: true,

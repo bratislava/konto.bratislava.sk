@@ -97,11 +97,7 @@ const TaxPaymentMethods = () => {
           installmentPayment.reasonNotPossible ===
             InstallmentPaymentReasonNotPossibleEnum.AfterDueDate && (
             <div className="p-4 lg:p-6 lg:pt-0">
-              <Alert
-                type="warning"
-                fullWidth
-                message={t('account_section_payment.tax_payment_year_over')}
-              />
+              <Alert type="warning" fullWidth message={t('TaxPaymentMethods.afterDueDateAlert')} />
             </div>
           )}
       </div>

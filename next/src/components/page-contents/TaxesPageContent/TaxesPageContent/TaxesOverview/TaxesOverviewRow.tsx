@@ -18,14 +18,12 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
   const { t } = useTranslation('account')
 
   const title = {
-    [TaxStatusEnum.AwaitingProcessing]: t(
-      'account_section_payment.tax_card_status_waiting_for_processing',
-    ),
-    [TaxStatusEnum.NotPaid]: t('account_section_payment.tax_card_status_not_paid'),
-    [TaxStatusEnum.PartiallyPaid]: t('account_section_payment.tax_card_status_partially_paid'),
-    [TaxStatusEnum.Paid]: t('account_section_payment.tax_card_status_paid'),
-    [TaxStatusEnum.OverPaid]: t('account_section_payment.tax_card_status_overpaid'),
-    [TaxStatusEnum.Cancelled]: t('account_section_payment.tax_card_status_cancelled'),
+    [TaxStatusEnum.AwaitingProcessing]: t('TaxesOverviewRow.statuses.waitingForProcessing'),
+    [TaxStatusEnum.NotPaid]: t('TaxesOverviewRow.statuses.notPaid'),
+    [TaxStatusEnum.PartiallyPaid]: t('TaxesOverviewRow.statuses.partiallyPaid'),
+    [TaxStatusEnum.Paid]: t('TaxesOverviewRow.statuses.paid'),
+    [TaxStatusEnum.OverPaid]: t('TaxesOverviewRow.statuses.overpaid'),
+    [TaxStatusEnum.Cancelled]: t('TaxesOverviewRow.statuses.cancelled'),
   }[status]
 
   return (
@@ -58,8 +56,8 @@ const TaxesOverviewRow = ({ taxData }: Props) => {
   const { year, order, status, createdAt, amountToBePaid, type } = taxData
 
   const title = {
-    [TaxType.Dzn]: t('account_section_payment.tax_card_title.dzn', { year }),
-    [TaxType.Ko]: t('account_section_payment.tax_card_title.ko', { year, order }),
+    [TaxType.Dzn]: t('TaxesOverviewRow.title.dzn', { year }),
+    [TaxType.Ko]: t('TaxesOverviewRow.title.ko', { year, order }),
   }[type]
 
   const href = ROUTES.TAXES_TAX_DETAIL({ year, type, order })
@@ -85,13 +83,13 @@ const TaxesOverviewRow = ({ taxData }: Props) => {
         <div className="flex w-full items-center gap-18">
           <div className="flex flex-col">
             <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
-              {t('account_section_payment.tax_card_delivered')}
+              {t('TaxesOverviewRow.delivered')}
             </Typography>
             <span className="w-max">{createdAt ? formatDate(createdAt) : '-'}</span>
           </div>
           <div className="flex flex-col">
             <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
-              {t('account_section_payment.tax_card_amount')}
+              {t('TaxesOverviewRow.amount')}
             </Typography>
             {amountToBePaid === undefined ? (
               <span>-</span>
@@ -103,7 +101,7 @@ const TaxesOverviewRow = ({ taxData }: Props) => {
           </div>
           <div className="flex flex-col">
             <Typography variant="p-tiny" as="span" className="mb-1 font-semibold">
-              {t('account_section_payment.tax_card_status')}
+              {t('TaxesOverviewRow.status')}
             </Typography>
             <PaymentStatus status={status} />
           </div>

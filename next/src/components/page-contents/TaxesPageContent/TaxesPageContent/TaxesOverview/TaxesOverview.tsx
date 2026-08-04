@@ -22,8 +22,8 @@ const TaxesOverview = ({ taxesData, taxType }: Props) => {
   const { t } = useTranslation('account')
 
   const title = {
-    [TaxType.Dzn]: t('account_section_payment.tax_overview_title.tax'),
-    [TaxType.Ko]: t('account_section_payment.tax_overview_title.fee'),
+    [TaxType.Dzn]: t('TaxesOverview.title.tax'),
+    [TaxType.Ko]: t('TaxesOverview.title.fee'),
   }[taxType]
 
   return (

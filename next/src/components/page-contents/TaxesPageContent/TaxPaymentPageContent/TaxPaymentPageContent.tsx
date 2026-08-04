@@ -63,7 +63,7 @@ const TaxPaymentPageContent = () => {
       <TaxPageHeader
         title={getTitle()}
         breadcrumbs={[
-          { title: t('account_section_payment.title'), path: ROUTES.TAXES },
+          { title: t('TaxesPageContent.title'), path: ROUTES.TAXES },
           { title: detailPageTitle, path: detailPagePath },
           { title: getTitle(), path: null },
         ]}

@@ -61,7 +61,7 @@ export const useNavMenu = () => {
     },
     {
       id: 3,
-      title: t('account_section_payment.title'),
+      title: t('TaxesPageContent.title'),
       icon: <Icon name="payment" className="size-6" />,
       url: ROUTES.TAXES,
       isHidden: isLegalEntity,

@@ -14,25 +14,25 @@ const TaxesOverviewBanner = ({ variant, taxType }: Props) => {
   const { t } = useTranslation('account')
 
   const titleLookingFor = {
-    [TaxType.Dzn]: t('account_section_payment.searching_card_title.dzn'),
-    [TaxType.Ko]: t('account_section_payment.searching_card_title.ko'),
+    [TaxType.Dzn]: t('TaxesOverviewBanner.lookingFor.title.dzn'),
+    [TaxType.Ko]: t('TaxesOverviewBanner.lookingFor.title.ko'),
   }[taxType]
 
   const textLookingFor = {
-    [TaxType.Dzn]: t('account_section_payment.searching_card_text.dzn'),
-    [TaxType.Ko]: t('account_section_payment.searching_card_text.ko'),
+    [TaxType.Dzn]: t('TaxesOverviewBanner.lookingFor.content.dzn'),
+    [TaxType.Ko]: t('TaxesOverviewBanner.lookingFor.content.ko'),
   }[taxType]
 
   const titleNoResults = {
-    [TaxType.Dzn]: t('account_section_payment.error_card_title.dzn'),
-    [TaxType.Ko]: t('account_section_payment.error_card_title.ko'),
+    [TaxType.Dzn]: t('TaxesOverviewBanner.noResults.title.dzn'),
+    [TaxType.Ko]: t('TaxesOverviewBanner.noResults.title.ko'),
   }[taxType]
 
   const textNoResults = {
-    [TaxType.Dzn]: t('account_section_payment.error_card_content.text.dzn', {
+    [TaxType.Dzn]: t('TaxesOverviewBanner.noResults.content.dzn', {
       url: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
     }),
-    [TaxType.Ko]: t('account_section_payment.error_card_content.text.ko', {
+    [TaxType.Ko]: t('TaxesOverviewBanner.noResults.content.ko', {
       url: ROUTES.MUNICIPAL_SERVICES_FORM('oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady'),
     }),
   }[taxType]

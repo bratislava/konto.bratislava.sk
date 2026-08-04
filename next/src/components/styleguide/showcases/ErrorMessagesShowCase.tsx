@@ -387,32 +387,32 @@ const rjsfMissingRows: ErrorMessageRow[] = [
 
 const uploadErrorRows: ErrorMessageRow[] = [
   {
-    translationKey: 'Upload.errors.large_file',
+    translationKey: 'UploadFileCard.errors.largeFile',
     trigger: 'Súbor prekročil maximálnu veľkosť',
     sources: ['UploadFileCard.tsx'],
     proposed: 'Súbor je väčší ako {{maxFileSize}}. Nahrajte menší súbor.',
   },
   {
-    translationKey: 'Upload.errors.invalid_file_type',
+    translationKey: 'UploadFileCard.errors.invalidFileType',
     trigger: 'Nepodporovaný formát súboru',
     sources: ['UploadFileCard.tsx'],
     proposed:
       'Tento formát súboru nepodporujeme. Nahrajte súbor v jednom z formátov {{supportedFormats}}.',
   },
   {
-    translationKey: 'Upload.errors.scan_infected',
+    translationKey: 'UploadFileCard.errors.scanInfected',
     trigger: 'Antivírová kontrola našla vírus',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.errors.scan_error',
+    translationKey: 'UploadFileCard.errors.scanError',
     trigger: 'Antivírová kontrola zlyhala',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.errors.unknown_error',
+    translationKey: 'UploadFileCard.errors.unknownError',
     trigger: 'Neznáma chyba pri nahrávaní súboru',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
@@ -421,25 +421,25 @@ const uploadErrorRows: ErrorMessageRow[] = [
 
 const uploadStatusRows: ErrorMessageRow[] = [
   {
-    translationKey: 'Upload.messages.upload_queued',
+    translationKey: 'UploadFileCard.messages.uploadQueued',
     trigger: 'Súbor čaká v poradí na nahratie',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.messages.uploading',
+    translationKey: 'UploadFileCard.messages.uploading',
     trigger: 'Prebieha nahrávanie súboru',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.messages.waiting_for_scan',
+    translationKey: 'UploadFileCard.messages.waitingForScan',
     trigger: 'Súbor čaká na antivírovú kontrolu',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.messages.scanning',
+    translationKey: 'UploadFileCard.messages.scanning',
     trigger: 'Prebieha antivírová kontrola',
     sources: ['UploadFileCard.tsx'],
     proposed: null,

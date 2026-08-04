@@ -37,7 +37,7 @@ const UploadFilesList = ({
     <div className="flex flex-col gap-4">
       {/* TODO accordion, "x of n" info */}
       <Typography variant="h5" as="h3">
-        {t('Upload.uploadingList')}
+        {t('UploadFilesList.title')}
       </Typography>
 
       <ul className="flex flex-col gap-2">

@@ -10,6 +10,7 @@ import ButtonShowCase from '@/src/components/styleguide/showcases/ButtonShowCase
 import CheckboxGroupShowCase from '@/src/components/styleguide/showcases/CheckboxGroupShowCase'
 import DatePickerShowCase from '@/src/components/styleguide/showcases/DatePickerShowCase'
 import DisclosureShowCase from '@/src/components/styleguide/showcases/DisclosureShowCase'
+import ErrorMessagesShowCase from '@/src/components/styleguide/showcases/ErrorMessagesShowCase'
 import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHeaderShowCase'
 import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
 import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
@@ -82,6 +83,7 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
   { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
   { id: 'thank-you-tile', label: 'ThankYou Tile', component: <ThankYouTileShowCase /> },
   { id: 'auth-forms', label: 'Auth Forms', component: <AuthFormsShowCase /> },
+  { id: 'error-messages', label: 'Error Messages', component: <ErrorMessagesShowCase /> },
   { id: 'form-sent', label: 'Form Sent', component: <FormSentPageContentShowCase /> },
   {
     id: 'payment-result',

@@ -4,13 +4,10 @@ import { useTranslation } from 'next-i18next/pages'
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
 import { TABLE_OF_CONTENTS_STICKY_TOP } from '@/src/components/common/TableOfContents/MobileTableOfContents'
 import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
-import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import Sections from '@/src/components/layouts/Sections'
-import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
 import MunicipalServiceCtas from '@/src/components/page-contents/MunicipalServicePageContent/MunicipalServiceCtas'
-import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
 import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
@@ -71,29 +68,7 @@ const MunicipalServicePageContent = ({
               '**:data-section-container-inner:lg:px-0',
             )}
           >
-            {/* TODO: Temporarily showing landing page from form, until sections are gradually migrated to municipal services. */}
-            {filteredSections.length ? (
-              <Sections sections={filteredSections} />
-            ) : strapiForm?.landingPage?.text ? (
-              <SectionContainer>
-                <Markdown content={strapiForm.landingPage.text} />
-              </SectionContainer>
-            ) : null}
-
-            {/* TODO: Temporarily rendering CTA cards from from (links and form CTA), until implement in municipal services. */}
-            {strapiForm?.landingPage ? (
-              <div className="flex flex-col rounded-xl border empty:hidden">
-                {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
-                  <FormLandingPageCard key={linkCta.id} {...linkCta} />
-                ))}
-                {formDefinition && strapiForm.landingPage.formCta ? (
-                  <FormLandingPageCtaCard
-                    formCta={strapiForm.landingPage.formCta}
-                    formDefinition={formDefinition}
-                  />
-                ) : null}
-              </div>
-            ) : null}
+            {filteredSections.length ? <Sections sections={filteredSections} /> : null}
           </div>
         </div>
 

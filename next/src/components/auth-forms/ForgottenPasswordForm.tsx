@@ -26,8 +26,8 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'account:auth.fields.email.required',
+        format: 'account:auth.fields.email.format',
       },
     },
   },
@@ -66,7 +66,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.email_label')}
+            label={t('auth.fields.email.label')}
             autoComplete="email"
             autoCapitalize="none"
             autoCorrect="off"

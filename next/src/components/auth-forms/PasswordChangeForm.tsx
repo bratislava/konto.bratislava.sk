@@ -25,15 +25,15 @@ const schema = {
       // min length set to 2 according to cognito error InvalidParameterException:
       // 1 validation error detected: Value at 'previousPassword' failed to satisfy constraint: Member must satisfy regular expression pattern: ^[\S]+.*[\S]+$
       minLength: 2,
-      errorMessage: { minLength: 'account:auth.fields.password_required' },
+      errorMessage: { minLength: 'account:auth.fields.password.required' },
     },
     password: {
       type: 'string',
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password_required',
-        format: 'account:auth.fields.password_format',
+        minLength: 'account:auth.fields.password.required',
+        format: 'account:auth.fields.password.format',
       },
     },
   },
@@ -68,7 +68,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             isRequired
-            label={t('auth.fields.old_password_label')}
+            label={t('auth.fields.oldPassword.label')}
             {...field}
             errorMessage={errors.oldPassword}
           />
@@ -81,8 +81,8 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             isRequired
             autoComplete="new-password"
-            label={t('auth.fields.new_password_label')}
-            helptext={t('auth.fields.password_description')}
+            label={t('auth.fields.newPassword.label')}
+            helptext={t('auth.fields.password.helptext')}
             {...field}
             errorMessage={errors.password}
           />

@@ -37,20 +37,20 @@ const foSchema = {
     givenName: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.given_name_required' },
+      errorMessage: { minLength: 'account:auth.fields.givenName.required' },
     },
     familyName: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.family_name_required' },
+      errorMessage: { minLength: 'account:auth.fields.familyName.required' },
     },
     rc: {
       type: 'string',
       minLength: 1,
       format: 'rc',
       errorMessage: {
-        minLength: 'account:auth.fields.rc_required',
-        format: 'account:auth.fields.rc_format',
+        minLength: 'account:auth.fields.birthNumber.required',
+        format: 'account:auth.fields.birthNumber.format',
       },
     },
     idCard: {
@@ -58,8 +58,8 @@ const foSchema = {
       minLength: 1,
       format: 'idCard',
       errorMessage: {
-        minLength: 'account:auth.fields.id_card_required',
-        format: 'account:auth.fields.id_card_format',
+        minLength: 'account:auth.fields.idCard.required',
+        format: 'account:auth.fields.idCard.format',
       },
     },
     turnstileToken: {
@@ -126,7 +126,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.given_name_label')}
+            label={t('auth.fields.givenName.label')}
             helptext={t('auth.identity_verification.fo.init.given_name_helptext')}
             autoComplete="given-name"
             autoCapitalize="on"
@@ -143,7 +143,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.family_name_label')}
+            label={t('auth.fields.familyName.label')}
             helptext={t('auth.identity_verification.fo.init.family_name_helptext')}
             autoComplete="family-name"
             autoCapitalize="on"
@@ -160,8 +160,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            helptext={t('auth.fields.rc_description')}
-            label={t('auth.fields.rc_label')}
+            helptext={t('auth.fields.birthNumber.helptext')}
+            label={t('auth.fields.birthNumber.label')}
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"
@@ -176,8 +176,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.id_card_label')}
-            helptext={t('auth.fields.id_card_description')}
+            label={t('auth.fields.idCard.label')}
+            helptext={t('auth.fields.idCard.helptext')}
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"

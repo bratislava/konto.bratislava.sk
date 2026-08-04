@@ -28,14 +28,14 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'account:auth.fields.email.required',
+        format: 'account:auth.fields.email.format',
       },
     },
     password: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.password_required' },
+      errorMessage: { minLength: 'account:auth.fields.password.required' },
     },
   },
   required: ['email', 'password'],
@@ -71,7 +71,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.email_label')}
+            label={t('auth.fields.email.label')}
             autoComplete="username"
             autoCapitalize="none"
             autoCorrect="off"
@@ -87,7 +87,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             isRequired
-            label={t('auth.fields.password_label')}
+            label={t('auth.fields.password.label')}
             autoComplete="current-password"
             {...field}
             errorMessage={errors.password}

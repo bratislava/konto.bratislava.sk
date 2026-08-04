@@ -31,7 +31,7 @@ type ErrorMessageSection = {
 
 const hookFormRows: ErrorMessageRow[] = [
   {
-    translationKey: 'auth.fields.email_required',
+    translationKey: 'auth.fields.email.required',
     trigger: 'Prázdny e-mail',
     sources: [
       'LoginForm.tsx',
@@ -43,7 +43,7 @@ const hookFormRows: ErrorMessageRow[] = [
     proposed: 'Zadajte e-mail.',
   },
   {
-    translationKey: 'auth.fields.email_format',
+    translationKey: 'auth.fields.email.format',
     trigger: 'E-mail nemá platný tvar',
     sources: [
       'LoginForm.tsx',
@@ -56,7 +56,7 @@ const hookFormRows: ErrorMessageRow[] = [
     note: 'Rovnaké znenie ako rjsfErrors.format.email vo formulároch mestských služieb.',
   },
   {
-    translationKey: 'auth.fields.password_required',
+    translationKey: 'auth.fields.password.required',
     trigger: 'Prázdne heslo, v PasswordChangeForm.tsx aj prázdne staré heslo',
     sources: [
       'LoginForm.tsx',
@@ -69,26 +69,26 @@ const hookFormRows: ErrorMessageRow[] = [
     note: 'Pole starého hesla má v schéme minLength: 2, takže sa táto správa zobrazí aj pri jednom zadanom znaku.',
   },
   {
-    translationKey: 'auth.fields.password_format',
+    translationKey: 'auth.fields.password.format',
     trigger: 'Heslo nespĺňa požiadavky na dĺžku a znaky',
     sources: ['RegisterForm.tsx', 'NewPasswordForm.tsx', 'PasswordChangeForm.tsx'],
     proposed: 'Heslo musí mať aspoň 8 znakov a obsahovať veľké písmeno, malé písmeno a číslo.',
   },
   {
-    translationKey: 'auth.fields.verification_code_required',
+    translationKey: 'auth.fields.verificationCode.required',
     trigger: 'Prázdny overovací kód',
     sources: ['EmailVerificationForm.tsx', 'NewPasswordForm.tsx'],
     proposed: 'Zadajte overovací kód, ktorý sme vám poslali e-mailom.',
   },
   {
-    translationKey: 'auth.fields.verification_code_format',
+    translationKey: 'auth.fields.verificationCode.format',
     trigger: 'Overovací kód nemá 6 číslic',
     sources: ['EmailVerificationForm.tsx', 'NewPasswordForm.tsx'],
     proposed: 'Overovací kód musí mať 6 číslic.',
     note: 'Súčasné znenie („kód nie je správny“) mýli, nesprávny kód hlási až server v errors.CodeMismatchException.',
   },
   {
-    translationKey: 'auth.fields.given_name_required',
+    translationKey: 'auth.fields.givenName.required',
     trigger: 'Prázdne meno',
     sources: [
       'RegisterForm.tsx',
@@ -98,7 +98,7 @@ const hookFormRows: ErrorMessageRow[] = [
     proposed: 'Zadajte meno.',
   },
   {
-    translationKey: 'auth.fields.family_name_required',
+    translationKey: 'auth.fields.familyName.required',
     trigger: 'Prázdne priezvisko',
     sources: [
       'RegisterForm.tsx',
@@ -108,39 +108,39 @@ const hookFormRows: ErrorMessageRow[] = [
     proposed: 'Zadajte priezvisko.',
   },
   {
-    translationKey: 'auth.fields.business_name_required',
+    translationKey: 'auth.fields.businessName.required',
     trigger: 'Prázdne obchodné meno pri právnickej osobe a fyzickej osobe – podnikateľovi',
     sources: ['RegisterForm.tsx'],
     proposed: 'Zadajte obchodné meno.',
   },
   {
-    translationKey: 'auth.fields.rc_required',
+    translationKey: 'auth.fields.birthNumber.required',
     trigger: 'Prázdne rodné číslo',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte rodné číslo v tvare 123456/7890.',
   },
   {
-    translationKey: 'auth.fields.rc_format',
+    translationKey: 'auth.fields.birthNumber.format',
     trigger: 'Rodné číslo má nesprávnu dĺžku alebo kontrolný súčet',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte rodné číslo s lomkou v tvare 123456/7890.',
     note: 'Validácia prijme aj deväť číslic bez lomky, správa však lomku vyžaduje.',
   },
   {
-    translationKey: 'auth.fields.id_card_required',
+    translationKey: 'auth.fields.idCard.required',
     trigger: 'Prázdne číslo dokladu totožnosti',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte číslo dokladu totožnosti.',
     note: 'Súčasné znenie „Číslo je povinné.“ nepomenúva pole.',
   },
   {
-    translationKey: 'auth.fields.id_card_format',
+    translationKey: 'auth.fields.idCard.format',
     trigger: 'Číslo dokladu nemá tvar dvoch písmen a šiestich až siedmich číslic',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte číslo dokladu bez medzier v tvare AB123456.',
   },
   {
-    translationKey: 'auth.fields.phone_number_format',
+    translationKey: 'auth.fields.phoneNumber.format',
     trigger: 'Telefónne číslo nie je v medzinárodnom tvare',
     sources: ['PhoneNumberForm.tsx'],
     proposed: null,

@@ -15,8 +15,8 @@ export default defineConfig({
     keySeparator: false,
     preservePatterns: [
       // Translations in account forms (registration, login...) are thrown away during parsing. This is quick fix, how to keep them.
-      'account:auth.fields.*_format',
-      'account:auth.fields.*_required',
+      'account:auth.fields.*.format',
+      'account:auth.fields.*.required',
       'account:Towing.*Required',
       'account:IdentityVerificationStatus.verification_status_required_alert',
     ],

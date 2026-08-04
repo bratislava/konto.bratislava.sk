@@ -16,7 +16,7 @@ const schema = {
     phone_number: {
       type: 'string',
       format: 'phone',
-      errorMessage: { format: 'account:auth.fields.phone_number_format' },
+      errorMessage: { format: 'account:auth.fields.phoneNumber.format' },
     },
   },
   required: ['phone_number'],

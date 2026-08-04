@@ -32,8 +32,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:auth.fields.verification_code_required',
-        format: 'account:auth.fields.verification_code_format',
+        minLength: 'account:auth.fields.verificationCode.required',
+        format: 'account:auth.fields.verificationCode.format',
       },
     },
     password: {
@@ -41,8 +41,8 @@ const schema = {
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password_required',
-        format: 'account:auth.fields.password_format',
+        minLength: 'account:auth.fields.password.required',
+        format: 'account:auth.fields.password.format',
       },
     },
   },
@@ -113,7 +113,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"
-            label={t('auth.fields.verification_code_label')}
+            label={t('auth.fields.verificationCode.label')}
             {...field}
             errorMessage={errors.verificationCode}
           />
@@ -127,9 +127,9 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
             isRequired
             autoComplete="new-password"
             label={
-              fromMigration ? t('auth.fields.password_label') : t('auth.fields.new_password_label')
+              fromMigration ? t('auth.fields.password.label') : t('auth.fields.newPassword.label')
             }
-            helptext={t('auth.fields.password_description')}
+            helptext={t('auth.fields.password.helptext')}
             {...field}
             errorMessage={errors.password}
           />

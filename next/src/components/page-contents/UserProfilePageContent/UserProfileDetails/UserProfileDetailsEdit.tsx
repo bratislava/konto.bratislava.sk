@@ -21,20 +21,20 @@ const foSchema = {
     given_name: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.given_name_required' },
+      errorMessage: { minLength: 'account:auth.fields.givenName.required' },
     },
     family_name: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.family_name_required' },
+      errorMessage: { minLength: 'account:auth.fields.familyName.required' },
     },
     email: {
       type: 'string',
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'account:auth.fields.email.required',
+        format: 'account:auth.fields.email.format',
       },
     },
   },
@@ -52,8 +52,8 @@ const poSchema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'account:auth.fields.email.required',
+        format: 'account:auth.fields.email.format',
       },
     },
   },

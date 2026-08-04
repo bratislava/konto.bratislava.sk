@@ -29,8 +29,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:auth.fields.verification_code_required',
-        format: 'account:auth.fields.verification_code_format',
+        minLength: 'account:auth.fields.verificationCode.required',
+        format: 'account:auth.fields.verificationCode.format',
       },
     },
   },
@@ -104,7 +104,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"
-            label={t('auth.fields.verification_code_label')}
+            label={t('auth.fields.verificationCode.label')}
             {...field}
             errorMessage={errors.verificationCode}
           />

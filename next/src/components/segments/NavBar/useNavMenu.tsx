@@ -55,7 +55,7 @@ export const useNavMenu = () => {
     },
     {
       id: 2,
-      title: t('account_section_applications.navigation'),
+      title: t('MyApplicationsPageContent.title'),
       icon: <Icon name="submission" className="size-6" />,
       url: ROUTES.MY_APPLICATIONS,
     },

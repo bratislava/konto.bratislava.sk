@@ -149,17 +149,17 @@ const MyApplicationsCard = ({
   const conceptMenuContent: DropdownMenuItemProps[] = canDownloadPdf
     ? [
         {
-          title: t('account_section_applications.concept_menu_list.download_xml'),
+          title: t('MyApplicationsCard.menu.downloadXml'),
           icon: <Icon name="download" className="size-6" />,
           onPress: () => exportXml(),
         },
         {
-          title: t('account_section_applications.concept_menu_list.download_pdf'),
+          title: t('MyApplicationsCard.menu.downloadPdf'),
           icon: <Icon name="pdf" className="size-6" />,
           onPress: () => exportPdf(),
         },
         {
-          title: t('account_section_applications.concept_menu_list.delete'),
+          title: t('MyApplicationsCard.menu.delete'),
           itemClassName: 'text-negative-700',
           icon: <Icon name="bin" className="size-6" />,
           onPress: () => setDeleteConceptModalShow(true),
@@ -167,12 +167,12 @@ const MyApplicationsCard = ({
       ]
     : [
         {
-          title: t('account_section_applications.concept_menu_list.download_xml'),
+          title: t('MyApplicationsCard.menu.downloadXml'),
           icon: <Icon name="download" className="size-6" />,
           onPress: () => exportXml(),
         },
         {
-          title: t('account_section_applications.concept_menu_list.delete'),
+          title: t('MyApplicationsCard.menu.delete'),
           itemClassName: 'text-negative-700',
           icon: <Icon name="bin" className="size-6" />,
           onPress: () => setDeleteConceptModalShow(true),
@@ -261,15 +261,9 @@ const MyApplicationsCard = ({
                     >
                       {isEditable
                         ? variant === 'DRAFT'
-                          ? t(
-                              'account_section_applications.navigation_concept_card.continue_button_text',
-                            )
-                          : t(
-                              'account_section_applications.navigation_concept_card.edit_button_text',
-                            )
-                        : t(
-                            'account_section_applications.navigation_concept_card.view_button_text',
-                          )}
+                          ? t('MyApplicationsCard.continueButton')
+                          : t('MyApplicationsCard.editButton')
+                        : t('MyApplicationsCard.viewButton')}
                     </Button>
                     <DropdownMenu
                       buttonTrigger={
@@ -358,9 +352,9 @@ const MyApplicationsCard = ({
           {
             title: isEditable
               ? variant === 'DRAFT'
-                ? t('account_section_applications.navigation_concept_card.continue_button_text')
-                : t('account_section_applications.navigation_concept_card.edit_button_text')
-              : t('account_section_applications.navigation_concept_card.view_button_text'),
+                ? t('MyApplicationsCard.continueButton')
+                : t('MyApplicationsCard.editButton')
+              : t('MyApplicationsCard.viewButton'),
             icon: isEditable ? (
               <Icon name="edit" className="size-6" />
             ) : (

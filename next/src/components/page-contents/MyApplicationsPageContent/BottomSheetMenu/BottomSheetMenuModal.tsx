@@ -37,7 +37,7 @@ const BottomSheetMenuModal = ({
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 rounded-t-lg border-b bg-white p-4">
                 <Typography variant="h6" className="grow">
-                  {t('account_section_applications.mobile_modal_menu.title')}
+                  {t('BottomSheetMenuModal.title')}
                 </Typography>
                 <Button
                   variant="icon-wrapped-negative-margin"

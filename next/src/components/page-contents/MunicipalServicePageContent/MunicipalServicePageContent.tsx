@@ -2,7 +2,9 @@ import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
-import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
+import TableOfContents, {
+  TABLE_OF_CONTENTS_STICKY_TOP,
+} from '@/src/components/common/TableOfContents/TableOfContents'
 import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
@@ -96,7 +98,12 @@ const MunicipalServicePageContent = ({
           </div>
         </div>
 
-        <aside className="w-full lg:w-80 lg:shrink-0">
+        {/* On small screens the table of contents sticks below the navbar, so the aside has to be the
+        sticky element itself - inside it the table of contents would have no room to move. */}
+        <aside
+          className="w-full max-lg:sticky max-lg:z-20 lg:w-80 lg:shrink-0"
+          style={{ top: TABLE_OF_CONTENTS_STICKY_TOP }}
+        >
           <TableOfContents
             footerComponent={
               shouldShowCtaButtons ? (

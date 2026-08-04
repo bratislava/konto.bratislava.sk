@@ -459,6 +459,12 @@
   "IdentityVerificationAlert.verification_in_process.title": "Čaká na overenie",
   "IdentityVerificationAlert.verification_needed.message": "Vaša totožnosť zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
   "IdentityVerificationAlert.verification_needed.title": "Neoverený používateľ",
+  "IdentityVerificationModal.footerChoice": "alebo",
+  "IdentityVerificationModal.footerDesktopContinue": "Preskočiť na žiadosť",
+  "IdentityVerificationModal.footerDesktopEid": "Pokračovať s eID",
+  "IdentityVerificationModal.info": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení totožnosti v Bratislavskom konte. Bez overenia viete žiadosť vyplniť, ale odoslať iba pomocou eID cez [slovensko.sk](https://slovensko.sk).",
+  "IdentityVerificationModal.subtitle": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné **jednorazovo** overiť totožnosť používateľa.",
+  "IdentityVerificationModal.title": "Overenie totožnosti",
   "IdentityVerificationStatus.verification_status_in_queue": "Čaká na overenie",
   "IdentityVerificationStatus.verification_status_required": "Neoverený používateľ",
   "IdentityVerificationStatus.verification_status_required_alert": "Vaša totožnosť zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
@@ -705,11 +711,5 @@
   "Upload.supportedFormats": "Podporované formáty",
   "Upload.uploadFile": "Nahrať súbor",
   "Upload.uploadFiles": "Nahrať súbory",
-  "Upload.uploadingList": "Nahrávané súbory",
-  "verification_modal.footer_choice": "alebo",
-  "verification_modal.footer_desktop_continue": "Preskočiť na žiadosť",
-  "verification_modal.footer_desktop_eID_text": "Pokračovať s eID",
-  "verification_modal.info": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení totožnosti v Bratislavskom konte. Bez overenia viete žiadosť vyplniť, ale odoslať iba pomocou eID cez [slovensko.sk](https://slovensko.sk).",
-  "verification_modal.subtitle": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné **jednorazovo** overiť totožnosť používateľa.",
-  "verification_modal.title": "Overenie totožnosti"
+  "Upload.uploadingList": "Nahrávané súbory"
 }

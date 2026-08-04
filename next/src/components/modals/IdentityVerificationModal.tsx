@@ -24,15 +24,15 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
   return (
     // We consciously do not use MessageModal props for buttons,
     // because this modal has custom layout with content under buttons
-    <MessageModal type="warning" title={t('verification_modal.title')} {...rest}>
+    <MessageModal type="warning" title={t('IdentityVerificationModal.title')} {...rest}>
       <div className="flex flex-col gap-6 lg:gap-4">
         <div className="flex flex-col gap-4">
           <Markdown
             variant="large"
             className="text-center"
-            content={t('verification_modal.subtitle')}
+            content={t('IdentityVerificationModal.subtitle')}
           />
-          <Markdown variant="small" content={t('verification_modal.info')} />
+          <Markdown variant="small" content={t('IdentityVerificationModal.info')} />
         </div>
         <div className="flex flex-col gap-3 *:w-full lg:flex-row">
           <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>
@@ -43,13 +43,13 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
             variant="outline-soft"
             onPress={() => rest?.onOpenChange?.(false)}
           >
-            {t('verification_modal.footer_desktop_eID_text')}
+            {t('IdentityVerificationModal.footerDesktopEid')}
           </Button>
         </div>
         <div className="flex items-center">
           <HorizontalDivider className="w-full" />
           <span className="px-6 text-size-p-large-r lg:text-size-p-large">
-            {t('verification_modal.footer_choice')}
+            {t('IdentityVerificationModal.footerChoice')}
           </span>
           <HorizontalDivider className="w-full" />
         </div>
@@ -59,7 +59,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
           onPress={() => rest?.onOpenChange?.(false)}
           fullWidth
         >
-          {t('verification_modal.footer_desktop_continue')}
+          {t('IdentityVerificationModal.footerDesktopContinue')}
         </Button>
       </div>
     </MessageModal>

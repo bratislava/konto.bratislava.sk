@@ -30,31 +30,31 @@ const getErrorFormat = (error: RJSFValidationError) => {
  * The above scope seems enough for our current use case, but if we need more (i.e. special error based on the name of the field), it should all be self-contained within this function
  */
 export const useFormErrorTranslations = () => {
-  const { t } = useTranslation('rjsf-errors')
+  const { t } = useTranslation('account')
 
   const formatMessages: Record<TranslatedFormat, string> = {
-    email: t('format.email'),
-    date: t('format.date'),
-    'ba-iban': t('format.ba-iban'),
-    'ba-ico': t('format.ba-ico'),
-    'ba-phone-number': t('format.ba-phone-number'),
-    'ba-slovak-phone-number': t('format.ba-slovak-phone-number'),
-    'ba-slovak-zip': t('format.ba-slovak-zip'),
-    'ba-ratio': t('format.ba-ratio'),
-    'ba-time': t('format.ba-time'),
-    'ba-file-uuid': t('format.ba-file-uuid'),
+    email: t('rjsfErrors.format.email'),
+    date: t('rjsfErrors.format.date'),
+    'ba-iban': t('rjsfErrors.format.ba-iban'),
+    'ba-ico': t('rjsfErrors.format.ba-ico'),
+    'ba-phone-number': t('rjsfErrors.format.ba-phone-number'),
+    'ba-slovak-phone-number': t('rjsfErrors.format.ba-slovak-phone-number'),
+    'ba-slovak-zip': t('rjsfErrors.format.ba-slovak-zip'),
+    'ba-ratio': t('rjsfErrors.format.ba-ratio'),
+    'ba-time': t('rjsfErrors.format.ba-time'),
+    'ba-file-uuid': t('rjsfErrors.format.ba-file-uuid'),
   }
 
   const errorNameMessages: Record<TranslatedErrorName, string> = {
-    const: t('const'),
-    minItems: t('minItems'),
-    minLength: t('minLength'),
-    pattern: t('pattern'),
-    required: t('required'),
+    const: t('rjsfErrors.const'),
+    minItems: t('rjsfErrors.minItems'),
+    minLength: t('rjsfErrors.minLength'),
+    pattern: t('rjsfErrors.pattern'),
+    required: t('rjsfErrors.required'),
   }
 
-  const unknownFormatMessage = t('format.unknown')
-  const unknownErrorMessage = t('unknown')
+  const unknownFormatMessage = t('rjsfErrors.format.unknown')
+  const unknownErrorMessage = t('rjsfErrors.unknown')
 
   const getMessage = (error: RJSFValidationError) => {
     if (error.name === 'format') {

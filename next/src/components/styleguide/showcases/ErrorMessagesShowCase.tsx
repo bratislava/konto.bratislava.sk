@@ -25,7 +25,6 @@ type ErrorMessageRow = {
 
 type ErrorMessageSection = {
   title: string
-  namespace: 'account' | 'rjsf-errors'
   description: ReactNode
   rows: ErrorMessageRow[]
 }
@@ -54,7 +53,7 @@ const hookFormRows: ErrorMessageRow[] = [
       'UserProfileDetailsEdit.tsx',
     ],
     proposed: 'Zadajte e-mail v tvare meno.priezvisko@priklad.sk.',
-    note: 'Rovnaké znenie ako rjsf-errors:format.email vo formulároch mestských služieb.',
+    note: 'Rovnaké znenie ako rjsfErrors.format.email vo formulároch mestských služieb.',
   },
   {
     translationKey: 'auth.fields.password_required',
@@ -145,7 +144,7 @@ const hookFormRows: ErrorMessageRow[] = [
     trigger: 'Telefónne číslo nie je v medzinárodnom tvare',
     sources: ['PhoneNumberForm.tsx'],
     proposed: null,
-    note: 'Znenie je rovnaké ako rjsf-errors:format.ba-phone-number. Pole nie je povinné, správa pre prázdne pole neexistuje.',
+    note: 'Znenie je rovnaké ako rjsfErrors.format.ba-phone-number. Pole nie je povinné, správa pre prázdne pole neexistuje.',
   },
   {
     translationKey: 'towing.licensePlate_required',
@@ -157,7 +156,7 @@ const hookFormRows: ErrorMessageRow[] = [
 
 const rjsfExistingRows: ErrorMessageRow[] = [
   {
-    translationKey: 'required',
+    translationKey: 'rjsfErrors.required',
     trigger: 'Prázdne povinné pole akéhokoľvek typu vo všetkých formulároch mestských služieb',
     sources: [
       'InputWidgetRJSF.tsx',
@@ -169,15 +168,15 @@ const rjsfExistingRows: ErrorMessageRow[] = [
       'FileUploadWidgetRJSF.tsx',
     ],
     proposed: [
-      { translationKey: 'required.input', message: 'Vyplňte pole.' },
-      { translationKey: 'required.number', message: 'Zadajte číslo.' },
-      { translationKey: 'required.select', message: 'Vyberte možnosť zo zoznamu.' },
-      { translationKey: 'required.radio', message: 'Vyberte jednu z možností.' },
-      { translationKey: 'required.checkbox', message: 'Označte pole.' },
-      { translationKey: 'required.date', message: 'Zadajte dátum v tvare DD.MM.RRRR.' },
-      { translationKey: 'required.time', message: 'Zadajte čas v tvare HH:MM.' },
-      { translationKey: 'required.file', message: 'Nahrajte súbor.' },
-      { translationKey: 'required.unknown', message: 'Vyplňte pole.' },
+      { translationKey: 'rjsfErrors.required.input', message: 'Vyplňte pole.' },
+      { translationKey: 'rjsfErrors.required.number', message: 'Zadajte číslo.' },
+      { translationKey: 'rjsfErrors.required.select', message: 'Vyberte možnosť zo zoznamu.' },
+      { translationKey: 'rjsfErrors.required.radio', message: 'Vyberte jednu z možností.' },
+      { translationKey: 'rjsfErrors.required.checkbox', message: 'Označte pole.' },
+      { translationKey: 'rjsfErrors.required.date', message: 'Zadajte dátum v tvare DD.MM.RRRR.' },
+      { translationKey: 'rjsfErrors.required.time', message: 'Zadajte čas v tvare HH:MM.' },
+      { translationKey: 'rjsfErrors.required.file', message: 'Nahrajte súbor.' },
+      { translationKey: 'rjsfErrors.required.unknown', message: 'Vyplňte pole.' },
     ],
     note: (
       <>
@@ -188,13 +187,13 @@ const rjsfExistingRows: ErrorMessageRow[] = [
     ),
   },
   {
-    translationKey: 'minLength',
+    translationKey: 'rjsfErrors.minLength',
     trigger: 'Text kratší ako minLength',
     sources: ['InputWidgetRJSF.tsx', 'TextAreaWidgetRJSF.tsx'],
     proposed: [
-      { translationKey: 'minLength_one', message: 'Zadajte aspoň {{count}} znak.' },
-      { translationKey: 'minLength_few', message: 'Zadajte aspoň {{count}} znaky.' },
-      { translationKey: 'minLength_other', message: 'Zadajte aspoň {{count}} znakov.' },
+      { translationKey: 'rjsfErrors.minLength_one', message: 'Zadajte aspoň {{count}} znak.' },
+      { translationKey: 'rjsfErrors.minLength_few', message: 'Zadajte aspoň {{count}} znaky.' },
+      { translationKey: 'rjsfErrors.minLength_other', message: 'Zadajte aspoň {{count}} znakov.' },
     ],
     note: (
       <>
@@ -204,7 +203,7 @@ const rjsfExistingRows: ErrorMessageRow[] = [
     ),
   },
   {
-    translationKey: 'minItems',
+    translationKey: 'rjsfErrors.minItems',
     trigger: 'Primalý počet vybraných možností alebo pridaných položiek',
     sources: [
       'CheckboxGroupWidgetRJSF.tsx',
@@ -213,94 +212,94 @@ const rjsfExistingRows: ErrorMessageRow[] = [
       'BAArrayFieldTemplate.tsx',
     ],
     proposed: [
-      { translationKey: 'minItems_one', message: 'Vyberte aspoň {{count}} možnosť.' },
-      { translationKey: 'minItems_few', message: 'Vyberte aspoň {{count}} možnosti.' },
-      { translationKey: 'minItems_other', message: 'Vyberte aspoň {{count}} možností.' },
+      { translationKey: 'rjsfErrors.minItems_one', message: 'Vyberte aspoň {{count}} možnosť.' },
+      { translationKey: 'rjsfErrors.minItems_few', message: 'Vyberte aspoň {{count}} možnosti.' },
+      { translationKey: 'rjsfErrors.minItems_other', message: 'Vyberte aspoň {{count}} možností.' },
     ],
     note: 'Pre polia položiek (arrayField) navrhujeme vlastné kľúče so znením „Pridajte aspoň {{count}} položku / položky / položiek.“',
   },
   {
-    translationKey: 'const',
+    translationKey: 'rjsfErrors.const',
     trigger: 'Odznačené povinné zaškrtnutie, napríklad súhlas – 15 použití v schémach',
     sources: ['CheckboxWidgetRJSF.tsx'],
     proposed: null,
     note: 'Nastane, keď používateľ súhlas označí a znova odznačí – vo formulári vtedy zostane hodnota false. Ak sa poľa nikdy nedotkne, zobrazí sa chyba required.',
   },
   {
-    translationKey: 'pattern',
+    translationKey: 'rjsfErrors.pattern',
     trigger: 'Hodnota nesedí s regulárnym výrazom',
     sources: ['InputWidgetRJSF.tsx', 'TextAreaWidgetRJSF.tsx'],
     proposed: null,
     note: 'Generické znenie stačí ako záloha, vhodnejšie je znenie na úrovni poľa.',
   },
   {
-    translationKey: 'format.email',
+    translationKey: 'rjsfErrors.format.email',
     trigger: 'E-mail nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-iban',
+    translationKey: 'rjsfErrors.format.ba-iban',
     trigger: 'IBAN nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-phone-number',
+    translationKey: 'rjsfErrors.format.ba-phone-number',
     trigger: 'Telefónne číslo nie je v medzinárodnom tvare',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-slovak-phone-number',
+    translationKey: 'rjsfErrors.format.ba-slovak-phone-number',
     trigger: 'Slovenské telefónne číslo nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-slovak-zip',
+    translationKey: 'rjsfErrors.format.ba-slovak-zip',
     trigger: 'PSČ nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-ico',
+    translationKey: 'rjsfErrors.format.ba-ico',
     trigger: 'IČO nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-ratio',
+    translationKey: 'rjsfErrors.format.ba-ratio',
     trigger: 'Spoluvlastnícky podiel nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.date',
+    translationKey: 'rjsfErrors.format.date',
     trigger: 'Dátum nemá platný tvar',
     sources: ['DatePickerWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-time',
+    translationKey: 'rjsfErrors.format.ba-time',
     trigger: 'Čas nemá platný tvar',
     sources: ['TimePickerWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-file-uuid',
+    translationKey: 'rjsfErrors.format.ba-file-uuid',
     trigger: 'Neplatný identifikátor nahranej prílohy',
     sources: ['FileUploadWidgetRJSF.tsx', 'FileUploadMultipleWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.unknown',
+    translationKey: 'rjsfErrors.format.unknown',
     trigger: 'Formát bez vlastného kľúča',
     proposed: null,
     note: 'Všetky formáty používané v schémach majú vlastný kľúč, táto správa je len záloha pre nový formát bez prekladu.',
   },
   {
-    translationKey: 'unknown',
+    translationKey: 'rjsfErrors.unknown',
     trigger: 'Chyba bez názvu',
     proposed: null,
   },
@@ -308,7 +307,7 @@ const rjsfExistingRows: ErrorMessageRow[] = [
 
 const rjsfMissingRows: ErrorMessageRow[] = [
   {
-    translationKey: 'maxItems',
+    translationKey: 'rjsfErrors.maxItems',
     trigger: 'Prekročený počet vybraných možností alebo pridaných položiek – 3 použitia',
     sources: [
       'CheckboxGroupWidgetRJSF.tsx',
@@ -316,45 +315,45 @@ const rjsfMissingRows: ErrorMessageRow[] = [
       'BAArrayFieldTemplate.tsx',
     ],
     proposed: [
-      { translationKey: 'maxItems_one', message: 'Vyberte najviac {{count}} možnosť.' },
-      { translationKey: 'maxItems_few', message: 'Vyberte najviac {{count}} možnosti.' },
-      { translationKey: 'maxItems_other', message: 'Vyberte najviac {{count}} možností.' },
+      { translationKey: 'rjsfErrors.maxItems_one', message: 'Vyberte najviac {{count}} možnosť.' },
+      { translationKey: 'rjsfErrors.maxItems_few', message: 'Vyberte najviac {{count}} možnosti.' },
+      { translationKey: 'rjsfErrors.maxItems_other', message: 'Vyberte najviac {{count}} možností.' },
     ],
   },
   {
-    translationKey: 'minimum',
+    translationKey: 'rjsfErrors.minimum',
     trigger: 'Hodnota pod minimom – 42 použití v službách, najčastejšie minimum 0',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte číslo {{limit}} alebo väčšie.',
     note: 'Pole dostáva minimum ako minValue a hodnotu samo upraví, chyba nastane len pri importe XML alebo JSON. Pri minimum 0 je vhodnejšie znenie „Zadajte nezáporné číslo.“',
   },
   {
-    translationKey: 'maximum',
+    translationKey: 'rjsfErrors.maximum',
     trigger: 'Hodnota nad maximom – 4 použitia, napríklad rok priznania (2000 – 2099)',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte číslo {{limit}} alebo menšie.',
     note: 'Pole dostáva maximum ako maxValue a hodnotu samo upraví, chyba nastane len pri importe XML alebo JSON.',
   },
   {
-    translationKey: 'multipleOf',
+    translationKey: 'rjsfErrors.multipleOf',
     trigger: 'Hodnota mimo povoleného kroku – 11 použití',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte hodnotu ako násobok {{limit}}.',
     note: 'Pole hodnotu samo zaokrúhli, chyba nastane len pri importe XML alebo JSON. Pri kroku 0,01 je vhodnejšie znenie „Zadajte hodnotu s najviac dvoma desatinnými miestami.“',
   },
   {
-    translationKey: 'maxLength',
+    translationKey: 'rjsfErrors.maxLength',
     trigger: 'Text dlhší ako maxLength',
     sources: ['InputWidgetRJSF.tsx', 'TextAreaWidgetRJSF.tsx'],
     proposed: [
-      { translationKey: 'maxLength_one', message: 'Zadajte najviac {{count}} znak.' },
-      { translationKey: 'maxLength_few', message: 'Zadajte najviac {{count}} znaky.' },
-      { translationKey: 'maxLength_other', message: 'Zadajte najviac {{count}} znakov.' },
+      { translationKey: 'rjsfErrors.maxLength_one', message: 'Zadajte najviac {{count}} znak.' },
+      { translationKey: 'rjsfErrors.maxLength_few', message: 'Zadajte najviac {{count}} znaky.' },
+      { translationKey: 'rjsfErrors.maxLength_other', message: 'Zadajte najviac {{count}} znakov.' },
     ],
     note: 'Žiadna schéma dnes maxLength nepoužíva.',
   },
   {
-    translationKey: 'uniqueItems',
+    translationKey: 'rjsfErrors.uniqueItems',
     trigger: 'Duplicitné položky vo výbere alebo v poli položiek',
     sources: [
       'CheckboxGroupWidgetRJSF.tsx',
@@ -365,14 +364,14 @@ const rjsfMissingRows: ErrorMessageRow[] = [
     note: 'Duplicitu sa v rozhraní nedá vybrať, chyba nastane len pri importe XML alebo JSON.',
   },
   {
-    translationKey: 'enum',
+    translationKey: 'rjsfErrors.enum',
     trigger: 'Hodnota mimo zoznamu možností',
     sources: ['SelectWidgetRJSF.tsx', 'RadioGroupWidgetRJSF.tsx'],
     proposed: 'Vyberte jednu z možností.',
     note: 'Rozhranie ponúka len platné možnosti, chyba nastane len pri importe XML alebo JSON.',
   },
   {
-    translationKey: 'type',
+    translationKey: 'rjsfErrors.type',
     trigger: 'Desatinné číslo v celočíselnom poli',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte hodnotu v správnom formáte.',
@@ -595,7 +594,6 @@ const serverErrorRows: ErrorMessageRow[] = [
 const sections: ErrorMessageSection[] = [
   {
     title: 'Hook formuláre (prihlásenie, registrácia, profil, odťahy) – chyby polí',
-    namespace: 'account',
     description: (
       <>
         Validácia beží v <code>useHookForm.ts</code> (react-hook-form + AJV). Povinné pole je v
@@ -607,7 +605,6 @@ const sections: ErrorMessageSection[] = [
   },
   {
     title: 'Formuláre mestských služieb (RJSF) – existujúce chyby polí',
-    namespace: 'rjsf-errors',
     description: (
       <>
         <code>useFormErrorTranslations.ts</code> prekladá chyby podľa názvu AJV chyby, chyby formátu
@@ -621,37 +618,30 @@ const sections: ErrorMessageSection[] = [
   },
   {
     title: 'Formuláre mestských služieb (RJSF) – chýbajúce chyby polí',
-    namespace: 'rjsf-errors',
     description:
       'Tieto chyby v schémach nastávajú, ale preklad neexistuje a pre názvy chýb neexistuje ani záloha – i18next vráti samotný kľúč a používateľ vidí v poli anglický text ako „minimum“ alebo „const“.',
     rows: rjsfMissingRows,
   },
   {
     title: 'Prílohy – chyby polí',
-    namespace: 'account',
     description: 'Chyby nahrávania súborov v poliach s prílohou vo formulároch mestských služieb.',
     rows: uploadErrorRows,
   },
   {
     title: 'Prílohy – stavy (nie chyby)',
-    namespace: 'account',
     description: 'Priebehové stavy zobrazené v karte súboru, doplnené pre celkový prehľad.',
     rows: uploadStatusRows,
   },
   {
     title: 'Prihlásenie a overenie totožnosti – chyby zo servera',
-    namespace: 'account',
     description:
       'Nie sú to chyby polí. Zobrazujú sa ako upozornenie nad formulárom, aj keď väčšina sa vzťahuje na konkrétne pole (heslo, e-mail, overovací kód) a dala by sa presunúť k poľu. Viaceré znenia opisujú klikanie v rozhraní alebo majú rovnaký text pre rôzne dôvody zamietnutia.',
     rows: serverErrorRows,
   },
 ]
 
-const ErrorMessageTable = ({
-  namespace,
-  rows,
-}: Pick<ErrorMessageSection, 'namespace' | 'rows'>) => {
-  const { t } = useTranslation(namespace)
+const ErrorMessageTable = ({ rows }: Pick<ErrorMessageSection, 'rows'>) => {
+  const { t } = useTranslation('account')
 
   return (
     <div className="w-full overflow-x-auto">
@@ -670,14 +660,14 @@ const ErrorMessageTable = ({
             const isMissing = current === translationKey
             // useFormErrorTranslations checks whether the format key exists and falls back to
             // `format.unknown`. Error names other than `format` have no such fallback.
-            const fallbackTranslationKey = translationKey.startsWith('format.')
-              ? 'format.unknown'
+            const fallbackTranslationKey = translationKey.startsWith('rjsfErrors.format.')
+              ? 'rjsfErrors.format.unknown'
               : null
 
             return (
               <tr key={translationKey} className="border-b border-solid border-gray-200">
                 <td className="p-2 align-top">
-                  <code className="break-all">{`${namespace}:${translationKey}`}</code>
+                  <code className="break-all">{translationKey}</code>
                 </td>
                 <td className="p-2 align-top text-error">
                   {isMissing && fallbackTranslationKey && (
@@ -742,18 +732,18 @@ const ErrorMessagesShowCase = () => {
           Prehľad všetkých chybových správ vo formulároch vygeneroval Claude Code z kódu aplikácie a
           z testovania vo formulárovom playgrounde. Stĺpec Navrhované znenie je podklad na diskusiu,
           nie schválený text. Súčasné znenie sa načítava priamo z prekladov, takže tabuľka je vždy
-          aktuálna. Aplikácia má dva nezávislé systémy validácie a každý má vlastný súbor s
-          prekladmi: <code>public/locales/sk/account.json</code> pre hook formuláre a{' '}
-          <code>public/locales/sk/rjsf-errors.json</code> pre formuláre mestských služieb.
+          aktuálna. Aplikácia má dva nezávislé systémy validácie, znenia oboch sú v{' '}
+          <code>public/locales/sk/account.json</code> – chyby formulárov mestských služieb pod
+          predponou <code>rjsfErrors.</code>.
         </Typography>
       </Wrapper>
 
-      {sections.map(({ title, namespace, description, rows }) => (
+      {sections.map(({ title, description, rows }) => (
         <Wrapper key={title} title={title} direction="column">
           <Typography variant="p-default" className="pb-4">
             {description}
           </Typography>
-          <ErrorMessageTable namespace={namespace} rows={rows} />
+          <ErrorMessageTable rows={rows} />
         </Wrapper>
       ))}
 

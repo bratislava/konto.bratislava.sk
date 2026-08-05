@@ -40,6 +40,7 @@
   },
   "sideEffects": false,
   "scripts": {
+    "dev": "pnpm run build:watch",
     "generate:forms": "tsx scripts/generateClient.ts forms",
     "generate:tax": "tsx scripts/generateClient.ts tax",
     "generate:city-account": "tsx scripts/generateClient.ts city-account",
@@ -55,8 +56,12 @@
     "generate:magproxy:local": "tsx scripts/generateClient.ts magproxy --local-url localhost:3000",
     "check-for-changes": "tsx scripts/checkForChanges.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
+    "build:watch": "tsc --project tsconfig.build.json --watch",
     "prettier": "prettier --write .",
     "generate-and-build": "npm run generate && npm run build"
+  },
+  "dependencies": {
+    "axios": "1.18.1"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.40.1",
@@ -64,7 +69,6 @@
     "@types/fs-extra": "11.0.4",
     "@types/node": "24.13.3",
     "app-root-dir": "1.0.2",
-    "axios": "1.18.1",
     "camelcase": "9.0.0",
     "chalk": "6.0.0",
     "commander": "15.0.0",

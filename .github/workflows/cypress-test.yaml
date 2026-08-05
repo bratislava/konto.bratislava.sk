@@ -14,6 +14,19 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+  BAKE_FILES: |
+    docker-bake.json
+    docker-bake.hcl
+    .github/docker-bake.ci.hcl
+  IMAGE_TAG: city-account-next:e2e
+  CONTAINER_NAME: city-account-next-e2e
+
 jobs:
   dependabot-approval:
     if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
@@ -34,40 +47,95 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        id: node
+        background: true
+        uses: actions/setup-node@v7
         with:
-          node-version: "24.15"
+          node-version-file: package.json
 
-      - name: Build forms-shared
-        working-directory: forms-shared
-        run: |
-          npm install
-          npm run build
+      - name: Set up Docker build
+        id: docker-build-setup
+        background: true
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        with:
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+          buildx_driver_opts: |
+            network=host
 
-      - name: Build openapi-clients
-        working-directory: openapi-clients
-        run: |
-          npm install
-          npm run build
+      - name: Docker metadata
+        id: meta
+        background: true
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ env.REGISTRY }}/standalone/next
+          suffix: -e2e
 
-      - name: Install and build application
-        working-directory: next
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        background: true
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Wait for Node.js
+        wait: node
+
+      - name: Use pnpm and install dependencies
+        id: install-deps
+        background: true
+        uses: pnpm/action-setup@v6
+        with:
+          cache: true
+          run_install: |
+            - args:
+                - --frozen-lockfile
+                - --filter=konto-bratislava-sk-monorepo
+                - --filter=city-account-cypress-tests
+
+      - name: Wait for Docker and Turborepo cache setup
+        wait: [ docker-build-setup, meta, turbo-cache ]
+
+      - name: Build application image
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: next
+          load: true
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
+          TAGS: ${{ env.IMAGE_TAG }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+          NEXT_BUILD_ENV: e2e
+
+      - name: Start application container
         run: |
-          npm install
-          npm run build:e2e
-          npm run start &
+          docker run --detach \
+            --name "$CONTAINER_NAME" \
+            --publish 3000:3000 \
+            "$IMAGE_TAG"
+
+      - name: Wait for dependency install
+        wait: install-deps
 
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
+          install: false
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
-          working-directory: tests
-          command: npm run cypress:ci
+          command: pnpm --filter city-account-cypress-tests run cypress:ci
 
       - name: Upload Cypress screenshots
         uses: actions/upload-artifact@v4
         if: always()
+        background: true
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
@@ -76,6 +144,7 @@ jobs:
       - name: Upload Cypress videos
         uses: actions/upload-artifact@v4
         if: always()
+        background: true
         with:
           name: cypress-videos
           path: tests/cypress/videos
@@ -84,7 +153,21 @@ jobs:
       - name: Visual testing screenshots
         uses: actions/upload-artifact@v4
         if: always()
+        background: true
         with:
           name: visual-testing
           path: tests/cypress/visualTesting
           retention-days: 1
+
+      - name: Application logs
+        if: always()
+        continue-on-error: true
+        run: docker logs "$CONTAINER_NAME"
+
+      - name: Stop application container
+        if: always()
+        continue-on-error: true
+        run: docker rm --force "$CONTAINER_NAME"
+
+      - name: Wait for uploads
+        wait-all:

@@ -18,13 +18,23 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type MagproxyClient = ReturnType<typeof createMagproxyClient>
+export interface MagproxyClient
+  extends
+    ReturnType<typeof AdminApiFactory>,
+    ReturnType<typeof DefaultApiFactory>,
+    ReturnType<typeof DeveloperApiFactory>,
+    ReturnType<typeof KNKatasterNehnutenostApiFactory>,
+    ReturnType<typeof NEVNrodnEvidenciaVozidielApiFactory>,
+    ReturnType<typeof RARegisterAdriesApiFactory>,
+    ReturnType<typeof RFORegisterFyzickchOsbApiFactory>,
+    ReturnType<typeof RPORegisterPrvnickchOsbApiFactory>,
+    ReturnType<typeof RSDRegisterSocilnychDvokApiFactory> {}
 
 export const createMagproxyClient = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): MagproxyClient => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
@@ -38,5 +48,5 @@ export const createMagproxyClient = ({
     ...RFORegisterFyzickchOsbApiFactory(...args),
     ...RPORegisterPrvnickchOsbApiFactory(...args),
     ...RSDRegisterSocilnychDvokApiFactory(...args),
-  }
+  } satisfies MagproxyClient
 }

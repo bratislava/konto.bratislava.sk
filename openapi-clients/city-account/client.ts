@@ -20,13 +20,25 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type CityAccountClient = ReturnType<typeof createCityAccountClient>
+export interface CityAccountClient
+  extends
+    ReturnType<typeof ADMINApiFactory>,
+    ReturnType<typeof AuthApiFactory>,
+    ReturnType<typeof BackendIntegrationAPIApiFactory>,
+    ReturnType<typeof DPBApiFactory>,
+    ReturnType<typeof DefaultApiFactory>,
+    ReturnType<typeof OAuth2ApiFactory>,
+    ReturnType<typeof PAASMPAApiFactory>,
+    ReturnType<typeof TowingApiFactory>,
+    ReturnType<typeof UserIntegrationApiFactory>,
+    ReturnType<typeof UserVerificationsApiFactory>,
+    ReturnType<typeof UsersManipulationApiFactory> {}
 
 export const createCityAccountClient = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): CityAccountClient => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
@@ -42,5 +54,5 @@ export const createCityAccountClient = ({
     ...UserIntegrationApiFactory(...args),
     ...UserVerificationsApiFactory(...args),
     ...UsersManipulationApiFactory(...args),
-  }
+  } satisfies CityAccountClient
 }

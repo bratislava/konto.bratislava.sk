@@ -12,8 +12,8 @@
     "test:coverage": "vitest run --coverage",
     "test:ci": "cross-env CI=true vitest run",
     "test:ci:update": "cross-env CI=true vitest --update",
-    "docker:test": "ts-node scripts/runDockerTest.ts test",
-    "docker:test:update": "ts-node scripts/runDockerTest.ts test-update",
+    "docker:test": "ts-node scripts/runDockerTest.ts test-local",
+    "docker:test:update": "ts-node scripts/runDockerTest.ts test-local-update",
     "generate-assets": "ts-node scripts/assets/generate.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
     "build:watch": "tsc --project tsconfig.build.json --watch",
@@ -34,15 +34,15 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@internationalized/date": "3.12.1",
+    "@internationalized/date": "catalog:",
     "@pdf-lib/fontkit": "1.1.1",
     "@react-email/components": "1.0.12",
-    "@rjsf/core": "6.5.2",
-    "@rjsf/utils": "6.5.2",
-    "@rjsf/validator-ajv8": "6.5.2",
+    "@rjsf/core": "catalog:",
+    "@rjsf/utils": "catalog:",
+    "@rjsf/validator-ajv8": "catalog:",
     "adm-zip": "0.5.17",
-    "ajv": "8.20.0",
-    "ajv-formats": "3.0.1",
+    "ajv": "catalog:",
+    "ajv-formats": "catalog:",
     "classnames": "2.5.1",
     "dayjs": "1.11.21",
     "eta": "3.5.0",
@@ -57,8 +57,8 @@
     "neotraverse": "1.0.1",
     "object-hash": "3.0.0",
     "pdf-lib": "1.17.1",
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-email": "6.0.8",
     "react-markdown": "6.0.3",
     "remove-markdown": "0.6.4",
@@ -78,11 +78,11 @@
     "@types/jsdom": "28.0.1",
     "@types/json-schema": "7.0.15",
     "@types/lodash": "4.17.24",
-    "@types/node": "24.13.3",
+    "@types/node": "catalog:",
     "@types/object-hash": "3.0.6",
     "@types/prompts": "2.4.9",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@types/remove-markdown": "0.3.4",
     "@types/semver": "7.7.1",
     "@types/unzipper": "0.10.11",
@@ -95,7 +95,7 @@
     "jest-image-snapshot": "6.5.2",
     "libxml2-wasm": "0.7.1",
     "pdf-to-img": "6.2.0",
-    "playwright": "1.59.1",
+    "playwright": "catalog:",
     "postcss": "8.5.14",
     "prettier": "3.9.6",
     "prompts": "2.4.2",
@@ -109,14 +109,9 @@
     "vitest": "4.1.10"
   },
   "peerDependencies": {
-    "playwright": "1.59.1"
-  },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
+    "playwright": "catalog:"
   },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   }
 }

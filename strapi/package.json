@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "strapi build",
-    "dev": "npm run develop",
+    "dev": "pnpm run develop",
     "develop": "cross-env ENV_PATH='./.env.local' strapi develop",
     "start": "strapi start",
     "strapi": "strapi"
@@ -35,13 +35,8 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-scope": "9.1.2"
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
-  },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   },
   "strapi": {
     "uuid": "61130046-63b5-40a0-a617-713763ba3913"

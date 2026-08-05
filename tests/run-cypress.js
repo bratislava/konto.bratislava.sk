@@ -52,7 +52,7 @@ const main = async () => {
     '--expose',
     `pluginVisualRegressionImagesPath=cypress/visualTesting/${visualTesting}/`,
   ]
-  const cypressProcess = spawn('npx', ['cypress', ...args], { stdio: 'inherit' })
+  const cypressProcess = spawn('pnpm', ['exec', 'cypress', ...args], { stdio: 'inherit' })
 
   cypressProcess.on('close', (code) => {
     process.exit(code) // Exit with the code from the Cypress process

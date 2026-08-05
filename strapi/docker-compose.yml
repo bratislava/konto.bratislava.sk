@@ -1,0 +1,24 @@
+# Should be run alongside local `pnpm run dev`
+# Credentials and port match .env.example, override them in .env.local if you change them here
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: strapi
+      PGPORT: 5432
+    expose:
+      - '5432'
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      # A named volume rather than a bind mount into the repository: the Docker
+      # build context is the repository root, so a local data directory would be
+      # sent to the daemon on every image build.
+      - strapi-postgres:/var/lib/postgresql/data
+
+volumes:
+  strapi-postgres:

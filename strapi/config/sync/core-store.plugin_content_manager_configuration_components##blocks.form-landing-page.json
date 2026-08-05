@@ -22,7 +22,7 @@
       },
       "text": {
         "edit": {
-          "label": "Text",
+          "label": "UŽ SA NEPOUŽIVA - Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,11 +36,12 @@
       },
       "linkCtas": {
         "edit": {
-          "label": "Odkazy CTAs",
+          "label": "UŽ SA NEPOUŽIVA - Odkazy CTAs",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "linkCtas",
@@ -50,11 +51,12 @@
       },
       "formCta": {
         "edit": {
-          "label": "Formulár CTA",
+          "label": "UŽ SA NEPOUŽIVA - Formulár CTA",
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true
+          "editable": true,
+          "mainField": "title"
         },
         "list": {
           "label": "formCta",
@@ -72,12 +74,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "linkCtas",
-        "formCta",
-        "documentId"
-      ],
       "edit": [
         [
           {
@@ -97,6 +93,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "linkCtas",
+        "formCta",
+        "documentId"
       ]
     },
     "uid": "blocks.form-landing-page",

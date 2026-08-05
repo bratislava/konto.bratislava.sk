@@ -2,14 +2,12 @@ import { Button, Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 
 import { FormWithLandingPageFragment } from '@/src/clients/graphql-strapi/api'
+import { TABLE_OF_CONTENTS_STICKY_TOP } from '@/src/components/common/TableOfContents/MobileTableOfContents'
 import TableOfContents from '@/src/components/common/TableOfContents/TableOfContents'
 import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import FormLandingPageCtaCard from '@/src/components/page-contents/FormLandingPageContent/FormCta/FormLandingPageCtaCard'
-import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
-import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
 /**
@@ -80,24 +78,15 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
                 <Markdown variant="small" content={strapiForm.landingPage.text} />
               </SectionContainer>
             ) : null}
-
-            <SectionContainer>
-              <div className="flex flex-col rounded-xl border">
-                {strapiForm.landingPage.linkCtas?.filter(isDefined).map((linkCta) => (
-                  <FormLandingPageCard key={linkCta.id} {...linkCta} />
-                ))}
-                {isDefined(strapiForm.landingPage.formCta) ? (
-                  <FormLandingPageCtaCard
-                    formCta={strapiForm.landingPage.formCta}
-                    formDefinition={formDefinition}
-                  />
-                ) : null}
-              </div>
-            </SectionContainer>
           </div>
         </div>
 
-        <aside className="w-full lg:w-80 lg:shrink-0">
+        {/* On small screens the table of contents sticks below the navbar, so the aside has to be the
+        sticky element itself - inside it the table of contents would have no room to move. */}
+        <aside
+          className="w-full max-lg:sticky max-lg:z-20 lg:w-80 lg:shrink-0"
+          style={{ top: TABLE_OF_CONTENTS_STICKY_TOP }}
+        >
           <TableOfContents />
         </aside>
       </div>

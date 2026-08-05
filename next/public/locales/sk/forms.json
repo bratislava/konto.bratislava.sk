@@ -54,6 +54,7 @@
   "form_version_compare_action.error_version_update": "Nie je možné pokračovať. Skúste to prosím znova.",
   "form_version_compare_action.title_cannot_continue": "Formulár prešiel výraznými zmenami",
   "form_version_compare_action.title_requires_bump": "Formulár bol aktualizovaný",
+  "FormCtaButton.fileFormButtonLabel": "Vyplniť formulár",
   "info_messages.concept_delete": "Koncept sa maže.",
   "info_messages.concept_save": "Koncept sa ukladá.",
   "info_messages.form_leave_protection": "Naozaj chcete odísť? Údaje, ktoré ste vyplnili sa nemusia uložiť.",

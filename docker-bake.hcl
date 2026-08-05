@@ -33,6 +33,18 @@ target "_toolchain" {
     NODE_VERSION  = NODE_VERSION
     PNPM_VERSION  = PNPM_VERSION
     TURBO_VERSION = TURBO_VERSION
+
+    # Two Dockerfile checks every image here trips, silenced once for all of them
+    # rather than repeated as a `# check=skip=` directive in each Dockerfile:
+    #
+    #   InvalidDefaultArgInFrom -- toolchain versions have no defaults in the
+    #   Dockerfiles on purpose, bake provides them, so they are not duplicated.
+    #
+    #   SecretsUsedInArgOrEnv -- TURBO_TOKEN is a Turborepo remote cache token,
+    #   not a real secret, but Docker flags it on the name alone. Unfortunately
+    #   there is no way to silence it for that one line, so after assessing the
+    #   risk it is disabled for the whole build.
+    BUILDKIT_DOCKERFILE_CHECK = "skip=InvalidDefaultArgInFrom,SecretsUsedInArgOrEnv"
   }
 }
 

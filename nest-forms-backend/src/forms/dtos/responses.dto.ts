@@ -110,7 +110,7 @@ export class GetFormResponseSimpleDto {
   declare formDefinitionSlug: string
 }
 
-class GetFormMetaDto {
+export class GetFormMetaDto {
   @ApiProperty({
     description: 'Number of forms for each state',
     example: {

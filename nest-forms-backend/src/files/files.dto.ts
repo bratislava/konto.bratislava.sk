@@ -17,7 +17,7 @@ import {
 
 import { FileStatus, FormError, FormState } from '../generated/prisma/client'
 
-class FormUserInformationDto {
+export class FormUserInformationDto {
   @ApiProperty({
     description:
       'User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID',
@@ -44,7 +44,7 @@ class FormUserInformationDto {
   declare actorUri: string | null
 }
 
-class IdDto {
+export class IdDto {
   @ApiProperty({
     description: 'id of the record in db',
     example: 'd81d6e01-8196-45a1-bce2-e02877d9fbd8',

@@ -8,7 +8,7 @@ export interface NasesSendResponse {
   data: unknown
 }
 
-class ValidateFormRegistrationDto {
+export class ValidateFormRegistrationDto {
   @ApiProperty({ description: 'Form slug' })
   @IsString()
   slug: string

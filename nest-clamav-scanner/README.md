@@ -75,16 +75,22 @@ If you want to run an application without installing it locally quickly, you can
 
 ## Local installation
 
-- Run npm installation for dependencies
+- Run pnpm installation for dependencies
 
   ```bash
-  npm install
+  pnpm install
+  ```
+
+- Build the shared packages this service depends on
+
+  ```bash
+  pnpm run build:dependencies
   ```
 
 - For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
 
   ```bash
-  npx prisma
+  pnpm exec prisma
   ```
 
 - Check the `.env` file for your correct local database connection configuration. It looks like this:
@@ -104,13 +110,13 @@ DATABASE_URL="postgresql://user:pass@localhost:54302/mydb?connect_timeout=30&sch
 
 ```bash
 # development
-npm run start
+pnpm run start
 
 # watch mode
-npm run start:dev
+pnpm run start:dev
 
 # production mode
-npm run start:prod
+pnpm run start:prod
 ```
 
 ## Test
@@ -119,13 +125,13 @@ To run tests in the repo, please use these commands:
 
 ```bash
 # unit tests
-npm run test
+pnpm run test
 
 # e2e tests
-npm run test:e2e
+pnpm run test:e2e
 
 # test coverage
-npm run test:cov
+pnpm run test:cov
 ```
 
 ## Stay in touch

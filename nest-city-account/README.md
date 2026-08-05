@@ -18,14 +18,11 @@ Adjust the values as you need. (all secret variables)
 
 ### Run locally
 
-1. Build required shared package:
+1. Install dependencies for the whole workspace and build the shared packages this service depends on:
 
 ```bash
-# Build openapi-clients
-cd ../openapi-clients/
-npm install
-npm run build
-cd ../nest-city-account/
+pnpm install
+pnpm run build:dependencies
 ```
 
 2. Run from docker-compose:
@@ -33,12 +30,6 @@ cd ../nest-city-account/
    - Postgresql (main app DB on `localhost:5422`)
    - Postgresql (Bloomreach contacts DB on `localhost:54322`)
    - Bloomreach contacts bootstrap script (`docker/postgres-init/01-bloomreach-contacts.sql`)
-
-3. Install dependencies:
-
-```bash
-npm install
-```
 
 copy and adjust .env from .env.example
 
@@ -48,27 +39,27 @@ if you are using a different database or different postgres with user, adjust en
 Migrate database and generate prisma files
 
 ```bash
-npx prisma migrate dev
-npx prisma generate
+pnpm exec prisma migrate dev
+pnpm exec prisma generate
 ```
 
 Run the app:
 
 ```bash
 # development mode without auto reload
-npm run start
+pnpm run start
 
 # development mode with auto reload
-npm run start:dev
+pnpm run start:dev
 
 # production mode
-npm run start:prod
+pnpm run start:prod
 ```
 
 ## Test
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ## Used external services and tools

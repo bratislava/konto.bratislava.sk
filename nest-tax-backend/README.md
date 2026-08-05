@@ -12,33 +12,29 @@ docker-compose up --build
 
 # Local installation
 
-1. Build required shared package:
+1. Install dependencies for the whole workspace:
 
 ```bash
-# Build openapi-clients
-cd ../openapi-clients/
-npm install
-npm run build
-cd ../nest-tax-backend/
+pnpm install
 ```
 
-2. Install dependencies:
+2. Build the shared packages this service depends on:
 
 ```bash
-npm install
+pnpm run build:dependencies
 ```
 
 - For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
 
 ```bash
-npx prisma
+pnpm exec prisma
 ```
 
 - Migrate database and generate prisma files
 
 ```
-npx prisma migrate dev
-npx prisma generate
+pnpm exec prisma migrate dev
+pnpm exec prisma generate
 ```
 
 - Check the `.env` file for your correct local database connection configuration. It looks like this:
@@ -57,13 +53,13 @@ DATABASE_URL="postgresql://user:password@localhost:5432/?connect_timeout=30&sche
 
 ```bash
 # development
-npm run start
+pnpm run start
 
 # watch mode
-npm run start:dev
+pnpm run start:dev
 
 # production mode
-npm run start:prod
+pnpm run start:prod
 ```
 
 ## Test
@@ -72,10 +68,10 @@ To run tests in the repo, please use these commands:
 
 ```bash
 # unit tests
-npm run test
+pnpm run test
 
 # test coverage
-npm run test:cov
+pnpm run test:cov
 ```
 
 # Configuration Management

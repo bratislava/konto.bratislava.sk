@@ -5,7 +5,7 @@
 Before you start, install all dependencies and create `.env.local` file which is .gitignored used for local dev
 
 ```
-npm install
+pnpm install
 cp .env.example .env.local
 ```
 
@@ -19,7 +19,7 @@ docker compose up postgres
 
 ### Starting from empty database
 
-While not recommended once data is in, you can start by simply running `npm run dev` with an empty database. Strapi will create the tables and you can start from scratch.
+While not recommended once data is in, you can start by simply running `pnpm run dev` with an empty database. Strapi will create the tables and you can start from scratch.
 
 ### Seeding the database
 
@@ -32,5 +32,5 @@ We may provide a db dump as part of the project in the future - for now please c
 Start the development server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```

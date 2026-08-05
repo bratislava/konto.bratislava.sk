@@ -1,22 +1,14 @@
-name: Build Next
+name: Build Strapi
 # Two modes, selected by the `cluster` input:
 #   - CI (cluster == ''): build the final image, do not push.
 #   - Deploy (cluster != ''): reuse an existing commit image or build+push it
 #     and re-tag it for the cluster. The infrastructure deploy is triggered
 #     separately by the caller (deploy.yml).
-#
-# Next.js bakes the environment into the build, so the image, tags and Docker
-# cache are environment-specific (the `-<build_env>` flavor suffix) and cannot
-# be reused across clusters.
 on:
   workflow_call:
     inputs:
       image:
-        description: "Full image name including registry/repository for Docker cache."
-        type: string
-        required: true
-      build_env:
-        description: "Environment suffix for .env.ci-build.<env> (dev, staging, prod)."
+        description: "Full image name including registry/repository."
         type: string
         required: true
       cluster:
@@ -50,13 +42,10 @@ env:
 
 jobs:
   build:
-    name: Build Next
+    name: Build Strapi
     runs-on: bratislava
     env:
-      # Per-cluster deploy tag prefix (empty in CI) and the per-environment
-      # flavor suffix that keeps each env's image and cache separate.
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
-      ENV_SUFFIX: -${{ inputs.build_env }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -85,17 +74,14 @@ jobs:
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
-          suffix: ${{ env.ENV_SUFFIX }}
 
-      # Deploy mode only: reuse the per-env commit image across clusters. If it
-      # already exists, re-tag it for this cluster and skip the build below.
       - name: Check for existing image
         if: ${{ inputs.cluster != '' }}
         id: existing
         uses: bratislava/github-actions/.github/actions/check-existing-image@beta
         with:
-          existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
-          new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}${{ env.ENV_SUFFIX }}
+          existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}
+          new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}
 
       - name: Set up Turborepo cache
         id: turbo-cache
@@ -109,7 +95,7 @@ jobs:
         with:
           source: .
           files: ${{ env.BAKE_FILES }}
-          targets: next
+          targets: strapi
           push: ${{ inputs.cluster != '' }}
           allow: network.host
         env:
@@ -117,4 +103,3 @@ jobs:
           CACHE_TO: ${{ steps.meta.outputs.cache_to }}
           TAGS: ${{ steps.meta.outputs.tags }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
-          NEXT_BUILD_ENV: ${{ inputs.build_env }}

@@ -317,6 +317,12 @@ export default class ConvertService {
       return this.generateTaxPdf(jsonForm, formId)
     }
 
+    const launchBrowser = async () =>
+      chromium.launch({
+        executablePath:
+          this.baConfigService.pdfGenerator.chromiumExecutablePath,
+      })
+
     let pdfBuffer: Buffer
     try {
       // Forms that are not sent have their summary generated on the fly. For sent forms the summary is stored in the database.
@@ -340,7 +346,7 @@ export default class ConvertService {
         pdfBuffer = await renderSummaryPdf({
           formSummary,
           validationData,
-          launchBrowser: async () => chromium.launch(),
+          launchBrowser,
           clientFiles,
           serverFiles: form.files,
         })
@@ -355,7 +361,7 @@ export default class ConvertService {
         pdfBuffer = await renderSummaryPdf({
           formSummary: form.formSummary,
           validationData: null,
-          launchBrowser: async () => chromium.launch(),
+          launchBrowser,
           serverFiles: form.files,
         })
       }

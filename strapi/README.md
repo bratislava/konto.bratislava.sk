@@ -34,13 +34,3 @@ Start the development server:
 ```bash
 npm run dev
 ```
-
-## Patches
-
-We use [patch-package](https://github.com/ds300/patch-package) to slightly change the behavior of some packages. See the `patches` folder for more details.
-
-When updating these packages, please run also `patch-package`:
-
-```
-npm run patch-package @strapi/plugin-users-permissions
-```

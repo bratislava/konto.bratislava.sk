@@ -1,79 +1,43 @@
-import { createRequire } from 'node:module'
+import { addHook } from 'pirates'
 
 import { CliError } from './cli-error'
-import type { Disposable } from './disposable'
-
-/** Emitted JavaScript, keyed by the normalized absolute path of its `.ts` source. */
-export type CompiledSources = Map<string, string>
-
-export const normalizePath = (path: string): string => path.replace(/\\/g, '/')
-
-const registry = createRequire(__filename).extensions
-type ExtensionHandler = NonNullable<(typeof registry)['.js']>
+import { type CompiledSources, normalizePath } from './types'
 
 /**
- * `module._compile` is a Node internal that `@types/node` deliberately omits. Declared as a
- * named interface rather than suppressed with `@ts-expect-error` so the call stays checked.
- */
-interface CompilableModule {
-  _compile(code: string, filename: string): unknown
-}
-
-/**
- * Teaches `require` to serve the backend's compiled TypeScript out of memory.
+ * Teaches `require` to serve the backend's compiled TypeScript out of memory. Returns the
+ * function that undoes it.
  *
- * This has to be `require.extensions['.ts']` and not the newer
- * `module.registerHooks({ load })`. Assigning the extension does double duty: as well as
- * compiling the file, it adds `.ts` to the CJS resolver's extension-probe list, which is
- * what makes extensionless imports like `require('./app.module')` resolve at all. A `load`
- * hook alone is never consulted, because resolution fails first — verified:
- * `Cannot find module './config/ba-config.service'`.
+ * `pirates` does the fiddly parts — registering `.ts` in `Module._extensions` (which is what
+ * also puts it in the CJS resolver's extension-probe list, so extensionless imports like
+ * `require('./app.module')` resolve), chaining any handler already installed, driving
+ * `module._compile`, and handing back a `revert`. It is the same mechanism `babel-register`
+ * uses.
  *
- * The previous handler, if any, is chained rather than clobbered, so a `.ts` file outside
- * the compiled program (a dependency shipping raw TypeScript, or a pre-registered ts-node)
- * still loads.
+ * Note this cannot be `module.registerHooks({ load })`: a `load` hook is never consulted for
+ * an extensionless import, because resolution fails before loading is reached.
  */
 export function installRequireHook(options: {
   sources: CompiledSources
   configPath: string
-}): Disposable {
+}): () => void {
   const { sources, configPath } = options
 
-  // Windows require() preserves the caller's casing while TypeScript reports the casing it
-  // was given, so an exact lookup can miss. Built on the first miss, by which point
-  // `sources` is fully populated.
-  let byLowercasePath: CompiledSources | undefined
-  const lookup = (path: string): string | undefined => {
-    const exact = sources.get(path)
-    if (exact !== undefined) return exact
-    byLowercasePath ??= new Map(
-      [...sources].map(([key, value]) => [key.toLowerCase(), value]),
-    )
-    return byLowercasePath.get(path.toLowerCase())
-  }
-
-  const previous = registry['.ts']
-
-  const handler: ExtensionHandler = (module, filename) => {
-    const source = lookup(normalizePath(filename))
-    if (source === undefined) {
-      if (previous) {
-        previous(module, filename)
-        return
+  return addHook(
+    // The file's own contents are deliberately ignored: what must run is the output the
+    // swagger transformer produced, not the source on disk.
+    (_code, filename) => {
+      const source = sources.get(normalizePath(filename))
+      if (source === undefined) {
+        // Never fall through. Node can strip types from an untransformed file and load it
+        // happily, which would silently produce a document missing its inferred types.
+        throw new CliError(
+          `${filename} was required but is not in the file list of ${configPath} — if it is excluded there, it cannot be reachable from the contract module`,
+        )
       }
-      throw new CliError(
-        `${filename} was required but is not in the file list of ${configPath} — if it is excluded there, it cannot be reachable from the contract module`,
-      )
-    }
-    ;(module as unknown as CompilableModule)._compile(source, filename)
-  }
-
-  registry['.ts'] = handler
-
-  return {
-    dispose: () => {
-      if (previous === undefined) delete registry['.ts']
-      else registry['.ts'] = previous
+      return source
     },
-  }
+    // `ignoreNodeModules` defaults to true, so a dependency shipping raw TypeScript still
+    // loads through whatever handler was already in place.
+    { exts: ['.ts'] },
+  )
 }

@@ -5,10 +5,10 @@ import type { OpenAPIObject } from '@nestjs/swagger'
 import { CliError } from './cli-error'
 import { compileBackend } from './compile'
 import { asOpenApiContract } from './contract'
-import { installRequireHook, normalizePath } from './require-hook'
+import { installRequireHook } from './require-hook'
 import { readSwaggerPluginOptions } from './swagger-plugin'
 import { loadBackendToolchain } from './toolchain'
-import type { BackendConfig } from './types'
+import { type BackendConfig, normalizePath } from './types'
 
 /**
  * Compiles the backend, loads its contract and produces the document — the same one the
@@ -46,7 +46,7 @@ export async function buildDocument(
       sources,
     })
 
-    const hook = installRequireHook({ sources, configPath })
+    const revertHook = installRequireHook({ sources, configPath })
     try {
       if (!sources.has(normalizePath(entryPath))) {
         throw new CliError(
@@ -70,9 +70,9 @@ export async function buildDocument(
         await app.close()
       }
     } finally {
-      hook.dispose()
+      revertHook()
     }
   } finally {
-    toolchain.dispose()
+    toolchain.revert()
   }
 }

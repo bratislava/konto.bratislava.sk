@@ -4,7 +4,6 @@ import { pathToFileURL } from 'node:url'
 import type * as ts from 'typescript'
 
 import { CliError } from './cli-error'
-import type { Disposable } from './disposable'
 
 /**
  * Forces `require('typescript')` inside `@nestjs/swagger` onto the backend's own copy.
@@ -19,7 +18,7 @@ import type { Disposable } from './disposable'
  * instance, so the `ts.Program` handed to the transformer belongs to the same realm.
  *
  * Scoped by `parentURL` rather than applied globally, so the backend's own code is free to
- * resolve `typescript` however it likes, and reversible via `dispose()`.
+ * resolve `typescript` however it likes. Returns the function that undoes it.
  *
  * Must be installed before the first `require` of the swagger plugin: those requires are at
  * module scope, and Node caches modules by resolved filename, so a primed cache wins.
@@ -27,7 +26,7 @@ import type { Disposable } from './disposable'
 export function pinTypescriptForSwagger(paths: {
   typescript: string
   swaggerPackageJson: string
-}): Disposable {
+}): () => void {
   const typescriptUrl = pathToFileURL(paths.typescript).href
   const swaggerRoot = pathToFileURL(
     dirname(paths.swaggerPackageJson) + sep,
@@ -45,7 +44,7 @@ export function pinTypescriptForSwagger(paths: {
     },
   })
 
-  return { dispose: () => hooks.deregister() }
+  return () => hooks.deregister()
 }
 
 /**

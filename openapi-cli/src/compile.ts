@@ -2,8 +2,8 @@ import { dirname, join } from 'node:path'
 import type * as ts from 'typescript'
 
 import { CliError } from './cli-error'
-import { type CompiledSources, normalizePath } from './require-hook'
 import type { SwaggerPluginBefore } from './swagger-plugin'
+import { type CompiledSources, normalizePath } from './types'
 
 /**
  * Nothing reaches disk, so every option that would produce a second artifact is off.
@@ -100,8 +100,13 @@ export function compileBackend(options: {
     before: [swaggerBefore(swaggerOptions, program)],
   })
 
-  reportDiagnostics(typescript, program, emitResult)
+  reportDiagnostics(typescript, program, emitResult, backendDir)
 
+  // A skipped emit can still have written some files, so this must be checked separately
+  // from an empty result — a document built from a partial emit would look plausible.
+  if (emitResult.emitSkipped) {
+    throw new CliError(`emit was skipped for ${configPath}`)
+  }
   if (sources.size === 0) {
     throw new CliError(`compiling ${configPath} produced no output`)
   }
@@ -111,6 +116,7 @@ function reportDiagnostics(
   typescript: typeof ts,
   program: ts.Program,
   emitResult: ts.EmitResult,
+  backendDir: string,
 ): void {
   const diagnostics = typescript
     .getPreEmitDiagnostics(program)
@@ -120,7 +126,8 @@ function reportDiagnostics(
   process.stderr.write(
     typescript.formatDiagnostics(diagnostics, {
       getCanonicalFileName: (fileName) => fileName,
-      getCurrentDirectory: typescript.sys.getCurrentDirectory,
+      // The backend, not process.cwd() — they coincide today, but only by convention.
+      getCurrentDirectory: () => backendDir,
       getNewLine: () => typescript.sys.newLine,
     }),
   )

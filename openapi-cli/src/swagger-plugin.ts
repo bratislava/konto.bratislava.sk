@@ -1,13 +1,13 @@
-import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type * as ts from 'typescript'
 
 import { CliError } from './cli-error'
+import { readJsonFile } from './read-json'
 
 /**
  * The `before` transformer exported by `@nestjs/swagger/plugin`. Declared locally rather
  * than imported so that this package never *value*-imports `@nestjs/swagger` — every
- * runtime module comes from the backend, by path. See `host-modules.ts`.
+ * runtime module comes from the backend, by path. See `toolchain.ts`.
  */
 export type SwaggerPluginBefore = (
   options?: Record<string, unknown>,
@@ -17,6 +17,13 @@ export type SwaggerPluginBefore = (
 interface NestCliPlugin {
   name?: string
   options?: Record<string, unknown>
+}
+
+interface NestCliJson {
+  compilerOptions?: {
+    /** Both the object form and the bare-string shorthand are legal. */
+    plugins?: (string | NestCliPlugin)[]
+  }
 }
 
 /**
@@ -31,20 +38,11 @@ export function readSwaggerPluginOptions(
   backendDir: string,
 ): Record<string, unknown> {
   const configPath = join(backendDir, 'nest-cli.json')
-
-  let contents: string
-  try {
-    contents = readFileSync(configPath, 'utf8')
-  } catch {
-    throw new CliError(`cannot read ${configPath}`)
-  }
-
-  const parsed: unknown = JSON.parse(contents)
-  const plugins: unknown =
-    typeof parsed === 'object' && parsed !== null
-      ? (parsed as { compilerOptions?: { plugins?: unknown } }).compilerOptions
-          ?.plugins
-      : undefined
+  const { compilerOptions } = readJsonFile<NestCliJson>(
+    configPath,
+    'the @nestjs/swagger plugin options are read from it',
+  )
+  const plugins = compilerOptions?.plugins
 
   if (!Array.isArray(plugins)) {
     throw new CliError(
@@ -52,11 +50,10 @@ export function readSwaggerPluginOptions(
     )
   }
 
-  // Both the object form and the bare-string shorthand are legal in nest-cli.json.
-  const entry = plugins.find((plugin: unknown) =>
+  const entry = plugins.find((plugin) =>
     typeof plugin === 'string'
       ? plugin === '@nestjs/swagger'
-      : (plugin as NestCliPlugin)?.name === '@nestjs/swagger',
+      : plugin.name === '@nestjs/swagger',
   )
 
   if (entry === undefined) {
@@ -65,7 +62,5 @@ export function readSwaggerPluginOptions(
     )
   }
 
-  return typeof entry === 'string'
-    ? {}
-    : ((entry as NestCliPlugin).options ?? {})
+  return typeof entry === 'string' ? {} : (entry.options ?? {})
 }

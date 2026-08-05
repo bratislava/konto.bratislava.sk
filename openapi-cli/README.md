@@ -58,22 +58,35 @@ way needed a re-keying shim and source edits across the backend.
 So the CLI runs the real transformer, driven through the TypeScript compiler API, and keeps
 the emitted JavaScript in memory. Two consequences worth knowing about:
 
-- **`require.extensions['.ts']`, not `module.registerHooks({ load })`.** Assigning the
-  extension also adds `.ts` to the CJS resolver's extension-probe list, which is what makes
-  extensionless imports (`require('./app.module')`) resolve. A `load` hook alone is never
-  consulted, because resolution fails first.
+- **Loading goes through `pirates`**, the same require-hook library `babel-register` uses. It
+  registers `.ts` in `Module._extensions`, chains any handler already installed, drives
+  `module._compile` and hands back a `revert`. It has to be that mechanism and not the newer
+  `module.registerHooks({ load })`: registering the extension is also what adds `.ts` to the
+  CJS resolver's extension-probe list, which is what makes extensionless imports
+  (`require('./app.module')`) resolve at all. A `load` hook is never consulted, because
+  resolution fails first.
 - **`typescript` is pinned for `@nestjs/swagger`.** That package declares no dependency on
   `typescript` yet requires it at module scope, so in this workspace it escapes to pnpm's
   hidden hoist directory and can pick up a TypeScript major that has no `ts.factory`. A
   scoped `resolve` hook forces it onto the backend's copy, which also guarantees the plugin
   and the CLI share one instance — necessary, since the `ts.Program` is passed between them.
 
-## No runtime dependencies on the backend's stack
+## The compiler and Nest runtime come from the backend
 
 `typescript`, `@nestjs/core`, `@nestjs/common` and `@nestjs/swagger` are **type-only**
 devDependencies here. At runtime every one of them is resolved from the backend's own
-directory (`src/host-modules.ts`) so that the CLI uses the same module instances the
-backend's compiled code will. A second `@nestjs/core` would mean decorator metadata written
-by one copy and read by another.
+directory (`src/host-modules.ts`).
 
-Never `import` any of them for a value — only `import type`.
+That is deliberate, for two different reasons:
+
+- **`typescript`** compiles the *backend's* source, so it must be the backend's compiler —
+  the same one `nest build` uses. A different version could emit differently or infer
+  different types, and the whole point is for this document to match what the server serves.
+  Same reasoning as reading plugin options from the backend's `nest-cli.json` rather than
+  hardcoding them.
+- **`@nestjs/*`** must be the exact instances the backend's compiled code requires.
+  `NestFactory` has to be the copy whose `@nestjs/common` wrote the decorator metadata it
+  reads back; two copies means metadata written by one and read by another.
+
+Never `import` any of them for a value — only `import type`. `commander` and `pirates` are
+the CLI's own runtime dependencies and are imported normally.

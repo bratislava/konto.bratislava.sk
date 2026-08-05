@@ -3,6 +3,12 @@ import type { OpenAPIObject } from '@nestjs/swagger'
 
 export type NestModuleClass = new (...args: never[]) => unknown
 
+/** Emitted JavaScript, keyed by the normalized absolute path of its `.ts` source. */
+export type CompiledSources = Map<string, string>
+
+/** TypeScript reports forward slashes; `require` reports native separators. */
+export const normalizePath = (path: string): string => path.replace(/\\/g, '/')
+
 /**
  * What every backend's contract module (see `BackendConfig.entry`) must export.
  *

@@ -1,28 +1,19 @@
-import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { backends } from './backends'
 import { CliError } from './cli-error'
+import { readJsonFile } from './read-json'
 import type { BackendConfig } from './types'
 
 function readPackageName(directory: string): string {
-  let contents: string
-  try {
-    contents = readFileSync(join(directory, 'package.json'), 'utf8')
-  } catch {
-    throw new CliError(
-      `no package.json in ${directory} — run this from a backend package directory`,
-    )
-  }
-
-  const parsed: unknown = JSON.parse(contents)
-  const name =
-    typeof parsed === 'object' && parsed !== null
-      ? (parsed as { name?: unknown }).name
-      : undefined
+  const packageJsonPath = join(directory, 'package.json')
+  const { name } = readJsonFile<{ name?: string }>(
+    packageJsonPath,
+    'run this from a backend package directory',
+  )
 
   if (typeof name !== 'string') {
-    throw new CliError(`${join(directory, 'package.json')} has no "name"`)
+    throw new CliError(`${packageJsonPath} has no "name"`)
   }
   return name
 }

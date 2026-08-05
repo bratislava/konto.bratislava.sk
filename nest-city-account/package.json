@@ -13,6 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:repl": "nest start --watch --entryFile repl",
     "start:prod": "node dist/main",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\"",
     "lint:fix": "eslint \"src/**/*.{ts,js}\" \"test/**/*.{ts,js}\" --fix",

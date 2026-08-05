@@ -48,7 +48,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
               className="w-max"
               href={strapiForm.moreInformationUrl}
             >
-              {t('forms.form_header.services_link')}
+              {t('FormHeader.servicesLink')}
             </Button>
           ) : null}
         </div>

@@ -147,62 +147,62 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
             {tierStatus.isInQueue && (
               <AccountSuccessAlert
                 variant="pending"
-                title={t('auth.identity_verification.fo.pending.title')}
+                title={t('IdentityVerificationPage.fo.pending.title')}
                 {...(isOAuthLogin
                   ? {
-                      confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                      confirmLabel: t('auth.continueToOauthOrigin', { clientTitle }),
                       onConfirm: () => {
                         // TODO OAuth: What to do here whe identity verification is pending?
                       },
                       description:
                         lastRc && lastIdCard
-                          ? t('auth.identity_verification.fo.pending_oauth.content', {
+                          ? t('IdentityVerificationPage.fo.pendingOauth.content', {
                               rc: lastRc,
                               idCard: lastIdCard,
                               clientTitle,
                             })
-                          : t('auth.identity_verification.fo.pending_oauth.content_without_data', {
+                          : t('IdentityVerificationPage.fo.pendingOauth.contentWithoutData', {
                               clientTitle,
                             }),
                     }
                   : {
-                      confirmLabel: t('auth.continue_to_account'),
+                      confirmLabel: t('auth.continueToAccount'),
                       onConfirm: () => {
                         redirect()
                       },
                       description:
                         lastRc && lastIdCard
-                          ? t('auth.identity_verification.fo.pending.content', {
+                          ? t('IdentityVerificationPage.fo.pending.content', {
                               rc: lastRc,
                               idCard: lastIdCard,
                             })
-                          : t('auth.identity_verification.fo.pending.content_without_data'),
+                          : t('IdentityVerificationPage.fo.pending.contentWithoutData'),
                     })}
               />
             )}
             {tierStatus.isIdentityVerified && (
               <AccountSuccessAlert
                 variant="success"
-                title={t('auth.identity_verification.common.success.title')}
+                title={t('IdentityVerificationPage.successTitle')}
                 description={
                   isLegalEntity
-                    ? t('auth.identity_verification.fop_po_eid.success.content')
+                    ? t('IdentityVerificationPage.fopPo.successContent')
                     : lastRc &&
                       lastIdCard &&
-                      t('auth.identity_verification.fo.success.content', {
+                      t('IdentityVerificationPage.fo.successContent', {
                         rc: lastRc,
                         idCard: lastIdCard,
                       })
                 }
                 {...(isOAuthLogin
                   ? {
-                      confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                      confirmLabel: t('auth.continueToOauthOrigin', { clientTitle }),
                       onConfirm: () => {
                         storeTokensAndRedirect()
                       },
                     }
                   : {
-                      confirmLabel: t('auth.continue_to_account'),
+                      confirmLabel: t('auth.continueToAccount'),
                       onConfirm: () => {
                         redirect()
                       },

@@ -23,7 +23,7 @@ const SummaryAdditionalInfo = () => {
   return (
     <div>
       <Typography variant="h3" className="mb-4">
-        {t('forms.summary.additional_info')}
+        {t('SummaryAdditionalInfo.title')}
       </Typography>
       <Markdown
         content={additionalInfo}

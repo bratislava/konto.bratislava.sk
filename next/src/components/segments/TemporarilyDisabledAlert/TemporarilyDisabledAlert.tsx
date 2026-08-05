@@ -35,12 +35,12 @@ const TemporarilyDisabledAlert = ({
 
   const translationMap = {
     authenticated: {
-      withDate: t('TemporarilyDisabledAlert.body', { date }),
-      withoutDate: t('TemporarilyDisabledAlert.body_no_date'),
+      withDate: t('TemporarilyDisabledAlert.body.authenticated.withDate', { date }),
+      withoutDate: t('TemporarilyDisabledAlert.body.authenticated.withoutDate'),
     },
     notAuthenticated: {
-      withDate: t('TemporarilyDisabledAlert.body_not_authenticated', { date }),
-      withoutDate: t('TemporarilyDisabledAlert.body_not_authenticated_no_date'),
+      withDate: t('TemporarilyDisabledAlert.body.notAuthenticated.withDate', { date }),
+      withoutDate: t('TemporarilyDisabledAlert.body.notAuthenticated.withoutDate'),
     },
   }
 
@@ -58,7 +58,7 @@ const TemporarilyDisabledAlert = ({
       />
       {showReason ? (
         <div>
-          <span className="font-semibold">{t('TemporarilyDisabledAlert.reason_label')}</span>{' '}
+          <span className="font-semibold">{t('TemporarilyDisabledAlert.reasonLabel')}</span>{' '}
           {reason}
         </div>
       ) : null}

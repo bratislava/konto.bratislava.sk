@@ -40,7 +40,7 @@ const useGetContext = () => {
     onMutate: () => {
       // TODO: Wording.
       showToast({
-        message: t('forms.useFormRedirects.save_concept.on_mutate_snackbar_message'),
+        message: t('useFormRedirects.saveConcept.redirectingMessage'),
         variant: 'info',
       })
       turnOffLeaveProtection()
@@ -48,7 +48,7 @@ const useGetContext = () => {
     onError: () => {
       // Maybe different wording for this case.
       showToast({
-        message: t('forms.useFormRedirects.save_concept.on_error_snackbar_message'),
+        message: t('useFormRedirects.saveConcept.errorMessage'),
         variant: 'error',
       })
     },

@@ -33,28 +33,28 @@ export const useFormErrorTranslations = () => {
   const { t } = useTranslation('account')
 
   const formatMessages: Record<TranslatedFormat, string> = {
-    email: t('rjsfErrors.format.email'),
-    date: t('rjsfErrors.format.date'),
-    'ba-iban': t('rjsfErrors.format.ba-iban'),
-    'ba-ico': t('rjsfErrors.format.ba-ico'),
-    'ba-phone-number': t('rjsfErrors.format.ba-phone-number'),
-    'ba-slovak-phone-number': t('rjsfErrors.format.ba-slovak-phone-number'),
-    'ba-slovak-zip': t('rjsfErrors.format.ba-slovak-zip'),
-    'ba-ratio': t('rjsfErrors.format.ba-ratio'),
-    'ba-time': t('rjsfErrors.format.ba-time'),
-    'ba-file-uuid': t('rjsfErrors.format.ba-file-uuid'),
+    email: t('useFormErrorTranslations.formats.email'),
+    date: t('useFormErrorTranslations.formats.date'),
+    'ba-iban': t('useFormErrorTranslations.formats.ba-iban'),
+    'ba-ico': t('useFormErrorTranslations.formats.ba-ico'),
+    'ba-phone-number': t('useFormErrorTranslations.formats.ba-phone-number'),
+    'ba-slovak-phone-number': t('useFormErrorTranslations.formats.ba-slovak-phone-number'),
+    'ba-slovak-zip': t('useFormErrorTranslations.formats.ba-slovak-zip'),
+    'ba-ratio': t('useFormErrorTranslations.formats.ba-ratio'),
+    'ba-time': t('useFormErrorTranslations.formats.ba-time'),
+    'ba-file-uuid': t('useFormErrorTranslations.formats.ba-file-uuid'),
   }
 
   const errorNameMessages: Record<TranslatedErrorName, string> = {
-    const: t('rjsfErrors.const'),
-    minItems: t('rjsfErrors.minItems'),
-    minLength: t('rjsfErrors.minLength'),
-    pattern: t('rjsfErrors.pattern'),
-    required: t('rjsfErrors.required'),
+    const: t('useFormErrorTranslations.errors.const'),
+    minItems: t('useFormErrorTranslations.errors.minItems'),
+    minLength: t('useFormErrorTranslations.errors.minLength'),
+    pattern: t('useFormErrorTranslations.errors.pattern'),
+    required: t('useFormErrorTranslations.errors.required'),
   }
 
-  const unknownFormatMessage = t('rjsfErrors.format.unknown')
-  const unknownErrorMessage = t('rjsfErrors.unknown')
+  const unknownFormatMessage = t('useFormErrorTranslations.formats.unknown')
+  const unknownErrorMessage = t('useFormErrorTranslations.errors.unknown')
 
   const getMessage = (error: RJSFValidationError) => {
     if (error.name === 'format') {

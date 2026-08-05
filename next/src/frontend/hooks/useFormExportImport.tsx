@@ -68,11 +68,11 @@ export const useGetContext = () => {
     onMutate: ({ fromModal }) => {
       // The concept saved from modal has its own loading indicator.
       if (!fromModal) {
-        showToast({ message: t('forms.info_messages.concept_save'), variant: 'info' })
+        showToast({ message: t('useFormExportImport.info.conceptSave'), variant: 'info' })
       }
     },
     onSuccess: () => {
-      showToast({ message: t('forms.success_messages.concept_save'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.conceptSave'), variant: 'success' })
       setConceptSaveErrorModal(false)
       turnOffLeaveProtection()
     },
@@ -95,7 +95,7 @@ export const useGetContext = () => {
       return new Promise(() => {})
     },
     onError: () => {
-      showToast({ message: t('forms.errors.migration'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.migration'), variant: 'error' })
     },
   })
 
@@ -108,7 +108,7 @@ export const useGetContext = () => {
   }
   // TODO refactor, same as next/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard.tsx
   const exportXml = async () => {
-    showToast({ message: t('forms.info_messages.xml_export'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.xmlExport'), variant: 'info' })
     try {
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
         formId,
@@ -120,17 +120,17 @@ export const useGetContext = () => {
       const fileName = `${slug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
       closeToasts()
-      showToast({ message: t('forms.success_messages.xml_export'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.xmlExport'), variant: 'success' })
       plausible(`${slug}#export-xml`)
     } catch (error) {
-      showToast({ message: t('forms.errors.xml_export'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.xmlExport'), variant: 'error' })
     }
   }
 
   const exportJson = async () => {
     const fileName = `${slug}_output.json`
     downloadBlob(new Blob([JSON.stringify(formData)]), fileName)
-    showToast({ message: t('forms.success_messages.json_export'), variant: 'success' })
+    showToast({ message: t('useFormExportImport.success.jsonExport'), variant: 'success' })
   }
 
   const triggerImportXml = () => {
@@ -148,7 +148,7 @@ export const useGetContext = () => {
     const file = files[0]
 
     try {
-      showToast({ message: t('forms.info_messages.xml_import'), variant: 'info' })
+      showToast({ message: t('useFormExportImport.info.xmlImport'), variant: 'info' })
       const xmlForm = await file.text()
       const { data } = await formsClient.convertControllerConvertXmlToJson(
         formId,
@@ -161,7 +161,7 @@ export const useGetContext = () => {
 
       const importData = () => {
         setImportedFormData(data.formDataJson)
-        showToast({ message: t('forms.success_messages.xml_import'), variant: 'success' })
+        showToast({ message: t('useFormExportImport.success.xmlImport'), variant: 'success' })
       }
 
       if (environment.featureToggles.versioning && data.requiresVersionConfirmation) {
@@ -178,9 +178,12 @@ export const useGetContext = () => {
       plausible(`${slug}#import-xml`)
     } catch (error) {
       if (isAxiosError(error) && error.response?.data?.errorName === 'INCOMPATIBLE_JSON_VERSION') {
-        showToast({ message: t('forms.errors.xml_import_incompatible_version'), variant: 'error' })
+        showToast({
+          message: t('useFormExportImport.errors.xmlImportIncompatibleVersion'),
+          variant: 'error',
+        })
       } else {
-        showToast({ message: t('forms.errors.xml_import'), variant: 'error' })
+        showToast({ message: t('useFormExportImport.errors.xmlImport'), variant: 'error' })
       }
     }
   }
@@ -191,15 +194,15 @@ export const useGetContext = () => {
     }
     const file = files[0]
     const jsonForm = await file.text()
-    showToast({ message: t('forms.info_messages.json_import'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.jsonImport'), variant: 'info' })
     try {
       const parsed = JSON.parse(jsonForm)
 
       setImportedFormData(parsed)
     } catch (error) {
-      showToast({ message: t('forms.errors.json_import'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.jsonImport'), variant: 'error' })
     }
-    showToast({ message: t('forms.success_messages.json_import'), variant: 'success' })
+    showToast({ message: t('useFormExportImport.success.jsonImport'), variant: 'success' })
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
@@ -223,17 +226,17 @@ export const useGetContext = () => {
   }
 
   const exportOrdinaryPdf = async () => {
-    showToast({ message: t('forms.info_messages.pdf_export'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.pdfExport'), variant: 'info' })
     try {
       await runPdfExport()
     } catch (error) {
       closeToasts()
-      showToast({ message: t('forms.errors.pdf_export'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.pdfExport'), variant: 'error' })
 
       return
     }
     closeToasts()
-    showToast({ message: t('forms.success_messages.pdf_export'), variant: 'success' })
+    showToast({ message: t('useFormExportImport.success.pdfExport'), variant: 'success' })
   }
 
   const exportTaxPdf = async () => {
@@ -244,7 +247,7 @@ export const useGetContext = () => {
     } catch (error) {
       setTaxFormPdfExportModal(null)
       if (!abortController.signal.aborted) {
-        showToast({ message: t('forms.errors.pdf_export'), variant: 'error' })
+        showToast({ message: t('useFormExportImport.errors.pdfExport'), variant: 'error' })
       }
 
       return
@@ -272,17 +275,17 @@ export const useGetContext = () => {
   }
 
   const deleteConcept = async () => {
-    showToast({ message: t('forms.info_messages.concept_delete'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.conceptDelete'), variant: 'info' })
     try {
       await formsClient.formsControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
       closeToasts()
-      showToast({ message: t('forms.success_messages.concept_delete'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.conceptDelete'), variant: 'success' })
       await router.push(ROUTES.MY_APPLICATIONS)
     } catch (error) {
       logger.error(error)
-      showToast({ message: t('forms.errors.concept_delete'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.conceptDelete'), variant: 'error' })
     }
   }
 

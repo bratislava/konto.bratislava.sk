@@ -36,7 +36,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         </div>
         <div className="flex flex-col gap-3 *:w-full lg:flex-row">
           <Button className="grow" variant="solid" onPress={() => verifyIdentity()}>
-            {t('auth.verification_url_text')}
+            {t('auth.verifyIdentity')}
           </Button>
           <Button
             className="grow"

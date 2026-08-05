@@ -72,7 +72,7 @@ const BAArrayFieldItemTemplate = <
             variant="icon-wrapped"
             icon={<Icon name="clear" />}
             // TODO: Improve message
-            aria-label={t('forms.array_field_item.remove_aria_label')}
+            aria-label={t('BAArrayFieldItemTemplate.aria.remove')}
             onPress={onRemoveItemPatched}
             className="self-start"
           />

@@ -214,10 +214,10 @@ const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
               />
             ) : (
               <AccountSuccessAlert
-                title={t('auth.email_change_success_title')}
-                confirmLabel={t('auth.continue_to_account')}
+                title={t('EmailChangePage.successTitle')}
+                confirmLabel={t('auth.continueToAccount')}
                 onConfirm={onConfirm}
-                description={t('auth.email_change_success_description', { email: lastEmail })}
+                description={t('EmailChangePage.successDescription', { email: lastEmail })}
               />
             )}
           </AccountContainer>

@@ -122,7 +122,7 @@ const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
 
   const tags: string[] = [
     ...(service.form?.isTemporarilyDisabled
-      ? [t('MunicipalServiceCard.temporarily_disabled_badge')]
+      ? [t('MunicipalServiceCard.temporarilyDisabledBadge')]
       : []),
     ...service.tags.map((tag) => tag?.title).filter(isDefined),
   ]

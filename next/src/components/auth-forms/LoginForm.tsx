@@ -62,7 +62,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       data-cy="login-container"
     >
       <Typography variant="h3" as="h1">
-        {t('auth.login_title')}
+        {t('LoginForm.title')}
       </Typography>
       <AccountErrorAlert error={error} />
       <Controller
@@ -103,8 +103,8 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         data-cy="login-button"
       >
         {isOAuthLogin && clientTitle
-          ? t('auth.login_page.continue_to_oauth_origin', { clientTitle })
-          : t('auth.login_submit')}
+          ? t('LoginForm.continueToOauthOrigin', { clientTitle })
+          : t('LoginForm.submit')}
       </Button>
     </form>
   )

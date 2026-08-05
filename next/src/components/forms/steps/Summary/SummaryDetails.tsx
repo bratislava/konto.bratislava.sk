@@ -67,7 +67,7 @@ const FileValueComponent = ({ fileInfo }: SummaryFileValueComponentProps) => {
 const NoneValueComponent = () => {
   const { t } = useTranslation('account')
 
-  return <span>{t('forms.summary.none_value')}</span>
+  return <span>{t('SummaryDetails.noneValue')}</span>
 }
 
 const InvalidValueComponent = () => {
@@ -79,7 +79,7 @@ const InvalidValueComponent = () => {
         <div className="shrink-0">
           <Icon name="warning" />
         </div>
-        {t('forms.summary.invalid_value')}
+        {t('SummaryDetails.invalidValue')}
       </div>
     </span>
   )
@@ -118,7 +118,7 @@ const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemC
             </Typography>
             {hasError && (
               <Typography variant="p-small" className="text-category-700 group-open:hidden">
-                {t('forms.summary.contains_errors')}
+                {t('SummaryDetails.containsErrors')}
               </Typography>
             )}
           </div>

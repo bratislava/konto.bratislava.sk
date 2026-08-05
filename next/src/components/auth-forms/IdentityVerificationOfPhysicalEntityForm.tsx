@@ -115,9 +115,9 @@ const IdentityVerificationOfPhysicalEntityForm = ({
       })}
     >
       <Typography variant="h3" as="h1">
-        {t('auth.identity_verification.fo.init.title')}
+        {t('IdentityVerificationOfPhysicalEntityForm.title')}
       </Typography>
-      <Markdown variant="small" content={t('auth.identity_verification.fo.init.content')} />
+      <Markdown variant="small" content={t('IdentityVerificationOfPhysicalEntityForm.content')} />
       <AccountErrorAlert error={error} />
 
       <Controller
@@ -127,7 +127,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
           <TextField
             isRequired
             label={t('auth.fields.givenName.label')}
-            helptext={t('auth.identity_verification.fo.init.given_name_helptext')}
+            helptext={t('IdentityVerificationOfPhysicalEntityForm.givenNameHelptext')}
             autoComplete="given-name"
             autoCapitalize="on"
             autoCorrect="off"
@@ -144,7 +144,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
           <TextField
             isRequired
             label={t('auth.fields.familyName.label')}
-            helptext={t('auth.identity_verification.fo.init.family_name_helptext')}
+            helptext={t('IdentityVerificationOfPhysicalEntityForm.familyNameHelptext')}
             autoComplete="family-name"
             autoCapitalize="on"
             autoCorrect="off"
@@ -219,7 +219,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
             />
             {captchaWarning === 'show' && (
               <Typography variant="p-small" className="italic">
-                {t('auth.captcha_warning')}
+                {t('auth.captchaWarning')}
               </Typography>
             )}
           </>
@@ -227,7 +227,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
       />
       <div className="flex flex-col gap-3 lg:gap-4">
         <Button variant="solid" fullWidth type="submit" isLoading={isSubmitting}>
-          {t('auth.identity_verification.fo.init.submit_button_text')}
+          {t('IdentityVerificationOfPhysicalEntityForm.submit')}
         </Button>
         {showSkipButton ? (
           <Button
@@ -236,7 +236,7 @@ const IdentityVerificationOfPhysicalEntityForm = ({
             onPress={() => redirect()}
             endIcon={<Icon name="arrow-right" />}
           >
-            {t('auth.identity_verification.common.skip_verification_button_text')}
+            {t('auth.skipVerificationButton')}
           </Button>
         ) : null}
       </div>

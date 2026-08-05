@@ -91,10 +91,10 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       })}
     >
       <Typography variant="h3" as="h1">
-        {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
+        {fromMigration ? t('NewPasswordForm.migrationTitle') : t('NewPasswordForm.title')}
       </Typography>
       <Typography variant="p-small">
-        {t('auth.new_password_description', { email: lastEmail })}
+        {t('NewPasswordForm.description', { email: lastEmail })}
       </Typography>
       <AccountErrorAlert
         error={error}
@@ -136,14 +136,14 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')}
+        {fromMigration ? t('NewPasswordForm.migrationSubmit') : t('NewPasswordForm.submit')}
       </Button>
       <Typography variant="p-small">
-        <span>{t('auth.verification_description')}</span>{' '}
-        {cnt > 0 && <span>{t('auth.verification_cnt_description', { cnt })}</span>}
+        <span>{t('auth.resendCode.description')}</span>{' '}
+        {cnt > 0 && <span>{t('auth.resendCode.countdown', { cnt })}</span>}
       </Typography>
       <Button variant="outline" onPress={handleResend} fullWidth isDisabled={cnt > 0}>
-        {t('auth.verification_resend')}
+        {t('auth.resendCode.button')}
       </Button>
       <AccountLink variant="login" />
     </form>

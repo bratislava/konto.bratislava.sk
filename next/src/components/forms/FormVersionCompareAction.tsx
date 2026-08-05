@@ -39,7 +39,7 @@ const FormVersionCompareAction = () => {
     },
     onError: () => {
       showToast({
-        message: t('forms.form_version_compare_action.error_version_update'),
+        message: t('FormVersionCompareAction.errorVersionUpdate'),
         variant: 'error',
       })
     },
@@ -85,10 +85,10 @@ const FormVersionCompareAction = () => {
               {
                 {
                   [VersionCompareContinueAction.CannotContinue]: t(
-                    'forms.form_version_compare_action.title_cannot_continue',
+                    'FormVersionCompareAction.cannotContinue.title',
                   ),
                   [VersionCompareContinueAction.RequiresBump]: t(
-                    'forms.form_version_compare_action.title_requires_bump',
+                    'FormVersionCompareAction.requiresBump.title',
                   ),
                 }[versionCompareContinueAction]
               }
@@ -98,10 +98,10 @@ const FormVersionCompareAction = () => {
               content={
                 {
                   [VersionCompareContinueAction.CannotContinue]: t(
-                    'forms.form_version_compare_action.content_cannot_continue',
+                    'FormVersionCompareAction.cannotContinue.content',
                   ),
                   [VersionCompareContinueAction.RequiresBump]: t(
-                    'forms.form_version_compare_action.content_requires_bump',
+                    'FormVersionCompareAction.requiresBump.content',
                   ),
                 }[versionCompareContinueAction]
               }
@@ -111,7 +111,7 @@ const FormVersionCompareAction = () => {
           <div className="flex w-full flex-col items-center gap-4 lg:flex-row">
             {isSignedIn ? (
               <Button variant="outline" fullWidth href={ROUTES.MY_APPLICATIONS} hasLinkIcon={false}>
-                {t('forms.form_version_compare_action.button_back')}
+                {t('FormVersionCompareAction.buttons.back')}
               </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.CannotContinue ? (
@@ -121,7 +121,7 @@ const FormVersionCompareAction = () => {
                 href={ROUTES.MUNICIPAL_SERVICES_FORM(slug)}
                 hasLinkIcon={false}
               >
-                {t('forms.form_version_compare_action.button_create_new')}
+                {t('FormVersionCompareAction.buttons.createNew')}
               </Button>
             ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.RequiresBump ? (
@@ -133,7 +133,7 @@ const FormVersionCompareAction = () => {
                 }}
                 isLoading={bumpVersionIsPending || isRedirecting}
               >
-                {t('forms.form_version_compare_action.button_confirm')}
+                {t('FormVersionCompareAction.buttons.confirm')}
               </Button>
             ) : null}
           </div>

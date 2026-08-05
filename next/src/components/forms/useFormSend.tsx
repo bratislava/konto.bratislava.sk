@@ -116,7 +116,7 @@ const useGetContext = () => {
         return
       }
 
-      showToast({ message: t('forms.form_send_error'), variant: 'error' })
+      showToast({ message: t('useFormSend.error'), variant: 'error' })
     },
   })
 
@@ -141,7 +141,7 @@ const useGetContext = () => {
         setRedirectingToSlovenskoSkLogin(true)
       },
       onError: () => {
-        showToast({ message: t('forms.form_send_error'), variant: 'error' })
+        showToast({ message: t('useFormSend.error'), variant: 'error' })
       },
     })
 
@@ -185,7 +185,7 @@ const useGetContext = () => {
         },
       })
       if (fromRepeatModal) {
-        showToast({ message: t('forms.form_send_error'), variant: 'error' })
+        showToast({ message: t('useFormSend.error'), variant: 'error' })
       }
     },
   })

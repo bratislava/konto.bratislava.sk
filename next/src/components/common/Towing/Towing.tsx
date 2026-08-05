@@ -149,7 +149,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
 
               {captchaWarning === 'show' && (
                 <Typography variant="p-small" className="italic">
-                  {t('auth.captcha_warning')}
+                  {t('auth.captchaWarning')}
                 </Typography>
               )}
             </>

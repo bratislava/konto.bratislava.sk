@@ -57,7 +57,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
       })}
     >
       <Typography variant="h3" as="h1">
-        {t('auth.forgotten_password_title')}
+        {t('ForgottenPasswordForm.title')}
       </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
@@ -77,7 +77,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('auth.forgotten_password_submit')}
+        {t('ForgottenPasswordForm.submit')}
       </Button>
     </form>
   )

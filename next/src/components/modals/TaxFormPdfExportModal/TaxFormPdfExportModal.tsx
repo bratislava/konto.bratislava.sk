@@ -26,10 +26,10 @@ const LoadingContent = () => {
       <div className="flex flex-col gap-3 text-center">
         {/* Accessible Dialog heading */}
         <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
-          {t('forms.tax_form_pdf_export_modal.preparing')}
+          {t('TaxFormPdfExportModal.preparing')}
         </Heading>
         <Typography variant="p-default">
-          {t('forms.tax_form_pdf_export_modal.preparing_description')}
+          {t('TaxFormPdfExportModal.preparingDescription')}
         </Typography>
       </div>
     </div>
@@ -48,31 +48,31 @@ const SuccessContent = () => {
   const actions = [
     <Trans
       ns="account"
-      i18nKey="forms.tax_form_pdf_export_modal.action_1"
+      i18nKey="TaxFormPdfExportModal.actions.1"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
     <Trans
       ns="account"
-      i18nKey="forms.tax_form_pdf_export_modal.action_2"
+      i18nKey="TaxFormPdfExportModal.actions.2"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
     <Trans
       ns="account"
-      i18nKey="forms.tax_form_pdf_export_modal.action_3"
+      i18nKey="TaxFormPdfExportModal.actions.3"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
     <Trans
       ns="account"
-      i18nKey="forms.tax_form_pdf_export_modal.action_4"
+      i18nKey="TaxFormPdfExportModal.actions.4"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
   ]
 
   const advantages = [
-    t('forms.tax_form_pdf_export_modal.advantage_1'),
-    t('forms.tax_form_pdf_export_modal.advantage_2'),
-    t('forms.tax_form_pdf_export_modal.advantage_3'),
-    t('forms.tax_form_pdf_export_modal.advantage_4'),
+    t('TaxFormPdfExportModal.advantages.1'),
+    t('TaxFormPdfExportModal.advantages.2'),
+    t('TaxFormPdfExportModal.advantages.3'),
+    t('TaxFormPdfExportModal.advantages.4'),
   ]
 
   return (
@@ -84,11 +84,9 @@ const SuccessContent = () => {
         <div className="flex flex-col items-center gap-1">
           {/* Accessible Dialog heading */}
           <Heading slot="title" className="text-size-h2-r font-semibold lg:text-size-h2">
-            {t('forms.tax_form_pdf_export_modal.heading')}
+            {t('TaxFormPdfExportModal.heading')}
           </Heading>
-          <Typography variant="p-small">
-            {t('forms.tax_form_pdf_export_modal.subheading')}
-          </Typography>
+          <Typography variant="p-small">{t('TaxFormPdfExportModal.subheading')}</Typography>
         </div>
         <div className="flex flex-col items-center gap-1">
           <ol className="flex flex-col gap-6 [counter-reset:list-number-styling]">
@@ -108,7 +106,7 @@ const SuccessContent = () => {
         {feedbackLink ? (
           <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
             <Typography variant="h3" className="text-left">
-              {t('forms.tax_form_pdf_export_modal.feedback_heading')}
+              {t('TaxFormPdfExportModal.feedbackHeading')}
             </Typography>
             <Button
               variant="solid"
@@ -117,23 +115,23 @@ const SuccessContent = () => {
               hasLinkIcon={false}
               target="_blank"
             >
-              {t('forms.tax_form_pdf_export_modal.feedback_button')}
+              {t('TaxFormPdfExportModal.feedbackButton')}
             </Button>
           </div>
         ) : null}
         <div className="h-0.5 w-full bg-gray-200" />
-        <Typography variant="h3">{t('forms.tax_form_pdf_export_modal.how_to_pay_tax')}</Typography>
+        <Typography variant="h3">{t('TaxFormPdfExportModal.howToPayTax')}</Typography>
         <Typography variant="p-large">
           {isSignedIn ? (
             <Trans
               ns="account"
-              i18nKey="forms.tax_form_pdf_export_modal.tax_assessed_statement_authenticated"
+              i18nKey="TaxFormPdfExportModal.taxAssessedStatementAuthenticated"
               components={{ strong: <strong className="font-semibold" /> }}
             />
           ) : (
             <Trans
               ns="account"
-              i18nKey="forms.tax_form_pdf_export_modal.tax_assessed_statement"
+              i18nKey="TaxFormPdfExportModal.taxAssessedStatement"
               components={{ strong: <strong className="font-semibold" /> }}
             />
           )}
@@ -144,15 +142,13 @@ const SuccessContent = () => {
             <div className="mt-3 flex w-full items-center lg:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
               <Typography variant="p-large" as="span" className="px-6">
-                {t('forms.tax_form_pdf_export_modal.footer_choice')}
+                {t('TaxFormPdfExportModal.footerChoice')}
               </Typography>
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
               <div className="rounded-t-lg bg-gray-100 p-4 lg:px-6 lg:py-5">
-                <Typography variant="h4">
-                  {t('forms.tax_form_pdf_export_modal.account_create')}
-                </Typography>
+                <Typography variant="h4">{t('TaxFormPdfExportModal.accountCreate')}</Typography>
                 <ul className="mt-6 flex flex-col gap-2 lg:gap-4">
                   {advantages.map((item, index) => (
                     <li key={index} className="flex items-center gap-4">
@@ -171,7 +167,7 @@ const SuccessContent = () => {
                   className="rounded-lg px-5 py-2 text-size-p-large-r font-semibold lg:rounded-t-none lg:rounded-b-lg lg:px-0 lg:py-6 lg:text-size-p-large"
                   onPress={() => register()}
                 >
-                  {t('forms.tax_form_pdf_export_modal.account_create_button')}
+                  {t('TaxFormPdfExportModal.accountCreateButton')}
                 </Button>
               </div>
             </div>

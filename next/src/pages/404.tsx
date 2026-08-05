@@ -25,10 +25,10 @@ const NotFoundPage = () => {
         <div className="flex shrink-0 flex-col items-center lg:items-start">
           <div className="pb-4 text-[48px] font-extrabold lg:text-[64px]">404</div>
           <Typography variant="p-large" className="max-w-xs pb-10 text-center lg:text-left">
-            {t('404.sorryNoResultsFound')}
+            {t('NotFoundPage.sorryNoResultsFound')}
           </Typography>
           <Button href="/" hasLinkIcon={false} variant="solid">
-            {t('404.toTheMainPage')}
+            {t('NotFoundPage.toTheMainPage')}
           </Button>
         </div>
       </div>

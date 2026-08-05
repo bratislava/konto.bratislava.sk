@@ -20,8 +20,8 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
   return verificationStatus === VerificationStatus.VERIFYING ? (
     <AccountSuccessAlert
       variant="loading"
-      title={t('auth.identity_verification.fop_po_eid.pending.title')}
-      description={t('auth.identity_verification.fop_po_eid.pending.content')}
+      title={t('LegalPersonVerificationPageContent.pending.title')}
+      description={t('LegalPersonVerificationPageContent.pending.content')}
     />
   ) : verificationStatus === VerificationStatus.ERROR ? (
     <div className="flex flex-col gap-4 lg:gap-6">
@@ -31,36 +31,36 @@ const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) =>
         </div>
       </div>
       <Typography variant="h3" as="h1" className="text-center">
-        {t('auth.identity_verification.fop_po_eid.error.title')}
+        {t('LegalPersonVerificationPageContent.error.title')}
       </Typography>
       <Markdown
         variant="small"
-        content={t('auth.identity_verification.fop_po_eid.error.content')}
+        content={t('LegalPersonVerificationPageContent.error.content')}
         className="text-center"
       />
 
       <Button variant="solid" onPress={() => redirect()} fullWidth>
-        {t('auth.identity_verification.fop_po_eid.error.button_text')}
+        {t('LegalPersonVerificationPageContent.error.closeButton')}
       </Button>
     </div>
   ) : (
     <div className="flex flex-col gap-4 lg:gap-6">
       <Typography variant="h3" as="h1">
-        {t('auth.identity_verification.fop_po_eid.init.title')}
+        {t('LegalPersonVerificationPageContent.init.title')}
       </Typography>
-      <Markdown variant="small" content={t('auth.identity_verification.fop_po_eid.init.content')} />
+      <Markdown variant="small" content={t('LegalPersonVerificationPageContent.init.content')} />
       <Button
         variant="solid"
         onPress={loginWithEid}
         fullWidth
         isLoading={verificationStatus === VerificationStatus.REDIRECTING}
-        loadingText={t('auth.identity_verification.fop_po_eid.init.redirecting_button_text')}
+        loadingText={t('LegalPersonVerificationPageContent.init.redirectingButton')}
       >
-        {t('auth.identity_verification.fop_po_eid.init.verify_button_text')}
+        {t('LegalPersonVerificationPageContent.init.verifyButton')}
       </Button>
       {showSkipButton ? (
         <Button variant="plain" fullWidth onPress={() => redirect()}>
-          {t('auth.identity_verification.common.skip_verification_button_text')}
+          {t('auth.skipVerificationButton')}
         </Button>
       ) : null}
     </div>

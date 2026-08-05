@@ -21,20 +21,20 @@ const AccountLink = ({ variant, onLoginPress: onLoginPressFromProps }: Props) =>
   const { label, description, href, onLoginPress } = (
     {
       login: {
-        label: t('auth.links.login_link_text'),
-        description: t('auth.links.login_description'),
+        label: t('AccountLink.login.linkText'),
+        description: t('AccountLink.login.description'),
         // Standard href to login page, used when onLoginPress is undefined
         href: getRouteWithRedirect(ROUTES.LOGIN),
         onLoginPress: onLoginPressFromProps,
       },
       registration: {
-        label: t('auth.links.register_link_text'),
-        description: t('auth.links.register_description'),
+        label: t('AccountLink.register.linkText'),
+        description: t('AccountLink.register.description'),
         href: getRouteWithRedirect(ROUTES.REGISTER),
       },
       'forgotten-password': {
-        label: t('auth.links.forgotten_password_link_text'),
-        description: t('auth.links.forgotten_password_description'),
+        label: t('AccountLink.forgottenPassword.linkText'),
+        description: t('AccountLink.forgottenPassword.description'),
         href: getRouteWithRedirect(ROUTES.FORGOTTEN_PASSWORD),
       },
     } satisfies Record<

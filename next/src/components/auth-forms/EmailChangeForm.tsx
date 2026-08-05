@@ -63,9 +63,9 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
       data-cy="change-email-form"
     >
       <Typography variant="h3" as="h1">
-        {t('auth.email_change_title')}
+        {t('EmailChangeForm.title')}
       </Typography>
-      <Typography variant="p-small">{t('auth.email_change_description')}</Typography>
+      <Typography variant="p-small">{t('EmailChangeForm.description')}</Typography>
       <AccountErrorAlert error={error} />
       <Controller
         name="newEmail"
@@ -102,7 +102,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         isDisabled={isSubmitting}
         data-cy="change-email-submit"
       >
-        {t('auth.email_change_submit')}
+        {t('EmailChangeForm.submit')}
       </Button>
     </form>
   )

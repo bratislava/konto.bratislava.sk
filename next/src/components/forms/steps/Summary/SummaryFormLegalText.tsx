@@ -13,7 +13,7 @@ const SummaryFormLegalText = () => {
   return (
     <div>
       <Typography variant="h3" className="mb-4">
-        {t('forms.summary.vop_agreement_title')}
+        {t('SummaryFormLegalText.title')}
       </Typography>
       <Markdown
         content={termsAndConditions}

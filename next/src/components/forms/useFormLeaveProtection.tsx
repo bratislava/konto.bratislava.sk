@@ -11,9 +11,7 @@ const useGetContext = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
   const enabledRef = useRef(false)
-  useBeforeunload(() =>
-    enabledRef.current ? t('forms.info_messages.form_leave_protection') : null,
-  )
+  useBeforeunload(() => (enabledRef.current ? t('useFormLeaveProtection.message') : null))
 
   const turnOffLeaveProtection = () => {
     enabledRef.current = false
@@ -36,7 +34,7 @@ const useGetContext = () => {
       if (
         enabledRef.current &&
         !isShallow &&
-        !window.confirm(t('forms.info_messages.form_leave_protection'))
+        !window.confirm(t('useFormLeaveProtection.message'))
       ) {
         router.events.emit('routeChangeError')
         logger.info('routeChange aborted.')

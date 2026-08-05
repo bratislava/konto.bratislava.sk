@@ -59,7 +59,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
       data-cy="change-password-form"
     >
       <Typography variant="h3" as="h1">
-        {t('auth.password_change_title')}
+        {t('PasswordChangeForm.title')}
       </Typography>
       <AccountErrorAlert error={error} />
       <Controller
@@ -95,7 +95,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         isDisabled={isSubmitting}
         data-cy="change-password-submit"
       >
-        {t('auth.old_password_submit_new')}
+        {t('PasswordChangeForm.submit')}
       </Button>
     </form>
   )

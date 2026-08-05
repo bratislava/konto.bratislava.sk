@@ -178,7 +178,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       })}
     >
       <Typography variant="h2" as="h1" data-cy="register-form-title">
-        {t('auth.register_title')}
+        {t('RegisterForm.title')}
       </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
@@ -295,7 +295,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       />
       <Markdown
         variant="small"
-        content={t('auth.marketing_confirmation_text')}
+        content={t('RegisterForm.marketingConfirmation')}
         className="text-center"
       />
       <Controller
@@ -332,14 +332,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
 
             {captchaWarning === 'show' && (
               <Typography variant="p-small" className="italic">
-                {t('auth.captcha_warning')}
+                {t('auth.captchaWarning')}
               </Typography>
             )}
           </>
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('auth.register_submit')}
+        {t('RegisterForm.submit')}
       </Button>
     </form>
   )

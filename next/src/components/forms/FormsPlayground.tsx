@@ -230,7 +230,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
     const fileName = `${selectedForm?.slug}_output.json`
     const jsonBlob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' })
     downloadBlob(jsonBlob, fileName)
-    showToast({ message: t('forms.success_messages.json_export'), variant: 'success' })
+    showToast({ message: t('useFormExportImport.success.jsonExport'), variant: 'success' })
   }
 
   const triggerImportJson = () => {
@@ -246,9 +246,9 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
       const parsed = JSON.parse(jsonForm)
       setFormData(parsed)
       setJsonInput(JSON.stringify(parsed, null, 2))
-      showToast({ message: t('forms.success_messages.json_import'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.jsonImport'), variant: 'success' })
     } catch (error) {
-      showToast({ message: t('forms.errors.json_import'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.jsonImport'), variant: 'error' })
     }
 
     // Reset the file input
@@ -343,14 +343,14 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
 
           <div className="mt-4 flex gap-2">
             <Button onPress={exportJson} variant="solid" startIcon={<Icon name="download" />}>
-              {t('forms.menu_list.download_json')}
+              {t('useFormMenuItems.downloadJson')}
             </Button>
             <Button
               onPress={triggerImportJson}
               variant="outline"
               startIcon={<Icon name="upload" />}
             >
-              {t('forms.menu_list.upload_json')}
+              {t('useFormMenuItems.uploadJson')}
             </Button>
             <input
               type="file"

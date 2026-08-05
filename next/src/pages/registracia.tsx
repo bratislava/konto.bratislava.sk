@@ -285,7 +285,7 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   const accountSuccessAlertProps = useMemo(() => {
     if (registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) {
       return {
-        confirmLabel: t('auth.register_success_go_to_login'),
+        confirmLabel: t('RegisterPage.goToLogin'),
         onConfirm: () => {
           router
             .push(getRouteWithRedirect(ROUTES.LOGIN))
@@ -303,12 +303,12 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
 
     if (redirectToIdentityVerification) {
       return {
-        confirmLabel: t('auth.continue_to_account'),
+        confirmLabel: t('auth.continueToAccount'),
         onConfirm: () =>
           router
             .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
             .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
-        cancelLabel: t('auth.identity_verification.common.skip_verification_button_text'),
+        cancelLabel: t('auth.skipVerificationButton'),
         onCancel: () => redirect(),
       }
     }
@@ -316,8 +316,8 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
     if (isOAuthLogin) {
       if (isIdentityVerificationRequired) {
         return {
-          description: `${t('auth.register_success_description', { email: lastEmail })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
-          confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+          description: `${t('RegisterPage.successDescription', { email: lastEmail })}\n\n${t('auth.identityVerificationRequiredInfo')}`,
+          confirmLabel: t('auth.continueToIdentityVerification'),
           onConfirm: () => {
             router
               .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
@@ -327,7 +327,7 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
       }
 
       return {
-        confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+        confirmLabel: t('auth.continueToOauthOrigin', { clientTitle }),
         onConfirm: () => {
           storeTokensAndRedirect()
         },
@@ -335,7 +335,7 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
     }
 
     return {
-      confirmLabel: t('auth.continue_to_account'),
+      confirmLabel: t('auth.continueToAccount'),
       onConfirm: () => {
         redirect()
       },
@@ -388,8 +388,8 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
             {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
               registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
               <AccountSuccessAlert
-                title={t('auth.register_success_title')}
-                description={t('auth.register_success_description', { email: lastEmail })}
+                title={t('RegisterPage.successTitle')}
+                description={t('RegisterPage.successDescription', { email: lastEmail })}
                 {...accountSuccessAlertProps}
               />
             )}

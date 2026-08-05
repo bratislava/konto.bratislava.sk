@@ -42,7 +42,7 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
           <Button
             variant="icon-wrapped-negative-margin"
             icon={<Icon name="edit" />}
-            aria-label={t('forms.SummaryRow.EditButton.aria')}
+            aria-label={t('SummaryRow.aria.edit')}
             onPress={onGoToStep}
           />
         )}

@@ -43,7 +43,7 @@ const HomepageContent = ({
     <>
       <PhoneNumberModal />
       <Typography variant="h1" className="sr-only">
-        {t('common.bratislava_account')}
+        {t('common.bratislavaAccount')}
       </Typography>
       <PageHeader
         title={

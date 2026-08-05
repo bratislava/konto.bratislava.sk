@@ -89,7 +89,7 @@ const MyApplicationsCard = ({
   // xml and pdf exports copied from useFormExportImport
   // TODO refactor, same as next/frontend/hooks/useFormExportImport.tsx
   const exportXml = async () => {
-    showToast({ message: t('forms.info_messages.xml_export'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.xmlExport'), variant: 'info' })
     try {
       if (!formId) throw new Error('No form id provided for exportXml')
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
@@ -100,15 +100,15 @@ const MyApplicationsCard = ({
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
       closeToasts()
-      showToast({ message: t('forms.success_messages.xml_export'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.xmlExport'), variant: 'success' })
     } catch (error) {
-      showToast({ message: t('forms.errors.xml_export'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.xmlExport'), variant: 'error' })
       logger.error(JSON.stringify(error))
     }
   }
 
   const exportPdf = async () => {
-    showToast({ message: t('forms.info_messages.pdf_export'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.pdfExport'), variant: 'info' })
     try {
       if (!formSlug || !formId)
         throw new Error(
@@ -123,26 +123,26 @@ const MyApplicationsCard = ({
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
       closeToasts()
-      showToast({ message: t('forms.success_messages.pdf_export'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.pdfExport'), variant: 'success' })
     } catch (error) {
       logger.error(error)
-      showToast({ message: t('forms.errors.pdf_export'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.pdfExport'), variant: 'error' })
     }
   }
 
   const deleteConcept = async () => {
-    showToast({ message: t('forms.info_messages.concept_delete'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.conceptDelete'), variant: 'info' })
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsClient.formsControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
       closeToasts()
-      showToast({ message: t('forms.success_messages.concept_delete'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.conceptDelete'), variant: 'success' })
       await refreshListData()
     } catch (error) {
       logger.error(error)
-      showToast({ message: t('forms.errors.concept_delete'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.conceptDelete'), variant: 'error' })
     }
   }
 
@@ -321,7 +321,7 @@ const MyApplicationsCard = ({
         </div>
       </Wrapper>
       <MessageModal
-        title={t('forms.concept_delete_modal.title')}
+        title={t('FormModals.conceptDeleteModal.title')}
         type="error"
         isOpen={deleteConceptModalShow}
         onOpenChange={() => setDeleteConceptModalShow(false)}
@@ -334,16 +334,16 @@ const MyApplicationsCard = ({
               return deleteConcept()
             }}
           >
-            {t('forms.concept_delete_modal.button_title')}
+            {t('FormModals.conceptDeleteModal.buttonTitle')}
           </Button>
         }
         secondaryButton={
           <Button variant="plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {t('forms.modal.close_button_label')}
+            {t('FormModals.closeButton')}
           </Button>
         }
       >
-        {t('forms.concept_delete_modal.content_with_name', { conceptName: subject })}
+        {t('FormModals.conceptDeleteModal.contentWithName', { conceptName: subject })}
       </MessageModal>
       <BottomSheetMenuModal
         isOpen={bottomSheetIsOpen}

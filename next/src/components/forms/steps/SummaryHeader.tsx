@@ -20,16 +20,14 @@ const SummaryHeader = () => {
     <>
       <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" />
 
-      <Typography variant="h2">{t('forms.summary.title')}</Typography>
+      <Typography variant="h2">{t('SummaryHeader.title')}</Typography>
 
       <div className="flex flex-col gap-4">
         {hasErrors && (
           <Alert
             type="error"
             message={
-              isSigned
-                ? t('forms.summary.form_has_errors_signed')
-                : t('forms.summary.form_has_errors')
+              isSigned ? t('SummaryHeader.formHasErrorsSigned') : t('SummaryHeader.formHasErrors')
             }
             fullWidth
           />
@@ -37,7 +35,7 @@ const SummaryHeader = () => {
         {infectedFiles.length === 1 && (
           <Alert
             type="error"
-            message={t('forms.summary.virus_alert', {
+            message={t('SummaryHeader.virusAlert', {
               file: infectedFilesFilenames[0],
             })}
             fullWidth
@@ -46,7 +44,7 @@ const SummaryHeader = () => {
         {infectedFiles.length > 1 && (
           <Alert
             type="error"
-            message={t('forms.summary.virus_alert_plural', {
+            message={t('SummaryHeader.virusAlertPlural', {
               files: infectedFilesFilenames.map((name) => `“${name}“`).join(', '),
             })}
             fullWidth
@@ -55,7 +53,7 @@ const SummaryHeader = () => {
         {uploadFiles.length > 0 && (
           <Alert
             type="warning"
-            message={t('forms.summary.uploading_files', {
+            message={t('SummaryHeader.uploadingFiles', {
               files: uploadFiles.map((file) => file.fileName).join(', '),
             })}
             fullWidth

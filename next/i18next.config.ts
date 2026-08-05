@@ -18,7 +18,7 @@ export default defineConfig({
       'account:auth.fields.*.format',
       'account:auth.fields.*.required',
       'account:Towing.*Required',
-      'account:IdentityVerificationStatus.verification_status_required_alert',
+      'account:IdentityVerificationStatus.requiredAlert',
     ],
   },
 })

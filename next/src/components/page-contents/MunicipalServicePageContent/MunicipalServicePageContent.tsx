@@ -41,7 +41,7 @@ const MunicipalServicePageContent = ({
           {moreInformationUrl ? (
             // TODO size
             <Button variant="link" size="small" className="w-max" href={moreInformationUrl}>
-              {t('forms.form_header.services_link')}
+              {t('FormHeader.servicesLink')}
             </Button>
           ) : null}
         </div>

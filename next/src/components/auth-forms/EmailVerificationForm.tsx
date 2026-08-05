@@ -82,10 +82,10 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       })}
     >
       <Typography variant="h3" as="h1">
-        {t('auth.email_verification_title')}
+        {t('EmailVerificationForm.title')}
       </Typography>
       <Typography variant="p-small" data-cy="verification-description">
-        {t('auth.email_verification_description', { email: lastEmail || '' })}
+        {t('EmailVerificationForm.description', { email: lastEmail || '' })}
       </Typography>
       <AccountErrorAlert
         error={error}
@@ -111,18 +111,18 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('auth.email_verification_submit')}
+        {t('EmailVerificationForm.submit')}
       </Button>
       {/* don't show timer if error */}
 
       <div className="text-size-p-small-r lg:text-size-p-small">
         {noError && count > 0 && (
           <div className="mb-4">
-            <span>{t('auth.verification_description')}</span>{' '}
-            <span>{t('auth.verification_cnt_description', { cnt: count })}</span>
+            <span>{t('auth.resendCode.description')}</span>{' '}
+            <span>{t('auth.resendCode.countdown', { cnt: count })}</span>
           </div>
         )}
-        <Markdown variant="small" content={t('auth.verification_cnt_info')} />
+        <Markdown variant="small" content={t('EmailVerificationForm.checkSpamInfo')} />
       </div>
 
       <Button
@@ -132,7 +132,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         isDisabled={count > 0 && noError}
         isLoading={resendIsLoading}
       >
-        {t('auth.verification_resend')}
+        {t('auth.resendCode.button')}
       </Button>
     </form>
   )

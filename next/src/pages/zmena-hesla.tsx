@@ -97,8 +97,8 @@ const PasswordChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
           <AccountContainer ref={accountContainerRef}>
             {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
               <AccountSuccessAlert
-                title={t('auth.password_change_success_title')}
-                confirmLabel={t('auth.continue_to_account')}
+                title={t('PasswordChangePage.successTitle')}
+                confirmLabel={t('auth.continueToAccount')}
                 onConfirm={onConfirm}
               />
             ) : (

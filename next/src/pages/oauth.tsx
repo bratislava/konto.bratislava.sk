@@ -50,7 +50,7 @@ const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
         <GeneralContextProvider general={general}>
           <PageLayout variant="auth">
             <AccountContainer>
-              <AccountSuccessAlert variant="loading" title={t('auth.oauth_page.title')} />
+              <AccountSuccessAlert variant="loading" title={t('OAuthPage.title')} />
             </AccountContainer>
           </PageLayout>
         </GeneralContextProvider>

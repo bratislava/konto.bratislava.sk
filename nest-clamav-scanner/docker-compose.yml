@@ -1,3 +1,6 @@
+# Should be run alongside local `pnpm run start:dev`
+# Ports are set to match .env.example and not to conflict with other konto.bratislava.sk services
+
 services:
   postgres:
     image: postgres:latest
@@ -13,9 +16,6 @@ services:
       - '127.0.0.1:54302:54302'
     networks:
       - konto
-
-volumes:
-  postgres:
 
 networks:
   konto:

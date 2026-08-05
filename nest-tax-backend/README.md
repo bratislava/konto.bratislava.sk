@@ -2,42 +2,40 @@
 
 This repository contains backend code for digital real estate tax payment services (platba dane z nehnutelností) of the city of Bratislava.
 
-# Quick run
-
-If you want to run an application without installing it locally quickly, you can run it through `docker-compose`:
-
-```bash
-docker-compose up --build
-```
-
 # Local installation
 
-1. Install dependencies for the whole workspace:
+1. Start the database:
+
+```bash
+docker compose up postgres
+```
+
+2. Install dependencies for the whole workspace:
 
 ```bash
 pnpm install
 ```
 
-2. Build the shared packages this service depends on:
+3. Build the shared packages this service depends on:
 
 ```bash
 pnpm run build:dependencies
 ```
 
-- For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
+4. For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
 
 ```bash
 pnpm exec prisma
 ```
 
-- Migrate database and generate prisma files
+5. Migrate database and generate prisma files
 
 ```
 pnpm exec prisma migrate dev
 pnpm exec prisma generate
 ```
 
-- Check the `.env` file for your correct local database connection configuration. It looks like this:
+6. Check the `.env` file for your correct local database connection configuration. It looks like this:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase?schema=public"`

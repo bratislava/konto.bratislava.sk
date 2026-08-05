@@ -53,7 +53,7 @@ If the scanning result is `SAFE`, `INFECTED`, `MOVE ERROR INFECTED`, `MOVE ERROR
 
 ## Run locally
 
-If you want to run an application without installing it locally quickly, you can run it through `docker compose`.
+You need `clamav` and a database running before you start the app.
 
 1. You need to have `clamav` running first. To do that, in directories `/cvdmirror` and `/clamav` (in this order) run
 
@@ -65,13 +65,13 @@ If you want to run an application without installing it locally quickly, you can
 
 2. Copy and adjust `.env` from `.env.example`, and populate secrets you need (mainly `MINIO_SECRET_KEY`)
 
-3. In this `/nest-clamav-scanner` directory, run
+3. In this `/nest-clamav-scanner` directory, start the database:
 
    ```bash
-   docker compose up
+   docker compose up postgres
    ```
 
-   This command will initially build the image and run the container with the app. You can access the app on `http://localhost:3200`.
+4. Follow _Local installation_ below, then start the app with `pnpm run start:dev`. You can access it on `http://localhost:3200`.
 
 ## Local installation
 

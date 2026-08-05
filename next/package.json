@@ -18,18 +18,7 @@
     "prettier:check": "prettier --check .",
     "parse-translations": "i18next-cli extract",
     "generate-client-strapi": "graphql-codegen && prettier --write src/clients/graphql-strapi/api.ts",
-    "gen": "npm run generate-client-strapi",
-    "update-react-aria": "npm install @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest @react-aria/utils@latest --save-exact --save-exact-dev",
-    "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest --save-exact",
-    "update-markdown": "npm install remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
-    "update-next": "npx @next/codemod@canary upgrade latest",
-    "update-typescript": "npm install typescript@latest ts-node@latest --save-dev --save-exact",
-    "update-amplify": "npm install aws-amplify@latest @aws-amplify/core @aws-amplify/adapter-nextjs@latest --save-exact",
-    "update-tailwind": "npm install tailwind-merge@latest clsx@latest --save-exact && npm install tailwindcss@latest @tailwindcss/postcss@latest postcss@latest prettier-plugin-tailwindcss@latest eslint-plugin-better-tailwindcss@latest --save-dev --save-exact",
-    "update-i18next": "npm install i18next@latest next-i18next@latest react-i18next@latest --save-exact && npm install i18next-cli@latest --save-dev --save-exact",
-    "update-prettier": "npm install prettier@latest --save-dev --save-exact",
-    "update-eslint": "npm install eslint@latest @bratislava/eslint-config-next --save-dev --save-exact",
-    "update-graphql": "npm install @graphql-codegen/cli@latest @graphql-codegen/client-preset@latest @graphql-codegen/typescript-graphql-request@latest --save-dev --save-exact && npm install graphql@latest graphql-request@latest graphql-tag@latest --save-exact"
+    "gen": "npm run generate-client-strapi"
   },
   "overrides": {
     "react": "19.2.6",

@@ -8,7 +8,6 @@
  * No @nestjs/cli, no dist/, no metadata.ts, no loadPluginMetadata.
  */
 require('./pin-typescript.cjs')
-require('dotenv/config')
 
 const ts = require('typescript')
 const { before } = require('@nestjs/swagger/plugin')

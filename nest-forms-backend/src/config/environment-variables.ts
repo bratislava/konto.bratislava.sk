@@ -218,6 +218,9 @@ export default class EnvironmentVariables {
   @EnvInt()
   TAX_PDF_JOB_TIMEOUT: number
 
+  @EnvString()
+  PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: string
+
   @EnvBoolean()
   FEATURE_TOGGLE_VERSIONING: boolean
 

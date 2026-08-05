@@ -1,0 +1,12 @@
+{
+  "variable": {
+    "NODE_VERSION": {
+      "default": "24.18.1"
+    },
+    "PNPM_VERSION": {
+      "default": "11.18.0"
+    },
+    "TURBO_VERSION": { "default": "2.10.7" },
+    "PLAYWRIGHT_VERSION": { "default": "1.59.1" }
+  }
+}

@@ -2,6 +2,35 @@
 
 Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](https://konto.bratislava.sk).
 
+## Toolchain
+
+**pnpm is the only supported package manager — do not use npm or yarn.**
+
+pnpm resolves this workspace reliably where npm does not: npm installs without complaint but then breaks at build time with obscure module resolution errors on the more complex dependency graphs here, also its flat `node_modules` hides phantom dependencies — packages that are importable without ever being declared.
+
+Node and pnpm versions are pinned in the root `package.json` and picked up automatically by [Volta](https://volta.sh) — but its pnpm support is opt-in and needs [`VOLTA_FEATURE_PNPM`](https://docs.volta.sh/advanced/pnpm) set globally. Set it once:
+
+macOS / Linux — add to `~/.zshrc`, `~/.bashrc` or equivalent, then restart the shell:
+
+```bash
+echo 'export VOLTA_FEATURE_PNPM=1' >> ~/.zshrc
+```
+
+Windows (PowerShell) — persists for the user, applies to new terminals:
+
+```bash
+[Environment]::SetEnvironmentVariable('VOLTA_FEATURE_PNPM', '1', 'User')
+```
+Verify with `pnpm --version` — it should report the version pinned in `package.json`. Without the flag Volta ignores the pin and you get whatever pnpm happens to be on `PATH`, or none at all.
+
+## Turborepo
+
+[Turborepo](https://turbo.build) is configured once in the root `turbo.json`.
+
+- Every task depends on `^build`, so shared packages (`forms-shared`, `openapi-clients`) are always built before whatever consumes them — you never have to rebuild dependencies by hand.
+- Task results are cached and replayed instead of re-run when nothing relevant changed. Locally that is a `.turbo` directory; in CI it is a shared remote cache, so a package unchanged since an earlier run is restored rather than rebuilt.
+- We do not currently run several services at once (there is no `dev` task, and a CI build targets a single service), so the parallel-task side of Turborepo buys us little today. The caching and the dependency ordering are the reasons it is here.
+
 ## Product specification
 
 [Product specification for city account (internal)](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)
@@ -80,6 +109,20 @@ If you aren't sure where a variable belongs, or need help with anything else dep
 ### Validation and build pipelines
 
 By creating a PR, GitHub actions will run validation pipelines and Dockerized build, lint and test pipelines.
+
+## Docker
+
+A few things here differ from a typical per-service Docker setup:
+
+- The build context is always the repository root, never the service directory — `turbo prune --docker` needs the workspace metadata to resolve the dependency graph. Hence a single root `.dockerignore`, and `prepare` stages that prune before installing.
+- Bake reads three files, merging targets of the same name:
+  - `docker-bake.hcl` — targets, and everything a laptop can do. `docker buildx bake <target>` works with no arguments.
+  - `docker-bake.json` — toolchain versions only. Plain JSON so [scripts/verify-docker-bake-versions.ts](scripts/verify-docker-bake-versions.ts) can check them against `package.json` and the pnpm catalog without parsing HCL.
+  - `.github/docker-bake.ci.hcl` — CI-only overlay (registry cache, tags, host networking, remote cache). Kept out of the root and off the `docker-bake.override.hcl` name so local bake does not pick it up and fail on the missing `--allow`.
+- CI runs the Turborepo cache server on the runner's loopback, so builds reach it at `127.0.0.1` — no published port, no proxy, no `host.docker.internal` (a Docker Desktop convenience that does not exist on Linux runners). Three pieces have to line up for that: the `network=host` buildx driver option, `network = "host"` on the bake target, and `allow: network.host` on each bake step to grant the gated entitlement. Missing any one of them yields a silent cache miss, not an error.
+- Tests and lint run inside `docker build` as their own stages, not as runner steps, so an unchanged service short-circuits on the layer cache instead of re-running them.
+- CI bake steps pass `source: .` to build from the checkout. Without it BuildKit clones the repository — following every tag — inside the builder (it takes around 30 seconds extra for no gain).
+- Next.js images bake their environment in, so they are built per cluster. Backend images are environment-agnostic and built once per commit.
 
 ## Acknowledgments
 

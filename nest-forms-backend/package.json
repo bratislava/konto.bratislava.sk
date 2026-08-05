@@ -13,6 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",
@@ -26,9 +27,7 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
-    "update-rjsf": "npm install @rjsf/utils@latest --save-exact",
-    "update-aws": "npm install @aws-sdk/client-cognito-identity@latest @aws-sdk/client-cognito-identity-provider@latest @aws-sdk/client-sts@latest aws-jwt-verify@latest"
+    "vulnerabilities": "pnpm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity": "3.1095.0",
@@ -46,16 +45,17 @@
     "@nestjs/swagger": "11.4.6",
     "@prisma/adapter-pg": "7.9.0",
     "@prisma/client": "7.9.0",
-    "@rjsf/utils": "6.5.2",
+    "@rjsf/utils": "catalog:",
     "amqplib": "2.0.1",
     "aws-jwt-verify": "5.2.1",
-    "axios": "1.18.1",
+    "axios": "catalog:",
     "bull": "4.16.5",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.4",
     "content-disposition": "1.0.1",
+    "express": "5.2.1",
     "form-data": "4.0.6",
-    "forms-shared": "file:../forms-shared",
+    "forms-shared": "workspace:*",
     "handlebars": "4.7.9",
     "jsonwebtoken": "9.0.3",
     "lodash": "4.17.23",
@@ -64,7 +64,7 @@
     "minio": "8.0.7",
     "multer": "2.2.0",
     "nodemailer": "8.0.7",
-    "openapi-clients": "file:../openapi-clients",
+    "openapi-clients": "workspace:*",
     "passport-custom": "1.1.1",
     "passport-headerapikey": "1.2.2",
     "passport-http": "0.3.0",
@@ -72,10 +72,9 @@
     "passport-jwt": "4.0.1",
     "pg": "8.22.0",
     "piscina": "5.3.0",
-    "playwright": "1.59.1",
+    "playwright": "catalog:",
     "prisma": "7.9.0",
     "reflect-metadata": "0.2.2",
-    "rimraf": "6.1.2",
     "uuid": "11.1.0",
     "xml2js": "0.6.2"
   },
@@ -91,11 +90,12 @@
     "@types/content-disposition": "0.5.9",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
+    "@types/json-schema": "7.0.15",
     "@types/jsonwebtoken": "9.0.10",
     "@types/lodash": "4.17.23",
     "@types/mime-types": "3.0.1",
     "@types/multer": "2.2.0",
-    "@types/node": "24.12.2",
+    "@types/node": "catalog:",
     "@types/nodemailer": "8.0.0",
     "@types/passport-http": "0.3.11",
     "@types/passport-http-bearer": "1.0.42",
@@ -110,17 +110,13 @@
     "nock": "14.0.16",
     "prettier": "3.8.1",
     "prisma-json-types-generator": "5.1.1",
+    "rimraf": "6.1.2",
     "ts-jest": "29.4.11",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
     "typescript": "6.0.3"
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
-  },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   }
 }

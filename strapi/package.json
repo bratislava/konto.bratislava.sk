@@ -11,7 +11,6 @@
     "build": "strapi build",
     "dev": "npm run develop",
     "develop": "cross-env ENV_PATH='./.env.local' strapi develop",
-    "postinstall": "patch-package",
     "start": "strapi start",
     "strapi": "strapi"
   },
@@ -22,7 +21,6 @@
     "@strapi/strapi": "5.50.0",
     "@strapi/typescript-utils": "5.50.0",
     "@strapi/utils": "5.50.0",
-    "patch-package": "8.0.1",
     "pg": "8.22.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",

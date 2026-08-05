@@ -26,6 +26,7 @@ packages:
   - nest-clamav-scanner
   - nest-forms-backend
   - nest-tax-backend
+  - openapi-cli
   - openapi-clients
   - next
   - scripts

@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    // Must stay CommonJS: the CLI requires the backend's CommonJS output in-process.
+    "module": "commonjs",
+    // `bundler` is required, not stylistic — commander@15 is ESM-only, and this is the only
+    // resolution mode under which a CommonJS file may import it without TS1479. Node 24's
+    // require(esm) makes it work at runtime.
+    "moduleResolution": "bundler",
+    "lib": ["es2022"],
+    "types": ["node"],
+    "rootDir": "src",
+    "outDir": "dist",
+    // Bin-only package; nothing imports it programmatically.
+    "declaration": false,
+    "sourceMap": false,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

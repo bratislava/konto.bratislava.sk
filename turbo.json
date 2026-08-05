@@ -21,6 +21,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "openapi-cli#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
     "openapi-clients#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]

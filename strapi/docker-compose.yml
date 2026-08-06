@@ -15,10 +15,4 @@ services:
     ports:
       - '127.0.0.1:5432:5432'
     volumes:
-      # A named volume rather than a bind mount into the repository: the Docker
-      # build context is the repository root, so a local data directory would be
-      # sent to the daemon on every image build.
-      - strapi-postgres:/var/lib/postgresql/data
-
-volumes:
-  strapi-postgres:
+      - ./postgres:/var/lib/postgresql/data

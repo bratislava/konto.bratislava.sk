@@ -28,6 +28,7 @@ packages:
   - nest-tax-backend
   - openapi-cli
   - openapi-clients
+  - openapi-clients-v2
   - next
   - scripts
   - strapi

@@ -17,6 +17,10 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
+    "openapi:validate": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
     "forms-shared#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]

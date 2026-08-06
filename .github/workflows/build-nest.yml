@@ -139,6 +139,14 @@ jobs:
           image: ${{ inputs.image }}
           suffix: -lint
 
+      - name: Docker metadata (openapi)
+        if: ${{ !inputs.skip_tests }}
+        id: meta-openapi
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          suffix: -openapi
+
       - name: Docker metadata (e2e)
         if: ${{ !inputs.skip_tests && inputs.e2e_tests }}
         id: meta-e2e
@@ -206,6 +214,22 @@ jobs:
         env:
           CACHE_FROM: ${{ steps.meta-lint.outputs.cache_from }}
           CACHE_TO: ${{ steps.meta-lint.outputs.cache_to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+
+      # Fails when the committed spec in openapi-clients-v2 no longer matches this
+      # service's code, printing a diff. The spec is in the build context because
+      # openapi-cli depends on openapi-clients-v2, so `turbo prune` pulls it in.
+      - name: Validate OpenAPI spec
+        if: ${{ !inputs.skip_tests }}
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-openapi
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-openapi.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-openapi.outputs.cache_to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run E2E tests

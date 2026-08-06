@@ -45,6 +45,12 @@ RUN pnpm turbo run test --filter=nest-city-account
 FROM builder AS lint
 RUN pnpm turbo run lint --filter=nest-city-account
 
+# Fails when the committed OpenAPI spec no longer matches this service's code.
+# `builder-deps` already has openapi-cli built and openapi-clients-v2 in the pruned
+# context, because openapi-cli depends on it.
+FROM builder-deps AS openapi
+RUN pnpm turbo run openapi:validate --filter=nest-city-account
+
 FROM base AS prod-deps
 COPY --from=prepare /app/out/json/ .
 RUN pnpm install --frozen-lockfile --prod

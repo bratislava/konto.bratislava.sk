@@ -45,6 +45,12 @@ RUN pnpm turbo run test --filter=nest-tax-backend
 FROM builder AS lint
 RUN pnpm turbo run lint --filter=nest-tax-backend
 
+# Fails when the committed OpenAPI spec no longer matches this service's code.
+# `builder-deps` already has openapi-cli built and openapi-clients-v2 in the pruned
+# context, because openapi-cli depends on it.
+FROM builder-deps AS openapi
+RUN pnpm turbo run openapi:validate --filter=nest-tax-backend
+
 FROM base AS prod-deps
 COPY --from=prepare /app/out/json/ .
 RUN pnpm install --frozen-lockfile --prod

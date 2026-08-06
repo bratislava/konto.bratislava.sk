@@ -1,0 +1,10 @@
+{
+  "name": "openapi-clients-v2",
+  "version": "1.0.0",
+  "description": "OpenAPI specs generated from the NestJS backends, and the clients generated from them.",
+  "license": "EUPL-1.2",
+  "private": true,
+  "volta": {
+    "extends": "../package.json"
+  }
+}

@@ -133,6 +133,11 @@ target "nest-city-account-lint" {
   target   = "lint"
 }
 
+target "nest-city-account-openapi" {
+  inherits = ["_nest-city-account"]
+  target   = "openapi"
+}
+
 target "_nest-clamav-scanner" {
   inherits   = ["_turbo-cache"]
   dockerfile = "nest-clamav-scanner/Dockerfile"
@@ -158,6 +163,11 @@ target "nest-clamav-scanner-lint" {
   target   = "lint"
 }
 
+target "nest-clamav-scanner-openapi" {
+  inherits = ["_nest-clamav-scanner"]
+  target   = "openapi"
+}
+
 target "_nest-forms-backend" {
   inherits   = ["_turbo-cache"]
   dockerfile = "nest-forms-backend/Dockerfile"
@@ -181,6 +191,11 @@ target "nest-forms-backend-test" {
 target "nest-forms-backend-lint" {
   inherits = ["_nest-forms-backend"]
   target   = "lint"
+}
+
+target "nest-forms-backend-openapi" {
+  inherits = ["_nest-forms-backend"]
+  target   = "openapi"
 }
 
 # The only service with E2E tests. CI_E2E_DATABASE_URL points at a database that
@@ -213,6 +228,11 @@ target "nest-tax-backend-test" {
 target "nest-tax-backend-lint" {
   inherits = ["_nest-tax-backend"]
   target   = "lint"
+}
+
+target "nest-tax-backend-openapi" {
+  inherits = ["_nest-tax-backend"]
+  target   = "openapi"
 }
 
 # Bare `docker buildx bake` builds every deployable image.

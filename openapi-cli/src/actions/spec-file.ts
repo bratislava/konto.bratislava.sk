@@ -1,13 +1,19 @@
-import { relative, resolve } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import type { OpenAPIObject } from '@nestjs/swagger'
 
 import type { Command } from 'commander'
 
 /**
- * Where specs live, relative to a backend package. Client generation reads from here, so
- * every backend writes to the same place under its own `projectName`.
+ * Where specs live. Client generation reads from here, so every backend writes to the same
+ * place under its own `projectName`.
+ *
+ * Resolved through the package rather than as a path relative to the backend, so it does not
+ * assume anything about the workspace layout and keeps working inside a pruned Docker
+ * context. This is what `openapi-clients-v2` being a dependency of this package buys.
  */
-const SPECS_DIR = '../openapi-clients-v2/specs'
+function specsDir(): string {
+  return join(dirname(require.resolve('openapi-clients-v2/package.json')), 'specs')
+}
 
 export interface SpecFileOptions {
   out?: string
@@ -16,7 +22,7 @@ export interface SpecFileOptions {
 export function configureSpecFileOption(command: Command): void {
   command.option(
     '--out <file>',
-    `spec file, relative to the backend directory (default: ${SPECS_DIR}/<projectName>.json)`,
+    'spec file, relative to the backend directory (default: the openapi-clients-v2 spec for this project)',
   )
 }
 
@@ -25,7 +31,9 @@ export function specFilePath(
   projectName: string,
   out: string | undefined,
 ): string {
-  return resolve(backendDir, out ?? `${SPECS_DIR}/${projectName}.json`)
+  return out === undefined
+    ? join(specsDir(), `${projectName}.json`)
+    : resolve(backendDir, out)
 }
 
 /**

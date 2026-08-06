@@ -1,10 +1,11 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { SwaggerModule } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 
 import { AppModule } from './app.module'
 import BaConfigService from './config/ba-config.service'
+import { createSwaggerDocument } from './swagger'
 import {
   ErrorFilter,
   HttpExceptionFilter,
@@ -33,28 +34,7 @@ async function bootstrap() {
   app.useGlobalFilters(new ErrorFilter()) // This filter must be first
   app.useGlobalFilters(new TypeErrorFilter())
   app.useGlobalFilters(new HttpExceptionFilter())
-  const config = new DocumentBuilder()
-    .setTitle('Nest tax backend')
-    .setDescription('Backend for payment taxes and connection to Noris')
-    .setVersion('1.0')
-    .setContact(
-      'Bratislava Inovations',
-      'https://inovacie.bratislava.sk',
-      'inovacie@bratislava.sk',
-    )
-    .addServer(`http://localhost:${baConfigService.self.port}/`)
-    .addServer('https://nest-tax-backend.dev.bratislava.sk/')
-    .addServer('https://nest-tax-backend.staging.bratislava.sk/')
-    .addServer('https://nest-tax-backend.bratislava.sk/')
-    .addApiKey({ type: 'apiKey', name: 'apiKey', in: 'header' }, 'apiKey')
-    .addBearerAuth({
-      type: 'http',
-      description: 'Get token from cognito',
-      openIdConnectUrl: 'TBD',
-    })
-    .build()
-
-  const document = SwaggerModule.createDocument(app, config)
+  const document = createSwaggerDocument(app)
   SwaggerModule.setup('api', app, document)
   app
     .getHttpAdapter()

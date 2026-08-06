@@ -4,6 +4,7 @@ import type { Backend } from './backend'
 import { CliError } from './cli-error'
 import { compileBackend } from './compile'
 import { asOpenApiContract } from './contract'
+import { loadBackendEnv } from './env'
 import { installRequireHook } from './require-hook'
 import { readSwaggerPluginOptions } from './swagger-plugin'
 import { loadBackendToolchain } from './toolchain'
@@ -21,6 +22,10 @@ export async function buildDocument(
   backend: Backend,
 ): Promise<{ projectName: string; document: OpenAPIObject }> {
   const { directory, entryPath, tsconfigPath } = backend
+
+  // Before anything from the backend is required — its config validation runs at module
+  // definition time, which `preview: true` does not prevent.
+  loadBackendEnv(directory)
 
   const swaggerOptions = readSwaggerPluginOptions(directory)
   const toolchain = loadBackendToolchain(directory)

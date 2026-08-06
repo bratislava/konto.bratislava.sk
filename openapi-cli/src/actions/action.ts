@@ -1,12 +1,11 @@
 import type { OpenAPIObject } from '@nestjs/swagger'
 import type { Command } from 'commander'
 
-import type { BackendConfig } from '../types'
-
 export interface ActionContext {
-  backend: BackendConfig
   /** Absolute path to the backend package root. */
   backendDir: string
+  /** The backend's own name for itself, from its contract. */
+  projectName: string
   /** The finished document, as plain JSON. */
   document: OpenAPIObject
 }

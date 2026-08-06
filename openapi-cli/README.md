@@ -8,25 +8,38 @@ Run it from the backend you want a document for, normally through that backend's
 pnpm --filter nest-forms-backend run openapi
 ```
 
-Only the action's output is written — the compile happens entirely in memory.
+That writes `openapi-clients-v2/specs/<projectName>.json`; `--out` overrides the path. Only
+the action's output is written — the compile happens entirely in memory.
 
 ## The per-backend contract
 
-A backend is wired up by exporting two things from `src/openapi.ts`:
+A backend is wired up by default-exporting a contract from `src/openapi.ts`, typed by this
+package so a mistake is a compile error rather than a runtime one:
 
 ```ts
-export { default as AppModule } from './app.module'
-export { createSwaggerDocument } from './bootstrap'
+import type { OpenApiContract } from 'openapi-cli'
+
+import AppModule from './app.module'
+import { createSwaggerDocument } from './bootstrap'
+
+export default {
+  projectName: 'forms',
+  AppModule,
+  createSwaggerDocument: (app) => createSwaggerDocument(app, 3000),
+} satisfies OpenApiContract
 ```
 
-| Export | Purpose |
+| Field | Purpose |
 | --- | --- |
+| `projectName` | Names the emitted spec: `openapi-clients-v2/specs/<projectName>.json`. |
 | `AppModule` | The root module. Created in preview mode, so no provider is instantiated. |
-| `createSwaggerDocument(app, port?)` | Must return the same document the running server serves at `/api-json`. Taking the port as an argument is what keeps config providers — and therefore instantiation — out of it. |
+| `createSwaggerDocument(app)` | Must return the same document the running server serves at `/api-json`. Supplying its own port here is what keeps config providers — and therefore instantiation — out of it. |
 | `prepareApp?(app)` | Optional. Applied before the document is built, for routes that depend on app-level setup rather than on `DocumentBuilder`. `nest-tax-backend` needs it for `app.enableVersioning()`. |
 
-Backends are then listed in `src/backends.ts`. All of them are listed already; one whose
-`src/openapi.ts` does not exist yet fails with a message saying exactly that.
+There is no registry of backends. The target is whichever directory the CLI runs in, and a
+backend is wired up entirely by having `src/openapi.ts` plus a `devDependency` on this
+package. The tsconfig is derived the way `nest build` derives it — `tsconfig.build.json` when
+it exists, else `tsconfig.json` — so the two cannot drift apart.
 
 ## Adding an action
 

@@ -1,9 +1,9 @@
 import { Command } from 'commander'
 
 import { registerActions } from './actions/register'
+import { resolveBackend } from './backend'
 import { buildDocument } from './build-document'
 import { CliError } from './cli-error'
-import { resolveBackend } from './resolve-backend'
 
 function createProgram(): Command {
   const program = new Command()
@@ -16,12 +16,8 @@ function createProgram(): Command {
 
   // Lazily invoked, so `--help` and argument errors never trigger a compile.
   registerActions(program, async () => {
-    const { backend, backendDir } = resolveBackend(process.cwd())
-    return {
-      backend,
-      backendDir,
-      document: await buildDocument(backend, backendDir),
-    }
+    const backend = resolveBackend(process.cwd())
+    return { backendDir: backend.directory, ...(await buildDocument(backend)) }
   })
 
   return program

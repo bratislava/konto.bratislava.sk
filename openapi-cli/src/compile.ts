@@ -1,4 +1,4 @@
-import { dirname, join } from 'node:path'
+import { dirname } from 'node:path'
 import type * as ts from 'typescript'
 
 import { CliError } from './cli-error'
@@ -62,7 +62,7 @@ export function compileBackend(options: {
   swaggerBefore: SwaggerPluginBefore
   swaggerOptions: Record<string, unknown>
   backendDir: string
-  tsconfig: string
+  tsconfigPath: string
   sources: CompiledSources
 }): void {
   const {
@@ -70,11 +70,10 @@ export function compileBackend(options: {
     swaggerBefore,
     swaggerOptions,
     backendDir,
-    tsconfig,
+    tsconfigPath: configPath,
     sources,
   } = options
 
-  const configPath = join(backendDir, tsconfig)
   const { fileNames, options: compilerOptions } = parseConfig(
     typescript,
     configPath,

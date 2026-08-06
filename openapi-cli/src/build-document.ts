@@ -1,39 +1,29 @@
-import { existsSync } from 'node:fs'
-import { join } from 'node:path'
 import type { OpenAPIObject } from '@nestjs/swagger'
 
+import type { Backend } from './backend'
 import { CliError } from './cli-error'
 import { compileBackend } from './compile'
 import { asOpenApiContract } from './contract'
 import { installRequireHook } from './require-hook'
 import { readSwaggerPluginOptions } from './swagger-plugin'
 import { loadBackendToolchain } from './toolchain'
-import { type BackendConfig, normalizePath } from './types'
+import { normalizePath } from './types'
 
 /**
  * Compiles the backend, loads its contract and produces the document — the same one the
  * running server serves at `/api-json`, because it comes from the same factory.
  *
  * The app is created in preview mode, so no provider is instantiated and nothing connects to
- * a database or broker. That is only possible because the contract takes the port as an
- * argument instead of resolving it from a config provider.
+ * a database or broker. That is only possible because the contract supplies its own port
+ * rather than resolving one from a config provider.
  */
 export async function buildDocument(
-  backend: BackendConfig,
-  backendDir: string,
-): Promise<OpenAPIObject> {
-  const entryPath = join(backendDir, backend.entry)
-  const configPath = join(backendDir, backend.tsconfig)
+  backend: Backend,
+): Promise<{ projectName: string; document: OpenAPIObject }> {
+  const { directory, entryPath, tsconfigPath } = backend
 
-  // Checked before the multi-second compile, so an unwired backend fails immediately.
-  if (!existsSync(entryPath)) {
-    throw new CliError(
-      `${entryPath} not found — a backend must export { AppModule, createSwaggerDocument } from there`,
-    )
-  }
-
-  const swaggerOptions = readSwaggerPluginOptions(backendDir)
-  const toolchain = loadBackendToolchain(backendDir)
+  const swaggerOptions = readSwaggerPluginOptions(directory)
+  const toolchain = loadBackendToolchain(directory)
   const sources = new Map<string, string>()
 
   try {
@@ -41,16 +31,16 @@ export async function buildDocument(
       typescript: toolchain.typescript,
       swaggerBefore: toolchain.swaggerBefore,
       swaggerOptions,
-      backendDir,
-      tsconfig: backend.tsconfig,
+      backendDir: directory,
+      tsconfigPath,
       sources,
     })
 
-    const revertHook = installRequireHook({ sources, configPath })
+    const revertHook = installRequireHook({ sources, configPath: tsconfigPath })
     try {
       if (!sources.has(normalizePath(entryPath))) {
         throw new CliError(
-          `${entryPath} is not in the file list of ${configPath} — check its "include"`,
+          `${entryPath} is not in the file list of ${tsconfigPath} — check its "include"`,
         )
       }
 
@@ -64,7 +54,10 @@ export async function buildDocument(
       })
       try {
         await contract.prepareApp?.(app)
-        return contract.createSwaggerDocument(app, backend.port)
+        return {
+          projectName: contract.projectName,
+          document: contract.createSwaggerDocument(app),
+        }
       } finally {
         // Without this the process keeps an open handle and never exits.
         await app.close()

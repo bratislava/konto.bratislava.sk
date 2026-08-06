@@ -11,8 +11,8 @@
     "types": ["node"],
     "rootDir": "src",
     "outDir": "dist",
-    // Bin-only package; nothing imports it programmatically.
-    "declaration": false,
+    // Backends import the contract type from this package, so declarations must ship.
+    "declaration": true,
     "sourceMap": false,
     "strict": true,
     "esModuleInterop": true,

@@ -10,32 +10,31 @@ export type CompiledSources = Map<string, string>
 export const normalizePath = (path: string): string => path.replace(/\\/g, '/')
 
 /**
- * What every backend's contract module (see `BackendConfig.entry`) must export.
+ * What every backend default-exports from its `src/openapi.ts`.
  *
- * Keeping this to plain exported values is what lets the CLI stay out of each backend's
- * internals — it never reaches into controllers, DTOs or config.
+ * Keeping this to plain values is what lets the CLI stay out of each backend's internals —
+ * it never reaches into controllers, DTOs or config.
+ *
+ * ```ts
+ * import type { OpenApiContract } from 'openapi-cli'
+ *
+ * export default {
+ *   projectName: 'forms',
+ *   AppModule,
+ *   createSwaggerDocument,
+ * } satisfies OpenApiContract
+ * ```
  */
 export interface OpenApiContract {
+  /** Names the emitted spec: `openapi-clients-v2/specs/<projectName>.json`. */
+  projectName: string
   AppModule: NestModuleClass
-  createSwaggerDocument(
-    app: INestApplication,
-    overridePort?: number,
-  ): OpenAPIObject
+  /** Must return the same document the running server serves at `/api-json`. */
+  createSwaggerDocument(app: INestApplication): OpenAPIObject
   /**
    * Applied to the app after creation, before the document is built. Needed when routes
    * depend on app-level setup rather than on `DocumentBuilder` — `nest-tax-backend` calls
    * `app.enableVersioning()`, without which its `/v2/tax` paths come out wrong.
    */
   prepareApp?(app: INestApplication): void | Promise<void>
-}
-
-export interface BackendConfig {
-  /** Workspace package name, matched against the cwd's `package.json` name. */
-  packageName: string
-  /** Contract module, relative to the backend package root. */
-  entry: string
-  /** tsconfig whose file list and options the in-memory compile uses. */
-  tsconfig: string
-  /** Port for the `http://localhost:<port>/` server entry in the document. */
-  port: number
 }

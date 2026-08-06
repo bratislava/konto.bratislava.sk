@@ -25,15 +25,15 @@ const schema = {
       // min length set to 2 according to cognito error InvalidParameterException:
       // 1 validation error detected: Value at 'previousPassword' failed to satisfy constraint: Member must satisfy regular expression pattern: ^[\S]+.*[\S]+$
       minLength: 2,
-      errorMessage: { minLength: 'account:auth.fields.password.required' },
+      errorMessage: { minLength: 'auth.fields.password.required' },
     },
     password: {
       type: 'string',
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password.required',
-        format: 'account:auth.fields.password.format',
+        minLength: 'auth.fields.password.required',
+        format: 'auth.fields.password.format',
       },
     },
   },

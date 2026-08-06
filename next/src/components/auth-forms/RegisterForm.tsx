@@ -54,8 +54,8 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email.required',
-        format: 'account:auth.fields.email.format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
     password: {
@@ -63,8 +63,8 @@ const schema = {
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password.required',
-        format: 'account:auth.fields.password.format',
+        minLength: 'auth.fields.password.required',
+        format: 'auth.fields.password.format',
       },
     },
     turnstileToken: {
@@ -86,12 +86,12 @@ const schema = {
           given_name: {
             type: 'string',
             minLength: 1,
-            errorMessage: { minLength: 'account:auth.fields.givenName.required' },
+            errorMessage: { minLength: 'auth.fields.givenName.required' },
           },
           family_name: {
             type: 'string',
             minLength: 1,
-            errorMessage: { minLength: 'account:auth.fields.familyName.required' },
+            errorMessage: { minLength: 'auth.fields.familyName.required' },
           },
         },
         required: ['given_name', 'family_name'],
@@ -101,7 +101,7 @@ const schema = {
           name: {
             type: 'string',
             minLength: 1,
-            errorMessage: { minLength: 'account:auth.fields.businessName.required' },
+            errorMessage: { minLength: 'auth.fields.businessName.required' },
           },
         },
         required: ['name'],

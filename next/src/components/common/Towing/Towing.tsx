@@ -34,7 +34,7 @@ const schema = {
     licensePlate: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:Towing.licensePlateRequired' },
+      errorMessage: { minLength: 'Towing.licensePlateRequired' },
     },
     turnstileToken: {
       type: 'string',

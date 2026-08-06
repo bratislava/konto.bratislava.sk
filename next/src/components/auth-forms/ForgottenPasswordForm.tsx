@@ -26,8 +26,8 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email.required',
-        format: 'account:auth.fields.email.format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
   },

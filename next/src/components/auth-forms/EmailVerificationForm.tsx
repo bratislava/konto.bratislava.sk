@@ -29,8 +29,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:auth.fields.verificationCode.required',
-        format: 'account:auth.fields.verificationCode.format',
+        minLength: 'auth.fields.verificationCode.required',
+        format: 'auth.fields.verificationCode.format',
       },
     },
   },

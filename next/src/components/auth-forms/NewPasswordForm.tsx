@@ -32,8 +32,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:auth.fields.verificationCode.required',
-        format: 'account:auth.fields.verificationCode.format',
+        minLength: 'auth.fields.verificationCode.required',
+        format: 'auth.fields.verificationCode.format',
       },
     },
     password: {
@@ -41,8 +41,8 @@ const schema = {
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password.required',
-        format: 'account:auth.fields.password.format',
+        minLength: 'auth.fields.password.required',
+        format: 'auth.fields.password.format',
       },
     },
   },

@@ -37,20 +37,20 @@ const foSchema = {
     givenName: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.givenName.required' },
+      errorMessage: { minLength: 'auth.fields.givenName.required' },
     },
     familyName: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.familyName.required' },
+      errorMessage: { minLength: 'auth.fields.familyName.required' },
     },
     rc: {
       type: 'string',
       minLength: 1,
       format: 'rc',
       errorMessage: {
-        minLength: 'account:auth.fields.birthNumber.required',
-        format: 'account:auth.fields.birthNumber.format',
+        minLength: 'auth.fields.birthNumber.required',
+        format: 'auth.fields.birthNumber.format',
       },
     },
     idCard: {
@@ -58,8 +58,8 @@ const foSchema = {
       minLength: 1,
       format: 'idCard',
       errorMessage: {
-        minLength: 'account:auth.fields.idCard.required',
-        format: 'account:auth.fields.idCard.format',
+        minLength: 'auth.fields.idCard.required',
+        format: 'auth.fields.idCard.format',
       },
     },
     turnstileToken: {

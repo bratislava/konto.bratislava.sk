@@ -26,14 +26,14 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email.required',
-        format: 'account:auth.fields.email.format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
     password: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:auth.fields.password.required' },
+      errorMessage: { minLength: 'auth.fields.password.required' },
     },
   },
   required: ['newEmail', 'password'],

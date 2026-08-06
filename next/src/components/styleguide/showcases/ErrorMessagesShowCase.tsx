@@ -798,7 +798,7 @@ const ErrorMessagesShowCase = () => {
           z testovania vo formulárovom playgrounde. Stĺpec Navrhované znenie je podklad na diskusiu,
           nie schválený text. Súčasné znenie sa načítava priamo z prekladov, takže tabuľka je vždy
           aktuálna. Aplikácia má dva nezávislé systémy validácie, znenia oboch sú v{' '}
-          <code>public/locales/sk/account.json</code> – chyby formulárov mestských služieb pod
+          <code>public/locales/sk/translation.json</code> – chyby formulárov mestských služieb pod
           predponou <code>useFormErrorTranslations.</code>.
         </Typography>
       </Wrapper>

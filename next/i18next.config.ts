@@ -10,17 +10,15 @@ export default defineConfig({
     // namespace, which the extractor resolves to the default one.
     ignore: ['src/components/styleguide/showcases/ErrorMessagesShowCase.tsx'],
     output: 'public/locales/{{language}}/{{namespace}}.json',
-    // `useTranslation()` is called without a namespace, the extractor would otherwise use `translation`
-    defaultNS: 'account',
     sort: true,
     // makes the translation json files flat (our keys contain dots)
     keySeparator: false,
     preservePatterns: [
       // Translations in account forms (registration, login...) are thrown away during parsing. This is quick fix, how to keep them.
-      'account:auth.fields.*.format',
-      'account:auth.fields.*.required',
-      'account:Towing.*Required',
-      'account:IdentityVerificationStatus.requiredAlert',
+      'translation:auth.fields.*.format',
+      'translation:auth.fields.*.required',
+      'translation:Towing.*Required',
+      'translation:IdentityVerificationStatus.requiredAlert',
     ],
   },
 })

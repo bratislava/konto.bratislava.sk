@@ -11,6 +11,17 @@ pnpm --filter nest-forms-backend run openapi
 That writes `openapi-clients-v2/specs/<projectName>.json`; `--out` overrides the path. Only
 the action's output is written — the compile happens entirely in memory.
 
+| Action | Purpose |
+| --- | --- |
+| `spec:generate` | Write the document to its spec file. |
+| `spec:validate` | Check the committed spec matches the code. Prints a unified diff and exits 1 if not. Run in CI by each service's `openapi` Docker stage. |
+
+Each backend exposes these as `openapi` and `openapi:validate` scripts.
+
+A backend needs a `.env.spec` fixture: its config validation runs while modules are being
+defined, which Nest's preview mode does not skip. That file is also the only `.env*` allowed
+into the Docker build context, so CI depends on it.
+
 ## The per-backend contract
 
 A backend is wired up by default-exporting a contract from `src/openapi.ts`, typed by this

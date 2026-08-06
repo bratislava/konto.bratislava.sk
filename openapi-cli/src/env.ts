@@ -4,13 +4,16 @@ import { join } from 'node:path'
 import { CliError } from './cli-error'
 
 /**
- * Tried in order. `.env.spec` first because it is the fixture written to satisfy a backend's
- * config validation with dummy values; `.env.example` is the documented shape and is the
- * fallback for backends that have no spec fixture yet.
+ * Tried in order.
  *
- * A developer's real `.env` is deliberately not in this list — it is still picked up by the
- * backend's own `ConfigModule.forRoot()`, but only for variables these fixtures leave unset,
- * so the generated document does not depend on local secrets.
+ * `.env.spec` is the one that matters: it is the fixture written to satisfy a backend's config
+ * validation with dummy values, and per `.dockerignore` it is the **only** `.env*` allowed
+ * into the Docker build context. CI therefore needs it — an `.env.example` fallback that
+ * happens to work locally would fail in the image.
+ *
+ * A developer's real `.env` is deliberately not in this list. It is still picked up by the
+ * backend's own `ConfigModule.forRoot()`, but only for variables the fixture leaves unset, so
+ * a generated spec never depends on local secrets.
  */
 const ENV_FILES = ['.env.spec', '.env.example']
 

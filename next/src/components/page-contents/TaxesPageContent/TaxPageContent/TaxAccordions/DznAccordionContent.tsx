@@ -26,7 +26,7 @@ type Props = {
 }
 
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const matchHeader: Record<string, string[]> = {
     GROUND: [
@@ -69,7 +69,7 @@ const TableData = ({
     | ResponseConstructionTaxDetailDto[]
     | ResponseApartmentTaxDetailDto[]
 }) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const translationMap = {
     GROUND: {

@@ -99,7 +99,8 @@ interface FormProps {
 }
 
 const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     watch,
     setValue,
@@ -204,7 +205,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
  * TODO Rewrite the radio group to actual values instead of true/false?
  */
 const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { showToast } = useToast()
 

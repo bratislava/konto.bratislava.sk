@@ -10,7 +10,7 @@ import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
  */
 
 const UserProfilePageContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <>

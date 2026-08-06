@@ -24,7 +24,8 @@ const BAArrayFieldItemTemplate = <
 >(
   props: ArrayFieldItemTemplateProps<T, S, F>,
 ) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { children, buttonsProps, index, parentUiSchema } = props
   const { hasRemove } = buttonsProps
   const { parentId } = getObjectFieldInfo(buttonsProps.fieldPathId)

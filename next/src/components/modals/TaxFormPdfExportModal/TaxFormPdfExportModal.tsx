@@ -18,7 +18,7 @@ type TaxFormPdfExportModalProps = {
 } & ModalProps
 
 const LoadingContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <div className="flex flex-col items-center gap-6">
@@ -37,7 +37,8 @@ const LoadingContent = () => {
 }
 
 const SuccessContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { register } = useFormRedirects()
   const {
     formDefinition: { feedbackLink },
@@ -47,22 +48,18 @@ const SuccessContent = () => {
   // TODO Translations - cleanup
   const actions = [
     <Trans
-      ns="account"
       i18nKey="TaxFormPdfExportModal.actions.1"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
     <Trans
-      ns="account"
       i18nKey="TaxFormPdfExportModal.actions.2"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
     <Trans
-      ns="account"
       i18nKey="TaxFormPdfExportModal.actions.3"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
     <Trans
-      ns="account"
       i18nKey="TaxFormPdfExportModal.actions.4"
       components={{ strong: <strong className="font-semibold" /> }}
     />,
@@ -124,13 +121,11 @@ const SuccessContent = () => {
         <Typography variant="p-large">
           {isSignedIn ? (
             <Trans
-              ns="account"
               i18nKey="TaxFormPdfExportModal.taxAssessedStatementAuthenticated"
               components={{ strong: <strong className="font-semibold" /> }}
             />
           ) : (
             <Trans
-              ns="account"
               i18nKey="TaxFormPdfExportModal.taxAssessedStatement"
               components={{ strong: <strong className="font-semibold" /> }}
             />

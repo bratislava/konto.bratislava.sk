@@ -37,7 +37,8 @@ const Carousel = ({
   hasVerticalPadding = true,
   showControlsOnMobile = false,
 }: CarouselProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const scrollerRef = useRef<HTMLUListElement>(null)
 
   const [currentIndex, setCurrentIndex] = useState(0)

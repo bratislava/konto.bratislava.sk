@@ -36,7 +36,7 @@ export type FormMessageModalsKeys = (typeof formMessageModalsKeys)[number]
  */
 
 export const FormMessageModals = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     migrationRequiredModal,

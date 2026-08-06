@@ -9,7 +9,7 @@ type Props = {
 }
 
 const IdentityVerificationBanner = ({ variant }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   if (variant === 'verification-needed') {
     return (

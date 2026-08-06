@@ -110,6 +110,8 @@ const FormPlaygroundProviders = ({
 }
 
 const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroundProps) => {
+  const { t } = useTranslation()
+
   const { transformErrors } = useFormErrorTranslations()
   const validatorRegistry = useFormValidatorRegistry()
   const formRef = createRef<Form>()
@@ -150,7 +152,6 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const [jsonInput, setJsonInput] = useState(JSON.stringify(defaultFormData, null, 2))
 
   const { showToast } = useToast()
-  const { t } = useTranslation('account')
   const importJsonInputRef = useRef<HTMLInputElement>(null)
 
   const handleFormSelect = (option: SelectOption | null) => {

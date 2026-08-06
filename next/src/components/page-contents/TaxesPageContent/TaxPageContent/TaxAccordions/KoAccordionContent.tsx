@@ -26,7 +26,7 @@ type TableDataProps = {
 }
 
 const TableHeader = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const tableHeaderData = {
     containerVolume: t('KoAccordionContent.containerVolume'),

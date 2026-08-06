@@ -32,7 +32,8 @@ const HomepageContent = ({
   announcements,
   announcementsLegalPerson,
 }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { userAttributes, isLegalEntity } = useSsrAuth()
 
   const name = isLegalEntity ? userAttributes?.name : userAttributes?.given_name

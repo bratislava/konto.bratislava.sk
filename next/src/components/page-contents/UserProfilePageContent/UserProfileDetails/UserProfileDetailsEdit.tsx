@@ -67,7 +67,7 @@ type Props = {
 }
 
 const UserProfileDetailsEdit = ({ formId, userAttributes, onSubmit }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     name,

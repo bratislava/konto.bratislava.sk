@@ -7,7 +7,7 @@ import KoAccordionContent from '@/src/components/page-contents/TaxesPageContent/
 import { useTaxData } from '@/src/components/page-contents/TaxesPageContent/useTaxData'
 
 const TaxAccordions = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()

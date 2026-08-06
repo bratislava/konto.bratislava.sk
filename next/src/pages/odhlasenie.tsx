@@ -34,7 +34,8 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const LogoutPage = ({ general, clientInfo }: AuthPageCommonProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { signOut } = useSignOut()
   const { redirect } = useQueryParamRedirect()
   const [isLoading, setIsLoading] = useState(false)

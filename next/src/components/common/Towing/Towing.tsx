@@ -45,7 +45,7 @@ const schema = {
 }
 
 const Towing = ({ title, text }: TowingSectionProps) => {
-  const { t, i18n } = useTranslation('account')
+  const { t, i18n } = useTranslation()
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
 

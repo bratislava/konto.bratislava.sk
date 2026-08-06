@@ -17,7 +17,7 @@ const displayStrings = (strings: (string | undefined | null)[], separator: strin
  */
 
 const TaxSubjectInformation = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
   const { userAttributes } = useSsrAuth()

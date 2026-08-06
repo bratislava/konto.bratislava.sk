@@ -13,7 +13,7 @@ import cn from '@/src/utils/cn'
  */
 
 export const NavMenu = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
 
   const { mainMenuItems } = useNavMenu()

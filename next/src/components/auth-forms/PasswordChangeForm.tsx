@@ -41,7 +41,8 @@ const schema = {
 }
 
 const PasswordChangeForm = ({ onSubmit, error }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
     control,

@@ -18,7 +18,7 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const TaxPaymentMethods = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
   const { paidStatus, oneTimePayment, installmentPayment, overallBalance } = taxData

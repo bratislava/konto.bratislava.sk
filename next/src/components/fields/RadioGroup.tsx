@@ -21,8 +21,9 @@ export interface RadioGroupProps extends Omit<RACRadioGroupProps, 'orientation'>
 // Calling setSelectedValue(null) on the shared state reliably clears the selection
 // (natively typed to accept null), unlike calling the group's onChange prop with null.
 const ResetButton = () => {
+  const { t } = useTranslation()
+
   const state = useContext(RadioGroupStateContext)
-  const { t } = useTranslation('account')
 
   if (!state) return null
 

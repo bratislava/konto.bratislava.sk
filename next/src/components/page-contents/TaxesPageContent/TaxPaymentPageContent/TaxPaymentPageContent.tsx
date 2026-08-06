@@ -16,7 +16,7 @@ import { ROUTES } from '@/src/utils/routes'
 // query param "sposob-uhrady" could have "zvysna suma" split to "zvysna-suma" and "jednorazova-uhrada"
 // but only thing that is affecting is title of the page
 const TaxPaymentPageContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const [paymentMethodParam] = useQueryState(
     'sposob-uhrady',

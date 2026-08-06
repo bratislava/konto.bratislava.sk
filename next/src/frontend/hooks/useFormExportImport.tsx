@@ -24,6 +24,9 @@ import logger from '@/src/frontend/utils/logger'
 import { ROUTES } from '@/src/utils/routes'
 
 export const useGetContext = () => {
+  const { t } = useTranslation()
+  const router = useRouter()
+
   const { isSignedIn } = useSsrAuth()
   const {
     formDefinition: { slug },
@@ -34,13 +37,11 @@ export const useGetContext = () => {
   const { formData } = useFormData()
   const { setRegistrationModal, setTaxFormPdfExportModal, setXmlImportVersionConfirmationModal } =
     useFormModals()
-  const { t } = useTranslation('account')
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { signature } = useFormSignature()
   const { clientFiles } = useFormFileUpload()
 
-  const router = useRouter()
   // track each imported/exported xml/pdf in analytics - event format should match the one in FormPagesWrapper
   const plausible = usePlausible()
 

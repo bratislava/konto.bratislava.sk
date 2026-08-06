@@ -14,7 +14,8 @@ import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import logger from '@/src/frontend/utils/logger'
 
 export const useUserProfileDetails = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { showToast } = useToast()
   const formId = `form-${useId()}`
 

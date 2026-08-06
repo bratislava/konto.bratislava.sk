@@ -34,7 +34,7 @@ type Props = {
 }
 
 const UserProfileDetailsView = ({ userAttributes }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     name,

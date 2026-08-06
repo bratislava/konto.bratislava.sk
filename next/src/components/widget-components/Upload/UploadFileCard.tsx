@@ -25,7 +25,8 @@ type UploadedFileProps = {
 }
 
 const useGetErrorMessage = (fileInfo: FileInfo) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { status } = fileInfo
 
   if (!isErrorFileStatusType(status.type)) {
@@ -57,7 +58,8 @@ const useGetErrorMessage = (fileInfo: FileInfo) => {
 }
 
 const useGetMessage = (fileInfo: FileInfo) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { status } = fileInfo
 
   return (
@@ -81,7 +83,8 @@ const UploadFileCard = ({
   onFileDownload,
   isDisabled = false,
 }: UploadedFileProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const errorMessage = useGetErrorMessage(fileInfo)
   const message = useGetMessage(fileInfo)
 

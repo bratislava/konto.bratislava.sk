@@ -11,7 +11,7 @@ type Props = {
 }
 
 const TaxesOverviewBanner = ({ variant, taxType }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const titleLookingFor = {
     [TaxType.Dzn]: t('TaxesOverviewBanner.lookingFor.title.dzn'),

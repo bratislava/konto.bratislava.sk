@@ -41,7 +41,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     },
     ref,
   ) => {
-    const { t } = useTranslation('account')
+    const { t } = useTranslation()
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)

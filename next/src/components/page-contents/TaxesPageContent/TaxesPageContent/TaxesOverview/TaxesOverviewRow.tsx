@@ -15,7 +15,7 @@ type Props = {
 }
 
 const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const title = {
     [TaxStatusEnum.AwaitingProcessing]: t('TaxesOverviewRow.statuses.waitingForProcessing'),
@@ -51,7 +51,7 @@ const PaymentStatus = ({ status }: { status: TaxStatusEnum }) => {
  */
 
 const TaxesOverviewRow = ({ taxData }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { year, order, status, createdAt, amountToBePaid, type } = taxData
 

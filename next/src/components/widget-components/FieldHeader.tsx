@@ -37,7 +37,7 @@ const FieldHeader = ({
   customHeaderBottomMargin = 'mb-1',
   displayOptionalLabel = true,
 }: FieldHeaderProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const useCustomBottomMargin = labelSize === 'default' || !helptext
 

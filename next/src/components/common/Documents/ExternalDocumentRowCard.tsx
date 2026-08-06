@@ -14,7 +14,7 @@ type Props = {
  */
 
 const ExternalDocumentRowCard = ({ title, url, ariaLabel }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <li className="relative flex flex-row items-center justify-between gap-4 rounded-md px-6 py-4 wrapper-focus-ring">

@@ -20,7 +20,7 @@ export type DialogProps = RACDialogProps & {
  * React Aria logs a warning.
  */
 const Dialog = ({ children, className, noCloseButton, ...rest }: DialogProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <RACDialog {...rest} className={cn('outline-0', className)}>

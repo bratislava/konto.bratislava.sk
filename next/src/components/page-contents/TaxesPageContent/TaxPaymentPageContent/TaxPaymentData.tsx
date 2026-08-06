@@ -24,7 +24,7 @@ type Props = {
  */
 
 const TaxPaymentData = ({ paymentMethod }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     taxData,

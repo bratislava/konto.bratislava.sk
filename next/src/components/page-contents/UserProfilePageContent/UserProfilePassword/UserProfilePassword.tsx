@@ -10,7 +10,7 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const UserProfilePassword = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <SectionContainer>

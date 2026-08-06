@@ -54,8 +54,9 @@ const schema = {
  */
 
 const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }: Props) => {
+  const { t } = useTranslation()
+
   const [lastVerificationCode, setLastVerificationCode] = useState<string>('')
-  const { t } = useTranslation('account')
   const {
     handleSubmit,
     control,

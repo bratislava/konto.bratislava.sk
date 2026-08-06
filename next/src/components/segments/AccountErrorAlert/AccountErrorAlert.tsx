@@ -14,7 +14,7 @@ interface Props {
 }
 
 const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const errorMessage = useMemo<string>(() => {
     if (!error) {

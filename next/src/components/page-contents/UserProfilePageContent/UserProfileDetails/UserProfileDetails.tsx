@@ -12,7 +12,7 @@ import IdentityVerificationStatus from '@/src/components/simple-components/Ident
 import UserAvatar from '@/src/components/simple-components/UserAvatar'
 
 const UserProfileDetails = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { formId, isEditing, setIsEditing, userAttributes, tierStatus, handleSubmitEditing } =
     useUserProfileDetails()

@@ -18,7 +18,7 @@ const BottomSheetMenuModal = ({
   setIsOpen,
   conceptMenuContent,
 }: BottomSheetMenuModalProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const onLinkClick = () => {
     setIsOpen(false)

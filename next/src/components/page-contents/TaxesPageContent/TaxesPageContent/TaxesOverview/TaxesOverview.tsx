@@ -19,7 +19,7 @@ type Props = {
  */
 
 const TaxesOverview = ({ taxesData, taxType }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const title = {
     [TaxType.Dzn]: t('TaxesOverview.title.tax'),

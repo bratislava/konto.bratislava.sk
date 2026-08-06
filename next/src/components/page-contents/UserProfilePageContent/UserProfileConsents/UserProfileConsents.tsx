@@ -7,7 +7,8 @@ import useToast from '@/src/components/simple-components/Toast/useToast'
 import { useGdprConsent } from '@/src/frontend/hooks/useUser'
 
 const UserProfileConsents = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { showToast } = useToast()
 
   const { isGranted, changeConsent, consentChangePending } = useGdprConsent(ConsentEnum.Marketing)

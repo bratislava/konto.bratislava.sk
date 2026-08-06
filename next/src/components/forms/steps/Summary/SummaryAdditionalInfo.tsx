@@ -8,7 +8,8 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import { useFormData } from '@/src/components/forms/useFormData'
 
 const SummaryAdditionalInfo = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { formDefinition } = useFormContext()
   const { formData } = useFormData()
   const additionalInfo = useMemo(

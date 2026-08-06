@@ -23,7 +23,8 @@ import { useFormModals } from '@/src/components/modals/FormModals/useFormModals'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 
 const useGetContext = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { showToast } = useToast()
   const { setSignerIsDeploying } = useFormModals()
   const { formDefinition, formId, isSigned, initialSignature } = useFormContext()

@@ -116,7 +116,7 @@ const schema = {
  */
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
-  const { t, i18n } = useTranslation('account')
+  const { t, i18n } = useTranslation()
 
   const { clientInfo } = useAmplifyClientOAuthContext()
 

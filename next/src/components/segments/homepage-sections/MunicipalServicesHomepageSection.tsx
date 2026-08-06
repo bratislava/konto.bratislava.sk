@@ -12,7 +12,7 @@ type Props = {
 }
 
 const MunicipalServicesHomepageSection = ({ services }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <SectionContainer className="py-6 lg:py-18">

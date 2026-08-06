@@ -12,7 +12,8 @@ type Props = {
 }
 
 const LegalPersonVerificationPageContent = ({ showSkipButton = true }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { redirect } = useQueryParamRedirect()
 
   const { loginWithEid, verificationStatus } = useVerifyEid()

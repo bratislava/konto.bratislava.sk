@@ -48,13 +48,14 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const ForgottenPasswordPage = ({ general, clientInfo }: AuthPageCommonProps) => {
+  const { t } = useTranslation()
+  const router = useRouter()
+
   const [lastEmail, setLastEmail] = useState('')
   const [forgotPasswordError, setForgotPasswordError] = useState<Error | null>(null)
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<ForgotPasswordStatus>(
     ForgotPasswordStatus.INIT,
   )
-  const { t } = useTranslation('account')
-  const router = useRouter()
   const { getRouteWithRedirect } = useQueryParamRedirect()
   const accountContainerRef = useRef<HTMLDivElement>(null)
 

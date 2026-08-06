@@ -75,7 +75,8 @@ const IdentityVerificationOfPhysicalEntityForm = ({
   error,
   showSkipButton = true,
 }: Props) => {
-  const { t, i18n } = useTranslation('account')
+  const { t, i18n } = useTranslation()
+
   const { redirect } = useQueryParamRedirect()
 
   const { userAttributes } = useSsrAuth()

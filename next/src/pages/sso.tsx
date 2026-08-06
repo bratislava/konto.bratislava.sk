@@ -28,7 +28,7 @@ export const getServerSideProps = amplifyGetServerSideProps<SSOPageProps>(
 )
 
 const SSOPage = ({ accessToken }: SSOPageProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (accessToken) {

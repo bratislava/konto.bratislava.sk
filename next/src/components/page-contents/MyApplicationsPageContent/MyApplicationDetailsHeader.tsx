@@ -28,7 +28,7 @@ const MyApplicationDetailsHeader = ({
   ginisData,
 }: MyApplicationDetailsHeaderBase) => {
   // TODO Translations
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { showToast, closeToasts } = useToast()
 

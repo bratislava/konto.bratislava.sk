@@ -13,6 +13,8 @@ type FormMenuItem = DropdownMenuItemProps & {
 }
 
 export const useFormMenuItems = (): FormMenuItem[] => {
+  const { t } = useTranslation()
+
   const {
     isReadonly,
     isDeletable,
@@ -22,7 +24,6 @@ export const useFormMenuItems = (): FormMenuItem[] => {
   } = useFormContext()
   const { exportXml, exportPdf, importXml, saveConcept, deleteConcept, exportJson, importJson } =
     useFormExportImport()
-  const { t } = useTranslation('account')
   const { setDeleteConceptModal } = useFormModals()
 
   return [

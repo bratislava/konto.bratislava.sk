@@ -42,10 +42,13 @@ const schema = {
  */
 
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
+  const { t } = useTranslation()
+
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const [resendIsLoading, setResendIsLoading] = useState(false)
-  const { t } = useTranslation('account')
+
   const noError: boolean = error === null || error === undefined
+
   const {
     handleSubmit,
     control,
@@ -55,7 +58,9 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
     schema,
     defaultValues: { verificationCode: '' },
   })
+
   const [count, setCount] = useState(60)
+
   useEffect(() => {
     if (count > 0) {
       setTimeout(() => setCount((state) => state - 1), 1000)

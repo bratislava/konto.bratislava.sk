@@ -74,9 +74,10 @@ const MyApplicationsPageContent = ({
   formDefinitionSlugTitleMap,
   emailFormSlugs,
 }: MyApplicationsSectionProps) => {
-  const { t } = useTranslation('account')
-  const title = t('MyApplicationsPageContent.title')
+  const { t } = useTranslation()
   const router = useRouter()
+
+  const title = t('MyApplicationsPageContent.title')
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
     { title: t('MyApplicationsPageContent.tabs.sent'), tag: 'SENT' },

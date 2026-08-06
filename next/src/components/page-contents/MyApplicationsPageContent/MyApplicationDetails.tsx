@@ -24,7 +24,7 @@ const MyApplicationDetails = ({
   detailsData,
   ginisData,
 }: MyApplicationsDetailsBase) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <div className="flex flex-col">

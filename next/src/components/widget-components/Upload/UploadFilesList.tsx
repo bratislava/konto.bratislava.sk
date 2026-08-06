@@ -22,7 +22,7 @@ const UploadFilesList = ({
   onFileDownload = () => {},
   isDisabled = false,
 }: UploadedFilesListProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   let valueArray: string[] = []
   if (value) {

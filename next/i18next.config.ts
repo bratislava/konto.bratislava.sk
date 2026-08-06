@@ -10,6 +10,8 @@ export default defineConfig({
     // namespace, which the extractor resolves to the default one.
     ignore: ['src/components/styleguide/showcases/ErrorMessagesShowCase.tsx'],
     output: 'public/locales/{{language}}/{{namespace}}.json',
+    // `useTranslation()` is called without a namespace, the extractor would otherwise use `translation`
+    defaultNS: 'account',
     sort: true,
     // makes the translation json files flat (our keys contain dots)
     keySeparator: false,

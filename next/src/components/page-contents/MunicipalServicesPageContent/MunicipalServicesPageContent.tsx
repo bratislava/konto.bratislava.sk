@@ -37,7 +37,7 @@ const MunicipalServicesPageContent = ({
   servicesLegalPerson,
   categoriesLegalPerson,
 }: MunicipalServicesPageContentProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { categorySlug, setCategorySlug, currentPage, setCurrentPage } =
     useMunicipalServicesFilters()

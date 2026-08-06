@@ -12,7 +12,7 @@ import { useGetDeliveryMethod } from '@/src/frontend/hooks/useDeliveryMethod'
  */
 
 const DeliveryMethodInformation = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     deliveryMethod,

@@ -12,8 +12,9 @@ type Props = {
 }
 
 const AnnouncementsHomepageSection = ({ announcements, announcementsLegalPerson }: Props) => {
+  const { t } = useTranslation()
+
   const { isLegalEntity } = useSsrAuth()
-  const { t } = useTranslation('account')
 
   const announcementsByPersonType = isLegalEntity ? announcementsLegalPerson : announcements
 

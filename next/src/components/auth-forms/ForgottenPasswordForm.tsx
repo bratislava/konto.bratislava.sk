@@ -35,7 +35,8 @@ const schema = {
 }
 
 const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
     control,

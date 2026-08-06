@@ -17,8 +17,9 @@ interface StepperViewRowProps {
  */
 
 const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => {
+  const { t } = useTranslation()
+
   const { submittedStepsIndexes } = useFormState()
-  const { t } = useTranslation('account')
 
   const isSubmitted = step.index === 'summary' ? false : submittedStepsIndexes.has(step.index)
   const getTitle = () => {

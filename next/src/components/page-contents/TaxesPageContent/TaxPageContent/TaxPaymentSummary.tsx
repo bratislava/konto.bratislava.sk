@@ -9,7 +9,7 @@ import HorizontalDivider from '@/src/components/simple-components/HorizontalDivi
 import cn from '@/src/utils/cn'
 
 const TaxPaymentSummary = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
 

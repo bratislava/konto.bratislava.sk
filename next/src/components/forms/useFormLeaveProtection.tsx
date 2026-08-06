@@ -7,9 +7,10 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import logger from '@/src/frontend/utils/logger'
 
 const useGetContext = () => {
-  const { isDevRoute } = useFormContext()
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
+
+  const { isDevRoute } = useFormContext()
   const enabledRef = useRef(false)
   useBeforeunload(() => (enabledRef.current ? t('useFormLeaveProtection.message') : null))
 

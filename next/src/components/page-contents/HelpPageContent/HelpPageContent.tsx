@@ -18,7 +18,7 @@ type Props = {
  */
 
 const HelpPageContent = ({ helpPage }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <>

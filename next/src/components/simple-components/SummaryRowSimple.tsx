@@ -14,7 +14,8 @@ type SummaryRowProps = PropsWithChildren<{
 }>
 
 const SummaryRowSimple = (props: SummaryRowProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { size = 'large', children, isError, label, isEditable = true, onGoToStep } = props
 
   const containerClassName = cn('flex flex-wrap gap-2 border-b py-4 lg:flex-nowrap', {

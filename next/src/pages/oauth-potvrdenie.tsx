@@ -50,8 +50,9 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
+  const { t } = useTranslation()
   const router = useRouter()
-  const { t } = useTranslation('account')
+
   const { signOut } = useSignOut()
   const [isLoading, setIsLoading] = useState(false)
 

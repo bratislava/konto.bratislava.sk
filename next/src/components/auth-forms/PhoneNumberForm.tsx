@@ -30,7 +30,8 @@ interface Props {
 }
 
 const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
     control,

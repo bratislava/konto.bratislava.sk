@@ -15,7 +15,7 @@ interface MyApplicationHistoryProps {
  */
 
 const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const translationMap = {
     DOCUMENT_CREATED: t('MyApplicationHistory.states.DOCUMENT_CREATED'),

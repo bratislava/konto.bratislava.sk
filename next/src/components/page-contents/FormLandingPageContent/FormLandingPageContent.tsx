@@ -31,7 +31,7 @@ export type FormLandingPageProps = {
 
 // TODO: Remove this page completely, after full migration to municipal service page
 const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <>

@@ -42,7 +42,8 @@ const schema = {
 }
 
 const LoginForm = ({ onSubmit, error }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { isOAuthLogin, clientTitle } = useAmplifyClientOAuthContext()
 
   const {

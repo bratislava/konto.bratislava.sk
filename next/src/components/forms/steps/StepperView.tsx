@@ -19,7 +19,7 @@ type StepperModalProps = {
 }
 
 const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <RACModalOverlay

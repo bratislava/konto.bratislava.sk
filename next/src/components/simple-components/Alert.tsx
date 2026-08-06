@@ -76,7 +76,7 @@ const Alert = ({
   solid = false,
   hasIcon = true,
 }: AlertBase) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const icons = {
     error: <Icon name="error" className="size-6" />,

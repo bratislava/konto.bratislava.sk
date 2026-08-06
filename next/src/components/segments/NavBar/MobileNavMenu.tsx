@@ -53,8 +53,9 @@ const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
  */
 
 export const MobileNavMenu = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { height } = useWindowSize()
   const heightWithoutHeader = `calc(${height}px - 14*4px)`
 

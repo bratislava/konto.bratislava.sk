@@ -8,7 +8,7 @@ import Icon from '@/src/components/icon-components/Icon'
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 
 const SummaryFormControls = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     isTaxForm,

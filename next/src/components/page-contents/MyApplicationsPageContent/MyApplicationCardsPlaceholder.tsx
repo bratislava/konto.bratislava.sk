@@ -6,7 +6,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 
 const MyApplicationCardsPlaceholder = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <SectionContainer>

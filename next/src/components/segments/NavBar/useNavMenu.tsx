@@ -18,7 +18,8 @@ export type MainMenuItemProps = {
 }
 
 export const useNavMenu = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+  const router = useRouter()
 
   const { isLegalEntity } = useSsrAuth()
   const { signOut } = useSignOut()
@@ -26,7 +27,6 @@ export const useNavMenu = () => {
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
-  const router = useRouter()
 
   const login = optionalFormRedirectsContext
     ? () => optionalFormRedirectsContext.login()

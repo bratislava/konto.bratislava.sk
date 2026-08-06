@@ -9,13 +9,14 @@ import DropdownMenu from '@/src/components/simple-components/DropdownMenu/Dropdo
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 
 const FormHeader = () => {
+  const { t } = useTranslation()
+
   const {
     formDefinition: { schema },
     isReadonly,
     strapiForm,
   } = useFormContext()
   const { saveConcept } = useFormExportImport()
-  const { t } = useTranslation('account')
 
   const menuItems = useFormMenuItems()
 

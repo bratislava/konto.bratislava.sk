@@ -19,7 +19,8 @@ import logger from '@/src/frontend/utils/logger'
 
 // TODO: Phone number modal is temporarily hidden. Remove completely if not use in long-term.
 const PhoneNumberModal = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { userAttributes } = useSsrAuth()
   const [isOpen, setIsOpen] = useState(false) // useState(getInitialOpen(userAttributes))
   const [phoneNumberError, setPhoneNumberError] = useState<Error | null>(null)

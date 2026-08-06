@@ -58,9 +58,9 @@ import {
  */
 
 const useGetContext = () => {
+  const { t } = useTranslation()
   const router = useRouter()
 
-  const { t } = useTranslation('account')
   const { showToast } = useToast()
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)

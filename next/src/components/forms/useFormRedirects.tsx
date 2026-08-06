@@ -13,11 +13,12 @@ import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirec
 import { ROUTES } from '@/src/utils/routes'
 
 const useGetContext = () => {
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { formId } = useFormContext()
   const { formData } = useFormData()
-  const { t } = useTranslation('account')
   const { showToast, closeToasts } = useToast()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { signature } = useFormSignature()

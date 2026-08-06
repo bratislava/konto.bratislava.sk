@@ -13,7 +13,7 @@ import { userQueryKey, useUser } from '@/src/frontend/hooks/useUser'
  * to ensure more consistency in other components and with backends
  */
 export const useGetDeliveryMethod = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { userData } = useUser()
 

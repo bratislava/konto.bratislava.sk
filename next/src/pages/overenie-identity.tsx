@@ -47,8 +47,9 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) => {
+  const { t } = useTranslation()
+
   const { redirect } = useQueryParamRedirect()
-  const { t } = useTranslation('account')
   const [lastRc, setLastRc] = useState('')
   const [lastIdCard, setLastIdCard] = useState('')
 

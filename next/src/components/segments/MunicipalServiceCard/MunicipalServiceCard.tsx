@@ -118,7 +118,7 @@ type MunicipalServiceCardProps = {
 }
 
 const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const tags: string[] = [
     ...(service.form?.isTemporarilyDisabled

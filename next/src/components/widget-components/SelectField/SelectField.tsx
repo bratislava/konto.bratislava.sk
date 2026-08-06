@@ -160,8 +160,9 @@ const SelectField = <
   displayOptionalLabel,
   ...rest
 }: SelectMultiNewProps<Option, IsMulti, Group>) => {
+  const { t } = useTranslation()
+
   const id = useId()
-  const { t } = useTranslation('account')
 
   const isError = !!errorMessage?.length
   const hasDescriptions = someOptionHasDescription<Option, IsMulti, Group>(options)

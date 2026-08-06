@@ -19,7 +19,7 @@ type Props = {
  */
 
 const TaxAdministratorCardWrapper = ({ taxAdministrator, taxType }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   if (!taxAdministrator) {
     return null

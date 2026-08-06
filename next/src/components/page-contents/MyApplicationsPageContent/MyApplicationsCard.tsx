@@ -59,7 +59,7 @@ const MyApplicationsCard = ({
   formDefinitionSlugTitleMap,
 }: MyApplicationsCardProps) => {
   // TODO Translations
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
 

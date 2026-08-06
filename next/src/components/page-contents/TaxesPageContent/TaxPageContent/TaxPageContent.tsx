@@ -22,7 +22,7 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const TaxPageContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
   const strapiTaxAdministrator = useStrapiTaxAdministrator()

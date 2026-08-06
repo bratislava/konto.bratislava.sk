@@ -19,13 +19,14 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const FormVersionCompareAction = () => {
+  const { t } = useTranslation()
+
   const {
     formId,
     versionCompareContinueAction,
     formDefinition: { slug },
   } = useFormContext()
   const { isSignedIn } = useSsrAuth()
-  const { t } = useTranslation('account')
   const { showToast } = useToast()
   const [isRedirecting, setIsRedirecting] = useState(false)
 

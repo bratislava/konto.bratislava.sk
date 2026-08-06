@@ -27,7 +27,8 @@ type RegistrationModalBase = {
  */
 
 const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     evaluatedSendPolicy: { sendAllowedForUserResult, eidSendPossible },
   } = useFormContext()

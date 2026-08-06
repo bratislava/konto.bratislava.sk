@@ -28,7 +28,8 @@ const PasswordField = (
   }: PasswordFieldProps,
   ref: Ref<HTMLInputElement>,
 ) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const [isHidden, setIsHidden] = useState(true)
 
   return (

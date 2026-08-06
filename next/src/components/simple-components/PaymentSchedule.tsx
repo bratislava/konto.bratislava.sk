@@ -14,7 +14,7 @@ import cn from '@/src/utils/cn'
  */
 
 const PaymentSchedule = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
 

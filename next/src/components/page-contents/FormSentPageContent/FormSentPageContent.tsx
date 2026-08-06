@@ -7,7 +7,7 @@ import ThankYouTile, {
 import { ROUTES } from '@/src/utils/routes'
 
 const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { isTaxForm, formDefinition, isEmbedded } = useFormContext()
   const { feedbackLink } = formDefinition

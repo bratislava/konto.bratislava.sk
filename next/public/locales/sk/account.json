@@ -182,6 +182,7 @@
   "FormControls.back": "Späť",
   "FormControls.continue": "Pokračovať",
   "FormControls.skip": "Preskočiť",
+  "FormCtaButton.fileFormButtonLabel": "Vyplniť formulár",
   "FormHeader.aria.actionsMenu": "Ďalšie akcie formulára",
   "FormHeader.servicesLink": "Viac informácií o službe",
   "FormLandingPageCtaCard.redirectError": "Nepodarilo sa načítať formulár. Skúste to prosím znova.",

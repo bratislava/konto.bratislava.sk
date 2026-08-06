@@ -98,14 +98,15 @@ const getInitialState = (query: ParsedUrlQuery) => {
 }
 
 const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
   const { isOAuthLogin, storeTokensAndRedirect, clientTitle, isIdentityVerificationRequired } =
     useOAuthGetContext(clientInfo)
 
-  const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
     initialState.registrationStatus,

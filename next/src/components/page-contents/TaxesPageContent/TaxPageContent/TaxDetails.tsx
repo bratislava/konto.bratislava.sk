@@ -13,7 +13,7 @@ import { EXTERNAL_LINKS } from '@/src/utils/routes'
  */
 
 const TaxDetails = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
 

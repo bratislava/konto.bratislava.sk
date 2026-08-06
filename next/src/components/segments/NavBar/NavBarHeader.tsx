@@ -30,7 +30,7 @@ type Props = {
 }
 
 export const NavBarHeader = ({ variant, hasBackButton = false }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
 
   const { signedInActionsMenuItems } = useNavMenu()

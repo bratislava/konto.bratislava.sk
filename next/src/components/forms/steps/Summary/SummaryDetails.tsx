@@ -65,13 +65,13 @@ const FileValueComponent = ({ fileInfo }: SummaryFileValueComponentProps) => {
 }
 
 const NoneValueComponent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return <span>{t('SummaryDetails.noneValue')}</span>
 }
 
 const InvalidValueComponent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <span>
@@ -102,7 +102,8 @@ const ArrayComponent = ({ array, children }: SummaryArrayComponentProps) => {
 const getArrayDepth = (id: string) => id.split('_').filter((part) => part.match(/^\d+$/)).length
 
 const ArrayItemComponent = ({ arrayItem, children, hasError }: SummaryArrayItemComponentProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const arrayDepth = getArrayDepth(arrayItem.id)
 
   if (arrayDepth === 1) {

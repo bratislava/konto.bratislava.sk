@@ -16,7 +16,8 @@ import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
  */
 
 const SummaryFormSignature = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
   const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()

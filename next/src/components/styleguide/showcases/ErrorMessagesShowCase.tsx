@@ -704,7 +704,7 @@ const sections: ErrorMessageSection[] = [
 ]
 
 const ErrorMessageTable = ({ rows }: Pick<ErrorMessageSection, 'rows'>) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <div className="w-full overflow-x-auto">

@@ -14,8 +14,9 @@ type Props = {
 }
 
 const FormCtaButton = ({ buttonLabel, formDefinition }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { showToast, closeToasts } = useToast()
 
   const { mutate, isPending } = useMutation({

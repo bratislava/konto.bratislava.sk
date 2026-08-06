@@ -5,10 +5,11 @@ import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 
 const SummaryFormLegalText = () => {
+  const { t } = useTranslation()
+
   const {
     formDefinition: { termsAndConditions },
   } = useFormContext()
-  const { t } = useTranslation('account')
 
   return (
     <div>

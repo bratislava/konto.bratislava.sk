@@ -18,7 +18,8 @@ type IdentityVerificationModalProps = {
  */
 
 const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificationModalProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { verifyIdentity } = useFormRedirects()
 
   return (

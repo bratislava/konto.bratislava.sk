@@ -25,7 +25,8 @@ const MunicipalServicePageContent = ({
   municipalService,
   formDefinition,
 }: MunicipalServicePageContentProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { sections, form: strapiForm, pageHeaderText, moreInformationUrl } = municipalService
 
   const filteredSections = sections?.filter(isDefined) ?? []

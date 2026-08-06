@@ -71,8 +71,9 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { userAttributes } = useSsrAuth()
   const [emailChangeStatus, setEmailChangeStatus] = useState<EmailChangeStatus>(
     EmailChangeStatus.INIT,

@@ -10,8 +10,9 @@ type Props = {
 }
 
 const TowingNotFound = ({ initialLicensePlate }: Props) => {
+  const { t } = useTranslation()
+
   const [licensePlate] = useState(initialLicensePlate) // TODO: Remove this once the license plate is part of the response
-  const { t } = useTranslation('account')
 
   return (
     <>

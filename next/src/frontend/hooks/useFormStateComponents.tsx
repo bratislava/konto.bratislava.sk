@@ -12,7 +12,7 @@ export type UseFormStateComponentsParams = {
 }
 
 const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   // note: in case of 'unsafe return of any type' the BE enum likely changed/expanded - see const ret assignment below
   return useMemo(() => {

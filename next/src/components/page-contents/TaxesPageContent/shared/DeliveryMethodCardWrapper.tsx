@@ -10,7 +10,8 @@ import { ROUTES } from '@/src/utils/routes'
 // TODO unify with TaxAdministratorCardWrapper
 
 const DeliveryMethodCardWrapper = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { deliveryMethod, deliveryMethodLabel, canUserChangeDeliveryMethod } =
     useGetDeliveryMethod()
 

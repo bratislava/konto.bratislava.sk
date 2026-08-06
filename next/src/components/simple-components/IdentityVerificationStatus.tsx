@@ -12,9 +12,10 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const IdentityVerificationStatus = () => {
-  const { isSignedIn, tierStatus } = useSsrAuth()
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
+
+  const { isSignedIn, tierStatus } = useSsrAuth()
 
   // we need to save the WIP of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()

@@ -7,12 +7,13 @@ import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisab
 import Alert from '@/src/components/simple-components/Alert'
 
 const SummaryHeader = () => {
+  const { t } = useTranslation()
+
   const { isSigned, strapiForm } = useFormContext()
   const { getValidatedSummary, getInfectedFiles, getUploadFiles } = useFormSummary()
   const { hasErrors } = getValidatedSummary()
   const infectedFiles = getInfectedFiles()
   const uploadFiles = getUploadFiles()
-  const { t } = useTranslation('account')
 
   const infectedFilesFilenames = infectedFiles.map((file) => file.fileName)
 

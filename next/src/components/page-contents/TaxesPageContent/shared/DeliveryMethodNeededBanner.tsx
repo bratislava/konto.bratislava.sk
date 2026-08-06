@@ -6,7 +6,7 @@ import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesPageC
 import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 
 const DeliveryMethodNeededBanner = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 

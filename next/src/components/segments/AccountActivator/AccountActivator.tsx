@@ -5,7 +5,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 
 const AccountActivator = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <AccountContainer>

@@ -7,7 +7,7 @@ import MLink from '@/src/components/simple-components/MLink'
 import { ROUTES } from '@/src/utils/routes'
 
 const DznTaxFormAlert = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <Alert

@@ -39,7 +39,7 @@ export const usePaymentResultPropsMap = ({
   feedbackLink?: string | null
   taxDetailLink: string
 }) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const commonProps: Partial<ThankYouTileProps> = {
     isContentCentered: true,

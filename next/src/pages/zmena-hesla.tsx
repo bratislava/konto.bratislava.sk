@@ -44,10 +44,11 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const PasswordChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
+  const { t } = useTranslation()
+  const router = useRouter()
+
   const { userAttributes } = useSsrAuth()
 
-  const { t } = useTranslation('account')
-  const router = useRouter()
   const [passwordChangeError, setPasswordChangeError] = useState<Error | null>(null)
   const [passwordChangeStatus, setPasswordChangeStatus] = useState<PasswordChangeStatus>(
     PasswordChangeStatus.INIT,

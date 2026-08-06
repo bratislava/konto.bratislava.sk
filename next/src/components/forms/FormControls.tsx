@@ -5,8 +5,9 @@ import { useFormState } from '@/src/components/forms/useFormState'
 import Icon from '@/src/components/icon-components/Icon'
 
 const FormControls = () => {
+  const { t } = useTranslation()
+
   const { canGoToPreviousStep, goToPreviousStep, canGoToNextStep, goToNextStep } = useFormState()
-  const { t } = useTranslation('account')
 
   return (
     <>

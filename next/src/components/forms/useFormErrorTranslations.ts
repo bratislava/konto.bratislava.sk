@@ -30,7 +30,7 @@ const getErrorFormat = (error: RJSFValidationError) => {
  * The above scope seems enough for our current use case, but if we need more (i.e. special error based on the name of the field), it should all be self-contained within this function
  */
 export const useFormErrorTranslations = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const formatMessages: Record<TranslatedFormat, string> = {
     email: t('useFormErrorTranslations.formats.email'),

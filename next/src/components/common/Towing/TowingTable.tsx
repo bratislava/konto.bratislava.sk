@@ -14,7 +14,7 @@ type Props = {
 }
 
 const TowingTable = ({ vehicle, initialLicensePlate }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const [licensePlate] = useState(initialLicensePlate) // TODO: Remove this once the license plate is part of the response
   const variant = vehicle.unloadingLocation ? 'relay' : 'towing'

@@ -24,7 +24,7 @@ import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
  */
 
 const TaxesPageContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     tierStatus: { isInQueue, isIdentityVerified },

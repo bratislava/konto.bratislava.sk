@@ -15,7 +15,8 @@ type Props = {
 }
 
 const AccountLink = ({ variant, onLoginPress: onLoginPressFromProps }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { getRouteWithRedirect } = useQueryParamRedirect()
 
   const { label, description, href, onLoginPress } = (

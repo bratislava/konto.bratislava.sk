@@ -89,7 +89,7 @@ export class ScannerService {
         )
       }
 
-      const maxFileSize = this.baConfigService.fileLimits.maxSingleSizeGlobal
+      const maxFileSize = this.baConfigService.files.maxSingleSizeGlobal
       if (fileSize > maxFileSize) {
         throw new PayloadTooLargeException(
           `File size (${fileSize}) exceeds the maximum allowed size (${maxFileSize}). Please check the file size.`,
@@ -154,7 +154,7 @@ export class ScannerService {
     }
 
     //check if bucketFiles array contains more than 20 files
-    const maxFiles = this.baConfigService.scanner.maxFilesPerRequest
+    const maxFiles = this.baConfigService.files.maxFilesPerRequest
     if (bucketFiles.length > maxFiles) {
       throw new PayloadTooLargeException(
         `Please provide a maximum of ${maxFiles} files!`,

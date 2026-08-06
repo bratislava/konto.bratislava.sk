@@ -169,16 +169,11 @@ export default class BaConfig {
     }
   }
 
-  get fileLimits() {
-    return {
-      maxSingleSizeGlobal: this.validatedConfig.MAX_FILE_SIZE,
-      maxCumulativeSizeGlobal: this.validatedConfig.MAX_CUMULATIVE_FILE_SIZE,
-    }
-  }
-
   get files() {
     return {
       mimeTypeWhitelist: this.validatedConfig.MIMETYPE_WHITELIST,
+      maxSingleSizeGlobal: this.validatedConfig.MAX_FILE_SIZE,
+      maxCumulativeSizeGlobal: this.validatedConfig.MAX_CUMULATIVE_FILE_SIZE,
     }
   }
 }

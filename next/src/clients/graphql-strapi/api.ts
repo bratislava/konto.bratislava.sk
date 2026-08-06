@@ -4125,6 +4125,7 @@ export type MunicipalServiceEntityFragment = {
   __typename?: 'MunicipalService'
   pageHeaderText?: string | null
   moreInformationUrl?: string | null
+  formButtonLabel?: string | null
   description: string
   buttonText: string
   color: Enum_Municipalservice_Color
@@ -4294,6 +4295,7 @@ export type MunicipalServiceBySlugQuery = {
     __typename?: 'MunicipalService'
     pageHeaderText?: string | null
     moreInformationUrl?: string | null
+    formButtonLabel?: string | null
     description: string
     buttonText: string
     color: Enum_Municipalservice_Color
@@ -4464,6 +4466,7 @@ export type MunicipalServicesPageQuery = {
       __typename?: 'MunicipalService'
       pageHeaderText?: string | null
       moreInformationUrl?: string | null
+      formButtonLabel?: string | null
       description: string
       buttonText: string
       color: Enum_Municipalservice_Color
@@ -4626,6 +4629,7 @@ export type MunicipalServicesPageQuery = {
       __typename?: 'MunicipalService'
       pageHeaderText?: string | null
       moreInformationUrl?: string | null
+      formButtonLabel?: string | null
       description: string
       buttonText: string
       color: Enum_Municipalservice_Color
@@ -5512,6 +5516,7 @@ export const MunicipalServiceEntityFragmentDoc = gql`
     ...MunicipalServiceCardEntity
     pageHeaderText
     moreInformationUrl
+    formButtonLabel
     form {
       ...FormWithLandingPage
     }

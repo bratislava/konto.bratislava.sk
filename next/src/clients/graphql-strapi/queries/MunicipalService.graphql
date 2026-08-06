@@ -61,6 +61,7 @@ fragment MunicipalServiceEntity on MunicipalService {
   ...MunicipalServiceCardEntity
   pageHeaderText
   moreInformationUrl
+  formButtonLabel
   form {
     ...FormWithLandingPage
   }

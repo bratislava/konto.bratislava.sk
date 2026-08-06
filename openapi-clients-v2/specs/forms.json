@@ -1754,14 +1754,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "description": "Create date of record",
-            "default": "2026-08-06T08:28:03.265Z"
+            "description": "Create date of record"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "description": "Update date of record",
-            "default": "2026-08-06T08:28:03.265Z"
+            "description": "Update date of record"
           },
           "state": {
             "type": "string",
@@ -1990,14 +1988,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "description": "Create date of record",
-            "default": "2026-08-06T08:28:03.265Z"
+            "description": "Create date of record"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "description": "Update date of record",
-            "default": "2026-08-06T08:28:03.265Z"
+            "description": "Update date of record"
           },
           "externalId": {
             "type": "string",
@@ -2257,14 +2253,12 @@
           "createdAt": {
             "format": "date-time",
             "type": "string",
-            "description": "Create date of record",
-            "default": "2026-08-06T08:28:03.265Z"
+            "description": "Create date of record"
           },
           "updatedAt": {
             "format": "date-time",
             "type": "string",
-            "description": "Update date of record",
-            "default": "2026-08-06T08:28:03.265Z"
+            "description": "Update date of record"
           },
           "externalId": {
             "type": "string",

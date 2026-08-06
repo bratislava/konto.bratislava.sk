@@ -1608,6 +1608,9 @@ importers:
       commander:
         specifier: 15.0.0
         version: 15.0.0
+      diff:
+        specifier: 9.0.0
+        version: 9.0.0
       pirates:
         specifier: 4.0.7
         version: 4.0.7

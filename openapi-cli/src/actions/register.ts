@@ -1,7 +1,8 @@
 import type { Command } from 'commander'
 
 import type { Action, ActionContext } from './action'
-import { emitAction } from './emit'
+import { specGenerateAction } from './spec-generate'
+import { specValidateAction } from './spec-validate'
 
 /** Compiles the backend and builds the document. Called only once an action actually runs. */
 export type LoadActionContext = () => Promise<ActionContext>
@@ -28,5 +29,6 @@ export function registerActions(
   program: Command,
   loadContext: LoadActionContext,
 ): void {
-  registerAction(program, loadContext, emitAction)
+  registerAction(program, loadContext, specGenerateAction)
+  registerAction(program, loadContext, specValidateAction)
 }

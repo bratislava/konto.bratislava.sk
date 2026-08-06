@@ -1,15 +1,14 @@
-import { INestApplication, VersioningType } from '@nestjs/common'
+import type { INestApplication } from '@nestjs/common'
 import type { OpenApiContract } from 'openapi-cli'
 
 import { AppModule } from './app.module'
-import { createSwaggerDocument } from './swagger'
+import { createSwaggerDocument, prepareApp } from './swagger'
 
 /**
  * The contract `openapi-cli` loads to build this backend's OpenAPI document offline.
  *
- * `prepareApp` is not optional here: URI versioning is app-level setup that happens outside
- * `DocumentBuilder`, and without it every `@Controller({ version: '2' })` route would be
- * emitted without its `/v2` prefix.
+ * `prepareApp` and `createSwaggerDocument` are the same functions `main.ts` applies to the
+ * running server, so the emitted document cannot drift from the served one.
  *
  * The port is fixed rather than read from `PORT` so the emitted document is identical on
  * every machine, and passing it explicitly keeps `BaConfigService` — and therefore provider
@@ -18,9 +17,7 @@ import { createSwaggerDocument } from './swagger'
 export default {
   projectName: 'tax',
   AppModule,
-  prepareApp: (app: INestApplication) => {
-    app.enableVersioning({ type: VersioningType.URI })
-  },
+  prepareApp,
   createSwaggerDocument: (app: INestApplication) =>
     createSwaggerDocument(app, 3000),
 } satisfies OpenApiContract

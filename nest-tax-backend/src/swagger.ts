@@ -1,7 +1,19 @@
-import { INestApplication } from '@nestjs/common'
+import { INestApplication, VersioningType } from '@nestjs/common'
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
 
 import BaConfigService from './config/ba-config.service'
+
+/**
+ * App-level setup the emitted paths depend on, applied before the document is built.
+ *
+ * URI versioning is what puts `/v2` in front of every `@Controller({ version: '2' })` route.
+ * It lives here, next to `createSwaggerDocument`, so `main.ts` and the offline generator
+ * share one definition — if they drifted apart the spec would still build, still report the
+ * same number of paths, and quietly document the wrong URLs.
+ */
+export function prepareApp(app: INestApplication): void {
+  app.enableVersioning({ type: VersioningType.URI })
+}
 
 /**
  * Builds the exact OpenAPI document the running server serves at `/api-json`.

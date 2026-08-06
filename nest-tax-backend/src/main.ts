@@ -1,11 +1,11 @@
-import { ValidationPipe, VersioningType } from '@nestjs/common'
+import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { SwaggerModule } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 
 import { AppModule } from './app.module'
 import BaConfigService from './config/ba-config.service'
-import { createSwaggerDocument } from './swagger'
+import { createSwaggerDocument, prepareApp } from './swagger'
 import {
   ErrorFilter,
   HttpExceptionFilter,
@@ -19,9 +19,7 @@ async function bootstrap() {
     logger,
   })
   const baConfigService = app.get(BaConfigService)
-  app.enableVersioning({
-    type: VersioningType.URI,
-  })
+  prepareApp(app)
   const corsOptions = {
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

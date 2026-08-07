@@ -9,16 +9,13 @@
     "moduleResolution": "bundler",
     "lib": ["es2022"],
     "types": ["node"],
-    "rootDir": "src",
-    "outDir": "dist",
-    // Backends import the contract type from this package, so declarations must ship.
-    "declaration": true,
-    "sourceMap": false,
+    // tsdown emits; this config exists for typechecking and for its declarations.
+    "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "tsdown.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

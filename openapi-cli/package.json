@@ -15,8 +15,8 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "rimraf dist && tsc --project tsconfig.build.json",
-    "build:watch": "tsc --project tsconfig.build.json --watch",
+    "build": "rimraf dist && tsdown",
+    "build:watch": "tsdown --watch",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -31,6 +31,7 @@
     "@nestjs/swagger": "11.4.6",
     "@types/node": "catalog:",
     "rimraf": "6.1.3",
+    "tsdown": "0.22.14",
     "typescript": "6.0.3"
   },
   "volta": {

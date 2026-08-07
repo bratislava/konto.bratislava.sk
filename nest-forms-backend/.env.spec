@@ -1,4 +1,10 @@
 # Basic configuration
+# NODE_ENV and DATABASE_URL are required by EnvironmentVariables. The e2e run gets both from
+# its environment (jest sets NODE_ENV, and e2e-global-setup.ts assigns DATABASE_URL outright),
+# but `openapi-cli` loads this file on its own — and in the Docker build it is the only .env*
+# available, so the fixture has to be complete on its own.
+NODE_ENV=test
+DATABASE_URL=postgresql://localhost:5432/db
 PORT=3000
 SELF_URL=https://nest-forms-backend.dev.bratislava.sk
 CLUSTER_ENV=dev

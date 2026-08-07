@@ -41,7 +41,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   // This page should never render, instead, redirect to LOGIN or OAUTH_CONFIRM page should happen on server
   return (
@@ -50,7 +50,7 @@ const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
         <GeneralContextProvider general={general}>
           <PageLayout variant="auth">
             <AccountContainer>
-              <AccountSuccessAlert variant="loading" title={t('auth.oauth_page.title')} />
+              <AccountSuccessAlert variant="loading" title={t('OAuthPage.title')} />
             </AccountContainer>
           </PageLayout>
         </GeneralContextProvider>

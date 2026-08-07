@@ -28,7 +28,7 @@ export const getServerSideProps = amplifyGetServerSideProps<SSOPageProps>(
 )
 
 const SSOPage = ({ accessToken }: SSOPageProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (accessToken) {
@@ -45,7 +45,7 @@ const SSOPage = ({ accessToken }: SSOPageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <Markdown variant="default" content={t('sso_page.sso_placeholder')} />
+  return <Markdown variant="default" content={t('SSOPage.placeholder')} />
 }
 
 export default SSOPage

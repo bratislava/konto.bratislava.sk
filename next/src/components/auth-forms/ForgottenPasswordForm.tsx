@@ -26,8 +26,8 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
   },
@@ -35,7 +35,8 @@ const schema = {
 }
 
 const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
     control,
@@ -57,7 +58,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
       })}
     >
       <Typography variant="h3" as="h1">
-        {t('auth.forgotten_password_title')}
+        {t('ForgottenPasswordForm.title')}
       </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
@@ -66,7 +67,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         render={({ field }) => (
           <TextField
             isRequired
-            label={t('auth.fields.email_label')}
+            label={t('auth.fields.email.label')}
             autoComplete="email"
             autoCapitalize="none"
             autoCorrect="off"
@@ -77,7 +78,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('auth.forgotten_password_submit')}
+        {t('ForgottenPasswordForm.submit')}
       </Button>
     </form>
   )

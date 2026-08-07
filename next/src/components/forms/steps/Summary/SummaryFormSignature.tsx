@@ -16,7 +16,8 @@ import { isFormSigningDisabled } from '@/src/frontend/utils/formSummary'
  */
 
 const SummaryFormSignature = () => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
+
   const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
   const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()
@@ -36,17 +37,17 @@ const SummaryFormSignature = () => {
               variant="icon-wrapped-negative-margin"
               size="small"
               icon={<Icon name="menu-kebab" />}
-              aria-label={t('form_signature.menu_aria_label')}
+              aria-label={t('SummaryFormSignature.aria.menu')}
             />
           }
           items={[
             {
-              title: t('form_signature.menu.sign_again'),
+              title: t('SummaryFormSignature.menu.signAgain'),
               icon: <Icon name="edit" className="size-6" />,
               onPress: () => sign(),
             },
             {
-              title: t('form_signature.menu.remove'),
+              title: t('SummaryFormSignature.menu.remove'),
               icon: <Icon name="bin" className="size-6" />,
               onPress: () => remove(),
               itemClassName: 'text-negative-700',
@@ -60,17 +61,17 @@ const SummaryFormSignature = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3">
-        <Typography variant="h3">{t('form_signature.title')}</Typography>
-        <Typography variant="p-small">{t('form_signature.description')}</Typography>
+        <Typography variant="h3">{t('SummaryFormSignature.title')}</Typography>
+        <Typography variant="p-small">{t('SummaryFormSignature.description')}</Typography>
       </div>
       {isNotSupported && (
         <Alert
           type="error"
           message={
             <>
-              {t('form_signature.not_supported_platform.message')}{' '}
+              {t('SummaryFormSignature.notSupportedPlatform.message')}{' '}
               <Button href="https://www.slovensko.sk/sk/na-stiahnutie" variant="link">
-                {t('form_signature.not_supported_platform.link_text')}
+                {t('SummaryFormSignature.notSupportedPlatform.linkText')}
               </Button>
             </>
           }
@@ -82,9 +83,9 @@ const SummaryFormSignature = () => {
           type="error"
           message={
             <>
-              {t('form_signature.loader_error')}{' '}
+              {t('SummaryFormSignature.loaderError')}{' '}
               <Button variant="link" onPress={() => retry()}>
-                {t('form_signature.retry')}
+                {t('SummaryFormSignature.retry')}
               </Button>
             </>
           }
@@ -94,7 +95,7 @@ const SummaryFormSignature = () => {
       {signature &&
         (validSignature ? (
           <Alert
-            message={<AlertContent>{t('form_signature.success')}</AlertContent>}
+            message={<AlertContent>{t('SummaryFormSignature.success')}</AlertContent>}
             type="success"
             className="min-w-full"
           />
@@ -102,14 +103,14 @@ const SummaryFormSignature = () => {
           <Alert
             message={
               <AlertContent>
-                {t('form_signature.outdated')}{' '}
+                {t('SummaryFormSignature.outdated')}{' '}
                 <Button
                   variant="link"
                   isLoading={isLoading}
                   isDisabled={signerButtonDisabled}
                   onPress={() => sign()}
                 >
-                  {t('form_signature.sign_again')}
+                  {t('SummaryFormSignature.signAgain')}
                 </Button>
               </AlertContent>
             }
@@ -124,7 +125,7 @@ const SummaryFormSignature = () => {
           isDisabled={signerButtonDisabled}
           onPress={() => sign()}
         >
-          {t('form_signature.sign_document')}
+          {t('SummaryFormSignature.signDocument')}
         </Button>
       )}
     </div>

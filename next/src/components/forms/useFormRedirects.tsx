@@ -13,11 +13,12 @@ import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirec
 import { ROUTES } from '@/src/utils/routes'
 
 const useGetContext = () => {
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { formId } = useFormContext()
   const { formData } = useFormData()
-  const { t } = useTranslation('forms')
   const { showToast, closeToasts } = useToast()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { signature } = useFormSignature()
@@ -40,7 +41,7 @@ const useGetContext = () => {
     onMutate: () => {
       // TODO: Wording.
       showToast({
-        message: t('useFormRedirects.save_concept.on_mutate_snackbar_message'),
+        message: t('useFormRedirects.saveConcept.redirectingMessage'),
         variant: 'info',
       })
       turnOffLeaveProtection()
@@ -48,7 +49,7 @@ const useGetContext = () => {
     onError: () => {
       // Maybe different wording for this case.
       showToast({
-        message: t('useFormRedirects.save_concept.on_error_snackbar_message'),
+        message: t('useFormRedirects.saveConcept.errorMessage'),
         variant: 'error',
       })
     },

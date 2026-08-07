@@ -6,7 +6,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 
 const MyApplicationCardsPlaceholder = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <SectionContainer>
@@ -16,12 +16,9 @@ const MyApplicationCardsPlaceholder = () => {
         </div>
         <div className="mt-5 flex max-w-none flex-col justify-center gap-3 lg:mt-0 lg:max-w-[500px]">
           <Typography variant="h4" as="p" className="font-semibold">
-            {t('account_section_applications.placeholder.title')}
+            {t('MyApplicationCardsPlaceholder.title')}
           </Typography>
-          <Markdown
-            variant="default"
-            content={t('account_section_applications.placeholder.subtitle')}
-          />
+          <Markdown variant="default" content={t('MyApplicationCardsPlaceholder.subtitle')} />
         </div>
       </div>
     </SectionContainer>

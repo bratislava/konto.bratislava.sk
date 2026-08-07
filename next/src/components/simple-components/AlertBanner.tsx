@@ -41,7 +41,7 @@ const fetchAlert = async () => {
 }
 
 export const AlertBanner = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { data: alertData } = useQuery({
     queryKey: ['alert'],

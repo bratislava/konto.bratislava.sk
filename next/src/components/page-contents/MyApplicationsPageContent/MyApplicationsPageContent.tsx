@@ -74,14 +74,15 @@ const MyApplicationsPageContent = ({
   formDefinitionSlugTitleMap,
   emailFormSlugs,
 }: MyApplicationsSectionProps) => {
-  const { t } = useTranslation('account')
-  const title = t('account_section_applications.navigation')
+  const { t } = useTranslation()
   const router = useRouter()
 
+  const title = t('MyApplicationsPageContent.title')
+
   const headerNavigationList: HeaderNavigationItemBase[] = [
-    { title: t('account_section_applications.navigation_sent'), tag: 'SENT' },
-    { title: t('account_section_applications.navigation_sending'), tag: 'SENDING' },
-    { title: t('account_section_applications.navigation_draft'), tag: 'DRAFT' },
+    { title: t('MyApplicationsPageContent.tabs.sent'), tag: 'SENT' },
+    { title: t('MyApplicationsPageContent.tabs.sending'), tag: 'SENDING' },
+    { title: t('MyApplicationsPageContent.tabs.draft'), tag: 'DRAFT' },
   ]
 
   const totalCounts = {

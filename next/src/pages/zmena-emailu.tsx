@@ -71,8 +71,9 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { userAttributes } = useSsrAuth()
   const [emailChangeStatus, setEmailChangeStatus] = useState<EmailChangeStatus>(
     EmailChangeStatus.INIT,
@@ -214,10 +215,10 @@ const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
               />
             ) : (
               <AccountSuccessAlert
-                title={t('auth.email_change_success_title')}
-                confirmLabel={t('auth.continue_to_account')}
+                title={t('EmailChangePage.successTitle')}
+                confirmLabel={t('auth.continueToAccount')}
                 onConfirm={onConfirm}
-                description={t('auth.email_change_success_description', { email: lastEmail })}
+                description={t('EmailChangePage.successDescription', { email: lastEmail })}
               />
             )}
           </AccountContainer>

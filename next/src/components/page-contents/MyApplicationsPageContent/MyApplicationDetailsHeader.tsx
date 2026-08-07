@@ -28,7 +28,7 @@ const MyApplicationDetailsHeader = ({
   ginisData,
 }: MyApplicationDetailsHeaderBase) => {
   // TODO Translations
-  const { t } = useTranslation(['account', 'forms'])
+  const { t } = useTranslation()
 
   const { showToast, closeToasts } = useToast()
 
@@ -47,7 +47,7 @@ const MyApplicationDetailsHeader = ({
   const { icon: iconComponent, text: textComponent } = useFormStateComponents({ error, state })
 
   const exportPdf = async () => {
-    showToast({ message: t('forms:info_messages.pdf_export'), variant: 'info' })
+    showToast({ message: t('useFormExportImport.info.pdfExport'), variant: 'info' })
     try {
       if (!formId) throw new Error(`No form id.`)
       const response = await formsClient.convertControllerConvertToPdf(
@@ -58,10 +58,10 @@ const MyApplicationDetailsHeader = ({
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
       closeToasts()
-      showToast({ message: t('forms:success_messages.pdf_export'), variant: 'success' })
+      showToast({ message: t('useFormExportImport.success.pdfExport'), variant: 'success' })
     } catch (error) {
       logger.error(error)
-      showToast({ message: t('forms:errors.pdf_export'), variant: 'error' })
+      showToast({ message: t('useFormExportImport.errors.pdfExport'), variant: 'error' })
     }
   }
 
@@ -74,7 +74,7 @@ const MyApplicationDetailsHeader = ({
             <Icon name="chevron-left" className="size-5" />
 
             <Typography variant="p-tiny" className="font-medium underline underline-offset-2">
-              {t('back_to_list')}
+              {t('MyApplicationDetailsHeader.backToList')}
             </Typography>
           </Link>
           <div className="flex flex-col gap-4 lg:gap-6">
@@ -90,14 +90,14 @@ const MyApplicationDetailsHeader = ({
                   startIcon={<Icon name="download" />}
                   onPress={exportPdf}
                 >
-                  {t('my_application.details.download_pdf')}
+                  {t('MyApplicationDetailsHeader.downloadPdf')}
                 </Button>
               </div>
             </div>
             <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
               <div className="flex items-center gap-3">
                 <Typography variant="p-small" className="font-semibold">
-                  {t('account_section_applications.details.application_details.sent')}
+                  {t('MyApplicationDetailsHeader.sent')}
                 </Typography>
                 <Typography variant="p-small">
                   <FormatDate>{createdAt || ''}</FormatDate>
@@ -111,7 +111,7 @@ const MyApplicationDetailsHeader = ({
               <div aria-hidden className="size-1.5 rounded-full bg-gray-700 max-lg:hidden" />
               <div className="flex items-center gap-1">
                 <Typography variant="p-small">
-                  {t('account_section_applications.last_change')}
+                  {t('MyApplicationDetailsHeader.lastChange')}
                 </Typography>
                 <Typography variant="p-small">
                   <FormatDate>{updatedAt || ''}</FormatDate>
@@ -125,7 +125,7 @@ const MyApplicationDetailsHeader = ({
               startIcon={<Icon name="download" />}
               onPress={exportPdf}
             >
-              {t('my_application.details.download_pdf')}
+              {t('MyApplicationDetailsHeader.downloadPdf')}
             </Button>
           </div>
         </div>

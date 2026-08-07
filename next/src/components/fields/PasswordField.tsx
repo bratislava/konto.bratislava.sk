@@ -28,7 +28,8 @@ const PasswordField = (
   }: PasswordFieldProps,
   ref: Ref<HTMLInputElement>,
 ) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const [isHidden, setIsHidden] = useState(true)
 
   return (
@@ -72,7 +73,7 @@ const PasswordField = (
             }
           />
           <RACToggleButton
-            aria-label={t('auth.fields.password_eyeButton.aria')}
+            aria-label={t('PasswordField.aria.showPassword')}
             isSelected={!isHidden}
             onChange={(selected) => setIsHidden(!selected)}
             isDisabled={rest.isDisabled}

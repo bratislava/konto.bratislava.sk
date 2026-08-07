@@ -29,8 +29,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:auth.fields.verification_code_required',
-        format: 'account:auth.fields.verification_code_format',
+        minLength: 'auth.fields.verificationCode.required',
+        format: 'auth.fields.verificationCode.format',
       },
     },
   },
@@ -42,10 +42,13 @@ const schema = {
  */
 
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
+  const { t } = useTranslation()
+
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const [resendIsLoading, setResendIsLoading] = useState(false)
-  const { t } = useTranslation('account')
+
   const noError: boolean = error === null || error === undefined
+
   const {
     handleSubmit,
     control,
@@ -55,7 +58,9 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
     schema,
     defaultValues: { verificationCode: '' },
   })
+
   const [count, setCount] = useState(60)
+
   useEffect(() => {
     if (count > 0) {
       setTimeout(() => setCount((state) => state - 1), 1000)
@@ -82,10 +87,10 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       })}
     >
       <Typography variant="h3" as="h1">
-        {t('auth.email_verification_title')}
+        {t('EmailVerificationForm.title')}
       </Typography>
       <Typography variant="p-small" data-cy="verification-description">
-        {t('auth.email_verification_description', { email: lastEmail || '' })}
+        {t('EmailVerificationForm.description', { email: lastEmail || '' })}
       </Typography>
       <AccountErrorAlert
         error={error}
@@ -104,25 +109,25 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"
-            label={t('auth.fields.verification_code_label')}
+            label={t('auth.fields.verificationCode.label')}
             {...field}
             errorMessage={errors.verificationCode}
           />
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('auth.email_verification_submit')}
+        {t('EmailVerificationForm.submit')}
       </Button>
       {/* don't show timer if error */}
 
       <div className="text-size-p-small-r lg:text-size-p-small">
         {noError && count > 0 && (
           <div className="mb-4">
-            <span>{t('auth.verification_description')}</span>{' '}
-            <span>{t('auth.verification_cnt_description', { cnt: count })}</span>
+            <span>{t('auth.resendCode.description')}</span>{' '}
+            <span>{t('auth.resendCode.countdown', { cnt: count })}</span>
           </div>
         )}
-        <Markdown variant="small" content={t('auth.verification_cnt_info')} />
+        <Markdown variant="small" content={t('EmailVerificationForm.checkSpamInfo')} />
       </div>
 
       <Button
@@ -132,7 +137,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         isDisabled={count > 0 && noError}
         isLoading={resendIsLoading}
       >
-        {t('auth.verification_resend')}
+        {t('auth.resendCode.button')}
       </Button>
     </form>
   )

@@ -32,7 +32,8 @@ const HomepageContent = ({
   announcements,
   announcementsLegalPerson,
 }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { userAttributes, isLegalEntity } = useSsrAuth()
 
   const name = isLegalEntity ? userAttributes?.name : userAttributes?.given_name
@@ -43,15 +44,15 @@ const HomepageContent = ({
     <>
       <PhoneNumberModal />
       <Typography variant="h1" className="sr-only">
-        {t('common.bratislava_account')}
+        {t('common.bratislavaAccount')}
       </Typography>
       <PageHeader
         title={
           name
-            ? `${t('account_section_intro.header_title')} ${name}.`
-            : t('account_section_intro.header_title_without_name')
+            ? `${t('HomepageContent.headerTitle')} ${name}.`
+            : t('HomepageContent.headerTitleWithoutName')
         }
-        text={t('account_section_intro.header_text')}
+        text={t('HomepageContent.headerText')}
         titleAsParagraph
       />
 
@@ -64,9 +65,9 @@ const HomepageContent = ({
 
       <SectionContainer className="py-6 lg:bg-background-passive-primary lg:py-18">
         <Banner
-          title={t('account_section_intro.banner_title')}
-          content={t('account_section_intro.banner_content')}
-          buttonText={t('account_section_intro.banner_button_text')}
+          title={t('HomepageContent.bannerTitle')}
+          content={t('HomepageContent.bannerContent')}
+          buttonText={t('HomepageContent.bannerButtonText')}
           href={ROUTES.HELP}
           image={BannerImage}
         />

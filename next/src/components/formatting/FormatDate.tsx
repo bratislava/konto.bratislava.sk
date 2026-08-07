@@ -32,7 +32,7 @@ export const formatDate = (
 }
 
 const FormatDate = ({ children, format = 'default' }: Props) => {
-  const { i18n } = useTranslation('account')
+  const { i18n } = useTranslation()
   const locale = i18n.language
 
   return <>{formatDate(children, locale, format)}</>

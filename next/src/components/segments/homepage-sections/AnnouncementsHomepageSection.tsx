@@ -12,15 +12,16 @@ type Props = {
 }
 
 const AnnouncementsHomepageSection = ({ announcements, announcementsLegalPerson }: Props) => {
+  const { t } = useTranslation()
+
   const { isLegalEntity } = useSsrAuth()
-  const { t } = useTranslation('account')
 
   const announcementsByPersonType = isLegalEntity ? announcementsLegalPerson : announcements
 
   return (
     <SectionContainer className="py-6 lg:py-18">
       <div className="flex flex-col gap-6">
-        <SectionHeader title={t('account_section_intro.announcement_title')} titleLevel="h2" />
+        <SectionHeader title={t('AnnouncementsHomepageSection.title')} titleLevel="h2" />
         {announcementsByPersonType.map((announcement, index) => (
           <AnnouncementBlockStrapi
             key={announcement.documentId}

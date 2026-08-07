@@ -10,7 +10,7 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const UserProfilePassword = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <SectionContainer>
@@ -18,9 +18,9 @@ const UserProfilePassword = () => {
         <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2">
             <Typography variant="h5" as="h2">
-              {t('my_profile.password_change.title')}
+              {t('UserProfilePassword.title')}
             </Typography>
-            <Typography variant="p-small">{t('my_profile.password_change.text')}</Typography>
+            <Typography variant="p-small">{t('UserProfilePassword.text')}</Typography>
           </div>
           <Button
             variant="solid"
@@ -29,7 +29,7 @@ const UserProfilePassword = () => {
             hasLinkIcon={false}
             data-cy="change-password-button"
           >
-            {t('my_profile.password_change.button')}
+            {t('UserProfilePassword.button')}
           </Button>
         </div>
       </div>

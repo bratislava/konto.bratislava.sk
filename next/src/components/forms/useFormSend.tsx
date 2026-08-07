@@ -58,9 +58,9 @@ import {
  */
 
 const useGetContext = () => {
+  const { t } = useTranslation()
   const router = useRouter()
 
-  const { t } = useTranslation('forms')
   const { showToast } = useToast()
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
@@ -116,7 +116,7 @@ const useGetContext = () => {
         return
       }
 
-      showToast({ message: t('form_send_error'), variant: 'error' })
+      showToast({ message: t('useFormSend.error'), variant: 'error' })
     },
   })
 
@@ -141,7 +141,7 @@ const useGetContext = () => {
         setRedirectingToSlovenskoSkLogin(true)
       },
       onError: () => {
-        showToast({ message: t('form_send_error'), variant: 'error' })
+        showToast({ message: t('useFormSend.error'), variant: 'error' })
       },
     })
 
@@ -185,7 +185,7 @@ const useGetContext = () => {
         },
       })
       if (fromRepeatModal) {
-        showToast({ message: t('form_send_error'), variant: 'error' })
+        showToast({ message: t('useFormSend.error'), variant: 'error' })
       }
     },
   })

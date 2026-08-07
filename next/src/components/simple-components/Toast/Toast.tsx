@@ -50,7 +50,7 @@ const Toast = ({ className, ...props }: ToastProps<AppToastContent>) => {
  */
 
 const AppToastRegion = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <ToastRegion

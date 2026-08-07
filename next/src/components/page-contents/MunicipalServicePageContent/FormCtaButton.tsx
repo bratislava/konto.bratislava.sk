@@ -14,8 +14,9 @@ type Props = {
 }
 
 const FormCtaButton = ({ buttonLabel, formDefinition }: Props) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
   const router = useRouter()
+
   const { showToast, closeToasts } = useToast()
 
   const { mutate, isPending } = useMutation({
@@ -29,7 +30,7 @@ const FormCtaButton = ({ buttonLabel, formDefinition }: Props) => {
     networkMode: 'always',
     onMutate: () => {
       showToast({
-        message: t('form_landing_page.redirect_info'),
+        message: t('FormLandingPageCtaCard.redirectInfo'),
         variant: 'info',
         // Keep this toast visible for the whole redirect flow; it is closed explicitly after navigation succeeds.
         duration: Number.MAX_SAFE_INTEGER,
@@ -43,7 +44,7 @@ const FormCtaButton = ({ buttonLabel, formDefinition }: Props) => {
       closeToasts()
     },
     onError: () => {
-      showToast({ message: t('form_landing_page.redirect_error'), variant: 'error' })
+      showToast({ message: t('FormLandingPageCtaCard.redirectError'), variant: 'error' })
     },
   })
 

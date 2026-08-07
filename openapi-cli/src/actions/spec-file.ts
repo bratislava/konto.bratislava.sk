@@ -23,7 +23,7 @@ export interface SpecFileOptions {
 export function configureSpecFileOption(command: Command): void {
   command.option(
     '--out <file>',
-    'spec file, relative to the backend directory (default: the openapi-clients-v2 spec for this project)',
+    'spec file, relative to the backend directory (default: this project's entry in openapi-specs)',
   )
 }
 

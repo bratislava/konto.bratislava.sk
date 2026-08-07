@@ -8,13 +8,13 @@ is the leaf of the OpenAPI dependency graph, which is what keeps that graph acyc
 ```
 openapi-specs  ←── openapi-cli        (writes specs here)
       ↑
-      └────────── openapi-clients-v2  (generates clients from them)
+      └────────── openapi-clients  (generates clients from them)
 ```
 
 Backends import each other's clients, so "spec derived from backend code" and "backend code
 imports clients derived from specs" would otherwise be circular. It stays acyclic because
-**specs and generated clients are committed artifacts, never build outputs** — the build only
-consumes what is committed, and regeneration is a deliberate act.
+**the specs are committed** — a client is derived from a file, never from a running service.
+The clients themselves are a build output and are not committed.
 
 ## Regenerating
 

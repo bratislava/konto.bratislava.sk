@@ -216,9 +216,9 @@ jobs:
           CACHE_TO: ${{ steps.meta-lint.outputs.cache_to }}
           TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
-      # Fails when the committed spec in openapi-clients-v2 no longer matches this
+      # Fails when the committed spec in openapi-specs no longer matches this
       # service's code, printing a diff. The spec is in the build context because
-      # openapi-cli depends on openapi-clients-v2, so `turbo prune` pulls it in.
+      # openapi-cli depends on openapi-specs, so `turbo prune` pulls it in.
       - name: Validate OpenAPI spec
         if: ${{ !inputs.skip_tests }}
         uses: docker/bake-action@v7

@@ -1,14 +1,14 @@
-# openapi-clients-v2
+# openapi-clients
 
 Typed HTTP clients generated from the specs in [`openapi-specs`](../openapi-specs).
 
-Replaces [`openapi-clients`](../openapi-clients), which is deprecated. The difference that
-matters: v1 generated from **live staging URLs**, so output depended on what happened to be
-deployed. This generates from committed specs, so it is reproducible and offline.
+Generation reads committed spec files, so it is reproducible and offline. The previous version
+of this package generated from **live staging URLs**, which made the output depend on whatever
+happened to be deployed at the time.
 
 ```sh
-pnpm --filter openapi-clients-v2 run build      # specs -> generated/ -> dist/
-pnpm --filter openapi-clients-v2 run generate   # just the first step
+pnpm --filter openapi-clients run build      # specs -> generated/ -> dist/
+pnpm --filter openapi-clients run generate   # just the first step
 ```
 
 ## Two steps, on purpose
@@ -30,11 +30,11 @@ build. The Docker build stages install a headless JRE for it; the runtime images
 One wildcard subpath, so nothing has to be registered per client:
 
 ```ts
-import { createFormsClient } from 'openapi-clients-v2/forms'
-import { RequiredError } from 'openapi-clients-v2/magproxy'
+import { createFormsClient } from 'openapi-clients/forms'
+import { RequiredError } from 'openapi-clients/magproxy'
 ```
 
-`openapi-clients-v2/<name>` maps to `dist/<name>/index.js`. The generator appends `./base` to
+`openapi-clients/<name>` maps to `dist/<name>/index.js`. The generator appends `./base` to
 each generated index, which is why `RequiredError` is reachable from the client itself — v1
 needed a separate `magproxy/base` entry point for it.
 

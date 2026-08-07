@@ -1,5 +1,5 @@
 {
-  "name": "openapi-clients-v2",
+  "name": "openapi-clients",
   "version": "1.0.0",
   "description": "Typed HTTP clients generated from the OpenAPI specs in openapi-specs.",
   "license": "EUPL-1.2",

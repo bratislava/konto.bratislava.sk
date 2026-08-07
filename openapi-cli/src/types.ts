@@ -26,7 +26,7 @@ export const normalizePath = (path: string): string => path.replace(/\\/g, '/')
  * ```
  */
 export interface OpenApiContract {
-  /** Names the emitted spec: `openapi-clients-v2/specs/<projectName>.json`. */
+  /** Names the emitted spec: `openapi-specs/<projectName>.json`. */
   projectName: string
   AppModule: NestModuleClass
   /** Must return the same document the running server serves at `/api-json`. */

@@ -33,10 +33,6 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "openapi-clients-v2#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
-    },
     "nest-city-account#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]

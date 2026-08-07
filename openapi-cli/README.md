@@ -8,7 +8,7 @@ Run it from the backend you want a document for, normally through that backend's
 pnpm --filter nest-forms-backend run openapi
 ```
 
-That writes `openapi-clients-v2/specs/<projectName>.json`; `--out` overrides the path. Only
+That writes `openapi-specs/<projectName>.json`; `--out` overrides the path. Only
 the action's output is written — the compile happens entirely in memory.
 
 | Action | Purpose |
@@ -42,7 +42,7 @@ export default {
 
 | Field | Purpose |
 | --- | --- |
-| `projectName` | Names the emitted spec: `openapi-clients-v2/specs/<projectName>.json`. |
+| `projectName` | Names the emitted spec: `openapi-specs/<projectName>.json`. |
 | `AppModule` | The root module. Created in preview mode, so no provider is instantiated. |
 | `createSwaggerDocument(app)` | Must return the same document the running server serves at `/api-json`. Supplying its own port here is what keeps config providers — and therefore instantiation — out of it. |
 | `prepareApp?(app)` | Optional. Applied before the document is built, for routes that depend on app-level setup rather than on `DocumentBuilder`. `nest-tax-backend` needs it for `app.enableVersioning()`. |

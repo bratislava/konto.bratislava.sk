@@ -2,7 +2,7 @@ import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   // One output file per input file, mirroring generated/. Consumers import a single client
-  // (`openapi-clients-v2/forms`), so bundling every client into one chunk would make each
+  // (`openapi-clients/forms`), so bundling every client into one chunk would make each
   // import pull in all of them.
   unbundle: true,
   entry: ['generated/**/*.ts'],

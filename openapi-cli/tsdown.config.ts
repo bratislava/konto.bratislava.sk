@@ -15,6 +15,9 @@ export default defineConfig({
   dts: true,
   platform: 'node',
   sourcemap: false,
+  // Plain `.js`/`.d.ts`, so the committed `bin/openapi-cli.cjs` launcher and the `exports` map
+  // keep pointing at stable filenames. The package has no `"type"`, so `.js` is CommonJS.
+  outExtensions: () => ({ js: '.js', dts: '.d.ts' }),
   deps: {
     // `@nestjs/*` and `typescript` are type-only devDependencies, and tsdown treats
     // devDependencies as bundleable — which pulled their declarations (and rxjs's) into dist,

@@ -2,6 +2,10 @@
 
 Backend utility responsible for handling requests for files needed to be scanned. It uses ClamAV interface to scan files. As a file storage we use our minio bucket storage.
 
+## Architecture
+
+For a high-level overview of this service (endpoints, statuses, the scan/callback flow, deployment), see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). For workflows that span multiple konto backends, see the repo-root [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
 ## How it works
 
 It has two main parts: Endpoints where new files are added to the queue for the scanning. And a DB queue run by regular cron jobs.

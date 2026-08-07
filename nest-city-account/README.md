@@ -2,6 +2,10 @@
 
 This repository contains backend code of the City Account project.
 
+## Architecture
+
+For a high-level overview of this service (modules, data model, auth, integrations, deployment), see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). For workflows that span multiple konto backends, see the repo-root [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
 ## Product specification
 
 [Product specification](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)

@@ -119,6 +119,21 @@ target "strapi" {
 target "_openapi-generate" {
   target = "openapi-spec"
   output = ["type=local,dest=.openapi-generated"]
+
+  # Attestations are on by default and a local export writes them as files, so
+  # without this the destination holds a provenance.json next to the spec. Every
+  # consumer here treats "the one file that came out" as the spec, and there is
+  # nothing to attest anyway: the output is a JSON document that gets committed
+  # and reviewed, not an image that ships.
+  #
+  # Spelled as `attest` rather than the shorter `provenance = false` / `sbom =
+  # false`: those are compose and command-line spellings, and bake's HCL parser
+  # drops them from a target silently rather than rejecting them, so the setting
+  # would look present and do nothing.
+  attest = [
+    "type=provenance,disabled=true",
+    "type=sbom,disabled=true",
+  ]
 }
 
 target "_nest-city-account" {

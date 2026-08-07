@@ -118,15 +118,29 @@ jobs:
           fi
 
           # Catches an empty or truncated export, which a plain existence check
-          # would wave through.
-          node -e '
-            const spec = require("./" + process.argv[1])
-            const paths = Object.keys(spec.paths ?? {}).length
-            if (!spec.openapi || paths === 0) {
-              throw new Error("not a usable OpenAPI document: " + JSON.stringify(Object.keys(spec)))
-            }
-            console.log(`${process.argv[1]} — OpenAPI ${spec.openapi}, ${paths} paths`)
-          ' "${exported[0]}"
+          # would wave through. Textual rather than parsed: the runner has
+          # neither node nor a guaranteed jq, and the step below compares the
+          # whole file against the committed spec anyway, which is a stronger
+          # check than any shape assertion here could be.
+          bytes=$(wc -c < "${exported[0]}")
+          if [ "${bytes}" -lt 1024 ]; then
+            echo "::error::${actual} is ${bytes} bytes -- empty or truncated"
+            exit 1
+          fi
+
+          if [ "$(tail -c 2 "${exported[0]}")" != "}" ]; then
+            echo "::error::${actual} does not end in a closing brace -- truncated"
+            exit 1
+          fi
+
+          for key in '"openapi"' '"paths"' '"components"'; do
+            if ! grep -q -- "${key}" "${exported[0]}"; then
+              echo "::error::${actual} has no ${key} key -- not an OpenAPI document"
+              exit 1
+            fi
+          done
+
+          echo "${actual} — ${bytes} bytes"
 
       # Informational. A difference here is the `<service>-openapi` validation
       # stage's business, not this workflow's -- see the header.

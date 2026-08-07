@@ -108,6 +108,19 @@ target "strapi" {
 # naming its Dockerfile and one target per stage. The stage target names are
 # what the build-nest workflow passes to bake, as `<service>[-<stage>]`.
 
+# The one stage that produces a file rather than an image: it regenerates the
+# service's OpenAPI spec and exports it to the host, which is how the `/openapi`
+# pull request command gets something to commit. Nothing about it differs
+# between services except the Dockerfile, so it is a shared mixin rather than
+# four copies. Usable straight from a laptop, which is the point of keeping it
+# here rather than in the CI overlay:
+#
+#   docker buildx bake nest-forms-backend-openapi-generate
+target "_openapi-generate" {
+  target = "openapi-spec"
+  output = ["type=local,dest=.openapi-generated"]
+}
+
 target "_nest-city-account" {
   inherits   = ["_turbo-cache"]
   dockerfile = "nest-city-account/Dockerfile"
@@ -136,6 +149,10 @@ target "nest-city-account-lint" {
 target "nest-city-account-openapi" {
   inherits = ["_nest-city-account"]
   target   = "openapi"
+}
+
+target "nest-city-account-openapi-generate" {
+  inherits = ["_nest-city-account", "_openapi-generate"]
 }
 
 target "_nest-clamav-scanner" {
@@ -168,6 +185,10 @@ target "nest-clamav-scanner-openapi" {
   target   = "openapi"
 }
 
+target "nest-clamav-scanner-openapi-generate" {
+  inherits = ["_nest-clamav-scanner", "_openapi-generate"]
+}
+
 target "_nest-forms-backend" {
   inherits   = ["_turbo-cache"]
   dockerfile = "nest-forms-backend/Dockerfile"
@@ -196,6 +217,10 @@ target "nest-forms-backend-lint" {
 target "nest-forms-backend-openapi" {
   inherits = ["_nest-forms-backend"]
   target   = "openapi"
+}
+
+target "nest-forms-backend-openapi-generate" {
+  inherits = ["_nest-forms-backend", "_openapi-generate"]
 }
 
 # The only service with E2E tests. CI_E2E_DATABASE_URL points at a database that
@@ -233,6 +258,10 @@ target "nest-tax-backend-lint" {
 target "nest-tax-backend-openapi" {
   inherits = ["_nest-tax-backend"]
   target   = "openapi"
+}
+
+target "nest-tax-backend-openapi-generate" {
+  inherits = ["_nest-tax-backend", "_openapi-generate"]
 }
 
 # Bare `docker buildx bake` builds every deployable image.

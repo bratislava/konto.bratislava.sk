@@ -34,6 +34,19 @@ pnpm --filter nest-forms-backend run openapi
 CI fails the build when a committed spec no longer matches its backend — see each service's
 `openapi` Docker stage, which runs `openapi-cli spec:validate`.
 
+When that check fails on a pull request you can regenerate without a local checkout, by
+commenting on the pull request:
+
+```
+/openapi nest-forms-backend
+```
+
+Either the workspace directory name or the spec name (`forms`) identifies the service. The
+spec is built in the service's `openapi-generate` Docker stage and committed to the branch —
+so it comes out of the same image as the check that failed, not a laptop that may be on
+different dependencies. See [openapi-chatops.yml](../.github/workflows/openapi-chatops.yml);
+that workflow also notes why the pull request's checks do not re-run by themselves afterwards.
+
 Specs for services outside this repo (`slovensko-sk`, `magproxy`) are not here yet; clients
 for those are still generated straight from their upstream URLs.
 

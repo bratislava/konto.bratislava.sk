@@ -134,3 +134,7 @@ out/
 
 # Claude Code worktrees
 .claude/worktrees/
+
+# Where the `<service>-openapi-generate` bake targets drop the regenerated spec
+# before it is moved into openapi-specs/
+.openapi-generated/

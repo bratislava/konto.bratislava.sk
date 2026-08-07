@@ -61,6 +61,21 @@ RUN pnpm turbo run lint --filter=nest-forms-backend
 FROM builder-deps AS openapi
 RUN pnpm turbo run openapi:validate --filter=nest-forms-backend
 
+# Rewrites the spec instead of checking it, for the `/openapi` pull request
+# command -- see .github/workflows/openapi-chatops.yml.
+#
+# Run through pnpm rather than turbo, unlike every other stage here: the spec is
+# written to the openapi-specs package, outside this backend's own directory, so
+# turbo cannot declare it as a task output. A cache hit would then replay a
+# recorded log without writing anything and the stale spec would be committed as
+# if it were fresh.
+FROM builder-deps AS openapi-generate
+RUN pnpm --filter nest-forms-backend run openapi
+
+# Scratch, so `--output type=local` writes the regenerated spec and nothing else.
+FROM scratch AS openapi-spec
+COPY --from=openapi-generate /app/openapi-specs/forms.json /
+
 FROM base AS prod-deps
 COPY --from=prepare /app/out/json/ .
 RUN pnpm install --frozen-lockfile --prod

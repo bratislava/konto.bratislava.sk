@@ -1,0 +1,213 @@
+name: OpenAPI ChatOps
+# Regenerates a service's committed OpenAPI spec from a pull request comment:
+#
+#   /openapi nest-forms-backend
+#
+# The spec is built by the same Docker stage machinery as the rest of CI --
+# `<service>-openapi-generate` in docker-bake.hcl -- rather than by running the
+# toolchain on the runner, so what gets committed is produced exactly the way
+# the `<service>-openapi` validation stage will later check it.
+#
+# Two things worth knowing before relying on this:
+#
+#   - `issue_comment` workflows always run the copy of this file on the default
+#     branch, never the one on the pull request branch. Editing it in a pull
+#     request has no effect until that pull request merges.
+#   - Commits pushed with GITHUB_TOKEN do not trigger workflows, so the pull
+#     request's checks do not re-run on their own. The result comment says so.
+on:
+  issue_comment:
+    types: [created]
+
+# Never let two regenerations of the same pull request race for the branch.
+concurrency:
+  group: openapi-chatops-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  regenerate:
+    name: Regenerate OpenAPI spec
+    # Comments from anyone without write access are ignored silently: a failing
+    # run for every drive-by comment would be worse than no feedback.
+    if: >-
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/openapi') &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: bratislava
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REGISTRY: harbor.bratislava.sk
+      REGISTRY_USERNAME: robot$github_actions
+      BAKE_FILES: |
+        docker-bake.json
+        docker-bake.hcl
+        .github/docker-bake.ci.hcl
+      # Matches `output = ["type=local,dest=…"]` on `_openapi-generate`.
+      OUTPUT_DIR: .openapi-generated
+    steps:
+      - name: Acknowledge the command
+        run: |
+          gh api --silent \
+            "repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions" \
+            -f content=eyes
+
+      # Accepts the workspace directory name -- the same identifier build.yml
+      # passes to build-nest.yml -- plus the spec's own name as a shorthand, so
+      # `/openapi forms` and `/openapi nest-forms-backend` both work.
+      - name: Resolve service
+        id: service
+        run: |
+          set -euo pipefail
+          argument=$(printf '%s' "${COMMENT_BODY}" | head -n 1 | awk '{ print $2 }')
+
+          case "${argument}" in
+            nest-forms-backend|forms)      service=nest-forms-backend ;;
+            nest-tax-backend|tax)          service=nest-tax-backend ;;
+            nest-city-account|city-account) service=nest-city-account ;;
+            nest-clamav-scanner|clamav-scanner|clamav) service=nest-clamav-scanner ;;
+            *)
+              gh api --silent \
+                "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+                -f body="$(printf '`/openapi %s` — unknown service.\n\nUsage: `/openapi <service>`, where `<service>` is one of `nest-forms-backend`, `nest-tax-backend`, `nest-city-account`, `nest-clamav-scanner` (or their spec names `forms`, `tax`, `city-account`, `clamav-scanner`).' "${argument:-<missing>}")"
+              exit 1
+              ;;
+          esac
+
+          echo "name=${service}" >> "$GITHUB_OUTPUT"
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+
+      # A fork's branch is not writable with GITHUB_TOKEN, so say that up front
+      # rather than failing at the push after a full build.
+      - name: Resolve pull request branch
+        id: pr
+        run: |
+          set -euo pipefail
+          gh pr view "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --json headRefName,isCrossRepository > pr.json
+
+          if [ "$(jq -r .isCrossRepository pr.json)" = "true" ]; then
+            gh api --silent \
+              "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+              -f body='`/openapi` cannot write to a fork'"'"'s branch. Regenerate locally with `pnpm --filter <service> run openapi` and push.'
+            exit 1
+          fi
+
+          echo "branch=$(jq -r .headRefName pr.json)" >> "$GITHUB_OUTPUT"
+          rm pr.json
+
+      - name: Checkout pull request branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.pr.outputs.branch }}
+          fetch-depth: 1
+
+      - name: Set up Docker build
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        with:
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+          # Same reason as in build-nest.yml: the bake targets build with
+          # `network = "host"`, which only reaches the Turborepo cache server on
+          # localhost when BuildKit itself is in the runner's namespace.
+          buildx_driver_opts: |
+            network=host
+
+      # Read-only: the generate stage shares its `builder-deps` base with the
+      # validation stage, so CI's cache warms this build, but a one-off
+      # regeneration has no business writing back to it.
+      - name: Docker metadata (openapi)
+        id: meta-openapi
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: harbor.bratislava.sk/standalone/${{ steps.service.outputs.name }}
+          suffix: -openapi
+
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Generate OpenAPI spec
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ steps.service.outputs.name }}-openapi-generate
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-openapi.outputs.cache_from }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+
+      # The stage exports exactly one file, so this cannot pick up a spec the
+      # command did not ask for -- and the glob failing is a real error.
+      - name: Move the spec into place
+        id: spec
+        run: |
+          set -euo pipefail
+          shopt -s failglob
+          spec=("${OUTPUT_DIR}"/*.json)
+          if [ "${#spec[@]}" -ne 1 ]; then
+            echo "Expected one spec in ${OUTPUT_DIR}, got: ${spec[*]}" >&2
+            exit 1
+          fi
+
+          mv "${spec[0]}" openapi-specs/
+          rm -rf "${OUTPUT_DIR}"
+          echo "file=openapi-specs/$(basename "${spec[0]}")" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        id: commit
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- "${SPEC_FILE}"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${SPEC_FILE}"
+          git commit -m "chore: regenerate ${SPEC_FILE} for ${SERVICE}"
+          git push origin "HEAD:${{ steps.pr.outputs.branch }}"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        env:
+          SPEC_FILE: ${{ steps.spec.outputs.file }}
+          SERVICE: ${{ steps.service.outputs.name }}
+
+      - name: Report the result
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
+            body=$(printf 'Regenerated `%s` from `%s` and pushed it to this branch.\n\nChecks do not re-run automatically on a bot push — re-run them from the checks tab.' \
+              "${SPEC_FILE}" "${SERVICE}")
+          else
+            body=$(printf '`%s` is already up to date with `%s`. Nothing to commit.' \
+              "${SPEC_FILE}" "${SERVICE}")
+          fi
+
+          gh api --silent \
+            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="${body}"
+        env:
+          SPEC_FILE: ${{ steps.spec.outputs.file }}
+          SERVICE: ${{ steps.service.outputs.name }}
+
+      # The unknown-service and fork cases comment for themselves; this covers a
+      # build that actually broke, which otherwise fails silently in the run log.
+      - name: Report a failed build
+        if: failure() && steps.pr.outcome == 'success'
+        run: |
+          gh api --silent \
+            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -f body="Regenerating the \`${{ steps.service.outputs.name }}\` spec failed. [See the run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."

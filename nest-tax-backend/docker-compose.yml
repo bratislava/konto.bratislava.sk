@@ -1,25 +1,7 @@
-version: '3.8'
-services:
-  nest:
-    depends_on:
-      - postgres
-    restart: unless-stopped
-    build:
-      context: .
-      target: dev
-    init: true
-    env_file: .env
-    environment:
-      - PORT=3001
-      - DEBUG_HOST=0.0.0.0:9229
-      - DATABASE_URL=postgresql://user:pass@postgres:54320/mydb?schema=public&connect_timeout=30
-    command: npm run start:debug
-    ports:
-      - "127.0.0.1:3001:3001"
-      - "127.0.0.1:9229:9229"
-    volumes:
-      - ./:/home/node/app
+# Should be run alongside local `pnpm run start:dev`
+# Ports are set to match .env.example and not to conflict with other konto.bratislava.sk services
 
+services:
   postgres:
     image: postgres:latest
     restart: unless-stopped
@@ -32,6 +14,3 @@ services:
       - '54320'
     ports:
       - '127.0.0.1:54320:54320'
-
-volumes:
-  postgres:

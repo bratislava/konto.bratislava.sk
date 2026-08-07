@@ -3,7 +3,7 @@
 ## Install
 
 ```sh
-npm i
+pnpm install
 ```
 
 ## Run App Locally in E2E Setup
@@ -11,7 +11,7 @@ npm i
 The tests are configured to run against http://localhost:3000, so you must have the app running locally. You can set up your environment for end-to-end (e2e) testing by following the instructions in the [Next app README](../next/README.md), or you can quickly rebuild and restart the app using the following command from this directory:
 
 ```sh
-npm run start:e2e
+pnpm run start:e2e
 ```
 
 ## Run Cypress Locally
@@ -19,13 +19,13 @@ npm run start:e2e
 To interactively open Cypress in the Chrome browser, use:
 
 ```sh
-npm run cypress:open
+pnpm run cypress:open
 ```
 
 To execute Cypress tests in terminal mode, use:
 
 ```sh
-npm run cypress:run
+pnpm run cypress:run
 ```
 
 Alternatively, you can directly use the `run-cypress.js` script with Node.js to specify additional options. This script utilizes `yargs` for command-line argument parsing, offering a more flexible way to configure your Cypress tests.

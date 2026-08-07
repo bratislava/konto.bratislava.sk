@@ -1,76 +1,66 @@
-# check=skip=InvalidDefaultArgInFrom
-ARG FORMS_SHARED_DIGEST
-ARG OPENAPI_CLIENTS_DIGEST
-FROM harbor.bratislava.sk/standalone/forms-shared@${FORMS_SHARED_DIGEST} AS forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
-FROM node:24.15-alpine AS base
+ARG NODE_VERSION
+ARG PNPM_VERSION
+ARG TURBO_VERSION
+FROM node:${NODE_VERSION}-alpine AS base
 
-# used as app-base in prodution and development image
-FROM base AS app-base
-RUN apk add --no-cache tini
-RUN mkdir -p /home/node/app \
- && chown node:node /home/node/app
-USER node
-WORKDIR /home/node/app
+ENV TURBO_TELEMETRY_DISABLED=1
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV PNPM_HOME=/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
+
+WORKDIR /app
+ARG PNPM_VERSION
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
+
+FROM base AS prepare
+COPY . .
+
+ARG TURBO_VERSION
+RUN pnpm dlx turbo@${TURBO_VERSION} prune city-account-next --docker
+
+FROM base AS builder
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile
+COPY --from=prepare /app/out/full/ .
+
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
+
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
+ARG NEXT_BUILD_ENV
+ENV NEXT_BUILD_ENV=$NEXT_BUILD_ENV
+RUN cp "next/.env.ci-build.$NEXT_BUILD_ENV" next/.env.production.local
+
+RUN pnpm turbo run build --filter=city-account-next
+
+FROM node:${NODE_VERSION}-alpine AS runner
+# Based on https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 ENV NODE_ENV=production
-EXPOSE 3000
-ARG GIT_COMMIT="undefined"
-ENV GIT_COMMIT=$GIT_COMMIT
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/next" \
-      org.opencontainers.image.licenses="EUPL-1.2"
-ENTRYPOINT [ "/sbin/tini", "--" ]
-
-# used for build-base for building only
-FROM base AS build-base
-
-# Temporary workaround until this repository uses npm workspaces. Locally, shared
-# packages are symlinked through file: dependencies and their folders already
-# contain node_modules. In CI, the copied package folders would not have
-# node_modules, so we install each shared package explicitly to keep behavior
-# close to local development and expose missing runtime dependencies early.
-# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm
-
-WORKDIR /forms-shared
-COPY --from=forms-shared / ./
-RUN npm ci
-
-WORKDIR /openapi-clients
-COPY --from=openapi-clients / ./
-RUN npm ci
-
-WORKDIR /build
-COPY ./package.json ./package-lock.json ./
-
-FROM build-base AS install-prod
-ENV NPM_CONFIG_CACHE=/build/.npm
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm \
- && npm ci --omit=dev
-
-FROM install-prod AS build
-COPY . ./
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm \
-    && npm ci --include=dev \
-    && npm run build
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-FROM app-base AS dev
-ENV NODE_ENV=development
-COPY --chown=node:node --from=build /build/node_modules ./node_modules
-CMD [ "npm run", "develop" ]
+RUN apk add --no-cache tini
 
-FROM app-base AS prod
-# Turbopack with `turbopack.root` set to parent produces nested standalone output:
-# .next/standalone/{build,forms-shared,openapi-clients}/ with server.js inside build/
-COPY --chown=node:node --from=build /build/.next/standalone ./
-COPY --chown=node:node .env.*.local ./build/
-# https://github.com/i18next/next-i18next?tab=readme-ov-file#docker
-COPY --chown=node:node --from=build /build/next-i18next.config.js ./build/
-COPY --chown=node:node --from=build /build/public ./build/public
-COPY --chown=node:node --from=build /build/.next/static ./build/.next/static
-CMD [ "node", "build/server.js" ]
+WORKDIR /app
+RUN chown -R node:node /app
+
+USER node
+
+COPY --from=builder --chown=node:node /app/next/public ./next/public
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=node:node /app/next/.next/standalone ./
+COPY --from=builder --chown=node:node /app/next/.next/static ./next/.next/static
+
+EXPOSE 3000
+
+# tini reaps orphaned children and forwards SIGTERM. Exec-form CMD keeps `node`
+# as tini's direct child, so Kubernetes rollouts can shut it down gracefully.
+ENTRYPOINT [ "/sbin/tini", "--" ]
+CMD [ "node", "next/server.js" ]

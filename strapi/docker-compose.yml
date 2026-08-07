@@ -1,4 +1,6 @@
-version: '3.8'
+# Should be run alongside local `pnpm run dev`
+# Credentials and port match .env.example, override them in .env.local if you change them here
+
 services:
   postgres:
     image: postgres:latest

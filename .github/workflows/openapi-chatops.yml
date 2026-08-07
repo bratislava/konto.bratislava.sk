@@ -32,15 +32,14 @@ permissions:
 jobs:
   regenerate:
     name: Regenerate OpenAPI spec
-    # Comments from anyone without write access are ignored silently: a failing
-    # run for every drive-by comment would be worse than no feedback.
+    # Cheap pre-filter, before anything occupies a self-hosted runner. Whether
+    # the comment may actually run the command is github/command's decision,
+    # below.
     if: >-
       github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/openapi') &&
-      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+      startsWith(github.event.comment.body, '/openapi')
     runs-on: bratislava
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REGISTRY: harbor.bratislava.sk
       REGISTRY_USERNAME: robot$github_actions
       BAKE_FILES: |
@@ -50,62 +49,90 @@ jobs:
       # Matches `output = ["type=local,dest=…"]` on `_openapi-generate`.
       OUTPUT_DIR: .openapi-generated
     steps:
-      - name: Acknowledge the command
-        run: |
-          gh api --silent \
-            "repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions" \
-            -f content=eyes
+      # Checks the author's permissions, resolves the pull request's ref and
+      # sha, reacts to the comment, and reacts again with the outcome once the
+      # job finishes.
+      - name: Parse the command
+        id: command
+        uses: github/command@v2
+        with:
+          command: /openapi
+          # Default is `|`, which would make the command `/openapi | forms`.
+          param_separator: " "
+          allowed_contexts: pull_request
+          # The whole point of the command is to fix a spec check that is
+          # currently failing, so a red pull request is the normal case for
+          # running it -- and waiting for an approving review to fix a
+          # generated file would be backwards.
+          skip_ci: "true"
+          skip_reviews: "true"
+
+      # Everything below is `if: success()` by default, so failing here is what
+      # stops a comment the Action rejected. It has already reacted to explain
+      # why.
+      - name: Stop unless the command was accepted
+        if: steps.command.outputs.continue != 'true'
+        run: exit 1
+
+      # GITHUB_TOKEN cannot write to a fork's branch, and with reviews skipped
+      # above, building unreviewed fork code on a self-hosted runner is not
+      # something to do quietly either.
+      - name: Refuse forks
+        if: steps.command.outputs.fork == 'true'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: >-
+            `/openapi` cannot write to a fork's branch. Regenerate locally with
+            `pnpm --filter <service> run openapi` and push.
+
+      - name: Fail on fork
+        if: steps.command.outputs.fork == 'true'
+        run: exit 1
 
       # Accepts the workspace directory name -- the same identifier build.yml
       # passes to build-nest.yml -- plus the spec's own name as a shorthand, so
       # `/openapi forms` and `/openapi nest-forms-backend` both work.
       - name: Resolve service
         id: service
-        run: |
-          set -euo pipefail
-          argument=$(printf '%s' "${COMMENT_BODY}" | head -n 1 | awk '{ print $2 }')
-
-          case "${argument}" in
-            nest-forms-backend|forms)      service=nest-forms-backend ;;
-            nest-tax-backend|tax)          service=nest-tax-backend ;;
-            nest-city-account|city-account) service=nest-city-account ;;
-            nest-clamav-scanner|clamav-scanner|clamav) service=nest-clamav-scanner ;;
-            *)
-              gh api --silent \
-                "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-                -f body="$(printf '`/openapi %s` — unknown service.\n\nUsage: `/openapi <service>`, where `<service>` is one of `nest-forms-backend`, `nest-tax-backend`, `nest-city-account`, `nest-clamav-scanner` (or their spec names `forms`, `tax`, `city-account`, `clamav-scanner`).' "${argument:-<missing>}")"
-              exit 1
-              ;;
-          esac
-
-          echo "name=${service}" >> "$GITHUB_OUTPUT"
+        # Through the environment, not interpolated into the script: the
+        # parameter is comment text, and `${{ }}` would splice it in as shell
+        # source.
         env:
-          COMMENT_BODY: ${{ github.event.comment.body }}
-
-      # A fork's branch is not writable with GITHUB_TOKEN, so say that up front
-      # rather than failing at the push after a full build.
-      - name: Resolve pull request branch
-        id: pr
+          PARAMS: ${{ steps.command.outputs.params }}
         run: |
           set -euo pipefail
-          gh pr view "${{ github.event.issue.number }}" \
-            --repo "${{ github.repository }}" \
-            --json headRefName,isCrossRepository > pr.json
+          case "${PARAMS}" in
+            nest-forms-backend|forms)                  service=nest-forms-backend ;;
+            nest-tax-backend|tax)                      service=nest-tax-backend ;;
+            nest-city-account|city-account)            service=nest-city-account ;;
+            nest-clamav-scanner|clamav-scanner|clamav) service=nest-clamav-scanner ;;
+            *)                                         service="" ;;
+          esac
+          echo "name=${service}" >> "$GITHUB_OUTPUT"
 
-          if [ "$(jq -r .isCrossRepository pr.json)" = "true" ]; then
-            gh api --silent \
-              "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-              -f body='`/openapi` cannot write to a fork'"'"'s branch. Regenerate locally with `pnpm --filter <service> run openapi` and push.'
-            exit 1
-          fi
+      - name: Explain an unknown service
+        if: steps.service.outputs.name == ''
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: >-
+            Unknown service. Usage: `/openapi <service>`, where `<service>` is a
+            backend's workspace directory (`nest-forms-backend`) or its spec name
+            (`forms`).
 
-          echo "branch=$(jq -r .headRefName pr.json)" >> "$GITHUB_OUTPUT"
-          rm pr.json
+      - name: Fail on unknown service
+        if: steps.service.outputs.name == ''
+        run: exit 1
 
+      # By branch name rather than by the command's sha: the commit action
+      # pushes `HEAD:<branch>`, and from a detached head there would be no
+      # branch to fast-forward. If someone pushes in the meantime the push is
+      # rejected, which is the right way for that race to end.
       - name: Checkout pull request branch
         uses: actions/checkout@v6
         with:
-          ref: ${{ steps.pr.outputs.branch }}
+          ref: ${{ steps.command.outputs.ref }}
           fetch-depth: 1
 
       - name: Set up Docker build
@@ -161,53 +188,36 @@ jobs:
             echo "Expected one spec in ${OUTPUT_DIR}, got: ${spec[*]}" >&2
             exit 1
           fi
-
           mv "${spec[0]}" openapi-specs/
           rm -rf "${OUTPUT_DIR}"
           echo "file=openapi-specs/$(basename "${spec[0]}")" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push
         id: commit
-        run: |
-          set -euo pipefail
-          if git diff --quiet -- "${SPEC_FILE}"; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "${SPEC_FILE}"
-          git commit -m "chore: regenerate ${SPEC_FILE} for ${SERVICE}"
-          git push origin "HEAD:${{ steps.pr.outputs.branch }}"
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-        env:
-          SPEC_FILE: ${{ steps.spec.outputs.file }}
-          SERVICE: ${{ steps.service.outputs.name }}
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: ${{ steps.command.outputs.ref }}
+          file_pattern: ${{ steps.spec.outputs.file }}
+          commit_message: >-
+            chore: regenerate ${{ steps.spec.outputs.file }}
+            for ${{ steps.service.outputs.name }}
 
       - name: Report the result
-        run: |
-          set -euo pipefail
-          if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
-            body=$(printf 'Regenerated `%s` from `%s` and pushed it to this branch.\n\nChecks do not re-run automatically on a bot push — re-run them from the checks tab.' \
-              "${SPEC_FILE}" "${SERVICE}")
-          else
-            body=$(printf '`%s` is already up to date with `%s`. Nothing to commit.' \
-              "${SPEC_FILE}" "${SERVICE}")
-          fi
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: >-
+            ${{ steps.commit.outputs.changes_detected == 'true'
+              && format('Regenerated `{0}` from `{1}` and pushed it to this branch. Checks do not re-run automatically on a bot push — re-run them from the checks tab.', steps.spec.outputs.file, steps.service.outputs.name)
+              || format('`{0}` is already up to date with `{1}`. Nothing to commit.', steps.spec.outputs.file, steps.service.outputs.name) }}
 
-          gh api --silent \
-            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f body="${body}"
-        env:
-          SPEC_FILE: ${{ steps.spec.outputs.file }}
-          SERVICE: ${{ steps.service.outputs.name }}
-
-      # The unknown-service and fork cases comment for themselves; this covers a
-      # build that actually broke, which otherwise fails silently in the run log.
+      # The rejection paths comment for themselves; this covers a build that
+      # actually broke, which would otherwise only show up in the run log.
       - name: Report a failed build
-        if: failure() && steps.pr.outcome == 'success'
-        run: |
-          gh api --silent \
-            "repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            -f body="Regenerating the \`${{ steps.service.outputs.name }}\` spec failed. [See the run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+        if: failure() && steps.service.outputs.name != ''
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: >-
+            Regenerating the `${{ steps.service.outputs.name }}` spec failed.
+            [See the run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).

@@ -1,0 +1,150 @@
+name: OpenAPI ChatOps Self-Test
+# TEMPORARY -- delete once `/openapi` has run for real on a pull request.
+#
+# The `/openapi` command itself cannot be tested before it merges: GitHub only
+# ever runs the default branch's copy of an `issue_comment` workflow, so it does
+# nothing while it lives on a feature branch. A `pull_request` trigger, by
+# contrast, runs the branch's copy -- so this exercises everything in
+# openapi-chatops.yml that is not the chat plumbing:
+#
+#   - the `<service>-openapi-generate` bake targets resolve
+#   - the `openapi-spec` stage exports exactly one file, named correctly, for
+#     every service (the filename is hardcoded per Dockerfile, so a typo in one
+#     of the four would otherwise only surface the first time it is used)
+#   - the build works on the `bratislava` runner, with the registry cache and
+#     the Turborepo cache, the same way build-nest.yml uses them
+#
+# What it deliberately does not assert is that the generated spec matches the
+# committed one. That is the `<service>-openapi` validation stage's job, and a
+# pull request that intentionally changes an API would fail here for a reason
+# that has nothing to do with this mechanism.
+on:
+  pull_request:
+    paths:
+      - .github/workflows/openapi-chatops*.yml
+      - docker-bake.hcl
+      - nest-*/Dockerfile
+      - openapi-cli/**
+      - openapi-specs/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+  BAKE_FILES: |
+    docker-bake.json
+    docker-bake.hcl
+    .github/docker-bake.ci.hcl
+  OUTPUT_DIR: .openapi-generated
+
+jobs:
+  generate:
+    name: Generate ${{ matrix.service }}
+    runs-on: bratislava
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: nest-forms-backend
+            spec: forms.json
+          - service: nest-tax-backend
+            spec: tax.json
+          - service: nest-city-account
+            spec: city-account.json
+          - service: nest-clamav-scanner
+            spec: clamav-scanner.json
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Set up Docker build
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        with:
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+          buildx_driver_opts: |
+            network=host
+
+      - name: Docker metadata (openapi)
+        id: meta-openapi
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: harbor.bratislava.sk/standalone/${{ matrix.service }}
+          suffix: -openapi
+
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Generate OpenAPI spec
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ matrix.service }}-openapi-generate
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-openapi.outputs.cache_from }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+
+      - name: Check the export
+        env:
+          EXPECTED: ${{ matrix.spec }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          exported=("${OUTPUT_DIR}"/*)
+
+          if [ "${#exported[@]}" -ne 1 ]; then
+            echo "::error::expected exactly one exported file, got: ${exported[*]:-none}"
+            exit 1
+          fi
+
+          actual=$(basename "${exported[0]}")
+          if [ "${actual}" != "${EXPECTED}" ]; then
+            echo "::error::exported ${actual}, expected ${EXPECTED} -- check the COPY in ${{ matrix.service }}/Dockerfile"
+            exit 1
+          fi
+
+          # Catches an empty or truncated export, which a plain existence check
+          # would wave through.
+          node -e '
+            const spec = require("./" + process.argv[1])
+            const paths = Object.keys(spec.paths ?? {}).length
+            if (!spec.openapi || paths === 0) {
+              throw new Error("not a usable OpenAPI document: " + JSON.stringify(Object.keys(spec)))
+            }
+            console.log(`${process.argv[1]} — OpenAPI ${spec.openapi}, ${paths} paths`)
+          ' "${exported[0]}"
+
+      # Informational. A difference here is the `<service>-openapi` validation
+      # stage's business, not this workflow's -- see the header.
+      - name: Compare against the committed spec
+        env:
+          EXPECTED: ${{ matrix.spec }}
+        run: |
+          set -euo pipefail
+          if diff -q "openapi-specs/${EXPECTED}" "${OUTPUT_DIR}/${EXPECTED}" > /dev/null; then
+            echo "matches the committed openapi-specs/${EXPECTED}"
+          else
+            echo "differs from the committed openapi-specs/${EXPECTED};"
+            echo "this is what /openapi would commit:"
+            diff -u "openapi-specs/${EXPECTED}" "${OUTPUT_DIR}/${EXPECTED}" | head -60 || true
+          fi
+
+      - name: Upload the generated spec
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-spec-${{ matrix.service }}
+          path: ${{ env.OUTPUT_DIR }}/${{ matrix.spec }}

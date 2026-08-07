@@ -8,11 +8,15 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "build:dependencies": "pnpm -w exec turbo run build --filter=nest-tax-backend... --filter=!nest-tax-backend",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main",
+    "start:prod": "node dist/main",
+    "typecheck": "tsc --noEmit",
+    "openapi": "openapi-cli spec:generate",
+    "openapi:validate": "openapi-cli spec:validate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",
@@ -24,12 +28,11 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
+    "vulnerabilities": "pnpm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "3.1098.0",
     "@nestjs-cognito/auth": "2.5.1",
-    "@nestjs/cli": "11.0.24",
     "@nestjs/common": "11.1.28",
     "@nestjs/config": "4.0.4",
     "@nestjs/core": "11.1.28",
@@ -39,7 +42,7 @@
     "@nestjs/swagger": "11.4.6",
     "@prisma/adapter-pg": "7.9.0",
     "@prisma/client": "7.9.0",
-    "axios": "1.18.1",
+    "axios": "catalog:",
     "bysquare": "2.1.0",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.4",
@@ -51,26 +54,26 @@
     "lodash": "4.18.1",
     "mssql": "12.7.0",
     "nodemailer": "8.0.8",
-    "openapi-clients": "file:../openapi-clients",
+    "openapi-clients": "workspace:*",
     "p-limit": "3.1.0",
     "passport-headerapikey": "1.2.2",
     "pg": "8.22.0",
     "prisma": "7.9.0",
     "qrcode": "1.5.4",
-    "rimraf": "6.1.2",
     "ssh2-sftp-client": "12.1.1",
     "zod": "4.4.3"
   },
   "devDependencies": {
     "@bratislava/eslint-config-nest": "0.19.1",
     "@golevelup/ts-jest": "3.0.0",
+    "@nestjs/cli": "11.0.24",
     "@nestjs/schematics": "11.1.0",
     "@nestjs/testing": "11.1.28",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/lodash": "4.17.24",
     "@types/mssql": "12.3.0",
-    "@types/node": "24.12.2",
+    "@types/node": "catalog:",
     "@types/nodemailer": "8.0.0",
     "@types/qrcode": "1.5.6",
     "@types/ssh2-sftp-client": "9.0.6",
@@ -81,9 +84,11 @@
     "eslint": "9.39.3",
     "jest": "30.4.2",
     "jest-mock-extended": "4.0.1",
+    "openapi-cli": "workspace:*",
     "path": "0.12.7",
     "prettier": "3.8.1",
     "prisma-json-types-generator": "5.1.1",
+    "rimraf": "6.1.2",
     "source-map-support": "0.5.21",
     "supertest": "7.2.2",
     "ts-jest": "29.4.12",
@@ -108,12 +113,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
-  },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   }
 }

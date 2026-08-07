@@ -1,9 +1,9 @@
 name: Build Nest
 # Two modes, selected by the `cluster` input:
 #   - CI (cluster == ''): build the validation/test/lint[/e2e] images and the
-#     final `build` image, do not push.
+#     final `runner` image, do not push.
 #   - Deploy (cluster != ''): reuse an existing commit image or build+push the
-#     `prod` image and re-tag it for the cluster. Pass skip_tests: true to skip
+#     `runner` image and re-tag it for the cluster. Pass skip_tests: true to skip
 #     the test images. The infrastructure deploy is triggered separately by the
 #     caller (deploy.yml).
 #
@@ -12,41 +12,21 @@ name: Build Nest
 on:
   workflow_call:
     inputs:
-      directory:
-        description: "Base dir where whole app is located."
+      service:
+        description: >-
+          Workspace directory name of the service, which is also its bake target
+          name (see docker-bake.hcl). Stage targets are `<service>-<stage>`.
         type: string
         required: true
       image:
         description: "Full image name including registry/repository for Docker cache."
         type: string
         required: true
-      forms_shared_digest:
-        description: "Immutable forms-shared image digest used during Docker build."
-        type: string
+      e2e_tests:
+        description: "Run the E2E test image build (requires a `test-e2e` Docker target)."
+        type: boolean
         required: false
-        default: ""
-      openapi_clients_digest:
-        description: "Immutable openapi-clients image digest used during Docker build."
-        type: string
-        required: false
-        default: ""
-      target_validate:
-        description: "Docker target used for validation image build."
-        type: string
-        required: true
-      target_unit_test:
-        description: "Docker target used for unit test image build."
-        type: string
-        required: true
-      target_lint:
-        description: "Docker target used for lint image build."
-        type: string
-        required: true
-      target_e2e_test:
-        description: "Docker target used for E2E test image build."
-        type: string
-        required: false
-        default: ""
+        default: false
       skip_tests:
         description: "Skip the validation/test/lint/e2e images (used in deploy mode)."
         type: boolean
@@ -68,6 +48,8 @@ on:
         required: true
       HARBOR_REGISTRY_PASSWORD:
         required: true
+      TURBOREPO_CACHE_MINIO_SECRET_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -75,6 +57,10 @@ permissions:
 env:
   REGISTRY: harbor.bratislava.sk
   REGISTRY_USERNAME: robot$github_actions
+  BAKE_FILES: |
+    docker-bake.json
+    docker-bake.hcl
+    .github/docker-bake.ci.hcl
 
 jobs:
   test:
@@ -87,7 +73,7 @@ jobs:
       postgres:
         # GitHub Actions does not support `if:` on services, so use an empty image
         # to disable the service when E2E tests are not running.
-        image: ${{ inputs.target_e2e_test != '' && !inputs.skip_tests && 'postgres:16-alpine' || '' }}
+        image: ${{ inputs.e2e_tests && !inputs.skip_tests && 'postgres:16-alpine' || '' }}
         env:
           POSTGRES_DB: forms
           POSTGRES_USER: forms
@@ -99,9 +85,6 @@ jobs:
           --health-interval 2s
           --health-timeout 3s
           --health-retries 15
-    defaults:
-      run:
-        working-directory: ${{ inputs.directory }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -121,9 +104,11 @@ jobs:
           harbor_registry: ${{ env.REGISTRY }}
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-          # The docker-container driver does not support resolving `host-gateway`
-          # for `--add-host`, so use the host network and reach the GitHub service
-          # container through its published localhost port during the E2E build.
+          # Put BuildKit itself in the runner's network namespace so that a
+          # build step with `network = "host"` can reach the Turborepo cache
+          # server and the E2E postgres service container on plain localhost.
+          # Without this the builder runs on the bridge network and "host" only
+          # means the builder's own namespace.
           buildx_driver_opts: |
             network=host
 
@@ -154,8 +139,16 @@ jobs:
           image: ${{ inputs.image }}
           suffix: -lint
 
+      - name: Docker metadata (openapi)
+        if: ${{ !inputs.skip_tests }}
+        id: meta-openapi
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ inputs.image }}
+          suffix: -openapi
+
       - name: Docker metadata (e2e)
-        if: ${{ !inputs.skip_tests && inputs.target_e2e_test != '' }}
+        if: ${{ !inputs.skip_tests && inputs.e2e_tests }}
         id: meta-e2e
         uses: bratislava/github-actions/.github/actions/docker-metadata@beta
         with:
@@ -171,67 +164,102 @@ jobs:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
 
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      # Every bake target below sets network=host, which is a gated entitlement,
+      # hence `allow: network.host` on each step.
+      #
+      # `source: .` builds from the checkout above. Without it bake-action
+      # defaults to the Git context, so BuildKit clones the repository -- and
+      # auto-follows every tag -- inside the builder container on each cold
+      # builder, which costs far more than syncing the working tree.
       - name: Build validation image
         if: ${{ !inputs.skip_tests }}
-        uses: docker/build-push-action@v7
+        uses: docker/bake-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: ${{ inputs.target_validate }}
-          cache-from: ${{ steps.meta-validate.outputs.cache_from }}
-          cache-to: ${{ steps.meta-validate.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-builder-deps
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-validate.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-validate.outputs.cache_to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run unit tests
         if: ${{ !inputs.skip_tests }}
-        uses: docker/build-push-action@v7
+        uses: docker/bake-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: ${{ inputs.target_unit_test }}
-          cache-from: ${{ steps.meta-test.outputs.cache_from }}
-          cache-to: ${{ steps.meta-test.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-test
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-test.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-test.outputs.cache_to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run ESLint
         if: ${{ !inputs.skip_tests }}
-        uses: docker/build-push-action@v7
+        uses: docker/bake-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: ${{ inputs.target_lint }}
-          cache-from: ${{ steps.meta-lint.outputs.cache_from }}
-          cache-to: ${{ steps.meta-lint.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-lint
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-lint.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-lint.outputs.cache_to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+
+      # Fails when the committed spec in openapi-specs no longer matches this
+      # service's code, printing a diff. The spec is in the build context because
+      # openapi-cli depends on openapi-specs, so `turbo prune` pulls it in.
+      - name: Validate OpenAPI spec
+        if: ${{ !inputs.skip_tests }}
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-openapi
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-openapi.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-openapi.outputs.cache_to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       - name: Run E2E tests
-        if: ${{ !inputs.skip_tests && inputs.target_e2e_test != '' }}
-        uses: docker/build-push-action@v7
+        if: ${{ !inputs.skip_tests && inputs.e2e_tests }}
+        uses: docker/bake-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: ${{ inputs.target_e2e_test }}
-          cache-from: ${{ steps.meta-e2e.outputs.cache_from }}
-          cache-to: ${{ steps.meta-e2e.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
-            CI_E2E_DATABASE_URL=postgresql://forms:password@localhost:${{ job.services.postgres.ports[5432] }}/forms?schema=public&connect_timeout=30
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}-test-e2e
+          allow: network.host
+          set: |
+            *.args.CI_E2E_DATABASE_URL=postgresql://forms:password@localhost:${{ job.services.postgres.ports['5432'] }}/forms?schema=public&connect_timeout=30
+        env:
+          CACHE_FROM: ${{ steps.meta-e2e.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-e2e.outputs.cache_to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
-      # CI mode: build the final `build` image, do not push.
+      # CI mode: build the final `runner` image, do not push.
       - name: Build final image
         if: ${{ inputs.cluster == '' }}
-        uses: docker/build-push-action@v7
+        uses: docker/bake-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: build
-          cache-from: ${{ steps.meta-build.outputs.cache_from }}
-          cache-to: ${{ steps.meta-build.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-build.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-build.outputs.cache_to }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
 
       # Deploy mode only: reuse the commit image across clusters. If it already
       # exists, re-tag it for this cluster and skip the build below.
@@ -243,17 +271,18 @@ jobs:
           existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}
           new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}
 
-      # Deploy mode: build+push the deployable (prod) image when not reused.
+      # Deploy mode: build+push the deployable image when not reused.
       - name: Build deploy image
         if: ${{ inputs.cluster != '' && steps.existing.outputs.found != 'true' }}
-        uses: docker/build-push-action@v7
+        uses: docker/bake-action@v7
         with:
-          context: ${{ inputs.directory }}
-          target: prod
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: ${{ inputs.service }}
           push: true
-          tags: ${{ steps.meta-build.outputs.tags }}
-          cache-from: ${{ steps.meta-build.outputs.cache_from }}
-          cache-to: ${{ steps.meta-build.outputs.cache_to }}
-          build-args: |
-            FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
-            OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta-build.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta-build.outputs.cache_to }}
+          TAGS: ${{ steps.meta-build.outputs.tags }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}

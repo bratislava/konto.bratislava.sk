@@ -1,5 +1,5 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
 import express, { json } from 'express'
 
 import { cognitoGuestIdentityIdHeaderKey } from './auth-v2/utils/extract-cognito-guest-identity-id-from-request'
@@ -47,8 +47,19 @@ function setupMiddleware(app: INestApplication) {
   app.use(json({ limit: '50mb' }))
 }
 
-function setupSwagger(app: INestApplication) {
-  const baConfigService = app.get(BaConfigService)
+/**
+ * Builds the exact OpenAPI document the running server serves at `/api-json`.
+ * Exported so the spec can be generated offline without duplicating the config.
+ *
+ * `overridePort` supplies the port for the localhost server entry. Passing it avoids
+ * resolving `BaConfigService`, which lets callers generate the document from an app
+ * created in `preview` mode — i.e. without instantiating any providers.
+ */
+export function createSwaggerDocument(
+  app: INestApplication,
+  overridePort?: number,
+): OpenAPIObject {
+  const port = overridePort ?? app.get(BaConfigService).self.port
 
   const config = new DocumentBuilder()
     .setTitle('Nest Forms Backend')
@@ -59,7 +70,7 @@ function setupSwagger(app: INestApplication) {
       'https://inovacie.bratislava.sk',
       INNOVATION_MAIL,
     )
-    .addServer(`http://localhost:${baConfigService.self.port}/`)
+    .addServer(`http://localhost:${port}/`)
     .addServer('https://nest-forms-backend.dev.bratislava.sk/')
     .addServer('https://nest-forms-backend.staging.bratislava.sk/')
     .addServer('https://nest-forms-backend.bratislava.sk/')
@@ -82,7 +93,11 @@ function setupSwagger(app: INestApplication) {
     })
     .build()
 
-  const document = SwaggerModule.createDocument(app, config)
+  return SwaggerModule.createDocument(app, config)
+}
+
+function setupSwagger(app: INestApplication) {
+  const document = createSwaggerDocument(app)
   SwaggerModule.setup('api', app, document)
   app
     .getHttpAdapter()

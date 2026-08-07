@@ -1,0 +1,40 @@
+{
+  "name": "openapi-cli",
+  "version": "1.0.0",
+  "description": "Builds each backend's OpenAPI document offline and runs actions over it.",
+  "license": "EUPL-1.2",
+  "private": true,
+  "bin": {
+    "openapi-cli": "./bin/openapi-cli.cjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsdown",
+    "build:watch": "tsdown --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "commander": "15.0.0",
+    "diff": "9.0.0",
+    "openapi-specs": "workspace:*",
+    "pirates": "4.0.7"
+  },
+  "devDependencies": {
+    "@nestjs/common": "11.1.28",
+    "@nestjs/core": "11.1.28",
+    "@nestjs/swagger": "11.4.6",
+    "@types/node": "catalog:",
+    "rimraf": "6.1.3",
+    "tsdown": "0.22.14",
+    "typescript": "6.0.3"
+  },
+  "volta": {
+    "extends": "../package.json"
+  }
+}

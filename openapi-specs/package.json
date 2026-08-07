@@ -1,0 +1,10 @@
+{
+  "name": "openapi-specs",
+  "version": "1.0.0",
+  "description": "OpenAPI documents for the services in this monorepo, generated offline and committed.",
+  "license": "EUPL-1.2",
+  "private": true,
+  "volta": {
+    "extends": "../package.json"
+  }
+}

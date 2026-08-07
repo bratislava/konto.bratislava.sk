@@ -1,9 +1,10 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { SwaggerModule } from '@nestjs/swagger'
 
 import { AppModule } from './app.module'
 import BaConfigService from './config/ba-config.service'
+import { createSwaggerDocument } from './swagger'
 import { ErrorFilter, HttpExceptionFilter, TypeErrorFilter } from './utils/filters/error.filter'
 import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
@@ -25,26 +26,7 @@ async function bootstrap() {
   app.useGlobalFilters(new ErrorFilter()) // This filter must be first
   app.useGlobalFilters(new TypeErrorFilter())
   app.useGlobalFilters(new HttpExceptionFilter())
-  const config = new DocumentBuilder()
-    .setTitle('User Module - city account')
-    .setDescription(
-      'User module use for store additional data for users and authentication against Azure AD'
-    )
-    .setVersion('1.0')
-    .setContact('Bratislava Inovations', 'https://inovacie.bratislava.sk', 'inovacie@bratislava.sk')
-    .addServer(`http://localhost:${baConfigService.self.port}/`)
-    .addServer('https://nest-city-account.dev.bratislava.sk/')
-    .addServer('https://nest-city-account.staging.bratislava.sk/')
-    .addServer('https://nest-city-account.bratislava.sk/')
-    .addApiKey({ type: 'apiKey', name: 'apiKey', in: 'header' }, 'apiKey')
-    .addBearerAuth({
-      type: 'http',
-      description: 'Get token from cognito',
-      openIdConnectUrl: 'TBD',
-    })
-    .build()
-
-  const document = SwaggerModule.createDocument(app, config)
+  const document = createSwaggerDocument(app)
   SwaggerModule.setup('api', app, document)
 
   await app.listen(baConfigService.self.port)

@@ -1,107 +1,106 @@
-import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
-import path from 'node:path'
-import { rimrafSync } from 'rimraf'
+import { execFileSync } from 'node:child_process'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import camelcase from 'camelcase'
-import { get as getAppRootDir } from 'app-root-dir'
-import fetch from 'node-fetch'
-import semver from 'semver'
+import { Command } from 'commander'
+import { rimrafSync } from 'rimraf'
 
-interface GenerateClientOptions {
-  rootDir?: string
-  localUrl?: string
-}
+/**
+ * Step one of two: turn a spec into TypeScript under `generated/`. `pnpm run build` runs this
+ * and then compiles the result with tsdown. Neither `generated/` nor `dist/` is committed.
+ *
+ * What keeps the dependency graph acyclic is that the *specs* are committed, not this output.
+ * Backends import each other's clients, so if a client had to be derived from a live backend
+ * the graph would be circular; deriving it from a committed spec breaks that.
+ */
 
-export const validTypes = [
+const clientTypes = [
   'forms',
   'tax',
   'city-account',
-  'slovensko-sk',
   'clamav-scanner',
+  'slovensko-sk',
   'magproxy',
 ] as const
-export type ValidType = (typeof validTypes)[number]
+type ClientType = (typeof clientTypes)[number]
 
-export const endpoints: Record<ValidType, string> = {
-  forms: 'https://nest-forms-backend.staging.bratislava.sk/api-json',
-  tax: 'https://nest-tax-backend.staging.bratislava.sk/api-json',
-  'city-account': 'https://nest-city-account.staging.bratislava.sk/api-json',
-  'clamav-scanner': 'https://nest-clamav-scanner.staging.bratislava.sk/api-json',
+const packageRoot = join(import.meta.dirname, '..')
+const generatedRoot = join(packageRoot, 'generated')
+
+const specsDir = dirname(
+  require.resolve('openapi-specs/package.json', { paths: [packageRoot] }),
+)
+
+/**
+ * Where each client's spec comes from. The four in-repo backends write theirs into
+ * `openapi-specs` with `openapi-cli`, so generation reads a committed file and needs no
+ * network. The other two describe services outside this repo and are still fetched.
+ */
+const specSources: Record<ClientType, string> = {
+  forms: join(specsDir, 'forms.json'),
+  tax: join(specsDir, 'tax.json'),
+  'city-account': join(specsDir, 'city-account.json'),
+  'clamav-scanner': join(specsDir, 'clamav-scanner.json'),
   'slovensko-sk': 'https://fix.slovensko-sk-api.bratislava.sk/openapi.yaml',
   magproxy: 'https://new-magproxy.staging.bratislava.sk/api-json',
 }
 
-export const getLocalEndpoint = (type: ValidType, localUrl: string): string => {
-  if (type === 'slovensko-sk') {
-    return `http://${localUrl}/openapi.yaml`
+function runOpenApiGenerator(type: ClientType, outputDir: string): void {
+  const input = specSources[type]
+  if (!input.startsWith('http') && !existsSync(input)) {
+    throw new Error(
+      `${input} does not exist — run "pnpm --filter <backend> run openapi" first`,
+    )
   }
-  return `http://${localUrl}/api-json`
+
+  execFileSync(
+    'pnpm',
+    [
+      'exec',
+      'openapi-generator-cli',
+      'generate',
+      '-i',
+      input,
+      '-g',
+      'typescript-axios',
+      '-o',
+      outputDir,
+      '--skip-validate-spec',
+    ],
+    { stdio: 'inherit', cwd: packageRoot, shell: true },
+  )
 }
 
-const appRootDir = getAppRootDir()
+/** The generator writes a `docs/` tree we do not ship, plus a manifest listing it. */
+function removeDocs(outputDir: string): void {
+  rimrafSync(join(outputDir, 'docs'))
 
-async function checkOpenApiGeneratorVersion() {
-  const openapitoolsConfigPath = path.join(appRootDir, 'openapitools.json')
-  const openapitoolsConfig = JSON.parse(readFileSync(openapitoolsConfigPath, 'utf8'))
-  const currentVersion = openapitoolsConfig['generator-cli']?.version
-
-  try {
-    const res = await fetch(
-      'https://search.maven.org/solrsearch/select?q=g:org.openapitools+AND+a:openapi-generator-cli&rows=1&wt=json',
-    )
-    if (!res.ok) {
-      console.warn('Could not fetch latest OpenAPI Generator CLI version.')
-      return
-    }
-    const data = await res.json()
-    const latestVersion = data.response?.docs?.[0]?.latestVersion
-    if (!latestVersion) {
-      console.warn('Could not determine latest OpenAPI Generator CLI version.')
-      return
-    }
-    if (currentVersion && semver.lt(currentVersion, latestVersion)) {
-      console.log(
-        `Your version (${currentVersion}) is behind the latest (${latestVersion}). Please update the version in openapitools.json to "${latestVersion}".`,
-      )
-    }
-  } catch (err) {
-    console.warn('Failed to check OpenAPI Generator CLI version:', err)
-  }
+  const manifestPath = join(outputDir, '.openapi-generator', 'FILES')
+  if (!existsSync(manifestPath)) return
+  const kept = readFileSync(manifestPath, 'utf8')
+    .split('\n')
+    .filter((line) => !line.startsWith('docs/'))
+    .join('\n')
+  writeFileSync(manifestPath, kept)
 }
 
 /**
- * Adds missing type definitions to the generated slovensko-sk API code.
- * The OpenAPI generator incorrectly handles Base64 and Uuid types,
- * treating them as unknown types instead of strings.
+ * Synthesises a `client.ts` exposing one factory per tag as a single object, so consumers get
+ * `createFormsClient({ basePath })` instead of wiring every generated `*Factory` by hand.
  */
-const customizeSlovenskoSkGeneratedCode = (type: ValidType, outputDir: string) => {
-  if (type !== 'slovensko-sk') {
-    return
-  }
-
-  console.log(`Customizing generated code for ${type}...`)
-  const apiPath = path.join(outputDir, 'api.ts')
-  let content = readFileSync(apiPath, 'utf8')
-  content = `type Base64 = string\ntype Uuid = string\n\n${content}`
-  writeFileSync(apiPath, content)
-}
-
-const generateClientFile = (type: ValidType, outputDir: string) => {
-  console.log(`Generating client file for ${type}...`)
-  const apiPath = path.join(outputDir, 'api.ts')
-  const content = readFileSync(apiPath, 'utf8')
-
-  const factoryRegex = /export const (\w+Factory)/g
-  const factories = Array.from(content.matchAll(factoryRegex)).map((match) => match[1])
-
+function writeClientFile(type: ClientType, outputDir: string): void {
+  const api = readFileSync(join(outputDir, 'api.ts'), 'utf8')
+  const factories = [...api.matchAll(/export const (\w+Factory)/g)].map(
+    (match) => match[1],
+  )
   if (factories.length === 0) {
-    throw new Error(`No API factories found in generated code for ${type}`)
+    throw new Error(`no API factories found in the generated code for ${type}`)
   }
 
-  const clientName = camelcase(type, { pascalCase: true })
-
-  const clientContent = `
-import {
+  const name = camelcase(type, { pascalCase: true })
+  writeFileSync(
+    join(outputDir, 'client.ts'),
+    `import {
   ${factories.join(',\n  ')}
 } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
@@ -113,133 +112,82 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
-export type ${clientName}Client = ReturnType<typeof create${clientName}Client>
+export interface ${name}Client extends
+  ${factories.map((factory) => `ReturnType<typeof ${factory}>`).join(',\n  ')} {}
 
-export const create${clientName}Client = ({
+export const create${name}Client = ({
   basePath,
   configurationParameters = {},
   axios,
-}: ClientConfig) => {
+}: ClientConfig): ${name}Client => {
   const configuration = new Configuration(configurationParameters)
   const args = [configuration, basePath, axios] as const
 
   return {
     ${factories.map((factory) => `...${factory}(...args)`).join(',\n    ')}
-  }
+  } satisfies ${name}Client
 }
-`
-
-  const clientPath = path.join(outputDir, 'client.ts')
-  writeFileSync(clientPath, clientContent)
-}
-
-const updateIndexFile = (type: ValidType, outputDir: string) => {
-  console.log(`Updating index file for ${type}...`)
-  const indexPath = path.join(outputDir, 'index.ts')
-  const content = readFileSync(indexPath, 'utf8')
-
-  const updatedContent = content.replace(
-    'export * from "./configuration"',
-    'export * from "./configuration"\nexport * from "./client"',
-  )
-
-  writeFileSync(indexPath, updatedContent)
-}
-
-const formatGeneratedCode = (type: ValidType, outputDir: string) => {
-  console.log(`Formatting generated code for ${type}...`)
-
-  const prettierConfigPath = path.join(appRootDir, '.prettierrc.js')
-  const prettierIgnorePath = path.join(appRootDir, '.prettierignore')
-  execSync(
-    `prettier --write ${outputDir} --config ${prettierConfigPath} --ignore-path ${prettierIgnorePath}`,
-    { stdio: 'inherit' },
+`,
   )
 }
 
-const cleanupExistingClient = (type: ValidType, outputDir: string) => {
-  console.log(`Removing existing client for ${type}...`)
+/**
+ * Re-exports the two modules the generator leaves out of its index: our synthesised `client`,
+ * and `base` (which holds `RequiredError`). Exporting `base` here is what lets `package.json`
+ * use a single wildcard subpath instead of naming every entry point.
+ */
+function extendIndexFile(outputDir: string): void {
+  const indexPath = join(outputDir, 'index.ts')
+  const index = readFileSync(indexPath, 'utf8')
+  writeFileSync(
+    indexPath,
+    `${index.trimEnd()}\nexport * from './client'\nexport * from './base'\n`,
+  )
+}
+
+/**
+ * The generator maps slovensko-sk's `Base64` and `Uuid` formats to bare type names it never
+ * declares, so the output does not compile without these aliases.
+ */
+function addSlovenskoSkTypeAliases(outputDir: string): void {
+  const apiPath = join(outputDir, 'api.ts')
+  const api = readFileSync(apiPath, 'utf8')
+  writeFileSync(apiPath, `type Base64 = string\ntype Uuid = string\n\n${api}`)
+}
+
+function generateClient(type: ClientType): void {
+  const outputDir = join(generatedRoot, type)
+  console.log(`\n=== ${type} <- ${specSources[type]}`)
+
   rimrafSync(outputDir)
+  runOpenApiGenerator(type, outputDir)
+  removeDocs(outputDir)
+  writeClientFile(type, outputDir)
+  extendIndexFile(outputDir)
+  if (type === 'slovensko-sk') addSlovenskoSkTypeAliases(outputDir)
+
+  console.log(`=== ${type} generated into generated/${type}`)
 }
 
-const generateOpenApiClient = (type: ValidType, url: string, outputDir: string) => {
-  console.log(`Generating OpenAPI client for ${type}...`)
-  execSync(
-    `npx @openapitools/openapi-generator-cli generate \
-      -i ${url} \
-      -g typescript-axios \
-      -o ${outputDir} \
-      --skip-validate-spec`,
-    { stdio: 'inherit' },
-  )
-}
+const program = new Command()
+  .name('generateClient')
+  .description('Generate a typed client from its OpenAPI spec into generated/.')
+  .argument('<type>', `client to generate, or "all" (${clientTypes.join(', ')})`)
+  .action((type: string) => {
+    const targets =
+      type === 'all'
+        ? clientTypes
+        : clientTypes.filter((candidate) => candidate === type)
 
-const removeDocsAndCleanupFiles = (type: ValidType, outputDir: string) => {
-  console.log(`Cleaning up documentation files for ${type}...`)
+    if (targets.length === 0) {
+      console.error(
+        `unknown client: ${type} — expected one of ${clientTypes.join(', ')}, or "all"`,
+      )
+      process.exitCode = 1
+      return
+    }
 
-  // Remove docs directory
-  const docsDir = path.join(outputDir, 'docs')
-  rimrafSync(docsDir)
-
-  // Clean up FILES list to remove docs entries
-  const filesPath = path.join(outputDir, '.openapi-generator', 'FILES')
-  try {
-    const filesContent = readFileSync(filesPath, 'utf8')
-    const filteredLines = filesContent
-      .split('\n')
-      .filter((line) => !line.startsWith('docs/'))
-      .join('\n')
-    writeFileSync(filesPath, filteredLines)
-  } catch (error) {
-    console.warn('Could not clean up FILES list:', error)
-  }
-}
-
-export const generateClient = async (type: ValidType, options: GenerateClientOptions = {}) => {
-  await checkOpenApiGeneratorVersion()
-  const outputDir = path.join(options.rootDir ?? appRootDir, type)
-  const url = options.localUrl ? getLocalEndpoint(type, options.localUrl) : endpoints[type]
-
-  try {
-    cleanupExistingClient(type, outputDir)
-    generateOpenApiClient(type, url, outputDir)
-    removeDocsAndCleanupFiles(type, outputDir)
-    generateClientFile(type, outputDir)
-    updateIndexFile(type, outputDir)
-    customizeSlovenskoSkGeneratedCode(type, outputDir)
-    formatGeneratedCode(type, outputDir)
-
-    console.log(`Client generation for ${type} completed successfully.`)
-  } catch (error) {
-    console.error(`Error generating client for ${type}:`, error)
-    throw error
-  }
-}
-
-const isValidType = (type: string): type is ValidType => {
-  return validTypes.includes(type as ValidType)
-}
-
-if (require.main === module) {
-  import('commander').then(({ Command }) => {
-    const program = new Command()
-
-    program
-      .name('generateClient')
-      .description('Generate OpenAPI client for specified type')
-      .argument('<type>', `Type of client to generate (${validTypes.join(', ')})`)
-      .option('--local-url <url>', 'Local URL to use (e.g., localhost:3000)')
-      .action((type: string, options) => {
-        if (!isValidType(type)) {
-          console.error(`Invalid type: ${type}. Valid types are: ${validTypes.join(', ')}.`)
-          process.exit(1)
-        }
-
-        generateClient(type, {
-          localUrl: options.localUrl ? options.localUrl : undefined,
-        }).catch(() => process.exit(1))
-      })
-
-    program.parse()
+    for (const target of targets) generateClient(target)
   })
-}
+
+program.parse()

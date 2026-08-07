@@ -1,0 +1,37 @@
+**/node_modules
+**/.git
+**/.turbo
+**/.idea
+**/.vscode
+**/.volta
+**/.claude
+.github
+
+# Build outputs
+**/dist
+**/.next
+**/out
+**/build
+**/coverage
+**/*.tsbuildinfo
+**/.eslintcache
+
+# Prisma clients
+**/src/generated/prisma
+
+# Noise
+**/*.log
+**/.DS_Store
+**/*.md
+tests/cypress/videos
+tests/cypress/screenshots
+
+# Secrets
+**/.env*
+!**/.env.spec
+**/*.pem
+**/*.key
+
+# next/Dockerfile promotes .env.ci-build.<NEXT_BUILD_ENV> to .env.production.local
+# during the build, so the sources must reach the context.
+!next/.env.ci-build.*

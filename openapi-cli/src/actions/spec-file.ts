@@ -9,10 +9,11 @@ import type { Command } from 'commander'
  *
  * Resolved through the package rather than as a path relative to the backend, so it does not
  * assume anything about the workspace layout and keeps working inside a pruned Docker
- * context. This is what `openapi-clients-v2` being a dependency of this package buys.
+ * context. That is what depending on `openapi-specs` buys — and `openapi-specs` is a
+ * data-only leaf package, so this dependency can never close a cycle.
  */
 function specsDir(): string {
-  return join(dirname(require.resolve('openapi-clients-v2/package.json')), 'specs')
+  return dirname(require.resolve('openapi-specs/package.json'))
 }
 
 export interface SpecFileOptions {

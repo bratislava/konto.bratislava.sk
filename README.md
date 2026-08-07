@@ -62,7 +62,11 @@ Each sub-project contains a README which should get you up and running. More doc
 
 🛠️ `/openapi-cli` CLI that builds each backend's OpenAPI document offline
 
-📦 `/openapi-clients` Auto-generated OpenAPI TypeScript clients
+📄 `/openapi-specs` The generated OpenAPI documents, committed
+
+📦 `/openapi-clients-v2` TypeScript clients generated from `/openapi-specs`
+
+📦 `/openapi-clients` Auto-generated OpenAPI TypeScript clients (deprecated, use `/openapi-clients-v2`)
 
 ## Deployment
 

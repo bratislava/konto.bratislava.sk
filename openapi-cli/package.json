@@ -22,7 +22,7 @@
   "dependencies": {
     "commander": "15.0.0",
     "diff": "9.0.0",
-    "openapi-clients-v2": "workspace:*",
+    "openapi-specs": "workspace:*",
     "pirates": "4.0.7"
   },
   "devDependencies": {

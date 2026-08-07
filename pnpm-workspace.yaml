@@ -29,6 +29,7 @@ packages:
   - openapi-cli
   - openapi-clients
   - openapi-clients-v2
+  - openapi-specs
   - next
   - scripts
   - strapi

@@ -18,6 +18,11 @@ RUN pnpm dlx turbo@${TURBO_VERSION} prune nest-city-account --docker
 
 FROM base AS builder-deps
 
+# openapi-clients-v2 generates its TypeScript from the committed specs at build time, and
+# openapi-generator-cli is a Java tool. Headless JRE only, and only in the build stages —
+# `runner` starts from a clean node image, so this never reaches the shipped image.
+RUN apk add --no-cache openjdk21-jre-headless
+
 COPY --from=prepare /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 

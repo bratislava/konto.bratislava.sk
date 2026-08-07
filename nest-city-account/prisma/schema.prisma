@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 generator json {
@@ -80,6 +81,11 @@ enum BloomreachOutboxStatus {
   COMPLETED
   FAILED
   SUPERSEDED
+}
+
+enum BloomreachCommandName {
+  CUSTOMERS        @map("customers")
+  CUSTOMERS_EVENTS @map("customers/events")
 }
 
 model User {
@@ -386,13 +392,25 @@ model BloomreachOutbox {
   createdAt   DateTime               @default(now())
   updatedAt   DateTime               @updatedAt
   externalId  String
-  commandName String
+  commandName BloomreachCommandName
   /// [BloomreachCommandData]
   commandData Json
   status      BloomreachOutboxStatus @default(PENDING)
   attempts    Int                    @default(0)
   lastError   String?
+  /// Marks the authoritative entry for a deduplication key (the
+  /// two unique indexes below)
+  /// - Rejects any later non-terminal write to the same dedup key.
+  /// - Triggers deletion of every other entry for the same dedup key.
+  isTerminal  Boolean                @default(false)
 
+  // Equivalent exists in the database but Prisma does not support JSON-path index columns:
+  // @@unique([externalId, eventType, category], map: "bloomreach_outbox_events_pending_key",
+  //          where: raw('"commandName" = 'customers/events'
+  //                         AND "status" = 'PENDING'
+  //                         AND "commandData" ->> 'event_type' IS NOT NULL
+  //                         AND "commandData" -> 'properties' ->> 'category' IS NOT NULL"))
+  @@unique([externalId], map: "bloomreach_outbox_customers_pending_key", where: { commandName: "customers", status: "PENDING" })
   @@index([status, createdAt])
   @@index([externalId, commandName, status])
 }

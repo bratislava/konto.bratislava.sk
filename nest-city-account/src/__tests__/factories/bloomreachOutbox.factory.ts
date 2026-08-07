@@ -1,12 +1,14 @@
+import { BloomreachCustomerCommandData } from '../../bloomreach/bloomreach.types'
 import {
-  BloomreachCommandNameEnum,
-  BloomreachCustomerCommandData,
-} from '../../bloomreach/bloomreach.types'
-import { BloomreachOutbox, BloomreachOutboxStatus } from '../../generated/prisma/client'
+  BloomreachCommandName,
+  BloomreachOutbox,
+  BloomreachOutboxStatus,
+} from '../../generated/prisma/client'
 
 const defaultCommandData: BloomreachCustomerCommandData = {
   customer_ids: { city_account_id: 'user-id' },
   properties: {},
+  update_timestamp: 0,
 }
 
 export const bloomreachOutboxFactory = (
@@ -16,10 +18,11 @@ export const bloomreachOutboxFactory = (
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
   externalId: 'external-id',
-  commandName: BloomreachCommandNameEnum.CUSTOMERS,
+  commandName: BloomreachCommandName.CUSTOMERS,
   commandData: defaultCommandData,
   status: BloomreachOutboxStatus.PENDING,
   attempts: 0,
   lastError: null,
+  isTerminal: false,
   ...overrides,
 })

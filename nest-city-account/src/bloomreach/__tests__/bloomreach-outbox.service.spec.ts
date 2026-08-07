@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import prismaMock from '../../../test/singleton'
 import { bloomreachOutboxFactory } from '../../__tests__/factories/bloomreachOutbox.factory'
 import BaConfigService from '../../config/ba-config.service'
-import { ConsentEnum } from '../../generated/prisma/client'
+import { BloomreachCommandName, ConsentEnum } from '../../generated/prisma/enums'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
@@ -13,6 +13,7 @@ import {
   BloomreachEventNameEnum,
 } from '../bloomreach.types'
 import { BloomreachOutboxService } from '../bloomreach-outbox.service'
+import { BloomreachOutboxWriterService } from '../bloomreach-outbox-writer.service'
 import { BloomreachPayloadBuilder } from '../bloomreach-payload.builder'
 
 describe('BloomreachOutboxService', () => {
@@ -26,6 +27,7 @@ describe('BloomreachOutboxService', () => {
     commandData: {
       customer_ids: { city_account_id: externalId },
       properties: { email: 'test@example.com' },
+      update_timestamp: 200,
     },
   }
 
@@ -45,6 +47,7 @@ describe('BloomreachOutboxService', () => {
         oauth_origin_client_name: '',
         current_tax_correspondence_channel: '',
       },
+      update_timestamp: 200,
     },
   }
 
@@ -56,6 +59,7 @@ describe('BloomreachOutboxService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BloomreachOutboxService,
+        BloomreachOutboxWriterService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: BloomreachPayloadBuilder, useValue: createMock<BloomreachPayloadBuilder>() },
         { provide: ThrowerErrorGuard, useValue: createMock<ThrowerErrorGuard>() },
@@ -99,8 +103,9 @@ describe('BloomreachOutboxService', () => {
       expect(txMock.bloomreachOutbox.create).toHaveBeenCalledWith({
         data: {
           externalId,
-          commandName: BloomreachCommandNameEnum.CUSTOMERS,
+          commandName: BloomreachCommandName.CUSTOMERS,
           commandData: mockCustomerCommand.commandData,
+          isTerminal: false,
         },
       })
     })
@@ -112,6 +117,8 @@ describe('BloomreachOutboxService', () => {
         commandData: {
           customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
           properties: { phone: '0900000000', email: 'old@never.test' },
+          // Must be older than mockCustomerCommand's 200
+          update_timestamp: 100,
         },
       })
       const txMock = createMock<PrismaService>()
@@ -126,7 +133,9 @@ describe('BloomreachOutboxService', () => {
           commandData: {
             customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
             properties: { phone: '0900000000', email: 'test@example.com' },
+            update_timestamp: 200,
           },
+          isTerminal: false,
         },
       })
       expect(txMock.bloomreachOutbox.create).not.toHaveBeenCalled()
@@ -172,6 +181,7 @@ describe('BloomreachOutboxService', () => {
           category: 'ESBS-MARKETING',
           valid_until: 'unlimited',
         },
+        timestamp: 100,
       }
 
       const unsubscribeCommandData = {
@@ -182,6 +192,7 @@ describe('BloomreachOutboxService', () => {
           category: 'ESBS-MARKETING',
           valid_until: 'unlimited',
         },
+        timestamp: 200,
       }
 
       const existingEntry = bloomreachOutboxFactory({
@@ -206,7 +217,7 @@ describe('BloomreachOutboxService', () => {
 
       expect(txMock.bloomreachOutbox.update).toHaveBeenCalledWith({
         where: { id: 'pending-subscribe-id' },
-        data: { commandData: unsubscribeCommandData },
+        data: { commandData: unsubscribeCommandData, isTerminal: false },
       })
       expect(txMock.bloomreachOutbox.create).not.toHaveBeenCalled()
     })
@@ -221,7 +232,7 @@ describe('BloomreachOutboxService', () => {
       expect(payloadBuilder.buildAnonymizeCommand).not.toHaveBeenCalled()
     })
 
-    it('should queue unsubscribe consent events and anonymize command', async () => {
+    it('should queue unsubscribe consent events and anonymize command with one shared timestamp', async () => {
       payloadBuilder.buildConsentEventCommands.mockReturnValue([])
       payloadBuilder.buildAnonymizeCommand.mockReturnValue(mockAnonymizeCommand)
       const txMock = createMock<PrismaService>()
@@ -230,19 +241,20 @@ describe('BloomreachOutboxService', () => {
 
       await service.anonymizeCustomer(externalId)
 
-      expect(payloadBuilder.buildConsentEventCommands).toHaveBeenCalledWith(
-        [
-          { consentType: ConsentEnum.MARKETING, isGranted: false },
-          { consentType: ConsentEnum.GENERAL, isGranted: false },
-        ],
-        externalId
-      )
-      expect(payloadBuilder.buildAnonymizeCommand).toHaveBeenCalledWith(externalId)
+      const [consents] = payloadBuilder.buildConsentEventCommands.mock.calls[0]
+      const anonymizedAt = consents[0].timestamp
+
+      expect(consents).toEqual([
+        { consentType: ConsentEnum.MARKETING, isGranted: false, timestamp: anonymizedAt },
+        { consentType: ConsentEnum.GENERAL, isGranted: false, timestamp: anonymizedAt },
+      ])
+      expect(payloadBuilder.buildAnonymizeCommand).toHaveBeenCalledWith(externalId, anonymizedAt)
       expect(txMock.bloomreachOutbox.create).toHaveBeenCalledWith({
         data: {
           externalId,
-          commandName: BloomreachCommandNameEnum.CUSTOMERS,
+          commandName: BloomreachCommandName.CUSTOMERS,
           commandData: mockAnonymizeCommand.commandData,
+          isTerminal: true,
         },
       })
     })

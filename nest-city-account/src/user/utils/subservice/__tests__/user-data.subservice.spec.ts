@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../../../../test/singleton'
 import { BloomreachOutboxService } from '../../../../bloomreach/bloomreach-outbox.service'
-import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '../../../../generated/prisma/client'
+import { ConsentEnum, DeliveryMethodUserPreferenceEnum } from '../../../../generated/prisma/enums'
 import { PrismaService } from '../../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../../utils/guards/errors.guard'
 import { UserIdentitySubservice } from '../../../../utils/subservices/user-identity.subservice'

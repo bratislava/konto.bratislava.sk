@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
 
-import { CognitoUserAttributesTierEnum } from '../../generated/prisma/client'
+import { CognitoUserAttributesTierEnum } from '../../generated/prisma/enums'
 
 export class PaasMpaRegisterRequestDto {
   @ApiProperty({

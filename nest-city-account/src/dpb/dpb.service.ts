@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { LoginClientEnum } from '../generated/prisma/client'
+import { LoginClientEnum } from '../generated/prisma/enums'
 import { UserService } from '../user/user.service'
 
 @Injectable()

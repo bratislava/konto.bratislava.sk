@@ -11,7 +11,11 @@ import {
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { BloomreachConsentActionEnum, BloomreachEventNameEnum } from '../bloomreach.types'
+import {
+  BloomreachCommandDataKind,
+  BloomreachConsentActionEnum,
+  BloomreachEventNameEnum,
+} from '../bloomreach.types'
 import { BloomreachExportService } from '../bloomreach-export.service'
 import { BloomreachMergeConsentService } from '../bloomreach-merge-consent.service'
 import { BloomreachOutboxWriterService } from '../bloomreach-outbox-writer.service'
@@ -31,6 +35,7 @@ describe('BloomreachMergeConsentService', () => {
     externalId,
     commandName: BloomreachCommandName.CUSTOMERS,
     commandData: {
+      kind: BloomreachCommandDataKind.CUSTOMER,
       customer_ids: { city_account_id: externalId, contact_id: contactId },
       properties: { is_identity_verified: true },
       update_timestamp: 100,
@@ -101,6 +106,7 @@ describe('BloomreachMergeConsentService', () => {
     const result = await service.ensureConsentsSurviveMerge(
       makeEntry({
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: externalId },
           properties: {},
           update_timestamp: 100,
@@ -129,6 +135,7 @@ describe('BloomreachMergeConsentService', () => {
         id: 'other-entry',
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: externalId },
           properties: { is_identity_verified: false },
           update_timestamp: 150,
@@ -276,6 +283,7 @@ describe('BloomreachMergeConsentService', () => {
         commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.EVENT,
           customer_ids: { city_account_id: externalId },
           properties: {
             action: BloomreachConsentActionEnum.REJECT,

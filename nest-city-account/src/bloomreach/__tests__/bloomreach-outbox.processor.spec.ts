@@ -20,8 +20,10 @@ import { PrismaService } from '../../prisma/prisma.service'
 import {
   BLOOMREACH_WIRE_COMMAND_NAME,
   BloomreachBatchCommand,
+  BloomreachCommandDataKind,
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
+  toWireCommandData,
 } from '../bloomreach.types'
 import { BloomreachMergeConsentService } from '../bloomreach-merge-consent.service'
 import { BloomreachOutboxProcessor } from '../bloomreach-outbox.processor'
@@ -51,6 +53,7 @@ describe('BloomreachOutboxProcessor', () => {
     externalId: 'cognito-1',
     commandName: BloomreachCommandName.CUSTOMERS,
     commandData: {
+      kind: BloomreachCommandDataKind.CUSTOMER,
       customer_ids: { city_account_id: 'cognito-1' },
       properties: {},
       update_timestamp: 100,
@@ -140,7 +143,7 @@ describe('BloomreachOutboxProcessor', () => {
           commands: [
             {
               name: BLOOMREACH_WIRE_COMMAND_NAME[entry.commandName],
-              data: entry.commandData,
+              data: toWireCommandData(entry.commandData),
               command_id: 'entry-1',
             },
           ],
@@ -305,7 +308,7 @@ describe('BloomreachOutboxProcessor', () => {
       expect((requestBody as { commands: BloomreachBatchCommand[] }).commands).toEqual([
         {
           name: BLOOMREACH_WIRE_COMMAND_NAME[entries[1].commandName],
-          data: entries[1].commandData,
+          data: toWireCommandData(entries[1].commandData),
           command_id: 'entry-2',
         },
       ])
@@ -327,6 +330,7 @@ describe('BloomreachOutboxProcessor', () => {
       const oldEntry = makeEntry({
         id: 'old-entry',
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { phone: '0900000000', email: 'old@example.com' },
           update_timestamp: 100,
@@ -336,6 +340,7 @@ describe('BloomreachOutboxProcessor', () => {
         id: 'newer-entry',
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { email: 'new@example.com' },
           update_timestamp: 200,
@@ -362,6 +367,7 @@ describe('BloomreachOutboxProcessor', () => {
         where: { id: 'newer-entry' },
         data: {
           commandData: {
+            kind: BloomreachCommandDataKind.CUSTOMER,
             customer_ids: { city_account_id: 'cognito-1' },
             properties: { phone: '0900000000', email: 'new@example.com' },
             update_timestamp: 200,
@@ -375,6 +381,7 @@ describe('BloomreachOutboxProcessor', () => {
       const oldEntry = makeEntry({
         id: 'old-entry',
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { phone: '0900000000', email: 'old@example.com' },
           update_timestamp: 100,
@@ -384,6 +391,7 @@ describe('BloomreachOutboxProcessor', () => {
         id: 'newer-entry',
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { email: 'new@example.com' },
           update_timestamp: 200,
@@ -415,6 +423,7 @@ describe('BloomreachOutboxProcessor', () => {
         id: 'old-event',
         commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
         commandData: {
+          kind: BloomreachCommandDataKind.EVENT,
           customer_ids: { city_account_id: 'cognito-1' },
           event_type: BloomreachEventNameEnum.CONSENT,
           properties: {
@@ -430,6 +439,7 @@ describe('BloomreachOutboxProcessor', () => {
         commandName: BloomreachCommandName.CUSTOMERS_EVENTS,
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.EVENT,
           customer_ids: { city_account_id: 'cognito-1' },
           event_type: BloomreachEventNameEnum.CONSENT,
           properties: {
@@ -492,6 +502,7 @@ describe('BloomreachOutboxProcessor', () => {
         status: BloomreachOutboxStatus.PROCESSING,
         updatedAt: new Date('2026-03-26T11:58:00Z'),
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { phone: '0900000000', email: 'old@example.com' },
           update_timestamp: 100,
@@ -501,6 +512,7 @@ describe('BloomreachOutboxProcessor', () => {
         id: 'newer-1',
         status: BloomreachOutboxStatus.PENDING,
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: 'cognito-1' },
           properties: { email: 'new@example.com' },
           update_timestamp: 200,
@@ -526,6 +538,7 @@ describe('BloomreachOutboxProcessor', () => {
         where: { id: 'newer-1' },
         data: {
           commandData: {
+            kind: BloomreachCommandDataKind.CUSTOMER,
             customer_ids: { city_account_id: 'cognito-1' },
             properties: { phone: '0900000000', email: 'new@example.com' },
             update_timestamp: 200,

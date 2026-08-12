@@ -4,8 +4,8 @@ import { Injectable } from '@nestjs/common'
 import BaConfigService from '../config/ba-config.service'
 import { ConsentEnum } from '../generated/prisma/enums'
 import { Consent } from './bloomreach.types'
-import { nowUnixSeconds } from './bloomreach-payload.builder'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
+import { nowUnixSeconds } from './bloomreach-payload.builder'
 
 @Injectable()
 export class BloomreachOutboxService {

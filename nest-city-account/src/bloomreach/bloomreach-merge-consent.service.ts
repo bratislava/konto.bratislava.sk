@@ -286,7 +286,7 @@ export class BloomreachMergeConsentService {
       LIMIT 1
     `
 
-    return rows?.[0]?.updateTimestamp ?? null
+    return rows[0]?.updateTimestamp ?? null
   }
 
   /**

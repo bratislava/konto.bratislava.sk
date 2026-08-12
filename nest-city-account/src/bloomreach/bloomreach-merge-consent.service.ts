@@ -195,7 +195,7 @@ export class BloomreachMergeConsentService {
     const restoreTimestampFloor = anonymizationTimestamp + MERGE_CONSENT_RESTORE_BUFFER_SECONDS
     const consentsToRestore = consents.map((consent) => ({
       ...consent,
-      timestamp: Math.max(restoreTimestampFloor),
+      timestamp: Math.max(consent.timestamp ?? restoreTimestampFloor, restoreTimestampFloor),
     }))
 
     await this.outboxWriter.queueConsentEvents(consentsToRestore, entry.externalId)

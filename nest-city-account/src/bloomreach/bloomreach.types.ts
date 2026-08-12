@@ -35,6 +35,12 @@ export interface BloomreachCustomerIds {
   contact_id?: string
 }
 
+/** Discriminates `BloomreachOutbox.commandData`'s two shapes at the type level. */
+export enum BloomreachCommandDataKind {
+  CUSTOMER = 'customer',
+  EVENT = 'event',
+}
+
 export interface BloomreachCustomerProperties {
   first_name?: string
   last_name?: string
@@ -49,6 +55,7 @@ export interface BloomreachCustomerProperties {
 }
 
 export interface BloomreachCustomerCommandData {
+  kind: BloomreachCommandDataKind.CUSTOMER
   customer_ids: BloomreachCustomerIds
   properties: BloomreachCustomerProperties
   update_timestamp: number
@@ -61,6 +68,7 @@ export interface BloomreachConsentEventProperties {
 }
 
 export interface BloomreachEventCommandData {
+  kind: BloomreachCommandDataKind.EVENT
   customer_ids: BloomreachCustomerIds
   properties: BloomreachConsentEventProperties
   event_type: BloomreachEventNameEnum
@@ -70,7 +78,7 @@ export interface BloomreachEventCommandData {
 export function isBloomreachCustomerData(
   data: BloomreachCustomerCommandData | BloomreachEventCommandData
 ): data is BloomreachCustomerCommandData {
-  return !('event_type' in data)
+  return data.kind === BloomreachCommandDataKind.CUSTOMER
 }
 
 export interface BloomreachCustomerCommand {
@@ -81,7 +89,7 @@ export interface BloomreachCustomerCommand {
 export function isBloomreachEventCommandData(
   data: BloomreachCustomerCommandData | BloomreachEventCommandData
 ): data is BloomreachEventCommandData {
-  return 'event_type' in data
+  return data.kind === BloomreachCommandDataKind.EVENT
 }
 
 export interface BloomreachEventCommand {
@@ -89,9 +97,22 @@ export interface BloomreachEventCommand {
   commandData: BloomreachEventCommandData
 }
 
+/** `commandData` stripped of internal bookkeeping not part of Bloomreach's wire contract. */
+export type BloomreachWireCommandData =
+  | Omit<BloomreachCustomerCommandData, 'kind'>
+  | Omit<BloomreachEventCommandData, 'kind'>
+
+export function toWireCommandData(
+  data: BloomreachCustomerCommandData | BloomreachEventCommandData
+): BloomreachWireCommandData {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- destructured only to exclude it from wireData
+  const { kind, ...wireData } = data
+  return wireData
+}
+
 export interface BloomreachBatchCommand {
   name: BloomreachCommandNameEnum
-  data: BloomreachCustomerCommandData | BloomreachEventCommandData
+  data: BloomreachWireCommandData
   command_id?: string
 }
 

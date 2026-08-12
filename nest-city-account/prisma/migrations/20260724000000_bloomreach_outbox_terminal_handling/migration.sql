@@ -29,6 +29,21 @@ WHERE
     "commandName" = 'customers/events'
     AND "commandData" -> 'timestamp' IS NULL;
 
+-- Backfill the `kind` discriminator into commandData of entries queued before the field existed.
+UPDATE "BloomreachOutbox"
+SET
+    "commandData" = JSONB_SET("commandData", '{kind}', '"customer"')
+WHERE
+    "commandName" = 'customers'
+    AND "commandData" -> 'kind' IS NULL;
+
+UPDATE "BloomreachOutbox"
+SET
+    "commandData" = JSONB_SET("commandData", '{kind}', '"event"')
+WHERE
+    "commandName" = 'customers/events'
+    AND "commandData" -> 'kind' IS NULL;
+
 
 -- Prevent a terminal entry from being silently downgraded by a non-terminal write.
 CREATE OR REPLACE FUNCTION bloomreach_outbox_prevent_terminal_downgrade()

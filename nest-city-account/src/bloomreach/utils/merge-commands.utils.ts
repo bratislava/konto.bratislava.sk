@@ -34,6 +34,7 @@ export function mergeCustomerCommandData(
   }
 
   return {
+    kind: newer.kind,
     customer_ids: { ...older.customer_ids, ...newer.customer_ids },
     properties: { ...older.properties, ...newer.properties },
     update_timestamp: newer.update_timestamp,

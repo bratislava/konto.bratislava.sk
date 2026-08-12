@@ -8,6 +8,7 @@ import { BloomreachCommandName, ConsentEnum } from '../../generated/prisma/enums
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import {
+  BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachEventNameEnum,
@@ -25,6 +26,7 @@ describe('BloomreachOutboxService', () => {
   const mockCustomerCommand = {
     commandName: BloomreachCommandNameEnum.CUSTOMERS as const,
     commandData: {
+      kind: BloomreachCommandDataKind.CUSTOMER as const,
       customer_ids: { city_account_id: externalId },
       properties: { email: 'test@example.com' },
       update_timestamp: 200,
@@ -34,6 +36,7 @@ describe('BloomreachOutboxService', () => {
   const mockAnonymizeCommand = {
     commandName: BloomreachCommandNameEnum.CUSTOMERS as const,
     commandData: {
+      kind: BloomreachCommandDataKind.CUSTOMER as const,
       customer_ids: { city_account_id: externalId },
       properties: {
         first_name: '',
@@ -115,6 +118,7 @@ describe('BloomreachOutboxService', () => {
       const existingEntry = bloomreachOutboxFactory({
         id: 'existing-id',
         commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
           customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
           properties: { phone: '0900000000', email: 'old@never.test' },
           // Must be older than mockCustomerCommand's 200
@@ -131,6 +135,7 @@ describe('BloomreachOutboxService', () => {
         where: { id: 'existing-id' },
         data: {
           commandData: {
+            kind: BloomreachCommandDataKind.CUSTOMER,
             customer_ids: { city_account_id: externalId, contact_id: 'contact-id' },
             properties: { phone: '0900000000', email: 'test@example.com' },
             update_timestamp: 200,
@@ -174,6 +179,7 @@ describe('BloomreachOutboxService', () => {
 
     it('should override a pending action value for the same event_type and category', async () => {
       const subscribeCommandData = {
+        kind: BloomreachCommandDataKind.EVENT as const,
         customer_ids: { city_account_id: externalId },
         event_type: BloomreachEventNameEnum.CONSENT,
         properties: {
@@ -185,6 +191,7 @@ describe('BloomreachOutboxService', () => {
       }
 
       const unsubscribeCommandData = {
+        kind: BloomreachCommandDataKind.EVENT as const,
         customer_ids: { city_account_id: externalId },
         event_type: BloomreachEventNameEnum.CONSENT,
         properties: {

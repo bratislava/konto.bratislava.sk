@@ -8,6 +8,7 @@ import {
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { UserIdentitySubservice } from '../utils/subservices/user-identity.subservice'
 import {
+  BloomreachCommandDataKind,
   BloomreachCommandNameEnum,
   BloomreachConsentActionEnum,
   BloomreachCustomerCommand,
@@ -71,6 +72,7 @@ export class BloomreachPayloadBuilder {
     return {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
+        kind: BloomreachCommandDataKind.CUSTOMER,
         customer_ids: {
           city_account_id: externalId,
           ...(contactId && { contact_id: contactId }),
@@ -119,6 +121,7 @@ export class BloomreachPayloadBuilder {
     return {
       commandName: BloomreachCommandNameEnum.CUSTOMERS,
       commandData: {
+        kind: BloomreachCommandDataKind.CUSTOMER,
         customer_ids: {
           city_account_id: externalId,
         },
@@ -143,6 +146,7 @@ export class BloomreachPayloadBuilder {
     return consents.map((consent) => ({
       commandName: BloomreachCommandNameEnum.CUSTOMERS_EVENTS,
       commandData: {
+        kind: BloomreachCommandDataKind.EVENT,
         customer_ids: {
           city_account_id: externalId,
         },

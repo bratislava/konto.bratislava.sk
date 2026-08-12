@@ -1,4 +1,7 @@
-import { BloomreachCustomerCommandData } from '../../bloomreach/bloomreach.types'
+import {
+  BloomreachCommandDataKind,
+  BloomreachCustomerCommandData,
+} from '../../bloomreach/bloomreach.types'
 import {
   BloomreachCommandName,
   BloomreachOutbox,
@@ -6,6 +9,7 @@ import {
 } from '../../generated/prisma/client'
 
 const defaultCommandData: BloomreachCustomerCommandData = {
+  kind: BloomreachCommandDataKind.CUSTOMER,
   customer_ids: { city_account_id: 'user-id' },
   properties: {},
   update_timestamp: 0,

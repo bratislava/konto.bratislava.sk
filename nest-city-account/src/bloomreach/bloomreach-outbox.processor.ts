@@ -15,6 +15,7 @@ import {
   BloomreachBatchResponse,
   isBloomreachCustomerData,
   isBloomreachEventCommandData,
+  toWireCommandData,
 } from './bloomreach.types'
 import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
 import { isAnonymizationCommand, mergeCustomerCommandData } from './utils/merge-commands.utils'
@@ -96,7 +97,7 @@ export class BloomreachOutboxProcessor {
 
     const commands: BloomreachBatchCommand[] = entries.map((entry) => ({
       name: BLOOMREACH_WIRE_COMMAND_NAME[entry.commandName],
-      data: entry.commandData,
+      data: toWireCommandData(entry.commandData),
       command_id: entry.id,
     }))
 

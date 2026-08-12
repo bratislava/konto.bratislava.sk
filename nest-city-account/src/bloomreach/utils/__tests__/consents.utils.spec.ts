@@ -94,7 +94,9 @@ describe('consents.utils', () => {
         { consentType: ConsentEnum.GENERAL, isGranted: true, timestamp: 100 },
       ])
 
-      expect(result).toEqual([{ consentType: ConsentEnum.GENERAL, isGranted: true, timestamp: 100 }])
+      expect(result).toEqual([
+        { consentType: ConsentEnum.GENERAL, isGranted: true, timestamp: 100 },
+      ])
     })
 
     it('should reduce consents from multiple sources together, keeping the latest per category', () => {
@@ -103,7 +105,9 @@ describe('consents.utils', () => {
 
       const result = extractLatestCityAccountConsents([...fromExport, ...fromPending])
 
-      expect(result).toEqual([{ consentType: ConsentEnum.MARKETING, isGranted: false, timestamp: 500 }])
+      expect(result).toEqual([
+        { consentType: ConsentEnum.MARKETING, isGranted: false, timestamp: 500 },
+      ])
     })
   })
 })

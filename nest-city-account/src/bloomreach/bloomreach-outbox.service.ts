@@ -7,8 +7,8 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { Consent } from './bloomreach.types'
-import { nowUnixSeconds } from './bloomreach-payload.builder'
 import { BloomreachOutboxWriterService } from './bloomreach-outbox-writer.service'
+import { nowUnixSeconds } from './bloomreach-payload.builder'
 
 @Injectable()
 export class BloomreachOutboxService {

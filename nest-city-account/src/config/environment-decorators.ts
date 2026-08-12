@@ -65,7 +65,7 @@ export function EnvBoolean({ required = true }: { required?: boolean } = {}) {
 export function EnvInt({
   min,
   max,
-  required = true
+  required = true,
 }: {
   min?: number
   max?: number
@@ -91,7 +91,7 @@ export function EnvString({ required = true }: { required?: boolean } = {}) {
 
 export function EnvUrl({
   requireTld = true,
-  required = true
+  required = true,
 }: {
   requireTld?: boolean
   required?: boolean
@@ -115,10 +115,7 @@ export function EnvStringList() {
   )
 }
 
-export function EnvEnum(
-  enumType: object,
-  { required = true }: { required?: boolean } = {}
-) {
+export function EnvEnum(enumType: object, { required = true }: { required?: boolean } = {}) {
   return applyDecorators(Expose(), IsEnum(enumType), ...(required ? [IsNotEmpty()] : []))
 }
 

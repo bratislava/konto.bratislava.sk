@@ -66,12 +66,9 @@ Runtime configuration is split in two: **non-secret env vars live in this repo**
 
 **Non-secret env vars** go in `<service>/.env.deploy.<cluster>`, e.g. `nest-forms-backend/.env.deploy.staging`. On deploy the infrastructure repo reads that file from the exact commit being deployed and turns it into the `<service>-env` config map. The format is: one `KEY=VALUE` per line, blank lines and whole-line `#` comments ignored, one layer of surrounding quotes stripped if present. **A value has to fit on a single line** — there is no line continuation and no escape processing, so a `#` mid-line stays part of the value. Anything multiline (a PEM key, a certificate) must either be rewritten to a single line, or land in Passbolt.
 
-**Secrets** live in [Passbolt](https://www.passbolt.com/) and are synced into the cluster by External Secrets Operator, so you need Passbolt access to change them:
+**Secrets** live in [Passbolt](https://www.passbolt.com/) and are synced into the cluster by External Secrets Operator, so you need Passbolt access to change them. Every secret belongs to exactly one service: Passbolt resources are named `<cluster>/<service>/<ENV_VAR_NAME>` (e.g. `staging/nest-city-account/TURNSTILE_SECRET_KEY`) and sync into that service's `<service>-secret` Kubernetes Secret. There are no shared secret groups — a value that two services both need is stored once per service.
 
-- Service-private secrets are Passbolt resources named `<cluster>/<service>/<ENV_VAR_NAME>` (e.g. `staging/nest-city-account/TURNSTILE_SECRET_KEY`), synced into the `<service>-secret` Kubernetes Secret.
-- Secrets shared by multiple services (Mailgun, NASES, Noris, Bloomreach, AWS Cognito, …) are grouped as `<cluster>/konto-<group>/<ENV_VAR_NAME>` — see `clusters/<cluster>/applications/konto.bratislava.sk/secrets` in the infrastructure repo.
-
-Updating the value in Passbolt is enough — it syncs to the cluster automatically with next deploy. Same goes for **new** secret env vars, as long as they match the existing service name or `konto-<group>` name. Creating new secret "groups" requires a change and apply in infra repo `clusters/<cluster>/applications/konto.bratislava.sk/secrets`. If needed, it's also possible to sync secrets without full redeployment, only with (rolling - no production downtime) application restart (ask the infra repo maintainers).
+Updating the value in Passbolt is enough — it syncs to the cluster automatically with next deploy. Same goes for **new** secret env vars, as long as they are named under an existing service. If needed, it's also possible to sync secrets without full redeployment, only with (rolling - no production downtime) application restart (ask the infra repo maintainers).
 
 If you don't have Passbolt access, ask around on the konto.bratislava.sk team.
 

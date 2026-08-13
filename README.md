@@ -62,9 +62,9 @@ The build and deploy plumbing (Buildx setup, registry logins, Docker tag/cache m
 
 ### Environment variables and secrets
 
-Runtime configuration no longer lives in this repo (the per-service `kubernetes` directories were removed). It is managed per cluster in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration), under `clusters/<cluster>/applications/konto.bratislava.sk/<service>` (clusters: `development`, `staging`, `production`).
+Runtime configuration is split in two: **non-secret env vars live in this repo**, next to the code they configure, and **secrets live in Passbolt**. The deployment itself is still defined per cluster in [infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration), under `clusters/<cluster>/applications/konto.bratislava.sk/<service>` (clusters: `development`, `staging`, `production`).
 
-**Non-secret env vars** are defined in a `kubernetes_config_map` resource (usually `<service>-env`) in that service's `app/main.tf`. To change one, open a PR in the infrastructure repo editing the config map for each affected cluster and notify the infra repo maintainers — the change is applied when the Terragrunt module is applied (which also happens on every deploy of the service).
+**Non-secret env vars** go in `<service>/.env.deploy.<cluster>`, e.g. `nest-forms-backend/.env.deploy.staging`. On deploy the infrastructure repo reads that file from the exact commit being deployed and turns it into the `<service>-env` config map. The format is: one `KEY=VALUE` per line, blank lines and whole-line `#` comments ignored, one layer of surrounding quotes stripped if present. **A value has to fit on a single line** — there is no line continuation and no escape processing, so a `#` mid-line stays part of the value. Anything multiline (a PEM key, a certificate) must either be rewritten to a single line, or land in Passbolt.
 
 **Secrets** live in [Passbolt](https://www.passbolt.com/) and are synced into the cluster by External Secrets Operator, so you need Passbolt access to change them:
 

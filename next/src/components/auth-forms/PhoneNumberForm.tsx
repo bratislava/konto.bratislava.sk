@@ -16,7 +16,7 @@ const schema = {
     phone_number: {
       type: 'string',
       format: 'phone',
-      errorMessage: { format: 'account:auth.fields.phone_number_format' },
+      errorMessage: { format: 'auth.fields.phoneNumber.format' },
     },
   },
   required: ['phone_number'],
@@ -30,7 +30,8 @@ interface Props {
 }
 
 const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
     control,
@@ -46,15 +47,15 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
       className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
-      <Typography variant="p-small">{t('phone_number_modal.description')}</Typography>
+      <Typography variant="p-small">{t('PhoneNumberForm.description')}</Typography>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
         name="phone_number"
         control={control}
         render={({ field }) => (
           <TextField
-            label={t('my_profile.profile_detail.phone_number')}
-            helptext={t('my_profile.profile_detail.phone_number_helptext')}
+            label={t('PhoneNumberForm.phoneNumber')}
+            helptext={t('PhoneNumberForm.phoneNumberHelptext')}
             autoComplete="tel"
             autoCapitalize="none"
             autoCorrect="off"
@@ -65,7 +66,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('phone_number_form.save_changes_button')}
+        {t('PhoneNumberForm.saveChangesButton')}
       </Button>
     </form>
   )

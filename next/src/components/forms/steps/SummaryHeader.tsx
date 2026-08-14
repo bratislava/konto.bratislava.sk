@@ -7,12 +7,13 @@ import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisab
 import Alert from '@/src/components/simple-components/Alert'
 
 const SummaryHeader = () => {
+  const { t } = useTranslation()
+
   const { isSigned, strapiForm } = useFormContext()
   const { getValidatedSummary, getInfectedFiles, getUploadFiles } = useFormSummary()
   const { hasErrors } = getValidatedSummary()
   const infectedFiles = getInfectedFiles()
   const uploadFiles = getUploadFiles()
-  const { t } = useTranslation('forms')
 
   const infectedFilesFilenames = infectedFiles.map((file) => file.fileName)
 
@@ -20,20 +21,22 @@ const SummaryHeader = () => {
     <>
       <TemporarilyDisabledAlert strapiForm={strapiForm} variant="form" />
 
-      <Typography variant="h2">{t('summary.title')}</Typography>
+      <Typography variant="h2">{t('SummaryHeader.title')}</Typography>
 
       <div className="flex flex-col gap-4">
         {hasErrors && (
           <Alert
             type="error"
-            message={isSigned ? t('summary.form_has_errors_signed') : t('summary.form_has_errors')}
+            message={
+              isSigned ? t('SummaryHeader.formHasErrorsSigned') : t('SummaryHeader.formHasErrors')
+            }
             fullWidth
           />
         )}
         {infectedFiles.length === 1 && (
           <Alert
             type="error"
-            message={t('summary.virus_alert', {
+            message={t('SummaryHeader.virusAlert', {
               file: infectedFilesFilenames[0],
             })}
             fullWidth
@@ -42,7 +45,7 @@ const SummaryHeader = () => {
         {infectedFiles.length > 1 && (
           <Alert
             type="error"
-            message={t('summary.virus_alert_plural', {
+            message={t('SummaryHeader.virusAlertPlural', {
               files: infectedFilesFilenames.map((name) => `“${name}“`).join(', '),
             })}
             fullWidth
@@ -51,7 +54,7 @@ const SummaryHeader = () => {
         {uploadFiles.length > 0 && (
           <Alert
             type="warning"
-            message={t('summary.uploading_files', {
+            message={t('SummaryHeader.uploadingFiles', {
               files: uploadFiles.map((file) => file.fileName).join(', '),
             })}
             fullWidth

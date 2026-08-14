@@ -22,7 +22,7 @@ import { ROUTES } from '@/src/utils/routes'
  */
 
 const TaxPageContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
   const strapiTaxAdministrator = useStrapiTaxAdministrator()
@@ -34,22 +34,22 @@ const TaxPageContent = () => {
   })
 
   const pageTitle = {
-    [TaxType.Dzn]: t('tax_detail_section.title.dzn', { year: taxData.year }),
-    [TaxType.Ko]: t('tax_detail_section.title.ko', { year: taxData.year, order: taxData.order }),
+    [TaxType.Dzn]: t('TaxPageContent.title.dzn', { year: taxData.year }),
+    [TaxType.Ko]: t('TaxPageContent.title.ko', { year: taxData.year, order: taxData.order }),
   }[taxData.type]
 
   const paymentSuccessMessage = {
-    [TaxType.Dzn]: t('account_section_payment.payment_successful.dzn'),
-    [TaxType.Ko]: t('account_section_payment.payment_successful.ko'),
+    [TaxType.Dzn]: t('TaxPageContent.paymentSuccessful.dzn'),
+    [TaxType.Ko]: t('TaxPageContent.paymentSuccessful.ko'),
   }[taxData.type]
 
   const paymentCancelledMessage = {
-    [TaxType.Dzn]: t('account_section_payment.payment_cancelled.dzn'),
-    [TaxType.Ko]: t('account_section_payment.payment_cancelled.ko'),
+    [TaxType.Dzn]: t('TaxPageContent.paymentCancelled.dzn'),
+    [TaxType.Ko]: t('TaxPageContent.paymentCancelled.ko'),
   }[taxData.type]
 
   const breadcrumbs = [
-    { title: t('account_section_payment.title'), path: ROUTES.TAXES },
+    { title: t('TaxesPageContent.title'), path: ROUTES.TAXES },
     { title: pageTitle, path: null },
   ]
 

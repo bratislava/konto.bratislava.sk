@@ -39,12 +39,12 @@ export const usePaymentResultPropsMap = ({
   feedbackLink?: string | null
   taxDetailLink: string
 }) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const commonProps: Partial<ThankYouTileProps> = {
     isContentCentered: true,
     secondaryButton: {
-      label: t('PaymentResultPageContent.button_to_taxes'),
+      label: t('PaymentResultPageContent.buttons.toTaxes'),
       href: ROUTES.TAXES,
     },
   }
@@ -53,11 +53,11 @@ export const usePaymentResultPropsMap = ({
     [PaymentRedirectStateEnum.PaymentSuccess]: {
       ...commonProps,
       variant: 'success',
-      title: t('PaymentResultPageContent.payment_success.title'),
-      content: t('PaymentResultPageContent.payment_success.content'),
+      title: t('PaymentResultPageContent.paymentSuccess.title'),
+      content: t('PaymentResultPageContent.paymentSuccess.content'),
       primaryButton: feedbackLink
         ? {
-            label: t('PaymentResultPageContent.button_to_feedback'),
+            label: t('PaymentResultPageContent.buttons.toFeedback'),
             href: feedbackLink,
           }
         : null,
@@ -65,26 +65,26 @@ export const usePaymentResultPropsMap = ({
     [PaymentRedirectStateEnum.PaymentAlreadyPaid]: {
       ...commonProps,
       variant: 'success',
-      title: t('PaymentResultPageContent.payment_already_paid.title'),
-      content: t('PaymentResultPageContent.payment_success.content'),
+      title: t('PaymentResultPageContent.paymentAlreadyPaid.title'),
+      content: t('PaymentResultPageContent.paymentSuccess.content'),
     },
     [PaymentRedirectStateEnum.FailedToVerify]: {
       ...commonProps,
       variant: 'warning',
-      title: t('PaymentResultPageContent.payment_failed_to_verify.title'),
-      content: t('PaymentResultPageContent.payment_failed.content'),
+      title: t('PaymentResultPageContent.paymentFailedToVerify.title'),
+      content: t('PaymentResultPageContent.paymentFailed.content'),
       primaryButton: {
-        label: t('PaymentResultPageContent.button_repeat_payment'),
+        label: t('PaymentResultPageContent.buttons.repeatPayment'),
         href: taxDetailLink,
       },
     },
     [PaymentRedirectStateEnum.PaymentFailed]: {
       ...commonProps,
       variant: 'error',
-      title: t('PaymentResultPageContent.payment_failed.title'),
-      content: t('PaymentResultPageContent.payment_failed.content'),
+      title: t('PaymentResultPageContent.paymentFailed.title'),
+      content: t('PaymentResultPageContent.paymentFailed.content'),
       primaryButton: {
-        label: t('PaymentResultPageContent.button_repeat_payment'),
+        label: t('PaymentResultPageContent.buttons.repeatPayment'),
         href: taxDetailLink,
       },
     },

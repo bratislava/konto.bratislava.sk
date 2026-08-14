@@ -14,7 +14,8 @@ const goBack = () => {
  * Based on bratislava.sk: https://github.com/bratislava/bratislava.sk/blob/b8e21a117c691f1f3e3a9be9fa8ae65d4c8172ee/next/src/components/common/Breadcrumbs/MobileBreadcrumbs.tsx#L22
  */
 const MobileBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const withHome = [{ title: t('Breadcrumbs.homepage'), path: '/' }, ...breadcrumbs]
   const withHomeWithoutCurrent = withHome.slice(0, -1)
   const last = withHomeWithoutCurrent.at(-1)

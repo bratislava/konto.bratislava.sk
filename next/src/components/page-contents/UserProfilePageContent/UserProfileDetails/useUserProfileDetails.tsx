@@ -14,7 +14,8 @@ import { GENERIC_ERROR_MESSAGE, isError } from '@/src/frontend/utils/errors'
 import logger from '@/src/frontend/utils/logger'
 
 export const useUserProfileDetails = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { showToast } = useToast()
   const formId = `form-${useId()}`
 
@@ -40,7 +41,7 @@ export const useUserProfileDetails = () => {
       })
 
       showToast({
-        message: t('my_profile.profile_detail.success_snackbar_message'),
+        message: t('useUserProfileDetails.successSnackbarMessage'),
         variant: 'success',
         duration: 3000,
       })
@@ -62,7 +63,7 @@ export const useUserProfileDetails = () => {
       }
 
       showToast({
-        message: t('my_profile.profile_detail.error_snackbar_message'),
+        message: t('useUserProfileDetails.errorSnackbarMessage'),
         variant: 'error',
         duration: 3000,
       })

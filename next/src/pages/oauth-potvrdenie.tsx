@@ -50,8 +50,9 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
+  const { t } = useTranslation()
   const router = useRouter()
-  const { t } = useTranslation('account')
+
   const { signOut } = useSignOut()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -92,26 +93,26 @@ const OAuthPage = ({ general, clientInfo, dehydratedState }: PageProps) => {
           <PageLayout variant="auth">
             <AccountContainer>
               <AccountSuccessAlert
-                title={t('auth.oauth_page.title')}
+                title={t('OAuthPage.title')}
                 {...(shouldRedirectToIdentityVerification
                   ? {
                       variant: 'info',
-                      description: `${t('auth.oauth_page.description', { email })}\n\n${t('auth.oauth_page.identity_verification_is_required_info')}`,
-                      confirmLabel: t('auth.oauth_page.continue_to_identity_verification'),
+                      description: `${t('OAuthPage.description', { email })}\n\n${t('auth.identityVerificationRequiredInfo')}`,
+                      confirmLabel: t('auth.continueToIdentityVerification'),
                       onConfirm: () => {
                         handleRedirectToIdentityVerification()
                       },
                     }
                   : {
                       variant: 'success',
-                      description: t('auth.oauth_page.description', { email }),
-                      confirmLabel: t('auth.oauth_page.continue_to_oauth_origin', { clientTitle }),
+                      description: t('OAuthPage.description', { email }),
+                      confirmLabel: t('auth.continueToOauthOrigin', { clientTitle }),
                       onConfirm: () => {
                         handleOAuthContinue()
                       },
                     })}
                 confirmIsLoading={isLoading}
-                cancelLabel={t('auth.oauth_page.cancel_label')}
+                cancelLabel={t('OAuthPage.cancelLabel')}
                 onCancel={handleLogout}
                 cancelIsLoading={isLoading}
               />

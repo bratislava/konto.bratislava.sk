@@ -12,7 +12,7 @@ export type UseFormStateComponentsParams = {
 }
 
 const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   // note: in case of 'unsafe return of any type' the BE enum likely changed/expanded - see const ret assignment below
   return useMemo(() => {
@@ -25,7 +25,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           iconRound: null,
           text: (
             <Typography className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error')}
+              {t('useFormStateComponents.statuses.error')}
             </Typography>
           ),
         },
@@ -38,7 +38,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_other')}
+              {t('useFormStateComponents.statuses.errorOther')}
             </Typography>
           ),
         },
@@ -46,11 +46,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
         [GetFormResponseDtoErrorEnum.FilesNotYetScanned]: {
           icon: null,
           iconRound: null,
-          text: (
-            <Typography>
-              {t('account_section_applications.navigation_concept_card.status_draft')}
-            </Typography>
-          ),
+          text: <Typography>{t('useFormStateComponents.statuses.draft')}</Typography>,
         },
         [GetFormResponseDtoErrorEnum.UnableToScanFiles]: {
           icon: <Icon name="error" className="size-6 text-error" />,
@@ -61,7 +57,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
+              {t('useFormStateComponents.statuses.errorAntivirus')}
             </Typography>
           ),
         },
@@ -74,7 +70,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
+              {t('useFormStateComponents.statuses.errorAntivirus')}
             </Typography>
           ),
         },
@@ -87,7 +83,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_other')}
+              {t('useFormStateComponents.statuses.errorOther')}
             </Typography>
           ),
         },
@@ -100,7 +96,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_other')}
+              {t('useFormStateComponents.statuses.errorOther')}
             </Typography>
           ),
         },
@@ -118,7 +114,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error')}
+              {t('useFormStateComponents.statuses.error')}
             </Typography>
           ),
         }
@@ -132,11 +128,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
         DRAFT: {
           icon: null,
           iconRound: null,
-          text: (
-            <Typography>
-              {t('account_section_applications.navigation_concept_card.status_draft')}
-            </Typography>
-          ),
+          text: <Typography>{t('useFormStateComponents.statuses.draft')}</Typography>,
         },
         QUEUED: {
           icon: <Icon name="scan" className="size-6" />,
@@ -145,11 +137,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
               <Icon name="scan" className="size-5" />
             </div>
           ),
-          text: (
-            <Typography>
-              {t('account_section_applications.navigation_concept_card.status_scanning')}
-            </Typography>
-          ),
+          text: <Typography>{t('useFormStateComponents.statuses.scanning')}</Typography>,
         },
         DELIVERED_NASES: {
           icon: <Icon name="send" className="size-6 text-warning-700" />,
@@ -160,7 +148,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography variant="p-small" className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.delivered_nases')}
+              {t('useFormStateComponents.statuses.deliveredNases')}
             </Typography>
           ),
         },
@@ -173,7 +161,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography variant="p-small" className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.status_sending')}
+              {t('useFormStateComponents.statuses.sending')}
             </Typography>
           ),
         },
@@ -186,7 +174,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography variant="p-small" className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.status_processing')}
+              {t('useFormStateComponents.statuses.processing')}
             </Typography>
           ),
         },
@@ -199,7 +187,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography variant="p-small" className="text-success-700">
-              {t('account_section_applications.navigation_concept_card.status_finished')}
+              {t('useFormStateComponents.statuses.finished')}
             </Typography>
           ),
         },
@@ -212,7 +200,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography variant="p-small" className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_rejected')}
+              {t('useFormStateComponents.statuses.rejected')}
             </Typography>
           ),
         },
@@ -225,7 +213,7 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography variant="p-small" className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error')}
+              {t('useFormStateComponents.statuses.error')}
             </Typography>
           ),
         },
@@ -239,18 +227,14 @@ const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) 
           ),
           text: (
             <Typography variant="p-small" className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error')}
+              {t('useFormStateComponents.statuses.error')}
             </Typography>
           ),
         },
         NONE: {
           icon: null,
           iconRound: null,
-          text: (
-            <Typography>
-              {t('account_section_applications.navigation_concept_card.status_none')}
-            </Typography>
-          ),
+          text: <Typography>{t('useFormStateComponents.statuses.none')}</Typography>,
         },
       } as const
     )[state || 'NONE']

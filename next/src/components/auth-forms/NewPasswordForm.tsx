@@ -32,8 +32,8 @@ const schema = {
       minLength: 1,
       format: 'verificationCode',
       errorMessage: {
-        minLength: 'account:auth.fields.verification_code_required',
-        format: 'account:auth.fields.verification_code_format',
+        minLength: 'auth.fields.verificationCode.required',
+        format: 'auth.fields.verificationCode.format',
       },
     },
     password: {
@@ -41,8 +41,8 @@ const schema = {
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password_required',
-        format: 'account:auth.fields.password_format',
+        minLength: 'auth.fields.password.required',
+        format: 'auth.fields.password.format',
       },
     },
   },
@@ -54,8 +54,9 @@ const schema = {
  */
 
 const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }: Props) => {
+  const { t } = useTranslation()
+
   const [lastVerificationCode, setLastVerificationCode] = useState<string>('')
-  const { t } = useTranslation('account')
   const {
     handleSubmit,
     control,
@@ -91,10 +92,10 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       })}
     >
       <Typography variant="h3" as="h1">
-        {fromMigration ? t('auth.migration_new_password_title') : t('auth.new_password_title')}
+        {fromMigration ? t('NewPasswordForm.migrationTitle') : t('NewPasswordForm.title')}
       </Typography>
       <Typography variant="p-small">
-        {t('auth.new_password_description', { email: lastEmail })}
+        {t('NewPasswordForm.description', { email: lastEmail })}
       </Typography>
       <AccountErrorAlert
         error={error}
@@ -113,7 +114,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck="false"
-            label={t('auth.fields.verification_code_label')}
+            label={t('auth.fields.verificationCode.label')}
             {...field}
             errorMessage={errors.verificationCode}
           />
@@ -127,23 +128,23 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
             isRequired
             autoComplete="new-password"
             label={
-              fromMigration ? t('auth.fields.password_label') : t('auth.fields.new_password_label')
+              fromMigration ? t('auth.fields.password.label') : t('auth.fields.newPassword.label')
             }
-            helptext={t('auth.fields.password_description')}
+            helptext={t('auth.fields.password.helptext')}
             {...field}
             errorMessage={errors.password}
           />
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {fromMigration ? t('auth.migration_new_password_submit') : t('auth.new_password_submit')}
+        {fromMigration ? t('NewPasswordForm.migrationSubmit') : t('NewPasswordForm.submit')}
       </Button>
       <Typography variant="p-small">
-        <span>{t('auth.verification_description')}</span>{' '}
-        {cnt > 0 && <span>{t('auth.verification_cnt_description', { cnt })}</span>}
+        <span>{t('auth.resendCode.description')}</span>{' '}
+        {cnt > 0 && <span>{t('auth.resendCode.countdown', { cnt })}</span>}
       </Typography>
       <Button variant="outline" onPress={handleResend} fullWidth isDisabled={cnt > 0}>
-        {t('auth.verification_resend')}
+        {t('auth.resendCode.button')}
       </Button>
       <AccountLink variant="login" />
     </form>

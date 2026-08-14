@@ -12,7 +12,8 @@ interface Props<T> {
 }
 
 export default function useHookForm<T extends FieldValues>({ schema, defaultValues }: Props<T>) {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   // if we want password to contain special symbol add (?=.*?[ !"#$%&'()*+,./:;<=>?@[\\\]^_`{|}~-])
   const form = useForm({
     resolver: ajvResolver(schema as JSONSchemaType<T>, {

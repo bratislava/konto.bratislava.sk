@@ -55,7 +55,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
 type BATooltipProps = Pick<TooltipProps, 'placement'> & { children: string }
 
 const BATooltip = ({ placement, children }: BATooltipProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   // According to documentation
   // >> Note: tooltips are not shown on touch screen interactions. Ensure that your UI is usable without tooltips, or use

@@ -34,7 +34,8 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const LogoutPage = ({ general, clientInfo }: AuthPageCommonProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { signOut } = useSignOut()
   const { redirect } = useQueryParamRedirect()
   const [isLoading, setIsLoading] = useState(false)
@@ -57,12 +58,12 @@ const LogoutPage = ({ general, clientInfo }: AuthPageCommonProps) => {
           <AccountContainer>
             <AccountSuccessAlert
               variant="logout"
-              title={t('auth.logout_page.title')}
-              description={t('auth.logout_page.description')}
-              confirmLabel={t('auth.logout_page.confirm_label')}
+              title={t('LogoutPage.title')}
+              description={t('LogoutPage.description')}
+              confirmLabel={t('LogoutPage.confirmLabel')}
               onConfirm={handleLogout}
               confirmIsLoading={isLoading}
-              cancelLabel={t('auth.logout_page.cancel_label')}
+              cancelLabel={t('LogoutPage.cancelLabel')}
               onCancel={() => redirect()}
             />
           </AccountContainer>

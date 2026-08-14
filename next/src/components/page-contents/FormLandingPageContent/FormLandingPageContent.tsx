@@ -31,7 +31,7 @@ export type FormLandingPageProps = {
 
 // TODO: Remove this page completely, after full migration to municipal service page
 const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
 
   return (
     <>
@@ -46,7 +46,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
               className="w-max"
               href={strapiForm.moreInformationUrl}
             >
-              {t('form_header.services_link')}
+              {t('FormHeader.servicesLink')}
             </Button>
           ) : null}
         </div>

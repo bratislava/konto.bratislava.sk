@@ -12,7 +12,8 @@ import Spinner from '@/src/components/simple-components/Spinner'
 type FormLightboxModalProps = { imageUrl: string }
 
 const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightboxModalProps>) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -44,7 +45,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
               size="large"
               onPress={() => setIsOpen(false)}
               icon={<Icon name="close" className="size-6" />}
-              aria-label={t('Modal.aria.close')}
+              aria-label={t('Dialog.aria.close')}
               className="text-content-active-primary-inverted-default hover:text-content-active-primary-inverted-hover active:text-content-active-primary-inverted-pressed"
             />
           ),

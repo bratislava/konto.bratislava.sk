@@ -13,23 +13,23 @@ import { EXTERNAL_LINKS } from '@/src/utils/routes'
  */
 
 const TaxDetails = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { taxData } = useTaxData()
 
   const taxAccordionsHeader = {
-    [TaxType.Dzn]: t('taxes.tax_details.tax_liability_breakdown.taxes'),
-    [TaxType.Ko]: t('taxes.tax_details.tax_liability_breakdown.fees'),
+    [TaxType.Dzn]: t('TaxDetails.breakdown.taxes'),
+    [TaxType.Ko]: t('TaxDetails.breakdown.fees'),
   }[taxData.type]
 
   const taxAccordionsHeaderLinkProps = {
     [TaxType.Dzn]: {
       href: EXTERNAL_LINKS.BRATISLAVA_TAXES_INFO_DZN,
-      children: t('tax_detail_section.tax_detail_fees_link.dzn'),
+      children: t('TaxDetails.feesLink.dzn'),
     },
     [TaxType.Ko]: {
       href: EXTERNAL_LINKS.BRATISLAVA_TAXES_INFO_KO,
-      children: t('tax_detail_section.tax_detail_fees_link.ko'),
+      children: t('TaxDetails.feesLink.ko'),
     },
   }[taxData.type]
 

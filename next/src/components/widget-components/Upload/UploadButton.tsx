@@ -38,7 +38,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     },
     ref,
   ) => {
-    const { t } = useTranslation('account')
+    const { t } = useTranslation()
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 

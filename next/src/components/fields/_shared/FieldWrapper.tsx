@@ -41,7 +41,7 @@ const FieldWrapper = ({
   errorMessage,
   children,
 }: FieldWrapperProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   // Showing "(optional)" is the default approach, but we still want to keep the door open for using
   // asterisks = hiding "(optional)", by setting displayOptionalLabel={false}

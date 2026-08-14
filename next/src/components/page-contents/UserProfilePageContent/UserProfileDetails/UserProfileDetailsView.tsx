@@ -34,7 +34,7 @@ type Props = {
 }
 
 const UserProfileDetailsView = ({ userAttributes }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     name,
@@ -47,8 +47,8 @@ const UserProfileDetailsView = ({ userAttributes }: Props) => {
   const isLegalEntity = account_type !== AccountType.FyzickaOsoba
 
   const nameLabel = isLegalEntity
-    ? t('my_profile.profile_detail.business_name')
-    : t('my_profile.profile_detail.full_name')
+    ? t('UserProfileDetails.businessName')
+    : t('UserProfileDetailsView.fullName')
 
   const fullName = isLegalEntity
     ? (name ?? '')
@@ -60,7 +60,7 @@ const UserProfileDetailsView = ({ userAttributes }: Props) => {
       value: fullName,
     },
     {
-      label: t('my_profile.profile_detail.email'),
+      label: t('UserProfileDetails.email'),
       value: email,
     },
   ]

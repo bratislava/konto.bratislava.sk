@@ -6,7 +6,7 @@ import DeliveryMethodChangeModal from '@/src/components/page-contents/TaxesPageC
 import AnnouncementBlock from '@/src/components/segments/Announcements/AnnouncementBlock'
 
 const DeliveryMethodNeededBanner = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -14,11 +14,11 @@ const DeliveryMethodNeededBanner = () => {
     <>
       <DeliveryMethodChangeModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
       <AnnouncementBlock
-        announcementContent={t('account_section_payment.set_delivery_method_content')}
+        announcementContent={t('DeliveryMethodNeededBanner.content')}
         imageSrc={ImageMestskeKontoSituacia}
         buttons={[
           {
-            children: t('account_section_payment.set_delivery_method'),
+            children: t('DeliveryMethodNeededBanner.button'),
             onPress: () => setIsModalOpen(true),
             variant: 'solid',
             fullWidthMobile: true,

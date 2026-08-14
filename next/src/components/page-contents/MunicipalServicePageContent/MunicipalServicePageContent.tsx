@@ -25,7 +25,8 @@ const MunicipalServicePageContent = ({
   municipalService,
   formDefinition,
 }: MunicipalServicePageContentProps) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
+
   const { sections, form: strapiForm, pageHeaderText, moreInformationUrl } = municipalService
 
   const filteredSections = sections?.filter(isDefined) ?? []
@@ -42,7 +43,7 @@ const MunicipalServicePageContent = ({
           {moreInformationUrl ? (
             // TODO size
             <Button variant="link" size="small" className="w-max" href={moreInformationUrl}>
-              {t('form_header.services_link')}
+              {t('FormHeader.servicesLink')}
             </Button>
           ) : null}
         </div>

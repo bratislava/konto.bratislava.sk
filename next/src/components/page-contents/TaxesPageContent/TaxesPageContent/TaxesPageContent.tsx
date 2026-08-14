@@ -24,7 +24,7 @@ import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
  */
 
 const TaxesPageContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const {
     tierStatus: { isInQueue, isIdentityVerified },
@@ -34,8 +34,8 @@ const TaxesPageContent = () => {
   const strapiTaxAdministrator = useStrapiTaxAdministrator()
 
   const taxTypeTabOptions: TaxesPageTabsProps['items'] = [
-    { title: t('account_section_payment.property_tax_title'), id: TaxType.Dzn },
-    { title: t('account_section_payment.communal_waste_fee_title'), id: TaxType.Ko },
+    { title: t('TaxesPageContent.tabs.dzn'), id: TaxType.Dzn },
+    { title: t('TaxesPageContent.tabs.ko'), id: TaxType.Ko },
   ]
 
   const [selectedTaxType, setSelectedTaxType] = useState<TaxType>(taxTypeTabOptions[0].id)
@@ -55,7 +55,7 @@ const TaxesPageContent = () => {
   return (
     <>
       <PageHeader
-        title={t('account_section_payment.title')}
+        title={t('TaxesPageContent.title')}
         // not the best solution, but for proper one we need to rewrite components in Figma (pages, UserProfileView, HelpSection, IntroSection)
         titleWrapperClassName="pb-0 pt-8 lg:py-0"
         className="lg:pt-14"

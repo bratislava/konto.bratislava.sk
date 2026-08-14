@@ -9,13 +9,14 @@ import DropdownMenu from '@/src/components/simple-components/DropdownMenu/Dropdo
 import { useFormExportImport } from '@/src/frontend/hooks/useFormExportImport'
 
 const FormHeader = () => {
+  const { t } = useTranslation()
+
   const {
     formDefinition: { schema },
     isReadonly,
     strapiForm,
   } = useFormContext()
   const { saveConcept } = useFormExportImport()
-  const { t } = useTranslation('forms')
 
   const menuItems = useFormMenuItems()
 
@@ -31,7 +32,7 @@ const FormHeader = () => {
               className="w-max"
               href={strapiForm.moreInformationUrl}
             >
-              {t('form_header.services_link')}
+              {t('FormHeader.servicesLink')}
             </Button>
           ) : null}
         </div>
@@ -44,7 +45,7 @@ const FormHeader = () => {
               onPress={() => saveConcept()}
               data-cy="save-concept-desktop"
             >
-              {t('menu_list.save_concept')}
+              {t('useFormMenuItems.saveConcept')}
             </Button>
           )}
           <DropdownMenu
@@ -53,7 +54,7 @@ const FormHeader = () => {
                 variant="outline"
                 size="small"
                 icon={<Icon name="menu-kebab" />}
-                aria-label={t('form_header.additional_fom_action_menu_aria_label')}
+                aria-label={t('FormHeader.aria.actionsMenu')}
               />
             }
             items={menuItems}

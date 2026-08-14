@@ -30,7 +30,7 @@ type Props = {
 }
 
 export const NavBarHeader = ({ variant, hasBackButton = false }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
 
   const { signedInActionsMenuItems } = useNavMenu()
@@ -98,7 +98,7 @@ export const NavBarHeader = ({ variant, hasBackButton = false }: Props) => {
                 ) : (
                   <div className="flex items-center gap-6">
                     <Button variant="plain" size="small" onPress={login} data-cy="login-button">
-                      {t('menu_links.login')}
+                      {t('useNavMenu.login')}
                     </Button>
                     <Button
                       variant="solid"
@@ -106,7 +106,7 @@ export const NavBarHeader = ({ variant, hasBackButton = false }: Props) => {
                       onPress={register}
                       data-cy="register-button"
                     >
-                      {t('menu_links.register')}
+                      {t('useNavMenu.register')}
                     </Button>
                   </div>
                 )}

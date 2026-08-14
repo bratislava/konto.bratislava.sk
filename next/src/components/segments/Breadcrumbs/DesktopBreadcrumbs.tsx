@@ -10,7 +10,7 @@ import MLink from '@/src/components/simple-components/MLink'
  */
 
 const DesktopBreadcrumbs = ({ breadcrumbs }: BreadcrumbsProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <ol className="flex flex-wrap items-center gap-x-1 gap-y-1.5 py-3 lg:py-6">

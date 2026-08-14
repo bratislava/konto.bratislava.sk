@@ -24,7 +24,8 @@ const AMOUNT_OF_DOCUMENTS_TO_SHOW = 5
 const DocumentsSection = ({
   section: { allowCollapsingDocuments, title, text, externalDocuments },
 }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const [showAllDocuments, setShowAllDocuments] = useState(false)
   const listId = useId()
   const filteredExternalDocuments = externalDocuments?.filter(isDefined) ?? []

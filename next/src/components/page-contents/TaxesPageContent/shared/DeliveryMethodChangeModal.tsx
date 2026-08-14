@@ -99,7 +99,8 @@ interface FormProps {
 }
 
 const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     watch,
     setValue,
@@ -134,28 +135,26 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
             isRequired
             onChange={(value) => field.onChange(value === 'true')}
             value={isDefined(field.value) ? String(field.value) : undefined}
-            label={t('taxes.delivery_method_change_modal.delivery_method_label')}
+            label={t('DeliveryMethodChangeModal.deliveryMethodLabel')}
             orientation="vertical"
           >
             <Radio
               value="false"
               variant="boxed"
-              description={t(
-                'taxes.delivery_method_change_modal.delivery_method_false.description',
-              )}
+              description={t('DeliveryMethodChangeModal.deliveryMethodFalse.description')}
             >
               <Typography as="span">
-                {t('taxes.delivery_method_change_modal.delivery_method_false.title')}
+                {t('DeliveryMethodChangeModal.deliveryMethodFalse.title')}
               </Typography>
             </Radio>
             <Radio
               value="true"
               variant="boxed"
-              description={t('taxes.delivery_method_change_modal.delivery_method_true.description')}
+              description={t('DeliveryMethodChangeModal.deliveryMethodTrue.description')}
             >
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                 <Typography as="span">
-                  {t('taxes.delivery_method_change_modal.delivery_method_true.title')}
+                  {t('DeliveryMethodChangeModal.deliveryMethodTrue.title')}
                 </Typography>
                 {/* TODO unify with Tag component */}
                 <Typography
@@ -163,7 +162,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
                   as="span"
                   className="rounded-sm bg-background-success-soft-default px-2 py-0.5 text-content-success-default"
                 >
-                  {t('taxes.delivery_method_change_modal.delivery_method_true.usage_percentage')}
+                  {t('DeliveryMethodChangeModal.deliveryMethodTrue.usagePercentage')}
                 </Typography>
               </div>
             </Radio>
@@ -173,7 +172,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
       {isSubscribed && (
         <div className="flex flex-col gap-2">
           <Typography variant="p-small" className="font-semibold">
-            {t('taxes.delivery_method_change_modal.delivery_method_true.agreement.title')}
+            {t('DeliveryMethodChangeModal.deliveryMethodTrue.agreement.title')}
           </Typography>
           <Controller
             name="scrolledToBottom"
@@ -194,7 +193,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
         isDisabled={isSubmitting || !isValid}
         isLoading={isSubmitting}
       >
-        {t('taxes.delivery_method_change_modal.confirm_button_text')}
+        {t('DeliveryMethodChangeModal.confirmButtonText')}
       </Button>
     </form>
   )
@@ -206,7 +205,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
  * TODO Rewrite the radio group to actual values instead of true/false?
  */
 const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { showToast } = useToast()
 
@@ -237,14 +236,14 @@ const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
         onSuccess: () => {
           onOpenChange?.(false)
           showToast({
-            message: t('taxes.delivery_method_change_modal.success_snackbar_message'),
+            message: t('DeliveryMethodChangeModal.successSnackbarMessage'),
             variant: 'success',
           })
         },
         onError: (error) => {
           logger.error(error)
           showToast({
-            message: t('taxes.delivery_method_change_modal.error_snackbar_message'),
+            message: t('DeliveryMethodChangeModal.errorSnackbarMessage'),
             variant: 'error',
           })
         },
@@ -264,12 +263,9 @@ const DeliveryMethodChangeModal = ({ isOpen, onOpenChange }: ModalProps) => {
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <Heading slot="title" className="text-size-h3-r font-semibold lg:text-size-h3">
-              {t('taxes.delivery_method_change_modal.title')}
+              {t('DeliveryMethodChangeModal.title')}
             </Heading>
-            <Markdown
-              variant="small"
-              content={t('taxes.delivery_method_change_modal.description')}
-            />
+            <Markdown variant="small" content={t('DeliveryMethodChangeModal.description')} />
           </div>
           {hasUserChangedDeliveryMethodAfterDeadline && (
             <DeliveryMethodAlert variant="change-effective-next-year" />

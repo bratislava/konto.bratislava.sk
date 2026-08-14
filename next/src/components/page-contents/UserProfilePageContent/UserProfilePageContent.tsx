@@ -10,11 +10,11 @@ import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
  */
 
 const UserProfilePageContent = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <>
-      <PageHeader title={t('account_section_my_profile.title')} />
+      <PageHeader title={t('UserProfilePageContent.title')} />
       <div className="flex flex-col gap-2.5 py-6 lg:gap-6 lg:py-10">
         <UserProfileDetails />
         <UserProfilePassword />

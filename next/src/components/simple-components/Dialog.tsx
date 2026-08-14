@@ -20,7 +20,7 @@ export type DialogProps = RACDialogProps & {
  * React Aria logs a warning.
  */
 const Dialog = ({ children, className, noCloseButton, ...rest }: DialogProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <RACDialog {...rest} className={cn('outline-0', className)}>
@@ -30,7 +30,7 @@ const Dialog = ({ children, className, noCloseButton, ...rest }: DialogProps) =>
             <Button
               variant="icon-wrapped-negative-margin"
               icon={<Icon name="close" className="size-6" />}
-              aria-label={t('Modal.aria.close')}
+              aria-label={t('Dialog.aria.close')}
               onPress={renderProps.close}
               data-cy="close-modal"
               className="absolute top-3 right-3 lg:top-4 lg:right-4"

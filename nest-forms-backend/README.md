@@ -1,5 +1,9 @@
 # nest-forms-backend
 
+## Architecture
+
+For a high-level overview of this service (modules, data model, auth, integrations, delivery pipeline, deployment), see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). For workflows that span multiple konto backends, see the repo-root [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
 ## Run locally
 
 1. Run from `docker compose`:

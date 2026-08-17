@@ -131,7 +131,6 @@
       }
     },
     "layouts": {
-      "list": ["id", "title", "municipalServices", "createdAt"],
       "edit": [
         [
           {
@@ -151,6 +150,13 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "title",
+        "slug",
+        "municipalServices",
+        "createdAt"
       ]
     },
     "uid": "api::municipal-service-tag.municipal-service-tag"

@@ -14,6 +14,7 @@ import Select, {
 import CheckboxIcon from '@/src/components/icon-components/CheckboxIcon'
 import Icon from '@/src/components/icon-components/Icon'
 import FieldWrapper, { FieldWrapperProps } from '@/src/components/widget-components/FieldWrapper'
+import useSelectAriaLiveMessages from '@/src/components/widget-components/SelectField/useSelectAriaLiveMessages'
 import cn from '@/src/utils/cn'
 
 export type SelectOption = { value: string; label: string; description?: string }
@@ -124,7 +125,9 @@ const someOptionHasDescription = <
 >(
   options: ReactSelectProps<Option, IsMulti, Group>['options'] | undefined,
 ) => {
-  if (!options) return false
+  if (!options) {
+    return false
+  }
 
   return options.some((option) =>
     'options' in option ? someOptionHasDescription(option.options) : Boolean(option.description),
@@ -164,6 +167,12 @@ const SelectField = <
 
   const id = useId()
 
+  const { ariaLiveMessages, screenReaderStatus } = useSelectAriaLiveMessages<
+    Option,
+    IsMulti,
+    Group
+  >(label)
+
   const isError = !!errorMessage?.length
   const hasDescriptions = someOptionHasDescription<Option, IsMulti, Group>(options)
 
@@ -194,6 +203,9 @@ const SelectField = <
             closeMenuOnSelect={!rest.isMulti}
             hideSelectedOptions={false}
             noOptionsMessage={() => t('SelectField.noOptions')}
+            // react-select announces its state in English by default, this is the official way how to override it, see the hook for details
+            ariaLiveMessages={ariaLiveMessages}
+            screenReaderStatus={screenReaderStatus}
             className="w-full"
             classNames={{
               control: ({ isFocused, isDisabled }) =>

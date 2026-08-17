@@ -33,6 +33,7 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
         isSelected={consent.isSelected}
         isDisabled={consent.isDisabled}
         onChange={onChange}
+        aria-label={consent.title}
       />
     </div>
   )

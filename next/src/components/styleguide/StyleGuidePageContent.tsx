@@ -1,7 +1,9 @@
+import { Typography } from '@bratislava/component-library'
 import { parseAsString, useQueryState } from 'nuqs'
 import { ReactElement } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { AlertBanner } from '@/src/components/simple-components/AlertBanner'
 import AlertShowCase from '@/src/components/styleguide/showcases/AlertShowCase'
 import AuthFormsShowCase from '@/src/components/styleguide/showcases/AuthFormsShowCase'
@@ -42,9 +44,12 @@ import ToggleShowCase from '@/src/components/styleguide/showcases/ToggleShowCase
 import TooltipShowCase from '@/src/components/styleguide/showcases/TooltipShowCase'
 import UploadShowCase from '@/src/components/styleguide/showcases/UploadShowCase'
 
-import StyleGuideWrapper from './StyleGuideWrapper'
-
-const showcases: { id: string; label: string; component: ReactElement }[] = [
+const showcases: {
+  id: string
+  label: string
+  component: ReactElement
+  fullWidth?: boolean
+}[] = [
   { id: 'button', label: 'Button', component: <ButtonShowCase /> },
   { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },
@@ -95,11 +100,17 @@ const showcases: { id: string; label: string; component: ReactElement }[] = [
     label: 'Form Version Compare Action',
     component: <FormVersionCompareActionShowCase />,
   },
-  { id: 'taxes', label: 'Taxes Pages (Dane a poplatky)', component: <TaxesShowCase /> },
+  {
+    id: 'taxes',
+    label: 'Taxes Pages (Dane a poplatky)',
+    component: <TaxesShowCase />,
+    fullWidth: true,
+  },
   {
     id: 'my-applications',
     label: 'My Applications Pages',
     component: <MyApplicationsShowCase />,
+    fullWidth: true,
   },
   { id: 'navbar', label: 'NavBar', component: <NavBarShowCase /> },
   { id: 'modal', label: 'Modal', component: <ModalShowCase /> },
@@ -115,30 +126,37 @@ const StyleGuidePageContent = () => {
     <>
       <AlertBanner />
 
-      <StyleGuideWrapper>
+      <main className="min-h-[calc(100vh+1px)] bg-background-passive-secondary pb-64 lg:pt-12">
+        <SectionContainer>
+          <Typography variant="h1" className="mb-10 text-center underline">
+            Style Guide
+          </Typography>
+        </SectionContainer>
         <Tabs
           selectedKey={selectedKey ?? undefined}
           onSelectionChange={(value) => setSelectedKey(value.toString())}
           className="mb-10 flex flex-col"
         >
-          <TabList className="flex flex-wrap gap-1.5 pb-4">
-            {showcases.map(({ id, label }) => (
-              <Tab
-                key={id}
-                id={id}
-                className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-1.5 hover:border-gray-500 hover:bg-gray-50 selected:border-gray-700 selected:bg-gray-100 selected:font-semibold"
-              >
-                {label}
-              </Tab>
-            ))}
-          </TabList>
-          {showcases.map(({ id, component }) => (
+          <SectionContainer>
+            <TabList className="flex flex-wrap gap-1.5 pb-4">
+              {showcases.map(({ id, label }) => (
+                <Tab
+                  key={id}
+                  id={id}
+                  className="cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-1.5 hover:border-gray-500 hover:bg-gray-50 selected:border-gray-700 selected:bg-gray-100 selected:font-semibold"
+                >
+                  {label}
+                </Tab>
+              ))}
+            </TabList>
+          </SectionContainer>
+          {showcases.map(({ id, component, fullWidth }) => (
             <TabPanel key={id} id={id}>
-              {component}
+              {fullWidth ? component : <SectionContainer>{component}</SectionContainer>}
             </TabPanel>
           ))}
         </Tabs>
-      </StyleGuideWrapper>
+      </main>
     </>
   )
 }

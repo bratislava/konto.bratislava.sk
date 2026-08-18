@@ -1,5 +1,3 @@
-/* eslint-disable i18next/no-literal-string */
-
 import { Button, Typography } from '@bratislava/component-library'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'

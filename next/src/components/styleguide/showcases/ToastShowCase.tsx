@@ -1,5 +1,3 @@
-/* eslint-disable i18next/no-literal-string */
-
 import { Button } from '@bratislava/component-library'
 import { useMemo, useState } from 'react'
 

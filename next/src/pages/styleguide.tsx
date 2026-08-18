@@ -9,7 +9,9 @@ const StyleguidePage = () => {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(async () => {
-  if (isProductionDeployment()) return { notFound: true }
+  if (isProductionDeployment()) {
+    return { notFound: true }
+  }
 
   return {
     props: {

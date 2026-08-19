@@ -5,7 +5,7 @@ import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import FormatDate from '@/src/components/formatting/FormatDate'
 
-interface MyApplicationHistoryProps {
+type Props = {
   // TODO fix the types in OpenAPI (BE)
   historyData: GinisDocumentDetailResponseDto['documentHistory'] | undefined
 }
@@ -14,7 +14,7 @@ interface MyApplicationHistoryProps {
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
  */
 
-const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
+const MyApplicationHistory = ({ historyData }: Props) => {
   const { t } = useTranslation()
 
   const translationMap = {

@@ -15,18 +15,20 @@ import { modifyGinisDataForSchemaSlug } from '@/src/frontend/utils/ginis'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
-type AccountMyApplicationsPageProps = {
+type Props = {
   general: GeneralQuery
   formDefinitionTitle: string
   myApplicationDetailsData: GetFormResponseDto
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
 
-export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplicationsPageProps>(
+export const getServerSideProps = amplifyGetServerSideProps<Props>(
   async ({ context, fetchAuthSession }) => {
     const id = context.query.ziadost as string
 
-    if (!id) return { notFound: true }
+    if (!id) {
+      return { notFound: true }
+    }
 
     // eslint-disable-next-line no-useless-assignment
     let myApplicationDetailsData: GetFormResponseDto | null = null
@@ -36,8 +38,10 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
         authStrategy: 'authOnly',
         getSsrAuthSession: fetchAuthSession,
       })
+
       const emailFormSlugs = getEmailFormSlugs()
       myApplicationDetailsData = patchApplicationFormIfNeeded(response.data, emailFormSlugs)
+
       if (myApplicationDetailsData.ginisDocumentId) {
         const ginisRequest = await formsClient.ginisControllerGetGinisDocumentByFormId(id, {
           authStrategy: 'authOnly',
@@ -51,7 +55,9 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
       return { notFound: true }
     }
 
-    if (!myApplicationDetailsData) return { notFound: true }
+    if (!myApplicationDetailsData) {
+      return { notFound: true }
+    }
 
     const formDefinition = getFormDefinitionBySlug(myApplicationDetailsData.formDefinitionSlug)
     if (!formDefinition) {
@@ -81,14 +87,14 @@ const AccountMyApplicationsPage = ({
   formDefinitionTitle,
   myApplicationDetailsData,
   myApplicationGinisData,
-}: AccountMyApplicationsPageProps) => {
+}: Props) => {
   return (
     <GeneralContextProvider general={general}>
       <PageLayout>
         <MyApplicationDetails
           formDefinitionTitle={formDefinitionTitle}
+          myApplicationDetailsData={myApplicationDetailsData}
           ginisData={myApplicationGinisData}
-          detailsData={myApplicationDetailsData}
         />
       </PageLayout>
     </GeneralContextProvider>

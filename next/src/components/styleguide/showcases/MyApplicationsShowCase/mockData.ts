@@ -187,7 +187,9 @@ export const detailStateOptions: SelectOption[] = [
 
 export const MOCK_FORM_DEFINITION_TITLE = MOCK_FORM_CATEGORY
 
-export const createMockDetailData = (state: GetFormResponseDtoStateEnum): GetFormResponseDto => ({
+export const createMockMyApplicationDetailsData = (
+  state: GetFormResponseDtoStateEnum,
+): GetFormResponseDto => ({
   email: 'test@example.com',
   id: 'mock-application-detail',
   createdAt: '2024-04-15T08:48:15.346Z',

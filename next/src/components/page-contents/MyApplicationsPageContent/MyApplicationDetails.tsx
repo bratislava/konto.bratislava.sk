@@ -9,9 +9,9 @@ import MyApplicationHistory from '@/src/components/page-contents/MyApplicationsP
 import MLink from '@/src/components/simple-components/MLink'
 import SummaryRowSimple from '@/src/components/simple-components/SummaryRowSimple'
 
-type MyApplicationsDetailsBase = {
+type Props = {
   formDefinitionTitle: string
-  detailsData: GetFormResponseDto
+  myApplicationDetailsData: GetFormResponseDto
   ginisData: GinisDocumentDetailResponseDto | null
 }
 
@@ -21,16 +21,16 @@ type MyApplicationsDetailsBase = {
 
 const MyApplicationDetails = ({
   formDefinitionTitle,
-  detailsData,
+  myApplicationDetailsData,
   ginisData,
-}: MyApplicationsDetailsBase) => {
+}: Props) => {
   const { t } = useTranslation()
 
   return (
     <div className="flex flex-col">
       <MyApplicationDetailsHeader
         formDefinitionTitle={formDefinitionTitle}
-        data={detailsData}
+        myApplicationDetailsData={myApplicationDetailsData}
         ginisData={ginisData}
       />
       <SectionContainer className="py-12">
@@ -74,7 +74,7 @@ const MyApplicationDetails = ({
                 label={t('MyApplicationDetails.contact')}
                 isError={false}
               >
-                <Typography variant="p-default">
+                <Typography variant="p-default" as="span">
                   {ginisData?.ownerPhone ? (
                     <MLink variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
                       {`${ginisData.ownerPhone}, `}

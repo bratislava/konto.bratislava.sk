@@ -1,5 +1,5 @@
 {
-  "AccountActivator.buttonText": "Viac informácií",
+  "AccountActivator.buttonText": "Viac informácií o Bratislavskom konte",
   "AccountActivator.content": "Vytvorte si svoj účet a majte rôzne služby mesta na jednom mieste, zaplaťte daň z nehnuteľností online alebo si kúpte lístok na kúpalisko bez čakania v rade.",
   "AccountActivator.title": "Vitajte v Bratislavskom konte",
   "AccountErrorAlert.errors.AliasExistsException": "E-mail {{email}} už používa iné Bratislavské konto. Ak si stále želáte zmeniť e-mail svojho konta, vráťte sa do svojho profilu kliknutím na šípku späť vedľa bratislavského loga a zopakujte proces zmeny e-mailu s inou e-mailovou adresou.",
@@ -312,6 +312,8 @@
   "LogoutPage.title": "Odhlásenie",
   "MobileNavBar.close": "Zavrieť menu",
   "MobileNavBar.open": "Otvoriť menu",
+  "MuniciaplServicePageContent.header.servicesLink": "Viac informácií o službe",
+  "MuniciaplServicePageContent.header.servicesLink.ariaLabel": "Viac informácií o službe {{serviceName}}",
   "MunicipalServiceCard.temporarilyDisabledBadge": "Dočasne nedostupné",
   "MunicipalServicesHomepageSection.allServices": "Všetky služby",
   "MunicipalServicesPageContent.allCategories": "Všetky kategórie",

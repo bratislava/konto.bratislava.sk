@@ -6,10 +6,10 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "relationOpenMode": "modal",
       "mainField": "title",
       "defaultSortBy": "title",
-      "defaultSortOrder": "ASC"
+      "defaultSortOrder": "ASC",
+      "relationOpenMode": "modal"
     },
     "metadatas": {
       "id": {
@@ -134,26 +134,23 @@
         [
           {
             "name": "title",
-            "size": 6
-          },
+            "size": 12
+          }
+        ],
+        [
           {
             "name": "slug",
-            "size": 6
+            "size": 12
           }
         ],
         [
           {
             "name": "feedbackLink",
-            "size": 6
+            "size": 12
           }
         ]
       ],
-      "list": [
-        "id",
-        "title",
-        "slug",
-        "feedbackLink"
-      ]
+      "list": ["id", "title", "slug", "feedbackLink"]
     },
     "uid": "api::municipal-charge.municipal-charge"
   },

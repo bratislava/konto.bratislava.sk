@@ -660,7 +660,7 @@ export interface ApiMunicipalServiceCategoryMunicipalServiceCategory
       'api::municipal-service.municipal-service'
     >
     publishedAt: Schema.Attribute.DateTime
-    slug: Schema.Attribute.UID<'title'>
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
     title: Schema.Attribute.String & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private
@@ -691,7 +691,7 @@ export interface ApiMunicipalServiceTagMunicipalServiceTag extends Struct.Collec
       'api::municipal-service.municipal-service'
     >
     publishedAt: Schema.Attribute.DateTime
-    slug: Schema.Attribute.UID<'title'>
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required
     title: Schema.Attribute.String & Schema.Attribute.Required
     updatedAt: Schema.Attribute.DateTime
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private

@@ -73,6 +73,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
           <TextField
             isRequired
             label={t('auth.fields.email.label')}
+            type="email"
             autoComplete="username"
             autoCapitalize="none"
             autoCorrect="off"

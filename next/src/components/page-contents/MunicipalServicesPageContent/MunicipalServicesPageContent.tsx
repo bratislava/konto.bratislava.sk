@@ -1,6 +1,5 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import slugify from 'slugify'
 
 import {
   MunicipalServiceCategoryEntityFragment,
@@ -49,8 +48,7 @@ const MunicipalServicesPageContent = ({
   const categorySelectOptions: SelectOption[] = [
     { value: ALL_CATEGORIES_VALUE, label: t('MunicipalServicesPageContent.allCategories') },
     ...categoriesByPersonType.map((category) => ({
-      // TODO: remove fallback value once slug is set to required in strapi
-      value: category.slug ?? slugify(category.title),
+      value: category.slug,
       label: category.title,
     })),
   ]
@@ -66,10 +64,7 @@ const MunicipalServicesPageContent = ({
     }
 
     return service.categories.some(
-      (category) =>
-        isDefined(category) &&
-        // TODO: remove fallback value once slug is set to required in strapi
-        (category.slug ?? slugify(category.title)) === selectorValue.value,
+      (category) => isDefined(category) && category.slug === selectorValue.value,
     )
   })
 

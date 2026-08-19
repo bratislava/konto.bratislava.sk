@@ -1469,7 +1469,7 @@ type MunicipalServiceCategory {
   municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
   municipalServices_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
   publishedAt: DateTime
-  slug: String
+  slug: String!
   title: String!
   updatedAt: DateTime
 }
@@ -1585,7 +1585,7 @@ type MunicipalServiceTag {
   municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [MunicipalService]!
   municipalServices_connection(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
   publishedAt: DateTime
-  slug: String
+  slug: String!
   title: String!
   updatedAt: DateTime
 }

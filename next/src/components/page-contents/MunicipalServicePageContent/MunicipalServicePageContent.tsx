@@ -46,11 +46,11 @@ const MunicipalServicePageContent = ({
               className="w-max"
               href={moreInformationUrl}
               // We append service name to the link text to give user more context when using screen reader
-              aria-label={t('MuniciaplServicePageContent.header.servicesLink.ariaLabel', {
+              aria-label={t('FormHeader.servicesLink.ariaLabel', {
                 serviceName: municipalService.title,
               })}
             >
-              {t('MuniciaplServicePageContent.header.servicesLink')}
+              {t('FormHeader.servicesLink')}
             </Button>
           ) : null}
         </div>

@@ -60,7 +60,9 @@ const Towing = ({ title, text }: TowingSectionProps) => {
   })
 
   useTimeout(() => {
-    if (!isBrowser() || captchaWarning === 'hide') return
+    if (!isBrowser() || captchaWarning === 'hide') {
+      return
+    }
     setCaptchaWarning('show')
   }, 3000)
 
@@ -93,6 +95,7 @@ const Towing = ({ title, text }: TowingSectionProps) => {
       <SectionHeader title={title} text={text} />
 
       <form
+        noValidate // We use AJV validation
         className="flex flex-col justify-center gap-4 rounded-lg border px-5 py-6"
         onSubmit={handleSubmit((formData) => mutateAsync(formData))}
       >

@@ -122,6 +122,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex w-full flex-col gap-6"
       onSubmit={handleSubmit((data) => {
         return onSubmit({ data })

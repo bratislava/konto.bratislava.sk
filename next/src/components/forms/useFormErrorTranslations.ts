@@ -65,6 +65,25 @@ export const useFormErrorTranslations = () => {
         : unknownFormatMessage
     }
 
+    // Accessibility (WCAG 2.2 SC 3.3.1 + technique G83) requires the omitted field to be identified
+    // in text. RJSF fills `title` from the `ui:title` / schema `title` of the field in error, it
+    // falls back to the generic message when the error has no title.
+    //
+    // Fields that hold an array (`checkboxGroup`, `selectMultiple`, `fileUploadMultiple`) are
+    // prefilled with an empty array, so leaving them empty yields a `minItems` error instead of a
+    // `required` one.
+    if (error.name === 'required' && error.title) {
+      return t('useFormErrorTranslations.errors.requiredWithFieldLabel', {
+        fieldLabel: error.title,
+      })
+    }
+
+    if (error.name === 'minItems' && error.title) {
+      return t('useFormErrorTranslations.errors.minItemsWithFieldLabel', {
+        fieldLabel: error.title,
+      })
+    }
+
     return error.name && error.name in errorNameMessages
       ? errorNameMessages[error.name as TranslatedErrorName]
       : unknownErrorMessage

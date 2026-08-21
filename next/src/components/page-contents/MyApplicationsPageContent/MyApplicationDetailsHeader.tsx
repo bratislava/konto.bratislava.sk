@@ -1,4 +1,5 @@
 import { Button, Typography } from '@bratislava/component-library'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
@@ -6,8 +7,6 @@ import FormatDate from '@/src/components/formatting/FormatDate'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import useExportFormPdf from '@/src/components/page-contents/MyApplicationsPageContent/useExportFormPdf'
-import Breadcrumbs from '@/src/components/segments/Breadcrumbs/Breadcrumbs'
-import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   formDefinitionTitle: string
@@ -25,6 +24,7 @@ const MyApplicationDetailsHeader = ({
   myApplicationGinisData,
 }: Props) => {
   const { t } = useTranslation()
+  const router = useRouter()
   const exportFormPdf = useExportFormPdf({ myApplicationFormData })
 
   const firstGinisChangeDate =
@@ -35,17 +35,20 @@ const MyApplicationDetailsHeader = ({
   const subject = myApplicationFormData?.formSubject
   const createdAt = firstGinisChangeDate || myApplicationFormData?.createdAt
 
-  const breadcrumbs = [
-    { title: t('MyApplicationsPageContent.title'), path: ROUTES.MY_APPLICATIONS },
-    { title: subject ?? formDefinitionTitle, path: null },
-  ]
-
   return (
     <SectionContainer className="bg-background-passive-primary pb-4 lg:pb-10">
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
+      <div className="py-3 lg:py-6">
+        <Button
+          variant="link"
+          startIcon={<Icon name="chevron-left" />}
+          onPress={() => router.back()}
+        >
+          {t('MyApplicationDetailsHeader.backToList')}
+        </Button>
+      </div>
       <div className="flex flex-col gap-4 lg:gap-6">
         <div className="flex flex-col gap-3">
-          <Typography variant="h1">{subject}</Typography>
+          <Typography variant="h1">{subject ?? formDefinitionTitle}</Typography>
           <div className="flex gap-3">
             <Typography variant="p-small">{t('MyApplicationDetailsHeader.sentDate')}</Typography>
             {createdAt ? (

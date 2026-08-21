@@ -443,6 +443,7 @@
   "SelectField.aria.results_many": "Dostupných {{count}} výsledkov",
   "SelectField.aria.results_other": "Dostupných {{count}} výsledkov",
   "SelectField.noOptions": "Žiadne možnosti",
+  "ServiceCard.openInNewTab": "Otvoriť v novej karte",
   "SkipToContentButton.skipNavigation": "Preskočiť navigáciu",
   "SSOPage.placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. [Späť domov](/).",
   "StatusBar.aria.close": "Zavrieť upozornenie",

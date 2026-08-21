@@ -11,7 +11,7 @@ import {
 } from './mockData'
 import { ShowcaseLayout, ShowcaseSelectField } from './shared'
 
-const MyApplicationDetailShowCase = () => {
+const MyApplicationDetailsShowCase = () => {
   const [state, setState] = useState<GetFormResponseDtoStateEnum>(
     GetFormResponseDtoStateEnum.DeliveredNases,
   )
@@ -41,4 +41,4 @@ const MyApplicationDetailShowCase = () => {
   )
 }
 
-export default MyApplicationDetailShowCase
+export default MyApplicationDetailsShowCase

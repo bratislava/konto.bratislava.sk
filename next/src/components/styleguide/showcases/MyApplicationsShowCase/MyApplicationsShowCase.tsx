@@ -4,7 +4,7 @@ import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { Wrapper } from '@/src/components/styleguide/Wrapper'
 
-import MyApplicationDetailShowCase from './MyApplicationDetailShowCase'
+import MyApplicationDetailsShowCase from './MyApplicationDetailsShowCase'
 import MyApplicationsListShowCase from './MyApplicationsListShowCase'
 
 const myApplicationsShowcaseTabs = [
@@ -45,7 +45,7 @@ const MyApplicationsShowCase = () => {
       </TabPanel>
 
       <TabPanel id="detail">
-        <MyApplicationDetailShowCase />
+        <MyApplicationDetailsShowCase />
       </TabPanel>
     </Tabs>
   )

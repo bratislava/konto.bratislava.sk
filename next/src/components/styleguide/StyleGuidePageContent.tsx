@@ -17,6 +17,7 @@ import FieldHeaderShowCase from '@/src/components/styleguide/showcases/FieldHead
 import FormSentPageContentShowCase from '@/src/components/styleguide/showcases/FormSentPageContentShowCase'
 import FormVersionCompareActionShowCase from '@/src/components/styleguide/showcases/FormVersionCompareActionShowCase'
 import IconShowCase from '@/src/components/styleguide/showcases/IconShowCase'
+import LabelValueRowGroupShowCase from '@/src/components/styleguide/showcases/LabelValueRowGroupShowCase'
 import MarkdownShowCase from '@/src/components/styleguide/showcases/MarkdownShowCase'
 import ModalShowCase from '@/src/components/styleguide/showcases/ModalShowCase/ModalsShowCase'
 import MyApplicationsCardShowCase from '@/src/components/styleguide/showcases/MyApplicationsCardShowCase'
@@ -54,9 +55,11 @@ const showcases: {
   { id: 'markdown', label: 'Markdown', component: <MarkdownShowCase /> },
   { id: 'icon', label: 'Icon', component: <IconShowCase /> },
   { id: 'tag', label: 'Tag', component: <TagShowCase /> },
-  { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },
-  { id: 'field-header', label: 'Field Header', component: <FieldHeaderShowCase /> },
   { id: 'spinner', label: 'Spinner', component: <SpinnerShowCase /> },
+  { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
+  { id: 'tooltip', label: 'Tooltip', component: <TooltipShowCase /> },
+  { id: 'banner', label: 'Banner', component: <BannerShowCase /> },
+  { id: 'field-header', label: 'Field Header', component: <FieldHeaderShowCase /> },
   { id: 'text-field', label: 'Text Field', component: <TextFieldShowCase /> },
   { id: 'text-area-field', label: 'Text Area Field', component: <TextAreaFieldShowCase /> },
   { id: 'number-field', label: 'Number Field', component: <NumberFieldShowCase /> },
@@ -66,26 +69,30 @@ const showcases: {
   { id: 'checkbox-group', label: 'Checkbox Group', component: <CheckboxGroupShowCase /> },
   { id: 'date-picker', label: 'Date Picker', component: <DatePickerShowCase /> },
   { id: 'time-field', label: 'Time Field', component: <TimeFieldShowCase /> },
+  { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
   { id: 'select', label: 'Select', component: <SelectMultiNewShowCase /> },
   { id: 'toggle', label: 'Toggle', component: <ToggleShowCase /> },
+
   { id: 'alert', label: 'Alert', component: <AlertShowCase /> },
   {
     id: 'temporarily-disabled-alert',
     label: 'Temporarily Disabled Alert',
     component: <TemporarilyDisabledAlertShowCase />,
   },
-  { id: 'upload', label: 'Upload', component: <UploadShowCase /> },
   { id: 'disclosure', label: 'Disclosure', component: <DisclosureShowCase /> },
   { id: 'progress-bar', label: 'Progress Bar', component: <ProgressBarShowCase /> },
   { id: 'summary-row', label: 'Summary Row', component: <SummaryRowShowCase /> },
-  { id: 'banner', label: 'Banner', component: <BannerShowCase /> },
+  {
+    id: 'label-value-row-group',
+    label: 'Label+Value Row',
+    component: <LabelValueRowGroupShowCase />,
+  },
   { id: 'service-card', label: 'Service Card', component: <ServiceCardShowCase /> },
   {
     id: 'my-applications-card',
     label: 'My Applications Card',
     component: <MyApplicationsCardShowCase />,
   },
-  { id: 'toast', label: 'Toast', component: <ToastShowCase /> },
   { id: 'thank-you-tile', label: 'ThankYou Tile', component: <ThankYouTileShowCase /> },
   { id: 'auth-forms', label: 'Auth Forms', component: <AuthFormsShowCase /> },
   { id: 'error-messages', label: 'Error Messages', component: <ErrorMessagesShowCase /> },

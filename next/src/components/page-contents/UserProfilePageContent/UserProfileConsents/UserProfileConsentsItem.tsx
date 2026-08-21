@@ -26,11 +26,13 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}
     >
       <div className="flex flex-col gap-2">
-        <Typography variant="h5" as="h3">
+        <Typography variant="h5" as="h3" id={id}>
           {consent.title}
         </Typography>
+
         <Markdown variant="small" content={consent.text} />
       </div>
+
       <Toggle
         id={consent.id}
         isSelected={consent.isSelected}

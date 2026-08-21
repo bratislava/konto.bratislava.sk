@@ -10,7 +10,7 @@ import cn from '@/src/utils/cn'
 export type LabelValueRowProps = {
   variant?: 'align-value-right'
   label: string
-  value: string
+  value?: string
   valueAsMarkdown?: boolean
   className?: string
 }

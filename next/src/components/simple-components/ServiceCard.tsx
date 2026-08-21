@@ -1,4 +1,5 @@
 import { Button, Typography } from '@bratislava/component-library'
+import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
@@ -32,6 +33,7 @@ const ServiceCard = ({
   href,
   analyticsProps,
 }: ServiceCardBase) => {
+  const { t } = useTranslation()
   const style = cn(
     'group relative flex w-full flex-col items-start gap-5 rounded-lg border border-solid border-gray-200 bg-gray-0 p-4 wrapper-focus-ring!',
     className,
@@ -83,7 +85,7 @@ const ServiceCard = ({
           {buttonText && (
             <span className="flex size-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
               {href?.includes('http') ? (
-                <Icon name="export" className="size-5" />
+                <Icon name="export" className="size-5" aria-label={t('ServiceCard.openInNewTab')} />
               ) : (
                 <Icon name="arrow-right" className="size-5" />
               )}

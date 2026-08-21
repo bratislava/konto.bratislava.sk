@@ -7,19 +7,19 @@ import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
 type Props = {
-  myApplicationData?: GetFormResponseDto
+  myApplicationFormData?: GetFormResponseDto
 }
 
-const useExportFormPdf = ({ myApplicationData }: Props) => {
+const useExportFormPdf = ({ myApplicationFormData }: Props) => {
   const { t } = useTranslation()
   const { showToast, closeToasts } = useToast()
 
-  if (!myApplicationData) {
+  if (!myApplicationFormData) {
     return null
   }
 
-  const formSlug = myApplicationData?.formDefinitionSlug
-  const formId = myApplicationData?.id
+  const formSlug = myApplicationFormData?.formDefinitionSlug
+  const formId = myApplicationFormData?.id
 
   return async () => {
     showToast({ message: t('useFormExportImport.info.pdfExport'), variant: 'info' })

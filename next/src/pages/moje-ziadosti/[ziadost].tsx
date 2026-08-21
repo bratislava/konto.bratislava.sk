@@ -18,7 +18,7 @@ import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerS
 type Props = {
   general: GeneralQuery
   formDefinitionTitle: string
-  myApplicationDetailsData: GetFormResponseDto
+  myApplicationFormData: GetFormResponseDto
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
 
@@ -31,7 +31,7 @@ export const getServerSideProps = amplifyGetServerSideProps<Props>(
     }
 
     // eslint-disable-next-line no-useless-assignment
-    let myApplicationDetailsData: GetFormResponseDto | null = null
+    let myApplicationFormData: GetFormResponseDto | null = null
     let myApplicationGinisData: GinisDocumentDetailResponseDto | null = null
     try {
       const response = await formsClient.formsControllerGetForm(id, {
@@ -40,9 +40,9 @@ export const getServerSideProps = amplifyGetServerSideProps<Props>(
       })
 
       const emailFormSlugs = getEmailFormSlugs()
-      myApplicationDetailsData = patchApplicationFormIfNeeded(response.data, emailFormSlugs)
+      myApplicationFormData = patchApplicationFormIfNeeded(response.data, emailFormSlugs)
 
-      if (myApplicationDetailsData.ginisDocumentId) {
+      if (myApplicationFormData.ginisDocumentId) {
         const ginisRequest = await formsClient.ginisControllerGetGinisDocumentByFormId(id, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
@@ -55,11 +55,11 @@ export const getServerSideProps = amplifyGetServerSideProps<Props>(
       return { notFound: true }
     }
 
-    if (!myApplicationDetailsData) {
+    if (!myApplicationFormData) {
       return { notFound: true }
     }
 
-    const formDefinition = getFormDefinitionBySlug(myApplicationDetailsData.formDefinitionSlug)
+    const formDefinition = getFormDefinitionBySlug(myApplicationFormData.formDefinitionSlug)
     if (!formDefinition) {
       return { notFound: true }
     }
@@ -70,10 +70,10 @@ export const getServerSideProps = amplifyGetServerSideProps<Props>(
       props: {
         general,
         formDefinitionTitle: formDefinition.title,
-        myApplicationDetailsData,
+        myApplicationFormData,
         myApplicationGinisData: modifyGinisDataForSchemaSlug(
           myApplicationGinisData,
-          myApplicationDetailsData.formDefinitionSlug,
+          myApplicationFormData.formDefinitionSlug,
         ),
         ...(await slovakServerSideTranslations()),
       },
@@ -85,7 +85,7 @@ export const getServerSideProps = amplifyGetServerSideProps<Props>(
 const AccountMyApplicationsPage = ({
   general,
   formDefinitionTitle,
-  myApplicationDetailsData,
+  myApplicationFormData,
   myApplicationGinisData,
 }: Props) => {
   return (
@@ -93,8 +93,8 @@ const AccountMyApplicationsPage = ({
       <PageLayout>
         <MyApplicationDetails
           formDefinitionTitle={formDefinitionTitle}
-          myApplicationDetailsData={myApplicationDetailsData}
-          ginisData={myApplicationGinisData}
+          myApplicationFormData={myApplicationFormData}
+          myApplicationGinisData={myApplicationGinisData}
         />
       </PageLayout>
     </GeneralContextProvider>

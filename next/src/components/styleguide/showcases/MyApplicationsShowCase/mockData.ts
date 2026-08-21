@@ -187,7 +187,7 @@ export const detailStateOptions: SelectOption[] = [
 
 export const MOCK_FORM_DEFINITION_TITLE = MOCK_FORM_CATEGORY
 
-export const createMockMyApplicationDetailsData = (
+export const createMockMyApplicationFormData = (
   state: GetFormResponseDtoStateEnum,
 ): GetFormResponseDto => ({
   email: 'test@example.com',
@@ -212,7 +212,7 @@ export const createMockMyApplicationDetailsData = (
   requiresMigration: false,
 })
 
-export const createMockGinisData = (): GinisDocumentDetailResponseDto => {
+export const createMockMyApplicationGinisData = (): GinisDocumentDetailResponseDto => {
   return {
     id: 'MAG-DEN-2024-0001',
     dossierId: 'MAG-SPIS-2024-1234',

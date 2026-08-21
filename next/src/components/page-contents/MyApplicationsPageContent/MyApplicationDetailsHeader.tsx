@@ -11,8 +11,8 @@ import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
   formDefinitionTitle: string
-  myApplicationDetailsData?: GetFormResponseDto
-  ginisData?: GinisDocumentDetailResponseDto | null
+  myApplicationFormData?: GetFormResponseDto
+  myApplicationGinisData?: GinisDocumentDetailResponseDto | null
 }
 
 /**
@@ -21,17 +21,19 @@ type Props = {
 
 const MyApplicationDetailsHeader = ({
   formDefinitionTitle,
-  myApplicationDetailsData,
-  ginisData,
+  myApplicationFormData,
+  myApplicationGinisData,
 }: Props) => {
   const { t } = useTranslation()
-  const exportFormPdf = useExportFormPdf({ myApplicationData: myApplicationDetailsData })
+  const exportFormPdf = useExportFormPdf({ myApplicationFormData })
 
   const firstGinisChangeDate =
-    ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.['Datum-zmeny']
+    myApplicationGinisData?.documentHistory?.[
+      (myApplicationGinisData?.documentHistory?.length || 0) - 1
+    ]?.['Datum-zmeny']
 
-  const subject = myApplicationDetailsData?.formSubject
-  const createdAt = firstGinisChangeDate || myApplicationDetailsData?.createdAt
+  const subject = myApplicationFormData?.formSubject
+  const createdAt = firstGinisChangeDate || myApplicationFormData?.createdAt
 
   const breadcrumbs = [
     { title: t('MyApplicationsPageContent.title'), path: ROUTES.MY_APPLICATIONS },

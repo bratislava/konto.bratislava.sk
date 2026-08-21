@@ -4,8 +4,8 @@ import { useMemo, useState } from 'react'
 import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails'
 
 import {
-  createMockGinisData,
-  createMockMyApplicationDetailsData,
+  createMockMyApplicationFormData,
+  createMockMyApplicationGinisData,
   detailStateOptions,
   MOCK_FORM_DEFINITION_TITLE,
 } from './mockData'
@@ -16,8 +16,8 @@ const MyApplicationDetailsShowCase = () => {
     GetFormResponseDtoStateEnum.DeliveredNases,
   )
 
-  const myApplicationDetailsData = useMemo(() => createMockMyApplicationDetailsData(state), [state])
-  const ginisData = useMemo(() => createMockGinisData(), [])
+  const myApplicationFormData = useMemo(() => createMockMyApplicationFormData(state), [state])
+  const myApplicationGinisData = useMemo(() => createMockMyApplicationGinisData(), [])
 
   return (
     <ShowcaseLayout
@@ -33,8 +33,8 @@ const MyApplicationDetailsShowCase = () => {
       <div className="bg-background-passive-base">
         <MyApplicationDetails
           formDefinitionTitle={MOCK_FORM_DEFINITION_TITLE}
-          myApplicationDetailsData={myApplicationDetailsData}
-          ginisData={ginisData}
+          myApplicationFormData={myApplicationFormData}
+          myApplicationGinisData={myApplicationGinisData}
         />
       </div>
     </ShowcaseLayout>

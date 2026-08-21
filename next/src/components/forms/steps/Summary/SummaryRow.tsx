@@ -1,5 +1,4 @@
 import { Button, Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
@@ -23,8 +22,6 @@ interface SummaryRowProps {
 }
 
 const SummaryRow = (props: SummaryRowProps) => {
-  const { t } = useTranslation()
-
   const { data, size = 'large', isEditable = true, hasBorder = true, onGoToStep } = props
 
   const containerClassName = cn('flex flex-wrap gap-2 py-2.5 lg:flex-nowrap', {
@@ -53,7 +50,7 @@ const SummaryRow = (props: SummaryRowProps) => {
           <Button
             variant="icon-wrapped-negative-margin"
             icon={<Icon name="edit" />}
-            aria-label={t('SummaryRow.aria.edit')}
+            aria-label={data.label}
             onPress={onGoToStep}
           />
         )}

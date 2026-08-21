@@ -41,8 +41,15 @@ const MunicipalServicePageContent = ({
           <Typography variant="h1">{municipalService.title}</Typography>
           {pageHeaderText ? <Typography>{pageHeaderText}</Typography> : null}
           {moreInformationUrl ? (
-            // TODO size
-            <Button variant="link" size="small" className="w-max" href={moreInformationUrl}>
+            <Button
+              variant="link"
+              className="w-max"
+              href={moreInformationUrl}
+              // We append service name to the link text to give user more context when using screen reader
+              aria-label={t('FormHeader.servicesLink.ariaLabel', {
+                serviceName: municipalService.title,
+              })}
+            >
               {t('FormHeader.servicesLink')}
             </Button>
           ) : null}

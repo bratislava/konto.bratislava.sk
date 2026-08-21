@@ -82,8 +82,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "overrideTitle"
+          "editable": true
         },
         "list": {
           "label": "card",
@@ -226,8 +225,7 @@
           "description": "",
           "placeholder": "",
           "visible": true,
-          "editable": true,
-          "mainField": "label"
+          "editable": true
         },
         "list": {
           "label": "links",
@@ -317,6 +315,13 @@
       }
     },
     "layouts": {
+      "list": [
+        "id",
+        "title",
+        "updatedAt",
+        "categories",
+        "form"
+      ],
       "edit": [
         [
           {
@@ -406,13 +411,6 @@
             "size": 12
           }
         ]
-      ],
-      "list": [
-        "id",
-        "title",
-        "updatedAt",
-        "categories",
-        "form"
       ]
     },
     "uid": "api::municipal-service.municipal-service"

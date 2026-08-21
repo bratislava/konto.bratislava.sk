@@ -68,6 +68,7 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Pro
           <TextField
             isRequired
             label={t('auth.fields.email.label')}
+            type="email"
             autoComplete="email"
             autoCapitalize="none"
             autoCorrect="off"

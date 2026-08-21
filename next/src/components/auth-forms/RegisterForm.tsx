@@ -141,7 +141,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
 
   useTimeout(() => {
-    if (!isBrowser() || captchaWarning === 'hide') return
+    if (!isBrowser() || captchaWarning === 'hide') {
+      return
+    }
     setCaptchaWarning('show')
   }, 3000)
 
@@ -215,6 +217,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             isRequired
             helptext={emailHelptextTranslationMap[type]}
             label={t('auth.fields.email.label')}
+            type="email"
             autoComplete="username"
             autoCapitalize="none"
             autoCorrect="off"

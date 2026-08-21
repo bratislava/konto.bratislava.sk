@@ -1,4 +1,5 @@
 import { Typography } from '@bratislava/component-library'
+import { useId } from 'react'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Toggle from '@/src/components/simple-components/Toggle'
@@ -17,22 +18,27 @@ type Props = {
 }
 
 const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
+  const id = useId()
+
   return (
     <div
       className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center"
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}
     >
       <div className="flex flex-col gap-2">
-        <Typography variant="h5" as="h3">
+        <Typography variant="h5" as="h3" id={id}>
           {consent.title}
         </Typography>
+
         <Markdown variant="small" content={consent.text} />
       </div>
+
       <Toggle
         id={consent.id}
         isSelected={consent.isSelected}
         isDisabled={consent.isDisabled}
         onChange={onChange}
+        aria-labelledby={id}
       />
     </div>
   )

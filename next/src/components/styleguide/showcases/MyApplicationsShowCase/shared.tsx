@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SelectField, {
   SelectOption,
 } from '@/src/components/widget-components/SelectField/SelectField'
@@ -11,7 +12,9 @@ type ShowcaseLayoutProps = {
 
 export const ShowcaseLayout = ({ controls, children }: ShowcaseLayoutProps) => (
   <div className="flex flex-col gap-12">
-    <div className="flex flex-wrap gap-3 rounded-sm bg-gray-200 p-3 text-sm">{controls}</div>
+    <SectionContainer>
+      <div className="flex flex-wrap gap-3 rounded-sm bg-gray-200 p-3 text-sm">{controls}</div>
+    </SectionContainer>
     {children}
   </div>
 )
@@ -34,7 +37,9 @@ export const ShowcaseSelectField = <T extends string>({
     options={options}
     value={options.find((option) => option.value === value) ?? null}
     onChange={(option) => {
-      if (option && !Array.isArray(option)) onChange(option.value as T)
+      if (option && !Array.isArray(option)) {
+        onChange(option.value as T)
+      }
     }}
     className="min-w-[260px] flex-1"
     displayOptionalLabel={false}

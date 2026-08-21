@@ -22,7 +22,9 @@ export const formatDate = (
   locale = 'sk',
   format: CDateFormat = 'default',
 ) => {
-  if (!isoString) return ''
+  if (!isoString) {
+    return ''
+  }
 
   const localeMapped = ({ sk: 'sk-SK', en: 'en-IE' } as const)[locale] ?? 'sk-SK'
 

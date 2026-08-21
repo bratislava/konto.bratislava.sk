@@ -1,4 +1,5 @@
 import { Typography } from '@bratislava/component-library'
+import { useId } from 'react'
 
 import Markdown from '@/src/components/formatting/Markdown'
 import Toggle from '@/src/components/simple-components/Toggle'
@@ -17,6 +18,8 @@ type Props = {
 }
 
 const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
+  const id = useId()
+
   return (
     <div
       className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center"
@@ -33,7 +36,7 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
         isSelected={consent.isSelected}
         isDisabled={consent.isDisabled}
         onChange={onChange}
-        aria-label={consent.title}
+        aria-labelledby={id}
       />
     </div>
   )

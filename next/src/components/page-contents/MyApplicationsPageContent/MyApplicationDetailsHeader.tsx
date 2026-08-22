@@ -1,5 +1,4 @@
 import { Button, Typography } from '@bratislava/component-library'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
@@ -7,10 +6,12 @@ import { formsClient } from '@/src/clients/forms'
 import FormatDate from '@/src/components/formatting/FormatDate'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import MLink from '@/src/components/simple-components/MLink'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
 import { downloadBlob } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
+import { ROUTES } from '@/src/utils/routes'
 
 type MyApplicationDetailsHeaderBase = {
   formDefinitionTitle: string
@@ -65,18 +66,17 @@ const MyApplicationDetailsHeader = ({
     }
   }
 
-  // TODO: use MLink instead of regular Link component, check if it doesn't break in parent component
   return (
     <SectionContainer className="bg-gray-50">
       <div className="flex size-full flex-col justify-end gap-4 py-4 lg:gap-6 lg:py-8">
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
-          <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
+          <MLink href={ROUTES.MY_APPLICATIONS} className="flex w-max items-center gap-1">
             <Icon name="chevron-left" className="size-5" />
 
             <Typography variant="p-tiny" className="font-medium underline underline-offset-2">
               {t('MyApplicationDetailsHeader.backToList')}
             </Typography>
-          </Link>
+          </MLink>
           <div className="flex flex-col gap-4 lg:gap-6">
             <div className="flex flex-col gap-2">
               <Typography variant="p-small" className="font-semibold text-main-700">

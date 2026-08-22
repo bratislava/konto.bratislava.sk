@@ -1,9 +1,9 @@
 import url from 'node:url'
 
 import { Button, Typography } from '@bratislava/component-library'
-import { LinkProps } from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 
+import { MLinkProps } from '@/src/components/simple-components/MLink'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { ROUTES } from '@/src/utils/routes'
 
@@ -40,7 +40,7 @@ const AccountLink = ({ variant, onLoginPress: onLoginPressFromProps }: Props) =>
       },
     } satisfies Record<
       Props['variant'],
-      { label: string; description: string; href: LinkProps['href']; onLoginPress?: () => void }
+      { label: string; description: string; href: MLinkProps['href']; onLoginPress?: () => void }
     >
   )[variant]
 

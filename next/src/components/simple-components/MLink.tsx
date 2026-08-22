@@ -22,7 +22,16 @@ export type MLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref'
 
 const MLink = forwardRef<HTMLAnchorElement, MLinkProps>(
   (
-    { href, children, className, variant = 'unstyled', stretched = false, analyticsProps, ...rest },
+    {
+      href,
+      children,
+      className,
+      variant = 'unstyled',
+      stretched = false,
+      analyticsProps,
+      onClick,
+      ...rest
+    },
     ref,
   ) => {
     const plausible = usePlausible()
@@ -43,14 +52,16 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkProps>(
     return (
       <NextLink
         href={href}
-        passHref
         ref={ref}
         {...rest}
         className={styles}
-        onClick={() => {
+        onClick={(event) => {
           if (analyticsProps) {
             plausible('Link click', { props: analyticsProps })
           }
+          // Must be called explicitly, otherwise it would be overridden by this handler. Needed
+          // e.g. for closing menus on navigation, or for handlers injected by Radix `asChild`.
+          onClick?.(event)
         }}
       >
         {children}

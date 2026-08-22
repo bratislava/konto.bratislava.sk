@@ -1,13 +1,13 @@
 import { Typography } from '@bratislava/component-library'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import Link from 'next/link'
 
 import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
+import MLink from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
 
 const HeaderMenuItem = ({ title, icon, url, onPress, itemClassName }: DropdownMenuItemProps) => {
   return url ? (
-    <Link
+    <MLink
       className="flex items-center gap-3"
       href={url}
       data-cy={`${url.replaceAll('/', '')}-menu-item`}
@@ -23,7 +23,7 @@ const HeaderMenuItem = ({ title, icon, url, onPress, itemClassName }: DropdownMe
           {title}
         </Typography>
       </DropdownMenu.Item>
-    </Link>
+    </MLink>
   ) : (
     <DropdownMenu.Item
       onClick={onPress}

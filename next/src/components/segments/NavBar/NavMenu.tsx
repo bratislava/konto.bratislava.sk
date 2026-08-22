@@ -1,10 +1,10 @@
 import { Typography } from '@bratislava/component-library'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
+import MLink from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
 
 /**
@@ -39,7 +39,7 @@ export const NavMenu = () => {
                   className="size-full rounded-sm wrapper-focus-ring ring-inset"
                 >
                   <NavigationMenu.Link asChild active={isActive}>
-                    <NextLink href={sectionItem.url}>
+                    <MLink href={sectionItem.url}>
                       <div
                         className={cn(
                           'flex size-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-content-error-hover hover:text-content-error-hover',
@@ -54,7 +54,7 @@ export const NavMenu = () => {
                           {sectionItem.title}
                         </Typography>
                       </div>
-                    </NextLink>
+                    </MLink>
                   </NavigationMenu.Link>
                 </NavigationMenu.Item>
               )

@@ -1,8 +1,7 @@
 import { Button } from '@bratislava/component-library'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import NextLink from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
-import { ComponentProps, forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { useEventListener, useScrollLock, useWindowSize } from 'usehooks-ts'
 
 import { useNavMenuContext } from '@/src/components/segments/NavBar/navMenuContext'
@@ -10,12 +9,13 @@ import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
 import { DropdownMenuItemProps } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
 import IdentityVerificationStatus from '@/src/components/simple-components/IdentityVerificationStatus'
+import MLink, { MLinkProps } from '@/src/components/simple-components/MLink'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import logger from '@/src/frontend/utils/logger'
 import cn from '@/src/utils/cn'
 import { ROUTES } from '@/src/utils/routes'
 
-type NavMenuLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref' | 'href'> & {
+type NavMenuLinkProps = Omit<MLinkProps, 'href' | 'onClick'> & {
   menuItem: DropdownMenuItemProps
   isActive?: boolean
   onClick: () => void
@@ -24,7 +24,7 @@ type NavMenuLinkProps = Omit<ComponentProps<typeof NextLink>, 'as' | 'passHref' 
 const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
   ({ menuItem, isActive, onClick, ...rest }, forwardedRef) => {
     return menuItem.url ? (
-      <NextLink
+      <MLink
         href={menuItem.url}
         // without forwardedRef, you can't navigate using arrow keys
         ref={forwardedRef}
@@ -42,7 +42,7 @@ const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
         <div aria-hidden>{menuItem.icon}</div>
         <span>{menuItem.title}</span>
         {menuItem.url === ROUTES.USER_PROFILE && <IdentityVerificationStatus />}
-      </NextLink>
+      </MLink>
     ) : null
   },
 )

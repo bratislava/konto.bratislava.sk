@@ -59,7 +59,7 @@
     "handlebars": "4.7.9",
     "jsonwebtoken": "9.0.3",
     "lodash": "4.17.23",
-    "mailgun.js": "13.1.0",
+    "mailgun.js": "14.0.0",
     "mime-types": "3.0.2",
     "minio": "8.0.7",
     "multer": "2.2.0",

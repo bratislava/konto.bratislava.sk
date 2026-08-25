@@ -1209,8 +1209,8 @@ importers:
         specifier: 30.0.0
         version: 30.0.0
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/mssql':
         specifier: 12.3.0
         version: 12.3.0(supports-color@10.2.2)
@@ -8305,6 +8305,9 @@ packages:
 
   '@types/lodash@4.17.24':
     resolution: {integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==}
+
+  '@types/lodash@4.17.25':
+    resolution: {integrity: sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ==}
 
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
@@ -28113,6 +28116,8 @@ snapshots:
 
   '@types/lodash@4.17.24': {}
 
+  '@types/lodash@4.17.25': {}
+
   '@types/long@4.0.2': {}
 
   '@types/luxon@3.7.2': {}
@@ -29004,7 +29009,7 @@ snapshots:
 
   '@visx/responsive@4.0.1-alpha.0(react@19.2.6)':
     dependencies:
-      '@types/lodash': 4.17.24
+      '@types/lodash': 4.17.25
       '@types/react': 19.2.14
       lodash: 4.18.1
       react: 19.2.6
@@ -29015,7 +29020,7 @@ snapshots:
 
   '@visx/shape@4.0.1-alpha.0(react@19.2.6)':
     dependencies:
-      '@types/lodash': 4.17.24
+      '@types/lodash': 4.17.25
       '@types/react': 19.2.14
       '@visx/curve': 4.0.1-alpha.0
       '@visx/group': 4.0.1-alpha.0(react@19.2.6)
@@ -38458,7 +38463,7 @@ snapshots:
     dependencies:
       '@juggle/resize-observer': 3.4.0
       '@types/is-hotkey': 0.1.10
-      '@types/lodash': 4.17.24
+      '@types/lodash': 4.17.25
       direction: 1.0.4
       is-hotkey: 0.1.8
       is-plain-object: 5.0.0

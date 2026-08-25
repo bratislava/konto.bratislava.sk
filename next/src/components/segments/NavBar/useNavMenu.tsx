@@ -90,6 +90,18 @@ export const useNavMenu = () => {
     },
   ]
 
+  /**
+   * Used both for the visual highlight and for the `active` prop of `NavigationMenu.Link`,
+   * which renders `aria-current="page"` for assistive technologies.
+   */
+  const isMenuItemActive = (url?: string) => {
+    if (!url) {
+      return false
+    }
+
+    return url === '/' ? router.pathname === '/' : router.pathname.startsWith(url)
+  }
+
   const notSignedInActionsMenuItems: DropdownMenuItemProps[] = [
     {
       id: 0,
@@ -109,5 +121,6 @@ export const useNavMenu = () => {
     mainMenuItems,
     signedInActionsMenuItems,
     notSignedInActionsMenuItems,
+    isMenuItemActive,
   }
 }

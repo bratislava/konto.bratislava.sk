@@ -203,10 +203,10 @@ jobs:
       build_env: ${{ needs.resolve.outputs.next-build-env }}
 
   # ---- Gate + trigger infrastructure deploys ----
-  # deploy-secrets is the gate: nothing deploys until every in-scope build (and
-  # the forms-shared test) has finished and none failed.
-  deploy-secrets:
-    name: Shared application secrets
+  # builds-complete is the gate: nothing deploys until every in-scope build (and
+  # the forms-shared test) has finished and none failed. It does no work of its own.
+  builds-complete:
+    name: All builds completed
     needs:
       [
         resolve,
@@ -221,15 +221,13 @@ jobs:
         build-next,
       ]
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
-    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
-    secrets: inherit
-    with:
-      cluster: ${{ needs.resolve.outputs.cluster }}
-      app: konto.bratislava.sk/secrets
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All in-scope builds finished, starting deploys."
 
   deploy-cvdmirror:
     name: cvdmirror
-    needs: [resolve, build-cvdmirror, deploy-secrets]
+    needs: [resolve, build-cvdmirror, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.cvdmirror == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -239,7 +237,7 @@ jobs:
 
   deploy-clamav:
     name: clamav
-    needs: [resolve, build-clamav, deploy-cvdmirror, deploy-secrets]
+    needs: [resolve, build-clamav, deploy-cvdmirror, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.clamav == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -249,7 +247,7 @@ jobs:
 
   deploy-nest-clamav-scanner:
     name: nest-clamav-scanner
-    needs: [resolve, build-nest-clamav-scanner, deploy-clamav, deploy-secrets]
+    needs: [resolve, build-nest-clamav-scanner, deploy-clamav, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-clamav-scanner == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -259,7 +257,7 @@ jobs:
 
   deploy-nest-forms-backend:
     name: nest-forms-backend
-    needs: [ resolve, build-nest-forms-backend, test-forms-shared, deploy-secrets ]
+    needs: [ resolve, build-nest-forms-backend, test-forms-shared, builds-complete ]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-forms-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -269,7 +267,7 @@ jobs:
 
   deploy-nest-tax-backend:
     name: nest-tax-backend
-    needs: [resolve, build-nest-tax-backend, deploy-secrets]
+    needs: [resolve, build-nest-tax-backend, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-tax-backend == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -279,7 +277,7 @@ jobs:
 
   deploy-nest-city-account:
     name: nest-city-account
-    needs: [resolve, build-nest-city-account, deploy-secrets]
+    needs: [resolve, build-nest-city-account, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.nest-city-account == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -289,7 +287,7 @@ jobs:
 
   deploy-strapi:
     name: Strapi
-    needs: [resolve, build-strapi, deploy-secrets]
+    needs: [resolve, build-strapi, builds-complete]
     if: ${{ !failure() && !cancelled() && needs.resolve.outputs.strapi == 'true' }}
     uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@v3.0.0
     secrets: inherit
@@ -304,7 +302,7 @@ jobs:
         resolve,
         build-next,
         test-forms-shared,
-        deploy-secrets,
+        builds-complete,
         deploy-strapi,
         deploy-nest-forms-backend,
         deploy-nest-clamav-scanner,

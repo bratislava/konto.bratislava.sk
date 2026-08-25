@@ -31,6 +31,10 @@ const FormHeader = () => {
               size="large"
               className="w-max"
               href={strapiForm.moreInformationUrl}
+              // We append service name to the link text to give user more context when using screen reader
+              aria-label={t('FormHeader.servicesLink.ariaLabel', {
+                serviceName: schema.title,
+              })}
             >
               {t('FormHeader.servicesLink')}
             </Button>

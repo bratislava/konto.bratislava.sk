@@ -7,27 +7,27 @@ import ThankYouTile, {
 import { ROUTES } from '@/src/utils/routes'
 
 const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { isTaxForm, formDefinition, isEmbedded } = useFormContext()
   const { feedbackLink } = formDefinition
 
   const feedbackButton = feedbackLink
     ? {
-        label: t('FormSentPageContent.button_to_feedback'),
+        label: t('FormSentPageContent.buttons.toFeedback'),
         href: feedbackLink,
       }
     : null
 
   const municipalServicesButton = {
-    label: t('FormSentPageContent.button_to_municipal_services'),
+    label: t('FormSentPageContent.buttons.toMunicipalServices'),
     href: ROUTES.MUNICIPAL_SERVICES,
   }
 
   if (isEmbedded) {
     return {
       title: t('FormSentPageContent.title'),
-      content: t('FormSentPageContent.content_embedded'),
+      content: t('FormSentPageContent.content.embedded'),
       isContentCentered: true,
     }
   }
@@ -35,7 +35,7 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
   if (isTaxForm) {
     return {
       title: t('FormSentPageContent.title'),
-      content: t('FormSentPageContent.content_tax'),
+      content: t('FormSentPageContent.content.tax'),
       primaryButton: feedbackButton,
       secondaryButton: municipalServicesButton,
     }
@@ -43,7 +43,7 @@ const useFormSentPageContent = (): Omit<ThankYouTileProps, 'variant'> => {
 
   return {
     title: t('FormSentPageContent.title'),
-    content: t('FormSentPageContent.content'),
+    content: t('FormSentPageContent.content.generic'),
     isContentCentered: true,
     primaryButton: feedbackButton,
     secondaryButton: municipalServicesButton,

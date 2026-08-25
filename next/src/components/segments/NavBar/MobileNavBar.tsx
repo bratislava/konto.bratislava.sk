@@ -26,7 +26,8 @@ export const MobileNavBar = ({
   hasBackButton = false,
   className,
 }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
   // Auth-variant pages are wrapped in AmplifyClientOAuthProvider; default pages are not, so read the

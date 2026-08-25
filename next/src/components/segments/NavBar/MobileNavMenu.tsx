@@ -1,7 +1,6 @@
 import { Button } from '@bratislava/component-library'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 import { ComponentProps, forwardRef } from 'react'
 import { useEventListener, useScrollLock, useWindowSize } from 'usehooks-ts'
@@ -53,15 +52,16 @@ const NavMenuLink = forwardRef<HTMLAnchorElement, NavMenuLinkProps>(
  */
 
 export const MobileNavMenu = () => {
-  const { t } = useTranslation('account')
-  const router = useRouter()
+  const { t } = useTranslation()
+
   const { height } = useWindowSize()
   const heightWithoutHeader = `calc(${height}px - 14*4px)`
 
   const { isSignedIn } = useSsrAuth()
 
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
-  const { mainMenuItems, signedInActionsMenuItems, notSignedInActionsMenuItems } = useNavMenu()
+  const { mainMenuItems, signedInActionsMenuItems, notSignedInActionsMenuItems, isMenuItemActive } =
+    useNavMenu()
 
   const closeMenu = () => setMobileMenuOpen(false)
 
@@ -86,17 +86,17 @@ export const MobileNavMenu = () => {
     >
       <NavigationMenu.Root aria-label={t('NavMenu.aria.navMenuLabel')}>
         <NavigationMenu.List className="flex flex-col">
-          {mainMenuItems.map((sectionItem) => (
-            <NavigationMenu.Item key={sectionItem.id}>
-              <NavigationMenu.Link asChild>
-                <NavMenuLink
-                  menuItem={sectionItem}
-                  isActive={router.route.endsWith(sectionItem.url)}
-                  onClick={closeMenu}
-                />
-              </NavigationMenu.Link>
-            </NavigationMenu.Item>
-          ))}
+          {mainMenuItems.map((sectionItem) => {
+            const isActive = isMenuItemActive(sectionItem.url)
+
+            return (
+              <NavigationMenu.Item key={sectionItem.id}>
+                <NavigationMenu.Link asChild active={isActive}>
+                  <NavMenuLink menuItem={sectionItem} isActive={isActive} onClick={closeMenu} />
+                </NavigationMenu.Link>
+              </NavigationMenu.Item>
+            )
+          })}
 
           <HorizontalDivider asListItem className="my-4" />
 
@@ -118,10 +118,10 @@ export const MobileNavMenu = () => {
                     {menuItem.title}
                   </Button>
                 ) : menuItem.url ? (
-                  <NavigationMenu.Link asChild>
+                  <NavigationMenu.Link asChild active={isMenuItemActive(menuItem.url)}>
                     <NavMenuLink
                       menuItem={menuItem}
-                      isActive={router.route.endsWith(menuItem.url)}
+                      isActive={isMenuItemActive(menuItem.url)}
                       onClick={closeMenu}
                     />
                   </NavigationMenu.Link>

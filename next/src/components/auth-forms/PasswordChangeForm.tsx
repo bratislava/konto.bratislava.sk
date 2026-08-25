@@ -25,15 +25,15 @@ const schema = {
       // min length set to 2 according to cognito error InvalidParameterException:
       // 1 validation error detected: Value at 'previousPassword' failed to satisfy constraint: Member must satisfy regular expression pattern: ^[\S]+.*[\S]+$
       minLength: 2,
-      errorMessage: { minLength: 'account:auth.fields.password_required' },
+      errorMessage: { minLength: 'auth.fields.password.required' },
     },
     password: {
       type: 'string',
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password_required',
-        format: 'account:auth.fields.password_format',
+        minLength: 'auth.fields.password.required',
+        format: 'auth.fields.password.format',
       },
     },
   },
@@ -41,7 +41,8 @@ const schema = {
 }
 
 const PasswordChangeForm = ({ onSubmit, error }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
     control,
@@ -59,7 +60,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
       data-cy="change-password-form"
     >
       <Typography variant="h3" as="h1">
-        {t('auth.password_change_title')}
+        {t('PasswordChangeForm.title')}
       </Typography>
       <AccountErrorAlert error={error} />
       <Controller
@@ -68,7 +69,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             isRequired
-            label={t('auth.fields.old_password_label')}
+            label={t('auth.fields.oldPassword.label')}
             {...field}
             errorMessage={errors.oldPassword}
           />
@@ -81,8 +82,8 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
           <PasswordField
             isRequired
             autoComplete="new-password"
-            label={t('auth.fields.new_password_label')}
-            helptext={t('auth.fields.password_description')}
+            label={t('auth.fields.newPassword.label')}
+            helptext={t('auth.fields.password.helptext')}
             {...field}
             errorMessage={errors.password}
           />
@@ -95,7 +96,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         isDisabled={isSubmitting}
         data-cy="change-password-submit"
       >
-        {t('auth.old_password_submit_new')}
+        {t('PasswordChangeForm.submit')}
       </Button>
     </form>
   )

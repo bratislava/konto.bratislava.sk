@@ -1,6 +1,5 @@
 import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
-import slugify from 'slugify'
 
 import {
   MunicipalServiceCategoryEntityFragment,
@@ -37,7 +36,7 @@ const MunicipalServicesPageContent = ({
   servicesLegalPerson,
   categoriesLegalPerson,
 }: MunicipalServicesPageContentProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const { categorySlug, setCategorySlug, currentPage, setCurrentPage } =
     useMunicipalServicesFilters()
@@ -47,10 +46,9 @@ const MunicipalServicesPageContent = ({
   const categoriesByPersonType = isLegalEntity ? categoriesLegalPerson : categories
 
   const categorySelectOptions: SelectOption[] = [
-    { value: ALL_CATEGORIES_VALUE, label: t('account_section_services.all_categories') },
+    { value: ALL_CATEGORIES_VALUE, label: t('MunicipalServicesPageContent.allCategories') },
     ...categoriesByPersonType.map((category) => ({
-      // TODO: remove fallback value once slug is set to required in strapi
-      value: category.slug ?? slugify(category.title),
+      value: category.slug,
       label: category.title,
     })),
   ]
@@ -66,10 +64,7 @@ const MunicipalServicesPageContent = ({
     }
 
     return service.categories.some(
-      (category) =>
-        isDefined(category) &&
-        // TODO: remove fallback value once slug is set to required in strapi
-        (category.slug ?? slugify(category.title)) === selectorValue.value,
+      (category) => isDefined(category) && category.slug === selectorValue.value,
     )
   })
 
@@ -79,11 +74,11 @@ const MunicipalServicesPageContent = ({
         enumOptions={categorySelectOptions}
         setSelectorValue={(newSelectorValue) => setCategorySlug(newSelectorValue.value)}
         selectorValue={selectorValue}
-        title={t('account_section_services.navigation')}
+        title={t('MunicipalServicesPageContent.title')}
       />
       <SectionContainer className="w-full pt-4 lg:pt-8">
         <Typography variant="h2" className="sr-only">
-          {t('account_section_services.services_list')}
+          {t('MunicipalServicesPageContent.servicesList')}
         </Typography>
         <div className="grid grid-cols-1 gap-3 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:gap-8">
           {filteredServices

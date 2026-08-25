@@ -5,8 +5,9 @@ import { useFormState } from '@/src/components/forms/useFormState'
 import Icon from '@/src/components/icon-components/Icon'
 
 const FormControls = () => {
+  const { t } = useTranslation()
+
   const { canGoToPreviousStep, goToPreviousStep, canGoToNextStep, goToNextStep } = useFormState()
-  const { t } = useTranslation('forms')
 
   return (
     <>
@@ -19,7 +20,7 @@ const FormControls = () => {
               onPress={goToPreviousStep}
               startIcon={<Icon name="chevron-left" />}
             >
-              {t('form_controls.back')}
+              {t('FormControls.back')}
             </Button>
           )}
         </div>
@@ -27,7 +28,7 @@ const FormControls = () => {
         <div className="flex flex-wrap gap-5">
           {canGoToNextStep && (
             <Button variant="outline" onPress={goToNextStep}>
-              {t('form_controls.skip')}
+              {t('FormControls.skip')}
             </Button>
           )}
           <Button
@@ -36,7 +37,7 @@ const FormControls = () => {
             data-cy="continue-button-desktop"
             endIcon={<Icon name="arrow-right" />}
           >
-            {t('form_controls.continue')}
+            {t('FormControls.continue')}
           </Button>
         </div>
       </div>
@@ -44,17 +45,17 @@ const FormControls = () => {
       {/* Mobile */}
       <div className="mt-4 flex flex-col gap-2 lg:hidden">
         <Button variant="solid" type="submit" fullWidth data-cy="continue-button-mobile">
-          {t('form_controls.continue')}
+          {t('FormControls.continue')}
         </Button>
         <div className="flex items-center gap-3">
           {canGoToPreviousStep && (
             <Button variant="outline" fullWidth onPress={goToPreviousStep}>
-              {t('form_controls.back')}
+              {t('FormControls.back')}
             </Button>
           )}
           {canGoToNextStep && (
             <Button variant="outline" fullWidth onPress={goToNextStep}>
-              {t('form_controls.skip')}
+              {t('FormControls.skip')}
             </Button>
           )}
         </div>

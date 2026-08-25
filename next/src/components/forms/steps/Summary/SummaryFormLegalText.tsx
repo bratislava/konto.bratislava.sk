@@ -5,15 +5,16 @@ import Markdown from '@/src/components/formatting/Markdown'
 import { useFormContext } from '@/src/components/forms/useFormContext'
 
 const SummaryFormLegalText = () => {
+  const { t } = useTranslation()
+
   const {
     formDefinition: { termsAndConditions },
   } = useFormContext()
-  const { t } = useTranslation('forms')
 
   return (
     <div>
       <Typography variant="h3" className="mb-4">
-        {t('summary.vop_agreement_title')}
+        {t('SummaryFormLegalText.title')}
       </Typography>
       <Markdown
         content={termsAndConditions}

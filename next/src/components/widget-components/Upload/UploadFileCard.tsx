@@ -25,7 +25,8 @@ type UploadedFileProps = {
 }
 
 const useGetErrorMessage = (fileInfo: FileInfo) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { status } = fileInfo
 
   if (!isErrorFileStatusType(status.type)) {
@@ -34,13 +35,13 @@ const useGetErrorMessage = (fileInfo: FileInfo) => {
 
   if (status.type === FileStatusType.UploadClientError) {
     if (status.reason.type === UploadClientErrorReasonType.LargeFile) {
-      return t('Upload.errors.large_file', {
+      return t('UploadFileCard.errors.largeFile', {
         maxFileSize: status.reason.maxFileSize,
       })
     }
 
     if (status.reason.type === UploadClientErrorReasonType.InvalidFileType) {
-      return t('Upload.errors.invalid_file_type', {
+      return t('UploadFileCard.errors.invalidFileType', {
         supportedFormats: status.reason.supportedFormats.join(', '),
       })
     }
@@ -50,22 +51,23 @@ const useGetErrorMessage = (fileInfo: FileInfo) => {
   // (max file size, invalid file type).
   return (
     {
-      [FileStatusType.ScanInfected]: t('Upload.errors.scan_infected'),
-      [FileStatusType.ScanError]: t('Upload.errors.scan_error'),
-    }[status.type] ?? t('Upload.errors.unknown_error')
+      [FileStatusType.ScanInfected]: t('UploadFileCard.errors.scanInfected'),
+      [FileStatusType.ScanError]: t('UploadFileCard.errors.scanError'),
+    }[status.type] ?? t('UploadFileCard.errors.unknownError')
   )
 }
 
 const useGetMessage = (fileInfo: FileInfo) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const { status } = fileInfo
 
   return (
     {
-      [FileStatusType.UploadQueued]: t('Upload.messages.upload_queued'),
-      [FileStatusType.Uploading]: t('Upload.messages.uploading'),
-      [FileStatusType.WaitingForScan]: t('Upload.messages.waiting_for_scan'),
-      [FileStatusType.Scanning]: t('Upload.messages.scanning'),
+      [FileStatusType.UploadQueued]: t('UploadFileCard.messages.uploadQueued'),
+      [FileStatusType.Uploading]: t('UploadFileCard.messages.uploading'),
+      [FileStatusType.WaitingForScan]: t('UploadFileCard.messages.waitingForScan'),
+      [FileStatusType.Scanning]: t('UploadFileCard.messages.scanning'),
     }[status.type] ?? null
   )
 }
@@ -81,7 +83,8 @@ const UploadFileCard = ({
   onFileDownload,
   isDisabled = false,
 }: UploadedFileProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+
   const errorMessage = useGetErrorMessage(fileInfo)
   const message = useGetMessage(fileInfo)
 
@@ -130,7 +133,7 @@ const UploadFileCard = ({
                   <Button
                     variant="icon-wrapped-negative-margin"
                     icon={<Icon name="download" />}
-                    aria-label={t('Upload.aria.download')}
+                    aria-label={t('UploadFileCard.aria.download')}
                     onPress={onFileDownload}
                   />
                 )}
@@ -153,7 +156,7 @@ const UploadFileCard = ({
               <Button
                 variant="icon-wrapped-negative-margin"
                 icon={<Icon name="close-circle" />}
-                aria-label={t('Upload.aria.removeFile')}
+                aria-label={t('UploadFileCard.aria.removeFile')}
                 className={cn('relative', {
                   'hover:bg-negative-200 focus:bg-negative-300': isErrorStatus,
                   'hover:bg-success-200 focus:bg-success-300': isDoneStatus,
@@ -182,7 +185,7 @@ const UploadFileCard = ({
               className="font-semibold"
               isDisabled={isDisabled}
             >
-              {t('Upload.retry')}
+              {t('UploadFileCard.retry')}
             </Button>
           )}
         </div>

@@ -15,13 +15,11 @@ interface MyApplicationHistoryProps {
  */
 
 const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const translationMap = {
-    DOCUMENT_CREATED: t(
-      'account_section_applications.details.application_history.state.DOCUMENT_CREATED',
-    ),
-    UNKNOWN: t('account_section_applications.details.application_history.state.UNKNOWN'),
+    DOCUMENT_CREATED: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
+    UNKNOWN: t('MyApplicationHistory.states.UNKNOWN'),
   }
 
   return (
@@ -35,7 +33,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
                 <Typography variant="p-small" as="span" className="font-semibold">
-                  {t('account_section_applications.details.application_history.edit_date')}
+                  {t('MyApplicationHistory.editDate')}
                 </Typography>
                 <Typography variant="p-small" as="span">
                   <FormatDate>{data['Datum-zmeny']}</FormatDate>
@@ -43,7 +41,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
               </div>
               <div className="flex w-full flex-col">
                 <Typography variant="p-small" as="span" className="font-semibold">
-                  {t('account_section_applications.details.application_history.description')}
+                  {t('MyApplicationHistory.description')}
                 </Typography>
                 <Typography variant="p-small" as="span">
                   {translationMap[data?.assignedCategory] ?? translationMap.UNKNOWN}
@@ -58,10 +56,10 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
         <div className="w-[548px] rounded-lg border border-gray-200">
           <div className="flex items-center bg-gray-200 p-4">
             <Typography variant="p-small" as="span" className="min-w-60">
-              {t('account_section_applications.details.application_history.edit_date')}
+              {t('MyApplicationHistory.editDate')}
             </Typography>
             <Typography variant="p-small" as="span" className="w-full">
-              {t('account_section_applications.details.application_history.description')}
+              {t('MyApplicationHistory.description')}
             </Typography>
           </div>
           <div className="flex flex-col items-center">

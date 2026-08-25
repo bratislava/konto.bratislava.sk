@@ -54,8 +54,8 @@ const schema = {
       minLength: 1,
       format: 'email',
       errorMessage: {
-        minLength: 'account:auth.fields.email_required',
-        format: 'account:auth.fields.email_format',
+        minLength: 'auth.fields.email.required',
+        format: 'auth.fields.email.format',
       },
     },
     password: {
@@ -63,8 +63,8 @@ const schema = {
       minLength: 1,
       format: 'password',
       errorMessage: {
-        minLength: 'account:auth.fields.password_required',
-        format: 'account:auth.fields.password_format',
+        minLength: 'auth.fields.password.required',
+        format: 'auth.fields.password.format',
       },
     },
     turnstileToken: {
@@ -86,12 +86,12 @@ const schema = {
           given_name: {
             type: 'string',
             minLength: 1,
-            errorMessage: { minLength: 'account:auth.fields.given_name_required' },
+            errorMessage: { minLength: 'auth.fields.givenName.required' },
           },
           family_name: {
             type: 'string',
             minLength: 1,
-            errorMessage: { minLength: 'account:auth.fields.family_name_required' },
+            errorMessage: { minLength: 'auth.fields.familyName.required' },
           },
         },
         required: ['given_name', 'family_name'],
@@ -101,7 +101,7 @@ const schema = {
           name: {
             type: 'string',
             minLength: 1,
-            errorMessage: { minLength: 'account:auth.fields.business_name_required' },
+            errorMessage: { minLength: 'auth.fields.businessName.required' },
           },
         },
         required: ['name'],
@@ -116,7 +116,7 @@ const schema = {
  */
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
-  const { t, i18n } = useTranslation('account')
+  const { t, i18n } = useTranslation()
 
   const { clientInfo } = useAmplifyClientOAuthContext()
 
@@ -141,16 +141,18 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
 
   useTimeout(() => {
-    if (!isBrowser() || captchaWarning === 'hide') return
+    if (!isBrowser() || captchaWarning === 'hide') {
+      return
+    }
     setCaptchaWarning('show')
   }, 3000)
 
   const type = watch('account_type')
 
   const emailHelptextTranslationMap = {
-    fo: t('auth.fields.email_fo_description'),
-    'fo-p': t('auth.fields.email_fo-p_description'),
-    po: t('auth.fields.email_po_description'),
+    fo: t('auth.fields.email.helptext.fo'),
+    'fo-p': t('auth.fields.email.helptext.fop'),
+    po: t('auth.fields.email.helptext.po'),
   } satisfies Record<AccountType, string>
 
   return (
@@ -178,7 +180,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       })}
     >
       <Typography variant="h2" as="h1" data-cy="register-form-title">
-        {t('auth.register_title')}
+        {t('RegisterForm.title')}
       </Typography>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
@@ -191,17 +193,17 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               isRequired
               onChange={field.onChange}
               value={field.value}
-              label={t('auth.fields.account_type_label')}
+              label={t('auth.fields.accountType.label')}
               orientation="vertical"
             >
               <Radio value="fo" variant="boxed" data-cy="radio-fyzická-osoba">
-                {t('auth.fields.fo_label')}
+                {t('auth.fields.accountType.options.fo')}
               </Radio>
               <Radio value="fo-p" variant="boxed" data-cy="radio-fyzická-osoba---podnikateľ">
-                {t('auth.fields.fop_label')}
+                {t('auth.fields.accountType.options.fop')}
               </Radio>
               <Radio value="po" variant="boxed" data-cy="radio-právnická-osoba">
-                {t('auth.fields.po_label')}
+                {t('auth.fields.accountType.options.po')}
               </Radio>
             </RadioGroup>
           )}
@@ -214,7 +216,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           <TextField
             isRequired
             helptext={emailHelptextTranslationMap[type]}
-            label={t('auth.fields.email_label')}
+            label={t('auth.fields.email.label')}
+            type="email"
             autoComplete="username"
             autoCapitalize="none"
             autoCorrect="off"
@@ -232,8 +235,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             render={({ field }) => (
               <TextField
                 isRequired
-                label={t('auth.fields.given_name_label')}
-                helptext={t('auth.fields.given_name_helptext')}
+                label={t('auth.fields.givenName.label')}
+                helptext={t('auth.fields.givenName.helptext')}
                 autoComplete="given-name"
                 autoCapitalize="on"
                 autoCorrect="off"
@@ -249,8 +252,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             render={({ field }) => (
               <TextField
                 isRequired
-                label={t('auth.fields.family_name_label')}
-                helptext={t('auth.fields.family_name_helptext')}
+                label={t('auth.fields.familyName.label')}
+                helptext={t('auth.fields.familyName.helptext')}
                 autoComplete="family-name"
                 autoCapitalize="on"
                 autoCorrect="off"
@@ -269,7 +272,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           render={({ field }) => (
             <TextField
               isRequired
-              label={t('auth.fields.business_name_label')}
+              label={t('auth.fields.businessName.label')}
               autoCapitalize="on"
               autoCorrect="off"
               spellCheck="false"
@@ -285,8 +288,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         render={({ field }) => (
           <PasswordField
             isRequired
-            label={t('auth.fields.password_label')}
-            helptext={t('auth.fields.password_description')}
+            label={t('auth.fields.password.label')}
+            helptext={t('auth.fields.password.helptext')}
             autoComplete="new-password"
             {...field}
             errorMessage={errors.password}
@@ -295,7 +298,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       />
       <Markdown
         variant="small"
-        content={t('auth.marketing_confirmation_text')}
+        content={t('RegisterForm.marketingConfirmation')}
         className="text-center"
       />
       <Controller
@@ -332,14 +335,14 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
 
             {captchaWarning === 'show' && (
               <Typography variant="p-small" className="italic">
-                {t('auth.captcha_warning')}
+                {t('auth.captchaWarning')}
               </Typography>
             )}
           </>
         )}
       />
       <Button variant="solid" type="submit" fullWidth isDisabled={isSubmitting}>
-        {t('auth.register_submit')}
+        {t('RegisterForm.submit')}
       </Button>
     </form>
   )

@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next/pages'
 import Icon from '@/src/components/icon-components/Icon'
 
 const BackButton = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
 
   return (

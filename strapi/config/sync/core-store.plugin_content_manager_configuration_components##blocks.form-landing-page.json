@@ -22,7 +22,7 @@
       },
       "text": {
         "edit": {
-          "label": "Text",
+          "label": "UŽ SA NEPOUŽIVA - Text",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -36,7 +36,7 @@
       },
       "linkCtas": {
         "edit": {
-          "label": "Odkazy CTAs",
+          "label": "UŽ SA NEPOUŽIVA - Odkazy CTAs",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -50,7 +50,7 @@
       },
       "formCta": {
         "edit": {
-          "label": "Formulár CTA",
+          "label": "UŽ SA NEPOUŽIVA - Formulár CTA",
           "description": "",
           "placeholder": "",
           "visible": true,

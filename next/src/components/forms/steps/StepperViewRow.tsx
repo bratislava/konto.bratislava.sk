@@ -17,13 +17,14 @@ interface StepperViewRowProps {
  */
 
 const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => {
+  const { t } = useTranslation()
+
   const { submittedStepsIndexes } = useFormState()
-  const { t } = useTranslation('forms')
 
   const isSubmitted = step.index === 'summary' ? false : submittedStepsIndexes.has(step.index)
   const getTitle = () => {
     if (step.index === 'summary') {
-      return t('summary.title')
+      return t('SummaryHeader.title')
     }
 
     return step.stepperTitle ?? step.title
@@ -47,9 +48,9 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
         )}
       </div>
       <Typography variant="p-tiny" as="span" className="text-left font-medium">
-        {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}
+        {isCurrent ? <span className="sr-only">{t('StepperViewRow.srOnly.current')}</span> : null}
         {isSubmitted && !isCurrent ? (
-          <span className="sr-only">{t('steps.submitted_sr')}</span>
+          <span className="sr-only">{t('StepperViewRow.srOnly.submitted')}</span>
         ) : null}
         {getTitle()}
       </Typography>

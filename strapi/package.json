@@ -31,6 +31,7 @@
   "devDependencies": {
     "@babel/core": "7.29.0",
     "@babel/eslint-parser": "7.28.6",
+    "cross-env": "10.1.0",
     "eslint": "9.39.4",
     "eslint-config-prettier": "10.1.8",
     "eslint-scope": "9.1.2"

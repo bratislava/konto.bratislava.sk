@@ -69,7 +69,7 @@ export const FooterAccessibilityLink = ({ accessibilityPageLink }: FooterFragmen
 }
 
 export const FooterCopyright = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <Typography variant="p-small" className="text-center text-content-passive-secondary">

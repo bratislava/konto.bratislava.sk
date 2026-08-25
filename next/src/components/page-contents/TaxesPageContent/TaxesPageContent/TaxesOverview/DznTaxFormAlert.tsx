@@ -7,7 +7,7 @@ import MLink from '@/src/components/simple-components/MLink'
 import { ROUTES } from '@/src/utils/routes'
 
 const DznTaxFormAlert = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <Alert
@@ -16,19 +16,16 @@ const DznTaxFormAlert = () => {
       message={
         <>
           <Typography variant="h6" as="p" className="mb-2 font-semibold">
-            {t('account_section_payment.tax_form_change_ownership_alert_title')}
+            {t('DznTaxFormAlert.title')}
           </Typography>
 
-          <Markdown
-            variant="small"
-            content={t('account_section_payment.tax_form_change_ownership_alert_text')}
-          />
+          <Markdown variant="small" content={t('DznTaxFormAlert.text')} />
           <div className="pt-2">
             <MLink
               href={ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti')}
               variant="underlined-medium"
             >
-              {t('account_section_payment.tax_form_change_ownership_alert_link_text')}
+              {t('DznTaxFormAlert.linkText')}
             </MLink>
           </div>
         </>

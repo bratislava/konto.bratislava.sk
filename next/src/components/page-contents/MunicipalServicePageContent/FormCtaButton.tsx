@@ -1,22 +1,22 @@
+import { Button } from '@bratislava/component-library'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 
 import { formsClient } from '@/src/clients/forms'
-import { FormLandingPageFormCtaFragment } from '@/src/clients/graphql-strapi/api'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
-import FormLandingPageCard from '@/src/components/segments/FormLandingPageCard/FormLandingPageCard'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import { ROUTES } from '@/src/utils/routes'
 
 type Props = {
-  formCta: FormLandingPageFormCtaFragment
   formDefinition: ClientLandingPageFormDefinition
+  buttonLabel?: string | null
 }
 
-const FormLandingPageCtaCard = ({ formCta, formDefinition }: Props) => {
+const FormCtaButton = ({ buttonLabel, formDefinition }: Props) => {
+  const { t } = useTranslation()
   const router = useRouter()
-  const { t } = useTranslation('forms')
+
   const { showToast, closeToasts } = useToast()
 
   const { mutate, isPending } = useMutation({
@@ -30,7 +30,7 @@ const FormLandingPageCtaCard = ({ formCta, formDefinition }: Props) => {
     networkMode: 'always',
     onMutate: () => {
       showToast({
-        message: t('form_landing_page.redirect_info'),
+        message: t('FormLandingPageCtaCard.redirectInfo'),
         variant: 'info',
         // Keep this toast visible for the whole redirect flow; it is closed explicitly after navigation succeeds.
         duration: Number.MAX_SAFE_INTEGER,
@@ -44,19 +44,22 @@ const FormLandingPageCtaCard = ({ formCta, formDefinition }: Props) => {
       closeToasts()
     },
     onError: () => {
-      showToast({ message: t('form_landing_page.redirect_error'), variant: 'error' })
+      showToast({ message: t('FormLandingPageCtaCard.redirectError'), variant: 'error' })
     },
   })
 
   return (
-    <FormLandingPageCard
-      {...formCta}
-      isLoading={isPending}
+    <Button
+      variant="solid"
+      fullWidth
       onPress={() => {
         mutate()
       }}
-    />
+      isLoading={isPending}
+    >
+      {buttonLabel ?? t('FormCtaButton.fileFormButtonLabel')}
+    </Button>
   )
 }
 
-export default FormLandingPageCtaCard
+export default FormCtaButton

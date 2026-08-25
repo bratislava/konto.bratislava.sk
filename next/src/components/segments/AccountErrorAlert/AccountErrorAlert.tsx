@@ -14,7 +14,7 @@ interface Props {
 }
 
 const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const errorMessage = useMemo<string>(() => {
     if (!error) {
@@ -27,7 +27,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
         JSON.stringify(error),
       )
 
-      return t('errors.unknown')
+      return t('AccountErrorAlert.errors.unknown')
     }
     if (isErrorWithoutName(error)) {
       // JSON.stringify here because amplify returns custom errors which pino tries to serialize but fails (they either don't have 'message' attribute or have it as private)
@@ -37,42 +37,47 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
         JSON.stringify(error),
       )
 
-      return t('errors.unknown')
+      return t('AccountErrorAlert.errors.unknown')
     }
 
     // Translation map for all known errors
     const errorTranslationMap: Record<string, string> = {
-      unknown: t('errors.unknown'),
-      UserLambdaValidationException: t('errors.UserLambdaValidationException'),
-      'Bad Request': t('errors.Bad Request'),
-      NotAuthorizedException: t('errors.NotAuthorizedException'),
+      unknown: t('AccountErrorAlert.errors.unknown'),
+      UserLambdaValidationException: t('AccountErrorAlert.errors.UserLambdaValidationException'),
+      'Bad Request': t('AccountErrorAlert.errors.Bad Request'),
+      NotAuthorizedException: t('AccountErrorAlert.errors.NotAuthorizedException'),
       'NotAuthorizedException User is disabled.': t(
-        'errors.NotAuthorizedException User is disabled.',
+        'AccountErrorAlert.errors.NotAuthorizedException User is disabled.',
       ),
-      CodeMismatchException: t('errors.CodeMismatchException'),
-      LimitExceededException: t('errors.LimitExceededException'),
-      UserNotFoundException: t('errors.UserNotFoundException'),
-      MigrationUserNotFoundException: t('errors.MigrationUserNotFoundException', args),
-      UserNotConfirmedException: t('errors.UserNotConfirmedException'),
-      UsernameExistsException: t('errors.UsernameExistsException', args),
-      ExpiredCodeException: t('errors.ExpiredCodeException'),
-      IncorrectPasswordException: t('errors.IncorrectPasswordException'),
+      CodeMismatchException: t('AccountErrorAlert.errors.CodeMismatchException'),
+      LimitExceededException: t('AccountErrorAlert.errors.LimitExceededException'),
+      UserNotFoundException: t('AccountErrorAlert.errors.UserNotFoundException'),
+      MigrationUserNotFoundException: t(
+        'AccountErrorAlert.errors.MigrationUserNotFoundException',
+        args,
+      ),
+      UserNotConfirmedException: t('AccountErrorAlert.errors.UserNotConfirmedException'),
+      UsernameExistsException: t('AccountErrorAlert.errors.UsernameExistsException', args),
+      ExpiredCodeException: t('AccountErrorAlert.errors.ExpiredCodeException'),
+      IncorrectPasswordException: t('AccountErrorAlert.errors.IncorrectPasswordException'),
       // InvalidPasswordException returns probably also a message which rule failed ("Password did not conform with policy: Password must have symbol characters").
-      InvalidPasswordException: t('errors.InvalidPasswordException'),
-      InvalidParameterException: t('errors.InvalidParameterException'),
-      AliasExistsException: t('errors.AliasExistsException', args),
-      API_ERROR: t('errors.API_ERROR'),
-      RFO_ACCESS_ERROR: t('errors.RFO_ACCESS_ERROR'),
-      RFO_NOT_RESPONDING: t('errors.RFO_NOT_RESPONDING'),
-      DEAD_PERSON: t('errors.DEAD_PERSON'),
+      InvalidPasswordException: t('AccountErrorAlert.errors.InvalidPasswordException'),
+      InvalidParameterException: t('AccountErrorAlert.errors.InvalidParameterException'),
+      AliasExistsException: t('AccountErrorAlert.errors.AliasExistsException', args),
+      API_ERROR: t('AccountErrorAlert.errors.API_ERROR'),
+      RFO_ACCESS_ERROR: t('AccountErrorAlert.errors.RFO_ACCESS_ERROR'),
+      RFO_NOT_RESPONDING: t('AccountErrorAlert.errors.RFO_NOT_RESPONDING'),
+      DEAD_PERSON: t('AccountErrorAlert.errors.DEAD_PERSON'),
       BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY: t(
-        'errors.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
+        'AccountErrorAlert.errors.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
       ),
-      BIRTHNUMBER_IFO_DUPLICITY: t('errors.BIRTHNUMBER_IFO_DUPLICITY'),
-      'unsuccessful-identity-verification': t('errors.unsuccessful-identity-verification'),
+      BIRTHNUMBER_IFO_DUPLICITY: t('AccountErrorAlert.errors.BIRTHNUMBER_IFO_DUPLICITY'),
+      'unsuccessful-identity-verification': t(
+        'AccountErrorAlert.errors.unsuccessful-identity-verification',
+      ),
       'InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number':
         t(
-          'errors.InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number',
+          'AccountErrorAlert.errors.InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number',
         ),
     }
 
@@ -96,7 +101,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     // Unknown error
     logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error)
 
-    return t('errors.unknown')
+    return t('AccountErrorAlert.errors.unknown')
     // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render
     // instead of fixing this, we may want to get rid of args/present version of formatUnicorn altogether
     // eslint-disable-next-line react-hooks/exhaustive-deps

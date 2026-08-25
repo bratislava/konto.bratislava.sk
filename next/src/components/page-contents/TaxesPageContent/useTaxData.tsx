@@ -14,7 +14,7 @@ type TaxDataProviderProps = {
 }
 
 const useGetContext = ({ taxData }: TaxDataProviderProps) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   const router = useRouter()
 
   const { showToast, closeToasts } = useToast()
@@ -36,11 +36,11 @@ const useGetContext = ({ taxData }: TaxDataProviderProps) => {
         await router.push(response.data.url)
       },
       onMutate: () => {
-        showToast({ message: t('account_section_payment.redirecting_to_payment'), variant: 'info' })
+        showToast({ message: t('useTaxData.redirectingToPayment'), variant: 'info' })
       },
       onError: (error) => {
         showToast({
-          message: t('account_section_payment.payment_redirect_error'),
+          message: t('useTaxData.paymentRedirectError'),
           variant: 'error',
         })
         logger.error(error)
@@ -66,10 +66,10 @@ const useGetContext = ({ taxData }: TaxDataProviderProps) => {
       await router.push(response.data.url)
     },
     onMutate: () => {
-      showToast({ message: t('account_section_payment.redirecting_to_payment'), variant: 'info' })
+      showToast({ message: t('useTaxData.redirectingToPayment'), variant: 'info' })
     },
     onError: (error) => {
-      showToast({ message: t('account_section_payment.payment_redirect_error'), variant: 'error' })
+      showToast({ message: t('useTaxData.paymentRedirectError'), variant: 'error' })
       logger.error(error)
     },
   })

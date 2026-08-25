@@ -9,16 +9,16 @@ type Props = {
 }
 
 const IdentityVerificationBanner = ({ variant }: Props) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   if (variant === 'verification-needed') {
     return (
       <AnnouncementBlock
-        announcementContent={t('account_section_payment.verify_identity_content')}
+        announcementContent={t('IdentityVerificationBanner.verificationNeeded.content')}
         imageSrc={ImageMestskeKontoSituacia}
         buttons={[
           {
-            children: t('account_section_payment.verify_and_set'),
+            children: t('IdentityVerificationBanner.verificationNeeded.button'),
             href: ROUTES.IDENTITY_VERIFICATION,
             variant: 'solid',
             fullWidthMobile: true,
@@ -32,7 +32,7 @@ const IdentityVerificationBanner = ({ variant }: Props) => {
   if (variant === 'verification-in-process') {
     return (
       <AnnouncementBlock
-        announcementContent={t('account_section_payment.verifying_identity_content')}
+        announcementContent={t('IdentityVerificationBanner.verificationInProcess.content')}
         imageSrc={ImageMestskeKontoSituacia}
       />
     )

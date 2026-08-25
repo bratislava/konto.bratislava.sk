@@ -7,11 +7,12 @@ import { useFormContext } from '@/src/components/forms/useFormContext'
 import logger from '@/src/frontend/utils/logger'
 
 const useGetContext = () => {
-  const { isDevRoute } = useFormContext()
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation()
   const router = useRouter()
+
+  const { isDevRoute } = useFormContext()
   const enabledRef = useRef(false)
-  useBeforeunload(() => (enabledRef.current ? t('info_messages.form_leave_protection') : null))
+  useBeforeunload(() => (enabledRef.current ? t('useFormLeaveProtection.message') : null))
 
   const turnOffLeaveProtection = () => {
     enabledRef.current = false
@@ -34,7 +35,7 @@ const useGetContext = () => {
       if (
         enabledRef.current &&
         !isShallow &&
-        !window.confirm(t('info_messages.form_leave_protection'))
+        !window.confirm(t('useFormLeaveProtection.message'))
       ) {
         router.events.emit('routeChangeError')
         logger.info('routeChange aborted.')

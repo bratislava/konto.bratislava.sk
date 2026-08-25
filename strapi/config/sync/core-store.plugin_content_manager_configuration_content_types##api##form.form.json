@@ -107,7 +107,7 @@
       },
       "landingPage": {
         "edit": {
-          "label": "Landing page",
+          "label": "UŽ SA NEPOUŽIVA - Landing page",
           "description": "",
           "placeholder": "",
           "visible": true,
@@ -211,12 +211,6 @@
       "edit": [
         [
           {
-            "name": "landingPage",
-            "size": 12
-          }
-        ],
-        [
-          {
             "name": "slug",
             "size": 12
           },
@@ -247,6 +241,12 @@
           {
             "name": "temporarilyDisabledReason",
             "size": 4
+          }
+        ],
+        [
+          {
+            "name": "landingPage",
+            "size": 12
           }
         ]
       ]

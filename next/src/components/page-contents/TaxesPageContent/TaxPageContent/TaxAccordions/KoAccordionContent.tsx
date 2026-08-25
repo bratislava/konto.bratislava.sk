@@ -26,14 +26,14 @@ type TableDataProps = {
 }
 
 const TableHeader = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   const tableHeaderData = {
-    containerVolume: t('tax_detail_section.ko_table.container_volume'),
-    containerCount: t('tax_detail_section.ko_table.container_count'),
-    numberOfDisposals: t('tax_detail_section.ko_table.number_of_disposals'),
-    unitRate: t('tax_detail_section.ko_table.unit_rate'),
-    fee: t('tax_detail_section.ko_table.fee'),
+    containerVolume: t('KoAccordionContent.containerVolume'),
+    containerCount: t('KoAccordionContent.containerCount'),
+    numberOfDisposals: t('KoAccordionContent.numberOfDisposals'),
+    unitRate: t('KoAccordionContent.unitRate'),
+    fee: t('KoAccordionContent.fee'),
     containerType: null,
   } satisfies Record<keyof TableHeaderDataType, string | null>
 

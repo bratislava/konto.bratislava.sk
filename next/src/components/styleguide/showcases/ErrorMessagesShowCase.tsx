@@ -25,14 +25,13 @@ type ErrorMessageRow = {
 
 type ErrorMessageSection = {
   title: string
-  namespace: 'account' | 'rjsf-errors'
   description: ReactNode
   rows: ErrorMessageRow[]
 }
 
 const hookFormRows: ErrorMessageRow[] = [
   {
-    translationKey: 'auth.fields.email_required',
+    translationKey: 'auth.fields.email.required',
     trigger: 'Prázdny e-mail',
     sources: [
       'LoginForm.tsx',
@@ -44,7 +43,7 @@ const hookFormRows: ErrorMessageRow[] = [
     proposed: 'Zadajte e-mail.',
   },
   {
-    translationKey: 'auth.fields.email_format',
+    translationKey: 'auth.fields.email.format',
     trigger: 'E-mail nemá platný tvar',
     sources: [
       'LoginForm.tsx',
@@ -54,10 +53,10 @@ const hookFormRows: ErrorMessageRow[] = [
       'UserProfileDetailsEdit.tsx',
     ],
     proposed: 'Zadajte e-mail v tvare meno.priezvisko@priklad.sk.',
-    note: 'Rovnaké znenie ako rjsf-errors:format.email vo formulároch mestských služieb.',
+    note: 'Rovnaké znenie ako useFormErrorTranslations.formats.email vo formulároch mestských služieb.',
   },
   {
-    translationKey: 'auth.fields.password_required',
+    translationKey: 'auth.fields.password.required',
     trigger: 'Prázdne heslo, v PasswordChangeForm.tsx aj prázdne staré heslo',
     sources: [
       'LoginForm.tsx',
@@ -70,26 +69,26 @@ const hookFormRows: ErrorMessageRow[] = [
     note: 'Pole starého hesla má v schéme minLength: 2, takže sa táto správa zobrazí aj pri jednom zadanom znaku.',
   },
   {
-    translationKey: 'auth.fields.password_format',
+    translationKey: 'auth.fields.password.format',
     trigger: 'Heslo nespĺňa požiadavky na dĺžku a znaky',
     sources: ['RegisterForm.tsx', 'NewPasswordForm.tsx', 'PasswordChangeForm.tsx'],
     proposed: 'Heslo musí mať aspoň 8 znakov a obsahovať veľké písmeno, malé písmeno a číslo.',
   },
   {
-    translationKey: 'auth.fields.verification_code_required',
+    translationKey: 'auth.fields.verificationCode.required',
     trigger: 'Prázdny overovací kód',
     sources: ['EmailVerificationForm.tsx', 'NewPasswordForm.tsx'],
     proposed: 'Zadajte overovací kód, ktorý sme vám poslali e-mailom.',
   },
   {
-    translationKey: 'auth.fields.verification_code_format',
+    translationKey: 'auth.fields.verificationCode.format',
     trigger: 'Overovací kód nemá 6 číslic',
     sources: ['EmailVerificationForm.tsx', 'NewPasswordForm.tsx'],
     proposed: 'Overovací kód musí mať 6 číslic.',
     note: 'Súčasné znenie („kód nie je správny“) mýli, nesprávny kód hlási až server v errors.CodeMismatchException.',
   },
   {
-    translationKey: 'auth.fields.given_name_required',
+    translationKey: 'auth.fields.givenName.required',
     trigger: 'Prázdne meno',
     sources: [
       'RegisterForm.tsx',
@@ -99,7 +98,7 @@ const hookFormRows: ErrorMessageRow[] = [
     proposed: 'Zadajte meno.',
   },
   {
-    translationKey: 'auth.fields.family_name_required',
+    translationKey: 'auth.fields.familyName.required',
     trigger: 'Prázdne priezvisko',
     sources: [
       'RegisterForm.tsx',
@@ -109,46 +108,46 @@ const hookFormRows: ErrorMessageRow[] = [
     proposed: 'Zadajte priezvisko.',
   },
   {
-    translationKey: 'auth.fields.business_name_required',
+    translationKey: 'auth.fields.businessName.required',
     trigger: 'Prázdne obchodné meno pri právnickej osobe a fyzickej osobe – podnikateľovi',
     sources: ['RegisterForm.tsx'],
     proposed: 'Zadajte obchodné meno.',
   },
   {
-    translationKey: 'auth.fields.rc_required',
+    translationKey: 'auth.fields.birthNumber.required',
     trigger: 'Prázdne rodné číslo',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte rodné číslo v tvare 123456/7890.',
   },
   {
-    translationKey: 'auth.fields.rc_format',
+    translationKey: 'auth.fields.birthNumber.format',
     trigger: 'Rodné číslo má nesprávnu dĺžku alebo kontrolný súčet',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte rodné číslo s lomkou v tvare 123456/7890.',
     note: 'Validácia prijme aj deväť číslic bez lomky, správa však lomku vyžaduje.',
   },
   {
-    translationKey: 'auth.fields.id_card_required',
+    translationKey: 'auth.fields.idCard.required',
     trigger: 'Prázdne číslo dokladu totožnosti',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte číslo dokladu totožnosti.',
     note: 'Súčasné znenie „Číslo je povinné.“ nepomenúva pole.',
   },
   {
-    translationKey: 'auth.fields.id_card_format',
+    translationKey: 'auth.fields.idCard.format',
     trigger: 'Číslo dokladu nemá tvar dvoch písmen a šiestich až siedmich číslic',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Zadajte číslo dokladu bez medzier v tvare AB123456.',
   },
   {
-    translationKey: 'auth.fields.phone_number_format',
+    translationKey: 'auth.fields.phoneNumber.format',
     trigger: 'Telefónne číslo nie je v medzinárodnom tvare',
     sources: ['PhoneNumberForm.tsx'],
     proposed: null,
-    note: 'Znenie je rovnaké ako rjsf-errors:format.ba-phone-number. Pole nie je povinné, správa pre prázdne pole neexistuje.',
+    note: 'Znenie je rovnaké ako useFormErrorTranslations.formats.ba-phone-number. Pole nie je povinné, správa pre prázdne pole neexistuje.',
   },
   {
-    translationKey: 'towing.licensePlate_required',
+    translationKey: 'Towing.licensePlateRequired',
     trigger: 'Prázdne evidenčné číslo vozidla',
     sources: ['Towing.tsx'],
     proposed: 'Zadajte evidenčné číslo vozidla bez medzier, napríklad BA123AB.',
@@ -157,7 +156,7 @@ const hookFormRows: ErrorMessageRow[] = [
 
 const rjsfExistingRows: ErrorMessageRow[] = [
   {
-    translationKey: 'required',
+    translationKey: 'useFormErrorTranslations.errors.required',
     trigger: 'Prázdne povinné pole akéhokoľvek typu vo všetkých formulároch mestských služieb',
     sources: [
       'InputWidgetRJSF.tsx',
@@ -169,15 +168,42 @@ const rjsfExistingRows: ErrorMessageRow[] = [
       'FileUploadWidgetRJSF.tsx',
     ],
     proposed: [
-      { translationKey: 'required.input', message: 'Vyplňte pole.' },
-      { translationKey: 'required.number', message: 'Zadajte číslo.' },
-      { translationKey: 'required.select', message: 'Vyberte možnosť zo zoznamu.' },
-      { translationKey: 'required.radio', message: 'Vyberte jednu z možností.' },
-      { translationKey: 'required.checkbox', message: 'Označte pole.' },
-      { translationKey: 'required.date', message: 'Zadajte dátum v tvare DD.MM.RRRR.' },
-      { translationKey: 'required.time', message: 'Zadajte čas v tvare HH:MM.' },
-      { translationKey: 'required.file', message: 'Nahrajte súbor.' },
-      { translationKey: 'required.unknown', message: 'Vyplňte pole.' },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.input',
+        message: 'Vyplňte pole.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.number',
+        message: 'Zadajte číslo.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.select',
+        message: 'Vyberte možnosť zo zoznamu.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.radio',
+        message: 'Vyberte jednu z možností.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.checkbox',
+        message: 'Označte pole.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.date',
+        message: 'Zadajte dátum v tvare DD.MM.RRRR.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.time',
+        message: 'Zadajte čas v tvare HH:MM.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.file',
+        message: 'Nahrajte súbor.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.required.unknown',
+        message: 'Vyplňte pole.',
+      },
     ],
     note: (
       <>
@@ -188,13 +214,22 @@ const rjsfExistingRows: ErrorMessageRow[] = [
     ),
   },
   {
-    translationKey: 'minLength',
+    translationKey: 'useFormErrorTranslations.errors.minLength',
     trigger: 'Text kratší ako minLength',
     sources: ['InputWidgetRJSF.tsx', 'TextAreaWidgetRJSF.tsx'],
     proposed: [
-      { translationKey: 'minLength_one', message: 'Zadajte aspoň {{count}} znak.' },
-      { translationKey: 'minLength_few', message: 'Zadajte aspoň {{count}} znaky.' },
-      { translationKey: 'minLength_other', message: 'Zadajte aspoň {{count}} znakov.' },
+      {
+        translationKey: 'useFormErrorTranslations.errors.minLength_one',
+        message: 'Zadajte aspoň {{count}} znak.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.minLength_few',
+        message: 'Zadajte aspoň {{count}} znaky.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.minLength_other',
+        message: 'Zadajte aspoň {{count}} znakov.',
+      },
     ],
     note: (
       <>
@@ -204,7 +239,7 @@ const rjsfExistingRows: ErrorMessageRow[] = [
     ),
   },
   {
-    translationKey: 'minItems',
+    translationKey: 'useFormErrorTranslations.errors.minItems',
     trigger: 'Primalý počet vybraných možností alebo pridaných položiek',
     sources: [
       'CheckboxGroupWidgetRJSF.tsx',
@@ -213,94 +248,103 @@ const rjsfExistingRows: ErrorMessageRow[] = [
       'BAArrayFieldTemplate.tsx',
     ],
     proposed: [
-      { translationKey: 'minItems_one', message: 'Vyberte aspoň {{count}} možnosť.' },
-      { translationKey: 'minItems_few', message: 'Vyberte aspoň {{count}} možnosti.' },
-      { translationKey: 'minItems_other', message: 'Vyberte aspoň {{count}} možností.' },
+      {
+        translationKey: 'useFormErrorTranslations.errors.minItems_one',
+        message: 'Vyberte aspoň {{count}} možnosť.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.minItems_few',
+        message: 'Vyberte aspoň {{count}} možnosti.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.minItems_other',
+        message: 'Vyberte aspoň {{count}} možností.',
+      },
     ],
     note: 'Pre polia položiek (arrayField) navrhujeme vlastné kľúče so znením „Pridajte aspoň {{count}} položku / položky / položiek.“',
   },
   {
-    translationKey: 'const',
+    translationKey: 'useFormErrorTranslations.errors.const',
     trigger: 'Odznačené povinné zaškrtnutie, napríklad súhlas – 15 použití v schémach',
     sources: ['CheckboxWidgetRJSF.tsx'],
     proposed: null,
     note: 'Nastane, keď používateľ súhlas označí a znova odznačí – vo formulári vtedy zostane hodnota false. Ak sa poľa nikdy nedotkne, zobrazí sa chyba required.',
   },
   {
-    translationKey: 'pattern',
+    translationKey: 'useFormErrorTranslations.errors.pattern',
     trigger: 'Hodnota nesedí s regulárnym výrazom',
     sources: ['InputWidgetRJSF.tsx', 'TextAreaWidgetRJSF.tsx'],
     proposed: null,
     note: 'Generické znenie stačí ako záloha, vhodnejšie je znenie na úrovni poľa.',
   },
   {
-    translationKey: 'format.email',
+    translationKey: 'useFormErrorTranslations.formats.email',
     trigger: 'E-mail nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-iban',
+    translationKey: 'useFormErrorTranslations.formats.ba-iban',
     trigger: 'IBAN nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-phone-number',
+    translationKey: 'useFormErrorTranslations.formats.ba-phone-number',
     trigger: 'Telefónne číslo nie je v medzinárodnom tvare',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-slovak-phone-number',
+    translationKey: 'useFormErrorTranslations.formats.ba-slovak-phone-number',
     trigger: 'Slovenské telefónne číslo nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-slovak-zip',
+    translationKey: 'useFormErrorTranslations.formats.ba-slovak-zip',
     trigger: 'PSČ nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-ico',
+    translationKey: 'useFormErrorTranslations.formats.ba-ico',
     trigger: 'IČO nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-ratio',
+    translationKey: 'useFormErrorTranslations.formats.ba-ratio',
     trigger: 'Spoluvlastnícky podiel nemá platný tvar',
     sources: ['InputWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.date',
+    translationKey: 'useFormErrorTranslations.formats.date',
     trigger: 'Dátum nemá platný tvar',
     sources: ['DatePickerWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-time',
+    translationKey: 'useFormErrorTranslations.formats.ba-time',
     trigger: 'Čas nemá platný tvar',
     sources: ['TimePickerWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.ba-file-uuid',
+    translationKey: 'useFormErrorTranslations.formats.ba-file-uuid',
     trigger: 'Neplatný identifikátor nahranej prílohy',
     sources: ['FileUploadWidgetRJSF.tsx', 'FileUploadMultipleWidgetRJSF.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'format.unknown',
+    translationKey: 'useFormErrorTranslations.formats.unknown',
     trigger: 'Formát bez vlastného kľúča',
     proposed: null,
     note: 'Všetky formáty používané v schémach majú vlastný kľúč, táto správa je len záloha pre nový formát bez prekladu.',
   },
   {
-    translationKey: 'unknown',
+    translationKey: 'useFormErrorTranslations.errors.unknown',
     trigger: 'Chyba bez názvu',
     proposed: null,
   },
@@ -308,7 +352,7 @@ const rjsfExistingRows: ErrorMessageRow[] = [
 
 const rjsfMissingRows: ErrorMessageRow[] = [
   {
-    translationKey: 'maxItems',
+    translationKey: 'useFormErrorTranslations.errors.maxItems',
     trigger: 'Prekročený počet vybraných možností alebo pridaných položiek – 3 použitia',
     sources: [
       'CheckboxGroupWidgetRJSF.tsx',
@@ -316,45 +360,63 @@ const rjsfMissingRows: ErrorMessageRow[] = [
       'BAArrayFieldTemplate.tsx',
     ],
     proposed: [
-      { translationKey: 'maxItems_one', message: 'Vyberte najviac {{count}} možnosť.' },
-      { translationKey: 'maxItems_few', message: 'Vyberte najviac {{count}} možnosti.' },
-      { translationKey: 'maxItems_other', message: 'Vyberte najviac {{count}} možností.' },
+      {
+        translationKey: 'useFormErrorTranslations.errors.maxItems_one',
+        message: 'Vyberte najviac {{count}} možnosť.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.maxItems_few',
+        message: 'Vyberte najviac {{count}} možnosti.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.maxItems_other',
+        message: 'Vyberte najviac {{count}} možností.',
+      },
     ],
   },
   {
-    translationKey: 'minimum',
+    translationKey: 'useFormErrorTranslations.errors.minimum',
     trigger: 'Hodnota pod minimom – 42 použití v službách, najčastejšie minimum 0',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte číslo {{limit}} alebo väčšie.',
     note: 'Pole dostáva minimum ako minValue a hodnotu samo upraví, chyba nastane len pri importe XML alebo JSON. Pri minimum 0 je vhodnejšie znenie „Zadajte nezáporné číslo.“',
   },
   {
-    translationKey: 'maximum',
+    translationKey: 'useFormErrorTranslations.errors.maximum',
     trigger: 'Hodnota nad maximom – 4 použitia, napríklad rok priznania (2000 – 2099)',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte číslo {{limit}} alebo menšie.',
     note: 'Pole dostáva maximum ako maxValue a hodnotu samo upraví, chyba nastane len pri importe XML alebo JSON.',
   },
   {
-    translationKey: 'multipleOf',
+    translationKey: 'useFormErrorTranslations.errors.multipleOf',
     trigger: 'Hodnota mimo povoleného kroku – 11 použití',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte hodnotu ako násobok {{limit}}.',
     note: 'Pole hodnotu samo zaokrúhli, chyba nastane len pri importe XML alebo JSON. Pri kroku 0,01 je vhodnejšie znenie „Zadajte hodnotu s najviac dvoma desatinnými miestami.“',
   },
   {
-    translationKey: 'maxLength',
+    translationKey: 'useFormErrorTranslations.errors.maxLength',
     trigger: 'Text dlhší ako maxLength',
     sources: ['InputWidgetRJSF.tsx', 'TextAreaWidgetRJSF.tsx'],
     proposed: [
-      { translationKey: 'maxLength_one', message: 'Zadajte najviac {{count}} znak.' },
-      { translationKey: 'maxLength_few', message: 'Zadajte najviac {{count}} znaky.' },
-      { translationKey: 'maxLength_other', message: 'Zadajte najviac {{count}} znakov.' },
+      {
+        translationKey: 'useFormErrorTranslations.errors.maxLength_one',
+        message: 'Zadajte najviac {{count}} znak.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.maxLength_few',
+        message: 'Zadajte najviac {{count}} znaky.',
+      },
+      {
+        translationKey: 'useFormErrorTranslations.errors.maxLength_other',
+        message: 'Zadajte najviac {{count}} znakov.',
+      },
     ],
     note: 'Žiadna schéma dnes maxLength nepoužíva.',
   },
   {
-    translationKey: 'uniqueItems',
+    translationKey: 'useFormErrorTranslations.errors.uniqueItems',
     trigger: 'Duplicitné položky vo výbere alebo v poli položiek',
     sources: [
       'CheckboxGroupWidgetRJSF.tsx',
@@ -365,14 +427,14 @@ const rjsfMissingRows: ErrorMessageRow[] = [
     note: 'Duplicitu sa v rozhraní nedá vybrať, chyba nastane len pri importe XML alebo JSON.',
   },
   {
-    translationKey: 'enum',
+    translationKey: 'useFormErrorTranslations.errors.enum',
     trigger: 'Hodnota mimo zoznamu možností',
     sources: ['SelectWidgetRJSF.tsx', 'RadioGroupWidgetRJSF.tsx'],
     proposed: 'Vyberte jednu z možností.',
     note: 'Rozhranie ponúka len platné možnosti, chyba nastane len pri importe XML alebo JSON.',
   },
   {
-    translationKey: 'type',
+    translationKey: 'useFormErrorTranslations.errors.type',
     trigger: 'Desatinné číslo v celočíselnom poli',
     sources: ['NumberWidgetRJSF.tsx'],
     proposed: 'Zadajte hodnotu v správnom formáte.',
@@ -382,32 +444,32 @@ const rjsfMissingRows: ErrorMessageRow[] = [
 
 const uploadErrorRows: ErrorMessageRow[] = [
   {
-    translationKey: 'Upload.errors.large_file',
+    translationKey: 'UploadFileCard.errors.largeFile',
     trigger: 'Súbor prekročil maximálnu veľkosť',
     sources: ['UploadFileCard.tsx'],
     proposed: 'Súbor je väčší ako {{maxFileSize}}. Nahrajte menší súbor.',
   },
   {
-    translationKey: 'Upload.errors.invalid_file_type',
+    translationKey: 'UploadFileCard.errors.invalidFileType',
     trigger: 'Nepodporovaný formát súboru',
     sources: ['UploadFileCard.tsx'],
     proposed:
       'Tento formát súboru nepodporujeme. Nahrajte súbor v jednom z formátov {{supportedFormats}}.',
   },
   {
-    translationKey: 'Upload.errors.scan_infected',
+    translationKey: 'UploadFileCard.errors.scanInfected',
     trigger: 'Antivírová kontrola našla vírus',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.errors.scan_error',
+    translationKey: 'UploadFileCard.errors.scanError',
     trigger: 'Antivírová kontrola zlyhala',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.errors.unknown_error',
+    translationKey: 'UploadFileCard.errors.unknownError',
     trigger: 'Neznáma chyba pri nahrávaní súboru',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
@@ -416,25 +478,25 @@ const uploadErrorRows: ErrorMessageRow[] = [
 
 const uploadStatusRows: ErrorMessageRow[] = [
   {
-    translationKey: 'Upload.messages.upload_queued',
+    translationKey: 'UploadFileCard.messages.uploadQueued',
     trigger: 'Súbor čaká v poradí na nahratie',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.messages.uploading',
+    translationKey: 'UploadFileCard.messages.uploading',
     trigger: 'Prebieha nahrávanie súboru',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.messages.waiting_for_scan',
+    translationKey: 'UploadFileCard.messages.waitingForScan',
     trigger: 'Súbor čaká na antivírovú kontrolu',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'Upload.messages.scanning',
+    translationKey: 'UploadFileCard.messages.scanning',
     trigger: 'Prebieha antivírová kontrola',
     sources: ['UploadFileCard.tsx'],
     proposed: null,
@@ -443,38 +505,38 @@ const uploadStatusRows: ErrorMessageRow[] = [
 
 const serverErrorRows: ErrorMessageRow[] = [
   {
-    translationKey: 'errors.NotAuthorizedException',
+    translationKey: 'AccountErrorAlert.errors.NotAuthorizedException',
     trigger: 'Nesprávny e-mail alebo heslo',
     sources: ['LoginForm.tsx'],
     proposed:
       'E-mail alebo heslo nie je správne. Skontrolujte prihlasovacie údaje alebo si obnovte heslo.',
   },
   {
-    translationKey: 'errors.NotAuthorizedException User is disabled.',
+    translationKey: 'AccountErrorAlert.errors.NotAuthorizedException User is disabled.',
     trigger: 'Konto je deaktivované',
     sources: ['LoginForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.UserNotFoundException',
+    translationKey: 'AccountErrorAlert.errors.UserNotFoundException',
     trigger: 'Konto so zadaným e-mailom neexistuje',
     sources: ['LoginForm.tsx', 'ForgottenPasswordForm.tsx'],
     proposed: 'Konto s týmto e-mailom neexistuje. Skontrolujte e-mail alebo sa zaregistrujte.',
   },
   {
-    translationKey: 'errors.UserNotConfirmedException',
+    translationKey: 'AccountErrorAlert.errors.UserNotConfirmedException',
     trigger: 'E-mail konta nebol overený',
     sources: ['LoginForm.tsx'],
     proposed: 'E-mail ešte nie je overený. Zadajte overovací kód, ktorý sme vám poslali.',
   },
   {
-    translationKey: 'errors.UsernameExistsException',
+    translationKey: 'AccountErrorAlert.errors.UsernameExistsException',
     trigger: 'Konto so zadaným e-mailom už existuje',
     sources: ['RegisterForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.AliasExistsException',
+    translationKey: 'AccountErrorAlert.errors.AliasExistsException',
     trigger: 'Nový e-mail už používa iné konto',
     sources: ['EmailChangeForm.tsx'],
     proposed:
@@ -482,111 +544,111 @@ const serverErrorRows: ErrorMessageRow[] = [
     note: 'Súčasné znenie je veľmi dlhé a opisuje klikanie v rozhraní.',
   },
   {
-    translationKey: 'errors.IncorrectPasswordException',
+    translationKey: 'AccountErrorAlert.errors.IncorrectPasswordException',
     trigger: 'Nesprávne súčasné heslo',
     sources: ['PasswordChangeForm.tsx', 'EmailChangeForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.InvalidPasswordException',
+    translationKey: 'AccountErrorAlert.errors.InvalidPasswordException',
     trigger: 'Heslo nespĺňa požiadavky na strane servera',
     sources: ['RegisterForm.tsx', 'NewPasswordForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.InvalidParameterException',
+    translationKey: 'AccountErrorAlert.errors.InvalidParameterException',
     trigger: 'Zadané údaje sú v nesprávnom formáte',
     sources: ['RegisterForm.tsx', 'LoginForm.tsx'],
     proposed: null,
   },
   {
     translationKey:
-      'errors.InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number',
+      'AccountErrorAlert.errors.InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number',
     trigger: 'Obnova hesla pre konto bez overeného e-mailu',
     sources: ['ForgottenPasswordForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.CodeMismatchException',
+    translationKey: 'AccountErrorAlert.errors.CodeMismatchException',
     trigger: 'Nesprávny overovací kód',
     sources: ['EmailVerificationForm.tsx', 'NewPasswordForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.ExpiredCodeException',
+    translationKey: 'AccountErrorAlert.errors.ExpiredCodeException',
     trigger: 'Overovaciemu kódu vypršala platnosť',
     sources: ['EmailVerificationForm.tsx', 'NewPasswordForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.LimitExceededException',
+    translationKey: 'AccountErrorAlert.errors.LimitExceededException',
     trigger: 'Priveľa pokusov o odoslanie overovacieho kódu',
     sources: ['EmailVerificationForm.tsx', 'ForgottenPasswordForm.tsx'],
     proposed: 'Priveľa pokusov. Skúste to znova o niekoľko minút.',
   },
   {
-    translationKey: 'errors.MigrationUserNotFoundException',
+    translationKey: 'AccountErrorAlert.errors.MigrationUserNotFoundException',
     trigger: 'E-mail sa nenachádza medzi minuloročnými platbami dane',
     sources: ['NewPasswordForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.UserLambdaValidationException',
+    translationKey: 'AccountErrorAlert.errors.UserLambdaValidationException',
     trigger: 'Neúspešné overenie, že nejde o robota',
     sources: ['RegisterForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.unsuccessful-identity-verification',
+    translationKey: 'AccountErrorAlert.errors.unsuccessful-identity-verification',
     trigger: 'Neúspešné overenie totožnosti',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
+    translationKey: 'AccountErrorAlert.errors.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
     trigger: 'Rodné číslo a číslo dokladu v registri nepatria tej istej osobe',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Rodné číslo a číslo dokladu sa nezhodujú. Skontrolujte oba údaje.',
     note: 'Tri rôzne dôvody (nezhoda údajov, zosnulá osoba, neplatná požiadavka) majú rovnaké znenie.',
   },
   {
-    translationKey: 'errors.BIRTHNUMBER_IFO_DUPLICITY',
+    translationKey: 'AccountErrorAlert.errors.BIRTHNUMBER_IFO_DUPLICITY',
     trigger: 'Osobné údaje už boli použité v inom konte',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.DEAD_PERSON',
+    translationKey: 'AccountErrorAlert.errors.DEAD_PERSON',
     trigger: 'Osoba je v registri evidovaná ako zosnulá',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.Bad Request',
+    translationKey: 'AccountErrorAlert.errors.Bad Request',
     trigger: 'Neplatná požiadavka na overenie totožnosti',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.RFO_ACCESS_ERROR',
+    translationKey: 'AccountErrorAlert.errors.RFO_ACCESS_ERROR',
     trigger: 'Register fyzických osôb je nedostupný',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Register je momentálne nedostupný. Skúste to znova neskôr.',
   },
   {
-    translationKey: 'errors.RFO_NOT_RESPONDING',
+    translationKey: 'AccountErrorAlert.errors.RFO_NOT_RESPONDING',
     trigger: 'Register fyzických osôb neodpovedá',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: 'Register neodpovedá. Skúste to znova neskôr.',
   },
   {
-    translationKey: 'errors.API_ERROR',
+    translationKey: 'AccountErrorAlert.errors.API_ERROR',
     trigger: 'Neúspešné volanie backendu',
     sources: ['IdentityVerificationOfPhysicalEntityForm.tsx'],
     proposed: null,
   },
   {
-    translationKey: 'errors.unknown',
+    translationKey: 'AccountErrorAlert.errors.unknown',
     trigger: 'Chyba bez známeho kódu',
     proposed: null,
   },
@@ -595,7 +657,6 @@ const serverErrorRows: ErrorMessageRow[] = [
 const sections: ErrorMessageSection[] = [
   {
     title: 'Hook formuláre (prihlásenie, registrácia, profil, odťahy) – chyby polí',
-    namespace: 'account',
     description: (
       <>
         Validácia beží v <code>useHookForm.ts</code> (react-hook-form + AJV). Povinné pole je v
@@ -607,7 +668,6 @@ const sections: ErrorMessageSection[] = [
   },
   {
     title: 'Formuláre mestských služieb (RJSF) – existujúce chyby polí',
-    namespace: 'rjsf-errors',
     description: (
       <>
         <code>useFormErrorTranslations.ts</code> prekladá chyby podľa názvu AJV chyby, chyby formátu
@@ -621,37 +681,30 @@ const sections: ErrorMessageSection[] = [
   },
   {
     title: 'Formuláre mestských služieb (RJSF) – chýbajúce chyby polí',
-    namespace: 'rjsf-errors',
     description:
       'Tieto chyby v schémach nastávajú, ale preklad neexistuje a pre názvy chýb neexistuje ani záloha – i18next vráti samotný kľúč a používateľ vidí v poli anglický text ako „minimum“ alebo „const“.',
     rows: rjsfMissingRows,
   },
   {
     title: 'Prílohy – chyby polí',
-    namespace: 'account',
     description: 'Chyby nahrávania súborov v poliach s prílohou vo formulároch mestských služieb.',
     rows: uploadErrorRows,
   },
   {
     title: 'Prílohy – stavy (nie chyby)',
-    namespace: 'account',
     description: 'Priebehové stavy zobrazené v karte súboru, doplnené pre celkový prehľad.',
     rows: uploadStatusRows,
   },
   {
     title: 'Prihlásenie a overenie totožnosti – chyby zo servera',
-    namespace: 'account',
     description:
       'Nie sú to chyby polí. Zobrazujú sa ako upozornenie nad formulárom, aj keď väčšina sa vzťahuje na konkrétne pole (heslo, e-mail, overovací kód) a dala by sa presunúť k poľu. Viaceré znenia opisujú klikanie v rozhraní alebo majú rovnaký text pre rôzne dôvody zamietnutia.',
     rows: serverErrorRows,
   },
 ]
 
-const ErrorMessageTable = ({
-  namespace,
-  rows,
-}: Pick<ErrorMessageSection, 'namespace' | 'rows'>) => {
-  const { t } = useTranslation(namespace)
+const ErrorMessageTable = ({ rows }: Pick<ErrorMessageSection, 'rows'>) => {
+  const { t } = useTranslation()
 
   return (
     <div className="w-full overflow-x-auto">
@@ -670,14 +723,16 @@ const ErrorMessageTable = ({
             const isMissing = current === translationKey
             // useFormErrorTranslations checks whether the format key exists and falls back to
             // `format.unknown`. Error names other than `format` have no such fallback.
-            const fallbackTranslationKey = translationKey.startsWith('format.')
-              ? 'format.unknown'
+            const fallbackTranslationKey = translationKey.startsWith(
+              'useFormErrorTranslations.formats.',
+            )
+              ? 'useFormErrorTranslations.formats.unknown'
               : null
 
             return (
               <tr key={translationKey} className="border-b border-solid border-gray-200">
                 <td className="p-2 align-top">
-                  <code className="break-all">{`${namespace}:${translationKey}`}</code>
+                  <code className="break-all">{translationKey}</code>
                 </td>
                 <td className="p-2 align-top text-error">
                   {isMissing && fallbackTranslationKey && (
@@ -742,18 +797,18 @@ const ErrorMessagesShowCase = () => {
           Prehľad všetkých chybových správ vo formulároch vygeneroval Claude Code z kódu aplikácie a
           z testovania vo formulárovom playgrounde. Stĺpec Navrhované znenie je podklad na diskusiu,
           nie schválený text. Súčasné znenie sa načítava priamo z prekladov, takže tabuľka je vždy
-          aktuálna. Aplikácia má dva nezávislé systémy validácie a každý má vlastný súbor s
-          prekladmi: <code>public/locales/sk/account.json</code> pre hook formuláre a{' '}
-          <code>public/locales/sk/rjsf-errors.json</code> pre formuláre mestských služieb.
+          aktuálna. Aplikácia má dva nezávislé systémy validácie, znenia oboch sú v{' '}
+          <code>public/locales/sk/translation.json</code> – chyby formulárov mestských služieb pod
+          predponou <code>useFormErrorTranslations.</code>.
         </Typography>
       </Wrapper>
 
-      {sections.map(({ title, namespace, description, rows }) => (
+      {sections.map(({ title, description, rows }) => (
         <Wrapper key={title} title={title} direction="column">
           <Typography variant="p-default" className="pb-4">
             {description}
           </Typography>
-          <ErrorMessageTable namespace={namespace} rows={rows} />
+          <ErrorMessageTable rows={rows} />
         </Wrapper>
       ))}
 

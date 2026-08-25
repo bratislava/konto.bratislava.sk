@@ -4,8 +4,8 @@ export default ({ env }) => ({
     connection: {
       host: env('DATABASE_HOST', '127.0.0.1'),
       port: env.int('DATABASE_PORT', 5432),
-      database: env('DATABASE_NAME', 'strapi'),
-      user: env('DATABASE_USERNAME', 'strapi'),
+      database: env('POSTGRES_DB', 'strapi'),
+      user: env('POSTGRES_USER', 'strapi'),
       password: env('POSTGRES_PASSWORD', 'password'),
       schema: env('DATABASE_SCHEMA', 'public'), // Not required
     },

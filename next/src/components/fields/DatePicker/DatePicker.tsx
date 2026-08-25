@@ -40,7 +40,7 @@ const DatePicker = (
   }: DatePickerProps,
   ref: Ref<HTMLDivElement>,
 ) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <RACDatePicker

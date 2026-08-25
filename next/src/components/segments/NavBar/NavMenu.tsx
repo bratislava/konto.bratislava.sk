@@ -1,11 +1,10 @@
 import { Typography } from '@bratislava/component-library'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import { MainMenuItemProps, useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
+import { useNavMenu } from '@/src/components/segments/NavBar/useNavMenu'
 import cn from '@/src/utils/cn'
 
 /**
@@ -13,15 +12,9 @@ import cn from '@/src/utils/cn'
  */
 
 export const NavMenu = () => {
-  const { t } = useTranslation('account')
-  const router = useRouter()
+  const { t } = useTranslation()
 
-  const { mainMenuItems } = useNavMenu()
-
-  const isActive = (mainMenuItem: MainMenuItemProps) =>
-    mainMenuItem.url === '/'
-      ? router.pathname === '/'
-      : router.pathname.startsWith(mainMenuItem.url)
+  const { mainMenuItems, isMenuItemActive } = useNavMenu()
 
   return (
     <SectionContainer>
@@ -37,32 +30,35 @@ export const NavMenu = () => {
           className="grid size-full"
         >
           <NavigationMenu.List className="flex size-full items-center">
-            {mainMenuItems.map((sectionItem) => (
-              <NavigationMenu.Item
-                key={sectionItem.id}
-                className="size-full rounded-sm wrapper-focus-ring ring-inset"
-              >
-                <NavigationMenu.Link asChild>
-                  <NextLink href={sectionItem.url}>
-                    <div
-                      className={cn(
-                        'flex size-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-content-error-hover hover:text-content-error-hover',
-                        {
-                          'border-content-error-default text-content-error-default':
-                            isActive(sectionItem),
-                          'border-transparent': !isActive(sectionItem),
-                        },
-                      )}
-                    >
-                      {sectionItem.icon}
-                      <Typography variant="p-small" as="span" className="ml-3 font-semibold">
-                        {sectionItem.title}
-                      </Typography>
-                    </div>
-                  </NextLink>
-                </NavigationMenu.Link>
-              </NavigationMenu.Item>
-            ))}
+            {mainMenuItems.map((sectionItem) => {
+              const isActive = isMenuItemActive(sectionItem.url)
+
+              return (
+                <NavigationMenu.Item
+                  key={sectionItem.id}
+                  className="size-full rounded-sm wrapper-focus-ring ring-inset"
+                >
+                  <NavigationMenu.Link asChild active={isActive}>
+                    <NextLink href={sectionItem.url}>
+                      <div
+                        className={cn(
+                          'flex size-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-content-error-hover hover:text-content-error-hover',
+                          {
+                            'border-content-error-default text-content-error-default': isActive,
+                            'border-transparent': !isActive,
+                          },
+                        )}
+                      >
+                        {sectionItem.icon}
+                        <Typography variant="p-small" as="span" className="ml-3 font-semibold">
+                          {sectionItem.title}
+                        </Typography>
+                      </div>
+                    </NextLink>
+                  </NavigationMenu.Link>
+                </NavigationMenu.Item>
+              )
+            })}
           </NavigationMenu.List>
         </NavigationMenu.Root>
       </div>

@@ -18,7 +18,8 @@ export type MainMenuItemProps = {
 }
 
 export const useNavMenu = () => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
+  const router = useRouter()
 
   const { isLegalEntity } = useSsrAuth()
   const { signOut } = useSignOut()
@@ -26,7 +27,6 @@ export const useNavMenu = () => {
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
-  const router = useRouter()
 
   const login = optionalFormRedirectsContext
     ? () => optionalFormRedirectsContext.login()
@@ -43,25 +43,25 @@ export const useNavMenu = () => {
   const mainMenuItems: (MainMenuItemProps & { hidden?: boolean })[] = [
     {
       id: 0,
-      title: t('account_section_intro.navigation'),
+      title: t('useNavMenu.homepage'),
       icon: <Icon name="home" className="size-6" />,
       url: '/',
     },
     {
       id: 1,
-      title: t('account_section_services.navigation'),
+      title: t('MunicipalServicesPageContent.title'),
       icon: <Icon name="city-services" className="size-6" />,
       url: ROUTES.MUNICIPAL_SERVICES,
     },
     {
       id: 2,
-      title: t('account_section_applications.navigation'),
+      title: t('MyApplicationsPageContent.title'),
       icon: <Icon name="submission" className="size-6" />,
       url: ROUTES.MY_APPLICATIONS,
     },
     {
       id: 3,
-      title: t('account_section_payment.title'),
+      title: t('TaxesPageContent.title'),
       icon: <Icon name="payment" className="size-6" />,
       url: ROUTES.TAXES,
       isHidden: isLegalEntity,
@@ -71,35 +71,47 @@ export const useNavMenu = () => {
   const signedInActionsMenuItems: DropdownMenuItemProps[] = [
     {
       id: 0,
-      title: t('menu_links.profile'),
+      title: t('UserProfilePageContent.title'),
       icon: <Icon name="user" className="size-5" />,
       url: ROUTES.USER_PROFILE,
     },
     {
       id: 1,
-      title: t('menu_links.help'),
+      title: t('HelpPageContent.title'),
       icon: <Icon name="help" className="size-5" />,
       url: ROUTES.HELP,
     },
     {
       id: 2,
-      title: t('menu_links.logout'),
+      title: t('useNavMenu.logout'),
       icon: <Icon name="logout" className="size-5 text-content-error-default" />,
       onPress: () => signOut(),
       itemClassName: 'bg-negative-50',
     },
   ]
 
+  /**
+   * Used both for the visual highlight and for the `active` prop of `NavigationMenu.Link`,
+   * which renders `aria-current="page"` for assistive technologies.
+   */
+  const isMenuItemActive = (url?: string) => {
+    if (!url) {
+      return false
+    }
+
+    return url === '/' ? router.pathname === '/' : router.pathname.startsWith(url)
+  }
+
   const notSignedInActionsMenuItems: DropdownMenuItemProps[] = [
     {
       id: 0,
-      title: t('menu_links.login'),
+      title: t('useNavMenu.login'),
       icon: <Icon name="user" className="size-5" />,
       onPress: login,
     },
     {
       id: 1,
-      title: t('menu_links.register'),
+      title: t('useNavMenu.register'),
       icon: <Icon name="user" className="size-5" />,
       onPress: register,
     },
@@ -109,5 +121,6 @@ export const useNavMenu = () => {
     mainMenuItems,
     signedInActionsMenuItems,
     notSignedInActionsMenuItems,
+    isMenuItemActive,
   }
 }

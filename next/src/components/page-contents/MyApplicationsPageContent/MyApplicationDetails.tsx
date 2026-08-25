@@ -24,7 +24,7 @@ const MyApplicationDetails = ({
   detailsData,
   ginisData,
 }: MyApplicationsDetailsBase) => {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
 
   return (
     <div className="flex flex-col">
@@ -36,17 +36,13 @@ const MyApplicationDetails = ({
       <SectionContainer className="py-12">
         <div className="flex flex-col gap-16">
           <div className="flex flex-col gap-2 px-4 lg:px-0">
-            <Typography variant="h3">
-              {t('account_section_applications.details.application_details.title')}
-            </Typography>
+            <Typography variant="h3">{t('MyApplicationDetails.title')}</Typography>
             <div className="flex w-full flex-col">
               <SummaryRow
                 size="small"
                 isEditable={false}
                 data={{
-                  label: t(
-                    'account_section_applications.details.application_details.record_number',
-                  ),
+                  label: t('MyApplicationDetails.recordNumber'),
                   value: ginisData?.id,
                   schemaPath: '',
                   isError: false,
@@ -56,7 +52,7 @@ const MyApplicationDetails = ({
                 size="small"
                 isEditable={false}
                 data={{
-                  label: t('account_section_applications.details.application_details.file_number'),
+                  label: t('MyApplicationDetails.fileNumber'),
                   value: ginisData?.dossierId,
                   schemaPath: '',
                   isError: false,
@@ -66,9 +62,7 @@ const MyApplicationDetails = ({
                 size="small"
                 isEditable={false}
                 data={{
-                  label: t(
-                    'account_section_applications.details.application_details.handle_person',
-                  ),
+                  label: t('MyApplicationDetails.handlePerson'),
                   value: ginisData?.ownerName,
                   schemaPath: '',
                   isError: false,
@@ -77,7 +71,7 @@ const MyApplicationDetails = ({
               <SummaryRowSimple
                 size="small"
                 isEditable={false}
-                label={t('account_section_applications.details.application_details.contact')}
+                label={t('MyApplicationDetails.contact')}
                 isError={false}
               >
                 <Typography variant="p-default">
@@ -93,16 +87,14 @@ const MyApplicationDetails = ({
                       {ginisData.ownerEmail}
                     </MLink>
                   ) : (
-                    t('account_section_applications.details.application_details.email_unavailable')
+                    t('MyApplicationDetails.emailUnavailable')
                   )}
                 </Typography>
               </SummaryRowSimple>
             </div>
           </div>
           <div className="flex flex-col gap-2 px-4 lg:px-0">
-            <Typography variant="h3">
-              {t('account_section_applications.details.application_history.title')}
-            </Typography>
+            <Typography variant="h3">{t('MyApplicationDetails.historyTitle')}</Typography>
             <MyApplicationHistory historyData={ginisData?.documentHistory} />
           </div>
         </div>

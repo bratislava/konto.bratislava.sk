@@ -51,7 +51,7 @@ const useTotalCount = (variant: ApplicationsListVariant, emailFormSlugs: string[
   const { data, refetch } = useQuery({
     // `emailFormSlugs` is stable and should be part of the key
 
-    queryKey: [`ApplicationsCount_${variant}`, variant, emailFormSlugs],
+    queryKey: ['TotalNumberOfApplications', variant, emailFormSlugs],
     queryFn: () => getTotalNumberOfApplications(variant, emailFormSlugs),
   })
 

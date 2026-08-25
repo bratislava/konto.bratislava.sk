@@ -3,11 +3,11 @@ import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clie
 
 import { LabelValueRowProps } from '@/src/components/common/LabelValueRowGroup/LabelValueRow'
 import LabelValueRowGroup from '@/src/components/common/LabelValueRowGroup/LabelValueRowGroup'
+import { formatDate } from '@/src/components/formatting/FormatDate'
 import { formatMarkdownLink } from '@/src/components/formatting/formatMarkdownLink'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import SectionHeader from '@/src/components/layouts/SectionHeader'
 import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetailsHeader'
-import { isDefined } from '@/src/frontend/utils/general'
 
 type Props = {
   formDefinitionTitle: string
@@ -26,18 +26,12 @@ const MyApplicationDetails = ({
 }: Props) => {
   const { t } = useTranslation()
 
-  const {
-    id,
-    dossierId,
-    ownerName,
-    ownerEmail,
-    ownerPhone,
-    // documentHistory
-  } = myApplicationGinisData ?? {}
+  const { id, dossierId, ownerName, ownerEmail, ownerPhone, documentHistory } =
+    myApplicationGinisData ?? {}
 
   const detailsRows: LabelValueRowProps[] = [
-    // TODO Check with BE if the fields are correct
     { label: t('MyApplicationDetails.recordNumber'), value: id },
+    // TODO Add 'Názov projektu' when more information is availible from product (we will display this only for some forms)
     { label: t('MyApplicationDetails.fileNumber'), value: dossierId },
     { label: t('MyApplicationDetails.ownerName'), value: ownerName },
     {
@@ -48,31 +42,27 @@ const MyApplicationDetails = ({
         formatMarkdownLink({ value: ownerEmail, type: 'email' }),
       ]
         .filter(Boolean)
-        .join(', '),
+        .join('\n'),
     },
-  ].filter((row) => isDefined(row.value))
+  ].filter((row) => Boolean(row.value))
 
   /**
-   * TODO Need to check with BE
-   * - history data needs changes in process and on BE - until then, we just take 1 instance and present it as 'document created' (all the instances are interpreted as document created)
+   * TODO History is broken, check with BE
+   * - history data needs changes in process and on BE
+   * - until then, we just take 1 instance and present it as 'document created'
+   *   (all the instances are interpreted as document created)
    * - fix the types in OpenAPI (BE)
    */
-  // const newestHistoryInstance = documentHistory?.at(-1)
-  // const historyRows: LabelValueRowProps[] = newestHistoryInstance
-  //   ? [
-  //       {
-  //         label: t('MyApplicationHistory.editDate'),
-  //         value: formatDate(newestHistoryInstance?.['Datum-zmeny']),
-  //       },
-  //       {
-  //         label: t('MyApplicationHistory.description'),
-  //         value: {
-  //           DOCUMENT_CREATED: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
-  //           UNKNOWN: t('MyApplicationHistory.states.UNKNOWN'),
-  //         }[newestHistoryInstance.assignedCategory],
-  //       },
-  //     ].filter((row) => isDefined(row.value))
-  //   : []
+  const historyLabelMap = {
+    DOCUMENT_CREATED: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
+    UNKNOWN: t('MyApplicationHistory.states.UNKNOWN'),
+  }
+
+  const historyRows: LabelValueRowProps[] =
+    documentHistory?.slice(-1).map((row) => ({
+      label: formatDate(row['Datum-zmeny']),
+      value: historyLabelMap[row.assignedCategory],
+    })) ?? []
 
   return (
     <div className="flex flex-col">
@@ -87,13 +77,10 @@ const MyApplicationDetails = ({
             <SectionHeader title={t('MyApplicationDetails.detailsTitle')} />
             <LabelValueRowGroup rows={detailsRows} />
           </div>
-          {/* 
-          TODO need to check with BE
           <div className="flex flex-col gap-2 lg:gap-4">
             <SectionHeader title={t('MyApplicationDetails.historyTitle')} />
             <LabelValueRowGroup rows={historyRows} />
-          </div> 
-          */}
+          </div>
         </div>
       </SectionContainer>
     </div>

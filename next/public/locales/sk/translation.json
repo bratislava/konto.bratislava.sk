@@ -326,8 +326,6 @@
   "MyApplicationDetailsHeader.backToList": "Späť na zoznam",
   "MyApplicationDetailsHeader.downloadPdf": "Stiahnuť PDF",
   "MyApplicationDetailsHeader.sentDate": "Dátum podania",
-  "MyApplicationHistory.description": "Popis",
-  "MyApplicationHistory.editDate": "Dátum zmeny",
   "MyApplicationHistory.states.DOCUMENT_CREATED": "Podanie bolo doručené na magistrát",
   "MyApplicationHistory.states.UNKNOWN": "Zmena stavu podania",
   "MyApplicationsBanner.content": "## Zatiaľ ste neodoslali žiadne podanie\nPozrite si ponuku dostupných [mestských služieb](/mestske-sluzby).",

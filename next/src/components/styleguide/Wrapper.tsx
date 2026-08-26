@@ -18,12 +18,9 @@ const mySlugify = (text: string) => {
 }
 
 export const Wrapper = ({ title, children, direction = 'row', noBorder }: WrapperProps) => {
-  const wrapperClassNames = cn(
-    'mb-10 flex w-full flex-col border border-x-0 border-t border-b-0 border-solid border-gray-800 pt-10',
-    {
-      'border-t-0': noBorder,
-    },
-  )
+  const wrapperClassNames = cn('mb-10 flex w-full flex-col pt-10', {
+    'border-t-0': noBorder,
+  })
 
   const childrenClassNames = cn('flex gap-2', {
     'flex-col': direction === 'column',

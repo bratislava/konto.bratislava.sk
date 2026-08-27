@@ -27,7 +27,7 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('1. Press fill form button.', () => {
-          cy.dataCy('form-landing-page-fill-form-button').click()
+          cy.dataCy('form-cta-button').click()
         })
 
         it('2. Checking "Applicant" step validation.', () => {

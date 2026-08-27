@@ -18,7 +18,7 @@ type Props = {
 }
 
 const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
-  const id = useId()
+  const titleId = useId()
 
   return (
     <div
@@ -26,7 +26,7 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}
     >
       <div className="flex flex-col gap-2">
-        <Typography variant="h5" as="h3" id={id}>
+        <Typography variant="h5" as="h3" id={titleId}>
           {consent.title}
         </Typography>
 
@@ -38,7 +38,7 @@ const UserProfileConsentsItem = ({ consent, onChange }: Props) => {
         isSelected={consent.isSelected}
         isDisabled={consent.isDisabled}
         onChange={onChange}
-        aria-labelledby={id}
+        aria-labelledby={titleId}
       />
     </div>
   )

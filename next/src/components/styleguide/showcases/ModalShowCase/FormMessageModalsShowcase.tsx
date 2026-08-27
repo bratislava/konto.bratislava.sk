@@ -1,5 +1,3 @@
-/* eslint-disable i18next/no-literal-string */
-
 import { Button, Typography } from '@bratislava/component-library'
 
 import Markdown from '@/src/components/formatting/Markdown'

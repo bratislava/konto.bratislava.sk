@@ -32,7 +32,7 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('1. Press fill form button.', () => {
-          cy.dataCy('form-cta-button-form-fill-button').click()
+          cy.dataCy('form-cta-button').click()
         })
 
         it('2. Checking "Applicant" step validation.', () => {

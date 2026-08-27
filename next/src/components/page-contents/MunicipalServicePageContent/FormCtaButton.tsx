@@ -56,7 +56,7 @@ const FormCtaButton = ({ buttonLabel, formDefinition }: Props) => {
         mutate()
       }}
       isLoading={isPending}
-      data-cy="form-cta-button-form-fill-button"
+      data-cy="form-cta-button"
     >
       {buttonLabel ?? t('FormCtaButton.fillFormButtonLabel')}
     </Button>

@@ -11,7 +11,7 @@ describe('RF04 -', { testIsolation: false }, () => {
           cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti')
           cy.waitForHydration()
           cy.hideNavbar(device)
-          cy.dataCy('form-cta-button-form-fill-button').click()
+          cy.dataCy('form-cta-button').click()
         })
 
         it('1. Registration modal is redirecting to registration page.', () => {

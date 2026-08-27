@@ -1,21 +1,18 @@
 import { Button, Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next/pages'
 import { ReactNode } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
-import { LinkAnalyticsProps } from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
+import { CommonLinkProps } from '@/src/utils/getLinkProps'
 
 type ServiceCardBase = {
   title: string
   description: string
-  buttonText: string
   className?: string
   icon: ReactNode
-  href: string | null | undefined
+  linkProps: CommonLinkProps
   tags?: string[]
   tagStyle?: string
-  analyticsProps?: LinkAnalyticsProps
 }
 
 /**
@@ -25,19 +22,18 @@ type ServiceCardBase = {
 const ServiceCard = ({
   title,
   description,
-  buttonText,
   className,
   tags,
   tagStyle,
   icon,
-  href,
-  analyticsProps,
+  linkProps,
 }: ServiceCardBase) => {
-  const { t } = useTranslation()
   const style = cn(
     'group relative flex w-full flex-col items-start gap-5 rounded-lg border border-solid border-gray-200 bg-gray-0 p-4 wrapper-focus-ring!',
     className,
   )
+  const hasButtonText = Boolean(linkProps.children)
+  const isExternal = linkProps.target === '_blank'
 
   return (
     <div className={style}>
@@ -64,7 +60,7 @@ const ServiceCard = ({
           variant="h5"
           as="h3"
           className={cn({
-            'group-hover:underline': buttonText,
+            'group-hover:underline': hasButtonText,
           })}
         >
           {title}
@@ -73,22 +69,11 @@ const ServiceCard = ({
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
-          <Button
-            href={href ?? '#'}
-            variant="link"
-            hasLinkIcon={false}
-            stretched
-            analyticsProps={analyticsProps}
-          >
-            {buttonText}
-          </Button>
-          {buttonText && (
+          <Button {...linkProps} variant="link" hasLinkIcon={false} stretched />
+          {hasButtonText && (
             <span className="flex size-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
-              {href?.includes('http') ? (
-                <Icon name="export" className="size-5" aria-label={t('ServiceCard.openInNewTab')} />
-              ) : (
-                <Icon name="arrow-right" className="size-5" />
-              )}
+              {/* The information about opening in a new tab is a part of the link's aria-label, so the icon is decorative. */}
+              <Icon name={isExternal ? 'export' : 'arrow-right'} className="size-5" />
             </span>
           )}
         </div>

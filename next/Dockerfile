@@ -1,16 +1,14 @@
 ARG NODE_VERSION
-ARG PNPM_VERSION
 ARG TURBO_VERSION
 FROM node:${NODE_VERSION}-alpine AS base
 
 ENV TURBO_TELEMETRY_DISABLED=1
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PNPM_HOME=/pnpm
-ENV PATH="$PNPM_HOME:$PATH"
+ENV PATH="/opt/pnpm:$PNPM_HOME/bin:$PATH"
 
 WORKDIR /app
-ARG PNPM_VERSION
-RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
+COPY --from=pnpm-dist /opt/pnpm /opt/pnpm
 
 FROM base AS prepare
 COPY . .

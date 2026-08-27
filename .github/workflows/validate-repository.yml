@@ -16,19 +16,16 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: package.json
-
-      - name: Use pnpm and install dependencies
-        uses: pnpm/action-setup@v6
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v2
         with:
           cache: true
-          run_install: |
-            - args:
-                - --frozen-lockfile
-                - --filter=repository-scripts
+          # pnpm/setup can only run a bare `pnpm install`; this repository wants
+          # a frozen, filtered one, so it is a step of its own below.
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --filter=repository-scripts
 
       - name: Typecheck scripts
         run: pnpm --filter=repository-scripts run typecheck

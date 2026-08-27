@@ -76,10 +76,9 @@ export function expectedPackageManager({ pnpmVersion }: ToolchainVersions) {
   return `${packageManagerName}@${pnpmVersion}`
 }
 
-export function expectedRootVolta({ nodeVersion, pnpmVersion }: ToolchainVersions) {
+export function expectedRootVolta({ nodeVersion }: ToolchainVersions) {
   return {
     [runtimeName]: nodeVersion,
-    [packageManagerName]: pnpmVersion,
   }
 }
 

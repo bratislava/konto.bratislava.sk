@@ -46,12 +46,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js
-        id: node
+      - name: Set up pnpm and Node.js
+        id: pnpm-setup
         background: true
-        uses: actions/setup-node@v7
+        uses: pnpm/setup@v2
         with:
-          node-version-file: package.json
+          cache: true
+          # pnpm/setup can only run a bare `pnpm install`; the filtered, frozen
+          # one this job needs stays a backgrounded step of its own below, so it
+          # keeps overlapping the image build.
+          install: false
 
       - name: Set up Docker build
         id: docker-build-setup
@@ -81,20 +85,13 @@ jobs:
         with:
           minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
 
-      - name: Wait for Node.js
-        wait: node
+      - name: Wait for pnpm and Node.js
+        wait: pnpm-setup
 
-      - name: Use pnpm and install dependencies
+      - name: Install dependencies
         id: install-deps
         background: true
-        uses: pnpm/action-setup@v6
-        with:
-          cache: true
-          run_install: |
-            - args:
-                - --frozen-lockfile
-                - --filter=konto-bratislava-sk-monorepo
-                - --filter=city-account-cypress-tests
+        run: pnpm install --frozen-lockfile --filter=konto-bratislava-sk-monorepo --filter=city-account-cypress-tests
 
       - name: Wait for Docker and Turborepo cache setup
         wait: [ docker-build-setup, meta, turbo-cache ]

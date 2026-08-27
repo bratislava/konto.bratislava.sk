@@ -6,22 +6,16 @@ Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](ht
 
 **pnpm is the only supported package manager — do not use npm or yarn.**
 
+pnpm must be installed via the [official guide](https://pnpm.io/installation), not through npm, to work correctly.
+
 pnpm resolves this workspace reliably where npm does not: npm installs without complaint but then breaks at build time with obscure module resolution errors on the more complex dependency graphs here, also its flat `node_modules` hides phantom dependencies — packages that are importable without ever being declared.
 
-Node and pnpm versions are pinned in the root `package.json` and picked up automatically by [Volta](https://volta.sh) — but its pnpm support is opt-in and needs [`VOLTA_FEATURE_PNPM`](https://docs.volta.sh/advanced/pnpm) set globally. Set it once:
+Node and pnpm versions are pinned once in the root `package.json`. How they are provisioned depends on how you invoke the runtime:
 
-macOS / Linux — add to `~/.zshrc`, `~/.bashrc` or equivalent, then restart the shell:
+- **`node` directly** — [Volta](https://volta.sh) provides the version in `volta.node`. (Volta doesn't support pnpm 12+.)
+- **`pnpm`, and `node` reached through pnpm** — the versions are managed by pnpm. `devEngines` pins both, and `pmOnFail: download` / `runtimeOnFail: download` in `pnpm-workspace.yaml` tell pnpm to fetch a pinned version that is not present rather than fail. So `pnpm install` on a fresh checkout provisions its own pnpm and Node.
 
-```bash
-echo 'export VOLTA_FEATURE_PNPM=1' >> ~/.zshrc
-```
-
-Windows (PowerShell) — persists for the user, applies to new terminals:
-
-```bash
-[Environment]::SetEnvironmentVariable('VOLTA_FEATURE_PNPM', '1', 'User')
-```
-Verify with `pnpm --version` — it should report the version pinned in `package.json`. Without the flag Volta ignores the pin and you get whatever pnpm happens to be on `PATH`, or none at all.
+The `onFail: error` on `devEngines` is the strict default for everything else — a tool that reads the pin but does not satisfy the version stops rather than run on a mismatch.
 
 ## Turborepo
 
@@ -119,6 +113,7 @@ A few things here differ from a typical per-service Docker setup:
   - `docker-bake.hcl` — targets, and everything a laptop can do. `docker buildx bake <target>` works with no arguments.
   - `docker-bake.json` — toolchain versions only. Plain JSON so [scripts/verify-docker-bake-versions.ts](scripts/verify-docker-bake-versions.ts) can check them against `package.json` and the pnpm catalog without parsing HCL.
   - `.github/docker-bake.ci.hcl` — CI-only overlay (registry cache, tags, host networking, remote cache). Kept out of the root and off the `docker-bake.override.hcl` name so local bake does not pick it up and fail on the missing `--allow`.
+- pnpm is installed from [pnpm.Dockerfile](pnpm.Dockerfile), which every image `COPY`s from through the `pnpm-dist` bake context.
 - Two Dockerfile checks are skipped for every image, via a `BUILDKIT_DOCKERFILE_CHECK` build arg on the shared bake target instead of a `# check=skip=` directive in each Dockerfile. `docker-bake.hcl` says which and why.
 - CI runs the Turborepo cache server on the runner's loopback, so builds reach it at `127.0.0.1` — no published port, no proxy, no `host.docker.internal` (a Docker Desktop convenience that does not exist on Linux runners). Three pieces have to line up for that: the `network=host` buildx driver option, `network = "host"` on the bake target, and `allow: network.host` on each bake step to grant the gated entitlement. Missing any one of them yields a silent cache miss, not an error.
 - Tests and lint run inside `docker build` as their own stages, not as runner steps, so an unchanged service short-circuits on the layer cache instead of re-running them.

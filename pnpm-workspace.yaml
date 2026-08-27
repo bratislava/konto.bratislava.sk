@@ -1,3 +1,5 @@
+savePrefix: ''
+
 catalog:
   '@internationalized/date': 3.12.2
   '@react-aria/utils': 3.34.1
@@ -53,5 +55,22 @@ allowBuilds:
   sharp: true
   ssh2: false
   unrs-resolver: true
+
 minimumReleaseAgeExclude:
   - '@bratislava/*'
+
+# The root package.json pins Node and pnpm in devEngines with `onFail: error`,
+# so any tool that reads that contract and finds the wrong version stops instead
+# of running on a mismatch. That is the right default for a consumer that only
+# checks the pin.
+#
+# When the toolchain is used through pnpm, though, the versions are managed by
+# pnpm, so the two settings below relax that `error` to `download` for pnpm's own
+# runs: when pnpm -- or a Node process pnpm starts -- needs a version that is not
+# present, pnpm fetches the pinned one and uses it. Direct `node` stays Volta's
+# job (volta.node), and a bare non-pnpm tool still hits the strict error.
+#
+# pmOnFail overrides devEngines.packageManager.onFail; runtimeOnFail overrides
+# devEngines.runtime.onFail.
+pmOnFail: download
+runtimeOnFail: download

@@ -27,11 +27,27 @@ variable "NEXT_BUILD_ENV" {
   }
 }
 
+# The pnpm distribution every image COPYs from, via the `pnpm-dist` named
+# context below. Kept out of `_toolchain` on purpose: the CI overlay adds tags
+# and a registry cache to that target, and neither belongs on a throwaway
+# download stage. Uses the repository root context like everything else, so
+# bake reuses the one context transfer rather than adding a second.
+target "pnpm-dist" {
+  context    = "."
+  dockerfile = "pnpm.Dockerfile"
+  args = {
+    NODE_VERSION = NODE_VERSION
+    PNPM_VERSION = PNPM_VERSION
+  }
+}
+
 target "_toolchain" {
   context = "."
+  contexts = {
+    "pnpm-dist" = "target:pnpm-dist"
+  }
   args = {
     NODE_VERSION  = NODE_VERSION
-    PNPM_VERSION  = PNPM_VERSION
     TURBO_VERSION = TURBO_VERSION
 
     # Two Dockerfile checks every image here trips, silenced once for all of them

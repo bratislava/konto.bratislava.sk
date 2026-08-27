@@ -250,7 +250,7 @@
   "FormVersionCompareAction.errorVersionUpdate": "Nie je možné pokračovať. Skúste to prosím znova.",
   "FormVersionCompareAction.requiresBump.content": "Od vašej poslednej návštevy prešiel formulár zmenami. Niektoré údaje sa môžu zobraziť inak alebo môžu chýbať. Prajete si pokračovať?",
   "FormVersionCompareAction.requiresBump.title": "Formulár bol aktualizovaný",
-  "getLinkProps.openInNewTab": "Otvoriť v novej karte",
+  "getLinkProps.openInNewTab": "Otvoriť na novej karte",
   "HelpPageContent.bannerButtonText": "Napísať správu",
   "HelpPageContent.bannerContent": "Kontaktujte nás a radi vás nasmerujeme na správnu odpoveď.",
   "HelpPageContent.bannerTitle": "Nenašli ste odpoveď na vašu otázku?",

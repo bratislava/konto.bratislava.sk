@@ -25,7 +25,13 @@ const SearchFieldShowCase = () => {
       </Stack>
       <Stack direction="column">
         <SearchField label="Label" isRequired helptext="Help text" />
-        <SearchField label="Label" isRequired value={value} onChange={setValue} helptext="Help text" />
+        <SearchField
+          label="Label"
+          isRequired
+          value={value}
+          onChange={setValue}
+          helptext="Help text"
+        />
         <SearchField label="Label" isRequired helptext="Help text" errorMessage="Error message" />
         <SearchField
           label="Label"

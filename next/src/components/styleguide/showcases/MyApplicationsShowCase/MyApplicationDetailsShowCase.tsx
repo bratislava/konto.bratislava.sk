@@ -4,20 +4,20 @@ import { useMemo, useState } from 'react'
 import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails'
 
 import {
-  createMockDetailData,
-  createMockGinisData,
+  createMockMyApplicationFormData,
+  createMockMyApplicationGinisData,
   detailStateOptions,
   MOCK_FORM_DEFINITION_TITLE,
 } from './mockData'
 import { ShowcaseLayout, ShowcaseSelectField } from './shared'
 
-const MyApplicationDetailShowCase = () => {
+const MyApplicationDetailsShowCase = () => {
   const [state, setState] = useState<GetFormResponseDtoStateEnum>(
     GetFormResponseDtoStateEnum.DeliveredNases,
   )
 
-  const detailsData = useMemo(() => createMockDetailData(state), [state])
-  const ginisData = useMemo(() => createMockGinisData(), [])
+  const myApplicationFormData = useMemo(() => createMockMyApplicationFormData(state), [state])
+  const myApplicationGinisData = useMemo(() => createMockMyApplicationGinisData(), [])
 
   return (
     <ShowcaseLayout
@@ -33,12 +33,12 @@ const MyApplicationDetailShowCase = () => {
       <div className="bg-background-passive-base">
         <MyApplicationDetails
           formDefinitionTitle={MOCK_FORM_DEFINITION_TITLE}
-          detailsData={detailsData}
-          ginisData={ginisData}
+          myApplicationFormData={myApplicationFormData}
+          myApplicationGinisData={myApplicationGinisData}
         />
       </div>
     </ShowcaseLayout>
   )
 }
 
-export default MyApplicationDetailShowCase
+export default MyApplicationDetailsShowCase

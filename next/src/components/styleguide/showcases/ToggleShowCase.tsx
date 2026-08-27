@@ -1,4 +1,3 @@
-/* eslint-disable i18next/no-literal-string */
 import { useState } from 'react'
 
 import Toggle from '@/src/components/simple-components/Toggle'

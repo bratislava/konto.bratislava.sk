@@ -157,6 +157,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex flex-col gap-4 lg:gap-6"
       data-cy="register-form"
       onSubmit={handleSubmit((data: Data) => {

@@ -7,9 +7,8 @@ import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import MyApplicationsList, {
-  getDraftApplications,
-} from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
+import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/getDraftApplications'
+import MyApplicationsList from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
 import logger from '@/src/frontend/utils/logger'
 import { ApplicationsListVariant, sections } from '@/src/pages/moje-ziadosti'
 import cn from '@/src/utils/cn'
@@ -51,8 +50,8 @@ export const getTotalNumberOfApplications = async (
 const useTotalCount = (variant: ApplicationsListVariant, emailFormSlugs: string[]) => {
   const { data, refetch } = useQuery({
     // `emailFormSlugs` is stable and should be part of the key
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: [`ApplicationsCount_${variant}`, variant],
+
+    queryKey: ['TotalNumberOfApplications', variant, emailFormSlugs],
     queryFn: () => getTotalNumberOfApplications(variant, emailFormSlugs),
   })
 

@@ -1,4 +1,3 @@
-/* eslint-disable i18next/no-literal-string */
 import Radio from '@/src/components/fields/Radio'
 import RadioGroup from '@/src/components/fields/RadioGroup'
 

@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode } from 'react'
 
+import SectionContainer from '@/src/components/layouts/SectionContainer'
 import { SsrAuthContext } from '@/src/components/logic/SsrAuthContext'
 import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import SelectField, {
@@ -37,9 +38,12 @@ type ShowcaseLayoutProps = {
   children: ReactNode
 }
 
+/** Only the controls are wrapped in SectionContainer - the page content is rendered full width, as on the real page */
 export const ShowcaseLayout = ({ controls, children }: ShowcaseLayoutProps) => (
   <div className="flex flex-col gap-12">
-    <div className="flex gap-3 rounded-sm bg-gray-200 p-3 text-sm">{controls}</div>
+    <SectionContainer>
+      <div className="flex gap-3 rounded-sm bg-gray-200 p-3 text-sm">{controls}</div>
+    </SectionContainer>
     {children}
   </div>
 )

@@ -1,18 +1,18 @@
-import { Typography } from '@bratislava/component-library'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
-import SummaryRow from '@/src/components/forms/steps/Summary/SummaryRow'
+import { LabelValueRowProps } from '@/src/components/common/LabelValueRowGroup/LabelValueRow'
+import LabelValueRowGroup from '@/src/components/common/LabelValueRowGroup/LabelValueRowGroup'
+import { formatDate } from '@/src/components/formatting/FormatDate'
+import { formatMarkdownLink } from '@/src/components/formatting/formatMarkdownLink'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import SectionHeader from '@/src/components/layouts/SectionHeader'
 import MyApplicationDetailsHeader from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetailsHeader'
-import MyApplicationHistory from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationHistory'
-import MLink from '@/src/components/simple-components/MLink'
-import SummaryRowSimple from '@/src/components/simple-components/SummaryRowSimple'
 
-type MyApplicationsDetailsBase = {
+type Props = {
   formDefinitionTitle: string
-  detailsData: GetFormResponseDto
-  ginisData: GinisDocumentDetailResponseDto | null
+  myApplicationFormData: GetFormResponseDto
+  myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
 
 /**
@@ -21,81 +21,65 @@ type MyApplicationsDetailsBase = {
 
 const MyApplicationDetails = ({
   formDefinitionTitle,
-  detailsData,
-  ginisData,
-}: MyApplicationsDetailsBase) => {
+  myApplicationFormData,
+  myApplicationGinisData,
+}: Props) => {
   const { t } = useTranslation()
+
+  const { id, dossierId, ownerName, ownerEmail, ownerPhone, documentHistory } =
+    myApplicationGinisData ?? {}
+
+  const detailsRows: LabelValueRowProps[] = [
+    { label: t('MyApplicationDetails.recordNumber'), value: id },
+    // TODO Add 'Názov projektu' when more information is availible from product (we will display this only for some forms)
+    { label: t('MyApplicationDetails.fileNumber'), value: dossierId },
+    { label: t('MyApplicationDetails.ownerName'), value: ownerName },
+    {
+      label: t('MyApplicationDetails.ownerContact'),
+      valueAsMarkdown: true,
+      value: [
+        formatMarkdownLink({ value: ownerPhone, type: 'telephone' }),
+        formatMarkdownLink({ value: ownerEmail, type: 'email' }),
+      ]
+        .filter(Boolean)
+        .join('\n'),
+    },
+  ].filter((row) => Boolean(row.value))
+
+  /**
+   * TODO History is broken, check with BE
+   * - history data needs changes in process and on BE
+   * - until then, we just take 1 instance and present it as 'document created'
+   *   (all the instances are interpreted as document created)
+   * - fix the types in OpenAPI (BE)
+   */
+  const historyLabelMap = {
+    DOCUMENT_CREATED: t('MyApplicationHistory.states.DOCUMENT_CREATED'),
+    UNKNOWN: t('MyApplicationHistory.states.UNKNOWN'),
+  }
+
+  const historyRows: LabelValueRowProps[] =
+    documentHistory?.slice(-1).map((row) => ({
+      label: formatDate(row['Datum-zmeny']),
+      value: historyLabelMap[row.assignedCategory],
+    })) ?? []
 
   return (
     <div className="flex flex-col">
       <MyApplicationDetailsHeader
         formDefinitionTitle={formDefinitionTitle}
-        data={detailsData}
-        ginisData={ginisData}
+        myApplicationFormData={myApplicationFormData}
+        myApplicationGinisData={myApplicationGinisData}
       />
-      <SectionContainer className="py-12">
-        <div className="flex flex-col gap-16">
-          <div className="flex flex-col gap-2 px-4 lg:px-0">
-            <Typography variant="h3">{t('MyApplicationDetails.title')}</Typography>
-            <div className="flex w-full flex-col">
-              <SummaryRow
-                size="small"
-                isEditable={false}
-                data={{
-                  label: t('MyApplicationDetails.recordNumber'),
-                  value: ginisData?.id,
-                  schemaPath: '',
-                  isError: false,
-                }}
-              />
-              <SummaryRow
-                size="small"
-                isEditable={false}
-                data={{
-                  label: t('MyApplicationDetails.fileNumber'),
-                  value: ginisData?.dossierId,
-                  schemaPath: '',
-                  isError: false,
-                }}
-              />
-              <SummaryRow
-                size="small"
-                isEditable={false}
-                data={{
-                  label: t('MyApplicationDetails.handlePerson'),
-                  value: ginisData?.ownerName,
-                  schemaPath: '',
-                  isError: false,
-                }}
-              />
-              <SummaryRowSimple
-                size="small"
-                isEditable={false}
-                label={t('MyApplicationDetails.contact')}
-                isError={false}
-              >
-                <Typography variant="p-default">
-                  {ginisData?.ownerPhone ? (
-                    <MLink variant="underlined" href={`tel:${ginisData.ownerPhone}`}>
-                      {`${ginisData.ownerPhone}, `}
-                    </MLink>
-                  ) : (
-                    ''
-                  )}
-                  {ginisData?.ownerEmail ? (
-                    <MLink variant="underlined" href={`mailto:${ginisData.ownerEmail}`}>
-                      {ginisData.ownerEmail}
-                    </MLink>
-                  ) : (
-                    t('MyApplicationDetails.emailUnavailable')
-                  )}
-                </Typography>
-              </SummaryRowSimple>
-            </div>
+      <SectionContainer className="py-6 lg:pt-8 lg:pb-18">
+        <div className="flex flex-col gap-6 lg:gap-8">
+          <div className="flex flex-col gap-2 lg:gap-4">
+            <SectionHeader title={t('MyApplicationDetails.detailsTitle')} />
+            <LabelValueRowGroup rows={detailsRows} />
           </div>
-          <div className="flex flex-col gap-2 px-4 lg:px-0">
-            <Typography variant="h3">{t('MyApplicationDetails.historyTitle')}</Typography>
-            <MyApplicationHistory historyData={ginisData?.documentHistory} />
+          <div className="flex flex-col gap-2 lg:gap-4">
+            <SectionHeader title={t('MyApplicationDetails.historyTitle')} />
+            <LabelValueRowGroup rows={historyRows} />
           </div>
         </div>
       </SectionContainer>

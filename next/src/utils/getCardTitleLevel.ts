@@ -11,7 +11,9 @@ export type AccordionTitleLevel = 'h2' | 'h3' | 'h4'
 export const getCardTitleLevel = (
   sectionTitleLevel: SectionTitleLevel | null | undefined,
 ): CardTitleLevel => {
-  if (sectionTitleLevel === 'h3') return 'h4'
+  if (sectionTitleLevel === 'h3') {
+    return 'h4'
+  }
 
   return 'h3'
 }

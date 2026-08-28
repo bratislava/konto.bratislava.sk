@@ -34,7 +34,9 @@ export const getTotalNumberOfApplications = async (
   getSsrAuthSession?: () => Promise<AuthSession>,
 ) => {
   const firstPage = await getDraftApplications(variant, 1, emailFormSlugs, getSsrAuthSession)
-  if (firstPage.countPages === 0) return 0
+  if (firstPage.countPages === 0) {
+    return 0
+  }
 
   const lastPage = await getDraftApplications(
     variant,

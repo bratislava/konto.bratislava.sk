@@ -50,7 +50,7 @@ const MyApplicationDetailsHeader = ({
   const exportPdf = async () => {
     showToast({ message: t('useFormExportImport.info.pdfExport'), variant: 'info' })
     try {
-      if (!formId) throw new Error(`No form id.`)
+      if (!formId) {throw new Error(`No form id.`)}
       const response = await formsClient.convertControllerConvertToPdf(
         formId,
         {},

@@ -60,7 +60,9 @@ const Towing = ({ title, text }: TowingSectionProps) => {
   })
 
   useTimeout(() => {
-    if (!isBrowser() || captchaWarning === 'hide') return
+    if (!isBrowser() || captchaWarning === 'hide') {
+      return
+    }
     setCaptchaWarning('show')
   }, 3000)
 

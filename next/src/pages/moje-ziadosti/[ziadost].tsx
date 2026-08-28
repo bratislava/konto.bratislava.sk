@@ -26,7 +26,9 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
   async ({ context, fetchAuthSession }) => {
     const id = context.query.ziadost as string
 
-    if (!id) return { notFound: true }
+    if (!id) {
+      return { notFound: true }
+    }
 
     // eslint-disable-next-line no-useless-assignment
     let myApplicationDetailsData: GetFormResponseDto | null = null
@@ -51,7 +53,9 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
       return { notFound: true }
     }
 
-    if (!myApplicationDetailsData) return { notFound: true }
+    if (!myApplicationDetailsData) {
+      return { notFound: true }
+    }
 
     const formDefinition = getFormDefinitionBySlug(myApplicationDetailsData.formDefinitionSlug)
     if (!formDefinition) {

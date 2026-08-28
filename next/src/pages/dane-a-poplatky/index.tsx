@@ -86,8 +86,9 @@ export const getServerSideProps = amplifyGetServerSideProps<TaxesPageProps>(
       if (
         accountType === AccountType.FyzickaOsobaPodnikatel ||
         accountType === AccountType.PravnickaOsoba
-      )
+      ) {
         return { notFound: true }
+      }
 
       return {
         props: {

@@ -62,7 +62,9 @@ export const ShowcaseSelectField = <T extends string>({
     options={options}
     value={options.find((option) => option.value === value) ?? null}
     onChange={(option) => {
-      if (option && !Array.isArray(option)) onChange(option.value as T)
+      if (option && !Array.isArray(option)) {
+        onChange(option.value as T)
+      }
     }}
     className="min-w-0 flex-1"
     displayOptionalLabel={false}

@@ -6,7 +6,9 @@ export const modifyGinisDataForSchemaSlug = (
   data: GinisDocumentDetailResponseDto | null,
   schemaSlug: string | undefined,
 ): GinisDocumentDetailResponseDto | null => {
-  if (!data || !schemaSlug) return data
+  if (!data || !schemaSlug) {
+    return data
+  }
   // dossierId coming from data is always incorrect - TODO fix this together with the rest of the detail page
   const prefilteredData = { ...data, dossierId: '' }
   // SUR forms want to direct support through single support email

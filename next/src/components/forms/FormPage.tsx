@@ -19,9 +19,10 @@ import cn from '@/src/utils/cn'
  */
 
 const FormPageContent = ({ nonce }: { nonce?: string }) => {
-  const { isEmbedded, versionCompareContinueAction } = useFormContext()
+  const { isEmbedded, versionCompareContinueAction, formDefinition } = useFormContext()
   const { formSent } = useFormSent()
 
+  const title = formDefinition.title
   const isFormSent = formSent
   const isFormOutdated = versionCompareContinueAction !== VersionCompareContinueAction.None
 
@@ -34,6 +35,7 @@ const FormPageContent = ({ nonce }: { nonce?: string }) => {
             className={cn({
               'bg-gray-0 lg:bg-gray-50': isFormOutdated || isFormSent,
             })}
+            title={title}
           >
             {children}
           </PageLayout>

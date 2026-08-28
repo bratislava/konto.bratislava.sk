@@ -1,4 +1,5 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { UseTranslation, useTranslation } from 'next-i18next/pages'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
@@ -34,10 +35,12 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const MojProfil = ({ general, dehydratedState }: MojProfilProps) => {
+  const { t } = useTranslation()
+
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
-        <PageLayout>
+        <PageLayout title={t('UserProfilePageContent.title')}>
           <UserProfilePageContent />
         </PageLayout>
       </GeneralContextProvider>

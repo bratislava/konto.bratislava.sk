@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import Head from 'next/head'
 
 import { formsClient } from '@/src/clients/forms'
 import { strapiClient } from '@/src/clients/graphql-strapi'
@@ -166,6 +167,9 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
 
 const MunicipalServicesFormSplitPage = ({ general, ...props }: Props) => (
   <GeneralContextProvider general={general}>
+    <Head>
+      <title>{props.type}</title>
+    </Head>
     <FormCreatedSplitPage {...props} />
   </GeneralContextProvider>
 )

@@ -54,7 +54,7 @@ const LogoutPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth">
+        <PageLayout variant="auth" title={t('LogoutPage.title')}>
           <AccountContainer>
             <AccountSuccessAlert
               variant="logout"

@@ -6,6 +6,7 @@ import {
   signIn,
 } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next/pages'
 import {
   ClientInfoResponseDto,
   UpsertUserRecordClientRequestDtoLoginClientEnum,
@@ -71,6 +72,7 @@ const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
+  const { t } = useTranslation()
 
   const { isOAuthLogin, storeTokensAndRedirect, isIdentityVerificationRequired } =
     useOAuthGetContext(clientInfo)
@@ -187,7 +189,7 @@ const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth">
+        <PageLayout variant="auth" title={t('prihlasenie.title')}>
           <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
             <LoginForm onSubmit={onLogin} error={loginError} />
             <HorizontalDivider />

@@ -352,6 +352,7 @@
   "OAuthPage.cancelLabel": "Odhlásiť a pokračovať s iným účtom",
   "OAuthPage.description": "Ste prihlásený/á ako {{email}}.",
   "OAuthPage.title": "Prihlásenie",
+  "overenie-identity.title": "Overenie identity",
   "Pagination.aria.goToNextPage": "Ísť na ďalšiu stranu",
   "Pagination.aria.goToPage": "Ísť na stranu {{page}}",
   "Pagination.aria.goToPreviousPage": "Ísť na predchádzajúcu stranu",
@@ -383,6 +384,7 @@
   "PhoneNumberForm.phoneNumberHelptext": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
   "PhoneNumberForm.saveChangesButton": "Uložiť",
   "PhoneNumberModal.title": "Doplnenie telefónneho čísla",
+  "prihlasenie.title": "Prihlásenie",
   "RadioGroup.resetChoice": "Vymazať výber",
   "RegisterForm.marketingConfirmation": "Odoslaním požiadavky na vytvorenie konta potvrdzujem, že som sa oboznámil/a so [všeobecnými podmienkami používania elektronických služieb Bratislavského konta](https://bratislava.sk/dokumenty/vseobecne-podmienky-pouzivania-elektronickych-sluzieb-bratislavskeho-konta) a [podmienkami ochrany súkromia pre Bratislavské konto](https://bratislava.sk/dokumenty/podmienky-ochrany-sukromia-pre-bratislavske-konto).",
   "RegisterForm.submit": "Vytvoriť konto",
@@ -390,6 +392,7 @@
   "RegisterPage.goToLogin": "Pokračovať na prihlásenie",
   "RegisterPage.successDescription": "E-mailová adresa {{email}} bola overená.",
   "RegisterPage.successTitle": "Bratislavské konto bolo vytvorené",
+  "registracia.title": "Registrácia",
   "RegistrationModal.bodyAction": "Vytvoriť Bratislavské konto",
   "RegistrationModal.bodyList.0": "Nájdite všetky služby mesta na jednom mieste",
   "RegistrationModal.bodyList.1": "Sledujte aktuálny stav podaných žiadostí a čo sa s nimi deje v čase",
@@ -733,5 +736,8 @@
   "useTaxData.paymentRedirectError": "Nepodarilo sa presmerovať na platbu.",
   "useTaxData.redirectingToPayment": "Presmerovávam na platbu.",
   "useUserProfileDetails.errorSnackbarMessage": "Zmeny sa nepodarilo uložiť.",
-  "useUserProfileDetails.successSnackbarMessage": "Zmeny boli uložené."
+  "useUserProfileDetails.successSnackbarMessage": "Zmeny boli uložené.",
+  "zabudnute-heslo.title": "Zabudnuté heslo",
+  "zmena-emailu.title": "Zmena emailu",
+  "zmena-hesla.title": "Zmena hesla"
 }

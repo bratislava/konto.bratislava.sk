@@ -27,6 +27,7 @@ const basePropertiesToPick = [
   'termsAndConditions',
   'feedbackLink',
   'sendPolicy',
+  'title',
 ] as const satisfies readonly (keyof FormDefinition)[]
 
 const slovenskoSkBasePropertiesToPick = [
@@ -131,7 +132,7 @@ export type ClientLandingPageFormDefinition = Pick<
 export const makeClientLandingPageFormDefinition = (
   formDefinition: FormDefinition,
 ): ClientLandingPageFormDefinition => {
-  return pick(formDefinition, landingPagePropertiesToPick) as ClientLandingPageFormDefinition
+  return pick(formDefinition, landingPagePropertiesToPick)
 }
 
 const playgroundPropertiesToPick = [

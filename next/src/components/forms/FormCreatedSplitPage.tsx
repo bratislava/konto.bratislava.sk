@@ -28,7 +28,7 @@ const FormCreatedSplitPage = (props: FormCreatedSplitPageProps) => {
   // eslint-disable-next-line react/destructuring-assignment
   if (props.type === 'landingPage') {
     return (
-      <PageLayout>
+      <PageLayout title={props.formDefinition.title}>
         <FormLandingPage {...props} />
       </PageLayout>
     )
@@ -36,7 +36,7 @@ const FormCreatedSplitPage = (props: FormCreatedSplitPageProps) => {
 
   if (props.type === 'municipalService') {
     return (
-      <PageLayout>
+      <PageLayout title={props.municipalService.title}>
         <MunicipalServicePageContent {...props} />
       </PageLayout>
     )

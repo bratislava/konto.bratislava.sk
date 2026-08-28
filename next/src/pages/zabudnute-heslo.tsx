@@ -122,6 +122,7 @@ const ForgottenPasswordPage = ({ general, clientInfo }: AuthPageCommonProps) => 
         <PageLayout
           variant="auth"
           hasBackButton={forgotPasswordStatus !== ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
+          title={t('zabudnute-heslo.title')}
         >
           <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
             {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (

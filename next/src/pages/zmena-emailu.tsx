@@ -201,6 +201,7 @@ const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
       <GeneralContextProvider general={general}>
         <PageLayout
           variant="auth"
+          title={t('zmena-emailu.title')}
           hasBackButton={emailChangeStatus !== EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
         >
           <AccountContainer ref={accountContainerRef}>

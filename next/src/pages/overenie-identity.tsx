@@ -127,10 +127,12 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth">
+        <PageLayout variant="auth" title={t('overenie-identity.title')}>
           <AccountContainer ref={accountContainerRef}>
-            {(tierStatus.isIdentityVerificationNotYetAttempted ||
-              tierStatus.isNotVerifiedIdentityCard) && (
+            {!(
+              tierStatus.isIdentityVerificationNotYetAttempted ||
+              tierStatus.isNotVerifiedIdentityCard
+            ) && (
               <>
                 {isLegalEntity ? (
                   <LegalPersonVerificationPageContent

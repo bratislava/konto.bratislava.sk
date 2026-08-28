@@ -1,3 +1,5 @@
+import { useTranslation } from 'next-i18next/pages'
+
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery, HelpPageFragment } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
@@ -34,9 +36,11 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountHelpPageProps
 })
 
 const AccountHelpPage = ({ general, helpPage }: AccountHelpPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
+      <PageLayout title={t('HelpPageContent.title')}>
         <HelpPageContent helpPage={helpPage} />
       </PageLayout>
     </GeneralContextProvider>

@@ -4,6 +4,7 @@ import {
   VersionCompareContinueAction,
   versionCompareContinueAction,
 } from 'forms-shared/versioning/version-compare'
+import Head from 'next/head'
 import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'

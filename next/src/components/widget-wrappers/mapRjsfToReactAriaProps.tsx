@@ -84,7 +84,11 @@ const mapRjsfToReactAriaProps = <TValue, TFieldValue, TOptions extends WidgetUiO
       errorMessage: rawErrors?.length ? rawErrors.join(', ') : undefined,
       value: config.toFieldValue(props.value),
       onChange: (valueInner) => props.onChange(config.fromFieldValue(valueInner)),
-      name: props.name,
+      // `props.name` contains only the field name which is not unique for a form and is not intended
+      // to be used as a form field `name`. For this case RJSF provides `props.htmlName` property,
+      // which is empty unless `nameGenerator` is provided as a form prop (a bug), the easiest
+      // way is to set it to `id` here directly
+      name: props.id,
       className: cn(getFieldSizeClassName(size), className),
     },
     // TODO Find more generic and typesafe solutions

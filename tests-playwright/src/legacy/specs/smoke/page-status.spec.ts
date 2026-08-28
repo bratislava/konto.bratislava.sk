@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { smokeUrls } from '../../../data/smoke-urls'
+import { smokeUrls } from '../../data/smoke-urls'
 
 /**
  * Was `tests/cypress/e2e/smokeTests/pageStatusVerification.cy.ts`, which looped all six URLs inside

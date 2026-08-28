@@ -1,7 +1,7 @@
 import { test } from '@playwright/test'
 import example from 'forms-shared/example-forms/examples/stanoviskoKInvesticnemuZameruExample'
 
-import { openForm } from '../../../pages/FormPage'
+import { openForm } from '../../pages/FormPage'
 import {
   attachFiles,
   continueTo,
@@ -12,7 +12,7 @@ import {
   pickDate,
   pickRadio,
   pickSelectMultiple,
-} from '../helpers'
+} from '../../helpers'
 
 /**
  * Legacy port of `tests/cypress/e2e/form/formSIZ.cy.ts` (F01), which was `xdescribe`d and had not run

@@ -1,12 +1,12 @@
-import { expect, test } from '../../../fixtures'
+import { expect, test } from '../../fixtures'
 import {
   expectRegistrationSuccess,
   logIn,
   logOut,
   openProfile,
   submitForm,
-} from '../../../pages/AccountPage'
-import { waitForHydration } from '../../../pages/FormPage'
+} from '../../pages/AccountPage'
+import { waitForHydration } from '../../pages/FormPage'
 
 /**
  * Was `tests/cypress/e2e/registration/registration.cy.ts` (RF01) and `registrationPO.cy.ts` (RF02),

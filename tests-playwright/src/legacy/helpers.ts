@@ -137,7 +137,7 @@ const UPLOAD_IN_PROGRESS = [
  * the tax form restricts `accept`, so a PDF is always acceptable.
  */
 export const attachFiles = async (page: Page, id: string, fileNames: string[]) => {
-  const buffer = readFileSync(resolve(__dirname, '../../../assets/test.pdf'))
+  const buffer = readFileSync(resolve(__dirname, '../../assets/test.pdf'))
   const input = field(page, id).locator('input[type="file"]').first()
 
   await input.setInputFiles(

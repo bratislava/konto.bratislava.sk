@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { exampleForms } from 'forms-shared/example-forms/exampleForms'
 
-import { expectSummaryMatchesPlan, fillForm } from '../../engine/fill'
-import { buildPlan, stepProperty, stepQueryParams } from '../../engine/plan'
-import { openForm } from '../../pages/FormPage'
+import { expectSummaryMatchesPlan, fillForm } from './fill'
+import { buildPlan, stepProperty, stepQueryParams } from './plan'
+import { openForm } from '../legacy/pages/FormPage'
 
 /**
  * Replaces `tests/cypress/e2e/form/formRealEstateTaxReturn.cy.ts` (864 lines, 18 chained `it`s per

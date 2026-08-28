@@ -26,6 +26,7 @@ env:
     .github/docker-bake.ci.hcl
   IMAGE_TAG: city-account-next:e2e
   CONTAINER_NAME: city-account-next-e2e-playwright
+  REPORT_DIR: reports/${{ github.run_id }}-${{ github.run_attempt }}
 
 jobs:
   dependabot-approval:
@@ -41,6 +42,13 @@ jobs:
     if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 25
+
+    # Needed to push the HTML report to the `gh-pages` branch.
+    permissions:
+      contents: write
+
+    outputs:
+      report_url: ${{ steps.report-url.outputs.url }}
 
     steps:
       - name: Checkout code
@@ -146,7 +154,7 @@ jobs:
         run: pnpm --filter city-account-playwright-tests run test:playwright
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         background: true
         with:
@@ -156,22 +164,62 @@ jobs:
 
       # Traces, videos and screenshots for failed tests.
       - name: Upload Playwright test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         background: true
         with:
           name: playwright-test-results
-          path: tests-playwright/test-results
+          path: tests-playwright/test-results/index.html
+          archive: false
           retention-days: 1
 
       - name: Upload JUnit results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         background: true
         with:
           name: playwright-junit
           path: tests-playwright/results
           retention-days: 1
+
+      # The `html` reporter in `playwright.config.ts` already wrote the report, so this only
+      # publishes it. Every run gets its own directory and `keep_files` leaves the existing ones
+      # alone, so links from earlier runs keep working.
+      #
+      # Skipped for fork and Dependabot pull requests: those get a read-only `GITHUB_TOKEN`, so the
+      # push to `gh-pages` would fail. The `playwright-report` artifact above still covers them.
+      - name: Publish Playwright report to GitHub Pages
+        id: publish-report
+        if: >-
+          always()
+          && hashFiles('tests-playwright/playwright-report/**') != ''
+          && github.event.pull_request.head.repo.fork != true
+          && github.actor != 'dependabot[bot]'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: tests-playwright/playwright-report
+          destination_dir: ${{ env.REPORT_DIR }}
+          keep_files: true
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_message: "Playwright report for ${{ github.sha }} (run ${{ github.run_id }})"
+
+      - name: Output report URL
+        id: report-url
+        if: always() && steps.publish-report.outcome == 'success'
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.repository }}
+        run: |
+          url="https://${OWNER,,}.github.io/${REPO#*/}/${REPORT_DIR}/"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Playwright report: $url"
+          {
+            echo "### Playwright report"
+            echo
+            echo "<$url>"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Application logs
         if: always()

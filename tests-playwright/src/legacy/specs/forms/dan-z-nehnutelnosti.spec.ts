@@ -7,7 +7,7 @@ import example5 from 'forms-shared/example-forms/examples/priznanieKDaniZNehnute
 import example5NoCalculators from 'forms-shared/example-forms/examples/priznanieKDaniZNehnutelnostiExample5NoCalculators'
 import type { TaxFormData } from 'forms-shared/tax-form/types'
 
-import { openForm } from '../../../pages/FormPage'
+import { openForm } from '../../pages/FormPage'
 import {
   attachFiles,
   continueTo,
@@ -20,7 +20,7 @@ import {
   pickRadio,
   pickSelect,
   setCheckbox,
-} from '../helpers'
+} from '../../helpers'
 
 /**
  * Legacy port of `tests/cypress/e2e/form/formRealEstateTaxReturn.cy.ts` (F05) — 864 lines and 18

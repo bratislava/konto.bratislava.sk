@@ -28,16 +28,20 @@ passing tests too.
 ## Layout
 
 ```
-src/specs/legacy/      the Cypress port — every spec that replaces a `.cy.ts` file
-src/specs/forms/       the schema-driven form runner
-src/pages/             page objects shared by both
-src/fixtures/          identities and the per-test registered account
+src/legacy/            the Cypress port, self-contained
+  specs/               one folder per Cypress e2e folder
+  helpers.ts           the whole interaction vocabulary the specs use
+  pages/               openForm, waitForHydration, the account flows
+  fixtures/            generated identities, the per-test registered account
+  data/                the smoke URL list
+src/runner/            the schema-driven form runner and its single spec
+src/global-setup.ts    health-checks the base URL, seeds the run id
 ```
 
-`src/specs/legacy/` is the whole Cypress suite, migrated roughly as-is: explicit field ids, explicit
-step order, explicit `if`s for the branches. Its only vocabulary is `helpers.ts` next to it, and it
-imports **nothing** from `src/engine/` — deleting the runner leaves it intact. Every one of its tests
-is tagged `@legacy`:
+`src/legacy/` is the whole Cypress suite, migrated roughly as-is: explicit field ids, explicit step
+order, explicit `if`s for the branches. It is a closed tree — nothing in it imports from
+`src/runner/`, so the runner can be deleted without touching it (the dependency runs the other way:
+`runner/example-forms.spec.ts` uses `legacy/pages/FormPage`). Every legacy test is tagged `@legacy`:
 
 ```bash
 playwright test --grep @legacy          # the Cypress port
@@ -46,7 +50,7 @@ playwright test --grep-invert @legacy   # everything else
 
 ## How the form runner works
 
-`src/engine/` fills any form from its schema plus a typed example, rather than from hand-written
+`src/runner/` fills any form from its schema plus a typed example, rather than from hand-written
 steps. `forms-shared`'s `getSummaryJsonNode` renders the form through the same RJSF pipeline the app
 uses and returns a tree in which every field carries its RJSF path id — exactly the `id` that
 `WidgetWrapper` puts on the wrapping element in the app. So:

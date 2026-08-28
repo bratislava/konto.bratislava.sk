@@ -130,7 +130,7 @@ jobs:
           command: pnpm --filter city-account-cypress-tests run cypress:ci
 
       - name: Upload Cypress screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         background: true
         with:
@@ -139,7 +139,7 @@ jobs:
           retention-days: 1
 
       - name: Upload Cypress videos
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         background: true
         with:
@@ -148,7 +148,7 @@ jobs:
           retention-days: 1
 
       - name: Visual testing screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         background: true
         with:

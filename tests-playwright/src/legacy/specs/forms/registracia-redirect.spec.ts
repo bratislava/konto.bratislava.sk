@@ -1,9 +1,9 @@
 import type { Page } from '@playwright/test'
 
-import { expect, test } from '../../../fixtures'
-import { expectRegistrationSuccess, logOut, submitForm } from '../../../pages/AccountPage'
-import { openForm, waitForHydration } from '../../../pages/FormPage'
-import { continueButton, field } from '../helpers'
+import { expect, test } from '../../fixtures'
+import { expectRegistrationSuccess, logOut, submitForm } from '../../pages/AccountPage'
+import { openForm, waitForHydration } from '../../pages/FormPage'
+import { continueButton, field } from '../../helpers'
 
 /**
  * Was `tests/cypress/e2e/form/formRegistrationRedirect.cy.ts` and its near-identical twin

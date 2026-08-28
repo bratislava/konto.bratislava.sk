@@ -1,5 +1,5 @@
-import { expect, test } from '../../../fixtures'
-import { continueToAccount, openProfile } from '../../../pages/AccountPage'
+import { expect, test } from '../../fixtures'
+import { continueToAccount, openProfile } from '../../pages/AccountPage'
 
 /**
  * Merges `consentsVerification.cy.ts` (A03), `personalData.cy.ts` (A04) and

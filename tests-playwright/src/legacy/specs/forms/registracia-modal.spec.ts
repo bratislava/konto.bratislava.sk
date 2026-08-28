@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { openForm } from '../../../pages/FormPage'
+import { openForm } from '../../pages/FormPage'
 
 /**
  * Was `tests/cypress/e2e/registration/registrationModalSIZ.cy.ts` (RF03) and

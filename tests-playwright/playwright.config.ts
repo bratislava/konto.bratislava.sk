@@ -16,7 +16,7 @@ export const VIEWPORTS = {
 } as const
 
 export default defineConfig({
-  testDir: './src/specs',
+  testDir: './src',
   globalSetup: './src/global-setup.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -45,7 +45,7 @@ export default defineConfig({
     // Request-only: no browser is launched at all.
     {
       name: 'smoke',
-      testDir: './src/specs/legacy/smoke',
+      testDir: './src/legacy/specs/smoke',
     },
     {
       name: 'setup',

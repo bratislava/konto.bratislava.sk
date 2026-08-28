@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-import { openForm } from '../../../pages/FormPage'
-import { continueButton, field, formContainer, summaryRow } from '../helpers'
+import { openForm } from '../../pages/FormPage'
+import { continueButton, field, formContainer, summaryRow } from '../../helpers'
 
 /**
  * Was `tests/cypress/e2e/form/formSummaryCheck.cy.ts` (F03).

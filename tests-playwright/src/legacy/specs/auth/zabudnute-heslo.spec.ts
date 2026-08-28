@@ -1,6 +1,6 @@
-import { expect, test } from '../../../fixtures'
-import { submitForm } from '../../../pages/AccountPage'
-import { waitForHydration } from '../../../pages/FormPage'
+import { expect, test } from '../../fixtures'
+import { submitForm } from '../../pages/AccountPage'
+import { waitForHydration } from '../../pages/FormPage'
 
 /**
  * Was the nested `RF05 - forgotten password` block in `tests/cypress/e2e/registration/registration.cy.ts`.

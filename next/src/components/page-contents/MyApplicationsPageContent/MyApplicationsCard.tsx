@@ -1,5 +1,4 @@
 import { Button, Typography } from '@bratislava/component-library'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
 import { useState } from 'react'
@@ -13,6 +12,7 @@ import BottomSheetMenuModal from '@/src/components/page-contents/MyApplicationsP
 import DropdownMenu, {
   DropdownMenuItemProps,
 } from '@/src/components/simple-components/DropdownMenu/DropdownMenu'
+import MLink from '@/src/components/simple-components/MLink'
 import useToast from '@/src/components/simple-components/Toast/useToast'
 import MessageModal from '@/src/components/widget-components/Modals/MessageModal'
 import useFormStateComponents from '@/src/frontend/hooks/useFormStateComponents'
@@ -38,9 +38,9 @@ export type WrapperProps = {
 
 const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
   return variant === 'SENT' && href ? (
-    <Link href={href} className="rounded-lg base-focus-ring lg:hidden">
+    <MLink href={href} className="rounded-lg base-focus-ring lg:hidden">
       {children}
-    </Link>
+    </MLink>
   ) : (
     <Button className="relative w-full bg-white text-left lg:hidden" onPress={onClick}>
       {children}
@@ -91,7 +91,9 @@ const MyApplicationsCard = ({
   const exportXml = async () => {
     showToast({ message: t('useFormExportImport.info.xmlExport'), variant: 'info' })
     try {
-      if (!formId) throw new Error('No form id provided for exportXml')
+      if (!formId) {
+        throw new Error('No form id provided for exportXml')
+      }
       const response = await formsClient.convertControllerConvertJsonToXmlV2(
         formId,
         {},
@@ -110,11 +112,12 @@ const MyApplicationsCard = ({
   const exportPdf = async () => {
     showToast({ message: t('useFormExportImport.info.pdfExport'), variant: 'info' })
     try {
-      if (!formSlug || !formId)
+      if (!formSlug || !formId) {
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
+      }
       const response = await formsClient.convertControllerConvertToPdf(
         formId,
         {},
@@ -133,7 +136,9 @@ const MyApplicationsCard = ({
   const deleteConcept = async () => {
     showToast({ message: t('useFormExportImport.info.conceptDelete'), variant: 'info' })
     try {
-      if (!formId) throw new Error(`No formId provided on deleteConcept`)
+      if (!formId) {
+        throw new Error(`No formId provided on deleteConcept`)
+      }
       await formsClient.formsControllerDeleteForm(formId, {
         authStrategy: 'authOrGuestWithToken',
       })
@@ -182,7 +187,9 @@ const MyApplicationsCard = ({
   const stateIconAndText = useFormStateComponents({ error, state })
 
   const openBottomSheetModal = () => {
-    if (variant === 'SENT') return
+    if (variant === 'SENT') {
+      return
+    }
     setBottomSheetIsOpen(true)
   }
 
@@ -191,9 +198,9 @@ const MyApplicationsCard = ({
       <ConditionalWrap
         condition={variant === 'SENT'}
         wrap={(children) => (
-          <Link className="block rounded-lg base-focus-ring max-lg:hidden" href={detailPageHref}>
+          <MLink className="block rounded-lg base-focus-ring max-lg:hidden" href={detailPageHref}>
             {children}
-          </Link>
+          </MLink>
         )}
       >
         {/* Desktop */}

@@ -1,6 +1,6 @@
 import { Typography } from '@bratislava/component-library'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { ReactNode } from 'react'
 
 import cn from '@/src/utils/cn'
@@ -15,7 +15,7 @@ type FormMenuItemBase = {
 
 const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase) => {
   return url ? (
-    <Link href={url} className="flex items-center gap-3">
+    <NextLink href={url} className="flex items-center gap-3">
       <DropdownMenu.Item
         className={cn(
           'flex cursor-pointer items-center gap-3 px-5 py-3 hover:font-semibold focus:font-semibold focus:outline-hidden',
@@ -27,7 +27,7 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
           {title}
         </Typography>
       </DropdownMenu.Item>
-    </Link>
+    </NextLink>
   ) : (
     <DropdownMenu.Item
       onClick={onPress}

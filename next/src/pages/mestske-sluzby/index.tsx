@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash'
+import { useTranslation } from 'next-i18next/pages'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery, MunicipalServiceEntityFragment } from '@/src/clients/graphql-strapi/api'
@@ -65,9 +66,11 @@ const AccountMunicipalServicesPage = ({
   servicesLegalPerson,
   categoriesLegalPerson,
 }: AccountMunicipalServicesPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
+      <PageLayout title={t('MunicipalServicesPageContent.title')}>
         <MunicipalServicesPageContent
           services={services}
           categories={categories}

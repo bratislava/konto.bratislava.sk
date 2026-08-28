@@ -2,6 +2,7 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
+import { useTranslation } from 'next-i18next/pages'
 import { ResponseGetTaxesListDto, TaxType } from 'openapi-clients/tax'
 
 import {
@@ -86,8 +87,9 @@ export const getServerSideProps = amplifyGetServerSideProps<TaxesPageProps>(
       if (
         accountType === AccountType.FyzickaOsobaPodnikatel ||
         accountType === AccountType.PravnickaOsoba
-      )
+      ) {
         return { notFound: true }
+      }
 
       return {
         props: {
@@ -118,13 +120,15 @@ const TaxesPage = ({
   strapiTaxConfig,
   dehydratedState,
 }: TaxesPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
         <TaxesDataProvider taxesData={taxesData}>
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
-              <PageLayout>
+              <PageLayout title={t('TaxesPageContent.title')}>
                 <TaxesPageContent />
               </PageLayout>
             </StrapiTaxAdministratorProvider>

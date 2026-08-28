@@ -1,3 +1,5 @@
+import { useTranslation } from 'next-i18next/pages'
+
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery, MunicipalChargeConfigFragment } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
@@ -33,10 +35,12 @@ export const getServerSideProps = amplifyGetServerSideProps(async () => {
 })
 
 const PaymentResultPage = ({ general, strapiTaxConfig }: Props) => {
+  const { t } = useTranslation()
+
   return (
     <GeneralContextProvider general={general}>
       <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
-        <PageLayout className="lg:bg-gray-50">
+        <PageLayout className="lg:bg-gray-50" title={t('platba.stav.title')}>
           <PaymentResultPageContent />
         </PageLayout>
       </StrapiTaxConfigProvider>

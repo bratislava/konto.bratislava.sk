@@ -1,4 +1,5 @@
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+import { useTranslation } from 'next-i18next/pages'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
 import { strapiClient } from '@/src/clients/graphql-strapi'
@@ -68,9 +69,11 @@ const AccountMyApplicationsPage = ({
   formDefinitionSlugTitleMap,
   emailFormSlugs,
 }: AccountMyApplicationsPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
+      <PageLayout title={t('MyApplicationsPageContent.title')}>
         <MyApplicationsPageContent
           selectedSection={selectedSection}
           applications={applications}

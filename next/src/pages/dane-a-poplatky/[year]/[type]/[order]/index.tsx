@@ -1,5 +1,6 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 
 import {
@@ -111,13 +112,15 @@ const TaxPage = ({
   strapiTaxAdministrator,
   dehydratedState,
 }: PageProps) => {
+  const { t } = useTranslation()
+
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
         <TaxDataProvider taxData={taxData}>
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
-              <PageLayout>
+              <PageLayout title={t('TaxesPageContent.title')}>
                 <TaxPageContent />
               </PageLayout>
             </StrapiTaxAdministratorProvider>

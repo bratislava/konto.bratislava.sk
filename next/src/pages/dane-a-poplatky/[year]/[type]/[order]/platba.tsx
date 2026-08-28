@@ -21,6 +21,7 @@ import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { convertYearToNumber } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 import { TaxRouteProps } from '@/src/utils/routes'
+import { useTranslation } from 'next-i18next/pages'
 
 type PageProps = {
   general: GeneralQuery
@@ -107,13 +108,15 @@ const TaxPaymentPage = ({
   strapiTaxAdministrator,
   dehydratedState,
 }: PageProps) => {
+  const { t } = useTranslation()
+
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
         <TaxDataProvider taxData={taxData}>
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
-              <PageLayout>
+              <PageLayout title={t('TaxesPageContent.title')}>
                 <TaxPaymentPageContent />
               </PageLayout>
             </StrapiTaxAdministratorProvider>

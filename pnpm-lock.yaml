@@ -110,6 +110,9 @@ catalogs:
     '@internationalized/date':
       specifier: 3.12.2
       version: 3.12.2
+    '@playwright/test':
+      specifier: 1.59.1
+      version: 1.59.1
     '@react-aria/utils':
       specifier: 3.34.1
       version: 3.34.1
@@ -1672,6 +1675,28 @@ importers:
       yargs:
         specifier: 18.0.0
         version: 18.0.0
+
+  tests-playwright:
+    dependencies:
+      forms-shared:
+        specifier: workspace:*
+        version: link:../forms-shared
+    devDependencies:
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.59.1
+      '@rjsf/utils':
+        specifier: 'catalog:'
+        version: 6.5.2(react@19.2.6)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      prettier:
+        specifier: 3.8.1
+        version: 3.8.1
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
 
 packages:
 
@@ -5582,6 +5607,11 @@ packages:
   '@pkgr/core@0.3.6':
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  '@playwright/test@1.59.1':
+    resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@pmmmwh/react-refresh-webpack-plugin@0.5.17':
     resolution: {integrity: sha512-tXDyE1/jzFsHXjhRZQ3hMl0IVhYe5qula43LDWIhVfjp9G/nT5OQY5AORVOrkEGAUltBJOfOWeETbmhm6kHhuQ==}
@@ -24130,6 +24160,10 @@ snapshots:
   '@pkgr/core@0.1.2': {}
 
   '@pkgr/core@0.3.6': {}
+
+  '@playwright/test@1.59.1':
+    dependencies:
+      playwright: 1.59.1
 
   '@pmmmwh/react-refresh-webpack-plugin@0.5.17(react-refresh@0.14.0)(webpack-hot-middleware@2.26.1)(webpack@5.106.2(esbuild@0.28.1)(postcss@8.5.14))':
     dependencies:

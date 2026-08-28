@@ -26,9 +26,32 @@ variable "TURBO_API" {
   default = ""
 }
 
+variable "CACHE_COMPRESSION" {
+  # Cache blobs are only ever read back by BuildKit, never pulled by a container
+  # runtime, so the compression format is a free choice. zstd at a low level is
+  # markedly faster than the gzip default, which is what the export spends its
+  # time on: it compresses on a single core in the runner's dind sidecar.
+  #
+  # force-compression is deliberately not set, so layers that arrive already
+  # compressed (base images from Docker Hub) are passed through instead of being
+  # re-encoded for no benefit. Existing gzip cache blobs therefore stay gzip
+  # until they are next rebuilt, so the speedup ramps in rather than landing at
+  # once.
+  #
+  # image-manifest/oci-mediatypes make the cache a real OCI image manifest
+  # rather than the legacy cache-manifest form, which is what lets Harbor apply
+  # retention policies to the `cache-*` tags.
+  default = "compression=zstd,compression-level=1,image-manifest=true,oci-mediatypes=true"
+}
+
 target "_toolchain" {
   cache-from = compact(split("\n", CACHE_FROM))
-  cache-to   = compact(split("\n", CACHE_TO))
+  # Compression is a per-export CSV parameter, so it is appended to each ref
+  # rather than set on its own. compact() runs first, so an empty CACHE_TO stays
+  # an empty list instead of becoming a bare parameter string.
+  cache-to = [
+    for ref in compact(split("\n", CACHE_TO)) : "${ref},${CACHE_COMPRESSION}"
+  ]
   # docker-metadata emits tags space-separated; tolerate newlines too.
   tags = compact(split(" ", replace(TAGS, "\n", " ")))
 }

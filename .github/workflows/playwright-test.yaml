@@ -1,0 +1,187 @@
+name: Playwright test
+
+on:
+  pull_request:
+    branches:
+      - master
+
+  push:
+    tags:
+      - "dev**"
+      - "staging**"
+      - "prod**"
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: harbor.bratislava.sk
+  REGISTRY_USERNAME: robot$github_actions
+  BAKE_FILES: |
+    docker-bake.json
+    docker-bake.hcl
+    .github/docker-bake.ci.hcl
+  IMAGE_TAG: city-account-next:e2e
+  CONTAINER_NAME: city-account-next-e2e-playwright
+
+jobs:
+  dependabot-approval:
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    environment: dependabot
+    steps:
+      - name: Wait for approval
+        run: echo "Approved to run Playwright tests for Dependabot PR"
+
+  playwright-tests:
+    needs: [ dependabot-approval ]
+    if: always() && (needs.dependabot-approval.result == 'success' || needs.dependabot-approval.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        id: node
+        background: true
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+
+      - name: Set up Docker build
+        id: docker-build-setup
+        background: true
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        with:
+          docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          harbor_registry: ${{ env.REGISTRY }}
+          harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
+          harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+          buildx_driver_opts: |
+            network=host
+
+      # Same `-e2e` suffix as the Cypress workflow on purpose: both build the identical
+      # NEXT_BUILD_ENV=e2e image, so they share the Docker layer cache.
+      - name: Docker metadata
+        id: meta
+        background: true
+        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        with:
+          image: ${{ env.REGISTRY }}/standalone/next
+          suffix: -e2e
+
+      - name: Set up Turborepo cache
+        id: turbo-cache
+        background: true
+        uses: ./.github/actions/setup-turborepo-cache
+        with:
+          minio_secret_key: ${{ secrets.TURBOREPO_CACHE_MINIO_SECRET_KEY }}
+
+      - name: Wait for Node.js
+        wait: node
+
+      # The trailing `...` pulls in workspace dependencies, which the Playwright package needs:
+      # unlike the Cypress suite it imports `forms-shared` through its `exports` map rather than
+      # reaching into `forms-shared/src` with a relative require.
+      - name: Use pnpm and install dependencies
+        id: install-deps
+        background: true
+        uses: pnpm/action-setup@v6
+        with:
+          cache: true
+          run_install: |
+            - args:
+                - --frozen-lockfile
+                - --filter=konto-bratislava-sk-monorepo
+                - --filter=city-account-playwright-tests...
+
+      - name: Wait for Docker and Turborepo cache setup
+        wait: [ docker-build-setup, meta, turbo-cache ]
+
+      - name: Build application image
+        uses: docker/bake-action@v7
+        with:
+          source: .
+          files: ${{ env.BAKE_FILES }}
+          targets: next
+          load: true
+          allow: network.host
+        env:
+          CACHE_FROM: ${{ steps.meta.outputs.cache_from }}
+          CACHE_TO: ${{ steps.meta.outputs.cache_to }}
+          TAGS: ${{ env.IMAGE_TAG }}
+          TURBO_API: ${{ steps.turbo-cache.outputs.turbo_api }}
+          NEXT_BUILD_ENV: e2e
+
+      - name: Start application container
+        run: |
+          docker run --detach \
+            --name "$CONTAINER_NAME" \
+            --publish 3000:3000 \
+            "$IMAGE_TAG"
+
+      - name: Wait for dependency install
+        wait: install-deps
+
+      # The suite imports `forms-shared/summary-json/...` and `forms-shared/example-forms/...`,
+      # which resolve to `dist` through the package's `exports` map, so it has to be compiled.
+      - name: Build forms-shared
+        run: pnpm --filter forms-shared run build
+
+      - name: Install Playwright browsers
+        run: pnpm --filter city-account-playwright-tests exec playwright install --with-deps chromium
+
+      - name: Wait for application
+        run: |
+          timeout 120 bash -c \
+            'until curl --silent --fail --output /dev/null http://localhost:3000/api/healthcheck; do sleep 2; done'
+
+      - name: Run Playwright tests
+        run: pnpm --filter city-account-playwright-tests run test:playwright
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        background: true
+        with:
+          name: playwright-report
+          path: tests-playwright/playwright-report
+          retention-days: 1
+
+      # Traces, videos and screenshots for failed tests.
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        background: true
+        with:
+          name: playwright-test-results
+          path: tests-playwright/test-results
+          retention-days: 1
+
+      - name: Upload JUnit results
+        uses: actions/upload-artifact@v4
+        if: always()
+        background: true
+        with:
+          name: playwright-junit
+          path: tests-playwright/results
+          retention-days: 1
+
+      - name: Application logs
+        if: always()
+        continue-on-error: true
+        run: docker logs "$CONTAINER_NAME"
+
+      - name: Stop application container
+        if: always()
+        continue-on-error: true
+        run: docker rm --force "$CONTAINER_NAME"
+
+      - name: Wait for uploads
+        wait-all:

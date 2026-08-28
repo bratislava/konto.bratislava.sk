@@ -1,0 +1,28 @@
+{
+  "name": "city-account-playwright-tests",
+  "scripts": {
+    "test:playwright": "playwright test",
+    "test:playwright:smoke": "playwright test --project=smoke",
+    "test:playwright:desktop": "playwright test --project=desktop",
+    "test:playwright:mobile": "playwright test --project=mobile",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:report": "playwright show-report",
+    "typecheck": "tsc",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check ."
+  },
+  "dependencies": {
+    "forms-shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "catalog:",
+    "@rjsf/utils": "catalog:",
+    "@types/node": "catalog:",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "volta": {
+    "extends": "../package.json"
+  },
+  "private": true
+}

@@ -2,6 +2,7 @@ savePrefix: ''
 
 catalog:
   '@internationalized/date': 3.12.2
+  '@playwright/test': 1.59.1
   '@react-aria/utils': 3.34.1
   '@react-stately/utils': 3.12.1
   '@react-types/shared': 3.36.0
@@ -33,6 +34,7 @@ packages:
   - scripts
   - strapi
   - tests
+  - tests-playwright
 # `ssh2` (via `ssh2-sftp-client` in nest-tax-backend) compiles two optional
 # native speedups — its own `sshcrypto` binding and `cpu-features`. Neither
 # builds in the alpine images (no python3/g++) and both are `require`d inside a

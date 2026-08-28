@@ -2,7 +2,6 @@ import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/form
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import FormControls from '@/src/components/forms/FormControls'
-import FormProviders from '@/src/components/forms/FormProviders'
 import FormUploadXmlJson from '@/src/components/forms/FormUploadXmlJson'
 import StepperView from '@/src/components/forms/steps/StepperView'
 import FormSummary from '@/src/components/forms/steps/Summary/FormSummary'
@@ -53,7 +52,7 @@ const FormStep = () => {
   )
 }
 
-const FormContentInner = () => {
+const FormContent = () => {
   const { displayHeaderAndMenu, strapiForm } = useFormContext()
   const { currentStepIndex, currentStepperStep, popScrollToFieldId } = useFormState()
 
@@ -95,14 +94,6 @@ const FormContentInner = () => {
         </div>
       </SectionContainer>
     </>
-  )
-}
-
-const FormContent = ({ nonce }: { nonce?: string }) => {
-  return (
-    <FormProviders nonce={nonce}>
-      <FormContentInner />
-    </FormProviders>
   )
 }
 

@@ -182,7 +182,7 @@
   "FormControls.back": "Späť",
   "FormControls.continue": "Pokračovať",
   "FormControls.skip": "Preskočiť",
-  "FormCtaButton.fileFormButtonLabel": "Vyplniť formulár",
+  "FormCtaButton.fillFormButtonLabel": "Vyplniť formulár",
   "FormHeader.aria.actionsMenu": "Ďalšie akcie formulára",
   "FormHeader.servicesLink": "Viac informácií o službe",
   "FormHeader.servicesLink.ariaLabel": "Viac informácií o službe {{serviceName}}",

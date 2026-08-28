@@ -129,10 +129,8 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
       <GeneralContextProvider general={general}>
         <PageLayout variant="auth" title={t('overenie-identity.title')}>
           <AccountContainer ref={accountContainerRef}>
-            {!(
-              tierStatus.isIdentityVerificationNotYetAttempted ||
-              tierStatus.isNotVerifiedIdentityCard
-            ) && (
+            {(tierStatus.isIdentityVerificationNotYetAttempted ||
+              tierStatus.isNotVerifiedIdentityCard) && (
               <>
                 {isLegalEntity ? (
                   <LegalPersonVerificationPageContent

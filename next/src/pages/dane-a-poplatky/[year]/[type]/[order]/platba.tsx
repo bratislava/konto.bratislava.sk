@@ -1,5 +1,6 @@
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import { useTranslation } from 'next-i18next/pages'
 import { TaxControllerV2GetTaxDetailByYearV2200Response } from 'openapi-clients/tax'
 
 import {
@@ -21,7 +22,6 @@ import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { convertYearToNumber } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 import { TaxRouteProps } from '@/src/utils/routes'
-import { useTranslation } from 'next-i18next/pages'
 
 type PageProps = {
   general: GeneralQuery

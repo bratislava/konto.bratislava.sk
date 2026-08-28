@@ -167,9 +167,6 @@ export const getServerSideProps = amplifyGetServerSideProps<Props, Params>(
 
 const MunicipalServicesFormSplitPage = ({ general, ...props }: Props) => (
   <GeneralContextProvider general={general}>
-    <Head>
-      <title>{props.type}</title>
-    </Head>
     <FormCreatedSplitPage {...props} />
   </GeneralContextProvider>
 )

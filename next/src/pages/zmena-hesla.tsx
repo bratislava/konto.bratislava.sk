@@ -93,8 +93,8 @@ const PasswordChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
       <GeneralContextProvider general={general}>
         <PageLayout
           variant="auth"
-          title={t('zmena-hesla.title')}
           hasBackButton={passwordChangeStatus !== PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+          title={t('zmena-hesla.title')}
         >
           <AccountContainer ref={accountContainerRef}>
             {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (

@@ -41,7 +41,9 @@ describe('F05 -', { testIsolation: false }, () => {
             })
 
             it('1. Choosing how to fill out the return.', () => {
-              cy.dataCy('form-cta-button').click()
+              cy.dataCy('form-cta-button').then((buttons) => {
+                cy.wrap(buttons.filter(':visible')).click()
+              })
             })
 
             it('2. Checking "Type of tax return" step validation.', () => {

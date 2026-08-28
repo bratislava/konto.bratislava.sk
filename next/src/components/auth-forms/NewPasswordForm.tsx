@@ -81,6 +81,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
 
   return (
     <form
+      noValidate // We use AJV validation
       className="flex flex-col gap-4 lg:gap-6"
       data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {

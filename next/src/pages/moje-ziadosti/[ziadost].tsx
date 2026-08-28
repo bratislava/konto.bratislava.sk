@@ -93,7 +93,7 @@ const AccountMyApplicationsPage = ({
 
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout title={t(formDefinitionTitle)}>
+      <PageLayout title={formDefinitionTitle}>
         <MyApplicationDetails
           formDefinitionTitle={formDefinitionTitle}
           myApplicationFormData={myApplicationFormData}

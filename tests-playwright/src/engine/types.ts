@@ -29,6 +29,12 @@ export type FillOptions = {
    */
   files?: (fieldId: string) => string
   /**
+   * Maps a file uuid to the name the example gave it (`ExampleForm.serverFiles`). The extension
+   * decides which local asset stands in for it, and the name is reused for the upload so multiple
+   * files in one field stay distinguishable.
+   */
+  fileNames?: Record<string, string>
+  /**
    * Called when a field held a different value than the plan after being filled. Used by the
    * verify pass to surface app bugs instead of silently papering over them.
    */

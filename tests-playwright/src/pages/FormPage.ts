@@ -33,28 +33,46 @@ export const openDevForm = async (page: Page, slug: string, firstStepQueryParam:
 /**
  * Opens a real form instance through the public entry point.
  *
- * `/mestske-sluzby/{slug}` either redirects straight to a freshly created form or renders a landing
- * page with a CTA. The CTA is rendered twice — once per breakpoint, one of them hidden — so the
- * visible one is picked rather than the first in the DOM.
+ * `/mestske-sluzby/{slug}` comes in two shapes and the difference is not knowable up front, so both
+ * are raced rather than assumed:
+ *  - **no landing page** — `getServerSideProps` creates a form and the page redirects to it
+ *    client-side (it has to be client-side, so a new guest identity cookie can be saved);
+ *  - **landing page** — a `form-cta-button` that creates the form when clicked. It is rendered twice,
+ *    once per breakpoint with one hidden, so the visible one is picked rather than the first.
  *
- * A guest opening a form is greeted by the registration modal, which overlays the whole page and
- * swallows pointer events, so it is dismissed by default. `registracia-modal.spec.ts` opts out
- * because there the modal is the thing under test.
+ * A guest opening a form is greeted by the registration modal, which overlays the page and swallows
+ * pointer events, so it is dismissed by default. `registracia-modal.spec.ts` opts out because there
+ * the modal is the thing under test.
  */
 export const openForm = async (
   page: Page,
   slug: string,
   { dismissRegistrationModal = true }: { dismissRegistrationModal?: boolean } = {},
 ) => {
-  await page.goto(`/mestske-sluzby/${slug}`)
-  await waitForHydration(page)
+  const onFormInstance = new RegExp(`/mestske-sluzby/${slug}/[^/?#]+`)
 
-  const alreadyOnForm = new RegExp(`/mestske-sluzby/${slug}/[^/]+`)
-  if (!alreadyOnForm.test(page.url())) {
-    await page.locator('[data-cy=form-cta-button]').locator('visible=true').first().click()
-    await page.waitForURL(alreadyOnForm)
+  await page.goto(`/mestske-sluzby/${slug}`)
+
+  const cta = page.locator('[data-cy=form-cta-button]').locator('visible=true').first()
+  await Promise.race([
+    page.waitForURL(onFormInstance, { timeout: 30_000 }).catch(() => {}),
+    cta.waitFor({ state: 'visible', timeout: 30_000 }).catch(() => {}),
+  ])
+
+  if (!onFormInstance.test(page.url())) {
+    if ((await cta.count()) === 0) {
+      throw new Error(
+        `Formulár "${slug}" sa nedá otvoriť: stránka /mestske-sluzby/${slug} ani nepresmerovala na ` +
+          `inštanciu formulára, ani nevykreslila [data-cy=form-cta-button]. Buď nemá v Strapi ` +
+          `priradený formulár, alebo používa staršiu landing page bez CTA.`,
+      )
+    }
+
+    await cta.click()
+    await page.waitForURL(onFormInstance)
   }
 
+  await waitForHydration(page)
   await expect(formContainer(page)).toBeVisible()
 
   if (dismissRegistrationModal) {

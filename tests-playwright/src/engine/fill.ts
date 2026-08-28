@@ -28,18 +28,27 @@ import {
   fillText,
   fillTextArea,
   fillTime,
+  isFieldDisabled,
   resolveWidgetKind,
   selectOption,
   selectRadio,
+  fileDisplayValueIds,
   stringDisplayValues,
   uploadFile,
 } from './widgets'
 
-const DEFAULT_FILE = 'assets/test.pdf'
+/**
+ * The file uuids a field holds, for either widget shape: `fileUploadMultiple` carries an array,
+ * plain `fileUpload` a single uuid string. Handling only the array form silently skipped required
+ * single-file fields such as `stavebnik.splnomocnenie`, which then blocked the step from advancing.
+ */
+const fileUuids = (value: unknown): string[] => {
+  if (Array.isArray(value)) {
+    return value.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0)
+  }
 
-/** True when the plan holds an actual file reference, for either file widget shape. */
-const hasFileValue = (value: unknown) =>
-  Array.isArray(value) ? value.length > 0 : typeof value === 'string' && value.length > 0
+  return typeof value === 'string' && value.length > 0 ? [value] : []
+}
 
 const fillField = async (page: Page, field: SummaryJsonField, options: FillOptions) => {
   const root = fieldRoot(page, field.id)
@@ -62,6 +71,12 @@ const fillField = async (page: Page, field: SummaryJsonField, options: FillOptio
 
   const kind = await resolveWidgetKind(root)
 
+  // Derived fields render disabled controls; there is nothing to fill and trying just burns a
+  // timeout.
+  if (await isFieldDisabled(root)) {
+    return undefined
+  }
+
   // Optional fields appear in the plan with no value. Without this guard they would be filled with
   // the literal string "undefined" — which is exactly what the form then shows on the summary.
   const hasValue = field.value != null
@@ -79,14 +94,18 @@ const fillField = async (page: Page, field: SummaryJsonField, options: FillOptio
       return fillCheckbox(root, field.value)
     case 'checkboxGroup':
       return fillCheckboxGroup(root, field.value)
-    case 'file':
-      // Only upload where the scenario actually has a file; an empty file field is a valid state.
-      // `fileUploadMultiple` carries an array of uuids, plain `fileUpload` a single uuid string —
-      // handling only the array form silently skipped required single-file fields such as
-      // `stavebnik.splnomocnenie`, which then blocked the step from advancing.
-      return hasFileValue(field.value)
-        ? uploadFile(root, options.files?.(field.id) ?? DEFAULT_FILE)
+    case 'file': {
+      // Only upload where the scenario actually has files; an empty file field is a valid state.
+      const uuids = fileUuids(field.value)
+
+      return uuids.length > 0
+        ? uploadFile(
+            root,
+            uuids.map((uuid) => options.fileNames?.[uuid]),
+            options.files?.(field.id),
+          )
         : undefined
+    }
     case 'number':
       return fillNumber(root, field.value)
     case 'date':
@@ -248,13 +267,24 @@ export const fillForm = async (
  *
  * `getSummaryJsonNode` is the same function the app calls in `getInitialSummaryJson`, so the plan is
  * a genuine oracle rather than a restatement of the test's own input. This replaces the Cypress
- * `summaryBorderFields` fixture — a hardcoded list of seven selectors asserted not to carry a CSS
- * class that no longer exists in the app, and therefore could never fail.
+ * `summaryBorderFields` fixture — a hardcoded list of seven selectors.
+ *
+ * Files are checked too, by both name and count. `SummaryFile` renders `{fileInfo.fileName}`, and
+ * the engine uploads each file under the name the example gave it, so the two line up. The count
+ * matters as much as the names: `toContainText` on a row holding one of two expected files would
+ * pass, which is exactly how two-file fields (`prilohy.projektovaDokumentacia`,
+ * `informacieODovoze.fotoOdpadu`) went unnoticed while only one file was being uploaded.
  */
-export const expectSummaryMatchesPlan = async (page: Page, fields: SummaryJsonField[]) => {
+export const expectSummaryMatchesPlan = async (
+  page: Page,
+  fields: SummaryJsonField[],
+  { fileNames = {} }: { fileNames?: Record<string, string> } = {},
+) => {
   for (const field of fields) {
-    const expected = stringDisplayValues(field.displayValues)
-    if (expected.length === 0) {
+    const expectedStrings = stringDisplayValues(field.displayValues)
+    const expectedFileIds = fileDisplayValueIds(field.displayValues)
+
+    if (expectedStrings.length === 0 && expectedFileIds.length === 0) {
       continue
     }
 
@@ -263,8 +293,23 @@ export const expectSummaryMatchesPlan = async (page: Page, fields: SummaryJsonFi
       continue
     }
 
-    for (const value of expected) {
-      await expect(row).toContainText(value)
+    for (const value of expectedStrings) {
+      await expect(row, field.id).toContainText(value)
+    }
+
+    if (expectedFileIds.length > 0) {
+      // One `SummaryFile` — and so one icon — is rendered per file value.
+      await expect(
+        row.locator('[data-cy=summary-row-icon]'),
+        `${field.id}: počet súborov`,
+      ).toHaveCount(expectedFileIds.length)
+
+      for (const id of expectedFileIds) {
+        const fileName = fileNames[id]
+        if (fileName) {
+          await expect(row, `${field.id}: ${fileName}`).toContainText(fileName)
+        }
+      }
     }
   }
 }

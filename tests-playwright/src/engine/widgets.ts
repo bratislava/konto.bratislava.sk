@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
 import { expect, type Locator } from '@playwright/test'
 import {
   SummaryDisplayValueType,
@@ -35,6 +38,19 @@ export const stringDisplayValues = (displayValues: SummaryDisplayValues): string
   displayValues
     .filter((value) => value.type === SummaryDisplayValueType.String)
     .map((value) => (value as { value: string }).value)
+
+/**
+ * The file uuids a field's display values reference.
+ *
+ * The summary JSON deliberately carries only ids — a file's name is runtime state on the form, not
+ * a function of schema plus form data, so every consumer (`renderXmlSummary`, `SummaryEmail`,
+ * `SummaryPdf`) takes a separate `fileInfos` map keyed by uuid. The tests resolve the same way,
+ * through `ExampleForm.serverFiles`.
+ */
+export const fileDisplayValueIds = (displayValues: SummaryDisplayValues): string[] =>
+  displayValues
+    .filter((value) => value.type === SummaryDisplayValueType.File)
+    .map((value) => (value as { id: string }).id)
 
 /**
  * react-aria commits a field's value on blur. The Cypress suite handled that with ~40 scattered
@@ -113,7 +129,31 @@ export const selectOption = async (root: Locator, displayValues: SummaryDisplayV
     await search.fill(label)
     await control.getByRole('option', { name: label, exact: true }).first().click()
   }
+
+  // A multi-select keeps its menu open after a pick, and an open option list overlays whatever
+  // comes next — which showed up as the *following* select being unclickable.
+  if (await control.getByRole('option').count()) {
+    await search.press('Escape')
+    await expect(control.getByRole('option')).toHaveCount(0)
+  }
 }
+
+/**
+ * Whether every control in the field is disabled.
+ *
+ * Some fields are derived rather than entered (e.g. `nadoba.objemNadoby`, whose react-select input
+ * renders `disabled`). They still appear in the plan with a value, so without this guard the engine
+ * waits out the full timeout trying to fill something the user cannot touch.
+ */
+export const isFieldDisabled = (root: Locator): Promise<boolean> =>
+  root.evaluate((element) => {
+    const controls = element.querySelectorAll('input, textarea, select')
+
+    return (
+      controls.length > 0 &&
+      Array.from(controls).every((control) => (control as HTMLInputElement).disabled)
+    )
+  })
 
 /**
  * Toggles only on mismatch, which is load-bearing rather than defensive: `pouzitKalkulacku`
@@ -192,14 +232,6 @@ export const fillTime = async (root: Locator, value: unknown) => {
 }
 
 /**
- * The one thing the schema cannot drive: the plan's value is a server-side file UUID that has no
- * local counterpart, so the caller injects a real path.
- *
- * Scoped to the field's own wrapper. The Cypress spec scoped `[data-cy=file-input]` to the whole
- * step (`formRealEstateTaxReturn.cy.ts:459,665`), so it attached to whichever file input happened
- * to come first regardless of which `priznanie` it belonged to.
- */
-/**
  * The messages `UploadFileCard` shows while an upload is still in flight.
  *
  * `UploadFileCard` has no test attribute and distinguishes its states only by Tailwind classes, so
@@ -214,11 +246,93 @@ const UPLOAD_IN_PROGRESS_MESSAGES = [
   'Prebieha antivírová kontrola',
 ]
 
-export const uploadFile = async (root: Locator, path: string) => {
-  await root.locator('input[type="file"]').first().setInputFiles(path)
+/**
+ * Assets offered to file fields. The plan cannot supply these: its value is a server-side file uuid
+ * with no local counterpart.
+ */
+const FILE_ASSETS = [
+  { path: 'test.pdf', extension: '.pdf', mime: 'application/pdf' },
+  { path: 'test.png', extension: '.png', mime: 'image/png' },
+] as const
 
-  const fileName = path.split(/[\\/]/).pop() ?? path
-  await expect(root.getByText(fileName, { exact: false }).first()).toBeVisible({ timeout: 30_000 })
+const assetPath = (asset: (typeof FILE_ASSETS)[number]) =>
+  resolve(__dirname, '../../assets', asset.path)
+
+/**
+ * Picks the asset to stand in for one of the example's files.
+ *
+ * The example's own file name wins, because it states the intent: `nahlaseniePodnetu` declares
+ * `fotografia-podnetu.jpg` and its field only accepts `.jpg,.jpeg,.png`, so handing it a PDF leaves
+ * the form invalid — which surfaced only as an error alert on the summary, far from the cause.
+ * `accept` is the fallback for files the example does not name.
+ */
+const assetFor = (fileName: string | undefined, accept: string | null) => {
+  const byName = fileName
+    ? FILE_ASSETS.find((asset) => fileName.toLowerCase().endsWith(asset.extension))
+    : undefined
+  if (byName) {
+    return byName
+  }
+
+  const allowed = (accept ?? '')
+    .split(',')
+    .map((entry) => entry.trim().toLowerCase())
+    .filter(Boolean)
+
+  const byAccept = FILE_ASSETS.find((asset) =>
+    allowed.some(
+      (entry) =>
+        entry === asset.extension ||
+        entry === asset.mime ||
+        (entry.endsWith('/*') && asset.mime.startsWith(entry.slice(0, -1))),
+    ),
+  )
+
+  return byAccept ?? FILE_ASSETS[0]
+}
+
+/**
+ * Uploads one file per file reference the example holds.
+ *
+ * Both parts matter. Uploading a *single* file regardless of how many the example declares silently
+ * under-tested `prilohy.projektovaDokumentacia` and `informacieODovoze.fotoOdpadu`, which each
+ * expect two — the field is valid with one, so nothing failed. And reusing the example's file names
+ * keeps the uploaded files distinguishable, which is what makes the per-file wait below meaningful;
+ * two files both called `test.pdf` would be indistinguishable in the UI.
+ *
+ * Scoped to the field's own wrapper. The Cypress spec scoped `[data-cy=file-input]` to the whole
+ * step (`formRealEstateTaxReturn.cy.ts:459,665`), so it attached to whichever file input happened
+ * to come first regardless of which `priznanie` it belonged to.
+ */
+export const uploadFile = async (
+  root: Locator,
+  fileNames: (string | undefined)[],
+  override?: string,
+) => {
+  const input = root.locator('input[type="file"]').first()
+
+  if (override) {
+    await input.setInputFiles(override)
+  } else {
+    const accept = await input.getAttribute('accept')
+    const payloads = fileNames.map((fileName, index) => {
+      const asset = assetFor(fileName, accept)
+
+      return {
+        name: fileName ?? `test-${index + 1}${asset.extension}`,
+        mimeType: asset.mime,
+        buffer: readFileSync(assetPath(asset)),
+      }
+    })
+
+    await input.setInputFiles(payloads)
+
+    for (const payload of payloads) {
+      await expect(root.getByText(payload.name, { exact: false }).first()).toBeVisible({
+        timeout: 30_000,
+      })
+    }
+  }
 
   // The antivirus scan runs server-side, so settling can take a while.
   for (const message of UPLOAD_IN_PROGRESS_MESSAGES) {

@@ -19,12 +19,47 @@ import { openForm } from '../../pages/FormPage'
  * Every test creates nothing and shares nothing, so the whole matrix runs in parallel.
  */
 const SLUGS = [
+  // Ported from Cypress: F05 (`formRealEstateTaxReturn.cy.ts`) and the disabled F01 / F02
+  // (`formSIZ.cy.ts` / `formZSIZ.cy.ts`).
   'priznanie-k-dani-z-nehnutelnosti',
-  // Were `formSIZ.cy.ts` / `formZSIZ.cy.ts` (F01 / F02) — 420 lines of hand-written steps, disabled
-  // with `xdescribe`. The engine drives them from their own example forms at no extra cost.
   'stanovisko-k-investicnemu-zameru',
   'zavazne-stanovisko-k-investicnej-cinnosti',
+
+  // TEMPORARY — every remaining form that ships an example, added only to exercise the engine
+  // against widget and schema shapes the three forms above never reach. Not intended to stay in the
+  // suite; delete this block once the engine has been shaken out.
+  'komunitne-zahrady',
+  'ziadost-o-najom-bytu',
+  'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady',
+  'ziadost-o-uzemnoplanovaciu-informaciu',
+  'nahlasenie-podnetu-k-elektrickym-kolobezkam',
+  'olo-mimoriadny-odvoz-a-zhodnotenie-odpadu',
+  'olo-energeticke-zhodnotenie-odpadu-v-zevo',
+  'olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti',
+  'olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby',
+  'olo-odvoz-objemneho-odpadu-valnikom',
+  'olo-olo-taxi',
+  'olo-podnety-a-pochvaly-obcanov',
+  'olo-kolo-taxi',
+  'olo-docistenie-stanovista-zbernych-nadob',
+  'olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom',
+  'olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom',
+  'predzahradky',
+  'ziadost-o-slobodny-pristup-k-informaciam',
+  'paas-kontaktny-formular',
 ] as const
+
+/**
+ * Forms that exist and have example data but cannot currently be opened by a user, so there is no
+ * engine signal to gain from them. Skipped with the reason rather than left to fail, and `openForm`
+ * throws a descriptive error if any other slug turns out to be unreachable too.
+ */
+const UNREACHABLE: Partial<Record<(typeof SLUGS)[number], string>> = {
+  'ziadost-o-slobodny-pristup-k-informaciam':
+    'používa staršiu landing page (FormLandingPageContent) bez CTA na vyplnenie',
+  'paas-kontaktny-formular':
+    'stránka mestskej služby nemá v Strapi priradený formulár, takže nevykresľuje CTA',
+}
 
 SLUGS.forEach((slug) => {
   const formDefinition = getFormDefinitionBySlug(slug)
@@ -35,6 +70,10 @@ SLUGS.forEach((slug) => {
   const examples = exampleForms[slug] ?? []
 
   test.describe(slug, () => {
+    // A disabled form returns 404 from `/mestske-sluzby/{slug}`, so it cannot be opened at all.
+    test.skip(formDefinition.isDisabled === true, 'formulár je vypnutý (isDisabled)')
+    test.skip(UNREACHABLE[slug] !== undefined, UNREACHABLE[slug] ?? '')
+
     examples.forEach((example) => {
       test(example.name, async ({ page }) => {
         const { schema } = formDefinition
@@ -48,7 +87,15 @@ SLUGS.forEach((slug) => {
         // so file uploads cannot complete there, and all three forms include uploads.
         await openForm(page, slug)
 
+        // The example names its files, and the names carry the intended type — `fotografia-podnetu.jpg`
+        // versus `splnomocnenie.pdf`. The engine uses them to pick a matching local asset, to upload
+        // each file under its own name, and then to assert those names on the summary.
+        const fileNames = Object.fromEntries(
+          (example.serverFiles ?? []).map((file) => [file.id, file.fileName]),
+        )
+
         const { fields } = await fillForm(page, schema, example.formData, {
+          fileNames,
           onMismatch: (field, actual, expected) =>
             mismatches.push(`${field.id}: expected "${expected}", found "${actual}"`),
         })
@@ -63,7 +110,7 @@ SLUGS.forEach((slug) => {
         })
 
         await test.step('sumár zodpovedá vyplneným údajom', async () => {
-          await expectSummaryMatchesPlan(page, fields)
+          await expectSummaryMatchesPlan(page, fields, { fileNames })
         })
 
         // Surfaces the behaviour the Cypress suite worked around with its undocumented

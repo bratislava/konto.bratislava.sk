@@ -1,7 +1,7 @@
 import { test } from '@playwright/test'
-import example from 'forms-shared/example-forms/examples/zavazneStanoviskoKInvesticnejCinnostiExample'
+import example from 'forms-shared/example-forms/examples/stanoviskoKInvesticnemuZameruExample'
 
-import { openForm } from '../../pages/FormPage'
+import { openForm } from '../../../pages/FormPage'
 import {
   attachFiles,
   continueTo,
@@ -12,16 +12,22 @@ import {
   pickDate,
   pickRadio,
   pickSelectMultiple,
-} from './helpers'
+} from '../helpers'
 
 /**
- * Legacy port of `tests/cypress/e2e/form/formZSIZ.cy.ts` (F02), which was `xdescribe`d and had not run
+ * Legacy port of `tests/cypress/e2e/form/formSIZ.cy.ts` (F01), which was `xdescribe`d and had not run
  * for a long time.
  *
- * Hand-written on purpose — see the sibling SIZ spec for why. Beyond the selector breakage listed
- * there, the Cypress version was also *incomplete*: it never touched
- * `clenenieStavby.obsahujeByty`, which defaults to "Nie", so the six required apartment counts behind
- * it were never reached. It also predates `stavba.idStavby`.
+ * Hand-written on purpose: explicit field ids, explicit step order, no schema introspection. Values
+ * come from the `forms-shared` example so they stay typed and there is no re-encoded JSON fixture,
+ * but nothing else is derived.
+ *
+ * Differences from the Cypress original, all forced:
+ *  - every `input-<leaf>` selector is dead (`data-cy` is now `input-<full RJSF id>`), so fields are
+ *    addressed through their wrapper id instead;
+ *  - `stavba.parcelneCislo` was renamed to the plural `parcelneCisla`;
+ *  - `radio-bytový-dom` no longer exists in the schema at all;
+ *  - `[aria-required=true]` counts are replaced by the list of fields expected to error.
  */
 
 const data = example.formData as {
@@ -30,19 +36,16 @@ const data = example.formData as {
   zodpovednyProjektant: Record<string, string>
   stavba: {
     nazov: string
-    idStavby: string
     ulica: string
     supisneCislo: string
     parcelneCisla: string
-    clenenieStavby: Record<string, string | number | boolean>
+    clenenieStavby: Record<string, string>
   }
-  typZiadosti: { typ: string }
 }
 
-const SLUG = 'zavazne-stanovisko-k-investicnej-cinnosti'
-const clenenie = data.stavba.clenenieStavby
+const SLUG = 'stanovisko-k-investicnemu-zameru'
 
-test('F02 — záväzné stanovisko k investičnej činnosti', { tag: '@legacy' }, async ({ page }) => {
+test('F01 — stanovisko k investičnému zámeru', { tag: '@legacy' }, async ({ page }) => {
   await openForm(page, SLUG)
 
   await test.step('žiadateľ — prázdny krok neprejde', async () => {
@@ -58,6 +61,8 @@ test('F02 — záväzné stanovisko k investičnej činnosti', { tag: '@legacy' 
   })
 
   await test.step('žiadateľ', async () => {
+    // `ziadatelTyp` already holds `fyzickaOsoba` by default; set it anyway so the spec states which
+    // branch it is exercising.
     await pickRadio(page, 'root_ziadatel_ziadatelTyp', 'fyzickaOsoba')
     await fillIn(page, 'root_ziadatel_meno', data.ziadatel.meno)
     await fillIn(page, 'root_ziadatel_priezvisko', data.ziadatel.priezvisko)
@@ -71,6 +76,9 @@ test('F02 — záväzné stanovisko k investičnej činnosti', { tag: '@legacy' 
   })
 
   await test.step('stavebník — po zvolení "Nie" prázdny krok neprejde', async () => {
+    // The step is valid at its default ("Áno" — stavebník is the applicant), so it would advance
+    // happily. The negative check only means anything after switching to "Nie", which unfolds the
+    // whole block.
     await pickRadio(page, 'root_stavebnik_stavebnikZiadatelom', false)
 
     await expectStepRejected(page, 'stavebnik', [
@@ -86,6 +94,7 @@ test('F02 — záväzné stanovisko k investičnej činnosti', { tag: '@legacy' 
   })
 
   await test.step('stavebník', async () => {
+    // Single `fileUpload` rendered as `UploadButton`, which carries no `data-cy=file-input`.
     await attachFiles(page, 'root_stavebnik_splnomocnenie', ['splnomocnenie.pdf'])
 
     await pickRadio(page, 'root_stavebnik_ziadatelTyp', 'fyzickaOsoba')
@@ -131,7 +140,6 @@ test('F02 — záväzné stanovisko k investičnej činnosti', { tag: '@legacy' 
   })
 
   await test.step('informácie o stavbe — prázdny krok neprejde', async () => {
-    // `obsahujeByty` defaults to "Nie", which satisfies it, so it is not in the expected error list.
     await expectStepRejected(page, 'informacie-o-stavbe', [
       'root_stavba_nazov',
       'root_stavba_ulica',
@@ -144,85 +152,43 @@ test('F02 — záväzné stanovisko k investičnej činnosti', { tag: '@legacy' 
 
   await test.step('informácie o stavbe', async () => {
     await fillIn(page, 'root_stavba_nazov', data.stavba.nazov)
-    await fillIn(page, 'root_stavba_idStavby', data.stavba.idStavby)
     await fillIn(page, 'root_stavba_ulica', data.stavba.ulica)
     await fillIn(page, 'root_stavba_supisneCislo', data.stavba.supisneCislo)
     await fillIn(page, 'root_stavba_parcelneCisla', data.stavba.parcelneCisla)
+
+    // `selectMultiple` — the example picks two cadastral areas.
     await pickSelectMultiple(page, 'root_stavba_katastralneUzemia', ['Karlova Ves', 'Dúbravka'])
 
-    await fillIn(page, 'root_stavba_clenenieStavby_hlavnaStavba', String(clenenie.hlavnaStavba))
+    await fillIn(
+      page,
+      'root_stavba_clenenieStavby_hlavnaStavba',
+      data.stavba.clenenieStavby.hlavnaStavba,
+    )
     await fillIn(
       page,
       'root_stavba_clenenieStavby_clenenieHlavnejStavby',
-      String(clenenie.clenenieHlavnejStavby),
+      data.stavba.clenenieStavby.clenenieHlavnejStavby,
     )
     await fillIn(
       page,
       'root_stavba_clenenieStavby_hlavnaStavbaPodlaUcelu',
-      String(clenenie.hlavnaStavbaPodlaUcelu),
-    )
-    await fillIn(page, 'root_stavba_clenenieStavby_ostatneStavby', String(clenenie.ostatneStavby))
-
-    // Defaults to "Nie"; switching it reveals the six apartment counts below. The Cypress spec never
-    // did this, so none of them were ever tested.
-    await pickRadio(page, 'root_stavba_clenenieStavby_obsahujeByty', true)
-
-    await fillIn(
-      page,
-      'root_stavba_clenenieStavby_pocetBytovCelkovo',
-      Number(clenenie.pocetBytovCelkovo),
+      data.stavba.clenenieStavby.hlavnaStavbaPodlaUcelu,
     )
     await fillIn(
       page,
-      'root_stavba_clenenieStavby_pocet1IzbovychBytov',
-      Number(clenenie.pocet1IzbovychBytov),
-    )
-    await fillIn(
-      page,
-      'root_stavba_clenenieStavby_pocet2IzbovychBytov',
-      Number(clenenie.pocet2IzbovychBytov),
-    )
-    await fillIn(
-      page,
-      'root_stavba_clenenieStavby_pocet3IzbovychBytov',
-      Number(clenenie.pocet3IzbovychBytov),
-    )
-    await fillIn(
-      page,
-      'root_stavba_clenenieStavby_pocet4IzbovychBytov',
-      Number(clenenie.pocet4IzbovychBytov),
-    )
-    // Required and legitimately zero — it has to be typed, not left blank.
-    await fillIn(
-      page,
-      'root_stavba_clenenieStavby_pocetViacAko4IzbovychBytov',
-      Number(clenenie.pocetViacAko4IzbovychBytov),
+      'root_stavba_clenenieStavby_ostatneStavby',
+      data.stavba.clenenieStavby.ostatneStavby,
     )
 
-    await continueTo(page, 'typ-ziadosti')
-  })
-
-  await test.step('typ žiadosti — prázdny krok neprejde', async () => {
-    // The only step in either form with no preselected option, so this is the cleanest negative check.
-    await expectStepRejected(page, 'typ-ziadosti', ['root_typZiadosti_typ'])
-  })
-
-  await test.step('typ žiadosti', async () => {
-    await pickRadio(page, 'root_typZiadosti_typ', data.typZiadosti.typ)
     await continueTo(page, 'prilohy')
   })
 
   await test.step('prílohy — prázdny krok neprejde', async () => {
-    await expectStepRejected(page, 'prilohy', ['root_prilohy_projektovaDokumentacia'])
+    await expectStepRejected(page, 'prilohy', ['root_prilohy_architektonickaStudia'])
   })
 
   await test.step('prílohy', async () => {
-    // Two files. The field is valid with one, so they are uploaded under distinct names and both are
-    // asserted on the summary — otherwise the second file could silently go missing.
-    await attachFiles(page, 'root_prilohy_projektovaDokumentacia', [
-      'projektova-dokumentacia-1.pdf',
-      'projektova-dokumentacia-2.pdf',
-    ])
+    await attachFiles(page, 'root_prilohy_architektonickaStudia', ['architektonicka-studia.pdf'])
     await continueTo(page, 'sumar')
   })
 
@@ -230,25 +196,12 @@ test('F02 — záväzné stanovisko k investičnej činnosti', { tag: '@legacy' 
     await expectSummaryWithoutErrors(page)
 
     await expectSummaryRow(page, 'root_ziadatel_meno', data.ziadatel.meno)
+    await expectSummaryRow(page, 'root_ziadatel_email', data.ziadatel.email)
     await expectSummaryRow(page, 'root_stavebnik_priezvisko', data.stavebnik.priezvisko)
+    await expectSummaryRow(page, 'root_zodpovednyProjektant_meno', data.zodpovednyProjektant.meno)
     await expectSummaryRow(page, 'root_stavba_nazov', data.stavba.nazov)
-    await expectSummaryRow(page, 'root_stavba_idStavby', data.stavba.idStavby)
     await expectSummaryRow(page, 'root_stavba_katastralneUzemia', 'Karlova Ves')
     await expectSummaryRow(page, 'root_stavba_katastralneUzemia', 'Dúbravka')
-    await expectSummaryRow(
-      page,
-      'root_stavba_clenenieStavby_pocetBytovCelkovo',
-      String(clenenie.pocetBytovCelkovo),
-    )
-    await expectSummaryRow(
-      page,
-      'root_prilohy_projektovaDokumentacia',
-      'projektova-dokumentacia-1.pdf',
-    )
-    await expectSummaryRow(
-      page,
-      'root_prilohy_projektovaDokumentacia',
-      'projektova-dokumentacia-2.pdf',
-    )
+    await expectSummaryRow(page, 'root_prilohy_architektonickaStudia', 'architektonicka-studia.pdf')
   })
 })

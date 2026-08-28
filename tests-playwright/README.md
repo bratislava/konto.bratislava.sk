@@ -17,15 +17,34 @@ pnpm --filter city-account-playwright-tests run test:playwright
 | `test:playwright`                     | everything: smoke + desktop + mobile    |
 | `test:playwright:smoke`               | six URL status checks, no browser       |
 | `test:playwright:desktop` / `:mobile` | one viewport                            |
-| `test:playwright:legacy`              | only the Cypress-parity specs           |
-| `test:playwright:engine`              | everything except those                 |
+| `test:playwright:legacy`              | `src/specs/legacy` — the Cypress port   |
+| `test:playwright:runner`              | everything except that                  |
 | `test:playwright:ui`                  | Playwright UI mode                      |
 | `typecheck`                           | `tsc` — catches schema drift, see below |
 
 `E2E_BASE_URL` points the suite elsewhere (default `http://localhost:3000`). `E2E_VIDEO=on` records
 passing tests too.
 
-## How the form tests work
+## Layout
+
+```
+src/specs/legacy/      the Cypress port — every spec that replaces a `.cy.ts` file
+src/specs/forms/       the schema-driven form runner
+src/pages/             page objects shared by both
+src/fixtures/          identities and the per-test registered account
+```
+
+`src/specs/legacy/` is the whole Cypress suite, migrated roughly as-is: explicit field ids, explicit
+step order, explicit `if`s for the branches. Its only vocabulary is `helpers.ts` next to it, and it
+imports **nothing** from `src/engine/` — deleting the runner leaves it intact. Every one of its tests
+is tagged `@legacy`:
+
+```bash
+playwright test --grep @legacy          # the Cypress port
+playwright test --grep-invert @legacy   # everything else
+```
+
+## How the form runner works
 
 `src/engine/` fills any form from its schema plus a typed example, rather than from hand-written
 steps. `forms-shared`'s `getSummaryJsonNode` renders the form through the same RJSF pipeline the app
@@ -38,13 +57,10 @@ uses and returns a tree in which every field carries its RJSF path id — exactl
   and the conditional `bezpodieloveSpoluvlastnictvoManzelov` step need no test-side logic;
 - the same plan doubles as the summary oracle.
 
-Scenarios come from `forms-shared/example-forms`, so the data is typed as `TaxFormData` and
-`pnpm run typecheck` turns a schema rename into a compile error instead of a silently passing test.
-
-Two invariants the engine relies on:
+Two invariants it relies on:
 
 1. **Fill in plan order.** RJSF renders in `baOrder`, and the generator always places a gate before
-   what it gates, so every conditional field is revealed before the engine reaches it.
+   what it gates, so every conditional field is revealed before the runner reaches it.
 2. **Add all array items, then fill them.** Adding remounts items and drops uncommitted react-aria
    state. Doing all the adds first is what removed the need for the "clear and re-type" passes the
    Cypress spec carried.
@@ -52,29 +68,10 @@ Two invariants the engine relies on:
 Filling is verified afterwards; a field that lost its value is reported rather than silently
 re-typed, so drift shows up as a finding instead of a workaround.
 
-## Entry points
-
-Form-filling tests use `/mestske-sluzby/dev/{slug}`, which renders the form straight from the schema
-with no form instance and no backend. Nothing is created, nothing is shared, so the matrix runs fully
-in parallel. Scenarios that upload a file need a real form instance, and `requiresBackend()` routes
-those through the public `/mestske-sluzby/{slug}` entry point automatically.
-
-## Two kinds of form test
-
-`src/specs/legacy/` is a near-as-is port of the Cypress form specs, kept deliberately dumb: explicit
-field ids, explicit step order, explicit `if`s for the branches, and a ~200-line local `helpers.ts`.
-It imports **nothing** from `src/engine/`. It exists so that Cypress can be deleted, and so form
-coverage does not depend on a single mechanism being correct — if the engine is wrong, every engine
-test is wrong the same way.
-
-Every legacy test is tagged `@legacy`:
-
-```bash
-playwright test --grep @legacy          # Cypress-parity specs only
-playwright test --grep-invert @legacy   # engine specs only
-```
-
-Both take their values from `forms-shared/example-forms`, so neither has re-encoded JSON fixtures.
+Both styles take their values from `forms-shared/example-forms`, so neither has re-encoded JSON
+fixtures, and `pnpm run typecheck` turns a schema rename into a compile error instead of a silently
+passing test. Both open forms through the public `/mestske-sluzby/{slug}` entry point, because file
+upload and persistence need a real form instance.
 
 ## Parallelism
 

@@ -1,12 +1,12 @@
-import { expect, test } from '../../fixtures'
+import { expect, test } from '../../../fixtures'
 import {
   expectRegistrationSuccess,
   logIn,
   logOut,
   openProfile,
   submitForm,
-} from '../../pages/AccountPage'
-import { waitForHydration } from '../../pages/FormPage'
+} from '../../../pages/AccountPage'
+import { waitForHydration } from '../../../pages/FormPage'
 
 /**
  * Was `tests/cypress/e2e/registration/registration.cy.ts` (RF01) and `registrationPO.cy.ts` (RF02),
@@ -19,7 +19,7 @@ import { waitForHydration } from '../../pages/FormPage'
 // Registration must start signed out; do not rely on the default.
 test.use({ storageState: { cookies: [], origins: [] } })
 
-test('registrácia fyzickej osoby', async ({ page, identity }) => {
+test('registrácia fyzickej osoby', { tag: '@legacy' }, async ({ page, identity }) => {
   await page.goto('/registracia')
   await waitForHydration(page)
 
@@ -48,7 +48,7 @@ test('registrácia fyzickej osoby', async ({ page, identity }) => {
   await expectRegistrationSuccess(page, identity.email)
 })
 
-test('registrácia právnickej osoby', async ({ page, identity }) => {
+test('registrácia právnickej osoby', { tag: '@legacy' }, async ({ page, identity }) => {
   await page.goto('/registracia')
   await waitForHydration(page)
 
@@ -68,7 +68,7 @@ test('registrácia právnickej osoby', async ({ page, identity }) => {
  * account it had just created. It is genuinely sequential, so it stays one test with steps — but it
  * now owns its account instead of depending on another spec having run first.
  */
-test('zmena e-mailu a hesla', async ({ page, registeredAccount }) => {
+test('zmena e-mailu a hesla', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
   // Registration here is setup, not the thing under test, so it goes through the shared helper.
   await logOut(page)
   await logIn(page, registeredAccount.email, registeredAccount.password)
@@ -105,7 +105,7 @@ test('zmena e-mailu a hesla', async ({ page, registeredAccount }) => {
 })
 
 /** Was the trailing `cy.logOutUser()` in every account spec; real coverage, so it gets its own test. */
-test('odhlásenie', async ({ page, registeredAccount }) => {
+test('odhlásenie', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
   void registeredAccount
   await logOut(page)
 })

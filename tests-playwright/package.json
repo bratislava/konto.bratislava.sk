@@ -6,7 +6,7 @@
     "test:playwright:desktop": "playwright test --project=desktop",
     "test:playwright:mobile": "playwright test --project=mobile",
     "test:playwright:legacy": "playwright test --grep @legacy",
-    "test:playwright:engine": "playwright test --grep-invert @legacy",
+    "test:playwright:runner": "playwright test --grep-invert @legacy",
     "test:playwright:ui": "playwright test --ui",
     "test:playwright:report": "playwright show-report",
     "typecheck": "tsc",

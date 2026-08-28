@@ -7,9 +7,8 @@ import { expect, type Locator, type Page } from '@playwright/test'
  * Interaction helpers for the legacy, hand-written form specs.
  *
  * Deliberately dumb: every function takes an explicit RJSF field id and does one thing. Nothing here
- * reads the schema, resolves a widget type, or builds a plan — that is `src/engine/`, which these
- * specs must not touch. The point is that a legacy spec reads as a literal description of what a
- * person does on the page.
+ * reads a schema, resolves a widget type or builds a plan — a spec reads as a literal description of
+ * what a person does on the page, and that is the whole design.
  *
  * The one non-obvious rule: anchor on the *wrapper*. `WidgetWrapper` renders `<div id="root_…">`, and
  * the `<input>` inside does not carry that id. The control's own `data-cy` is `input-<full RJSF id>`
@@ -159,9 +158,23 @@ export const attachFiles = async (page: Page, id: string, fileNames: string[]) =
   }
 }
 
-/** Both continue buttons always render, one hidden per breakpoint — click whichever is visible. */
-const continueButton = (page: Page) =>
+/**
+ * `FormControls` always renders both the desktop and the mobile button, hiding one with Tailwind.
+ * Picking the visible one means no test ever needs to know which viewport it is running in — this is
+ * what removes the `device` parameter every Cypress custom command had to thread through.
+ */
+export const continueButton = (page: Page): Locator =>
   page.locator('[data-cy^=continue-button-]').locator('visible=true')
+
+/** The form itself, as opposed to the page around it. Visible once RJSF has rendered a step. */
+export const formContainer = (page: Page): Locator => page.locator('[data-cy=form-container]')
+
+/**
+ * A summary row, addressed by the same RJSF id as the field it summarises — `SummaryRow` is keyed on
+ * the field path, so the summary needs no separate vocabulary.
+ */
+export const summaryRow = (page: Page, fieldId: string): Locator =>
+  page.locator(`[data-cy="summary-row-${fieldId}"]`)
 
 /** Submits the step and asserts the form moved to the expected `krok`. */
 export const continueTo = async (page: Page, krok: string) => {
@@ -191,7 +204,7 @@ export const expectStepRejected = async (page: Page, krok: string, fieldIds: str
 
 /** Asserts a summary row contains the given text. */
 export const expectSummaryRow = async (page: Page, id: string, text: string) => {
-  await expect(page.locator(`[data-cy="summary-row-${id}"]`), id).toContainText(text)
+  await expect(summaryRow(page, id), id).toContainText(text)
 }
 
 /** Asserts the summary carries no error alert — how every Cypress form spec ended. */

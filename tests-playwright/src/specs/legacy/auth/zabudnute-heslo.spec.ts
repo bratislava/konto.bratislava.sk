@@ -1,6 +1,6 @@
-import { expect, test } from '../../fixtures'
-import { submitForm } from '../../pages/AccountPage'
-import { waitForHydration } from '../../pages/FormPage'
+import { expect, test } from '../../../fixtures'
+import { submitForm } from '../../../pages/AccountPage'
+import { waitForHydration } from '../../../pages/FormPage'
 
 /**
  * Was the nested `RF05 - forgotten password` block in `tests/cypress/e2e/registration/registration.cy.ts`.
@@ -55,14 +55,14 @@ test.describe('zabudnuté heslo', () => {
     await waitForHydration(page)
   })
 
-  test('neplatný formát e-mailu je odmietnutý', async ({ page }) => {
+  test('neplatný formát e-mailu je odmietnutý', { tag: '@legacy' }, async ({ page }) => {
     await page.locator('[data-cy=forgotten-password-form] [data-cy=input-email]').fill('test')
     await submitForm(page, 'forgotten-password-form')
 
     await expect(page.locator('[data-cy=error-message]').first()).toBeVisible()
   })
 
-  test('neznámy e-mail zobrazí chybu', async ({ page, identity }) => {
+  test('neznámy e-mail zobrazí chybu', { tag: '@legacy' }, async ({ page, identity }) => {
     await page
       .locator('[data-cy=forgotten-password-form] [data-cy=input-email]')
       .fill(identity.unknownEmail)
@@ -72,12 +72,16 @@ test.describe('zabudnuté heslo', () => {
     await expect(page.locator('[data-cy=forgotten-password-form]')).toBeVisible()
   })
 
-  test('známy e-mail pokračuje na zadanie nového hesla', async ({ page, identity }) => {
-    await page
-      .locator('[data-cy=forgotten-password-form] [data-cy=input-email]')
-      .fill(identity.email)
-    await submitForm(page, 'forgotten-password-form')
+  test(
+    'známy e-mail pokračuje na zadanie nového hesla',
+    { tag: '@legacy' },
+    async ({ page, identity }) => {
+      await page
+        .locator('[data-cy=forgotten-password-form] [data-cy=input-email]')
+        .fill(identity.email)
+      await submitForm(page, 'forgotten-password-form')
 
-    await expect(page.locator('[data-cy=new-password-form]')).toBeVisible()
-  })
+      await expect(page.locator('[data-cy=new-password-form]')).toBeVisible()
+    },
+  )
 })

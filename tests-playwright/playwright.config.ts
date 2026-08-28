@@ -45,7 +45,7 @@ export default defineConfig({
     // Request-only: no browser is launched at all.
     {
       name: 'smoke',
-      testDir: './src/specs/smoke',
+      testDir: './src/specs/legacy/smoke',
     },
     {
       name: 'setup',

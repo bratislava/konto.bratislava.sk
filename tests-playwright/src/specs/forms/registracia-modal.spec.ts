@@ -20,7 +20,7 @@ const SLUGS = ['stanovisko-k-investicnemu-zameru'] as const
 SLUGS.forEach((slug) => {
   test.describe(slug, () => {
     test('registračné modálne okno vedie na registráciu', async ({ page }) => {
-      await openForm(page, slug)
+      await openForm(page, slug, { dismissRegistrationModal: false })
 
       await expect(page.locator('[data-cy=registration-modal]')).toBeVisible()
       await page.locator('[data-cy=registration-modal-button]').click()
@@ -29,7 +29,7 @@ SLUGS.forEach((slug) => {
     })
 
     test('uloženie konceptu znovu otvorí registračné modálne okno', async ({ page }) => {
-      await openForm(page, slug)
+      await openForm(page, slug, { dismissRegistrationModal: false })
 
       await page.locator('[data-cy=close-modal]').click()
       await expect(page.locator('[data-cy=registration-modal]')).toBeHidden()

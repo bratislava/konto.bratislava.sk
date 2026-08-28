@@ -37,11 +37,25 @@ import {
 
 const DEFAULT_FILE = 'assets/test.pdf'
 
+/** True when the plan holds an actual file reference, for either file widget shape. */
+const hasFileValue = (value: unknown) =>
+  Array.isArray(value) ? value.length > 0 : typeof value === 'string' && value.length > 0
+
 const fillField = async (page: Page, field: SummaryJsonField, options: FillOptions) => {
   const root = fieldRoot(page, field.id)
 
-  // A field can legitimately be absent: `customComponentsField` calculators render no control, and
-  // the plan carries fields whose value is `undefined` for optional inputs.
+  // Wait rather than skip. Setting a radio can reveal the fields that follow it (e.g. answering
+  // "Je stavebník rovnaká osoba ako žiadateľ?" with "Nie" unfolds the whole `stavebnik` block), and
+  // RJSF re-renders asynchronously — checking `count()` straight away silently skipped those fields
+  // and left the step invalid.
+  //
+  // Everything in the plan is expected to render: `customComponentsField` calculators are mapped to
+  // `() => null` by the summary theme, so they never reach the plan in the first place. The catch is
+  // a safety net rather than an expected path.
+  await root
+    .first()
+    .waitFor({ state: 'attached', timeout: 5_000 })
+    .catch(() => {})
   if ((await root.count()) === 0) {
     return
   }
@@ -67,7 +81,10 @@ const fillField = async (page: Page, field: SummaryJsonField, options: FillOptio
       return fillCheckboxGroup(root, field.value)
     case 'file':
       // Only upload where the scenario actually has a file; an empty file field is a valid state.
-      return Array.isArray(field.value) && field.value.length > 0
+      // `fileUploadMultiple` carries an array of uuids, plain `fileUpload` a single uuid string —
+      // handling only the array form silently skipped required single-file fields such as
+      // `stavebnik.splnomocnenie`, which then blocked the step from advancing.
+      return hasFileValue(field.value)
         ? uploadFile(root, options.files?.(field.id) ?? DEFAULT_FILE)
         : undefined
     case 'number':

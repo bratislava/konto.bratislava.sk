@@ -84,25 +84,35 @@ export const selectRadio = async (root: Locator, value: unknown) => {
 }
 
 /**
- * react-select. The one place a Slovak label is genuinely required — there is no native input
- * carrying the value. The label comes from the schema's `enumMetadata` via `displayValues`, so it
- * is still schema-derived and never hand-translated.
+ * react-select, single or multiple. The one place a Slovak label is genuinely required — there is no
+ * native input carrying the value. The labels come from the schema's `enumMetadata` via
+ * `displayValues`, so they are still schema-derived and never hand-translated.
+ *
+ * Every display value is selected, not just the first: `selectMultiple` fields such as
+ * `stavba.katastralneUzemia` carry several. `SelectField` passes `closeMenuOnSelect={!isMulti}`, so
+ * the menu stays open between picks on a multi-select and must only be re-opened when it closed.
  *
  * Matching is exact. The Cypress version appended separators (`druhPozemku + ' – '`,
  * `predmetDane + ') '`) to force `.contains()` substring matches against code-prefixed labels;
  * exact matching removes those hacks and the latent `Nové Mesto` / `Nové Mesto nad Váhom` ambiguity.
  */
 export const selectOption = async (root: Locator, displayValues: SummaryDisplayValues) => {
-  const [label] = stringDisplayValues(displayValues)
-  if (label == null) {
+  const labels = stringDisplayValues(displayValues)
+  if (labels.length === 0) {
     return
   }
 
   const control = root.locator('[data-cy^="select-"]').first()
-  await control.click()
-  // `stat` and `kataster` have hundreds of options; typing filters the list before we pick.
-  await control.locator('input').first().fill(label)
-  await control.getByRole('option', { name: label, exact: true }).first().click()
+  const search = control.locator('input').first()
+
+  for (const label of labels) {
+    // `stat` and `kataster` have hundreds of options; typing filters the list before we pick.
+    if ((await control.getByRole('option').count()) === 0) {
+      await control.click()
+    }
+    await search.fill(label)
+    await control.getByRole('option', { name: label, exact: true }).first().click()
+  }
 }
 
 /**

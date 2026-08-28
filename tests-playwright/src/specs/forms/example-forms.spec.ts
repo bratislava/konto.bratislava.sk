@@ -18,7 +18,13 @@ import { openForm } from '../../pages/FormPage'
  *
  * Every test creates nothing and shares nothing, so the whole matrix runs in parallel.
  */
-const SLUGS = ['priznanie-k-dani-z-nehnutelnosti'] as const
+const SLUGS = [
+  'priznanie-k-dani-z-nehnutelnosti',
+  // Were `formSIZ.cy.ts` / `formZSIZ.cy.ts` (F01 / F02) — 420 lines of hand-written steps, disabled
+  // with `xdescribe`. The engine drives them from their own example forms at no extra cost.
+  'stanovisko-k-investicnemu-zameru',
+  'zavazne-stanovisko-k-investicnej-cinnosti',
+] as const
 
 SLUGS.forEach((slug) => {
   const formDefinition = getFormDefinitionBySlug(slug)
@@ -38,13 +44,9 @@ SLUGS.forEach((slug) => {
 
         const mismatches: string[] = []
 
-        // Scenarios that upload a file need a real form instance, because the dev preview route
-        // has no backend. Everything else takes the fast, state-free path.
-        // if (requiresBackend(plan)) {
+        // Every scenario goes through a real form instance: the dev preview route has no backend,
+        // so file uploads cannot complete there, and all three forms include uploads.
         await openForm(page, slug)
-        // } else {
-        //   await openDevForm(page, slug, firstStep)
-        // }
 
         const { fields } = await fillForm(page, schema, example.formData, {
           onMismatch: (field, actual, expected) =>

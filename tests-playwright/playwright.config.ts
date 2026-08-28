@@ -22,8 +22,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   workers: process.env.CI ? 4 : 6,
   retries: process.env.CI ? 1 : 0,
-  // Tax scenarios fill ~100 fields across 8 steps.
-  timeout: 120_000,
+  // The heaviest form scenarios fill ~100 fields across 8 steps and upload through the real backend
+  // (forms-backend + ClamAV). `Example5NoCalculators` alone takes ~60s uncontended, and running the
+  // legacy and engine form suites together multiplies that, so 120s was not enough.
+  timeout: 180_000,
   expect: { timeout: 10_000 },
   reporter: [
     ['list'],

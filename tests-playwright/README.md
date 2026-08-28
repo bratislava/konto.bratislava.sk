@@ -17,6 +17,8 @@ pnpm --filter city-account-playwright-tests run test:playwright
 | `test:playwright`                     | everything: smoke + desktop + mobile    |
 | `test:playwright:smoke`               | six URL status checks, no browser       |
 | `test:playwright:desktop` / `:mobile` | one viewport                            |
+| `test:playwright:legacy`              | only the Cypress-parity specs           |
+| `test:playwright:engine`              | everything except those                 |
 | `test:playwright:ui`                  | Playwright UI mode                      |
 | `typecheck`                           | `tsc` — catches schema drift, see below |
 
@@ -57,6 +59,23 @@ with no form instance and no backend. Nothing is created, nothing is shared, so 
 in parallel. Scenarios that upload a file need a real form instance, and `requiresBackend()` routes
 those through the public `/mestske-sluzby/{slug}` entry point automatically.
 
+## Two kinds of form test
+
+`src/specs/legacy/` is a near-as-is port of the Cypress form specs, kept deliberately dumb: explicit
+field ids, explicit step order, explicit `if`s for the branches, and a ~200-line local `helpers.ts`.
+It imports **nothing** from `src/engine/`. It exists so that Cypress can be deleted, and so form
+coverage does not depend on a single mechanism being correct — if the engine is wrong, every engine
+test is wrong the same way.
+
+Every legacy test is tagged `@legacy`:
+
+```bash
+playwright test --grep @legacy          # Cypress-parity specs only
+playwright test --grep-invert @legacy   # engine specs only
+```
+
+Both take their values from `forms-shared/example-forms`, so neither has re-encoded JSON fixtures.
+
 ## Parallelism
 
 Everything runs in parallel, on both viewports. There is no shared account and no serial mode: every
@@ -69,6 +88,4 @@ would reset one.
 
 ## Known gaps
 
-- `registracia-modal.spec.ts` covers only the SIZ slug; `zavazne-stanovisko-k-investicnej-cinnosti`
-  still renders the legacy landing page, which has no fill-form CTA at all.
 - Visual regression is not ported. Every `.matchImage()` call in the Cypress suite was commented out.

@@ -32,6 +32,32 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
  * Only applied on submit (inside the resolver), so the displayed input value is not changed.
  * Recurses only into plain objects and arrays, so values like `File`, `Date` or `CalendarDate`
  * are passed through untouched instead of being flattened into plain objects.
+ *
+ * The exclusion is matched by key name at any depth, not by path, so a `password` key nested
+ * inside an object is skipped as well, together with its whole subtree.
+ *
+ * @example
+ * trimValues(
+ *   {
+ *     givenName: '  Meno ',                              // string       -> trimmed
+ *     password: '  secret  ',                            // noTrimFields -> passed through
+ *     tags: [' a ', ' b '],                              // array        -> each item recursed
+ *     address: { street: ' Hlavna 1 ', zip: ' 81101 ' }, // plain object -> recursed
+ *     birthDate: new CalendarDate(1990, 1, 1),           // not plain    -> passed through
+ *     attachment: new File(['x'], 'scan.pdf'),           // not plain    -> passed through
+ *     agreed: true,                                      // not a string -> passed through
+ *   },
+ *   ['password'],
+ * )
+ * // {
+ * //   givenName: 'Meno',
+ * //   password: '  secret  ',
+ * //   tags: ['a', 'b'],
+ * //   address: { street: 'Hlavna 1', zip: '81101' },
+ * //   birthDate: CalendarDate { year: 1990, ... },  // same instance, prototype intact
+ * //   attachment: File { name: 'scan.pdf', ... },   // same instance
+ * //   agreed: true,
+ * // }
  */
 const trimValues = (value: unknown, noTrimFields: string[]): unknown => {
   if (typeof value === 'string') {

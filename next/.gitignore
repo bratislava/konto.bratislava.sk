@@ -37,3 +37,6 @@ yarn-error.log*
 
 # Copied by CopyWebpackPlugin in next.config.ts
 public/scripts/iframe-resizer-child-*.js
+
+#sitemap
+sitemap*.xml

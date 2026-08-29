@@ -8,11 +8,15 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "build:dependencies": "pnpm -w exec turbo run build --filter=nest-clamav-scanner... --filter=!nest-clamav-scanner",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main",
+    "start:prod": "node dist/main",
+    "typecheck": "tsc --noEmit",
+    "openapi": "openapi-cli spec:generate",
+    "openapi:validate": "openapi-cli spec:validate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",
@@ -25,7 +29,7 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
+    "vulnerabilities": "pnpm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
     "@nestjs/common": "11.1.28",
@@ -38,19 +42,18 @@
     "@prisma/adapter-pg": "7.9.0",
     "@prisma/client": "7.9.0",
     "await-exec": "0.1.2",
-    "axios": "1.18.1",
+    "axios": "catalog:",
     "base64url": "3.0.1",
     "clamdjs": "1.0.2",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.4",
-    "husky": "9.1.7",
+    "express": "5.2.1",
     "mime-types": "3.0.2",
     "minio": "8.0.7",
-    "openapi-clients": "file:../openapi-clients",
+    "openapi-clients": "workspace:*",
     "passport-http": "0.3.0",
     "pg": "8.22.0",
-    "prisma": "7.9.0",
-    "rimraf": "6.0.1"
+    "prisma": "7.9.0"
   },
   "devDependencies": {
     "@bratislava/eslint-config-nest": "0.19.1",
@@ -60,14 +63,16 @@
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/mime-types": "3.0.1",
-    "@types/node": "24.12.2",
+    "@types/node": "catalog:",
     "@types/passport-http": "0.3.11",
     "cross-env": "10.1.0",
     "dotenv": "17.4.2",
     "eslint": "9.39.4",
     "jest": "30.4.2",
+    "openapi-cli": "workspace:*",
     "path": "0.12.7",
     "prettier": "3.6.2",
+    "rimraf": "6.0.1",
     "source-map-support": "0.5.21",
     "ts-jest": "29.4.12",
     "ts-node": "10.9.2",
@@ -94,12 +99,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-  "engines": {
-    "node": ">=24.15.x",
-    "npm": ">=11.12.x"
-  },
   "volta": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "extends": "../package.json"
   }
 }

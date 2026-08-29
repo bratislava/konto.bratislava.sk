@@ -51,7 +51,7 @@ export class XmlToJsonResponseDto {
   requiresVersionConfirmation: boolean
 }
 
-class ClientFileInfoFileDto {
+export class ClientFileInfoFileDto {
   @IsString()
   @IsNotEmpty()
   name: string
@@ -60,7 +60,7 @@ class ClientFileInfoFileDto {
   size: number
 }
 
-class ClientFileInfoStatusDto {
+export class ClientFileInfoStatusDto {
   @IsEnum(FileStatusType)
   type: FileStatusType
 }
@@ -70,7 +70,7 @@ class ClientFileInfoStatusDto {
  * Uses minimal typed shapes so that `ClientFileInfo` structurally extends this DTO,
  * allowing a single `as ClientFileInfo[]` cast without `as unknown as`.
  */
-class SimplifiedClientFileInfoDto {
+export class SimplifiedClientFileInfoDto {
   @IsString()
   @IsNotEmpty()
   id: string

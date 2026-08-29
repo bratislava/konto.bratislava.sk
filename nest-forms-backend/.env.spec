@@ -1,4 +1,10 @@
 # Basic configuration
+# NODE_ENV and DATABASE_URL are required by EnvironmentVariables. The e2e run gets both from
+# its environment (jest sets NODE_ENV, and e2e-global-setup.ts assigns DATABASE_URL outright),
+# but `openapi-cli` loads this file on its own — and in the Docker build it is the only .env*
+# available, so the fixture has to be complete on its own.
+NODE_ENV=test
+DATABASE_URL=postgresql://localhost:5432/db
 PORT=3000
 SELF_URL=https://nest-forms-backend.dev.bratislava.sk
 CLUSTER_ENV=dev
@@ -93,6 +99,8 @@ REDIS_PASSWORD=test-redis-password
 # Tax PDF Jobs
 TAX_PDF_JOB_CONCURRENCY=1
 TAX_PDF_JOB_TIMEOUT=10000
+
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Feature Toggles
 FEATURE_TOGGLE_VERSIONING=true

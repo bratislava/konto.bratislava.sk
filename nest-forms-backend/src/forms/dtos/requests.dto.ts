@@ -102,7 +102,6 @@ export class FormUpdateBodyDto {
   @Type(() => Date)
   @ApiPropertyOptional({
     description: 'Date time, when submission was finished in ginis',
-    default: new Date(),
   })
   @IsOptional()
   @IsDate()

@@ -1,0 +1,4 @@
+# `openapi-cli spec:validate` byte-compares each committed spec against a freshly generated
+# one, and writes LF. With core.autocrlf=true a Windows checkout would get CRLF, so the check
+# could never pass locally while still passing in CI — pin these to LF in the working tree.
+openapi-specs/*.json text eol=lf

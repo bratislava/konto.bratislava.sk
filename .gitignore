@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
@@ -125,5 +126,15 @@ dist
 # Volta
 .volta
 
+# Turbopack
+.turbo
+
+# Turbo prune output
+out/
+
 # Claude Code worktrees
 .claude/worktrees/
+
+# Where the `<service>-openapi-generate` bake targets drop the regenerated spec
+# before it is moved into openapi-specs/
+.openapi-generated/

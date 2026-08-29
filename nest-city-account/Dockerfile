@@ -1,85 +1,109 @@
-# check=skip=InvalidDefaultArgInFrom
-ARG OPENAPI_CLIENTS_DIGEST
-FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
-FROM node:24.15-alpine AS base
+ARG NODE_VERSION
+ARG PNPM_VERSION
+ARG TURBO_VERSION
+FROM node:${NODE_VERSION}-alpine AS base
 
-# Install Chromium and dependencies via apk
-RUN apk add --no-cache \
-      chromium \
-      nss \
-      freetype \
-      harfbuzz \
-      ca-certificates \
-      ttf-freefont \
-      qpdf
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV PNPM_HOME=/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
 
+WORKDIR /app
+ARG PNPM_VERSION
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
+FROM base AS prepare
+COPY . .
+ARG TURBO_VERSION
+RUN pnpm dlx turbo@${TURBO_VERSION} prune nest-city-account --docker
+
+FROM base AS builder-deps
+
+# openapi-clients generates its TypeScript from the committed specs at build time, and
+# openapi-generator-cli is a Java tool. Headless JRE only, and only in the build stages —
+# `runner` starts from a clean node image, so this never reaches the shipped image.
+RUN apk add --no-cache openjdk21-jre-headless
+
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile
+
+COPY --from=prepare /app/out/full/ .
+
+RUN pnpm --filter nest-city-account db:generate
+
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
+
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
+RUN pnpm turbo run build --filter=nest-city-account^... --filter=!nest-city-account
+
+FROM builder-deps AS builder
+RUN pnpm turbo run build --filter=nest-city-account
+
+FROM builder-deps AS test
+RUN pnpm turbo run test --filter=nest-city-account
+
+FROM builder AS lint
+RUN pnpm turbo run lint --filter=nest-city-account
+
+# Fails when the committed OpenAPI spec no longer matches this service's code.
+# `builder-deps` already has openapi-cli built and openapi-specs in the pruned
+# context, because openapi-cli depends on it.
+FROM builder-deps AS openapi
+RUN pnpm turbo run openapi:validate --filter=nest-city-account
+
+# Rewrites the spec instead of checking it, for the `/openapi` pull request
+# command -- see .github/workflows/openapi-chatops.yml.
+#
+# Run through pnpm rather than turbo, unlike every other stage here: the spec is
+# written to the openapi-specs package, outside this backend's own directory, so
+# turbo cannot declare it as a task output. A cache hit would then replay a
+# recorded log without writing anything and the stale spec would be committed as
+# if it were fresh.
+FROM builder-deps AS openapi-generate
+RUN pnpm --filter nest-city-account run openapi
+
+# Scratch, so `--output type=local` writes the regenerated spec and nothing else.
+FROM scratch AS openapi-spec
+COPY --from=openapi-generate /app/openapi-specs/city-account.json /
+
+FROM base AS prod-deps
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile --prod
+
+FROM node:${NODE_VERSION}-alpine AS runner
+ENV NODE_ENV=production
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-ENV NODE_ENV=production
+RUN apk add --no-cache \
+      chromium \
+      qpdf \
+      tini \
+      ttf-freefont
 
-FROM base AS app-base
-RUN apk update \
- && apk add tini \
- && rm -rf /var/cache/apk/* \
- && mkdir -p /home/node/app \
- && chown -R node:node /home/node/app
+WORKDIR /app
+RUN chown -R node:node /app
+
 USER node
-WORKDIR /home/node/app
-ENTRYPOINT [ "/sbin/tini", "--" ]
 
-FROM base AS build-base
+COPY --from=prod-deps --chown=node:node /app ./
+COPY --from=builder --chown=node:node /app/nest-city-account/nest-cli.json ./nest-city-account/nest-cli.json
+COPY --from=builder --chown=node:node /app/nest-city-account/prisma.config.ts ./nest-city-account/prisma.config.ts
+COPY --from=builder --chown=node:node /app/nest-city-account/prisma ./nest-city-account/prisma
+COPY --from=builder --chown=node:node /app/openapi-clients/dist ./openapi-clients/dist
+COPY --from=builder --chown=node:node /app/nest-city-account/dist ./nest-city-account/dist
 
-# Temporary workaround until this repository uses npm workspaces. Locally, shared
-# packages are symlinked through file: dependencies and their folders already
-# contain node_modules. In CI, the copied package folders would not have
-# node_modules, so we install each shared package explicitly to keep behavior
-# close to local development and expose missing runtime dependencies early.
-# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
-WORKDIR /openapi-clients
-COPY --from=openapi-clients / .
-RUN npm ci --include=dev
+WORKDIR /app/nest-city-account
 
-WORKDIR /build
-COPY package.json package-lock.json prisma ./
-RUN npm ci --include=dev
-
-FROM build-base AS prebuild
-WORKDIR /build
-COPY . ./
-RUN npm run db:generate
-
-FROM prebuild AS build
-RUN npm run build \
-  && npm prune --production
-
-FROM prebuild AS test
-RUN npm run test
-
-FROM prebuild AS lint
-RUN npm run lint
-
-FROM app-base AS dev
-ENV NODE_ENV=development
-# used **only** for development and local directory should be mounted
-CMD [ "npm", "run", "start:debug" ]
-
-# production
-FROM app-base AS prod
-COPY --chown=node:node --from=build /openapi-clients /home/node/openapi-clients
-
-WORKDIR /home/node/app
-COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
-COPY --chown=node:node --from=build /build/node_modules ./node_modules
-COPY --chown=node:node --from=build /build/dist ./dist
-COPY --chown=node:node --from=build /build/prisma ./prisma
-COPY --chown=node:node --from=build /build/prisma.config.ts ./prisma.config.ts
-COPY --chown=node:node nest-cli.json ./nest-cli.json
 EXPOSE 3000
-ARG GIT_COMMIT="undefined"
-ENV GIT_COMMIT=$GIT_COMMIT
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/nest-city-account" \
-      org.opencontainers.image.licenses="EUPL-1.2"
-CMD [ "sh", "-c", "npm run db:migrate:deploy && npm run start:prod" ]
+
+# `exec` replaces the shell with `node`, making it tini's direct child so
+# Kubernetes' SIGTERM reaches it. Without `exec` the shell dies on SIGTERM and
+# tini tears the container down before `node` can drain in-flight requests.
+ENTRYPOINT [ "/sbin/tini", "--" ]
+CMD [ "sh", "-c", "./node_modules/.bin/prisma migrate deploy && exec node dist/main" ]

@@ -1,0 +1,50 @@
+# Fixture with dummy-but-valid values, kept in sync with EnvironmentVariables.
+# Used by openapi-cli to load the app far enough to build the OpenAPI document:
+# config validation runs while modules are being defined, which preview mode does
+# not skip. This file is the only .env* allowed into the Docker build context
+# (see .dockerignore), so it must contain no real secrets.
+
+# Environment variables declared in this file are automatically made available to Prisma.
+# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB (Preview).
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+# minio
+MINIO_ACCESS_KEY=forms-dev
+MINIO_ENDPOINT=s3.bratislava.sk
+MINIO_HOST=s3.bratislava.sk:443
+MINIO_PORT=443
+MINIO_SECRET_KEY=secret
+MINIO_USE_SSL=true
+MINIO_PATH_STYLE=false
+
+# clamav
+CLAMAV_HOST=localhost
+CLAMAV_PORT=3310
+CLAMAV_UNSCANNED_BUCKET=forms-dev-uploaded
+CLAMAV_SAFE_BUCKET=forms-dev-safe
+CLAMAV_INFECTED_BUCKET=forms-dev-infected
+
+# postgres
+DATABASE_URL="postgresql://user:pass@localhost:54302/mydb?connect_timeout=30&schema=public"
+
+# other settings
+PORT=3200
+NODE_ENV=development
+NEST_FORMS_BACKEND=http://localhost:3100
+MIMETYPE_WHITELIST="application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/vnd.ms-powerpoint application/vnd.openxmlformats-officedocument.presentationml.presentation text/csv image/jpeg image/jpg image/png image/gif image/tiff image/bmp image/vnd.dwg image/vnd.dxf application/zip application/x-zip-compressed application/pkcs7-signature application/pkcs7-mime application/xml text/xml application/vnd.etsi.asic-e+zip application/vnd.etsi.asic-s+zip"
+# 1 GB
+MAX_FILE_SIZE=1000000000
+# 15 minutes
+MAX_FILE_SCAN_RUNS_TIMEOUT=900000
+MAX_FILE_SCAN_RUNS=3
+MAX_FILES_PER_REQUEST=20
+
+# auth
+NEST_CLAMAV_SCANNER_USERNAME=user
+NEST_CLAMAV_SCANNER_PASSWORD=pass
+NEST_FORMS_BACKEND_USERNAME=user
+NEST_FORMS_BACKEND_PASSWORD=pass
+
+# Used for the settings toggle based on the cluster environment
+CLUSTER_ENV=staging

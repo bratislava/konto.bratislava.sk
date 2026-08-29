@@ -1,5 +1,5 @@
 import { HttpException } from '@nestjs/common'
-import { RequiredError } from 'openapi-clients/magproxy/base'
+import { RequiredError } from 'openapi-clients/magproxy'
 
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
 

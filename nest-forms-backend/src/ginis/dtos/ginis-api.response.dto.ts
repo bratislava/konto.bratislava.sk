@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 
 import { GinisDocumentChangeType } from '../../utils/ginis/ginis-api-helper'
 
-class GinisSdkHistorieDokumentuWithAssignedCategory {
+export class GinisSdkHistorieDokumentuWithAssignedCategory {
   'Id-dokumentu': string
 
   'Text-zmeny'?: string

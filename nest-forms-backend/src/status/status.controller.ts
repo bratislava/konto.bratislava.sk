@@ -34,7 +34,7 @@ export default class StatusController {
   // endpoint to check if prisma is running
   @ApiOperation({
     summary: 'Check prisma status',
-    description: 'This endpoint checks if prisma is running',
+    description: 'This endpoint checks if priasdassma is running',
   })
   @ApiOkResponse({
     description: 'Status of prisma.',

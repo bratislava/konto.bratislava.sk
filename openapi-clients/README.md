@@ -1,56 +1,66 @@
-# OpenAPI Clients
+# openapi-clients
 
-This package contains auto-generated TypeScript clients for various Bratislava city services.
+Typed HTTP clients generated from the specs in [`openapi-specs`](../openapi-specs).
 
-## Limitations
+Generation reads committed spec files, so it is reproducible and offline. The previous version
+of this package generated from **live staging URLs**, which made the output depend on whatever
+happened to be deployed at the time.
 
-It's not possible to generate OpenAPI specifications for NestJS backends without running them easily (see [this StackOverflow discussion](https://stackoverflow.com/questions/72852736/generating-swagger-json-file-without-running-nest-js-server)). Therefore, the automatic check for client updates only runs after all backend services are deployed to the staging environment on the master branch.
-
-Running this on each commit would require spinning up all the backend services, which is resource-intensive and impractical.
-
-## Available Clients
-
-- `city-account` - City Account service client
-- `forms` - Forms service client
-- `tax` - Tax service client
-- `clamav-scanner` - ClamAV Scanner service client
-- `slovensko-sk` - Slovensko.sk API client
-
-## Development
-
-### Prerequisites
-
-- Java JDK 11+ (OpenAPI Generator requires Java to run)
-
-### Scripts
-
-- `npm run generate` - Generate all API clients using staging endpoints
-- `npm run generate:<client>` - Generate specific client using staging endpoint (e.g., `npm run generate:forms`)
-- `npm run generate:local` - Generate all API clients using local endpoints (localhost:3000)
-- `npm run generate:<client>:local` - Generate specific client using local endpoint (e.g., `npm run generate:forms:local`)
-- `npm run check-for-changes` - Check if any clients need to be regenerated
-- `npm run build` - Build the package
-- `npm run prettier` - Format code
-
-### Using Local Endpoints
-
-By default, the local generation scripts use `localhost:3000`. You can specify a different URL by temporarily rewriting `package.json` or by passing the `--local-url` parameter:
-
-```bash
-npm run generate:forms -- --local-url localhost:8080
+```sh
+pnpm --filter openapi-clients run build      # specs -> generated/ -> dist/
+pnpm --filter openapi-clients run generate   # just the first step
 ```
 
-### Adding a New Client
+## Two steps, on purpose
 
-1. Add the client type to `validTypes` in `scripts/generateClient.ts`
-2. Add the OpenAPI spec URL to `endpoints` in the same file
-3. Run `npm run generate:<new-client>` to generate the client
-4. Add the export path and generation scripts to `package.json`
+`generate` turns each spec into TypeScript under `generated/`; tsdown then compiles that into
+`dist/`. `build` runs both. **Neither directory is committed** — the committed artifact is the
+spec, in [`openapi-specs`](../openapi-specs).
 
-### Checking for Changes
+That distinction is what keeps the dependency graph acyclic. Backends import each other's
+clients — `nest-clamav-scanner` uses the forms client, `nest-forms-backend` uses the
+city-account client — so a client derived from a *live* backend would close a cycle. Deriving it
+from a committed spec does not: generation reads a file, never a running service.
 
-The `check-for-changes` script compares newly generated clients with existing ones and shows git-style diffs for any changes. This is useful for CI to ensure clients are up-to-date with their OpenAPI specs.
+Because generation happens at build time, `openapi-generator-cli` (a Java tool) runs during the
+build. The Docker build stages install a headless JRE for it; the runtime images do not.
 
-## License
+## Importing
 
-EUPL-1.2
+One wildcard subpath, so nothing has to be registered per client:
+
+```ts
+import { createFormsClient } from 'openapi-clients/forms'
+import { RequiredError } from 'openapi-clients/magproxy'
+```
+
+`openapi-clients/<name>` maps to `dist/<name>/index.js`. The generator appends `./base` to
+each generated index, which is why `RequiredError` is reachable from the client itself — v1
+needed a separate `magproxy/base` entry point for it.
+
+## Build
+
+`tsdown` in **unbundle** mode: one output file per input file, mirroring `src/`. Consumers
+import a single client, so bundling everything into one chunk would make each import pull in all
+six. Declarations are emitted by TypeScript 7.
+
+## Generation steps
+
+For each client, on top of what `openapi-generator-cli` produces:
+
+| Step | Why |
+| --- | --- |
+| Drop `docs/` and its manifest entries | Not shipped |
+| Synthesise `client.ts` | Exposes one `create<Name>Client({ basePath })` instead of wiring every generated `*Factory` by hand |
+| Append `./client` and `./base` to `index.ts` | The generator omits both; `./base` is what removes the need for extra export entries |
+| Add `Base64`/`Uuid` aliases (slovensko-sk only) | The generator emits those type names without declaring them, so the output would not compile |
+
+Nothing is reformatted and no spec content is rewritten — the generator's output is the source
+of truth.
+
+## Specs
+
+`forms`, `tax`, `city-account` and `clamav-scanner` come from committed files in
+`openapi-specs`, written by each backend via `openapi-cli`. `slovensko-sk` and `magproxy`
+describe services outside this repo and are still fetched from their upstream URLs at generation
+time.

@@ -1,0 +1,3161 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "description": "See if app is working!",
+        "operationId": "AppController_healthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Everything is working",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "HealthCheck",
+        "tags": [
+          "default"
+        ]
+      }
+    },
+    "/auth/user": {
+      "get": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return data from cognito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CognitoGetUserData"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check if user is authorized",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/user/upsert": {
+      "post": {
+        "description": "This endpoint returns all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically Bloomreach Customer.Use this endpoint AFTER login/registration, not during the login/registration flow. For login/registration flows, use '/upsert-user-record-client' instead to track which client the user logged in through. This endpoint is intended for subsequent user data fetches after the user is already authenticated (e.g., forms backend, next.js app fetching user data).",
+        "operationId": "UserController_upsertUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return subscribed value for logged user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseUserDataDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseLegalPersonDataDto"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upsert user with their data (use when already logged in, not during login/registration)",
+        "tags": [
+          "Users manipulation"
+        ]
+      }
+    },
+    "/user/upsert-user-record-client": {
+      "post": {
+        "description": "Gets or creates the user/legal person and records a login client for the currently authenticated user. This tracks which client the user logged in through and increments the login count. Use this endpoint DURING login/registration flows to track login client usage. For subsequent user data fetches after login (e.g., forms backend, next.js app), use '/upsert' instead. This endpoint should be called once per login/registration to properly track which client was used.",
+        "operationId": "UserController_upsertUserAndRecordClient",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertUserRecordClientRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User/legal person data with login client recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseUserDataDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseLegalPersonDataDto"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upsert user and record login client (use during login/registration)",
+        "tags": [
+          "Users manipulation"
+        ]
+      }
+    },
+    "/user/update-or-create-bloomreach-customer": {
+      "post": {
+        "description": "This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.",
+        "operationId": "UserController_updateOrCreateBloomreachCustomer",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return subscribed value for logged user"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update or create bloomreach customer for logged user",
+        "tags": [
+          "Users manipulation"
+        ]
+      }
+    },
+    "/user/remove-birthnumber": {
+      "post": {
+        "operationId": "UserController_removeBirthNumber",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUserDataDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Users manipulation"
+        ]
+      }
+    },
+    "/user/change-email": {
+      "post": {
+        "description": "Change email saved in database for a given cognito user.",
+        "operationId": "UserController_changeEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeEmailRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return info of a given user or a legal person.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseUserDataBasicDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseLegalPersonDataSimpleDto"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Change email of cognito user in database",
+        "tags": [
+          "Users manipulation"
+        ]
+      }
+    },
+    "/user/gdpr-consent": {
+      "post": {
+        "description": "Accept or revoke a single user-facing consent identified by 'consentType'.",
+        "operationId": "UserController_updateGdprConsent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGdprConsentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Consent updated"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a single GDPR consent for the logged-in user",
+        "tags": [
+          "Users manipulation"
+        ]
+      }
+    },
+    "/user/set-delivery-method-preference": {
+      "post": {
+        "description": "Sets the user preference for how official / tax communication should be delivered.",
+        "operationId": "UserController_setDeliveryMethodPreference",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetDeliveryMethodPreferenceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Delivery method preference updated"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Set tax/official delivery method preference for the logged-in user",
+        "tags": [
+          "Users manipulation"
+        ]
+      }
+    },
+    "/user-integration/contact-and-id-info/{externalId}": {
+      "get": {
+        "description": "Returns contact and ID information for user or legal person based on external ID. This endpoint requires API key authentication.",
+        "operationId": "UserIntegrationController_getContactAndIdInfoByExternalId",
+        "parameters": [
+          {
+            "name": "externalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact and ID information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserContactAndIdInfoResponseDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/LegalPersonContactAndIdInfoResponseDto"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "accountType",
+                    "mapping": {
+                      "fo": "#/components/schemas/UserContactAndIdInfoResponseDto",
+                      "po": "#/components/schemas/LegalPersonContactAndIdInfoResponseDto",
+                      "fo-p": "#/components/schemas/LegalPersonContactAndIdInfoResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Get user contact and ID information by external ID",
+        "tags": [
+          "User integration"
+        ]
+      }
+    },
+    "/user-verification/identity-card": {
+      "post": {
+        "description": "This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.",
+        "operationId": "VerificationController_verifyBirthNumberAndIdentityCard",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBodyVerifyIdentityCardDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return subscribed value for logged user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseVerificationIdentityCardToQueueDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Birth number not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCustomErrorVerificationIdentityCardDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Specific error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseNotFoundErrorVerificationIdentityCardDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get or create user with his data",
+        "tags": [
+          "User verifications"
+        ]
+      }
+    },
+    "/user-verification/ico-rpo": {
+      "post": {
+        "description": "This endpoint validates users via the register of legal entities",
+        "operationId": "VerificationController_verifyIcoBirthNumberAndIdentityCard",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBodyVerifyWithRpoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return validated user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseVerificationDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Specific error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpException"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validate user via rpo",
+        "tags": [
+          "User verifications"
+        ]
+      }
+    },
+    "/user-verification/eid": {
+      "post": {
+        "description": "This endpoint validates users via eid by contacting slovensko.sk and returns user data upon successful validation.",
+        "operationId": "VerificationController_verifyWithEid",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBodyVerifyWithEidDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return validated user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseVerificationDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Specific error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseCustomErrorVerificationEidDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validate user via eid",
+        "tags": [
+          "User verifications"
+        ]
+      }
+    },
+    "/admin/activate-sync-cognito-to-db": {
+      "get": {
+        "description": "This endpoint is intended to be used manually to trigger a sync of all users from cognito and then call getOrCreate for each user.",
+        "operationId": "AdminController_syncCognitoToDb",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Will activate one time sync of all users from cognito to db at 3am ",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/admin/status/user/{email}": {
+      "get": {
+        "description": "Return the state of user verifying.",
+        "operationId": "AdminController_checkUserVerifyState",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserVerifyState"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Get user's verify state",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/admin/deactivate/{externalId}": {
+      "get": {
+        "description": "Deactivates user account in cognito and deletes personal info from database.",
+        "operationId": "AdminController_deactivateAccount",
+        "parameters": [
+          {
+            "name": "externalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeactivateAccountResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Deactivate user account",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/admin/mark-deceased": {
+      "patch": {
+        "description": "This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.",
+        "operationId": "AdminController_markAccountsAsDeceasedByBirthnumber",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkDeceasedAccountRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkDeceasedAccountResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Mark accounts as deceased",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/admin/user/id-card-verification-data/{email}": {
+      "get": {
+        "description": "Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.",
+        "operationId": "AdminController_getVerificationDataForUser",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All data used for verification for this user in the last month.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationDataForUserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Get verification data for user.",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/admin/user/verify-manually/{email}": {
+      "post": {
+        "description": "Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.",
+        "operationId": "AdminController_verifyUserManually",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManuallyVerifyUserRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success if all was updated accordingly.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlySuccessDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Manually verify user.",
+        "tags": [
+          "ADMIN"
+        ]
+      }
+    },
+    "/integration/userdata": {
+      "get": {
+        "description": "Get user data by birthnumber",
+        "operationId": "IntegrationController_getUserDataByBirthNumber",
+        "parameters": [
+          {
+            "name": "birthNumber",
+            "required": true,
+            "in": "query",
+            "description": "userBirthNumber",
+            "schema": {
+              "default": "8808080000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUserByBirthNumberDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User by birth number not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpException"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Get user data",
+        "tags": [
+          "Backend Integration API"
+        ]
+      }
+    },
+    "/integration/userdata-batch": {
+      "post": {
+        "description": "Get user data by birthnumbers in batch.",
+        "operationId": "IntegrationController_getUserDataByBirthNumbersBatch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBatchQueryUsersByBirthNumbersDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserDataByBirthNumbersBatchResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Get user data",
+        "tags": [
+          "Backend Integration API"
+        ]
+      }
+    },
+    "/integration/get-verified-users-birth-numbers-batch": {
+      "post": {
+        "description": "Retrieves birth numbers for up to `take` newly verified users since the specified date. Returns paginated results with a `nextSince` timestamp for subsequent requests.",
+        "operationId": "IntegrationController_getNewVerifiedUsersBirthNumbers",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBatchNewUserBirthNumbers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns list of birth numbers for new verified users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNewVerifiedUsersBirthNumbersResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "summary": "Get birth numbers of newly verified users.",
+        "tags": [
+          "Backend Integration API"
+        ]
+      }
+    },
+    "/oauth2/authorize": {
+      "get": {
+        "description": "Initiate OAuth2 authorization flow with PKCE (RFC 7636). Redirects to frontend for user authentication (HTTP 303 See Other).",
+        "operationId": "OAuth2Controller_authorize",
+        "parameters": [
+          {
+            "name": "response_type",
+            "required": true,
+            "in": "query",
+            "description": "Response type. Must be \"code\" for Authorization Code flow. \"token\" is not allowed if PKCE is required.",
+            "schema": {
+              "example": "code",
+              "type": "string",
+              "enum": [
+                "code",
+                "token"
+              ]
+            }
+          },
+          {
+            "name": "client_id",
+            "required": true,
+            "in": "query",
+            "description": "The client identifier for your application",
+            "schema": {
+              "example": "a1b2c3d4e5f67890abcdef1234567890",
+              "type": "string"
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "required": true,
+            "in": "query",
+            "description": "The redirect URI registered for your application",
+            "schema": {
+              "example": "https://your-app.com/callback",
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "required": false,
+            "in": "query",
+            "description": "Space-delimited list of scopes",
+            "schema": {
+              "default": "",
+              "example": "read write",
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "description": "CSRF protection: random value generated by the app and returned unchanged (RECOMMENDED per RFC 6749)",
+            "schema": {
+              "minLength": 1,
+              "example": "xK8F2j9pL3mN7qR",
+              "type": "string"
+            }
+          },
+          {
+            "name": "code_challenge",
+            "required": false,
+            "in": "query",
+            "description": "Code challenge for PKCE (RFC 7636). Optional - only required if using PKCE or if client requires it",
+            "schema": {
+              "pattern": "^[A-Za-z0-9\\-._~]{43,128}$",
+              "example": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+              "type": "string"
+            }
+          },
+          {
+            "name": "code_challenge_method",
+            "required": false,
+            "in": "query",
+            "description": "Code challenge method for PKCE. Optional - required if code_challenge is provided",
+            "schema": {
+              "default": "S256",
+              "example": "S256",
+              "type": "string",
+              "enum": [
+                "S256",
+                "plain"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "303": {
+            "description": "Redirects to client redirect_uri with OAuth2 error parameters (error, error_description, error_uri, state) if authorization fails with valid redirect_uri (RFC 6749 Section 4.1.2.1)\n\nRedirects to frontend for user authentication"
+          },
+          "400": {
+            "description": "Returns OAuth2 error as JSON if authorization fails without valid redirect_uri to prevent open redirector vulnerability (RFC 6749 Section 4.1.2.1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2AuthorizationErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "OAuth2 Authorization Endpoint",
+        "tags": [
+          "OAuth2"
+        ]
+      }
+    },
+    "/oauth2/store": {
+      "post": {
+        "description": "Store tokens after user authentication. Called by frontend with tokens and authorization request ID.",
+        "operationId": "OAuth2Controller_storeTokens",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StoreTokensRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens successfully stored"
+          }
+        },
+        "summary": "OAuth2 Store Tokens Endpoint",
+        "tags": [
+          "OAuth2"
+        ]
+      }
+    },
+    "/oauth2/continue": {
+      "get": {
+        "description": "Complete authorization flow after tokens are stored via POST /oauth2/store. Called by frontend with authorization request ID. Checks if tokens are stored, generates authorization grant, and redirects to client redirect_uri with authorization code (HTTP 303 See Other).",
+        "operationId": "OAuth2Controller_continueComplete",
+        "parameters": [
+          {
+            "name": "authRequestId",
+            "required": true,
+            "in": "query",
+            "description": "UUID of the authorization request stored in the database",
+            "schema": {
+              "format": "uuid",
+              "example": "550e8400-e29b-41d4-a716-446655440000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "303": {
+            "description": "Successfully redirects to client redirect_uri with authorization code and state (if provided)"
+          }
+        },
+        "summary": "OAuth2 Continue Endpoint",
+        "tags": [
+          "OAuth2"
+        ]
+      }
+    },
+    "/oauth2/token": {
+      "post": {
+        "description": "Exchange authorization code for tokens or refresh access token. Returns JSON response per RFC 6749 Section 5.1.",
+        "operationId": "OAuth2Controller_token",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Token request - use authorization_code or refresh_token grant type",
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TokenRequestDto"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RefreshTokenRequestDto"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "grant_type",
+                  "mapping": {
+                    "authorization_code": "#/components/schemas/TokenRequestDto",
+                    "refresh_token": "#/components/schemas/RefreshTokenRequestDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token exchange successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token request failed with OAuth2 error (RFC 6749 Section 5.2). Always returns HTTP 400 Bad Request with error details in JSON body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2TokenErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "OAuth2 Token Endpoint",
+        "tags": [
+          "OAuth2"
+        ]
+      }
+    },
+    "/oauth2/info": {
+      "get": {
+        "description": "Get client information (client id and client name) by authorization request id.",
+        "operationId": "OAuth2Controller_info",
+        "parameters": [
+          {
+            "name": "authRequestId",
+            "required": true,
+            "in": "query",
+            "description": "UUID of the authorization request stored in the database",
+            "schema": {
+              "format": "uuid",
+              "example": "550e8400-e29b-41d4-a716-446655440000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Client information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientInfoResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or client not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2AuthorizationErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "OAuth2 Client Info Endpoint",
+        "tags": [
+          "OAuth2"
+        ]
+      }
+    },
+    "/dpb/userdata": {
+      "get": {
+        "description": "Returns user data for the authenticated user",
+        "operationId": "DpbController_userData",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DpbUserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user data",
+        "tags": [
+          "DPB"
+        ]
+      }
+    },
+    "/dpb/list-user-logins": {
+      "get": {
+        "description": "Returns a list of all user logins with statistics.\n\nAuthenticated via RSA signature (backend-to-backend).\n\n---\n\n**Signing format**\n\n    METHOD|ORIGINAL_URL|TIMESTAMP|BODY\n\nExample:\n\n    GET|/dpb/list-user-logins?example=1|1234567890123|{}\n\n- ORIGINAL_URL is the full request path **including query string** (i.e. everything after the host)\n- TIMESTAMP is Unix ms\n- BODY is the JSON body string, or '{}' for GET requests\n- Sign with your RSA private key using SHA-256, then base64-encode the result\n\n⚠️ The server verifies against the complete URL. Omitting or reordering the query string will cause signature verification to fail.\n\n---\n\n**Key generation (one-time)**\n\n    openssl genrsa -out private_key.pem 2048\n    openssl rsa -in private_key.pem -pubout -out public_key.pem\n\nShare the public key with us — it will be stored as the DPB_CLIENT_PUBLIC_KEY env var.\n\n---\n\n**Replay protection:** requests older than 5 minutes or more than 1 minute in the future are rejected.",
+        "operationId": "DpbController_listUserLogins",
+        "parameters": [
+          {
+            "name": "X-Signature",
+            "in": "header",
+            "description": "Base64-encoded RSA-SHA256 signature of the signing string",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "aGVsbG8gd29ybGQ=..."
+            }
+          },
+          {
+            "name": "X-Timestamp",
+            "in": "header",
+            "description": "Unix timestamp in milliseconds",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1234567890123"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logins retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DPBUserLoginStatistics"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — invalid/missing signature, expired timestamp, or clock skew"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all user logins for DPB",
+        "tags": [
+          "DPB"
+        ]
+      }
+    },
+    "/paas-mpa/register": {
+      "post": {
+        "description": "Accepts phone number from PAAS-MPA, registers phone number for a verified user in Bloomreach, and returns Bloomreach hard ID (`contact_id`).",
+        "operationId": "PaasMpaController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaasMpaRegisterRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns registration result and verification state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaasMpaRegisterResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Register phone number for a verified user in Bloomreach",
+        "tags": [
+          "PAAS-MPA"
+        ]
+      }
+    },
+    "/towing/public/{ecv}": {
+      "post": {
+        "description": "Proxies `GET /api/public/tow/:ecv` from `nest-enforcement-backend`. ECV validation and normalization are owned by the upstream service. The path parameter is forwarded to upstream. The upstream call is authenticated with an internal API key. A valid Turnstile token must be supplied in request body to mitigate enumeration attacks.",
+        "operationId": "TowingController_getPublicTowingByEcv",
+        "parameters": [
+          {
+            "name": "ecv",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TowingSearchRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TowingSearchResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Turnstile token or upstream rejected the license plate.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No active towing or relocation found for the given license plate.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Enforcement backend returned an unexpected response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Enforcement backend is currently unreachable. Try again later.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseInternalServerErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Public lookup of an active towing / relocation by license plate",
+        "tags": [
+          "Towing"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "User Module - city account",
+    "description": "User module use for store additional data for users and authentication against Azure AD",
+    "version": "1.0",
+    "contact": {
+      "name": "Bratislava Inovations",
+      "url": "https://inovacie.bratislava.sk",
+      "email": "inovacie@bratislava.sk"
+    }
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    },
+    {
+      "url": "https://nest-city-account.dev.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-city-account.staging.bratislava.sk/"
+    },
+    {
+      "url": "https://nest-city-account.bratislava.sk/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "apiKey"
+      },
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Get token from cognito",
+        "openIdConnectUrl": "TBD"
+      }
+    },
+    "schemas": {
+      "CognitoUserAccountTypesEnum": {
+        "type": "string",
+        "enum": [
+          "fo",
+          "po",
+          "fo-p"
+        ],
+        "description": "Which type of account it is?"
+      },
+      "CognitoUserStatusEnum": {
+        "type": "string",
+        "enum": [
+          "ARCHIVED",
+          "COMPROMISED",
+          "CONFIRMED",
+          "FORCE_CHANGE_PASSWORD",
+          "RESET_REQUIRED",
+          "UNCONFIRMED",
+          "UNKNOWN"
+        ],
+        "description": "Cognito confirmation statue"
+      },
+      "CognitoGetUserData": {
+        "type": "object",
+        "properties": {
+          "sub": {
+            "type": "string",
+            "description": "Id from cognito",
+            "default": "9e7791b2-787b-4b93-8473-94a70a516025"
+          },
+          "email_verified": {
+            "type": "string",
+            "description": "Is email verified in cognito?",
+            "default": "true"
+          },
+          "name": {
+            "type": "string",
+            "description": "Usually name of the company",
+            "example": "Company s.r.o."
+          },
+          "custom:tier": {
+            "type": "string",
+            "description": "Which type of verified tier it is?",
+            "enum": [
+              "NEW",
+              "QUEUE_IDENTITY_CARD",
+              "NOT_VERIFIED_IDENTITY_CARD",
+              "IDENTITY_CARD",
+              "EID"
+            ],
+            "default": "IDENTITY_CARD"
+          },
+          "custom:account_type": {
+            "description": "Which type of account it is?",
+            "default": "fo",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserAccountTypesEnum"
+              }
+            ]
+          },
+          "custom:origin_client_id": {
+            "type": "string",
+            "description": "client_id of the oAuth origin"
+          },
+          "custom:origin_client_name": {
+            "type": "string",
+            "description": "Name of the oAuth origin corresponding to the custom:origin_client_id",
+            "example": "DPB"
+          },
+          "given_name": {
+            "type": "string",
+            "description": "First name",
+            "default": "Jožko"
+          },
+          "family_name": {
+            "type": "string",
+            "description": "Last name",
+            "default": "Bratislavský"
+          },
+          "email": {
+            "type": "string",
+            "description": "email",
+            "default": "janko.bratislavsky@bratislava.sk"
+          },
+          "idUser": {
+            "type": "string",
+            "description": "User Id from cognito, same as sub",
+            "default": "9e7791b2-787b-4b93-8473-94a70a516025"
+          },
+          "UserCreateDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "User create date",
+            "default": "2022-01-01 00:00:00"
+          },
+          "UserLastModifiedDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "User updated date",
+            "default": "2022-01-01 00:00:00"
+          },
+          "Enabled": {
+            "type": "boolean",
+            "description": "Is user enabled?",
+            "default": true
+          },
+          "UserStatus": {
+            "description": "Cognito confirmation statue",
+            "default": "CONFIRMED",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserStatusEnum"
+              }
+            ]
+          }
+        },
+        "required": [
+          "sub",
+          "custom:account_type",
+          "email",
+          "idUser",
+          "Enabled"
+        ]
+      },
+      "UserOfficialCorrespondenceChannelEnum": {
+        "type": "string",
+        "enum": [
+          "POSTAL",
+          "EDESK",
+          "EMAIL"
+        ],
+        "description": "State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication."
+      },
+      "ConsentEnum": {
+        "type": "string",
+        "enum": [
+          "MARKETING",
+          "GENERAL"
+        ],
+        "description": "Type of consent"
+      },
+      "ResponseConsentDto": {
+        "type": "object",
+        "properties": {
+          "consentType": {
+            "description": "Type of consent",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConsentEnum"
+              }
+            ]
+          },
+          "isGranted": {
+            "type": "boolean",
+            "description": "Whether the consent is currently granted",
+            "example": true
+          }
+        },
+        "required": [
+          "consentType",
+          "isGranted"
+        ]
+      },
+      "ResponseUserDataDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Local ID of user",
+            "default": "133e0473-44da-407a-b24f-12da343e808d"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last updated timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id from cognito, it is not required. We can have also only subscribed user, who are not city account users",
+            "default": "e51754f2-3367-43f6-b9bc-b5c6131b041a"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Email",
+            "default": "test@bratislava.sk"
+          },
+          "birthNumber": {
+            "type": "string",
+            "nullable": true,
+            "description": "Birth number",
+            "default": "9909090000"
+          },
+          "officialCorrespondenceChannel": {
+            "nullable": true,
+            "description": "State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.",
+            "default": "EMAIL",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserOfficialCorrespondenceChannelEnum"
+              }
+            ]
+          },
+          "showEmailCommunicationBanner": {
+            "type": "boolean",
+            "description": "Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.",
+            "default": true
+          },
+          "hasChangedDeliveryMethodAfterDeadline": {
+            "type": "boolean",
+            "description": "True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.",
+            "default": false
+          },
+          "consents": {
+            "description": "Current consent state for the user, one entry per consent type.",
+            "default": [
+              {
+                "consentType": "MARKETING",
+                "isGranted": true
+              },
+              {
+                "consentType": "GENERAL",
+                "isGranted": true
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseConsentDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "externalId",
+          "email",
+          "birthNumber",
+          "officialCorrespondenceChannel",
+          "showEmailCommunicationBanner",
+          "hasChangedDeliveryMethodAfterDeadline",
+          "consents"
+        ]
+      },
+      "ResponseLegalPersonDataDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Local ID of user",
+            "default": "133e0473-44da-407a-b24f-12da343e808d"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last updated timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Id from cognito",
+            "default": "e51754f2-3367-43f6-b9bc-b5c6131b041a"
+          },
+          "ico": {
+            "type": "string",
+            "nullable": true,
+            "description": "Ico of company, which this user represents",
+            "default": "000000"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Email",
+            "default": "test@bratislava.sk"
+          },
+          "birthNumber": {
+            "type": "string",
+            "nullable": true,
+            "description": "Birth number",
+            "default": "9909090000"
+          },
+          "consents": {
+            "description": "Current consent state for the legal person, one entry per consent type.",
+            "default": [
+              {
+                "consentType": "MARKETING",
+                "isGranted": true
+              },
+              {
+                "consentType": "GENERAL",
+                "isGranted": true
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseConsentDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "externalId",
+          "ico",
+          "email",
+          "birthNumber",
+          "consents"
+        ]
+      },
+      "ResponseUserDataBasicDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Local ID of user",
+            "default": "133e0473-44da-407a-b24f-12da343e808d"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last updated timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id from cognito, it is not required. We can have also only subscribed user, who are not city account users",
+            "default": "e51754f2-3367-43f6-b9bc-b5c6131b041a"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Email",
+            "default": "test@bratislava.sk"
+          },
+          "birthNumber": {
+            "type": "string",
+            "nullable": true,
+            "description": "Birth number",
+            "default": "9909090000"
+          },
+          "officialCorrespondenceChannel": {
+            "nullable": true,
+            "description": "State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.",
+            "default": "EMAIL",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserOfficialCorrespondenceChannelEnum"
+              }
+            ]
+          },
+          "showEmailCommunicationBanner": {
+            "type": "boolean",
+            "description": "Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.",
+            "default": true
+          },
+          "hasChangedDeliveryMethodAfterDeadline": {
+            "type": "boolean",
+            "description": "True if user changed delivery method after deadline. This is used to show alert about changed delivery method propagating in the next year.",
+            "default": false
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "externalId",
+          "email",
+          "birthNumber",
+          "officialCorrespondenceChannel",
+          "showEmailCommunicationBanner",
+          "hasChangedDeliveryMethodAfterDeadline"
+        ]
+      },
+      "ResponseLegalPersonDataSimpleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Local ID of user",
+            "default": "133e0473-44da-407a-b24f-12da343e808d"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last updated timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Id from cognito",
+            "default": "e51754f2-3367-43f6-b9bc-b5c6131b041a"
+          },
+          "ico": {
+            "type": "string",
+            "nullable": true,
+            "description": "Ico of company, which this user represents",
+            "default": "000000"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Email",
+            "default": "test@bratislava.sk"
+          },
+          "birthNumber": {
+            "type": "string",
+            "nullable": true,
+            "description": "Birth number",
+            "default": "9909090000"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "externalId",
+          "ico",
+          "email",
+          "birthNumber"
+        ]
+      },
+      "ResponseInternalServerErrorDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "statusCode",
+            "default": 500
+          },
+          "message": {
+            "type": "string",
+            "description": "Message about error",
+            "default": "Internal server error"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message"
+        ]
+      },
+      "UpsertUserRecordClientRequestDto": {
+        "type": "object",
+        "properties": {
+          "loginClient": {
+            "enum": [
+              "DPB",
+              "PAAS_MPA",
+              "CITY_ACCOUNT"
+            ],
+            "type": "string",
+            "description": "Client that the user logged in through",
+            "example": "CITY_ACCOUNT"
+          }
+        },
+        "required": [
+          "loginClient"
+        ]
+      },
+      "ChangeEmailRequestDto": {
+        "type": "object",
+        "properties": {
+          "newEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "New email for a user",
+            "default": "new@email.com"
+          }
+        },
+        "required": [
+          "newEmail"
+        ]
+      },
+      "UpdateGdprConsentRequestDto": {
+        "type": "object",
+        "properties": {
+          "consentType": {
+            "enum": [
+              "MARKETING",
+              "GENERAL"
+            ],
+            "type": "string",
+            "description": "The consent the user is toggling",
+            "example": "MARKETING"
+          },
+          "grant": {
+            "type": "boolean",
+            "description": "True to accept the consent, false to revoke it",
+            "example": true
+          }
+        },
+        "required": [
+          "consentType",
+          "grant"
+        ]
+      },
+      "SetDeliveryMethodPreferenceDto": {
+        "type": "object",
+        "properties": {
+          "deliveryMethod": {
+            "enum": [
+              "CITY_ACCOUNT",
+              "POSTAL"
+            ],
+            "type": "string",
+            "description": "Preferred delivery method for tax / official communication",
+            "example": "CITY_ACCOUNT"
+          }
+        },
+        "required": [
+          "deliveryMethod"
+        ]
+      },
+      "UserContactAndIdInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string",
+            "description": "External ID from Cognito",
+            "example": "9e7791b2-787b-4b93-8473-94a70a516025"
+          },
+          "accountType": {
+            "description": "Account type from Cognito",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserAccountTypesEnum"
+              }
+            ]
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "user@example.com"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name",
+            "example": "Doe"
+          },
+          "birthNumber": {
+            "type": "string",
+            "description": "Birth number",
+            "example": "0011223344"
+          }
+        },
+        "required": [
+          "externalId",
+          "accountType"
+        ]
+      },
+      "LegalPersonContactAndIdInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string",
+            "description": "External ID from Cognito",
+            "example": "9e7791b2-787b-4b93-8473-94a70a516025"
+          },
+          "accountType": {
+            "description": "Account type from Cognito",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserAccountTypesEnum"
+              }
+            ]
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "user@example.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Company Name, s. r. o."
+          },
+          "ico": {
+            "type": "string",
+            "description": "ICO (Company identification number)",
+            "example": "12345678"
+          }
+        },
+        "required": [
+          "externalId",
+          "accountType"
+        ]
+      },
+      "RequestBodyVerifyIdentityCardDto": {
+        "type": "object",
+        "properties": {
+          "birthNumber": {
+            "type": "string",
+            "description": "Birth number for check",
+            "example": "8808080000"
+          },
+          "identityCard": {
+            "type": "string",
+            "description": "String of identity card",
+            "example": "AB123456"
+          },
+          "turnstileToken": {
+            "type": "string",
+            "description": "Token returned by turnstile captcha",
+            "example": ""
+          }
+        },
+        "required": [
+          "birthNumber",
+          "identityCard",
+          "turnstileToken"
+        ]
+      },
+      "ResponseVerificationIdentityCardMessageEnum": {
+        "type": "string",
+        "enum": [
+          "SendToQueue",
+          "AlreadyVerified"
+        ],
+        "description": "Message about update"
+      },
+      "VerificationErrorsEnum": {
+        "type": "string",
+        "enum": [
+          "RFO_ACCESS_ERROR",
+          "RPO_ACCESS_ERROR",
+          "RFO_NOT_RESPONDING",
+          "RPO_NOT_RESPONDING",
+          "DEAD_PERSON",
+          "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY",
+          "BIRTHNUMBER_IFO_DUPLICITY",
+          "BIRTHNUMBER_ICO_DUPLICITY",
+          "BIRTH_NUMBER_NOT_EXISTS",
+          "BIRTH_NUMBER_WRONG_FORMAT",
+          "DATABASE_ERROR",
+          "INVALID_CAPTCHA",
+          "VERIFY_EID_ERROR",
+          "IDENTITY_LOOKUP_REJECTED",
+          "UNEXPECTED_UPVS_RESPONSE",
+          "RPO_FIELD_NOT_EXISTS",
+          "ICO_NOT_PROVIDED",
+          "IFO_NOT_PROVIDED",
+          "EMPTY_RFO_RESPONSE",
+          "EMPTY_RPO_RESPONSE",
+          "NAMES_NOT_MATCHING"
+        ],
+        "description": "Error if exists"
+      },
+      "ResponseVerificationIdentityCardToQueueDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "number of status code",
+            "default": 200
+          },
+          "status": {
+            "type": "string",
+            "description": "status",
+            "default": "OK"
+          },
+          "message": {
+            "description": "Message about update",
+            "default": "SendToQueue",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResponseVerificationIdentityCardMessageEnum"
+              }
+            ]
+          },
+          "errorName": {
+            "description": "Error if exists",
+            "default": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VerificationErrorsEnum"
+              }
+            ]
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ]
+      },
+      "ResponseCustomErrorVerificationIdentityCardDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "status",
+            "default": "custom_error"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message about error",
+            "default": "Some detail about error"
+          },
+          "errorName": {
+            "description": "Error name for decoding.",
+            "default": "BIRTHNUMBER_IFO_DUPLICITY",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VerificationErrorsEnum"
+              }
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "errorName"
+        ]
+      },
+      "ResponseNotFoundErrorVerificationIdentityCardDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "status",
+            "default": "NotFound"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message about error",
+            "default": "This identity card number is not matching identity card for birthNumber"
+          },
+          "errorName": {
+            "type": "string",
+            "description": "Error name for decoding.",
+            "default": "BIRTH_NUMBER_NOT_EXISTS"
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "errorName"
+        ]
+      },
+      "RequestBodyVerifyWithRpoDto": {
+        "type": "object",
+        "properties": {
+          "ico": {
+            "type": "string",
+            "description": "ico",
+            "example": "00000000"
+          },
+          "birthNumber": {
+            "type": "string",
+            "description": "Birth number of legal entity's executive",
+            "example": "0000000011"
+          },
+          "identityCard": {
+            "type": "string",
+            "description": "Identity card of legal entity's executive",
+            "example": "AB123456"
+          },
+          "turnstileToken": {
+            "type": "string",
+            "description": "Token returned by turnstile captcha",
+            "example": ""
+          }
+        },
+        "required": [
+          "ico",
+          "birthNumber",
+          "identityCard",
+          "turnstileToken"
+        ]
+      },
+      "ResponseVerificationDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "number of status code",
+            "default": 200
+          },
+          "status": {
+            "type": "string",
+            "description": "status",
+            "default": "OK"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message about update",
+            "default": "Tier was updated"
+          },
+          "errorName": {
+            "description": "Error if exists",
+            "default": "",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VerificationErrorsEnum"
+              }
+            ]
+          }
+        },
+        "required": [
+          "statusCode",
+          "status",
+          "message"
+        ]
+      },
+      "HttpException": {
+        "type": "object",
+        "properties": {}
+      },
+      "RequestBodyVerifyWithEidDto": {
+        "type": "object",
+        "properties": {
+          "oboToken": {
+            "type": "string",
+            "description": "Token returned by https://fix.slovensko-sk-api.bratislava.sk/login",
+            "example": ""
+          }
+        },
+        "required": [
+          "oboToken"
+        ]
+      },
+      "ResponseCustomErrorVerificationEidDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "status",
+            "default": "custom_error"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message about error",
+            "default": "Some detail about error"
+          },
+          "errorName": {
+            "description": "Error name for decoding.",
+            "default": "VERIFY_EID_ERROR",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VerificationErrorsEnum"
+              }
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "errorName"
+        ]
+      },
+      "CognitoUserAttributesTierEnum": {
+        "type": "string",
+        "enum": [
+          "NEW",
+          "QUEUE_IDENTITY_CARD",
+          "NOT_VERIFIED_IDENTITY_CARD",
+          "IDENTITY_CARD",
+          "EID"
+        ],
+        "description": "Current cognito tier, marks the status of verifying."
+      },
+      "UserVerifyState": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of given user's email, if exists"
+          },
+          "type": {
+            "description": "Type of user.",
+            "example": "po",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserAccountTypesEnum"
+              }
+            ]
+          },
+          "isInDatabase": {
+            "type": "boolean",
+            "description": "Marks if the user with given email is in database.",
+            "example": true
+          },
+          "isInCognito": {
+            "type": "boolean",
+            "description": "Marks if the user with given email is in cognito.",
+            "example": true
+          },
+          "cognitoTier": {
+            "description": "Current cognito tier, marks the status of verifying.",
+            "example": "NOT_VERIFIED_IDENTITY_CARD",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserAttributesTierEnum"
+              }
+            ]
+          },
+          "birthNumberAlreadyExists": {
+            "type": "string",
+            "description": "If set, then this number was used for verifying, but is already in our database for other user.",
+            "example": "7902301011"
+          },
+          "birthNumberIcoAlreadyExists": {
+            "type": "string",
+            "description": "If set, then this number was used for verifying, but is already in our database for other user.",
+            "example": "7902301011"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "description": "Marks if the user with given email is verified.",
+            "example": false
+          },
+          "possibleCause": {
+            "type": "string",
+            "description": "Possible cause of the verify error.",
+            "example": "TODO"
+          }
+        },
+        "required": [
+          "isInDatabase",
+          "isInCognito",
+          "isVerified"
+        ]
+      },
+      "AnonymizeResponse": {
+        "type": "string",
+        "enum": [
+          "NOT_FOUND",
+          "NOT_ACTIVE",
+          "ERROR",
+          "SUCCESS"
+        ],
+        "description": "Status of the anonymization of user in bloomreach"
+      },
+      "DeactivateAccountResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Marks if the operation has been successful",
+            "example": true
+          },
+          "bloomreachRemoved": {
+            "description": "Status of the anonymization of user in bloomreach",
+            "example": "SUCCESS",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnonymizeResponse"
+              }
+            ]
+          },
+          "taxDeliveryMethodsRemoved": {
+            "type": "boolean",
+            "description": "Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.",
+            "example": true
+          }
+        },
+        "required": [
+          "success",
+          "bloomreachRemoved",
+          "taxDeliveryMethodsRemoved"
+        ]
+      },
+      "MarkDeceasedAccountRequestDto": {
+        "type": "object",
+        "properties": {
+          "birthNumbers": {
+            "description": "List of birthnumbers/external IDs to mark as deceased",
+            "example": [
+              "1234567890",
+              "2345678901",
+              "3456789012"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "birthNumbers"
+        ]
+      },
+      "MarkDeceasedAccountResponseItemDto": {
+        "type": "object",
+        "properties": {
+          "birthNumber": {
+            "type": "string",
+            "description": "Birth number of the deceased person",
+            "example": "1234567890"
+          },
+          "databaseMarked": {
+            "type": "boolean",
+            "description": "Whether the user was successfully marked as deceased in the database",
+            "example": true
+          },
+          "cognitoArchived": {
+            "type": "boolean",
+            "description": "Whether the user was successfully archived in Cognito / mail was changed.",
+            "example": true
+          },
+          "bloomreachRemoved": {
+            "description": "Status of the anonymization of user in Bloomreach",
+            "example": "SUCCESS",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnonymizeResponse"
+              }
+            ]
+          }
+        },
+        "required": [
+          "birthNumber",
+          "databaseMarked",
+          "cognitoArchived"
+        ]
+      },
+      "MarkDeceasedAccountResponseDto": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "description": "List of birth numbers with success marked for each data storage.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarkDeceasedAccountResponseItemDto"
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "VerificationDataForUser": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of the user in cognito.",
+            "example": "a86bdfb7-7134-4dc2-b49b-1bc051d3825b"
+          },
+          "birthNumber": {
+            "type": "string",
+            "description": "userBirthNumber",
+            "default": "8808080000"
+          },
+          "idCard": {
+            "type": "string",
+            "description": "Id card used for verification.",
+            "example": "AA123123"
+          },
+          "ico": {
+            "type": "string",
+            "description": "Ico used for verification.",
+            "example": "65451354"
+          },
+          "verifyStart": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created timestamp",
+            "default": "2023-02-10T10:31:49.247Z"
+          }
+        },
+        "required": [
+          "userId",
+          "birthNumber",
+          "idCard",
+          "verifyStart"
+        ]
+      },
+      "VerificationDataForUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the user in cognito.",
+            "example": "a86bdfb7-7134-4dc2-b49b-1bc051d3825b"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "format": "email",
+            "description": "Email of the user.",
+            "example": "test@bratislava.sk"
+          },
+          "verificationDataLastMonth": {
+            "description": "Verification data for the user in the last month. Ordered by start date descending.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VerificationDataForUser"
+            }
+          }
+        },
+        "required": [
+          "externalId",
+          "email",
+          "verificationDataLastMonth"
+        ]
+      },
+      "ManuallyVerifyUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "birthNumber": {
+            "type": "string",
+            "description": "userBirthNumber",
+            "default": "8808080000"
+          },
+          "ifo": {
+            "type": "string",
+            "description": "Ifo of the user",
+            "example": "123456987"
+          },
+          "ico": {
+            "type": "string",
+            "description": "ico",
+            "example": "00000000"
+          }
+        },
+        "required": [
+          "birthNumber"
+        ]
+      },
+      "OnlySuccessDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Marks if the operation has been successful",
+            "example": true
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ResponseUserByBirthNumberDto": {
+        "type": "object",
+        "properties": {
+          "birthNumber": {
+            "type": "string",
+            "nullable": true,
+            "description": "userBirthNumber",
+            "default": "8808080000"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "email",
+            "default": "brtaislavcan@bratislava.sk"
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cognito Id",
+            "default": "d18cbd7c-daad-4d5d-a1d7-8e47f845baab"
+          },
+          "userAttribute": {
+            "type": "object",
+            "description": "Special user attribute for user segmentation",
+            "default": "TAX2023"
+          },
+          "cognitoAttributes": {
+            "type": "object",
+            "description": "Tier from cognito",
+            "default": "IDENTITY_CARD"
+          },
+          "taxDeliveryMethodAtLockDate": {
+            "nullable": true,
+            "enum": [
+              "EDESK",
+              "CITY_ACCOUNT",
+              "POSTAL"
+            ],
+            "type": "string",
+            "description": "Delivery method for tax documents at lock date",
+            "example": "EDESK"
+          }
+        },
+        "required": [
+          "birthNumber",
+          "email",
+          "externalId",
+          "userAttribute"
+        ]
+      },
+      "RequestBatchQueryUsersByBirthNumbersDto": {
+        "type": "object",
+        "properties": {
+          "birthNumbers": {
+            "description": "Birth numbers without slash which should be retrieved from user database.",
+            "default": [
+              "0000000000",
+              "0000001010"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "birthNumbers"
+        ]
+      },
+      "GetUserDataByBirthNumbersBatchResponseDto": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "ResponseUserByBirthNumberDto"
+            },
+            "description": "A record of users keyed by their birth number"
+          }
+        },
+        "required": [
+          "users"
+        ]
+      },
+      "RequestBatchNewUserBirthNumbers": {
+        "type": "object",
+        "properties": {
+          "since": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date to query.",
+            "example": "2023-04-13T14:39:49.004Z"
+          },
+          "take": {
+            "type": "number",
+            "description": "Optionally specify maximum number to return. Will not return more than internal limit (100).",
+            "example": 20
+          }
+        },
+        "required": [
+          "since"
+        ]
+      },
+      "GetNewVerifiedUsersBirthNumbersResponseDto": {
+        "type": "object",
+        "properties": {
+          "birthNumbers": {
+            "description": "List of birth numbers",
+            "example": [
+              "0123456789",
+              "1234567890",
+              "234567890"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nextSince": {
+            "type": "string",
+            "description": "Next date to query.",
+            "example": "2023-04-13T14:39:49.004Z",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "birthNumbers",
+          "nextSince"
+        ]
+      },
+      "OAuth2AuthorizationErrorCode": {
+        "type": "string",
+        "enum": [
+          "invalid_request",
+          "unauthorized_client",
+          "access_denied",
+          "unsupported_response_type",
+          "invalid_scope",
+          "server_error",
+          "temporarily_unavailable"
+        ],
+        "description": "Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)"
+      },
+      "OAuth2AuthorizationErrorDto": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "description": "Single ASCII error code per OAuth 2.0 specification (Authorization Endpoint)",
+            "example": "invalid_request",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OAuth2AuthorizationErrorCode"
+              }
+            ]
+          },
+          "error_description": {
+            "type": "string",
+            "description": "Human-readable ASCII text providing additional information for debugging (not displayed to end-user)",
+            "example": "The request is missing the required redirect_uri parameter"
+          },
+          "error_uri": {
+            "type": "string",
+            "description": "URI identifying a human-readable web page with information about the error",
+            "example": "https://developer.example.com/errors/invalid_request"
+          },
+          "state": {
+            "type": "string",
+            "description": "Exact value received from the client in the authorization request. REQUIRED if and only if the state parameter was present in the client authorization request. Only included when redirecting (not in direct error responses).",
+            "example": "xK8F2j9pL3mN7qR"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "StoreTokensRequestDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token from user authentication",
+            "example": "def50200f3b2a7b4e8b1c..."
+          },
+          "authRequestId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the authorization request stored in the database",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        },
+        "required": [
+          "refreshToken",
+          "authRequestId"
+        ]
+      },
+      "TokenRequestDto": {
+        "type": "object",
+        "properties": {
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "authorization_code"
+            ],
+            "description": "Grant type, must be \"authorization_code\"",
+            "example": "authorization_code"
+          },
+          "code": {
+            "type": "string",
+            "description": "Authorization code received from the authorization endpoint",
+            "example": "SplxlOBeZQQYbYS6WxSbIA"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "description": "Must be identical to the redirect_uri used in the authorization request",
+            "example": "https://your-app.com/callback"
+          },
+          "code_verifier": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9\\-._~]{43,128}$",
+            "description": "Code verifier for PKCE (RFC 7636). Must match the code_challenge from authorization request",
+            "example": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header",
+            "example": "a1b2c3d4e5f67890abcdef1234567890"
+          },
+          "client_secret": {
+            "type": "string",
+            "description": "The client secret. Required if client has a secret configured. Can be provided via HTTP Basic Authentication or this parameter",
+            "example": "your-client-secret"
+          },
+          "state": {
+            "type": "string",
+            "description": "The value of the state parameter sent in authorization request (for verification)",
+            "example": "xK8F2j9pL3mN7qR"
+          }
+        },
+        "required": [
+          "grant_type",
+          "code",
+          "redirect_uri",
+          "code_verifier"
+        ]
+      },
+      "RefreshTokenRequestDto": {
+        "type": "object",
+        "properties": {
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "refresh_token"
+            ],
+            "description": "Grant type, must be \"refresh_token\"",
+            "example": "refresh_token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "The refresh token issued by the authorization server",
+            "example": "def50200f3b2a7b4e8b1c..."
+          },
+          "scope": {
+            "type": "string",
+            "description": "Space-delimited list of scopes (optional - should not request new scopes)",
+            "example": "read write"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "The client identifier. Required for client authentication; can be omitted if using HTTP Basic Authentication header",
+            "example": "a1b2c3d4e5f67890abcdef1234567890"
+          },
+          "client_secret": {
+            "type": "string",
+            "description": "The client secret. Required if client has a secret configured. Can be provided via HTTP Basic Authentication or this parameter",
+            "example": "your-client-secret"
+          }
+        },
+        "required": [
+          "grant_type",
+          "refresh_token"
+        ]
+      },
+      "TokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Access token issued by the authorization server",
+            "example": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0..."
+          },
+          "token_type": {
+            "type": "string",
+            "description": "Token type, typically \"Bearer\"",
+            "example": "Bearer",
+            "enum": [
+              "Bearer"
+            ]
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh token used to obtain new access tokens",
+            "example": "def50200f3b2a7b4e8b1c..."
+          },
+          "expires_in": {
+            "type": "number",
+            "description": "Expiration time of the access token in seconds",
+            "example": 3600
+          },
+          "scope": {
+            "type": "string",
+            "description": "Space-delimited list of scopes granted",
+            "example": "read write"
+          }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in"
+        ]
+      },
+      "OAuth2TokenErrorCode": {
+        "type": "string",
+        "enum": [
+          "invalid_request",
+          "invalid_client",
+          "invalid_grant",
+          "unauthorized_client",
+          "unsupported_grant_type",
+          "invalid_scope"
+        ],
+        "description": "Single ASCII error code per OAuth 2.0 specification (Token Endpoint)"
+      },
+      "OAuth2TokenErrorDto": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "description": "Single ASCII error code per OAuth 2.0 specification (Token Endpoint)",
+            "example": "invalid_grant",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OAuth2TokenErrorCode"
+              }
+            ]
+          },
+          "error_description": {
+            "type": "string",
+            "description": "Human-readable ASCII text providing additional information for debugging (not displayed to end-user)",
+            "example": "The provided authorization code is invalid or expired"
+          },
+          "error_uri": {
+            "type": "string",
+            "description": "URI identifying a human-readable web page with information about the error",
+            "example": "https://developer.example.com/errors/invalid_grant"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "ClientInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "Client ID of the oAuth2 client",
+            "example": "a1b2c3d4e5f67890abcdef1234567890"
+          },
+          "clientName": {
+            "type": "string",
+            "description": "Human-readable name for the client (prefix from OAUTH2_CLIENT_LIST)",
+            "example": "DPB"
+          }
+        },
+        "required": [
+          "clientId",
+          "clientName"
+        ]
+      },
+      "DpbUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "user@example.com"
+          },
+          "email_verified": {
+            "type": "string",
+            "description": "Is email verified in cognito?",
+            "example": "true"
+          },
+          "account_type": {
+            "description": "Account type",
+            "example": "fo",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserAccountTypesEnum"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Name (usually company name for legal entities)",
+            "example": "Company s.r.o."
+          },
+          "given_name": {
+            "type": "string",
+            "description": "Given name (first name)",
+            "example": "Jožko"
+          },
+          "family_name": {
+            "type": "string",
+            "description": "Family name (last name)",
+            "example": "Bratislavský"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "account_type"
+        ]
+      },
+      "DPBUserLoginStatistics": {
+        "type": "object",
+        "properties": {
+          "loginCount": {
+            "type": "number",
+            "description": "Number of times the user has logged in",
+            "example": 5
+          },
+          "firstLogin": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date of first login",
+            "example": "2024-01-15T10:30:00.000Z"
+          },
+          "latestLogin": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date of latest login",
+            "example": "2024-02-20T14:45:00.000Z"
+          },
+          "id": {
+            "type": "string",
+            "description": "User ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "nullable": true
+          }
+        },
+        "required": [
+          "loginCount",
+          "firstLogin",
+          "latestLogin",
+          "id"
+        ]
+      },
+      "PaasMpaRegisterRequestDto": {
+        "type": "object",
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number received from MPA",
+            "example": "+421900000000"
+          }
+        },
+        "required": [
+          "phoneNumber"
+        ]
+      },
+      "PaasMpaRegisterStatusEnum": {
+        "type": "string",
+        "enum": [
+          "SUCCESS",
+          "NOT_VERIFIED",
+          "IDENTIFIERS_NOT_FOUND",
+          "BLOOMREACH_CONTACT_ID_UNAVAILABLE",
+          "BLOOMREACH_SYNC_FAILED",
+          "UNEXPECTED_ERROR"
+        ],
+        "description": "Result of PAAS-MPA Bloomreach registration attempt"
+      },
+      "PaasMpaRegisterResponseDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "description": "Result of PAAS-MPA Bloomreach registration attempt",
+            "example": "SUCCESS",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaasMpaRegisterStatusEnum"
+              }
+            ]
+          },
+          "verificationState": {
+            "description": "Current verification tier of the authenticated user",
+            "example": "IDENTITY_CARD",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CognitoUserAttributesTierEnum"
+              }
+            ]
+          },
+          "bloomreachContactId": {
+            "type": "string",
+            "description": "Bloomreach hard ID (`contact_id`) for the user",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "TowingSearchRequestDto": {
+        "type": "object",
+        "properties": {
+          "turnstileToken": {
+            "type": "string",
+            "description": "Token returned by Cloudflare Turnstile captcha. Required to prevent abuse.",
+            "example": ""
+          }
+        },
+        "required": [
+          "turnstileToken"
+        ]
+      },
+      "TowReason": {
+        "type": "string",
+        "enum": [
+          "RESERVED_PARKING",
+          "PRIVATE_ACCESS_OBSTACLE",
+          "PARKING_NEAR_PUBLIC_TRANSPORT_STOP",
+          "PARKING_NEAR_PEDESTRIAN_CROSSING",
+          "PARKING_ON_SIDEWALK",
+          "PARKING_IN_TRAFFIC_LANE",
+          "PARKING_AT_STREET_CROSSING",
+          "OTHER",
+          "TRAFFIC_FLOW_OBSTACLE",
+          "NO_STOPPING_ZONE",
+          "STOPPED_AT_CROSSWALK",
+          "NO_PARKING_ZONE"
+        ],
+        "description": "Reason for towing. Raw enum value - clients render the localized label."
+      },
+      "TowingSearchResponseDto": {
+        "type": "object",
+        "properties": {
+          "loadingDate": {
+            "type": "string",
+            "description": "Date when the vehicle was towed",
+            "format": "date-time"
+          },
+          "loadingLocation": {
+            "type": "string",
+            "description": "Pickup location - where the vehicle was towed from"
+          },
+          "towReason": {
+            "description": "Reason for towing. Raw enum value - clients render the localized label.",
+            "example": "RESERVED_PARKING",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TowReason"
+              }
+            ]
+          },
+          "unloadingLocation": {
+            "type": "string",
+            "description": "Dropoff location - where the vehicle was relocated to"
+          },
+          "relocationReason": {
+            "type": "string",
+            "description": "Reason for vehicle relocation"
+          }
+        },
+        "required": [
+          "loadingDate",
+          "loadingLocation"
+        ]
+      }
+    }
+  }
+}

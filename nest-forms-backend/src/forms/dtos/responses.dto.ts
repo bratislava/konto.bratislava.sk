@@ -58,7 +58,6 @@ export class GetFormResponseSimpleDto {
   @Type(() => Date)
   @ApiProperty({
     description: 'Create date of record',
-    default: new Date(),
   })
   @IsDefined()
   declare createdAt: Date
@@ -66,7 +65,6 @@ export class GetFormResponseSimpleDto {
   @Type(() => Date)
   @ApiProperty({
     description: 'Update date of record',
-    default: new Date(),
   })
   @IsDate()
   declare updatedAt: Date
@@ -110,7 +108,7 @@ export class GetFormResponseSimpleDto {
   declare formDefinitionSlug: string
 }
 
-class GetFormMetaDto {
+export class GetFormMetaDto {
   @ApiProperty({
     description: 'Number of forms for each state',
     example: {
@@ -174,7 +172,6 @@ export class UpdateFormResponseDto {
   @Type(() => Date)
   @ApiProperty({
     description: 'Create date of record',
-    default: new Date(),
   })
   @IsDefined()
   declare createdAt: Date
@@ -182,7 +179,6 @@ export class UpdateFormResponseDto {
   @Type(() => Date)
   @ApiProperty({
     description: 'Update date of record',
-    default: new Date(),
   })
   @IsDate()
   declare updatedAt: Date

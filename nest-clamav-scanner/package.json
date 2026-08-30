@@ -48,7 +48,7 @@
     "minio": "8.0.7",
     "openapi-clients": "file:../openapi-clients",
     "passport-http": "0.3.0",
-    "pg": "8.22.0",
+    "pg": "8.23.0",
     "prisma": "7.9.0",
     "rimraf": "6.0.1"
   },

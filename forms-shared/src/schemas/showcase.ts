@@ -47,6 +47,69 @@ export default schema(
         ],
       ),
       object(
+        'expectedCharactersCountVariants',
+        {
+          title: 'Expected Characters Count Variants',
+          description: [
+            'Use fixed width inputs for content that has a specific, known length. Postcode inputs should be postcode-sized, telephone number inputs should be telephone number-sized.',
+            'The widths are designed for specific character lengths and to be consistent across a range of browsers. They include extra padding to fit icons that some browsers might insert into the input (for example to show or generate a password).',
+            'On fixed width inputs, the width will remain fixed on all screens unless it is wider than the viewport, in which case it will shrink to fit.',
+            '[https://design-system.service.gov.uk/components/text-input/](https://design-system.service.gov.uk/components/text-input/)',
+          ].join('\n'),
+          descriptionMarkdown: true,
+        },
+        [
+          input(
+            'expectedCharactersCount40',
+            { type: 'text', title: '40 character width, the maximum', required: true },
+            { expectedCharactersCount: 40 },
+          ),
+          input(
+            'expectedCharactersCount20',
+            { type: 'text', title: '20 character width', required: true },
+            { expectedCharactersCount: 20 },
+          ),
+          input(
+            'expectedCharactersCount10',
+            { type: 'text', title: '10 character width', required: true },
+            { expectedCharactersCount: 10 },
+          ),
+          input(
+            'expectedCharactersCount5',
+            { type: 'text', title: '5 character width', required: true },
+            { expectedCharactersCount: 5 },
+          ),
+          input(
+            'expectedCharactersCount4',
+            { type: 'text', title: '4 character width', required: true },
+            { expectedCharactersCount: 4 },
+          ),
+          input(
+            'expectedCharactersCount3',
+            { type: 'text', title: '3 character width', required: true },
+            { expectedCharactersCount: 3 },
+          ),
+          input(
+            'expectedCharactersCount2',
+            { type: 'text', title: '2 character width', required: true },
+            { expectedCharactersCount: 2 },
+          ),
+          input(
+            'expectedCharactersCountWithHelptext',
+            {
+              type: 'text',
+              title: '5 character width with full width label, helptext and error message',
+              required: true,
+            },
+            {
+              expectedCharactersCount: 5,
+              helptext:
+                'This helptext spans the full available width while the input stays five characters wide.',
+            },
+          ),
+        ],
+      ),
+      object(
         'selfColumnVariants',
         {
           title: 'Self Column Variants',

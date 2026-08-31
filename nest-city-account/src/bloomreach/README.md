@@ -23,25 +23,25 @@ flowchart TD
 
 - **Decouples** request handling from Bloomreach availability. Callers never fail due to Bloomreach being down.
 - **Automatic retries**. Failed batches are retried with exponential backoff up to `MAX_ATTEMPTS` (5) before being
-  marked `FAILED`. A failed merge consent check (see below) doesn't count toward this budget - it isn't Bloomreach
+  marked `FAILED`. A failed merge consent check (see below) doesn't count toward this budget: it isn't Bloomreach
   rejecting the command, so it retries indefinitely instead of ever being marked `FAILED`.
-- **Batching** - multiple commands are sent in a single Bloomreach batch API call, reducing HTTP overhead.
-- **Single-writer** - `@Interval(30_000)` does *not* wait for the previous run to finish, so `processOutbox` wraps
+- **Batches** multiple commands into a single Bloomreach API call, reducing HTTP overhead.
+- **Single-writer**: `@Interval(30_000)` does *not* wait for the previous run to finish, so `processOutbox` wraps
   `processBatch` in a `pg_try_advisory_lock`-based single-flight guard (`runWithAdvisoryLock`) instead - a shared
   DB-level lock, so it also holds if this ever runs on more than one instance, unlike an in-memory flag.
 
 ## Key Components
 
-| File                                  | Responsibility                                                                                                                                                                 |
-|---------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `bloomreach-outbox.service.ts`        | Public queueing API - `trackCustomer()`, `trackConsents()`, `anonymizeCustomer()`. Thin wrapper: skips when the integration is inactive and logs failures instead of throwing. |
-| `bloomreach-outbox-writer.service.ts` | Builds commands and writes them to the outbox, deduplicating at write time. Module-internal (not exported), throws on failure.                                                 |
-| `bloomreach-outbox.processor.ts`      | Claims a batch (up to 50), runs the merge consent check, sends to Bloomreach batch API. Scheduled every 30s by `TasksService`.                                                 |
-| `bloomreach-payload.builder.ts`       | Builds Bloomreach command payloads (`customers`, `customers/events`). Fetches user data from Cognito and DB.                                                                   |
-| `bloomreach-export.service.ts`        | Read access to Bloomreach - fetches a customer (`export-one`) and its consent events. Requires "GDPR > Export customer" and "Events > Get" API key permissions.                |
-| `bloomreach-merge-consent.service.ts` | Protects consents when a customer is about to merge with an anonymized Bloomreach profile (see below).                                                                         |
-| `contact-database/`                   | Submodule managing contact records in a separate Bloomreach contact database (upsert, phone). Exports the service; the pg provider stays private.                              |
-| `bloomreach.types.ts`                 | Command types, enums, batch and export API type definitions.                                                                                                                   |
+| File                                  | Responsibility                                                                                                                                                                |
+|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `bloomreach-outbox.service.ts`        | Public queueing API: `trackCustomer()`, `trackConsents()`, `anonymizeCustomer()`. Thin wrapper: skips when the integration is inactive and logs failures instead of throwing. |
+| `bloomreach-outbox-writer.service.ts` | Builds commands and writes them to the outbox, deduplicating at write time. Module-internal (not exported), throws on failure.                                                |
+| `bloomreach-outbox.processor.ts`      | Claims a batch (up to 50), runs the merge consent check, sends to Bloomreach batch API. Scheduled every 30s by `TasksService`.                                                |
+| `bloomreach-payload.builder.ts`       | Builds Bloomreach command payloads (`customers`, `customers/events`). Fetches user data from Cognito and DB.                                                                  |
+| `bloomreach-export.service.ts`        | Read access to Bloomreach: fetches a customer (`export-one`) and its consent events. Requires "GDPR > Export customer" and "Events > Get" API key permissions.                |
+| `bloomreach-merge-consent.service.ts` | Protects consents when a customer is about to merge with an anonymized Bloomreach profile (see below).                                                                        |
+| `contact-database/`                   | Submodule managing contact records in a separate Bloomreach contact database (upsert, phone). Exports the service; the pg provider stays private.                             |
+| `bloomreach.types.ts`                 | Command types, enums, batch and export API type definitions.                                                                                                                  |
 
 ## Outbox Entry Lifecycle
 
@@ -89,18 +89,18 @@ never reorder or silently disappear behind them.
   terminal only when queued by `anonymizeCustomer`.
 - **At write time**, `isExistingHigherPriorityEventCommand` lets an existing terminal event outrank an incoming
   non-terminal one regardless of timestamp; between two entries of the same terminal-ness, the newer timestamp wins.
-  Customer commands don't need this check - `mergeCustomerCommandData` already keeps whichever side is terminal.
+  Customer commands don't need this check, since `mergeCustomerCommandData` already keeps whichever side is terminal.
 - **DB triggers back this up** for cases the write-time, PENDING-only check can't see: an `UPDATE` can never flip
-  `isTerminal` from true to false (`ERRCODE BR001`, surfaced as `isTerminalDowngradeError` - should never happen, always
-  thrown/alerted), and an `INSERT` is rejected outright if a non-`FAILED` terminal entry already exists for the same
-  dedup key – unconditionally, not just one that's at least as recent (`ERRCODE BR003`, surfaced as
-  `isTerminalOverrideError` and logged instead of thrown when queuing events). The `FAILED` exception matters: if the
-  terminal entry itself exhausts retries and lands on `FAILED`, it no longer blocks a later insert for the same key – a
-  genuinely undelivered anonymize doesn't get to permanently lock the key out.
+  `isTerminal` from true to false (`ERRCODE BR001`, surfaced as `isTerminalDowngradeError`, which should never happen
+  and is always thrown or alerted), and an `INSERT` is rejected outright if a non-`FAILED` terminal entry already
+  exists for the same dedup key, and it does so unconditionally, not just for one that's at least as recent
+  (`ERRCODE BR003`, surfaced as `isTerminalOverrideError` and logged instead of thrown when queuing events). The
+  `FAILED` exception matters: if the terminal entry itself exhausts retries and lands on `FAILED`, it no longer blocks
+  a later insert for the same key, so a genuinely undelivered anonymize doesn't get to permanently lock the key out.
 - Two more triggers enforce the PENDING-dedup invariant itself with named codes rather than the app interpreting a bare
   unique-constraint violation: `ERRCODE BR004` (`isDuplicatePendingCustomerError`) and `ERRCODE BR005`
   (`isDuplicatePendingEventError`), both meaning `lockTransactionWithKey` should have prevented the conflict and
-  didn't - always alerted. `ERRCODE BR002` marks an unrecognized `BloomreachCommandName` reaching a trigger that doesn't
+  didn't; this always triggers an alert. `ERRCODE BR002` marks an unrecognized `BloomreachCommandName` reaching a trigger that doesn't
   know how to handle it yet.
 - Once an entry becomes terminal, a trigger deletes every other entry sharing its dedup key. A terminal entry is meant
   to be the sole, final word for that key.
@@ -110,16 +110,16 @@ never reorder or silently disappear behind them.
 Bloomreach does **not** execute commands within a batch in the order they appear. Every command therefore carries an
 explicit timestamp set when it is queued:
 
-- `customers` commands: `update_timestamp` - Bloomreach resolves property conflicts (e.g., during a customer merge) by
-  this timestamp. When commands are merged in the outbox, the newer entry's timestamp is kept.
-- `customers/events` commands: `timestamp` - Bloomreach evaluates consents by the latest consent event timestamp.
+- `customers` commands carry `update_timestamp`, which Bloomreach uses to resolve property conflicts (e.g., during a
+  customer merge). When commands are merged in the outbox, the newer entry's timestamp is kept.
+- `customers/events` commands carry `timestamp`, which Bloomreach uses to evaluate consents by the latest event.
 
 Without these, ordering would depend on batch delivery timing (entries can sit in the outbox through retries and
 backoff), making consent and property resolution nondeterministic.
 
 `anonymizeCustomer` stamps its anonymize `customers` command and the paired MARKETING/GENERAL reject events with **one
 shared timestamp**, computed once and passed to both. The merge consent check (below) treats the anonymize command's own
-`update_timestamp` as standing in for exactly when the rejects took effect too - that only holds if they're genuinely
+`update_timestamp` as standing in for exactly when the rejects took effect too, but that only holds if they're genuinely
 the same value, not two independent `now()` calls a few milliseconds apart.
 
 ## Merge Consent Check
@@ -141,8 +141,8 @@ only if the current one doesn't disqualify it from causing a harmful merge:
 3. **Is a separate anonymize command racing for this same account?** If this entry was already claimed by the processor
    before a fresh `anonymizeCustomer` call for the same `externalId` was queued, the write-time PENDING-only merge can't
    fold the two together. The anonymize lands as its own row instead of being absorbed into this one. If a live or
-   recently-completed anonymize exists for this externalId, stop - restoring consents here would fight the account's own
-   anonymization.
+   recently-completed anonymize exists for this externalId, stop, since restoring consents here would fight the
+   account's own anonymization.
 4. **Is there a profile to merge with?** Fetch the profile holding the `contact_id` from Bloomreach (`export-one`). No
    profile, or a profile already carrying this `city_account_id`, means we can stop.
 5. **Is that profile anonymized?** Either the exported profile shows `is_identity_verified: false`, or (only checked
@@ -150,24 +150,24 @@ only if the current one doesn't disqualify it from causing a harmful merge:
    the candidate `city_account_id`s that Bloomreach may not have applied yet. Candidates are the profile's
    already-linked ids, plus any other account whose own outbox rows are separately trying to attach this same
    `contact_id` (its merge into the profile may already be in flight, just not reflected in this export yet).
-   Anonymizations queued **after** this customer command don't count since those are deliberate revocations that must win
-   the merge. If neither, stop.
+   Anonymizations queued **after** this customer command don't count since those are deliberate revocations that must
+   win the merge. If neither, stop.
 6. **Re-assert consents.** A merge with an anonymized profile is imminent: read the customer's consent events back from
-   Bloomreach (source of truth) and merge in this account's own locally live/recently-completed
-   consent events too, since the export can lag a genuine, not-yet-delivered change by up to
+   Bloomreach (source of truth) and merge in this account's own locally live/recently-completed consent events too,
+   since the export can lag a genuine, not-yet-delivered change by up to
    `BLOOMREACH_PROPAGATION_WINDOW_HOURS`. Reduce both sources together to the latest state per ESBS category.
 7. **Anchor the restore's timestamp.** Bloomreach resolves consents by latest timestamp regardless of delivery order, so
    each restored consent must land strictly after the anonymization it's protecting against and not at its own honest
-   original timestamp (which may predate the anonymization), and not at an unbounded `now()` either (which
-   could wrongly outrank a genuinely newer, unrelated consent change made well after the merge). The anchor is the
-   anonymize command's own `update_timestamp` when a local entry for it was found in step 5 (exact, since it's shared
-   with its reject events – see Explicit Timestamps above), or `now()` as a conservative fallback when only the export
-   confirmed anonymization. No exact local moment to read. Each consent's timestamp is raised to `anchor + 10s` only if
-   it otherwise loses to the reject - never lowered if it's already safely newer.
+   original timestamp (which may predate the anonymization), and not at an unbounded `now()` either (which could wrongly
+   outrank a genuinely newer, unrelated consent change made well after the merge). The anchor is the anonymize command's
+   own `update_timestamp` when a local entry for it was found in step 5 (exact, since it's shared with its reject
+   events; see Explicit Timestamps above), or `now()` as a conservative fallback when only the export confirmed
+   anonymization. No exact local moment to read. Each consent's timestamp is raised to `anchor + 10s` only if it
+   otherwise loses to the reject; it's never lowered if it's already safely newer.
 
 ## Processing Order
 
-The processor claims entries in **global `createdAt` order** - oldest first, up to `BATCH_SIZE` (50) per cycle. There is
+The processor claims entries in **global `createdAt` order**. Oldest first, up to `BATCH_SIZE` (50) per cycle. There is
 no per-key grouping or ordering constraint in the claim query itself.
 
 This is safe because write-time deduplication already prevents duplicate PENDING entries for the same key (see above),
@@ -189,11 +189,12 @@ If a newer entry exists:
   newer takes precedence), mirroring the write-time merge that was skipped, and `isTerminal` is recomputed from the
   merge result. The old entry is marked `SUPERSEDED` with
   `lastError: "Superseded by newer PENDING entry <superseding-entry-id>"`.
-- **`customers/events` commands**: normally the old entry is simply marked `SUPERSEDED` - the newer entry fully replaces
-  it (no merge needed). Exception: if the old entry is terminal and the newer one isn't, the terminal reject must still
-  win, so the old entry's `commandData` overwrites the newer entry's instead (which inherits `isTerminal: true`).
+- **`customers/events` commands**: normally the old entry is simply marked `SUPERSEDED`, since the newer entry fully
+  replaces it (no merge needed). Exception: if the old entry is terminal and the newer one isn't, the terminal reject
+  must still win, so the old entry's `commandData` overwrites the newer entry's instead (which inherits
+  `isTerminal: true`).
 
-The `SUPERSEDED` status is distinct from `FAILED` because the data may still be delivered through the newer entry — it
+The `SUPERSEDED` status is distinct from `FAILED` because the data may still be delivered through the newer entry. It
 indicates a partial failure that was absorbed, not a permanent loss.
 
 The same logic applies during crash recovery (`recoverStaleProcessingEntries`).

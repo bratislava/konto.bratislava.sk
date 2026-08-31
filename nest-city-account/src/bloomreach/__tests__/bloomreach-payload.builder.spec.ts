@@ -169,14 +169,15 @@ describe('BloomreachPayloadBuilder', () => {
 
   describe('buildAnonymizeCommand', () => {
     it('should return a customers command with empty properties', () => {
-      const result = builder.buildAnonymizeCommand(externalId, 200)
+      const TIMESTAMP = 200
+      const result = builder.buildAnonymizeCommand(externalId, TIMESTAMP)
 
       expect(result.commandName).toBe(BloomreachCommandNameEnum.CUSTOMERS)
       expect(result.commandData.customer_ids.city_account_id).toBe(externalId)
       expect(result.commandData.properties.first_name).toBe('')
       expect(result.commandData.properties.email).toBe('')
       expect(result.commandData.properties.is_identity_verified).toBe(false)
-      expect(result.commandData.update_timestamp).toBe(200)
+      expect(result.commandData.update_timestamp).toBe(TIMESTAMP)
     })
   })
 

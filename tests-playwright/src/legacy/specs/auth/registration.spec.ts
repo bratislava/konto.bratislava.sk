@@ -19,9 +19,6 @@ import { waitForHydration } from '../../pages/FormPage'
  * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/registration/registrationPO.cy.ts
  */
 
-// Registration must start signed out; do not rely on the default.
-test.use({ storageState: { cookies: [], origins: [] } })
-
 /** Cypress: RF01 `registration.cy.ts` — `it` 1–6. */
 test('registering a personal account', { tag: '@legacy' }, async ({ page, identity }) => {
   await page.goto('/registracia')

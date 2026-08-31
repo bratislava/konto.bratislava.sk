@@ -39,7 +39,7 @@ SLUGS.forEach((slug) => {
 
         await page.locator('[data-cy=close-modal]').click()
         await expect(page.locator('[data-cy=registration-modal]')).toBeHidden()
-        
+
         await page
           .locator('[data-cy=save-concept-desktop], [data-cy=save-concept-mobile]')
           .locator('visible=true')

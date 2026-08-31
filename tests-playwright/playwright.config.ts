@@ -2,19 +2,6 @@ import { defineConfig, devices } from '@playwright/test'
 
 export const BASE_URL = process.env.E2E_BASE_URL ?? 'http://localhost:3000'
 
-/**
- * Viewports match the Cypress suite exactly (`cypress.config.ts` -> `config.expose.resolution`).
- *
- * Deliberately viewport-only, not `devices['Pixel 5']`: the Cypress suite only ever changed the
- * viewport, and the app branches on the Tailwind `lg:` breakpoint (1024px). Adding touch emulation
- * and a mobile user agent would change behaviour and make the port unfaithful. Real device
- * emulation is worth adding later as new coverage, not as part of the migration.
- */
-export const VIEWPORTS = {
-  desktop: { width: 1920, height: 1080 },
-  mobile: { width: 360, height: 640 },
-} as const
-
 export default defineConfig({
   testDir: './src',
   globalSetup: './src/global-setup.ts',
@@ -48,21 +35,19 @@ export default defineConfig({
       testDir: './src/legacy/specs/smoke',
     },
     {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-      use: { ...devices['Desktop Chrome'], viewport: VIEWPORTS.desktop },
-    },
-    {
       name: 'desktop',
-      dependencies: ['setup'],
       testIgnore: ['**/smoke/**'],
-      use: { ...devices['Desktop Chrome'], viewport: VIEWPORTS.desktop },
+      use: { ...devices['Desktop Chrome'] },
     },
+    /**
+     * Real device emulation, not just a narrow window: `Pixel 5` brings a mobile user agent, touch
+     * input and `isMobile`. The app branches on the Tailwind `lg:` breakpoint (1024px), which 393px
+     * is comfortably below.
+     */
     {
       name: 'mobile',
-      dependencies: ['setup'],
       testIgnore: ['**/smoke/**'],
-      use: { ...devices['Desktop Chrome'], viewport: VIEWPORTS.mobile },
+      use: { ...devices['Pixel 5'] },
     },
   ],
 })

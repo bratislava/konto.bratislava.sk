@@ -205,9 +205,9 @@ export const expectSummaryRow = async (page: Page, id: string, text: string) => 
   await expect(summaryRow(page, id), id).toContainText(text)
 }
 
-/** Asserts the summary carries no error alert. */
+/** Asserts no field on the summary is flagged invalid. */
 export const expectSummaryWithoutErrors = async (page: Page) => {
-  await expect(page.locator('[data-cy=alert-container].bg-negative-100')).toHaveCount(0, {
+  await expect(page.locator('[data-cy^=summary-row-].border-red-500')).toHaveCount(0, {
     timeout: 30_000,
   })
 }

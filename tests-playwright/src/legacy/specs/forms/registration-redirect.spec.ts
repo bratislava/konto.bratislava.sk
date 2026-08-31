@@ -12,7 +12,6 @@ import { continueButton, field } from '../../helpers'
  * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/form/formRegistrationRedirect.cy.ts
  * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/form/formRegistrationRedirect-mobile.cy.ts
  */
-test.use({ storageState: { cookies: [], origins: [] } })
 
 const SLUG = 'stanovisko-k-investicnemu-zameru'
 

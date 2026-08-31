@@ -11,7 +11,6 @@ import { continueToAccount, openProfile } from '../../pages/AccountPage'
  * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/account/personalData.cy.ts
  * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/account/unverifiedProfile.cy.ts
  */
-test.use({ storageState: { cookies: [], origins: [] } })
 
 test.beforeEach(async ({ page, registeredAccount }) => {
   // `registeredAccount` leaves us on the post-registration success screen, already signed in.

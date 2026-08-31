@@ -11,7 +11,6 @@ import { waitForHydration } from '../../pages/FormPage'
  * Cypress source:
  * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/registration/registration.cy.ts
  */
-test.use({ storageState: { cookies: [], origins: [] } })
 
 const COGNITO_URL = /^https:\/\/cognito-idp\.[a-z0-9-]+\.amazonaws\.com\/$/
 const FORGOT_PASSWORD_TARGET = 'AWSCognitoIdentityProviderService.ForgotPassword'

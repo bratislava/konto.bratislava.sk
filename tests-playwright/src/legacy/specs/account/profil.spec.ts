@@ -52,13 +52,9 @@ test(
         (request) => request.url().includes('/user/gdpr-consent') && request.method() === 'POST',
       )
 
-    // A freshly registered account has this consent granted, so the sequence is revoke-then-grant.
-    // The Cypress version was the other way round only because it ran on a long-lived shared account
-    // that the previous run had left revoked.
+    // A freshly registered account has this consent granted.
     await expect(input).toBeChecked()
 
-    // Cypress asserted the request body, which is the part that proves the app sends the right
-    // payload rather than merely firing a request.
     const revoking = gdprRequest()
     await toggle.click()
     expect(JSON.parse((await revoking).postData() ?? '{}')).toMatchObject({ grant: false })

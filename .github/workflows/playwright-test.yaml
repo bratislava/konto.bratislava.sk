@@ -151,7 +151,7 @@ jobs:
             'until curl --silent --fail --output /dev/null http://localhost:3000/api/healthcheck; do sleep 2; done'
 
       - name: Run Playwright tests
-        run: pnpm --filter city-account-playwright-tests run test:playwright
+        run: pnpm --filter city-account-playwright-tests run test
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7

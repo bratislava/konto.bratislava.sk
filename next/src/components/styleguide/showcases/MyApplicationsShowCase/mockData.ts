@@ -8,8 +8,18 @@ import {
   GinisDocumentDetailResponseDto,
 } from 'openapi-clients/forms'
 
+import { getMyApplicationsCountQueryKey } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsCountFetcher'
+import {
+  getMyApplicationsQueryKey,
+  myApplicationsDefaultFilters,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsFetcher'
+import {
+  MY_APPLICATION_STATE_FILTERS,
+  MY_APPLICATION_STATES,
+  MyApplicationState,
+  MyApplicationStateFilter,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
 import { SelectOption } from '@/src/components/widget-components/SelectField/SelectField'
-import { ApplicationsListVariant } from '@/src/pages/moje-ziadosti'
 
 // ─── Shared showcase data ───
 
@@ -20,15 +30,12 @@ export const formDefinitionSlugTitleMap: Record<string, string> = {
   [MOCK_FORM_SLUG]: MOCK_FORM_CATEGORY,
 }
 
-export const emailFormSlugs: string[] = []
-
 // ─── List page (MyApplicationsPageContent) ───
 
-export const sectionOptions: SelectOption[] = [
-  { value: 'SENT', label: 'SENT' },
-  { value: 'SENDING', label: 'SENDING' },
-  { value: 'DRAFT', label: 'DRAFT' },
-]
+export const sectionOptions: SelectOption[] = MY_APPLICATION_STATE_FILTERS.map((filter) => ({
+  value: filter,
+  label: filter,
+}))
 
 export type ListScenario = 'withItems' | 'empty'
 
@@ -44,7 +51,7 @@ type SimpleItemDraft = {
 }
 
 // Representative items per section, covering the states the section can display.
-const sectionItemDrafts: Record<ApplicationsListVariant, SimpleItemDraft[]> = {
+const sectionItemDrafts: Record<MyApplicationState, SimpleItemDraft[]> = {
   SENT: [
     {
       state: GetFormResponseDtoStateEnum.DeliveredNases,
@@ -72,23 +79,6 @@ const sectionItemDrafts: Record<ApplicationsListVariant, SimpleItemDraft[]> = {
       subject: 'Zamietnuté',
     },
   ],
-  SENDING: [
-    {
-      state: GetFormResponseDtoStateEnum.Queued,
-      error: GetFormResponseDtoErrorEnum.None,
-      subject: 'Prebieha kontrola na vírusy',
-    },
-    {
-      state: GetFormResponseDtoStateEnum.Error,
-      error: GetFormResponseDtoErrorEnum.InfectedFiles,
-      subject: 'Chyba – infikované súbory',
-    },
-    {
-      state: GetFormResponseDtoStateEnum.Error,
-      error: GetFormResponseDtoErrorEnum.NasesSendError,
-      subject: 'Chyba – odoslanie zlyhalo',
-    },
-  ],
   DRAFT: [
     {
       state: GetFormResponseDtoStateEnum.Draft,
@@ -114,14 +104,19 @@ const createSimpleItem = (draft: SimpleItemDraft, index: number): GetFormRespons
   formDefinitionSlug: MOCK_FORM_SLUG,
 })
 
+const getSectionItemDrafts = (section: MyApplicationStateFilter): SimpleItemDraft[] =>
+  section === 'ALL'
+    ? MY_APPLICATION_STATES.flatMap((state) => sectionItemDrafts[state])
+    : sectionItemDrafts[section]
+
 export const createMockApplications = (
-  section: ApplicationsListVariant,
+  section: MyApplicationStateFilter,
   scenario: ListScenario,
 ): GetFormsResponseDto => {
   const items =
     scenario === 'empty'
       ? []
-      : sectionItemDrafts[section].map((draft, i) => createSimpleItem(draft, i))
+      : getSectionItemDrafts(section).map((draft, i) => createSimpleItem(draft, i))
 
   return {
     currentPage: 1,
@@ -132,11 +127,11 @@ export const createMockApplications = (
   }
 }
 
-// QueryClient seeded with the section counts (used by useTotalCount in the tab labels).
+// QueryClient seeded with the list itself and the section counts shown in the tab labels.
 // staleTime: Infinity keeps the seeded data fresh so the real API is never called.
 export const createMockQueryClient = (
   applications: GetFormsResponseDto,
-  section: ApplicationsListVariant,
+  section: MyApplicationStateFilter,
 ): QueryClient => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -150,16 +145,23 @@ export const createMockQueryClient = (
     },
   })
 
-  const counts: Record<ApplicationsListVariant, number> = {
+  queryClient.setQueryData(
+    getMyApplicationsQueryKey({
+      ...myApplicationsDefaultFilters,
+      myApplicationState: section,
+      page: 1,
+    }),
+    applications,
+  )
+
+  const counts: Record<MyApplicationStateFilter, number> = {
+    ALL: 15,
     SENT: 12,
-    SENDING: 2,
     DRAFT: 3,
   }
   // Reflect the currently shown section's real item count.
   counts[section] = applications.items.length
-  ;(['SENT', 'SENDING', 'DRAFT'] as const).forEach((variant) => {
-    queryClient.setQueryData([`ApplicationsCount_${variant}`, variant], counts[variant])
-  })
+  queryClient.setQueryData(getMyApplicationsCountQueryKey(), counts)
 
   return queryClient
 }

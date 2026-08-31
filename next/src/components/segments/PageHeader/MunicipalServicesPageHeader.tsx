@@ -29,7 +29,9 @@ const MunicipalServicesPageHeader = ({
           className="max-w-none pr-4 lg:max-w-[400px]"
           value={selectorValue}
           onChange={(value) => {
-            if (!value) return
+            if (!value) {
+              return
+            }
             setSelectorValue(value)
           }}
           options={enumOptions}

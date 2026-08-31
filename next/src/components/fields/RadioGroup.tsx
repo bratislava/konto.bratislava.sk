@@ -25,7 +25,9 @@ const ResetButton = () => {
 
   const state = useContext(RadioGroupStateContext)
 
-  if (!state) return null
+  if (!state) {
+    return null
+  }
 
   return (
     <Button

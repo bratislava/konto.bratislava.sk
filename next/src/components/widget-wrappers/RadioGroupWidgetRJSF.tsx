@@ -24,13 +24,19 @@ const RadioGroupWidgetRJSF = (props: RadioGroupWidgetRJSFProps) => {
    */
   const { wrapperProps, fieldProps, specificOptions } = mapRjsfToReactAriaProps(props, {
     toFieldValue: (value) => {
-      if (isBoolean) return typeof value === 'boolean' ? value.toString() : null
+      if (isBoolean) {
+        return typeof value === 'boolean' ? value.toString() : null
+      }
 
       return typeof value === 'string' ? value : null
     },
     fromFieldValue: (value) => {
-      if (value === null) return undefined
-      if (isBoolean) return value === 'true'
+      if (value === null) {
+        return undefined
+      }
+      if (isBoolean) {
+        return value === 'true'
+      }
 
       return value
     },

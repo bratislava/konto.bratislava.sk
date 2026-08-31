@@ -18,8 +18,19 @@ module.exports = {
       }))
     }
 
-    const [formPaths] = await Promise.all([fetchFormPaths()])
-    const paths = [...formPaths]
+    const fetchMunicipalServicePaths = async () => {
+      const { municipalServices } = await strapiClient.MunicipalServicesStaticPaths({ limit: -1 })
+
+      return municipalServices.map((municipalService) => ({
+        loc: `/mestske-sluzby/${municipalService.slug}`,
+      }))
+    }
+
+    const [formPaths, municipalServices] = await Promise.all([
+      fetchFormPaths(),
+      fetchMunicipalServicePaths(),
+    ])
+    const paths = [...formPaths, ...municipalServices]
 
     return paths.map((path) => ({
       loc: path.loc,

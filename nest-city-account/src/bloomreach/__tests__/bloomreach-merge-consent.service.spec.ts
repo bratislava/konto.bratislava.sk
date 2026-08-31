@@ -106,9 +106,25 @@ describe('BloomreachMergeConsentService', () => {
     expect(isBloomreachCustomerDataSpy).not.toHaveBeenCalled()
   })
 
-  it('should skip customer commands without contact_id', async () => {
-    const couldCauseMergeSpy = jest.spyOn(service as never, 'couldCauseMerge')
+  it('should skip when the command itself de-verifies the account', async () => {
+    const result = await service.ensureConsentsSurviveMerge(
+      makeEntry({
+        commandData: {
+          kind: BloomreachCommandDataKind.CUSTOMER,
+          customer_ids: { city_account_id: externalId, contact_id: contactId },
+          properties: { is_identity_verified: false },
+          update_timestamp: 100,
+        },
+      })
+    )
 
+    expect(result).toBe(true)
+    expect(exportService.fetchCustomer).not.toHaveBeenCalled()
+    // couldCauseMerge is the only thing that queries findFirst before this point
+    expect(prismaMock.bloomreachOutbox.findFirst).not.toHaveBeenCalled()
+  })
+
+  it('should skip customer commands without contact_id', async () => {
     const result = await service.ensureConsentsSurviveMerge(
       makeEntry({
         commandData: {
@@ -122,11 +138,10 @@ describe('BloomreachMergeConsentService', () => {
 
     expect(result).toBe(true)
     expect(exportService.fetchCustomer).not.toHaveBeenCalled()
-    expect(couldCauseMergeSpy).not.toHaveBeenCalled()
+    expect(prismaMock.bloomreachOutbox.findFirst).not.toHaveBeenCalled()
   })
 
   it('should skip when the contact attachment was already delivered for the customer', async () => {
-    const hasOwnAnonymizeInFlightSpy = jest.spyOn(service as never, 'hasOwnAnonymizeInFlight')
     prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(
       makeEntry({ status: BloomreachOutboxStatus.COMPLETED })
     )
@@ -135,7 +150,7 @@ describe('BloomreachMergeConsentService', () => {
 
     expect(result).toBe(true)
     expect(exportService.fetchCustomer).not.toHaveBeenCalled()
-    expect(hasOwnAnonymizeInFlightSpy).not.toHaveBeenCalled()
+    expect(prismaMock.bloomreachOutbox.findFirst).toHaveBeenCalledTimes(1)
   })
 
   it('should skip when a separate anonymize command is racing for this same externalId', async () => {
@@ -327,8 +342,8 @@ describe('BloomreachMergeConsentService', () => {
     })
     prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(null)
     prismaMock.bloomreachOutbox.findMany.mockResolvedValueOnce([
-      { externalId: 'cognito-older' },
-    ] as never)
+      makeEntry({ externalId: 'cognito-older' }),
+    ])
     // findPossiblyUnmergedCityAccountIds
     prismaMock.$queryRaw.mockResolvedValueOnce([{ updateTimestamp: 90 }])
     exportService.fetchConsentEvents.mockResolvedValue(consentEvents)

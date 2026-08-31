@@ -1,0 +1,302 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: runner/example-forms.spec.ts >> zavazne-stanovisko-k-investicnej-cinnosti >> zavazneStanoviskoKInvesticnejCinnostiExample
+- Location: src/runner/example-forms.spec.ts:78:11
+
+# Error details
+
+```
+Test timeout of 30000ms exceeded.
+```
+
+```
+Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  locator('[id="root_prilohy_projektovaDokumentacia"]').getByText('Čaká na antivírovú kontrolu')
+Expected: 0
+Received: 2
+
+Call log:
+  - Expect "toHaveCount" with timeout 60000ms
+  - waiting for locator('[id="root_prilohy_projektovaDokumentacia"]').getByText('Čaká na antivírovú kontrolu')
+    9 × locator resolved to 2 elements
+      - unexpected value "2"
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - log
+    - log
+  - generic [ref=e5]:
+    - banner [ref=e6]:
+      - generic [ref=e9]:
+        - generic "brand" [ref=e11]:
+          - link "Bratislavské konto" [ref=e12] [cursor=pointer]:
+            - /url: /
+            - img [ref=e13]
+            - paragraph [ref=e16]: Bratislavské konto
+        - button "Otvoriť menu" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]
+    - main [ref=e21]:
+      - generic [ref=e22]:
+        - button
+        - button
+      - generic [ref=e26]:
+        - heading "Žiadosť o záväzné stanovisko k investičnej činnosti" [level=1] [ref=e27]
+        - link "Viac informácií o službe Žiadosť o záväzné stanovisko k investičnej činnosti" [ref=e28] [cursor=pointer]:
+          - /url: https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti
+          - text: Viac informácií o službe
+          - img [ref=e29]
+      - generic [ref=e33]:
+        - 'button "6 Aktuálny: Prílohy" [ref=e36] [cursor=pointer]':
+          - generic [ref=e37]:
+            - generic [ref=e38]: "6"
+            - generic [ref=e39]:
+              - generic [ref=e40]: "Aktuálny:"
+              - text: Prílohy
+          - img [ref=e41]
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - group [ref=e48]:
+              - group [ref=e53]:
+                - heading "Prílohy" [level=2] [ref=e55]
+                - generic [ref=e58]:
+                  - generic [ref=e61]:
+                    - generic [ref=e62]:
+                      - generic [ref=e64]: Projektová dokumentácia
+                      - generic [ref=e66]: Jednotlivé časti dokumentácie môžete nahrať samostatne alebo ako jeden súbor.
+                    - generic [ref=e67]:
+                      - generic [ref=e69] [cursor=pointer]:
+                        - generic [ref=e70]:
+                          - button "DropZone"
+                        - button "Nahrať súbory" [ref=e71]:
+                          - img [ref=e74]
+                          - paragraph [ref=e76]: Nahrať súbory
+                      - generic [ref=e77]:
+                        - heading "Nahrávané súbory" [level=3] [ref=e78]
+                        - list [ref=e79]:
+                          - listitem [ref=e80]:
+                            - generic [ref=e84]:
+                              - generic [ref=e85]:
+                                - heading "projektova-dokumentacia-1.pdf" [level=3] [ref=e86]
+                                - generic [ref=e87]:
+                                  - button "Stiahnuť" [ref=e88] [cursor=pointer]:
+                                    - img [ref=e89]
+                                  - generic [ref=e91]: 15.5 kB
+                                  - generic [ref=e92]: •
+                                  - generic [ref=e93]: Čaká na antivírovú kontrolu
+                              - button "Odstrániť súbor" [ref=e95] [cursor=pointer]:
+                                - img [ref=e96]
+                          - listitem [ref=e99]:
+                            - generic [ref=e103]:
+                              - generic [ref=e104]:
+                                - heading "projektova-dokumentacia-2.pdf" [level=3] [ref=e105]
+                                - generic [ref=e106]:
+                                  - button "Stiahnuť" [ref=e107] [cursor=pointer]:
+                                    - img [ref=e108]
+                                  - generic [ref=e110]: 15.5 kB
+                                  - generic [ref=e111]: •
+                                  - generic [ref=e112]: Čaká na antivírovú kontrolu
+                              - button "Odstrániť súbor" [ref=e114] [cursor=pointer]:
+                                - img [ref=e115]
+                  - link "Čo všetko má obsahovať projektová dokumentácia" [ref=e120] [cursor=pointer]:
+                    - /url: https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti
+                    - text: Čo všetko má obsahovať projektová dokumentácia
+                    - img [ref=e121]
+            - generic [ref=e123]:
+              - button "Pokračovať" [ref=e124] [cursor=pointer]
+              - generic [ref=e125]:
+                - button "Späť" [ref=e126] [cursor=pointer]
+                - button "Preskočiť" [ref=e127] [cursor=pointer]
+          - list [ref=e128]:
+            - listitem [ref=e129]:
+              - button "Uložiť ako koncept" [ref=e130] [cursor=pointer]:
+                - img [ref=e131]
+                - text: Uložiť ako koncept
+            - listitem [ref=e133]:
+              - button "Stiahnuť ako XML" [ref=e134] [cursor=pointer]:
+                - img [ref=e135]
+                - text: Stiahnuť ako XML
+            - listitem [ref=e137]:
+              - button "Stiahnuť ako PDF" [ref=e138] [cursor=pointer]:
+                - img [ref=e139]
+                - text: Stiahnuť ako PDF
+            - listitem [ref=e141]:
+              - button "Nahrať XML" [ref=e142] [cursor=pointer]:
+                - img [ref=e143]
+                - text: Nahrať XML
+            - listitem [ref=e145]:
+              - button "Vymazať" [ref=e146] [cursor=pointer]:
+                - img [ref=e147]
+                - text: Vymazať
+    - generic [ref=e151]:
+      - separator [ref=e152]
+      - contentinfo [ref=e153]:
+        - generic "brand" [ref=e155]:
+          - link "Mesto Bratislava" [ref=e156] [cursor=pointer]:
+            - /url: /
+            - img [ref=e157]
+            - paragraph [ref=e160]: Mesto Bratislava
+        - generic [ref=e163]:
+          - paragraph [ref=e164]: Hlavné mesto Slovenskej republiky Bratislava Primaciálne námestie 1 814 99 Bratislava
+          - paragraph [ref=e165]: "IČO: 00603481 DIČ: 2020372596 IČ DPH: SK2020372596"
+          - paragraph [ref=e166]:
+            - text: "Email:"
+            - link "info@bratislava.sk" [ref=e167] [cursor=pointer]:
+              - /url: mailto:info@bratislava.sk
+            - text: "Infolinka 8:30-16:00:"
+            - link "+421 904 099 004" [ref=e168] [cursor=pointer]:
+              - /url: tel:+421904099004
+            - text: "Kontakt pre médiá:"
+            - link "press@bratislava.sk" [ref=e169] [cursor=pointer]:
+              - /url: mailto:press@bratislava.sk
+        - generic [ref=e170]:
+          - generic [ref=e171]:
+            - separator [ref=e172]
+            - heading "Právne informácie" [level=3] [ref=e174]:
+              - button "Právne informácie" [ref=e175] [cursor=pointer]:
+                - generic [ref=e176]:
+                  - heading "Právne informácie" [level=3] [ref=e178]
+                  - img [ref=e179]
+          - separator [ref=e181]
+        - generic [ref=e182]:
+          - generic [ref=e183]:
+            - link "Facebook" [ref=e184] [cursor=pointer]:
+              - /url: https://www.facebook.com/Bratislava.sk/
+              - img [ref=e185]
+            - link "Instagram" [ref=e187] [cursor=pointer]:
+              - /url: https://www.instagram.com/bratislava.sk/
+              - img [ref=e188]
+            - link "LinkedIn" [ref=e192] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/bratislava
+              - img [ref=e193]
+            - link "TikTok" [ref=e195] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@bratislava.sk
+              - img [ref=e196]
+          - img [ref=e198]
+        - separator [ref=e210]
+        - button "Nastavenia cookies" [ref=e212] [cursor=pointer]
+        - separator [ref=e213]
+        - paragraph [ref=e215]: © 2026 Hlavné mesto Slovenskej Republiky Bratislava
+  - alert [ref=e216]: Bratislavské konto
+```
+
+# Test source
+
+```ts
+  239 |  * none of them. Kept in sync with `UploadFileCard.messages.*` in
+  240 |  * `next/public/locales/sk/translation.json`.
+  241 |  */
+  242 | const UPLOAD_IN_PROGRESS_MESSAGES = [
+  243 |   'Čaká sa na nahratie',
+  244 |   'Nahráva sa',
+  245 |   'Čaká na antivírovú kontrolu',
+  246 |   'Prebieha antivírová kontrola',
+  247 | ]
+  248 | 
+  249 | /**
+  250 |  * Assets offered to file fields. The plan cannot supply these: its value is a server-side file uuid
+  251 |  * with no local counterpart.
+  252 |  */
+  253 | const FILE_ASSETS = [
+  254 |   { path: 'test.pdf', extension: '.pdf', mime: 'application/pdf' },
+  255 |   { path: 'test.png', extension: '.png', mime: 'image/png' },
+  256 | ] as const
+  257 | 
+  258 | const assetPath = (asset: (typeof FILE_ASSETS)[number]) =>
+  259 |   resolve(__dirname, '../../assets', asset.path)
+  260 | 
+  261 | /**
+  262 |  * Picks the asset to stand in for one of the example's files.
+  263 |  *
+  264 |  * The example's own file name wins, because it states the intent: `nahlaseniePodnetu` declares
+  265 |  * `fotografia-podnetu.jpg` and its field only accepts `.jpg,.jpeg,.png`, so handing it a PDF leaves
+  266 |  * the form invalid — which surfaced only as an error alert on the summary, far from the cause.
+  267 |  * `accept` is the fallback for files the example does not name.
+  268 |  */
+  269 | const assetFor = (fileName: string | undefined, accept: string | null) => {
+  270 |   const byName = fileName
+  271 |     ? FILE_ASSETS.find((asset) => fileName.toLowerCase().endsWith(asset.extension))
+  272 |     : undefined
+  273 |   if (byName) {
+  274 |     return byName
+  275 |   }
+  276 | 
+  277 |   const allowed = (accept ?? '')
+  278 |     .split(',')
+  279 |     .map((entry) => entry.trim().toLowerCase())
+  280 |     .filter(Boolean)
+  281 | 
+  282 |   const byAccept = FILE_ASSETS.find((asset) =>
+  283 |     allowed.some(
+  284 |       (entry) =>
+  285 |         entry === asset.extension ||
+  286 |         entry === asset.mime ||
+  287 |         (entry.endsWith('/*') && asset.mime.startsWith(entry.slice(0, -1))),
+  288 |     ),
+  289 |   )
+  290 | 
+  291 |   return byAccept ?? FILE_ASSETS[0]
+  292 | }
+  293 | 
+  294 | /**
+  295 |  * Uploads one file per file reference the example holds.
+  296 |  *
+  297 |  * Both parts matter. Uploading a *single* file regardless of how many the example declares silently
+  298 |  * under-tested `prilohy.projektovaDokumentacia` and `informacieODovoze.fotoOdpadu`, which each
+  299 |  * expect two — the field is valid with one, so nothing failed. And reusing the example's file names
+  300 |  * keeps the uploaded files distinguishable, which is what makes the per-file wait below meaningful;
+  301 |  * two files both called `test.pdf` would be indistinguishable in the UI.
+  302 |  *
+  303 |  * Scoped to the field's own wrapper. The Cypress spec scoped `[data-cy=file-input]` to the whole
+  304 |  * step (`formRealEstateTaxReturn.cy.ts:459,665`), so it attached to whichever file input happened
+  305 |  * to come first regardless of which `priznanie` it belonged to.
+  306 |  */
+  307 | export const uploadFile = async (
+  308 |   root: Locator,
+  309 |   fileNames: (string | undefined)[],
+  310 |   override?: string,
+  311 | ) => {
+  312 |   const input = root.locator('input[type="file"]').first()
+  313 | 
+  314 |   if (override) {
+  315 |     await input.setInputFiles(override)
+  316 |   } else {
+  317 |     const accept = await input.getAttribute('accept')
+  318 |     const payloads = fileNames.map((fileName, index) => {
+  319 |       const asset = assetFor(fileName, accept)
+  320 | 
+  321 |       return {
+  322 |         name: fileName ?? `test-${index + 1}${asset.extension}`,
+  323 |         mimeType: asset.mime,
+  324 |         buffer: readFileSync(assetPath(asset)),
+  325 |       }
+  326 |     })
+  327 | 
+  328 |     await input.setInputFiles(payloads)
+  329 | 
+  330 |     for (const payload of payloads) {
+  331 |       await expect(root.getByText(payload.name, { exact: false }).first()).toBeVisible({
+  332 |         timeout: 30_000,
+  333 |       })
+  334 |     }
+  335 |   }
+  336 | 
+  337 |   // The antivirus scan runs server-side, so settling can take a while.
+  338 |   for (const message of UPLOAD_IN_PROGRESS_MESSAGES) {
+> 339 |     await expect(root.getByText(message, { exact: false })).toHaveCount(0, { timeout: 60_000 })
+      |                                                             ^ Error: expect(locator).toHaveCount(expected) failed
+  340 |   }
+  341 | }
+  342 | 
+```

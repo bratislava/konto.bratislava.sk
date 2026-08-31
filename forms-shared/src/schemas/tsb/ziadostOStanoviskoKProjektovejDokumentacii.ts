@@ -1,12 +1,12 @@
 import { selectMultiple } from '../../generator/functions/selectMultiple'
 import { input } from '../../generator/functions/input'
-import { radioGroup } from '../../generator/functions/radioGroup'
+import { select } from '../../generator/functions/select'
 import { datePicker } from '../../generator/functions/datePicker'
 import { step } from '../../generator/functions/step'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
-import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 import type { GenericObjectType } from '@rjsf/utils' with {
   'resolution-mode': 'import',
@@ -14,7 +14,7 @@ import type { GenericObjectType } from '@rjsf/utils' with {
 
 export default schema(
   {
-    title: 'Žiadosť o stanovisko k projektovej dokumentácii',
+    title: 'Žiadosť o záväzné stanovisko k projektovej dokumentácii',
   },
   [
     getObjednavatelZiadatelStep('ziadatel'),
@@ -32,17 +32,17 @@ export default schema(
         { helptext: 'Vyplňte vo formáte ulica a číslo' },
       ),
       selectMultiple(
-        'katastralneUzemie',
+        'mestskaCast',
         {
-          title: 'Katastrálne územie',
+          title: 'Mestská časť, v ktorej sa stavba nachádza',
           required: true,
-          items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
+          items: esbsBratislavaMestskaCastNoPrefixCiselnik.map(({ Name, Code }) => ({
             value: Code,
             label: Name,
           })),
         },
         {
-          helptext: 'Vyberte jedno alebo viacero katastrálnych území zo zoznamu.',
+          helptext: 'Vyberte jednu alebo viacero mestských častí zo zoznamu.',
         },
       ),
       datePicker(
@@ -55,28 +55,36 @@ export default schema(
         { title: 'Predpokladaný termín stavby do', required: true },
         { selfColumn: '2/4' },
       ),
-      radioGroup(
-        'stupenProjektovejDokumentacie',
+      select(
+        'typZiadosti',
         {
-          type: 'string',
-          title: 'Stupeň projektovej dokumentácie',
+          title: 'Typ žiadosti',
           required: true,
           items: [
+            { value: 'uzemneRozhodnutie', label: 'Územné rozhodnutie' },
+            { value: 'stavebnePovolenie', label: 'Stavebné povolenie' },
+            { value: 'ohlasenieDrobnejStavby', label: 'Ohlásenie drobnej stavby' },
+            { value: 'zmenyStavbyPredDokoncenim', label: 'Zmeny stavby pred dokončením' },
             {
-              value: 'dokumentaciaPreUzemneneRozhodnutie',
-              label: 'Dokumentácia pre územné rozhodnutie (DÚR)',
+              value: 'preskumanieSposobilostiStavbyNaUzivanie',
+              label: 'Preskúmanie spôsobilosti stavby na užívanie §140d',
             },
-            {
-              value: 'dokumentaciaPreStavbnePovolenie',
-              label: 'Dokumentácia pre stavebné povolenie (DSP)',
-            },
-            {
-              value: 'dokumentaciaPreRealizaciuStavby',
-              label: 'Dokumentácia pre realizáciu stavby (DRS)',
-            },
+            { value: 'zmenaUceluVyuzitiaPriestoru', label: 'Zmena účelu využitia priestoru' },
+            { value: 'rozkopavkovePovolenie', label: 'Rozkopávkové povolenie' },
+            { value: 'predprojektovaPriprava', label: 'Predprojektová príprava' },
+            { value: 'kolaudacia', label: 'Kolaudácia' },
+            { value: 'stavebnyZamer', label: 'Stavebný zámer' },
+            { value: 'overovaciaDolozka', label: 'Overovacia doložka' },
+            { value: 'osvedcenieStavby', label: 'Osvedčenie stavby' },
+            { value: 'stavebneUpravy', label: 'Stavebné úpravy' },
+            { value: 'rozkopavka', label: 'Rozkopávka' },
+            { value: 'zmenaDokoncenejStavby', label: 'Zmena dokončenej stavby' },
           ],
         },
-        { variant: 'boxed', orientations: 'column' },
+        {
+          helptext:
+            'Vyberte typ žiadosti, ku ktorej žiadate o záväzné stanovisko k projektovej dokumentácii.',
+        },
       ),
     ]),
     step('prilohy', { title: 'Prílohy' }, [

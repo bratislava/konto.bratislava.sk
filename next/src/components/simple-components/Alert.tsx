@@ -1,9 +1,9 @@
 import { Button } from '@bratislava/component-library'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next/pages'
 import React, { ReactNode } from 'react'
 
 import Icon from '@/src/components/icon-components/Icon'
+import MLink from '@/src/components/simple-components/MLink'
 import cn from '@/src/utils/cn'
 
 type AlertButtonBase = {
@@ -23,13 +23,13 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
       {buttons?.map((button, i) => (
         <React.Fragment key={i}>
           {button.link ? (
-            <Link
+            <MLink
               className="w-max text-size-p-small-r font-medium underline underline-offset-4 lg:text-size-p-small"
               href={button.link}
               data-cy="alert-container-button"
             >
               {button.title}
-            </Link>
+            </MLink>
           ) : (
             <Button
               variant="unstyled"

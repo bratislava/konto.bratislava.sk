@@ -75,7 +75,9 @@ const useGetContext = ({ taxData }: TaxDataProviderProps) => {
   })
 
   const downloadQrCodeOneTimePayment = async () => {
-    if (!taxData.oneTimePayment.qrCode) return
+    if (!taxData.oneTimePayment.qrCode) {
+      return
+    }
     const arrayBuffer = base64ToArrayBuffer(taxData.oneTimePayment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),
@@ -83,7 +85,9 @@ const useGetContext = ({ taxData }: TaxDataProviderProps) => {
     )
   }
   const downloadQrCodeInstallmentPayment = async () => {
-    if (!taxData.installmentPayment.activeInstallment?.qrCode) return
+    if (!taxData.installmentPayment.activeInstallment?.qrCode) {
+      return
+    }
     const arrayBuffer = base64ToArrayBuffer(taxData.installmentPayment.activeInstallment.qrCode)
     downloadBlob(
       new Blob([arrayBuffer], { type: 'image/png' }),

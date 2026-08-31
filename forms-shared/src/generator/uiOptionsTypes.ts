@@ -96,12 +96,23 @@ export type DatePickerUiOptions = WidgetUiOptions
 
 export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
 
+export const inputSizeMin = 1
+export const inputSizeMax = 40
+
+/**
+ * Approximate width of the input in characters, an integer between `inputSizeMin` and
+ * `inputSizeMax`. Narrows only the input, never past the available space. Label, helptext and error
+ * message keep the full width.
+ */
+export type InputSizeType = number
+
 export type InputUiOptions = {
   inputType: InputUiOptionsInputType
+  inputSize?: InputSizeType
   placeholder?: string
 } & WidgetUiOptions
 
-export type NumberUiOptions = Omit<InputUiOptions, 'inputType'> & {
+export type NumberUiOptions = Omit<InputUiOptions, 'inputType' | 'inputSize'> & {
   formatOptions?: Intl.NumberFormatOptions
   unit?: string
 }

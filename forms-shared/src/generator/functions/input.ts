@@ -1,6 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaAjvInputFormat } from '../../form-utils/ajvFormats'
-import { BaWidgetType, InputUiOptions } from '../uiOptionsTypes'
+import { BaWidgetType, InputUiOptions, inputSizeMax, inputSizeMin } from '../uiOptionsTypes'
 import { getInputTypeForAjvFormat, removeUndefinedValues } from '../helpers'
 
 export const input = (
@@ -11,6 +11,16 @@ export const input = (
   },
   uiOptions: Omit<InputUiOptions, 'inputType'>,
 ): GeneratorField => {
+  const { inputSize } = uiOptions
+  if (
+    inputSize !== undefined &&
+    (!Number.isInteger(inputSize) || inputSize < inputSizeMin || inputSize > inputSizeMax)
+  ) {
+    throw new Error(
+      `inputSize must be an integer between ${inputSizeMin} and ${inputSizeMax}, got ${inputSize} (property "${property}")`,
+    )
+  }
+
   const { inputType, format } = (() => {
     if (options.type === 'email') {
       return {

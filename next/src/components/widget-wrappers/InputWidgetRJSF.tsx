@@ -20,7 +20,7 @@ const InputWidgetRJSF = (props: InputWidgetRJSFProps) => {
         {...fieldProps}
         type={specificOptions.inputType}
         placeholder={specificOptions.placeholder}
-        inputSize={specificOptions.inputSize}
+        expectedCharactersCount={specificOptions.expectedCharactersCount}
       />
     </WidgetWrapper>
   )

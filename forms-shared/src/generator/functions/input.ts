@@ -1,6 +1,11 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaAjvInputFormat } from '../../form-utils/ajvFormats'
-import { BaWidgetType, InputUiOptions, inputSizeMax, inputSizeMin } from '../uiOptionsTypes'
+import {
+  BaWidgetType,
+  expectedCharactersCountMax,
+  expectedCharactersCountMin,
+  InputUiOptions,
+} from '../uiOptionsTypes'
 import { getInputTypeForAjvFormat, removeUndefinedValues } from '../helpers'
 
 export const input = (
@@ -11,13 +16,14 @@ export const input = (
   },
   uiOptions: Omit<InputUiOptions, 'inputType'>,
 ): GeneratorField => {
-  const { inputSize } = uiOptions
+  const { expectedCharactersCount } = uiOptions
   if (
-    inputSize !== undefined &&
-    (!Number.isInteger(inputSize) || inputSize < inputSizeMin || inputSize > inputSizeMax)
+    expectedCharactersCount !== undefined &&
+    (expectedCharactersCount < expectedCharactersCountMin ||
+      expectedCharactersCount > expectedCharactersCountMax)
   ) {
     throw new Error(
-      `inputSize must be an integer between ${inputSizeMin} and ${inputSizeMax}, got ${inputSize} (property "${property}")`,
+      `expectedCharactersCount must be an integer between ${expectedCharactersCountMin} and ${expectedCharactersCountMax}, got ${expectedCharactersCount} (property "${property}")`,
     )
   }
 

@@ -1,3 +1,5 @@
+import type { IntClosedRange } from 'type-fest' with { 'resolution-mode': 'import' }
+
 import { EnumMetadata } from './optionItems'
 
 export type CustomComponentAccordionProps = {
@@ -96,23 +98,29 @@ export type DatePickerUiOptions = WidgetUiOptions
 
 export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
 
-export const inputSizeMin = 1
-export const inputSizeMax = 40
+export const expectedCharactersCountMin = 1
+export const expectedCharactersCountMax = 40
 
 /**
- * Approximate width of the input in characters, an integer between `inputSizeMin` and
- * `inputSizeMax`. Narrows only the input, never past the available space. Label, helptext and error
+ * Approximate width of the input in characters, an integer between `expectedCharactersCountMin` and
+ * `expectedCharactersCountMax`. Narrows only the input, never past the available space. Label, helptext and error
  * message keep the full width.
+ * See the part "Fixed width inputs" on https://design-system.service.gov.uk/components/text-input/
+ *
+ * TODO: add support for fluid sizes, that will replace current `size` behaviour.
  */
-export type InputSizeType = number
+export type ExpectedCharactersCountType = IntClosedRange<
+  typeof expectedCharactersCountMin,
+  typeof expectedCharactersCountMax
+>
 
 export type InputUiOptions = {
   inputType: InputUiOptionsInputType
-  inputSize?: InputSizeType
+  expectedCharactersCount?: ExpectedCharactersCountType
   placeholder?: string
 } & WidgetUiOptions
 
-export type NumberUiOptions = Omit<InputUiOptions, 'inputType' | 'inputSize'> & {
+export type NumberUiOptions = Omit<InputUiOptions, 'inputType' | 'expectedCharactersCount'> & {
   formatOptions?: Intl.NumberFormatOptions
   unit?: string
 }

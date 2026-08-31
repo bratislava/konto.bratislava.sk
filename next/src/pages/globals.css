@@ -461,17 +461,17 @@
 }
 
 /*
- * Approximate width of an input in characters, driven by the `inputSize` ui option which sets
- * `--input-char-count` inline. `1em` per character is generous on purpose, it matches the gov.uk
- * text input widths. The extra values are the input's own padding (`px-3` / `lg:px-4`) and border,
- * which is why this lives in CSS rather than an inline style.
+ * Approximate width of an input in characters, driven by the `expectedCharactersCount` ui
+ * option which sets `--expected-characters-count` inline. `1em` per character is generous on
+ * purpose, it matches the gov.uk text input widths. The extra values are the input's own padding
+ * (`px-3` / `lg:px-4`) and border, which is why this lives in CSS rather than an inline style.
  */
-@utility input-char-width {
-  width: calc(var(--input-char-count) * 1em + 1.5rem + 2px);
+@utility input-width-based-on-characters-count {
+  width: calc(var(--expected-characters-count) * 1em + 1.5rem + 2px);
   max-width: 100%;
 
   @variant lg {
-    width: calc(var(--input-char-count) * 1em + 2rem + 2px);
+    width: calc(var(--expected-characters-count) * 1em + 2rem + 2px);
   }
 }
 

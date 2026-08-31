@@ -1,144 +1,94 @@
-import { Typography } from '@bratislava/component-library'
-import { useQuery } from '@tanstack/react-query'
-import { AuthSession } from 'aws-amplify/auth'
-import { useRouter } from 'next/router'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next/pages'
-import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import { getDraftApplications } from '@/src/components/page-contents/MyApplicationsPageContent/getDraftApplications'
+import {
+  getMyApplicationsCountQueryKey,
+  myApplicationsCountFetcher,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsCountFetcher'
+import {
+  getMyApplicationsFilters,
+  getMyApplicationsQueryKey,
+  myApplicationsFetcher,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsFetcher'
+import {
+  MY_APPLICATION_STATE_FILTERS,
+  MyApplicationStateFilter,
+} from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
 import MyApplicationsList from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsList'
-import logger from '@/src/frontend/utils/logger'
-import { ApplicationsListVariant, sections } from '@/src/pages/moje-ziadosti'
+import { useMyApplicationsFilters } from '@/src/components/page-contents/MyApplicationsPageContent/useMyApplicationsFilters'
+import PageHeader from '@/src/components/segments/PageHeader/PageHeader'
 import cn from '@/src/utils/cn'
-
-type HeaderNavigationItemBase = {
-  title: string
-  tag: ApplicationsListVariant
-}
-
-const englishToSlovakSectionNames: Record<ApplicationsListVariant, string> = {
-  SENT: 'odoslane',
-  SENDING: 'odosiela-sa',
-  DRAFT: 'koncepty',
-}
-
-// this was moved from server side props to client side react-query beacause requests took too long (3-5 second)
-// and user had no visual feedback and it looked like page wasn't doing anything after click on 'moje-ziadosti' nav link
-// when this task https://github.com/bratislava/konto.bratislava.sk/issues/670 is done it could be moved back to server side props
-export const getTotalNumberOfApplications = async (
-  variant: ApplicationsListVariant,
-  emailFormSlugs: string[],
-  getSsrAuthSession?: () => Promise<AuthSession>,
-) => {
-  const firstPage = await getDraftApplications(variant, 1, emailFormSlugs, getSsrAuthSession)
-  if (firstPage.countPages === 0) {
-    return 0
-  }
-
-  const lastPage = await getDraftApplications(
-    variant,
-    firstPage.countPages,
-    emailFormSlugs,
-    getSsrAuthSession,
-  )
-
-  return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
-}
-
-const useTotalCount = (variant: ApplicationsListVariant, emailFormSlugs: string[]) => {
-  const { data, refetch } = useQuery({
-    // `emailFormSlugs` is stable and should be part of the key
-
-    queryKey: ['TotalNumberOfApplications', variant, emailFormSlugs],
-    queryFn: () => getTotalNumberOfApplications(variant, emailFormSlugs),
-  })
-
-  return { data, refetch }
-}
-
-type MyApplicationsSectionProps = {
-  selectedSection: ApplicationsListVariant
-  applications?: GetFormsResponseDto
-  formDefinitionSlugTitleMap: Record<string, string>
-  emailFormSlugs: string[]
-}
 
 /**
  * Figma: https://www.figma.com/design/0VrrvwWs7n3T8YFzoHe92X/BK--Dizajn--DEV-?node-id=10974-95085
  */
 
-const MyApplicationsPageContent = ({
-  selectedSection,
-  applications,
-  formDefinitionSlugTitleMap,
-  emailFormSlugs,
-}: MyApplicationsSectionProps) => {
+const MyApplicationsPageContent = () => {
   const { t } = useTranslation()
-  const router = useRouter()
+  const { selectedSection, setSelectedSection, currentPage } = useMyApplicationsFilters()
 
-  const title = t('MyApplicationsPageContent.title')
+  const filters = getMyApplicationsFilters({
+    myApplicationState: selectedSection,
+    page: currentPage,
+  })
 
-  const headerNavigationList: HeaderNavigationItemBase[] = [
-    { title: t('MyApplicationsPageContent.tabs.sent'), tag: 'SENT' },
-    { title: t('MyApplicationsPageContent.tabs.sending'), tag: 'SENDING' },
-    { title: t('MyApplicationsPageContent.tabs.draft'), tag: 'DRAFT' },
-  ]
+  const {
+    data: applications,
+    isPending,
+    isError,
+    refetch: refetchApplications,
+  } = useQuery({
+    queryKey: getMyApplicationsQueryKey(filters),
+    queryFn: () => myApplicationsFetcher(filters),
+    placeholderData: keepPreviousData,
+  })
 
-  const totalCounts = {
-    SENT: useTotalCount('SENT', emailFormSlugs),
-    SENDING: useTotalCount('SENDING', emailFormSlugs),
-    DRAFT: useTotalCount('DRAFT', emailFormSlugs),
+  const { data: totalCounts, refetch: refetchApplicationsCount } = useQuery({
+    queryKey: getMyApplicationsCountQueryKey(),
+    queryFn: () => myApplicationsCountFetcher(),
+  })
+
+  const refreshListData = async () => {
+    await Promise.all([refetchApplicationsCount(), refetchApplications()])
   }
 
-  const refetchApplicationsCount = async () => {
-    totalCounts.SENT.refetch().catch((error) => logger.error(error))
-    totalCounts.SENDING.refetch().catch((error) => logger.error(error))
-    totalCounts.DRAFT.refetch().catch((error) => logger.error(error))
+  const tabTitles: Record<MyApplicationStateFilter, string> = {
+    ALL: t('MyApplicationsPageContent.tabs.all'),
+    SENT: t('MyApplicationsPageContent.tabs.sent'),
+    DRAFT: t('MyApplicationsPageContent.tabs.draft'),
   }
 
   return (
-    <Tabs
-      selectedKey={selectedSection}
-      onSelectionChange={(key) => {
-        router
-          .push(
-            {
-              pathname: router.pathname,
-              query: {
-                ...router.query,
-                sekcia: englishToSlovakSectionNames[key as ApplicationsListVariant],
-              },
-            },
-            undefined,
-          )
-          .catch((error) => logger.error(error))
-      }}
-      className="flex flex-col"
-    >
-      <SectionContainer className="bg-gray-50 pt-6 lg:pt-14">
-        <div className="size-full flex-col justify-end gap-4 lg:gap-6">
-          <Typography variant="h1" className="pt-4">
-            {title}
-          </Typography>
-          <TabList className="scrollbar-hide flex gap-4 overflow-auto p-2 pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
-            {headerNavigationList.map((item) => {
-              const count = totalCounts[item.tag].data
-              const countText = count == null ? '' : ` (${count})`
-              const text = `${item.title}${countText}`
+    <div className="flex flex-col">
+      <PageHeader title={t('MyApplicationsPageContent.title')} />
+      <SectionContainer className="py-4 lg:py-8">
+        <Tabs
+          selectedKey={selectedSection}
+          onSelectionChange={(key) => {
+            const section = MY_APPLICATION_STATE_FILTERS.find((filter) => filter === key)
+            if (section) {
+              setSelectedSection(section)
+            }
+          }}
+          className="flex flex-col gap-7 lg:gap-8"
+        >
+          <TabList className="scrollbar-hide flex gap-2 overflow-x-auto lg:gap-4">
+            {MY_APPLICATION_STATE_FILTERS.map((filter) => {
+              const count = totalCounts?.[filter] ?? 0
+              const text = `${tabTitles[filter]} (${count})`
 
               return (
                 <Tab
-                  key={item.tag}
-                  id={item.tag}
+                  key={filter}
+                  id={filter}
                   data-before-text={text}
                   className={cn(
-                    'cursor-pointer rounded-sm p-4 text-center text-size-p-large base-focus-ring lg:px-0 lg:text-size-p-large',
-                    'hover:border-gray-700 hover:font-semibold',
-                    'selected:border-b-2 selected:border-gray-700 selected:font-semibold',
-                    // Hover without layout shift based on: https://stackoverflow.com/a/20249560
-                    'before:invisible before:block before:h-0 before:overflow-hidden before:font-semibold before:content-[attr(data-before-text)]',
+                    'cursor-pointer rounded-md border px-3 py-2',
+                    'border-border-active-default bg-background-passive-base text-content-passive-secondary',
+                    'hover:border-border-active-hover',
+                    'selected:border-background-active-primary-default selected:bg-background-active-primary-default selected:text-content-passive-inverted-primary',
                   )}
                 >
                   {text}
@@ -146,21 +96,19 @@ const MyApplicationsPageContent = ({
               )
             })}
           </TabList>
-        </div>
+          {MY_APPLICATION_STATE_FILTERS.map((variant) => (
+            <TabPanel key={variant} id={variant}>
+              <MyApplicationsList
+                applications={applications}
+                isPending={isPending}
+                isError={isError}
+                refreshListData={refreshListData}
+              />
+            </TabPanel>
+          ))}
+        </Tabs>
       </SectionContainer>
-      <SectionContainer className="py-4 lg:py-8">
-        {sections.map((variant) => (
-          <TabPanel key={variant} id={variant}>
-            <MyApplicationsList
-              variant={variant}
-              applications={applications}
-              refetchApplicationsCount={refetchApplicationsCount}
-              formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-            />
-          </TabPanel>
-        ))}
-      </SectionContainer>
-    </Tabs>
+    </div>
   )
 }
 

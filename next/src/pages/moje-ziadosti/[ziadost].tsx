@@ -7,22 +7,20 @@ import { GeneralQuery } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
-import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails'
-import { patchApplicationFormIfNeeded } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededClient'
-import { getEmailFormSlugs } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededServer'
+import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails/MyApplicationDetails'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { modifyGinisDataForSchemaSlug } from '@/src/frontend/utils/ginis'
 import logger from '@/src/frontend/utils/logger'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
-type Props = {
+type MyApplicationDetailsPageProps = {
   general: GeneralQuery
   formDefinitionTitle: string
   myApplicationFormData: GetFormResponseDto
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
 
-export const getServerSideProps = amplifyGetServerSideProps<Props>(
+export const getServerSideProps = amplifyGetServerSideProps<MyApplicationDetailsPageProps>(
   async ({ context, fetchAuthSession }) => {
     const id = context.query.ziadost as string
 
@@ -33,21 +31,21 @@ export const getServerSideProps = amplifyGetServerSideProps<Props>(
     // eslint-disable-next-line no-useless-assignment
     let myApplicationFormData: GetFormResponseDto | null = null
     let myApplicationGinisData: GinisDocumentDetailResponseDto | null = null
+
     try {
       const response = await formsClient.formsControllerGetForm(id, {
         authStrategy: 'authOnly',
         getSsrAuthSession: fetchAuthSession,
       })
 
-      const emailFormSlugs = getEmailFormSlugs()
-      myApplicationFormData = patchApplicationFormIfNeeded(response.data, emailFormSlugs)
+      myApplicationFormData = response.data
 
       if (myApplicationFormData.ginisDocumentId) {
         const ginisRequest = await formsClient.ginisControllerGetGinisDocumentByFormId(id, {
           authStrategy: 'authOnly',
           getSsrAuthSession: fetchAuthSession,
         })
-        myApplicationGinisData = ginisRequest?.data
+        myApplicationGinisData = ginisRequest.data
       }
     } catch (error) {
       logger.error(error)
@@ -60,6 +58,7 @@ export const getServerSideProps = amplifyGetServerSideProps<Props>(
     }
 
     const formDefinition = getFormDefinitionBySlug(myApplicationFormData.formDefinitionSlug)
+
     if (!formDefinition) {
       return { notFound: true }
     }
@@ -87,7 +86,7 @@ const AccountMyApplicationsPage = ({
   formDefinitionTitle,
   myApplicationFormData,
   myApplicationGinisData,
-}: Props) => {
+}: MyApplicationDetailsPageProps) => {
   return (
     <GeneralContextProvider general={general}>
       <PageLayout>

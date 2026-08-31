@@ -8,15 +8,14 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
       `
       User-Agent: *
       Disallow: /
-
-
-      # Sitemaps
-      Sitemap: ${process.env.NEXT_PUBLIC_SELF_URL}/sitemap.xml
       `,
     )
   }
 
-  return res.send('')
+  return res.send(`
+      # Sitemaps
+      Sitemap: ${process.env.NEXT_PUBLIC_SELF_URL}/sitemap.xml
+      `)
 }
 
 export default handler

@@ -11,6 +11,7 @@ import {
 } from '../../generated/prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import * as bloomreachTypes from '../bloomreach.types'
 import {
   BloomreachCommandDataKind,
   BloomreachConsentActionEnum,
@@ -94,15 +95,20 @@ describe('BloomreachMergeConsentService', () => {
   })
 
   it('should skip event commands', async () => {
+    const isBloomreachCustomerDataSpy = jest.spyOn(bloomreachTypes, 'isBloomreachCustomerData')
+
     const result = await service.ensureConsentsSurviveMerge(
       makeEntry({ commandName: BloomreachCommandName.CUSTOMERS_EVENTS })
     )
 
     expect(result).toBe(true)
     expect(exportService.fetchCustomer).not.toHaveBeenCalled()
+    expect(isBloomreachCustomerDataSpy).not.toHaveBeenCalled()
   })
 
   it('should skip customer commands without contact_id', async () => {
+    const couldCauseMergeSpy = jest.spyOn(service as never, 'couldCauseMerge')
+
     const result = await service.ensureConsentsSurviveMerge(
       makeEntry({
         commandData: {
@@ -116,9 +122,11 @@ describe('BloomreachMergeConsentService', () => {
 
     expect(result).toBe(true)
     expect(exportService.fetchCustomer).not.toHaveBeenCalled()
+    expect(couldCauseMergeSpy).not.toHaveBeenCalled()
   })
 
   it('should skip when the contact attachment was already delivered for the customer', async () => {
+    const hasOwnAnonymizeInFlightSpy = jest.spyOn(service as never, 'hasOwnAnonymizeInFlight')
     prismaMock.bloomreachOutbox.findFirst.mockResolvedValue(
       makeEntry({ status: BloomreachOutboxStatus.COMPLETED })
     )
@@ -127,6 +135,7 @@ describe('BloomreachMergeConsentService', () => {
 
     expect(result).toBe(true)
     expect(exportService.fetchCustomer).not.toHaveBeenCalled()
+    expect(hasOwnAnonymizeInFlightSpy).not.toHaveBeenCalled()
   })
 
   it('should skip when a separate anonymize command is racing for this same externalId', async () => {

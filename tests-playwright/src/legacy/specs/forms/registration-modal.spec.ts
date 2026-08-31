@@ -42,7 +42,7 @@ SLUGS.forEach((slug) => {
 
         await page
           .locator('[data-cy=save-concept-desktop], [data-cy=save-concept-mobile]')
-          .locator('visible=true')
+          .filter({ visible: true })
           .first()
           .click()
 

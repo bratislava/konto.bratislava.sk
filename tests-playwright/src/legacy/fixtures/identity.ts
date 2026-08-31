@@ -1,3 +1,5 @@
+import { getRunId } from '../../runId'
+
 export type Identity = {
   email: string
   /** A syntactically valid address that is guaranteed not to exist, for negative cases. */
@@ -30,7 +32,7 @@ const EMAIL_DOMAIN = 'cypress.test'
  *                    hand the next test an address a previous one had already registered.
  */
 export const createIdentity = (parallelIndex: number, nonce: string): Identity => {
-  const runId = process.env.E2E_RUN_ID ?? 'local'
+  const runId = getRunId()
   const slug = `e2e-${runId}-${parallelIndex}-${nonce}`
 
   return {

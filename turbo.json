@@ -13,10 +13,11 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
-    "test:playwright": {
+    "city-account-playwright-tests#test": {
       "dependsOn": ["^build"],
       "passThroughEnv": [
-        "E2E_BASE_URL"
+        "E2E_BASE_URL",
+        "E2E_VIDEO"
       ],
       "outputs": []
     },

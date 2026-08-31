@@ -1,10 +1,8 @@
 import { expect, type Page } from '@playwright/test'
-
-import { waitForHydration } from './FormPage'
+import { Identity } from '../fixtures/identity'
 
 export const logIn = async (page: Page, email: string, password: string) => {
   await page.goto('/prihlasenie')
-  await waitForHydration(page)
 
   const form = page.locator('[data-cy=login-container]')
   await form.locator('[data-cy=input-email]').fill(email)
@@ -16,7 +14,6 @@ export const logIn = async (page: Page, email: string, password: string) => {
 
 export const logOut = async (page: Page) => {
   await page.goto('/odhlasenie')
-  await waitForHydration(page)
   await page.locator('[data-cy="odhlásiť-sa-button"]').click()
   await expect(page).toHaveURL(/\/prihlasenie/)
 }
@@ -24,11 +21,27 @@ export const logOut = async (page: Page) => {
 export const openProfile = async (page: Page) => {
   await page
     .locator('[data-cy=account-button], [data-cy=mobile-account-button]')
-    .locator('visible=true')
+    .filter({ visible: true })
     .first()
     .click()
   await page.locator('[data-cy=moj-profil-menu-item]').click()
   await expect(page).toHaveURL(/\/moj-profil/)
+}
+
+/**
+ * Leaves the current page for the registration form the way a visitor would: the desktop navbar has
+ * a `register-button`, the mobile one hides it behind the account menu.
+ */
+export const openRegistration = async (page: Page) => {
+  const registerButton = page.locator('[data-cy=register-button]')
+  if (await registerButton.isVisible().catch(() => false)) {
+    await registerButton.click()
+
+    return
+  }
+
+  await page.locator('[data-cy=mobile-account-button]').click()
+  await page.locator('[data-cy="Registrácia-menu-item"]').click()
 }
 
 /**
@@ -68,7 +81,6 @@ export const submitForm = async (
   formDataCy: string,
   { turnstile = false }: { turnstile?: boolean } = {},
 ) => {
-  await waitForHydration(page)
   if (turnstile) {
     await waitForTurnstile(page)
   }
@@ -124,17 +136,10 @@ export type AccountType = 'fyzickaOsoba' | 'pravnickaOsoba'
  */
 export const registerAccount = async (
   page: Page,
-  identity: {
-    email: string
-    password: string
-    givenName: string
-    familyName: string
-    companyName: string
-  },
+  identity: Identity,
   { accountType = 'fyzickaOsoba' }: { accountType?: AccountType } = {},
 ) => {
   await page.goto('/registracia')
-  await waitForHydration(page)
 
   const form = page.locator('[data-cy=register-form]')
 

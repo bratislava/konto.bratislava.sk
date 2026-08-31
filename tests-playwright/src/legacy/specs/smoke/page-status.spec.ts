@@ -10,7 +10,7 @@ import { smokeUrls } from '../../data/smoke-urls'
  */
 smokeUrls.forEach(({ path, status }) => {
   /** Cypress: `pageStatusVerification.cy.ts` — `Verification of successful page loading`. */
-  test(`${path} returns ${status}`, { tag: '@legacy' }, async ({ request }) => {
+  test(`${path} returns ${status}`, { tag: ['@legacy', '@smoke'] }, async ({ request }) => {
     const response = await request.get(path, { maxRedirects: 0 })
 
     expect(response.status()).toBe(status)

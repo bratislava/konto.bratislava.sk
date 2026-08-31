@@ -44,6 +44,9 @@ test(
   'stanovisko k investičnému zámeru is filled in and the summary has no errors',
   { tag: '@legacy' },
   async ({ page }) => {
+    // Six steps plus an upload through forms-backend and ClamAV — past the default 30s.
+    test.slow()
+
     await openForm(page, SLUG)
 
     await test.step('žiadateľ — empty step is rejected', async () => {

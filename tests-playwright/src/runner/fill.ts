@@ -160,7 +160,7 @@ const fillNodes = async (page: Page, nodes: PlanNode[], options: FillOptions) =>
 }
 
 /** Strips `sk-SK` group separators (including non-breaking spaces) and normalises the decimal mark. */
-const normalizeNumeric = (value: string) => value.replace(/[\s  ]/g, '').replace(',', '.')
+const normalizeNumeric = (value: string) => value.replace(/\s/g, '').replace(',', '.')
 
 /**
  * Re-reads what was filled and reports drift instead of blindly re-typing it.

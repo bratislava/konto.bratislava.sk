@@ -586,12 +586,19 @@ const fillZnizenie = async (page: Page, data: TaxFormData) => {
 
 const EXAMPLES = [example1, example2, example3, example4, example5, example5NoCalculators]
 
+/* eslint-disable playwright/no-conditional-in-test --
+   Three of the six examples include the spouse step, so the branch follows the example data
+   rather than page state. Splitting it into with-spouse and without-spouse tests would
+   duplicate the whole step sequence to satisfy the rule. */
 EXAMPLES.forEach((example) => {
   /** Cypress: F05 `formRealEstateTaxReturn.cy.ts` — `it` 1–17. */
   test(
     `${example.name} is filled in and the summary has no errors`,
     { tag: '@legacy' },
     async ({ page }) => {
+      // Eight steps, up to ~100 fields and a real upload per scenario — well past the default 30s.
+      test.slow()
+
       const data = example.formData as TaxFormData
 
       await openForm(page, SLUG)
@@ -620,11 +627,14 @@ EXAMPLES.forEach((example) => {
       // The four tax steps have no negative check to make: their gate defaults to "Nie", which
       // satisfies the only requirement, so an empty step legitimately advances.
       await test.step('daň z pozemkov', () => fillDanZPozemkov(page, data))
+
       await test.step('daň zo stavieb — jeden účel', () => fillDanZoStaviebJedenUcel(page, data))
+
       await test.step('daň zo stavieb — viaceré účely', () =>
         fillDanZoStaviebViacereUcely(page, data))
 
       const hasSpouse = Boolean(data.bezpodieloveSpoluvlastnictvoManzelov)
+
       await test.step('daň z bytov a nebytových priestorov', () =>
         fillDanZBytov(
           page,
@@ -640,6 +650,7 @@ EXAMPLES.forEach((example) => {
             'root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_meno',
           ])
         })
+
         await test.step('bezpodielové spoluvlastníctvo manželov', () => fillManzel(page, data))
       }
 

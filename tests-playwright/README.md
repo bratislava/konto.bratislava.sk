@@ -9,18 +9,16 @@ not start it — building writes `next/.env.production.local`, and a test runner
 app package as a side effect. `globalSetup` health-checks the base URL and fails fast if it is down.
 
 ```bash
-pnpm --filter city-account-playwright-tests run test:playwright
+pnpm --filter city-account-playwright-tests run test
 ```
 
-| Command                               | What it runs                            |
-| ------------------------------------- | --------------------------------------- |
-| `test:playwright`                     | everything: smoke + desktop + mobile    |
-| `test:playwright:smoke`               | six URL status checks, no browser       |
-| `test:playwright:desktop` / `:mobile` | one viewport                            |
-| `test:playwright:legacy`              | `src/legacy` — the Cypress port         |
-| `test:playwright:runner`              | everything except that                  |
-| `test:playwright:ui`                  | Playwright UI mode                      |
-| `typecheck`                           | `tsc` — catches schema drift, see below |
+| Command       | What it runs                            |
+| ------------- | --------------------------------------- |
+| `test`        | everything: smoke + desktop + mobile    |
+| `test:ui`     | Playwright UI mode                      |
+| `test:report` | opens the last HTML report              |
+| `lint`        | `eslint src`                            |
+| `typecheck`   | `tsc` — catches schema drift, see below |
 
 `E2E_BASE_URL` points the suite elsewhere (default `http://localhost:3000`). `E2E_VIDEO=on` records
 passing tests too.
@@ -83,7 +81,8 @@ upload and persistence need a real form instance.
 
 ## Parallelism
 
-Everything runs in parallel, on both viewports. There is no shared account and no serial mode: every
+Everything runs in parallel, on both devices — `Desktop Chrome` and `Pixel 5`. There is no shared
+account and no serial mode: every
 test that needs an account registers its own through the `registeredAccount` fixture. That is cheap
 because the staging pool auto-confirms the `cypress.test` domain, so no verification e-mail is sent.
 

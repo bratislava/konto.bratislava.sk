@@ -1,13 +1,10 @@
 {
   "name": "city-account-playwright-tests",
   "scripts": {
-    "test:playwright": "playwright test",
-    "test:playwright:smoke": "playwright test --project=smoke",
-    "test:playwright:desktop": "playwright test --project=desktop",
-    "test:playwright:mobile": "playwright test --project=mobile",
-    "test:playwright:runner": "playwright test --grep-invert @legacy",
-    "test:playwright:ui": "playwright test --ui",
-    "test:playwright:report": "playwright show-report",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "lint": "eslint src",
     "typecheck": "tsc",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
@@ -16,11 +13,15 @@
     "forms-shared": "workspace:*"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@playwright/test": "catalog:",
     "@rjsf/utils": "catalog:",
     "@types/node": "catalog:",
+    "eslint": "10.9.1",
+    "eslint-plugin-playwright": "2.11.0",
     "prettier": "3.8.1",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.68.0"
   },
   "volta": {
     "extends": "../package.json"

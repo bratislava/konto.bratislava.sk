@@ -1,6 +1,5 @@
 import { expect, test } from '../../fixtures'
 import { expectFieldErrors, submitForm } from '../../pages/AccountPage'
-import { waitForHydration } from '../../pages/FormPage'
 
 /**
  * The forgotten-password form, against a mocked Cognito.
@@ -53,7 +52,6 @@ test.describe('forgotten password', () => {
     })
 
     await page.goto('/zabudnute-heslo')
-    await waitForHydration(page)
   })
 
   /** Cypress: RF05 `registration.cy.ts` — `1. Submitting wrong value`. */

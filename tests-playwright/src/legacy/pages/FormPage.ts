@@ -1,16 +1,5 @@
 import { expect, type Page } from '@playwright/test'
 
-/**
- * Waits for client-side hydration, which `next/src/pages/_app.tsx` signals explicitly.
- *
- * Playwright's actionability checks cover most of what `cy.waitForHydration()` was for, but the
- * form is entirely client-rendered, so gating on the flag avoids interacting with server HTML that
- * is about to be replaced.
- */
-export const waitForHydration = async (page: Page) => {
-  await page.locator('body[data-cy-hydrated="true"]').waitFor({ state: 'attached' })
-}
-
 const formContainer = (page: Page) => page.locator('[data-cy=form-container]')
 
 /**
@@ -36,7 +25,7 @@ export const openForm = async (
 
   await page.goto(`/mestske-sluzby/${slug}`)
 
-  const cta = page.locator('[data-cy=form-cta-button]').locator('visible=true').first()
+  const cta = page.locator('[data-cy=form-cta-button]').filter({ visible: true }).first()
   await Promise.race([
     page.waitForURL(onFormInstance, { timeout: 30_000 }).catch(() => {}),
     cta.waitFor({ state: 'visible', timeout: 30_000 }).catch(() => {}),
@@ -55,7 +44,6 @@ export const openForm = async (
     await page.waitForURL(onFormInstance)
   }
 
-  await waitForHydration(page)
   await expect(formContainer(page)).toBeVisible()
 
   if (dismissRegistrationModal) {

@@ -79,7 +79,6 @@ SLUGS.forEach((slug) => {
         const { schema } = formDefinition
         const plan = buildPlan(schema, example.formData)
         const queryParams = stepQueryParams(schema)
-        const firstStep = queryParams[stepProperty(plan.steps[0])]
 
         const mismatches: string[] = []
 

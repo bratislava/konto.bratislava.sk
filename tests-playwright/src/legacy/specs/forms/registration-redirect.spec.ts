@@ -1,8 +1,13 @@
 import type { Page } from '@playwright/test'
 
 import { expect, test } from '../../fixtures'
-import { expectRegistrationSuccess, logOut, submitForm } from '../../pages/AccountPage'
-import { openForm, waitForHydration } from '../../pages/FormPage'
+import {
+  expectRegistrationSuccess,
+  logOut,
+  openRegistration,
+  submitForm,
+} from '../../pages/AccountPage'
+import { openForm } from '../../pages/FormPage'
 import { continueButton, field } from '../../helpers'
 
 /**
@@ -41,11 +46,6 @@ test(
   async ({ page, identity }) => {
     await openForm(page, SLUG)
 
-    const closeModal = page.locator('[data-cy=close-modal]')
-    if (await closeModal.isVisible().catch(() => false)) {
-      await closeModal.click()
-    }
-
     // Captured before leaving, so the draft can be compared against it afterwards.
     const formUrl = page.url()
 
@@ -58,24 +58,8 @@ test(
     })
 
     await test.step('leave the form for registration', async () => {
-      // Desktop shows the register button in the navbar; mobile hides it behind the account menu.
-      const registerButton = page.locator('[data-cy=register-button]')
-      if (await registerButton.isVisible().catch(() => false)) {
-        await registerButton.click()
-      } else {
-        await page.locator('[data-cy=mobile-account-button]').click()
-        await page.locator('[data-cy="Registrácia-menu-item"]').click()
-      }
-
-      // Leaving a form with unsaved work routes through the registration modal rather than
-      // navigating straight away, so accept either path.
-      const modalButton = page.locator('[data-cy=registration-modal-button]')
-      if (await modalButton.isVisible({ timeout: 5_000 }).catch(() => false)) {
-        await modalButton.click()
-      }
-
+      await openRegistration(page)
       await page.waitForURL(/\/registracia/)
-      await waitForHydration(page)
     })
 
     await test.step('register', async () => {
@@ -96,7 +80,6 @@ test(
       // taking the user straight back to the form they came from.
       await page.locator('[data-cy=back-button]').click()
       await page.waitForURL(formUrl)
-      await waitForHydration(page)
     })
 
     const migrationModal = page.getByRole('dialog').filter({ hasText: 'Pokračovať vo vypĺňaní?' })
@@ -131,7 +114,6 @@ test(
 
       expect((await claimed).ok()).toBe(true)
       await reloaded
-      await waitForHydration(page)
     })
 
     await test.step('form is filled in and editable', async () => {

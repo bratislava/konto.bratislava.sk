@@ -47,6 +47,9 @@ test(
   'záväzné stanovisko k investičnej činnosti is filled in and the summary has no errors',
   { tag: '@legacy' },
   async ({ page }) => {
+    // Seven steps plus two uploads through forms-backend and ClamAV — past the default 30s.
+    test.slow()
+
     await openForm(page, SLUG)
 
     await test.step('žiadateľ — empty step is rejected', async () => {

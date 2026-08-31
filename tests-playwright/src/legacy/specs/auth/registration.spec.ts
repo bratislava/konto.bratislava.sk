@@ -5,9 +5,9 @@ import {
   logIn,
   logOut,
   openProfile,
+  registerAccount,
   submitForm,
 } from '../../pages/AccountPage'
-import { waitForHydration } from '../../pages/FormPage'
 
 /**
  * Registration of both account types, and the e-mail and password changes that follow it.
@@ -22,7 +22,6 @@ import { waitForHydration } from '../../pages/FormPage'
 /** Cypress: RF01 `registration.cy.ts` — `it` 1–6. */
 test('registering a personal account', { tag: '@legacy' }, async ({ page, identity }) => {
   await page.goto('/registracia')
-  await waitForHydration(page)
 
   await test.step('empty form is rejected with errors', async () => {
     await submitForm(page, 'register-form', { turnstile: true })
@@ -56,7 +55,6 @@ test('registering a personal account', { tag: '@legacy' }, async ({ page, identi
 /** Cypress: RF02 `registrationPO.cy.ts` — `it` 1–6. */
 test('registering a company account', { tag: '@legacy' }, async ({ page, identity }) => {
   await page.goto('/registracia')
-  await waitForHydration(page)
 
   const form = page.locator('[data-cy=register-form]')
   await form.locator('[data-cy="radio-právnická-osoba"]').click()
@@ -86,9 +84,14 @@ test('registering a company account', { tag: '@legacy' }, async ({ page, identit
  *
  * Cypress: A02 `registration.cy.ts` — `it` 1–5.
  */
-test('changing e-mail and password', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
+test('changing e-mail and password', { tag: '@legacy' }, async ({ page, identity }) => {
+  // Registers, signs out, signs in, changes the e-mail and changes the password: five sequential
+  // Cognito round-trips, two of them behind Turnstile.
+  test.slow()
+
+  await registerAccount(page, identity)
   await logOut(page)
-  await logIn(page, registeredAccount.email, registeredAccount.password)
+  await logIn(page, identity.email, identity.password)
 
   await test.step('change e-mail', async () => {
     await openProfile(page)
@@ -97,22 +100,21 @@ test('changing e-mail and password', { tag: '@legacy' }, async ({ page, register
     await expect(page).toHaveURL(/\/zmena-emailu/)
 
     const form = page.locator('[data-cy=change-email-form]')
-    await form.locator('[data-cy=input-newEmail]').fill(registeredAccount.email)
-    await form.locator('[data-cy=input-password]').fill(registeredAccount.password)
+    await form.locator('[data-cy=input-newEmail]').fill(identity.email)
+    await form.locator('[data-cy=input-password]').fill(identity.password)
     await page.locator('[data-cy=change-email-submit]').click()
 
-    await expectRegistrationSuccess(page, registeredAccount.email)
+    await expectRegistrationSuccess(page, identity.email)
   })
 
   await test.step('change password', async () => {
     await page.goto('/moj-profil')
-    await waitForHydration(page)
     await page.locator('[data-cy=change-password-button]').click()
     await expect(page).toHaveURL(/\/zmena-hesla/)
 
     const form = page.locator('[data-cy=change-password-form]')
-    await form.locator('[data-cy=input-oldPassword]').fill(registeredAccount.password)
-    await form.locator('[data-cy=input-password]').fill(registeredAccount.password)
+    await form.locator('[data-cy=input-oldPassword]').fill(identity.password)
+    await form.locator('[data-cy=input-password]').fill(identity.password)
     await page.locator('[data-cy=change-password-submit]').click()
 
     await expect(page.locator('[data-cy=success-alert]')).toBeVisible()
@@ -122,7 +124,9 @@ test('changing e-mail and password', { tag: '@legacy' }, async ({ page, register
 })
 
 /** Cypress: RF01 `registration.cy.ts` — `7. Logout user`; RF02 `registrationPO.cy.ts` — `8. Logout user`. */
-test('signing out', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
-  void registeredAccount
+test('signing out', { tag: '@legacy' }, async ({ page, identity }) => {
+  await registerAccount(page, identity)
   await logOut(page)
+
+  await expect(page.locator('[data-cy=login-container]')).toBeVisible()
 })

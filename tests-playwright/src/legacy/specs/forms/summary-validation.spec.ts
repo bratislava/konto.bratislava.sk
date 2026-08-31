@@ -1,7 +1,14 @@
 import { expect, test } from '@playwright/test'
 
 import { openForm } from '../../pages/FormPage'
-import { continueButton, expectStepRejected, field, formContainer, summaryRow } from '../../helpers'
+import {
+  continueButton,
+  expectStepRejected,
+  field,
+  formContainer,
+  openStep,
+  summaryRow,
+} from '../../helpers'
 
 /**
  * Invalid input has to survive to the summary step and be flagged there rather than silently lost.
@@ -29,12 +36,6 @@ test(
   async ({ page }) => {
     await openForm(page, SLUG)
 
-    // A guest opening the form is greeted by the registration modal.
-    const closeModal = page.locator('[data-cy=close-modal]')
-    if (await closeModal.isVisible().catch(() => false)) {
-      await closeModal.click()
-    }
-
     await test.step('empty step is rejected', async () => {
       await expectStepRejected(page, 'ziadatel', [
         'root_ziadatel_meno',
@@ -58,13 +59,7 @@ test(
     })
 
     await test.step('jump to the summary step via the stepper', async () => {
-      const stepper = page.locator('[data-cy=stepper-desktop], [data-cy=stepper-mobile]')
-      const dropdown = page.locator('[data-cy=stepper-dropdown]')
-      if (await dropdown.isVisible().catch(() => false)) {
-        await dropdown.click()
-      }
-
-      await stepper.locator('[data-cy=stepper-step-6]').locator('visible=true').first().click()
+      await openStep(page, 6)
       await expect(formContainer(page)).toBeVisible()
     })
 

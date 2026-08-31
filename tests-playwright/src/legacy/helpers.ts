@@ -163,7 +163,7 @@ export const attachFiles = async (page: Page, id: string, fileNames: string[]) =
  * Picking the visible one means no test ever needs to know which viewport it is running in.
  */
 export const continueButton = (page: Page): Locator =>
-  page.locator('[data-cy^=continue-button-]').locator('visible=true')
+  page.locator('[data-cy^=continue-button-]').filter({ visible: true })
 
 /** The form itself, as opposed to the page around it. Visible once RJSF has rendered a step. */
 export const formContainer = (page: Page): Locator => page.locator('[data-cy=form-container]')
@@ -174,6 +174,24 @@ export const formContainer = (page: Page): Locator => page.locator('[data-cy=for
  */
 export const summaryRow = (page: Page, fieldId: string): Locator =>
   page.locator(`[data-cy="summary-row-${fieldId}"]`)
+
+/**
+ * Jumps straight to a step through the stepper. The mobile layout collapses it into a dropdown that
+ * has to be opened first; the desktop one lists the steps inline.
+ */
+export const openStep = async (page: Page, index: number) => {
+  const dropdown = page.locator('[data-cy=stepper-dropdown]')
+  if (await dropdown.isVisible().catch(() => false)) {
+    await dropdown.click()
+  }
+
+  await page
+    .locator('[data-cy=stepper-desktop], [data-cy=stepper-mobile]')
+    .locator(`[data-cy=stepper-step-${index}]`)
+    .filter({ visible: true })
+    .first()
+    .click()
+}
 
 /** Submits the step and asserts the form moved to the expected `krok`. */
 export const continueTo = async (page: Page, krok: string) => {

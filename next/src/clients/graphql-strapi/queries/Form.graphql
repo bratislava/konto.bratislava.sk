@@ -73,3 +73,9 @@ query FormWithLandingPageBySlug($slug: String!) {
     ...FormWithLandingPage
   }
 }
+
+query FormsStaticPaths($limit: Int = -1) {
+  forms(sort: "createdAt:desc", pagination: { limit: $limit }) {
+    ...FormBase
+  }
+}

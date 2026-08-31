@@ -1,67 +1,45 @@
 import { Typography } from '@bratislava/component-library'
-import { useState } from 'react'
 
 import Tag from '@/src/components/simple-components/Tag'
-import logger from '@/src/frontend/utils/logger'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
 const TagShowCase = () => {
-  const [removableTag, setRemovableTag] = useState<string | null>('Real onRemove')
-
   return (
     <Wrapper direction="column" title="Tag">
-      <Typography>
-        WARNING: branded colors are automatically set from primary and secondary colors from
-        tailwind config as its set brand{' '}
-      </Typography>
+      <Typography>Variants (size small)</Typography>
       <Stack>
-        <Tag text="Defaulttttttttttttttttttt" />
+        <Tag text="Default" />
+        <Tag text="Success" variant="success" />
+        <Tag text="Warning" variant="warning" />
+        <Tag text="Error" variant="error" />
+      </Stack>
+
+      <Typography>Variants (size large)</Typography>
+      <Stack>
+        <Tag text="Default" size="large" />
+        <Tag text="Success" size="large" variant="success" />
+        <Tag text="Warning" size="large" variant="warning" />
+        <Tag text="Error" size="large" variant="error" />
+      </Stack>
+
+      <Typography>Text length</Typography>
+      <Stack>
         <Tag text="D" />
         <Tag text="Default" />
-      </Stack>
-      <Stack>
-        <Tag text="Defaulttttttttttttttttttt" size="large" />
+        <Tag text="Defaulttttttttttttttttttt" />
         <Tag text="D" size="large" />
         <Tag text="Default" size="large" />
+        <Tag text="Defaulttttttttttttttttttt" size="large" />
       </Stack>
+
+      <Typography>Shorthand (text longer than 10 characters is truncated)</Typography>
       <Stack>
-        {removableTag && (
-          <Tag text="Real onRemove" size="large" onRemove={() => setRemovableTag(null)} removable />
-        )}
-        <Tag
-          text="Console.log onRemove"
-          size="small"
-          onRemove={() => logger.info('TAG REMOVED')}
-          removable
-        />
-      </Stack>
-      <Stack>
-        <Tag text="Brandeeeeeeeeeeeeeeeed" branded />
-        <Tag text="B" branded />
-        <Tag text="Branded" branded />
-      </Stack>
-      <Stack>
-        <Tag text="Brandeeeeeeeeeeeeeeeed" size="large" branded />
-        <Tag text="B" size="large" branded />
-        <Tag text="Branded" size="large" branded />
-      </Stack>
-      <Stack>
-        <Tag
-          text="Console.log onRemove"
-          size="large"
-          onRemove={() => logger.info('TAG REMOVED')}
-          removable
-          branded
-        />
-        <Tag
-          text="Console.log onRemove"
-          size="small"
-          onRemove={() => logger.info('TAG REMOVED')}
-          removable
-          branded
-        />
+        <Tag text="Defaulttttttttttttttttttt" shorthand />
+        <Tag text="Short" shorthand />
+        <Tag text="Errorrrrrrrrrrrrrrrrrrrrr" variant="error" shorthand />
+        <Tag text="Defaulttttttttttttttttttt" size="large" shorthand />
       </Stack>
     </Wrapper>
   )

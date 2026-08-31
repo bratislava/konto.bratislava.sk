@@ -478,7 +478,6 @@
   "SummaryHeader.virusAlertPlural": "Súbory “{{files}}“ obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
   "SummaryRow.aria.edit": "Upraviť",
   "TableOfContents.title": "Obsah stránky",
-  "Tag.aria.remove": "Odstrániť",
   "TaxAccordions.taxTypes.APARTMENT": "Daň z bytov",
   "TaxAccordions.taxTypes.CONSTRUCTION": "Daň zo stavieb",
   "TaxAccordions.taxTypes.GROUND": "Daň z pozemkov",

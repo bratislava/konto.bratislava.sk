@@ -1,74 +1,42 @@
-import { Button, Typography } from '@bratislava/component-library'
-import { useTranslation } from 'next-i18next/pages'
-import { FC, useState } from 'react'
+import { Typography } from '@bratislava/component-library'
 
-import Icon from '@/src/components/icon-components/Icon'
 import cn from '@/src/utils/cn'
 
-interface TagProps {
+type Props = {
+  variant?: 'default' | 'warning' | 'success' | 'error'
+  size?: 'small' | 'large'
   text: string
-  removable?: boolean
-  size?: 'large' | 'small'
-  branded?: boolean
   shorthand?: boolean
-  onRemove?: () => void
 }
+
+const MAX_SHORTHAND_TEXT_LENGTH = 10
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=16846-13191&m=dev
  * TODO align with design system
  */
 
-const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove }: TagProps) => {
-  const { t } = useTranslation()
-
-  // STATE
-  const [isHovered, setIsHovered] = useState<boolean>(false)
-
-  // STYLES
-  const classStyles = cn('flex h-5 min-w-14 items-center gap-2.5 px-2 text-center', {
-    'text-size-p-small-r lg:text-size-p-small': size === 'large',
-    'text-size-p-tiny-r lg:text-size-p-tiny': size === 'small' || !size,
-    'py-0.5': size === 'large',
-    'rounded-lg': size === 'large',
-    rounded: size === 'small' || !size,
-    'bg-gray-100': removable || !branded,
-    'text-gray-700': (removable || !branded) && !isHovered,
-    'text-gray-600': removable && isHovered,
-    'bg-category-200': !removable && branded,
-    'text-category-800': !removable && branded,
-    underline: !removable && isHovered,
-  })
-
-  const iconClassStyles = cn({
-    'size-3 text-size-p-small-r lg:text-size-p-small': size === 'large',
-    'size-2.5 text-size-p-tiny-r lg:text-size-p-tiny': size === 'small' || !size,
-  })
-
-  const MAX_TEXT_SIZE = 10
-  const tagText = shorthand
-    ? `${text.slice(0, MAX_TEXT_SIZE)}${text.length > MAX_TEXT_SIZE ? '...' : ''}`
+const Tag = ({ variant = 'default', text, shorthand, size = 'small' }: Props) => {
+  const textToRender = shorthand
+    ? `${text.slice(0, MAX_SHORTHAND_TEXT_LENGTH)}${text.length > MAX_SHORTHAND_TEXT_LENGTH ? '...' : ''}`
     : text
 
-  // RENDER
-  /* class name tag is crucial for good working of select dropdown */
   return (
     <div
-      className={classStyles}
-      onMouseOver={() => setIsHovered(true)}
-      onFocus={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <Typography className="inline-block cursor-default select-none">{tagText}</Typography>
-      {removable && (
-        // TODO implement correct variant and larger clickable area
-        <Button
-          icon={<Icon name="close" className={iconClassStyles} />}
-          onPress={onRemove}
-          aria-label={t('Tag.aria.remove')}
-          className="shrink-0"
-        />
+      className={cn(
+        'flex items-center rounded-sm px-2 py-0.5',
+        { 'py-1': size === 'large' },
+        'bg-background-passive-secondary text-content-passive-secondary',
+        {
+          'bg-background-success-soft-default text-content-success-default': variant === 'success',
+          'bg-background-warning-soft-default text-content-warning-default': variant === 'warning',
+          'bg-background-error-soft-default text-content-error-default': variant === 'error',
+        },
       )}
+    >
+      <Typography variant="p-small" className="inline-block cursor-default select-none">
+        {textToRender}
+      </Typography>
     </div>
   )
 }

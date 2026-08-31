@@ -12,6 +12,7 @@ import MyApplicationsPageContent from '@/src/components/page-contents/MyApplicat
 import { getEmailFormSlugs } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededServer'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 
 type AccountMyApplicationsPageProps = {
   general: GeneralQuery
@@ -73,14 +74,18 @@ const AccountMyApplicationsPage = ({
 
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout title={t('MyApplicationsPageContent.title')}>
-        <MyApplicationsPageContent
-          selectedSection={selectedSection}
-          applications={applications}
-          formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          emailFormSlugs={emailFormSlugs}
-        />
-      </PageLayout>
+      <>
+        <SeoHead title={t('MyApplicationsPageContent.title')} />
+
+        <PageLayout>
+          <MyApplicationsPageContent
+            selectedSection={selectedSection}
+            applications={applications}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+            emailFormSlugs={emailFormSlugs}
+          />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

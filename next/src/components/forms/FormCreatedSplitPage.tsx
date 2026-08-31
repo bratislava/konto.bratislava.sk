@@ -8,6 +8,7 @@ import FormLandingPage, {
 import MunicipalServicePageContent, {
   MunicipalServicePageContentProps,
 } from '@/src/components/page-contents/MunicipalServicePageContent/MunicipalServicePageContent'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 
 export type FormCreatedSplitPageProps =
   | ({
@@ -28,17 +29,25 @@ const FormCreatedSplitPage = (props: FormCreatedSplitPageProps) => {
   // eslint-disable-next-line react/destructuring-assignment
   if (props.type === 'landingPage') {
     return (
-      <PageLayout title={props.formDefinition.title}>
-        <FormLandingPage {...props} />
-      </PageLayout>
+      <>
+        <SeoHead title={props.formDefinition.title} />
+
+        <PageLayout>
+          <FormLandingPage {...props} />
+        </PageLayout>
+      </>
     )
   }
 
   if (props.type === 'municipalService') {
     return (
-      <PageLayout title={props.municipalService.title}>
-        <MunicipalServicePageContent {...props} />
-      </PageLayout>
+      <>
+        <SeoHead title={props.municipalService.title} />
+
+        <PageLayout>
+          <MunicipalServicePageContent {...props} />
+        </PageLayout>
+      </>
     )
   }
 

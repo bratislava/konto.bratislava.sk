@@ -18,6 +18,7 @@ import AccountActivator from '@/src/components/segments/AccountActivator/Account
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { UserAttributes } from '@/src/frontend/dtos/accountDto'
 import {
   AmplifyClientOAuthProvider,
@@ -359,43 +360,47 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth" title={t('registracia.title')}>
-          {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
+        <>
+          <SeoHead title={t('registracia.title')} />
 
-          <AccountContainer
-            dataCyPrefix="registration"
-            ref={accountContainerRef}
-            className="flex flex-col gap-8 lg:gap-10"
-          >
-            {registrationStatus === RegistrationStatus.INIT && (
-              <>
-                <RegisterForm
+          <PageLayout variant="auth">
+            {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
+
+            <AccountContainer
+              dataCyPrefix="registration"
+              ref={accountContainerRef}
+              className="flex flex-col gap-8 lg:gap-10"
+            >
+              {registrationStatus === RegistrationStatus.INIT && (
+                <>
+                  <RegisterForm
+                    lastEmail={lastEmail}
+                    onSubmit={handleSignUp}
+                    error={registrationError}
+                  />
+                  <HorizontalDivider />
+                  <AccountLink variant="login" />
+                </>
+              )}
+              {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
+                <EmailVerificationForm
                   lastEmail={lastEmail}
-                  onSubmit={handleSignUp}
+                  onResend={resendVerificationCode}
+                  onSubmit={verifyEmail}
                   error={registrationError}
                 />
-                <HorizontalDivider />
-                <AccountLink variant="login" />
-              </>
-            )}
-            {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
-              <EmailVerificationForm
-                lastEmail={lastEmail}
-                onResend={resendVerificationCode}
-                onSubmit={verifyEmail}
-                error={registrationError}
-              />
-            )}
-            {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
-              registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
-              <AccountSuccessAlert
-                title={t('RegisterPage.successTitle')}
-                description={t('RegisterPage.successDescription', { email: lastEmail })}
-                {...accountSuccessAlertProps}
-              />
-            )}
-          </AccountContainer>
-        </PageLayout>
+              )}
+              {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
+                registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
+                <AccountSuccessAlert
+                  title={t('RegisterPage.successTitle')}
+                  description={t('RegisterPage.successDescription', { email: lastEmail })}
+                  {...accountSuccessAlertProps}
+                />
+              )}
+            </AccountContainer>
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )

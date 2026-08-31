@@ -9,6 +9,7 @@ import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import MunicipalServicesPageContent, {
   MunicipalServicesPageContentProps,
 } from '@/src/components/page-contents/MunicipalServicesPageContent/MunicipalServicesPageContent'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { isDefined } from '@/src/frontend/utils/general'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
@@ -70,14 +71,18 @@ const AccountMunicipalServicesPage = ({
 
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout title={t('MunicipalServicesPageContent.title')}>
-        <MunicipalServicesPageContent
-          services={services}
-          categories={categories}
-          servicesLegalPerson={servicesLegalPerson}
-          categoriesLegalPerson={categoriesLegalPerson}
-        />
-      </PageLayout>
+      <>
+        <SeoHead title={t('MunicipalServicesPageContent.title')} />
+
+        <PageLayout>
+          <MunicipalServicesPageContent
+            services={services}
+            categories={categories}
+            servicesLegalPerson={servicesLegalPerson}
+            categoriesLegalPerson={categoriesLegalPerson}
+          />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

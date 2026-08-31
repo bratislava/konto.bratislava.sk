@@ -13,6 +13,7 @@ import { FormSentProvider, useFormSent } from '@/src/components/forms/useFormSen
 import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import FormSentPageContent from '@/src/components/page-contents/FormSentPageContent/FormSentPageContent'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import cn from '@/src/utils/cn'
 
 /**
@@ -48,14 +49,18 @@ const FormPageContent = ({ nonce }: { nonce?: string }) => {
         <ConditionalWrap
           condition={!isEmbedded}
           wrap={(children) => (
-            <PageLayout
-              className={cn({
-                'bg-gray-0 lg:bg-gray-50': formPageState === 'sent' || formPageState === 'outdated',
-              })}
-              title={title}
-            >
-              {children}
-            </PageLayout>
+            <>
+              <SeoHead title={title} />
+
+              <PageLayout
+                className={cn({
+                  'bg-gray-0 lg:bg-gray-50':
+                    formPageState === 'sent' || formPageState === 'outdated',
+                })}
+              >
+                {children}
+              </PageLayout>
+            </>
           )}
         >
           {formPageState === 'sent' ? <FormSentPageContent /> : null}

@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { ReactNode } from 'react'
 
 import { useNavbarHeight } from '@/src/components/layouts/useNavbarHeight'
@@ -17,30 +16,17 @@ type Props = {
   variant?: 'default' | 'auth'
   hasBackButton?: boolean
   className?: string
-  title?: string
 }
 
 /**
  * Figma: https://www.figma.com/design/17wbd0MDQcMW9NbXl6UPs8/DS--Component-library?node-id=19549-21361&m=dev
  */
 
-const PageLayout = ({
-  variant = 'default',
-  className,
-  title,
-  children,
-  hasBackButton = false,
-}: Props) => {
+const PageLayout = ({ variant = 'default', className, children, hasBackButton = false }: Props) => {
   const { navbarHeight, desktopNavbarRef, mobileNavbarRef } = useNavbarHeight()
 
   return (
     <div className={cn('flex min-h-dvh flex-col', className)}>
-      {title ? (
-        <Head>
-          <title>{title}</title>
-        </Head>
-      ) : null}
-
       <header className="relative">
         <NavBar
           variant={variant}

@@ -7,6 +7,7 @@ import { GeneralContextProvider } from '@/src/components/logic/GeneralContextPro
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import PaymentResultPageContent from '@/src/components/page-contents/PaymentResultPageContent/PaymentResultPageContent'
 import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
@@ -40,9 +41,13 @@ const PaymentResultPage = ({ general, strapiTaxConfig }: Props) => {
   return (
     <GeneralContextProvider general={general}>
       <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
-        <PageLayout className="lg:bg-gray-50" title={t('platba.stav.title')}>
-          <PaymentResultPageContent />
-        </PageLayout>
+        <>
+          <SeoHead title={t('platba.stav.title')} />
+
+          <PageLayout className="lg:bg-gray-50">
+            <PaymentResultPageContent />
+          </PageLayout>
+        </>
       </StrapiTaxConfigProvider>
     </GeneralContextProvider>
   )

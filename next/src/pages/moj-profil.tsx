@@ -7,6 +7,7 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import UserProfilePageContent from '@/src/components/page-contents/UserProfilePageContent/UserProfilePageContent'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
@@ -40,9 +41,13 @@ const MojProfil = ({ general, dehydratedState }: MojProfilProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
-        <PageLayout title={t('UserProfilePageContent.title')}>
-          <UserProfilePageContent />
-        </PageLayout>
+        <>
+          <SeoHead title={t('UserProfilePageContent.title')} />
+
+          <PageLayout>
+            <UserProfilePageContent />
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </HydrationBoundary>
   )

@@ -8,6 +8,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import cn from '@/src/utils/cn'
 
 /**
@@ -35,6 +36,8 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
 
   return (
     <>
+      <SeoHead title={formDefinition.title} />
+
       {/* Header */}
       <SectionContainer className="size-full bg-background-passive-primary py-6 lg:min-h-[120px] lg:py-12">
         <div className="flex flex-col gap-2 lg:gap-4">

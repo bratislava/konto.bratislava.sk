@@ -6,6 +6,7 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import HelpPageContent from '@/src/components/page-contents/HelpPageContent/HelpPageContent'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
@@ -40,9 +41,13 @@ const AccountHelpPage = ({ general, helpPage }: AccountHelpPageProps) => {
 
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout title={t('HelpPageContent.title')}>
-        <HelpPageContent helpPage={helpPage} />
-      </PageLayout>
+      <>
+        <SeoHead title={t('HelpPageContent.title')} />
+
+        <PageLayout>
+          <HelpPageContent helpPage={helpPage} />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

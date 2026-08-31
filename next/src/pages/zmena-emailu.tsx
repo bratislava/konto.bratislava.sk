@@ -18,6 +18,7 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useSsrAuth } from '@/src/frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -199,31 +200,34 @@ const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout
-          variant="auth"
-          hasBackButton={emailChangeStatus !== EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
-          title={t('zmena-emailu.title')}
-        >
-          <AccountContainer ref={accountContainerRef}>
-            {emailChangeStatus === EmailChangeStatus.INIT ? (
-              <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
-            ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
-              <EmailVerificationForm
-                lastEmail={lastEmail}
-                onResend={resendVerificationCode}
-                onSubmit={verifyEmail}
-                error={emailChangeError}
-              />
-            ) : (
-              <AccountSuccessAlert
-                title={t('EmailChangePage.successTitle')}
-                confirmLabel={t('auth.continueToAccount')}
-                onConfirm={onConfirm}
-                description={t('EmailChangePage.successDescription', { email: lastEmail })}
-              />
-            )}
-          </AccountContainer>
-        </PageLayout>
+        <>
+          <SeoHead title={t('zmena-emailu.title')} />
+
+          <PageLayout
+            variant="auth"
+            hasBackButton={emailChangeStatus !== EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+          >
+            <AccountContainer ref={accountContainerRef}>
+              {emailChangeStatus === EmailChangeStatus.INIT ? (
+                <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
+              ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
+                <EmailVerificationForm
+                  lastEmail={lastEmail}
+                  onResend={resendVerificationCode}
+                  onSubmit={verifyEmail}
+                  error={emailChangeError}
+                />
+              ) : (
+                <AccountSuccessAlert
+                  title={t('EmailChangePage.successTitle')}
+                  confirmLabel={t('auth.continueToAccount')}
+                  onConfirm={onConfirm}
+                  description={t('EmailChangePage.successDescription', { email: lastEmail })}
+                />
+              )}
+            </AccountContainer>
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )

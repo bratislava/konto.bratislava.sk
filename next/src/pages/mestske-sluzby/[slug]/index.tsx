@@ -1,7 +1,6 @@
 import { isAxiosError } from 'axios'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import Head from 'next/head'
 
 import { formsClient } from '@/src/clients/forms'
 import { strapiClient } from '@/src/clients/graphql-strapi'

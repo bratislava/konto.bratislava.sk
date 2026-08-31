@@ -19,6 +19,7 @@ import TaxesPageContent from '@/src/components/page-contents/TaxesPageContent/Ta
 import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxAdministrator'
 import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import { TaxesDataProvider } from '@/src/components/page-contents/TaxesPageContent/useTaxesData'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -128,9 +129,13 @@ const TaxesPage = ({
         <TaxesDataProvider taxesData={taxesData}>
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
-              <PageLayout title={t('TaxesPageContent.title')}>
-                <TaxesPageContent />
-              </PageLayout>
+              <>
+                <SeoHead title={t('TaxesPageContent.title')} />
+
+                <PageLayout>
+                  <TaxesPageContent />
+                </PageLayout>
+              </>
             </StrapiTaxAdministratorProvider>
           </StrapiTaxConfigProvider>
         </TaxesDataProvider>

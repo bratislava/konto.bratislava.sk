@@ -23,6 +23,7 @@ import { GeneralContextProvider } from '@/src/components/logic/GeneralContextPro
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountLink from '@/src/components/segments/AccountLink/AccountLink'
 import HorizontalDivider from '@/src/components/simple-components/HorizontalDivider'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { Tier } from '@/src/frontend/dtos/accountDto'
 import {
   AmplifyClientOAuthProvider,
@@ -189,13 +190,17 @@ const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth" title={t('prihlasenie.title')}>
-          <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
-            <LoginForm onSubmit={onLogin} error={loginError} />
-            <HorizontalDivider />
-            <AccountLink variant="registration" />
-          </AccountContainer>
-        </PageLayout>
+        <>
+          <SeoHead title={t('prihlasenie.title')} />
+
+          <PageLayout variant="auth">
+            <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">
+              <LoginForm onSubmit={onLogin} error={loginError} />
+              <HorizontalDivider />
+              <AccountLink variant="registration" />
+            </AccountContainer>
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )

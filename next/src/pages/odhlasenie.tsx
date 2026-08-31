@@ -7,6 +7,7 @@ import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import AccountSuccessAlert from '@/src/components/segments/AccountSuccessAlert/AccountSuccessAlert'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { AmplifyClientOAuthProvider } from '@/src/frontend/hooks/useAmplifyClientOAuthContext'
 import { useQueryParamRedirect } from '@/src/frontend/hooks/useQueryParamRedirect'
 import { useSignOut } from '@/src/frontend/utils/amplifyClient'
@@ -54,20 +55,24 @@ const LogoutPage = ({ general, clientInfo }: AuthPageCommonProps) => {
   return (
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
-        <PageLayout variant="auth" title={t('LogoutPage.title')}>
-          <AccountContainer>
-            <AccountSuccessAlert
-              variant="logout"
-              title={t('LogoutPage.title')}
-              description={t('LogoutPage.description')}
-              confirmLabel={t('LogoutPage.confirmLabel')}
-              onConfirm={handleLogout}
-              confirmIsLoading={isLoading}
-              cancelLabel={t('LogoutPage.cancelLabel')}
-              onCancel={() => redirect()}
-            />
-          </AccountContainer>
-        </PageLayout>
+        <>
+          <SeoHead title={t('LogoutPage.title')} />
+
+          <PageLayout variant="auth">
+            <AccountContainer>
+              <AccountSuccessAlert
+                variant="logout"
+                title={t('LogoutPage.title')}
+                description={t('LogoutPage.description')}
+                confirmLabel={t('LogoutPage.confirmLabel')}
+                onConfirm={handleLogout}
+                confirmIsLoading={isLoading}
+                cancelLabel={t('LogoutPage.cancelLabel')}
+                onCancel={() => redirect()}
+              />
+            </AccountContainer>
+          </PageLayout>
+        </>
       </GeneralContextProvider>
     </AmplifyClientOAuthProvider>
   )

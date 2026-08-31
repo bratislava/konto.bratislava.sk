@@ -6,7 +6,7 @@ import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clie
 import FormatDate from '@/src/components/formatting/FormatDate'
 import Icon from '@/src/components/icon-components/Icon'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
-import useExportFormPdf from '@/src/components/page-contents/MyApplicationsPageContent/useExportFormPdf'
+import useExportFormPdf from '@/src/frontend/hooks/useExportFormPdf'
 
 type Props = {
   formDefinitionTitle: string

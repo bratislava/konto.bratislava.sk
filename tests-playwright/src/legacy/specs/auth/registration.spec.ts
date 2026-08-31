@@ -1,5 +1,6 @@
 import { expect, test } from '../../fixtures'
 import {
+  expectFieldErrors,
   expectRegistrationSuccess,
   logIn,
   logOut,
@@ -9,30 +10,37 @@ import {
 import { waitForHydration } from '../../pages/FormPage'
 
 /**
- * Was `tests/cypress/e2e/registration/registration.cy.ts` (RF01) and `registrationPO.cy.ts` (RF02),
- * plus the nested `A02 - change email and password` block.
+ * Registration of both account types, and the e-mail and password changes that follow it.
  *
- * Each test registers its own account, so nothing is shared and they run in parallel — see
- * `src/fixtures/identity.ts` for why `Date.now()`-based addresses could not.
+ * Every test registers its own account, so nothing here is shared or ordered.
+ *
+ * Cypress sources:
+ * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/registration/registration.cy.ts
+ * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/registration/registrationPO.cy.ts
  */
 
 // Registration must start signed out; do not rely on the default.
 test.use({ storageState: { cookies: [], origins: [] } })
 
-test('registrácia fyzickej osoby', { tag: '@legacy' }, async ({ page, identity }) => {
+/** Cypress: RF01 `registration.cy.ts` — `it` 1–6. */
+test('registering a personal account', { tag: '@legacy' }, async ({ page, identity }) => {
   await page.goto('/registracia')
   await waitForHydration(page)
 
-  await test.step('prázdny formulár sa neodošle a označí chyby', async () => {
+  await test.step('empty form is rejected with errors', async () => {
     await submitForm(page, 'register-form', { turnstile: true })
 
-    // The Cypress version asserted `[aria-required=true]` had exactly 5 elements — a magic number
-    // that says nothing about which field is required.
-    await expect(page.locator('[data-cy=error-message]').first()).toBeVisible()
+    // `turnstileToken` is required too, but it has no rendered field, so it cannot be flagged.
+    await expectFieldErrors(page, 'register-form', [
+      'email',
+      'given_name',
+      'family_name',
+      'password',
+    ])
     await expect(page).toHaveURL(/\/registracia/)
   })
 
-  await test.step('vyplnenie a odoslanie', async () => {
+  await test.step('fill in and submit', async () => {
     const form = page.locator('[data-cy=register-form]')
     await expect(form.locator('[data-cy="radio-fyzická-osoba"] input')).toBeChecked()
 
@@ -48,32 +56,44 @@ test('registrácia fyzickej osoby', { tag: '@legacy' }, async ({ page, identity 
   await expectRegistrationSuccess(page, identity.email)
 })
 
-test('registrácia právnickej osoby', { tag: '@legacy' }, async ({ page, identity }) => {
+/** Cypress: RF02 `registrationPO.cy.ts` — `it` 1–6. */
+test('registering a company account', { tag: '@legacy' }, async ({ page, identity }) => {
   await page.goto('/registracia')
   await waitForHydration(page)
 
   const form = page.locator('[data-cy=register-form]')
   await form.locator('[data-cy="radio-právnická-osoba"]').click()
 
-  await form.locator('[data-cy=input-email]').fill(identity.email)
-  await form.locator('[data-cy=input-name]').fill(identity.companyName)
-  await form.locator('[data-cy=input-password]').fill(identity.password)
+  await test.step('empty form is rejected with errors', async () => {
+    await submitForm(page, 'register-form', { turnstile: true })
 
-  await submitForm(page, 'register-form', { turnstile: true })
+    await expectFieldErrors(page, 'register-form', ['email', 'name', 'password'])
+    await expect(page).toHaveURL(/\/registracia/)
+  })
+
+  await test.step('fill in and submit', async () => {
+    await form.locator('[data-cy=input-email]').fill(identity.email)
+    await form.locator('[data-cy=input-name]').fill(identity.companyName)
+    await form.locator('[data-cy=input-password]').fill(identity.password)
+
+    await expect(page.locator('[data-cy=error-message]')).toHaveCount(0)
+    await submitForm(page, 'register-form', { turnstile: true })
+  })
+
   await expectRegistrationSuccess(page, identity.email)
 })
 
 /**
- * The Cypress A02 block ran as five chained `it`s inside the registration describe, reusing the
- * account it had just created. It is genuinely sequential, so it stays one test with steps — but it
- * now owns its account instead of depending on another spec having run first.
+ * Genuinely sequential — the new password has to be set on the account whose e-mail just changed —
+ * so it is one test with steps rather than two.
+ *
+ * Cypress: A02 `registration.cy.ts` — `it` 1–5.
  */
-test('zmena e-mailu a hesla', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
-  // Registration here is setup, not the thing under test, so it goes through the shared helper.
+test('changing e-mail and password', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
   await logOut(page)
   await logIn(page, registeredAccount.email, registeredAccount.password)
 
-  await test.step('zmena e-mailu', async () => {
+  await test.step('change e-mail', async () => {
     await openProfile(page)
     await page.locator('[data-cy=edit-personal-information-button]').click()
     await page.locator('[data-cy=change-email-button]').click()
@@ -87,7 +107,7 @@ test('zmena e-mailu a hesla', { tag: '@legacy' }, async ({ page, registeredAccou
     await expectRegistrationSuccess(page, registeredAccount.email)
   })
 
-  await test.step('zmena hesla', async () => {
+  await test.step('change password', async () => {
     await page.goto('/moj-profil')
     await waitForHydration(page)
     await page.locator('[data-cy=change-password-button]').click()
@@ -104,8 +124,8 @@ test('zmena e-mailu a hesla', { tag: '@legacy' }, async ({ page, registeredAccou
   })
 })
 
-/** Was the trailing `cy.logOutUser()` in every account spec; real coverage, so it gets its own test. */
-test('odhlásenie', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
+/** Cypress: RF01 `registration.cy.ts` — `7. Logout user`; RF02 `registrationPO.cy.ts` — `8. Logout user`. */
+test('signing out', { tag: '@legacy' }, async ({ page, registeredAccount }) => {
   void registeredAccount
   await logOut(page)
 })

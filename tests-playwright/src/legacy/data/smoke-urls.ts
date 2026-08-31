@@ -1,4 +1,3 @@
-/** Ported from `tests/cypress/fixtures/URLsForSmokeTests.json`. */
 export const smokeUrls: { path: string; status: number }[] = [
   { path: '/prihlasenie', status: 200 },
   { path: '/zabudnute-heslo', status: 200 },

@@ -1,15 +1,13 @@
 import { expect, test } from '@playwright/test'
 
 import { openForm } from '../../pages/FormPage'
-import { continueButton, field, formContainer, summaryRow } from '../../helpers'
+import { continueButton, expectStepRejected, field, formContainer, summaryRow } from '../../helpers'
 
 /**
- * Was `tests/cypress/e2e/form/formSummaryCheck.cy.ts` (F03).
+ * Invalid input has to survive to the summary step and be flagged there rather than silently lost.
  *
- * Checks that deliberately invalid input survives to the summary and is flagged there. The Cypress
- * fixture named these values `first_name`, `last_name`, `zip_code`, `email_wrong`… — English
- * `snake_case` for a schema whose properties are Slovak `camelCase`. They are named after the
- * schema here (`next/../forms-shared` step `ziadatel`).
+ * Cypress source:
+ * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/form/formSummaryCheck.cy.ts
  */
 const SLUG = 'stanovisko-k-investicnemu-zameru'
 
@@ -24,8 +22,9 @@ const ziadatel = {
   telefon: '444333222',
 }
 
+/** Cypress: F03 `formSummaryCheck.cy.ts` — `it` 1–7. */
 test(
-  'neplatný e-mail a telefón sú v sumári označené ako chyby',
+  'invalid e-mail and phone are flagged in the summary',
   { tag: '@legacy' },
   async ({ page }) => {
     await openForm(page, SLUG)
@@ -36,18 +35,19 @@ test(
       await closeModal.click()
     }
 
-    await test.step('prázdny krok sa neodošle', async () => {
-      const urlBefore = page.url()
-      await continueButton(page).click()
-
-      // The Cypress version asserted `[aria-required=true]` had exactly 8 elements. A magic number
-      // says nothing about which fields are required and breaks whenever the schema changes; that the
-      // step refuses to advance and shows errors is the behaviour worth pinning.
-      await expect(page).toHaveURL(urlBefore)
-      await expect(page.locator('[data-cy=error-message]').first()).toBeVisible()
+    await test.step('empty step is rejected', async () => {
+      await expectStepRejected(page, 'ziadatel', [
+        'root_ziadatel_meno',
+        'root_ziadatel_priezvisko',
+        'root_ziadatel_ulicaACislo',
+        'root_ziadatel_mesto',
+        'root_ziadatel_psc',
+        'root_ziadatel_email',
+        'root_ziadatel_telefon',
+      ])
     })
 
-    await test.step('vyplnenie kroku "Žiadateľ"', async () => {
+    await test.step('fill in the "žiadateľ" step', async () => {
       for (const [property, value] of Object.entries(ziadatel)) {
         const input = field(page, `root_ziadatel_${property}`).locator('input').first()
         await input.fill(value)
@@ -57,7 +57,7 @@ test(
       await continueButton(page).click()
     })
 
-    await test.step('preskočenie na sumár cez stepper', async () => {
+    await test.step('jump to the summary step via the stepper', async () => {
       const stepper = page.locator('[data-cy=stepper-desktop], [data-cy=stepper-mobile]')
       const dropdown = page.locator('[data-cy=stepper-dropdown]')
       if (await dropdown.isVisible().catch(() => false)) {
@@ -68,7 +68,7 @@ test(
       await expect(formContainer(page)).toBeVisible()
     })
 
-    await test.step('sumár hlási chyby a zachoval zadané hodnoty', async () => {
+    await test.step('summary reports errors and keeps the entered values', async () => {
       await expect(page.locator('[data-cy=alert-container]').first()).toBeVisible()
 
       for (const [property, value] of Object.entries(ziadatel)) {

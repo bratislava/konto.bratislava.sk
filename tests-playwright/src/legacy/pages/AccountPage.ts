@@ -21,11 +21,6 @@ export const logOut = async (page: Page) => {
   await expect(page).toHaveURL(/\/prihlasenie/)
 }
 
-/**
- * Opens the profile via the account menu, which differs between viewports: the desktop navbar has
- * `account-button`, the mobile one `mobile-account-button`. Picking the visible one keeps the spec
- * viewport-agnostic instead of branching on a `device` string the way every Cypress spec did.
- */
 export const openProfile = async (page: Page) => {
   await page
     .locator('[data-cy=account-button], [data-cy=mobile-account-button]')
@@ -40,12 +35,10 @@ export const openProfile = async (page: Page) => {
  * Waits for Cloudflare Turnstile to produce a token, when the form uses it.
  *
  * `RegisterForm` declares `turnstileToken` as a *required* schema field, so submitting before the
- * widget has resolved fails validation silently — the form simply does not advance. This is what
- * the Cypress `.dblclick()` was really working around: the first click was swallowed and the second
- * happened to land after the token arrived.
+ * widget has resolved fails validation silently — the form simply does not advance.
  *
- * The e2e build uses Cloudflare's always-pass test key, so the token appears in a second or two,
- * but it is still asynchronous and must be waited for rather than double-clicked through.
+ * The e2e build uses Cloudflare's always-pass test key, so the token appears in a second or two, but
+ * it is still asynchronous and has to be waited for.
  */
 const waitForTurnstile = async (page: Page) => {
   // Waits for the hidden input to both exist and hold a token. Checking `count()` first and
@@ -64,7 +57,7 @@ const waitForTurnstile = async (page: Page) => {
 }
 
 /**
- * Submits a form by its container's `data-cy`, once — never a double click.
+ * Submits a form by its container's `data-cy`.
  *
  * `turnstile` is explicit rather than detected: only `RegisterForm` and the identity-verification
  * form use the captcha, and a heuristic that guessed wrong would either hang on forms without it or
@@ -83,16 +76,13 @@ export const submitForm = async (
 }
 
 /**
- * The success screen shown after registration or an e-mail change.
- *
- * Named `check2FAPage` in Cypress, which is misleading for this environment: the staging pool
- * auto-confirms the `cypress.test` domain, so `signUp` returns `UserConfirmed: true` and Amplify
- * completes `autoSignIn` — the user is signed in, never asked for a code.
+ * The success screen shown after registration or an e-mail change. No 2FA code is asked for: the
+ * staging pool auto-confirms the `cypress.test` domain, so `signUp` returns `UserConfirmed: true`
+ * and Amplify completes `autoSignIn`.
  *
  * The generous timeout is not padding. Getting here costs six sequential staging round-trips:
  * SignUp, InitiateAuth, RespondToAuthChallenge, GetCredentialsForIdentity, the forms-backend
- * migration prep, and the city-account user upsert. Cypress allowed 15s and that is simply too
- * tight when several tests hit staging at once.
+ * migration prep, and the city-account user upsert.
  */
 export const expectRegistrationSuccess = async (page: Page, email: string) => {
   await expect(page.locator('[data-cy=success-alert]')).toContainText(email, { timeout: 60_000 })
@@ -101,22 +91,36 @@ export const expectRegistrationSuccess = async (page: Page, email: string) => {
   )
 }
 
+export const expectFieldErrors = async (page: Page, formDataCy: string, names: string[]) => {
+  const form = page.locator(`[data-cy=${formDataCy}]`)
+
+  for (const name of names) {
+    await expect(
+      form.locator(`[data-cy=input-${name}]`),
+      `${name} must report an error`,
+    ).toHaveAttribute('aria-invalid', 'true')
+  }
+
+  await expect(form.locator('[data-cy=error-message]'), 'number of flagged fields').toHaveCount(
+    names.length,
+  )
+}
+
 export type AccountType = 'fyzickaOsoba' | 'pravnickaOsoba'
 
 /**
  * Registers a brand-new account through the UI and leaves it signed in.
  *
- * Registration is the cheapest way to get an isolated account, which is why nothing in this suite
- * needs a shared one any more:
+ * This is the cheapest way to get an isolated account:
  *  - the staging pool auto-confirms the `cypress.test` domain, so `signUp` returns
  *    `UserConfirmed: true` with no `CodeDeliveryDetails` — **no verification e-mail is sent**, so
  *    this does not consume Cognito's e-mail quota;
  *  - Amplify's `autoSignIn` completes immediately, so the caller is already authenticated;
- *  - the account is unverified against the state registers, which is exactly the state the profile
- *    specs assert.
+ *  - the account is unverified against the state registers, which is the state the profile specs
+ *    assert.
  *
- * Used for setup only. The registration specs themselves fill the form inline, because there the
- * form *is* the thing under test.
+ * Used for setup only. The registration specs fill the form inline, because there the form *is* the
+ * thing under test.
  */
 export const registerAccount = async (
   page: Page,

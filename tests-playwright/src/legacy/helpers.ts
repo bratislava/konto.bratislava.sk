@@ -4,16 +4,16 @@ import { resolve } from 'node:path'
 import { expect, type Locator, type Page } from '@playwright/test'
 
 /**
- * Interaction helpers for the legacy, hand-written form specs.
+ * Interaction helpers for the legacy specs.
  *
  * Deliberately dumb: every function takes an explicit RJSF field id and does one thing. Nothing here
  * reads a schema, resolves a widget type or builds a plan — a spec reads as a literal description of
  * what a person does on the page, and that is the whole design.
  *
- * The one non-obvious rule: anchor on the *wrapper*. `WidgetWrapper` renders `<div id="root_…">`, and
- * the `<input>` inside does not carry that id. The control's own `data-cy` is `input-<full RJSF id>`
- * (because `mapRjsfToReactAriaProps` sets `name: props.id`), so every Cypress selector of the form
- * `input-meno` is dead — descending from the wrapper avoids the whole problem.
+ * The one non-obvious rule: anchor on the *wrapper*. `WidgetWrapper` renders `<div id="root_…">` and
+ * the `<input>` inside does not carry that id, so every field is located by its wrapper id and
+ * descended into. The control's own `data-cy` is `input-<full RJSF id>`, because
+ * `mapRjsfToReactAriaProps` sets `name: props.id`.
  */
 
 /** The field's wrapper element. Attribute selector, so ids are never parsed as CSS. */
@@ -133,8 +133,8 @@ const UPLOAD_IN_PROGRESS = [
  * Uploads one file per given name, all using the same local PDF.
  *
  * Names matter: a field expecting two files is *valid with one*, so uploading two identically-named
- * files would be indistinguishable in the UI and the case would go unnoticed. Neither SIZ, ZSIZ nor
- * the tax form restricts `accept`, so a PDF is always acceptable.
+ * files would be indistinguishable in the UI and the case would go unnoticed. None of the forms
+ * covered here restricts `accept`, so a PDF is always acceptable.
  */
 export const attachFiles = async (page: Page, id: string, fileNames: string[]) => {
   const buffer = readFileSync(resolve(__dirname, '../../assets/test.pdf'))
@@ -160,8 +160,7 @@ export const attachFiles = async (page: Page, id: string, fileNames: string[]) =
 
 /**
  * `FormControls` always renders both the desktop and the mobile button, hiding one with Tailwind.
- * Picking the visible one means no test ever needs to know which viewport it is running in — this is
- * what removes the `device` parameter every Cypress custom command had to thread through.
+ * Picking the visible one means no test ever needs to know which viewport it is running in.
  */
 export const continueButton = (page: Page): Locator =>
   page.locator('[data-cy^=continue-button-]').locator('visible=true')
@@ -179,25 +178,24 @@ export const summaryRow = (page: Page, fieldId: string): Locator =>
 /** Submits the step and asserts the form moved to the expected `krok`. */
 export const continueTo = async (page: Page, krok: string) => {
   await continueButton(page).click()
-  await expect(page, `prechod na krok=${krok}`).toHaveURL(new RegExp(`[?&]krok=${krok}(&|$)`))
+  await expect(page, `advance to krok=${krok}`).toHaveURL(new RegExp(`[?&]krok=${krok}(&|$)`))
 }
 
 /**
  * Submits an incomplete step and asserts it was rejected.
  *
- * Asserts *which* fields are flagged rather than how many. The Cypress equivalent counted
- * `[aria-required=true]` elements (2, 11, 9, 12, 14, …), which broke on any schema change and never
- * said which field was at fault.
+ * Takes the ids expected to error, so a failure names the field. Counting flagged fields instead
+ * would break on any schema change and would not say which one was at fault.
  */
 export const expectStepRejected = async (page: Page, krok: string, fieldIds: string[]) => {
   await continueButton(page).click()
 
-  await expect(page, `krok=${krok} nesmie prejsť`).toHaveURL(new RegExp(`[?&]krok=${krok}(&|$)`))
+  await expect(page, `krok=${krok} must not advance`).toHaveURL(new RegExp(`[?&]krok=${krok}(&|$)`))
 
   for (const id of fieldIds) {
     await expect(
       field(page, id).locator('[data-cy=error-message]'),
-      `${id} musí hlásiť chybu`,
+      `${id} must report an error`,
     ).toBeVisible()
   }
 }
@@ -207,7 +205,7 @@ export const expectSummaryRow = async (page: Page, id: string, text: string) => 
   await expect(summaryRow(page, id), id).toContainText(text)
 }
 
-/** Asserts the summary carries no error alert — how every Cypress form spec ended. */
+/** Asserts the summary carries no error alert. */
 export const expectSummaryWithoutErrors = async (page: Page) => {
   await expect(page.locator('[data-cy=alert-container].bg-negative-100')).toHaveCount(0, {
     timeout: 30_000,

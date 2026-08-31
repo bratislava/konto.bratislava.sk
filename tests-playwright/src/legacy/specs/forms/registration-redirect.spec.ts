@@ -6,13 +6,11 @@ import { openForm, waitForHydration } from '../../pages/FormPage'
 import { continueButton, field } from '../../helpers'
 
 /**
- * Was `tests/cypress/e2e/form/formRegistrationRedirect.cy.ts` and its near-identical twin
- * `formRegistrationRedirect-mobile.cy.ts` (F04). The two files differed only in which device they
- * ran on and how they reached the register link, so they collapse into one spec that runs under
- * both viewport projects.
+ * A guest fills part of a form, leaves it to register, and comes back to claim the draft.
  *
- * Note the Cypress pair shared the describe name `F04 -`, which meant the desktop and mobile runs
- * also shared visual-regression baselines.
+ * Cypress sources:
+ * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/form/formRegistrationRedirect.cy.ts
+ * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/form/formRegistrationRedirect-mobile.cy.ts
  */
 test.use({ storageState: { cookies: [], origins: [] } })
 
@@ -33,11 +31,13 @@ const ziadatelInput = (page: Page, property: string) =>
   field(page, `root_ziadatel_${property}`).locator('input').first()
 
 /**
- * The core assertion is the last step: leaving a part-filled form saves it as a concept, and
- * registering migrates that guest-owned draft to the new account, so the work must survive both.
+ * Leaving a part-filled form saves it as a concept, and registering migrates that guest-owned draft
+ * to the new account — so the work has to survive the registration, the claim and a reload.
+ *
+ * Cypress: F04 `formRegistrationRedirect.cy.ts` + `formRegistrationRedirect-mobile.cy.ts` — `it` 1–8.
  */
 test(
-  'rozpracovaný formulár vedie na registráciu a registrácia prebehne',
+  'part-filled form survives registration and is claimed by the new account',
   { tag: '@legacy' },
   async ({ page, identity }) => {
     await openForm(page, SLUG)
@@ -50,7 +50,7 @@ test(
     // Captured before leaving, so the draft can be compared against it afterwards.
     const formUrl = page.url()
 
-    await test.step('vyplnenie kroku "Žiadateľ"', async () => {
+    await test.step('fill in the "žiadateľ" step', async () => {
       for (const [property, value] of Object.entries(ziadatel)) {
         const input = ziadatelInput(page, property)
         await input.fill(value)
@@ -58,7 +58,7 @@ test(
       }
     })
 
-    await test.step('odchod z formulára na registráciu', async () => {
+    await test.step('leave the form for registration', async () => {
       // Desktop shows the register button in the navbar; mobile hides it behind the account menu.
       const registerButton = page.locator('[data-cy=register-button]')
       if (await registerButton.isVisible().catch(() => false)) {
@@ -79,21 +79,19 @@ test(
       await waitForHydration(page)
     })
 
-    await test.step('registrácia', async () => {
+    await test.step('register', async () => {
       const form = page.locator('[data-cy=register-form]')
       await form.locator('[data-cy=input-email]').fill(identity.email)
       await form.locator('[data-cy=input-given_name]').fill(identity.givenName)
       await form.locator('[data-cy=input-family_name]').fill(identity.familyName)
       await form.locator('[data-cy=input-password]').fill(identity.password)
 
-      // Filled inline rather than via `registerAccount`: reaching the registration form *with the
-      // form's work preserved* is the point of this test, so the navigation must not be short-circuited.
       await expect(page.locator('[data-cy=error-message]')).toHaveCount(0)
       await submitForm(page, 'register-form', { turnstile: true })
       await expectRegistrationSuccess(page, identity.email)
     })
 
-    await test.step('preskočenie overenia totožnosti', async () => {
+    await test.step('skip identity verification', async () => {
       // `AccountSuccessAlert`'s cancel button. Because the redirect target is a municipal-service
       // URL, the app offers identity verification here — this button skips it and calls `redirect()`,
       // taking the user straight back to the form they came from.
@@ -104,7 +102,7 @@ test(
 
     const migrationModal = page.getByRole('dialog').filter({ hasText: 'Pokračovať vo vypĺňaní?' })
 
-    await test.step('žiadosť je uzamknutá, kým sa neprevezme', async () => {
+    await test.step('form is locked until it is claimed', async () => {
       // The draft was created by a guest, so the newly registered user has to claim it first.
       // `useFormContext` sets `isReadonly = formMigrationRequired`, which `FormContent` passes to
       // RJSF as `readonly` and which also suppresses `FormControls` entirely.
@@ -113,7 +111,7 @@ test(
       for (const property of Object.keys(ziadatel)) {
         await expect(
           ziadatelInput(page, property),
-          `root_ziadatel_${property} musí byť neupravovateľné`,
+          `root_ziadatel_${property} must be read-only`,
         ).not.toBeEditable()
       }
 
@@ -121,7 +119,7 @@ test(
       await expect(page.locator('[data-cy^=continue-button-]')).toHaveCount(0)
     })
 
-    await test.step('prevzatie žiadosti prenačíta stránku', async () => {
+    await test.step('claiming the form reloads the page', async () => {
       const claimed = page.waitForResponse(
         (response) =>
           response.url().includes('/forms/migrations/claim/') &&
@@ -137,20 +135,20 @@ test(
       await waitForHydration(page)
     })
 
-    await test.step('formulár je vyplnený a upravovateľný', async () => {
+    await test.step('form is filled in and editable', async () => {
       await expect(migrationModal).toHaveCount(0)
 
       // The work must survive being saved as a concept, the registration, and the claim.
       for (const [property, value] of Object.entries(ziadatel)) {
         const input = ziadatelInput(page, property)
         await expect(input, `root_ziadatel_${property}`).toHaveValue(value)
-        await expect(input, `root_ziadatel_${property} musí byť upravovateľné`).toBeEditable()
+        await expect(input, `root_ziadatel_${property} must be editable`).toBeEditable()
       }
 
       await expect(continueButton(page)).toBeVisible()
     })
 
-    await test.step('po odhlásení nie je žiadosť dostupná', async () => {
+    await test.step('form is unreachable after signing out', async () => {
       await logOut(page)
 
       // The draft now belongs to a real account, so a signed-out visitor must not reach it.

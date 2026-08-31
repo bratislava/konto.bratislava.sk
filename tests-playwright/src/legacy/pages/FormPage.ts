@@ -24,7 +24,7 @@ const formContainer = (page: Page) => page.locator('[data-cy=form-container]')
  *    once per breakpoint with one hidden, so the visible one is picked rather than the first.
  *
  * A guest opening a form is greeted by the registration modal, which overlays the page and swallows
- * pointer events, so it is dismissed by default. `registracia-modal.spec.ts` opts out because there
+ * pointer events, so it is dismissed by default. `registration-modal.spec.ts` opts out because there
  * the modal is the thing under test.
  */
 export const openForm = async (
@@ -45,9 +45,9 @@ export const openForm = async (
   if (!onFormInstance.test(page.url())) {
     if ((await cta.count()) === 0) {
       throw new Error(
-        `Formulár "${slug}" sa nedá otvoriť: stránka /mestske-sluzby/${slug} ani nepresmerovala na ` +
-          `inštanciu formulára, ani nevykreslila [data-cy=form-cta-button]. Buď nemá v Strapi ` +
-          `priradený formulár, alebo používa staršiu landing page bez CTA.`,
+        `Cannot open form "${slug}": /mestske-sluzby/${slug} neither redirected to a form ` +
+          `instance nor rendered [data-cy=form-cta-button]. Either it has no form assigned in ` +
+          `Strapi, or it still uses the older landing page without a CTA.`,
       )
     }
 

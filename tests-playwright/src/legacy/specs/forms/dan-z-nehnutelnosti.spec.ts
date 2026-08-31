@@ -23,19 +23,15 @@ import {
 } from '../../helpers'
 
 /**
- * Legacy port of `tests/cypress/e2e/form/formRealEstateTaxReturn.cy.ts` (F05) — 864 lines and 18
- * chained `it`s per scenario.
+ * `priznanie k dani z nehnutelnosti`, one test per `forms-shared` example, filled step by step with
+ * per-step validation checks.
  *
- * Hand-written on purpose: explicit ids, explicit step order, explicit `if`s for the branches. The
- * branching is the honest cost of covering six scenarios by hand, and it is what the Cypress custom
- * commands (`useCalculator`, `fillOwner`, `selectLegalRelationship`, …) were hiding.
+ * Hand-written on purpose: explicit ids, explicit step order, explicit `if`s for the branches. All
+ * six examples are `priznanieAko: 'fyzickaOsoba'` with `voSvojomMene: true`, so the taxpayer step is
+ * identical everywhere and only the four tax steps and the spouse step branch.
  *
- * Values come from the `forms-shared` examples, so they are typed as `TaxFormData` and there is no
- * re-encoded JSON fixture — the five files in `tests/cypress/fixtures/formRealEstateTaxReturn/` were
- * byte-for-byte copies of these.
- *
- * What made this tractable: all six examples are `priznanieAko: 'fyzickaOsoba'` with
- * `voSvojomMene: true`, so the taxpayer step is identical everywhere.
+ * Cypress source:
+ * https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress/e2e/form/formRealEstateTaxReturn.cy.ts
  */
 
 const SLUG = 'priznanie-k-dani-z-nehnutelnosti'
@@ -43,9 +39,8 @@ const SLUG = 'priznanie-k-dani-z-nehnutelnosti'
 /**
  * Option labels for the code-prefixed selects, hardcoded for exactly the codes the examples use.
  *
- * react-select has to be driven by the visible label and these labels carry a code prefix and an
- * en dash. The Cypress spec worked around that by appending separators (`druhPozemku + ' – '`) to
- * force a substring match; spelling the labels out is both shorter and exact.
+ * react-select has to be driven by the visible label, and these labels carry a code prefix and an
+ * en dash, so they are spelled out in full and matched exactly.
  */
 const DRUH_POZEMKU: Record<string, string> = {
   B: 'B – trvalé trávnaté porasty',
@@ -592,82 +587,87 @@ const fillZnizenie = async (page: Page, data: TaxFormData) => {
 const EXAMPLES = [example1, example2, example3, example4, example5, example5NoCalculators]
 
 EXAMPLES.forEach((example) => {
-  test(`F05 — ${example.name}`, { tag: '@legacy' }, async ({ page }) => {
-    const data = example.formData as TaxFormData
+  /** Cypress: F05 `formRealEstateTaxReturn.cy.ts` — `it` 1–17. */
+  test(
+    `${example.name} is filled in and the summary has no errors`,
+    { tag: '@legacy' },
+    async ({ page }) => {
+      const data = example.formData as TaxFormData
 
-    await openForm(page, SLUG)
+      await openForm(page, SLUG)
 
-    await test.step('druh priznania — prázdny krok neprejde', async () => {
-      // Only the year errors: `druh` already holds its default.
-      await expectStepRejected(page, 'druh-priznania', ['root_druhPriznania_rok'])
-    })
+      await test.step('druh priznania — empty step is rejected', async () => {
+        // Only the year errors: `druh` already holds its default.
+        await expectStepRejected(page, 'druh-priznania', ['root_druhPriznania_rok'])
+      })
 
-    await test.step('druh priznania', () => fillDruhPriznania(page, data))
+      await test.step('druh priznania', () => fillDruhPriznania(page, data))
 
-    await test.step('údaje o daňovníkovi — prázdny krok neprejde', async () => {
-      await expectStepRejected(page, 'udaje-o-danovnikovi', [
-        'root_udajeODanovnikovi_rodneCislo',
-        'root_udajeODanovnikovi_priezvisko',
-        'root_udajeODanovnikovi_menoTitul_meno',
-        'root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_ulica',
-        'root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_cislo',
-        'root_udajeODanovnikovi_obecPsc_obec',
-        'root_udajeODanovnikovi_obecPsc_psc',
-      ])
-    })
-
-    await test.step('údaje o daňovníkovi', () => fillUdajeODanovnikovi(page, data))
-
-    // The four tax steps have no negative check to make: their gate defaults to "Nie", which
-    // satisfies the only requirement, so an empty step legitimately advances.
-    await test.step('daň z pozemkov', () => fillDanZPozemkov(page, data))
-    await test.step('daň zo stavieb — jeden účel', () => fillDanZoStaviebJedenUcel(page, data))
-    await test.step('daň zo stavieb — viaceré účely', () =>
-      fillDanZoStaviebViacereUcely(page, data))
-
-    const hasSpouse = Boolean(data.bezpodieloveSpoluvlastnictvoManzelov)
-    await test.step('daň z bytov a nebytových priestorov', () =>
-      fillDanZBytov(
-        page,
-        data,
-        hasSpouse ? 'udaje-o-manzelovi-manzelke' : 'znizenie-alebo-oslobodenie-od-dane',
-      ))
-
-    if (hasSpouse) {
-      await test.step('údaje o manželovi/manželke — prázdny krok neprejde', async () => {
-        await expectStepRejected(page, 'udaje-o-manzelovi-manzelke', [
-          'root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo',
-          'root_bezpodieloveSpoluvlastnictvoManzelov_priezvisko',
-          'root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_meno',
+      await test.step('údaje o daňovníkovi — empty step is rejected', async () => {
+        await expectStepRejected(page, 'udaje-o-danovnikovi', [
+          'root_udajeODanovnikovi_rodneCislo',
+          'root_udajeODanovnikovi_priezvisko',
+          'root_udajeODanovnikovi_menoTitul_meno',
+          'root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_ulica',
+          'root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_cislo',
+          'root_udajeODanovnikovi_obecPsc_obec',
+          'root_udajeODanovnikovi_obecPsc_psc',
         ])
       })
-      await test.step('údaje o manželovi/manželke', () => fillManzel(page, data))
-    }
 
-    // Nothing in this step is required, so it always advances.
-    await test.step('zníženie alebo oslobodenie od dane', () => fillZnizenie(page, data))
+      await test.step('údaje o daňovníkovi', () => fillUdajeODanovnikovi(page, data))
 
-    await test.step('sumár', async () => {
-      await expectSummaryWithoutErrors(page)
+      // The four tax steps have no negative check to make: their gate defaults to "Nie", which
+      // satisfies the only requirement, so an empty step legitimately advances.
+      await test.step('daň z pozemkov', () => fillDanZPozemkov(page, data))
+      await test.step('daň zo stavieb — jeden účel', () => fillDanZoStaviebJedenUcel(page, data))
+      await test.step('daň zo stavieb — viaceré účely', () =>
+        fillDanZoStaviebViacereUcely(page, data))
 
-      await expectSummaryRow(page, 'root_druhPriznania_rok', String(data.druhPriznania!.rok))
-      await expectSummaryRow(
-        page,
-        'root_udajeODanovnikovi_rodneCislo',
-        (data.udajeODanovnikovi as Any).rodneCislo,
-      )
-      await expectSummaryRow(
-        page,
-        'root_udajeODanovnikovi_priezvisko',
-        (data.udajeODanovnikovi as Any).priezvisko,
-      )
+      const hasSpouse = Boolean(data.bezpodieloveSpoluvlastnictvoManzelov)
+      await test.step('daň z bytov a nebytových priestorov', () =>
+        fillDanZBytov(
+          page,
+          data,
+          hasSpouse ? 'udaje-o-manzelovi-manzelke' : 'znizenie-alebo-oslobodenie-od-dane',
+        ))
+
       if (hasSpouse) {
+        await test.step('bezpodielové spoluvlastníctvo manželov — empty step is rejected', async () => {
+          await expectStepRejected(page, 'udaje-o-manzelovi-manzelke', [
+            'root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo',
+            'root_bezpodieloveSpoluvlastnictvoManzelov_priezvisko',
+            'root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_meno',
+          ])
+        })
+        await test.step('bezpodielové spoluvlastníctvo manželov', () => fillManzel(page, data))
+      }
+
+      // Nothing in this step is required, so it always advances.
+      await test.step('zníženie alebo oslobodenie od dane', () => fillZnizenie(page, data))
+
+      await test.step('summary', async () => {
+        await expectSummaryWithoutErrors(page)
+
+        await expectSummaryRow(page, 'root_druhPriznania_rok', String(data.druhPriznania!.rok))
         await expectSummaryRow(
           page,
-          'root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo',
-          (data.bezpodieloveSpoluvlastnictvoManzelov as Any).rodneCislo,
+          'root_udajeODanovnikovi_rodneCislo',
+          (data.udajeODanovnikovi as Any).rodneCislo,
         )
-      }
-    })
-  })
+        await expectSummaryRow(
+          page,
+          'root_udajeODanovnikovi_priezvisko',
+          (data.udajeODanovnikovi as Any).priezvisko,
+        )
+        if (hasSpouse) {
+          await expectSummaryRow(
+            page,
+            'root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo',
+            (data.bezpodieloveSpoluvlastnictvoManzelov as Any).rodneCislo,
+          )
+        }
+      })
+    },
+  )
 })

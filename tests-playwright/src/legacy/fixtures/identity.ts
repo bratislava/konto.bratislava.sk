@@ -9,22 +9,17 @@ export type Identity = {
 }
 
 /**
- * The domain stays `cypress.test`.
+ * The domain has to stay `cypress.test`.
  *
- * The staging Cognito pool is configured to auto-confirm this domain — that is why the Cypress
- * suite can register a user and immediately sign in with it without ever entering a 2FA code
- * (see the comment in `next/src/pages/zmena-emailu.tsx` about confirmation being disabled in E2E).
- * Changing it would break registration.
+ * The staging Cognito pool is configured to auto-confirm it, which is what lets a test register a
+ * user and sign in immediately without entering a 2FA code (see the comment in
+ * `next/src/pages/zmena-emailu.tsx` about confirmation being disabled in E2E).
  */
 const EMAIL_DOMAIN = 'cypress.test'
 
 /**
- * Builds an address that cannot collide under parallel workers.
- *
- * The Cypress version was `` `${Date.now() + device}@cypress.test` `` — string concatenation at
- * millisecond resolution, which only avoided collisions because the suite ran serially. Two workers
- * starting in the same millisecond would both claim it and the second would get
- * `UsernameExistsException`.
+ * Builds an address that cannot collide under parallel workers — a collision means the second
+ * registration fails with `UsernameExistsException`.
  *
  * Each component removes one collision axis:
  *  - `runId`         separates runs,

@@ -10,7 +10,7 @@ import { BASE_URL } from '../playwright.config'
  * mutate the app package as a side effect, so we assert the app is up and fail fast instead.
  */
 const globalSetup = async () => {
-  // Shared by every worker to namespace generated identities. See `src/fixtures/identity.ts`.
+  // Shared by every worker to namespace generated identities. See `src/legacy/fixtures/identity.ts`.
   process.env.E2E_RUN_ID = randomUUID().slice(0, 8)
 
   let status: number

@@ -17,7 +17,7 @@ pnpm --filter city-account-playwright-tests run test:playwright
 | `test:playwright`                     | everything: smoke + desktop + mobile    |
 | `test:playwright:smoke`               | six URL status checks, no browser       |
 | `test:playwright:desktop` / `:mobile` | one viewport                            |
-| `test:playwright:legacy`              | `src/specs/legacy` — the Cypress port   |
+| `test:playwright:legacy`              | `src/legacy` — the Cypress port         |
 | `test:playwright:runner`              | everything except that                  |
 | `test:playwright:ui`                  | Playwright UI mode                      |
 | `typecheck`                           | `tsc` — catches schema drift, see below |
@@ -37,6 +37,10 @@ src/legacy/            the Cypress port, self-contained
 src/runner/            the schema-driven form runner and its single spec
 src/global-setup.ts    health-checks the base URL, seeds the run id
 ```
+
+Each spec's header names the Cypress file it replaces and links it at tag `prod3.30.3`, so the
+original is one click away for as long as anyone needs to compare:
+`https://github.com/bratislava/konto.bratislava.sk/tree/prod3.30.3/tests/cypress`.
 
 `src/legacy/` is the whole Cypress suite, migrated roughly as-is: explicit field ids, explicit step
 order, explicit `if`s for the branches. It is a closed tree — nothing in it imports from
@@ -83,7 +87,7 @@ Everything runs in parallel, on both viewports. There is no shared account and n
 test that needs an account registers its own through the `registeredAccount` fixture. That is cheap
 because the staging pool auto-confirms the `cypress.test` domain, so no verification e-mail is sent.
 
-Generated identities (`src/fixtures/identity.ts`) are unique by run id + parallel index + a random
+Generated identities (`src/legacy/fixtures/identity.ts`) are unique by run id + parallel index + a random
 nonce. The nonce is deliberately not a counter: Playwright restarts a worker after a failure, which
 would reset one.
 

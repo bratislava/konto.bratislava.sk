@@ -101,18 +101,24 @@ export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
 export const inputWidthCharactersMin = 1
 export const inputWidthCharactersMax = 40
 
+export const inputWidthFractions = ['full', '3/4', '2/3', '1/2', '1/3', '1/4'] as const
+
+export type InputWidthFraction = (typeof inputWidthFractions)[number]
+
 /**
- * Approximate width of the input in characters, an integer between `inputWidthCharactersMin` and
- * `inputWidthCharactersMax`. Narrows only the input, never past the available space. Label, helptext and error
- * message keep the full width.
+ * A number is an approximate width in characters, an integer between `inputWidthCharactersMin` and
+ * `inputWidthCharactersMax`. A fraction is a share of the available width, applied from the `md`
+ * breakpoint up and full width below it.
+ *
+ * Narrows only the input, never past the available space. Label, helptext and error message keep
+ * the full width.
  * See the part "Fixed width inputs" on https://design-system.service.gov.uk/components/text-input/
  *
- * TODO: add support for fluid sizes, that will replace current `size` behaviour.
+ * TODO: migrate the remaining `size` usages, that will replace current `size` behaviour.
  */
-export type InputWidthType = IntClosedRange<
-  typeof inputWidthCharactersMin,
-  typeof inputWidthCharactersMax
->
+export type InputWidthType =
+  | IntClosedRange<typeof inputWidthCharactersMin, typeof inputWidthCharactersMax>
+  | InputWidthFraction
 
 export type InputUiOptions = {
   inputType: InputUiOptionsInputType

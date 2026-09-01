@@ -6,6 +6,7 @@ import { BaAjvInputFormat } from '../form-utils/ajvFormats'
 import {
   inputWidthCharactersMax,
   inputWidthCharactersMin,
+  inputWidthFractions,
   InputUiOptionsInputType,
   InputWidthType,
 } from './uiOptionsTypes'
@@ -234,13 +235,13 @@ export const getInputTypeForAjvFormat = (format: BaAjvInputFormat): InputUiOptio
  */
 export const validateInputWidth = (inputWidth: InputWidthType | undefined, property: string) => {
   if (
-    inputWidth !== undefined &&
+    typeof inputWidth === 'number' &&
     (!Number.isInteger(inputWidth) ||
       inputWidth < inputWidthCharactersMin ||
       inputWidth > inputWidthCharactersMax)
   ) {
     throw new Error(
-      `inputWidth must be an integer between ${inputWidthCharactersMin} and ${inputWidthCharactersMax}, got ${inputWidth} (property "${property}")`,
+      `inputWidth must be an integer between ${inputWidthCharactersMin} and ${inputWidthCharactersMax} or one of ${inputWidthFractions.join(', ')}, got ${inputWidth} (property "${property}")`,
     )
   }
 }

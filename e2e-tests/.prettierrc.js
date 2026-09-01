@@ -1,8 +1,6 @@
 module.exports = {
-  plugins: [],
-  trailingComma: 'all',
-  tabWidth: 2,
   semi: false,
   singleQuote: true,
+  trailingComma: 'all',
   printWidth: 100,
 }

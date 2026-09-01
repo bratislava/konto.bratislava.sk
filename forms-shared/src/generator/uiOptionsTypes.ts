@@ -126,7 +126,7 @@ export type InputUiOptions = {
   placeholder?: string
 } & WidgetUiOptions
 
-export type NumberUiOptions = Omit<InputUiOptions, 'inputType' | 'inputWidth'> & {
+export type NumberUiOptions = Omit<InputUiOptions, 'inputType'> & {
   formatOptions?: Intl.NumberFormatOptions
   unit?: string
 }

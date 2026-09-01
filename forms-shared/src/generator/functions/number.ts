@@ -1,6 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, NumberUiOptions } from '../uiOptionsTypes'
-import { removeUndefinedValues } from '../helpers'
+import { removeUndefinedValues, validateInputWidth } from '../helpers'
 
 /**
  * Creates a number field generator
@@ -29,6 +29,8 @@ export const number = (
     },
   uiOptions: NumberUiOptions,
 ): GeneratorField => {
+  validateInputWidth(uiOptions.inputWidth, property)
+
   return {
     property,
     schema: removeUndefinedValues({

@@ -14,10 +14,6 @@ const bundleAnalyzer = withBundleAnalyzer({
  *
  * The path contains the version so that the browser does not serve the old cached version when
  * the package is updated.
- *
- * This used to run through Next.js' `adapterPath` hook, but configuring any adapter makes
- * Turbopack skip emitting `.next/next-server.js.nft.json`, which `output: 'standalone'` then
- * fails to read. https://github.com/vercel/next.js/pull/97287
  */
 const prepareIframeResizerScript = () => {
   const packagePath = path.join(__dirname, 'node_modules/@iframe-resizer/child/package.json')

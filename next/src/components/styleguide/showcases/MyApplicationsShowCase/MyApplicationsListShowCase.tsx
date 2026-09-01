@@ -16,7 +16,6 @@ import {
 import { ShowcaseLayout, ShowcaseSelectField } from './shared'
 
 const MyApplicationsListShowCase = () => {
-  // The section is owned by the `sekcia` query param now, so the showcase drives the same state.
   const { selectedSection, setSelectedSection } = useMyApplicationsFilters()
   const [scenario, setScenario] = useState<ListScenario>('withItems')
 
@@ -34,7 +33,7 @@ const MyApplicationsListShowCase = () => {
       controls={
         <>
           <ShowcaseSelectField
-            label="Section (sekcia)"
+            label="Status"
             options={sectionOptions}
             value={selectedSection}
             onChange={setSelectedSection}

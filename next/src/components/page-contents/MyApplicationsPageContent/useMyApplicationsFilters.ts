@@ -14,7 +14,7 @@ export const useMyApplicationsFilters = () => {
   })
 
   const setSelectedSection = (variant: MyApplicationStateFilter) => {
-    setQueryState({ sekcia: slugByMyApplicationStateFilter[variant], strana: 1 }).catch((error) =>
+    setQueryState({ stav: slugByMyApplicationStateFilter[variant], strana: 1 }).catch((error) =>
       logger.error(error),
     )
   }

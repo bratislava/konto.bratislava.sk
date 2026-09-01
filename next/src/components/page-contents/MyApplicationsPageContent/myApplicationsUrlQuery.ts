@@ -5,9 +5,6 @@ import {
   MyApplicationStateFilter,
 } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
 
-/**
- * In the URL the filter is represented by a Slovak slug, e.g. `?sekcia=odoslane`.
- */
 export const slugByMyApplicationStateFilter: Record<MyApplicationStateFilter, string> = {
   ALL: 'vsetky',
   SENT: 'odoslane',
@@ -25,20 +22,20 @@ const myApplicationStateFilterBySlug = Object.fromEntries(
  * match the query keys used on the client.
  */
 export const myApplicationsUrlQueryParams = {
-  sekcia: parseAsString.withDefault(slugByMyApplicationStateFilter.ALL),
+  stav: parseAsString.withDefault(slugByMyApplicationStateFilter.ALL),
   strana: parseAsInteger.withDefault(1),
 }
 
 export const parseMyApplicationsFiltersFromUrlQuery = ({
-  sekcia,
+  stav,
   strana,
 }: {
-  sekcia: string
+  stav: string
   strana: number
 }) =>
   ({
     // A hand-edited URL can carry an unknown slug, such a section falls back to 'ALL'.
-    selectedSection: myApplicationStateFilterBySlug[sekcia] ?? 'ALL',
+    selectedSection: myApplicationStateFilterBySlug[stav] ?? 'ALL',
     // A hand-edited URL can carry a nonsensical page, the API expects 1-based pages.
     currentPage: Math.max(strana, 1),
   }) as const

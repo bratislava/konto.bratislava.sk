@@ -4,11 +4,11 @@ import { GetFormsResponseDto } from 'openapi-clients/forms'
 
 import RowGroupWrapper from '@/src/components/common/RowGroupWrapper'
 import MyApplicationsBanner from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsBanner'
-import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard'
-import { getMyApplicationStateByFormResponseState } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationStates'
+import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/MyApplicationsCard'
 import { useMyApplicationsFilters } from '@/src/components/page-contents/MyApplicationsPageContent/useMyApplicationsFilters'
 import Pagination from '@/src/components/simple-components/Pagination/Pagination'
 import Spinner from '@/src/components/simple-components/Spinner'
+import { isDefined } from '@/src/frontend/utils/general'
 import logger from '@/src/frontend/utils/logger'
 
 type Props = {
@@ -47,20 +47,18 @@ const MyApplicationsList = ({ applications, isPending, isError, refreshListData 
     )
   }
 
-  return applications?.items.length ? (
+  const filteredApplications = applications?.items.filter(isDefined) ?? []
+
+  return filteredApplications.length ? (
     <>
+      <Typography variant="h2" className="sr-only">
+        {t('MyApplicationsList.applicationsList.aria')}
+      </Typography>
       <RowGroupWrapper
         asList
-        className="flex flex-col gap-2 lg:gap-4"
-        items={applications.items.map((form) => {
-          return (
-            <MyApplicationsCard
-              form={form}
-              refreshListData={refreshListData}
-              variant={getMyApplicationStateByFormResponseState(form.state)}
-              key={form.id}
-            />
-          )
+        className="flex flex-col"
+        items={filteredApplications.map((form) => {
+          return <MyApplicationsCard key={form.id} form={form} refreshListData={refreshListData} />
         })}
       />
       <div className="py-4 lg:py-8">

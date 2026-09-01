@@ -73,6 +73,7 @@ const MyApplicationsPageContent = () => {
             }
           }}
           className="flex flex-col gap-7 lg:gap-8"
+          aria-label={t('MyApplicationsPageContent.tabs.ariaLabel')}
         >
           <TabList className="scrollbar-hide flex gap-2 overflow-x-auto lg:gap-4">
             {MY_APPLICATION_STATE_FILTERS.map((filter) => {

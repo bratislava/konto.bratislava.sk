@@ -114,7 +114,7 @@ jobs:
         run: echo "short_sha=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker build
-        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@use-zstd-compression
         with:
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -133,7 +133,7 @@ jobs:
       - name: Docker metadata (validate)
         if: ${{ !inputs.skip_tests }}
         id: meta-validate
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
         with:
           image: ${{ inputs.image }}
           suffix: -validate
@@ -141,7 +141,7 @@ jobs:
       - name: Docker metadata (test)
         if: ${{ !inputs.skip_tests }}
         id: meta-test
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
         with:
           image: ${{ inputs.image }}
           suffix: -test
@@ -149,7 +149,7 @@ jobs:
       - name: Docker metadata (lint)
         if: ${{ !inputs.skip_tests }}
         id: meta-lint
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
         with:
           image: ${{ inputs.image }}
           suffix: -lint
@@ -157,7 +157,7 @@ jobs:
       - name: Docker metadata (e2e)
         if: ${{ !inputs.skip_tests && inputs.target_e2e_test != '' }}
         id: meta-e2e
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
         with:
           image: ${{ inputs.image }}
           suffix: -e2e
@@ -166,7 +166,7 @@ jobs:
       # (cluster prefix), so a single metadata call serves both.
       - name: Docker metadata (build)
         id: meta-build
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
@@ -238,7 +238,7 @@ jobs:
       - name: Check for existing image
         if: ${{ inputs.cluster != '' }}
         id: existing
-        uses: bratislava/github-actions/.github/actions/check-existing-image@beta
+        uses: bratislava/github-actions/.github/actions/check-existing-image@use-zstd-compression
         with:
           existing_tag: ${{ inputs.image }}:${{ steps.sha.outputs.short_sha }}
           new_tag: ${{ inputs.image }}:${{ env.CLUSTER_PREFIX }}${{ steps.sha.outputs.short_sha }}

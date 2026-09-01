@@ -50,7 +50,7 @@ jobs:
           node "$DIRECTORY/scripts/printDockerBuildArgs.ts" "$DIRECTORY" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker build
-        uses: bratislava/github-actions/.github/actions/setup-docker-build@beta
+        uses: bratislava/github-actions/.github/actions/setup-docker-build@use-zstd-compression
         with:
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
@@ -60,7 +60,7 @@ jobs:
 
       - name: Docker metadata
         id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@beta
+        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
         with:
           image: ${{ inputs.image }}
           suffix: -test

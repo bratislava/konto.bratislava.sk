@@ -51,3 +51,5 @@ async function bootstrap() {
   logger.log(`Nest is running on port: ${baConfigService.self.port}`)
 }
 void bootstrap()
+
+// zstd cache compression test - no functional change

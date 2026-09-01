@@ -20,3 +20,5 @@ async function main(): Promise<void> {
 }
 
 void main()
+
+// zstd cache compression test - no functional change

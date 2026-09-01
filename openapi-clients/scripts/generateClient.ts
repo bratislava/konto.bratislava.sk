@@ -243,3 +243,5 @@ if (require.main === module) {
     program.parse()
   })
 }
+
+// zstd cache compression test - no functional change

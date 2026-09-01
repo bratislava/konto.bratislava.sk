@@ -54,7 +54,6 @@ export default schema(
             'Use fixed width inputs for content that has a specific, known length. Postcode inputs should be postcode-sized, telephone number inputs should be telephone number-sized.',
             'The widths are designed for specific character lengths and to be consistent across a range of browsers. They include extra padding to fit icons that some browsers might insert into the input (for example to show or generate a password).',
             'On fixed width inputs, the width will remain fixed on all screens unless it is wider than the viewport, in which case it will shrink to fit.',
-            '[https://design-system.service.gov.uk/components/text-input/](https://design-system.service.gov.uk/components/text-input/)',
           ].join('\n'),
           descriptionMarkdown: true,
         },
@@ -106,6 +105,88 @@ export default schema(
               helptext:
                 'This helptext spans the full available width while the input stays five characters wide.',
             },
+          ),
+        ],
+      ),
+      object(
+        'inputWidthFractionVariants',
+        {
+          title: 'Input Width — Fractions',
+          description: [
+            'Fractions are a share of the available width. They apply from the `md` breakpoint up, below it the input is full width.',
+            'Unlike `size`, only the input is narrowed. The label, helptext and error message always keep the full width.',
+          ].join('\n'),
+          descriptionMarkdown: true,
+        },
+        [
+          input(
+            'fractionFull',
+            { type: 'text', title: 'Full width (default)', required: true },
+            { inputWidth: 'full' },
+          ),
+          input(
+            'fractionThreeQuarters',
+            { type: 'text', title: '3/4 width', required: true },
+            { inputWidth: '3/4' },
+          ),
+          input(
+            'fractionTwoThirds',
+            { type: 'text', title: '2/3 width', required: true },
+            { inputWidth: '2/3' },
+          ),
+          input(
+            'fractionHalf',
+            { type: 'text', title: '1/2 width', required: true },
+            { inputWidth: '1/2' },
+          ),
+          input(
+            'fractionThird',
+            { type: 'text', title: '1/3 width', required: true },
+            { inputWidth: '1/3' },
+          ),
+          input(
+            'fractionQuarter',
+            {
+              type: 'text',
+              title:
+                '1/4 width with a long label, helptext and error message that keep the full width',
+              required: true,
+            },
+            {
+              inputWidth: '1/4',
+              helptext:
+                'This helptext spans the full available width while the input takes only a quarter of it.',
+            },
+          ),
+        ],
+      ),
+      object(
+        'inputWidthNumberVariants',
+        {
+          title: 'Input Width — Number Fields',
+          description:
+            'With a unit, a character count sizes the typing area and the unit is added next to it, while a fraction sizes the whole control.',
+        },
+        [
+          number(
+            'numberCharacters',
+            { type: 'integer', title: '5 character width', required: true },
+            { inputWidth: 5 },
+          ),
+          number(
+            'numberCharactersWithUnit',
+            { type: 'integer', title: '5 character width with unit', required: true },
+            { inputWidth: 5, unit: 'm²' },
+          ),
+          number(
+            'numberFraction',
+            { type: 'integer', title: '1/2 width', required: true },
+            { inputWidth: '1/2' },
+          ),
+          number(
+            'numberFractionWithUnit',
+            { type: 'integer', title: '1/2 width with unit', required: true },
+            { inputWidth: '1/2', unit: '€' },
           ),
         ],
       ),

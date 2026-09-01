@@ -112,6 +112,7 @@ describe('FormsService', () => {
           error: true,
           formDataJson: true,
           formDefinitionSlug: true,
+          formSentAt: true,
         },
         where: {
           archived: false,

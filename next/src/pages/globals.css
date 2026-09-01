@@ -461,7 +461,7 @@
 }
 
 /*
- * Approximate width of an input in characters, driven by the `expectedCharactersCount` ui
+ * Approximate width of an input in characters, driven by the `inputWidth` ui
  * option which sets `--expected-characters-count` inline. `1em` per character is generous on
  * purpose, it matches the gov.uk text input widths. The extra values are the input's own padding
  * (`px-3` / `lg:px-4`) and border, which is why this lives in CSS rather than an inline style.

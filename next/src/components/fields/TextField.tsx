@@ -21,7 +21,7 @@ export interface TextFieldProps
    * Approximate width of the input in characters. Narrows only the input, never past the available
    * space. Label, helptext and error message keep the full width.
    */
-  expectedCharactersCount?: number
+  inputWidth?: number
 }
 
 const TextField = (
@@ -37,7 +37,7 @@ const TextField = (
     autoCorrect,
     spellCheck,
     autoComplete,
-    expectedCharactersCount,
+    inputWidth,
     ...rest
   }: TextFieldProps,
   ref: Ref<HTMLInputElement>,
@@ -66,15 +66,15 @@ const TextField = (
         autoComplete={autoComplete}
         data-cy={rest.name ? `input-${rest.name}` : undefined}
         style={
-          isDefined(expectedCharactersCount)
-            ? ({ '--expected-characters-count': expectedCharactersCount } as CSSProperties)
+          isDefined(inputWidth)
+            ? ({ '--expected-characters-count': inputWidth } as CSSProperties)
             : undefined
         }
         className={({ isFocused, isDisabled, isInvalid }) =>
           cn(
             'rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
             // Both set the width, so they are mutually exclusive
-            isDefined(expectedCharactersCount) ? 'input-width-based-on-characters-count' : 'w-full',
+            isDefined(inputWidth) ? 'input-width-based-on-characters-count' : 'w-full',
             'px-3 py-2 lg:px-4 lg:py-3',
             'placeholder:text-content-passive-tertiary',
             {

@@ -47,9 +47,9 @@ export default schema(
         ],
       ),
       object(
-        'expectedCharactersCountVariants',
+        'inputWidthCharacterVariants',
         {
-          title: 'Expected Characters Count Variants',
+          title: 'Input Width — Characters',
           description: [
             'Use fixed width inputs for content that has a specific, known length. Postcode inputs should be postcode-sized, telephone number inputs should be telephone number-sized.',
             'The widths are designed for specific character lengths and to be consistent across a range of browsers. They include extra padding to fit icons that some browsers might insert into the input (for example to show or generate a password).',
@@ -60,49 +60,49 @@ export default schema(
         },
         [
           input(
-            'expectedCharactersCount40',
+            'inputWidthCharacters40',
             { type: 'text', title: '40 character width, the maximum', required: true },
-            { expectedCharactersCount: 40 },
+            { inputWidth: 40 },
           ),
           input(
-            'expectedCharactersCount20',
+            'inputWidthCharacters20',
             { type: 'text', title: '20 character width', required: true },
-            { expectedCharactersCount: 20 },
+            { inputWidth: 20 },
           ),
           input(
-            'expectedCharactersCount10',
+            'inputWidthCharacters10',
             { type: 'text', title: '10 character width', required: true },
-            { expectedCharactersCount: 10 },
+            { inputWidth: 10 },
           ),
           input(
-            'expectedCharactersCount5',
+            'inputWidthCharacters5',
             { type: 'text', title: '5 character width', required: true },
-            { expectedCharactersCount: 5 },
+            { inputWidth: 5 },
           ),
           input(
-            'expectedCharactersCount4',
+            'inputWidthCharacters4',
             { type: 'text', title: '4 character width', required: true },
-            { expectedCharactersCount: 4 },
+            { inputWidth: 4 },
           ),
           input(
-            'expectedCharactersCount3',
+            'inputWidthCharacters3',
             { type: 'text', title: '3 character width', required: true },
-            { expectedCharactersCount: 3 },
+            { inputWidth: 3 },
           ),
           input(
-            'expectedCharactersCount2',
+            'inputWidthCharacters2',
             { type: 'text', title: '2 character width', required: true },
-            { expectedCharactersCount: 2 },
+            { inputWidth: 2 },
           ),
           input(
-            'expectedCharactersCountWithHelptext',
+            'inputWidthCharactersWithHelptext',
             {
               type: 'text',
               title: '5 character width with full width label, helptext and error message',
               required: true,
             },
             {
-              expectedCharactersCount: 5,
+              inputWidth: 5,
               helptext:
                 'This helptext spans the full available width while the input stays five characters wide.',
             },

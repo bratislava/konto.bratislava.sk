@@ -368,6 +368,10 @@ export interface GetFormResponseSimpleDto {
    * Slug of the form definition
    */
   formDefinitionSlug: string
+  /**
+   * Date when the form was sent
+   */
+  formSentAt: string | null
 }
 
 export const GetFormResponseSimpleDtoStateEnum = {
@@ -549,15 +553,15 @@ export interface SendFormResponseDto {
 }
 
 export const SendFormResponseDtoStateEnum = {
-  Finished: 'FINISHED',
+  Error: 'ERROR',
   Draft: 'DRAFT',
   Queued: 'QUEUED',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
   Processing: 'PROCESSING',
+  Finished: 'FINISHED',
   Rejected: 'REJECTED',
-  Error: 'ERROR',
 } as const
 
 export type SendFormResponseDtoStateEnum =

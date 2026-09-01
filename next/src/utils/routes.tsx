@@ -8,11 +8,9 @@ export const ROUTES = {
   IDENTITY_VERIFICATION: '/overenie-identity',
   LOGIN: '/prihlasenie',
   LOGOUT: '/odhlasenie',
-  // eslint-disable-next-line sonarjs/no-hardcoded-passwords
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
   OAUTH: '/oauth',
   OAUTH_CONFIRM: '/oauth-potvrdenie',
-  // eslint-disable-next-line sonarjs/no-hardcoded-passwords
   PASSWORD_CHANGE: '/zmena-hesla',
   EMAIL_CHANGE: '/zmena-emailu',
   HELP: '/pomoc',
@@ -30,6 +28,7 @@ export const ROUTES = {
   THANK_YOU: '/vysledok-platby',
   USER_PROFILE: '/moj-profil',
   MY_APPLICATIONS: '/moje-ziadosti',
+  MY_APPLICATION_DETAIL: (formId: string) => `/moje-ziadosti/${formId}`,
   PAYMENT_RESULT: '/platba/stav',
 }
 

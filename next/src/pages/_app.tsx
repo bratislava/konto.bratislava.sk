@@ -76,9 +76,6 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
       sessionStorage.removeItem(amplifyCookiesRemovedSessionStorageKey)
     }
 
-    // Set data-cy-hydrated attribute so Cypress can wait for client-side hydration
-    document.body.setAttribute('data-cy-hydrated', 'true')
-
     // Rewritten from useEffectOnce
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

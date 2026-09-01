@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next/pages'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components/Tabs'
 
 import SectionContainer from '@/src/components/layouts/SectionContainer'
+import MyApplicationsBanner from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsBanner'
 import {
   getMyApplicationsCountQueryKey,
   myApplicationsCountFetcher,
@@ -99,12 +100,16 @@ const MyApplicationsPageContent = () => {
           </TabList>
           {MY_APPLICATION_STATE_FILTERS.map((variant) => (
             <TabPanel key={variant} id={variant}>
-              <MyApplicationsList
-                applications={applications}
-                isPending={isPending}
-                isError={isError}
-                refreshListData={refreshListData}
-              />
+              {applications?.items.length ? (
+                <MyApplicationsList
+                  applications={applications}
+                  isPending={isPending}
+                  isError={isError}
+                  refreshListData={refreshListData}
+                />
+              ) : selectedSection !== 'DRAFT' ? (
+                <MyApplicationsBanner variant="no-applications" />
+              ) : null}
             </TabPanel>
           ))}
         </Tabs>

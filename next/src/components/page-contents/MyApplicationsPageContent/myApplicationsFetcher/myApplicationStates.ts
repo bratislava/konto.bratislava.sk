@@ -35,10 +35,3 @@ export const getFormResponseStatesByMyApplicationState = (
   myApplicationState === 'ALL'
     ? MY_APPLICATION_STATES.flatMap((state) => formResponseStatesByMyApplicationState[state])
     : formResponseStatesByMyApplicationState[myApplicationState]
-
-export const getMyApplicationStateByFormResponseState = (
-  formResponseState: GetFormResponseDtoStateEnum,
-): MyApplicationState =>
-  MY_APPLICATION_STATES.find((myApplicationState) =>
-    formResponseStatesByMyApplicationState[myApplicationState].includes(formResponseState),
-  ) ?? 'SENT'

@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next/pages'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
 import RowGroupWrapper from '@/src/components/common/RowGroupWrapper'
-import MyApplicationsBanner from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsBanner'
 import MyApplicationsCard from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationsCard/MyApplicationsCard'
 import { useMyApplicationsFilters } from '@/src/components/page-contents/MyApplicationsPageContent/useMyApplicationsFilters'
 import Pagination from '@/src/components/simple-components/Pagination/Pagination'
@@ -69,9 +68,7 @@ const MyApplicationsList = ({ applications, isPending, isError, refreshListData 
         />
       </div>
     </>
-  ) : (
-    <MyApplicationsBanner variant="no-applications" />
-  )
+  ) : null
 }
 
 export default MyApplicationsList

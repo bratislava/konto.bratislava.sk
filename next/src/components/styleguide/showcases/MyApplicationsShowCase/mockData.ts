@@ -14,6 +14,7 @@ import {
   myApplicationsDefaultFilters,
 } from '@/src/components/page-contents/MyApplicationsPageContent/myApplicationsFetcher/myApplicationsFetcher'
 import {
+  getFormResponseStatesByMyApplicationState,
   MY_APPLICATION_STATE_FILTERS,
   MY_APPLICATION_STATES,
   MyApplicationState,
@@ -109,6 +110,21 @@ const getSectionItemDrafts = (section: MyApplicationStateFilter): SimpleItemDraf
     ? MY_APPLICATION_STATES.flatMap((state) => sectionItemDrafts[state])
     : sectionItemDrafts[section]
 
+// Mirrors `meta.countByState` from the backend, which counts the forms in all the states
+// regardless of the currently selected section.
+const createCountByState = (scenario: ListScenario): Record<string, number> => {
+  if (scenario === 'empty') {
+    return {}
+  }
+
+  const countByState: Record<string, number> = {}
+  getSectionItemDrafts('ALL').forEach((draft) => {
+    countByState[draft.state] = (countByState[draft.state] ?? 0) + 1
+  })
+
+  return countByState
+}
+
 export const createMockApplications = (
   section: MyApplicationStateFilter,
   scenario: ListScenario,
@@ -123,7 +139,7 @@ export const createMockApplications = (
     pagination: 10,
     countPages: 1,
     items,
-    meta: { countByState: {} },
+    meta: { countByState: createCountByState(scenario) },
   }
 }
 
@@ -154,13 +170,18 @@ export const createMockQueryClient = (
     applications,
   )
 
-  const counts: Record<MyApplicationStateFilter, number> = {
-    ALL: 15,
-    SENT: 12,
-    DRAFT: 3,
-  }
-  // Reflect the currently shown section's real item count.
-  counts[section] = applications.items.length
+  // Derived from the mocked `meta.countByState` the same way `myApplicationsCountFetcher` does it,
+  // so the tab counts always match the mocked items.
+  const { countByState } = applications.meta
+  const counts = Object.fromEntries(
+    MY_APPLICATION_STATE_FILTERS.map((myApplicationState) => [
+      myApplicationState,
+      getFormResponseStatesByMyApplicationState(myApplicationState).reduce(
+        (count, formState) => count + (countByState[formState] ?? 0),
+        0,
+      ),
+    ]),
+  ) as Record<MyApplicationStateFilter, number>
   queryClient.setQueryData(getMyApplicationsCountQueryKey(), counts)
 
   return queryClient

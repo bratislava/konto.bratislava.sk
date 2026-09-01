@@ -1,12 +1,7 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaAjvInputFormat } from '../../form-utils/ajvFormats'
-import {
-  BaWidgetType,
-  inputWidthCharactersMax,
-  inputWidthCharactersMin,
-  InputUiOptions,
-} from '../uiOptionsTypes'
-import { getInputTypeForAjvFormat, removeUndefinedValues } from '../helpers'
+import { BaWidgetType, InputUiOptions } from '../uiOptionsTypes'
+import { getInputTypeForAjvFormat, removeUndefinedValues, validateInputWidth } from '../helpers'
 
 export const input = (
   property: string,
@@ -16,15 +11,7 @@ export const input = (
   },
   uiOptions: Omit<InputUiOptions, 'inputType'>,
 ): GeneratorField => {
-  const { inputWidth } = uiOptions
-  if (
-    inputWidth !== undefined &&
-    (inputWidth < inputWidthCharactersMin || inputWidth > inputWidthCharactersMax)
-  ) {
-    throw new Error(
-      `inputWidth must be an integer between ${inputWidthCharactersMin} and ${inputWidthCharactersMax}, got ${inputWidth} (property "${property}")`,
-    )
-  }
+  validateInputWidth(uiOptions.inputWidth, property)
 
   const { inputType, format } = (() => {
     if (options.type === 'email') {

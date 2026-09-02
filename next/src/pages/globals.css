@@ -10,8 +10,8 @@
 
 @source '../../node_modules/@bratislava/component-library/dist';
 
-/** 
- * Figma: https://www.figma.com/design/ctDKMhAPIjLUVNNmq430D4/DS--Foundations 
+/**
+ * Figma: https://www.figma.com/design/ctDKMhAPIjLUVNNmq430D4/DS--Foundations
  */
 
 /* When updating the theme don't forget to update the `baTwMerge` implementation in `cn.ts`. */
@@ -461,10 +461,11 @@
 }
 
 /*
- * Approximate width of an input in characters, driven by the `expectedCharactersCount` ui
- * option which sets `--expected-characters-count` inline. `1em` per character is generous on
- * purpose, it matches the gov.uk text input widths. The extra values are the input's own padding
- * (`px-3` / `lg:px-4`) and border, which is why this lives in CSS rather than an inline style.
+ * Approximate width of an input in characters, driven by a numeric `inputWidth` ui option which
+ * sets `--expected-characters-count` inline. `1em` per character is generous on purpose, it matches
+ * the gov.uk text input widths. The extra values are the input's own padding (`px-3` / `lg:px-4`)
+ * and border, which is why this lives in CSS rather than an inline style. Fractional `inputWidth`
+ * values need no utility of their own, they use Tailwind's classes directly.
  */
 @utility input-width-based-on-characters-count {
   width: calc(var(--expected-characters-count) * 1em + 1.5rem + 2px);

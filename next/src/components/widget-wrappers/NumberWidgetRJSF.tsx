@@ -43,6 +43,7 @@ const NumberWidgetRJSF = (props: NumberWidgetRJSFProps) => {
       <NumberField
         {...fieldProps}
         placeholder={specificOptions.placeholder}
+        inputWidth={specificOptions.inputWidth}
         unit={specificOptions.unit}
         minValue={schema.minimum}
         maxValue={schema.maximum}

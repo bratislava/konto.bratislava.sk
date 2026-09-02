@@ -1,14 +1,20 @@
-import { CSSProperties, forwardRef, Ref } from 'react'
+import { InputWidthType } from 'forms-shared/generator/uiOptionsTypes'
+import { forwardRef, Ref } from 'react'
 import { Input as RACInput, InputProps as RACInputProps } from 'react-aria-components/Input'
 import {
   TextField as RACTextField,
   TextFieldProps as RACTextFieldProps,
 } from 'react-aria-components/TextField'
 
-import { isDefined } from '@/src/frontend/utils/general'
 import cn from '@/src/utils/cn'
 
 import FieldWrapper from './_shared/FieldWrapper'
+import {
+  getInputWidthCharactersStyle,
+  getInputWidthFractionClassName,
+  inputWidthCharactersClassName,
+  isInputWidthCharacters,
+} from './_shared/inputWidth'
 import { FieldBaseProps } from './_shared/types'
 
 export interface TextFieldProps
@@ -18,10 +24,11 @@ export interface TextFieldProps
     Pick<RACInputProps, 'autoCapitalize' | 'autoCorrect' | 'spellCheck'> {
   placeholder?: string
   /**
-   * Approximate width of the input in characters. Narrows only the input, never past the available
-   * space. Label, helptext and error message keep the full width.
+   * Width of the input, either a number of characters or a fraction of the available width.
+   * Narrows only the input, never past the available space. Label, helptext and error message keep
+   * the full width.
    */
-  expectedCharactersCount?: number
+  inputWidth?: InputWidthType
 }
 
 const TextField = (
@@ -37,7 +44,7 @@ const TextField = (
     autoCorrect,
     spellCheck,
     autoComplete,
-    expectedCharactersCount,
+    inputWidth,
     ...rest
   }: TextFieldProps,
   ref: Ref<HTMLInputElement>,
@@ -66,15 +73,15 @@ const TextField = (
         autoComplete={autoComplete}
         data-cy={rest.name ? `input-${rest.name}` : undefined}
         style={
-          isDefined(expectedCharactersCount)
-            ? ({ '--expected-characters-count': expectedCharactersCount } as CSSProperties)
-            : undefined
+          isInputWidthCharacters(inputWidth) ? getInputWidthCharactersStyle(inputWidth) : undefined
         }
         className={({ isFocused, isDisabled, isInvalid }) =>
           cn(
             'rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
             // Both set the width, so they are mutually exclusive
-            isDefined(expectedCharactersCount) ? 'input-width-based-on-characters-count' : 'w-full',
+            isInputWidthCharacters(inputWidth)
+              ? inputWidthCharactersClassName
+              : getInputWidthFractionClassName(inputWidth),
             'px-3 py-2 lg:px-4 lg:py-3',
             'placeholder:text-content-passive-tertiary',
             {

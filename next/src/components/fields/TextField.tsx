@@ -1,3 +1,4 @@
+import { InputWidthType } from 'forms-shared/generator/uiOptionsTypes'
 import { forwardRef, Ref } from 'react'
 import { Input as RACInput, InputProps as RACInputProps } from 'react-aria-components/Input'
 import {
@@ -8,6 +9,12 @@ import {
 import cn from '@/src/utils/cn'
 
 import FieldWrapper from './_shared/FieldWrapper'
+import {
+  getInputWidthCharactersStyle,
+  getInputWidthFractionClassName,
+  inputWidthCharactersClassName,
+  isInputWidthCharacters,
+} from './_shared/inputWidth'
 import { FieldBaseProps } from './_shared/types'
 
 export interface TextFieldProps
@@ -16,6 +23,12 @@ export interface TextFieldProps
     FieldBaseProps,
     Pick<RACInputProps, 'autoCapitalize' | 'autoCorrect' | 'spellCheck'> {
   placeholder?: string
+  /**
+   * Width of the input, either a number of characters or a fraction of the available width.
+   * Narrows only the input, never past the available space. Label, helptext and error message keep
+   * the full width.
+   */
+  inputWidth?: InputWidthType
 }
 
 const TextField = (
@@ -31,6 +44,7 @@ const TextField = (
     autoCorrect,
     spellCheck,
     autoComplete,
+    inputWidth,
     ...rest
   }: TextFieldProps,
   ref: Ref<HTMLInputElement>,
@@ -58,9 +72,16 @@ const TextField = (
         spellCheck={spellCheck}
         autoComplete={autoComplete}
         data-cy={rest.name ? `input-${rest.name}` : undefined}
+        style={
+          isInputWidthCharacters(inputWidth) ? getInputWidthCharactersStyle(inputWidth) : undefined
+        }
         className={({ isFocused, isDisabled, isInvalid }) =>
           cn(
-            'w-full rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
+            'rounded-lg border bg-background-passive-base text-size-p-small-r text-content-passive-secondary base-focus-ring outline-hidden lg:text-size-p-small',
+            // Both set the width, so they are mutually exclusive
+            isInputWidthCharacters(inputWidth)
+              ? inputWidthCharactersClassName
+              : getInputWidthFractionClassName(inputWidth),
             'px-3 py-2 lg:px-4 lg:py-3',
             'placeholder:text-content-passive-tertiary',
             {

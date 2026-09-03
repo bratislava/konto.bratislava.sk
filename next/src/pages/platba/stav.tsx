@@ -42,7 +42,7 @@ const PaymentResultPage = ({ general, strapiTaxConfig }: Props) => {
     <GeneralContextProvider general={general}>
       <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
         <>
-          <SeoHead title={t('platba.stav.title')} />
+          <SeoHead title={t('PaymentState.title')} />
 
           <PageLayout className="lg:bg-gray-50">
             <PaymentResultPageContent />

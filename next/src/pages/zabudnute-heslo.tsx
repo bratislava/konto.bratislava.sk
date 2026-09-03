@@ -121,7 +121,7 @@ const ForgottenPasswordPage = ({ general, clientInfo }: AuthPageCommonProps) => 
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
         <>
-          <SeoHead title={t('zabudnute-heslo.title')} />
+          <SeoHead title={t('ForgottenPasswordPage.title')} />
 
           <PageLayout
             variant="auth"

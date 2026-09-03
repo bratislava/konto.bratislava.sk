@@ -191,7 +191,7 @@ const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
         <>
-          <SeoHead title={t('prihlasenie.title')} />
+          <SeoHead title={t('LoginPage.title')} />
 
           <PageLayout variant="auth">
             <AccountContainer ref={accountContainerRef} className="flex flex-col gap-8 lg:gap-10">

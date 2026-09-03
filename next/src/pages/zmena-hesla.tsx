@@ -93,7 +93,7 @@ const PasswordChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
         <>
-          <SeoHead title={t('zmena-hesla.title')} />
+          <SeoHead title={t('PasswordChangePage.title')} />
 
           <PageLayout
             variant="auth"

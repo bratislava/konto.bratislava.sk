@@ -201,7 +201,7 @@ const EmailChangePage = ({ general, clientInfo }: AuthPageCommonProps) => {
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
         <>
-          <SeoHead title={t('zmena-emailu.title')} />
+          <SeoHead title={t('EmailChangePage.title')} />
 
           <PageLayout
             variant="auth"

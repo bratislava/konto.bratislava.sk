@@ -361,7 +361,7 @@ const RegisterPage = ({ general, clientInfo }: AuthPageCommonProps) => {
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
         <>
-          <SeoHead title={t('registracia.title')} />
+          <SeoHead title={t('RegistrationPage.title')} />
 
           <PageLayout variant="auth">
             {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}

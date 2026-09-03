@@ -129,7 +129,7 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
     <AmplifyClientOAuthProvider clientInfo={clientInfo}>
       <GeneralContextProvider general={general}>
         <>
-          <SeoHead title={t('overenie-identity.title')} />
+          <SeoHead title={t('IdentityVerificationPage.title')} />
 
           <PageLayout variant="auth">
             <AccountContainer ref={accountContainerRef}>

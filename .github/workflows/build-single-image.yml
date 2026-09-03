@@ -47,7 +47,7 @@ jobs:
     runs-on: bratislava
     env:
       # In deploy mode, the cluster-prefixed sha tag is the per-cluster deploy
-      # tag. Empty in CI so docker-metadata emits only the plain commit tag.
+      # tag. Empty in CI so docker-build-config emits only the plain commit tag.
       CLUSTER_PREFIX: ${{ inputs.cluster != '' && format('{0}-', inputs.cluster) || '' }}
     defaults:
       run:
@@ -72,12 +72,13 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
+          push: ${{ inputs.cluster != '' }}
 
       # Deploy mode only: reuse the commit image across clusters. If it already
       # exists, re-tag it for this cluster and skip the build below.
@@ -95,11 +96,7 @@ jobs:
         with:
           context: ${{ inputs.directory }}
           target: prod
-          # Test: push image layers as zstd instead of gzip. Cheaper to
-          # compress on push and to decompress on pull, but whatever pulls
-          # the image needs zstd support. No force-compression, so upstream
-          # base layers stay gzip and only our own layers convert.
-          outputs: type=image,push=${{ inputs.cluster != '' }},oci-mediatypes=true,compression=zstd
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: ${{ steps.meta.outputs.cache_from }}
-          cache-to: ${{ steps.meta.outputs.cache_to }}
+          outputs: ${{ steps.config.outputs.image_output }}
+          tags: ${{ steps.config.outputs.tags }}
+          cache-from: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          cache-to: ${{ fromJSON(steps.config.outputs.cache).main.to }}

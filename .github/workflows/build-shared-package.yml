@@ -60,11 +60,12 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
+          push: ${{ inputs.push }}
 
       - name: Build and push
         id: build
@@ -72,14 +73,10 @@ jobs:
         with:
           context: ${{ inputs.directory }}
           target: ${{ inputs.target }}
-          # Test: push image layers as zstd instead of gzip. Cheaper to
-          # compress on push and to decompress on pull, but whatever pulls
-          # the image needs zstd support. No force-compression, so upstream
-          # base layers stay gzip and only our own layers convert.
-          outputs: type=image,push=${{ inputs.push }},oci-mediatypes=true,compression=zstd
+          outputs: ${{ steps.config.outputs.image_output }}
           tags: ${{ inputs.image }}:build-${{ github.sha }}
-          cache-from: ${{ steps.meta.outputs.cache_from }}
-          cache-to: ${{ steps.meta.outputs.cache_to }}
+          cache-from: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          cache-to: ${{ fromJSON(steps.config.outputs.cache).main.to }}
 
       - name: Print summary
         shell: bash

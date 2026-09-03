@@ -58,20 +58,20 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
-          suffix: -test
+          stages: test
 
       - name: Run tests
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.directory }}
           target: ci-test
-          cache-from: ${{ steps.meta.outputs.cache_from }}
-          cache-to: ${{ steps.meta.outputs.cache_to }}
+          cache-from: ${{ fromJSON(steps.config.outputs.cache).test.from }}
+          cache-to: ${{ fromJSON(steps.config.outputs.cache).test.to }}
           build-args: |
             PLAYWRIGHT_VERSION=${{ steps.docker-build-args.outputs.PLAYWRIGHT_VERSION }}
             SLOVENSKO_MEF_JSON_LAST_MODIFIED=${{ steps.docker-build-args.outputs.SLOVENSKO_MEF_JSON_LAST_MODIFIED }}

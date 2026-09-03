@@ -112,13 +112,14 @@ jobs:
           harbor_registry_username: ${{ env.REGISTRY_USERNAME }}
           harbor_registry_password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-      - name: Docker metadata
-        id: meta
-        uses: bratislava/github-actions/.github/actions/docker-metadata@use-zstd-compression
+      - name: Docker build config
+        id: config
+        uses: ./.github/actions/docker-build-config
         with:
           image: ${{ inputs.image }}
           prefix: ${{ env.CLUSTER_PREFIX }}
           suffix: ${{ env.ENV_SUFFIX }}
+          push: ${{ inputs.cluster != '' }}
 
       # Deploy mode only: reuse the per-env commit image across clusters. If it
       # already exists, re-tag it for this cluster and skip the build below.
@@ -136,14 +137,10 @@ jobs:
         with:
           context: ${{ inputs.directory }}
           target: prod
-          # Test: push image layers as zstd instead of gzip. Cheaper to
-          # compress on push and to decompress on pull, but whatever pulls
-          # the image needs zstd support. No force-compression, so upstream
-          # base layers stay gzip and only our own layers convert.
-          outputs: type=image,push=${{ inputs.cluster != '' }},oci-mediatypes=true,compression=zstd
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: ${{ steps.meta.outputs.cache_from }}
-          cache-to: ${{ steps.meta.outputs.cache_to }}
+          outputs: ${{ steps.config.outputs.image_output }}
+          tags: ${{ steps.config.outputs.tags }}
+          cache-from: ${{ fromJSON(steps.config.outputs.cache).main.from }}
+          cache-to: ${{ fromJSON(steps.config.outputs.cache).main.to }}
           build-args: |
             FORMS_SHARED_DIGEST=${{ inputs.forms_shared_digest }}
             OPENAPI_CLIENTS_DIGEST=${{ inputs.openapi_clients_digest }}

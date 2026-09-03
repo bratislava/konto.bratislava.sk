@@ -13,7 +13,6 @@ import { FormSentProvider, useFormSent } from '@/src/components/forms/useFormSen
 import ConditionalWrap from '@/src/components/layouts/ConditionalWrap'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import FormSentPageContent from '@/src/components/page-contents/FormSentPageContent/FormSentPageContent'
-import SeoHead from '@/src/components/simple-components/SeoHead'
 import cn from '@/src/utils/cn'
 
 /**

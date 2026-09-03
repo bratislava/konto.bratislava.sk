@@ -68,12 +68,12 @@ export type AuthPageCommonProps = {
 }
 
 const LoginPage = ({ general, clientInfo }: AuthPageCommonProps) => {
+  const { t } = useTranslation()
   const router = useRouter()
   const { redirect, getRedirectQueryParams, getRouteWithRedirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
   const { prepareFormMigration } = usePrepareFormMigration('sign-in')
-  const { t } = useTranslation()
 
   const { isOAuthLogin, storeTokensAndRedirect, isIdentityVerificationRequired } =
     useOAuthGetContext(clientInfo)

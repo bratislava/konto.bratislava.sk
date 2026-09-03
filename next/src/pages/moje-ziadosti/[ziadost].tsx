@@ -1,5 +1,4 @@
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { useTranslation } from 'next-i18next/pages'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { formsClient } from '@/src/clients/forms'

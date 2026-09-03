@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next/pages'
 
-import { getSelfUrl } from '@/src/utils/getSelfUrl'
+import { environment } from '@/src/environment'
 
 type SeoHeadProps = {
   title?: string | null
@@ -18,7 +18,7 @@ const SeoHead = ({ title, ogType = 'website', description }: SeoHeadProps) => {
   const { t } = useTranslation()
   const { asPath } = useRouter()
 
-  const fullUrl = `${getSelfUrl()}${asPath}`
+  const fullUrl = `${environment.selfUrl}${asPath}`
 
   const metaTitle = `${title || ''} – ${t('common.bratislavaAccount')}`
 

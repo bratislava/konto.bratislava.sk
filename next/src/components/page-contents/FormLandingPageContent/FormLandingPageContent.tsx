@@ -36,8 +36,6 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
 
   return (
     <>
-      <SeoHead title={formDefinition.title} />
-
       {/* Header */}
       <SectionContainer className="size-full bg-background-passive-primary py-6 lg:min-h-[120px] lg:py-12">
         <div className="flex flex-col gap-2 lg:gap-4">

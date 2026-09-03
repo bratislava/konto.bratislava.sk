@@ -20,6 +20,7 @@ import pick from 'lodash/pick'
 const basePropertiesToPick = [
   'slug',
   'type',
+  'title',
   'jsonVersion',
   'schema',
   'embedded',
@@ -27,7 +28,6 @@ const basePropertiesToPick = [
   'termsAndConditions',
   'feedbackLink',
   'sendPolicy',
-  'title',
 ] as const satisfies readonly (keyof FormDefinition)[]
 
 const slovenskoSkBasePropertiesToPick = [

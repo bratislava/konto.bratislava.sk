@@ -36,6 +36,26 @@ import {
 } from './dtos/responses.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
 
+/**
+ * Prisma filter selecting exactly the forms for which {@link FormsService.isEditable} returns true.
+ * Keep the two in sync.
+ */
+const editableStatesFilter: Prisma.FormsWhereInput[] = [
+  { state: FormState.DRAFT },
+  { state: FormState.ERROR, error: { in: EDITABLE_ERRORS } },
+]
+
+/**
+ * Fields that may accompany the DRAFT -> QUEUED transition in
+ * {@link FormsService.transitionToQueued}. Deliberately does not include `formDataJson`: the form
+ * data must be final before the form is claimed for sending.
+ */
+export interface TransitionToQueuedData {
+  formSummary?: PrismaJson.FormSummary
+  formSentAt?: Date
+  jsonVersion?: string
+}
+
 @Injectable()
 export default class FormsService {
   constructor(
@@ -219,10 +239,7 @@ export default class FormsService {
     const take = Number(pagination ?? DEFAULT_PAGE_SIZE)
     const skip = (Number(currentPage ?? DEFAULT_PAGE) - 1) * take
 
-    const editableStates = [
-      { state: FormState.DRAFT },
-      { state: FormState.ERROR, error: { in: EDITABLE_ERRORS } },
-    ]
+    const editableStates = editableStatesFilter
 
     const statesFilter =
       typeof states === 'string'
@@ -383,6 +400,35 @@ export default class FormsService {
       )
     }
     return form
+  }
+
+  /**
+   * Claims the form for sending by moving it from an editable state to QUEUED.
+   *
+   * The transition is a single conditional UPDATE, so when two sends of the same form race, exactly
+   * one of them flips the state and the other one gets `false` back. A plain read-then-write (such
+   * as {@link checkFormBeforeSending} followed by {@link updateForm}) is not enough: both requests
+   * can read DRAFT before either of them writes QUEUED, and the submission is then queued twice.
+   *
+   * @returns whether this caller won the transition
+   */
+  async transitionToQueued(
+    id: string,
+    data: TransitionToQueuedData,
+  ): Promise<boolean> {
+    const { count } = await this.prisma.forms.updateMany({
+      where: {
+        id,
+        archived: false,
+        OR: editableStatesFilter,
+      },
+      data: {
+        ...data,
+        state: FormState.QUEUED,
+      },
+    })
+
+    return count === 1
   }
 
   async bumpJsonVersion(formId: string): Promise<void> {

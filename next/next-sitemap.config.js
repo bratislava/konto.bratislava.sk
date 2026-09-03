@@ -1,4 +1,5 @@
 const { strapiClient } = require('./dist/clients/graphql-strapi/index')
+const { routes } = require('./dist/routes/index')
 
 //  Documentation: https://www.npmjs.com/package/next-sitemap
 
@@ -7,30 +8,18 @@ module.exports = {
   siteUrl: process.env.NEXT_PUBLIC_SELF_URL,
   generateRobotsTxt: false,
   changefreq: 'weekly',
-  sitemapSize: 7000,
+  sitemapSize: 5000,
   // generate paths dynamically from Strapi
   additionalPaths: async (config) => {
-    const fetchFormPaths = async () => {
-      const { forms } = await strapiClient.FormsStaticPaths({ limit: -1 })
-
-      return forms.map((form) => ({
-        loc: `/mestske-sluzby/${form.slug}`,
-      }))
-    }
-
     const fetchMunicipalServicePaths = async () => {
       const { municipalServices } = await strapiClient.MunicipalServicesStaticPaths({ limit: -1 })
 
       return municipalServices.map((municipalService) => ({
-        loc: `/mestske-sluzby/${municipalService.slug}`,
+        loc: routes.MUNICIPAL_SERVICES_FORM(municipalService.slug),
       }))
     }
 
-    const [formPaths, municipalServices] = await Promise.all([
-      fetchFormPaths(),
-      fetchMunicipalServicePaths(),
-    ])
-    const paths = [...formPaths, ...municipalServices]
+    const paths = await fetchMunicipalServicePaths()
 
     return paths.map((path) => ({
       loc: path.loc,

@@ -3492,22 +3492,6 @@ export type FormWithLandingPageBySlugQuery = {
   } | null>
 }
 
-export type FormsStaticPathsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']['input']>
-}>
-
-export type FormsStaticPathsQuery = {
-  __typename?: 'Query'
-  forms: Array<{
-    __typename?: 'Form'
-    slug: string
-    moreInformationUrl?: string | null
-    isTemporarilyDisabled?: boolean | null
-    temporarilyDisabledUntil?: string | null
-    temporarilyDisabledReason?: string | null
-  } | null>
-}
-
 export type CommonLinkFragment = {
   __typename?: 'ComponentBlocksCommonLink'
   label?: string | null
@@ -5594,14 +5578,6 @@ export const FormWithLandingPageBySlugDocument = gql`
   }
   ${FormWithLandingPageFragmentDoc}
 `
-export const FormsStaticPathsDocument = gql`
-  query FormsStaticPaths($limit: Int = -1) {
-    forms(sort: "createdAt:desc", pagination: { limit: $limit }) {
-      ...FormBase
-    }
-  }
-  ${FormBaseFragmentDoc}
-`
 export const GeneralDocument = gql`
   query General {
     footer {
@@ -5738,24 +5714,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             signal,
           }),
         'FormWithLandingPageBySlug',
-        'query',
-        variables,
-      )
-    },
-    FormsStaticPaths(
-      variables?: FormsStaticPathsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<FormsStaticPathsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<FormsStaticPathsQuery>({
-            document: FormsStaticPathsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'FormsStaticPaths',
         'query',
         variables,
       )

@@ -45,17 +45,6 @@ const editableStatesFilter: Prisma.FormsWhereInput[] = [
   { state: FormState.ERROR, error: { in: EDITABLE_ERRORS } },
 ]
 
-/**
- * Fields that may accompany the DRAFT -> QUEUED transition in
- * {@link FormsService.transitionToQueued}. Deliberately does not include `formDataJson`: the form
- * data must be final before the form is claimed for sending.
- */
-export interface TransitionToQueuedData {
-  formSummary?: PrismaJson.FormSummary
-  formSentAt?: Date
-  jsonVersion?: string
-}
-
 @Injectable()
 export default class FormsService {
   constructor(
@@ -410,11 +399,17 @@ export default class FormsService {
    * as {@link checkFormBeforeSending} followed by {@link updateForm}) is not enough: both requests
    * can read DRAFT before either of them writes QUEUED, and the submission is then queued twice.
    *
+   * `data` deliberately cannot carry `formDataJson`: the form data must be final before the form
+   * is claimed for sending.
+   *
    * @returns whether this caller won the transition
    */
   async transitionToQueued(
     id: string,
-    data: TransitionToQueuedData,
+    data: Pick<
+      Prisma.FormsUpdateManyMutationInput,
+      'formSummary' | 'formSentAt' | 'jsonVersion'
+    >,
   ): Promise<boolean> {
     const { count } = await this.prisma.forms.updateMany({
       where: {

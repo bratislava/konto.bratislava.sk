@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 generator json {
@@ -80,6 +81,11 @@ enum BloomreachOutboxStatus {
   COMPLETED
   FAILED
   SUPERSEDED
+}
+
+enum BloomreachCommandName {
+  CUSTOMERS        @map("customers")
+  CUSTOMERS_EVENTS @map("customers/events")
 }
 
 model User {
@@ -386,13 +392,27 @@ model BloomreachOutbox {
   createdAt   DateTime               @default(now())
   updatedAt   DateTime               @updatedAt
   externalId  String
-  commandName String
+  commandName BloomreachCommandName
   /// [BloomreachCommandData]
   commandData Json
   status      BloomreachOutboxStatus @default(PENDING)
   attempts    Int                    @default(0)
   lastError   String?
+  /// Set on anonymize "customers" commands and the consent-reject events
+  /// queued alongside them. An authoritative entry that must never be
+  /// overwritten by a later non-terminal write for the same dedup key while
+  /// still PENDING. Once set, a trigger deletes every other entry for the
+  /// same dedup key - see trg_delete_non_final_bloomreach_outbox_on_terminal,
+  /// migration 20260724090000_delete_non_final_bloomreach_outbox_on_terminal.
+  isTerminal  Boolean                @default(false)
 
+  // Equivalent exists in the database but Prisma does not support JSON-path index columns:
+  // @@unique([externalId, eventType, category], map: "bloomreach_outbox_events_pending_key",
+  //          where: raw('"commandName" = 'customers/events'
+  //                         AND "status" = 'PENDING'
+  //                         AND "commandData" ->> 'event_type' IS NOT NULL
+  //                         AND "commandData" -> 'properties' ->> 'category' IS NOT NULL"))
+  @@unique([externalId], map: "bloomreach_outbox_customers_pending_key", where: { commandName: "customers", status: "PENDING" })
   @@index([status, createdAt])
   @@index([externalId, commandName, status])
 }

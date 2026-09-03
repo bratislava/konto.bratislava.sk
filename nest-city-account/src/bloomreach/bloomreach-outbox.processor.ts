@@ -3,24 +3,28 @@ import axios, { isAxiosError } from 'axios'
 
 import BaConfigService from '../config/ba-config.service'
 import { BloomreachOutbox, BloomreachOutboxStatus, Prisma } from '../generated/prisma/client'
+import { BloomreachCommandName } from '../generated/prisma/enums'
 import { PrismaService } from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { toLogfmt } from '../utils/logging'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
+  BLOOMREACH_WIRE_COMMAND_NAME,
   BloomreachBatchCommand,
   BloomreachBatchResponse,
-  BloomreachCommandNameEnum,
   BloomreachCustomerCommandData,
-  BloomreachEventCommandData,
+  isBloomreachEventCommandData,
 } from './bloomreach.types'
-import { mergeCustomerCommandData } from './utils/merge-commands.utils'
+import { BloomreachMergeConsentService } from './bloomreach-merge-consent.service'
+import { isAnonymizationCommand, mergeCustomerCommandData } from './utils/merge-commands.utils'
+import { lockOutboxDedupKey, runSingleFlight } from './utils/outbox-lock.utils'
 
 const BATCH_SIZE = 50
 const MAX_ATTEMPTS = 5
 const STALE_PROCESSING_THRESHOLD_MS = 60_000
 const RETRY_BACKOFF_BASE_MS = 60_000
+const PROCESSOR_LOCK_KEY = 'bloomreach-outbox-processor'
 
 @Injectable()
 export class BloomreachOutboxProcessor {
@@ -31,6 +35,7 @@ export class BloomreachOutboxProcessor {
   constructor(
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly mergeConsentService: BloomreachMergeConsentService,
     private readonly baConfigService: BaConfigService
   ) {
     const { apiKey, apiSecret } = this.baConfigService.bloomreach
@@ -43,7 +48,7 @@ export class BloomreachOutboxProcessor {
       return
     }
 
-    await this.processBatch()
+    await runSingleFlight(this.prisma, PROCESSOR_LOCK_KEY, () => this.processBatch())
   }
 
   private async processBatch(): Promise<void> {
@@ -53,7 +58,7 @@ export class BloomreachOutboxProcessor {
     // Backoff: skip entries that were recently retried (updatedAt + attempts * base delay > now)
     const now = new Date()
     //language=postgresql
-    const entries = await this.prisma.$queryRaw<BloomreachOutbox[]>`
+    const claimedEntries = await this.prisma.$queryRaw<BloomreachOutbox[]>`
     WITH claimed AS
         (SELECT "id"
          FROM
@@ -78,12 +83,18 @@ export class BloomreachOutboxProcessor {
     RETURNING b.*
     `
 
+    if (claimedEntries.length === 0) {
+      return
+    }
+
+    const entries = await this.runMergeConsentChecks(claimedEntries)
+
     if (entries.length === 0) {
       return
     }
 
     const commands: BloomreachBatchCommand[] = entries.map((entry) => ({
-      name: entry.commandName as BloomreachCommandNameEnum,
+      name: BLOOMREACH_WIRE_COMMAND_NAME[entry.commandName],
       data: entry.commandData,
       command_id: entry.id,
     }))
@@ -149,6 +160,31 @@ export class BloomreachOutboxProcessor {
     }
   }
 
+  private async runMergeConsentChecks(
+    claimedEntries: BloomreachOutbox[]
+  ): Promise<BloomreachOutbox[]> {
+    const checkResults = await Promise.all(
+      claimedEntries.map(async (entry) => ({
+        entry,
+        safeToSend: await this.mergeConsentService.ensureConsentsSurviveMerge(entry),
+      }))
+    )
+
+    const failedCheckEntries = checkResults.filter((r) => !r.safeToSend).map((r) => r.entry)
+    if (failedCheckEntries.length > 0) {
+      // A failed merge-consent check means we couldn't verify it's safe to
+      // send (e.g. the export API is down, or a DB read/write failed) - it
+      // says nothing about whether Bloomreach would accept the command
+      // itself, so it must not count toward the same attempts/backoff budget
+      // as a genuine delivery failure.
+      await this.revertEntries(failedCheckEntries, 'Bloomreach merge consent check failed', {
+        countsTowardAttempts: false,
+      })
+    }
+
+    return checkResults.filter((r) => r.safeToSend).map((r) => r.entry)
+  }
+
   /**
    * Reverts PROCESSING entries back to PENDING, or marks them as:
    * - FAILED if max attempts reached
@@ -158,15 +194,26 @@ export class BloomreachOutboxProcessor {
    * (mirroring write-time merge that was skipped while the entry was PROCESSING).
    *
    * Uses allSettled so one DB failure doesn't block the rest.
+   *
+   * @param countsTowardAttempts whether this revert counts toward the
+   *   attempts/backoff budget that eventually marks an entry FAILED - false
+   *   for failures unrelated to Bloomreach actually rejecting the command
+   *   (e.g. a merge-consent check that couldn't complete), so those retry
+   *   indefinitely instead of exhausting the same budget as a real delivery
+   *   failure.
    */
-  private async revertEntries(entries: BloomreachOutbox[], errorMessage?: string): Promise<void> {
+  private async revertEntries(
+    entries: BloomreachOutbox[],
+    errorMessage?: string,
+    { countsTowardAttempts = true }: { countsTowardAttempts?: boolean } = {}
+  ): Promise<void> {
     const supersededByMap = await this.findSupersededEntriesAndMerge(entries)
 
     const results = await Promise.allSettled(
       entries.map(async (entry) => {
         const supersededBy = supersededByMap.get(entry.id)
-        const newAttempts = entry.attempts + 1
-        const exhausted = newAttempts >= MAX_ATTEMPTS
+        const newAttempts = countsTowardAttempts ? entry.attempts + 1 : entry.attempts
+        const exhausted = countsTowardAttempts && newAttempts >= MAX_ATTEMPTS
 
         if (exhausted) {
           this.logger.error(
@@ -228,27 +275,35 @@ export class BloomreachOutboxProcessor {
         }
 
         const { commandData } = entry
+        const eventData = isBloomreachEventCommandData(commandData) ? commandData : undefined
 
-        let where: Prisma.BloomreachOutboxWhereInput
-        if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS_EVENTS.toString()) {
-          const eventData = commandData as BloomreachEventCommandData
-          where = {
-            ...baseWhere,
-            AND: [
-              { commandData: { path: ['event_type'], equals: eventData.event_type } },
-              {
-                commandData: {
-                  path: ['properties', 'category'],
-                  equals: eventData.properties.category,
+        const where: Prisma.BloomreachOutboxWhereInput = eventData
+          ? {
+              ...baseWhere,
+              AND: [
+                { commandData: { path: ['event_type'], equals: eventData.event_type } },
+                {
+                  commandData: {
+                    path: ['properties', 'category'],
+                    equals: eventData.properties.category,
+                  },
                 },
-              },
-            ],
-          }
-        } else {
-          where = baseWhere
-        }
+              ],
+            }
+          : baseWhere
+
+        const lockKeyParts = eventData
+          ? [
+              entry.externalId,
+              BloomreachCommandName.CUSTOMERS_EVENTS,
+              eventData.event_type,
+              eventData.properties.category,
+            ]
+          : [entry.externalId, BloomreachCommandName.CUSTOMERS]
 
         await this.prisma.$transaction(async (tx) => {
+          await lockOutboxDedupKey(tx, ...lockKeyParts)
+
           const newer = await tx.bloomreachOutbox.findFirst({ where })
 
           if (!newer) {
@@ -257,15 +312,22 @@ export class BloomreachOutboxProcessor {
 
           // For customers commands, merge the old entry's data into the newer one
           // (newer values take precedence, matching the write-time merge logic)
-          if (entry.commandName === BloomreachCommandNameEnum.CUSTOMERS.toString()) {
+          if (entry.commandName === BloomreachCommandName.CUSTOMERS) {
+            const merged = mergeCustomerCommandData(
+              commandData as BloomreachCustomerCommandData,
+              newer.commandData as BloomreachCustomerCommandData
+            )
             await tx.bloomreachOutbox.update({
               where: { id: newer.id },
-              data: {
-                commandData: mergeCustomerCommandData(
-                  commandData as BloomreachCustomerCommandData,
-                  newer.commandData as BloomreachCustomerCommandData
-                ),
-              },
+              data: { commandData: merged, isTerminal: isAnonymizationCommand(merged) },
+            })
+          } else if (entry.isTerminal && !newer.isTerminal) {
+            // A terminal (anonymize) reject being superseded must still win
+            // over a non-terminal newer entry, or it would be silently
+            // discarded instead of the other way around.
+            await tx.bloomreachOutbox.update({
+              where: { id: newer.id },
+              data: { commandData, isTerminal: true },
             })
           }
 

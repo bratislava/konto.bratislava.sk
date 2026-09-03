@@ -82,11 +82,15 @@ outputs:
   cache:
     description: >-
       JSON object of registry cache refs keyed by stage name, each with a
-      `from` and a `to`, plus the always-present `main`. Index it per build
-      step, e.g.
+      `from` and a `to`, plus the always-present `main` for the unmarked
+      build. Index it per build step through fromJSON - a validation stage
+      reads the expression fromJSON(steps.<id>.outputs.cache).validate.from
+      into build-push-action `cache-from:`, and the matching `.validate.to`
+      into `cache-to:`.
 
-        cache-from: ${{ fromJSON(steps.config.outputs.cache).validate.from }}
-        cache-to: ${{ fromJSON(steps.config.outputs.cache).validate.to }}
+      Note for editors of this file: expressions in an action manifest's
+      output descriptions are parsed, and the `steps` context is not
+      available there, so keep expression braces out of this text.
     value: ${{ steps.config.outputs.cache }}
 
 runs:

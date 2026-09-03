@@ -1,12 +1,40 @@
 import { withPlausibleProxy } from 'next-plausible'
 import i18nextConfig from './next-i18next.config'
 import path from 'node:path'
+import fs from 'node:fs'
 import type { NextConfig } from 'next'
 import withBundleAnalyzer from '@next/bundle-analyzer'
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
+
+/**
+ * Copies the iframe-resizer child script into `public/scripts` and returns its public path.
+ *
+ * The path contains the version so that the browser does not serve the old cached version when
+ * the package is updated.
+ */
+const prepareIframeResizerScript = () => {
+  const packagePath = path.join(__dirname, 'node_modules/@iframe-resizer/child/package.json')
+  const { version } = JSON.parse(fs.readFileSync(packagePath, 'utf8')) as { version?: string }
+  if (!version) {
+    throw new Error('Iframe resizer child package version not found')
+  }
+
+  const publicPath = `/scripts/iframe-resizer-child-${version}.js`
+
+  const sourcePath = path.join(__dirname, 'node_modules/@iframe-resizer/child/index.umd.js')
+  if (!fs.existsSync(sourcePath)) {
+    throw new Error('Iframe resizer child script not found')
+  }
+
+  const targetPath = path.join(__dirname, 'public', publicPath)
+  fs.mkdirSync(path.dirname(targetPath), { recursive: true })
+  fs.copyFileSync(sourcePath, targetPath)
+
+  return publicPath
+}
 
 const nextConfig: NextConfig = {
   i18n: i18nextConfig.i18n,
@@ -36,12 +64,6 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingIncludes: {
     '/**': [
-      // Workaround: Turbopack file tracer misses `module-sync` exports condition files (e.g. require.mjs)
-      // on Node.js >= 22.10. Will be fixed when Next.js bumps @vercel/nft to >= 0.30.0.
-      // https://github.com/vercel/next.js/issues/90567
-      './node_modules/**/require.mjs',
-      '../forms-shared/node_modules/**/require.mjs',
-      '../openapi-clients/node_modules/**/require.mjs',
       // tells Next to force-copy the config file into the standalone bundle for all routes, so the runtime require finds it at /home/node/app/next-i18next.config.js
       './next-i18next.config.js',
     ],
@@ -76,7 +98,9 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  adapterPath: require.resolve('./next-iframe-resizer-adapter.mjs'),
+  env: {
+    IFRAME_RESIZER_PUBLIC_PATH: prepareIframeResizerScript(),
+  },
   async redirects() {
     return [
       {

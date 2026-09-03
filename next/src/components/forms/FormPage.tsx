@@ -23,10 +23,9 @@ import cn from '@/src/utils/cn'
 type FormPageState = 'form' | 'sent' | 'outdated'
 
 const FormPageContent = ({ nonce }: { nonce?: string }) => {
-  const { isEmbedded, versionCompareContinueAction, formDefinition } = useFormContext()
+  const { isEmbedded, versionCompareContinueAction } = useFormContext()
   const { formSent } = useFormSent()
 
-  const title = formDefinition.title
   const formPageState: FormPageState = (() => {
     if (formSent) {
       return 'sent'
@@ -49,18 +48,13 @@ const FormPageContent = ({ nonce }: { nonce?: string }) => {
         <ConditionalWrap
           condition={!isEmbedded}
           wrap={(children) => (
-            <>
-              <SeoHead title={title} />
-
-              <PageLayout
-                className={cn({
-                  'bg-gray-0 lg:bg-gray-50':
-                    formPageState === 'sent' || formPageState === 'outdated',
-                })}
-              >
-                {children}
-              </PageLayout>
-            </>
+            <PageLayout
+              className={cn({
+                'bg-gray-0 lg:bg-gray-50': formPageState === 'sent' || formPageState === 'outdated',
+              })}
+            >
+              {children}
+            </PageLayout>
           )}
         >
           {formPageState === 'sent' ? <FormSentPageContent /> : null}

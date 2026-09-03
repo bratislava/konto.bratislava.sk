@@ -228,8 +228,6 @@ export default class FormsService {
     const take = Number(pagination ?? DEFAULT_PAGE_SIZE)
     const skip = (Number(currentPage ?? DEFAULT_PAGE) - 1) * take
 
-    const editableStates = editableStatesFilter
-
     const statesFilter =
       typeof states === 'string'
         ? {
@@ -258,8 +256,8 @@ export default class FormsService {
       userCanEdit === undefined
         ? undefined
         : userCanEdit
-          ? { OR: editableStates }
-          : { NOT: editableStates }
+          ? { OR: editableStatesFilter }
+          : { NOT: editableStatesFilter }
 
     // Forms with an enabled form definition are returned regardless of their
     // state, while forms with a disabled form definition are only returned when
@@ -271,7 +269,7 @@ export default class FormsService {
       NOT: {
         AND: [
           { formDefinitionSlug: { in: disabledSlugs } },
-          { OR: editableStates },
+          { OR: editableStatesFilter },
         ],
       },
     }

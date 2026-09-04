@@ -108,6 +108,16 @@ export class GetFormResponseSimpleDto {
   @IsNotEmpty()
   @IsString()
   declare formDefinitionSlug: string
+
+  @Type(() => Date)
+  @ApiProperty({
+    description: 'Date when the form was sent',
+    example: new Date('2026-01-01'),
+    nullable: true,
+  })
+  @IsOptional()
+  @IsDate()
+  declare formSentAt: Date | null
 }
 
 class GetFormMetaDto {

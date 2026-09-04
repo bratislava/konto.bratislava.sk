@@ -16,6 +16,7 @@ import { FormError, Forms, FormState } from '../generated/prisma/client'
 import { MinioStorageService } from '../minio-storage/minio-storage.service'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
+import { EDITABLE_ERRORS } from '../utils/constants'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { GetFormsRequestDto } from './dtos/requests.dto'
 import FormsService from './forms.service'
@@ -199,6 +200,43 @@ describe('FormsService', () => {
 
       const result = await service.checkFormBeforeSending('123')
       expect(result).toEqual(insertForm)
+    })
+  })
+
+  describe('transitionToQueued', () => {
+    const summary = { additionalInfo: 'test' } as PrismaJson.FormSummary
+
+    it('should only transition forms that are still editable', async () => {
+      prismaMock.forms.updateMany.mockResolvedValue({ count: 1 })
+
+      await service.transitionToQueued('1', { formSummary: summary })
+
+      expect(prismaMock.forms.updateMany).toHaveBeenCalledWith({
+        where: {
+          id: '1',
+          archived: false,
+          OR: [
+            { state: FormState.DRAFT },
+            { state: FormState.ERROR, error: { in: EDITABLE_ERRORS } },
+          ],
+        },
+        data: {
+          formSummary: summary,
+          state: FormState.QUEUED,
+        },
+      })
+    })
+
+    it('should return true when it claimed the form', async () => {
+      prismaMock.forms.updateMany.mockResolvedValue({ count: 1 })
+
+      await expect(service.transitionToQueued('1', {})).resolves.toBe(true)
+    })
+
+    it('should return false when the form was already claimed', async () => {
+      prismaMock.forms.updateMany.mockResolvedValue({ count: 0 })
+
+      await expect(service.transitionToQueued('1', {})).resolves.toBe(false)
     })
   })
 

@@ -1,12 +1,40 @@
 import { withPlausibleProxy } from 'next-plausible'
 import i18nextConfig from './next-i18next.config'
 import path from 'node:path'
+import fs from 'node:fs'
 import type { NextConfig } from 'next'
 import withBundleAnalyzer from '@next/bundle-analyzer'
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
+
+/**
+ * Copies the iframe-resizer child script into `public/scripts` and returns its public path.
+ *
+ * The path contains the version so that the browser does not serve the old cached version when
+ * the package is updated.
+ */
+const prepareIframeResizerScript = () => {
+  const packagePath = path.join(__dirname, 'node_modules/@iframe-resizer/child/package.json')
+  const { version } = JSON.parse(fs.readFileSync(packagePath, 'utf8')) as { version?: string }
+  if (!version) {
+    throw new Error('Iframe resizer child package version not found')
+  }
+
+  const publicPath = `/scripts/iframe-resizer-child-${version}.js`
+
+  const sourcePath = path.join(__dirname, 'node_modules/@iframe-resizer/child/index.umd.js')
+  if (!fs.existsSync(sourcePath)) {
+    throw new Error('Iframe resizer child script not found')
+  }
+
+  const targetPath = path.join(__dirname, 'public', publicPath)
+  fs.mkdirSync(path.dirname(targetPath), { recursive: true })
+  fs.copyFileSync(sourcePath, targetPath)
+
+  return publicPath
+}
 
 const nextConfig: NextConfig = {
   i18n: i18nextConfig.i18n,
@@ -68,7 +96,9 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  adapterPath: require.resolve('./next-iframe-resizer-adapter.mjs'),
+  env: {
+    IFRAME_RESIZER_PUBLIC_PATH: prepareIframeResizerScript(),
+  },
   async redirects() {
     return [
       {

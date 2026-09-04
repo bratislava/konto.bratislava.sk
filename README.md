@@ -52,7 +52,7 @@ Each sub-project contains a README which should get you up and running. More doc
 
 🗄️ `/strapi` Strapi CMS server
 
-👀 `/tests/cypress` Automated cypress tests
+👀 `/e2e-tests` Automated Playwright E2E tests
 
 📦 `/openapi-clients` Auto-generated OpenAPI TypeScript clients
 

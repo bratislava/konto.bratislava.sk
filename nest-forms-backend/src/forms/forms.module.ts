@@ -11,6 +11,7 @@ import ScannerClientModule from '../scanner-client/scanner-client.module'
 import FormsController from './forms.controller'
 import FormsService from './forms.service'
 import { FormDefinitionMustBeEnabledGuard } from './guards/form-definition-must-be-enabled.guard'
+import { FormMustBeEditableGuard } from './guards/form-must-be-editable.guard'
 import FormsTaskSubservice from './subservices/forms-task.subservice'
 
 @Module({
@@ -28,8 +29,13 @@ import FormsTaskSubservice from './subservices/forms-task.subservice'
     FilesService,
     FormsTaskSubservice,
     FormDefinitionMustBeEnabledGuard,
+    FormMustBeEditableGuard,
   ],
-  exports: [FormsService, FormDefinitionMustBeEnabledGuard],
+  exports: [
+    FormsService,
+    FormDefinitionMustBeEnabledGuard,
+    FormMustBeEditableGuard,
+  ],
   controllers: [FormsController],
 })
 export default class FormsModule {}

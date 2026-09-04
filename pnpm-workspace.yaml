@@ -9,17 +9,17 @@ catalog:
   '@rjsf/utils': 6.5.2
   '@rjsf/validator-ajv8': 6.5.2
   '@types/node': 24.13.3
-  '@types/react': 19.2.14
-  '@types/react-dom': 19.2.3
+  '@types/react': 19.2.18
+  '@types/react-dom': 19.2.5
   ajv: 8.20.0
   ajv-errors: 3.0.0
   ajv-formats: 3.0.1
   axios: 1.18.1
   playwright: 1.59.1
-  react: 19.2.6
+  react: 19.2.8
   react-aria: 3.50.0
   react-aria-components: 1.19.0
-  react-dom: 19.2.6
+  react-dom: 19.2.8
   react-stately: 3.48.0
 
 packages:
@@ -32,7 +32,6 @@ packages:
   - next
   - scripts
   - strapi
-  - tests
 # `ssh2` (via `ssh2-sftp-client` in nest-tax-backend) compiles two optional
 # native speedups — its own `sshcrypto` binding and `cpu-features`. Neither
 # builds in the alpine images (no python3/g++) and both are `require`d inside a
@@ -47,7 +46,6 @@ allowBuilds:
   '@swc/core': true
   core-js-pure: true
   cpu-features: false
-  cypress: true
   esbuild: true
   msgpackr-extract: true
   prisma: true

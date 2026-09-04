@@ -7,6 +7,7 @@ import { strapiClient } from '@/src/clients/graphql-strapi'
 import IdentityVerificationOfPhysicalEntityForm, {
   IdentityVerificationOfPhysicalEntityFormData,
 } from '@/src/components/auth-forms/IdentityVerificationOfPhysicalEntityForm'
+import IdentityVerificationOutageAlert from '@/src/components/auth-forms/IdentityVerificationOutageAlert'
 import LegalPersonVerificationPageContent from '@/src/components/auth-forms/LegalPersonVerificationPageContent'
 import AccountContainer from '@/src/components/layouts/AccountContainer'
 import PageLayout from '@/src/components/layouts/PageLayout'
@@ -183,8 +184,12 @@ const IdentityVerificationPage = ({ general, clientInfo }: AuthPageCommonProps) 
                               })
                             : t('IdentityVerificationPage.fo.pending.contentWithoutData'),
                       })}
-                />
+                >
+                  {/* TODO remove this temporary alert when state registers are fixed. */}
+                  <IdentityVerificationOutageAlert />
+                </AccountSuccessAlert>
               )}
+
               {tierStatus.isIdentityVerified && (
                 <AccountSuccessAlert
                   variant="success"

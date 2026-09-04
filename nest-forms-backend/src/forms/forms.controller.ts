@@ -36,6 +36,7 @@ import FormDeleteResponseDto, {
 } from './dtos/responses.dto'
 import FormsService from './forms.service'
 import { FormDefinitionMustBeEnabledGuard } from './guards/form-definition-must-be-enabled.guard'
+import { FormMustBeEditableGuard } from './guards/form-must-be-editable.guard'
 
 @ApiTags('forms')
 @ApiBearerAuth()
@@ -147,7 +148,12 @@ export default class FormsController {
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @UseGuards(UserAuthGuard, FormAccessGuard, FormDefinitionMustBeEnabledGuard)
+  @UseGuards(
+    UserAuthGuard,
+    FormAccessGuard,
+    FormDefinitionMustBeEnabledGuard,
+    FormMustBeEditableGuard,
+  )
   @Post(':formId/update')
   async updateForm(
     @Body() data: UpdateFormRequestDto,

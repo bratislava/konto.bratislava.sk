@@ -8,6 +8,7 @@ import Markdown from '@/src/components/formatting/Markdown'
 import { ClientLandingPageFormDefinition } from '@/src/components/forms/clientFormDefinitions'
 import SectionContainer from '@/src/components/layouts/SectionContainer'
 import TemporarilyDisabledAlert from '@/src/components/segments/TemporarilyDisabledAlert/TemporarilyDisabledAlert'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import cn from '@/src/utils/cn'
 
 /**

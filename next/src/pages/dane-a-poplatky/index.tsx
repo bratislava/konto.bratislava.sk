@@ -2,6 +2,7 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
+import { useTranslation } from 'next-i18next/pages'
 import { ResponseGetTaxesListDto, TaxType } from 'openapi-clients/tax'
 
 import {
@@ -18,6 +19,7 @@ import TaxesPageContent from '@/src/components/page-contents/TaxesPageContent/Ta
 import { StrapiTaxAdministratorProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxAdministrator'
 import { StrapiTaxConfigProvider } from '@/src/components/page-contents/TaxesPageContent/useStrapiTaxConfig'
 import { TaxesDataProvider } from '@/src/components/page-contents/TaxesPageContent/useTaxesData'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { AccountType } from '@/src/frontend/dtos/accountDto'
 import { prefetchUserQuery } from '@/src/frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
@@ -119,15 +121,21 @@ const TaxesPage = ({
   strapiTaxConfig,
   dehydratedState,
 }: TaxesPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <HydrationBoundary state={dehydratedState}>
       <GeneralContextProvider general={general}>
         <TaxesDataProvider taxesData={taxesData}>
           <StrapiTaxConfigProvider strapiTaxConfig={strapiTaxConfig}>
             <StrapiTaxAdministratorProvider strapiTaxAdministrator={strapiTaxAdministrator}>
-              <PageLayout>
-                <TaxesPageContent />
-              </PageLayout>
+              <>
+                <SeoHead title={t('TaxesPageContent.title')} />
+
+                <PageLayout>
+                  <TaxesPageContent />
+                </PageLayout>
+              </>
             </StrapiTaxAdministratorProvider>
           </StrapiTaxConfigProvider>
         </TaxesDataProvider>

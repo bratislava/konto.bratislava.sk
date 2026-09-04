@@ -10,6 +10,7 @@ import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import MyApplicationDetails from '@/src/components/page-contents/MyApplicationsPageContent/MyApplicationDetails'
 import { patchApplicationFormIfNeeded } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededClient'
 import { getEmailFormSlugs } from '@/src/components/page-contents/MyApplicationsPageContent/patchApplicationFormIfNeededServer'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { modifyGinisDataForSchemaSlug } from '@/src/frontend/utils/ginis'
 import logger from '@/src/frontend/utils/logger'
@@ -90,13 +91,17 @@ const AccountMyApplicationsPage = ({
 }: Props) => {
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
-        <MyApplicationDetails
-          formDefinitionTitle={formDefinitionTitle}
-          myApplicationFormData={myApplicationFormData}
-          myApplicationGinisData={myApplicationGinisData}
-        />
-      </PageLayout>
+      <>
+        <SeoHead title={formDefinitionTitle} />
+
+        <PageLayout>
+          <MyApplicationDetails
+            formDefinitionTitle={formDefinitionTitle}
+            myApplicationFormData={myApplicationFormData}
+            myApplicationGinisData={myApplicationGinisData}
+          />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

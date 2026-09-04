@@ -1,9 +1,12 @@
+import { useTranslation } from 'next-i18next/pages'
+
 import { strapiClient } from '@/src/clients/graphql-strapi'
 import { GeneralQuery, HelpPageFragment } from '@/src/clients/graphql-strapi/api'
 import PageLayout from '@/src/components/layouts/PageLayout'
 import { GeneralContextProvider } from '@/src/components/logic/GeneralContextProvider'
 import { SsrAuthProviderHOC } from '@/src/components/logic/SsrAuthContext'
 import HelpPageContent from '@/src/components/page-contents/HelpPageContent/HelpPageContent'
+import SeoHead from '@/src/components/simple-components/SeoHead'
 import { amplifyGetServerSideProps } from '@/src/frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '@/src/frontend/utils/slovakServerSideTranslations'
 
@@ -34,11 +37,17 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountHelpPageProps
 })
 
 const AccountHelpPage = ({ general, helpPage }: AccountHelpPageProps) => {
+  const { t } = useTranslation()
+
   return (
     <GeneralContextProvider general={general}>
-      <PageLayout>
-        <HelpPageContent helpPage={helpPage} />
-      </PageLayout>
+      <>
+        <SeoHead title={t('HelpPageContent.title')} />
+
+        <PageLayout>
+          <HelpPageContent helpPage={helpPage} />
+        </PageLayout>
+      </>
     </GeneralContextProvider>
   )
 }

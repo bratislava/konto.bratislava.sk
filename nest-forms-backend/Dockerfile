@@ -1,84 +1,86 @@
-# check=skip=InvalidDefaultArgInFrom
-ARG FORMS_SHARED_DIGEST
-ARG OPENAPI_CLIENTS_DIGEST
-FROM harbor.bratislava.sk/standalone/forms-shared@${FORMS_SHARED_DIGEST} AS forms-shared
-FROM harbor.bratislava.sk/standalone/openapi-clients@${OPENAPI_CLIENTS_DIGEST} AS openapi-clients
-FROM node:24.15 AS base
+ARG NODE_VERSION
+ARG TURBO_VERSION
+FROM node:${NODE_VERSION}-alpine AS base
 
-RUN npx playwright install-deps chromium
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV PNPM_HOME=/pnpm
+ENV PATH="/opt/pnpm:$PNPM_HOME/bin:$PATH"
 
-# build
-FROM base AS prebuild
+WORKDIR /app
+COPY --from=pnpm-dist /opt/pnpm /opt/pnpm
 
-# Temporary workaround until this repository uses npm workspaces. Locally, shared
-# packages are symlinked through file: dependencies and their folders already
-# contain node_modules. In CI, the copied package folders would not have
-# node_modules, so we install each shared package explicitly to keep behavior
-# close to local development and expose missing runtime dependencies early.
-# https://github.com/bratislava/private-konto.bratislava.sk/issues/1433
-WORKDIR /root/forms-shared
-COPY --from=forms-shared / .
-RUN npm ci
+FROM base AS prepare
+COPY . .
+ARG TURBO_VERSION
+RUN pnpm dlx turbo@${TURBO_VERSION} prune nest-forms-backend --docker
 
-WORKDIR /root/openapi-clients
-COPY --from=openapi-clients / .
-RUN npm ci
+FROM base AS builder-deps
 
-WORKDIR /root/nest-forms-backend
-COPY package*.json ./
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile
 
-RUN npm ci --include=dev
+COPY --from=prepare /app/out/full/ .
 
-COPY . ./
-RUN npm run db:generate
+RUN pnpm --filter nest-forms-backend db:generate
 
-FROM prebuild AS test
-RUN npm run test
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
 
-FROM prebuild AS lint
-RUN npm run lint
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
 
-FROM prebuild AS test-e2e
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
+RUN pnpm turbo run build --filter=nest-forms-backend^... --filter=!nest-forms-backend
+
+FROM builder-deps AS builder
+RUN pnpm turbo run build --filter=nest-forms-backend
+
+FROM builder-deps AS test
+RUN pnpm turbo run test --filter=nest-forms-backend
+
+FROM builder-deps AS test-e2e
 ARG CI_E2E_DATABASE_URL
 ENV CI_E2E_DATABASE_URL=${CI_E2E_DATABASE_URL}
-RUN npm run test:e2e
+RUN pnpm turbo run test:e2e --filter=nest-forms-backend
 
-FROM prebuild AS build
-RUN npm run build
+FROM builder AS lint
+RUN pnpm turbo run lint --filter=nest-forms-backend
 
-# development
-FROM base AS dev
+FROM base AS prod-deps
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile --prod
 
-WORKDIR /home/node/nest-forms-backend
-COPY package*.json ./
+FROM node:${NODE_VERSION}-alpine AS runner
+ENV NODE_ENV=production
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-RUN npm install
-COPY . ./
+RUN apk add --no-cache \
+      chromium \
+      tini \
+      ttf-freefont
 
-RUN npm run db:generate
-
-CMD [ "npm", "run", "start:debug" ]
-
-
-# production
-FROM base AS prod
+WORKDIR /app
+RUN chown -R node:node /app
 
 USER node
 
-COPY --chown=node:node --from=build /root/forms-shared /home/node/forms-shared
-COPY --chown=node:node --from=build /root/openapi-clients /home/node/openapi-clients
+COPY --from=prod-deps --chown=node:node /app ./
+COPY --from=builder --chown=node:node /app/nest-forms-backend/nest-cli.json ./nest-forms-backend/nest-cli.json
+COPY --from=builder --chown=node:node /app/nest-forms-backend/prisma.config.ts ./nest-forms-backend/prisma.config.ts
+COPY --from=builder --chown=node:node /app/nest-forms-backend/prisma ./nest-forms-backend/prisma
+COPY --from=builder --chown=node:node /app/forms-shared/dist ./forms-shared/dist
+COPY --from=builder --chown=node:node /app/openapi-clients/dist ./openapi-clients/dist
+COPY --from=builder --chown=node:node /app/nest-forms-backend/dist ./nest-forms-backend/dist
 
-WORKDIR /home/node/app
+WORKDIR /app/nest-forms-backend
 
-COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./
-COPY --chown=node:node --from=build /root/nest-forms-backend/node_modules ./node_modules
-# Playwright must be installed after node_modules are copied (installs the same version as in package.json)
-RUN npx playwright install chromium
-RUN npm prune --production
+EXPOSE 3000
 
-COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
-COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
-COPY --chown=node:node --from=build /root/nest-forms-backend/prisma.config.ts ./prisma.config.ts
-COPY --chown=node:node nest-cli.json ./nest-cli.json
-
-ENTRYPOINT npm run db:migrate:deploy && npm run start:prod
+# `exec` replaces the shell with `node`, making it tini's direct child so
+# Kubernetes' SIGTERM reaches it. Without `exec` the shell dies on SIGTERM and
+# tini tears the container down before `node` can drain in-flight requests.
+ENTRYPOINT [ "/sbin/tini", "--" ]
+CMD [ "sh", "-c", "./node_modules/.bin/prisma migrate deploy && exec node dist/main" ]

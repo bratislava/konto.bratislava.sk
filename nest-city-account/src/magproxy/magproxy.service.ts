@@ -204,6 +204,7 @@ export class MagproxyService {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
 
     const result = await this.clientsService.magproxyApi
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       .rpoControllerGetLegalPerson(ico, {
         httpsAgent,
         headers: {

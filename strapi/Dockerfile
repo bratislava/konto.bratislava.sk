@@ -1,70 +1,77 @@
-FROM node:24.15-alpine AS base
+ARG NODE_VERSION
+ARG TURBO_VERSION
+FROM node:${NODE_VERSION}-alpine AS base
 
-FROM base AS build-base
-RUN apk update \
- && apk add --no-cache build-base \
-                       gcc \
-                       autoconf \
-                       automake \
-                       zlib-dev \
-                       libpng-dev \
-                       vips-dev
-WORKDIR /build
-COPY ./package.json ./package-lock.json ./
-# Uncomment if you need any to apply any patches
-# COPY patches ./patches
-# copy any installation files for Strapi plugins you want to build. For example:
-# COPY src/plugins/<package-name>/package.json src/plugins/<package-name>/package-lock.json ./src/plugins/<package-name>
-# Or leave empty (do not add anyting) if you don't have any custom plugins (most likely ./plugins directory)
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV PNPM_HOME=/pnpm
+ENV PATH="/opt/pnpm:$PNPM_HOME/bin:$PATH"
 
-FROM build-base AS install-prod
-ENV NPM_CONFIG_CACHE=/build/.npm
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm \
- && npm ci --omit=dev
+WORKDIR /app
+COPY --from=pnpm-dist /opt/pnpm /opt/pnpm
 
-FROM install-prod AS build
-WORKDIR /build/app
-COPY ./ .
-RUN --mount=type=cache,target=/build/.npm \
-    npm config set cache /build/.npm \
-    && npm ci --include=dev \
-    && npm run build
+FROM base AS prepare
+COPY . .
+ARG TURBO_VERSION
+RUN pnpm dlx turbo@${TURBO_VERSION} prune city-account-strapi --docker
 
-FROM base AS app-base
-RUN apk add --no-cache vips-dev \
-                       tini
-RUN mkdir -p /home/node/app \
- && chown node:node /home/node/app
-USER node
-WORKDIR /home/node/app
-# Adds strapi cli to the PATH
-ENV PATH=/home/node/app/node_modules/.bin:$PATH
+FROM base AS builder-deps
+RUN apk add --no-cache \
+      autoconf \
+      automake \
+      build-base \
+      gcc \
+      libpng-dev \
+      vips-dev \
+      zlib-dev
+
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile
+
+COPY --from=prepare /app/out/full/ .
+
+FROM builder-deps AS builder
+
+ARG TURBO_API
+ENV TURBO_API=$TURBO_API
+
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
+RUN pnpm turbo run build --filter=city-account-strapi
+
+FROM base AS prod-deps
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --frozen-lockfile --prod
+
+FROM node:${NODE_VERSION}-alpine AS runner
 ENV NODE_ENV=production
+
+# vips-dev needed according to https://docs.strapi.io/cms/installation/docker
+RUN apk add --no-cache \
+      tini \
+      vips-dev
+
+WORKDIR /app
+RUN chown -R node:node /app
+
+USER node
+
+COPY --from=prod-deps --chown=node:node /app ./
+COPY --from=builder --chown=node:node /app/strapi/favicon.ico ./strapi/favicon.ico
+COPY --from=builder --chown=node:node /app/strapi/tsconfig.json ./strapi/tsconfig.json
+COPY --from=builder --chown=node:node /app/strapi/config ./strapi/config
+COPY --from=builder --chown=node:node /app/strapi/database ./strapi/database
+COPY --from=builder --chown=node:node /app/strapi/public ./strapi/public
+COPY --from=builder --chown=node:node /app/strapi/dist ./strapi/dist
+
+WORKDIR /app/strapi
+
 EXPOSE 1337
-ARG GIT_COMMIT="undefined"
-ENV GIT_COMMIT=$GIT_COMMIT
-LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/strapi" \
-      org.opencontainers.image.licenses="EUPL-1.2"
+
+# tini reaps orphaned children and forwards SIGTERM. Exec-form CMD keeps `node`
+# as tini's direct child, so Kubernetes rollouts can shut it down gracefully.
 ENTRYPOINT [ "/sbin/tini", "--" ]
-
-FROM app-base AS dev
-ENV NODE_ENV=development
-COPY --chown=node:node --from=build /build/node_modules ./node_modules
-CMD [ "npm run", "develop" ]
-
-FROM app-base AS prod
-COPY --chown=node:node --from=build /build/app/favicon.ico /build/package.json /build/package-lock.json /build/app/tsconfig.json ./
-COPY --chown=node:node --from=install-prod /build/node_modules ./node_modules
-COPY --chown=node:node --from=build /build/app/config ./config
-COPY --chown=node:node --from=build /build/app/public ./public
-COPY --chown=node:node --from=build /build/app/dist ./dist
-COPY --chown=node:node --from=build /build/app/database ./database
-# COPY to final image any built Strapi plugins. In this stage you will *ONLY* need
-# - plugins/<name>/package-lock.json
-# - plugins/<name>/package.json
-# - plugins/<name>/dist/
-# - plugins/<name>/*.js
-# Or leave empty (do not add anyting) if you don't have any custom plugins (most likely ./plugins directory)
-CMD [ "strapi", "start" ]
+CMD [ "./node_modules/.bin/strapi", "start" ]

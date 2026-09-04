@@ -5,5 +5,6 @@ export default ({ env }) => ({
   apiToken: {
     salt: env('API_TOKEN_SALT'),
   },
-  watchIgnoreFiles: ['../schema.graphql', '**/config/sync/**'],
+  // postgres/** ignored - local db writes would trigger endless restarts
+  watchIgnoreFiles: ['../schema.graphql', '**/config/sync/**', '**/postgres/**'],
 })

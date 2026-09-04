@@ -1,11 +1,11 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
-import { ClientName } from '../oauth2/decorators/client-name.decorator'
-import { OAuth2AccessGuard } from '../oauth2/guards/oauth2-access.guard'
-import { OAuth2ClientName } from '../oauth2/oauth2-client-name.enum'
-import { User } from '../utils/decorators/request.decorator'
-import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
+import { ClientName } from '../../oauth2/decorators/client-name.decorator'
+import { OAuth2AccessGuard } from '../../oauth2/guards/oauth2-access.guard'
+import { OAuth2ClientName } from '../../oauth2/oauth2-client-name.enum'
+import { User } from '../../utils/decorators/request.decorator'
+import { CognitoGetUserData } from '../../utils/global-dtos/cognito.dto'
 import { PaasMpaRegisterRequestDto, PaasMpaRegisterResponseDto } from './dtos/paas-mpa.dto'
 import { PaasMpaService } from './paas-mpa.service'
 

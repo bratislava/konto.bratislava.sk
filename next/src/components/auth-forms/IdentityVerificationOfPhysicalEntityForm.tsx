@@ -5,6 +5,7 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
+import IdentityVerificationOutageAlert from '@/src/components/auth-forms/IdentityVerificationOutageAlert'
 import TextField from '@/src/components/fields/TextField'
 import Markdown from '@/src/components/formatting/Markdown'
 import Icon from '@/src/components/icon-components/Icon'
@@ -122,7 +123,13 @@ const IdentityVerificationOfPhysicalEntityForm = ({
         {t('IdentityVerificationOfPhysicalEntityForm.title')}
       </Typography>
       <Markdown variant="small" content={t('IdentityVerificationOfPhysicalEntityForm.content')} />
-      <AccountErrorAlert error={error} />
+      {error ? (
+        <div className="flex flex-col gap-4">
+          <AccountErrorAlert error={error} />
+          {/* TODO remove this temporary alert when state registers are fixed. */}
+          <IdentityVerificationOutageAlert />
+        </div>
+      ) : null}
 
       <Controller
         name="givenName"
